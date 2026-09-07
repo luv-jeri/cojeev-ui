@@ -6,13 +6,13 @@ A family of React components with a warm canvas, expressive shapes and considere
 
 ## Install in your project
 
-Use a React + TypeScript project configured with Tailwind CSS v4 and shadcn. Then install a component by URL:
+Use a React 19 + TypeScript project configured with Tailwind CSS v4 and shadcn. Then install a component by URL:
 
 ```sh
 npx shadcn@latest add https://luv-jeri.github.io/sahajiv-ui/r/button.json
 ```
 
-The registry includes component source, dependency primitives, exact styles, shared motion utilities and licensed fonts. The optional `shape-scene` entry adds Three.js; ordinary components do not require it. Library development uses React 19.
+The registry includes component source, dependency primitives, exact styles, shared motion utilities and licensed fonts. The optional `shape-scene` entry adds Three.js; ordinary components do not require it.
 
 ```tsx
 import { Button } from "@/components/ui/button";

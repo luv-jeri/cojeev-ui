@@ -212,10 +212,17 @@ const cases = {
     await root.getByRole("button", { name: "Animate sculpture", exact: true }).waitFor();
     await page.waitForTimeout(250);
     const draws = await page.evaluate(() => window.__webkitSceneDraws);
+    const canHover = await page.evaluate(() => matchMedia("(any-hover: hover) and (any-pointer: fine)").matches);
+    if (renderer === "webgl" && !canHover) {
+      // WebKit can synthesize mouse movement after a touch. A touch-only
+      // device must not start the independent hover-tilt animation.
+      const box = await scene.boundingBox();
+      await scene.dispatchEvent("pointermove", { pointerType: "mouse", clientX: box.x + box.width - 1, clientY: box.y + 1 });
+    }
     await page.waitForTimeout(300);
     assert.equal(await page.evaluate(() => window.__webkitSceneDraws), draws, "Paused sculpture must stop WebGL draws");
     await scene.screenshot({ path: path.join(output, "shape-scene-390.png") });
-    return { detail: "Supported 3D output and touch pause checked", renderer, shadedColors: colors, pausedDrawCount: draws, layout: await layout(page) };
+    return { detail: "Supported 3D output, touch pause and compatibility mouse rejection checked", renderer, shadedColors: colors, canHover, pausedDrawCount: draws, layout: await layout(page) };
   },
   marquee: async page => {
     const root = await example(page, "marquee");

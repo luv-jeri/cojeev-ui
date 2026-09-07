@@ -25,6 +25,8 @@ The added stylesheet includes both light and dark token values. Set the mode on 
 document.documentElement.dataset.mode = "dark"; // or "light"
 ```
 
+The foundation also merges its semantic colors after an initialized shadcn starter theme, so direct component installs use the same canvas and text colors as these docs. Body and display typography use the bundled fonts. For explicit Tailwind font utilities, use `font-sahajiv-text` and `font-sahajiv-display`; an existing app's `font-sans` remains its own choice.
+
 For namespace commands, add this entry to your application's `components.json`:
 
 ```json

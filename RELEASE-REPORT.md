@@ -18,6 +18,8 @@ The final local static build produces 82 pages. TypeScript, lint, four core test
 
 All nine motion presets and five additional motion checks pass. All seven WebKit touch journeys pass against the static build, including every-frame mobile navigation/close bounds, unclipped MotionControls and actual WebGL rendering. This is Safari-engine coverage, not a physical iPhone test.
 
+The second publication run passed the full documentation and motion gate but caught a mobile ShapeScene pause failure. A browser trace identified compatibility mouse movement generated after touch, which incorrectly started hover tilt. A focused regression failed against the old build and passed after requiring hover-capable input. Deployment of the correction is awaiting final CI.
+
 ## Intentional differences and limits
 
 This release preserves the supplied design family and intentionally corrects broken source behavior. It is not a claim of pixel identity with every original export. [REFINEMENTS.md](REFINEMENTS.md) lists additions and changes; [BASELINE-STATUS.md](BASELINE-STATUS.md) preserves the historical 3,096/3,252 source comparison checkpoint and its 156 failures without relabeling them as passes.

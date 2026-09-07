@@ -13,6 +13,7 @@ The original 66 components remain the foundation. The September 2026 refinement 
 - **Final visual corrections:** Readable secondary text on pastel/ink Cards and Bubble timestamps; contrasting Alert glyphs, navigation counts and collapse controls; selected ButtonGroup state stays distinct in dark mode. Default Tabs now have padded targets, including 48 px height for coarse pointers. Popovers sit above ordinary content and dialogs.
 - **Effects edge cases:** AnimatedNumber preserves caller refs and displays an em dash for unavailable values. Zero-duration TextReveal shows its entire text immediately.
 - **Mobile geometry:** Generated Morph SVGs are positioned before insertion, preventing their default size from inflating a control during measurement. Sheet columns and MotionControls can shrink and wrap within narrow screens.
+- **Touch sculpture:** Hover tilt requires a hover-capable input. Safari's compatibility mouse events after touch no longer start an unwanted tilt animation after Pause; real mouse interaction remains independent of idle animation.
 - **Fresh installation:** Foundation metadata merges SahaJiv's semantic color aliases after the initialized app's starter theme and registers the documented data-mode dark variant. Components retain their warm surfaces and readable dark text when installed directly by URL into an existing shadcn scaffold. Body and display fonts use the bundled DM Sans and Bricolage faces; explicit host font utilities remain the app's choice.
 
 ## Additional components

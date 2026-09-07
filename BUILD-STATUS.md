@@ -11,7 +11,7 @@ The active brief is the production refinement described in PRODUCTION-PLAN.md an
 | Motion | Nine selectable presets, persistent tuning, calmer Glide and static segmented bodies; focused tests pass |
 | Documentation | Fumadocs base with SahaJiv controls, source-derived code/API, individual guides, categories and getting-started page |
 | Local checks | Production build, TypeScript, lint and four core logic tests pass |
-| Browser checks | Full GitHub CI passed: 462/462 layouts, all nine motion presets and seven Safari-engine journeys. Historical local assertion failure remains documented separately. |
+| Browser checks | First full GitHub CI passed. The second run passed docs/motion but exposed a Safari touch/hover conflict; its focused regression is corrected and final CI is pending. |
 | Fresh consumer | All 77 installed, imported, typechecked and built in an outside app; all 246 copied snippets compile. Eight entries installed and built from the public URL; a real-init theme conflict is in final correction. |
 | Public repository | Public MIT source and GitHub Pages documentation are live |
 
