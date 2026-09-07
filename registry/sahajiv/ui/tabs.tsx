@@ -13,7 +13,8 @@ import { useFlowPress } from "@/registry/sahajiv/motion/flow-press";
 export const tabsVariants = cva("v-tabs [display:flex] [gap:var(--s-6)]", {
   variants: {
     variant: {
-      default: "-pills gap-[var(--s-2)]",
+      default: "",
+      pills: "-pills gap-[var(--s-2)]",
       underline: "-underline gap-[var(--s-6)]",
       lenses: "-lenses gap-[var(--s-6)]",
     },

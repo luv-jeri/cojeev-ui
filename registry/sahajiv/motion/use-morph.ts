@@ -103,7 +103,9 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
      if(live)el.classList.remove('v-morph-live')
      el.style.removeProperty('--mfill')
      const paint=getComputedStyle(el),bg=paint.backgroundColor,cssFill=paint.getPropertyValue('--mfill').trim()
-     const fill=explicit&&old.fill?old.fill:!clear(bg)?bg:old.fill||(!clear(cssFill)?cssFill:surfaceFill(el))
+     // A transparent CSS fill is meaningful: selected controls reveal the
+     // travelling flow layer underneath their own morph body.
+     const fill=explicit&&old.fill?old.fill:!clear(bg)?bg:old.fill||cssFill||surfaceFill(el)
      if(attached)el.insertBefore(svg,next)
      if(live)el.classList.add('v-morph-live')
      el.style.setProperty('--mfill',fill)

@@ -416,8 +416,9 @@
   [data-slot="checkbox"]::after,
   [data-slot^="checkbox-"]::before,
   [data-slot^="checkbox-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

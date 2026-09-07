@@ -300,8 +300,9 @@
   [data-slot="switch"]::after,
   [data-slot^="switch-"]::before,
   [data-slot^="switch-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

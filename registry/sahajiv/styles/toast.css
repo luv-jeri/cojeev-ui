@@ -56,8 +56,9 @@
   [data-slot="toast"]::after,
   [data-slot^="toast-"]::before,
   [data-slot^="toast-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

@@ -51,7 +51,13 @@ export function Preview({
           </Button>
         </div>
         <TabsContent value="preview">
-          <Card variant="cream" className="v-preview__canvas">
+          <Card
+            variant="cream"
+            className="v-preview__canvas"
+            style={
+              { "--muted-foreground": "var(--v-text-2)" } as React.CSSProperties
+            }
+          >
             {children}
           </Card>
         </TabsContent>

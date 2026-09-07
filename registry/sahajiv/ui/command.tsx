@@ -75,7 +75,7 @@ export function CommandInput({
         data-slot="command-input"
         data-part="trigger"
         className={cn(
-          "min-w-0 flex-1 bg-transparent border-0 outline-none text-[length:var(--fs-body)]",
+          "min-w-0 flex-1 bg-transparent [border:0] [outline:0] [padding:1px_2px] text-[length:var(--fs-body)]",
           className,
         )}
         {...props}
