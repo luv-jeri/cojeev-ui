@@ -92,7 +92,24 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    if(!explicit){el.dataset.morph=mode;el.dataset.autoMorph=category;autoMode=mode}
    el.classList.add('v-morph-host','v-morph-live');const relative=cs.position==='static';if(relative)el.classList.add('v-morph-rel')
    const focused=el.ownerDocument.activeElement;el.prepend(svg);if(focused instanceof HTMLElement&&el.contains(focused)&&el.ownerDocument.activeElement!==focused)focused.focus({preventScroll:true})
-   const repaint=()=>{if(mode!=='fill'){el.style.setProperty('--mstroke',old.stroke||(el.matches('.v-badge.-test')?'var(--v-ink)':el.matches('.v-badge.-dashed')?'var(--v-text-2)':'var(--v-border)'))}if(mode!=='stroke'){el.style.removeProperty('--mfill');const bg=getComputedStyle(el).backgroundColor;el.style.setProperty('--mfill',explicit&&old.fill?old.fill:!clear(bg)?bg:old.fill||getComputedStyle(el).getPropertyValue('--mfill').trim()||surfaceFill(el))}lastPaint={fill:el.style.getPropertyValue('--mfill'),stroke:el.style.getPropertyValue('--mstroke')};signature=visualSignature()}
+   const repaint=()=>{
+    if(mode!=='fill')el.style.setProperty('--mstroke',old.stroke||(el.matches('.v-badge.-test')?'var(--v-ink)':el.matches('.v-badge.-dashed')?'var(--v-text-2)':'var(--v-border)'))
+    if(mode!=='stroke'){
+     // The generated layer suppresses its host background through :has() and
+     // live-state rules. Read the real surface without that owned layer, including
+     // after a theme change, then restore it before the browser can paint.
+     const next=svg.nextSibling,attached=svg.parentNode===el,live=el.classList.contains('v-morph-live')
+     if(attached)svg.remove()
+     if(live)el.classList.remove('v-morph-live')
+     el.style.removeProperty('--mfill')
+     const paint=getComputedStyle(el),bg=paint.backgroundColor,cssFill=paint.getPropertyValue('--mfill').trim()
+     const fill=explicit&&old.fill?old.fill:!clear(bg)?bg:old.fill||(!clear(cssFill)?cssFill:surfaceFill(el))
+     if(attached)el.insertBefore(svg,next)
+     if(live)el.classList.add('v-morph-live')
+     el.style.setProperty('--mfill',fill)
+    }
+    lastPaint={fill:el.style.getPropertyValue('--mfill'),stroke:el.style.getPropertyValue('--mstroke')};signature=visualSignature()
+   }
    let lastD='',dirty=true
    repairBody=()=>{
     if(svg.parentNode!==el){el.prepend(svg);dirty=true}

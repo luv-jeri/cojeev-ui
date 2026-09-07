@@ -3,11 +3,12 @@ import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/registry/sahajiv/lib/utils"
+import { cardVariants } from "@/registry/sahajiv/ui/card"
 
 const EmptyVariants=cva("v-empty [display:grid] [justify-items:center] [text-align:center] [gap:var(--s-3)] [padding:var(--s-12)_var(--s-6)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type EmptyProps=React.ComponentProps<"div"> & VariantProps<typeof EmptyVariants> & { as?:React.ElementType }
 export function Empty({ref: externalMorphRef, as:Tag="div",className,variant,size,...props}:EmptyProps){const ownedMorphRef = useMorph<HTMLDivElement>("cards", externalMorphRef);
-  return <Tag ref={ownedMorphRef} data-slot="empty" data-part="root" className={cn(EmptyVariants({variant,size}),className)} {...props}/>}
+  return <Tag ref={ownedMorphRef} data-slot="empty" data-part="root" className={cn(className?.split(/\s+/).includes("v-card")&&cardVariants(),EmptyVariants({variant,size}),className)} {...props}/>}
 
 const EmptyTitleVariants=cva("v-empty__title [font-family:var(--font-display)] [font-size:var(--fs-section)] [font-weight:500]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type EmptyTitleProps=React.ComponentProps<"h3"> & VariantProps<typeof EmptyTitleVariants> & { as?:React.ElementType }
