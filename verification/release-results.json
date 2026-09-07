@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "release": {
+    "name": "SahaJiv UI",
+    "version": "0.1.0",
+    "status": "RELEASED",
+    "sourceCommit": "479d13abfcfa0981d538a088d83f837a6acae8b8",
+    "sourceUrl": "https://github.com/luv-jeri/sahajiv-ui/commit/479d13abfcfa0981d538a088d83f837a6acae8b8",
+    "repository": "https://github.com/luv-jeri/sahajiv-ui",
+    "registryItems": 78,
+    "uiEntries": 77,
+    "originalComponents": 66,
+    "helpers": [
+      "icon",
+      "shape",
+      "preview",
+      "adjuster"
+    ],
+    "additions": [
+      "code-block",
+      "multi-select",
+      "animated-number",
+      "text-reveal",
+      "ambient-background",
+      "marquee",
+      "shape-scene"
+    ],
+    "foundationEntries": 1,
+    "documentation": "Fumadocs framework with SahaJiv visible navigation, controls and surfaces",
+    "codeLicense": "MIT",
+    "fontLicense": "SIL OFL-1.1",
+    "fontFamilies": [
+      "DM Sans",
+      "Bricolage Grotesque"
+    ],
+    "licenseDocuments": [
+      "LICENCE",
+      "FONT-NOTICES.md"
+    ],
+    "optionalThreeDependency": "shape-scene only",
+    "documentationUrl": "https://luv-jeri.github.io/sahajiv-ui/"
+  },
+  "recordedVerification": {
+    "firstCompleteCI": {
+      "status": "PASS",
+      "url": "https://github.com/luv-jeri/sahajiv-ui/actions/runs/34167226450",
+      "deployment": "PASS"
+    },
+    "freshPublicClone": {
+      "status": "PASS",
+      "commit": "47e30c08dd2083612aedf7347f9504fe4183a427",
+      "sourceUrl": "https://github.com/luv-jeri/sahajiv-ui/commit/47e30c08dd2083612aedf7347f9504fe4183a427",
+      "commands": [
+        "git clone",
+        "npm ci",
+        "npm run build"
+      ],
+      "node": "v22.22.0",
+      "npm": "10.9.4",
+      "initialGitStatus": "clean",
+      "finalGitStatus": "clean",
+      "pages": 82,
+      "registryItems": 78,
+      "uiEntries": 77,
+      "sourceFingerprintSha256": "8d3c479c4ec4b4b8fe9ad2f11059bca35b64c0e879f017f4435bbe4b26ec2cee",
+      "scope": "Initial public source snapshot; no claim of a fresh clone of the final correction"
+    },
+    "documentation": {
+      "status": "PASS",
+      "entries": 77,
+      "layoutsPassed": 462,
+      "layoutsTotal": 462,
+      "widths": [
+        360,
+        768,
+        1440
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "previewCopyPassed": 77,
+      "shellPassed": 6,
+      "runtimeErrors": 0,
+      "scope": "Final complete CI default-layout and per-entry behavior checks",
+      "document": "GATE.md"
+    },
+    "visualReview": {
+      "status": "REVIEWED",
+      "entries": 77,
+      "screenshots": 154,
+      "viewports": [
+        "1440 light",
+        "360 dark"
+      ],
+      "document": "DOCS-VERIFICATION.md",
+      "receipt": "verification/default-visual-review.json"
+    },
+    "motion": {
+      "status": "PASS",
+      "presetsPassed": 9,
+      "presetsTotal": 9,
+      "additionalChecksPassed": 5,
+      "additionalChecksTotal": 5,
+      "scope": "Final complete CI",
+      "document": "GATE.md"
+    },
+    "copiedExamples": {
+      "status": "PASS",
+      "defaultSnippets": 77,
+      "totalSnippets": 246,
+      "scope": "Default, variant and size snippets compile; not all combinations receive browser testing"
+    },
+    "localRegistryConsumer": {
+      "status": "PASS",
+      "entries": 77,
+      "checks": [
+        "actual shadcn installation",
+        "module imports",
+        "TypeScript",
+        "production build"
+      ],
+      "scope": "Isolated local registry, distinct from public-only installation"
+    },
+    "initialPublicUrls": {
+      "status": "PASS",
+      "checkedAt": "2026-09-07T22:49:08.884Z",
+      "passed": 159,
+      "total": 159,
+      "scope": "Initial deployed HTML and registry URLs; not the final correction deployment"
+    },
+    "initialPublicConsumer": {
+      "installation": "PASS",
+      "typecheck": "PASS",
+      "productionBuild": "PASS",
+      "specimensRendered": 8,
+      "specimens": [
+        "button",
+        "badge",
+        "card",
+        "accordion",
+        "dialog",
+        "code-block",
+        "text-reveal",
+        "shape-scene"
+      ],
+      "actions": "PASS",
+      "verifiedActions": [
+        "Button action",
+        "Accordion expansion",
+        "Dialog focus and Escape",
+        "exact CodeBlock clipboard content",
+        "accessible TextReveal content",
+        "real shaded ShapeScene WebGL output"
+      ],
+      "layoutCasesPassed": 4,
+      "runtimeErrors": 0,
+      "themeIntegration": "FAIL",
+      "scope": "Eight public-only specimens, not an all-77 public-consumer sweep"
+    },
+    "installerThemeCorrection": {
+      "localCandidateStatus": "PASS",
+      "foundationSha256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6",
+      "requestedComponents": [
+        "button",
+        "card"
+      ],
+      "foundationResolvedAsDependency": true,
+      "overwriteCssVarsOmitted": true,
+      "renderedModes": [
+        "no data-mode",
+        "light",
+        "dark"
+      ],
+      "checks": [
+        "canvas background and foreground",
+        "default Card background and foreground",
+        "sidebar foreground",
+        "data-mode dark utility",
+        "body DM Sans with host font-sans preserved"
+      ],
+      "runtimeErrors": 0,
+      "originalConsumerUnchanged": true,
+      "scope": "Actual installer/render proof in a disposable copy, followed by final deployed public confirmation"
+    },
+    "shapeSceneCorrection": {
+      "webkitRegression": {
+        "engineVersion": "26.6",
+        "width": 390,
+        "height": 844,
+        "physicalDevice": false,
+        "before": "FAIL",
+        "beforeDrawSamples": [
+          162,
+          324
+        ],
+        "after": "PASS",
+        "afterStableDrawCount": 216,
+        "cause": "Compatibility mouse movement after touch incorrectly activated hover tilt",
+        "correction": "Hover tilt requires hover-capable input"
+      },
+      "desktopFocusedChecks": {
+        "status": "PASS",
+        "passed": 13,
+        "total": 13,
+        "scope": [
+          "SSR fallback",
+          "actual WebGL draws",
+          "shaded pixels",
+          "DPR cap",
+          "global Off",
+          "reduced motion",
+          "offscreen pause",
+          "hidden-document pause",
+          "still frame inactivity",
+          "pointer response then settling",
+          "mobile and desktop bounds",
+          "GPU cleanup",
+          "unavailable-WebGL fallback"
+        ]
+      },
+      "scope": "Focused correction proof, not a substitute for final full CI"
+    }
+  },
+  "historicalFailures": [
+    {
+      "id": "source-comparison",
+      "phase": "historical fidelity checkpoint",
+      "passed": 3096,
+      "failed": 156,
+      "total": 3252,
+      "status": "PRESERVED",
+      "meaning": "Source comparisons are not relabeled as production passes; intentional refinements are documented separately",
+      "documents": [
+        "BASELINE-STATUS.md",
+        "REFINEMENTS.md"
+      ]
+    },
+    {
+      "id": "local-animated-number-sampling",
+      "phase": "local combined documentation run",
+      "originalStatus": "FAIL",
+      "causeEstablished": false,
+      "detail": "Combined sample-count and endpoint assertion failed; original receipt did not distinguish the two conditions",
+      "followUpStatus": "PASS",
+      "followUpValuesWithinEndpoints": 650,
+      "remediation": "Preserve raw numeric/text/timing evidence and assert sample count and bounds separately",
+      "meaning": "Focused unchanged-source passes do not erase the original failure"
+    },
+    {
+      "id": "public-consumer-theme",
+      "phase": "initial public-only consumer",
+      "originalStatus": "FAIL",
+      "detail": "Later neutral starter-theme aliases overrode imported SahaJiv semantic colors, including dark Card foreground",
+      "localCorrectionStatus": "PASS",
+      "finalPublicCorrectionStatus": "PASS"
+    },
+    {
+      "id": "second-ci-mobile-shape-scene",
+      "url": "https://github.com/luv-jeri/sahajiv-ui/actions/runs/34168747473",
+      "originalStatus": "FAIL",
+      "documentation": "PASS",
+      "motion": "PASS",
+      "snippets": "PASS",
+      "mobilePassed": 6,
+      "mobileTotal": 7,
+      "failedEntry": "shape-scene",
+      "pausedDrawSamples": [
+        306,
+        333
+      ],
+      "deployment": "NOT_DEPLOYED",
+      "focusedCorrectionStatus": "PASS",
+      "finalCIStatus": "PASS"
+    }
+  ],
+  "finalAcceptance": {
+    "status": "PASS",
+    "targetSourceCommit": "479d13abfcfa0981d538a088d83f837a6acae8b8",
+    "ci": {
+      "status": "PASS",
+      "runUrl": "https://github.com/luv-jeri/sahajiv-ui/actions/runs/34169905808",
+      "finishedAt": "2026-09-07T23:35:26Z",
+      "mobilePassed": 7,
+      "mobileTotal": 7
+    },
+    "deployment": {
+      "status": "PASS",
+      "manifestSha256": "8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6",
+      "foundationSha256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6",
+      "shapeSceneSha256": "24d28f9a9bf111af79e6d7624c5a1d16f72abdd1842f63b4f3ca15678fd9b3c3",
+      "finalUrlChecks": {
+        "base": "https://luv-jeri.github.io/sahajiv-ui/",
+        "checkedAt": "2026-09-07T23:36:47.218436+00:00",
+        "rows": [
+          {
+            "path": "r/registry.json",
+            "status": 200,
+            "sha256": "8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6",
+            "matchesBuilt": true
+          },
+          {
+            "path": "registry.json",
+            "status": 200,
+            "sha256": "8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6",
+            "matchesBuilt": true
+          },
+          {
+            "path": "r/sahajiv.json",
+            "status": 200,
+            "sha256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6",
+            "matchesBuilt": true
+          },
+          {
+            "path": "r/shape-scene.json",
+            "status": 200,
+            "sha256": "24d28f9a9bf111af79e6d7624c5a1d16f72abdd1842f63b4f3ca15678fd9b3c3",
+            "matchesBuilt": true
+          },
+          {
+            "path": "",
+            "status": 200
+          },
+          {
+            "path": "docs/button/",
+            "status": 200
+          },
+          {
+            "path": "docs/shape-scene/",
+            "status": 200
+          }
+        ],
+        "passed": true
+      }
+    },
+    "publicConsumer": {
+      "status": "PASS",
+      "checkedAt": "2026-09-07T23:41:52.524Z",
+      "publicCLIUpdate": "PASS",
+      "typecheckAndBuild": "PASS",
+      "themeAndCard": "PASS",
+      "fonts": "PASS",
+      "fontFamilies": [
+        "DM Sans",
+        "Bricolage Grotesque"
+      ],
+      "layoutWidths": [
+        390,
+        1440
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "minimumCardTitleContrast": 13.13870075384429,
+      "webglShadedColors": 1393,
+      "browserErrors": 0,
+      "unchangedSpecimenModules": [
+        "button",
+        "badge",
+        "accordion",
+        "dialog",
+        "code-block",
+        "text-reveal"
+      ],
+      "cardDirectiveRestored": true,
+      "runtimeEquivalentSpecimenModules": [
+        "button",
+        "badge",
+        "accordion",
+        "dialog",
+        "code-block",
+        "text-reveal",
+        "card"
+      ],
+      "scope": "Theme aliases, fonts, Card title contrast, corrected ShapeScene shaded WebGL, and 390/1440 bounds/screenshots; prior unrelated interactions not repeated"
+    }
+  },
+  "limits": [
+    "No exhaustive browser verification of every variant, state and content combination",
+    "Historical native-picker keyboard limitation remains documented",
+    "WebKit emulation does not establish physical iPhone behavior",
+    "Hardware-specific WebGL performance is unmeasured",
+    "Initial public clone and URL checks remain attributed to their original snapshot"
+  ],
+  "documents": [
+    "RELEASE-REPORT.md",
+    "GATE.md",
+    "DOCS-VERIFICATION.md",
+    "INSTALLATION.md",
+    "BASELINE-STATUS.md",
+    "REFINEMENTS.md"
+  ]
+}

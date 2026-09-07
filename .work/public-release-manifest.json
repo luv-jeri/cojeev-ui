@@ -1275,7 +1275,8 @@
     "tests/settings.test.ts",
     "tests/spring.test.ts",
     "tsconfig.json",
-    "verification/default-visual-review.json"
+    "verification/default-visual-review.json",
+    "verification/release-results.json"
   ],
   "explicitUntrackedOrIgnoredAllowed": [
     "BASELINE-STATUS.md",
