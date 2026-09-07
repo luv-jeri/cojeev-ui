@@ -5,7 +5,7 @@
 .v-cal__d:where(
     [data-slot="calendar"],
     [data-slot^="calendar-"]
-  )[aria-selected="true"] {
+  )[aria-pressed="true"] {
   color: var(--v-on-accent);
 }
 .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
@@ -31,13 +31,13 @@
 .v-cal__d:where(
     [data-slot="calendar"],
     [data-slot^="calendar-"]
-  )[aria-selected="true"] {
+  )[aria-pressed="true"] {
   background: var(--v-pink);
   color: var(--v-on-accent);
   font-weight: 600;
 }
 .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
-    [aria-selected="true"]
+    [aria-pressed="true"]
   ):hover {
   background: var(--v-beige);
 }
@@ -108,7 +108,7 @@
 .v-cal__d:where(
     [data-slot="calendar"],
     [data-slot^="calendar-"]
-  )[aria-selected="true"] {
+  )[aria-pressed="true"] {
   background: var(--v-pink);
   font-weight: 600;
 }
@@ -156,13 +156,13 @@
 .v-cal__d:where(
     [data-slot="calendar"],
     [data-slot^="calendar-"]
-  )[aria-selected="true"] {
+  )[aria-pressed="true"] {
   background: var(--v-pink);
   color: var(--v-on-accent);
   font-weight: 600;
 }
 .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
-    [aria-selected="true"]
+    [aria-pressed="true"]
   ):hover {
   background: var(--v-beige);
 }
@@ -335,12 +335,12 @@
   z-index: 0;
 }
 .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
-    [aria-selected="true"]
+    [aria-pressed="true"]
   ):hover {
   background: transparent;
 }
 .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
-    [aria-selected="true"]
+    [aria-pressed="true"]
   ):hover::before {
   transform: scale(1);
   opacity: 1;
@@ -352,7 +352,7 @@
   transform: scale(0.9);
 }
 .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-today:not(
-    [aria-selected="true"]
+    [aria-pressed="true"]
   ) {
   box-shadow: inset 0 0 0 1.5px var(--v-ink);
   font-weight: 600;
@@ -364,14 +364,14 @@
 .v-cal__d:where(
     [data-slot="calendar"],
     [data-slot^="calendar-"]
-  )[aria-selected="true"] {
+  )[aria-pressed="true"] {
   color: var(--v-on-accent);
   font-weight: 600;
 }
 .v-cal__d:where(
     [data-slot="calendar"],
     [data-slot^="calendar-"]
-  )[aria-selected="true"]
+  )[aria-pressed="true"]
   > span {
   animation: v-cal-pick var(--t-max) var(--enter) both;
 }
@@ -404,7 +404,7 @@
 .v-cal__d:where(
     [data-slot="calendar"],
     [data-slot^="calendar-"]
-  )[aria-selected="true"]
+  )[aria-pressed="true"]
   .v-cal__mark {
   background: var(--ink-fixed);
 }
@@ -422,7 +422,7 @@
 }
 :root[data-mode="dark"]
   .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-today:not(
-    [aria-selected="true"]
+    [aria-pressed="true"]
   ) {
   box-shadow: inset 0 0 0 1.5px var(--v-text);
 }

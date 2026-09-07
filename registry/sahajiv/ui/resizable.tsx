@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "react-resizable-panels";
@@ -22,12 +23,15 @@ export function ResizablePanelGroup({
   variant,
   direction,
   orientation,
+  elementRef,
   ...props
 }: ResizablePanelGroupProps) {
+  const morphRef = useMorph<HTMLDivElement>("cards", elementRef);
   const resolved =
     orientation ?? direction ?? (variant === "v" ? "vertical" : "horizontal");
   return (
     <Primitive.Group
+      elementRef={morphRef}
       data-slot="resizable"
       data-part="root"
       data-resizable=""

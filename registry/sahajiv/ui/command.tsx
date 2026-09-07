@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Command as Primitive } from "cmdk";
@@ -17,9 +18,11 @@ export const commandVariants = cva(
   "v-cmd [background:var(--popover)] [width:min(520px,100%)] [overflow:hidden] [border:0] [box-shadow:var(--shadow-float),inset_0_0_0_1px_var(--v-border)] [border-radius:22px]",
 );
 export type CommandProps = React.ComponentProps<typeof Primitive>;
-export function Command({ className, ...props }: CommandProps) {
+export function Command({ className, ref, ...props }: CommandProps) {
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
   return (
     <Primitive
+      ref={morphRef}
       data-slot="command"
       data-part="root"
       data-command=""
@@ -60,8 +63,13 @@ export function CommandInput({
   trailing,
   ...props
 }: CommandInputProps) {
+  const wrapperRef = useMorph<HTMLDivElement>("inputs");
   return (
-    <div data-slot="command-input-wrapper" className="v-cmd__input">
+    <div
+      ref={wrapperRef}
+      data-slot="command-input-wrapper"
+      className="v-cmd__input"
+    >
       {leading ?? <Icon name="search" />}
       <Primitive.Input
         data-slot="command-input"
@@ -120,10 +128,13 @@ export type CommandItemProps = React.ComponentProps<typeof Primitive.Item> & {
 export function CommandItem({
   className,
   variant,
+  ref,
   ...props
 }: CommandItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.Item
+      ref={morphRef}
       data-slot="command-item"
       data-part="item"
       className={cn(

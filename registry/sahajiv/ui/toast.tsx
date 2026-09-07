@@ -1,8 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
+import { Button } from "@/registry/sahajiv/ui/button";
 import * as Primitive from "@radix-ui/react-toast";
 import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
 export const toastVariants = cva(
@@ -44,9 +46,10 @@ export function Toast({
   ref,
   ...props
 }: ToastProps) {
+  const morphRef = useMorph<HTMLLIElement>("surfaces", ref);
   const flowRef = useFlowAppearance<HTMLLIElement>(
     props.open ?? true,
-    ref,
+    morphRef,
     "enter",
   );
   return (
@@ -88,30 +91,46 @@ export function ToastDescription({
   );
 }
 export type ToastActionProps = React.ComponentProps<typeof Primitive.Action>;
-export function ToastAction({ className, ...props }: ToastActionProps) {
+export function ToastAction({
+  className,
+  asChild,
+  children,
+  ...props
+}: ToastActionProps) {
   return (
     <Primitive.Action
       data-slot="toast-action"
       data-part="action"
-      className={cn(
-        "v-btn inline-flex items-center justify-center rounded-[var(--r-pill)]",
-        className,
-      )}
+      className={className}
+      asChild
       {...props}
-    />
+    >
+      {asChild ? children : <Button>{children}</Button>}
+    </Primitive.Action>
   );
 }
+
 export type ToastCloseProps = React.ComponentProps<typeof Primitive.Close>;
-export function ToastClose({ className, children, ...props }: ToastCloseProps) {
+export function ToastClose({
+  className,
+  children,
+  asChild,
+  ...props
+}: ToastCloseProps) {
   return (
     <Primitive.Close
       data-slot="toast-close"
       data-part="close"
       aria-label="Dismiss"
-      className={cn("v-btn min-w-[30px] rounded-[var(--r-pill)]", className)}
+      className={className}
+      asChild
       {...props}
     >
-      {children ?? "×"}
+      {asChild ? (
+        children
+      ) : (
+        <Button style={{ minWidth: 30, padding: 0 }}>{children ?? "×"}</Button>
+      )}
     </Primitive.Close>
   );
 }

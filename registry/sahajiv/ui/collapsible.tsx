@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Icon } from "@/registry/sahajiv/ui/icon";
@@ -48,7 +49,8 @@ export function CollapsibleContent({
   ref,
   ...props
 }: CollapsibleContentProps) {
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "enter");
+  const morphRef = useMorph<HTMLDivElement>("cards", ref);
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "enter");
   return (
     <Primitive.Content
       ref={flowRef}

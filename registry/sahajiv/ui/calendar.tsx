@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import {
   DayPicker,
   useDayPicker,
@@ -107,6 +108,7 @@ export function CalendarCaption({
 }: MonthCaptionProps) {
   const { goToMonth, previousMonth, nextMonth } = useDayPicker();
   const month = calendarMonth.date;
+  const monthRef = useMorph<HTMLSpanElement>("buttons");
   return (
     <div
       data-slot="calendar-header"
@@ -115,6 +117,7 @@ export function CalendarCaption({
       {...props}
     >
       <span
+        ref={monthRef}
         data-slot="calendar-caption"
         className="v-cal__month"
         aria-live="polite"
@@ -150,7 +153,7 @@ export function CalendarCaption({
 export function CalendarGrid({ className, ...props }: MonthGridProps) {
   const flowRef = useFlowGroup<HTMLTableElement>(undefined, {
     itemSelector: ".v-cal__d",
-    activeSelector: '[aria-selected="true"]',
+    activeSelector: '[data-state="active"]',
   });
   return (
     <table
@@ -171,6 +174,7 @@ export function CalendarDayButton({
 }: DayButtonProps) {
   const marks = React.useContext(MarksContext);
   const ref = React.useRef<HTMLButtonElement>(null);
+  const morphRef = useMorph<HTMLButtonElement>("nav", ref);
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
@@ -179,12 +183,12 @@ export function CalendarDayButton({
   const mark = marks[iso];
   return (
     <button
-      ref={ref}
+      ref={morphRef}
       data-slot="calendar-day"
       data-part="item"
       data-d={date.getDate()}
       data-state={modifiers.selected ? "active" : "inactive"}
-      aria-selected={modifiers.selected || undefined}
+      aria-pressed={modifiers.selected || undefined}
       className={cn(
         "v-cal__d",
         (date.getDay() === 0 || date.getDay() === 6) && "-off",
@@ -211,8 +215,10 @@ export function CalendarWeekNumber({
 }: WeekNumberProps) {
   const { getModifiers } = useDayPicker();
   const active = week.days.some((day) => getModifiers(day).selected);
+  const weekRef = useMorph<HTMLTableCellElement>("pills");
   return (
     <th
+      ref={weekRef}
       data-slot="calendar-week-number"
       className={cn("v-cal__wk", active && "-on", className)}
       {...props}

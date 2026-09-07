@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-context-menu";
@@ -89,7 +90,8 @@ export function ContextMenuContent({
   children,
   ...props
 }: ContextMenuContentProps) {
-  const groupRef = useFlowGroup<HTMLDivElement>(ref, {
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[data-highlighted]",
   });
@@ -116,7 +118,8 @@ export function ContextMenuSubContent({
   ref,
   ...props
 }: ContextMenuSubContentProps) {
-  const groupRef = useFlowGroup<HTMLDivElement>(ref, {
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[data-highlighted]",
   });
@@ -140,10 +143,13 @@ export function ContextMenuItem({
   className,
   variant,
   inset,
+  ref,
   ...props
 }: ContextMenuItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.Item
+      ref={morphRef}
       data-slot="context-menu-item"
       data-part="item"
       data-inset={inset || undefined}
@@ -163,10 +169,13 @@ export function ContextMenuSubTrigger({
   className,
   inset,
   children,
+  ref,
   ...props
 }: ContextMenuSubTriggerProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.SubTrigger
+      ref={morphRef}
       data-slot="context-menu-sub-trigger"
       data-part="item"
       data-inset={inset || undefined}
@@ -186,10 +195,13 @@ export type ContextMenuCheckboxItemProps = React.ComponentProps<
 export function ContextMenuCheckboxItem({
   className,
   children,
+  ref,
   ...props
 }: ContextMenuCheckboxItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.CheckboxItem
+      ref={morphRef}
       data-slot="context-menu-checkbox-item"
       data-part="item"
       className={cn("v-menu__item", className)}
@@ -211,10 +223,13 @@ export type ContextMenuRadioItemProps = React.ComponentProps<
 export function ContextMenuRadioItem({
   className,
   children,
+  ref,
   ...props
 }: ContextMenuRadioItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.RadioItem
+      ref={morphRef}
       data-slot="context-menu-radio-item"
       data-part="item"
       className={cn("v-menu__item", className)}

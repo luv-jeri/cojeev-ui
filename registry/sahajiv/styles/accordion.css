@@ -18,10 +18,6 @@
   font-size: var(--fs-body);
 }
 .v-acc:where([data-slot="accordion"], [data-slot^="accordion-"])
-  [data-slot="accordion-trigger"]::-webkit-[data-slot="accordion-item"]-marker {
-  display: none;
-}
-.v-acc:where([data-slot="accordion"], [data-slot^="accordion-"])
   [data-slot="accordion-trigger"]
   .v-chev {
   margin-left: auto;
