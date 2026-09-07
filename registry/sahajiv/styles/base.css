@@ -12,6 +12,8 @@
   :where([data-slot]) { -webkit-tap-highlight-color:initial; }
   img,svg { display:block; max-width:100%; }
   a { color:var(--foreground); text-underline-offset:2px; }
+  /* The reference preserves native link decoration; Tailwind preflight resets it. */
+  a:any-link { text-decoration-line:underline; }
   a:hover { color:var(--v-text-2); }
   :focus-visible { outline:2px solid var(--ring); outline-offset:2px; border-radius:var(--r-sm); }
   ::selection { background:var(--v-pink); color:var(--v-text); }
