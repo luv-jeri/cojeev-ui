@@ -1,0 +1,230 @@
+[
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.024401234567901234,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": false,
+    "candidateByteStable": true,
+    "pixelDifference": 0.023304843304843306,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.004697627314814815,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.003523220486111111,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.002505401234567901,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.001879050925925926,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.026466049382716048,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.024974358974358974,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0048046875,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.003603515625,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0025625,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.001921875,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  }
+]
