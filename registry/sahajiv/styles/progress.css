@@ -1,0 +1,12 @@
+/* Orthogonal authored class modifiers remain composable with CVA axes. */
+.v-track[data-slot].-lg{height:var(--track-h-lg);background:var(--v-canvas)}
+.v-track[data-slot].-sm{height:var(--track-h-sm)}
+.v-track[data-slot].-cream{background:var(--v-canvas)}
+.v-track[data-slot].-unavail{background:repeating-linear-gradient(135deg,var(--v-border) 0 6px,transparent 6px 12px);box-shadow:inset 0 0 0 1px var(--v-skel-edge);background-color:var(--v-canvas);background-image:none}
+
+/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */
+.v-track[data-slot]>i{position:absolute;inset:0 auto 0 0;width:var(--p,0%);border-radius:inherit;background:var(--c,var(--v-yellow));transition:width var(--t-draw) var(--enter)}
+.v-track[data-slot].-unavail>i{display:none}
+.v-track[data-slot].-unavail>i{display:none}
+.v-track[data-slot].-unavail::after{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(135deg,var(--v-skel-edge) 0 3px,transparent 3px 9px);opacity:.8}
+
