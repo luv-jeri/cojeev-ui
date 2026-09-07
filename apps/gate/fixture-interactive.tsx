@@ -1221,7 +1221,19 @@ export function convertInteractive(
           HoverCardParts.HoverCardContent,
           content,
           ctx,
-          controlledProps(content, ctx),
+          {
+            ...controlledProps(content, ctx),
+            ref: (element: HTMLDivElement | null) => {
+              const wrapper = element?.parentElement;
+              if (!wrapper?.hasAttribute("data-radix-popper-content-wrapper")) return;
+              // The real positioning wrapper replaces the source .v-hovercard.
+              // Transfer fixture identity only; its layout remains Radix-owned.
+              for (const name of ["data-gate", "data-canvas"]) {
+                const value = target?.getAttribute(name);
+                if (value) wrapper.setAttribute(name, value);
+              }
+            },
+          },
         )}
       </HoverCardParts.HoverCard>
     );
