@@ -8,6 +8,22 @@ export function componentAPIs(ids) {
   const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, ".");
   const program = ts.createProgram(parsed.fileNames, parsed.options);
   const checker = program.getTypeChecker();
+  const displayType = (symbol, declaration) => {
+    // Keep authored aliases readable instead of expanding package internals.
+    const authored = symbol.declarations?.find(node => node.type);
+    const value = authored?.type?.getText() ?? checker.typeToString(
+      checker.getTypeOfSymbolAtLocation(symbol, declaration), declaration, ts.TypeFormatFlags.NoTruncation,
+    );
+    return value.replace(/import\("([^"]+)"\)/g, (_, specifier) => {
+      const normalized = specifier.replaceAll("\\", "/");
+      const modules = normalized.lastIndexOf("/node_modules/");
+      if (modules !== -1) return `import(${JSON.stringify(normalized.slice(modules + 14).replace(/\/dist\/index$/, ""))})`;
+      const component = normalized.match(/\/registry\/sahajiv\/ui\/([^/]+?)(?:\.tsx)?$/);
+      if (component) return `import("@/components/ui/${component[1]}")`;
+      if (normalized.startsWith("/") || /^[A-Z]:\//i.test(normalized)) throw new Error(`Nonportable API type in ${declaration.name.text}`);
+      return `import(${JSON.stringify(normalized)})`;
+    });
+  };
   return Object.fromEntries(ids.map(id => {
     const source = program.getSourceFile(`registry/sahajiv/ui/${id}.tsx`);
     if (!source) throw new Error(`Missing component source: ${id}`);
@@ -18,7 +34,7 @@ export function componentAPIs(ids) {
         .filter(symbol => symbol.declarations?.some(node => node.getSourceFile() === source))
         .map(symbol => ({
           name: symbol.name,
-          type: checker.typeToString(checker.getTypeOfSymbolAtLocation(symbol, declaration), declaration, ts.TypeFormatFlags.NoTruncation),
+          type: displayType(symbol, declaration),
           required: !(symbol.flags & ts.SymbolFlags.Optional),
           description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
         })),

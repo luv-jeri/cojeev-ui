@@ -12,10 +12,10 @@ Expand proven gaps in reusable components and examples, rather than duplicating 
 
 ## Parallel implementation plan
 
-- [ ] Motion quality: `motion/flow.ts`, `flow-press.ts`, `use-flow.ts`, `settings.ts`, Flow styles/tokens and Tabs integration. Capture the current real Tabs behavior once, correct stacked motion and interruption, validate nine choices and pointer/keyboard/touch. Owner: motion delivery.
-- [ ] Motion stillness: `motion/use-morph.ts`. Preserve authored spinner fill under reduced motion; stop deformation, rotation and color cycling under Off; verify live preference changes and cleanup. Owner: composed delivery.
-- [ ] Documentation experience: `components/component-preview.tsx`, `components/docs-shell.tsx`, `app/docs/*`, Preview and Adjuster exports. One specimen with variant/size controls, exact code, visible motion panel with all nine presets, correct landmarks and current-page navigation, usable mobile layout. Owner: root.
-- [ ] Catalog and primary-source research: identify useful missing general-purpose components and improve discoverability of existing IconButton treatments. Preserve public API compatibility and track additions separately from the original 66. Owner: interactive delivery; implementation scope follows its concrete gap report.
+- [x] Motion quality: `motion/flow.ts`, `flow-press.ts`, `use-flow.ts`, `settings.ts`, Flow styles/tokens and Tabs integration. Capture the current real Tabs behavior once, correct stacked motion and interruption, validate nine choices and pointer/keyboard/touch. Owner: motion delivery.
+- [x] Motion stillness: `motion/use-morph.ts`. Preserve authored spinner fill under reduced motion; stop deformation, rotation and color cycling under Off; verify live preference changes and cleanup. Owner: composed delivery.
+- [x] Documentation experience: `components/component-preview.tsx`, `components/docs-shell.tsx`, `app/docs/*`, Preview and Adjuster exports. One specimen with variant/size controls, exact code, visible motion panel with all nine presets, correct landmarks and current-page navigation, usable mobile layout. Owner: root.
+- [x] Catalog and primary-source research: identify useful missing general-purpose components and improve discoverability of existing IconButton treatments. Preserve public API compatibility and track additions separately from the original 66. Owner: interactive delivery; implementation scope follows its concrete gap report.
 - [ ] Release: rebuild the registry, run focused behavior/type/lint/build checks, one desktop/mobile visual review and one confirmation after corrections, fresh outside-consumer installation, repository/licence review, publish GitHub Pages and verify public URLs and public installation. Owner: root.
 
 ## Release evidence
@@ -23,3 +23,5 @@ Expand proven gaps in reusable components and examples, rather than duplicating 
 Keep the original per-component fidelity checklist with its historical failures. Add a refinement log explaining intentional changes and their user-facing benefit. Require working selection, open/close and focus return, accessible names, keyboard and touch, light/dark themes, reduced motion, and responsive examples. Use focused regression checks when a behavior changes; do not repeat an exhaustive source matrix merely to chase an original bug or a frozen-clock artifact.
 
 The public release must include a licence file, font notices, install instructions, generated dependencies, a complete catalog, usable examples and API documentation, passing build/CI and a successful install from the deployed registry. This document records a plan, not a completion claim.
+
+The scope now includes Backgrounds, 3D, Effects and Creative categories. Seven new entries extend the base without changing its visual family. The owner explicitly requests natural, polished motion with stable layout and committed progress. All integrations are saved in local Git checkpoints; public publication follows the production and consumer gates.

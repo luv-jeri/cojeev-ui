@@ -105,6 +105,7 @@ color-scheme:light;
 --z-sheet:30;/* @kind other */
 --z-assist:35;/* @kind other */
 --z-dialog:40;/* @kind other */
+--z-popover:45;/* @kind other */
 --z-toast:50;/* @kind other */
 --z-tooltip:60;/* @kind other */
 /* motion [I] — decision: alive but unobtrusive */

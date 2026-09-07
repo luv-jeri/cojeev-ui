@@ -16,9 +16,9 @@ const staticServer = args.serve ? await startPreview({
   configFile: false,
   base: "/sahajiv-ui/",
   build: { outDir: "out" },
-  preview: { host: "127.0.0.1", port: 4321, strictPort: true },
+  preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
-const base = args.url || `http://127.0.0.1:${staticServer ? 4321 : 4320}/sahajiv-ui`;
+const base = args.url || `http://127.0.0.1:${staticServer ? staticServer.httpServer.address().port : 4320}/sahajiv-ui`;
 const main = args.checkout ? path.resolve(args.checkout) : process.cwd();
 const output = path.resolve(args.output || "output/playwright/docs");
 fs.mkdirSync(output, { recursive: true });
@@ -263,7 +263,7 @@ const tests = {
     await key(root.getByRole("button",{name:"Remove Research",exact:true}),"Enter");
     await text(root,"Following: Design, Engineering.");
     await root.getByRole("button",{name:"Clear selection",exact:true}).click();
-    await page.getByRole("alert").waitFor();
+    await root.getByRole("alert").waitFor();
     await attribute(trigger,"aria-invalid","true");
     await root.getByRole("button",{name:"Reset selection",exact:true}).click();
     await text(root,"Following: Design, Engineering.");
@@ -533,6 +533,7 @@ const tests = {
     return "Pointer note creation; keyboard reset; partial/error/filtered states rendered";
   },
   field: async ({ page }) => {
+    await page.locator(".docs-playground-controls").getByLabel("Variant", {exact:true}).selectOption("invalid");
     const root = page.locator('[data-example="field"][data-variant="invalid"]');
     const input = root.getByRole("textbox");
     await attribute(input, "aria-invalid", "true");
@@ -1033,6 +1034,7 @@ try {
       });
       await context.addInitScript(
         ({ theme }) => {
+          if (!/^https?:$/.test(location.protocol)) return;
           localStorage.setItem("sahajiv-docs-theme", theme);
         },
         { theme },
@@ -1132,7 +1134,7 @@ try {
           ]
             .filter(
               (el) =>
-                !el.closest("[hidden]") &&
+                !el.closest('[hidden], [aria-hidden="true"], [inert]') &&
                 el.getBoundingClientRect().width > 0 &&
                 !el.getAttribute("aria-label") &&
                 !el.getAttribute("aria-labelledby") &&
@@ -1208,6 +1210,9 @@ try {
           })
           .catch(() => {});
       }
+      // Each layout gets a settled page on its own. Release its scene before
+      // measuring the next viewport instead of retaining six active WebGL views.
+      await page.goto("about:blank");
     }
     const primary =
       contexts.find((c) => c.width === 1440 && c.theme === "light") ||
@@ -1216,6 +1221,8 @@ try {
     try {
       if (!page.url().includes(`/docs/${entry.name}/`))
         await page.goto(`${base}/docs/${entry.name}/`);
+      await page.evaluate(() => document.fonts.ready);
+      await page.locator('[data-slot="preview"] [data-slot="tabs-list"][data-flow-owned]').first().waitFor({state:"attached",timeout:30000});
       record.preview = {
         status: "pass",
         detail: await sharedPreview(page, entry.name),

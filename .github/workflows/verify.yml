@@ -28,6 +28,7 @@ jobs:
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build
+      - run: npm run check:examples
       - run: npm run gate
       - name: Preserve production evidence
         if: always()

@@ -10,6 +10,9 @@ The original 66 components remain the foundation. The September 2026 refinement 
 - **Documentation:** One configurable example per page, exact variant/size code, visible motion controls, grouped catalog, individual usage/accessibility notes and related components. Fumadocs provides the documentation base; SahaJiv supplies its visible controls and surfaces.
 - **Examples:** Button includes local loading, failure and retry. IconButton exposes its six existing treatments and four sizes with a working toggle action. Example code describes actual local effects.
 
+- **Final visual corrections:** Readable secondary text on pastel/ink Cards and Bubble timestamps; contrasting Alert glyphs, navigation counts and collapse controls; selected ButtonGroup state stays distinct in dark mode. Default Tabs now have padded targets, including 48 px height for coarse pointers. Popovers sit above ordinary content and dialogs.
+- **Effects edge cases:** AnimatedNumber preserves caller refs and displays an em dash for unavailable values. Zero-duration TextReveal shows its entire text immediately.
+
 ## Additional components
 
 | Entry | Category | Purpose |
@@ -21,7 +24,6 @@ The original 66 components remain the foundation. The September 2026 refinement 
 | Code block | Tools | Exact-text copy, accessible feedback, optional wrapping and HTTP selection fallback |
 | Animated number | Effects | Interruptible metrics with stable final values under reduced motion |
 | Text reveal | Effects | Bounded rise/fade word entrance with the full text accessible once |
-
 | Ambient background | Backgrounds | Three quiet compositions using the shared shapes and palette |
 | Shape scene | 3D | Tactile extruded shapes, bounded pointer response and static fallback |
 | Marquee | Creative | Repeating content with explicit pause, inert visual copies and static keyboard reading |

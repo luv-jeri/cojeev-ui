@@ -1,35 +1,22 @@
 # Build status
 
-All 66 base components are implemented and integrated. The documentation has 70 live component pages, including four separately tracked helpers. Installation, visual comparisons, and browser interaction checks are in progress; public deployment is pending. The owner approved MIT licensing, GitHub Pages hosting, parallel implementation, and the reduced-motion behavior in [PHASE-0-DECISION.md](PHASE-0-DECISION.md).
+The integrated library contains **77 UI entries**: all **66 original base components**, four shared helpers, and seven additional general/creative components. It also includes the shared foundation registry item. The current production build produces 82 static pages. MIT licence and GitHub Pages hosting are approved; a custom domain can follow later.
 
-| Phase | Status | Evidence |
-| --- | --- | --- |
-| 0 — Button, Badge, Card spike | Implemented; archived verification | Reference manifest: 924/924 hashes verified; 1,320 earlier static comparisons passed; final integrated revision is being rechecked |
-| 1 — Foundation | Implemented | Tokens, fonts with OFL notices, scoped CSS layers, registry foundation and outside-consumer install |
-| 2 — Motion and Adjuster | Implemented; browser verification in progress | Literal spring, shared clock, settings migration/persistence tests pass; full runtime matrix tracked separately |
-| 3A — 19 static components | Integrated; visual verification in progress | Production TSX/CSS and docs for every component |
-| 3B — 29 interactive components | Integrated; browser verification in progress | Radix/native behavior, scoped motion refs, semantic fixture mapping |
-| 3C — 18 composed components | Integrated; browser verification in progress | Composable production parts and live docs examples |
-| 4 — Documentation and publication | Docs build passes; publication pending | 75 static routes, 70 component pages, 71 registry items |
+The active brief is the production refinement described in PRODUCTION-PLAN.md and REFINEMENTS.md. It supersedes reproducing confirmed source bugs. There is no pending owner decision about refining motion, adding components or improving the docs.
 
-Scope: 66 base components, 542 supplied isolation pages. App screen migration is a later project.
-MIT licence. Initial hosting: GitHub Pages; a custom domain may follow after completion.
-
-## Definition of done tracking
-
-| Requirement | Current evidence / remaining work |
+| Area | Current state |
 | --- | --- |
-| Public repo; fresh clone, install, build | Public repo created; source remains local. Fresh-clone proof pending. |
-| All 66 base ports | All 66 production components are integrated. Visual verification is still in progress. |
-| Complete fidelity gate | `GATE.md` contains the latest bounded run. Full six-width coverage and motion agreement remain pending. |
-| Three motion engines; nine flow animations | All engines are implemented. Literal spring parity passes; browser motion and lifecycle matrix is being completed. |
-| Adjuster and three settings keys | Adjuster UI and settings store implemented. Tests cover real keys, migration, persistence, synchronization and independent resets. |
-| Public installable registry | Local registry JSON installed through the actual shadcn CLI; public hosting pending. |
-| Five-component stranger install with Radix | A clean external Vite consumer installed Button, Badge, Card, Accordion and Dialog through the real CLI and built successfully. Final public URL install and light/dark screenshots are pending. |
-| 66 published Fumadocs pages | All 66 pages plus four helper pages build with live examples, source-derived props/code and install commands. Public hosting is pending. |
-| CI build and gate on every push | Workflow implemented; first remote run pending. |
-| Final coverage and accepted-difference report | Reduced-motion static bodies accepted by owner. Final coverage report pending. |
+| Original 66 components | Implemented, with original variant/size axes |
+| Additional entries | Code Block, Animated Number, Text Reveal, Shape Scene, Ambient Background, Marquee, MultiSelect, plus existing helpers |
+| Motion | Nine selectable presets, persistent tuning, calmer Glide and static segmented bodies; focused tests pass |
+| Documentation | Fumadocs base with SahaJiv controls, source-derived code/API, individual guides, categories and getting-started page |
+| Local checks | Production build, TypeScript, lint and four core logic tests pass |
+| Final browser gate | In progress against the built 77-entry documentation |
+| Fresh consumer | Expanded 77-entry install and copied-source checks in progress |
+| Public repository | Created and public; first source push and Pages deployment pending |
 
-## Documentation UI direction
+The live development preview runs on port 4320 under `/sahajiv-ui/`. Use the Mac's current Wi-Fi address on a phone connected to the same network.
 
-Fumadocs supplies the framework. The visible documentation UI uses SahaJiv library components, including the sidebar, search, theme control, tables, buttons, tabs, and preview. [DOCS-COMPONENTS.md](DOCS-COMPONENTS.md) tracks the four helpers separately from the original 66. The live development server is available at http://127.0.0.1:4320/sahajiv-ui/docs/button/ while this task runs.
+Historical source evidence remains in BASELINE-STATUS.md: 3,096/3,252 comparisons pass across recorded checkpoints, with 156 preserved failures. That is an archive of the original clone work, not a percentage-complete claim for this release. The production gate tests refined behavior separately.
+
+RELEASE-REPORT.md will record final publication and consumer evidence. This document is an integration checkpoint, not a completion claim.

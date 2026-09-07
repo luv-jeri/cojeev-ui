@@ -40,7 +40,7 @@ export function SheetOverlay({ className, ...props }: SheetOverlayProps) {
   );
 }
 export const sheetContentVariants = cva(
-  "v-sheet [position:fixed] [top:var(--shell-inset)] [right:var(--shell-inset)] [bottom:var(--shell-inset)] [width:min(480px,calc(100%_-_56px))] [background:var(--v-canvas)] [border-radius:var(--r-panel)] [padding:var(--s-6)] [z-index:var(--z-sheet)] [overflow:auto] [display:grid] [gap:var(--s-5)] [align-content:start] [box-shadow:var(--shadow-float),inset_0_0_0_1px_var(--v-border)]",
+  "v-sheet [position:fixed] [top:var(--shell-inset)] [right:var(--shell-inset)] [bottom:var(--shell-inset)] [width:min(480px,calc(100%_-_56px))] [background:var(--v-canvas)] [border-radius:var(--r-panel)] [padding:var(--s-6)] [z-index:var(--z-sheet)] [overflow:auto] [display:grid] grid-cols-[minmax(0,1fr)] [gap:var(--s-5)] [align-content:start] [box-shadow:var(--shadow-float),inset_0_0_0_1px_var(--v-border)]",
 );
 export type SheetContentProps = React.ComponentProps<
   typeof Primitive.Content

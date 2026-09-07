@@ -9,7 +9,7 @@ import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
 export const tabsVariants = cva("v-tabs [display:flex] [gap:var(--s-6)]", {
   variants: {
     variant: {
-      default: "",
+      default: "-pills -default gap-[var(--s-2)]",
       pills: "-pills gap-[var(--s-2)]",
       underline: "-underline gap-[var(--s-6)]",
       lenses: "-lenses gap-[var(--s-6)]",

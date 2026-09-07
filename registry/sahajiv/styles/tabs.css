@@ -33,6 +33,16 @@
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-default .v-tab {
+  height: var(--ctl-md);
+  padding-inline: var(--s-4);
+  font-size: var(--fs-control);
+}
+@media (pointer: coarse) {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-default .v-tab {
+    min-height: var(--ctl-lg);
+  }
+}
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses .v-tab {
   height: var(--ctl-md);
   padding: 0 var(--s-4);

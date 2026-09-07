@@ -43,7 +43,7 @@ export function PopoverClose(props: PopoverCloseProps) {
   );
 }
 export const popoverContentVariants = cva(
-  "v-popover [background:var(--popover)] [border-radius:var(--r-card)] [padding:var(--s-5)] [box-shadow:var(--shadow-float)] [border:1px_solid_var(--v-border)]",
+  "v-popover [z-index:var(--z-popover)] [background:var(--popover)] [border-radius:var(--r-card)] [padding:var(--s-5)] [box-shadow:var(--shadow-float)] [border:1px_solid_var(--v-border)]",
 );
 export type PopoverContentProps = React.ComponentProps<
   typeof Primitive.Content

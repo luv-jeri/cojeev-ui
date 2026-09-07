@@ -1,6 +1,6 @@
 # Installation
 
-The public registry is being built. Commands using the public URL become available after publication; see [BUILD-STATUS.md](BUILD-STATUS.md) for current coverage.
+SahaJiv UI is distributed through a public shadcn registry. See [RELEASE-REPORT.md](RELEASE-REPORT.md) for the verified release and its limits.
 
 SahaJiv UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme, fonts and shared motion code; it does not require the private SahaJiv application.
 
@@ -39,13 +39,13 @@ You can then use `npx shadcn@latest add @sahajiv/button`. The namespace entry is
 
 ## Reproduce the stranger installation
 
-This command creates a new directory in the operating system's temporary folder, installs Vite and React, runs the real shadcn CLI, installs five registry components, and builds that app. It prints the directory and writes a receipt to `artifacts/stranger/install.json`.
+This command creates a new directory in the operating system's temporary folder, installs Vite and React, runs the real shadcn CLI, installs five registry components, and builds that app. It prints the directory and writes a timestamped receipt under `artifacts/stranger/`.
 
 ```sh
 node scripts/verify-install.mjs
 ```
 
-For the three-component Phase 0 spike against a locally served registry:
+To test selected components against a locally served registry:
 
 ```sh
 SAHAJIV_REGISTRY_URL=http://127.0.0.1:4318 npm run registry:build
@@ -62,4 +62,12 @@ To verify the foundation alone in another fresh app, run:
 node scripts/verify-install.mjs --components=sahajiv
 ```
 
-This renders only the base typography and canvas. Its separate receipt is written to `artifacts/stranger/foundation.json`.
+This renders only the base typography and canvas. Its separate timestamped receipt is written under `artifacts/stranger/`.
+
+## Audit the complete catalog
+
+```sh
+node scripts/audit-registry-consumer.mjs
+```
+
+This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 77 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See the release report for the exact tested scope.
