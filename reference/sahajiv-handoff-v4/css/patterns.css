@@ -1,0 +1,245 @@
+/* Vriksha · patterns.css — shell, sidebar, topbar, dock, assistant, master/detail, date strip, calendar, agenda, charts. */
+
+/* ---- Desktop shell (I15) ---- */
+/* The shell DECLARES the `shell` container, and a container query never matches the element that declares
+   it — so `@container shell (…)` rules written against `.v-shell` itself were dead everywhere the shell was
+   not nested inside a second `shell` container. That is why hiding the rail at 720 left the page squeezed
+   into the rail's 150 px track with the remainder empty. The tracks are now content-driven (sized by the
+   rail's own width) and both children are explicitly placed, so the composition holds however the rail is
+   sized, hidden or collapsed, and every responsive change is expressed on a CHILD, which can see the query. */
+.v-shell{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--sidebar-gap);padding:var(--shell-inset);min-height:100vh;background:var(--background);container:shell/inline-size}
+.v-shell>.v-sidebar{grid-column:1;width:var(--sidebar-w);flex:none}
+.v-shell.-mini>.v-sidebar{width:var(--sidebar-w-mini)}
+.v-shell>.v-page{grid-column:2;padding-top:var(--content-offset);display:grid;gap:36px;align-content:start;min-width:0;overflow-x:clip;overflow-clip-margin:12px}/* [M] I15: topbar centre 21px below sidebar top.
+  A morph body and a .v-wm watermark deliberately bleed past their host — that bleed is the organic look, not
+  a layout error, but it was being reported as page overflow (client 358 / scroll 369 at 390 px). `clip` is
+  the right containment here: unlike `hidden` it creates no scroll container, so nothing becomes scrollable
+  and no content is cut out of flow, and `overflow-clip-margin` still lets the decoration breathe past the
+  edge before the frame takes over. */
+.v-main{display:grid;grid-template-columns:minmax(0,1fr) var(--rail-w);gap:var(--rail-gap);align-content:start}.v-main.-single{grid-template-columns:minmax(0,1fr)}
+.v-content{display:grid;gap:var(--s-8);align-content:start;min-width:0}.v-rail{display:grid;gap:var(--s-6);align-content:start;min-width:0}
+.v-shell-root{container:shell/inline-size}
+.v-shell-root .v-sidebar{position:static;min-height:0;max-height:none}/* fixed-size frames: rail fills the grid row */
+
+/* ---- Sidebar (I15–I18) ---- */
+.v-sidebar{position:sticky;top:var(--shell-inset);align-self:stretch;overflow:visible;max-height:calc(100vh - var(--shell-inset)*2);min-height:calc(100vh - var(--shell-inset)*2);background:var(--v-structure);color:var(--on-structure);border-radius:var(--r-panel);padding:var(--s-6) var(--s-4) var(--s-5);display:flex;flex-direction:column;gap:var(--s-2);overflow:visible}
+.v-brand{display:flex;align-items:center;justify-content:center;height:56px;margin-bottom:var(--s-6);font-family:var(--font-display);font-size:30px;font-weight:500;letter-spacing:-.02em;color:var(--sidebar-foreground);position:relative}
+.v-collapse{position:absolute;right:calc(var(--s-4)*-1 - 12px);top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;background:var(--v-pink);color:var(--v-text);display:grid;place-items:center}.v-collapse .v-icon{width:12px;height:12px;stroke-width:2.5}
+.v-nav{display:grid;gap:2px}.v-nav__group{font-size:13px;color:var(--sidebar-muted);padding:var(--s-4) var(--s-3) var(--s-2)}
+.v-nav__item{position:relative;display:flex;align-items:center;gap:var(--s-4);height:var(--nav-row);padding:0 var(--s-3) 0 var(--s-5);border-radius:var(--r-md);color:var(--sidebar-foreground);font-size:var(--fs-body);text-decoration:none;transition:background var(--t-micro)}
+.v-nav__item:hover{background:rgba(251,244,230,.07)}.v-nav__item .v-icon{width:20px;height:20px}.v-nav__label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-nav__item[aria-current="page"]{color:var(--sidebar-primary)}.v-nav__item[aria-current="page"]::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;background:var(--sidebar-primary);border-radius:1px}
+.v-nav__item[aria-current="page"]::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--sidebar-primary);animation:v-breathe var(--breath) ease-in-out infinite}
+@keyframes v-breathe{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.v-nav__count{min-width:18px;height:18px;padding:0 5px;border-radius:var(--r-pill);background:var(--v-pink);color:var(--v-text);font-size:10px;font-weight:700;display:grid;place-items:center}
+.v-sidebar__foot{margin-top:auto;display:grid;gap:2px}
+.v-shell.-mini .v-nav__item{justify-content:center;padding:0}.v-shell.-mini>.v-sidebar{padding:14px 6px}.v-shell.-mini .v-nav__item::after{display:none}
+
+/* ---- Topbar (I15) ---- */
+.v-topbar{display:flex;align-items:center;gap:var(--s-4);height:var(--utility)}
+.v-search{display:flex;align-items:center;gap:var(--s-3);flex:1;min-width:0}.v-search .v-input{min-width:0}.v-search .v-input input{min-width:0}.v-search__disk{width:36px;height:36px;border-radius:50%;background:var(--v-pink);display:grid;place-items:center;flex:none}.v-search__disk .v-icon{width:20px;height:20px;stroke-width:2}
+.v-search .v-input{background:var(--v-canvas);border-color:var(--v-border);height:36px;font-size:var(--fs-control)}/* [M] I15 field 50 image px → 34–36 CSS */.v-search .v-scope{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--v-text);white-space:nowrap;min-width:0;flex-wrap:wrap}
+@media (max-width:640px){.v-search .v-scope{display:none}}.v-scope .v-badge{height:26px;font-size:12px}.v-scope .v-badge.-dashed{height:26px}
+.v-topbar .v-utility{margin-left:auto}
+.v-pagehead{display:grid;gap:var(--s-3);max-width:70ch}.v-pagehead .v-display{margin-top:var(--s-3)}
+.v-sechead{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4)}.v-sechead>:first-child{min-width:0;white-space:nowrap}.v-sechead .v-link{font-size:var(--fs-body);color:var(--v-text);text-decoration:none}
+
+/* ---- Mobile dock + shoulder (I07) ---- */
+.v-mobile{position:relative;width:393px;min-height:852px;background:var(--v-canvas);border-radius:48px;overflow:hidden;padding:60px var(--s-6) 0;display:grid;align-content:start;gap:var(--s-5)}
+.v-mobile.-yellow{background:var(--v-yellow)}.v-mobile.-pink{background:var(--v-pink)}.v-mobile.-blue{background:var(--v-blue)}
+.v-dock{position:absolute;left:var(--s-4);right:var(--s-4);bottom:var(--s-8);height:var(--dock-h);background:var(--v-ink);border-radius:var(--r-sheet);display:grid;grid-template-columns:repeat(5,1fr);align-items:center;z-index:var(--z-dock);color:var(--v-on-ink)}
+.v-dock::before{content:"";position:absolute;left:50%;top:calc(var(--dock-shoulder)*-1);width:calc(var(--dock-action) + 40px);height:calc(var(--dock-shoulder)*2 + 32px);transform:translateX(-50%);background:var(--v-ink);border-radius:50%;z-index:-1}/* [M] I07: shoulder rises ~14, action circle protrudes ~12 */
+.v-dock__item{display:grid;justify-items:center;gap:4px;height:100%;align-content:center;color:var(--v-on-ink);position:relative}.v-dock__item .v-icon{width:24px;height:24px}
+.v-dock__item[aria-current="page"]{color:var(--v-pink)}.v-dock__item[aria-current="page"]::after{content:"";width:20px;height:2px;border-radius:1px;background:var(--v-pink);position:absolute;bottom:14px}
+.v-dock__action{position:absolute;left:50%;top:-12px;transform:translateX(-50%);width:var(--dock-action);height:var(--dock-action);border-radius:50%;background:var(--v-pink);color:var(--v-text);display:grid;place-items:center;transition:transform var(--t-element) var(--enter),background var(--t-element)}
+.v-dock__action .v-icon{width:26px;height:26px;stroke-width:2;transition:transform var(--t-element) var(--enter)}.v-dock.-open .v-dock__action .v-icon{transform:rotate(45deg)}.v-dock.-open .v-dock__item{opacity:.35}
+.v-dock__action:hover{transform:translateX(-50%) scale(1.04)}
+/* A bottom-anchored sheet must be bounded by the frame it lives in. Unbounded it grew to 438 px inside a
+   260 px phone frame, so its top 291 px sat ABOVE the frame's overflow:hidden edge — Library rendered at
+   y = -28 and elementFromPoint returned null there, which is why a pointer could never reach it while the
+   keyboard could. The sheet now clamps to the space between the dock and the top of its containing block and
+   scrolls its own content, with the same quiet scrollbar family the rest of the system uses and a stable
+   gutter so gaining overflow never shifts a row sideways. */
+.v-dockpanel{position:absolute;padding-bottom:var(--s-6)!important;max-height:calc(100% - var(--s-8) - var(--dock-h) - var(--s-5));overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;left:var(--s-4);right:var(--s-4);bottom:calc(var(--s-8) + var(--dock-h) + 8px);background:var(--v-ink);color:var(--v-on-ink);border-radius:var(--r-sheet);padding:var(--s-6) var(--s-5) var(--s-10);z-index:var(--z-dock);display:grid;gap:var(--s-3)}
+.v-dockpanel::-webkit-scrollbar{width:6px}
+.v-dockpanel::-webkit-scrollbar-thumb{background:rgba(251,244,230,.34);border-radius:3px}
+.v-dockpanel::-webkit-scrollbar-track{background:transparent}
+/* The grab-bar was pinned 120 px down the sheet, which lands mid-list once the sheet is bounded. It belongs
+   to the sheet's own top edge — and it must stay OUT of flow, because putting it in flow (my first attempt)
+   added its height to the content and pushed the last row back out of view. */
+.v-dockpanel::after{top:14px;height:36px}
+.v-dockpanel__title{text-align:center;font-size:var(--fs-lead);font-weight:600;margin-bottom:var(--s-2)}.v-dockpanel .v-item{background:transparent;color:var(--v-on-ink);min-height:52px;padding:6px 0}.v-dockpanel .v-item:hover{background:rgba(251,244,230,.07)}
+.v-dockpanel::after{content:"";position:absolute;right:14px;top:120px;width:3px;height:56px;border-radius:2px;background:rgba(251,244,230,.6)}
+.v-mobile-scrim{position:absolute;inset:0;background:var(--v-scrim);z-index:calc(var(--z-dock) - 1)}
+.v-mobile__head{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;text-align:center;font-size:var(--fs-body);font-weight:500}
+
+/* ---- Assistant panel (I09 I16) ---- */
+.v-assist{position:relative;background:var(--v-ink);color:var(--v-on-ink);border-radius:var(--r-panel);padding:var(--s-8) var(--s-6) var(--s-6);display:grid;gap:var(--s-4);align-content:start;width:min(470px,100%)}
+.v-assist__close{position:absolute;top:calc(var(--assist-close)*-1/2);right:var(--s-6);width:var(--assist-close);height:var(--assist-close);border-radius:50%;background:var(--v-pink);color:var(--v-text);display:grid;place-items:center}.v-assist__close .v-icon{stroke-width:2.2}
+.v-assist__close.-pulse{animation:v-pulse .9s var(--enter) 1}@keyframes v-pulse{0%{box-shadow:0 0 0 0 var(--v-pink)}100%{box-shadow:0 0 0 14px transparent}}
+.v-assist__title{font-family:var(--font-display);font-size:22px;font-weight:500;text-align:center;margin-bottom:var(--s-2)}.v-assist .v-btn.-accent{width:100%;height:var(--ctl-lg)}
+.v-assist.-mini{width:auto;padding:var(--s-4) var(--s-5);border-radius:var(--r-pill);display:flex;align-items:center;gap:var(--s-3)}
+.v-assist.-anchored{position:fixed;right:var(--shell-inset);bottom:var(--shell-inset);z-index:var(--z-assist);max-height:calc(100vh - var(--shell-inset)*2 - 40px);overflow:auto}
+
+/* ---- Connected master/detail (I15) ---- */
+.v-md{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 var(--s-8)}
+.v-md__list{display:grid;gap:var(--s-2);align-content:start}.v-md__detail{background:var(--v-pink);border-radius:var(--r-card);padding:var(--s-6);align-self:start}
+.v-md__list .v-item.-selected{border-radius:var(--r-card) 0 0 var(--r-card);position:relative;overflow:visible;padding-right:var(--s-5)}.v-md__list{overflow:visible}.v-md__list .v-item.-selected .v-time{margin-right:0}.v-md__list .v-item.-selected::after{content:"";position:absolute;left:100%;top:0;bottom:0;width:var(--s-8);background:var(--v-pink)}
+@container shell (max-width:900px){.v-md{grid-template-columns:1fr;gap:var(--s-4)}.v-md__list .v-item.-selected{margin-right:0;border-radius:var(--r-card-sm)}.v-md__list .v-item.-selected::after{display:none}}
+
+/* ---- Date strip (I07) ---- */
+.v-datestrip{display:flex;justify-content:space-between;gap:4px}.v-datestrip button{width:var(--date-col);height:56px;border-radius:var(--r-pill);display:grid;justify-items:center;align-content:center;gap:4px;font-size:12px;color:var(--v-text-2);position:relative}
+.v-datestrip button b{font-size:14px;font-weight:600;color:var(--v-text)}.v-datestrip button[aria-pressed="true"]{background:var(--v-ink);color:var(--v-on-ink)}.v-datestrip button[aria-pressed="true"] b{color:var(--v-on-ink)}.v-datestrip button:disabled,.v-datestrip button:disabled b{color:var(--v-text-3)}
+.v-datestrip button[data-mark]::after{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:var(--v-danger)}
+
+/* ---- Mini calendar (I15) ---- */
+.v-cal{display:grid;gap:var(--s-3)}.v-cal__head{display:flex;align-items:center;justify-content:space-between}.v-cal__month{height:36px;padding:0 var(--s-4);border-radius:var(--r-pill);background:var(--v-pink);font-size:var(--fs-body);font-weight:500;display:grid;place-items:center}
+.v-cal__grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr)) 36px;gap:6px 2px;justify-items:center;align-items:center}.v-cal__wd{width:100%;max-width:44px;height:28px;border-radius:var(--r-pill);background:var(--v-cream-pill);font-size:12px;font-weight:500;display:grid;place-items:center}
+.v-cal__d{width:100%;max-width:44px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:15px;font-variant-numeric:tabular-nums}.v-cal__d:hover{background:var(--v-beige)}.v-cal__d.-off{color:var(--v-text-3)}.v-cal__d[aria-selected="true"]{background:var(--v-pink);font-weight:600}
+.v-cal__wk{font-size:11px;color:var(--v-text-2)}.v-cal__wk.-on{background:var(--v-beige);border-radius:var(--r-pill);padding:6px 6px;color:var(--v-text)}
+
+/* ---- Agenda timeline (I15 I18) ---- */
+.v-agenda{display:grid;grid-template-columns:56px minmax(0,1fr);gap:0 var(--s-4);position:relative;--agenda-slot:116px}/* 30-min slot = one 116px row incl. gap; override per fixture */.v-agenda__t{font-size:12px;color:var(--v-text-2);padding-top:14px;font-variant-numeric:tabular-nums;height:var(--agenda-slot)}.v-agenda__t.-now{color:var(--v-text)}
+.v-agenda__now{position:absolute;left:0;right:0;top:calc(var(--slot-start) * var(--agenda-slot) + var(--minute) / 30 * var(--agenda-slot) + 14px);/* slot = 30 min; --minute offsets within it */display:flex;align-items:center;gap:var(--s-3);pointer-events:none}.v-agenda__now .v-time{height:26px;padding:0 10px;font-size:12px;background:var(--v-pink)}.v-agenda__now i{flex:1;border-top:1px dashed var(--v-text-2)}
+.v-event{border-radius:var(--r-card-sm);background:var(--card);padding:var(--s-4);display:grid;gap:6px;min-height:72px;position:relative}.v-event.-past{color:var(--v-text-3)}.v-event.-past .v-disk{opacity:.5}.v-event.-yellow{background:var(--v-yellow)}.v-event.-blue{background:var(--v-blue)}.v-event.-pink{background:var(--v-pink)}
+.v-event__top{display:flex;align-items:flex-start;gap:var(--s-3)}.v-event__title{font-weight:600;font-size:var(--fs-body)}.v-event__sub{font-size:12px;color:var(--muted-foreground)}.v-event.-past .v-event__sub{color:inherit}.v-event__kebab{margin-left:auto}
+
+/* ---- Weekly calendar (I18) ---- */
+
+/* ---- Charts ---- */
+.v-bars{display:flex;align-items:flex-end;gap:8px;height:var(--h,88px)}.v-bars i{flex:1;max-width:16px;border-radius:var(--r-pill);background:var(--wm,var(--v-beige));height:var(--p);min-height:8px;transition:height var(--t-draw) var(--enter)}.v-bars i.-ink{background:var(--v-ink)}.v-bars i.-dash{background:transparent;border:1px dashed var(--v-ink)}.v-bars i.-pink{background:var(--v-pink)}
+.v-axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted-foreground);margin-top:8px;font-variant-numeric:tabular-nums}.v-axis b{color:var(--v-text)}
+.v-line{width:100%;height:var(--h,120px)}.v-line path{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.v-line .-hist{stroke:var(--v-ink)}.v-line .-next{stroke:var(--wm,var(--v-pink))}.v-line .-cross{stroke:var(--v-ink);stroke-dasharray:3 4;stroke-width:1}.v-line circle{fill:var(--v-ink)}
+.v-ring{position:relative;display:grid;place-items:center}.v-ring svg{width:100%;height:100%;transform:rotate(-90deg)}.v-ring circle{fill:none;stroke-width:var(--sw,12);stroke-linecap:round;transition:stroke-dasharray var(--t-draw) var(--enter)}.v-ring .-track{stroke:var(--v-beige)}
+.v-ring__c{position:absolute;display:grid;justify-items:center;gap:2px}.v-ring.-draw circle:not(.-track){animation:v-draw var(--t-draw) var(--enter) both}@keyframes v-draw{from{stroke-dasharray:0 1000}}
+.v-ring .v-disk{position:absolute}
+.v-count[data-count]{font-variant-numeric:tabular-nums}
+
+@media (max-width:900px){.v-md{grid-template-columns:minmax(0,1fr);gap:var(--s-4)}.v-md__list .v-item.-selected{margin-right:0;border-radius:var(--r-card-sm)}.v-md__list .v-item.-selected::after{display:none}.v-md__detail{margin-top:0!important}}
+
+/* ---- responsive shell (declared last: container queries add no specificity, so these must follow the base rules) ---- */
+/* breakpoints are container-based so a fixed-width fixture and a resizable app window behave alike */
+@container shell (max-width:1180px){.v-main{grid-template-columns:minmax(0,1fr)}.v-rail{grid-column:1}}
+@container shell (max-width:900px){.v-shell>.v-sidebar{width:var(--sidebar-w-mini)}.v-sidebar .v-nav__label,.v-sidebar .v-nav__group,.v-sidebar .v-brand>*:not(.v-collapse){display:none}}
+@container shell (max-width:720px){.v-shell>.v-sidebar{display:none}.v-shell>.v-page{grid-column:1/-1;padding-bottom:calc(var(--dock-h) + var(--s-8))}}
+@container shell (max-width:520px){.v-topbar{flex-wrap:wrap;height:auto;row-gap:8px}.v-topbar .v-search{order:-1;flex:1 1 100%}}
+
+/* opt-in: instead of hiding the rail, turn it into a compact horizontal nav row (for shells without a dock) */
+@container shell (max-width:720px){
+.v-shell.-navbar>.v-page{grid-column:1/-1}
+.v-shell.-navbar>.v-sidebar{grid-column:1/-1;display:flex;flex-direction:row;align-items:center;gap:var(--s-2);height:auto;width:auto;position:static;padding:8px;border-radius:var(--r-pill);overflow-x:auto;scrollbar-gutter:stable;-webkit-mask-image:linear-gradient(to right,var(--mask-ink) 0,var(--mask-ink) calc(100% - 28px),transparent 100%);mask-image:linear-gradient(to right,var(--mask-ink) 0,var(--mask-ink) calc(100% - 28px),transparent 100%)}
+.v-shell.-navbar>.v-sidebar::-webkit-scrollbar{height:6px}
+.v-shell.-navbar>.v-sidebar::-webkit-scrollbar-thumb{background:rgba(251,244,230,.34);border-radius:3px}
+.v-shell.-navbar>.v-sidebar::-webkit-scrollbar-track{background:transparent}
+.v-shell.-navbar>.v-sidebar .v-brand,.v-shell.-navbar>.v-sidebar .v-nav__group,.v-shell.-navbar>.v-sidebar .v-sidebar__foot{display:none}
+.v-shell.-navbar>.v-sidebar .v-nav{display:flex;flex-direction:row;gap:4px;min-width:0}
+.v-shell.-navbar>.v-sidebar .v-nav__item{height:36px;padding:0 14px;border-radius:var(--r-pill);flex:none}
+.v-shell.-navbar>.v-sidebar .v-nav__label{display:inline;font-size:13px}
+.v-shell.-navbar>.v-sidebar .v-nav__item[aria-current="page"]{background:rgba(251,244,230,.12)}
+.v-shell.-navbar>.v-sidebar .v-nav__item[aria-current="page"]::before{display:none}
+}
+/* a rail consumed on its own (not inside .v-shell) still collapses: the shell-scoped rules above cannot help it */
+.v-sidebar.-mini{width:var(--sidebar-w-mini)}
+.v-sidebar.-mini .v-nav__label,.v-sidebar.-mini .v-nav__group,.v-sidebar.-mini .v-brand span:not(.v-collapse){display:none}
+.v-sidebar.-mini .v-brand{justify-content:center;font-size:0}
+.v-sidebar.-mini .v-nav__item{justify-content:center;padding:0}
+.v-sidebar.-mini .v-nav__item::after{display:none}
+.v-sidebar.-mini .v-nav__count{position:absolute;top:4px;right:6px;min-width:16px;height:16px;font-size:9px}
+.v-sidebar{transition:width var(--t-element) var(--enter)}
+.v-collapse{cursor:pointer}
+.v-nav__item{cursor:pointer}
+
+/* The way back must be a real control. The brand ROW stays in layout while collapsed — only its wordmark
+   hides — because a display:none ancestor removes the toggle's box no matter what size the toggle claims.
+   !important is deliberate: it overrides the container-query rule in patterns.css and the catalog's own
+   demo override, both of which hide .v-brand wholesale. */
+.v-sidebar .v-brand{display:flex;align-items:center;gap:8px}
+.v-sidebar .v-collapse{position:relative;inset:auto;transform:none;margin-left:auto;flex:none;width:30px;height:30px;font:500 13px/1 var(--font-text);letter-spacing:0;overflow:hidden;
+ border-radius:50%;background:var(--v-pink);color:var(--v-on-accent);display:grid;place-items:center;cursor:pointer}
+.v-sidebar.-mini .v-brand{display:flex;justify-content:center;min-height:44px;gap:0}
+.v-sidebar.-mini .v-brand>*:not(.v-collapse){display:none}
+.v-sidebar.-mini .v-collapse{position:relative;inset:auto;margin:0;width:36px;height:36px;font-size:13px;
+ box-shadow:0 0 0 3px color-mix(in oklab,var(--v-pink) 28%,transparent)}
+.v-sidebar.-mini .v-collapse .v-icon{width:15px;height:15px;transform:rotate(180deg)}
+.v-collapse:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+
+/* Overlapping events keep their own height: a fixed 30-min slot crushed a two-line title into 32 px while its
+   text needed 80. Side-by-side columns keep the width, min-height keeps the text readable, and the metadata
+   wraps instead of colliding. */
+
+/* a narrow column stacks its events: halving 64 px leaves no room for a word, so overlap becomes sequence */
+
+/* A schedule needs a minimum readable day width. Two rules, one cause: the column's implicit grid track
+   resolved to the event's min-content (112 px) and escaped its 61 px day, so first pin the track — nothing
+   may exceed its column — then give the week a floor of 104 px per day inside a labelled local scroller,
+   the same pattern the reference canvases and wide tables already use. Never solved by clipping. */
+
+/* ---------- Weekly calendar: ONE model, two breakpoints ----------
+   Previous state: four competing position/height declarations and six title rules, layered over months. The
+   used height stayed a hard 56 px (the column's grid-auto-rows) even where a stacking branch declared
+   height:auto!important, so with a nowrap+overflow:hidden lane rule still matching, the title's grid track
+   resolved to 0 px and "Invoice review" rendered with no name at all. Everything below is the only calendar
+   layout in the system: a single position/height model per breakpoint and a single title rule. */
+.v-weekwrap{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:8px;scrollbar-gutter:stable}
+.v-weekwrap::-webkit-scrollbar{height:8px}
+.v-weekwrap::-webkit-scrollbar-thumb{background:var(--v-edge);border-radius:4px}
+
+.v-week{position:relative;display:grid;grid-template-columns:64px repeat(7,minmax(104px,1fr));gap:var(--s-2)}
+.v-week__gutter{font-size:12px;color:var(--v-text-2);text-align:center}
+.v-week__t{height:56px;font-size:12px;color:var(--v-text-2);font-variant-numeric:tabular-nums;text-align:center}
+.v-week__t.-now{color:var(--v-text);font-weight:600}
+.v-week__day{height:60px;border-radius:var(--r-card-sm);background:var(--card);display:grid;place-content:center;text-align:center;gap:2px}
+.v-week__day span{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground)}
+.v-week__day b{font-size:15px}
+.v-week__day.-on{background:var(--v-ink);color:var(--v-on-ink)}
+.v-week__day.-on span{color:var(--v-on-ink)}
+/* the readable pink ink already exists as --v-accent-ink; --v-pink-ink was never defined, so this rule was
+   invalid at computed-value time and the weekend inherited FULL ink — darker than a weekday */
+.v-week__day.-weekend span,.v-week__day.-weekend b{color:var(--v-accent-ink)}
+
+/* the column never lets a child exceed it, and never imposes a row height on a child's content */
+.v-week__col{position:relative;container:weekcol/inline-size;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:min-content;align-content:start;gap:6px;min-height:280px}
+.v-week__col>*{min-width:0;max-width:100%}
+
+/* ONE event box: content-sized, with the duration expressed as a minimum, never as a fixed height */
+.v-week .v-event{position:static;display:grid;grid-auto-rows:min-content;gap:4px;height:auto;min-height:calc(var(--dur,1) * 28px);padding:10px 12px;border-radius:var(--r-card-sm);background:var(--card);overflow:visible}
+.v-week .v-event.-yellow{background:var(--v-yellow)}
+.v-week .v-event.-blue{background:var(--v-blue)}
+.v-week .v-event.-pink{background:var(--v-pink)}
+.v-week .v-event.-past{color:var(--v-text-3)}
+.v-week .v-event+.v-event{border-top:1px dashed var(--v-edge)}
+
+/* ONE title rule: it wraps, it is never clipped, and it can never be handed a zero track */
+.v-week .v-event__title{min-height:1lh;font-size:13px;line-height:1.3;font-weight:600;white-space:normal;overflow:visible;overflow-wrap:normal;word-break:normal;hyphens:auto}
+.v-week .v-event__sub{font-size:11.5px;line-height:1.3;color:var(--muted-foreground)}
+.v-week .v-event.-past .v-event__sub{color:inherit}
+
+/* side by side only where a column is genuinely wide enough for two readable events */
+@container weekcol (min-width:230px){
+ .v-week .v-event{position:absolute;left:0;right:0;top:calc(var(--start,0) * 56px);min-height:calc(var(--dur,1) * 56px - 8px)}
+ .v-week .v-event.-lane2{left:52%}
+ .v-week .v-event.-lane1:has(~.v-event.-lane2){right:52%}
+ .v-week .v-event+.v-event{border-top:0}
+}
+/* narrow: sequence, with the trimmings that stole the words' room removed */
+@container weekcol (max-width:132px){
+ .v-week .v-event{padding:9px 10px}
+ .v-week .v-event .v-hexgroup,.v-week .v-event .v-btn{display:none}
+ .v-week .v-event__title{font-size:12.5px}
+}
+.v-agenda__now{position:absolute;left:0;right:0;display:flex;align-items:center;gap:var(--s-3);pointer-events:none;z-index:2}
+
+/* An axis that no longer maps to positions is worse than none: in the stacked branch events are a sequence,
+   not time-positioned, so the week hides the positional gutter and each card carries its own time instead.
+   The day headers stay; the schedule stops claiming a mapping it is not honouring. */
+.v-week__col .v-event__sub{font-weight:500;color:var(--v-text)}
+.v-week__col .v-event__sub::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--v-accent-ink);margin-right:6px;vertical-align:middle}
+/* The axis is hidden while the week is narrow enough that its columns stack — the same 230 px threshold the
+   lanes use, expressed on the week itself so no marker property is needed. */
+.v-weekwrap{container:weekwrap/inline-size}
+@container weekwrap (max-width:1673px){.v-week__t{visibility:hidden}}
+@container weekwrap (min-width:1674px){.v-week__t{visibility:visible}}
+@container weekcol (min-width:230px){
+ .v-week__col .v-event__sub{font-weight:400;color:var(--muted-foreground)}
+ .v-week__col .v-event__sub::before{display:none}
+}

@@ -1,0 +1,1620 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "sahajiv",
+  "homepage": "https://luv-jeri.github.io/sahajiv-ui",
+  "items": [
+    {
+      "name": "sahajiv",
+      "type": "registry:base",
+      "extends": "none",
+      "title": "SahaJiv",
+      "description": "SahaJiv tokens, fonts, reset, and Tailwind v4 theme bridge.",
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "tw-animate-css"
+      ],
+      "config": {
+        "style": "new-york",
+        "iconLibrary": "lucide",
+        "tailwind": {
+          "baseColor": "neutral"
+        },
+        "registries": {
+          "@sahajiv": "https://luv-jeri.github.io/sahajiv-ui/r/{name}.json"
+        }
+      },
+      "files": [
+        {
+          "path": "registry/sahajiv/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "lib/utils.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/body.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/body.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/flow-press.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/flow-press.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/geometry.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/settings.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/settings.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/shapes.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/shapes.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/use-morph.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/use-morph.ts"
+        },
+        {
+          "path": "registry/sahajiv/styles/fonts.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv-fonts.css"
+        },
+        {
+          "path": "reference/sahajiv-handoff-v4/fonts/DMSans-OFL.txt",
+          "type": "registry:file",
+          "target": "styles/fonts/DMSans-OFL.txt"
+        },
+        {
+          "path": "reference/sahajiv-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
+          "type": "registry:file",
+          "target": "styles/fonts/BricolageGrotesque-OFL.txt"
+        }
+      ],
+      "css": {
+        "@layer theme, base, components, utilities, sahajiv-states, sahajiv-accessibility": {},
+        ":root": {
+          "color-scheme": "light",
+          "--v-pink": "#F5B8DB",
+          "--v-olive": "#9AAB63",
+          "--v-blue": "#B6CAEB",
+          "--v-yellow": "#F5D867",
+          "--v-canvas": "#FBF4E6",
+          "--v-paper": "#FBF4E6",
+          "--v-beige": "#EEE7DA",
+          "--v-beige-2": "#F3ECDF",
+          "--v-cream-pill": "#F7F5EB",
+          "--v-ink": "#111111",
+          "--v-structure": "#111111",
+          "--on-structure": "#FBF4E6",
+          "--structure-quiet": "rgba(251,244,230,.09)",
+          "--structure-line": "rgba(251,244,230,.16)",
+          "--structure-text": "#E4DDCD",
+          "--v-ink-soft": "#32302F",
+          "--v-on-ink": "#FBF4E6",
+          "--v-text": "#0E0B0B",
+          "--v-text-2": "#5F5B55",
+          "--v-text-3": "#68645E",
+          "--v-skel-face": "#DACFB8",
+          "--v-skel-sheen": "#F4EDDF",
+          "--v-skel-edge": "#8C8474",
+          "--v-disabled-ink": "#6A635B",
+          "--v-disabled-face": "#EDE6D7",
+          "--v-disabled-edge": "#877F6F",
+          "--v-danger": "#E1443E",
+          "--v-danger-ink": "#A8302B",
+          "--v-danger-fill": "#C9332D",
+          "--v-olive-ink": "#5A6631",
+          "--v-accent-ink": "#8E4A6B",
+          "--v-brand": "#9C3E6E",
+          "--v-border": "#D9D2C4",
+          "--v-edge": "#87806F",
+          "--switch-knob": "#FBF4E6",
+          "--switch-knob-on": "#FBF4E6",
+          "--surface-quiet": "#F7F1E2",
+          "--surface-work": "#EFF2F7",
+          "--surface-automation": "#F9F2DC",
+          "--surface-memory": "#F0F2E4",
+          "--surface-library": "#F9EEF3",
+          "--surface-ai": "#EDF1F6",
+          "--surface-alert": "#F9EDE9",
+          "--sel-bg": "#F5DCEA",
+          "--sel-edge": "#C2739B",
+          "--sel-ink": "#0E0B0B",
+          "--status-ok-bg": "#E9EEDB",
+          "--status-ok-ink": "#3F5220",
+          "--status-warn-bg": "#FAF0D2",
+          "--status-warn-ink": "#6A4E10",
+          "--status-danger-bg": "#F9E2DD",
+          "--status-danger-ink": "#8C2F24",
+          "--status-info-bg": "#E4EAF4",
+          "--status-info-ink": "#2A4468",
+          "--status-pending-bg": "#ECE7DC",
+          "--status-pending-ink": "#4A453D",
+          "--v-scrim": "rgba(46,42,36,.46)",
+          "--v-disabled-fill": "#C7C2B7",
+          "--v-pink-deep": "#E09CC1",
+          "--v-olive-deep": "#808F53",
+          "--v-blue-deep": "#8BA2C8",
+          "--v-yellow-deep": "#E8C84D",
+          "--v-pink-soft": "color-mix(in oklab,var(--v-pink) 55%,var(--v-canvas))",
+          "--v-olive-soft": "color-mix(in oklab,var(--v-olive) 45%,var(--v-canvas))",
+          "--v-blue-soft": "color-mix(in oklab,var(--v-blue) 55%,var(--v-canvas))",
+          "--v-yellow-soft": "color-mix(in oklab,var(--v-yellow) 55%,var(--v-canvas))",
+          "--v-danger-soft": "color-mix(in oklab,var(--v-danger) 14%,var(--v-canvas))",
+          "--background": "var(--v-canvas)",
+          "--foreground": "var(--v-text)",
+          "--card": "var(--v-beige)",
+          "--card-foreground": "var(--v-text)",
+          "--card-2": "var(--v-beige-2)",
+          "--popover": "var(--v-canvas)",
+          "--popover-foreground": "var(--v-text)",
+          "--primary": "var(--v-ink)",
+          "--primary-foreground": "var(--v-on-ink)",
+          "--secondary": "var(--v-beige)",
+          "--secondary-foreground": "var(--v-text)",
+          "--accent": "var(--v-pink)",
+          "--accent-foreground": "var(--v-text)",
+          "--muted": "var(--v-beige-2)",
+          "--muted-foreground": "var(--v-text-2)",
+          "--border": "var(--v-border)",
+          "--input": "var(--v-beige)",
+          "--ring": "var(--v-brand)",
+          "--destructive": "var(--v-danger)",
+          "--destructive-foreground": "#fff",
+          "--chart-1": "var(--v-yellow)",
+          "--chart-2": "var(--v-pink)",
+          "--chart-3": "var(--v-olive)",
+          "--chart-4": "var(--v-blue)",
+          "--chart-5": "var(--v-ink)",
+          "--sidebar": "var(--v-structure)",
+          "--sidebar-foreground": "var(--on-structure)",
+          "--sidebar-muted": "#8B8474",
+          "--sidebar-primary": "var(--v-pink)",
+          "--cat-work": "var(--v-blue)",
+          "--cat-automations": "var(--v-yellow)",
+          "--cat-memory": "var(--v-olive)",
+          "--cat-library": "var(--v-pink)",
+          "--cat-ai-apps": "var(--v-blue)",
+          "--cat-free-models": "var(--v-olive)",
+          "--cat-settings": "var(--v-beige)",
+          "--cat-needs-you": "var(--v-pink)",
+          "--cat-runs": "var(--v-yellow)",
+          "--status-ok": "var(--v-olive)",
+          "--status-warn": "var(--v-yellow)",
+          "--status-danger": "var(--v-danger)",
+          "--status-info": "var(--v-blue)",
+          "--status-pending": "var(--v-ink-soft)",
+          "--status-off": "var(--v-text-3)",
+          "--font-display": "\"Bricolage Grotesque\",ui-sans-serif,system-ui,sans-serif",
+          "--font-text": "\"DM Sans\",ui-sans-serif,system-ui,-apple-system,\"Segoe UI\",sans-serif",
+          "--font-mono": "ui-monospace,\"SF Mono\",Menlo,monospace",
+          "--fs-hero": "72px",
+          "--fs-display": "44px",
+          "--fs-section": "26px",
+          "--fs-title": "21px",
+          "--fs-lead": "17px",
+          "--fs-body": "15px",
+          "--fs-control": "14px",
+          "--fs-meta": "12px",
+          "--fs-caps": "11px",
+          "--lh-hero": ".95",
+          "--lh-display": "1.05",
+          "--lh-title": "1.2",
+          "--lh-body": "1.45",
+          "--lh-control": "1.2",
+          "--fw-display": "500",
+          "--fw-title": "600",
+          "--fw-body": "400",
+          "--fw-control": "500",
+          "--fw-value": "700",
+          "--ls-display": "-.015em",
+          "--ls-hero": "-.03em",
+          "--ls-caps": ".06em",
+          "--s-1": "4px",
+          "--s-2": "8px",
+          "--s-3": "12px",
+          "--s-4": "16px",
+          "--s-5": "20px",
+          "--s-6": "24px",
+          "--s-8": "32px",
+          "--s-10": "40px",
+          "--s-12": "48px",
+          "--s-16": "64px",
+          "--shell-inset": "28px",
+          "--sidebar-w": "212px",
+          "--sidebar-w-mini": "76px",
+          "--sidebar-gap": "52px",
+          "--rail-w": "360px",
+          "--rail-gap": "40px",
+          "--topbar-h": "44px",
+          "--content-max": "1440px",
+          "--card-pad": "24px",
+          "--card-gap": "16px",
+          "--row-pad": "12px 16px",
+          "--item-h": "64px",
+          "--content-offset": "16px",
+          "--agenda-slot": "80px",
+          "--r-xs": "4px",
+          "--r-sm": "8px",
+          "--r-md": "12px",
+          "--r-card-sm": "16px",
+          "--r-card": "20px",
+          "--r-panel": "24px",
+          "--r-sheet": "28px",
+          "--r-frame": "40px",
+          "--r-pill": "999px",
+          "--disk-sm": "32px",
+          "--disk-md": "40px",
+          "--disk-lg": "48px",
+          "--icon-sm": "16px",
+          "--icon-md": "20px",
+          "--icon-lg": "24px",
+          "--icon-stroke": "1.6",
+          "--ctl-sm": "32px",
+          "--ctl-md": "40px",
+          "--ctl-lg": "48px",
+          "--utility": "44px",
+          "--utility-overlap": "-4px",
+          "--dock-h": "72px",
+          "--dock-action": "56px",
+          "--dock-shoulder": "24px",
+          "--assist-close": "48px",
+          "--hex": "24px",
+          "--edit-badge": "36px",
+          "--track-h": "10px",
+          "--track-h-lg": "14px",
+          "--track-h-sm": "6px",
+          "--table-row": "72px",
+          "--table-head": "44px",
+          "--nav-row": "40px",
+          "--date-col": "44px",
+          "--hit-min": "44px",
+          "--bw-hair": "1px",
+          "--bw-featured": "1.5px",
+          "--bw-dash": "1px dashed var(--v-text-2)",
+          "--shadow-none": "none",
+          "--shadow-float": "0 12px 32px -12px rgba(17,17,17,.18)",
+          "--shadow-lift": "0 1px 0 rgba(17,17,17,.06)",
+          "--z-base": "0",
+          "--z-sticky": "10",
+          "--z-dock": "20",
+          "--z-sheet": "30",
+          "--z-assist": "35",
+          "--z-dialog": "40",
+          "--z-toast": "50",
+          "--z-tooltip": "60",
+          "--t-micro": "120ms",
+          "--t-element": "200ms",
+          "--t-max": "300ms",
+          "--t-draw": "600ms",
+          "--t-count": "700ms",
+          "--breath": "6s",
+          "--enter": "cubic-bezier(.2,.8,.2,1)",
+          "--exit": "cubic-bezier(.4,0,1,1)",
+          "--pulse": "34px",
+          "--pulse-c": "var(--v-pink)",
+          "--c": "var(--v-beige)",
+          "--hue": "var(--v-pink)",
+          "--hue-deep": "var(--v-pink-deep)",
+          "--hue-ink": "var(--v-text)",
+          "--wm-m": "none",
+          "--wm": "var(--v-beige-2)",
+          "--skel": "var(--v-skel-face)",
+          "--sw": "var(--v-pink)",
+          "--dot": "var(--v-border)",
+          "--disk-bg": "var(--v-beige)",
+          "--mfill": "transparent",
+          "--mstroke": "transparent",
+          "--glide-bg": "#1A1714",
+          "--glide-fg": "#F6EFE2",
+          "--v-on-accent": "#111111",
+          "--ink-fixed": "#111111",
+          "--cream-fixed": "#F6EFE2",
+          "--mask-ink": "#000000",
+          "--unavail-ink": "#6E6A63",
+          "--alert-ink": "#3E3A34",
+          "--btn-disabled-ink": "#4A453D",
+          "--nav-group-ink": "#8E8674",
+          "--muted-foreground-ink": "#2E2A24",
+          "--muted-foreground-tinted": "#4A443C",
+          "--danger-deep": "#E9A79F",
+          "--legacy-on-brand": "#FDF6F9",
+          "--legacy-accent-5": "#E29A6A",
+          "--legacy-success": "#5C8C34",
+          "--legacy-warning": "#B9831C",
+          "--legacy-info": "#3F79B4",
+          "--legacy-danger-fill": "#A8402A",
+          "--legacy-success-fill": "#3F6B22",
+          "--rail-sel": "rgba(251,244,230,.1)",
+          "--rail-hover": "rgba(251,244,230,.055)",
+          "--t-flow-glide": ".42s",
+          "--t-flow-glide-h": ".34s",
+          "--t-flow-glide-land": ".36s",
+          "--t-flow-stretch": ".3s",
+          "--t-flow-stretch-p1": ".16s",
+          "--t-flow-jelly": ".5s",
+          "--t-flow-jelly-h": ".44s",
+          "--t-flow-jelly-hover": ".3s",
+          "--t-flow-jelly-land": ".52s",
+          "--t-flow-comet": ".34s",
+          "--t-flow-comet-h": ".3s",
+          "--t-flow-comet-trail": ".72s",
+          "--t-flow-comet-trail-h": ".6s",
+          "--t-flow-drop": ".3s",
+          "--t-flow-drop-gather": ".14s",
+          "--t-flow-drop-shoot": ".18s",
+          "--t-flow-drop-land": ".3s",
+          "--t-flow-rubber": ".36s",
+          "--t-flow-rubber-lead": ".2s",
+          "--t-flow-pebble": ".46s",
+          "--t-flow-pebble-h": ".4s",
+          "--t-flow-pebble-land": ".5s",
+          "--t-flow-ripple": ".36s",
+          "--t-flow-ripple-h": ".3s",
+          "--t-flow-ripple-ring": ".6s",
+          "--t-flow-ripple-delay": ".18s",
+          "--t-flow-halo": ".4s",
+          "--t-flow-halo-h": ".34s",
+          "--t-flow-halo-glow": ".7s",
+          "--t-flow-hover": ".22s",
+          "--t-flow-radius": ".3s",
+          "--t-flow-radius-sm": ".2s",
+          "--t-flow-fade": ".18s",
+          "--t-flow-fade-sm": ".16s",
+          "--t-flow-label": ".2s",
+          "--t-flow-label-delay": ".1s",
+          "--t-flow-still": "60ms",
+          "--t-flow-land-hold": "900ms",
+          "--t-skel": "1.4s",
+          "--t-skel-sheen": "2.4s",
+          "--t-pulse": "2.1s",
+          "--e-flow-glide": "cubic-bezier(.34,1.32,.44,1)",
+          "--e-flow-stretch": "cubic-bezier(.3,1.15,.4,1)",
+          "--e-flow-stretch-p1": "cubic-bezier(.4,0,.2,1)",
+          "--e-flow-jelly": "cubic-bezier(.3,1.3,.45,1)",
+          "--e-flow-jelly-hover": "cubic-bezier(.3,1.25,.45,1)",
+          "--e-flow-comet": "cubic-bezier(.2,.8,.2,1)",
+          "--e-flow-comet-trail": "cubic-bezier(.2,.7,.15,1)",
+          "--e-flow-drop": "cubic-bezier(.3,1.25,.4,1)",
+          "--e-flow-drop-gather": "cubic-bezier(.4,0,.6,1)",
+          "--e-flow-drop-shoot": "cubic-bezier(.3,0,.2,1)",
+          "--e-flow-rubber": "cubic-bezier(.3,1.3,.4,1)",
+          "--e-flow-rubber-lead": "cubic-bezier(.2,.9,.3,1)",
+          "--e-flow-pebble": "cubic-bezier(.32,1.25,.42,1)",
+          "--e-flow-ripple": "cubic-bezier(.2,.8,.2,1)",
+          "--e-flow-halo": "cubic-bezier(.3,1.2,.4,1)",
+          "--e-flow-settle": "cubic-bezier(.2,.7,.2,1)",
+          "--t-tooltip": "220ms",
+          "--t-hovercard": "300ms",
+          "--t-toast": "5000ms",
+          "--t-focus-settle": "120ms"
+        },
+        ":root[data-mode=\"dark\"]": {
+          "--glide-bg": "#0C0B0A",
+          "--v-accent-ink": "#EDA9C8",
+          "--v-skel-face": "#4A4238",
+          "--v-skel-sheen": "#5C5346",
+          "--v-skel-edge": "#7A7263",
+          "--v-disabled-ink": "#A79E90",
+          "--v-disabled-face": "#242019",
+          "--v-disabled-edge": "#7E7565",
+          "--v-danger-ink": "#F0A99C",
+          "--v-structure": "#0C0B0A",
+          "--on-structure": "#F6EFE2",
+          "--structure-quiet": "rgba(246,239,226,.08)",
+          "--structure-line": "rgba(246,239,226,.14)",
+          "--structure-text": "#DED6C6",
+          "--surface-quiet": "#201D19",
+          "--surface-work": "#1B1F26",
+          "--surface-automation": "#241F14",
+          "--surface-memory": "#1D2118",
+          "--surface-library": "#241A1F",
+          "--surface-ai": "#1A1F26",
+          "--surface-alert": "#251A17",
+          "--sel-bg": "#3A2430",
+          "--sel-edge": "#C2739B",
+          "--sel-ink": "#F6EFE2",
+          "--status-ok-bg": "#1E2617",
+          "--status-ok-ink": "#C3D69B",
+          "--status-warn-bg": "#2A2312",
+          "--status-warn-ink": "#E8CE86",
+          "--status-danger-bg": "#2C1A16",
+          "--status-danger-ink": "#F0AFA3",
+          "--status-info-bg": "#182130",
+          "--status-info-ink": "#AEC5E6",
+          "--status-pending-bg": "#242019",
+          "--status-pending-ink": "#CFC7B8",
+          "--switch-knob": "#F6EFE2",
+          "--switch-knob-on": "#171512",
+          "color-scheme": "dark",
+          "--v-canvas": "#171512",
+          "--v-beige": "#221F1B",
+          "--v-beige-2": "#2A2621",
+          "--v-cream-pill": "#2F2B25",
+          "--v-ink": "#FBF4E6",
+          "--v-ink-soft": "#E4DCCB",
+          "--v-on-ink": "#111111",
+          "--v-text": "#F6EFE2",
+          "--v-text-2": "#B5AC9E",
+          "--v-text-3": "#6E675E",
+          "--v-border": "#3A352E",
+          "--v-scrim": "rgba(0,0,0,.62)",
+          "--v-disabled-fill": "#3A352E",
+          "--sidebar": "var(--v-structure)",
+          "--shadow-float": "0 12px 32px -12px rgba(0,0,0,.6)"
+        },
+        "@media (prefers-reduced-motion:reduce)": {
+          ":root": {
+            "--t-micro": "0ms",
+            "--t-element": "0ms",
+            "--t-max": "0ms",
+            "--t-draw": "0ms",
+            "--t-count": "0ms"
+          }
+        },
+        "@custom-variant dark (&:where([data-mode=\"dark\"], [data-mode=\"dark\"] *))": {},
+        "@layer base": {
+          "*, *::before, *::after": {
+            "box-sizing": "border-box",
+            "border-width": "0",
+            "border-style": "none"
+          },
+          "html": {
+            "-webkit-text-size-adjust": "100%",
+            "text-size-adjust": "100%"
+          },
+          "body": {
+            "margin": "0",
+            "background": "var(--background)",
+            "color": "var(--foreground)",
+            "font-family": "var(--font-text)",
+            "font-size": "var(--fs-body)",
+            "line-height": "var(--lh-body)",
+            "font-weight": "var(--fw-body)",
+            "-webkit-font-smoothing": "antialiased",
+            "text-rendering": "optimizeLegibility"
+          },
+          "h1,h2,h3,h4,p,figure,ul,ol": {
+            "margin": "0"
+          },
+          "button,input,select,textarea": {
+            "font": "inherit",
+            "color": "inherit"
+          },
+          "button": {
+            "background": "none",
+            "border": "0",
+            "padding": "0",
+            "cursor": "pointer"
+          },
+          "img,svg": {
+            "display": "block",
+            "max-width": "100%"
+          },
+          "a": {
+            "color": "var(--foreground)",
+            "text-underline-offset": "2px"
+          },
+          "a:hover": {
+            "color": "var(--v-text-2)"
+          },
+          ":focus-visible": {
+            "outline": "2px solid var(--ring)",
+            "outline-offset": "2px",
+            "border-radius": "var(--r-sm)"
+          },
+          "::selection": {
+            "background": "var(--v-pink)",
+            "color": "var(--v-text)"
+          }
+        },
+        "@layer components": {
+          ".v-body-2": {
+            "font-size": "var(--fs-body)",
+            "line-height": "1.5",
+            "color": "var(--muted-foreground)"
+          },
+          ".v-meta": {
+            "font-size": "var(--fs-meta)",
+            "line-height": "1.3",
+            "color": "var(--muted-foreground)"
+          },
+          ".v-icon": {
+            "width": "var(--icon-md)",
+            "height": "var(--icon-md)",
+            "flex": "none",
+            "stroke-width": "var(--icon-stroke)",
+            "fill": "none"
+          }
+        },
+        "@layer sahajiv-accessibility": {
+          "[hidden]:not([hidden=\"until-found\"])": {
+            "display": "none"
+          },
+          ".v-sr": {
+            "position": "absolute",
+            "width": "1px",
+            "height": "1px",
+            "padding": "0",
+            "margin": "-1px",
+            "overflow": "hidden",
+            "clip": "rect(0 0 0 0)",
+            "clip-path": "inset(50%)",
+            "white-space": "nowrap",
+            "border": "0",
+            "inset-inline-start": "0",
+            "inset-block-start": "0"
+          },
+          "@media (prefers-reduced-motion:reduce)": {
+            "*,*::before,*::after": {
+              "animation-duration": "0s",
+              "animation-iteration-count": "1",
+              "transition-duration": "0s",
+              "scroll-behavior": "auto"
+            }
+          }
+        },
+        "@import \"@/styles/sahajiv-fonts.css\"": {},
+        "@layer sahajiv-morph": {
+          "[data-slot].v-morph-host": {
+            "isolation": "isolate"
+          },
+          "[data-slot].v-morph-rel": {
+            "position": "relative"
+          },
+          "[data-slot].v-morph-host[data-morph]": {
+            "transition": "transform 0s"
+          },
+          "[data-slot].v-morph-host > svg.v-morph": {
+            "max-width": "none",
+            "max-height": "none"
+          },
+          "[data-slot].v-morph-host > svg.v-morph, [data-slot].v-morph-host > svg.v-morph *": {
+            "pointer-events": "none"
+          },
+          "[data-slot].v-morph-host > svg.v-morph path": {
+            "fill": "var(--mfill, transparent)"
+          },
+          "[data-slot].v-morph-host > svg.v-morph path[stroke]": {
+            "stroke": "var(--mstroke, transparent)"
+          },
+          "[data-slot].v-morph-host[data-morph=\"stroke\"] > svg.v-morph path": {
+            "fill": "none"
+          },
+          "[data-slot].v-morph-host[data-morph=\"both\"] > svg.v-morph path": {
+            "fill": "var(--mfill, transparent)"
+          },
+          "[data-slot].v-morph-live[data-morph=\"stroke\"], [data-slot].v-morph-live[data-morph=\"both\"]": {
+            "box-shadow": "none"
+          },
+          "[data-slot=badge].v-badge.-dashed.v-morph-live, [data-slot=badge].v-badge.-test.v-morph-live": {
+            "border-color": "transparent"
+          }
+        },
+        "@layer sahajiv-flow": {
+          ":root": {
+            "--flow-ease": "var(--e-flow-glide)",
+            "--flow-dur": "var(--t-flow-glide)",
+            "--flow-land": "vf-land",
+            "--flow-glow": "none"
+          },
+          "[data-slot=button][data-flow-land]": {
+            "animation": "var(--flow-land) calc(var(--flow-dur) * .85) var(--flow-ease),var(--flow-glow) calc(var(--flow-dur) * 1.6) var(--e-flow-settle)"
+          },
+          "@keyframes vf-land": {
+            "0%": {
+              "transform": "scale(calc(1 + .05 * var(--flow-intensity,1)),calc(1 - .08 * var(--flow-intensity,1)))"
+            },
+            "60%": {
+              "transform": "scale(calc(1 - .015 * var(--flow-intensity,1)),calc(1 + .03 * var(--flow-intensity,1)))"
+            },
+            "100%": {
+              "transform": "scale(1)"
+            }
+          },
+          "@keyframes vf-jellyx": {
+            "0%": {
+              "transform": "scale(1)"
+            },
+            "30%": {
+              "transform": "scale(calc(1 + .14 * var(--flow-intensity,1)),calc(1 - .16 * var(--flow-intensity,1)))"
+            },
+            "65%": {
+              "transform": "scale(calc(1 - .05 * var(--flow-intensity,1)),calc(1 + .06 * var(--flow-intensity,1)))"
+            },
+            "85%": {
+              "transform": "scale(calc(1 + .02 * var(--flow-intensity,1)),calc(1 - .02 * var(--flow-intensity,1)))"
+            },
+            "100%": {
+              "transform": "scale(1)"
+            }
+          },
+          "@keyframes vf-bloom": {
+            "0%": {
+              "transform": "scale(calc(1 - .08 * var(--flow-intensity,1)))"
+            },
+            "100%": {
+              "transform": "scale(1)"
+            }
+          },
+          "@keyframes vf-lean": {
+            "0%": {
+              "transform": "none"
+            },
+            "35%": {
+              "transform": "scale(calc(1 + .04 * var(--flow-intensity,1)),calc(1 - .07 * var(--flow-intensity,1))) skewX(calc(-3deg * var(--flow-intensity,1)))"
+            },
+            "70%": {
+              "transform": "scale(calc(1 - .01 * var(--flow-intensity,1)),calc(1 + .03 * var(--flow-intensity,1))) skewX(calc(1deg * var(--flow-intensity,1)))"
+            },
+            "100%": {
+              "transform": "none"
+            }
+          },
+          "@keyframes vf-ring": {
+            "0%": {
+              "outline": "0 solid color-mix(in oklab,var(--v-pink) 70%,transparent)"
+            },
+            "100%": {
+              "outline": "calc(12px * var(--flow-intensity,1)) solid transparent"
+            }
+          },
+          "@keyframes vf-glow": {
+            "0%": {
+              "outline": "0 solid transparent"
+            },
+            "35%": {
+              "outline": "calc(6px * var(--flow-intensity,1)) solid color-mix(in oklab,var(--v-pink) 40%,transparent)"
+            },
+            "100%": {
+              "outline": "calc(10px * var(--flow-intensity,1)) solid transparent"
+            }
+          },
+          "@media (prefers-reduced-motion:reduce)": {
+            "[data-slot=button][data-flow-land]": {
+              "animation": "none"
+            }
+          }
+        }
+      },
+      "cssVars": {
+        "theme": {
+          "color-v-pink": "var(--v-pink)",
+          "color-v-olive": "var(--v-olive)",
+          "color-v-blue": "var(--v-blue)",
+          "color-v-yellow": "var(--v-yellow)",
+          "color-v-canvas": "var(--v-canvas)",
+          "color-v-paper": "var(--v-paper)",
+          "color-v-beige": "var(--v-beige)",
+          "color-v-beige-2": "var(--v-beige-2)",
+          "color-v-cream-pill": "var(--v-cream-pill)",
+          "color-v-ink": "var(--v-ink)",
+          "color-v-structure": "var(--v-structure)",
+          "color-on-structure": "var(--on-structure)",
+          "color-structure-quiet": "var(--structure-quiet)",
+          "color-structure-line": "var(--structure-line)",
+          "color-structure-text": "var(--structure-text)",
+          "color-v-ink-soft": "var(--v-ink-soft)",
+          "color-v-on-ink": "var(--v-on-ink)",
+          "color-v-text": "var(--v-text)",
+          "color-v-text-2": "var(--v-text-2)",
+          "color-v-text-3": "var(--v-text-3)",
+          "color-v-skel-face": "var(--v-skel-face)",
+          "color-v-skel-sheen": "var(--v-skel-sheen)",
+          "color-v-skel-edge": "var(--v-skel-edge)",
+          "color-v-disabled-ink": "var(--v-disabled-ink)",
+          "color-v-disabled-face": "var(--v-disabled-face)",
+          "color-v-disabled-edge": "var(--v-disabled-edge)",
+          "color-v-danger": "var(--v-danger)",
+          "color-v-danger-ink": "var(--v-danger-ink)",
+          "color-v-danger-fill": "var(--v-danger-fill)",
+          "color-v-olive-ink": "var(--v-olive-ink)",
+          "color-v-accent-ink": "var(--v-accent-ink)",
+          "color-v-brand": "var(--v-brand)",
+          "color-v-border": "var(--v-border)",
+          "color-v-edge": "var(--v-edge)",
+          "color-switch-knob": "var(--switch-knob)",
+          "color-switch-knob-on": "var(--switch-knob-on)",
+          "color-surface-quiet": "var(--surface-quiet)",
+          "color-surface-work": "var(--surface-work)",
+          "color-surface-automation": "var(--surface-automation)",
+          "color-surface-memory": "var(--surface-memory)",
+          "color-surface-library": "var(--surface-library)",
+          "color-surface-ai": "var(--surface-ai)",
+          "color-surface-alert": "var(--surface-alert)",
+          "color-sel-bg": "var(--sel-bg)",
+          "color-sel-edge": "var(--sel-edge)",
+          "color-sel-ink": "var(--sel-ink)",
+          "color-status-ok-bg": "var(--status-ok-bg)",
+          "color-status-ok-ink": "var(--status-ok-ink)",
+          "color-status-warn-bg": "var(--status-warn-bg)",
+          "color-status-warn-ink": "var(--status-warn-ink)",
+          "color-status-danger-bg": "var(--status-danger-bg)",
+          "color-status-danger-ink": "var(--status-danger-ink)",
+          "color-status-info-bg": "var(--status-info-bg)",
+          "color-status-info-ink": "var(--status-info-ink)",
+          "color-status-pending-bg": "var(--status-pending-bg)",
+          "color-status-pending-ink": "var(--status-pending-ink)",
+          "color-v-scrim": "var(--v-scrim)",
+          "color-v-disabled-fill": "var(--v-disabled-fill)",
+          "color-v-pink-deep": "var(--v-pink-deep)",
+          "color-v-olive-deep": "var(--v-olive-deep)",
+          "color-v-blue-deep": "var(--v-blue-deep)",
+          "color-v-yellow-deep": "var(--v-yellow-deep)",
+          "color-v-pink-soft": "var(--v-pink-soft)",
+          "color-v-olive-soft": "var(--v-olive-soft)",
+          "color-v-blue-soft": "var(--v-blue-soft)",
+          "color-v-yellow-soft": "var(--v-yellow-soft)",
+          "color-v-danger-soft": "var(--v-danger-soft)",
+          "color-background": "var(--background)",
+          "color-foreground": "var(--foreground)",
+          "color-card": "var(--card)",
+          "color-card-foreground": "var(--card-foreground)",
+          "color-card-2": "var(--card-2)",
+          "color-popover": "var(--popover)",
+          "color-popover-foreground": "var(--popover-foreground)",
+          "color-primary": "var(--primary)",
+          "color-secondary": "var(--secondary)",
+          "color-secondary-foreground": "var(--secondary-foreground)",
+          "color-accent": "var(--accent)",
+          "color-accent-foreground": "var(--accent-foreground)",
+          "color-muted": "var(--muted)",
+          "color-muted-foreground": "var(--muted-foreground)",
+          "color-border": "var(--border)",
+          "color-input": "var(--input)",
+          "color-ring": "var(--ring)",
+          "color-destructive": "var(--destructive)",
+          "color-destructive-foreground": "var(--destructive-foreground)",
+          "color-chart-1": "var(--chart-1)",
+          "color-chart-2": "var(--chart-2)",
+          "color-chart-3": "var(--chart-3)",
+          "color-chart-4": "var(--chart-4)",
+          "color-chart-5": "var(--chart-5)",
+          "spacing-sidebar-foreground": "var(--sidebar-foreground)",
+          "color-sidebar-muted": "var(--sidebar-muted)",
+          "color-sidebar-primary": "var(--sidebar-primary)",
+          "color-cat-work": "var(--cat-work)",
+          "color-cat-automations": "var(--cat-automations)",
+          "color-cat-memory": "var(--cat-memory)",
+          "color-cat-library": "var(--cat-library)",
+          "color-cat-ai-apps": "var(--cat-ai-apps)",
+          "color-cat-free-models": "var(--cat-free-models)",
+          "color-cat-settings": "var(--cat-settings)",
+          "color-cat-needs-you": "var(--cat-needs-you)",
+          "color-cat-runs": "var(--cat-runs)",
+          "color-status-ok": "var(--status-ok)",
+          "color-status-warn": "var(--status-warn)",
+          "color-status-danger": "var(--status-danger)",
+          "color-status-info": "var(--status-info)",
+          "color-status-pending": "var(--status-pending)",
+          "color-status-off": "var(--status-off)",
+          "text-v-hero": "var(--fs-hero)",
+          "text-v-display": "var(--fs-display)",
+          "text-v-section": "var(--fs-section)",
+          "text-v-title": "var(--fs-title)",
+          "text-v-lead": "var(--fs-lead)",
+          "text-v-body": "var(--fs-body)",
+          "text-v-control": "var(--fs-control)",
+          "text-v-meta": "var(--fs-meta)",
+          "text-v-caps": "var(--fs-caps)",
+          "spacing-s-1": "var(--s-1)",
+          "spacing-s-2": "var(--s-2)",
+          "spacing-s-3": "var(--s-3)",
+          "spacing-s-4": "var(--s-4)",
+          "spacing-s-5": "var(--s-5)",
+          "spacing-s-6": "var(--s-6)",
+          "spacing-s-8": "var(--s-8)",
+          "spacing-s-10": "var(--s-10)",
+          "spacing-s-12": "var(--s-12)",
+          "spacing-s-16": "var(--s-16)",
+          "spacing-shell-inset": "var(--shell-inset)",
+          "spacing-sidebar-w": "var(--sidebar-w)",
+          "spacing-sidebar-w-mini": "var(--sidebar-w-mini)",
+          "spacing-sidebar-gap": "var(--sidebar-gap)",
+          "spacing-rail-w": "var(--rail-w)",
+          "spacing-rail-gap": "var(--rail-gap)",
+          "spacing-topbar-h": "var(--topbar-h)",
+          "spacing-content-max": "var(--content-max)",
+          "spacing-card-pad": "var(--card-pad)",
+          "radius-v-xs": "var(--r-xs)",
+          "radius-v-sm": "var(--r-sm)",
+          "radius-v-md": "var(--r-md)",
+          "radius-v-card-sm": "var(--r-card-sm)",
+          "radius-v-card": "var(--r-card)",
+          "radius-v-panel": "var(--r-panel)",
+          "radius-v-sheet": "var(--r-sheet)",
+          "radius-v-frame": "var(--r-frame)",
+          "radius-v-pill": "var(--r-pill)",
+          "spacing-disk-sm": "var(--disk-sm)",
+          "spacing-disk-md": "var(--disk-md)",
+          "spacing-disk-lg": "var(--disk-lg)",
+          "spacing-icon-sm": "var(--icon-sm)",
+          "spacing-icon-md": "var(--icon-md)",
+          "spacing-icon-lg": "var(--icon-lg)",
+          "spacing-icon-stroke": "var(--icon-stroke)",
+          "spacing-ctl-sm": "var(--ctl-sm)",
+          "spacing-ctl-md": "var(--ctl-md)",
+          "spacing-ctl-lg": "var(--ctl-lg)",
+          "color-pulse-c": "var(--pulse-c)",
+          "color-c": "var(--c)",
+          "color-hue": "var(--hue)",
+          "color-hue-deep": "var(--hue-deep)",
+          "color-hue-ink": "var(--hue-ink)",
+          "color-wm": "var(--wm)",
+          "color-skel": "var(--skel)",
+          "color-sw": "var(--sw)",
+          "color-dot": "var(--dot)",
+          "color-disk-bg": "var(--disk-bg)",
+          "color-mfill": "var(--mfill)",
+          "color-mstroke": "var(--mstroke)",
+          "color-glide-bg": "var(--glide-bg)",
+          "color-glide-fg": "var(--glide-fg)",
+          "color-v-on-accent": "var(--v-on-accent)",
+          "color-ink-fixed": "var(--ink-fixed)",
+          "color-cream-fixed": "var(--cream-fixed)",
+          "color-mask-ink": "var(--mask-ink)",
+          "color-unavail-ink": "var(--unavail-ink)",
+          "color-alert-ink": "var(--alert-ink)",
+          "color-btn-disabled-ink": "var(--btn-disabled-ink)",
+          "color-nav-group-ink": "var(--nav-group-ink)",
+          "color-muted-foreground-ink": "var(--muted-foreground-ink)",
+          "color-muted-foreground-tinted": "var(--muted-foreground-tinted)",
+          "color-danger-deep": "var(--danger-deep)",
+          "color-legacy-on-brand": "var(--legacy-on-brand)",
+          "color-legacy-accent-5": "var(--legacy-accent-5)",
+          "color-legacy-success": "var(--legacy-success)",
+          "color-legacy-warning": "var(--legacy-warning)",
+          "color-legacy-info": "var(--legacy-info)",
+          "color-legacy-danger-fill": "var(--legacy-danger-fill)",
+          "color-legacy-success-fill": "var(--legacy-success-fill)",
+          "color-rail-sel": "var(--rail-sel)",
+          "color-rail-hover": "var(--rail-hover)",
+          "color-surface-page": "var(--surface-page)",
+          "color-surface-card": "var(--surface-card)",
+          "color-surface-raised": "var(--surface-raised)",
+          "color-surface-sunken": "var(--surface-sunken)",
+          "color-surface-inverse": "var(--surface-inverse)",
+          "color-text-primary": "var(--text-primary)",
+          "color-text-secondary": "var(--text-secondary)",
+          "color-text-muted": "var(--text-muted)",
+          "color-border-strong": "var(--border-strong)",
+          "color-border-subtle": "var(--border-subtle)",
+          "color-brand": "var(--brand)",
+          "color-action": "var(--action)",
+          "color-accent-1": "var(--accent-1)",
+          "color-accent-2": "var(--accent-2)",
+          "color-accent-3": "var(--accent-3)",
+          "color-accent-4": "var(--accent-4)",
+          "color-accent-1-soft": "var(--accent-1-soft)",
+          "color-accent-2-soft": "var(--accent-2-soft)",
+          "color-accent-3-soft": "var(--accent-3-soft)",
+          "color-accent-4-soft": "var(--accent-4-soft)",
+          "color-danger": "var(--danger)",
+          "color-success-soft": "var(--success-soft)",
+          "color-warning-soft": "var(--warning-soft)",
+          "color-danger-soft": "var(--danger-soft)",
+          "color-info-soft": "var(--info-soft)",
+          "color-ring-offset": "var(--ring-offset)",
+          "spacing-card-padding": "var(--card-padding)",
+          "spacing-topbar-height": "var(--topbar-height)",
+          "font-sahajiv-text": "var(--font-text)",
+          "font-sahajiv-display": "var(--font-display)"
+        }
+      }
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Button with SahaJiv variants and sizing.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "css": {
+        "@layer sahajiv-states": {
+          "[data-slot=\"button\"]": {
+            "transition": "background var(--t-micro) var(--enter), transform var(--t-micro) var(--enter), opacity var(--t-micro)"
+          },
+          "[data-slot=\"button\"]:not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):hover": {
+            "background": "color-mix(in oklab, var(--primary) 88%, var(--v-canvas))"
+          },
+          "[data-slot=\"button\"].-secondary:hover": {
+            "background": "color-mix(in oklab, var(--v-beige) 92%, var(--v-ink))"
+          },
+          "[data-slot=\"button\"].-danger:hover": {
+            "background": "color-mix(in oklab, var(--v-danger-fill) 88%, black)"
+          },
+          ":root[data-mode=\"dark\"] [data-slot=\"button\"]:not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger)": {
+            "background": "var(--v-pink)",
+            "color": "var(--v-on-accent)"
+          },
+          "[data-slot=\"button\"]:is(:disabled, [aria-disabled=\"true\"])": {
+            "background": "var(--v-disabled-face)",
+            "color": "var(--v-disabled-ink)",
+            "box-shadow": "inset 0 0 0 1px var(--v-disabled-edge)",
+            "cursor": "not-allowed",
+            "transform": "none"
+          },
+          ":root[data-mode=\"dark\"] [data-slot=\"button\"]:is(.-secondary,.-ghost,.-outline)": {
+            "color": "var(--v-text)"
+          },
+          "[data-slot=\"button\"] .v-icon": {
+            "width": "18px",
+            "height": "18px"
+          },
+          "[data-slot=\"button\"][aria-busy=\"true\"]": {
+            "position": "relative",
+            "overflow": "hidden",
+            "cursor": "progress",
+            "pointer-events": "none",
+            "gap": "10px"
+          },
+          "[data-slot=\"button\"][aria-busy=\"true\"] .v-pulse": {
+            "display": "inline-grid",
+            "place-items": "center",
+            "position": "relative",
+            "width": "20px",
+            "height": "20px"
+          },
+          "[data-slot=\"button\"][aria-busy=\"true\"] .v-pulse svg": {
+            "width": "100%",
+            "height": "100%",
+            "overflow": "visible"
+          },
+          "[data-slot=\"button\"][aria-busy=\"true\"] .v-pulse .seed": {
+            "fill": "var(--v-pink)"
+          },
+          "[data-slot=\"button\"]:is(.-secondary,.-ghost,.-outline)[aria-busy=\"true\"] .v-pulse .seed": {
+            "fill": "var(--v-brand)"
+          },
+          "[data-slot=\"button\"][aria-busy=\"true\"] .v-pulse .core": {
+            "fill": "var(--v-canvas)"
+          },
+          "[data-slot=\"button\"]:is(.-secondary,.-ghost,.-outline)[aria-busy=\"true\"] .v-pulse .core,\n:root[data-mode=\"dark\"] [data-slot=\"button\"][aria-busy=\"true\"] .v-pulse .core": {
+            "fill": "var(--v-on-accent)"
+          },
+          "[data-slot=\"button\"][aria-busy=\"true\"]::after": {
+            "content": "\"\"",
+            "position": "absolute",
+            "inset": "0",
+            "background": "linear-gradient(100deg, transparent 20%, rgba(251,244,230,.14) 50%, transparent 80%)",
+            "transform": "translateX(-100%)",
+            "animation": "v-button-sweep 2.2s cubic-bezier(.4,0,.2,1) infinite",
+            "pointer-events": "none"
+          },
+          "[data-slot=\"button\"]:is(.-secondary,.-ghost,.-outline)[aria-busy=\"true\"]::after": {
+            "background": "linear-gradient(100deg, transparent 20%, rgba(17,17,17,.06) 50%, transparent 80%)"
+          },
+          "[data-slot=\"button\"][aria-busy=\"true\"] > :not(.v-pulse)": {
+            "position": "relative",
+            "z-index": "1",
+            "opacity": ".85"
+          },
+          "@keyframes v-button-sweep": {
+            "to": {
+              "transform": "translateX(100%)"
+            }
+          },
+          "@media (prefers-reduced-motion: reduce)": {
+            "[data-slot=\"button\"][aria-busy=\"true\"]::after": {
+              "animation": "none",
+              "display": "none"
+            }
+          }
+        }
+      },
+      "meta": {
+        "source": {
+          "id": "button",
+          "name": "Button",
+          "tier": "base",
+          "evidence": "I07 I15 I18",
+          "status": "source",
+          "root": ".v-btn",
+          "variants": [
+            "accent",
+            "secondary",
+            "ghost",
+            "outline",
+            "danger",
+            "block"
+          ],
+          "sizes": [
+            "sm",
+            "lg"
+          ],
+          "states": [
+            "rest",
+            "hover",
+            "focus",
+            "active",
+            "disabled",
+            "busy"
+          ],
+          "dataStates": [],
+          "category": "buttons",
+          "motionOnByDefault": true,
+          "flowRoles": [
+            "press",
+            "paces"
+          ],
+          "canvas": "480x240",
+          "contract": "entries/button/contract.md",
+          "demo": "entries/button/demo.html",
+          "isolation": [
+            "default-default-rest.html",
+            "default-default-rest-dark.html",
+            "default-default-disabled.html",
+            "default-default-disabled-dark.html",
+            "default-default-busy.html",
+            "default-default-busy-dark.html",
+            "default-sm-rest.html",
+            "default-sm-rest-dark.html",
+            "default-sm-disabled.html",
+            "default-sm-disabled-dark.html",
+            "default-sm-busy.html",
+            "default-sm-busy-dark.html",
+            "default-lg-rest.html",
+            "default-lg-rest-dark.html",
+            "default-lg-disabled.html",
+            "default-lg-disabled-dark.html",
+            "default-lg-busy.html",
+            "default-lg-busy-dark.html",
+            "accent-default-rest.html",
+            "accent-default-rest-dark.html",
+            "accent-default-disabled.html",
+            "accent-default-disabled-dark.html",
+            "accent-default-busy.html",
+            "accent-default-busy-dark.html",
+            "accent-sm-rest.html",
+            "accent-sm-rest-dark.html",
+            "accent-sm-disabled.html",
+            "accent-sm-disabled-dark.html",
+            "accent-sm-busy.html",
+            "accent-sm-busy-dark.html",
+            "accent-lg-rest.html",
+            "accent-lg-rest-dark.html",
+            "accent-lg-disabled.html",
+            "accent-lg-disabled-dark.html",
+            "accent-lg-busy.html",
+            "accent-lg-busy-dark.html",
+            "secondary-default-rest.html",
+            "secondary-default-rest-dark.html",
+            "secondary-default-disabled.html",
+            "secondary-default-disabled-dark.html",
+            "secondary-default-busy.html",
+            "secondary-default-busy-dark.html",
+            "secondary-sm-rest.html",
+            "secondary-sm-rest-dark.html",
+            "secondary-sm-disabled.html",
+            "secondary-sm-disabled-dark.html",
+            "secondary-sm-busy.html",
+            "secondary-sm-busy-dark.html",
+            "secondary-lg-rest.html",
+            "secondary-lg-rest-dark.html",
+            "secondary-lg-disabled.html",
+            "secondary-lg-disabled-dark.html",
+            "secondary-lg-busy.html",
+            "secondary-lg-busy-dark.html",
+            "ghost-default-rest.html",
+            "ghost-default-rest-dark.html",
+            "ghost-default-disabled.html",
+            "ghost-default-disabled-dark.html",
+            "ghost-default-busy.html",
+            "ghost-default-busy-dark.html",
+            "ghost-sm-rest.html",
+            "ghost-sm-rest-dark.html",
+            "ghost-sm-disabled.html",
+            "ghost-sm-disabled-dark.html",
+            "ghost-sm-busy.html",
+            "ghost-sm-busy-dark.html",
+            "ghost-lg-rest.html",
+            "ghost-lg-rest-dark.html",
+            "ghost-lg-disabled.html",
+            "ghost-lg-disabled-dark.html",
+            "ghost-lg-busy.html",
+            "ghost-lg-busy-dark.html",
+            "outline-default-rest.html",
+            "outline-default-rest-dark.html",
+            "outline-default-disabled.html",
+            "outline-default-disabled-dark.html",
+            "outline-default-busy.html",
+            "outline-default-busy-dark.html",
+            "outline-sm-rest.html",
+            "outline-sm-rest-dark.html",
+            "outline-sm-disabled.html",
+            "outline-sm-disabled-dark.html",
+            "outline-sm-busy.html",
+            "outline-sm-busy-dark.html",
+            "outline-lg-rest.html",
+            "outline-lg-rest-dark.html",
+            "outline-lg-disabled.html",
+            "outline-lg-disabled-dark.html",
+            "outline-lg-busy.html",
+            "outline-lg-busy-dark.html",
+            "danger-default-rest.html",
+            "danger-default-rest-dark.html",
+            "danger-default-disabled.html",
+            "danger-default-disabled-dark.html",
+            "danger-default-busy.html",
+            "danger-default-busy-dark.html",
+            "danger-sm-rest.html",
+            "danger-sm-rest-dark.html",
+            "danger-sm-disabled.html",
+            "danger-sm-disabled-dark.html",
+            "danger-sm-busy.html",
+            "danger-sm-busy-dark.html",
+            "danger-lg-rest.html",
+            "danger-lg-rest-dark.html",
+            "danger-lg-disabled.html",
+            "danger-lg-disabled-dark.html",
+            "danger-lg-busy.html",
+            "danger-lg-busy-dark.html",
+            "block-default-rest.html",
+            "block-default-rest-dark.html",
+            "block-default-disabled.html",
+            "block-default-disabled-dark.html",
+            "block-default-busy.html",
+            "block-default-busy-dark.html",
+            "block-sm-rest.html",
+            "block-sm-rest-dark.html",
+            "block-sm-disabled.html",
+            "block-sm-disabled-dark.html",
+            "block-sm-busy.html",
+            "block-sm-busy-dark.html",
+            "block-lg-rest.html",
+            "block-lg-rest-dark.html",
+            "block-lg-disabled.html",
+            "block-lg-disabled-dark.html",
+            "block-lg-busy.html",
+            "block-lg-busy-dark.html"
+          ]
+        },
+        "api": [
+          {
+            "name": "ButtonProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"default\" | \"accent\" | \"secondary\" | \"ghost\" | \"outline\" | \"danger\" | \"block\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "\"default\" | \"sm\" | \"lg\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "fullWidth",
+                "type": "boolean | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "loading",
+                "type": "boolean | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "loadingIndicator",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "fidelity": "pending-spike"
+      }
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Badge with SahaJiv variants and sizing.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "css": {
+        "@layer sahajiv-states": {
+          "[data-slot=\"badge\"] > *": {
+            "line-height": "1"
+          },
+          "[data-slot=\"badge\"]:is(.-live,.-pending) .v-dot": {
+            "background": "var(--v-olive)"
+          },
+          ":root[data-mode=\"dark\"] [data-slot=\"badge\"]:is(.-pink-soft,.-yellow-soft,.-olive-soft,.-blue-soft)": {
+            "color": "var(--v-on-accent)"
+          },
+          ":root[data-mode=\"dark\"] [data-slot=\"badge\"]:is(.-dashed,.-test,.-live)": {
+            "background": "var(--v-beige-2)"
+          },
+          "[data-slot=\"badge\"]:is(.-dashed,.-test).v-morph-live": {
+            "border-color": "transparent"
+          }
+        }
+      },
+      "meta": {
+        "source": {
+          "id": "badge",
+          "name": "Badge",
+          "tier": "base",
+          "evidence": "I03 I18",
+          "status": "source",
+          "root": ".v-badge",
+          "variants": [
+            "pink",
+            "yellow",
+            "olive",
+            "blue",
+            "ink",
+            "cream",
+            "pink-soft",
+            "yellow-soft",
+            "olive-soft",
+            "blue-soft",
+            "danger",
+            "pending",
+            "count",
+            "dashed",
+            "caps",
+            "test",
+            "live"
+          ],
+          "sizes": [
+            "sm",
+            "lg"
+          ],
+          "states": [
+            "rest"
+          ],
+          "dataStates": [],
+          "category": "pills",
+          "motionOnByDefault": true,
+          "flowRoles": [
+            "enters"
+          ],
+          "canvas": "480x240",
+          "contract": "entries/badge/contract.md",
+          "demo": "entries/badge/demo.html",
+          "isolation": [
+            "default-default-rest.html",
+            "default-default-rest-dark.html",
+            "default-sm-rest.html",
+            "default-sm-rest-dark.html",
+            "default-lg-rest.html",
+            "default-lg-rest-dark.html",
+            "pink-default-rest.html",
+            "pink-default-rest-dark.html",
+            "pink-sm-rest.html",
+            "pink-sm-rest-dark.html",
+            "pink-lg-rest.html",
+            "pink-lg-rest-dark.html",
+            "yellow-default-rest.html",
+            "yellow-default-rest-dark.html",
+            "yellow-sm-rest.html",
+            "yellow-sm-rest-dark.html",
+            "yellow-lg-rest.html",
+            "yellow-lg-rest-dark.html",
+            "olive-default-rest.html",
+            "olive-default-rest-dark.html",
+            "olive-sm-rest.html",
+            "olive-sm-rest-dark.html",
+            "olive-lg-rest.html",
+            "olive-lg-rest-dark.html",
+            "blue-default-rest.html",
+            "blue-default-rest-dark.html",
+            "blue-sm-rest.html",
+            "blue-sm-rest-dark.html",
+            "blue-lg-rest.html",
+            "blue-lg-rest-dark.html",
+            "ink-default-rest.html",
+            "ink-default-rest-dark.html",
+            "ink-sm-rest.html",
+            "ink-sm-rest-dark.html",
+            "ink-lg-rest.html",
+            "ink-lg-rest-dark.html",
+            "cream-default-rest.html",
+            "cream-default-rest-dark.html",
+            "cream-sm-rest.html",
+            "cream-sm-rest-dark.html",
+            "cream-lg-rest.html",
+            "cream-lg-rest-dark.html",
+            "pink-soft-default-rest.html",
+            "pink-soft-default-rest-dark.html",
+            "pink-soft-sm-rest.html",
+            "pink-soft-sm-rest-dark.html",
+            "pink-soft-lg-rest.html",
+            "pink-soft-lg-rest-dark.html",
+            "yellow-soft-default-rest.html",
+            "yellow-soft-default-rest-dark.html",
+            "yellow-soft-sm-rest.html",
+            "yellow-soft-sm-rest-dark.html",
+            "yellow-soft-lg-rest.html",
+            "yellow-soft-lg-rest-dark.html",
+            "olive-soft-default-rest.html",
+            "olive-soft-default-rest-dark.html",
+            "olive-soft-sm-rest.html",
+            "olive-soft-sm-rest-dark.html",
+            "olive-soft-lg-rest.html",
+            "olive-soft-lg-rest-dark.html",
+            "blue-soft-default-rest.html",
+            "blue-soft-default-rest-dark.html",
+            "blue-soft-sm-rest.html",
+            "blue-soft-sm-rest-dark.html",
+            "blue-soft-lg-rest.html",
+            "blue-soft-lg-rest-dark.html",
+            "danger-default-rest.html",
+            "danger-default-rest-dark.html",
+            "danger-sm-rest.html",
+            "danger-sm-rest-dark.html",
+            "danger-lg-rest.html",
+            "danger-lg-rest-dark.html",
+            "pending-default-rest.html",
+            "pending-default-rest-dark.html",
+            "pending-sm-rest.html",
+            "pending-sm-rest-dark.html",
+            "pending-lg-rest.html",
+            "pending-lg-rest-dark.html",
+            "count-default-rest.html",
+            "count-default-rest-dark.html",
+            "count-sm-rest.html",
+            "count-sm-rest-dark.html",
+            "count-lg-rest.html",
+            "count-lg-rest-dark.html",
+            "dashed-default-rest.html",
+            "dashed-default-rest-dark.html",
+            "dashed-sm-rest.html",
+            "dashed-sm-rest-dark.html",
+            "dashed-lg-rest.html",
+            "dashed-lg-rest-dark.html",
+            "caps-default-rest.html",
+            "caps-default-rest-dark.html",
+            "caps-sm-rest.html",
+            "caps-sm-rest-dark.html",
+            "caps-lg-rest.html",
+            "caps-lg-rest-dark.html",
+            "test-default-rest.html",
+            "test-default-rest-dark.html",
+            "test-sm-rest.html",
+            "test-sm-rest-dark.html",
+            "test-lg-rest.html",
+            "test-lg-rest-dark.html",
+            "live-default-rest.html",
+            "live-default-rest-dark.html",
+            "live-sm-rest.html",
+            "live-sm-rest-dark.html",
+            "live-lg-rest.html",
+            "live-lg-rest-dark.html"
+          ]
+        },
+        "api": [
+          {
+            "name": "BadgeProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"default\" | \"danger\" | \"pink\" | \"yellow\" | \"olive\" | \"blue\" | \"ink\" | \"cream\" | \"pink-soft\" | \"yellow-soft\" | \"olive-soft\" | \"blue-soft\" | \"pending\" | \"count\" | \"dashed\" | \"caps\" | \"test\" | \"live\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "\"default\" | \"sm\" | \"lg\" | null | undefined",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "fidelity": "pending-spike"
+      }
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "Card with SahaJiv variants and sizing.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "css": {
+        "@layer sahajiv-states": {
+          "[data-slot=\"card\"]": {
+            "transition": "transform var(--t-micro) var(--enter), box-shadow var(--t-micro)"
+          },
+          "[data-slot=\"card\"] > :not(.v-wm)": {
+            "position": "relative",
+            "z-index": "1"
+          },
+          "[data-slot=\"card\"] > .v-wm": {
+            "position": "absolute",
+            "right": "-6%",
+            "top": "-14%",
+            "width": "38%",
+            "max-width": "150px",
+            "height": "auto",
+            "aspect-ratio": "1",
+            "color": "var(--wm,var(--v-beige-2))",
+            "pointer-events": "none",
+            "z-index": "0",
+            "opacity": ".55"
+          },
+          "[data-slot=\"card\"] > .v-wm.-bl": {
+            "right": "auto",
+            "left": "-10%",
+            "top": "auto",
+            "bottom": "-20%"
+          },
+          "[data-slot=\"card\"] > .v-wm.-br": {
+            "top": "auto",
+            "bottom": "-16%"
+          },
+          "[data-slot=\"card\"] > .v-wm.-tr-sm": {
+            "width": "30%",
+            "right": "8%",
+            "top": "8%"
+          },
+          "[data-slot=\"card\"] > .v-body-2 + *": {
+            "margin-top": "20px"
+          },
+          "[data-slot=\"card\"]:is(.-pink,.-yellow,.-olive,.-blue) :is(.v-meta,.v-body-2)": {
+            "color": "rgba(17,17,17,.66)"
+          },
+          "[data-slot=\"card\"]:is(.-pink,.-yellow,.-olive,.-blue) :is(.v-caps,.v-stat span)": {
+            "color": "rgba(17,17,17,.6)"
+          },
+          ":root[data-mode=\"dark\"] [data-slot=\"card\"] :is(.v-meta,.v-body-2,.v-caps)": {
+            "color": "var(--v-text-2)"
+          },
+          "[data-slot=card-watermark]": {
+            "display": "inline-block",
+            "background": "var(--c,currentColor)",
+            "-webkit-mask": "var(--m) center/contain no-repeat",
+            "mask": "var(--m) center/contain no-repeat",
+            "flex": "none"
+          },
+          "[data-slot=card-watermark].-cross": {
+            "--m": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Cpath%20d%3D%22M36%204H64Q68%204%2068%208V32H92Q96%2032%2096%2036V64Q96%2068%2092%2068H68V92Q68%2096%2064%2096H36Q32%2096%2032%2092V68H8Q4%2068%204%2064V36Q4%2032%208%2032H32V8Q32%204%2036%204Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E\")"
+          },
+          "[data-slot=card-watermark].-heart": {
+            "--m": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Cpath%20d%3D%22M50%2090C22%2068%206%2052%206%2033A20%2020%200%200%201%2050%2021A20%2020%200%200%201%2094%2033C94%2052%2078%2068%2050%2090Z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E\")"
+          }
+        }
+      },
+      "meta": {
+        "source": {
+          "id": "card",
+          "name": "Card",
+          "tier": "base",
+          "evidence": "I07 I11 I15 I17",
+          "status": "source",
+          "root": ".v-card",
+          "variants": [
+            "pink",
+            "yellow",
+            "olive",
+            "blue",
+            "ink",
+            "cream",
+            "featured",
+            "panel",
+            "lift"
+          ],
+          "sizes": [
+            "sm"
+          ],
+          "states": [
+            "rest"
+          ],
+          "dataStates": [],
+          "category": "cards",
+          "motionOnByDefault": false,
+          "flowRoles": [],
+          "canvas": "480x240",
+          "contract": "entries/card/contract.md",
+          "demo": "entries/card/demo.html",
+          "isolation": [
+            "default-default-rest.html",
+            "default-default-rest-dark.html",
+            "default-sm-rest.html",
+            "default-sm-rest-dark.html",
+            "pink-default-rest.html",
+            "pink-default-rest-dark.html",
+            "pink-sm-rest.html",
+            "pink-sm-rest-dark.html",
+            "yellow-default-rest.html",
+            "yellow-default-rest-dark.html",
+            "yellow-sm-rest.html",
+            "yellow-sm-rest-dark.html",
+            "olive-default-rest.html",
+            "olive-default-rest-dark.html",
+            "olive-sm-rest.html",
+            "olive-sm-rest-dark.html",
+            "blue-default-rest.html",
+            "blue-default-rest-dark.html",
+            "blue-sm-rest.html",
+            "blue-sm-rest-dark.html",
+            "ink-default-rest.html",
+            "ink-default-rest-dark.html",
+            "ink-sm-rest.html",
+            "ink-sm-rest-dark.html",
+            "cream-default-rest.html",
+            "cream-default-rest-dark.html",
+            "cream-sm-rest.html",
+            "cream-sm-rest-dark.html",
+            "featured-default-rest.html",
+            "featured-default-rest-dark.html",
+            "featured-sm-rest.html",
+            "featured-sm-rest-dark.html",
+            "panel-default-rest.html",
+            "panel-default-rest-dark.html",
+            "panel-sm-rest.html",
+            "panel-sm-rest-dark.html",
+            "lift-default-rest.html",
+            "lift-default-rest-dark.html",
+            "lift-sm-rest.html",
+            "lift-sm-rest-dark.html"
+          ]
+        },
+        "api": [
+          {
+            "name": "CardProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"default\" | \"pink\" | \"yellow\" | \"olive\" | \"blue\" | \"ink\" | \"cream\" | \"featured\" | \"panel\" | \"lift\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "\"default\" | \"sm\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "lift",
+                "type": "boolean | null | undefined",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "fidelity": "pending-spike"
+      }
+    }
+  ]
+}

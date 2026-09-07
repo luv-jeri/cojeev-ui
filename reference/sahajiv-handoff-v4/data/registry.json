@@ -1,0 +1,3642 @@
+{
+ "$description": "Machine-readable index of the catalog: every entry with its variants, sizes, states, motion category and files. category = the morph-body category from js/morph.js CATS (buttons | icons | pills | cards | nav | inputs | controls | surfaces | skeleton); \"none\" = a static element that never receives a body (typography, separators, labels, layout-only entries). motionOnByDefault = whether motion.js attaches the body without markup.",
+ "count": 102,
+ "entries": {
+  "accordion": {
+   "id": "accordion",
+   "name": "Accordion",
+   "tier": "base",
+   "evidence": "Ext I11",
+   "status": "derived",
+   "root": ".v-acc",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "unfolds"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/accordion/contract.md",
+   "demo": "entries/accordion/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-open.html",
+    "default-default-open-dark.html"
+   ]
+  },
+  "alert": {
+   "id": "alert",
+   "name": "Alert",
+   "tier": "base",
+   "evidence": "I12 I16",
+   "status": "source",
+   "root": ".v-alert",
+   "variants": [
+    "info",
+    "ok",
+    "warn",
+    "danger",
+    "pink"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "720x240",
+   "contract": "entries/alert/contract.md",
+   "demo": "entries/alert/demo.html",
+   "isolation": [
+    "default-default-rest-720x240.html",
+    "default-default-rest-dark-720x240.html",
+    "info-default-rest-720x240.html",
+    "info-default-rest-dark-720x240.html",
+    "ok-default-rest-720x240.html",
+    "ok-default-rest-dark-720x240.html",
+    "warn-default-rest-720x240.html",
+    "warn-default-rest-dark-720x240.html",
+    "danger-default-rest-720x240.html",
+    "danger-default-rest-dark-720x240.html",
+    "pink-default-rest-720x240.html",
+    "pink-default-rest-dark-720x240.html"
+   ]
+  },
+  "alert-dialog": {
+   "id": "alert-dialog",
+   "name": "Alert Dialog",
+   "tier": "base",
+   "evidence": "Ext I07",
+   "status": "derived",
+   "root": ".v-dialog",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "opens"
+   ],
+   "canvas": "720x480",
+   "contract": "entries/alert-dialog/contract.md",
+   "demo": "entries/alert-dialog/demo.html",
+   "isolation": [
+    "default-default-rest-720x480.html",
+    "default-default-rest-dark-720x480.html",
+    "default-default-open-720x480.html",
+    "default-default-open-dark-720x480.html"
+   ]
+  },
+  "aspect-ratio": {
+   "id": "aspect-ratio",
+   "name": "Aspect Ratio",
+   "tier": "base",
+   "evidence": "I05 I17 I20",
+   "status": "source",
+   "root": ".v-ratio",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "breathes"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/aspect-ratio/contract.md",
+   "demo": "entries/aspect-ratio/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "attachment": {
+   "id": "attachment",
+   "name": "Attachment",
+   "tier": "base",
+   "evidence": "I09 I16 I17",
+   "status": "source",
+   "root": ".v-attach",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "icons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "press"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/attachment/contract.md",
+   "demo": "entries/attachment/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "avatar": {
+   "id": "avatar",
+   "name": "Avatar",
+   "tier": "base",
+   "evidence": "I04 I11 I18",
+   "status": "source",
+   "root": ".v-avatar",
+   "variants": [
+    "square"
+   ],
+   "sizes": [
+    "lg"
+   ],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "breathes"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/avatar/contract.md",
+   "demo": "entries/avatar/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "badge": {
+   "id": "badge",
+   "name": "Badge",
+   "tier": "base",
+   "evidence": "I03 I18",
+   "status": "source",
+   "root": ".v-badge",
+   "variants": [
+    "pink",
+    "yellow",
+    "olive",
+    "blue",
+    "ink",
+    "cream",
+    "pink-soft",
+    "yellow-soft",
+    "olive-soft",
+    "blue-soft",
+    "danger",
+    "pending",
+    "count",
+    "dashed",
+    "caps",
+    "test",
+    "live"
+   ],
+   "sizes": [
+    "sm",
+    "lg"
+   ],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "pills",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "enters"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/badge/contract.md",
+   "demo": "entries/badge/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-sm-rest.html",
+    "default-sm-rest-dark.html",
+    "default-lg-rest.html",
+    "default-lg-rest-dark.html",
+    "pink-default-rest.html",
+    "pink-default-rest-dark.html",
+    "pink-sm-rest.html",
+    "pink-sm-rest-dark.html",
+    "pink-lg-rest.html",
+    "pink-lg-rest-dark.html",
+    "yellow-default-rest.html",
+    "yellow-default-rest-dark.html",
+    "yellow-sm-rest.html",
+    "yellow-sm-rest-dark.html",
+    "yellow-lg-rest.html",
+    "yellow-lg-rest-dark.html",
+    "olive-default-rest.html",
+    "olive-default-rest-dark.html",
+    "olive-sm-rest.html",
+    "olive-sm-rest-dark.html",
+    "olive-lg-rest.html",
+    "olive-lg-rest-dark.html",
+    "blue-default-rest.html",
+    "blue-default-rest-dark.html",
+    "blue-sm-rest.html",
+    "blue-sm-rest-dark.html",
+    "blue-lg-rest.html",
+    "blue-lg-rest-dark.html",
+    "ink-default-rest.html",
+    "ink-default-rest-dark.html",
+    "ink-sm-rest.html",
+    "ink-sm-rest-dark.html",
+    "ink-lg-rest.html",
+    "ink-lg-rest-dark.html",
+    "cream-default-rest.html",
+    "cream-default-rest-dark.html",
+    "cream-sm-rest.html",
+    "cream-sm-rest-dark.html",
+    "cream-lg-rest.html",
+    "cream-lg-rest-dark.html",
+    "pink-soft-default-rest.html",
+    "pink-soft-default-rest-dark.html",
+    "pink-soft-sm-rest.html",
+    "pink-soft-sm-rest-dark.html",
+    "pink-soft-lg-rest.html",
+    "pink-soft-lg-rest-dark.html",
+    "yellow-soft-default-rest.html",
+    "yellow-soft-default-rest-dark.html",
+    "yellow-soft-sm-rest.html",
+    "yellow-soft-sm-rest-dark.html",
+    "yellow-soft-lg-rest.html",
+    "yellow-soft-lg-rest-dark.html",
+    "olive-soft-default-rest.html",
+    "olive-soft-default-rest-dark.html",
+    "olive-soft-sm-rest.html",
+    "olive-soft-sm-rest-dark.html",
+    "olive-soft-lg-rest.html",
+    "olive-soft-lg-rest-dark.html",
+    "blue-soft-default-rest.html",
+    "blue-soft-default-rest-dark.html",
+    "blue-soft-sm-rest.html",
+    "blue-soft-sm-rest-dark.html",
+    "blue-soft-lg-rest.html",
+    "blue-soft-lg-rest-dark.html",
+    "danger-default-rest.html",
+    "danger-default-rest-dark.html",
+    "danger-sm-rest.html",
+    "danger-sm-rest-dark.html",
+    "danger-lg-rest.html",
+    "danger-lg-rest-dark.html",
+    "pending-default-rest.html",
+    "pending-default-rest-dark.html",
+    "pending-sm-rest.html",
+    "pending-sm-rest-dark.html",
+    "pending-lg-rest.html",
+    "pending-lg-rest-dark.html",
+    "count-default-rest.html",
+    "count-default-rest-dark.html",
+    "count-sm-rest.html",
+    "count-sm-rest-dark.html",
+    "count-lg-rest.html",
+    "count-lg-rest-dark.html",
+    "dashed-default-rest.html",
+    "dashed-default-rest-dark.html",
+    "dashed-sm-rest.html",
+    "dashed-sm-rest-dark.html",
+    "dashed-lg-rest.html",
+    "dashed-lg-rest-dark.html",
+    "caps-default-rest.html",
+    "caps-default-rest-dark.html",
+    "caps-sm-rest.html",
+    "caps-sm-rest-dark.html",
+    "caps-lg-rest.html",
+    "caps-lg-rest-dark.html",
+    "test-default-rest.html",
+    "test-default-rest-dark.html",
+    "test-sm-rest.html",
+    "test-sm-rest-dark.html",
+    "test-lg-rest.html",
+    "test-lg-rest-dark.html",
+    "live-default-rest.html",
+    "live-default-rest-dark.html",
+    "live-sm-rest.html",
+    "live-sm-rest-dark.html",
+    "live-lg-rest.html",
+    "live-lg-rest-dark.html"
+   ]
+  },
+  "breadcrumb": {
+   "id": "breadcrumb",
+   "name": "Breadcrumb",
+   "tier": "base",
+   "evidence": "I16",
+   "status": "source",
+   "root": ".v-crumbs",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "breathes"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/breadcrumb/contract.md",
+   "demo": "entries/breadcrumb/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-selected.html",
+    "default-default-selected-dark.html"
+   ]
+  },
+  "bubble": {
+   "id": "bubble",
+   "name": "Bubble",
+   "tier": "base",
+   "evidence": "I09 I16",
+   "status": "source",
+   "root": ".v-chat",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "enters",
+    "breathes"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/bubble/contract.md",
+   "demo": "entries/bubble/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "button": {
+   "id": "button",
+   "name": "Button",
+   "tier": "base",
+   "evidence": "I07 I15 I18",
+   "status": "source",
+   "root": ".v-btn",
+   "variants": [
+    "accent",
+    "secondary",
+    "ghost",
+    "outline",
+    "danger",
+    "block"
+   ],
+   "sizes": [
+    "sm",
+    "lg"
+   ],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "disabled",
+    "busy"
+   ],
+   "dataStates": [],
+   "category": "buttons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "press",
+    "paces"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/button/contract.md",
+   "demo": "entries/button/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-disabled.html",
+    "default-default-disabled-dark.html",
+    "default-default-busy.html",
+    "default-default-busy-dark.html",
+    "default-sm-rest.html",
+    "default-sm-rest-dark.html",
+    "default-sm-disabled.html",
+    "default-sm-disabled-dark.html",
+    "default-sm-busy.html",
+    "default-sm-busy-dark.html",
+    "default-lg-rest.html",
+    "default-lg-rest-dark.html",
+    "default-lg-disabled.html",
+    "default-lg-disabled-dark.html",
+    "default-lg-busy.html",
+    "default-lg-busy-dark.html",
+    "accent-default-rest.html",
+    "accent-default-rest-dark.html",
+    "accent-default-disabled.html",
+    "accent-default-disabled-dark.html",
+    "accent-default-busy.html",
+    "accent-default-busy-dark.html",
+    "accent-sm-rest.html",
+    "accent-sm-rest-dark.html",
+    "accent-sm-disabled.html",
+    "accent-sm-disabled-dark.html",
+    "accent-sm-busy.html",
+    "accent-sm-busy-dark.html",
+    "accent-lg-rest.html",
+    "accent-lg-rest-dark.html",
+    "accent-lg-disabled.html",
+    "accent-lg-disabled-dark.html",
+    "accent-lg-busy.html",
+    "accent-lg-busy-dark.html",
+    "secondary-default-rest.html",
+    "secondary-default-rest-dark.html",
+    "secondary-default-disabled.html",
+    "secondary-default-disabled-dark.html",
+    "secondary-default-busy.html",
+    "secondary-default-busy-dark.html",
+    "secondary-sm-rest.html",
+    "secondary-sm-rest-dark.html",
+    "secondary-sm-disabled.html",
+    "secondary-sm-disabled-dark.html",
+    "secondary-sm-busy.html",
+    "secondary-sm-busy-dark.html",
+    "secondary-lg-rest.html",
+    "secondary-lg-rest-dark.html",
+    "secondary-lg-disabled.html",
+    "secondary-lg-disabled-dark.html",
+    "secondary-lg-busy.html",
+    "secondary-lg-busy-dark.html",
+    "ghost-default-rest.html",
+    "ghost-default-rest-dark.html",
+    "ghost-default-disabled.html",
+    "ghost-default-disabled-dark.html",
+    "ghost-default-busy.html",
+    "ghost-default-busy-dark.html",
+    "ghost-sm-rest.html",
+    "ghost-sm-rest-dark.html",
+    "ghost-sm-disabled.html",
+    "ghost-sm-disabled-dark.html",
+    "ghost-sm-busy.html",
+    "ghost-sm-busy-dark.html",
+    "ghost-lg-rest.html",
+    "ghost-lg-rest-dark.html",
+    "ghost-lg-disabled.html",
+    "ghost-lg-disabled-dark.html",
+    "ghost-lg-busy.html",
+    "ghost-lg-busy-dark.html",
+    "outline-default-rest.html",
+    "outline-default-rest-dark.html",
+    "outline-default-disabled.html",
+    "outline-default-disabled-dark.html",
+    "outline-default-busy.html",
+    "outline-default-busy-dark.html",
+    "outline-sm-rest.html",
+    "outline-sm-rest-dark.html",
+    "outline-sm-disabled.html",
+    "outline-sm-disabled-dark.html",
+    "outline-sm-busy.html",
+    "outline-sm-busy-dark.html",
+    "outline-lg-rest.html",
+    "outline-lg-rest-dark.html",
+    "outline-lg-disabled.html",
+    "outline-lg-disabled-dark.html",
+    "outline-lg-busy.html",
+    "outline-lg-busy-dark.html",
+    "danger-default-rest.html",
+    "danger-default-rest-dark.html",
+    "danger-default-disabled.html",
+    "danger-default-disabled-dark.html",
+    "danger-default-busy.html",
+    "danger-default-busy-dark.html",
+    "danger-sm-rest.html",
+    "danger-sm-rest-dark.html",
+    "danger-sm-disabled.html",
+    "danger-sm-disabled-dark.html",
+    "danger-sm-busy.html",
+    "danger-sm-busy-dark.html",
+    "danger-lg-rest.html",
+    "danger-lg-rest-dark.html",
+    "danger-lg-disabled.html",
+    "danger-lg-disabled-dark.html",
+    "danger-lg-busy.html",
+    "danger-lg-busy-dark.html",
+    "block-default-rest.html",
+    "block-default-rest-dark.html",
+    "block-default-disabled.html",
+    "block-default-disabled-dark.html",
+    "block-default-busy.html",
+    "block-default-busy-dark.html",
+    "block-sm-rest.html",
+    "block-sm-rest-dark.html",
+    "block-sm-disabled.html",
+    "block-sm-disabled-dark.html",
+    "block-sm-busy.html",
+    "block-sm-busy-dark.html",
+    "block-lg-rest.html",
+    "block-lg-rest-dark.html",
+    "block-lg-disabled.html",
+    "block-lg-disabled-dark.html",
+    "block-lg-busy.html",
+    "block-lg-busy-dark.html"
+   ]
+  },
+  "button-group": {
+   "id": "button-group",
+   "name": "Button Group",
+   "tier": "base",
+   "evidence": "I15 I18",
+   "status": "source",
+   "root": ".v-seg",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "on",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/button-group/contract.md",
+   "demo": "entries/button-group/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-on.html",
+    "default-default-on-dark.html"
+   ]
+  },
+  "calendar": {
+   "id": "calendar",
+   "name": "Calendar",
+   "tier": "base",
+   "evidence": "I15",
+   "status": "source",
+   "root": ".v-cal",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "selected",
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x480",
+   "contract": "entries/calendar/contract.md",
+   "demo": "entries/calendar/demo.html",
+   "isolation": [
+    "default-default-rest-480x480.html",
+    "default-default-rest-dark-480x480.html",
+    "default-default-selected-480x480.html",
+    "default-default-selected-dark-480x480.html"
+   ]
+  },
+  "card": {
+   "id": "card",
+   "name": "Card",
+   "tier": "base",
+   "evidence": "I07 I11 I15 I17",
+   "status": "source",
+   "root": ".v-card",
+   "variants": [
+    "pink",
+    "yellow",
+    "olive",
+    "blue",
+    "ink",
+    "cream",
+    "featured",
+    "panel",
+    "lift"
+   ],
+   "sizes": [
+    "sm"
+   ],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/card/contract.md",
+   "demo": "entries/card/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-sm-rest.html",
+    "default-sm-rest-dark.html",
+    "pink-default-rest.html",
+    "pink-default-rest-dark.html",
+    "pink-sm-rest.html",
+    "pink-sm-rest-dark.html",
+    "yellow-default-rest.html",
+    "yellow-default-rest-dark.html",
+    "yellow-sm-rest.html",
+    "yellow-sm-rest-dark.html",
+    "olive-default-rest.html",
+    "olive-default-rest-dark.html",
+    "olive-sm-rest.html",
+    "olive-sm-rest-dark.html",
+    "blue-default-rest.html",
+    "blue-default-rest-dark.html",
+    "blue-sm-rest.html",
+    "blue-sm-rest-dark.html",
+    "ink-default-rest.html",
+    "ink-default-rest-dark.html",
+    "ink-sm-rest.html",
+    "ink-sm-rest-dark.html",
+    "cream-default-rest.html",
+    "cream-default-rest-dark.html",
+    "cream-sm-rest.html",
+    "cream-sm-rest-dark.html",
+    "featured-default-rest.html",
+    "featured-default-rest-dark.html",
+    "featured-sm-rest.html",
+    "featured-sm-rest-dark.html",
+    "panel-default-rest.html",
+    "panel-default-rest-dark.html",
+    "panel-sm-rest.html",
+    "panel-sm-rest-dark.html",
+    "lift-default-rest.html",
+    "lift-default-rest-dark.html",
+    "lift-sm-rest.html",
+    "lift-sm-rest-dark.html"
+   ]
+  },
+  "carousel": {
+   "id": "carousel",
+   "name": "Carousel",
+   "tier": "base",
+   "evidence": "I11",
+   "status": "source",
+   "root": ".v-carousel",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "960x360",
+   "contract": "entries/carousel/contract.md",
+   "demo": "entries/carousel/demo.html",
+   "isolation": [
+    "default-default-rest-960x360.html",
+    "default-default-rest-dark-960x360.html"
+   ]
+  },
+  "chart": {
+   "id": "chart",
+   "name": "Chart",
+   "tier": "base",
+   "evidence": "I07 I09 I15 I16 I18",
+   "status": "source",
+   "root": ".v-bars",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "unfolds",
+    "paces",
+    "breathes"
+   ],
+   "canvas": "960x480",
+   "contract": "entries/chart/contract.md",
+   "demo": "entries/chart/demo.html",
+   "isolation": [
+    "default-default-rest-960x480.html",
+    "default-default-rest-dark-960x480.html"
+   ]
+  },
+  "checkbox": {
+   "id": "checkbox",
+   "name": "Checkbox",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-check",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "checked",
+    "indeterminate",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "disabled"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "toggles",
+    "enters"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/checkbox/contract.md",
+   "demo": "entries/checkbox/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-disabled.html",
+    "default-default-disabled-dark.html",
+    "default-default-checked.html",
+    "default-default-checked-dark.html",
+    "default-default-indeterminate.html",
+    "default-default-indeterminate-dark.html"
+   ]
+  },
+  "collapsible": {
+   "id": "collapsible",
+   "name": "Collapsible",
+   "tier": "base",
+   "evidence": "Ext I11",
+   "status": "derived",
+   "root": ".v-collapsible",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "unfolds"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/collapsible/contract.md",
+   "demo": "entries/collapsible/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-open.html",
+    "default-default-open-dark.html"
+   ]
+  },
+  "combobox": {
+   "id": "combobox",
+   "name": "Combobox",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-combo",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "inputs",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "opens"
+   ],
+   "canvas": "480x360",
+   "contract": "entries/combobox/contract.md",
+   "demo": "entries/combobox/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html",
+    "default-default-open-480x360.html",
+    "default-default-open-dark-480x360.html"
+   ]
+  },
+  "command": {
+   "id": "command",
+   "name": "Command",
+   "tier": "base",
+   "evidence": "Ext I15",
+   "status": "derived",
+   "root": ".v-cmd",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "breathes"
+   ],
+   "canvas": "480x420",
+   "contract": "entries/command/contract.md",
+   "demo": "entries/command/demo.html",
+   "isolation": [
+    "default-default-rest-480x420.html",
+    "default-default-rest-dark-480x420.html"
+   ]
+  },
+  "context-menu": {
+   "id": "context-menu",
+   "name": "Context Menu",
+   "tier": "base",
+   "evidence": "Ext I18",
+   "status": "derived",
+   "root": "[data-context]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x360",
+   "contract": "entries/context-menu/contract.md",
+   "demo": "entries/context-menu/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html",
+    "default-default-open-480x360.html",
+    "default-default-open-dark-480x360.html"
+   ]
+  },
+  "data-table": {
+   "id": "data-table",
+   "name": "Data Table",
+   "tier": "base",
+   "evidence": "I18",
+   "status": "source",
+   "root": ".v-table-wrap",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "on"
+   ],
+   "dataStates": [
+    "full",
+    "filtered-empty"
+   ],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "enters",
+    "breathes"
+   ],
+   "canvas": "960x560",
+   "contract": "entries/data-table/contract.md",
+   "demo": "entries/data-table/demo.html",
+   "isolation": [
+    "default-default-rest-960x560.html",
+    "default-default-rest-dark-960x560.html",
+    "default-default-on-960x560.html",
+    "default-default-on-dark-960x560.html"
+   ]
+  },
+  "date-picker": {
+   "id": "date-picker",
+   "name": "Date Picker",
+   "tier": "base",
+   "evidence": "I07 I15",
+   "status": "source",
+   "root": ".v-menuhost[data-datepicker]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "opens"
+   ],
+   "canvas": "480x520",
+   "contract": "entries/date-picker/contract.md",
+   "demo": "entries/date-picker/demo.html",
+   "isolation": [
+    "default-default-rest-480x520.html",
+    "default-default-rest-dark-480x520.html",
+    "default-default-open-480x520.html",
+    "default-default-open-dark-480x520.html"
+   ]
+  },
+  "dialog": {
+   "id": "dialog",
+   "name": "Dialog",
+   "tier": "base",
+   "evidence": "Ext I07",
+   "status": "derived",
+   "root": ".v-dialog",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "opens"
+   ],
+   "canvas": "720x480",
+   "contract": "entries/dialog/contract.md",
+   "demo": "entries/dialog/demo.html",
+   "isolation": [
+    "default-default-rest-720x480.html",
+    "default-default-rest-dark-720x480.html",
+    "default-default-open-720x480.html",
+    "default-default-open-dark-720x480.html"
+   ]
+  },
+  "direction": {
+   "id": "direction",
+   "name": "Direction",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": "[dir=rtl]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/direction/contract.md",
+   "demo": "entries/direction/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-selected.html",
+    "default-default-selected-dark.html"
+   ]
+  },
+  "drawer": {
+   "id": "drawer",
+   "name": "Drawer",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-drawer",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "opens"
+   ],
+   "canvas": "480x480",
+   "contract": "entries/drawer/contract.md",
+   "demo": "entries/drawer/demo.html",
+   "isolation": [
+    "default-default-rest-480x480.html",
+    "default-default-rest-dark-480x480.html",
+    "default-default-open-480x480.html",
+    "default-default-open-dark-480x480.html"
+   ]
+  },
+  "dropdown-menu": {
+   "id": "dropdown-menu",
+   "name": "Dropdown Menu",
+   "tier": "base",
+   "evidence": "I18",
+   "status": "source",
+   "root": "[data-menu]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x360",
+   "contract": "entries/dropdown-menu/contract.md",
+   "demo": "entries/dropdown-menu/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html",
+    "default-default-open-480x360.html",
+    "default-default-open-dark-480x360.html"
+   ]
+  },
+  "empty": {
+   "id": "empty",
+   "name": "Empty",
+   "tier": "base",
+   "evidence": "I12",
+   "status": "source",
+   "root": ".v-empty",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [
+    "first-run",
+    "cleared",
+    "error",
+    "filtered-empty"
+   ],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "960x360",
+   "contract": "entries/empty/contract.md",
+   "demo": "entries/empty/demo.html",
+   "isolation": [
+    "default-default-rest-960x360.html",
+    "default-default-rest-dark-960x360.html"
+   ]
+  },
+  "field": {
+   "id": "field",
+   "name": "Field",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-field",
+   "variants": [
+    "invalid"
+   ],
+   "sizes": [],
+   "states": [
+    "error",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "inputs",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/field/contract.md",
+   "demo": "entries/field/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-error.html",
+    "default-default-error-dark.html"
+   ]
+  },
+  "hover-card": {
+   "id": "hover-card",
+   "name": "Hover Card",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": "[data-hovercard]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x360",
+   "contract": "entries/hover-card/contract.md",
+   "demo": "entries/hover-card/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html",
+    "default-default-open-480x360.html",
+    "default-default-open-dark-480x360.html"
+   ]
+  },
+  "input": {
+   "id": "input",
+   "name": "Input",
+   "tier": "base",
+   "evidence": "I07 I15",
+   "status": "source",
+   "root": ".v-input",
+   "variants": [
+    "cream"
+   ],
+   "sizes": [
+    "sm"
+   ],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "disabled",
+    "error"
+   ],
+   "dataStates": [],
+   "category": "inputs",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/input/contract.md",
+   "demo": "entries/input/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-disabled.html",
+    "default-default-disabled-dark.html",
+    "default-default-error.html",
+    "default-default-error-dark.html"
+   ]
+  },
+  "input-group": {
+   "id": "input-group",
+   "name": "Input Group",
+   "tier": "base",
+   "evidence": "I15",
+   "status": "source",
+   "root": ".v-igroup",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "inputs",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/input-group/contract.md",
+   "demo": "entries/input-group/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "input-otp": {
+   "id": "input-otp",
+   "name": "Input OTP",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-otp",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "inputs",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/input-otp/contract.md",
+   "demo": "entries/input-otp/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "item": {
+   "id": "item",
+   "name": "Item",
+   "tier": "base",
+   "evidence": "I11 I15 I16",
+   "status": "source",
+   "root": ".v-item",
+   "variants": [
+    "selected",
+    "flat"
+   ],
+   "sizes": [],
+   "states": [
+    "selected",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "enters"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/item/contract.md",
+   "demo": "entries/item/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-selected.html",
+    "default-default-selected-dark.html"
+   ]
+  },
+  "kbd": {
+   "id": "kbd",
+   "name": "Kbd",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-kbd",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "open"
+   ],
+   "dataStates": [],
+   "category": "pills",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "breathes"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/kbd/contract.md",
+   "demo": "entries/kbd/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-open.html",
+    "default-default-open-dark.html"
+   ]
+  },
+  "label": {
+   "id": "label",
+   "name": "Label",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-label",
+   "variants": [],
+   "sizes": [
+    "sm"
+   ],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/label/contract.md",
+   "demo": "entries/label/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "marker": {
+   "id": "marker",
+   "name": "Marker",
+   "tier": "base",
+   "evidence": "Ext I09",
+   "status": "derived",
+   "root": ".v-marker",
+   "variants": [
+    "ok",
+    "danger"
+   ],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "enters"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/marker/contract.md",
+   "demo": "entries/marker/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "menubar": {
+   "id": "menubar",
+   "name": "Menubar",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-menubar",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "opens"
+   ],
+   "canvas": "480x360",
+   "contract": "entries/menubar/contract.md",
+   "demo": "entries/menubar/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html",
+    "default-default-open-480x360.html",
+    "default-default-open-dark-480x360.html"
+   ]
+  },
+  "message": {
+   "id": "message",
+   "name": "Message",
+   "tier": "base",
+   "evidence": "I09 I16",
+   "status": "source",
+   "root": ".v-msg",
+   "variants": [
+    "me"
+   ],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "enters"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/message/contract.md",
+   "demo": "entries/message/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "message-scroller": {
+   "id": "message-scroller",
+   "name": "Message Scroller",
+   "tier": "base",
+   "evidence": "Ext I09",
+   "status": "derived",
+   "root": ".v-scroller",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "480x360",
+   "contract": "entries/message-scroller/contract.md",
+   "demo": "entries/message-scroller/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html"
+   ]
+  },
+  "native-select": {
+   "id": "native-select",
+   "name": "Native Select",
+   "tier": "base",
+   "evidence": "Ext I07",
+   "status": "derived",
+   "root": ".v-native",
+   "variants": [
+    "ink"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "buttons",
+   "motionOnByDefault": true,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/native-select/contract.md",
+   "demo": "entries/native-select/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "ink-default-rest.html",
+    "ink-default-rest-dark.html"
+   ]
+  },
+  "navigation-menu": {
+   "id": "navigation-menu",
+   "name": "Navigation Menu",
+   "tier": "base",
+   "evidence": "I15",
+   "status": "source",
+   "root": ".v-nav",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "selected",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group"
+   ],
+   "canvas": "480x480",
+   "contract": "entries/navigation-menu/contract.md",
+   "demo": "entries/navigation-menu/demo.html",
+   "isolation": [
+    "default-default-rest-480x480.html",
+    "default-default-rest-dark-480x480.html",
+    "default-default-selected-480x480.html",
+    "default-default-selected-dark-480x480.html"
+   ]
+  },
+  "pagination": {
+   "id": "pagination",
+   "name": "Pagination",
+   "tier": "base",
+   "evidence": "Ext I18",
+   "status": "derived",
+   "root": ".v-pager",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "selected",
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/pagination/contract.md",
+   "demo": "entries/pagination/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-selected.html",
+    "default-default-selected-dark.html"
+   ]
+  },
+  "popover": {
+   "id": "popover",
+   "name": "Popover",
+   "tier": "base",
+   "evidence": "Ext I15",
+   "status": "derived",
+   "root": ".v-popover",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "opens"
+   ],
+   "canvas": "480x360",
+   "contract": "entries/popover/contract.md",
+   "demo": "entries/popover/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html",
+    "default-default-open-480x360.html",
+    "default-default-open-dark-480x360.html"
+   ]
+  },
+  "progress": {
+   "id": "progress",
+   "name": "Progress",
+   "tier": "base",
+   "evidence": "I04 I09 I16",
+   "status": "source",
+   "root": ".v-track",
+   "variants": [
+    "cream",
+    "unavail"
+   ],
+   "sizes": [
+    "lg",
+    "sm"
+   ],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "paces"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/progress/contract.md",
+   "demo": "entries/progress/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "questionnaire": {
+   "id": "questionnaire",
+   "name": "Questionnaire",
+   "tier": "base",
+   "evidence": "Ext I07",
+   "status": "derived",
+   "root": ".v-quest",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "checked"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "toggles",
+    "paces"
+   ],
+   "canvas": "720x600",
+   "contract": "entries/questionnaire/contract.md",
+   "demo": "entries/questionnaire/demo.html",
+   "isolation": [
+    "default-default-rest-720x600.html",
+    "default-default-rest-dark-720x600.html",
+    "default-default-checked-720x600.html",
+    "default-default-checked-dark-720x600.html"
+   ]
+  },
+  "radio-group": {
+   "id": "radio-group",
+   "name": "Radio Group",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-radios",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "checked",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "disabled"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "toggles",
+    "enters"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/radio-group/contract.md",
+   "demo": "entries/radio-group/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-disabled.html",
+    "default-default-disabled-dark.html",
+    "default-default-checked.html",
+    "default-default-checked-dark.html"
+   ]
+  },
+  "resizable": {
+   "id": "resizable",
+   "name": "Resizable",
+   "tier": "base",
+   "evidence": "Ext I16",
+   "status": "derived",
+   "root": ".v-resizable",
+   "variants": [
+    "v"
+   ],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press"
+   ],
+   "canvas": "720x320",
+   "contract": "entries/resizable/contract.md",
+   "demo": "entries/resizable/demo.html",
+   "isolation": [
+    "default-default-rest-720x320.html",
+    "default-default-rest-dark-720x320.html",
+    "v-default-rest-720x320.html",
+    "v-default-rest-dark-720x320.html"
+   ]
+  },
+  "scroll-area": {
+   "id": "scroll-area",
+   "name": "Scroll Area",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-scroll",
+   "variants": [
+    "ink"
+   ],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/scroll-area/contract.md",
+   "demo": "entries/scroll-area/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "ink-default-rest.html",
+    "ink-default-rest-dark.html"
+   ]
+  },
+  "select": {
+   "id": "select",
+   "name": "Select",
+   "tier": "base",
+   "evidence": "I07 I11 I15",
+   "status": "source",
+   "root": ".v-menuhost[data-select]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "selected",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "opens"
+   ],
+   "canvas": "480x360",
+   "contract": "entries/select/contract.md",
+   "demo": "entries/select/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html",
+    "default-default-selected-480x360.html",
+    "default-default-selected-dark-480x360.html",
+    "default-default-open-480x360.html",
+    "default-default-open-dark-480x360.html"
+   ]
+  },
+  "separator": {
+   "id": "separator",
+   "name": "Separator",
+   "tier": "base",
+   "evidence": "I11 I18",
+   "status": "source",
+   "root": ".v-sep",
+   "variants": [
+    "v"
+   ],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/separator/contract.md",
+   "demo": "entries/separator/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "sheet": {
+   "id": "sheet",
+   "name": "Sheet",
+   "tier": "base",
+   "evidence": "I16",
+   "status": "source",
+   "root": ".v-sheet",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "opens"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/sheet/contract.md",
+   "demo": "entries/sheet/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-open-960x600.html",
+    "default-default-open-dark-960x600.html"
+   ]
+  },
+  "sidebar": {
+   "id": "sidebar",
+   "name": "Sidebar",
+   "tier": "base",
+   "evidence": "I15 I16 I17 I18",
+   "status": "source",
+   "root": ".v-sidebar",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "collapsed",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "enters"
+   ],
+   "canvas": "480x640",
+   "contract": "entries/sidebar/contract.md",
+   "demo": "entries/sidebar/demo.html",
+   "isolation": [
+    "default-default-rest-480x640.html",
+    "default-default-rest-dark-480x640.html",
+    "default-default-selected-480x640.html",
+    "default-default-selected-dark-480x640.html",
+    "default-default-collapsed-480x640.html",
+    "default-default-collapsed-dark-480x640.html"
+   ]
+  },
+  "skeleton": {
+   "id": "skeleton",
+   "name": "Skeleton",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-skel",
+   "variants": [
+    "line",
+    "disk",
+    "card",
+    "skel-group"
+   ],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [
+    "loading"
+   ],
+   "category": "skeleton",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "paces"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/skeleton/contract.md",
+   "demo": "entries/skeleton/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "slider": {
+   "id": "slider",
+   "name": "Slider",
+   "tier": "base",
+   "evidence": "Ext I09",
+   "status": "derived",
+   "root": ".v-slider",
+   "variants": [
+    "pink"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "paces"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/slider/contract.md",
+   "demo": "entries/slider/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "spinner": {
+   "id": "spinner",
+   "name": "Loading",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-pulse",
+   "variants": [
+    "point"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "busy"
+   ],
+   "dataStates": [],
+   "category": "skeleton",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "press",
+    "paces"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/spinner/contract.md",
+   "demo": "entries/spinner/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-busy.html",
+    "default-default-busy-dark.html",
+    "point-default-rest.html",
+    "point-default-rest-dark.html",
+    "point-default-busy.html",
+    "point-default-busy-dark.html"
+   ]
+  },
+  "switch": {
+   "id": "switch",
+   "name": "Switch",
+   "tier": "base",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-switch",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "checked",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "disabled"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "toggles"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/switch/contract.md",
+   "demo": "entries/switch/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-disabled.html",
+    "default-default-disabled-dark.html",
+    "default-default-checked.html",
+    "default-default-checked-dark.html"
+   ]
+  },
+  "table": {
+   "id": "table",
+   "name": "Table",
+   "tier": "base",
+   "evidence": "I18",
+   "status": "source",
+   "root": ".v-table",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "breathes"
+   ],
+   "canvas": "720x320",
+   "contract": "entries/table/contract.md",
+   "demo": "entries/table/demo.html",
+   "isolation": [
+    "default-default-rest-720x320.html",
+    "default-default-rest-dark-720x320.html"
+   ]
+  },
+  "tabs": {
+   "id": "tabs",
+   "name": "Tabs",
+   "tier": "base",
+   "evidence": "I11 I16 I18",
+   "status": "source",
+   "root": ".v-tabs",
+   "variants": [
+    "underline",
+    "lenses"
+   ],
+   "sizes": [],
+   "states": [
+    "selected",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "on"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "paces",
+    "enters"
+   ],
+   "canvas": "720x320",
+   "contract": "entries/tabs/contract.md",
+   "demo": "entries/tabs/demo.html",
+   "isolation": [
+    "default-default-rest-720x320.html",
+    "default-default-rest-dark-720x320.html",
+    "default-default-selected-720x320.html",
+    "default-default-selected-dark-720x320.html",
+    "default-default-on-720x320.html",
+    "default-default-on-dark-720x320.html",
+    "underline-default-rest-720x320.html",
+    "underline-default-rest-dark-720x320.html",
+    "underline-default-selected-720x320.html",
+    "underline-default-selected-dark-720x320.html",
+    "underline-default-on-720x320.html",
+    "underline-default-on-dark-720x320.html",
+    "lenses-default-rest-720x320.html",
+    "lenses-default-rest-dark-720x320.html",
+    "lenses-default-selected-720x320.html",
+    "lenses-default-selected-dark-720x320.html",
+    "lenses-default-on-720x320.html",
+    "lenses-default-on-dark-720x320.html"
+   ]
+  },
+  "textarea": {
+   "id": "textarea",
+   "name": "Textarea",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-textarea",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "inputs",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/textarea/contract.md",
+   "demo": "entries/textarea/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "toast": {
+   "id": "toast",
+   "name": "Toast",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": "[data-toast]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/toast/contract.md",
+   "demo": "entries/toast/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-open.html",
+    "default-default-open-dark.html"
+   ]
+  },
+  "toggle": {
+   "id": "toggle",
+   "name": "Toggle",
+   "tier": "base",
+   "evidence": "I07 I18",
+   "status": "source",
+   "root": ".v-toggle",
+   "variants": [
+    "pressed",
+    "pink",
+    "circle"
+   ],
+   "sizes": [],
+   "states": [
+    "on",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "disabled"
+   ],
+   "dataStates": [],
+   "category": "buttons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "press"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/toggle/contract.md",
+   "demo": "entries/toggle/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-disabled.html",
+    "default-default-disabled-dark.html",
+    "default-default-on.html",
+    "default-default-on-dark.html",
+    "pressed-default-rest.html",
+    "pressed-default-rest-dark.html",
+    "pressed-default-disabled.html",
+    "pressed-default-disabled-dark.html",
+    "pressed-default-on.html",
+    "pressed-default-on-dark.html",
+    "pink-default-rest.html",
+    "pink-default-rest-dark.html",
+    "pink-default-disabled.html",
+    "pink-default-disabled-dark.html",
+    "pink-default-on.html",
+    "pink-default-on-dark.html",
+    "circle-default-rest.html",
+    "circle-default-rest-dark.html",
+    "circle-default-disabled.html",
+    "circle-default-disabled-dark.html",
+    "circle-default-on.html",
+    "circle-default-on-dark.html"
+   ]
+  },
+  "toggle-group": {
+   "id": "toggle-group",
+   "name": "Toggle Group",
+   "tier": "base",
+   "evidence": "I07 I18",
+   "status": "source",
+   "root": "[data-togglegroup]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "on",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/toggle-group/contract.md",
+   "demo": "entries/toggle-group/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-on.html",
+    "default-default-on-dark.html"
+   ]
+  },
+  "tooltip": {
+   "id": "tooltip",
+   "name": "Tooltip",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": "[data-tooltip]",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "480x240",
+   "contract": "entries/tooltip/contract.md",
+   "demo": "entries/tooltip/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html",
+    "default-default-open.html",
+    "default-default-open-dark.html"
+   ]
+  },
+  "typography": {
+   "id": "typography",
+   "name": "Typography",
+   "tier": "base",
+   "evidence": "I03",
+   "status": "source",
+   "root": ".v-prose",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "720x480",
+   "contract": "entries/typography/contract.md",
+   "demo": "entries/typography/demo.html",
+   "isolation": [
+    "default-default-rest-720x480.html",
+    "default-default-rest-dark-720x480.html"
+   ]
+  },
+  "dropzone": {
+   "id": "dropzone",
+   "name": "Dropzone",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-drop",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "over",
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "paces"
+   ],
+   "canvas": "480x240",
+   "contract": "entries/dropzone/contract.md",
+   "demo": "entries/dropzone/demo.html",
+   "isolation": [
+    "default-default-rest.html",
+    "default-default-rest-dark.html"
+   ]
+  },
+  "stepper": {
+   "id": "stepper",
+   "name": "Stepper",
+   "tier": "base",
+   "evidence": "Ext",
+   "status": "derived",
+   "root": ".v-stepper-flow",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "selected",
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press"
+   ],
+   "canvas": "720x240",
+   "contract": "entries/stepper/contract.md",
+   "demo": "entries/stepper/demo.html",
+   "isolation": [
+    "default-default-rest-720x240.html",
+    "default-default-rest-dark-720x240.html",
+    "default-default-selected-720x240.html",
+    "default-default-selected-dark-720x240.html"
+   ]
+  },
+  "floating-sidebar": {
+   "id": "floating-sidebar",
+   "name": "Floating Sidebar",
+   "tier": "composite",
+   "evidence": "I15 I16 I17 I18",
+   "status": "source",
+   "root": ".v-sidebar",
+   "variants": [
+    "shell"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "enters"
+   ],
+   "canvas": "960x640",
+   "contract": "entries/floating-sidebar/contract.md",
+   "demo": "entries/floating-sidebar/demo.html",
+   "isolation": [
+    "default-default-rest-960x640.html",
+    "default-default-rest-dark-960x640.html",
+    "default-default-selected-960x640.html",
+    "default-default-selected-dark-960x640.html"
+   ]
+  },
+  "joined-utilities": {
+   "id": "joined-utilities",
+   "name": "Joined Utility Circles",
+   "tier": "composite",
+   "evidence": "I15 I16 I17 I18",
+   "status": "source",
+   "root": ".v-utility",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "icons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "group",
+    "press"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/joined-utilities/contract.md",
+   "demo": "entries/joined-utilities/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html"
+   ]
+  },
+  "mobile-dock": {
+   "id": "mobile-dock",
+   "name": "Mobile Dock + Attached Panel",
+   "tier": "composite",
+   "evidence": "I07 I09",
+   "status": "source",
+   "root": ".v-dock",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "open",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "enters"
+   ],
+   "canvas": "480x640",
+   "contract": "entries/mobile-dock/contract.md",
+   "demo": "entries/mobile-dock/demo.html",
+   "isolation": [
+    "default-default-rest-480x640.html",
+    "default-default-rest-dark-480x640.html",
+    "default-default-selected-480x640.html",
+    "default-default-selected-dark-480x640.html",
+    "default-default-open-480x640.html",
+    "default-default-open-dark-480x640.html"
+   ]
+  },
+  "assistant-panel": {
+   "id": "assistant-panel",
+   "name": "Assistant Panel",
+   "tier": "composite",
+   "evidence": "I09 I16",
+   "status": "source",
+   "root": ".v-assist",
+   "variants": [
+    "mini",
+    "anchored"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "480x520",
+   "contract": "entries/assistant-panel/contract.md",
+   "demo": "entries/assistant-panel/demo.html",
+   "isolation": [
+    "default-default-rest-480x520.html",
+    "default-default-rest-dark-480x520.html"
+   ]
+  },
+  "notched-card": {
+   "id": "notched-card",
+   "name": "Notched Action Card",
+   "tier": "composite",
+   "evidence": "I05 I11 I17",
+   "status": "source",
+   "root": ".v-notchwrap",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "icons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "720x360",
+   "contract": "entries/notched-card/contract.md",
+   "demo": "entries/notched-card/demo.html",
+   "isolation": [
+    "default-default-rest-720x360.html",
+    "default-default-rest-dark-720x360.html"
+   ]
+  },
+  "master-detail": {
+   "id": "master-detail",
+   "name": "Connected Master / Detail",
+   "tier": "composite",
+   "evidence": "I15",
+   "status": "source",
+   "root": ".v-md",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "enters"
+   ],
+   "canvas": "960x520",
+   "contract": "entries/master-detail/contract.md",
+   "demo": "entries/master-detail/demo.html",
+   "isolation": [
+    "default-default-rest-960x520.html",
+    "default-default-rest-dark-960x520.html",
+    "default-default-selected-960x520.html",
+    "default-default-selected-dark-960x520.html"
+   ]
+  },
+  "category-tile": {
+   "id": "category-tile",
+   "name": "Category Tile",
+   "tier": "composite",
+   "evidence": "I07 I09",
+   "status": "source",
+   "root": ".v-ctile",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "none",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "960x600",
+   "contract": "entries/category-tile/contract.md",
+   "demo": "entries/category-tile/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html"
+   ]
+  },
+  "metric-cards": {
+   "id": "metric-cards",
+   "name": "Metric Hero / Card / Compact",
+   "tier": "composite",
+   "evidence": "I07 I15 I18 I14",
+   "status": "source",
+   "root": ".v-mhero",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "960x420",
+   "contract": "entries/metric-cards/contract.md",
+   "demo": "entries/metric-cards/demo.html",
+   "isolation": [
+    "default-default-rest-960x420.html",
+    "default-default-rest-dark-960x420.html"
+   ]
+  },
+  "segmented-ring": {
+   "id": "segmented-ring",
+   "name": "Segmented Ring",
+   "tier": "composite",
+   "evidence": "I09 I18",
+   "status": "source",
+   "root": ".v-ring",
+   "variants": [
+    "draw"
+   ],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "paces"
+   ],
+   "canvas": "480x360",
+   "contract": "entries/segmented-ring/contract.md",
+   "demo": "entries/segmented-ring/demo.html",
+   "isolation": [
+    "default-default-rest-480x360.html",
+    "default-default-rest-dark-480x360.html"
+   ]
+  },
+  "date-strip": {
+   "id": "date-strip",
+   "name": "Date Strip + Weekday Picker",
+   "tier": "composite",
+   "evidence": "I07",
+   "status": "source",
+   "root": ".v-datestrip",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "on",
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "disabled",
+    "checked"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/date-strip/contract.md",
+   "demo": "entries/date-strip/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-disabled-960x600.html",
+    "default-default-disabled-dark-960x600.html",
+    "default-default-checked-960x600.html",
+    "default-default-checked-dark-960x600.html",
+    "default-default-on-960x600.html",
+    "default-default-on-dark-960x600.html"
+   ]
+  },
+  "calendars": {
+   "id": "calendars",
+   "name": "Mini Calendar / Agenda / Weekly Grid",
+   "tier": "composite",
+   "evidence": "I15 I18",
+   "status": "source",
+   "root": ".v-week",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "buttons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "press",
+    "enters",
+    "breathes"
+   ],
+   "canvas": "1280x720",
+   "contract": "entries/calendars/contract.md",
+   "demo": "entries/calendars/demo.html",
+   "isolation": [
+    "default-default-rest-1280x720.html",
+    "default-default-rest-dark-1280x720.html"
+   ]
+  },
+  "hex-group": {
+   "id": "hex-group",
+   "name": "Hex Participant Group",
+   "tier": "composite",
+   "evidence": "I04 I18",
+   "status": "source",
+   "root": ".v-hexgroup",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "controls",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "breathes"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/hex-group/contract.md",
+   "demo": "entries/hex-group/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html"
+   ]
+  },
+  "profile-record": {
+   "id": "profile-record",
+   "name": "Profile Header / Identity Band / Record Card",
+   "tier": "composite",
+   "evidence": "I11 I16",
+   "status": "source",
+   "root": ".v-profile",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "enters",
+    "breathes"
+   ],
+   "canvas": "960x480",
+   "contract": "entries/profile-record/contract.md",
+   "demo": "entries/profile-record/demo.html",
+   "isolation": [
+    "default-default-rest-960x480.html",
+    "default-default-rest-dark-960x480.html"
+   ]
+  },
+  "file-resource": {
+   "id": "file-resource",
+   "name": "File / Resource / Featured Media Cards",
+   "tier": "composite",
+   "evidence": "I16 I17",
+   "status": "source",
+   "root": ".v-file",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "960x520",
+   "contract": "entries/file-resource/contract.md",
+   "demo": "entries/file-resource/demo.html",
+   "isolation": [
+    "default-default-rest-960x520.html",
+    "default-default-rest-dark-960x520.html"
+   ]
+  },
+  "widgets": {
+   "id": "widgets",
+   "name": "Compact Summary / Live Activity Widget",
+   "tier": "composite",
+   "evidence": "I12 I13",
+   "status": "source",
+   "root": ".v-widget",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "paces",
+    "breathes"
+   ],
+   "canvas": "720x420",
+   "contract": "entries/widgets/contract.md",
+   "demo": "entries/widgets/demo.html",
+   "isolation": [
+    "default-default-rest-720x420.html",
+    "default-default-rest-dark-720x420.html"
+   ]
+  },
+  "masks-collage": {
+   "id": "masks-collage",
+   "name": "Shape Masks / Collage",
+   "tier": "composite",
+   "evidence": "I03 I13 I20",
+   "status": "source",
+   "root": ".v-collage",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "720x480",
+   "contract": "entries/masks-collage/contract.md",
+   "demo": "entries/masks-collage/demo.html",
+   "isolation": [
+    "default-default-rest-720x480.html",
+    "default-default-rest-dark-720x480.html"
+   ]
+  },
+  "empty-error": {
+   "id": "empty-error",
+   "name": "Empty / Error Compositions",
+   "tier": "composite",
+   "evidence": "I12 I20",
+   "status": "source",
+   "root": ".v-empty",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "720x420",
+   "contract": "entries/empty-error/contract.md",
+   "demo": "entries/empty-error/demo.html",
+   "isolation": [
+    "default-default-rest-720x420.html",
+    "default-default-rest-dark-720x420.html"
+   ]
+  },
+  "app-shell": {
+   "id": "app-shell",
+   "name": "App Shell + Page Header",
+   "tier": "sahajiv",
+   "evidence": "I15",
+   "status": "source",
+   "root": ".v-shell",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press"
+   ],
+   "canvas": "1280x800",
+   "contract": "entries/app-shell/contract.md",
+   "demo": "entries/app-shell/demo.html",
+   "isolation": [
+    "default-default-rest-1280x800.html",
+    "default-default-rest-dark-1280x800.html",
+    "default-default-selected-1280x800.html",
+    "default-default-selected-dark-1280x800.html"
+   ]
+  },
+  "scope-picker": {
+   "id": "scope-picker",
+   "name": "Project Scope Picker + Default Project Action",
+   "tier": "sahajiv",
+   "evidence": "I11",
+   "status": "derived",
+   "root": ".v-scopecard",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected",
+    "open"
+   ],
+   "dataStates": [],
+   "category": "buttons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "group",
+    "press",
+    "opens",
+    "enters"
+   ],
+   "canvas": "480x420",
+   "contract": "entries/scope-picker/contract.md",
+   "demo": "entries/scope-picker/demo.html",
+   "isolation": [
+    "default-default-rest-480x420.html",
+    "default-default-rest-dark-480x420.html",
+    "default-default-selected-480x420.html",
+    "default-default-selected-dark-480x420.html",
+    "default-default-open-480x420.html",
+    "default-default-open-dark-480x420.html"
+   ]
+  },
+  "observation": {
+   "id": "observation",
+   "name": "Observation Badge / Stamp / Capability / Evidence",
+   "tier": "sahajiv",
+   "evidence": "I16",
+   "status": "derived",
+   "root": ".v-stamp",
+   "variants": [
+    "stale"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "pills",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "unfolds",
+    "enters"
+   ],
+   "canvas": "720x320",
+   "contract": "entries/observation/contract.md",
+   "demo": "entries/observation/demo.html",
+   "isolation": [
+    "default-default-rest-720x320.html",
+    "default-default-rest-dark-720x320.html"
+   ]
+  },
+  "data-state": {
+   "id": "data-state",
+   "name": "Data State Panel",
+   "tier": "sahajiv",
+   "evidence": "—",
+   "status": "derived",
+   "root": ".v-state",
+   "variants": [
+    "loading",
+    "empty",
+    "filtered",
+    "partial",
+    "stale",
+    "unavail",
+    "error"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "error"
+   ],
+   "dataStates": [
+    "loading",
+    "empty",
+    "filtered",
+    "partial",
+    "stale",
+    "unavail",
+    "error"
+   ],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "paces",
+    "enters"
+   ],
+   "canvas": "960x420",
+   "contract": "entries/data-state/contract.md",
+   "demo": "entries/data-state/demo.html",
+   "isolation": [
+    "default-default-rest-960x420.html",
+    "default-default-rest-dark-960x420.html",
+    "default-default-error-960x420.html",
+    "default-default-error-dark-960x420.html"
+   ]
+  },
+  "receipt": {
+   "id": "receipt",
+   "name": "Action Receipt / Receipt Timeline",
+   "tier": "sahajiv",
+   "evidence": "I15 (agenda)",
+   "status": "derived",
+   "root": ".v-receipt",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "paces",
+    "enters"
+   ],
+   "canvas": "720x420",
+   "contract": "entries/receipt/contract.md",
+   "demo": "entries/receipt/demo.html",
+   "isolation": [
+    "default-default-rest-720x420.html",
+    "default-default-rest-dark-720x420.html"
+   ]
+  },
+  "chat-dock": {
+   "id": "chat-dock",
+   "name": "Contextual Chat Dock + Context Header + Typed Action Card",
+   "tier": "sahajiv",
+   "evidence": "I09 I16",
+   "status": "source",
+   "root": ".v-assist",
+   "variants": [
+    "mini",
+    "anchored"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "surfaces",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "enters"
+   ],
+   "canvas": "720x600",
+   "contract": "entries/chat-dock/contract.md",
+   "demo": "entries/chat-dock/demo.html",
+   "isolation": [
+    "default-default-rest-720x600.html",
+    "default-default-rest-dark-720x600.html"
+   ]
+  },
+  "quick-note": {
+   "id": "quick-note",
+   "name": "Quick Note + Destination Chip",
+   "tier": "sahajiv",
+   "evidence": "—",
+   "status": "derived",
+   "root": ".v-card.-memory",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "opens",
+    "enters"
+   ],
+   "canvas": "720x480",
+   "contract": "entries/quick-note/contract.md",
+   "demo": "entries/quick-note/demo.html",
+   "isolation": [
+    "default-default-rest-720x480.html",
+    "default-default-rest-dark-720x480.html",
+    "default-default-selected-720x480.html",
+    "default-default-selected-dark-720x480.html"
+   ]
+  },
+  "notifications": {
+   "id": "notifications",
+   "name": "Notification Drawer + Needs You Access",
+   "tier": "sahajiv",
+   "evidence": "I12",
+   "status": "derived",
+   "root": ".v-utility",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "open"
+   ],
+   "dataStates": [],
+   "category": "icons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "group",
+    "press",
+    "opens"
+   ],
+   "canvas": "720x520",
+   "contract": "entries/notifications/contract.md",
+   "demo": "entries/notifications/demo.html",
+   "isolation": [
+    "default-default-rest-720x520.html",
+    "default-default-rest-dark-720x520.html",
+    "default-default-open-720x520.html",
+    "default-default-open-dark-720x520.html"
+   ]
+  },
+  "work-views": {
+   "id": "work-views",
+   "name": "Work · Tabs with real panels",
+   "tier": "sahajiv",
+   "evidence": "I15 I16",
+   "status": "derived",
+   "root": ".v-tabs.-lenses",
+   "variants": [
+    "lenses"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [
+    "full",
+    "empty"
+   ],
+   "category": "nav",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "enters"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/work-views/contract.md",
+   "demo": "entries/work-views/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-selected-960x600.html",
+    "default-default-selected-dark-960x600.html"
+   ]
+  },
+  "needs-you": {
+   "id": "needs-you",
+   "name": "Needs You Item (read-only)",
+   "tier": "sahajiv",
+   "evidence": "I15",
+   "status": "derived",
+   "root": ".v-needs",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press"
+   ],
+   "canvas": "720x320",
+   "contract": "entries/needs-you/contract.md",
+   "demo": "entries/needs-you/demo.html",
+   "isolation": [
+    "default-default-rest-720x320.html",
+    "default-default-rest-dark-720x320.html"
+   ]
+  },
+  "health-line": {
+   "id": "health-line",
+   "name": "Agent Card + Health Line",
+   "tier": "sahajiv",
+   "evidence": "I15",
+   "status": "derived",
+   "root": ".v-health",
+   "variants": [
+    "ok",
+    "check",
+    "you",
+    "none"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "checked"
+   ],
+   "dataStates": [],
+   "category": "buttons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "press"
+   ],
+   "canvas": "720x420",
+   "contract": "entries/health-line/contract.md",
+   "demo": "entries/health-line/demo.html",
+   "isolation": [
+    "default-default-rest-720x420.html",
+    "default-default-rest-dark-720x420.html",
+    "default-default-checked-720x420.html",
+    "default-default-checked-dark-720x420.html"
+   ]
+  },
+  "automation-cards": {
+   "id": "automation-cards",
+   "name": "Automation Idea / Definition / Schedule / Upgrade",
+   "tier": "sahajiv",
+   "evidence": "I15",
+   "status": "derived",
+   "root": ".v-card.-automation",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "checked"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "toggles",
+    "enters"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/automation-cards/contract.md",
+   "demo": "entries/automation-cards/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-checked-960x600.html",
+    "default-default-checked-dark-960x600.html"
+   ]
+  },
+  "run-detail": {
+   "id": "run-detail",
+   "name": "Run Row / Run Detail / Fork Preview / Test badge",
+   "tier": "sahajiv",
+   "evidence": "I18",
+   "status": "derived",
+   "root": ".v-receipt",
+   "variants": [
+    "collapsible"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "unfolds",
+    "enters"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/run-detail/contract.md",
+   "demo": "entries/run-detail/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html"
+   ]
+  },
+  "builder": {
+   "id": "builder",
+   "name": "Agent Builder · Node / Wire / Palette / Inspector / Validation",
+   "tier": "sahajiv",
+   "evidence": "—",
+   "status": "derived",
+   "root": ".v-node",
+   "variants": [
+    "ai",
+    "selected",
+    "invalid",
+    "node"
+   ],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "error"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [],
+   "canvas": "1280x720",
+   "contract": "entries/builder/contract.md",
+   "demo": "entries/builder/demo.html",
+   "isolation": [
+    "default-default-rest-1280x720.html",
+    "default-default-rest-dark-1280x720.html",
+    "default-default-error-1280x720.html",
+    "default-default-error-dark-1280x720.html"
+   ]
+  },
+  "memory": {
+   "id": "memory",
+   "name": "Memory · Entry Card / Search / Recall / Import review",
+   "tier": "sahajiv",
+   "evidence": "—",
+   "status": "derived",
+   "root": ".v-card.-memory",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active"
+   ],
+   "dataStates": [
+    "full",
+    "filtered-empty"
+   ],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "unfolds",
+    "enters"
+   ],
+   "canvas": "960x640",
+   "contract": "entries/memory/contract.md",
+   "demo": "entries/memory/demo.html",
+   "isolation": [
+    "default-default-rest-960x640.html",
+    "default-default-rest-dark-960x640.html"
+   ]
+  },
+  "library": {
+   "id": "library",
+   "name": "Library · Skill Card / Hook Intent / Quarantine / Diff",
+   "tier": "sahajiv",
+   "evidence": "I17",
+   "status": "derived",
+   "root": ".v-card.-library",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "checked"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "press",
+    "toggles",
+    "enters"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/library/contract.md",
+   "demo": "entries/library/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-checked-960x600.html",
+    "default-default-checked-dark-960x600.html"
+   ]
+  },
+  "ai-apps": {
+   "id": "ai-apps",
+   "name": "AI Apps · App card, Capability matrix, Usage limit, Model row",
+   "tier": "sahajiv",
+   "evidence": "I18",
+   "status": "derived",
+   "root": ".v-card.-ai",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected"
+   ],
+   "dataStates": [
+    "full",
+    "unavail"
+   ],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "paces",
+    "enters",
+    "breathes"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/ai-apps/contract.md",
+   "demo": "entries/ai-apps/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-selected-960x600.html",
+    "default-default-selected-dark-960x600.html"
+   ]
+  },
+  "settings": {
+   "id": "settings",
+   "name": "Settings · System checks, Appearance, Motion",
+   "tier": "sahajiv",
+   "evidence": "—",
+   "status": "derived",
+   "root": ".v-settings-grid",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "on",
+    "checked"
+   ],
+   "dataStates": [],
+   "category": "buttons",
+   "motionOnByDefault": true,
+   "flowRoles": [
+    "group",
+    "press",
+    "toggles",
+    "enters"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/settings/contract.md",
+   "demo": "entries/settings/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-checked-960x600.html",
+    "default-default-checked-dark-960x600.html",
+    "default-default-on-960x600.html",
+    "default-default-on-dark-960x600.html"
+   ]
+  },
+  "explainers": {
+   "id": "explainers",
+   "name": "Explainer Card / Viewer / Version History",
+   "tier": "sahajiv",
+   "evidence": "I17",
+   "status": "derived",
+   "root": ".v-card.-work",
+   "variants": [],
+   "sizes": [],
+   "states": [
+    "rest",
+    "hover",
+    "focus",
+    "active",
+    "selected",
+    "error"
+   ],
+   "dataStates": [],
+   "category": "cards",
+   "motionOnByDefault": false,
+   "flowRoles": [
+    "group",
+    "press",
+    "unfolds",
+    "enters"
+   ],
+   "canvas": "960x600",
+   "contract": "entries/explainers/contract.md",
+   "demo": "entries/explainers/demo.html",
+   "isolation": [
+    "default-default-rest-960x600.html",
+    "default-default-rest-dark-960x600.html",
+    "default-default-selected-960x600.html",
+    "default-default-selected-dark-960x600.html",
+    "default-default-error-960x600.html",
+    "default-default-error-dark-960x600.html"
+   ]
+  }
+ }
+}

@@ -1,0 +1,7 @@
+/* Descendant paint and explicit dark overrides from alive.css. */
+[data-slot="badge"] > * { line-height: 1; }
+[data-slot="badge"]:is(.-live,.-pending) .v-dot { background: var(--v-olive); }
+:root[data-mode="dark"] [data-slot="badge"]:is(.-pink-soft,.-yellow-soft,.-olive-soft,.-blue-soft) { color: var(--v-on-accent); }
+:root[data-mode="dark"] [data-slot="badge"]:is(.-dashed,.-test,.-live) { background: var(--v-beige-2); }
+/* The moving SVG owns this edge; a painted DOM edge would double it. */
+[data-slot="badge"]:is(.-dashed,.-test).v-morph-live { border-color: transparent; }

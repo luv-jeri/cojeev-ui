@@ -1,0 +1,11 @@
+/* Fumadocs' utility sources are compiled in the shared Tailwind entrypoint. */
+#nd-sidebar {
+  background: var(--v-canvas);
+  color: var(--v-text);
+  --color-fd-accent: var(--v-beige);
+  --color-fd-accent-foreground: var(--v-text);
+  --color-fd-primary: var(--v-text);
+  --color-fd-primary-foreground: var(--v-canvas);
+}
+#nd-page pre { overflow-x: auto; }
+#nd-page td code { white-space: normal; overflow-wrap: anywhere; }

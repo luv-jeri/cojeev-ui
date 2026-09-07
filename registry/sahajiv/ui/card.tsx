@@ -1,0 +1,56 @@
+"use client"
+
+import * as React from "react"
+import { useMorph } from "@/registry/sahajiv/motion/use-morph"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/registry/sahajiv/lib/utils"
+
+const cardVariants = cva(
+  "v-card relative content-start overflow-hidden rounded-[var(--r-card)] p-[var(--card-pad)] bg-[var(--card)] text-[color:var(--card-foreground)]",
+  {
+    variants: {
+      variant: {
+        default: "",
+        pink: "-pink bg-[var(--v-pink)] text-[color:var(--v-on-accent)] [--wm:var(--v-pink-deep)] [--muted-foreground:var(--muted-foreground-ink)]",
+        yellow: "-yellow bg-[var(--v-yellow)] text-[color:var(--v-on-accent)] [--wm:var(--v-yellow-deep)] [--muted-foreground:var(--muted-foreground-ink)]",
+        olive: "-olive bg-[var(--v-olive)] text-[color:var(--v-on-accent)] [--wm:var(--v-olive-deep)] [--muted-foreground:var(--muted-foreground-ink)]",
+        blue: "-blue bg-[var(--v-blue)] text-[color:var(--v-on-accent)] [--wm:var(--v-blue-deep)] [--muted-foreground:var(--muted-foreground-ink)]",
+        ink: "-ink bg-[var(--v-ink)] text-[color:var(--v-on-ink)]",
+        cream: "-cream bg-[var(--card-2)] [--muted-foreground:var(--muted-foreground-tinted)]",
+        featured: "-featured bg-[var(--v-canvas)] [box-shadow:inset_0_0_0_var(--bw-featured)_var(--v-pink)]",
+        panel: "-panel",
+        lift: "-lift hover:-translate-y-px hover:[box-shadow:var(--shadow-lift)]",
+      },
+      size: { default: "", sm: "-sm rounded-[var(--r-card-sm)] p-[var(--s-4)]" },
+      lift: { true: "-lift hover:-translate-y-px hover:[box-shadow:var(--shadow-lift)]", false: "" },
+    },
+    compoundVariants: [{ variant: "panel", className: "rounded-[var(--r-panel)]" }],
+    defaultVariants: { variant: "default", size: "default", lift: false },
+  },
+)
+
+type CardProps = React.ComponentProps<"div"> & VariantProps<typeof cardVariants>
+function Card({ ref: externalRef, className, variant, size, lift, ...props }: CardProps) {
+  const morphRef = useMorph<HTMLDivElement>("cards", externalRef)
+  return <div ref={morphRef} data-slot="card" data-part="root" data-state="rest" className={cn(cardVariants({ variant, size, lift }), className)} {...props} />
+}
+function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return <div data-slot="card-header" data-part="header" className={cn("v-card__head flex items-center justify-between gap-[var(--s-3)] mb-[var(--s-4)]", className)} {...props} />
+}
+function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
+  return <h3 data-slot="card-title" data-part="title" className={cn("v-card__title text-[16px] font-semibold leading-[1.2] tracking-[-.012em]", className)} {...props} />
+}
+function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+  return <div data-slot="card-content" className={className} {...props} />
+}
+function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
+  return <p data-slot="card-description" className={cn("v-body-2", className)} {...props} />
+}
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return <div data-slot="card-footer" className={className} {...props} />
+}
+function CardWatermark({ className, ...props }: React.ComponentProps<"span">) {
+  return <span data-slot="card-watermark" data-part="watermark" aria-hidden="true" className={cn("v-wm v-shape", className)} {...props} />
+}
+export { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter, CardWatermark, cardVariants }
+export type { CardProps }

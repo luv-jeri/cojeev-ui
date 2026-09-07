@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="light" data-seed="42"><head><meta charset="utf-8"><title>Label · demo</title><link rel="stylesheet" href="../../css/vriksha.css">
+<style>html,body{margin:0}body{min-height:100vh;padding:32px;box-sizing:border-box;background:var(--v-canvas);display:grid;place-items:center;align-content:center;justify-content:center}body>[data-gate]{max-width:100%}</style></head>
+<body>
+<section class="entry" id="label" data-gate="label/demo" style="width:min(100%,1120px)"><h1 class="v-section" style="margin:0 0 6px">Label</h1><p class="v-meta" style="margin:0 0 20px">.v-label[.-sm] (bold display label) · .v-caps (10–11 px tracked caption for stats)</p><div class="demo"><div style="display:grid;grid-template-columns:minmax(0,1fr);gap:12px"><label class="v-label">Notification</label><label class="v-label -sm">Dosage</label><div class="v-stats"><div class="v-stat"><b>07:40</b><span>Fall asleep</span></div><div class="v-stat"><b>6.5<span class="u">h</span></b><span>Duration</span></div></div></div></div></section>
+<script src="../../assets/sprites.js"></script><script src="../../catalog/spec.js"></script><script src="../../js/v.js" data-base="../.."></script><script src="../../js/ui.js"></script><script src="../../js/flow.js"></script><script src="../../js/morph.js"></script><script src="../../js/motion.js"></script><script src="../../catalog/demo-behaviour.js"></script><script>(async()=>{await V.init(document.body);if(window.VUI)VUI.init(document.body);if(window.VLive)VLive.init(document.body)})()</script>
+<script>document.querySelectorAll('[data-indeterminate]').forEach(i=>i.indeterminate=true);addEventListener('load',()=>document.documentElement.dataset.ready='1');</script>
+</body></html>

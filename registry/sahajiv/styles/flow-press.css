@@ -1,0 +1,9 @@
+:root{--flow-ease:var(--e-flow-glide);--flow-dur:var(--t-flow-glide);--flow-land:vf-land;--flow-glow:none}
+[data-slot=button][data-flow-land]{animation:var(--flow-land) calc(var(--flow-dur) * .85) var(--flow-ease),var(--flow-glow) calc(var(--flow-dur) * 1.6) var(--e-flow-settle)}
+@keyframes vf-land{0%{transform:scale(calc(1 + .05 * var(--flow-intensity,1)),calc(1 - .08 * var(--flow-intensity,1)))}60%{transform:scale(calc(1 - .015 * var(--flow-intensity,1)),calc(1 + .03 * var(--flow-intensity,1)))}100%{transform:scale(1)}}
+@keyframes vf-jellyx{0%{transform:scale(1)}30%{transform:scale(calc(1 + .14 * var(--flow-intensity,1)),calc(1 - .16 * var(--flow-intensity,1)))}65%{transform:scale(calc(1 - .05 * var(--flow-intensity,1)),calc(1 + .06 * var(--flow-intensity,1)))}85%{transform:scale(calc(1 + .02 * var(--flow-intensity,1)),calc(1 - .02 * var(--flow-intensity,1)))}100%{transform:scale(1)}}
+@keyframes vf-bloom{0%{transform:scale(calc(1 - .08 * var(--flow-intensity,1)))}100%{transform:scale(1)}}
+@keyframes vf-lean{0%{transform:none}35%{transform:scale(calc(1 + .04 * var(--flow-intensity,1)),calc(1 - .07 * var(--flow-intensity,1))) skewX(calc(-3deg * var(--flow-intensity,1)))}70%{transform:scale(calc(1 - .01 * var(--flow-intensity,1)),calc(1 + .03 * var(--flow-intensity,1))) skewX(calc(1deg * var(--flow-intensity,1)))}100%{transform:none}}
+@keyframes vf-ring{0%{outline:0 solid color-mix(in oklab,var(--v-pink) 70%,transparent)}100%{outline:calc(12px * var(--flow-intensity,1)) solid transparent}}
+@keyframes vf-glow{0%{outline:0 solid transparent}35%{outline:calc(6px * var(--flow-intensity,1)) solid color-mix(in oklab,var(--v-pink) 40%,transparent)}100%{outline:calc(10px * var(--flow-intensity,1)) solid transparent}}
+@media(prefers-reduced-motion:reduce){[data-slot=button][data-flow-land]{animation:none}}

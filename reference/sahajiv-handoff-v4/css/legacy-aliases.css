@@ -1,0 +1,26 @@
+/* Legacy kit token aliases → Vriksha values. Delete once consumers use --v-* / semantic names. */
+:root{
+--surface-page:var(--v-canvas);--surface-card:var(--v-beige-2);--surface-raised:var(--v-canvas);--surface-sunken:var(--v-beige);--surface-inverse:var(--v-ink);
+--nav-surface:var(--sidebar);--nav-fg:var(--sidebar-foreground);--nav-muted:var(--sidebar-muted);--nav-active:var(--sidebar-primary);
+--text-primary:var(--v-text);--text-secondary:var(--v-text-2);--text-muted:var(--v-text-2);--text-inverse:var(--v-on-ink);
+--border-strong:var(--v-border);--border-subtle:color-mix(in oklab,var(--v-border) 50%,transparent);
+--brand:var(--v-brand);--on-brand:var(--legacy-on-brand);--action:var(--v-ink);--on-action:var(--v-on-ink);
+--accent-1:var(--v-yellow);--accent-2:var(--v-pink);--accent-3:var(--v-olive);--accent-4:var(--v-blue);--accent-5:var(--legacy-accent-5);
+--accent-1-soft:var(--v-yellow-soft);--accent-2-soft:var(--v-pink-soft);--accent-3-soft:var(--v-olive-soft);--accent-4-soft:var(--v-blue-soft);
+--success:var(--legacy-success);--warning:var(--legacy-warning);--danger:var(--v-danger);--info:var(--legacy-info);--danger-fill:var(--legacy-danger-fill);--success-fill:var(--legacy-success-fill);
+--success-soft:var(--v-olive-soft);--warning-soft:var(--v-yellow-soft);--danger-soft:var(--v-danger-soft);--info-soft:var(--v-blue-soft);
+--hover-mix:var(--mask-ink);--ring-offset:var(--v-canvas);
+--font-body:var(--font-text);
+--ui-micro:var(--fs-meta);--ui-body:var(--fs-body);--ui-lead:var(--fs-lead);--ui-title:var(--fs-title);--ui-head:var(--fs-section);--ui-display:var(--fs-display);--ui-tiny:var(--fs-caps);--ui-nano:9.5px;
+--radius-card:var(--r-card);--radius-inner:var(--r-card-sm);--radius-panel:var(--r-panel);--radius-control:var(--r-pill);--radius-input:var(--r-md);--radius-chip:var(--r-pill);--radius-tile:var(--r-card);
+--radius-xs:6px;--radius-sm:var(--r-sm);--radius-md:14px;--radius-lg:var(--r-card);--radius-xl:var(--r-panel);--radius-2xl:30px;--radius-pill:var(--r-pill);--radius-round:50%;
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-7:32px;--space-8:40px;--space-9:48px;--space-10:64px;
+--gutter:var(--card-gap);--card-padding:var(--card-pad);--page-padding:var(--shell-inset);--nav-width:var(--sidebar-w);--nav-width-mini:var(--sidebar-w-mini);--topbar-height:var(--topbar-h);
+--shadow-xs:none;--shadow-sm:none;--shadow-md:var(--shadow-float);--shadow-lg:var(--shadow-float);--shadow-xl:var(--shadow-float);--shadow-inset-hl:none;
+--dur-fast:var(--t-micro);--dur-quick:var(--t-micro);--dur-base:var(--t-element);--dur-slow:var(--t-max);--ease-standard:var(--enter);--ease-out:var(--enter);
+--scrim:var(--v-scrim);
+--t-toastin:220ms;/* @kind other */
+--t-toastout:160ms;/* @kind other */
+--t-hold:1200ms;/* @kind other */
+--t-think:1400ms;/* @kind other */
+}

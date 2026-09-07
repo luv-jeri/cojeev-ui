@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round" role="img" aria-label="SahaJiv">
+  <g transform="translate(0.3 -0.5)">
+    <path d="M9 21.5 A15 15 0 0 0 39 21.5" transform="rotate(-20 24 24)"></path>
+    <circle cx="28" cy="17.5" r="4" transform="rotate(-20 24 24)"></circle>
+  </g>
+</svg>

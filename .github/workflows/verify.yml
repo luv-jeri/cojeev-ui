@@ -1,0 +1,62 @@
+name: Build, fidelity, and publish
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+      - run: npm run gate
+      - name: Preserve fidelity evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: fidelity-evidence
+          path: |
+            GATE.md
+            GATE-INTERACTIONS.md
+            artifacts/gate/
+            artifacts/gate-interactions/
+            artifacts/gate-lifecycle/
+          retention-days: 14
+      - name: Package documentation
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: out
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish documentation and registry
+        id: deployment
+        uses: actions/deploy-pages@v4
