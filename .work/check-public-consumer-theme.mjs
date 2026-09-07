@@ -1,16 +1,21 @@
-/** Targeted closeout after the actual public foundation CLI update; no action-test repeats. */
+/** Targeted theme and corrected ShapeScene closeout after the actual public CLI update. */
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import { preview } from 'vite';
+import { PNG } from 'pngjs';
 const install=JSON.parse(fs.readFileSync('.work/public-consumer-install-receipt.json','utf8'));
+const update=JSON.parse(fs.readFileSync('.work/public-consumer-corrected-update-receipt.json','utf8'));assert.equal(update.status,'PASS');
 const output=path.resolve('.work/public-consumer-theme-closeout');fs.mkdirSync(output,{recursive:true});
-const receipt={startedAt:new Date().toISOString(),directory:install.directory,scope:'Theme aliases, fonts, Card title contrast, 390/1440 bounds and screenshots only; prior interactions not repeated',measurements:[],errors:[],consoleErrors:[]};
+const receipt={startedAt:new Date().toISOString(),directory:install.directory,publicManifest:update.publicManifest,publicFoundationSHA256:update.publicFoundation.sha256,publicScene:update.publicScene,scope:'Theme aliases, fonts, Card title contrast, corrected ShapeScene shaded WebGL, and 390/1440 bounds/screenshots; prior unrelated interactions not repeated',measurements:[],errors:[],consoleErrors:[]};
 const server=await preview({configFile:false,root:install.directory,build:{outDir:'dist'},preview:{host:'127.0.0.1',port:0,strictPort:true}});
 let browser,page;
 try {
  browser=await chromium.launch({headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>receipt.errors.push(e.message));page.on('console',m=>{if(m.type()==='error')receipt.consoleErrors.push(m.text());});await page.goto(`http://127.0.0.1:${server.httpServer.address().port}`);await page.getByRole('heading',{name:'SahaJiv stranger install',exact:true}).waitFor();
+ const scene=page.locator('[data-slot=shape-scene]');await scene.scrollIntoViewIfNeeded();await page.waitForFunction(()=>['webgl','fallback'].includes(document.querySelector('[data-slot=shape-scene]')?.getAttribute('data-renderer')),undefined,{timeout:30000});receipt.sceneRenderer=await scene.getAttribute('data-renderer');
+ if(receipt.sceneRenderer==='webgl'){const canvas=scene.locator('canvas');receipt.sceneBuffer=await canvas.evaluate(el=>({width:el.width,height:el.height}));assert(receipt.sceneBuffer.width>0&&receipt.sceneBuffer.height>0);const png=PNG.sync.read(await canvas.screenshot({path:path.join(output,'corrected-shape-scene.png')}));const colors=new Set();for(let i=0;i<png.data.length;i+=64)colors.add(png.data.subarray(i,i+4).toString('hex'));assert(colors.size>40,'Corrected public ShapeScene needs actual shaded pixels');receipt.sceneShadedColors=colors.size;}else{assert.equal(await scene.locator('[data-slot=shape-scene-fallback] [data-slot=shape]').count(),4);await scene.getByText('3D is unavailable. Showing the static composition.',{exact:true}).waitFor();}
+ receipt.correctedSceneRuntime='PASS';
  for(const width of [1440,390]){await page.setViewportSize({width,height:1000});for(const theme of ['light','dark']){await page.getByLabel('Theme',{exact:true}).selectOption(theme);await page.evaluate(async()=>{await document.fonts.ready;for(let pass=0;pass<8;pass++){await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const finite=document.getAnimations().filter(a=>a.playState==='running'&&Number.isFinite(a.effect?.getComputedTiming().endTime));if(!finite.length)return;await Promise.allSettled(finite.map(a=>a.finished));}throw new Error('Theme animation did not settle');});
   const measured=await page.evaluate(()=>{
    const root=getComputedStyle(document.documentElement),body=getComputedStyle(document.body),card=document.querySelector('[data-specimen=card] [data-slot=card]'),title=card.querySelector('[data-slot=card-title]'),cardStyle=getComputedStyle(card),titleStyle=getComputedStyle(title);

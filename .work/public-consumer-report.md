@@ -31,3 +31,9 @@ The candidate public manifest is `8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436
 On 2026-09-07 at 23:15:52 UTC, the parent reported corrected Pages run `34168747473` failed its mobile gate and had not deployed. The exact public watcher was stopped at the parent's request. No update CLI ran; hashes of all 29 installed component/support modules were unchanged. Readiness attempts and the pause reason are preserved in `.work/public-consumer-update-paused-receipt.json`; the original app remains available for the next corrected deployment.
 
 Status: install/build and interactions passed; final public theme integration remains unresolved pending corrected deployment. No deployment was performed by this agent.
+
+## Corrected scene closeout prepared
+
+Root source `479d13abfcfa0981d538a088d83f837a6acae8b8` is undergoing CI run `34169905808`. Its manifest and foundation hashes remain the candidate values above; the corrected ShapeScene payload must additionally match `24d28f9a9bf111af79e6d7624c5a1d16f72abdd1842f63b4f3ca15678fd9b3c3`.
+
+The prepared waiter now requires all three exact public hashes before requesting Button, Card, and ShapeScene component URLs through the real CLI. It will assert the other seven UI module hashes stay identical, rebuild all eight imports, and preserve a separate corrected-update receipt. The focused browser probe adds actual shaded WebGL (or explicit supported fallback evidence) for corrected ShapeScene to the pending theme/font/Card/width checks. Unrelated passing actions will not be repeated. Both probes passed Node syntax checks; no new public watcher, CLI update, or browser run has started.
