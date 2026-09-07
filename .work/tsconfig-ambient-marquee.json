@@ -1,0 +1,1 @@
+{"extends":"../tsconfig.json","compilerOptions":{"incremental":false},"include":["../registry/sahajiv/ui/ambient-background.tsx","../registry/sahajiv/ui/marquee.tsx","../components/examples/backgrounds.tsx"],"exclude":["../node_modules"]}
