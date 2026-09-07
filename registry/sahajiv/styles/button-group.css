@@ -73,4 +73,8 @@
   color: var(--v-on-accent);
 }
 
-:root[data-mode="dark"] [data-slot="button-group"] .v-btn[aria-pressed="true"] { border-color: var(--v-pink); }
+:root[data-mode="dark"] [data-slot="button-group"] .v-btn[aria-pressed="true"] {
+  background: var(--v-pink);
+  border-color: var(--v-pink);
+  color: var(--v-on-accent);
+}

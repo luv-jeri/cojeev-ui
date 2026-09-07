@@ -68,7 +68,7 @@ export function ButtonGroupItem({
       data-part="item"
       aria-pressed={pressed}
       data-state={pressed ? "on" : "off"}
-      variant="default"
+      variant="ghost"
       size="sm"
       className={cn(
         "h-[36px] px-[14px] text-[13.5px] leading-none font-medium [border:0] [box-shadow:none] text-[color:var(--v-text-2)]",
