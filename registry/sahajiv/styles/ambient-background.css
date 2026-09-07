@@ -1,0 +1,122 @@
+[data-slot="ambient-background"] {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-inline-size: 0;
+  min-block-size: 20rem;
+  padding: clamp(1.5rem, 6%, 4rem);
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--v-canvas);
+  color: var(--v-text);
+}
+[data-slot="ambient-background-decoration"] {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: .48;
+}
+[data-slot="ambient-background-content"] {
+  position: relative;
+  min-inline-size: 0;
+  max-inline-size: 38rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  border-radius: var(--r-panel);
+  background: var(--v-canvas);
+  color: var(--v-text);
+  overflow-wrap: anywhere;
+}
+[data-slot="ambient-background"] .v-ambient-background__field {
+  position: absolute;
+  inset: 0;
+}
+[data-slot="ambient-background"] .v-ambient-background__piece {
+  position: absolute;
+  display: block;
+  inline-size: clamp(9rem, 36%, 22rem);
+  aspect-ratio: 1;
+}
+[data-slot="ambient-background"] .v-ambient-background__piece [data-slot="shape"] {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+[data-slot="ambient-background"] .v-ambient-background__piece.-one {
+  inset-block-start: -20%;
+  inset-inline-end: -7%;
+  --c: var(--v-pink);
+}
+[data-slot="ambient-background"] .v-ambient-background__piece.-two {
+  inset-block-end: -24%;
+  inset-inline-start: -10%;
+  --c: var(--v-olive);
+}
+[data-slot="ambient-background"] .v-ambient-background__piece.-three {
+  inset-block-end: -30%;
+  inset-inline-end: 14%;
+  inline-size: clamp(7rem, 24%, 15rem);
+  --c: var(--v-blue);
+}
+[data-slot="ambient-background"][data-variant="drift"] .v-ambient-background__piece {
+  animation: v-ambient-drift 24s ease-in-out infinite alternate;
+}
+[data-slot="ambient-background"][data-variant="drift"] .v-ambient-background__piece.-two {
+  animation-delay: -12s;
+  animation-duration: 32s;
+}
+[data-slot="ambient-background"][data-variant="drift"] .v-ambient-background__piece.-three {
+  animation-delay: -6s;
+  animation-duration: 28s;
+}
+[data-slot="ambient-background"][data-variant="orbit"] .v-ambient-background__field {
+  inset: -35%;
+  animation: v-ambient-orbit 90s linear infinite;
+}
+[data-slot="ambient-background"][data-variant="orbit"] .v-ambient-background__piece.-one {
+  inset-block-start: 2%;
+  inset-inline-end: 15%;
+  --c: var(--v-yellow);
+}
+[data-slot="ambient-background"][data-variant="orbit"] .v-ambient-background__piece.-two {
+  inset-block-end: 5%;
+  inset-inline-start: 16%;
+  --c: var(--v-pink);
+}
+[data-slot="ambient-background"][data-variant="orbit"] .v-ambient-background__piece.-three {
+  inset-block-end: 18%;
+  inset-inline-end: 4%;
+}
+[data-slot="ambient-background"] .v-ambient-background__contour {
+  position: absolute;
+  inset-block-start: -60%;
+  inset-inline-end: -28%;
+  inline-size: max(38rem, 90%);
+  block-size: auto;
+  stroke: var(--v-olive);
+  stroke-width: 14;
+  animation: v-ambient-contour 38s ease-in-out infinite alternate;
+}
+[data-slot="ambient-background"] .v-ambient-background__contour ellipse:nth-child(2) { stroke: var(--v-yellow); }
+[data-slot="ambient-background"] .v-ambient-background__contour ellipse:nth-child(3) { stroke: var(--v-blue); }
+[data-slot="ambient-background"] .v-ambient-background__contour ellipse:nth-child(4) { stroke: var(--v-pink); }
+[data-slot="ambient-background"][data-motion="paused"] :is(.v-ambient-background__field, .v-ambient-background__piece, .v-ambient-background__contour) {
+  animation-play-state: paused;
+}
+[data-slot="ambient-background"][data-motion="static"] :is(.v-ambient-background__field, .v-ambient-background__piece, .v-ambient-background__contour) {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="ambient-background"] :is(.v-ambient-background__field, .v-ambient-background__piece, .v-ambient-background__contour) { animation: none; }
+}
+@keyframes v-ambient-drift {
+  from { transform: translate3d(-3%, 2%, 0) rotate(-8deg); }
+  to { transform: translate3d(7%, -6%, 0) rotate(10deg); }
+}
+@keyframes v-ambient-orbit { to { transform: rotate(360deg); } }
+@keyframes v-ambient-contour {
+  from { transform: translate3d(0, 0, 0) rotate(-18deg); }
+  to { transform: translate3d(-4%, 8%, 0) rotate(8deg); }
+}

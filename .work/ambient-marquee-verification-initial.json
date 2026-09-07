@@ -1,0 +1,38 @@
+{
+  "started": "2026-09-07T21:40:07.459Z",
+  "finished": "2026-09-07T21:41:09.928Z",
+  "revision": "5b9b3abea829bfe66d5293c78a7d6afbb7ab7fa1",
+  "passed": false,
+  "results": [
+    "390/light normal ambient animation advances",
+    "390/light variant controls retain three animated compositions",
+    "390/light marquee advances and speed/direction controls work",
+    "390/light actual touch uses coarse pointer",
+    "390/light duplicates are inert, unnamed, and not keyboard stops",
+    "390/light keyboard focus reveals a static readable original list",
+    "390/light runtime off becomes static with all content readable"
+  ],
+  "failures": [
+    {
+      "name": "390/light background explicit pause and resume",
+      "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    {\n      name: 'v-ambient-drift',\n      state: 'paused',\n+     time: 83.33700000923128\n-     time: 66.73700000923132\n    },\n    {\n      name: 'v-ambient-drift',\n      state: 'paused',\n+     time: 83.33700000923128\n-     time: 66.73700000923132\n    },\n    {\n      name: 'v-ambient-drift',\n      state: 'paused',\n+     time: 83.33700000923128\n-     time: 66.73700000923132\n    }\n  ]\n"
+    },
+    {
+      "name": "390/light marquee explicit pause/resume retains actual state",
+      "message": "Expected values to be strictly equal:\n\n0 !== 1\n"
+    },
+    {
+      "name": "390/light runtime reduced becomes static with all content readable",
+      "message": "page.waitForFunction: Timeout 30000ms exceeded."
+    },
+    {
+      "name": "runner",
+      "message": "page.waitForFunction: Timeout 30000ms exceeded.\n    at /Users/sanjaykumar/Documents/ChatGPT/sahajiv ui/.worktrees/composed/.work/verify-ambient-marquee.mjs:35:166"
+    }
+  ],
+  "errors": [],
+  "notes": [
+    "Visibility-state handler was tested using an explicit property override and visibilitychange event; this is not an OS tab-backgrounding test.",
+    "Mobile uses Chromium isMobile/hasTouch with real tap input for pause controls."
+  ]
+}
