@@ -1,0 +1,59 @@
+{
+  "startedAt": "2026-09-07T23:16:24.022Z",
+  "url": "http://127.0.0.1:49306/sahajiv-ui",
+  "revisionStart": {
+    "head": "d2d099d6f3d8bccc3dc81692b3a70368ffc9dc85",
+    "dirty": false,
+    "dirtyDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scope": {
+    "engine": "WebKit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mobile": true,
+    "touch": true,
+    "physicalDevice": false
+  },
+  "cases": [
+    {
+      "id": "shape-scene",
+      "startedAt": "2026-09-07T23:16:25.706Z",
+      "revision": {
+        "head": "d2d099d6f3d8bccc3dc81692b3a70368ffc9dc85",
+        "dirty": false,
+        "dirtyDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "detail": "Supported 3D output and touch pause checked",
+      "renderer": "webgl",
+      "shadedColors": 2841,
+      "pausedDrawCount": 288,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "status": "PASS",
+      "input": {
+        "pointerTypes": [
+          "touch"
+        ],
+        "touchStarts": 3
+      },
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T23:16:27.563Z"
+    }
+  ],
+  "browserVersion": "26.6",
+  "finishedAt": "2026-09-07T23:16:27.590Z",
+  "revisionEnd": {
+    "head": "d2d099d6f3d8bccc3dc81692b3a70368ffc9dc85",
+    "dirty": false,
+    "dirtyDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "runtimeSeconds": 3.568,
+  "status": "PASS"
+}
