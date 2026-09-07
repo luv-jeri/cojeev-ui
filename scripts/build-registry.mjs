@@ -25,7 +25,7 @@ function imports(id) {
   return [...fs.readFileSync(`${source}/ui/${id}.tsx`,"utf8").matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)].map(match=>match[1]);
 }
 function npmPackage(value){return value.startsWith("@")?value.split("/").slice(0,2).join("/"):value.split("/")[0];}
-const extras={icon:{name:"Icon and icon controls",variants:["default"],sizes:["default","sm","lg"],states:["rest","hover","disabled"]},shape:{name:"Shape",variants:["default"],sizes:["default"],states:["rest"]},adjuster:{name:"Motion Adjuster",variants:["default"],sizes:["default"],states:["rest","open"]}};
+const extras={preview:{name:"Component preview",variants:["default"],sizes:["default"],states:["preview","code","copied"]},icon:{name:"Icon and icon controls",variants:["default"],sizes:["default","sm","lg"],states:["rest","hover","disabled"]},shape:{name:"Shape",variants:["default"],sizes:["default"],states:["rest"]},adjuster:{name:"Motion Adjuster",variants:["default"],sizes:["default"],states:["rest","open"]}};
 const items=[base,...ids.map(id=>{
   const entry=reference[id]??extras[id];
   if(!entry)throw new Error(`Undeclared registry helper: ${id}`);
