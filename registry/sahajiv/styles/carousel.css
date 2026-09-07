@@ -1,0 +1,79 @@
+[data-slot="carousel-content"]::-webkit-scrollbar {
+  display: none;
+}
+[data-slot="carousel-content"] > * {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+[data-slot="carousel-content"] > .v-card {
+  min-height: 150px;
+}
+[data-slot="carousel-navigation"] .v-ibtn {
+  cursor: pointer;
+  background: var(--v-canvas);
+  box-shadow: inset 0 0 0 1px var(--v-edge);
+  color: var(--v-text);
+  transition:
+    background var(--t-micro),
+    transform var(--t-micro) var(--enter),
+    opacity var(--t-micro);
+}
+[data-slot="carousel-navigation"] .v-ibtn:hover:not(:disabled) {
+  background: var(--v-pink);
+  box-shadow: none;
+  color: var(--v-on-accent);
+}
+[data-slot="carousel-navigation"] .v-ibtn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+[data-slot="carousel-navigation"] .v-ibtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+[data-slot="carousel-navigation"] > .v-ibtn + .v-ibtn {
+  margin-left: 6px;
+}
+[data-slot="carousel-dot"] {
+  transition:
+    width var(--t-element) var(--enter),
+    background var(--t-element);
+}
+[data-slot="carousel-dot"]:hover {
+  background: var(--v-edge);
+}
+[data-slot="carousel-dot"][aria-current="true"] {
+  width: 22px;
+}
+[data-slot="carousel-dots"]:not(.v-glide)
+  [data-slot="carousel-dot"][aria-current="true"] {
+  background: var(--v-pink);
+}
+[data-slot="carousel-dot"]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+[data-slot="carousel-deck"] > .v-card {
+  position: absolute;
+  inset: 22px 26px 0 0;
+  transform-origin: bottom right;
+  transition: transform var(--t-max) var(--enter);
+}
+[data-slot="carousel-deck"] > .v-card:first-child {
+  position: relative;
+  inset: auto;
+  min-height: 150px;
+}
+[data-slot="carousel-deck"] > .v-card:nth-child(2) {
+  transform: translate(10px, -9px) rotate(1.5deg) scale(0.985);
+  z-index: -1;
+}
+[data-slot="carousel-deck"] > .v-card:nth-child(3) {
+  transform: translate(20px, -18px) rotate(3.5deg) scale(0.97);
+  z-index: -2;
+}
+[data-slot="carousel-deck"]:hover > .v-card:nth-child(2) {
+  transform: translate(12px, -11px) rotate(0) scale(0.985);
+}
+[data-slot="carousel-deck"]:hover > .v-card:nth-child(3) {
+  transform: translate(24px, -22px) rotate(0) scale(0.97);
+}
