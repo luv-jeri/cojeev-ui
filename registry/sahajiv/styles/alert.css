@@ -79,3 +79,12 @@
 :root[data-mode="dark"] .v-alert[data-slot]::after{opacity:.25}
 :root[data-mode="dark"] .v-alert[data-slot]>.v-alert__close{background:rgba(246,239,226,.1);color:var(--v-text)}
 
+/* The authored icon body is transparent; keep the glyph legible on the alert surface. */
+.v-alert[data-slot]>.v-alert__blob>.v-icon{color:var(--v-text)}
+.v-alert[data-slot].-danger>.v-alert__blob>.v-icon{color:var(--v-danger-ink)}
+.v-alert[data-slot].-pink>.v-alert__blob>.v-icon{color:var(--v-on-accent)}
+
+/* Pink stays light in either theme, including secondary copy and ghost actions. */
+:root[data-mode="dark"] .v-alert[data-slot].-pink .v-alert__text{color:var(--alert-ink)}
+.v-alert[data-slot].-pink .v-btn.-ghost:not(:disabled):not([aria-disabled="true"]){color:var(--v-on-accent)}
+.v-alert[data-slot].-pink .v-btn.-ghost:not(:disabled):not([aria-disabled="true"]):hover{background:color-mix(in oklab,var(--v-pink) 88%,var(--ink-fixed))}

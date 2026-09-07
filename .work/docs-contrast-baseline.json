@@ -1,0 +1,301 @@
+{
+  "rows": [
+    {
+      "theme": "light",
+      "motion": "subtle",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(238, 231, 218)"
+        },
+        {
+          "variant": "info",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.928596 -0.00119778 -0.00124929)"
+        },
+        {
+          "variant": "ok",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.901794 -0.0112672 0.0368694)"
+        },
+        {
+          "variant": "warn",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.940242 -0.00280021 0.0591429)"
+        },
+        {
+          "variant": "danger",
+          "color": "rgb(255, 255, 255)",
+          "hostColor": "rgb(255, 255, 255)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.922518 0.0242783 0.028726)"
+        },
+        {
+          "variant": "pink",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(245, 184, 219)"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Day",
+          "selected": "false",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(95, 91, 85)"
+        },
+        {
+          "text": "Week",
+          "selected": "true",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(246, 239, 226)"
+        },
+        {
+          "text": "Month",
+          "selected": "false",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(95, 91, 85)"
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "motion": "off",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(238, 231, 218)"
+        },
+        {
+          "variant": "info",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.928596 -0.00119778 -0.00124929)"
+        },
+        {
+          "variant": "ok",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.901794 -0.0112672 0.0368694)"
+        },
+        {
+          "variant": "warn",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.940242 -0.00280021 0.0591429)"
+        },
+        {
+          "variant": "danger",
+          "color": "rgb(255, 255, 255)",
+          "hostColor": "rgb(255, 255, 255)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.922518 0.0242783 0.028726)"
+        },
+        {
+          "variant": "pink",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(245, 184, 219)"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Day",
+          "selected": "false",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(95, 91, 85)"
+        },
+        {
+          "text": "Week",
+          "selected": "true",
+          "background": "rgb(17, 17, 17)",
+          "color": "rgb(251, 244, 230)"
+        },
+        {
+          "text": "Month",
+          "selected": "false",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(95, 91, 85)"
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "motion": "subtle",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(34, 31, 27)"
+        },
+        {
+          "variant": "info",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.311725 -0.000394018 -0.00372635)"
+        },
+        {
+          "variant": "ok",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.289457 -0.00765344 0.020713)"
+        },
+        {
+          "variant": "warn",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.306972 -0.000754788 0.0271615)"
+        },
+        {
+          "variant": "danger",
+          "color": "rgb(255, 255, 255)",
+          "hostColor": "rgb(255, 255, 255)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.26344 0.0289802 0.0195712)"
+        },
+        {
+          "variant": "pink",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(245, 184, 219)"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Day",
+          "selected": "false",
+          "background": "rgb(245, 184, 219)",
+          "color": "rgb(17, 17, 17)"
+        },
+        {
+          "text": "Week",
+          "selected": "true",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(17, 17, 17)"
+        },
+        {
+          "text": "Month",
+          "selected": "false",
+          "background": "rgb(245, 184, 219)",
+          "color": "rgb(17, 17, 17)"
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "motion": "off",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(34, 31, 27)"
+        },
+        {
+          "variant": "info",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.311725 -0.000394018 -0.00372635)"
+        },
+        {
+          "variant": "ok",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.289457 -0.00765344 0.020713)"
+        },
+        {
+          "variant": "warn",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.306972 -0.000754788 0.0271615)"
+        },
+        {
+          "variant": "danger",
+          "color": "rgb(255, 255, 255)",
+          "hostColor": "rgb(255, 255, 255)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "oklab(0.26344 0.0289802 0.0195712)"
+        },
+        {
+          "variant": "pink",
+          "color": "rgb(17, 17, 17)",
+          "hostColor": "rgb(17, 17, 17)",
+          "background": "rgba(0, 0, 0, 0)",
+          "morph": "rgba(0, 0, 0, 0)",
+          "alertBackground": "rgb(245, 184, 219)"
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Day",
+          "selected": "false",
+          "background": "rgb(245, 184, 219)",
+          "color": "rgb(17, 17, 17)"
+        },
+        {
+          "text": "Week",
+          "selected": "true",
+          "background": "rgb(245, 184, 219)",
+          "color": "rgb(17, 17, 17)"
+        },
+        {
+          "text": "Month",
+          "selected": "false",
+          "background": "rgb(245, 184, 219)",
+          "color": "rgb(17, 17, 17)"
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

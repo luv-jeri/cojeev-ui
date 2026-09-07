@@ -1,0 +1,1239 @@
+{
+  "componentsReviewed": 77,
+  "imagesReviewed": 154,
+  "scope": "Default viewport screenshots at 1440 light and 360 dark. Contact sheets inspected for every entry; suspect originals opened. No hover/open-state or below-viewport/full-page review claimed.",
+  "rows": [
+    {
+      "id": "accordion",
+      "images": [
+        {
+          "file": "artifacts/production-docs/accordion-1440-light.png",
+          "sha256": "a364df652f496c95b0b0593c7077fcc2d43a3c893b2f997293eeaceb311e5a1b",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/accordion-360-dark.png",
+          "sha256": "626fecb076e9c005095d7e778bc84267a49f0aa1cd3d410efcf3e31664f4bc1b",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "adjuster",
+      "images": [
+        {
+          "file": "artifacts/production-docs/adjuster-1440-light.png",
+          "sha256": "beb87808fa9dcab3fa6b2a5c119cffea9a86935a9cf51f439978dc7e1edb21ae",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/adjuster-360-dark.png",
+          "sha256": "e649bba235904df43b5dfaf6b53695d6062062385d0358dcf8a69bdd2678aac9",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "alert",
+      "images": [
+        {
+          "file": "artifacts/production-docs/alert-1440-light.png",
+          "sha256": "d4d0a47517373f9f040a369d913d6d6fb30876d89bdcd22efcdd5de4923cfaa2",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/alert-360-dark.png",
+          "sha256": "033dd7e3aa9385f0de3ac9d1c021b64ac8b88cbed59b465dfdd14d3cf02ce5cf",
+          "reviewed": true
+        }
+      ],
+      "result": "V1: dark status glyph low contrast; assigned to this agent"
+    },
+    {
+      "id": "alert-dialog",
+      "images": [
+        {
+          "file": "artifacts/production-docs/alert-dialog-1440-light.png",
+          "sha256": "176fa46b13e60adc8d70571036590b19da0d308ca4258d668bad11fd3632749c",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/alert-dialog-360-dark.png",
+          "sha256": "15e6d2cb1d37e4b6beef164834df0c5694ca28a5d219bab1ff14e36adfdf1ef7",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "ambient-background",
+      "images": [
+        {
+          "file": "artifacts/production-docs/ambient-background-1440-light.png",
+          "sha256": "d615f6c99cf4433f0cd111418205ab0a4bac390de2a3c7eb3fd3711c9040cc24",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/ambient-background-360-dark.png",
+          "sha256": "70a37e00bf657dc0a4c7c095c04fe8a2c23adf3e5c568b0d35d19706ae29e470",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "animated-number",
+      "images": [
+        {
+          "file": "artifacts/production-docs/animated-number-1440-light.png",
+          "sha256": "36406d5bbefcf63c6af5ffdecf8c088f397cd3378532e3dbe8a52491287f28f4",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/animated-number-360-dark.png",
+          "sha256": "8f6396d79b1bbcab0158f7667379ef34f7dd8ab4faa85ebc1ab6f72727690267",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "aspect-ratio",
+      "images": [
+        {
+          "file": "artifacts/production-docs/aspect-ratio-1440-light.png",
+          "sha256": "9f104cf56448fc32ae7c2ec4d7088ab048a26757dffb5bcd5f625725be92300a",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/aspect-ratio-360-dark.png",
+          "sha256": "4ed3b06c3ecc5f263ca5c8f3a7a59d8b1aa01a4993e0cd0dbf8227304a831be4",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "attachment",
+      "images": [
+        {
+          "file": "artifacts/production-docs/attachment-1440-light.png",
+          "sha256": "85e8f0d1b935eb01c94d3e0dfcb3377650b3b4eb2557903f7ea83304e9bc4457",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/attachment-360-dark.png",
+          "sha256": "f08a159779140f7deebd1d5f6e1d9778af71541efbc28b37d5871297001dcdaf",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "avatar",
+      "images": [
+        {
+          "file": "artifacts/production-docs/avatar-1440-light.png",
+          "sha256": "2dc13b0eda763dee7db31c4dd3317c3e3173d114e509cd8ec1c7c53cae8a6d8a",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/avatar-360-dark.png",
+          "sha256": "f80f71687a47c41014b62f505741e94965707f98c801dd26be028ac69826623f",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "badge",
+      "images": [
+        {
+          "file": "artifacts/production-docs/badge-1440-light.png",
+          "sha256": "01e3de1d94cfcfec9924e0db926fccfe3dba582a0517a6d0784411382b961159",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/badge-360-dark.png",
+          "sha256": "98ea8c6e312483df1ff2a1c662c2d30fad8afddb48f1b9d9f4b553813b3db9e9",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "breadcrumb",
+      "images": [
+        {
+          "file": "artifacts/production-docs/breadcrumb-1440-light.png",
+          "sha256": "919efac33b06f715a3f668f5cc73222f9ca5bc4afb359761c9e402ce75fc79c5",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/breadcrumb-360-dark.png",
+          "sha256": "8b67d069295a4019702b6482475918b51346d70b0bd432162237588581855d9d",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "bubble",
+      "images": [
+        {
+          "file": "artifacts/production-docs/bubble-1440-light.png",
+          "sha256": "c67a049b3ed3872201909412ebcedcf42b35532d6cebb546a47a34c0a91c029c",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/bubble-360-dark.png",
+          "sha256": "ade2c4fa7f1677a56be674781cf703261f964d30d9cfdc79506a9f1550c8ddc6",
+          "reviewed": true
+        }
+      ],
+      "result": "Previously assigned contrast issue, not duplicated"
+    },
+    {
+      "id": "button",
+      "images": [
+        {
+          "file": "artifacts/production-docs/button-1440-light.png",
+          "sha256": "0c6b852b9e439216490e278fd88dc8cb8ef8421104c28c0ebc101506c0517026",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/button-360-dark.png",
+          "sha256": "481af221ea098d85a739d54fd0d5e77f071ba3a9e515a9f06c5004851d9f6860",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "button-group",
+      "images": [
+        {
+          "file": "artifacts/production-docs/button-group-1440-light.png",
+          "sha256": "86b3eeb53a7b30062ba09e732e915c82cfe0b512cff674e0e750ba25a176d9d8",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/button-group-360-dark.png",
+          "sha256": "a1f808b034e3159ffc3c1f9a381eb021e7ecb86f68ac8a89bb24619b9282c317",
+          "reviewed": true
+        }
+      ],
+      "result": "V2: dark selected state indistinguishable; assigned to this agent"
+    },
+    {
+      "id": "calendar",
+      "images": [
+        {
+          "file": "artifacts/production-docs/calendar-1440-light.png",
+          "sha256": "a376166b75bbd3be013fc9851c1e860ad706b7ec1fc2c6063fb83d186796a8dd",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/calendar-360-dark.png",
+          "sha256": "1d8a2e38c151c41ce63775aef282cdc89a9df97b1d284b0b52e10ec757f66bcb",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "card",
+      "images": [
+        {
+          "file": "artifacts/production-docs/card-1440-light.png",
+          "sha256": "4d9e48c75f386a659f7ab4740b30c7fba140114dc2efcc39a00cbaed3bb5572b",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/card-360-dark.png",
+          "sha256": "b88465e249c5f6e1b1d04e7724656b4ff74faec83655432c332d08df51489f7b",
+          "reviewed": true
+        }
+      ],
+      "result": "Previously assigned contrast issue, not duplicated"
+    },
+    {
+      "id": "carousel",
+      "images": [
+        {
+          "file": "artifacts/production-docs/carousel-1440-light.png",
+          "sha256": "05b2c58761149b5bf5699ab48daac99b38dede8120005959a7966cee95aa4858",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/carousel-360-dark.png",
+          "sha256": "eb90c93700afc65b302a4630190dc7b1beead7d58bc4e3a3064f400355d36430",
+          "reviewed": true
+        }
+      ],
+      "result": "Card-derived contrast falls under existing assigned issue"
+    },
+    {
+      "id": "chart",
+      "images": [
+        {
+          "file": "artifacts/production-docs/chart-1440-light.png",
+          "sha256": "82bacdf59c0dea991ed4621beba8c581706835a1b02ee75772b70e176cfbbd8b",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/chart-360-dark.png",
+          "sha256": "6ec8dccb696e69b1ecbe5a4d42fb102eb00388903bcd40ce830013eeeafd5947",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "checkbox",
+      "images": [
+        {
+          "file": "artifacts/production-docs/checkbox-1440-light.png",
+          "sha256": "dae665ffe654ccdff1243fdcb912da2580faee5cf594917d0497a320c31e13cb",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/checkbox-360-dark.png",
+          "sha256": "87482cd70d31787cf27330878a42bdd9412aac13cf6788300576aba93e96461f",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "code-block",
+      "images": [
+        {
+          "file": "artifacts/production-docs/code-block-1440-light.png",
+          "sha256": "0a9eeb91072faccecbb589515d7d16f9583df1d7eaf2b84954a4bbe269dbd36f",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/code-block-360-dark.png",
+          "sha256": "c649c0a15a897a38eb0eaa06fb1b79751e09bf30acc0bdd53167cfa352a272c9",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "collapsible",
+      "images": [
+        {
+          "file": "artifacts/production-docs/collapsible-1440-light.png",
+          "sha256": "d921acdfecf655d90c1bfb0dd444bb52daf7db38f5124d7c66e3c88c6b8be90d",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/collapsible-360-dark.png",
+          "sha256": "2e5f954653156ef0bc67714fd33a618dd51428e1e01349748ec7bfb5ce78b5ae",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "combobox",
+      "images": [
+        {
+          "file": "artifacts/production-docs/combobox-1440-light.png",
+          "sha256": "953c083e1f8db096f31575d0b18c827b68ba6c9e109168803df569aa855e0305",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/combobox-360-dark.png",
+          "sha256": "e41dc9ee595a1a305e274dfcca59b2f82a40368865f4a07365e08f324629e430",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "command",
+      "images": [
+        {
+          "file": "artifacts/production-docs/command-1440-light.png",
+          "sha256": "a62fb1ee8f4ad444424dbbc395638f55ba2273dfe9b3814e688260ef6c4cb64c",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/command-360-dark.png",
+          "sha256": "a88a94b9810570f0b649c340aad9d4d393be30d6ca62d582582acf55781ca348",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "context-menu",
+      "images": [
+        {
+          "file": "artifacts/production-docs/context-menu-1440-light.png",
+          "sha256": "60e475e28fcccdf5ffcca370b53b0738a261c452f16eaed0fdadfd4eeab3d02b",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/context-menu-360-dark.png",
+          "sha256": "8de7a352919a24b3072b8d5c9692720d2ea1a06649a865fb183f5f02c1b7021b",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "data-table",
+      "images": [
+        {
+          "file": "artifacts/production-docs/data-table-1440-light.png",
+          "sha256": "ce9fa43836fcbcc0a4eee47561529b8cfc06efcfaecfefbe89d45b8c8dc2ee64",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/data-table-360-dark.png",
+          "sha256": "e91f26ad9ea47396235bb2b474bc7bae818784f22d5c016ebf99964625ea2dc4",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "date-picker",
+      "images": [
+        {
+          "file": "artifacts/production-docs/date-picker-1440-light.png",
+          "sha256": "089715ca21b1a1eba4f6673fb231a135d1eef0c706d2e388fc3be001d48032c2",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/date-picker-360-dark.png",
+          "sha256": "0e4f9867b9d51bfd9af39b2c5a33ee1c703d133c60636d5a595aea43aeacbb20",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "dialog",
+      "images": [
+        {
+          "file": "artifacts/production-docs/dialog-1440-light.png",
+          "sha256": "3252de3847d7e1b3863f8f23cbdcacb68c543846004772a0c8886b5789990e01",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/dialog-360-dark.png",
+          "sha256": "d00f45eae0b5a80e8a21f10053b5d30228dab5031646ffe3dd45c37d3278cd4e",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "direction",
+      "images": [
+        {
+          "file": "artifacts/production-docs/direction-1440-light.png",
+          "sha256": "bfac753913a5904b5a4679eb95c27cc7a5f7081bb9cb5722ae076b78fabf2706",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/direction-360-dark.png",
+          "sha256": "cd7449a71a4dc059644144a7eb74d8b3ff7efb93edba975acda58eb0a3eee678",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "drawer",
+      "images": [
+        {
+          "file": "artifacts/production-docs/drawer-1440-light.png",
+          "sha256": "df9f1bd7644a1596b8f3ee3ca909f340f4ce5bd5d4643efd75703377f2d5d933",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/drawer-360-dark.png",
+          "sha256": "908672c9314fac0ab385faf0e0889066ef89104ef8991a26ff876161ec32a3b4",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "dropdown-menu",
+      "images": [
+        {
+          "file": "artifacts/production-docs/dropdown-menu-1440-light.png",
+          "sha256": "e9ff7f08222557c38cb09ff260437599ddde6f3cb7676c012cad904ad6dfc929",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/dropdown-menu-360-dark.png",
+          "sha256": "468ff655f5457c0dc8b4020832e0902b7ae1f06b6de570ea115d90746428e735",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "dropzone",
+      "images": [
+        {
+          "file": "artifacts/production-docs/dropzone-1440-light.png",
+          "sha256": "ae2ccc871705a1c04e8ea2059fc56a95bbee9bf64eb121ac6c288f35ce3b3fbd",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/dropzone-360-dark.png",
+          "sha256": "1b0b964f194cb901c91f91535b878a7d099df57608f5eb59119f432ae89777ed",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "empty",
+      "images": [
+        {
+          "file": "artifacts/production-docs/empty-1440-light.png",
+          "sha256": "7c5b453c9832f183674f3c2ab9ac68ea847a8e71ea6dae407e4b266f7f1c7f62",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/empty-360-dark.png",
+          "sha256": "061f0579d3db0e80f6a9f6437f431a0913493daa9cecf5e5adb86ec53909e12a",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "field",
+      "images": [
+        {
+          "file": "artifacts/production-docs/field-1440-light.png",
+          "sha256": "8edc8aa3e564b7792ad3bd76623f311a5905694c3bb6df20dfadecf1414ed981",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/field-360-dark.png",
+          "sha256": "d090281ca5eaf6ee07c85354808e6614c1843e107d92ca6827f3d72ed017b840",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "hover-card",
+      "images": [
+        {
+          "file": "artifacts/production-docs/hover-card-1440-light.png",
+          "sha256": "b4a11cdf661227f371bb65e7be3c7ffd7fe8d150e2bb6c08cb01b12ed247dbc8",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/hover-card-360-dark.png",
+          "sha256": "666d1efd9c5f1e09ce3ca9c7affeb9038559eb972f32a8cf861fc7db4772dde1",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "icon",
+      "images": [
+        {
+          "file": "artifacts/production-docs/icon-1440-light.png",
+          "sha256": "d3b34f1caf3e43870cfe975c5c08e19e48be6e6e11c3b39ea0c4ca69fd33d971",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/icon-360-dark.png",
+          "sha256": "bc652dfbdd4dcc9cee331c0d5d569c00f9929cfa134295f400ca54ae26ec2a76",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "input",
+      "images": [
+        {
+          "file": "artifacts/production-docs/input-1440-light.png",
+          "sha256": "ed200e041890680a95f495906051b64386120fe9d4fe64032fd68936f1afc63d",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/input-360-dark.png",
+          "sha256": "1f49ddb212bc24e3b6905b79830db6b6866e2b507591a7b745de38a8efcf1c68",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "input-group",
+      "images": [
+        {
+          "file": "artifacts/production-docs/input-group-1440-light.png",
+          "sha256": "c094153b1c23d34530e7eac2171f764472d0153f28e977468dc1f7352e3ac221",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/input-group-360-dark.png",
+          "sha256": "efd9dd85a8835819519514142c2263cd078345438a21e9ed8ddbc6cdcc0db973",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "input-otp",
+      "images": [
+        {
+          "file": "artifacts/production-docs/input-otp-1440-light.png",
+          "sha256": "96921d7b0d1994f99dfcd40831d75660f5821f5deeba91b52944009a1f02105e",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/input-otp-360-dark.png",
+          "sha256": "3aa7051a289b6d88e0ed5bb28cd0b7d8447467cf52fbb357cb0ab1c6578322c7",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "item",
+      "images": [
+        {
+          "file": "artifacts/production-docs/item-1440-light.png",
+          "sha256": "bc0449f994c30cfc277b631d5da3235486f0422c8c57bae658c70e6c1268d5d1",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/item-360-dark.png",
+          "sha256": "f88b476491f8eb90e0381328ee31cdc5327ac5ac053dbeb50319b0d1b76155d8",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "kbd",
+      "images": [
+        {
+          "file": "artifacts/production-docs/kbd-1440-light.png",
+          "sha256": "0bf21202d356216df13a46592c8957dba2b05e68b81f2ed644db67719afcf056",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/kbd-360-dark.png",
+          "sha256": "c19c6ab9b99d22f2e08ff92b4c612cc41bd79408e7b5060afeee3a790791151a",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "label",
+      "images": [
+        {
+          "file": "artifacts/production-docs/label-1440-light.png",
+          "sha256": "69e2e9cb9e1186cc91b204898c6d72f3fd285a26495ce02dc78d13f38a18ed9b",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/label-360-dark.png",
+          "sha256": "69e5c192a1535554b9039f56da70334c94c8a8d2a7949655c8251bcc268b45d4",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "marker",
+      "images": [
+        {
+          "file": "artifacts/production-docs/marker-1440-light.png",
+          "sha256": "13135f528558d338cfaeabfd792af265fa56b7eb6e7abaedac4151b8126e177f",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/marker-360-dark.png",
+          "sha256": "4c2bf7c4f3ddffed9f6db98a4e717da8742542cb2231cc6c33bc1a43e1a88507",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "marquee",
+      "images": [
+        {
+          "file": "artifacts/production-docs/marquee-1440-light.png",
+          "sha256": "779d9f93ba346c754b52fa32abaad8cc621d88a98926129c136ce81851c78124",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/marquee-360-dark.png",
+          "sha256": "e9dcba23b00dbe0d8d0a4c82cd6f0b8810027effaab57719560b070c62a2e1ec",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "menubar",
+      "images": [
+        {
+          "file": "artifacts/production-docs/menubar-1440-light.png",
+          "sha256": "48e27cd51325ac57b82e940b50d237f55725d8f17daa573128475334b56cc82b",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/menubar-360-dark.png",
+          "sha256": "1fabefa8e2a0b6463f2561a6979e38b626e3517c28e9f3d6756f6a9ba9db5851",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "message",
+      "images": [
+        {
+          "file": "artifacts/production-docs/message-1440-light.png",
+          "sha256": "56da7f8fb1164ccbf40f7d30a1ae2210d982460a11743d1bfa8cca9981a455b0",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/message-360-dark.png",
+          "sha256": "da17ab3424d1b5b0f5f334de7929425c8075c1098d81cca4c35ce8e8b877a158",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "message-scroller",
+      "images": [
+        {
+          "file": "artifacts/production-docs/message-scroller-1440-light.png",
+          "sha256": "250f1ee2984c6e2813ec27f6823e4f6502f7cfc1514f3640033d4f4c8cd6da53",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/message-scroller-360-dark.png",
+          "sha256": "fc0244222434a0c08e620d1576371a42797d7c8377dbe8253918458fb908df0d",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "multi-select",
+      "images": [
+        {
+          "file": "artifacts/production-docs/multi-select-1440-light.png",
+          "sha256": "78a36ac560e727e1c47f878568c943fb80b121b995ff085889fd82cf0bc9fbf8",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/multi-select-360-dark.png",
+          "sha256": "3a857ee018aa9df2fb0cfb2524e6c547bd5ae5519b133bcd0dfb53981beb1cfc",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "native-select",
+      "images": [
+        {
+          "file": "artifacts/production-docs/native-select-1440-light.png",
+          "sha256": "3cc95a4fbd4332299f53dd1a331870f01510aae6466ff7e84bc840976ce3b29b",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/native-select-360-dark.png",
+          "sha256": "ca77bb8d21fa09714017456d19346dd74cdac89f50ae70a984018cca83f0f238",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "navigation-menu",
+      "images": [
+        {
+          "file": "artifacts/production-docs/navigation-menu-1440-light.png",
+          "sha256": "c0ec4dc91665117639914ee1a1f92c776c75d9bbb0d1686c2b91c310822967dd",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/navigation-menu-360-dark.png",
+          "sha256": "c213d4deb0bbb3b0e3048a391df5535038af7cd4bf0b1048c9094cf9250eae5c",
+          "reviewed": true
+        }
+      ],
+      "result": "V3: pale count labels on pink; reported to root"
+    },
+    {
+      "id": "pagination",
+      "images": [
+        {
+          "file": "artifacts/production-docs/pagination-1440-light.png",
+          "sha256": "2b52a6dca678ee39e1fef7b329a06009b8f7d48cee54ec54558a235ff28bd3ff",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/pagination-360-dark.png",
+          "sha256": "a1c3661b3782e0270f553cc085a60a095ca1a4699e029ae8d61a145d40b92e6b",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "popover",
+      "images": [
+        {
+          "file": "artifacts/production-docs/popover-1440-light.png",
+          "sha256": "35cd9e01bb1b9540f4e78cb8f2b92b8fbdfaf616b4c1123dd5d91e842b7a00f7",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/popover-360-dark.png",
+          "sha256": "f12826eab6de047660620a084bb7be6c4b09e4f0ebf3954daae5718f2d904a78",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "preview",
+      "images": [
+        {
+          "file": "artifacts/production-docs/preview-1440-light.png",
+          "sha256": "3c20193014ce669b8dcd6b0f6f070a6fcddc44dae836b38a8de860bd3d6358bf",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/preview-360-dark.png",
+          "sha256": "12581801159deb052985dff28cf701b7830721e8195044308be4b278c5f856ad",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "progress",
+      "images": [
+        {
+          "file": "artifacts/production-docs/progress-1440-light.png",
+          "sha256": "50710bbf740a7bc4a87cf8caf2509c0f8b8b1acf7f470995da7d778d7a723cf6",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/progress-360-dark.png",
+          "sha256": "aea2aa9cf1866e7d2c533636263459f590298e55dc8a7e9080d1cea29fe83245",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "questionnaire",
+      "images": [
+        {
+          "file": "artifacts/production-docs/questionnaire-1440-light.png",
+          "sha256": "dc757ae03c06db3d6fe2bbd12f9959c9d6de4c30db30518377fda078c02e899f",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/questionnaire-360-dark.png",
+          "sha256": "372da736de60d3db147e5f2c6525d4672dd44e58097ad9139abf57a3610cd24c",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "radio-group",
+      "images": [
+        {
+          "file": "artifacts/production-docs/radio-group-1440-light.png",
+          "sha256": "21b7580b7553ac3ca289c4df257139daa2dd53dfc37746aa9744c8e3379d0542",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/radio-group-360-dark.png",
+          "sha256": "ac338f5feeb0a964af8bc4987c643a43c32ab38fb7aab8a1f47c5467e6a83082",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "resizable",
+      "images": [
+        {
+          "file": "artifacts/production-docs/resizable-1440-light.png",
+          "sha256": "6c152b62a04cfef79ce376a57735525200a09edd7d7ffa61539e43dabaaf12a2",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/resizable-360-dark.png",
+          "sha256": "9dae276fa863b726109643f4ad0d232305f8e1ac76b2e294e9a8cb944f22ec1d",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "scroll-area",
+      "images": [
+        {
+          "file": "artifacts/production-docs/scroll-area-1440-light.png",
+          "sha256": "31518ec47d426b849c2f2500c21b74980cd2fd3338ca10f77359bf3292f9fd49",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/scroll-area-360-dark.png",
+          "sha256": "120a9a6a80770f0a6be2c50e01f60558eaa7e75d5a22f50a019b7454ae6dc27b",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "select",
+      "images": [
+        {
+          "file": "artifacts/production-docs/select-1440-light.png",
+          "sha256": "07d1e7d718b0778be434f9d1592d65d17e68845af0c3503ac89cc9181b9bdcdc",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/select-360-dark.png",
+          "sha256": "f1861aae6a04a24c4126810e8f07adfbc50563bb39b5c379c2eb72abc1ec18ab",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "separator",
+      "images": [
+        {
+          "file": "artifacts/production-docs/separator-1440-light.png",
+          "sha256": "91742500fc745146b953ade8fd8275333feaeba3d0f46ec45f9b4c2333454978",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/separator-360-dark.png",
+          "sha256": "5f27edf685cc4990f87968f87f06e67896e52a39a0abaf58107ff7e46f3c339c",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "shape",
+      "images": [
+        {
+          "file": "artifacts/production-docs/shape-1440-light.png",
+          "sha256": "6ec5063d91bfb8d21067d3c934fe8b505ce75acdc956040498fcd8084c7b660d",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/shape-360-dark.png",
+          "sha256": "0f0bd41282ff0118285ecaa1af9a52ac9fec777ea2149b31f396e78a8d63e3a4",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "shape-scene",
+      "images": [
+        {
+          "file": "artifacts/production-docs/shape-scene-1440-light.png",
+          "sha256": "9b42753575b1a8d4cd1113f3cadaf80e2ce6bdebde6ee4bb742417735b8dffae",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/shape-scene-360-dark.png",
+          "sha256": "33d6e6cd1679f87a2f1cc98f47a3a9971daa9ec25a6ae700a77a78873c5e566a",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "sheet",
+      "images": [
+        {
+          "file": "artifacts/production-docs/sheet-1440-light.png",
+          "sha256": "d3ec14cf181a2d48588c712afa07c396693ccbef21a22cd22a31c19599230d3e",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/sheet-360-dark.png",
+          "sha256": "7ca6dda9fcee95df24f2c93aef891311b1dcae5bb13f6891652d91cc7d8c9197",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "sidebar",
+      "images": [
+        {
+          "file": "artifacts/production-docs/sidebar-1440-light.png",
+          "sha256": "c66ee4c375f4689db8076780a5a816060223284548b41037deea31c5bba936f6",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/sidebar-360-dark.png",
+          "sha256": "5929c72116f9af1cf93ab3cbd6f4e5a886bec2aa6372efd0acb88e39705e8e54",
+          "reviewed": true
+        }
+      ],
+      "result": "V4: pale collapse chevron on pink; reported to root"
+    },
+    {
+      "id": "skeleton",
+      "images": [
+        {
+          "file": "artifacts/production-docs/skeleton-1440-light.png",
+          "sha256": "c8210da730444fce012dfbf471d3d73d46448c457a7f734226596e0696950801",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/skeleton-360-dark.png",
+          "sha256": "542875cb3e2827422e5c087d7399e42fd04de07c9f67c79e9a850507b04914ad",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "slider",
+      "images": [
+        {
+          "file": "artifacts/production-docs/slider-1440-light.png",
+          "sha256": "feb0524a1bb30876cac2014d4cb56be6393f4ee9d8922b9b8ccd2b0babd58b23",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/slider-360-dark.png",
+          "sha256": "462aa1c1cecb43c0a4d73a0773f439899cf5016b25be5d7ab685445194ee5907",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "spinner",
+      "images": [
+        {
+          "file": "artifacts/production-docs/spinner-1440-light.png",
+          "sha256": "885366118add97312162acab818dc83a4854c01c777ef49a5d85811680f5d213",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/spinner-360-dark.png",
+          "sha256": "ba65cf3c3afb7fda19f1dc531ba5c148bbda623443453e61ad3d51b6f1d1421c",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "stepper",
+      "images": [
+        {
+          "file": "artifacts/production-docs/stepper-1440-light.png",
+          "sha256": "91676637a79d4996d7816049488804dddb3ce8b9d26575f9992dd83dc2be2abb",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/stepper-360-dark.png",
+          "sha256": "2572b0f03503374c75ef66267f7cbb3ecfc8a27b61b99be5691416c20902a7d0",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "switch",
+      "images": [
+        {
+          "file": "artifacts/production-docs/switch-1440-light.png",
+          "sha256": "fa7edd7729dcb9c96f94e1afebe88161f59e9b8e9ab55c7752c37abca52354d1",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/switch-360-dark.png",
+          "sha256": "2e06d518b58364f3feaf46ea43bddc1b1cfb97353325570489757a5c7c1a9b36",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "table",
+      "images": [
+        {
+          "file": "artifacts/production-docs/table-1440-light.png",
+          "sha256": "5f88245b3deba03b64f2f4fc8790e3b69a8b415a16e01ff97c1e954d98fbeff5",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/table-360-dark.png",
+          "sha256": "0937c7954882e2054f24ab13656682fc379c00a551221047b0f41fa2db73f44b",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "tabs",
+      "images": [
+        {
+          "file": "artifacts/production-docs/tabs-1440-light.png",
+          "sha256": "2ee2240d016ccb6e367998f8ccf5803615bc77e4b4d83c7fc910a78678294c41",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/tabs-360-dark.png",
+          "sha256": "eeb38726f2b9f118d4053071f03e94c763face40994119e3a11ebd26993e5d9e",
+          "reviewed": true
+        }
+      ],
+      "result": "V5: default tabs have no padding; reported to root"
+    },
+    {
+      "id": "text-reveal",
+      "images": [
+        {
+          "file": "artifacts/production-docs/text-reveal-1440-light.png",
+          "sha256": "4cfb8ff5f0146d5f203506954a6ad090121486264bdbdaac71ec01a43fe68c03",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/text-reveal-360-dark.png",
+          "sha256": "2caa3493bc347732d48ba31fea8ab802e7b2e48fe2fbcc271585dd2873b6abaa",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "textarea",
+      "images": [
+        {
+          "file": "artifacts/production-docs/textarea-1440-light.png",
+          "sha256": "873581f0dfd81747e9a39a9a46972df582d882539cef233dbe870ee3b1c1429e",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/textarea-360-dark.png",
+          "sha256": "bbf99d4cb2f432b1ce1a5232a3f00a3f959544f26a2bc00633efbb3bd81ebe23",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "toast",
+      "images": [
+        {
+          "file": "artifacts/production-docs/toast-1440-light.png",
+          "sha256": "707378f58c08db18ec68830a7c3f2fb3ce92573d46b77f3802065e5595d7046e",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/toast-360-dark.png",
+          "sha256": "9c7a020ba0cc1195ce590ce2343bdb9e9d105409d53e3167b586f59f4d5a04cc",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "toggle",
+      "images": [
+        {
+          "file": "artifacts/production-docs/toggle-1440-light.png",
+          "sha256": "e7720b8078daf3ac4f39c1c34624223427731de17aa057b245df3681bf94290a",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/toggle-360-dark.png",
+          "sha256": "1142a7500eda3ca78d6614b11223c15c2c9c0db8d8c8956827d142314f8a0380",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "toggle-group",
+      "images": [
+        {
+          "file": "artifacts/production-docs/toggle-group-1440-light.png",
+          "sha256": "fbb8276bc138837180c0ca3f0d4b3e8b5f65df4ba0115ac0031b136675d349a6",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/toggle-group-360-dark.png",
+          "sha256": "ddfe81ab74c008ef3b6f959c6aec0ce56cba289cb0c86211b1d68cb8c206e352",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "tooltip",
+      "images": [
+        {
+          "file": "artifacts/production-docs/tooltip-1440-light.png",
+          "sha256": "f5b3f02923acf9f77d83699c471e7aed61eeb7c32af8b331a6565c3eafbe46b3",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/tooltip-360-dark.png",
+          "sha256": "1f342b7ac5f17789bd796c6228899316edc5a721e22d06a420975588e85a6ff0",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    },
+    {
+      "id": "typography",
+      "images": [
+        {
+          "file": "artifacts/production-docs/typography-1440-light.png",
+          "sha256": "87364ca84e6f415e5db522fc0a565c92e72e1ea2740c08ac02c6610dd01ec1d9",
+          "reviewed": true
+        },
+        {
+          "file": "artifacts/production-docs/typography-360-dark.png",
+          "sha256": "d562d0dd503ede3e55c340935638746ac0172c6674bca49d9cd66eee4d126dcf",
+          "reviewed": true
+        }
+      ],
+      "result": "No new concrete issue visible in the reviewed default viewports"
+    }
+  ]
+}

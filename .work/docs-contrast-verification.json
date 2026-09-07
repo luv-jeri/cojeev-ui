@@ -1,0 +1,982 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "theme": "light",
+      "motion": "subtle",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            238,
+            231,
+            218
+          ],
+          "contrast": 15.940456589172614,
+          "descriptionContrast": 9.183618765041267,
+          "actionContrast": 15.940456589172614
+        },
+        {
+          "variant": "info",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            230,
+            232,
+            232
+          ],
+          "contrast": 15.93513419754211,
+          "descriptionContrast": 9.180552427801842,
+          "actionContrast": 15.93513419754211
+        },
+        {
+          "variant": "ok",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            225,
+            225,
+            196
+          ],
+          "contrast": 14.718207918300836,
+          "descriptionContrast": 8.479456637277057,
+          "actionContrast": 14.718207918300836
+        },
+        {
+          "variant": "warn",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            249,
+            235,
+            191
+          ],
+          "contrast": 16.486869177663895,
+          "descriptionContrast": 9.498418085440392,
+          "actionContrast": 16.486869177663895
+        },
+        {
+          "variant": "danger",
+          "color": [
+            168,
+            48,
+            43
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            251,
+            223,
+            208
+          ],
+          "contrast": 5.30569606535014,
+          "descriptionContrast": 8.909126535426283,
+          "actionContrast": 15.464006991014326
+        },
+        {
+          "variant": "pink",
+          "color": [
+            17,
+            17,
+            17
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            17,
+            17,
+            17
+          ],
+          "surface": [
+            245,
+            184,
+            219
+          ],
+          "contrast": 11.475133633542155,
+          "descriptionContrast": 6.8624118292880745,
+          "actionContrast": 11.475133633542155
+        }
+      ],
+      "initial": {
+        "pill": "rgb(26, 23, 20)",
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          }
+        ]
+      },
+      "pointer": {
+        "pill": "rgb(26, 23, 20)",
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Week",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Month",
+            "selected": true,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          }
+        ]
+      },
+      "keyboard": {
+        "pill": "rgb(26, 23, 20)",
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          }
+        ]
+      },
+      "pinkHover": {
+        "color": [
+          17,
+          17,
+          17
+        ],
+        "background": [
+          214,
+          161,
+          191
+        ],
+        "contrast": 8.730712336830848
+      }
+    },
+    {
+      "theme": "light",
+      "motion": "off",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            238,
+            231,
+            218
+          ],
+          "contrast": 15.940456589172614,
+          "descriptionContrast": 9.183618765041267,
+          "actionContrast": 15.940456589172614
+        },
+        {
+          "variant": "info",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            230,
+            232,
+            232
+          ],
+          "contrast": 15.93513419754211,
+          "descriptionContrast": 9.180552427801842,
+          "actionContrast": 15.93513419754211
+        },
+        {
+          "variant": "ok",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            225,
+            225,
+            196
+          ],
+          "contrast": 14.718207918300836,
+          "descriptionContrast": 8.479456637277057,
+          "actionContrast": 14.718207918300836
+        },
+        {
+          "variant": "warn",
+          "color": [
+            14,
+            11,
+            11
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            249,
+            235,
+            191
+          ],
+          "contrast": 16.486869177663895,
+          "descriptionContrast": 9.498418085440392,
+          "actionContrast": 16.486869177663895
+        },
+        {
+          "variant": "danger",
+          "color": [
+            168,
+            48,
+            43
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            14,
+            11,
+            11
+          ],
+          "surface": [
+            251,
+            223,
+            208
+          ],
+          "contrast": 5.30569606535014,
+          "descriptionContrast": 8.909126535426283,
+          "actionContrast": 15.464006991014326
+        },
+        {
+          "variant": "pink",
+          "color": [
+            17,
+            17,
+            17
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            17,
+            17,
+            17
+          ],
+          "surface": [
+            245,
+            184,
+            219
+          ],
+          "contrast": 11.475133633542155,
+          "descriptionContrast": 6.8624118292880745,
+          "actionContrast": 11.475133633542155
+        }
+      ],
+      "initial": {
+        "pill": null,
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgb(17, 17, 17)",
+            "color": "rgb(251, 244, 230)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          }
+        ]
+      },
+      "pointer": {
+        "pill": null,
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Week",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Month",
+            "selected": true,
+            "background": "rgb(17, 17, 17)",
+            "color": "rgb(251, 244, 230)"
+          }
+        ]
+      },
+      "keyboard": {
+        "pill": null,
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgb(17, 17, 17)",
+            "color": "rgb(251, 244, 230)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 91, 85)"
+          }
+        ]
+      },
+      "pinkHover": {
+        "color": [
+          17,
+          17,
+          17
+        ],
+        "background": [
+          214,
+          161,
+          191
+        ],
+        "contrast": 8.730712336830848
+      }
+    },
+    {
+      "theme": "dark",
+      "motion": "subtle",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            34,
+            31,
+            27
+          ],
+          "contrast": 14.348203084289826,
+          "descriptionContrast": 7.313028012162567,
+          "actionContrast": 14.348203084289826
+        },
+        {
+          "variant": "info",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            48,
+            49,
+            51
+          ],
+          "contrast": 11.38598598426883,
+          "descriptionContrast": 5.803237796391256,
+          "actionContrast": 11.38598598426883
+        },
+        {
+          "variant": "ok",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            44,
+            44,
+            32
+          ],
+          "contrast": 12.339110776364326,
+          "descriptionContrast": 6.289028822816917,
+          "actionContrast": 12.339110776364326
+        },
+        {
+          "variant": "warn",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            52,
+            47,
+            32
+          ],
+          "contrast": 11.670572739688467,
+          "descriptionContrast": 5.9482866852345575,
+          "actionContrast": 11.670572739688467
+        },
+        {
+          "variant": "danger",
+          "color": [
+            240,
+            169,
+            156
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            52,
+            31,
+            25
+          ],
+          "contrast": 8.00880552814264,
+          "descriptionContrast": 6.902046848691781,
+          "actionContrast": 13.54185567423078
+        },
+        {
+          "variant": "pink",
+          "color": [
+            17,
+            17,
+            17
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            17,
+            17,
+            17
+          ],
+          "surface": [
+            245,
+            184,
+            219
+          ],
+          "contrast": 11.475133633542155,
+          "descriptionContrast": 6.8624118292880745,
+          "actionContrast": 11.475133633542155
+        }
+      ],
+      "initial": {
+        "pill": "rgb(245, 184, 219)",
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(17, 17, 17)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          }
+        ]
+      },
+      "pointer": {
+        "pill": "rgb(245, 184, 219)",
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Week",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Month",
+            "selected": true,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(17, 17, 17)"
+          }
+        ]
+      },
+      "keyboard": {
+        "pill": "rgb(245, 184, 219)",
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(17, 17, 17)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          }
+        ]
+      },
+      "pinkHover": {
+        "color": [
+          17,
+          17,
+          17
+        ],
+        "background": [
+          214,
+          161,
+          191
+        ],
+        "contrast": 8.730712336830848
+      }
+    },
+    {
+      "theme": "dark",
+      "motion": "off",
+      "alerts": [
+        {
+          "variant": "default",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            34,
+            31,
+            27
+          ],
+          "contrast": 14.348203084289826,
+          "descriptionContrast": 7.313028012162567,
+          "actionContrast": 14.348203084289826
+        },
+        {
+          "variant": "info",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            48,
+            49,
+            51
+          ],
+          "contrast": 11.38598598426883,
+          "descriptionContrast": 5.803237796391256,
+          "actionContrast": 11.38598598426883
+        },
+        {
+          "variant": "ok",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            44,
+            44,
+            32
+          ],
+          "contrast": 12.339110776364326,
+          "descriptionContrast": 6.289028822816917,
+          "actionContrast": 12.339110776364326
+        },
+        {
+          "variant": "warn",
+          "color": [
+            246,
+            239,
+            226
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            52,
+            47,
+            32
+          ],
+          "contrast": 11.670572739688467,
+          "descriptionContrast": 5.9482866852345575,
+          "actionContrast": 11.670572739688467
+        },
+        {
+          "variant": "danger",
+          "color": [
+            240,
+            169,
+            156
+          ],
+          "description": [
+            181,
+            172,
+            158
+          ],
+          "action": [
+            246,
+            239,
+            226
+          ],
+          "surface": [
+            52,
+            31,
+            25
+          ],
+          "contrast": 8.00880552814264,
+          "descriptionContrast": 6.902046848691781,
+          "actionContrast": 13.54185567423078
+        },
+        {
+          "variant": "pink",
+          "color": [
+            17,
+            17,
+            17
+          ],
+          "description": [
+            62,
+            58,
+            52
+          ],
+          "action": [
+            17,
+            17,
+            17
+          ],
+          "surface": [
+            245,
+            184,
+            219
+          ],
+          "contrast": 11.475133633542155,
+          "descriptionContrast": 6.8624118292880745,
+          "actionContrast": 11.475133633542155
+        }
+      ],
+      "initial": {
+        "pill": null,
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgb(245, 184, 219)",
+            "color": "rgb(17, 17, 17)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          }
+        ]
+      },
+      "pointer": {
+        "pill": null,
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Week",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Month",
+            "selected": true,
+            "background": "rgb(245, 184, 219)",
+            "color": "rgb(17, 17, 17)"
+          }
+        ]
+      },
+      "keyboard": {
+        "pill": null,
+        "buttons": [
+          {
+            "text": "Day",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          },
+          {
+            "text": "Week",
+            "selected": true,
+            "background": "rgb(245, 184, 219)",
+            "color": "rgb(17, 17, 17)"
+          },
+          {
+            "text": "Month",
+            "selected": false,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(246, 239, 226)"
+          }
+        ]
+      },
+      "pinkHover": {
+        "color": [
+          17,
+          17,
+          17
+        ],
+        "background": [
+          214,
+          161,
+          191
+        ],
+        "contrast": 8.730712336830848
+      }
+    }
+  ],
+  "errors": []
+}
