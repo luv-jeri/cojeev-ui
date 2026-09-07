@@ -38,3 +38,16 @@ Deduplicated causes and owned corrections:
 - Textarea: four light rows had reload self disagreement, while cross images differed by0–2pixels and computed styles were exact. This remains a harness finding pending a bounded identical-case recheck; no product change is inferred.
 
 The owned CSS/TSX batch passes focused registry/fixture typecheck, changed TSX ESLint, CSS parsing with no important declarations, and whitespace checks. DataTable affected light/dark rest cases now pass all six widths with zero computed and pixel differences. Other changed-case verification follows the shared Button integration; this checkpoint does not claim those failures closed yet. The full-cascade blob-effects discrepancy remains open; engine-only parity remains separate.
+
+
+## Affected-case verification after the batch
+
+The follow-up checks pass 72 distinct targeted rows using the existing comparator and source self-agreement protocol: DataTable rest/light+dark12; NativeSelect default dark6; Sidebar collapsed/light+dark12; Textarea light6; ButtonGroup all four supplied states24; InputGroup light+dark12. These are affected-case checks on the integrated corrections, not a new all360 snapshot. DataTable on-state pages shared the corrected media rule and were not redundantly re-run. The historical360-row diagnostic remains unchanged.
+
+All targeted visible computed styles are exact. DataTable, NativeSelect, Sidebar, and light ButtonGroup comparisons have zero pixel differences. ButtonGroup dark retains small comparator deltas up to0.0179%; InputGroup up to0.0003%; Textarea up to0.0002%. These are within the pre-existing gate limit and are reported rather than described as zero. Textarea A/A and B/B now agree at every width without a product change; its original four unstable rows remain in the historical artifact.
+
+The last ButtonGroup on-state failures were a fixture issue: it deliberately removed every source aria-pressed attribute, reducing the two-pressed authored initial fixture to one. ButtonGroupFixture now preserves the initial attributes, then yields selection to the real production callback after the first action. A native browser pointer click on Month and keyboard Enter on Today exactly match original source pressed/active arrays, starting from the two-pressed fixture. Both sides report zero runtime errors. No new public API or substitute event behavior was introduced.
+
+Targeted artifacts are in gate-composed-batch-data-table, gate-composed-batch-native, gate-composed-batch-sidebar, gate-composed-textarea-self-recheck, gate-composed-batch-buttons, and gate-composed-button-group-initial. The last directory also contains live-events.json. The intermediate ButtonGroup on failures are preserved in gate-composed-batch-buttons and superseded by the separately recorded final fixture check.
+
+Remaining cross-owner work: Questionnaire's last-checked radio fixture and full-cascade dark selected-radio background are with the interactive owner. The full-cascade blob-effect discrepancy is still open; the earlier engine-style-only proof is separate. Actual docs Button pointer evidence remains the bounded measurement recorded in composed-field-motion-checkpoint.md, with higher docs workload and no reproduced frame stall.
