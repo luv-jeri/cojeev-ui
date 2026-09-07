@@ -1,0 +1,1660 @@
+{
+  "trace": [
+    {
+      "t": 630,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6498:33\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6535:19\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130"
+    },
+    {
+      "t": 630,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6499:31\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6535:19\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49"
+    },
+    {
+      "t": 632,
+      "text": "Browse",
+      "w": 373.484375,
+      "h": 32,
+      "offset": 373,
+      "x": 132.4375,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6498:33\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6535:19\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7680:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7680:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130"
+    },
+    {
+      "t": 632,
+      "text": "Browse",
+      "w": 373.484375,
+      "h": 32,
+      "offset": 373,
+      "x": 132.4375,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6499:31\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6535:19\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7680:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7680:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49"
+    },
+    {
+      "t": 686,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 686,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 686,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5891:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 687,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5891:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 780,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6498:33\nuseMorph.useLayoutEffect.sync@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6540:31\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6655:29\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49"
+    },
+    {
+      "t": 780,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6499:31\nuseMorph.useLayoutEffect.sync@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6540:31\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6655:29\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130"
+    },
+    {
+      "t": 881,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 881,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5891:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 938,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 1139,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 1206,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 1408,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 1457,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 1658,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 1724,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 1922,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 2022,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6498:33\nuseMorph.useLayoutEffect.unsubscribe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6556:34\nforEach@[native code]\npublish@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5358:22\nsaveSettings@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5483:12\nsetMotionMode@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5489:17\nuseControllableState.useCallback[setValue]@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4520:42\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4106:23\nexecuteDispatch@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10159:21\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\nprocessDispatchQueue@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10185:58\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10462:33\nbatchedUpdates$1@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:2044:46\ndispatchEventForPluginEventSystem@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10261:25\ndispatchEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12858:70\ndispatchDiscreteEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12840:77"
+    },
+    {
+      "t": 2022,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6499:31\nuseMorph.useLayoutEffect.unsubscribe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6556:34\nforEach@[native code]\npublish@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5358:22\nsaveSettings@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5483:12\nsetMotionMode@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5489:17\nuseControllableState.useCallback[setValue]@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4520:42\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4106:23\nexecuteDispatch@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10159:21\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\nprocessDispatchQueue@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10185:58\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10462:33\nbatchedUpdates$1@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:2044:46\ndispatchEventForPluginEventSystem@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10261:25\ndispatchEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12858:70\ndispatchDiscreteEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12840:77"
+    },
+    {
+      "t": 2023,
+      "text": "Browse",
+      "w": 373.484375,
+      "h": 32,
+      "offset": 373,
+      "x": 132.4375,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6498:33\nuseMorph.useLayoutEffect.unsubscribe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6556:34\nforEach@[native code]\npublish@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5358:22\nsaveSettings@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5483:12\nsetMotionMode@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5489:17\nuseControllableState.useCallback[setValue]@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4520:42\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4106:23\nexecuteDispatch@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10159:21\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\nprocessDispatchQueue@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10185:58\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10462:33\nbatchedUpdates$1@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:2044:46\ndispatchEventForPluginEventSystem@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10261:25\ndispatchEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12858:70\ndispatchDiscreteEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12840:77"
+    },
+    {
+      "t": 2023,
+      "text": "Browse",
+      "w": 373.484375,
+      "h": 32,
+      "offset": 373,
+      "x": 132.4375,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6499:31\nuseMorph.useLayoutEffect.unsubscribe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6556:34\nforEach@[native code]\npublish@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5358:22\nsaveSettings@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5483:12\nsetMotionMode@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5489:17\nuseControllableState.useCallback[setValue]@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4520:42\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_0zy8jgx._.js:4106:23\nexecuteDispatch@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10159:21\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\nprocessDispatchQueue@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10185:58\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10462:33\nbatchedUpdates$1@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:2044:46\ndispatchEventForPluginEventSystem@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10261:25\ndispatchEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12858:70\ndispatchDiscreteEvent@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:12840:77"
+    },
+    {
+      "t": 2068,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 2068,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 2068,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5891:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 2069,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5891:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 2088,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6498:33\nuseMorph.useLayoutEffect.sync@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6540:31\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6655:29\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49"
+    },
+    {
+      "t": 2088,
+      "text": "Motion settings",
+      "w": 420.4375,
+      "h": 32,
+      "offset": 420,
+      "x": 12,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\nattach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6499:31\nuseMorph.useLayoutEffect.sync@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6540:31\nuseMorph.useLayoutEffect@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6655:29\nreact_stack_bottom_frame@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:28\nrunWithFiberInDEV@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:139\ncommitHookEffectListMount@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:184\ncommitHookLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7070:85\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7677:53\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7716:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7774:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130\ncommitLayoutEffectOnFiber@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7676:49\nrecursivelyTraverseLayoutEffects@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8360:130"
+    },
+    {
+      "t": 2137,
+      "text": "Motion settings",
+      "w": 115.75865173339844,
+      "h": 30.54810333251953,
+      "offset": 112,
+      "x": 190.41908264160156,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6312:55\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    },
+    {
+      "t": 2137,
+      "text": "Motion settings",
+      "w": 115.75865173339844,
+      "h": 30.54810333251953,
+      "offset": 112,
+      "x": 190.41908264160156,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6283:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6335:40\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25\nforEach@[native code]\nframe@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5891:22\n@http://127.0.0.1:4320/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5900:18"
+    }
+  ],
+  "frames": [
+    {
+      "t": 0,
+      "width": 696,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;"
+      },
+      "svg": {
+        "w": 440,
+        "style": "position: absolute; left: -10px; top: -10px; width: 440px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 440 52"
+      }
+    },
+    {
+      "t": 19,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 26,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 28,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 30,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 68,
+      "width": 641,
+      "host": {
+        "w": 118.05937194824219,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 462,
+        "style": "position: absolute; left: -10px; top: -10px; width: 440px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 440 52"
+      }
+    },
+    {
+      "t": 85,
+      "width": 633,
+      "host": {
+        "w": 115.75865173339844,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 452.99664306640625,
+        "style": "position: absolute; left: -10px; top: -10px; width: 440px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 440 52"
+      }
+    },
+    {
+      "t": 91,
+      "width": 390,
+      "host": {
+        "w": 115.02713012695312,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 139.13229370117188,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 104,
+      "width": 390,
+      "host": {
+        "w": 113.631103515625,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 137.44374084472656,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 121,
+      "width": 390,
+      "host": {
+        "w": 112.25955200195312,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 135.7847442626953,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 137,
+      "width": 390,
+      "host": {
+        "w": 111.43904113769531,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 134.7923126220703,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 154,
+      "width": 390,
+      "host": {
+        "w": 110.96005249023438,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 134.2129669189453,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 170,
+      "width": 390,
+      "host": {
+        "w": 110.7413330078125,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 133.94837951660156,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 187,
+      "width": 390,
+      "host": {
+        "w": 110.66693115234375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 133.8583984375,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 204,
+      "width": 390,
+      "host": {
+        "w": 110.66368103027344,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 133.85446166992188,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 220,
+      "width": 390,
+      "host": {
+        "w": 110.68748474121094,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 133.88323974609375,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 237,
+      "width": 390,
+      "host": {
+        "w": 110.71673583984375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 133.91860961914062,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 253,
+      "width": 390,
+      "host": {
+        "w": 110.73995971679688,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 133.94671630859375,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 270,
+      "width": 390,
+      "host": {
+        "w": 110.75090026855469,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 133.9599609375,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 288,
+      "width": 390,
+      "host": {
+        "w": 111.47769165039062,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 134.8390350341797,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 304,
+      "width": 390,
+      "host": {
+        "w": 112.03431701660156,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 135.51234436035156,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 321,
+      "width": 390,
+      "host": {
+        "w": 112.315673828125,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 135.8526611328125,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 336,
+      "width": 390,
+      "host": {
+        "w": 112.42425537109375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 135.9886474609375,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 354,
+      "width": 390,
+      "host": {
+        "w": 112.45787048339844,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136.0246124267578,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 369,
+      "width": 390,
+      "host": {
+        "w": 112.45510864257812,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136.0212860107422,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 387,
+      "width": 390,
+      "host": {
+        "w": 112.4434814453125,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136.0072479248047,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 405,
+      "width": 390,
+      "host": {
+        "w": 112.43763732910156,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136.00018310546875,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 421,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 438,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 455,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 470,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 487,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 504,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 521,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 536,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 552,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 569,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 587,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 604,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 621,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 638,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 652,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 698,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 699,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 704,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 721,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 738,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 753,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 771,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 788,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 805,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 819,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 835,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 853,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 870,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 887,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 903,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 920,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 937,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 952,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 971,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 988,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1004,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1018,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1037,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1052,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1071,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1088,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1102,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1120,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1137,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1155,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1170,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1187,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1203,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1221,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1237,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1254,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1270,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1287,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1303,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1319,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1337,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1354,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1371,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1387,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1403,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1420,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1437,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1454,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1471,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1488,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    },
+    {
+      "t": 1504,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 51px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 51"
+      }
+    }
+  ]
+}
