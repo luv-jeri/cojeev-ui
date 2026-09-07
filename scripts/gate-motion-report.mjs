@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-export function writeMotionReport({rows,scenarios,fixtures,widths,modes,output='artifacts/gate-motion'}){
+export function writeMotionReport({rows,scenarios,fixtures,widths,modes,output='artifacts/gate-motion',report='GATE-MOTION.md'}){
  fs.writeFileSync(output+'/results.json',JSON.stringify(rows,null,2)+'\n')
  const full=fixtures.motionScenarios.length*fixtures.motionWidths.length*2,total=scenarios.length*widths.length*modes.length,pass=rows.filter(row=>row.verdict==='PASS').length
  const lines=[
@@ -14,7 +14,7 @@ export function writeMotionReport({rows,scenarios,fixtures,widths,modes,output='
  '',
  'The only source timer adapter intercepts clearTimeout(object) when the object has numeric at and function fn. It replaces that callback with a no-op; all native timer IDs delegate unchanged. Original flow.js:79–82 returns object handles under its frozen clock, but line155 passes them to clearTimeout rather than clearTimer. The literal-source probe records native cancellation [], original frozen ["superseded phase"], and adapted frozen []. It runs before the gate and writes source-cancellation-probe.json. This repairs the reference clock mock; it does not change the source files or production cancellation semantics.',
  '',
- 'The `blob-effects` family isolates the original engine-required token/base/alive/flow styles and original JS so sheen/grain/color attributes can be judged independently. `full-export-effects` is wired to the complete original vriksha.css entry. The recorded bounded export diagnostic loaded the component sheets with token/base/alive/flow styles; it did not include legacy-aliases/shapes/patterns/composites, so the complete entry still needs a rerun. That component-cascade diagnostic retains its measured FAIL: components-2.css:460 and483 override every SVG path fill, including echo, sheen, grain and data-colors. Original morph.js:53,107 and its color painting specify the intended attributes; ADJUSTER.md:35 and the Phase2 D4/D5 contract require working textures/colors. No fill shim or copied candidate paint is inserted into the oracle.',
+ 'The `blob-effects` family isolates the original engine-required token/base/alive/flow styles and original JS so sheen/grain/color attributes can be judged independently. `full-export-effects` loads the complete original vriksha.css entry, including legacy aliases, shapes, patterns and composites. The September 8 follow-up reproduced the full-entry conflict: components-2.css:460 and483 override SVG path fills, including echo, sheen, grain and data-colors. Original morph.js:53,107 and its color painting specify the intended attributes; ADJUSTER.md:35 documents working textures/colors. The owner has been asked whether exported appearance or documented effects should define this baseline. No difference is accepted while that answer is pending, and no fill shim or copied candidate paint is inserted into the oracle.',
  '',
  'Role fixtures are wired to the full original vriksha.css entry; the retained bounded diagnostic used the component-cascade subset described above and original alive.js, supplying the creature renderer omitted from isolation loader pages. Source and candidate SMIL timelines are explicitly paused and stepped because V.clock owns Web Animations only. The combined morph+release/surface role trajectory remains unresolved: its self checks expose transform-dependent geometry/raster timing, and source hidden echo paint differs under the full cascade. See effects-and-roles.json from the bounded diagnostic. It is not counted as a role fidelity pass.',
  '',
@@ -28,8 +28,8 @@ export function writeMotionReport({rows,scenarios,fixtures,widths,modes,output='
  '| --- | ---: | --- | --- | --- | --- | ---: | ---: |',
  ...rows.map(r=>`| ${r.id} | ${r.width} | ${r.mode} | ${r.verdict} | ${r.oracleStable??'—'} | ${r.candidateStable??'—'} | ${r.differences?.length??0} | ${r.pixels?.filter(p=>p.pixels).length??0} |`),
  '',
- 'The raw results and PNGs are in artifacts/gate-motion in the worktree where the command ran. All public production hook signatures remain unchanged.',
+ `The raw results and PNGs are in ${output} in the worktree where the command ran. MOTION_GATE_OUTPUT and MOTION_GATE_REPORT select distinct artifact destinations for bounded checks. All public production hook signatures remain unchanged.`,
  ''
  ]
- fs.writeFileSync('GATE-MOTION.md',lines.join('\n'))
+ fs.writeFileSync(report,lines.join('\n'))
 }
