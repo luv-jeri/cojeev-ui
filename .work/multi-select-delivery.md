@@ -34,8 +34,8 @@ The dedicated browser check starts/stops its own Vite server on `4354`, uses the
 
 Focused TypeScript and ESLint pass. The new CSS parses and contains no `!important` declarations. No broad visual matrix was run. Screenshots in `output/playwright/multi-select/` were reviewed for open/closed 360px layouts. These are local raw artifacts; the compact JSON receipt is committed.
 
-## Shared limitation found during visual review
+## Shared dark Checkbox follow-up
 
-The existing dark Checkbox sheet clears its checked tick image: final dark checked/indeterminate rules use the `background` shorthand after the image rule. The selected pink fill and `aria-checked` remain correct, but the dark tick is absent. This predates MultiSelect and was reported to the root for the Checkbox owner; no local duplicate check renderer or out-of-scope primitive patch was added. The root owns the shared correction and final integrated docs check.
+Visual review found that the existing dark Checkbox sheet cleared its checked tick image: dark indicator rules used the `background` shorthand, overriding the later image through specificity. The root fixed the shared primitive in `60c62f7` and `6315478`; those commits are merged here. The bounded follow-up `rtk proxy node .work/verify-multi-select-dark.mjs` passes for both initially selected and pointer-selected dark choices: the authored SVG check image remains in computed background-image. The screenshot `output/playwright/multi-select/multi-select-390-dark-glyph-fixed.png` visibly confirms all three selected ticks. Receipt: `.work/multi-select-dark-verification.json`, zero page errors. No duplicate renderer or out-of-scope primitive patch was added, and the broader 14-group suite was not repeated for this shared fix. No remaining MultiSelect implementation issue was found in the scoped checks.
 
 Root retains registry/index/package/CSS/docs integration. The previously requested actual-docs motion release probe is now `rtk proxy node scripts/check-motion.mjs --serve` under main; no equivalent motion checks were rerun here.
