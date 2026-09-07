@@ -135,9 +135,16 @@ export function Combobox({
     </ComboboxContext.Provider>
   );
 }
-export type ComboboxInputProps = React.ComponentProps<typeof Primitive.Input>;
+export type ComboboxInputProps = React.ComponentProps<
+  typeof Primitive.Input
+> & {
+  wrapperProps?: React.ComponentProps<typeof InputWrapper>;
+  leading?: React.ReactNode;
+};
 export function ComboboxInput({
   className,
+  wrapperProps,
+  leading,
   onValueChange,
   onFocus,
   onKeyDown,
@@ -146,10 +153,12 @@ export function ComboboxInput({
   const state = useCombobox();
   return (
     <PopoverPrimitive.Anchor asChild>
-      <InputWrapper>
-        <Disk size="sm">
-          <Icon name="search" />
-        </Disk>
+      <InputWrapper {...wrapperProps}>
+        {leading ?? (
+          <Disk size="sm">
+            <Icon name="search" />
+          </Disk>
+        )}
         <Primitive.Input
           ref={state.inputRef}
           asChild

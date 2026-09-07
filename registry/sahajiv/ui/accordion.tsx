@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
+import { Icon } from "@/registry/sahajiv/ui/icon";
 import * as Primitive from "@radix-ui/react-accordion";
 import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
 export const accordionVariants = cva("v-acc [display:grid] [gap:8px]");
@@ -85,15 +86,14 @@ export function AccordionIndicator({
   ...props
 }: AccordionIndicatorProps) {
   return (
-    <svg
+    <Icon
+      name="chevron-down"
       data-slot="accordion-indicator"
       data-part="indicator"
       aria-hidden="true"
       viewBox="0 0 24 24"
       className={cn("v-icon v-chev ml-auto", className)}
       {...props}
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
+    />
   );
 }
