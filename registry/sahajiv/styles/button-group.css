@@ -1,0 +1,80 @@
+[data-slot="button-group"] .v-btn {
+  background: transparent;
+  box-shadow: none;
+  color: var(--v-text-2);
+  border: 0;
+}
+[data-slot="button-group"] .v-btn:hover:not([aria-pressed="true"]) {
+  background: color-mix(in oklab, var(--card) 84%, var(--v-ink));
+  color: var(--v-text);
+}
+[data-slot="button-group"]
+  .v-btn:is([aria-pressed="true"], .-on) {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+[data-slot="button-group"].-pink
+  .v-btn:is([aria-pressed="true"], .-on) {
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+}
+[data-slot="button-group"] .v-btn .v-icon {
+  width: 15px;
+  height: 15px;
+}
+[data-slot="button-group"] .v-btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+  border-radius: 999px;
+}
+[data-slot="button-group-utility"]
+  .v-ibtn:not([class*=" -"]):nth-child(3n + 1) {
+  background: var(--v-blue);
+}
+[data-slot="button-group-utility"]
+  .v-ibtn:not([class*=" -"]):nth-child(3n + 2) {
+  background: var(--v-yellow);
+}
+[data-slot="button-group-utility"] .v-ibtn:not([class*=" -"]):nth-child(3n) {
+  background: var(--v-pink);
+}
+.v-utility[data-slot="button-group-utility"] .v-ibtn.-ink {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+[data-slot="button-group-utility"] .v-ibtn:hover {
+  filter: brightness(0.92);
+  z-index: 1;
+}
+[data-slot="button-group-utility"] .v-ibtn .v-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.9;
+}
+[data-slot="button-group-utility"][data-shapes] {
+  border-radius: 17px;
+  padding: 4px;
+  gap: 4px;
+}
+[data-slot="button-group-utility"][data-shapes] .v-ibtn:nth-child(3n + 1) {
+  border-radius: 14px 14px 14px 5px;
+}
+[data-slot="button-group-utility"][data-shapes] .v-ibtn:nth-child(3n + 2) {
+  border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
+}
+[data-slot="button-group-utility"][data-shapes] .v-ibtn:nth-child(3n) {
+  border-radius: 14px 5px 14px 14px;
+}
+:root[data-mode="dark"]
+  :is([data-slot="button-group"], [data-slot="button-group-utility"]) {
+  background: var(--v-beige);
+}
+:root[data-mode="dark"] [data-slot="button-group"] [data-glide-active] {
+  color: var(--v-on-accent);
+}
+
+:root[data-mode="dark"] [data-slot="button-group"] .v-btn[aria-pressed="true"] {
+  background: var(--v-pink);
+  border-color: var(--v-pink);
+  color: var(--v-on-accent);
+}

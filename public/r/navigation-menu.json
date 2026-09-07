@@ -1,0 +1,113 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "navigation-menu",
+  "title": "Navigation Menu",
+  "description": "Organizes destination links and optional expandable navigation panels.",
+  "dependencies": [
+    "class-variance-authority",
+    "@radix-ui/react-navigation-menu"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/navigation-menu.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport { cva } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport * as Primitive from \"@radix-ui/react-navigation-menu\";\nimport { useFlowGroup } from \"@/lib/sahajiv-motion/use-flow\";\nexport const navigationMenuVariants = cva(\"v-nav [display:grid] [gap:2px]\");\nexport type NavigationMenuProps = React.ComponentProps<typeof Primitive.Root>;\nexport function NavigationMenu({\n  className,\n  ref,\n  orientation = \"vertical\",\n  ...props\n}: NavigationMenuProps) {\n  const flowRef = useFlowGroup<HTMLElement>(ref, {\n    itemSelector: \".v-nav__item\",\n    activeSelector: '[aria-current=\"page\"]',\n  });\n  return (\n    <Primitive.Root\n      ref={flowRef}\n      orientation={orientation}\n      data-slot=\"navigation-menu\"\n      data-part=\"root\"\n      className={cn(navigationMenuVariants(), className)}\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuListProps = React.ComponentProps<\n  typeof Primitive.List\n>;\nexport function NavigationMenuList({\n  className,\n  ...props\n}: NavigationMenuListProps) {\n  return (\n    <Primitive.List\n      data-slot=\"navigation-menu-list\"\n      className={cn(\"grid\", className)}\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuItemProps = React.ComponentProps<\n  typeof Primitive.Item\n>;\nexport function NavigationMenuItem(props: NavigationMenuItemProps) {\n  return <Primitive.Item data-slot=\"navigation-menu-item\" {...props} />;\n}\nexport type NavigationMenuLinkProps = React.ComponentProps<\n  typeof Primitive.Link\n>;\nexport function NavigationMenuLink({\n  className,\n  active,\n  ref,\n  ...props\n}: NavigationMenuLinkProps) {\n  const morphRef = useMorph<HTMLAnchorElement>(\"nav\", ref);\n  return (\n    <Primitive.Link\n      ref={morphRef}\n      data-slot=\"navigation-menu-link\"\n      data-part=\"item\"\n      active={active}\n      aria-current={active ? \"page\" : undefined}\n      className={cn(\"v-nav__item\", className)}\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuGroupProps = React.ComponentProps<\"div\">;\nexport function NavigationMenuGroup({\n  className,\n  ...props\n}: NavigationMenuGroupProps) {\n  return (\n    <div\n      data-slot=\"navigation-menu-group\"\n      data-part=\"group\"\n      className={cn(\"v-nav__group\", className)}\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuCountProps = React.ComponentProps<\"span\">;\nexport function NavigationMenuCount({\n  className,\n  ref,\n  ...props\n}: NavigationMenuCountProps) {\n  const morphRef = useMorph<HTMLSpanElement>(\"pills\", ref);\n  return (\n    <span\n      ref={morphRef}\n      data-slot=\"navigation-menu-count\"\n      data-part=\"indicator\"\n      className={cn(\"v-nav__count\", className)}\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuTriggerProps = React.ComponentProps<\n  typeof Primitive.Trigger\n>;\nexport function NavigationMenuTrigger({\n  className,\n  ...props\n}: NavigationMenuTriggerProps) {\n  return (\n    <Primitive.Trigger\n      data-slot=\"navigation-menu-trigger\"\n      data-part=\"trigger\"\n      className={cn(\"v-nav__item\", className)}\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuContentProps = React.ComponentProps<\n  typeof Primitive.Content\n>;\nexport function NavigationMenuContent(props: NavigationMenuContentProps) {\n  return (\n    <Primitive.Content\n      data-slot=\"navigation-menu-content\"\n      data-part=\"content\"\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuViewportProps = React.ComponentProps<\n  typeof Primitive.Viewport\n>;\nexport function NavigationMenuViewport(props: NavigationMenuViewportProps) {\n  return (\n    <Primitive.Viewport\n      data-slot=\"navigation-menu-viewport\"\n      data-part=\"viewport\"\n      {...props}\n    />\n  );\n}\nexport type NavigationMenuIndicatorProps = React.ComponentProps<\n  typeof Primitive.Indicator\n>;\nexport function NavigationMenuIndicator(props: NavigationMenuIndicatorProps) {\n  return (\n    <Primitive.Indicator\n      data-slot=\"navigation-menu-indicator\"\n      data-part=\"indicator\"\n      {...props}\n    />\n  );\n}\n\nexport type NavigationMenuLabelProps = React.ComponentProps<\"span\">;\nexport function NavigationMenuLabel({\n  className,\n  ...props\n}: NavigationMenuLabelProps) {\n  return (\n    <span\n      data-slot=\"navigation-menu-label\"\n      className={cn(\"v-nav__label\", className)}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/navigation-menu.css",
+      "content": "@layer sahajiv-states {\n/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"][data-morph] {\n  color: var(--v-text);\n}\n.v-nav__count:where(\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"]\n) {\n  color: var(--v-on-accent);\n}\n[dir=\"rtl\"]\n  .v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"]::before {\n  left: auto;\n  right: 0;\n}\n.v-nav__group:where(\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"]\n) {\n  font-size: 13px;\n  color: var(--sidebar-muted);\n  padding: var(--s-4) var(--s-3) var(--s-2);\n}\n.v-nav__item:where(\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"]\n) {\n  position: relative;\n  display: flex;\n  align-items: center;\n  gap: var(--s-4);\n  height: var(--nav-row);\n  padding: 0 var(--s-3) 0 var(--s-5);\n  border-radius: var(--r-md);\n  color: var(--sidebar-foreground);\n  font-size: var(--fs-body);\n  text-decoration: none;\n  transition: background var(--t-micro);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  ):hover {\n  background: rgba(251, 244, 230, 0.07);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )\n  .v-icon {\n  width: 20px;\n  height: 20px;\n}\n.v-nav__label:where(\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"]\n) {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"] {\n  color: var(--sidebar-primary);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"]::before {\n  content: \"\";\n  position: absolute;\n  left: 0;\n  top: 8px;\n  bottom: 8px;\n  width: 2px;\n  background: var(--sidebar-primary);\n  border-radius: 1px;\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"]::after {\n  content: \"\";\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--sidebar-primary);\n  animation: v-breathe var(--breath) ease-in-out infinite;\n}\n.v-nav__count:where(\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"]\n) {\n  min-width: 18px;\n  height: 18px;\n  padding: 0 5px;\n  border-radius: var(--r-pill);\n  background: var(--v-pink);\n  color: var(--v-on-accent);\n  font-size: 10px;\n  font-weight: 700;\n  display: grid;\n  place-items: center;\n}\n.v-nav__item:where(\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"]\n) {\n  cursor: pointer;\n}\n:root.-doc-hidden\n  .v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"]::after {\n  animation-play-state: paused;\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[data-ink=\"light\"] {\n  color: var(--cream-fixed);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[data-ink=\"light\"][aria-current=\"page\"] {\n  color: var(--v-pink);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[data-ink=\"dark\"] {\n  color: var(--v-on-accent);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[data-ink=\"dark\"][aria-current=\"page\"] {\n  color: var(--v-brand);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"]::before {\n  display: none;\n}\n.v-nav__item:where(\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"]\n) {\n  transition:\n    background var(--t-micro),\n    color var(--t-micro);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )\n  .v-icon {\n  transition: transform var(--t-element) var(--enter);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  ):hover\n  .v-icon {\n  transform: translateY(-1px) rotate(-6deg);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  ):active\n  .v-icon {\n  transform: scale(0.92);\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  ).-paused::after,\n.-paused\n  .v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"]::after {\n  animation-play-state: paused;\n}\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"],\n.v-nav__item:where(\n    [data-slot=\"navigation-menu\"],\n    [data-slot^=\"navigation-menu-\"]\n  )[aria-current=\"page\"]\n  .v-icon {\n  color: var(--v-pink);\n}\n@keyframes v-breathe {\n  0%,\n  100% {\n    opacity: 0.35;\n    transform: scale(0.8);\n  }\n  50% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"navigation-menu\"],\n  [data-slot^=\"navigation-menu-\"],\n  [data-slot=\"navigation-menu\"]::before,\n  [data-slot=\"navigation-menu\"]::after,\n  [data-slot^=\"navigation-menu-\"]::before,\n  [data-slot^=\"navigation-menu-\"]::after {\n    animation-duration: 0s;\n    animation-iteration-count: 1;\n    transition-duration: 0s;\n    scroll-behavior: auto;\n  }\n}\n\n[data-slot=\"navigation-menu-list\"] {\n  display: grid;\n  gap: 2px;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n[data-slot=\"navigation-menu-item\"] {\n  display: contents;\n}\n[data-slot=\"navigation-menu-label\"] {\n  flex: 1;\n  min-width: 0;\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/navigation-menu.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/navigation-menu.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "navigation-menu",
+      "name": "Navigation Menu",
+      "tier": "base",
+      "evidence": "I15",
+      "status": "source",
+      "root": ".v-nav",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "selected",
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "nav",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "group"
+      ],
+      "canvas": "480x480",
+      "contract": "entries/navigation-menu/contract.md",
+      "demo": "entries/navigation-menu/demo.html",
+      "isolation": [
+        "default-default-rest-480x480.html",
+        "default-default-rest-dark-480x480.html",
+        "default-default-selected-480x480.html",
+        "default-default-selected-dark-480x480.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "NavigationMenuProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuListProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuItemProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuLinkProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuGroupProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuCountProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuTriggerProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuContentProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuViewportProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuIndicatorProps",
+        "props": []
+      },
+      {
+        "name": "NavigationMenuLabelProps",
+        "props": []
+      }
+    ],
+    "category": "Navigation",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

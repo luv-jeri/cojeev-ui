@@ -1,0 +1,174 @@
+{
+  "preview": {
+    "name": "Component preview",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "preview",
+      "code",
+      "copied"
+    ]
+  },
+  "icon": {
+    "name": "Icon and icon button",
+    "variants": [
+      "default",
+      "dashed",
+      "ink",
+      "pink",
+      "beige",
+      "cream"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg",
+      "xl"
+    ],
+    "states": [
+      "rest",
+      "hover",
+      "pressed",
+      "disabled"
+    ]
+  },
+  "shape": {
+    "name": "Shape",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "adjuster": {
+    "name": "Motion Adjuster",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "open"
+    ]
+  },
+  "code-block": {
+    "name": "Code block",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "copying",
+      "copied",
+      "error"
+    ]
+  },
+  "animated-number": {
+    "name": "Animated number",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "updating",
+      "reduced motion"
+    ]
+  },
+  "text-reveal": {
+    "name": "Text reveal",
+    "variants": [
+      "rise",
+      "fade"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "revealing",
+      "reduced motion"
+    ]
+  },
+  "shape-scene": {
+    "name": "Shape scene",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "loading",
+      "animated",
+      "still",
+      "fallback"
+    ],
+    "dependencies": [
+      "three@0.185.1"
+    ],
+    "devDependencies": [
+      "@types/three@0.185.4"
+    ]
+  },
+  "multi-select": {
+    "name": "Multi-select",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "open",
+      "searching",
+      "selected",
+      "empty",
+      "invalid",
+      "disabled"
+    ]
+  },
+  "ambient-background": {
+    "name": "Ambient background",
+    "variants": [
+      "drift",
+      "orbit",
+      "contour"
+    ],
+    "sizes": [],
+    "states": [
+      "running",
+      "paused",
+      "static"
+    ]
+  },
+  "marquee": {
+    "name": "Marquee",
+    "variants": [
+      "default"
+    ],
+    "sizes": [],
+    "states": [
+      "running",
+      "paused",
+      "static",
+      "focused"
+    ]
+  }
+}

@@ -1,0 +1,658 @@
+{
+  "version": 1,
+  "source": "reference/sahajiv-handoff-v4/data/port-map.json",
+  "policy": {
+    "closedContent": "Only treat closed Radix unmount as equivalent when the corresponding source is demonstrably not visible. Never ignore a missing visible source part.",
+    "identities": "Authored data-gate attributes are preserved on production boundaries or structural wrappers. Select and combobox expose wrapper props for this purpose.",
+    "styles": "No reference styles or behavior scripts run on the candidate. No pixel masks or scene-specific CSS overrides are supplied."
+  },
+  "entries": {
+    "accordion": {
+      "parts": {
+        ".v-acc": {
+          "part": "root",
+          "candidateSelector": ".v-acc"
+        },
+        ".v-acc>details": {
+          "part": "item",
+          "candidateSelector": "[data-slot=\"accordion-item\"]"
+        },
+        ".v-acc>details>summary": {
+          "part": "trigger",
+          "candidateSelector": "[data-slot=\"accordion-trigger\"]"
+        },
+        ".v-acc__body": {
+          "part": "content",
+          "candidateSelector": ".v-acc__body"
+        },
+        ".v-acc .v-chev": {
+          "part": "indicator",
+          "candidateSelector": ".v-acc .v-chev"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "AccordionHeader inserts a display:contents h3; item and trigger selectors translate native details/summary to Radix parts. Closed content can be unmounted."
+      ]
+    },
+    "alert-dialog": {
+      "parts": {
+        ".v-dialog[role=alertdialog]": {
+          "part": "content",
+          "candidateSelector": ".v-dialog[role=alertdialog]"
+        },
+        "[data-dialog-open]": {
+          "part": "trigger",
+          "candidateSelector": "[data-dialog-open]"
+        },
+        ".v-dialog__actions": {
+          "part": "footer",
+          "candidateSelector": ".v-dialog__actions"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "calendar": {
+      "parts": {
+        ".v-cal": {
+          "part": "root",
+          "candidateSelector": ".v-cal"
+        },
+        ".v-cal__grid": {
+          "part": "viewport",
+          "candidateSelector": ".v-cal__grid"
+        },
+        ".v-cal__d": {
+          "part": "item",
+          "candidateSelector": ".v-cal__d"
+        },
+        ".v-cal__head .v-ibtn": {
+          "part": "trigger",
+          "candidateSelector": ".v-cal__head .v-ibtn"
+        },
+        ".v-cal__wk": {
+          "part": "week-number",
+          "candidateSelector": "[data-slot=\"calendar-week-number\"]"
+        },
+        ".v-cal__wd": {
+          "part": "weekday",
+          "candidateSelector": ".v-cal__wd"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "Real DayPicker produces a table instead of a flat div grid. All styled part classes survive; rows use display:contents. Parse local dates, never UTC dates."
+      ],
+      "additionalParts": {
+        ".v-cal__wk": "week-number",
+        ".v-cal__wd": "weekday"
+      }
+    },
+    "checkbox": {
+      "parts": {
+        ".v-check": {
+          "part": "root",
+          "candidateSelector": ".v-check"
+        },
+        ".v-check input": {
+          "part": "indicator",
+          "candidateSelector": "[data-slot=\"checkbox-indicator\"]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "collapsible": {
+      "parts": {
+        ".v-collapsible": {
+          "part": "root",
+          "candidateSelector": ".v-collapsible"
+        },
+        ".v-collapsible>summary": {
+          "part": "trigger",
+          "candidateSelector": "[data-slot=\"collapsible-trigger\"]"
+        },
+        ".v-collapsible__body": {
+          "part": "content",
+          "candidateSelector": ".v-collapsible__body"
+        },
+        ".v-collapsible .v-chev": {
+          "part": "indicator",
+          "candidateSelector": ".v-collapsible .v-chev"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "combobox": {
+      "parts": {
+        ".v-combo": {
+          "part": "root",
+          "candidateSelector": ".v-combo"
+        },
+        ".v-combo .v-input input": {
+          "part": "trigger",
+          "candidateSelector": ".v-combo .v-input input"
+        },
+        ".v-combo .v-menu": {
+          "part": "content",
+          "candidateSelector": ".v-combo .v-menu"
+        },
+        ".v-combo .v-menu__item": {
+          "part": "item",
+          "candidateSelector": ".v-combo .v-menu__item"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "ComboboxInput.wrapperProps and leading preserve source InputWrapper and disk identities. Actual cmdk filtering and Radix dismissal operate; no reference UI script is executed."
+      ]
+    },
+    "command": {
+      "parts": {
+        ".v-cmd": {
+          "part": "root",
+          "candidateSelector": ".v-cmd"
+        },
+        ".v-cmd__input input": {
+          "part": "trigger",
+          "candidateSelector": ".v-cmd__input input"
+        },
+        ".v-cmd__list": {
+          "part": "content",
+          "candidateSelector": ".v-cmd__list"
+        },
+        ".v-cmd__list .v-menu__item": {
+          "part": "item",
+          "candidateSelector": ".v-cmd__list .v-menu__item"
+        },
+        ".v-menu__group": {
+          "part": "group",
+          "candidateSelector": "[cmdk-group-heading]"
+        },
+        ".v-cmd__empty": {
+          "part": "empty",
+          "candidateSelector": ".v-cmd__empty"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "context-menu": {
+      "parts": {
+        "[data-context]": {
+          "part": "trigger",
+          "candidateSelector": "[data-context]"
+        },
+        ".v-menu": {
+          "part": "content",
+          "candidateSelector": ".v-menu"
+        },
+        ".v-menu__item": {
+          "part": "item",
+          "candidateSelector": ".v-menu__item"
+        },
+        ".v-menu__sep": {
+          "part": "separator",
+          "candidateSelector": ".v-menu__sep"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "date-picker": {
+      "parts": {
+        ".v-menuhost[data-datepicker]": {
+          "part": "root",
+          "candidateSelector": ".v-menuhost[data-datepicker]"
+        },
+        ".v-menuhost[data-datepicker]>.v-select": {
+          "part": "trigger",
+          "candidateSelector": "[data-slot=\"date-picker-trigger\"]"
+        },
+        ".v-popover": {
+          "part": "content",
+          "candidateSelector": ".v-popover"
+        },
+        ".v-cal": {
+          "part": "viewport",
+          "candidateSelector": ".v-cal"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "dialog": {
+      "parts": {
+        ".v-dialog": {
+          "part": "content",
+          "candidateSelector": ".v-dialog"
+        },
+        "[data-dialog-open]": {
+          "part": "trigger",
+          "candidateSelector": "[data-dialog-open]"
+        },
+        ".v-dialog__head": {
+          "part": "header",
+          "candidateSelector": ".v-dialog__head"
+        },
+        ".v-dialog__actions": {
+          "part": "footer",
+          "candidateSelector": ".v-dialog__actions"
+        },
+        "[data-close]": {
+          "part": "close",
+          "candidateSelector": "[data-close]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "drawer": {
+      "parts": {
+        ".v-drawer": {
+          "part": "content",
+          "candidateSelector": ".v-drawer"
+        },
+        "[data-drawer-open]": {
+          "part": "trigger",
+          "candidateSelector": "[data-drawer-open]"
+        },
+        "[data-close]": {
+          "part": "close",
+          "candidateSelector": "[data-close]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "dropdown-menu": {
+      "parts": {
+        "[data-menu]": {
+          "part": "trigger",
+          "candidateSelector": "[data-menu]"
+        },
+        ".v-menu": {
+          "part": "content",
+          "candidateSelector": ".v-menu"
+        },
+        ".v-menu__item": {
+          "part": "item",
+          "candidateSelector": ".v-menu__item"
+        },
+        ".v-menu__sep": {
+          "part": "separator",
+          "candidateSelector": ".v-menu__sep"
+        },
+        ".v-menu__group": {
+          "part": "group",
+          "candidateSelector": ".v-menu__group"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "hover-card": {
+      "parts": {
+        "[data-hovercard]": {
+          "part": "trigger",
+          "candidateSelector": "[data-hovercard]"
+        },
+        ".v-hovercard>.v-popover": {
+          "part": "content",
+          "candidateSelector": "[data-slot=\"hover-card-content\"]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "Source outer v-hovercard is a positioning/visibility wrapper; the visible v-popover maps to HoverCardContent. Its authored closed wrapper remains empty in the converted tree. The source nested health-line product surface is explicitly excluded from the 66-base scope.",
+        "The empty source positioning wrapper explicitly preserves its closed hidden state; visible content is owned by the real HoverCard portal.",
+        "On open, source v-hovercard data-gate/data-canvas identity is transferred to the actual Radix positioning wrapper. The hidden source placeholder is retained only for closed markup; no wrapper CSS is copied or synthesized."
+      ]
+    },
+    "input-otp": {
+      "parts": {
+        ".v-otp": {
+          "part": "root",
+          "candidateSelector": "[data-slot=\"input-otp-group\"]"
+        },
+        ".v-otp input": {
+          "part": "item",
+          "candidateSelector": "[data-slot=\"input-otp-slot\"]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "One library-owned accessible input handles the full value; six visible slots replace six source cells. Measurement root is the authored InputOTPGroup, not the transparent input or outer library wrapper."
+      ],
+      "semanticNotes": "One real OTP input supplies keyboard and paste semantics; visual slots expose active state to owned field-fill FlowGroup. The recorded common catalog wrapper adapter preserves the original catalog containing block; untouched isolated overflow remains separate evidence."
+    },
+    "menubar": {
+      "parts": {
+        ".v-menubar": {
+          "part": "root",
+          "candidateSelector": ".v-menubar"
+        },
+        ".v-menubar__trigger": {
+          "part": "trigger",
+          "candidateSelector": ".v-menubar__trigger"
+        },
+        ".v-menu": {
+          "part": "content",
+          "candidateSelector": ".v-menu"
+        },
+        ".v-menu__item": {
+          "part": "item",
+          "candidateSelector": ".v-menu__item"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "navigation-menu": {
+      "parts": {
+        ".v-nav": {
+          "part": "root",
+          "candidateSelector": ".v-nav"
+        },
+        ".v-nav__group": {
+          "part": "group",
+          "candidateSelector": ".v-nav__group"
+        },
+        ".v-nav__item": {
+          "part": "item",
+          "candidateSelector": ".v-nav__item"
+        },
+        ".v-nav__count": {
+          "part": "indicator",
+          "candidateSelector": ".v-nav__count"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "popover": {
+      "parts": {
+        ".v-popover": {
+          "part": "content",
+          "candidateSelector": ".v-popover"
+        },
+        "[data-menu]": {
+          "part": "trigger",
+          "candidateSelector": "[data-menu]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "radio-group": {
+      "parts": {
+        ".v-radios,.v-iradios": {
+          "part": "root",
+          "candidateSelector": "[data-fixture-authored-radio-root]"
+        },
+        ".v-radio,.v-iradio": {
+          "part": "item",
+          "candidateSelector": ".v-radio,.v-iradio"
+        },
+        ".v-radio input,.v-iradio input": {
+          "part": "indicator",
+          "candidateSelector": "[data-slot=\"radio-group-indicator\"]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "Inline radios without an authored v-radios wrapper receive the required Radix group provider; the original wrapping layout and data-gate attributes remain. Native inputs map to the visible indicator span; hidden form controls are excluded from visible-part comparison.",
+        "Only source-authored group roots receive data-fixture-authored-radio-root; implicit Radix provider wrappers preserve all data-gate nodes but do not introduce additional sampled source parts."
+      ]
+    },
+    "resizable": {
+      "parts": {
+        ".v-resizable": {
+          "part": "root",
+          "candidateSelector": ".v-resizable"
+        },
+        ".v-resizable__pane": {
+          "part": "content",
+          "candidateSelector": ".v-resizable__pane"
+        },
+        ".v-resizable__handle": {
+          "part": "thumb",
+          "candidateSelector": ".v-resizable__handle"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "semanticNotes": "Source --split is a percentage of the complete group; react-resizable-panels percentages exclude separator width. The fixture measures both and seeds the real Group.setLayout API, retaining user updates and translating on resize."
+    },
+    "scroll-area": {
+      "parts": {
+        ".v-scroll": {
+          "part": "root",
+          "candidateSelector": ".v-scroll"
+        },
+        ".v-scroll>*": {
+          "part": "viewport",
+          "candidateSelector": "[data-slot=\"scroll-area-viewport\"] > div > *"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "select": {
+      "parts": {
+        ".v-menuhost[data-select]": {
+          "part": "root",
+          "candidateSelector": ".v-menuhost[data-select]"
+        },
+        ".v-menuhost[data-select]>.v-select": {
+          "part": "trigger",
+          "candidateSelector": "[data-slot=\"select-trigger\"]"
+        },
+        ".v-listbox": {
+          "part": "content",
+          "candidateSelector": ".v-listbox"
+        },
+        ".v-listbox .v-menu__item": {
+          "part": "item",
+          "candidateSelector": ".v-listbox .v-menu__item"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "Select.containerProps preserves source host data-gate/style/class. SelectValue uses real state and updates the authored decorated trigger label. Content portals; hidden source content can correspond to absent closed Radix content."
+      ]
+    },
+    "sheet": {
+      "parts": {
+        ".v-sheet": {
+          "part": "content",
+          "candidateSelector": ".v-sheet"
+        },
+        "[data-sheet-open]": {
+          "part": "trigger",
+          "candidateSelector": "[data-sheet-open]"
+        },
+        "[data-close]": {
+          "part": "close",
+          "candidateSelector": "[data-close]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "Source nested health-line is outside the 66-base scope; original full scene cannot be labeled verified without an explicit scoped fixture."
+      ]
+    },
+    "slider": {
+      "parts": {
+        ".v-sliderwrap": {
+          "part": "root",
+          "candidateSelector": ".v-sliderwrap"
+        },
+        ".v-slider": {
+          "part": "track",
+          "candidateSelector": ".v-slider"
+        },
+        ".v-slider::-webkit-slider-thumb": {
+          "part": "thumb",
+          "candidateSelector": "[data-slot=\"slider-thumb\"]",
+          "referenceSelector": ".v-slider",
+          "referencePseudo": "::-webkit-slider-thumb",
+          "computedStyleUnavailable": "Chromium getComputedStyle(input, ::-webkit-slider-thumb) returns the input host styles; verify physical thumb through pixel and drag evidence."
+        },
+        ".v-sliderwrap output": {
+          "part": "indicator",
+          "candidateSelector": ".v-sliderwrap output"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "Source WebKit thumb is a pseudo-element. Sample source computed pseudo-style separately, then compare with the real Radix slider-thumb boundary; do not send a pseudo-element selector to querySelectorAll."
+      ]
+    },
+    "switch": {
+      "parts": {
+        ".v-switch": {
+          "part": "root",
+          "candidateSelector": ".v-switch"
+        },
+        ".v-switch input": {
+          "part": "thumb",
+          "candidateSelector": "[data-slot=\"switch-thumb\"]",
+          "referenceSelector": ".v-switch",
+          "referencePseudo": "::after"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "notes": [
+        "The source part name thumb points to a hidden native input; the actual authored thumb is .v-switch::after. Use source pseudo-element computed style and geometry, then compare to the real Radix thumb. The outer switch remains the canonical root."
+      ]
+    },
+    "tabs": {
+      "parts": {
+        ".v-tabs": {
+          "part": "root",
+          "candidateSelector": ".v-tabs"
+        },
+        ".v-tab": {
+          "part": "trigger",
+          "candidateSelector": ".v-tab"
+        },
+        "[role=tabpanel]": {
+          "part": "content",
+          "candidateSelector": "[role=tabpanel]"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "toast": {
+      "parts": {
+        ".v-toaster": {
+          "part": "viewport",
+          "candidateSelector": ".v-toaster"
+        },
+        ".v-toast": {
+          "part": "root",
+          "candidateSelector": ".v-toast"
+        },
+        ".v-toast button": {
+          "part": "action",
+          "candidateSelector": ".v-toast button"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "toggle": {
+      "parts": {
+        ".v-toggle": {
+          "part": "root",
+          "candidateSelector": ".v-toggle"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "toggle-group": {
+      "parts": {
+        "[data-togglegroup]": {
+          "part": "root",
+          "candidateSelector": "[data-togglegroup]"
+        },
+        "[data-togglegroup]>*": {
+          "part": "item",
+          "candidateSelector": "[data-togglegroup]>*"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending",
+      "semanticNotes": "Radix single selection uses radio roles and aria-checked, while multiple selection uses aria-pressed. Both select the authored state styles; asChild Button composition retains Button classes without injecting v-toggle.",
+      "initialStateAdapter": "Generated single-group on scenes contain two pressed buttons. Fixture preserves their initial aria-pressed paint until the first real selection event, then yields all state to Radix. This invalid source state is recorded, not exposed by the public primitive."
+    },
+    "tooltip": {
+      "parts": {
+        "[data-tooltip]": {
+          "part": "trigger",
+          "candidateSelector": "[data-tooltip]"
+        },
+        ".v-tip": {
+          "part": "content",
+          "candidateSelector": ".v-tip"
+        }
+      },
+      "coverage": "mapping implemented; browser gate pending"
+    },
+    "questionnaire": {
+      "additionalParts": {
+        ".v-quest__opt": "option",
+        ".v-quest__opt-body": "option-body"
+      }
+    }
+  },
+  "oracleIssues": [
+    {
+      "id": "menubar",
+      "files": "*open*.html",
+      "status": "invalid-initial-scene",
+      "evidence": "Raw open markup removes hidden from all three menus and sets all three triggers expanded. Source ui.js334 closes every menu at boot but leaves stale trigger expanded attributes. A real invocation from the paired rest fixture establishes one active menu.",
+      "contract": "reference/sahajiv-handoff-v4/entries/menubar/contract.md:5,19,34",
+      "replacement": "Start at rest. Open File with a real trigger, then ArrowRight/ArrowLeft and hover to move to Run and View on both oracle and candidate. Do not label the simultaneous-open original scene PASS."
+    },
+    {
+      "id": "context-menu",
+      "files": "*open*.html",
+      "status": "invalid-initial-scene",
+      "evidence": "Raw open markup removes hidden and inserts position:static, but source ui.js334 hides the menu at boot. The fixture starts closed; genuine open-state proof requires an actual contextmenu event from paired rest markup.",
+      "contract": "reference/sahajiv-handoff-v4/entries/context-menu/contract.md:5,19,34",
+      "replacement": "Start at rest. Dispatch the same real contextmenu event at the same pointer coordinates, or Shift+F10, on oracle and candidate. Candidate current open mapping invokes a real contextmenu event at trigger center, so original static scene remains deliberately unmatched."
+    },
+    {
+      "id": "hover-card",
+      "files": "*open*.html",
+      "status": "mislabeled-state",
+      "evidence": "Only outer data-gate state changes; no opening event or visible surface state is authored. Candidate mirrors actual initial closed state.",
+      "replacement": "Hover or focus the trigger and wait the authored delay."
+    },
+    {
+      "id": "tooltip",
+      "files": "*open*.html",
+      "status": "mislabeled-state",
+      "evidence": "Only outer data-gate state changes; no opening event or visible surface state is authored. Candidate mirrors actual initial closed state.",
+      "replacement": "Hover or focus a trigger and wait the authored delay."
+    },
+    {
+      "id": "toast",
+      "files": "*open*.html",
+      "status": "mislabeled-state",
+      "evidence": "Only outer data-gate state changes; no opening event or visible surface state is authored. Candidate mirrors actual initial closed state.",
+      "replacement": "Click each toast trigger and verify real dismissal/action/durable behavior."
+    }
+  ],
+  "sourceBootstrap": {
+    "initiallyClosed": [
+      "alert-dialog",
+      "dialog",
+      "drawer",
+      "sheet",
+      "combobox",
+      "select",
+      "date-picker",
+      "dropdown-menu",
+      "context-menu",
+      "popover",
+      "menubar"
+    ],
+    "evidence": [
+      "reference/sahajiv-handoff-v4/js/ui.js:153",
+      "reference/sahajiv-handoff-v4/js/ui.js:166",
+      "reference/sahajiv-handoff-v4/js/ui.js:248",
+      "reference/sahajiv-handoff-v4/js/ui.js:330",
+      "reference/sahajiv-handoff-v4/js/ui.js:334"
+    ],
+    "note": "Source initialization closes all these layers even when generated open HTML removes hidden. Fixture providers mirror that runtime initial state. Open-state proof must use explicitly recorded real events after boot, from paired rest markup when raw open markup seeds inconsistent expanded states."
+  }
+}

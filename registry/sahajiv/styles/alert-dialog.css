@@ -1,0 +1,84 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-scrim:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"]) {
+  position: fixed;
+  inset: 0;
+  background: var(--v-scrim);
+  z-index: var(--z-sheet);
+}
+.v-dialog__head:where(
+  [data-slot="alert-dialog"],
+  [data-slot^="alert-dialog-"]
+) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+.v-dialog__actions:where(
+  [data-slot="alert-dialog"],
+  [data-slot^="alert-dialog-"]
+) {
+  display: flex;
+  gap: var(--s-2);
+  justify-content: flex-end;
+}
+.v-scrim:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"]) {
+  animation: v-scrim-in var(--t-element) ease both;
+}
+.v-dialog:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"]) {
+  animation: v-dialog-in var(--t-max) var(--enter) both;
+}
+.v-dialog__head:where(
+  [data-slot="alert-dialog"],
+  [data-slot^="alert-dialog-"]
+) {
+  align-items: start;
+}
+.v-dialog__head:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"])
+  .v-section {
+  font-size: 24px;
+  line-height: 1.15;
+  padding-top: 6px;
+}
+.v-dialog:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"])
+  > .v-body-2 {
+  max-width: 52ch;
+}
+.v-dialog__actions:where(
+  [data-slot="alert-dialog"],
+  [data-slot^="alert-dialog-"]
+) {
+  margin-top: var(--s-2);
+  gap: var(--s-3);
+}
+.v-dialog:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"]) {
+  scrollbar-gutter: stable;
+}
+.v-dialog:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"]) {
+  scrollbar-gutter: stable;
+}
+@keyframes v-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes v-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="alert-dialog"],
+  [data-slot^="alert-dialog-"],
+  [data-slot="alert-dialog"]::before,
+  [data-slot="alert-dialog"]::after,
+  [data-slot^="alert-dialog-"]::before,
+  [data-slot^="alert-dialog-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}
+

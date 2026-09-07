@@ -1,0 +1,88 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "message-scroller",
+  "title": "Message Scroller",
+  "description": "Keeps a conversation near its latest content while allowing readers to scroll back without being pulled down.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/message-scroller.tsx",
+      "content": "\"use client\";\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport * as React from \"react\";\nimport { cva } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport { Button, type ButtonProps } from \"@/components/ui/button\";\nconst ScrollerContext = React.createContext<{\n  detached: boolean;\n  jump: () => void;\n} | null>(null);\nexport const messageScrollerVariants = cva(\n  \"v-scroller relative grid content-start auto-rows-min min-w-0 gap-[var(--s-3)] max-h-[var(--h,360px)] overflow-y-auto overflow-x-hidden p-[var(--s-4)] bg-[var(--card)] rounded-[var(--r-card)] overscroll-contain\",\n);\nexport type MessageScrollerProps = React.ComponentProps<\"div\"> & {\n  followThreshold?: number;\n  onAtBottomChange?: (atBottom: boolean) => void;\n};\nexport function MessageScroller({\n  ref,\n  className,\n  children,\n  followThreshold = 24,\n  onAtBottomChange,\n  onScroll,\n  ...props\n}: MessageScrollerProps) {\n  const element = React.useRef<HTMLDivElement>(null);\n  const attached = React.useRef(true);\n  const [detached, setDetached] = React.useState(false);\n  const callback = React.useRef(onAtBottomChange);\n  React.useEffect(() => {\n    callback.current = onAtBottomChange;\n  }, [onAtBottomChange]);\n  const mark = React.useCallback(() => {\n    const el = element.current;\n    if (!el) return;\n    const bottom =\n      el.scrollHeight - el.scrollTop - el.clientHeight < followThreshold;\n    if (attached.current !== bottom) {\n      attached.current = bottom;\n      setDetached(!bottom);\n      callback.current?.(bottom);\n    }\n  }, [followThreshold]);\n  const jump = React.useCallback(() => {\n    const el = element.current;\n    if (el) {\n      el.scrollTop = el.scrollHeight;\n      mark();\n    }\n  }, [mark]);\n  React.useLayoutEffect(() => {\n    const el = element.current;\n    if (!el) return;\n    jump();\n    const follow = () => {\n      if (attached.current) jump();\n    };\n    const resize = new ResizeObserver(follow);\n    const observe = () => {\n      resize.disconnect();\n      resize.observe(el);\n      for (const child of el.children) resize.observe(child);\n      follow();\n    };\n    const mutation = new MutationObserver(observe);\n    mutation.observe(el, {\n      childList: true,\n      subtree: true,\n      characterData: true,\n    });\n    observe();\n    return () => {\n      mutation.disconnect();\n      resize.disconnect();\n    };\n  }, [jump]);\n  const ownedMorphRef = useMorph<HTMLDivElement>(\"surfaces\", (node) => {\n          element.current = node;\n          if (typeof ref === \"function\") return ref(node);\n          if (ref) ref.current = node;\n        });\n  return (\n    <ScrollerContext.Provider value={{ detached, jump }}>\n      <div\n        ref={ownedMorphRef}\n        data-slot=\"message-scroller\"\n        data-part=\"viewport\"\n        data-scroller=\"\"\n        data-state={detached ? \"detached\" : \"attached\"}\n        className={cn(\n          messageScrollerVariants(),\n          detached && \"-detached\",\n          className,\n        )}\n        onScroll={(event) => {\n          mark();\n          onScroll?.(event);\n        }}\n        {...props}\n      >\n        {children}\n      </div>\n    </ScrollerContext.Provider>\n  );\n}\nexport type MessageScrollerJumpProps = ButtonProps;\nexport function MessageScrollerJump({\n  className,\n  children,\n  onClick,\n  ...props\n}: MessageScrollerJumpProps) {\n  const scroller = React.useContext(ScrollerContext);\n  return (\n    <Button\n      data-slot=\"message-scroller-jump\"\n      data-part=\"trigger\"\n      className={cn(\n        \"v-scroller__jump sticky bottom-0 justify-self-center\",\n        className,\n      )}\n      variant=\"secondary\"\n      size=\"sm\"\n      hidden={!scroller?.detached}\n      onClick={(event) => {\n        onClick?.(event);\n        if (!event.defaultPrevented) scroller?.jump();\n      }}\n      {...props}\n    >\n      {children ?? \"Jump to latest\"}\n    </Button>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/message-scroller.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"message-scroller\"] {\n  scroll-behavior: smooth;\n  scrollbar-gutter: stable;\n}\n[data-slot=\"message-scroller\"] > * {\n  min-height: 0;\n  overflow: visible;\n}\n[data-slot=\"message-scroller\"] .v-card {\n  height: auto;\n}\n[data-slot=\"message-scroller\"] .v-bubble {\n  border-radius: 18px 18px 18px 4px;\n  box-shadow: inset 0 0 0 1px var(--v-border);\n}\n[data-slot=\"message-scroller-jump\"][hidden] {\n  display: none;\n}\n[data-slot=\"message-scroller\"]::-webkit-scrollbar {\n  width: 8px;\n}\n[data-slot=\"message-scroller\"]::-webkit-scrollbar-track {\n  background: transparent;\n}\n[data-slot=\"message-scroller\"]::-webkit-scrollbar-thumb {\n  background: color-mix(in oklab, var(--v-edge) 55%, transparent);\n  border-radius: 999px;\n  border: 2px solid transparent;\n  background-clip: content-box;\n}\n[data-slot=\"message-scroller\"] .v-bubble,\n[data-slot=\"message-scroller\"] > div > * {\n  transition: transform var(--t-element) var(--enter);\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/message-scroller.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/message-scroller.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "message-scroller",
+      "name": "Message Scroller",
+      "tier": "base",
+      "evidence": "Ext I09",
+      "status": "derived",
+      "root": ".v-scroller",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "surfaces",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "press",
+        "enters"
+      ],
+      "canvas": "480x360",
+      "contract": "entries/message-scroller/contract.md",
+      "demo": "entries/message-scroller/demo.html",
+      "isolation": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "MessageScrollerProps",
+        "props": [
+          {
+            "name": "followThreshold",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onAtBottomChange",
+            "type": "(atBottom: boolean) => void",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "MessageScrollerJumpProps",
+        "props": []
+      }
+    ],
+    "category": "Conversation",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

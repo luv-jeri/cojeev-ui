@@ -1,0 +1,14 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="hover-card"],
+  [data-slot^="hover-card-"],
+  [data-slot="hover-card"]::before,
+  [data-slot="hover-card"]::after,
+  [data-slot^="hover-card-"]::before,
+  [data-slot^="hover-card-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}

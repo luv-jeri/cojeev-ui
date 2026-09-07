@@ -1,0 +1,541 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  color: var(--v-on-accent);
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  )[aria-pressed="true"] {
+  color: var(--v-on-accent);
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
+    :disabled
+  ) {
+  cursor: pointer;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):disabled {
+  cursor: not-allowed;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-off {
+  color: var(--unavail-ink);
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):disabled {
+  color: var(--v-disabled-ink);
+  opacity: 1;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  position: relative;
+  font-weight: 500;
+  transition: background var(--t-micro);
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  )[aria-pressed="true"] {
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+  font-weight: 600;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
+    [aria-pressed="true"]
+  ):hover {
+  background: var(--v-beige);
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  ):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+.v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]).-on {
+  background: var(--v-pink-soft);
+  color: var(--v-on-accent);
+}
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+.v-cal__head:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  height: 36px;
+  padding: 0 var(--s-4);
+  border-radius: var(--r-pill);
+  background: var(--v-pink);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  display: grid;
+  place-items: center;
+}
+.v-cal__grid:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) 36px;
+  gap: 6px 2px;
+  justify-items: center;
+  align-items: center;
+}
+.v-cal__wd:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  width: 100%;
+  max-width: 44px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  background: var(--v-cream-pill);
+  font-size: 12px;
+  font-weight: 500;
+  display: grid;
+  place-items: center;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  width: 100%;
+  max-width: 44px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):hover {
+  background: var(--v-beige);
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-off {
+  color: var(--v-text-3);
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  )[aria-pressed="true"] {
+  background: var(--v-pink);
+  font-weight: 600;
+}
+.v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  font-size: 11px;
+  color: var(--v-text-2);
+}
+.v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]).-on {
+  background: var(--v-beige);
+  border-radius: var(--r-pill);
+  padding: 6px 6px;
+  color: var(--v-text);
+}
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  font-weight: 600;
+  height: 38px;
+  padding: 0 18px;
+  font-size: 14.5px;
+}
+.v-cal__head:where([data-slot="calendar"], [data-slot^="calendar-"]) .v-ibtn {
+  background: var(--v-canvas);
+  box-shadow: inset 0 0 0 1px var(--v-edge);
+  color: var(--v-text);
+}
+.v-cal__head:where([data-slot="calendar"], [data-slot^="calendar-"])
+  .v-ibtn:hover {
+  background: var(--v-pink);
+  box-shadow: none;
+  color: var(--v-on-accent);
+}
+.v-cal__wd:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--v-text-2);
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  font-size: 14.5px;
+  font-weight: 500;
+  border-radius: 50%;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-off {
+  color: var(--v-text-2);
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  )[aria-pressed="true"] {
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+  font-weight: 600;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
+    [aria-pressed="true"]
+  ):hover {
+  background: var(--v-beige);
+}
+.v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  font-size: 10.5px;
+  color: var(--v-text-2);
+  letter-spacing: 0.04em;
+  padding: 0 6px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+}
+.v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]).-on {
+  background: var(--v-pink-soft);
+  color: var(--v-on-accent);
+  font-weight: 600;
+}
+:root[data-mode="dark"]
+  .v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]).-on {
+  color: var(--v-text);
+}
+:root[data-mode="dark"]
+  .v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]).-on {
+  background: color-mix(in oklab, var(--v-pink) 30%, var(--v-canvas));
+}
+:root[data-mode="dark"]
+  .v-cal__head:where([data-slot="calendar"], [data-slot^="calendar-"])
+  .v-ibtn {
+  background: var(--v-beige-2);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+.v-cal__head:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  gap: 12px;
+}
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  height: auto;
+  padding: 0 2px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  box-shadow: none;
+}
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) > span {
+  font-family: var(--font-text);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--v-text-2);
+  letter-spacing: 0;
+}
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--card);
+  box-shadow: none;
+  border-radius: 999px;
+  padding: 3px;
+}
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"]) .v-ibtn,
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"]) .v-ibtn.-sm,
+.v-cal__head:where([data-slot="calendar"], [data-slot^="calendar-"])
+  .v-cal__nav
+  .v-ibtn {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: var(--v-text);
+  cursor: pointer;
+  transition:
+    background var(--t-micro),
+    transform var(--t-micro) var(--enter);
+}
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"])
+  .v-ibtn:hover {
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+}
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"])
+  .v-ibtn:active {
+  transform: scale(0.92);
+}
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"])
+  .v-ibtn
+  .v-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+}
+.v-cal__grid:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  grid-template-columns: 30px repeat(7, minmax(0, 1fr));
+  gap: 4px 2px;
+  align-items: center;
+  justify-items: center;
+}
+.v-cal__grid:where([data-slot="calendar"], [data-slot^="calendar-"]).-fwd {
+  animation: v-cal-fwd var(--t-max) var(--enter) both;
+}
+.v-cal__grid:where([data-slot="calendar"], [data-slot^="calendar-"]).-back {
+  animation: v-cal-back var(--t-max) var(--enter) both;
+}
+.v-cal__wd:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  height: 26px;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--v-text-2);
+}
+.v-cal__wd:where([data-slot="calendar"], [data-slot^="calendar-"]).-wk {
+  font-size: 9.5px;
+  color: var(--v-text-3);
+  justify-self: start;
+  padding-left: 4px;
+}
+.v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  justify-self: start;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 6px;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--v-text-3);
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  transition:
+    background var(--t-micro),
+    color var(--t-micro);
+}
+.v-cal__wk:where([data-slot="calendar"], [data-slot^="calendar-"]).-on {
+  background: var(--v-pink-soft);
+  color: var(--v-on-accent);
+  font-weight: 600;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  max-width: none;
+  aspect-ratio: auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--v-text);
+  background: transparent;
+  isolation: isolate;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]) > span {
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--v-beige);
+  transform: scale(0.55);
+  opacity: 0;
+  transition:
+    transform var(--t-element) var(--enter),
+    opacity var(--t-element) var(--enter);
+  z-index: 0;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
+    [aria-pressed="true"]
+  ):hover {
+  background: transparent;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]):not(
+    [aria-pressed="true"]
+  ):hover::before {
+  transform: scale(1);
+  opacity: 1;
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  ):active::before {
+  transform: scale(0.9);
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-today:not(
+    [aria-pressed="true"]
+  ) {
+  box-shadow: inset 0 0 0 1.5px var(--v-ink);
+  font-weight: 600;
+}
+.v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-off {
+  color: var(--v-text-2);
+  font-weight: 400;
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  )[aria-pressed="true"] {
+  color: var(--v-on-accent);
+  font-weight: 600;
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  )[aria-pressed="true"]
+  > span {
+  animation: v-cal-pick var(--t-max) var(--enter) both;
+}
+.v-cal__mark:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--v-pink-deep);
+  z-index: 1;
+}
+.v-cal__mark:where([data-slot="calendar"], [data-slot^="calendar-"]).-pink {
+  background: var(--v-pink-deep);
+}
+.v-cal__mark:where([data-slot="calendar"], [data-slot^="calendar-"]).-blue {
+  background: var(--v-blue-deep);
+}
+.v-cal__mark:where([data-slot="calendar"], [data-slot^="calendar-"]).-olive {
+  background: var(--v-olive);
+}
+.v-cal__mark:where([data-slot="calendar"], [data-slot^="calendar-"]).-yellow {
+  background: var(--v-yellow-deep);
+}
+.v-cal__mark:where([data-slot="calendar"], [data-slot^="calendar-"]).-ink {
+  background: var(--v-ink);
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  )[aria-pressed="true"]
+  .v-cal__mark {
+  background: var(--ink-fixed);
+}
+.v-cal__d:where(
+    [data-slot="calendar"],
+    [data-slot^="calendar-"]
+  ):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+:root[data-mode="dark"]
+  .v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  background: var(--v-beige-2);
+  box-shadow: none;
+}
+:root[data-mode="dark"]
+  .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]).-today:not(
+    [aria-pressed="true"]
+  ) {
+  box-shadow: inset 0 0 0 1.5px var(--v-text);
+}
+:root[data-mode="dark"]
+  .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"])::before {
+  background: var(--v-beige-2);
+}
+@media (max-width: 420px) {
+  .v-cal__d:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+    width: 36px;
+    height: 36px;
+    font-size: 13.5px;
+  }
+}
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+}
+.v-cal__month:where([data-slot="calendar"], [data-slot^="calendar-"]) {
+  background: transparent;
+  color: var(--v-text);
+}
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"]) .v-ibtn,
+.v-cal__nav:where([data-slot="calendar"], [data-slot^="calendar-"]) .v-ibtn.-sm,
+.v-cal__head:where([data-slot="calendar"], [data-slot^="calendar-"])
+  .v-cal__nav
+  .v-ibtn {
+  box-shadow: none;
+}
+@keyframes v-cal-fwd {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}
+@keyframes v-cal-back {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+@keyframes v-cal-pick {
+  40% {
+    transform: scale(1.18);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="calendar"],
+  [data-slot^="calendar-"],
+  [data-slot="calendar"]::before,
+  [data-slot="calendar"]::after,
+  [data-slot^="calendar-"]::before,
+  [data-slot^="calendar-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}
+
+/* DayPicker retains table semantics; its structural rows join the authored eight-column grid. */
+[data-slot="calendar-grid"] {
+  width: 100%;
+  border-collapse: collapse;
+}
+[data-slot="calendar-grid"] :is(thead, tbody, tr) {
+  display: contents;
+}
+[data-slot="calendar-grid"] td {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 40px;
+  padding: 0;
+}
+:where([data-slot="calendar-grid"]) th:where(:not(.v-cal__wk)) {
+  padding: 0;
+}
+[data-slot="calendar-header"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+[data-slot="calendar-months"],
+[data-slot="calendar"] .v-cal__months {
+  display: flex;
+  gap: var(--s-6);
+}
+[data-slot="calendar"] .v-cal__month-wrap {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+[data-slot="calendar-day"][data-disabled],
+[data-slot="calendar-day"]:disabled {
+  cursor: not-allowed;
+  color: var(--v-disabled-ink);
+}
+@media (max-width: 420px) {
+  [data-slot="calendar-grid"] td {
+    height: 36px;
+  }
+}
+
+/* Semantic row headers retain the source span typography, including normal week weights. */
+.v-cal__wk:where([data-slot="calendar-week-number"]) {
+ font-weight: 400;
+ text-align: start;
+ vertical-align: baseline;
+}
+
+/* Authored weekday labels are spans; semantic table headers keep their alignment. */
+.v-cal__wd:where([data-slot="calendar-weekday"], [data-slot="calendar-week-number-header"]) {
+  text-align: start;
+}

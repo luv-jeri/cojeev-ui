@@ -1,0 +1,56 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-collapsible:where([data-slot="collapsible"], [data-slot^="collapsible-"])
+  [data-slot="collapsible-trigger"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  cursor: pointer;
+  font-size: var(--fs-control);
+  color: var(--muted-foreground);
+  height: 32px;
+}
+.v-collapsible:where([data-slot="collapsible"], [data-slot^="collapsible-"])
+  [data-slot="collapsible-trigger"]::-webkit-details-marker {
+  display: none;
+}
+.v-collapsible:where(
+    [data-slot="collapsible"],
+    [data-slot^="collapsible-"]
+  )[data-state="open"]
+  [data-slot="collapsible-trigger"]
+  .v-chev {
+  transform: rotate(180deg);
+}
+.v-collapsible__body:where(
+  [data-slot="collapsible"],
+  [data-slot^="collapsible-"]
+) {
+  margin-top: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  background: var(--card);
+  border-radius: var(--r-md);
+  font-size: 13px;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="collapsible"],
+  [data-slot^="collapsible-"],
+  [data-slot="collapsible"]::before,
+  [data-slot="collapsible"]::after,
+  [data-slot^="collapsible-"]::before,
+  [data-slot^="collapsible-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}
+
+[data-slot="collapsible"][data-state="closed"]
+  > [data-slot="collapsible-content"] {
+  display: none;
+}
+[data-slot="collapsible-trigger"]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

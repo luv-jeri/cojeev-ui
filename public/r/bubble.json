@@ -1,0 +1,178 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bubble",
+  "title": "Bubble",
+  "description": "Groups conversational content and timestamps into visually distinct message bubbles.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/bubble.tsx",
+      "content": "\"use client\"\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst BubbleVariants=cva(\"v-chat [display:grid] [gap:4px] [padding:18px_20px_16px] [border-radius:24px] [background:var(--v-ink)] [--bubble-surface:var(--v-ink)]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type BubbleProps=React.ComponentProps<\"div\"> & VariantProps<typeof BubbleVariants> & { as?:React.ElementType }\nexport function Bubble({as:Tag=\"div\",className,variant,size,...props}:BubbleProps){return <Tag data-slot=\"bubble\" data-part=\"root\" className={cn(BubbleVariants({variant,size}),className)} {...props}/>}\n\nconst BubbleRowVariants=cva(\"v-chat__row [display:flex] [align-items:flex-end] [gap:10px] [max-width:82%] [justify-self:start]\",{variants:{variant:{\"default\":\"\",\"me\":\"-me [justify-self:end] [flex-direction:row-reverse]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type BubbleRowProps=React.ComponentProps<\"div\"> & VariantProps<typeof BubbleRowVariants> & { as?:React.ElementType }\nexport function BubbleRow({as:Tag=\"div\",className,variant,size,...props}:BubbleRowProps){return <Tag data-slot=\"bubble-item\" data-part=\"item\" className={cn(BubbleRowVariants({variant,size}),className)} {...props}/>}\n\nconst BubbleContentVariants=cva(\"v-bubble [display:inline-block] [max-width:min(80%,52ch)] [padding:10px_14px_11px] [border-radius:18px_18px_18px_4px] [background:var(--v-canvas)] [color:var(--v-text)] [font-size:var(--fs-control)] [line-height:1.4] [overflow-wrap:anywhere] [position:relative]\",{variants:{variant:{\"default\":\"\",\"me\":\"-me [background:var(--v-pink)] [border-radius:18px_18px_4px_18px] [color:var(--v-on-accent)]\",\"tail\":\"-tail [border-bottom-left-radius:18px]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type BubbleContentProps=React.ComponentProps<\"div\"> & VariantProps<typeof BubbleContentVariants> & { as?:React.ElementType }\nexport function BubbleContent({ref: externalMorphRef, as:Tag=\"div\",className,variant,size,...props}:BubbleContentProps){const ownedMorphRef = useMorph<HTMLDivElement>(\"pills\", externalMorphRef);\n  return <Tag ref={ownedMorphRef} data-slot=\"bubble-content\" data-part=\"content\" className={cn(BubbleContentVariants({variant,size}),className)} {...props}/>}\n\nconst BubbleGapVariants=cva(\"v-chat__gap [height:10px]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type BubbleGapProps=React.ComponentProps<\"div\"> & VariantProps<typeof BubbleGapVariants> & { as?:React.ElementType }\nexport function BubbleGap({as:Tag=\"div\",className,variant,size,...props}:BubbleGapProps){return <Tag data-slot=\"bubble-gap\" data-part=\"gap\" className={cn(BubbleGapVariants({variant,size}),className)} {...props}/>}\n\nconst BubbleTimeVariants=cva(\"v-chat__time [font-size:11px] [color:var(--structure-text)] [opacity:.7] [padding:6px_0_2px_38px] [font-variant-numeric:tabular-nums]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type BubbleTimeProps=React.ComponentProps<\"div\"> & VariantProps<typeof BubbleTimeVariants> & { as?:React.ElementType }\nexport function BubbleTime({as:Tag=\"div\",className,variant,size,...props}:BubbleTimeProps){return <Tag data-slot=\"bubble-time\" data-part=\"time\" className={cn(BubbleTimeVariants({variant,size}),className)} {...props}/>}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/bubble.css",
+      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-bubble[data-slot].-me{background:var(--v-pink);border-radius:18px 18px 4px 18px;color:var(--v-on-accent)}\n.v-bubble[data-slot].-tail{border-bottom-left-radius:18px}\n.v-chat__row[data-slot].-me{justify-self:end;flex-direction:row-reverse}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-bubble[data-slot]+.v-bubble:not(.-me){border-radius:18px 18px 18px 18px;margin-top:-2px}\n.v-bubble[data-slot].-tail.-me{border-bottom-right-radius:18px}\n.v-bubble[data-slot].-tail::before{content:\"\";position:absolute;bottom:0;height:18px}\n.v-bubble[data-slot].-tail::after{content:\"\";position:absolute;bottom:0;height:18px}\n.v-bubble[data-slot].-tail::before{left:-7px;width:20px;background:inherit;border-bottom-right-radius:15px 14px}\n.v-bubble[data-slot].-tail::after{left:-10px;width:10px;background:var(--bubble-surface,var(--v-ink));border-bottom-right-radius:10px}\n.v-bubble[data-slot].-tail.-me::before{left:auto;right:-7px;border-bottom-right-radius:0;border-bottom-left-radius:15px 14px}\n.v-bubble[data-slot].-tail.-me::after{left:auto;right:-10px;border-bottom-right-radius:0;border-bottom-left-radius:10px}\n.v-chat__row[data-slot] .v-avatar{flex:none;width:28px;height:28px;font-size:11px;box-shadow:none;margin-bottom:2px}\n.v-chat__row[data-slot]+.v-chat__row:not(.-me):not(:has(.v-avatar)){padding-left:38px}\n.v-chat__row[data-slot].-me+.v-chat__row.-me{margin-top:0}\n.v-chat__row[data-slot].-me+.v-chat__time{text-align:right;padding-left:0}\n.v-chat[data-slot] .v-bubble{max-width:none;padding:10px 14px 11px}\n:root[data-mode=\"dark\"] .v-bubble[data-slot]{background:var(--v-beige-2);color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-bubble[data-slot].-me{background:var(--v-pink);color:var(--v-on-accent)}\n:root[data-mode=\"dark\"] .v-chat[data-slot] .v-chat__time[data-slot]{color:var(--v-on-ink)}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/bubble.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/bubble.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "bubble",
+      "name": "Bubble",
+      "tier": "base",
+      "evidence": "I09 I16",
+      "status": "source",
+      "root": ".v-chat",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "rest"
+      ],
+      "dataStates": [],
+      "category": "surfaces",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "enters",
+        "breathes"
+      ],
+      "canvas": "480x240",
+      "contract": "entries/bubble/contract.md",
+      "demo": "entries/bubble/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "BubbleProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "BubbleRowProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"me\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "BubbleContentProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"me\" | \"tail\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "BubbleGapProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "BubbleTimeProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Conversation",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,75 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-toast:where([data-slot="toast"], [data-slot^="toast-"]).-danger {
+  color: var(--destructive-foreground);
+}
+.v-toaster:where([data-slot="toast"], [data-slot^="toast-"]) {
+  position: fixed;
+  right: var(--s-6);
+  bottom: var(--s-6);
+  display: grid;
+  gap: var(--s-2);
+  z-index: var(--z-toast);
+  width: min(380px, calc(100% - 48px));
+}
+.v-toast:where([data-slot="toast"], [data-slot^="toast-"]) {
+  animation: v-toast-in var(--t-max) var(--enter);
+}
+.v-toast:where([data-slot="toast"], [data-slot^="toast-"]).-cream {
+  background: var(--v-canvas);
+  color: var(--v-text);
+  border: 1px solid var(--v-border);
+}
+.v-toast:where([data-slot="toast"], [data-slot^="toast-"]).-danger {
+  background: var(--v-danger);
+  color: var(--destructive-foreground);
+}
+.v-toast:where([data-slot="toast"], [data-slot^="toast-"]) .v-btn {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+  margin-left: auto;
+  background: rgba(251, 244, 230, 0.14);
+  color: inherit;
+}
+.v-toast:where([data-slot="toast"], [data-slot^="toast-"]).-cream .v-btn {
+  background: var(--v-beige);
+}
+.v-toast:where([data-slot="toast"], [data-slot^="toast-"]).-out {
+  animation: v-toast-out var(--t-element) var(--exit) forwards;
+}
+@keyframes v-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes v-toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="toast"],
+  [data-slot^="toast-"],
+  [data-slot="toast"]::before,
+  [data-slot="toast"]::after,
+  [data-slot^="toast-"]::before,
+  [data-slot^="toast-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}
+
+[data-slot="toast"][data-state="closed"] {
+  animation: v-toast-out var(--t-element) var(--exit) forwards;
+}
+[data-slot="toast"][data-swipe="move"] {
+  transform: translateX(var(--radix-toast-swipe-move-x));
+}
+[data-slot="toast"][data-swipe="end"] {
+  transform: translateX(var(--radix-toast-swipe-end-x));
+  opacity: 0;
+}

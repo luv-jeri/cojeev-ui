@@ -1,0 +1,98 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dropzone",
+  "title": "Dropzone",
+  "description": "Collects local files through drag and drop or a native file picker and reports the selection.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/dropzone.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cva } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nexport const dropzoneVariants = cva(\n  \"v-drop grid justify-items-center gap-[8px] px-[24px] py-[28px] rounded-[22px] bg-[var(--v-canvas)] border-[1.5px] border-dashed border-[var(--v-edge)] text-center cursor-pointer\",\n);\nexport type DropzoneFile = {\n  name: string;\n  size: number;\n  type: string;\n  lastModified: number;\n};\nexport type DropzoneProps = React.ComponentProps<\"div\"> & {\n  onFilesSelected?: (files: File[]) => void;\n  accept?: string;\n  multiple?: boolean;\n  disabled?: boolean;\n  showReceipt?: boolean;\n};\nexport function Dropzone({\n  className,\n  children,\n  onFilesSelected,\n  accept,\n  multiple = true,\n  disabled,\n  showReceipt = true,\n  onDragEnter,\n  onDragOver,\n  onDragLeave,\n  onDrop,\n  onClick,\n  onKeyDown,\n  ...props\n}: DropzoneProps) {\n  const picker = React.useRef<HTMLInputElement>(null);\n  const depth = React.useRef(0);\n  const [over, setOver] = React.useState(false);\n  const [receipt, setReceipt] = React.useState(\"\");\n  const receive = (files: File[]) => {\n    const chosen = multiple ? files : files.slice(0, 1);\n    onFilesSelected?.(chosen);\n    setReceipt(\n      chosen.length\n        ? `${chosen.length} file${chosen.length === 1 ? \"\" : \"s\"} selected: ${chosen.map((f) => f.name).join(\", \")}.`\n        : \"No files selected.\",\n    );\n  };\n  return (\n    <div\n      data-slot=\"dropzone\"\n      data-part=\"root\"\n      data-drop=\"\"\n      data-state={over ? \"over\" : \"rest\"}\n      role=\"button\"\n      tabIndex={disabled ? -1 : 0}\n      aria-disabled={disabled || undefined}\n      aria-label=\"Add files\"\n      className={cn(dropzoneVariants(), over && \"-over\", className)}\n      onClick={(event) => {\n        onClick?.(event);\n        if (\n          !event.defaultPrevented &&\n          !disabled &&\n          event.target !== picker.current\n        )\n          picker.current?.click();\n      }}\n      onKeyDown={(event) => {\n        onKeyDown?.(event);\n        if (\n          !event.defaultPrevented &&\n          !disabled &&\n          (event.key === \"Enter\" || event.key === \" \")\n        ) {\n          event.preventDefault();\n          picker.current?.click();\n        }\n      }}\n      onDragEnter={(event) => {\n        onDragEnter?.(event);\n        event.preventDefault();\n        if (!disabled && ++depth.current > 0) setOver(true);\n      }}\n      onDragOver={(event) => {\n        onDragOver?.(event);\n        event.preventDefault();\n        event.dataTransfer.dropEffect = disabled ? \"none\" : \"copy\";\n      }}\n      onDragLeave={(event) => {\n        onDragLeave?.(event);\n        event.preventDefault();\n        if (--depth.current <= 0) {\n          depth.current = 0;\n          setOver(false);\n        }\n      }}\n      onDrop={(event) => {\n        onDrop?.(event);\n        event.preventDefault();\n        depth.current = 0;\n        setOver(false);\n        if (!disabled) receive(Array.from(event.dataTransfer.files));\n      }}\n      {...props}\n    >\n      <input\n        ref={picker}\n        type=\"file\"\n        accept={accept}\n        multiple={multiple}\n        disabled={disabled}\n        tabIndex={-1}\n        className=\"sr-only\"\n        aria-hidden=\"true\"\n        onChange={(event) => {\n          receive(Array.from(event.target.files ?? []));\n          event.target.value = \"\";\n        }}\n      />\n      {children ?? (\n        <>\n          <b className=\"text-[16px]\">Drop files here</b>\n          <span className=\"v-quiet text-[13px]\">\n            or press Enter to choose files\n          </span>\n        </>\n      )}\n      {showReceipt && receipt && (\n        <p\n          data-slot=\"dropzone-receipt\"\n          data-drop-result=\"\"\n          role=\"status\"\n          className=\"v-quiet text-[12.5px]\"\n        >\n          {receipt}\n        </p>\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/dropzone.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"dropzone\"] {\n  transition:\n    background var(--t-element) var(--enter),\n    border-color var(--t-element) var(--enter),\n    transform var(--t-micro) var(--enter);\n}\n[data-slot=\"dropzone\"]:hover {\n  background: color-mix(in oklab, var(--v-olive) 8%, var(--v-canvas));\n}\n[data-slot=\"dropzone\"].-over {\n  background: color-mix(in oklab, var(--v-olive) 16%, var(--v-canvas));\n  border-color: var(--v-olive);\n  border-style: solid;\n  transform: translateY(-1px);\n}\n[data-slot=\"dropzone\"]:focus-visible {\n  outline: 2px solid var(--ring);\n  outline-offset: 3px;\n}\n[data-slot=\"dropzone\"][aria-disabled=\"true\"] {\n  cursor: not-allowed;\n  opacity: 0.5;\n}\n:root[data-mode=\"dark\"] [data-slot=\"dropzone\"] {\n  background: var(--v-beige);\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/dropzone.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/dropzone.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "dropzone",
+      "name": "Dropzone",
+      "tier": "base",
+      "evidence": "Ext",
+      "status": "derived",
+      "root": ".v-drop",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "over",
+        "rest"
+      ],
+      "dataStates": [],
+      "category": "controls",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "paces"
+      ],
+      "canvas": "480x240",
+      "contract": "entries/dropzone/contract.md",
+      "demo": "entries/dropzone/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "DropzoneProps",
+        "props": [
+          {
+            "name": "onFilesSelected",
+            "type": "(files: File[]) => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "accept",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "multiple",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "showReceipt",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Forms",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

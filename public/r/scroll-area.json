@@ -1,0 +1,86 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area",
+  "title": "Scroll Area",
+  "description": "Contains overflowing content in a bounded viewport with styled scrollbars.",
+  "dependencies": [
+    "class-variance-authority",
+    "@radix-ui/react-scroll-area"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/scroll-area.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport * as Primitive from \"@radix-ui/react-scroll-area\";\nexport const scrollAreaVariants = cva(\n  \"v-scroll [overflow:auto] [max-height:var(--h,240px)] [padding:6px_6px_6px_18px] [border-radius:20px] [box-shadow:inset_0_0_0_1px_var(--v-border)] [background:var(--v-canvas)] [padding-right:4px]\",\n  {\n    variants: { variant: { default: \"\", ink: \"-ink\" } },\n    defaultVariants: { variant: \"default\" },\n  },\n);\nexport type ScrollAreaProps = React.ComponentProps<typeof Primitive.Root> &\n  VariantProps<typeof scrollAreaVariants> & { viewportClassName?: string };\nexport function ScrollArea({\n  className,\n  variant,\n  children,\n  viewportClassName,\n  ...props\n}: ScrollAreaProps) {\n  return (\n    <Primitive.Root\n      data-slot=\"scroll-area\"\n      data-part=\"root\"\n      className={cn(scrollAreaVariants({ variant }), className)}\n      {...props}\n    >\n      <Primitive.Viewport\n        data-slot=\"scroll-area-viewport\"\n        data-part=\"viewport\"\n        className={cn(\n          \"size-full rounded-[inherit] max-h-[var(--h,240px)]\",\n          viewportClassName,\n        )}\n      >\n        {children}\n      </Primitive.Viewport>\n      <ScrollBar />\n      <Primitive.Corner data-slot=\"scroll-area-corner\" />\n    </Primitive.Root>\n  );\n}\nexport type ScrollBarProps = React.ComponentProps<typeof Primitive.Scrollbar>;\nexport function ScrollBar({\n  className,\n  orientation = \"vertical\",\n  ...props\n}: ScrollBarProps) {\n  return (\n    <Primitive.Scrollbar\n      data-slot=\"scroll-area-scrollbar\"\n      orientation={orientation}\n      className={cn(\n        \"flex touch-none select-none\",\n        orientation === \"vertical\" ? \"h-full w-3 p-1\" : \"h-3 flex-col p-1\",\n        className,\n      )}\n      {...props}\n    >\n      <Primitive.Thumb\n        data-slot=\"scroll-area-thumb\"\n        data-part=\"thumb\"\n        className=\"relative flex-1 rounded-full bg-[color-mix(in_oklab,var(--v-ink)_34%,transparent)]\"\n      />\n    </Primitive.Scrollbar>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/scroll-area.css",
+      "content": "@layer sahajiv-states {\n/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar-thumb {\n  background: var(--v-border);\n  border-radius: 3px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink::-webkit-scrollbar-thumb {\n  background: rgba(251, 244, 230, 0.5);\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]).-ink {\n  color: var(--v-on-ink);\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]) {\n  scrollbar-gutter: stable;\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]) {\n  scrollbar-gutter: stable;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar {\n  width: 12px;\n  height: 12px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar-track {\n  background: transparent;\n  border-radius: 999px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ):hover::-webkit-scrollbar-track {\n  background: color-mix(in oklab, var(--v-pink) 22%, transparent);\n  border: 4px solid transparent;\n  background-clip: content-box;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar-thumb {\n  background: color-mix(in oklab, var(--v-ink) 34%, transparent);\n  border-radius: 999px;\n  border: 4px solid transparent;\n  background-clip: content-box;\n  min-height: 36px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ):hover::-webkit-scrollbar-thumb {\n  background: var(--v-ink);\n  background-clip: content-box;\n  border-width: 3px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar-thumb:hover {\n  background: var(--v-brand);\n  background-clip: content-box;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar-thumb:active {\n  background: var(--v-pink-deep);\n  background-clip: content-box;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink::-webkit-scrollbar-thumb {\n  background: rgba(251, 244, 230, 0.5);\n  background-clip: content-box;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink:hover::-webkit-scrollbar-thumb {\n  background: var(--v-canvas);\n  background-clip: content-box;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink::-webkit-scrollbar-thumb:hover {\n  background: var(--v-pink);\n  background-clip: content-box;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink:hover::-webkit-scrollbar-track {\n  background: rgba(251, 244, 230, 0.1);\n  border: 4px solid transparent;\n  background-clip: content-box;\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]).v-card {\n  padding: 6px 6px 6px 18px;\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]) > p,\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"])\n  > .v-body {\n  padding: 10px 0;\n  border-bottom: 1px solid color-mix(in oklab, var(--v-border) 70%, transparent);\n  font-size: 14.5px;\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"])\n  > p:last-child {\n  border-bottom: 0;\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]).-ink\n  > p {\n  border-bottom-color: rgba(251, 244, 230, 0.12);\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )[data-scrollable] {\n  -webkit-mask-image: linear-gradient(\n    to bottom,\n    var(--mask-ink) 0,\n    var(--mask-ink) calc(100% - 28px),\n    color-mix(in oklab, var(--mask-ink) 20%, transparent) 100%\n  );\n  mask-image: linear-gradient(\n    to bottom,\n    var(--mask-ink) 0,\n    var(--mask-ink) calc(100% - 28px),\n    color-mix(in oklab, var(--mask-ink) 20%, transparent) 100%\n  );\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )[data-scrollable=\"end\"] {\n  -webkit-mask-image: none;\n  mask-image: none;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar {\n  width: 8px;\n  height: 8px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar-track {\n  background: transparent;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  )::-webkit-scrollbar-thumb {\n  background: color-mix(in oklab, var(--v-edge) 55%, transparent);\n  border: 2px solid transparent;\n  background-clip: content-box;\n  border-radius: 999px;\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink::-webkit-scrollbar-thumb {\n  background: rgba(251, 244, 230, 0.4);\n  background-clip: content-box;\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]) {\n  scrollbar-gutter: stable;\n}\n@supports not selector(::-webkit-scrollbar) {\n  .v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]).-ink {\n    scrollbar-color: rgba(251, 244, 230, 0.5) transparent;\n  }\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink::-webkit-scrollbar-thumb {\n  background-color: rgba(251, 244, 230, 0.42);\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink:hover::-webkit-scrollbar-thumb {\n  background-color: rgba(251, 244, 230, 0.7);\n}\n.v-scroll:where(\n    [data-slot=\"scroll-area\"],\n    [data-slot^=\"scroll-area-\"]\n  ).-ink::-webkit-scrollbar-thumb:hover {\n  background-color: var(--v-pink);\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]) {\n  scrollbar-gutter: stable;\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]) > p,\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"])\n  > .v-body {\n  margin-right: 6px;\n}\n:root[data-mode=\"dark\"]\n  .v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]) {\n  background: var(--v-beige);\n  box-shadow: inset 0 0 0 1px var(--v-border);\n}\n:root[data-mode=\"dark\"]\n  .v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]).-ink {\n  color: var(--v-text);\n  box-shadow: inset 0 0 0 1px var(--v-border);\n}\n.v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]).-ink {\n  background: var(--v-ink);\n}\n:root[data-mode=\"dark\"]\n  .v-scroll:where([data-slot=\"scroll-area\"], [data-slot^=\"scroll-area-\"]).-ink {\n  background: var(--v-canvas);\n}\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"scroll-area\"],\n  [data-slot^=\"scroll-area-\"],\n  [data-slot=\"scroll-area\"]::before,\n  [data-slot=\"scroll-area\"]::after,\n  [data-slot^=\"scroll-area-\"]::before,\n  [data-slot^=\"scroll-area-\"]::after {\n    animation-duration: 0s;\n    animation-iteration-count: 1;\n    transition-duration: 0s;\n    scroll-behavior: auto;\n  }\n}\n\n/* The viewport is Radix's scroll owner; content keeps the reference's direct-child rhythm. */\n[data-slot=\"scroll-area\"] {\n  overflow: hidden;\n}\n[data-slot=\"scroll-area-viewport\"] {\n  max-height: calc(var(--h, 240px) - 12px);\n}\n[data-slot=\"scroll-area-viewport\"] > div > :is(p, .v-body) {\n  padding: 10px 0;\n  margin-right: 6px;\n  border-bottom: 1px solid color-mix(in oklab, var(--v-border) 70%, transparent);\n  font-size: 14.5px;\n}\n[data-slot=\"scroll-area-viewport\"] > div > p:last-child {\n  border-bottom: 0;\n}\n[data-slot=\"scroll-area\"].-ink [data-slot=\"scroll-area-viewport\"] > div > p {\n  border-bottom-color: rgba(251, 244, 230, 0.12);\n}\n[data-slot=\"scroll-area-scrollbar\"][data-orientation=\"vertical\"] {\n  width: 8px;\n  padding: 2px;\n}\n[data-slot=\"scroll-area-scrollbar\"][data-orientation=\"horizontal\"] {\n  height: 8px;\n  padding: 2px;\n}\n[data-slot=\"scroll-area-thumb\"] {\n  background: color-mix(in oklab, var(--v-edge) 55%, transparent);\n}\n[data-slot=\"scroll-area\"].-ink [data-slot=\"scroll-area-thumb\"] {\n  background: rgba(251, 244, 230, 0.42);\n}\n[data-slot=\"scroll-area\"].-ink:hover [data-slot=\"scroll-area-thumb\"] {\n  background: rgba(251, 244, 230, 0.7);\n}\n[data-slot=\"scroll-area\"].-ink [data-slot=\"scroll-area-thumb\"]:hover {\n  background: var(--v-pink);\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/scroll-area.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/scroll-area.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "scroll-area",
+      "name": "Scroll Area",
+      "tier": "base",
+      "evidence": "I07",
+      "status": "source",
+      "root": ".v-scroll",
+      "variants": [
+        "ink"
+      ],
+      "sizes": [],
+      "states": [
+        "rest"
+      ],
+      "dataStates": [],
+      "category": "surfaces",
+      "motionOnByDefault": false,
+      "flowRoles": [],
+      "canvas": "480x240",
+      "contract": "entries/scroll-area/contract.md",
+      "demo": "entries/scroll-area/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "ink-default-rest.html",
+        "ink-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "ScrollAreaProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"ink\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "viewportClassName",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ScrollBarProps",
+        "props": []
+      }
+    ],
+    "category": "Layout",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

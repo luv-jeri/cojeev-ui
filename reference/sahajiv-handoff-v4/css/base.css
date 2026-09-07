@@ -1,0 +1,36 @@
+/* Vriksha · base.css — reset, typography roles, focus, reduced motion. */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--background);color:var(--foreground);font-family:var(--font-text);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4,p,figure,ul,ol{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:0;padding:0;cursor:pointer}
+img,svg{display:block;max-width:100%}
+[hidden]{display:none!important}
+a{color:var(--foreground);text-underline-offset:2px}a:hover{color:var(--v-text-2)}
+:focus-visible{outline:2px solid var(--ring);outline-offset:2px;border-radius:var(--r-sm)}
+::selection{background:var(--v-pink);color:var(--v-text)}
+/* type roles */
+.v-hero{font-family:var(--font-display);font-size:var(--fs-hero);line-height:var(--lh-hero);font-weight:var(--fw-display);letter-spacing:var(--ls-hero)}
+.v-display{font-family:var(--font-display);font-size:var(--fs-display);line-height:var(--lh-display);font-weight:var(--fw-display);letter-spacing:var(--ls-display);text-wrap:balance}
+.v-section{font-family:var(--font-display);font-size:var(--fs-section);line-height:1.1;font-weight:var(--fw-display);letter-spacing:-.01em}
+.v-title{font-size:var(--fs-title);line-height:var(--lh-title);font-weight:var(--fw-title);letter-spacing:-.005em}
+.v-lead{font-size:var(--fs-lead);line-height:1.3;font-weight:var(--fw-title)}
+.v-body{font-size:var(--fs-body);line-height:var(--lh-body)}
+.v-body-2{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--muted-foreground)}
+.v-control{font-size:var(--fs-control);line-height:var(--lh-control);font-weight:var(--fw-control)}
+.v-meta{font-size:var(--fs-meta);line-height:1.3;color:var(--muted-foreground)}
+.v-caps{font-size:var(--fs-caps);line-height:1.2;font-weight:500;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--muted-foreground)}
+.v-value{font-size:var(--fs-body);font-weight:var(--fw-value);font-variant-numeric:tabular-nums lining-nums}
+.v-value .u,.v-hero .u,.v-display .u{font-family:var(--font-text);font-size:.3em;font-weight:400;letter-spacing:0;margin-left:.15em;color:var(--muted-foreground)}
+.v-id{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.v-tnum{font-variant-numeric:tabular-nums lining-nums}
+/* demo marker — every fixture value is labelled */
+.v-fixture{position:relative}
+.v-fixture::after{content:"DEMO DATA";position:absolute;top:8px;right:8px;font:500 9px/1 var(--font-text);letter-spacing:.08em;padding:4px 6px;border:1px dashed var(--v-text-2);border-radius:var(--r-pill);color:var(--v-text-2);background:var(--v-canvas);pointer-events:none;z-index:1}
+/* Accessible-only content must be reachable by assistive tech but must NEVER contribute layout: a clipped
+   element still sits at its static position, so a wide data table pushed 15 px of scroll width. Pinning it
+   off-flow keeps the data and removes the geometry. */
+.v-sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;inset-inline-start:0;inset-block-start:0}
+/* reduced-motion guard: must beat every transition/animation declaration in every sheet, including the unlayered flow.css — !important is the only cascade position that does */
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;animation-iteration-count:1!important;transition-duration:0s!important;scroll-behavior:auto!important}}

@@ -1,0 +1,119 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-menu__item:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 40px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-control);
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+}
+.v-menu__item:where([data-slot="menubar"], [data-slot^="menubar-"]):hover,
+.v-menu__item:where(
+    [data-slot="menubar"],
+    [data-slot^="menubar-"]
+  )[data-highlighted] {
+  background: var(--v-beige);
+}
+.v-menu__item:where([data-slot="menubar"], [data-slot^="menubar-"]).-danger {
+  color: var(--v-danger-ink);
+}
+.v-menu__sep:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  height: 1px;
+  background: var(--v-border);
+  margin: 4px 0;
+}
+.v-menu__group:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  padding: 8px 12px 4px;
+}
+.v-menubar:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  display: inline-flex;
+  gap: var(--s-1);
+  padding: 4px;
+  background: var(--card);
+  border-radius: var(--r-pill);
+}
+.v-menubar__trigger:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  height: 32px;
+  padding: 0 var(--s-4);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-control);
+  font-weight: 500;
+}
+.v-menubar__trigger:where(
+    [data-slot="menubar"],
+    [data-slot^="menubar-"]
+  )[aria-expanded="true"],
+.v-menubar__trigger:where(
+    [data-slot="menubar"],
+    [data-slot^="menubar-"]
+  ):hover {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+.v-menu:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  scrollbar-gutter: stable;
+}
+.v-menu:where(
+    [data-slot="menubar"],
+    [data-slot^="menubar-"]
+  )::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+.v-menu:where(
+    [data-slot="menubar"],
+    [data-slot^="menubar-"]
+  )::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 999px;
+}
+.v-menu:where(
+    [data-slot="menubar"],
+    [data-slot^="menubar-"]
+  )::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--v-ink) 34%, transparent);
+  border-radius: 999px;
+  border: 4px solid transparent;
+  background-clip: content-box;
+  min-height: 36px;
+}
+.v-menu:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  scrollbar-gutter: stable;
+}
+.v-menu:where([data-slot="menubar"], [data-slot^="menubar-"]) {
+  scrollbar-gutter: stable;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="menubar"],
+  [data-slot^="menubar-"],
+  [data-slot="menubar"]::before,
+  [data-slot="menubar"]::after,
+  [data-slot^="menubar-"]::before,
+  [data-slot^="menubar-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}
+
+[data-slot^="menubar-"][data-inset] {
+  padding-left: 32px;
+}
+[data-slot^="menubar-"][data-disabled] {
+  pointer-events: none;
+  color: var(--v-disabled-ink);
+  cursor: not-allowed;
+}
+[data-slot^="menubar-"][data-highlighted] {
+  outline: none;
+  background: var(--v-beige);
+}

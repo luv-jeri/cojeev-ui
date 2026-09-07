@@ -1,0 +1,109 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "title": "Toast",
+  "description": "Reports a brief outcome in a notification area without moving the user away from the current task.",
+  "dependencies": [
+    "class-variance-authority",
+    "@radix-ui/react-toast"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/toast.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport { Button } from \"@/components/ui/button\";\nimport * as Primitive from \"@radix-ui/react-toast\";\nimport { useFlowAppearance } from \"@/lib/sahajiv-motion/use-flow\";\nexport const toastVariants = cva(\n  \"v-toast [display:flex] [align-items:center] [gap:var(--s-3)] [padding:var(--s-3)_var(--s-4)] [border-radius:var(--r-card-sm)] [background:var(--v-ink)] [color:var(--v-on-ink)] [font-size:var(--fs-control)]\",\n  {\n    variants: { variant: { default: \"\", cream: \"-cream\", danger: \"-danger\" } },\n    defaultVariants: { variant: \"default\" },\n  },\n);\nexport type ToastProviderProps = React.ComponentProps<\n  typeof Primitive.Provider\n>;\nexport function ToastProvider(props: ToastProviderProps) {\n  return <Primitive.Provider duration={5000} {...props} />;\n}\nexport type ToastViewportProps = React.ComponentProps<\n  typeof Primitive.Viewport\n>;\nexport function ToastViewport({ className, ...props }: ToastViewportProps) {\n  return (\n    <Primitive.Viewport\n      data-slot=\"toast-viewport\"\n      data-part=\"viewport\"\n      className={cn(\n        \"v-toaster fixed right-[var(--s-6)] bottom-[var(--s-6)] grid gap-[var(--s-2)] z-[var(--z-toast)] w-[min(380px,calc(100%-48px))]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type ToastProps = React.ComponentProps<typeof Primitive.Root> &\n  VariantProps<typeof toastVariants> & { durable?: boolean };\nexport function Toast({\n  className,\n  variant,\n  durable,\n  duration,\n  ref,\n  ...props\n}: ToastProps) {\n  const morphRef = useMorph<HTMLLIElement>(\"surfaces\", ref);\n  const flowRef = useFlowAppearance<HTMLLIElement>(\n    props.open ?? true,\n    morphRef,\n    \"enter\",\n  );\n  return (\n    <Primitive.Root\n      ref={flowRef}\n      data-slot=\"toast\"\n      data-part=\"root\"\n      duration={durable ? Infinity : duration}\n      className={cn(toastVariants({ variant }), className)}\n      {...props}\n    />\n  );\n}\nexport type ToastTitleProps = React.ComponentProps<typeof Primitive.Title>;\nexport function ToastTitle({ className, ...props }: ToastTitleProps) {\n  return (\n    <Primitive.Title\n      data-slot=\"toast-title\"\n      data-part=\"title\"\n      className={cn(\"font-medium\", className)}\n      {...props}\n    />\n  );\n}\nexport type ToastDescriptionProps = React.ComponentProps<\n  typeof Primitive.Description\n>;\nexport function ToastDescription({\n  className,\n  ...props\n}: ToastDescriptionProps) {\n  return (\n    <Primitive.Description\n      data-slot=\"toast-description\"\n      data-part=\"description\"\n      className={cn(\"flex-1\", className)}\n      {...props}\n    />\n  );\n}\nexport type ToastActionProps = React.ComponentProps<typeof Primitive.Action>;\nexport function ToastAction({\n  className,\n  asChild,\n  children,\n  ...props\n}: ToastActionProps) {\n  return (\n    <Primitive.Action\n      data-slot=\"toast-action\"\n      data-part=\"action\"\n      className={className}\n      asChild\n      {...props}\n    >\n      {asChild ? children : <Button>{children}</Button>}\n    </Primitive.Action>\n  );\n}\n\nexport type ToastCloseProps = React.ComponentProps<typeof Primitive.Close>;\nexport function ToastClose({\n  className,\n  children,\n  asChild,\n  ...props\n}: ToastCloseProps) {\n  return (\n    <Primitive.Close\n      data-slot=\"toast-close\"\n      data-part=\"close\"\n      aria-label=\"Dismiss\"\n      className={className}\n      asChild\n      {...props}\n    >\n      {asChild ? (\n        children\n      ) : (\n        <Button style={{ minWidth: 30, padding: 0 }}>{children ?? \"×\"}</Button>\n      )}\n    </Primitive.Close>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/toast.css",
+      "content": "@layer sahajiv-states {\n/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */\n.v-toast:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]).-danger {\n  color: var(--destructive-foreground);\n}\n.v-toaster:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]) {\n  position: fixed;\n  right: var(--s-6);\n  bottom: var(--s-6);\n  display: grid;\n  gap: var(--s-2);\n  z-index: var(--z-toast);\n  width: min(380px, calc(100% - 48px));\n}\n.v-toast:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]) {\n  animation: v-toast-in var(--t-max) var(--enter);\n}\n.v-toast:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]).-cream {\n  background: var(--v-canvas);\n  color: var(--v-text);\n  border: 1px solid var(--v-border);\n}\n.v-toast:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]).-danger {\n  background: var(--v-danger);\n  color: var(--destructive-foreground);\n}\n.v-toast:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]) .v-btn {\n  height: 30px;\n  padding: 0 12px;\n  font-size: 12px;\n  margin-left: auto;\n  background: rgba(251, 244, 230, 0.14);\n  color: inherit;\n}\n.v-toast:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]).-cream .v-btn {\n  background: var(--v-beige);\n}\n.v-toast:where([data-slot=\"toast\"], [data-slot^=\"toast-\"]).-out {\n  animation: v-toast-out var(--t-element) var(--exit) forwards;\n}\n@keyframes v-toast-in {\n  from {\n    opacity: 0;\n    transform: translateY(8px);\n  }\n}\n@keyframes v-toast-out {\n  to {\n    opacity: 0;\n    transform: translateY(8px);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"toast\"],\n  [data-slot^=\"toast-\"],\n  [data-slot=\"toast\"]::before,\n  [data-slot=\"toast\"]::after,\n  [data-slot^=\"toast-\"]::before,\n  [data-slot^=\"toast-\"]::after {\n    animation-duration: 0s;\n    animation-iteration-count: 1;\n    transition-duration: 0s;\n    scroll-behavior: auto;\n  }\n}\n\n[data-slot=\"toast\"][data-state=\"closed\"] {\n  animation: v-toast-out var(--t-element) var(--exit) forwards;\n}\n[data-slot=\"toast\"][data-swipe=\"move\"] {\n  transform: translateX(var(--radix-toast-swipe-move-x));\n}\n[data-slot=\"toast\"][data-swipe=\"end\"] {\n  transform: translateX(var(--radix-toast-swipe-end-x));\n  opacity: 0;\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/toast.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/toast.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "toast",
+      "name": "Toast",
+      "tier": "base",
+      "evidence": "Ext",
+      "status": "derived",
+      "root": "[data-toast]",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "open",
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "none",
+      "motionOnByDefault": false,
+      "flowRoles": [],
+      "canvas": "480x240",
+      "contract": "entries/toast/contract.md",
+      "demo": "entries/toast/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-open.html",
+        "default-default-open-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "ToastProviderProps",
+        "props": []
+      },
+      {
+        "name": "ToastViewportProps",
+        "props": []
+      },
+      {
+        "name": "ToastProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"danger\" | \"cream\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "durable",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ToastTitleProps",
+        "props": []
+      },
+      {
+        "name": "ToastDescriptionProps",
+        "props": []
+      },
+      {
+        "name": "ToastActionProps",
+        "props": []
+      },
+      {
+        "name": "ToastCloseProps",
+        "props": []
+      }
+    ],
+    "category": "Feedback",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

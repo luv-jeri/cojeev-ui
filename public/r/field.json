@@ -1,0 +1,135 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field",
+  "title": "Field",
+  "description": "Connects a form control with its label, description, and validation message.",
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/label.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/field.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { Slot } from \"@radix-ui/react-slot\";\nimport { useFlowGroup } from \"@/lib/sahajiv-motion/use-flow\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport { Label, type LabelProps } from \"@/components/ui/label\";\nconst FieldContext = React.createContext<{\n  id: string;\n  invalid: boolean;\n} | null>(null);\nconst fieldVariants = cva(\n  \"v-field grid gap-[8px] [border:0] bg-transparent [box-shadow:none]\",\n  {\n    variants: { variant: { default: \"\", invalid: \"-invalid\" } },\n    defaultVariants: { variant: \"default\" },\n  },\n);\nexport type FieldProps = React.ComponentProps<\"div\"> &\n  VariantProps<typeof fieldVariants> & {\n    invalid?: boolean;\n    controlId?: string;\n  };\nexport function Field({\n  className,\n  variant,\n  invalid = variant === \"invalid\",\n  controlId,\n  children,\n  ...props\n}: FieldProps) {\n  const generatedId = React.useId();\n  return (\n    <FieldContext.Provider value={{ id: controlId ?? generatedId, invalid }}>\n      <div\n        data-slot=\"field\"\n        data-part=\"root\"\n        data-state={invalid ? \"error\" : \"rest\"}\n        className={cn(\n          fieldVariants({ variant: invalid ? \"invalid\" : variant }),\n          className,\n        )}\n        {...props}\n      >\n        {children}\n      </div>\n    </FieldContext.Provider>\n  );\n}\nexport type FieldLabelProps = LabelProps;\nexport function FieldLabel(props: FieldLabelProps) {\n  const field = React.useContext(FieldContext);\n  return (\n    <Label\n      data-slot=\"field-label\"\n      data-part=\"label\"\n      htmlFor={field?.id}\n      {...props}\n    />\n  );\n}\nexport type FieldControlProps = React.ComponentProps<typeof Slot>;\nexport function FieldControl({ children, ...props }: FieldControlProps) {\n  const field = React.useContext(FieldContext);\n  return (\n    <Slot\n      data-part=\"input\"\n      id={field?.id}\n      aria-invalid={field?.invalid || undefined}\n      aria-describedby={field ? `${field.id}-message` : undefined}\n      {...props}\n    >\n      {children}\n    </Slot>\n  );\n}\nexport type FieldDescriptionProps = React.ComponentProps<\"p\">;\nexport function FieldDescription({\n  className,\n  ...props\n}: FieldDescriptionProps) {\n  const field = React.useContext(FieldContext);\n  return (\n    <p\n      data-slot=\"field-description\"\n      data-part=\"message\"\n      id={field ? `${field.id}-message` : undefined}\n      className={cn(\n        \"v-help min-h-[1.3em] text-[length:var(--fs-meta)] text-[color:var(--v-text-2)]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type FieldErrorProps = FieldDescriptionProps & {\n  errors?: Array<{ message?: string } | undefined>;\n};\nexport function FieldError({ errors, children, ...props }: FieldErrorProps) {\n  return (\n    <FieldDescription role=\"alert\" {...props}>\n      {children ??\n        [\n          ...new Set(errors?.map((error) => error?.message).filter(Boolean)),\n        ].join(\" \")}\n    </FieldDescription>\n  );\n}\nexport type FieldSetProps = React.ComponentProps<\"fieldset\">;\nexport function FieldSet({ ref, className, ...props }: FieldSetProps) {\n  const flowRef = useFlowGroup<HTMLFieldSetElement>(ref);\n  return (\n    <fieldset\n      ref={flowRef}\n      data-flow-fields=\"\"\n      data-slot=\"field-set\"\n      className={cn(\"grid min-w-0 gap-[var(--s-5)] [border:0] p-0\", className)}\n      {...props}\n    />\n  );\n}\nexport type FieldLegendProps = React.ComponentProps<\"legend\">;\nexport function FieldLegend({ className, ...props }: FieldLegendProps) {\n  return (\n    <legend\n      data-slot=\"field-legend\"\n      className={cn(\n        \"v-label text-[length:var(--fs-lead)] font-semibold\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type FieldGroupProps = React.ComponentProps<\"div\"> & { asChild?: boolean };\nexport function FieldGroup({ ref, asChild, className, ...props }: FieldGroupProps) {\n  const flowRef = useFlowGroup<HTMLDivElement>(ref);\n  const Comp = asChild ? Slot : \"div\";\n  return (\n    <Comp\n      ref={flowRef}\n      data-flow-fields=\"\"\n      data-slot=\"field-group\"\n      className={cn(!asChild && \"grid gap-[var(--s-5)]\", className)}\n      {...props}\n    />\n  );\n}\nexport { fieldVariants };\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/field.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"field\"].-invalid .v-help {\n  color: var(--v-danger-ink);\n}\n[data-slot=\"field\"]:has(:disabled) .v-label {\n  color: var(--v-disabled-ink);\n}\n[data-slot=\"field\"].-invalid :is(.v-input, .v-textarea) {\n  box-shadow: inset 0 0 0 2px var(--v-danger);\n  background: color-mix(in oklab, var(--v-danger) 6%, var(--input));\n}\n[data-slot=\"field\"].-ok .v-input {\n  box-shadow: inset 0 0 0 2px var(--v-olive);\n}\n[data-slot=\"field\"].-ok .v-help {\n  color: var(--v-olive-ink);\n}\n:root[data-mode=\"dark\"] [data-slot=\"field\"].-invalid .v-input {\n  background: color-mix(in oklab, var(--v-danger) 14%, var(--v-canvas));\n}\n[data-slot=\"field\"]:is(.-error, [data-invalid]) .v-input {\n  box-shadow: inset 0 0 0 1.5px var(--v-danger-fill);\n  background: var(--v-danger-soft);\n}\n[data-slot=\"field\"]:is(.-error, [data-invalid]) .v-input:focus-within {\n  box-shadow: inset 0 0 0 2px var(--v-danger-fill);\n}\n\n[data-slot=\"field\"].-invalid .v-input { border: 1.5px solid var(--v-danger); }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/field.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/field.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "field",
+      "name": "Field",
+      "tier": "base",
+      "evidence": "I07",
+      "status": "source",
+      "root": ".v-field",
+      "variants": [
+        "invalid"
+      ],
+      "sizes": [],
+      "states": [
+        "error",
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "inputs",
+      "motionOnByDefault": false,
+      "flowRoles": [],
+      "canvas": "480x240",
+      "contract": "entries/field/contract.md",
+      "demo": "entries/field/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-error.html",
+        "default-default-error-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "FieldProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"invalid\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "controlId",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "FieldLabelProps",
+        "props": []
+      },
+      {
+        "name": "FieldControlProps",
+        "props": []
+      },
+      {
+        "name": "FieldDescriptionProps",
+        "props": []
+      },
+      {
+        "name": "FieldErrorProps",
+        "props": [
+          {
+            "name": "errors",
+            "type": "Array<{ message?: string } | undefined>",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "FieldSetProps",
+        "props": []
+      },
+      {
+        "name": "FieldLegendProps",
+        "props": []
+      },
+      {
+        "name": "FieldGroupProps",
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Forms",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

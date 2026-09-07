@@ -1,0 +1,17 @@
+/* Vriksha design system — single entry. Load this one file.
+   Every sheet except flow.css sits in the cascade layer "vriksha"; flow.css (the travelling selection) is
+   unlayered, so its plain declarations win over any component rule regardless of specificity, so it needs no priority flags.
+   NOTE: nested imports do NOT inherit the parent's cache stamp, so each import carries its own ?v= (stripped in
+   the handoff export). */
+@layer vriksha;
+@import "../fonts/fonts.css" layer(vriksha);
+@import "../tokens/tokens.css" layer(vriksha);
+@import "./legacy-aliases.css" layer(vriksha);
+@import "./base.css" layer(vriksha);
+@import "./shapes.css" layer(vriksha);
+@import "./components.css" layer(vriksha);
+@import "./components-2.css" layer(vriksha);
+@import "./patterns.css" layer(vriksha);
+@import "./composites.css" layer(vriksha);
+@import "./alive.css" layer(vriksha);/* the living layer: the loading creature, breathing paper, native scrollbar */
+@import "./flow.css";/* the travelling selection: one body per group, nine characters, settings via VFlow */

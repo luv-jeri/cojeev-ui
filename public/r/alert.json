@@ -1,0 +1,266 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert",
+  "title": "Alert",
+  "description": "Displays a prominent message with context and optional actions where an issue or outcome occurs.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/alert.tsx",
+      "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\"\n\nconst AlertVariants=cva(\"v-alert [display:grid] [gap:0_16px] [align-items:start] [padding:16px_20px_17px_16px] [border-radius:20px] [background:var(--v-beige)] [grid-template-columns:40px_minmax(0,1fr)] [position:relative] [overflow:hidden] [isolation:isolate]\",{variants:{variant:{\"default\":\"\",\"info\":\"-info [background:var(--status-info-bg)] [--muted-foreground:var(--muted-foreground-tinted)] [color:var(--v-on-accent)] [--hue-ink:var(--status-info-ink)]\",\"ok\":\"-ok [background:var(--status-ok-bg)] [--muted-foreground:var(--muted-foreground-tinted)] [color:var(--v-on-accent)] [--hue-ink:var(--status-ok-ink)]\",\"warn\":\"-warn [background:var(--status-warn-bg)] [--muted-foreground:var(--muted-foreground-tinted)] [color:var(--v-on-accent)] [--hue-ink:var(--status-warn-ink)]\",\"danger\":\"-danger [background:var(--status-danger-bg)] [--muted-foreground:var(--muted-foreground-tinted)] [--hue-ink:var(--status-danger-ink)]\",\"pink\":\"-pink [background:var(--v-pink)] [--muted-foreground:var(--muted-foreground-ink)] [color:var(--v-on-accent)] [--hue:var(--v-paper)] [--hue-deep:var(--v-pink-deep)]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertProps=React.ComponentProps<\"div\"> & VariantProps<typeof AlertVariants> & { as?:React.ElementType }\nexport function Alert({as:Tag=\"div\",className,variant,size,ref,...props}:AlertProps){const ownedRef=useMorph<HTMLDivElement>(\"cards\",ref);return <Tag ref={ownedRef} data-slot=\"alert\" data-part=\"root\" role=\"alert\" className={cn(AlertVariants({variant,size}),className)} {...props}/>}\n\nconst AlertBodyVariants=cva(\"v-alert__body [display:grid] [gap:3px] [flex:1] [padding-top:9px] [min-width:0] [position:relative] [z-index:1]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertBodyProps=React.ComponentProps<\"div\"> & VariantProps<typeof AlertBodyVariants> & { as?:React.ElementType }\nexport function AlertBody({as:Tag=\"div\",className,variant,size,...props}:AlertBodyProps){return <Tag data-slot=\"alert-body\" data-part=\"body\" className={cn(AlertBodyVariants({variant,size}),className)} {...props}/>}\n\nconst AlertTitleVariants=cva(\"v-alert__title [font-weight:600] [font-size:15.5px] [line-height:1.3] [letter-spacing:-.005em]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertTitleProps=React.ComponentProps<\"div\"> & VariantProps<typeof AlertTitleVariants> & { as?:React.ElementType }\nexport function AlertTitle({as:Tag=\"div\",className,variant,size,...props}:AlertTitleProps){return <Tag data-slot=\"alert-title\" data-part=\"title\" className={cn(AlertTitleVariants({variant,size}),className)} {...props}/>}\n\nconst AlertDescriptionVariants=cva(\"v-alert__text [font-size:13.5px] [color:var(--muted-foreground)] [line-height:1.45]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertDescriptionProps=React.ComponentProps<\"div\"> & VariantProps<typeof AlertDescriptionVariants> & { as?:React.ElementType }\nexport function AlertDescription({as:Tag=\"div\",className,variant,size,...props}:AlertDescriptionProps){return <Tag data-slot=\"alert-description\" data-part=\"description\" className={cn(AlertDescriptionVariants({variant,size}),className)} {...props}/>}\n\nconst AlertKickerVariants=cva(\"v-alert__kicker [font-size:10.5px] [font-weight:600] [letter-spacing:.08em] [text-transform:uppercase] [color:var(--hue-ink,var(--alert-ink))] [margin-bottom:2px]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertKickerProps=React.ComponentProps<\"div\"> & VariantProps<typeof AlertKickerVariants> & { as?:React.ElementType }\nexport function AlertKicker({as:Tag=\"div\",className,variant,size,...props}:AlertKickerProps){return <Tag data-slot=\"alert-kicker\" data-part=\"kicker\" className={cn(AlertKickerVariants({variant,size}),className)} {...props}/>}\n\nconst AlertIconVariants=cva(\"v-alert__blob \",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertIconProps=React.ComponentProps<\"span\"> & VariantProps<typeof AlertIconVariants> & { as?:React.ElementType }\nexport function AlertIcon({as:Tag=\"span\",className,variant,size,ref,...props}:AlertIconProps){const ownedRef=useMorph<HTMLSpanElement>(\"icons\",ref);return <Tag ref={ownedRef} data-slot=\"alert-icon\" data-part=\"icon\" data-morph=\"fill\" data-shape=\"pebble\" data-tier=\"blob\" className={cn(AlertIconVariants({variant,size}),className)} {...props}/>}\n\nconst AlertActionsVariants=cva(\"v-alert__actions [display:flex] [gap:8px] [margin-top:10px] [flex-wrap:wrap]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertActionsProps=React.ComponentProps<\"div\"> & VariantProps<typeof AlertActionsVariants> & { as?:React.ElementType }\nexport function AlertActions({as:Tag=\"div\",className,variant,size,...props}:AlertActionsProps){return <Tag data-slot=\"alert-footer\" data-part=\"footer\" className={cn(AlertActionsVariants({variant,size}),className)} {...props}/>}\n\nconst AlertCloseVariants=cva(\"v-alert__close \",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type AlertCloseProps=React.ComponentProps<\"button\"> & VariantProps<typeof AlertCloseVariants> & { as?:React.ElementType }\nexport function AlertClose({as:Tag=\"button\",className,variant,size,...props}:AlertCloseProps){return <Tag type=\"button\" aria-label=\"Dismiss alert\" data-slot=\"alert-close\" data-part=\"close\" className={cn(AlertCloseVariants({variant,size}),className)} {...props}/>}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/alert.css",
+      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-alert[data-slot].-info{background:var(--status-info-bg);--muted-foreground:var(--muted-foreground-tinted);color:var(--v-on-accent);--hue-ink:var(--status-info-ink)}\n.v-alert[data-slot].-ok{background:var(--status-ok-bg);--muted-foreground:var(--muted-foreground-tinted);color:var(--v-on-accent);--hue-ink:var(--status-ok-ink)}\n.v-alert[data-slot].-warn{background:var(--status-warn-bg);--muted-foreground:var(--muted-foreground-tinted);color:var(--v-on-accent);--hue-ink:var(--status-warn-ink)}\n.v-alert[data-slot].-danger{background:var(--status-danger-bg);--muted-foreground:var(--muted-foreground-tinted);--hue-ink:var(--status-danger-ink)}\n.v-alert[data-slot].-pink{background:var(--v-pink);--muted-foreground:var(--muted-foreground-ink);color:var(--v-on-accent);--hue:var(--v-paper);--hue-deep:var(--v-pink-deep)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-alert[data-slot][data-morph]{--mfill:var(--v-beige)}\n.v-alert[data-slot].-info[data-morph]{--mfill:var(--v-blue-soft)}\n.v-alert[data-slot].-ok[data-morph]{--mfill:var(--v-olive-soft)}\n.v-alert[data-slot].-warn[data-morph]{--mfill:var(--v-yellow-soft)}\n.v-alert[data-slot].-danger[data-morph]{--mfill:var(--v-danger-soft)}\n.v-alert[data-slot].-pink[data-morph]{--mfill:var(--v-pink)}\n.v-alert[data-slot].-danger .v-alert__title{color:var(--v-danger-ink)}\n.v-alert[data-slot].-ok .v-alert__title{color:var(--status-ok-ink)}\n.v-alert[data-slot].-warn .v-alert__title{color:var(--status-warn-ink)}\n.v-alert[data-slot].-danger .v-alert__title{color:var(--status-danger-ink)}\n.v-alert[data-slot].-info .v-alert__title{color:var(--status-info-ink)}\n.v-alert[data-slot].-ok .v-alert__text{color:rgba(17,17,17,.68)}\n.v-alert[data-slot].-warn .v-alert__text{color:rgba(17,17,17,.68)}\n.v-alert[data-slot].-danger .v-alert__text{color:rgba(17,17,17,.68)}\n.v-alert[data-slot].-info .v-alert__text{color:rgba(17,17,17,.68)}\n.v-alert[data-slot]>.v-icon:first-child{width:32px;height:32px;padding:7px;border-radius:50%;background:var(--v-canvas);color:var(--v-on-accent);stroke-width:1.8}\n.v-alert__text[data-slot] a{color:inherit;font-weight:500;text-decoration:underline;text-underline-offset:3px}\n.v-alert[data-slot].-info>.v-icon:first-child{background:var(--v-blue)}\n.v-alert[data-slot].-ok>.v-icon:first-child{background:var(--v-olive)}\n.v-alert[data-slot].-warn>.v-icon:first-child{background:var(--v-yellow)}\n.v-alert[data-slot].-danger>.v-icon:first-child{background:var(--v-danger-fill);color:var(--destructive-foreground)}\n.v-alert[data-slot].-pink>.v-icon:first-child{background:var(--v-canvas)}\n.v-alert[data-slot].-ok .v-alert__text{color:var(--alert-ink)}\n.v-alert[data-slot].-warn .v-alert__text{color:var(--alert-ink)}\n.v-alert[data-slot].-danger .v-alert__text{color:var(--alert-ink)}\n.v-alert[data-slot].-info .v-alert__text{color:var(--alert-ink)}\n.v-alert[data-slot] .v-alert__text{color:var(--alert-ink)}\n:root[data-mode=\"dark\"] .v-alert[data-slot] .v-alert__text{color:var(--v-text-2)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-info{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-ok{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-warn{color:var(--v-text)}\n.v-alert[data-slot]>.v-icon:first-child{position:relative;z-index:1;width:40px;height:40px;padding:10px;border-radius:46% 54% 50% 50%/50% 46% 54% 50%;color:var(--v-on-accent);background:var(--hue,var(--v-beige));stroke-width:1.9;display:grid;place-items:center}\n.v-alert[data-slot]>.v-alert__blob{position:relative;z-index:1;width:40px;height:40px;padding:10px;border-radius:46% 54% 50% 50%/50% 46% 54% 50%;color:var(--v-on-accent);background:var(--hue,var(--v-beige));stroke-width:1.9;display:grid;place-items:center}\n.v-alert[data-slot]>.v-alert__blob>.v-icon{width:20px;height:20px}\n.v-alert[data-slot]>.v-alert__blob:has(>svg.v-morph){background:transparent}\n.v-alert[data-slot]>.v-alert__blob>svg.v-morph{z-index:0}\n.v-alert[data-slot]::after{content:\"\";position:absolute;right:-6%;top:-40%;width:34%;aspect-ratio:1;background:var(--hue-deep,var(--v-beige-2));-webkit-mask:var(--wm-m) center/contain no-repeat;mask:var(--wm-m) center/contain no-repeat;opacity:.55;pointer-events:none;z-index:0}\n.v-alert[data-slot].-info{--hue:var(--v-blue);--hue-deep:var(--v-blue-deep);background:color-mix(in oklab,var(--v-blue) 30%,var(--v-canvas));--wm-m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='24' r='20'/%3E%3Ccircle cx='76' cy='50' r='20'/%3E%3Ccircle cx='50' cy='76' r='20'/%3E%3Ccircle cx='24' cy='50' r='20'/%3E%3Ccircle cx='50' cy='50' r='22'/%3E%3C/svg%3E\")}\n.v-alert[data-slot].-ok{--hue:var(--v-olive);--hue-deep:var(--v-olive-deep);background:color-mix(in oklab,var(--v-olive) 26%,var(--v-canvas));--wm-m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 90C22 68 6 52 6 33A20 20 0 0 1 50 21A20 20 0 0 1 94 33C94 52 78 68 50 90Z'/%3E%3C/svg%3E\")}\n.v-alert[data-slot].-warn{--hue:var(--v-yellow);--hue-deep:var(--v-yellow-deep);background:color-mix(in oklab,var(--v-yellow) 34%,var(--v-canvas));--wm-m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 2l12 30 30 12-30 12-12 30-12-30-30-12 30-12z'/%3E%3C/svg%3E\")}\n.v-alert[data-slot].-danger{--hue:var(--v-danger-fill);--hue-deep:var(--danger-deep);background:color-mix(in oklab,var(--v-danger) 13%,var(--v-canvas));--wm-m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M60 5A45 45 0 1 0 60 95A50 50 0 0 1 60 5Z'/%3E%3C/svg%3E\")}\n.v-alert[data-slot].-danger>.v-icon:first-child{color:var(--destructive-foreground)}\n.v-alert[data-slot].-danger>.v-alert__blob{color:var(--destructive-foreground)}\n.v-alert[data-slot]:not([class*=\" -\"]){background:var(--v-beige)}\n.v-alert[data-slot]:not([class*=\" -\"])>.v-icon:first-child{background:var(--v-beige-2)}\n.v-alert[data-slot]:not([class*=\" -\"])>.v-alert__blob{background:var(--v-beige-2)}\n.v-alert[data-slot]:not([class*=\" -\"])::after{background:var(--v-beige-2)}\n.v-alert[data-slot].-ok .v-alert__title{color:var(--v-on-accent)}\n.v-alert[data-slot].-warn .v-alert__title{color:var(--v-on-accent)}\n.v-alert[data-slot].-info .v-alert__title{color:var(--v-on-accent)}\n.v-alert__actions[data-slot] .v-btn{height:32px;padding:0 14px;font-size:13px}\n.v-alert[data-slot]>.v-alert__close{position:absolute;top:12px;right:12px;width:28px;height:28px;z-index:2;background:rgba(251,244,230,.6);box-shadow:none}\n.v-alert[data-slot]>.v-alert__close:hover{background:var(--v-canvas)}\n.v-alert[data-slot]::after{width:26%;top:-24%;right:-3%;opacity:.55}\n.v-alert[data-slot]:has(.v-alert__close) .v-alert__body{padding-right:34px}\n.v-alert[data-slot]>.v-alert__close{cursor:pointer;transition:background var(--t-micro),transform var(--t-micro) var(--enter)}\n.v-alert[data-slot]>.v-alert__close:hover{transform:rotate(90deg)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-info{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-ok{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-warn{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-danger{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-info .v-alert__title{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-ok .v-alert__title{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-warn .v-alert__title{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-danger .v-alert__title{color:var(--v-text)}\n:root[data-mode=\"dark\"] .v-alert[data-slot] .v-alert__text{color:var(--v-text-2)}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-info{background:color-mix(in oklab,var(--v-blue) 18%,var(--v-canvas))}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-ok{background:color-mix(in oklab,var(--v-olive) 18%,var(--v-canvas))}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-warn{background:color-mix(in oklab,var(--v-yellow) 16%,var(--v-canvas))}\n:root[data-mode=\"dark\"] .v-alert[data-slot].-danger{background:color-mix(in oklab,var(--v-danger) 16%,var(--v-canvas))}\n:root[data-mode=\"dark\"] .v-alert[data-slot]::after{opacity:.25}\n:root[data-mode=\"dark\"] .v-alert[data-slot]>.v-alert__close{background:rgba(246,239,226,.1);color:var(--v-text)}\n\n/* The authored icon body is transparent; keep the glyph legible on the alert surface. */\n.v-alert[data-slot]>.v-alert__blob>.v-icon{color:var(--v-text)}\n.v-alert[data-slot].-danger>.v-alert__blob>.v-icon{color:var(--v-danger-ink)}\n.v-alert[data-slot].-pink>.v-alert__blob>.v-icon{color:var(--v-on-accent)}\n\n/* Pink stays light in either theme, including secondary copy and ghost actions. */\n:root[data-mode=\"dark\"] .v-alert[data-slot].-pink .v-alert__text{color:var(--alert-ink)}\n.v-alert[data-slot].-pink .v-btn.-ghost:not(:disabled):not([aria-disabled=\"true\"]){color:var(--v-on-accent)}\n.v-alert[data-slot].-pink .v-btn.-ghost:not(:disabled):not([aria-disabled=\"true\"]):hover{background:color-mix(in oklab,var(--v-pink) 88%,var(--ink-fixed))}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/alert.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/alert.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "alert",
+      "name": "Alert",
+      "tier": "base",
+      "evidence": "I12 I16",
+      "status": "source",
+      "root": ".v-alert",
+      "variants": [
+        "info",
+        "ok",
+        "warn",
+        "danger",
+        "pink"
+      ],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "cards",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "press",
+        "enters"
+      ],
+      "canvas": "720x240",
+      "contract": "entries/alert/contract.md",
+      "demo": "entries/alert/demo.html",
+      "isolation": [
+        "default-default-rest-720x240.html",
+        "default-default-rest-dark-720x240.html",
+        "info-default-rest-720x240.html",
+        "info-default-rest-dark-720x240.html",
+        "ok-default-rest-720x240.html",
+        "ok-default-rest-dark-720x240.html",
+        "warn-default-rest-720x240.html",
+        "warn-default-rest-dark-720x240.html",
+        "danger-default-rest-720x240.html",
+        "danger-default-rest-dark-720x240.html",
+        "pink-default-rest-720x240.html",
+        "pink-default-rest-dark-720x240.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "AlertProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"info\" | \"ok\" | \"warn\" | \"danger\" | \"pink\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AlertBodyProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AlertTitleProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AlertDescriptionProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AlertKickerProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AlertIconProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AlertActionsProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AlertCloseProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Feedback",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

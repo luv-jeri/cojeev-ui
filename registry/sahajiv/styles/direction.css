@@ -1,0 +1,2 @@
+/* Direction is inherited through the DOM and Radix context. Brand geometry is never mirrored. */
+[data-slot="direction"]{text-align:start}

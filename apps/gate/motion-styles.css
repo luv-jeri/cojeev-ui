@@ -1,0 +1,11 @@
+@layer theme, base, components, utilities, sahajiv-states, sahajiv-flow, sahajiv-morph, sahajiv-accessibility;
+@import "tailwindcss";
+@import "../../registry/sahajiv/styles/fonts.css";
+@import "../../registry/sahajiv/styles/tokens.css";
+@import "../../registry/sahajiv/styles/theme.css";
+@import "../../registry/sahajiv/styles/base.css";
+@import "../../registry/sahajiv/styles/morph.css";
+@import "../../registry/sahajiv/styles/flow-press.css";
+@import "../../registry/sahajiv/styles/spinner.css";
+@import "../../registry/sahajiv/styles/adjuster.css";
+@source "../../registry/sahajiv";

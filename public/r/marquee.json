@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marquee",
+  "title": "Marquee",
+  "description": "Moves a repeating content list with an explicit pause control and a static reading layout when motion is reduced.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/typography.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/marquee.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Button } from \"@/components/ui/button\";\nimport { Meta } from \"@/components/ui/typography\";\nimport { useReducedMotion } from \"@/lib/sahajiv-motion/use-reduced-motion\";\nimport { getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings } from \"@/lib/sahajiv-motion/settings\";\n\nexport type MarqueeDirection = \"left\" | \"right\";\nexport type MarqueeSpeed = \"slow\" | \"normal\" | \"fast\";\nexport type MarqueeProps = React.ComponentProps<\"section\"> & {\n  direction?: MarqueeDirection;\n  speed?: MarqueeSpeed;\n  label?: string;\n  paused?: boolean;\n  defaultPaused?: boolean;\n  onPausedChange?: (paused: boolean) => void;\n};\n\nfunction subscribeVisibility(listener: () => void) {\n  document.addEventListener(\"visibilitychange\", listener);\n  return () => document.removeEventListener(\"visibilitychange\", listener);\n}\nconst visibleSnapshot = () => document.visibilityState === \"visible\";\nconst hiddenSnapshot = () => false;\n\n/** One semantic list; its inert visual copy has no React effects or duplicate IDs. */\nexport function Marquee({\n  children,\n  direction = \"left\",\n  speed = \"slow\",\n  label = \"Highlights\",\n  paused,\n  defaultPaused = false,\n  onPausedChange,\n  className,\n  ref,\n  onPointerEnter,\n  onPointerLeave,\n  onFocusCapture,\n  onBlurCapture,\n  ...props\n}: MarqueeProps) {\n  const root = React.useRef<HTMLElement>(null);\n  const viewport = React.useRef<HTMLDivElement>(null);\n  const source = React.useRef<HTMLUListElement>(null);\n  const copy = React.useRef<HTMLUListElement>(null);\n  const [inView, setInView] = React.useState(false);\n  const [localPaused, setLocalPaused] = React.useState(defaultPaused);\n  const [hovered, setHovered] = React.useState(false);\n  const [focused, setFocused] = React.useState(false);\n  const [contentFocused, setContentFocused] = React.useState(false);\n  const id = React.useId();\n  const manuallyPaused = paused ?? localPaused;\n  const visible = React.useSyncExternalStore(subscribeVisibility, visibleSnapshot, hiddenSnapshot);\n  const { motion } = React.useSyncExternalStore(subscribeSettings, getSettingsSnapshot, getServerSettingsSnapshot);\n  const reduced = useReducedMotion();\n  const quiet = reduced || motion.mode === \"off\";\n  const running = inView && visible && !quiet && !manuallyPaused && !hovered && !focused;\n\n  React.useEffect(() => {\n    const element = root.current;\n    if (!element) return;\n    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));\n    observer.observe(element);\n    return () => observer.disconnect();\n  }, []);\n\n  React.useEffect(() => {\n    const list = source.current, duplicate = copy.current, windowElement = viewport.current, element = root.current;\n    if (!list || !duplicate || !windowElement || !element) return;\n    const mirror = () => {\n      const nodes = Array.from(list.children, (child) => child.cloneNode(true) as HTMLElement);\n      for (const node of nodes) {\n        for (const part of [node, ...node.querySelectorAll<HTMLElement>(\"*\")]) {\n          for (const attribute of [\"id\", \"name\", \"for\", \"form\", \"aria-labelledby\", \"aria-describedby\", \"aria-controls\", \"aria-owns\"]) part.removeAttribute(attribute);\n          if (part.matches(\"a,button,input,select,textarea,[tabindex],[contenteditable]\")) part.tabIndex = -1;\n        }\n      }\n      duplicate.replaceChildren(...nodes);\n      element.dataset.ready = \"true\";\n    };\n    const measure = () => element.style.setProperty(\"--marquee-viewport\", `${windowElement.clientWidth}px`);\n    mirror();\n    measure();\n    // Text/content changes matter; per-frame SVG geometry attributes do not.\n    const mutation = new MutationObserver(mirror);\n    mutation.observe(list, { childList: true, characterData: true, subtree: true });\n    const resize = new ResizeObserver(measure);\n    resize.observe(windowElement);\n    return () => { mutation.disconnect(); resize.disconnect(); duplicate.replaceChildren(); delete element.dataset.ready; };\n  }, [children]);\n\n  const status = reduced ? \"Reduced motion\" : motion.mode === \"off\" ? \"Motion is off\" : manuallyPaused ? \"Paused\" : focused ? \"Paused while focused\" : hovered ? \"Paused while hovered\" : running ? \"Moving\" : \"Paused\";\n  return (\n    <section\n      {...props}\n      ref={(element) => {\n        root.current = element;\n        if (typeof ref === \"function\") return ref(element);\n        if (ref) ref.current = element;\n      }}\n      data-slot=\"marquee\"\n      data-direction={direction}\n      data-speed={speed}\n      data-motion={quiet ? \"static\" : running ? \"running\" : \"paused\"}\n      data-content-focused={contentFocused || undefined}\n      aria-labelledby={props[\"aria-labelledby\"] ?? (props[\"aria-label\"] ? undefined : `${id}-label`)}\n      className={cn(\"v-marquee\", className)}\n      onPointerEnter={(event) => { onPointerEnter?.(event); if (event.pointerType !== \"touch\") setHovered(true); }}\n      onPointerLeave={(event) => { onPointerLeave?.(event); setHovered(false); }}\n      onFocusCapture={(event) => { onFocusCapture?.(event); setFocused(true); setContentFocused(!!source.current?.contains(event.target)); }}\n      onBlurCapture={(event) => {\n        onBlurCapture?.(event);\n        const next = event.relatedTarget;\n        setFocused(next instanceof Node && event.currentTarget.contains(next));\n        setContentFocused(next instanceof Node && !!source.current?.contains(next));\n      }}\n    >\n      <div data-slot=\"marquee-header\">\n        <Meta as=\"span\" id={`${id}-label`}>{label}</Meta>\n        <div data-slot=\"marquee-controls\">\n          <Meta as=\"span\" data-slot=\"marquee-status\" role=\"status\">{status}</Meta>\n          <Button\n            size=\"sm\"\n            variant=\"ghost\"\n            disabled={quiet}\n            aria-controls={`${id}-viewport`}\n            onClick={() => {\n              if (paused === undefined) setLocalPaused(!manuallyPaused);\n              onPausedChange?.(!manuallyPaused);\n            }}\n          >\n            {quiet ? \"Motion paused\" : manuallyPaused ? \"Resume motion\" : \"Pause motion\"}\n          </Button>\n        </div>\n      </div>\n      <div ref={viewport} data-slot=\"marquee-viewport\" id={`${id}-viewport`}>\n        <div data-slot=\"marquee-track\">\n          <ul ref={source} data-slot=\"marquee-content\">\n            {React.Children.toArray(children).map((child, index) => <li key={React.isValidElement(child) ? child.key ?? index : index}>{child}</li>)}\n          </ul>\n          <ul ref={copy} data-slot=\"marquee-copy\" aria-hidden=\"true\" inert />\n        </div>\n      </div>\n    </section>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/marquee.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"marquee\"] {\n  --marquee-duration: 44s;\n  --marquee-gap: var(--s-4);\n  display: grid;\n  gap: var(--s-4);\n  min-inline-size: 0;\n  color: var(--v-text);\n}\n[data-slot=\"marquee\"][data-speed=\"normal\"] { --marquee-duration: 30s; }\n[data-slot=\"marquee\"][data-speed=\"fast\"] { --marquee-duration: 18s; }\n[data-slot=\"marquee-header\"], [data-slot=\"marquee-controls\"] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: var(--s-3);\n  min-inline-size: 0;\n}\n[data-slot=\"marquee-header\"] { justify-content: space-between; }\n[data-slot=\"marquee-controls\"] { margin-inline-start: auto; }\n[data-slot=\"marquee-status\"] {\n  display: grid;\n  align-items: center;\n  inline-size: 18ch;\n  min-block-size: 2lh;\n  text-align: end;\n}\n[data-slot=\"marquee-viewport\"] {\n  min-inline-size: 0;\n  overflow: hidden;\n  padding-block: var(--s-2);\n}\n[data-slot=\"marquee-track\"] {\n  display: flex;\n  direction: ltr;\n  inline-size: max-content;\n}\n[data-slot=\"marquee-content\"], [data-slot=\"marquee-copy\"] {\n  display: flex;\n  flex-shrink: 0;\n  align-items: stretch;\n  gap: var(--marquee-gap);\n  min-inline-size: var(--marquee-viewport, 0px);\n  margin: 0;\n  padding: 0 var(--marquee-gap) 0 0;\n  list-style: none;\n}\n[data-slot=\"marquee\"] :is([data-slot=\"marquee-content\"], [data-slot=\"marquee-copy\"]) > li {\n  flex: 0 0 auto;\n  min-inline-size: 0;\n  max-inline-size: min(80vw, 30rem);\n  overflow-wrap: anywhere;\n}\n[data-slot=\"marquee-copy\"] { pointer-events: none; }\n[data-slot=\"marquee\"][data-ready=\"true\"] [data-slot=\"marquee-track\"] {\n  animation: v-marquee-travel var(--marquee-duration) linear infinite;\n  animation-play-state: paused;\n}\n[data-slot=\"marquee\"][data-motion=\"running\"] [data-slot=\"marquee-track\"] { animation-play-state: running; }\n[data-slot=\"marquee\"][data-direction=\"right\"] [data-slot=\"marquee-track\"] { animation-direction: reverse; }\n[data-slot=\"marquee\"]:is([data-motion=\"static\"], [data-content-focused=\"true\"], :not([data-ready=\"true\"])) [data-slot=\"marquee-track\"] {\n  animation: none;\n  inline-size: 100%;\n}\n[data-slot=\"marquee\"]:is([data-motion=\"static\"], [data-content-focused=\"true\"], :not([data-ready=\"true\"])) [data-slot=\"marquee-content\"] {\n  flex-wrap: wrap;\n  min-inline-size: 0;\n  inline-size: 100%;\n  padding: 0;\n}\n[data-slot=\"marquee\"]:is([data-motion=\"static\"], [data-content-focused=\"true\"], :not([data-ready=\"true\"])) [data-slot=\"marquee-content\"] > li { max-inline-size: 100%; }\n[data-slot=\"marquee\"]:is([data-motion=\"static\"], [data-content-focused=\"true\"], :not([data-ready=\"true\"])) [data-slot=\"marquee-content\"] > li > * { max-inline-size: 100%; }\n[data-slot=\"marquee\"]:is([data-motion=\"static\"], [data-content-focused=\"true\"], :not([data-ready=\"true\"])) [data-slot=\"marquee-viewport\"] { overflow: visible; }\n[data-slot=\"marquee\"]:is([data-motion=\"static\"], [data-content-focused=\"true\"], :not([data-ready=\"true\"])) [data-slot=\"marquee-copy\"] { display: none; }\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"marquee\"] [data-slot=\"marquee-track\"] { animation: none; inline-size: 100%; }\n  [data-slot=\"marquee\"] [data-slot=\"marquee-content\"] { flex-wrap: wrap; min-inline-size: 0; inline-size: 100%; padding: 0; }\n  [data-slot=\"marquee\"] [data-slot=\"marquee-content\"] > li { max-inline-size: 100%; }\n  [data-slot=\"marquee\"] [data-slot=\"marquee-content\"] > li > * { max-inline-size: 100%; }\n  [data-slot=\"marquee\"] [data-slot=\"marquee-viewport\"] { overflow: visible; }\n  [data-slot=\"marquee\"] [data-slot=\"marquee-copy\"] { display: none; }\n}\n@keyframes v-marquee-travel { to { transform: translate3d(-50%, 0, 0); } }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/marquee.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/marquee.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Marquee",
+      "variants": [
+        "default"
+      ],
+      "sizes": [],
+      "states": [
+        "running",
+        "paused",
+        "static",
+        "focused"
+      ]
+    },
+    "api": [
+      {
+        "name": "MarqueeProps",
+        "props": [
+          {
+            "name": "direction",
+            "type": "MarqueeDirection",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "speed",
+            "type": "MarqueeSpeed",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultPaused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onPausedChange",
+            "type": "(paused: boolean) => void",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Creative",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

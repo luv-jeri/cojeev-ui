@@ -1,0 +1,248 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart",
+  "title": "Chart",
+  "description": "Presents numeric comparisons as bars, lines, rings, or ranked rows with companion data-table primitives.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/table.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/chart.tsx",
+      "content": "\"use client\";\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Table,\n  TableHeader,\n  TableBody,\n  TableRow,\n  TableHead,\n  TableCell,\n  TableCaption,\n} from \"@/components/ui/table\";\nexport type ChartDatum = {\n  label: string;\n  value: number | null;\n  note?: string;\n  variant?: \"default\" | \"ink\" | \"dash\" | \"pink\";\n};\nexport type ChartContainerProps = React.ComponentProps<\"figure\">;\nexport function ChartContainer({ className, ...props }: ChartContainerProps) {\n  return (\n    <figure\n      data-slot=\"chart-container\"\n      className={cn(\"min-w-0\", className)}\n      {...props}\n    />\n  );\n}\nexport const chartVariants = cva(\n  \"v-bars flex items-end gap-[8px] h-[var(--h,88px)]\",\n);\nexport type ChartProps = React.ComponentProps<\"div\"> & {\n  data?: ChartDatum[];\n  max?: number;\n  showTable?: boolean;\n  caption?: string;\n};\nexport function Chart({\n  data,\n  max,\n  showTable = true,\n  caption = \"Chart data\",\n  className,\n  children,\n  ...props\n}: ChartProps) {\n  const ceiling =\n    max ??\n    Math.max(\n      1,\n      ...(data ?? []).map((d) => (Number.isFinite(d.value) ? d.value! : 0)),\n    );\n  return (\n    <>\n      <div\n        data-slot=\"chart\"\n        data-part=\"root\"\n        className={cn(chartVariants(), className)}\n        aria-label={data ? caption : undefined}\n        role={data ? \"img\" : undefined}\n        {...props}\n      >\n        {children ??\n          data?.map((item, index) => (\n            <ChartBar\n              key={index}\n              value={item.value ?? 0}\n              max={ceiling}\n              variant={item.value === null ? \"dash\" : item.variant}\n              aria-label={`${item.label}: ${item.value ?? \"missing\"}`}\n              title={`${item.label}: ${item.value ?? \"missing\"}`}\n            />\n          ))}\n      </div>\n      {data && showTable && <ChartDataTable data={data} caption={caption} />}\n    </>\n  );\n}\nexport const chartBarVariants = cva(\n  \"flex-1 max-w-[16px] rounded-[var(--r-pill)] bg-[var(--wm,var(--v-beige))] h-[var(--p)] min-h-[8px]\",\n  {\n    variants: {\n      variant: {\n        default: \"\",\n        ink: \"-ink bg-[var(--v-ink)]\",\n        dash: \"-dash bg-transparent border border-dashed border-[var(--v-ink)]\",\n        pink: \"-pink bg-[var(--v-pink)]\",\n      },\n    },\n    defaultVariants: { variant: \"default\" },\n  },\n);\nexport type ChartBarProps = React.ComponentProps<\"i\"> &\n  VariantProps<typeof chartBarVariants> & { value: number; max?: number };\nexport function ChartBar({\n  value,\n  max = 100,\n  variant,\n  className,\n  style,\n  ...props\n}: ChartBarProps) {\n  return (\n    <i\n      data-slot=\"chart-bar\"\n      data-part=\"item\"\n      data-missing={variant === \"dash\" ? \"\" : undefined}\n      className={cn(chartBarVariants({ variant }), className)}\n      style={\n        {\n          \"--p\": `${Math.max(0, Math.min(100, max > 0 && Number.isFinite(value) && Number.isFinite(max) ? (value / max) * 100 : 0))}%`,\n          ...style,\n        } as React.CSSProperties\n      }\n      {...props}\n    />\n  );\n}\nexport type ChartAxisProps = React.ComponentProps<\"div\">;\nexport function ChartAxis({ className, ...props }: ChartAxisProps) {\n  return (\n    <div\n      data-slot=\"chart-axis\"\n      data-part=\"label\"\n      className={cn(\n        \"v-axis flex justify-between text-[11px] text-[color:var(--muted-foreground)] mt-[8px] tabular-nums\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type ChartLineProps = React.ComponentProps<\"svg\"> & {\n  data?: ChartDatum[];\n  showTable?: boolean;\n  caption?: string;\n};\nexport function ChartLine({\n  className,\n  data,\n  showTable = true,\n  caption = \"Line chart data\",\n  children,\n  ...props\n}: ChartLineProps) {\n  const titleId = React.useId();\n  return (\n    <>\n      <svg\n        data-slot=\"chart-line\"\n        data-part=\"root\"\n        className={cn(\"v-line w-full h-[var(--h,120px)]\", className)}\n        viewBox=\"0 0 300 100\"\n        role=\"img\"\n        aria-labelledby={titleId}\n        {...props}\n      >\n        <title id={titleId}>{caption}</title>\n        {children}\n      </svg>\n      {data && showTable && <ChartDataTable caption={caption} data={data} />}\n    </>\n  );\n}\nexport type ChartLinePathProps = React.ComponentProps<\"path\"> & {\n  variant?: \"hist\" | \"next\" | \"cross\";\n};\nexport function ChartLinePath({\n  variant = \"hist\",\n  className,\n  ...props\n}: ChartLinePathProps) {\n  return (\n    <path\n      data-slot=\"chart-line-path\"\n      className={cn(`-${variant}`, className)}\n      {...props}\n    />\n  );\n}\nexport type ChartRingSegment = {\n  label: string;\n  value: number;\n  color: \"yellow\" | \"pink\" | \"blue\" | \"olive\" | \"ink\" | \"beige\";\n};\nexport type ChartRingProps = React.ComponentProps<\"div\"> & {\n  segments: ChartRingSegment[];\n  strokeWidth?: number;\n  gap?: number;\n  unit?: string;\n  showTable?: boolean;\n  draw?: boolean;\n  caption?: string;\n};\nexport function ChartRing({ref: externalMorphRef, \n  segments,\n  strokeWidth = 12,\n  gap = 6,\n  unit = \"\",\n  showTable = true,\n  draw,\n  className,\n  children,\n  caption = \"Ring chart\",\n  ...props\n}: ChartRingProps) {\n  const clean = segments.filter((s) => Number.isFinite(s.value) && s.value > 0);\n  const total = clean.reduce((sum, s) => sum + s.value, 0);\n  const width = Math.max(\n    1,\n    Math.min(49, Number.isFinite(strokeWidth) ? strokeWidth : 12),\n  );\n  const r = 50 - width / 2;\n  const circumference = 2 * Math.PI * r;\n  const arcs = clean.map((segment, index) => ({\n    segment,\n    offset:\n      (clean.slice(0, index).reduce((sum, s) => sum + s.value, 0) / total) *\n      circumference,\n    length: Math.max(\n      0,\n      (circumference * segment.value) / total -\n        (Number.isFinite(gap) ? Math.max(0, gap) : 6),\n    ),\n  }));\n  const ownedMorphRef = useMorph<HTMLDivElement>(\"surfaces\", externalMorphRef);\n  return (\n    <>\n      <div ref={ownedMorphRef}\n        data-slot=\"chart-ring\"\n        data-part=\"root\"\n        data-empty={total ? undefined : \"\"}\n        data-segs={clean.map((s) => `${s.color}:${s.value}`).join(\",\")}\n        data-sw={width}\n        className={cn(\n          \"v-ring relative grid place-items-center w-[min(100%,var(--sz,240px))] max-w-full h-auto aspect-square min-w-0 shrink\",\n          draw && \"-draw\",\n          className,\n        )}\n        {...props}\n      >\n        {total > 0 ? (\n          <svg\n            viewBox=\"0 0 100 100\"\n            role=\"img\"\n            aria-label={`${caption} — total ${total.toFixed(total % 1 ? 1 : 0)} ${unit}; a data table follows`}\n          >\n            <circle\n              className=\"-track\"\n              cx=\"50\"\n              cy=\"50\"\n              r={r}\n              style={{ \"--sw\": width } as React.CSSProperties}\n            />\n            {arcs.map(({ segment, offset, length }, index) => (\n              <circle\n                key={index}\n                cx=\"50\"\n                cy=\"50\"\n                r={r}\n                stroke={`var(--v-${segment.color})`}\n                style={{ \"--sw\": width } as React.CSSProperties}\n                strokeDasharray={`${length} ${circumference}`}\n                strokeDashoffset={-offset}\n              />\n            ))}\n          </svg>\n        ) : (\n          <p className=\"v-meta\">No data to plot.</p>\n        )}\n        {children ?? (\n          <ChartRingCenter>\n            <span data-total=\"\" className=\"v-hero\">\n              {total ? total.toFixed(total % 1 ? 1 : 0) : \"—\"}\n            </span>\n            {unit && <span className=\"v-caption\">{unit}</span>}\n          </ChartRingCenter>\n        )}\n      </div>\n      {showTable && (\n        <ChartDataTable\n          caption={`${caption} — ${unit}`}\n          data={clean.map((s) => ({\n            label: s.label,\n            value: s.value,\n            note: `${Math.round((s.value / total) * 100)}%`,\n          }))}\n        />\n      )}\n    </>\n  );\n}\nexport type ChartRingCenterProps = React.ComponentProps<\"div\">;\nexport function ChartRingCenter({ className, ...props }: ChartRingCenterProps) {\n  return (\n    <div\n      data-slot=\"chart-ring-center\"\n      className={cn(\n        \"v-ring__c absolute grid justify-items-center gap-[2px]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type ChartRankedRowProps = React.ComponentProps<\"div\">;\nexport function ChartRankedRow({ className, ...props }: ChartRankedRowProps) {\n  return (\n    <div\n      data-slot=\"chart-ranked-row\"\n      className={cn(\n        \"v-prow flex items-center gap-[var(--s-4)] min-h-[var(--utility)]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type ChartRankedLabelProps = React.ComponentProps<\"div\">;\nexport function ChartRankedLabel({\n  className,\n  ...props\n}: ChartRankedLabelProps) {\n  return (\n    <div\n      data-slot=\"chart-ranked-label\"\n      className={cn(\"v-prow__lab flex-1 min-w-0 grid gap-[6px]\", className)}\n      {...props}\n    />\n  );\n}\nexport type ChartRankedValueProps = React.ComponentProps<\"span\">;\nexport function ChartRankedValue({\n  className,\n  ...props\n}: ChartRankedValueProps) {\n  return (\n    <span\n      data-slot=\"chart-ranked-value\"\n      className={cn(\n        \"v-prow__val text-[20px] font-bold tabular-nums whitespace-nowrap\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type ChartDataTableProps = {\n  data: ChartDatum[];\n  caption?: string;\n  visuallyHidden?: boolean;\n};\nexport function ChartDataTable({\n  data,\n  caption = \"Chart data\",\n  visuallyHidden = true,\n}: ChartDataTableProps) {\n  return (\n    <Table\n      data-slot=\"chart-data-table\"\n      className={visuallyHidden ? \"v-sr\" : undefined}\n    >\n      <TableCaption>{caption}</TableCaption>\n      <TableHeader>\n        <TableRow>\n          <TableHead>Label</TableHead>\n          <TableHead numeric>Value</TableHead>\n          <TableHead>Note</TableHead>\n        </TableRow>\n      </TableHeader>\n      <TableBody>\n        {data.map((item, index) => (\n          <TableRow key={index}>\n            <TableCell>{item.label}</TableCell>\n            <TableCell numeric>{item.value ?? \"—\"}</TableCell>\n            <TableCell>\n              {item.note ?? (item.value === null ? \"Not observed\" : \"\")}\n            </TableCell>\n          </TableRow>\n        ))}\n      </TableBody>\n    </Table>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/chart.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"chart-bar\"] {\n  transition:\n    height var(--flow-dur) var(--flow-ease),\n    transform var(--flow-dur) var(--flow-ease);\n  transform-origin: bottom;\n}\n[data-slot=\"chart-bar\"]:hover {\n  transform: scaleY(calc(1 + 0.04 * var(--flow-intensity, 1)));\n}\n[data-slot=\"chart-axis\"] b {\n  color: var(--v-text);\n}\n[data-slot=\"chart-line\"] path {\n  fill: none;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n[data-slot=\"chart-line\"] .-hist {\n  stroke: var(--v-ink);\n}\n[data-slot=\"chart-line\"] .-next {\n  stroke: var(--wm, var(--v-pink));\n}\n[data-slot=\"chart-line\"] .-cross {\n  stroke: var(--v-ink);\n  stroke-dasharray: 3 4;\n  stroke-width: 1;\n}\n[data-slot=\"chart-line\"] circle {\n  fill: var(--v-ink);\n}\n[data-slot=\"chart-ring\"] svg {\n  width: 100%;\n  height: 100%;\n  transform: rotate(-90deg);\n}\n[data-slot=\"chart-ring\"] circle {\n  fill: none;\n  stroke-width: var(--sw, 12);\n  stroke-linecap: round;\n  transition: stroke-dasharray var(--flow-dur) var(--flow-ease);\n}\n[data-slot=\"chart-ring\"] .-track {\n  stroke: var(--v-beige);\n}\n[data-slot=\"chart-ring\"].-draw circle:not(.-track) {\n  animation: v-chart-draw var(--t-draw) var(--enter) both;\n}\n[data-slot=\"chart-ring\"] .v-disk {\n  position: absolute;\n}\n[data-slot=\"chart-ring-center\"] .v-hero {\n  font-size: clamp(28px, calc(var(--sz, 240px) * 0.28), 68px);\n}\n[data-slot=\"chart-ring-center\"] .v-caption {\n  font-size: var(--fs-meta);\n  color: var(--muted-foreground);\n}\n[data-slot=\"chart-ranked-label\"] b {\n  font-size: var(--fs-body);\n  font-weight: 500;\n  line-height: 1.2;\n}\n[data-slot=\"chart-ranked-value\"] .u {\n  font-size: 12px;\n  font-weight: 400;\n  margin-left: 3px;\n  color: var(--muted-foreground);\n}\n@keyframes v-chart-draw {\n  from {\n    stroke-dasharray: 0 1000;\n  }\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/chart.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/chart.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "chart",
+      "name": "Chart",
+      "tier": "base",
+      "evidence": "I07 I09 I15 I16 I18",
+      "status": "source",
+      "root": ".v-bars",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "controls",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "unfolds",
+        "paces",
+        "breathes"
+      ],
+      "canvas": "960x480",
+      "contract": "entries/chart/contract.md",
+      "demo": "entries/chart/demo.html",
+      "isolation": [
+        "default-default-rest-960x480.html",
+        "default-default-rest-dark-960x480.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "ChartContainerProps",
+        "props": []
+      },
+      {
+        "name": "ChartProps",
+        "props": [
+          {
+            "name": "data",
+            "type": "ChartDatum[]",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "showTable",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "caption",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ChartBarProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"pink\" | \"ink\" | \"dash\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ChartAxisProps",
+        "props": []
+      },
+      {
+        "name": "ChartLineProps",
+        "props": [
+          {
+            "name": "data",
+            "type": "ChartDatum[]",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "showTable",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "caption",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ChartLinePathProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"hist\" | \"next\" | \"cross\"",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ChartRingProps",
+        "props": [
+          {
+            "name": "segments",
+            "type": "ChartRingSegment[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "strokeWidth",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "gap",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "unit",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "showTable",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "draw",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "caption",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ChartRingCenterProps",
+        "props": []
+      },
+      {
+        "name": "ChartRankedRowProps",
+        "props": []
+      },
+      {
+        "name": "ChartRankedLabelProps",
+        "props": []
+      },
+      {
+        "name": "ChartRankedValueProps",
+        "props": []
+      },
+      {
+        "name": "ChartDataTableProps",
+        "props": [
+          {
+            "name": "data",
+            "type": "ChartDatum[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "caption",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "visuallyHidden",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Data display",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

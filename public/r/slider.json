@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "title": "Slider",
+  "description": "Adjusts one or more numeric values by moving labeled thumbs along a track.",
+  "dependencies": [
+    "class-variance-authority",
+    "@radix-ui/react-slider"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/slider.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport * as Primitive from \"@radix-ui/react-slider\";\nexport const sliderVariants = cva(\n  \"v-slider [-webkit-appearance:none] [appearance:none] [width:100%] [height:10px] [border-radius:var(--r-pill)] [background:var(--v-beige)] [outline-offset:6px] [cursor:pointer] relative flex items-center touch-none select-none\",\n  {\n    variants: { variant: { default: \"\", pink: \"-pink\" } },\n    defaultVariants: { variant: \"default\" },\n  },\n);\nexport type SliderProps = React.ComponentProps<typeof Primitive.Root> &\n  VariantProps<typeof sliderVariants> & {\n    thumbLabel?: string | ((index: number) => string);\n  };\nexport function Slider({\n  className,\n  variant,\n  value,\n  defaultValue = [50],\n  min = 0,\n  max = 100,\n  thumbLabel,\n  onValueChange,\n  style,\n  ...props\n}: SliderProps) {\n  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);\n  const values = value ?? uncontrolledValue;\n  const percent = max > min ? Math.min(100, Math.max(0, ((values[0] ?? min) - min) / (max - min) * 100)) : 0;\n  const range = values.length > 1 || props.orientation === \"vertical\";\n  const handleValueChange = (next: number[]) => {\n    if (value === undefined) setUncontrolledValue(next);\n    onValueChange?.(next);\n  };\n  return (\n    <Primitive.Root\n      data-slot=\"slider\"\n      data-part=\"track\"\n      data-range={range || undefined}\n      className={cn(sliderVariants({ variant }), className)}\n      value={value}\n      defaultValue={defaultValue}\n      min={min}\n      max={max}\n      onValueChange={handleValueChange}\n      style={{ \"--p\": `${percent}%`, ...style } as React.CSSProperties}\n      {...props}\n    >\n      <Primitive.Track\n        data-slot=\"slider-track\"\n        className=\"relative grow h-full rounded-full\"\n      >\n        <Primitive.Range\n          data-slot=\"slider-range\"\n          className=\"absolute h-full rounded-full\"\n        />\n      </Primitive.Track>\n      {values.map((_, index) => (\n        <Primitive.Thumb\n          key={index}\n          data-slot=\"slider-thumb\"\n          data-part=\"thumb\"\n          aria-label={\n            typeof thumbLabel === \"function\"\n              ? thumbLabel(index)\n              : (thumbLabel ??\n                (values.length > 1 ? `Value ${index + 1}` : undefined))\n          }\n        />\n      ))}\n    </Primitive.Root>\n  );\n}\nexport type SliderWrapperProps = React.ComponentProps<\"div\">;\nexport function SliderWrapper({ className, ...props }: SliderWrapperProps) {\n  return (\n    <div\n      data-slot=\"slider-wrapper\"\n      data-part=\"root\"\n      className={cn(\"v-sliderwrap grid gap-3\", className)}\n      {...props}\n    />\n  );\n}\nexport type SliderRowProps = React.ComponentProps<\"div\">;\nexport function SliderRow({ className, ...props }: SliderRowProps) {\n  return (\n    <div\n      data-slot=\"slider-row\"\n      className={cn(\"v-sliderwrap__row\", className)}\n      {...props}\n    />\n  );\n}\nexport type SliderOutputProps = React.ComponentProps<\"output\">;\nexport function SliderOutput({ className, ...props }: SliderOutputProps) {\n  return (\n    <output\n      data-slot=\"slider-output\"\n      data-part=\"indicator\"\n      className={className}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/slider.css",
+      "content": "@layer sahajiv-states {\n/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */\n[data-slot=\"slider-thumb\"] {\n  -webkit-appearance: none;\n  width: 22px;\n  height: 22px;\n  border-radius: 50%;\n  background: var(--v-ink);\n  border: 3px solid var(--v-canvas);\n  cursor: pointer;\n}\n.v-sliderwrap:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) {\n  display: grid;\n  gap: 8px;\n}\n.v-sliderwrap__row:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) {\n  display: flex;\n  justify-content: space-between;\n  font-size: var(--fs-meta);\n  color: var(--muted-foreground);\n}\n.v-sliderwrap:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) output {\n  font-weight: 600;\n  color: var(--v-text);\n  font-variant-numeric: tabular-nums;\n}\n[data-slot=\"slider-thumb\"] {\n  width: 22px;\n  height: 22px;\n  border-radius: 50%;\n  background: var(--v-ink);\n  border: 3px solid var(--v-canvas);\n}\n.v-slider:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]).-pink {\n  background: linear-gradient(\n    90deg,\n    var(--v-pink) var(--p, 50%),\n    var(--v-beige) var(--p, 50%)\n  );\n}\n.v-sliderwrap:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) {\n  box-shadow: none;\n  border: 0;\n  background: none;\n}\n.v-slider:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]),\ninput[type=\"range\"].v-slider:where(\n    [data-slot=\"slider\"],\n    [data-slot^=\"slider-\"]\n  ) {\n  -webkit-appearance: none;\n  appearance: none;\n  height: 10px;\n  border-radius: 999px;\n  background: var(--v-beige);\n  box-shadow: inset 0 0 0 1px\n    color-mix(in oklab, var(--v-edge) 40%, transparent);\n  border: 0;\n  padding: 0;\n  margin: 8px 0;\n}\n.v-slider:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]).-pink {\n  background: linear-gradient(\n    90deg,\n    var(--v-pink) var(--p, 50%),\n    var(--v-beige) var(--p, 50%)\n  );\n}\n[data-slot=\"slider-thumb\"] {\n  -webkit-appearance: none;\n  appearance: none;\n  width: 26px;\n  height: 26px;\n  margin-top: -8px;\n  border: 0;\n  border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;\n  background: var(--v-ink);\n  box-shadow: 0 0 0 3px var(--v-canvas);\n  cursor: grab;\n  transition:\n    transform var(--t-micro) var(--enter),\n    border-radius var(--t-max) var(--enter);\n}\n[data-slot=\"slider-thumb\"] {\n  width: 26px;\n  height: 26px;\n  border: 0;\n  border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;\n  background: var(--v-ink);\n  box-shadow: 0 0 0 3px var(--v-canvas);\n  cursor: grab;\n}\n[data-slot=\"slider\"]:hover [data-slot=\"slider-thumb\"] {\n  transform: scale(1.08);\n  border-radius: 50% 46% 54% 50%/46% 50% 50% 54%;\n}\n[data-slot=\"slider\"]:active [data-slot=\"slider-thumb\"] {\n  transform: scale(1.12, 0.9);\n  cursor: grabbing;\n  background: var(--v-pink-deep);\n}\n[data-slot=\"slider\"]:active [data-slot=\"slider-thumb\"] {\n  background: var(--v-pink-deep);\n}\n.v-slider:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]):focus-visible {\n  outline: 2px solid var(--ring);\n  outline-offset: 8px;\n}\n.v-sliderwrap:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) {\n  gap: 12px;\n}\n.v-sliderwrap__row:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) {\n  font-size: 14px;\n  color: var(--v-text);\n  font-weight: 500;\n}\n.v-sliderwrap:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) output {\n  display: inline-grid;\n  place-items: center;\n  min-width: 44px;\n  height: 26px;\n  padding: 0 10px;\n  border-radius: 999px;\n  background: var(--v-pink);\n  color: var(--v-on-accent);\n  font-size: 12.5px;\n  font-weight: 600;\n}\n:root[data-mode=\"dark\"] [data-slot=\"slider-thumb\"] {\n  background: var(--v-pink);\n  box-shadow: 0 0 0 3px var(--v-canvas);\n}\n:root[data-mode=\"dark\"] [data-slot=\"slider-thumb\"] {\n  background: var(--v-pink);\n}\n.v-slider:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]),\ninput[type=\"range\"].v-slider:where(\n    [data-slot=\"slider\"],\n    [data-slot^=\"slider-\"]\n  ) {\n  background: linear-gradient(\n    90deg,\n    var(--v-pink) var(--p, 0%),\n    var(--v-beige) var(--p, 0%)\n  );\n}\n.v-slider:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]).-ink,\ninput[type=\"range\"].v-slider:where(\n    [data-slot=\"slider\"],\n    [data-slot^=\"slider-\"]\n  ).-ink {\n  background: linear-gradient(\n    90deg,\n    var(--v-ink) var(--p, 0%),\n    var(--v-beige) var(--p, 0%)\n  );\n}\n[data-slot=\"slider-thumb\"] {\n  cursor: grab;\n}\n[data-slot=\"slider\"]:active [data-slot=\"slider-thumb\"] {\n  cursor: grabbing;\n}\n.v-sliderwrap:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]),\n.v-sliderwrap__row:where([data-slot=\"slider\"], [data-slot^=\"slider-\"]) {\n  box-shadow: none;\n  border: 0;\n}\n.v-sliderwrap:where([data-slot=\"slider\"], [data-slot^=\"slider-\"])\n  :is(input[type=\"range\"],[data-slot=\"slider\"]) {\n  border: 0;\n  box-shadow: none;\n}\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"slider\"],\n  [data-slot^=\"slider-\"],\n  [data-slot=\"slider\"]::before,\n  [data-slot=\"slider\"]::after,\n  [data-slot^=\"slider-\"]::before,\n  [data-slot^=\"slider-\"]::after {\n    animation-duration: 0s;\n    animation-iteration-count: 1;\n    transition-duration: 0s;\n    scroll-behavior: auto;\n  }\n}\n\n/* The native source gradient remains on the host; multiple values use Radix range geometry. */\n[data-slot=\"slider\"][data-range].v-slider {\n  background: var(--v-beige);\n}\n[data-slot=\"slider-range\"] {\n  background: transparent;\n}\n[data-slot=\"slider\"][data-range] [data-slot=\"slider-range\"] {\n  background: var(--v-pink);\n}\n[data-slot=\"slider\"][data-range].-ink [data-slot=\"slider-range\"] {\n  background: var(--v-ink);\n}\n[data-slot=\"slider-thumb\"] {\n  display: block;\n  margin-top: 0;\n}\n[data-slot=\"slider-thumb\"]:focus-visible {\n  outline: 2px solid var(--ring);\n  outline-offset: 8px;\n}\n[data-slot=\"slider\"][data-orientation=\"vertical\"] {\n  width: 10px;\n  height: var(--h, 200px);\n  flex-direction: column;\n}\n[data-slot=\"slider\"][data-orientation=\"vertical\"] [data-slot=\"slider-track\"] {\n  width: 100%;\n  height: 100%;\n}\n[data-slot=\"slider\"][data-orientation=\"vertical\"] [data-slot=\"slider-range\"] {\n  width: 100%;\n  height: auto;\n}\n[data-slot=\"slider\"][data-disabled],\n[data-slot=\"slider\"][data-disabled] [data-slot=\"slider-thumb\"] {\n  cursor: not-allowed;\n}\n[data-slot=\"slider\"][data-disabled] [data-slot=\"slider-thumb\"] {\n  background: var(--v-disabled-fill);\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/slider.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/slider.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "slider",
+      "name": "Slider",
+      "tier": "base",
+      "evidence": "Ext I09",
+      "status": "derived",
+      "root": ".v-slider",
+      "variants": [
+        "pink"
+      ],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "controls",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "paces"
+      ],
+      "canvas": "480x240",
+      "contract": "entries/slider/contract.md",
+      "demo": "entries/slider/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "SliderProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"pink\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "thumbLabel",
+            "type": "string | ((index: number) => string)",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "SliderWrapperProps",
+        "props": []
+      },
+      {
+        "name": "SliderRowProps",
+        "props": []
+      },
+      {
+        "name": "SliderOutputProps",
+        "props": []
+      }
+    ],
+    "category": "Forms",
+    "fidelity": "refined-design-family",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

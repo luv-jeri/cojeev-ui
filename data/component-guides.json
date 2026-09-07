@@ -1,0 +1,1274 @@
+{
+  "accordion": {
+    "description": "Organizes related sections into expandable panels so readers can open the details they need.",
+    "category": "Layout",
+    "usage": [
+      "Pair each AccordionTrigger with its AccordionContent inside an AccordionItem.",
+      "Choose single or multiple expansion through the root type; use controlled values when another control must open a section."
+    ],
+    "accessibility": [
+      "Use meaningful trigger text and preserve the supplied trigger and content parts for keyboard navigation and expanded-state relationships."
+    ],
+    "related": [
+      "collapsible",
+      "tabs"
+    ]
+  },
+  "adjuster": {
+    "description": "Provides live controls for the shared motion settings and editable body profiles used across the library.",
+    "category": "Tools",
+    "usage": [
+      "Use MotionControls for a compact character, speed, and intensity panel with an optional preview.",
+      "Use Adjuster to tune body tiers, change motion categories, and import or export the shared profile as JSON."
+    ],
+    "accessibility": [
+      "Keep the provided labels, numeric inputs, and status messages when composing a settings panel.",
+      "Respect the device reduced-motion preference and keep essential state changes understandable without animation."
+    ],
+    "related": [
+      "slider",
+      "switch",
+      "tabs"
+    ]
+  },
+  "alert": {
+    "description": "Displays a prominent message with context and optional actions where an issue or outcome occurs.",
+    "category": "Feedback",
+    "usage": [
+      "Combine AlertTitle and AlertDescription to explain what happened and what the reader can do next.",
+      "Choose a status variant and wire AlertClose to your own dismissal state when the message can be dismissed."
+    ],
+    "accessibility": [
+      "The root defaults to role=\"alert\"; reserve that announcement priority for messages that need attention.",
+      "State the meaning in text instead of relying on the variant color or icon."
+    ],
+    "related": [
+      "toast",
+      "field",
+      "empty"
+    ]
+  },
+  "alert-dialog": {
+    "description": "Pauses a workflow for a focused confirmation before a consequential action proceeds.",
+    "category": "Feedback",
+    "usage": [
+      "Describe the consequence with AlertDialogTitle and AlertDialogDescription, then provide explicit Action and Cancel choices.",
+      "Run the operation in the action handler and manage open state when completion depends on an asynchronous result."
+    ],
+    "accessibility": [
+      "Preserve the dialog title, description, and cancel action so the focused confirmation has an accessible name and a clear exit."
+    ],
+    "related": [
+      "dialog",
+      "button",
+      "alert"
+    ]
+  },
+  "aspect-ratio": {
+    "description": "Keeps a media container at a chosen width-to-height ratio as its available width changes.",
+    "category": "Layout",
+    "usage": [
+      "Set ratio for images, video, or previews that should retain a predictable shape.",
+      "Control the child media sizing and object-fit to decide whether it crops or leaves space."
+    ],
+    "accessibility": [
+      "Provide appropriate alternative text, captions, and controls on the media itself; the ratio wrapper adds no content description."
+    ],
+    "related": [
+      "card",
+      "carousel",
+      "skeleton"
+    ]
+  },
+  "attachment": {
+    "description": "Presents a file name, type, metadata, and nearby actions as a compact attachment row.",
+    "category": "Conversation",
+    "usage": [
+      "Compose AttachmentType, AttachmentName, and AttachmentMeta from the file information you have.",
+      "Connect AttachmentAction handlers to your preview, download, or removal behavior."
+    ],
+    "accessibility": [
+      "Give each action a clear accessible name and keep the file name readable without depending on its type icon."
+    ],
+    "related": [
+      "dropzone",
+      "message",
+      "bubble"
+    ]
+  },
+  "avatar": {
+    "description": "Identifies a person or entity with an image, fallback content, or a grouped set of avatars.",
+    "category": "Data display",
+    "usage": [
+      "Place AvatarImage and AvatarFallback inside Avatar to handle image loading with initials or other fallback content.",
+      "Use AvatarGroup for a small collection and AvatarMore for a visible remaining count."
+    ],
+    "accessibility": [
+      "Give meaningful images descriptive alt text; use empty alt text when adjacent text already identifies the person.",
+      "Ensure fallback initials and grouped counts have enough surrounding context to identify their meaning."
+    ],
+    "related": [
+      "item",
+      "message",
+      "hover-card"
+    ]
+  },
+  "badge": {
+    "description": "Adds a compact status, count, or category label alongside other content.",
+    "category": "Data display",
+    "usage": [
+      "Use short text to distinguish a state or category without competing with the main content.",
+      "Add BadgeIndicator when a small visual marker helps reinforce the written status."
+    ],
+    "accessibility": [
+      "Include the status meaning in text; a Badge is a span and does not supply button behavior."
+    ],
+    "related": [
+      "button",
+      "marker",
+      "item"
+    ]
+  },
+  "breadcrumb": {
+    "description": "Shows the current location within a hierarchy and links back to its ancestors.",
+    "category": "Navigation",
+    "usage": [
+      "Compose BreadcrumbList with linked ancestors and a final BreadcrumbPage.",
+      "Use asChild on BreadcrumbLink to integrate a router link, and wire BreadcrumbBack when a separate back action is useful."
+    ],
+    "accessibility": [
+      "BreadcrumbPage marks the current page and decorative separators are hidden from assistive technology; keep ancestor link names descriptive."
+    ],
+    "related": [
+      "sidebar",
+      "navigation-menu",
+      "pagination"
+    ]
+  },
+  "bubble": {
+    "description": "Groups conversational content and timestamps into visually distinct message bubbles.",
+    "category": "Conversation",
+    "usage": [
+      "Compose BubbleRow, BubbleContent, and BubbleTime to present a message and its timing.",
+      "Use the available bubble variants to distinguish message presentation while keeping sender information in the content."
+    ],
+    "accessibility": [
+      "Keep messages in a meaningful reading order and include sender and time text when needed; bubble styling does not create a live region."
+    ],
+    "related": [
+      "message",
+      "message-scroller",
+      "attachment"
+    ]
+  },
+  "button": {
+    "description": "Triggers an action with native button behavior and an optional busy indicator.",
+    "category": "Actions",
+    "usage": [
+      "Use onClick for an action or set type=\"submit\" when the button submits a form.",
+      "Set loading for busy feedback and disabled separately when repeat activation must be prevented."
+    ],
+    "accessibility": [
+      "Give the button a clear action name, including aria-label for icon-only content.",
+      "Keep a meaningful label while loading; the busy state is exposed with aria-busy."
+    ],
+    "related": [
+      "icon",
+      "button-group",
+      "spinner"
+    ]
+  },
+  "button-group": {
+    "description": "Places related actions together and can track one selected button value.",
+    "category": "Actions",
+    "usage": [
+      "Use ButtonGroupItem values with value or defaultValue to build a compact single-choice control.",
+      "Use ButtonGroupUtility and UtilityItem for adjacent actions that do not share selection state."
+    ],
+    "accessibility": [
+      "Name each group with aria-label or aria-labelledby; selectable items expose their state through aria-pressed."
+    ],
+    "related": [
+      "button",
+      "toggle-group",
+      "radio-group"
+    ]
+  },
+  "calendar": {
+    "description": "Displays a month grid for choosing a single date, with optional disabled dates and visual marks.",
+    "category": "Forms",
+    "usage": [
+      "Use selected and onSelect for a controlled date, or defaultSelected for local selection.",
+      "Pass disabled date matchers for unavailable days and required when the chosen date must remain selected."
+    ],
+    "accessibility": [
+      "Preserve the calendar day and navigation parts for their keyboard and date-label behavior.",
+      "Explain the meaning of colored marks in nearby text or date labels instead of using color alone."
+    ],
+    "related": [
+      "date-picker",
+      "field",
+      "popover"
+    ]
+  },
+  "card": {
+    "description": "Groups related content, metadata, and actions into a distinct surface.",
+    "category": "Layout",
+    "usage": [
+      "Compose CardHeader, CardTitle, CardDescription, CardContent, and CardFooter around one topic.",
+      "Choose a surface variant to establish hierarchy and put explicit links or buttons inside for actions."
+    ],
+    "accessibility": [
+      "CardTitle renders an h3; fit it into the surrounding heading structure or supply the needed heading inside CardHeader. Keep interactive controls individually named."
+    ],
+    "related": [
+      "item",
+      "aspect-ratio",
+      "typography"
+    ]
+  },
+  "carousel": {
+    "description": "Lets readers move through a horizontal collection of slides using scrolling and navigation controls.",
+    "category": "Navigation",
+    "usage": [
+      "Place CarouselItem elements inside CarouselContent and add Previous, Next, or Dot controls as needed.",
+      "Use onIndexChange to synchronize a slide count or related content with the current position."
+    ],
+    "accessibility": [
+      "Give the carousel region an accessible name and provide descriptive slide content.",
+      "Retain the labeled navigation buttons and the content keyboard handler when composing custom controls."
+    ],
+    "related": [
+      "aspect-ratio",
+      "pagination",
+      "card"
+    ]
+  },
+  "chart": {
+    "description": "Presents numeric comparisons as bars, lines, rings, or ranked rows with companion data-table primitives.",
+    "category": "Data display",
+    "usage": [
+      "Pass labeled data to Chart or ChartLine, or labeled segments to ChartRing.",
+      "Represent missing observations with null values and set a useful caption that describes the comparison."
+    ],
+    "accessibility": [
+      "Keep the default companion data table or supply an equivalent accessible explanation if showTable is false.",
+      "Include units and labels so values can be understood without interpreting color or geometry alone."
+    ],
+    "related": [
+      "table",
+      "progress",
+      "typography"
+    ]
+  },
+  "checkbox": {
+    "description": "Captures an independent checked, unchecked, or indeterminate choice.",
+    "category": "Forms",
+    "usage": [
+      "Use checked and onCheckedChange for controlled state or defaultChecked for a local default.",
+      "Group related options when users may choose more than one, and use indeterminate for a partially selected collection."
+    ],
+    "accessibility": [
+      "Associate each checkbox with a visible label and give a group a shared description when the choices need context."
+    ],
+    "related": [
+      "field",
+      "switch",
+      "radio-group"
+    ]
+  },
+  "code-block": {
+    "description": "Displays a code snippet with an optional caption, language label, wrapping, and copy feedback.",
+    "category": "Tools",
+    "usage": [
+      "Pass code as a string and use title or language to explain the snippet; language labels do not add syntax highlighting.",
+      "Enable wrap for long lines or use the default scrolling view, and use CopyButton when only the copy action is needed.",
+      "The copy control tries the Clipboard API and then a selection-based fallback when that API is unavailable, including on HTTP pages."
+    ],
+    "accessibility": [
+      "Keep the copy status available so users hear whether copying succeeded or manual copying is needed.",
+      "Provide a descriptive caption and preserve keyboard access to overflowing code."
+    ],
+    "related": [
+      "preview",
+      "kbd",
+      "typography"
+    ]
+  },
+  "collapsible": {
+    "description": "Shows or hides one optional section without leaving the surrounding layout.",
+    "category": "Layout",
+    "usage": [
+      "Pair CollapsibleTrigger and CollapsibleContent inside a shared Collapsible root.",
+      "Use open and onOpenChange when expansion must stay in sync with application state."
+    ],
+    "accessibility": [
+      "Keep the trigger keyboard-operable and use text that describes the section it expands."
+    ],
+    "related": [
+      "accordion",
+      "card",
+      "button"
+    ]
+  },
+  "combobox": {
+    "description": "Filters a list of options through text input and stores one selected value.",
+    "category": "Forms",
+    "usage": [
+      "Provide options with distinct values and readable labels for the built-in input, results, and empty state.",
+      "Use value and onValueChange to store the selection, or compose the input and item parts for custom option content."
+    ],
+    "accessibility": [
+      "Supply a specific aria-label for the input and preserve the input, list, and item parts that coordinate focus and selection.",
+      "Write a useful emptyText message when a search has no matching option."
+    ],
+    "related": [
+      "select",
+      "command",
+      "field"
+    ]
+  },
+  "command": {
+    "description": "Builds a searchable command list that users can navigate and activate from the keyboard.",
+    "category": "Tools",
+    "usage": [
+      "Compose CommandInput, CommandList, groups, and items, then run each command from its onSelect handler.",
+      "Use CommandDialog for a command palette and add CommandShortcut text to communicate shortcuts you implement."
+    ],
+    "accessibility": [
+      "Give the command input an accessible label and include an empty-results message.",
+      "Provide a dialog title and description when using CommandDialog; shortcut text alone does not register a keyboard shortcut."
+    ],
+    "related": [
+      "combobox",
+      "dialog",
+      "kbd"
+    ]
+  },
+  "context-menu": {
+    "description": "Reveals contextual actions for a target through a context-menu interaction.",
+    "category": "Actions",
+    "usage": [
+      "Wrap the relevant target with ContextMenuTrigger and compose actions in ContextMenuContent.",
+      "Use checkbox, radio, or submenu items when the actions include stateful choices or another level."
+    ],
+    "accessibility": [
+      "Keep essential actions reachable through a visible control as well as the contextual menu.",
+      "Use the supplied menu items to retain keyboard navigation and state announcements."
+    ],
+    "related": [
+      "dropdown-menu",
+      "menubar",
+      "button"
+    ]
+  },
+  "data-table": {
+    "description": "Displays records with client-side filtering, sortable columns, and paginated rows.",
+    "category": "Data display",
+    "usage": [
+      "Pass data and column definitions; provide sortValue only for columns that should sort.",
+      "Add predicate filters, set pageSize, and use page or filter callbacks when application state must track the view."
+    ],
+    "accessibility": [
+      "Supply a caption and clear column headers; sortable headers expose their direction with aria-sort.",
+      "For important row actions, include clearly named controls in cells even when onRowClick is also available."
+    ],
+    "related": [
+      "table",
+      "pagination",
+      "empty"
+    ]
+  },
+  "date-picker": {
+    "description": "Opens a calendar from a compact trigger to choose and display one date.",
+    "category": "Forms",
+    "usage": [
+      "Use date and onDateChange for controlled selection or defaultDate for a local initial date.",
+      "Pass disabled-date rules through calendarProps and formatDate to customize the displayed date."
+    ],
+    "accessibility": [
+      "Use triggerProps to give the trigger a field-specific accessible name and associate any instructions with it.",
+      "Preserve the calendar and popover parts for date navigation, focus handling, and dismissal."
+    ],
+    "related": [
+      "calendar",
+      "field",
+      "popover"
+    ]
+  },
+  "dialog": {
+    "description": "Opens a focused overlay for a task or information that needs dedicated attention.",
+    "category": "Layout",
+    "usage": [
+      "Compose a trigger, content, title, description, and close action inside Dialog.",
+      "Control open and onOpenChange when another part of the interface launches or completes the task."
+    ],
+    "accessibility": [
+      "Include DialogTitle and a useful DialogDescription so the overlay has an accessible name and context.",
+      "Preserve focus handling and provide a clear close action when customizing the content."
+    ],
+    "related": [
+      "alert-dialog",
+      "sheet",
+      "drawer"
+    ]
+  },
+  "direction": {
+    "description": "Sets a text direction for a subtree and shares it with direction-aware primitives.",
+    "category": "Layout",
+    "usage": [
+      "Wrap a region with dir=\"rtl\" or dir=\"ltr\" to match the language and layout direction.",
+      "Use a local Direction wrapper when a section needs a different direction from the rest of the page."
+    ],
+    "accessibility": [
+      "Set direction to match the content and provide the appropriate lang attribute separately; direction does not identify the language."
+    ],
+    "related": [
+      "typography",
+      "navigation-menu",
+      "tabs"
+    ]
+  },
+  "drawer": {
+    "description": "Presents dialog content in a drawer surface while keeping the current page underneath.",
+    "category": "Layout",
+    "usage": [
+      "Compose DrawerTrigger, DrawerContent, title, description, and close controls for a secondary task.",
+      "Use the root open state to coordinate opening and dismissal with the surrounding interface."
+    ],
+    "accessibility": [
+      "Provide DrawerTitle and an accessible close action, and retain the dialog primitives for focus management."
+    ],
+    "related": [
+      "sheet",
+      "dialog",
+      "sidebar"
+    ]
+  },
+  "dropdown-menu": {
+    "description": "Opens a compact menu of actions or stateful choices from a visible trigger.",
+    "category": "Actions",
+    "usage": [
+      "Use DropdownMenuTrigger with a named button and place related commands in the content.",
+      "Compose checkbox items, radio groups, separators, or submenus to match the action structure."
+    ],
+    "accessibility": [
+      "Preserve the supplied trigger and item primitives for keyboard navigation and focus return.",
+      "Use concise item labels and expose destructive consequences in text when necessary."
+    ],
+    "related": [
+      "context-menu",
+      "menubar",
+      "button"
+    ]
+  },
+  "dropzone": {
+    "description": "Collects local files through drag and drop or a native file picker and reports the selection.",
+    "category": "Forms",
+    "usage": [
+      "Handle onFilesSelected to validate selected File objects and connect your own storage or upload process.",
+      "Use multiple to limit the selection count and accept to guide the file picker; validate dropped files in the callback."
+    ],
+    "accessibility": [
+      "The surface supports Enter and Space to open the picker; give it a task-specific accessible name.",
+      "Keep the selection receipt or provide equivalent status feedback that names the selected files."
+    ],
+    "related": [
+      "attachment",
+      "progress",
+      "field"
+    ]
+  },
+  "empty": {
+    "description": "Explains an empty collection or unavailable result and creates space for a useful next step.",
+    "category": "Feedback",
+    "usage": [
+      "Use EmptyTitle and EmptyDescription to distinguish a new collection from a search with no results.",
+      "Add a clear action such as creating an item or clearing a filter when that action is available."
+    ],
+    "accessibility": [
+      "Use a meaningful heading and description; announce a dynamically changed result separately when the workflow requires it."
+    ],
+    "related": [
+      "data-table",
+      "alert",
+      "button"
+    ]
+  },
+  "field": {
+    "description": "Connects a form control with its label, description, and validation message.",
+    "category": "Forms",
+    "usage": [
+      "Wrap one control in FieldControl and pair it with FieldLabel and a description or error message.",
+      "Set invalid from your validation result and use FieldSet with FieldLegend for related controls."
+    ],
+    "accessibility": [
+      "FieldControl supplies the control ID, described-by connection, and invalid state when used with the field parts.",
+      "Use either FieldDescription or FieldError for the shared message slot, or assign distinct IDs and an explicit aria-describedby when both are present."
+    ],
+    "related": [
+      "input",
+      "label",
+      "textarea"
+    ]
+  },
+  "hover-card": {
+    "description": "Shows supplementary preview content when a user hovers over or focuses its trigger.",
+    "category": "Data display",
+    "usage": [
+      "Use HoverCardTrigger for a link or focusable target and HoverCardContent for a brief preview.",
+      "Keep the destination and essential information available in the main interface."
+    ],
+    "accessibility": [
+      "Treat hover-card content as supplementary; use a Popover or Dialog when users must interact with or reliably access the content."
+    ],
+    "related": [
+      "popover",
+      "tooltip",
+      "avatar"
+    ]
+  },
+  "icon": {
+    "description": "Renders named SVG icons and provides supporting icon-button and decorative disk primitives.",
+    "category": "Data display",
+    "usage": [
+      "Choose a supported icon name and size, then pair it with text to reinforce an action or status.",
+      "Use IconButton for an icon-only action and Disk when the icon needs a containing surface."
+    ],
+    "accessibility": [
+      "Icons are hidden from assistive technology by default; give an IconButton its own accessible action name."
+    ],
+    "related": [
+      "button",
+      "shape",
+      "tooltip"
+    ]
+  },
+  "input": {
+    "description": "Collects a single-line value through a native input with optional composed affixes and clearing controls.",
+    "category": "Forms",
+    "usage": [
+      "Pass native type, name, value, and onChange props to match the data you need.",
+      "Use InputWrapper and InputControl for addons, and connect InputClear onClear to the input value."
+    ],
+    "accessibility": [
+      "Associate a visible label with the input and connect instructions or errors using aria-describedby.",
+      "Use the native required and disabled attributes for those behaviors; visual variants alone do not enforce validation."
+    ],
+    "related": [
+      "field",
+      "input-group",
+      "textarea"
+    ]
+  },
+  "input-group": {
+    "description": "Combines a text control with adjacent prefixes, suffixes, or actions in one input surface.",
+    "category": "Forms",
+    "usage": [
+      "Place InputGroupInput or InputGroupTextarea with addons and text to show units or contextual information.",
+      "Use InputGroupButton for a related action and connect it to the same value through your state."
+    ],
+    "accessibility": [
+      "Label the actual input or textarea and give each addon button an accessible name.",
+      "Associate meaningful prefixes, units, and instructions with the control instead of relying on visual adjacency alone."
+    ],
+    "related": [
+      "input",
+      "textarea",
+      "field"
+    ]
+  },
+  "input-otp": {
+    "description": "Presents a single code input as a sequence of visible character slots.",
+    "category": "Forms",
+    "usage": [
+      "Set maxLength and render a matching set of InputOTPSlot indexes inside InputOTPGroup.",
+      "Use value and onChange to capture the code and validate or submit it in your application."
+    ],
+    "accessibility": [
+      "Label the underlying input, explain the expected code format, and associate any validation message with it."
+    ],
+    "related": [
+      "input",
+      "field",
+      "button"
+    ]
+  },
+  "item": {
+    "description": "Presents a compact content row with a title, supporting description, and optional trailing metadata.",
+    "category": "Data display",
+    "usage": [
+      "Compose ItemContent, ItemTitle, ItemDescription, and ItemTrailing for a readable list row.",
+      "Use the default button element for an action or choose an appropriate element through as for other content."
+    ],
+    "accessibility": [
+      "Keep each actionable row clearly named and avoid nesting interactive controls inside the default button.",
+      "Expose any selection meaning with appropriate semantics in addition to the selected visual variant."
+    ],
+    "related": [
+      "card",
+      "avatar",
+      "badge"
+    ]
+  },
+  "kbd": {
+    "description": "Formats a key or key combination as a recognizable keyboard instruction.",
+    "category": "Data display",
+    "usage": [
+      "Place key names inside Kbd next to the action they describe.",
+      "Use multiple key labels with readable separators when explaining a combination."
+    ],
+    "accessibility": [
+      "Write understandable key names and surrounding instructions; displaying a shortcut does not install its keyboard handler."
+    ],
+    "related": [
+      "command",
+      "tooltip",
+      "typography"
+    ]
+  },
+  "label": {
+    "description": "Provides a native form label plus compact stat-label primitives for named values.",
+    "category": "Forms",
+    "usage": [
+      "Set htmlFor to the ID of a form control so the label identifies and activates it.",
+      "Use Stats and Stat to lay out concise named values when no form control is involved."
+    ],
+    "accessibility": [
+      "Keep the label visible and specific; if using as to change the element, preserve the control association through appropriate semantics."
+    ],
+    "related": [
+      "field",
+      "input",
+      "typography"
+    ]
+  },
+  "marker": {
+    "description": "Separates or annotates a sequence with a short event, status, or time label.",
+    "category": "Conversation",
+    "usage": [
+      "Place a Marker between conversation or activity items to identify a date or milestone.",
+      "Use a status variant to reinforce an outcome that is also stated in the marker text."
+    ],
+    "accessibility": [
+      "Keep the marker text meaningful in reading order; its visual treatment does not add a live-region announcement."
+    ],
+    "related": [
+      "message",
+      "message-scroller",
+      "separator"
+    ]
+  },
+  "menubar": {
+    "description": "Groups application commands into a horizontal row of keyboard-navigable menus.",
+    "category": "Actions",
+    "usage": [
+      "Create one MenubarMenu per command family and connect each item to its action.",
+      "Use checkbox or radio items for persistent command settings and submenus for another level."
+    ],
+    "accessibility": [
+      "Keep the menubar trigger and item primitives intact for their menu keyboard behavior.",
+      "Give triggers concise category names and implement any shortcuts shown by MenubarShortcut."
+    ],
+    "related": [
+      "dropdown-menu",
+      "context-menu",
+      "command"
+    ]
+  },
+  "message": {
+    "description": "Structures a conversational or activity entry with a main content area and supporting description.",
+    "category": "Conversation",
+    "usage": [
+      "Compose MessageContent and MessageDescription around the entry body and its context.",
+      "Combine with Avatar, Attachment, or Bubble when the entry needs an identity, file, or speech-style surface."
+    ],
+    "accessibility": [
+      "Include sender, time, and status information in text where needed and preserve the intended message reading order."
+    ],
+    "related": [
+      "bubble",
+      "attachment",
+      "message-scroller"
+    ]
+  },
+  "message-scroller": {
+    "description": "Keeps a conversation near its latest content while allowing readers to scroll back without being pulled down.",
+    "category": "Conversation",
+    "usage": [
+      "Place messages inside MessageScroller and add MessageScrollerJump to offer a return to the latest content.",
+      "Use followThreshold and onAtBottomChange to coordinate a nearby new-message indicator."
+    ],
+    "accessibility": [
+      "Choose a suitable accessible label and announcement strategy for the conversation; the scroller does not create a live region automatically.",
+      "Provide a keyboard-reachable scrolling region when its content has no focusable elements."
+    ],
+    "related": [
+      "message",
+      "bubble",
+      "marker"
+    ]
+  },
+  "native-select": {
+    "description": "Uses the browser’s native select control to choose from a compact list of options.",
+    "category": "Forms",
+    "usage": [
+      "Pass native name, value, and onChange props and compose NativeSelectOption children.",
+      "Use NativeSelectOptGroup to label related choices and disabled options for unavailable selections."
+    ],
+    "accessibility": [
+      "Associate the select with a visible label and retain clear option text for the browser’s keyboard and assistive-technology behavior."
+    ],
+    "related": [
+      "select",
+      "combobox",
+      "field"
+    ]
+  },
+  "navigation-menu": {
+    "description": "Organizes destination links and optional expandable navigation panels.",
+    "category": "Navigation",
+    "usage": [
+      "Use NavigationMenuLink for destinations and set active for the current page.",
+      "Compose triggers, content, and a viewport when a destination group needs an expandable panel."
+    ],
+    "accessibility": [
+      "Give the navigation a useful label and use actual links for destinations.",
+      "Keep current-page state and the supplied trigger behavior when composing custom link content."
+    ],
+    "related": [
+      "sidebar",
+      "breadcrumb",
+      "menubar"
+    ]
+  },
+  "pagination": {
+    "description": "Lets users move between numbered pages and see their current position.",
+    "category": "Navigation",
+    "usage": [
+      "Provide totalPages and handle onPageChange to update the displayed records.",
+      "Use page for controlled navigation or compose the pagination parts when you need a custom arrangement."
+    ],
+    "accessibility": [
+      "The built-in controls identify the current page and announce the page count; preserve equivalent names and state in custom compositions."
+    ],
+    "related": [
+      "data-table",
+      "table",
+      "carousel"
+    ]
+  },
+  "popover": {
+    "description": "Places a dismissible panel next to a trigger for a small contextual task or set of controls.",
+    "category": "Layout",
+    "usage": [
+      "Compose PopoverTrigger and PopoverContent inside one root and add PopoverClose when an explicit close action helps.",
+      "Use controlled open state when the panel must follow another interaction."
+    ],
+    "accessibility": [
+      "Give the trigger and panel clear accessible names and preserve focus and dismissal handling when customizing content."
+    ],
+    "related": [
+      "dialog",
+      "hover-card",
+      "date-picker"
+    ]
+  },
+  "preview": {
+    "description": "Pairs a live component example with a code view and a copy action.",
+    "category": "Tools",
+    "usage": [
+      "Pass the rendered example as children and its source as code.",
+      "Add a title and description that explain the example and the behavior to try."
+    ],
+    "accessibility": [
+      "The view switch uses tabs and the copy result is announced; keep those controls and status available when extending the preview."
+    ],
+    "related": [
+      "code-block",
+      "tabs",
+      "card"
+    ]
+  },
+  "progress": {
+    "description": "Displays a measured amount of completion or an explicitly unavailable value.",
+    "category": "Feedback",
+    "usage": [
+      "Set value and max for known progress, including zero as a valid measurement.",
+      "Use an unavailable value when completion cannot be measured and provide nearby context explaining why."
+    ],
+    "accessibility": [
+      "Give the progressbar an accessible name through aria-label or aria-labelledby; the component exposes the numeric range or unavailable state."
+    ],
+    "related": [
+      "spinner",
+      "stepper",
+      "chart"
+    ]
+  },
+  "questionnaire": {
+    "description": "Composes labeled questions, single-choice answers, and visible completion progress.",
+    "category": "Forms",
+    "usage": [
+      "Group each question in QuestionnaireQuestion and place value-based QuestionnaireOption parts inside QuestionnaireOptions.",
+      "Store answers through onValueChange and update QuestionnaireProgress from your own completion logic."
+    ],
+    "accessibility": [
+      "Use a legend for each fieldset and label its radio group with aria-labelledby or aria-label.",
+      "Keep option labels descriptive and pass required or descriptive attributes through inputProps when needed."
+    ],
+    "related": [
+      "radio-group",
+      "field",
+      "stepper"
+    ]
+  },
+  "radio-group": {
+    "description": "Lets users select one option from a labeled set of mutually exclusive choices.",
+    "category": "Forms",
+    "usage": [
+      "Give each RadioGroupItem a distinct value and use value or defaultValue on the root.",
+      "Handle onValueChange to update the setting or form answer represented by the group."
+    ],
+    "accessibility": [
+      "Name the group and associate each item with a visible label; preserve the supplied radio parts for keyboard navigation and checked state."
+    ],
+    "related": [
+      "checkbox",
+      "select",
+      "questionnaire"
+    ]
+  },
+  "resizable": {
+    "description": "Divides a region into panels whose relative sizes can be adjusted with a separator.",
+    "category": "Layout",
+    "usage": [
+      "Compose ResizablePanel elements and ResizableHandle inside ResizablePanelGroup.",
+      "Choose horizontal or vertical direction and set panel size limits to keep each pane usable."
+    ],
+    "accessibility": [
+      "Preserve the separator primitive for keyboard resizing and give the panels meaningful content headings or labels."
+    ],
+    "related": [
+      "scroll-area",
+      "sidebar",
+      "separator"
+    ]
+  },
+  "scroll-area": {
+    "description": "Contains overflowing content in a bounded viewport with styled scrollbars.",
+    "category": "Layout",
+    "usage": [
+      "Set a height or width constraint so the viewport can scroll within its surrounding layout.",
+      "Add a horizontal ScrollBar when wide content needs horizontal scrolling."
+    ],
+    "accessibility": [
+      "Keep scrolling content keyboard-reachable and give an independently scrollable region a useful name when it needs one."
+    ],
+    "related": [
+      "resizable",
+      "table",
+      "message-scroller"
+    ]
+  },
+  "select": {
+    "description": "Opens a list of options from a trigger and stores one selected value.",
+    "category": "Forms",
+    "usage": [
+      "Compose SelectTrigger, SelectValue, SelectContent, and value-based SelectItem parts.",
+      "Use value and onValueChange for controlled state, and groups or labels to organize a longer list."
+    ],
+    "accessibility": [
+      "Associate a visible label with the trigger and retain the supplied item parts for keyboard navigation and selection announcements."
+    ],
+    "related": [
+      "native-select",
+      "combobox",
+      "field"
+    ]
+  },
+  "separator": {
+    "description": "Divides adjacent content with a horizontal or vertical rule.",
+    "category": "Layout",
+    "usage": [
+      "Use a separator between sections that need a visible boundary.",
+      "Set orientation for the layout and decorative when the line carries no structural meaning."
+    ],
+    "accessibility": [
+      "Set decorative for purely visual rules to remove separator semantics; meaningful separators expose their orientation."
+    ],
+    "related": [
+      "card",
+      "marker",
+      "resizable"
+    ]
+  },
+  "shape": {
+    "description": "Renders a named decorative silhouette that inherits or accepts a fill color.",
+    "category": "Data display",
+    "usage": [
+      "Choose a supported name from shapeNames and size the shape through its surrounding text or className.",
+      "Use shapes to support a composition or visual marker without replacing meaningful text."
+    ],
+    "accessibility": [
+      "Shapes are hidden from assistive technology by default; communicate any essential meaning in nearby text."
+    ],
+    "related": [
+      "icon",
+      "badge",
+      "avatar"
+    ]
+  },
+  "sheet": {
+    "description": "Opens a side surface for focused secondary content while the current page remains in place.",
+    "category": "Layout",
+    "usage": [
+      "Compose SheetTrigger, SheetContent, title, description, and close parts for a secondary workflow.",
+      "Use open and onOpenChange to coordinate the sheet with application state."
+    ],
+    "accessibility": [
+      "Include SheetTitle and a clear close action and retain the dialog primitives for focus management and dismissal."
+    ],
+    "related": [
+      "drawer",
+      "dialog",
+      "sidebar"
+    ]
+  },
+  "sidebar": {
+    "description": "Provides a collapsible navigation rail with grouped destinations, active states, and a footer area.",
+    "category": "Navigation",
+    "usage": [
+      "Compose SidebarHeader, SidebarContent, menu buttons, and SidebarFooter around your destination links.",
+      "Use SidebarProvider for shared open state and choose container or viewport layout for its placement."
+    ],
+    "accessibility": [
+      "Provide a label for icon-only destinations and set isActive on the current link.",
+      "Preserve the trigger’s expanded state and the navigation label when composing custom content."
+    ],
+    "related": [
+      "navigation-menu",
+      "breadcrumb",
+      "sheet"
+    ]
+  },
+  "skeleton": {
+    "description": "Reserves the visual shape of content while its real data is still loading.",
+    "category": "Feedback",
+    "usage": [
+      "Choose skeleton shapes and groups that approximate the content that will replace them.",
+      "Replace placeholders with the completed content or a useful error state when loading finishes."
+    ],
+    "accessibility": [
+      "Hide decorative placeholders from assistive technology and expose the loading state once on the surrounding content region."
+    ],
+    "related": [
+      "spinner",
+      "card",
+      "aspect-ratio"
+    ]
+  },
+  "slider": {
+    "description": "Adjusts one or more numeric values by moving labeled thumbs along a track.",
+    "category": "Forms",
+    "usage": [
+      "Set min, max, and step for the value domain and use value or defaultValue arrays for the thumbs.",
+      "Use SliderOutput or nearby text to show the current value and its unit."
+    ],
+    "accessibility": [
+      "Provide thumbLabel for every thumb, using the index callback when their meanings differ.",
+      "Keep the numeric value understandable without relying on the thumb position alone."
+    ],
+    "related": [
+      "input",
+      "adjuster",
+      "progress"
+    ]
+  },
+  "spinner": {
+    "description": "Shows that work is in progress when an exact completion amount is unavailable.",
+    "category": "Feedback",
+    "usage": [
+      "Set label to describe the work, such as loading a preview or saving changes.",
+      "Use Progress instead when a meaningful completion value is available."
+    ],
+    "accessibility": [
+      "The spinner supplies a status role and a working label; avoid duplicate announcements when a surrounding control already describes the same busy state."
+    ],
+    "related": [
+      "progress",
+      "button",
+      "skeleton"
+    ]
+  },
+  "stepper": {
+    "description": "Tracks the current stage of a multi-step sequence and provides previous and next controls.",
+    "category": "Navigation",
+    "usage": [
+      "Set count and optional labels, then use one-based values for StepperItem parts.",
+      "Use onValueChange to switch your content and gate progression with your own validation before advancing."
+    ],
+    "accessibility": [
+      "The current item exposes aria-current=\"step\"; use meaningful titles and include StepperStatus when a spoken progress update is useful."
+    ],
+    "related": [
+      "questionnaire",
+      "progress",
+      "button"
+    ]
+  },
+  "switch": {
+    "description": "Turns a named binary setting on or off.",
+    "category": "Forms",
+    "usage": [
+      "Use checked and onCheckedChange when the setting is stored in application state.",
+      "Pair the control with a label, or use SwitchRow to arrange it with explanatory text."
+    ],
+    "accessibility": [
+      "Keep the setting name stable as the state changes and associate it with the switch; the checked state communicates whether it is on."
+    ],
+    "related": [
+      "checkbox",
+      "toggle",
+      "field"
+    ]
+  },
+  "table": {
+    "description": "Presents structured data in native rows and columns with headers and an optional caption.",
+    "category": "Data display",
+    "usage": [
+      "Compose TableHeader, TableBody, TableRow, TableHead, and TableCell for the data structure.",
+      "Use TableContainer for overflow and numeric cells for aligned values; add TableCaption to explain the table."
+    ],
+    "accessibility": [
+      "Use real header cells and appropriate scope attributes so row and column relationships are clear."
+    ],
+    "related": [
+      "data-table",
+      "chart",
+      "scroll-area"
+    ]
+  },
+  "tabs": {
+    "description": "Switches between related content panels while keeping the available views visible.",
+    "category": "Navigation",
+    "usage": [
+      "Match each TabsTrigger value to a TabsContent value inside a shared Tabs root.",
+      "Use value and onValueChange when another control needs to select a view, and choose a variant for its visual hierarchy."
+    ],
+    "accessibility": [
+      "Give TabsList a descriptive accessible name and preserve the supplied trigger and panel relationships for keyboard navigation."
+    ],
+    "related": [
+      "accordion",
+      "toggle-group",
+      "preview"
+    ]
+  },
+  "textarea": {
+    "description": "Collects multiline text and offers composer and character-count parts for longer input.",
+    "category": "Forms",
+    "usage": [
+      "Pass native rows, value, and onChange props for notes, descriptions, or message drafts.",
+      "Use TextareaCount with the same value for a count display and set maxLength on the textarea when a limit must be enforced."
+    ],
+    "accessibility": [
+      "Associate a visible label and instructions with the textarea and connect validation errors through aria-describedby."
+    ],
+    "related": [
+      "input-group",
+      "field",
+      "message"
+    ]
+  },
+  "toast": {
+    "description": "Reports a brief outcome in a notification area without moving the user away from the current task.",
+    "category": "Feedback",
+    "usage": [
+      "Place ToastProvider and ToastViewport around controlled Toast instances with a title or description.",
+      "Use durable for a message that should not time out and provide a close action; use ToastAction for a relevant optional follow-up."
+    ],
+    "accessibility": [
+      "Provide ToastAction altText that explains the action’s purpose and keep a reachable dismissal control.",
+      "Keep critical instructions available outside a timed toast when users need time to act on them."
+    ],
+    "related": [
+      "alert",
+      "button",
+      "spinner"
+    ]
+  },
+  "toggle": {
+    "description": "Represents an action or option that stays pressed until it is toggled again.",
+    "category": "Actions",
+    "usage": [
+      "Use pressed and onPressedChange for controlled state or defaultPressed for a local default.",
+      "Use a stable action label for formatting or view options that can be enabled independently."
+    ],
+    "accessibility": [
+      "Keep the accessible name stable so aria-pressed communicates the changing state; name icon-only toggles explicitly."
+    ],
+    "related": [
+      "toggle-group",
+      "switch",
+      "button"
+    ]
+  },
+  "toggle-group": {
+    "description": "Groups pressable choices that can allow one or several selected values.",
+    "category": "Actions",
+    "usage": [
+      "Set type=\"single\" for one selected value or type=\"multiple\" for an array of choices.",
+      "Give each ToggleGroupItem a distinct value and handle onValueChange to apply the selection."
+    ],
+    "accessibility": [
+      "Name the group and every item, especially when choices use icons, and preserve the supplied pressed states and keyboard behavior."
+    ],
+    "related": [
+      "toggle",
+      "button-group",
+      "radio-group"
+    ]
+  },
+  "tooltip": {
+    "description": "Adds a short supplementary explanation to a trigger on hover or keyboard focus.",
+    "category": "Data display",
+    "usage": [
+      "Compose TooltipTrigger and TooltipContent inside Tooltip and use TooltipProvider to share timing settings.",
+      "Use the tooltip for concise clarification, such as explaining a labeled icon action."
+    ],
+    "accessibility": [
+      "Give the trigger its own accessible name and keep essential instructions available without the tooltip.",
+      "Use a Popover for interactive content instead of placing controls inside a tooltip."
+    ],
+    "related": [
+      "popover",
+      "hover-card",
+      "icon"
+    ]
+  },
+  "typography": {
+    "description": "Provides text roles for headings, body copy, metadata, values, and identifiers.",
+    "category": "Data display",
+    "usage": [
+      "Choose a role such as Hero, SectionTitle, Body, Meta, or Identifier to establish a readable hierarchy.",
+      "Use as to select the semantic element while retaining the intended text treatment."
+    ],
+    "accessibility": [
+      "Choose heading levels from the document structure and use paragraphs, labels, and code elements according to their meaning."
+    ],
+    "related": [
+      "label",
+      "card",
+      "code-block"
+    ]
+  },
+  "animated-number": {
+    "description": "A smooth, interruptible number transition for totals, metrics and small moments of progress.",
+    "category": "Effects",
+    "usage": [
+      "Pass a numeric value; updates animate from the current displayed value. The initial render shows the actual total. Non-finite values show the fallback (an em dash by default), never a fabricated zero.",
+      "Use locale and format for currency, percentages or compact notation. Reserve enough width for the largest expected value.",
+      "Use an external live status only when the update needs announcing."
+    ],
+    "accessibility": [
+      "Assistive technology receives the final formatted value without every intermediate animation frame.",
+      "Reduced motion, global Off and offscreen updates settle immediately."
+    ],
+    "related": [
+      "card",
+      "progress",
+      "typography"
+    ]
+  },
+  "text-reveal": {
+    "description": "A quiet word-by-word entrance for headings and short editorial text, with rise and fade treatments.",
+    "category": "Effects",
+    "usage": [
+      "Use short phrases at meaningful entry points, and choose the correct heading level with as.",
+      "Change replayKey to replay deliberately. The text is fully available during server rendering and without animation."
+    ],
+    "accessibility": [
+      "The complete text is exposed once; animated word fragments are hidden from assistive technology.",
+      "Reduced motion and global Off leave text still. Leaving the viewport ends the reveal without hiding content."
+    ],
+    "related": [
+      "typography",
+      "shape",
+      "animated-number"
+    ]
+  },
+  "shape-scene": {
+    "description": "A tactile 3D composition made from SahaJiv shapes, with a static fallback and motion preferences built in.",
+    "category": "3D",
+    "usage": [
+      "Place the sculpture beside generous typography. Its reserved aspect ratio keeps the surrounding layout stable while it loads.",
+      "Choose a palette, density or order of the four authored shapes. Set animate and interactive to false for a completely still sculpture.",
+      "This optional entry installs Three.js; the rest of the library does not require it. Initialization waits until the scene enters the viewport."
+    ],
+    "accessibility": [
+      "Provide a useful aria-label when the artwork conveys meaning, or aria-hidden for a decorative composition.",
+      "Global Off and reduced motion stop ambient and pointer motion. Offscreen and hidden scenes pause work.",
+      "Without WebGL2 the authored static shapes remain visible, with a clear fallback description."
+    ],
+    "related": [
+      "shape",
+      "text-reveal",
+      "card"
+    ]
+  },
+  "multi-select": {
+    "description": "Searchable multiple choices with removable selections, form values and clear validation.",
+    "category": "Forms",
+    "usage": [
+      "Use value and onValueChange for controlled selection, or defaultValue for internal state. A name submits repeated values with a native form.",
+      "Disabled options stay locked. Values no longer present in options stay visible and removable, so filtering does not silently discard a selection.",
+      "Use description for guidance and error for validation. This component handles a bounded local set of choices; it does not fetch or virtualize options."
+    ],
+    "accessibility": [
+      "The trigger has a visible label. Search, independently checked options and removable tokens expose their own accessible names.",
+      "Arrow keys, Home and End move through enabled choices; Space toggles. Escape closes the popup and returns focus.",
+      "A disabled field closes and locks its controls. Error text is announced and linked to the invalid trigger."
+    ],
+    "related": [
+      "select",
+      "checkbox",
+      "combobox",
+      "field"
+    ]
+  },
+  "ambient-background": {
+    "description": "Adds a quiet animated composition around content, with decorative shapes kept behind a readable surface.",
+    "category": "Backgrounds",
+    "usage": [
+      "Choose drift, orbit, or contour for a welcome section, introduction, or decorative pause between sections.",
+      "Pass children for foreground content and control paused when the surrounding experience should stop the decoration."
+    ],
+    "accessibility": [
+      "Decoration is hidden and inert; foreground children keep their own semantics.",
+      "Global motion Off and reduced-motion preferences produce a static composition; offscreen or hidden content pauses its animation."
+    ],
+    "related": [
+      "shape",
+      "card",
+      "adjuster"
+    ]
+  },
+  "marquee": {
+    "description": "Moves a repeating content list with an explicit pause control and a static reading layout when motion is reduced.",
+    "category": "Creative",
+    "usage": [
+      "Pass a short collection of responsive content items, then choose left or right direction and slow, normal, or fast speed.",
+      "Use the built-in pause control or paused and onPausedChange to coordinate playback with application state."
+    ],
+    "accessibility": [
+      "Only the original list is accessible; the visual copy is inert, hidden, and removed from keyboard navigation.",
+      "Hover and focus pause motion, focused content becomes a static list, and Off or reduced motion wraps all original items for reading."
+    ],
+    "related": [
+      "carousel",
+      "scroll-area",
+      "adjuster"
+    ]
+  }
+}
