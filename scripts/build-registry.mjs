@@ -20,7 +20,7 @@ const foundation=Object.fromEntries(["@/styles/sahajiv-fonts.css",...foundationS
 const theme=Object.fromEntries(Object.entries(css(`${source}/styles/theme.css`)["@theme inline"]).map(([key,value])=>[key.replace(/^--/,""),value]));
 const base={name:"sahajiv",type:"registry:base",extends:"none",title:"SahaJiv",description:"SahaJiv tokens, fonts, reset, and Tailwind v4 theme bridge.",dependencies:["class-variance-authority","clsx","tailwind-merge","tw-animate-css"],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@sahajiv":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:foundation};
 function imports(id) {
-  return [...fs.readFileSync(`${source}/ui/${id}.tsx`,"utf8").matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)].map(match=>sourceImport(`${source}/ui/${id}.tsx`,match[1]));
+  return [...fs.readFileSync(`${source}/ui/${id}.tsx`,"utf8").matchAll(/(?:from\s+|import\s+|import\s*\(\s*)["']([^"']+)["']/g)].map(match=>sourceImport(`${source}/ui/${id}.tsx`,match[1]));
 }
 function sourceImport(file, value) {
   if(value.startsWith("."))return `@/${path.posix.normalize(path.posix.join(path.posix.dirname(file),value))}`;
@@ -41,9 +41,9 @@ const items=[base,...ids.map(id=>{
   const imported=imports(id);
   const siblings=[...new Set(imported.filter(value=>value.startsWith("@/registry/sahajiv/ui/")).map(value=>value.split("/").at(-1)))];
   for(const sibling of siblings)if(!ids.includes(sibling))throw new Error(`Missing dependency ${sibling} of ${id}`);
-  const dependencies=[...new Set(imported.filter(value=>!value.startsWith(".")&&!value.startsWith("@/")&&value!=="react").map(npmPackage))];
+  const dependencies=[...new Set(imported.filter(value=>!value.startsWith(".")&&!value.startsWith("@/")&&value!=="react").map(npmPackage))].map(name=>(entry.dependencies??[]).find(value=>value===name||value.startsWith(`${name}@`))??name);
   const style=`${source}/styles/${id}.css`;
-  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with SahaJiv styling.`,registryDependencies:[`${baseURL}/r/sahajiv.json`,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...(fs.existsSync(style)?[{path:style,type:"registry:file",target:`styles/sahajiv/${id}.css`}]:[])],...(fs.existsSync(style)?{css:{[`@import "@/styles/sahajiv/${id}.css"`]:{}}}:{}),meta:{source:entry,api:apis[id],category:guides[id]?.category??"Tools",fidelity:"verification-in-progress",baseComponent:reference[id]?.tier==="base"}};
+  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with SahaJiv styling.`,registryDependencies:[`${baseURL}/r/sahajiv.json`,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,...(entry.devDependencies?{devDependencies:entry.devDependencies}:{}),files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...(fs.existsSync(style)?[{path:style,type:"registry:file",target:`styles/sahajiv/${id}.css`}]:[])],...(fs.existsSync(style)?{css:{[`@import "@/styles/sahajiv/${id}.css"`]:{}}}:{}),meta:{source:entry,api:apis[id],category:guides[id]?.category??"Tools",fidelity:"verification-in-progress",baseComponent:reference[id]?.tier==="base"}};
 })];
 base.cssVars={theme};
 base.files.push(...fs.readdirSync(`${source}/lib`).filter(name=>name.endsWith(".ts")&&name!=="utils.ts").map(name=>({path:`${source}/lib/${name}`,type:"registry:lib",target:`lib/sahajiv/${name}`})));
