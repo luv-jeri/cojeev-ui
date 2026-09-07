@@ -1,0 +1,125 @@
+{
+  "startedAt": "2026-09-07T22:37:39.121232+00:00",
+  "repository": "https://github.com/luv-jeri/sahajiv-ui.git",
+  "checkout": "/private/tmp/sahajiv-ui-fresh-source-c24f1n18/repo",
+  "steps": [
+    {
+      "label": "clone",
+      "command": [
+        "git",
+        "clone",
+        "--branch",
+        "main",
+        "--single-branch",
+        "https://github.com/luv-jeri/sahajiv-ui.git",
+        "/private/tmp/sahajiv-ui-fresh-source-c24f1n18/repo"
+      ],
+      "seconds": 8.359,
+      "exitCode": 0,
+      "log": "fresh-public-clone-clone.log"
+    },
+    {
+      "label": "commit",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "seconds": 0.011,
+      "exitCode": 0,
+      "log": "fresh-public-clone-commit.log"
+    },
+    {
+      "label": "tree",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "seconds": 0.01,
+      "exitCode": 0,
+      "log": "fresh-public-clone-tree.log"
+    },
+    {
+      "label": "initial-status",
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v1"
+      ],
+      "seconds": 0.059,
+      "exitCode": 0,
+      "log": "fresh-public-clone-initial-status.log"
+    },
+    {
+      "label": "node-version",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "seconds": 0.02,
+      "exitCode": 0,
+      "log": "fresh-public-clone-node-version.log"
+    },
+    {
+      "label": "npm-version",
+      "command": [
+        "npm",
+        "--version"
+      ],
+      "seconds": 0.111,
+      "exitCode": 0,
+      "log": "fresh-public-clone-npm-version.log"
+    },
+    {
+      "label": "npm-ci",
+      "command": [
+        "npm",
+        "ci"
+      ],
+      "seconds": 19.555,
+      "exitCode": 0,
+      "log": "fresh-public-clone-npm-ci.log"
+    },
+    {
+      "label": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "seconds": 17.784,
+      "exitCode": 0,
+      "log": "fresh-public-clone-build.log"
+    },
+    {
+      "label": "final-status",
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v1"
+      ],
+      "seconds": 0.085,
+      "exitCode": 0,
+      "log": "fresh-public-clone-final-status.log"
+    }
+  ],
+  "remoteCommit": "47e30c08dd2083612aedf7347f9504fe4183a427",
+  "gitTree": "8bf123b06beeab238f3f7a391e1833936ffe22a3",
+  "initialStatus": "",
+  "nodeVersion": "v22.22.0",
+  "npmVersion": "10.9.4",
+  "trackedFiles": 1274,
+  "sourceFingerprintAlgorithm": "SHA256 of sorted relative-path + NUL + per-file SHA256 + LF",
+  "sourceFingerprint": "8d3c479c4ec4b4b8fe9ad2f11059bca35b64c0e879f017f4435bbe4b26ec2cee",
+  "lockfileSha256": "784d6ac8836d588aaf98ddac58adf89ca31913f84ecc04c15a2322e51396de71",
+  "registryItems": 78,
+  "uiItems": 77,
+  "registrySha256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+  "builtRegistrySha256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+  "publicTextFilesScanned": 159,
+  "absolutePathFindings": [],
+  "finalStatus": "",
+  "finishedAt": "2026-09-07T22:38:25.267093+00:00",
+  "verdict": "PASS"
+}
