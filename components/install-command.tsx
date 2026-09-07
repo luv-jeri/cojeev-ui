@@ -1,19 +1,11 @@
 "use client";
-
-import { useState } from "react";
+import * as React from "react";
 import { Button } from "@/registry/sahajiv/ui/button";
-
-export function InstallCommand({ command }: { command: string }) {
-  const [status, setStatus] = useState("");
-  return <div>
-    <div className="flex items-center justify-between gap-4">
-      <span className="text-sm text-fd-muted-foreground">Terminal</span>
-      <Button variant="secondary" size="sm" onClick={async () => {
-        try { await navigator.clipboard.writeText(command); setStatus("Copied install command."); }
-        catch { setStatus("Clipboard unavailable. Select and copy the command below."); }
-      }}>Copy command</Button>
-    </div>
-    <pre tabIndex={0} aria-label="Install command"><code>{command}</code></pre>
-    <p role="status" className="text-sm">{status}</p>
-  </div>;
+import { Meta } from "@/registry/sahajiv/ui/typography";
+export function InstallCommand({command}:{command:string}) {
+  const [status,setStatus] = React.useState("");
+  return <div className="docs-command"><pre tabIndex={0}><code>{command}</code></pre><Button size="sm" variant="secondary" onClick={async () => {
+    try { await navigator.clipboard.writeText(command); setStatus("Copied install command."); }
+    catch { setStatus("Copy unavailable. Select the command and copy it manually."); }
+  }}>Copy command</Button><Meta role="status">{status}</Meta></div>;
 }
