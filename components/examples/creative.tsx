@@ -1,0 +1,29 @@
+"use client"
+
+import * as React from "react"
+import { ShapeScene } from "@/registry/sahajiv/ui/shape-scene"
+import { Button } from "@/registry/sahajiv/ui/button"
+import { Label } from "@/registry/sahajiv/ui/label"
+import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select"
+import { Meta } from "@/registry/sahajiv/ui/typography"
+
+export function ShapeSceneExample() {
+  const [animate, setAnimate] = React.useState(true)
+  const [palette, setPalette] = React.useState<"sahajiv" | "warm" | "cool">("sahajiv")
+  const id = React.useId()
+  return (
+    <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
+      <ShapeScene palette={palette} animate={animate} />
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+        <Button size="sm" variant="secondary" aria-pressed={!animate} onClick={() => setAnimate(value => !value)}>{animate ? "Pause sculpture" : "Animate sculpture"}</Button>
+        <Label htmlFor={id}>Palette</Label>
+        <NativeSelect id={id} value={palette} onChange={event => setPalette(event.target.value as typeof palette)}>
+          <NativeSelectOption value="sahajiv">SahaJiv</NativeSelectOption>
+          <NativeSelectOption value="warm">Warm</NativeSelectOption>
+          <NativeSelectOption value="cool">Cool</NativeSelectOption>
+        </NativeSelect>
+      </div>
+      <Meta>Move your pointer gently across the sculpture. Global motion Off and reduced motion keep it still; touch leaves scrolling free.</Meta>
+    </div>
+  )
+}
