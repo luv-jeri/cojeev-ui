@@ -23,6 +23,8 @@ import {
   BubbleTime,
 } from "@/registry/sahajiv/ui/bubble";
 import { Button } from "@/registry/sahajiv/ui/button";
+import { CodeBlock } from "@/registry/sahajiv/ui/code-block";
+import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
 import { Card, CardTitle, CardDescription } from "@/registry/sahajiv/ui/card";
 import { Direction } from "@/registry/sahajiv/ui/direction";
 import {
@@ -169,22 +171,31 @@ export function ButtonExample({
   size = "default",
 }: ExampleProps) {
   const [count, setCount] = React.useState(0);
+  const [outcome, setOutcome] = React.useState("success");
+  const [phase, setPhase] = React.useState<"idle" | "pending" | "success" | "error">("idle");
+  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const outcomeId = React.useId();
+  React.useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  function runExample() {
+    if (timer.current) return;
+    setPhase("pending");
+    timer.current = setTimeout(() => {
+      timer.current = null;
+      if (outcome === "error") setPhase("error");
+      else { setCount((value) => value + 1); setPhase("success"); }
+    }, 650);
+  }
   return (
     <div style={{ display: "grid", gap: 16 }}>
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
         <Button
           variant={variant as React.ComponentProps<typeof Button>["variant"]}
           size={size as React.ComponentProps<typeof Button>["size"]}
-          onClick={() => setCount((n) => n + 1)}
+          onClick={runExample}
+          loading={phase === "pending"}
+          disabled={phase === "pending"}
         >
-          Add a note
+          {phase === "pending" ? "Adding…" : phase === "error" ? "Retry example" : "Add a note"}
         </Button>
         <Button
           variant={variant as React.ComponentProps<typeof Button>["variant"]}
@@ -193,17 +204,18 @@ export function ButtonExample({
         >
           Disabled
         </Button>
-        <Button
-          variant={variant as React.ComponentProps<typeof Button>["variant"]}
-          size={size as React.ComponentProps<typeof Button>["size"]}
-          loading
-        >
-          Saving
-        </Button>
       </div>
-      <Meta role="status">
-        {count} {count === 1 ? "note" : "notes"} added in this example.
+      <div style={{ display: "grid", justifyItems: "start", gap: 8 }}>
+        <Label htmlFor={outcomeId}>Example outcome</Label>
+        <NativeSelect id={outcomeId} value={outcome} disabled={phase === "pending"} onChange={(event) => setOutcome(event.target.value)}>
+          <NativeSelectOption value="success">Success</NativeSelectOption>
+          <NativeSelectOption value="error">Error and retry</NativeSelectOption>
+        </NativeSelect>
+      </div>
+      <Meta role="status" aria-live="polite">
+        {phase === "pending" ? "Running the local example…" : phase === "error" ? "The example action failed. Choose Success and retry." : `${count} ${count === 1 ? "note" : "notes"} added in this example.`}
       </Meta>
+      <Meta>This demo only updates the count on this page.</Meta>
     </div>
   );
 }
@@ -503,43 +515,44 @@ export function TypographyExample() {
 }
 export function IconExample({ size = "default" }: ExampleProps) {
   const [query, setQuery] = React.useState("");
+  const [buttonVariant, setButtonVariant] = React.useState<NonNullable<React.ComponentProps<typeof IconButton>["variant"]>>("default");
+  const [buttonSize, setButtonSize] = React.useState<NonNullable<React.ComponentProps<typeof IconButton>["size"]>>("default");
+  const [saved, setSaved] = React.useState(false);
+  const controlId = React.useId();
   const names = iconNames.filter((name) => name.includes(query.toLowerCase()));
   return (
     <div style={{ display: "grid", gap: 20 }}>
-      <Input
-        aria-label="Filter icons"
-        placeholder="Filter icon names…"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <Disk variant="pink">
-          <Icon name="sparkles" />
-        </Disk>
-        <IconButton
-          aria-label="Example settings"
-          onClick={() => setQuery("settings")}
-        >
-          <Icon name="settings" />
-        </IconButton>
-        <Meta>{names.length} glyphs</Meta>
+      <Title as="h3">Icon buttons</Title>
+      <Meta>An action uses IconButton; a decorative icon holder uses Disk. Every icon-only action needs an accessible name.</Meta>
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+        <div style={{ display: "grid", gap: 8 }}>
+          <Label htmlFor={controlId + "-variant"}>Button style</Label>
+          <NativeSelect id={controlId + "-variant"} value={buttonVariant} onChange={(event) => setButtonVariant(event.target.value as typeof buttonVariant)}>
+            {(["default", "dashed", "ink", "pink", "beige", "cream"] as const).map((value) => <NativeSelectOption key={value} value={value}>{value}</NativeSelectOption>)}
+          </NativeSelect>
+        </div>
+        <div style={{ display: "grid", gap: 8 }}>
+          <Label htmlFor={controlId + "-size"}>Button size</Label>
+          <NativeSelect id={controlId + "-size"} value={buttonSize} onChange={(event) => setButtonSize(event.target.value as typeof buttonSize)}>
+            {(["default", "sm", "lg", "xl"] as const).map((value) => <NativeSelectOption key={value} value={value}>{value}</NativeSelectOption>)}
+          </NativeSelect>
+        </div>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill,minmax(96px,1fr))",
-          gap: 18,
-        }}
-      >
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+        <IconButton variant={buttonVariant} size={buttonSize} aria-label="Save example" aria-pressed={saved} onClick={() => setSaved((value) => !value)}>
+          <Icon name={saved ? "check" : "star"} />
+        </IconButton>
+        <IconButton variant={buttonVariant} size={buttonSize} aria-label="Unavailable settings" disabled><Icon name="settings" /></IconButton>
+        <Disk variant="pink"><Icon name="sparkles" /></Disk>
+      </div>
+      <Meta role="status" aria-live="polite">{saved ? "Example saved on this page." : "Example not saved."} Use Tab to focus the action, then Enter or Space.</Meta>
+      <Title as="h3">Icon catalog</Title>
+      <Input aria-label="Filter icons" placeholder="Filter icon names…" value={query} onChange={(event) => setQuery(event.target.value)} />
+      <Meta>{names.length} glyphs</Meta>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(96px,1fr))", gap: 18 }}>
         {names.map((name) => (
-          <div
-            key={name}
-            style={{ display: "grid", justifyItems: "center", gap: 8 }}
-          >
-            <Icon
-              name={name}
-              size={size as React.ComponentProps<typeof Icon>["size"]}
-            />
+          <div key={name} style={{ display: "grid", justifyItems: "center", gap: 8 }}>
+            <Icon name={name} size={size as React.ComponentProps<typeof Icon>["size"]} />
             <Meta>{name}</Meta>
           </div>
         ))}
@@ -588,5 +601,17 @@ export function PreviewExample() {
     >
       <Button variant="accent">Add a note</Button>
     </Preview>
+  );
+}
+
+export function CodeBlockExample() {
+  const [wrap, setWrap] = React.useState(false);
+  const code = 'import { Button } from "@/components/ui/button";\n\nexport function SaveAction({ onSave }: { onSave: () => void }) {\n  return <Button onClick={onSave}>Save note</Button>;\n}';
+  return (
+    <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
+      <Button variant="ghost" size="sm" aria-pressed={wrap} onClick={() => setWrap((value) => !value)}>{wrap ? "Keep lines unwrapped" : "Wrap long lines"}</Button>
+      <CodeBlock code={code} title="save-action.tsx" language="tsx" wrap={wrap} />
+      <Meta>Copy keeps the original text, including line breaks. You can also select the code and copy it manually.</Meta>
+    </div>
   );
 }

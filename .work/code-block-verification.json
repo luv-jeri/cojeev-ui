@@ -1,0 +1,15 @@
+{
+  "started": "2026-09-07T21:17:34.074Z",
+  "finished": "2026-09-07T21:17:37.328Z",
+  "passed": true,
+  "results": [
+    "Clipboard API copies exact multiline source text",
+    "Missing Clipboard API uses real execCommand and restores input focus/selection",
+    "Fallback restores contenteditable focus and document selection",
+    "Denied Clipboard API falls back to actual copy",
+    "Both mechanisms failing show manual-copy feedback without altering code",
+    "Fallback temporary controls are always removed",
+    "Long code is bounded and wrap is opt-in at360/1440 in both themes"
+  ],
+  "errors": []
+}
