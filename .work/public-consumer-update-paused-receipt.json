@@ -1,0 +1,107 @@
+{
+  "status": "PAUSED",
+  "at": "2026-09-07T23:15:52.571585+00:00",
+  "reason": "Parent reported corrected Pages run34168747473 failed mobile gate and requested waiter stop; correction was not deployed.",
+  "directory": "/tmp/sahajiv-ui-stranger-qFCcg0",
+  "publicCLIUpdate": "NOT RUN",
+  "consumerModulesUnchanged": true,
+  "moduleCount": 29,
+  "readinessAttempts": [
+    {
+      "at": "2026-09-07T23:07:47.944Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:08:18.081Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:08:48.444Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:09:18.740Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:09:49.870Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:10:20.085Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:10:50.235Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:11:20.506Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:11:50.732Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:12:21.283Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:12:51.636Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:13:21.791Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:13:52.174Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:14:22.311Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:14:52.975Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    },
+    {
+      "at": "2026-09-07T23:15:24.143Z",
+      "ready": false,
+      "manifestSHA256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+      "foundationSHA256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+    }
+  ]
+}
