@@ -1,0 +1,10 @@
+/* Content-driven narrow layout and morph-preview paint need the component boundary. */
+[data-slot="adjuster"] [data-part="body"][hidden] { display: none; }
+[data-slot="adjuster"] [data-slot="adjuster-preview"] { --mfill: var(--v-pink); background: var(--v-pink); padding: 12px 24px; }
+[data-slot="adjuster"] [data-slot="adjuster-preview"].v-morph-live { background: transparent; }
+[data-slot="adjuster"] [data-part="error"] { color: var(--v-danger-ink); }
+@container (max-width: 480px) {
+ [data-slot="adjuster"] [data-part="grid"] { grid-template-columns: minmax(0, 1fr); }
+ [data-slot="adjuster"] [data-part="body"] { padding: 0 12px 12px; }
+ [data-slot="adjuster"] fieldset { padding: 12px; }
+}
