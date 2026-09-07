@@ -71,14 +71,27 @@ function propsFor(node: Element): FixtureProps {
     if (/^on/i.test(attribute.name)) continue;
     if (attribute.name === "style") {
       const style: Record<string, string> = {};
-      const source = (node as HTMLElement).style;
-      for (let i = 0; i < source.length; i++) {
-        const key = source[i];
+      // CSSOM expands shorthands containing var() into empty longhands. Keep
+      // authored declarations, including data URLs and quoted semicolons, intact.
+      const declarations: string[]=[];
+      let start=0,depth=0,quote="";
+      for(let i=0;i<=attribute.value.length;i++){
+        const char=attribute.value[i];
+        if(quote){if(char==="\\")i++;else if(char===quote)quote="";continue;}
+        if(char==='"'||char==="'"){quote=char;continue;}
+        if(char==="(")depth++;else if(char===")")depth--;
+        if(i===attribute.value.length||(char===";"&&depth===0)){declarations.push(attribute.value.slice(start,i));start=i+1;}
+      }
+      for (const declaration of declarations) {
+        const colon=declaration.indexOf(":");
+        if(colon<0)continue;
+        const key=declaration.slice(0,colon).trim();
+        const value=declaration.slice(colon+1).trim();
         style[
           key.startsWith("--")
             ? key
             : key.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
-        ] = source.getPropertyValue(key);
+        ] = value;
       }
       props.style = style;
     } else if (booleanAttributes.has(attribute.name)) {
