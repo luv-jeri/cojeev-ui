@@ -113,7 +113,7 @@ async function sample(url,id,action){
       const cs=getComputedStyle(el,pseudo);
       return[key,{__visible:String(visible(el)),...(unavailable?{__computedStyleUnavailable:unavailable}:Object.fromEntries(properties.map(p=>[p,cs.getPropertyValue(p)])))}];
     }));
-  },{properties,parts:portMap[id].parts,translations:semantics[id]?.parts,candidate:url.includes("/candidate?")});
+  },{properties,parts:{...portMap[id].parts,...semantics[id]?.additionalParts},translations:semantics[id]?.parts,candidate:url.includes("/candidate?")});
   const oracleAdapters=await page.locator('meta[name="sahajiv-oracle-adapter"]').evaluateAll(nodes=>nodes.map(node=>node.content));
   frames[width]={styles,pixels:await page.screenshot(),errors:[...errors],oracleAdapters};
   }
@@ -141,14 +141,15 @@ try{
   }
   for(const id of ids){
     if(registry[id]?.tier!=="base")throw new Error(`Not a base component: ${id}`);
-    for(const file of registry[id].isolation.filter(file=>!arg("file")||file.includes(arg("file"))).slice(0,limit)){
+    const files=arg("demo-only")==="true"?["demo.html","demo-dark.html"]:registry[id].isolation;
+    for(const file of files.filter(file=>!arg("file")||file.includes(arg("file"))).slice(0,limit)){
       const scenario=fixtureScenario(id,file);
       if(priorReceipt&&previouslyExact(id,file,scenario)){
         skipped.push({id,file,widths,receipt:priorReceipt});
         fs.writeFileSync(`${out}/skipped-exact-cases.json`,JSON.stringify(skipped,null,2));
         continue;
       }
-      const oracle=`http://127.0.0.1:${port}/${reference}/isolation/${id}/${scenario.sourceFile}`;
+      const oracle=file.startsWith("demo")?`http://127.0.0.1:${port}/${reference}/${registry[id].demo}?mode=${file.includes("dark")?"dark":"light"}`:`http://127.0.0.1:${port}/${reference}/isolation/${id}/${scenario.sourceFile}`;
       const candidate=`http://127.0.0.1:${port}/candidate?id=${id}&file=${scenario.sourceFile}`;
       let A,A2,B,B2;
       try {A=await sample(oracle,id,scenario.action);A2=await sample(oracle,id,scenario.action);B=await sample(candidate,id,scenario.action);B2=await sample(candidate,id,scenario.action);}
@@ -182,9 +183,10 @@ try{
 finally{
   const unchanged=candidateHash()===candidateRevision;
   if(!unchanged){console.error("Candidate source changed during the run; results are not release evidence.");process.exitCode=1;}
-  const complete=ids.every(id=>results.filter(r=>r.id===id).length===registry[id].isolation.length*widths.length)&&widths.length===6;
+  const complete=arg("demo-only")!=="true"&&ids.every(id=>results.filter(r=>r.id===id).length===registry[id].isolation.length*widths.length)&&widths.length===6;
   const text=["# Fidelity gate","",`Scope: ${ids.join(", ")}. ${results.length} measured comparisons. Full six-width isolation coverage: ${complete?"yes":"NO"}.`,"","Oracle: handoff v4. Fonts ready + 1800ms settle; sequential independent reloads; rewind then step; no re-seeding. Static frames use reduced motion. Self agreement requires exact visible computed state and zero decoded-pixel differences using pixelmatch threshold 0.1 with anti-alias pixels included; raw PNG hash agreement is retained separately. Demonstrably hidden source content may correspond to unmounted Radix content; visible absence always fails. Motion and keyboard coverage are separate reports.","","| Component | Isolation variant / size / state / mode | Width | Verdict | Style differences | Pixel difference |","| --- | --- | ---: | --- | ---: | ---: |",...results.map(r=>`| ${r.id} | ${r.file} | ${r.width} | ${r.verdict} | ${r.differences.length} | ${(100*r.pixelDifference).toFixed(4)}% |`),""];
   text.splice(2,0,`Candidate source SHA-256: ${candidateRevision}. Unchanged during run: ${unchanged?"yes":"NO"}.`,"");
+  if(arg("demo-only")==="true")text.push("This supplementary run compares each original entries/<component>/demo.html, including parts omitted by the generated isolation cases. The same authored markup is rendered in both initial themes; no documentation example or newly designed fixture replaces it.","");
   const adapters=[...new Set(results.flatMap(row=>row.oracleAdapters??[]))];
   const unavailable=[...new Set(results.flatMap(row=>(row.unavailableStyles??[]).map(part=>`${row.id} / ${part.part}: ${part.reason}`)))];
   if(adapters.length)text.push("Recorded fixture adapters: "+adapters.join(", ")+". Reference files remain unchanged.","");
