@@ -1,0 +1,161 @@
+{
+  "startedAt": "2026-09-07T22:10:08.039Z",
+  "url": "http://127.0.0.1:4320/sahajiv-ui",
+  "revisionStart": {
+    "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+    "dirty": true,
+    "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+  },
+  "scope": {
+    "engine": "WebKit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mobile": true,
+    "touch": true,
+    "physicalDevice": false
+  },
+  "cases": [
+    {
+      "id": "home-and-getting-started",
+      "startedAt": "2026-09-07T22:10:19.109Z",
+      "revision": {
+        "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+        "dirty": true,
+        "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+      },
+      "status": "FAIL",
+      "error": "Horizontal overflow: 445 > 390",
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:10:21.873Z"
+    },
+    {
+      "id": "button",
+      "startedAt": "2026-09-07T22:10:22.067Z",
+      "revision": {
+        "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+        "dirty": true,
+        "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+      },
+      "detail": "Touch success, pending disabled state, visible local error, and retry",
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "status": "PASS",
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:10:25.299Z"
+    },
+    {
+      "id": "tabs",
+      "startedAt": "2026-09-07T22:10:25.486Z",
+      "revision": {
+        "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+        "dirty": true,
+        "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+      },
+      "detail": "Touch selects all three tabs and shows the matching content",
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "status": "PASS",
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:10:26.289Z"
+    },
+    {
+      "id": "motion-settings",
+      "startedAt": "2026-09-07T22:10:26.466Z",
+      "revision": {
+        "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+        "dirty": true,
+        "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+      },
+      "status": "FAIL",
+      "error": "Horizontal overflow: 641 > 390",
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:10:28.841Z"
+    },
+    {
+      "id": "multi-select",
+      "startedAt": "2026-09-07T22:10:29.017Z",
+      "revision": {
+        "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+        "dirty": true,
+        "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+      },
+      "detail": "Touch open/search/select; Escape dismisses and restores trigger focus",
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "status": "PASS",
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:10:30.012Z"
+    },
+    {
+      "id": "shape-scene",
+      "startedAt": "2026-09-07T22:10:30.183Z",
+      "revision": {
+        "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+        "dirty": true,
+        "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+      },
+      "detail": "Supported 3D output and touch pause checked",
+      "renderer": "webgl",
+      "shadedColors": 2922,
+      "pausedDrawCount": 279,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "status": "PASS",
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:10:31.916Z"
+    },
+    {
+      "id": "marquee",
+      "startedAt": "2026-09-07T22:10:32.088Z",
+      "revision": {
+        "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+        "dirty": true,
+        "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+      },
+      "detail": "Touch pause freezes the actual track; resume and repeated pause remain operable",
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "status": "PASS",
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:10:33.204Z"
+    }
+  ],
+  "browserVersion": "26.6",
+  "finishedAt": "2026-09-07T22:10:33.219Z",
+  "revisionEnd": {
+    "head": "53a1b40f176bc0f039144b21d46c892508341e91",
+    "dirty": true,
+    "dirtyDiffSHA256": "386445ade5acfea17b6499e8da05fcb1c6b9d89c310bc1f56d83ecb3820bb0c8"
+  },
+  "runtimeSeconds": 25.18,
+  "status": "FAIL"
+}
