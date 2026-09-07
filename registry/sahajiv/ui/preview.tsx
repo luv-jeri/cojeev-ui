@@ -54,7 +54,9 @@ export function Preview({
           <Card
             variant="cream"
             className="v-preview__canvas"
-            style={{ "--muted-foreground": "var(--v-text-2)" } as React.CSSProperties}
+            style={
+              { "--muted-foreground": "var(--v-text-2)" } as React.CSSProperties
+            }
           >
             {children}
           </Card>
