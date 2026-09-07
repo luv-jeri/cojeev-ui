@@ -24,7 +24,7 @@ export function ToggleGroup({
   const morphRef = useMorph<HTMLDivElement>("nav", ref);
   const flowRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: '[data-slot="toggle-group-item"]',
-    activeSelector: '[aria-pressed="true"]',
+    activeSelector: '[aria-pressed="true"],[aria-checked="true"]',
   });
   return (
     <ToggleGroupContext.Provider value={{ variant }}>
@@ -66,7 +66,7 @@ export function ToggleGroupItem({
       data-slot="toggle-group-item"
       data-part="item"
       className={cn(
-        toggleVariants({ variant: variant ?? inherited.variant }),
+        !asChild && toggleVariants({ variant: variant ?? inherited.variant }),
         className,
       )}
       {...props}

@@ -303,7 +303,8 @@
       "coverage": "mapping implemented; browser gate pending",
       "notes": [
         "One library-owned accessible input handles the full value; six visible slots replace six source cells. Measurement root is the authored InputOTPGroup, not the transparent input or outer library wrapper."
-      ]
+      ],
+      "semanticNotes": "One real OTP input supplies keyboard and paste semantics; visual slots expose active state to owned field-fill FlowGroup. The recorded common catalog wrapper adapter preserves the original catalog containing block; untouched isolated overflow remains separate evidence."
     },
     "menubar": {
       "parts": {
@@ -396,7 +397,8 @@
           "candidateSelector": ".v-resizable__handle"
         }
       },
-      "coverage": "mapping implemented; browser gate pending"
+      "coverage": "mapping implemented; browser gate pending",
+      "semanticNotes": "Source --split is a percentage of the complete group; react-resizable-panels percentages exclude separator width. The fixture measures both and seeds the real Group.setLayout API, retaining user updates and translating on resize."
     },
     "scroll-area": {
       "parts": {
@@ -554,7 +556,8 @@
           "candidateSelector": "[data-togglegroup]>*"
         }
       },
-      "coverage": "mapping implemented; browser gate pending"
+      "coverage": "mapping implemented; browser gate pending",
+      "semanticNotes": "Radix single selection uses radio roles and aria-checked, while multiple selection uses aria-pressed. Both select the authored state styles; asChild Button composition retains Button classes without injecting v-toggle."
     },
     "tooltip": {
       "parts": {

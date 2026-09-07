@@ -1,0 +1,45 @@
+{
+  "otp": {
+    "kind": "fill",
+    "fields": "auto",
+    "value": "123",
+    "slots": [
+      {
+        "text": "1",
+        "state": "inactive",
+        "glide": false
+      },
+      {
+        "text": "2",
+        "state": "inactive",
+        "glide": false
+      },
+      {
+        "text": "3",
+        "state": "inactive",
+        "glide": false
+      },
+      {
+        "text": "",
+        "state": "active",
+        "glide": true
+      },
+      {
+        "text": "",
+        "state": "inactive",
+        "glide": false
+      },
+      {
+        "text": "",
+        "state": "inactive",
+        "glide": false
+      }
+    ]
+  },
+  "sliderBefore": "40",
+  "sliderAfter": "41",
+  "sliderDrag": {
+    "value": "95",
+    "gradient": "linear-gradient(90deg, rgb(245, 184, 219) 95%, rgb(238, 231, 218) 95%)"
+  }
+}
