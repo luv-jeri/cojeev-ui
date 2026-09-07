@@ -1,0 +1,388 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-select:where([data-slot="select"], [data-slot^="select-"])[data-morph] {
+  --mfill: var(--v-beige);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-ink[data-morph] {
+  --mfill: var(--v-ink);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-ink {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block {
+  width: 100%;
+  height: var(--ctl-lg);
+  font-size: var(--fs-body);
+  font-weight: 400;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-sm {
+  height: var(--ctl-sm);
+  font-size: 13px;
+  padding: 0 12px 0 14px;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]) .v-icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.4;
+}
+.v-menu:where([data-slot="select"], [data-slot^="select-"]) {
+  background: var(--popover);
+  border-radius: var(--r-card-sm);
+  padding: var(--s-2);
+  min-width: 200px;
+  box-shadow: var(--shadow-float);
+  border: 1px solid var(--v-border);
+  display: grid;
+  gap: 2px;
+}
+.v-menu__item:where([data-slot="select"], [data-slot^="select-"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 40px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-control);
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+}
+.v-menu__item:where([data-slot="select"], [data-slot^="select-"]):hover,
+.v-menu__item:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  )[data-state="checked"] {
+  background: var(--v-beige);
+}
+.v-menu__item:where([data-slot="select"], [data-slot^="select-"]).-danger {
+  color: var(--v-danger-ink);
+}
+.v-menu__sep:where([data-slot="select"], [data-slot^="select-"]) {
+  height: 1px;
+  background: var(--v-border);
+  margin: 4px 0;
+}
+.v-menu__group:where([data-slot="select"], [data-slot^="select-"]) {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  padding: 8px 12px 4px;
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"]) {
+  min-width: max(100%, 200px);
+  z-index: var(--z-dialog);
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item[data-state="checked"]::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--v-pink);
+  margin-left: auto;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]):not(.-ink) {
+  box-shadow: inset 0 0 0 1px var(--v-edge);
+}
+:root[data-mode="dark"]
+  .v-select:where([data-slot="select"], [data-slot^="select-"]):not(.-ink) {
+  color: var(--v-text);
+}
+:root[data-mode="dark"]
+  .v-select:where([data-slot="select"], [data-slot^="select-"]).-ink {
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]):disabled {
+  background: var(--v-disabled-face);
+  color: var(--v-disabled-ink);
+  box-shadow: inset 0 0 0 1px var(--v-disabled-edge);
+  opacity: 1;
+}
+.v-menu:where([data-slot="select"], [data-slot^="select-"]) {
+  scrollbar-gutter: stable;
+}
+.v-menu:where([data-slot="select"], [data-slot^="select-"])::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+.v-menu:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  )::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 999px;
+}
+.v-menu:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  )::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--v-ink) 34%, transparent);
+  border-radius: 999px;
+  border: 4px solid transparent;
+  background-clip: content-box;
+  min-height: 36px;
+}
+.v-menu:where([data-slot="select"], [data-slot^="select-"]) {
+  scrollbar-gutter: stable;
+}
+.v-menu:where([data-slot="select"], [data-slot^="select-"]) {
+  scrollbar-gutter: stable;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]) {
+  transition:
+    background var(--t-micro),
+    box-shadow var(--t-micro);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]):hover {
+  background: var(--v-beige);
+}
+.v-select:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  )[aria-expanded="true"] {
+  box-shadow: inset 0 0 0 2px var(--v-brand);
+  background: var(--v-pink-soft);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"])
+  > .v-icon:last-child {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.4;
+  color: var(--v-text-2);
+  transition: transform var(--t-element) var(--enter);
+}
+.v-select:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  )[aria-expanded="true"]
+  > .v-icon:last-child {
+  transform: rotate(180deg);
+  color: var(--v-text);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-ink {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+  box-shadow: none;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-ink:hover {
+  background: var(--v-ink-soft);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-ink
+  > .v-icon:last-child {
+  color: rgba(251, 244, 230, 0.7);
+}
+.v-select:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  ).-ink[aria-expanded="true"] {
+  background: var(--v-ink);
+  box-shadow: inset 0 0 0 2px var(--v-pink);
+}
+.v-select:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  ).-ink[aria-expanded="true"]
+  > .v-icon:last-child {
+  color: var(--v-pink);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block {
+  width: 100%;
+  height: 52px;
+  padding: 0 8px 0 8px;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  background: var(--input);
+  box-shadow: inset 0 0 0 1px var(--v-edge);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block
+  > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block
+  > span:first-child
+  > [data-value],
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block
+  > span:first-child
+  > span:not(.v-disk) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block .v-disk {
+  width: 36px;
+  height: 36px;
+  flex: none;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block
+  .v-disk
+  .v-icon {
+  width: 17px;
+  height: 17px;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block
+  > .v-icon:last-child {
+  width: 28px;
+  height: 28px;
+  padding: 7px;
+  border-radius: 50%;
+  background: var(--v-canvas);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+  color: var(--v-text);
+  stroke-width: 2.2;
+  flex: none;
+}
+.v-select:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  ).-block[aria-expanded="true"]
+  > .v-icon:last-child {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+  box-shadow: none;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-block:hover {
+  background: color-mix(in oklab, var(--input) 90%, var(--v-canvas));
+}
+.v-select:where(
+    [data-slot="select"],
+    [data-slot^="select-"]
+  ).-block[aria-expanded="true"] {
+  background: var(--v-pink-soft);
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]).-sm {
+  height: 32px;
+  padding: 0 10px 0 14px;
+  font-size: 13px;
+}
+.v-select:where([data-slot="select"], [data-slot^="select-"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"]) {
+  padding: 6px;
+  border-radius: 18px;
+  box-shadow:
+    var(--shadow-float),
+    inset 0 0 0 1px var(--v-border);
+  border: 0;
+  display: grid;
+  gap: 2px;
+  min-width: max(100%, 220px);
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"]) .v-menu__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 10px 0 8px;
+  border-radius: 12px;
+  font-size: 14.5px;
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item:not(:has(.v-disk)) {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-left: 12px;
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item
+  .v-disk {
+  width: 28px;
+  height: 28px;
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item
+  .v-disk
+  .v-icon {
+  width: 15px;
+  height: 15px;
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item:hover {
+  background: var(--v-beige);
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item[data-state="checked"] {
+  background: var(--v-pink-soft);
+  color: var(--v-text);
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item[data-state="checked"]::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--v-pink-deep);
+  margin: 0;
+  justify-self: end;
+}
+.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+:root[data-mode="dark"]
+  .v-select:where([data-slot="select"], [data-slot^="select-"]):not(.-ink) {
+  background: var(--v-beige);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+:root[data-mode="dark"]
+  .v-select:where([data-slot="select"], [data-slot^="select-"]).-block
+  > .v-icon:last-child {
+  background: var(--v-beige-2);
+  box-shadow: none;
+  color: var(--v-text);
+}
+:root[data-mode="dark"]
+  .v-listbox:where([data-slot="select"], [data-slot^="select-"]) {
+  background: var(--v-beige);
+}
+:root[data-mode="dark"]
+  .v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item:hover {
+  background: var(--v-beige-2);
+}
+:root[data-mode="dark"]
+  .v-listbox:where([data-slot="select"], [data-slot^="select-"])
+  .v-menu__item[data-state="checked"] {
+  background: color-mix(in oklab, var(--v-pink) 22%, var(--v-canvas));
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="select"],
+  [data-slot^="select-"],
+  [data-slot="select"]::before,
+  [data-slot="select"]::after,
+  [data-slot^="select-"]::before,
+  [data-slot^="select-"]::after {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+
+[data-slot="select-content"] {
+  min-width: max(var(--radix-select-trigger-width, 0px), 220px);
+  max-height: var(--radix-select-content-available-height);
+  max-width: calc(100vw - 24px);
+}
+[data-slot="select-viewport"] {
+  display: grid;
+  gap: 2px;
+}
+[data-slot="select-item"][data-disabled] {
+  pointer-events: none;
+  color: var(--v-disabled-ink);
+  cursor: not-allowed;
+}
+[data-slot="select-item"][data-highlighted] {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}

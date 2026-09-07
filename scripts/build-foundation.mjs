@@ -30,5 +30,5 @@ const css = faces.map(([file, family, weights, stretch]) => {
   const bytes = ttf2woff2(fs.readFileSync(path.join(reference, "fonts", `${file}.ttf`)));
   return `@font-face{font-family:"${family}";src:url("data:font/woff2;base64,${bytes.toString("base64")}") format("woff2");font-weight:${weights};font-style:normal;${stretch}font-display:swap}`;
 }).join("\n");
-fs.writeFileSync(`${output}/fonts.css`, `/* Fonts converted losslessly from the reference TTFs. OFL licences ship with the base item. */\n@layer theme, base, components, utilities, sahajiv-states, sahajiv-accessibility;\n${css}\n`);
+fs.writeFileSync(`${output}/fonts.css`, `/* Fonts converted losslessly from the reference TTFs. OFL licences ship with the base item. */\n@layer theme, base, components, utilities, sahajiv-states, sahajiv-morph, sahajiv-flow, sahajiv-accessibility;\n${css}\n`);
 console.log(`Foundation: authored tokens, ${Object.keys(mapping).length} theme mappings, 2 embedded WOFF2 fonts`);

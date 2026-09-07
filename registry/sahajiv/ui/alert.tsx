@@ -26,7 +26,7 @@ export function AlertKicker({as:Tag="div",className,variant,size,...props}:Alert
 
 const AlertIconVariants=cva("v-alert__blob ",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type AlertIconProps=React.ComponentProps<"span"> & VariantProps<typeof AlertIconVariants> & { as?:React.ElementType }
-export function AlertIcon({as:Tag="span",className,variant,size,...props}:AlertIconProps){return <Tag data-slot="alert-icon" data-part="icon" className={cn(AlertIconVariants({variant,size}),className)} {...props}/>}
+export function AlertIcon({as:Tag="span",className,variant,size,ref,...props}:AlertIconProps){const ownedRef=useMorph<HTMLSpanElement>("icons",ref);return <Tag ref={ownedRef} data-slot="alert-icon" data-part="icon" data-morph="fill" data-shape="pebble" data-tier="blob" className={cn(AlertIconVariants({variant,size}),className)} {...props}/>}
 
 const AlertActionsVariants=cva("v-alert__actions [display:flex] [gap:8px] [margin-top:10px] [flex-wrap:wrap]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type AlertActionsProps=React.ComponentProps<"div"> & VariantProps<typeof AlertActionsVariants> & { as?:React.ElementType }

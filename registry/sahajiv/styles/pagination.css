@@ -1,0 +1,19 @@
+[data-slot="pagination"]:not(.v-glide)
+  [data-slot="pagination-link"][aria-current="page"] {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+[data-slot="pagination-link"]:not([aria-current="page"]) {
+  box-shadow: inset 0 0 0 1px var(--v-edge);
+}
+[data-slot="pagination-link"]:disabled {
+  color: var(--v-disabled-ink);
+  opacity: 1;
+  cursor: not-allowed;
+}
+:root[data-mode="dark"] [data-slot="pagination"] [data-glide-active] {
+  color: var(--v-on-accent);
+}
+:root[data-mode="dark"] [data-slot="pagination-link"]:not([aria-current]) {
+  color: var(--v-text);
+}

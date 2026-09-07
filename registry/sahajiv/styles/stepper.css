@@ -1,0 +1,46 @@
+[data-slot="stepper"] > li::marker {
+  content: none;
+}
+[data-slot="stepper-item"] + [data-slot="stepper-item"]::before {
+  content: "";
+  position: absolute;
+  left: 18.25px;
+  top: -9px;
+  height: 18px;
+  width: 1.5px;
+  background: var(--v-edge);
+}
+[data-slot="stepper-indicator"] {
+  transition:
+    background var(--t-element) var(--enter),
+    box-shadow var(--t-element) var(--enter),
+    color var(--t-element);
+}
+[data-slot="stepper-indicator"] .v-icon {
+  width: 17px;
+  height: 17px;
+}
+[data-slot="stepper-title"] {
+  transition: color var(--t-element);
+}
+[data-slot="stepper-item"].-done .v-step__n {
+  background: var(--v-olive);
+  box-shadow: none;
+  color: var(--v-on-accent);
+}
+[data-slot="stepper-item"].-done .v-step__t {
+  color: var(--v-text);
+}
+[data-slot="stepper-item"].-done + [data-slot="stepper-item"]::before {
+  background: var(--v-olive);
+}
+[data-slot="stepper"]:not(.v-glide) [data-slot="stepper-item"].-on .v-step__n {
+  background: var(--v-pink);
+  box-shadow: none;
+  color: var(--v-on-accent);
+}
+[data-slot="stepper-item"].-on .v-step__t {
+  color: var(--v-text);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}

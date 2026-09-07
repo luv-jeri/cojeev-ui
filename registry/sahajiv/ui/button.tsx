@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Spinner } from "@/registry/sahajiv/ui/spinner"
 import { useFlowPress } from "@/registry/sahajiv/motion/flow-press"
 import { useMorph } from "@/registry/sahajiv/motion/use-morph"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -47,9 +48,8 @@ function Button({ ref: externalRef, className, variant, size, fullWidth, loading
   )
 }
 
-function ButtonIndicator({ ref:externalRef, className, ...props }: React.ComponentProps<"span">) {
-  const morphRef=useMorph<HTMLSpanElement>("skeleton",externalRef)
-  return <span ref={morphRef} data-slot="button-indicator" data-part="indicator" data-label="" aria-hidden="true" className={cn("v-pulse", className)} {...props} />
+function ButtonIndicator({className,...props}:React.ComponentProps<"span">) {
+  return <Spinner data-slot="button-indicator" data-part="indicator" data-label="" aria-hidden="true" className={className} {...props}/>
 }
 
 export { Button, ButtonIndicator, buttonVariants }

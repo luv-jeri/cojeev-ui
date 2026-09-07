@@ -1,0 +1,108 @@
+[data-slot="questionnaire-progress"] b {
+  color: var(--v-text);
+}
+[data-slot="questionnaire-progress"] .v-track {
+  flex: 1;
+  min-width: 80px;
+}
+[data-slot="questionnaire-option"] {
+  transition:
+    background var(--t-element),
+    box-shadow var(--t-element),
+    transform var(--t-micro) var(--enter);
+}
+[data-slot="questionnaire-option"]:not(:has(input:checked)) {
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+[data-slot="questionnaire-option"]:not(:has(input:checked)):hover {
+  background: var(--v-beige-2);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+[data-slot="questionnaire-option"]:active {
+  transform: scale(0.99);
+}
+[data-slot="questionnaire-option"] input {
+  order: 3;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--v-edge);
+  background: var(--v-canvas);
+  display: grid;
+  place-items: center;
+  transition:
+    background var(--t-micro),
+    border-color var(--t-micro);
+}
+[data-slot="questionnaire-option"] .v-disk {
+  order: 1;
+  width: 36px;
+  height: 36px;
+}
+[data-slot="questionnaire-option"] input:checked {
+  background:
+    radial-gradient(circle, var(--ink-fixed) 0 4px, transparent 4.6px),
+    var(--v-pink);
+  border-color: var(--v-pink);
+  border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
+  animation: v-questionnaire-tick var(--t-max) var(--enter) both;
+}
+[data-slot="questionnaire-options"]:not(.v-glide)
+  [data-slot="questionnaire-option"]:has(input:checked) {
+  background: var(--v-pink-soft);
+  color: var(--v-text);
+  box-shadow: none;
+}
+[data-slot="questionnaire-option"]:has(input:checked) .v-quest__opt-body small {
+  color: var(--v-text);
+}
+[data-slot="questionnaire-option"]:has(input:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+[data-slot="questionnaire-option-body"] b {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.3;
+}
+[data-slot="questionnaire-option-body"] small {
+  font-size: 13px;
+  color: var(--v-text-2);
+  line-height: 1.4;
+}
+[data-slot="questionnaire-option"]:has(input:disabled) {
+  color: var(--v-disabled-ink);
+  cursor: not-allowed;
+}
+:root[data-mode="dark"] [data-slot="questionnaire-option"] {
+  background: var(--v-beige);
+}
+:root[data-mode="dark"] [data-slot="questionnaire-option"] input {
+  border-color: var(--v-text-2);
+  background: var(--v-beige-2);
+}
+:root[data-mode="dark"] [data-slot="questionnaire-option"] input:checked {
+  background:
+    radial-gradient(circle, var(--ink-fixed) 0 4px, transparent 4.6px),
+    var(--v-pink);
+  border-color: var(--v-pink);
+}
+@keyframes v-questionnaire-tick {
+  0% {
+    transform: scale(0.8);
+    border-radius: 54% 46% 50% 50%/46% 50% 50% 54%;
+  }
+  55% {
+    transform: scale(1.14, 0.94);
+    border-radius: 50% 50% 46% 54%/54% 50% 46% 50%;
+  }
+  80% {
+    transform: scale(0.98, 1.04);
+  }
+  100% {
+    transform: scale(1);
+    border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
+  }
+}

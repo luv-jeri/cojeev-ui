@@ -1,4 +1,5 @@
 "use client"
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow"
@@ -6,11 +7,13 @@ import { cn } from "@/registry/sahajiv/lib/utils"
 
 const ItemVariants=cva("v-item [display:flex] [align-items:center] [gap:var(--s-4)] [padding:var(--row-pad)] [border-radius:var(--r-card-sm)] [background:var(--card-2)] [min-height:var(--item-h)] [text-align:left] [width:100%] [transition:background_var(--t-micro)]",{variants:{variant:{"default":"","selected":"-selected [background:var(--sel-bg)] [--muted-foreground:var(--muted-foreground-ink)] [color:var(--sel-ink)] [box-shadow:inset_0_0_0_1px_var(--sel-edge)]","flat":"-flat [background:transparent] [padding:var(--s-3)_0] [min-height:56px] [border-radius:0]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type ItemProps=React.ComponentProps<"button"> & VariantProps<typeof ItemVariants> & { as?:React.ElementType }
-export function Item({as:Tag="button",className,variant,size,...props}:ItemProps){return <Tag data-slot="item-item" data-part="item" type={Tag==="button"?"button":undefined} className={cn(ItemVariants({variant,size}),className)} {...props}/>}
+export function Item({ref: externalMorphRef, as:Tag="button",className,variant,size,...props}:ItemProps){const ownedMorphRef = useMorph<HTMLButtonElement>("nav", externalMorphRef);
+  return <Tag ref={ownedMorphRef} data-slot="item-item" data-part="item" type={Tag==="button"?"button":undefined} className={cn(ItemVariants({variant,size}),className)} {...props}/>}
 
 const ItemGroupVariants=cva("v-list [display:grid] [gap:var(--s-2)]",{variants:{variant:{"default":"","grouped":"-grouped [gap:0] [background:var(--card)] [border-radius:var(--r-card)] [padding:var(--s-2)]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type ItemGroupProps=React.ComponentProps<"div"> & VariantProps<typeof ItemGroupVariants> & { as?:React.ElementType }
-export function ItemGroup({as:Tag="div",ref:externalRef,className,variant,size,...props}:ItemGroupProps){const ref=useFlowGroup<HTMLDivElement>(externalRef);return <Tag ref={ref} data-slot="item" data-part="root" className={cn(ItemGroupVariants({variant,size}),className)} {...props}/>}
+export function ItemGroup({as:Tag="div",ref:externalRef,className,variant,size,...props}:ItemGroupProps){const ref=useFlowGroup<HTMLDivElement>(externalRef);const ownedMorphRef = useMorph<HTMLDivElement>("cards", ref);
+  return <Tag ref={ownedMorphRef} data-slot="item" data-part="root" className={cn(ItemGroupVariants({variant,size}),className)} {...props}/>}
 
 const ItemContentVariants=cva("v-item__body [flex:1] [min-width:0] [display:grid] [gap:2px]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type ItemContentProps=React.ComponentProps<"div"> & VariantProps<typeof ItemContentVariants> & { as?:React.ElementType }
@@ -26,4 +29,5 @@ export function ItemDescription({as:Tag="div",className,variant,size,...props}:I
 
 const ItemTrailingVariants=cva("v-time [display:inline-flex] [align-items:center] [white-space:nowrap] [flex:none] [height:26px] [padding:0_12px] [border-radius:var(--r-pill)] [font-size:12px] [font-weight:500] [font-variant-numeric:tabular-nums] [background:var(--v-canvas)]",{variants:{variant:{"default":"","blue":"-blue [background:var(--v-blue)] [color:var(--v-on-accent)]","pink":"-pink [background:var(--v-pink)] [color:var(--v-on-accent)]","olive":"-olive [background:var(--v-olive)] [color:var(--v-on-accent)]","yellow":"-yellow [background:var(--v-yellow)] [color:var(--v-on-accent)]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type ItemTrailingProps=React.ComponentProps<"span"> & VariantProps<typeof ItemTrailingVariants> & { as?:React.ElementType }
-export function ItemTrailing({as:Tag="span",className,variant,size,...props}:ItemTrailingProps){return <Tag data-slot="item-trailing" data-part="trailing" className={cn(ItemTrailingVariants({variant,size}),className)} {...props}/>}
+export function ItemTrailing({ref: externalMorphRef, as:Tag="span",className,variant,size,...props}:ItemTrailingProps){const ownedMorphRef = useMorph<HTMLSpanElement>("pills", externalMorphRef);
+  return <Tag ref={ownedMorphRef} data-slot="item-trailing" data-part="trailing" className={cn(ItemTrailingVariants({variant,size}),className)} {...props}/>}

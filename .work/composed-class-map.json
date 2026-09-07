@@ -1,0 +1,138 @@
+{
+  "attachment": {
+    ".v-attach": "Attachment",
+    ".v-disk": "AttachmentType",
+    ".v-attach__name": "AttachmentName",
+    ".v-attach__meta": "AttachmentMeta",
+    ".v-actions": "AttachmentActions",
+    ".v-ibtn": "AttachmentAction"
+  },
+  "breadcrumb": {
+    ".v-crumbs": "Breadcrumb",
+    ".v-crumbs a": "BreadcrumbLink",
+    "[aria-current=page]": "BreadcrumbPage",
+    ".v-crumbs > .v-ibtn:first-child": "BreadcrumbBack"
+  },
+  "button-group": {
+    ".v-seg": "ButtonGroup",
+    ".v-seg > .v-btn": "ButtonGroupItem",
+    ".v-utility": "ButtonGroupUtility",
+    ".v-utility .v-ibtn": "ButtonGroupUtilityItem"
+  },
+  "carousel": {
+    ".v-carousel": "Carousel",
+    ".v-carousel__track": "CarouselContent",
+    ".v-carousel__track > *": "CarouselItem(asChild)",
+    ".v-carousel__nav": "CarouselNavigation",
+    ".v-carousel__nav button:first-of-type": "CarouselPrevious",
+    ".v-carousel__nav button:last-of-type": "CarouselNext",
+    ".v-carousel__dots": "CarouselDots",
+    ".v-carousel__dots button": "CarouselDot",
+    ".v-deck": "CarouselDeck"
+  },
+  "chart": {
+    ".v-bars": "Chart",
+    ".v-bars > i": "ChartBar",
+    ".v-axis": "ChartAxis",
+    ".v-line": "ChartLine",
+    ".v-line path": "ChartLinePath",
+    ".v-ring": "ChartRing",
+    ".v-ring__c": "ChartRingCenter",
+    ".v-prow": "ChartRankedRow",
+    ".v-prow__lab": "ChartRankedLabel",
+    ".v-prow__val": "ChartRankedValue"
+  },
+  "data-table": {
+    ".v-table-wrap": "DataTableViewport",
+    ".v-table": "Table",
+    ".v-tabs[data-filters]": "DataTableFilters",
+    ".v-tab": "DataTableFilterButton",
+    ".v-pager": "DataTablePagination",
+    ".v-state.-filtered": "DataTableEmpty"
+  },
+  "dropzone": {
+    ".v-drop": "Dropzone"
+  },
+  "field": {
+    ".v-field": "Field",
+    ".v-label": "FieldLabel",
+    ".v-help": "FieldDescription or FieldError",
+    ".v-input/.v-textarea": "FieldControl(asChild slot around Input/Textarea)"
+  },
+  "input": {
+    "input.v-input": "Input",
+    "div.v-input/label.v-input": "InputWrapper",
+    ".v-input input": "InputControl",
+    ".v-input .v-disk": "InputAddon",
+    ".v-affix": "InputAffix",
+    ".v-clear": "InputClear"
+  },
+  "input-group": {
+    ".v-igroup": "InputGroup",
+    ".v-addon": "InputGroupAddon",
+    ".v-igroup input": "InputGroupInput",
+    ".v-igroup .v-btn": "InputGroupButton",
+    ".v-search": "InputSearch",
+    ".v-scope": "InputSearchScope"
+  },
+  "message-scroller": {
+    ".v-scroller": "MessageScroller",
+    ".v-scroller__jump": "MessageScrollerJump"
+  },
+  "native-select": {
+    ".v-native": "NativeSelect",
+    "option": "NativeSelectOption",
+    "optgroup": "NativeSelectOptGroup"
+  },
+  "pagination": {
+    ".v-pager": "Pagination",
+    ".v-pager button[data-p]": "PaginationLink",
+    ".v-ellipsis": "PaginationEllipsis"
+  },
+  "questionnaire": {
+    ".v-quest": "Questionnaire",
+    ".v-quest__progress": "QuestionnaireProgress",
+    ".v-quest__q": "QuestionnaireQuestion",
+    ".v-quest__q > .v-label": "QuestionnaireLabel",
+    ".v-quest__opts": "QuestionnaireOptions",
+    ".v-quest__opt": "QuestionnaireOption",
+    ".v-quest__opt-body": "QuestionnaireOptionBody"
+  },
+  "sidebar": {
+    ".v-sidebar": "Sidebar",
+    ".v-brand": "SidebarHeader",
+    ".v-collapse": "SidebarTrigger",
+    ".v-nav": "SidebarContent",
+    ".v-nav__group": "SidebarGroupLabel",
+    ".v-nav__item": "SidebarMenuButton",
+    ".v-nav__label": "SidebarMenuLabel",
+    ".v-nav__count": "SidebarMenuBadge",
+    ".v-sidebar__foot": "SidebarFooter"
+  },
+  "stepper": {
+    ".v-stepper-flow": "StepperList (inside Stepper provider)",
+    ".v-step": "StepperItem",
+    ".v-step__n": "StepperIndicator",
+    ".v-step__t": "StepperTitle",
+    "[data-step-back]": "StepperPrevious",
+    "[data-step-next]": "StepperNext",
+    "[data-step-say]": "StepperStatus"
+  },
+  "table": {
+    ".v-table-wrap": "TableContainer",
+    ".v-table": "Table",
+    "thead": "TableHeader",
+    "tbody": "TableBody",
+    "tfoot": "TableFooter",
+    "tr": "TableRow",
+    "th": "TableHead",
+    "td": "TableCell",
+    "caption": "TableCaption"
+  },
+  "textarea": {
+    ".v-textarea": "Textarea",
+    ".v-composer": "TextareaComposer",
+    ".v-composer__bar": "TextareaComposerBar",
+    ".v-composer__count": "TextareaCount"
+  }
+}
