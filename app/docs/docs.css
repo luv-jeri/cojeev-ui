@@ -181,3 +181,5 @@
     padding: 20px 4px 64px;
   }
 }
+
+.docs-size[data-example] { display: block; }
