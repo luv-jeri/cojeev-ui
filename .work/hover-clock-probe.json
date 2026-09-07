@@ -1,0 +1,75 @@
+{
+  "sourceClock": "reference/sahajiv-handoff-v4/js/v.js:83-85",
+  "sourceStyle": "reference/sahajiv-handoff-v4/css/flow.css:104",
+  "token": "--t-flow-fade-sm=.16s (tokens.css:165)",
+  "scope": "Literal source clock and full source flow stylesheet, identical minimal DOM, native pointerover, only wall time before first clock changes.",
+  "rows": [
+    {
+      "wallDelay": 0,
+      "states": [
+        {
+          "label": "ghost",
+          "time": 100016,
+          "opacity": "0",
+          "animations": [
+            {
+              "property": "opacity",
+              "time": 0,
+              "at": 100016,
+              "state": "paused"
+            }
+          ]
+        },
+        {
+          "label": "pointerdown",
+          "time": 100016,
+          "opacity": "0",
+          "animations": []
+        },
+        {
+          "label": "15ms after pointerdown",
+          "time": 100031,
+          "opacity": "0",
+          "animations": []
+        }
+      ]
+    },
+    {
+      "wallDelay": 250,
+      "states": [
+        {
+          "label": "ghost",
+          "time": 100016,
+          "opacity": "1",
+          "animations": []
+        },
+        {
+          "label": "pointerdown",
+          "time": 100016,
+          "opacity": "1",
+          "animations": [
+            {
+              "property": "opacity",
+              "time": 0,
+              "at": 100016,
+              "state": "paused"
+            }
+          ]
+        },
+        {
+          "label": "15ms after pointerdown",
+          "time": 100031,
+          "opacity": "0.914594",
+          "animations": [
+            {
+              "property": "opacity",
+              "time": 15,
+              "at": 100016,
+              "state": "paused"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
