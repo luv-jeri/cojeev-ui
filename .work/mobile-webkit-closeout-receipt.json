@@ -1,0 +1,119 @@
+{
+  "startedAt": "2026-09-07T22:26:23.417Z",
+  "url": "http://127.0.0.1:4320/sahajiv-ui",
+  "revisionStart": {
+    "head": "9ac1fcd09966dcd696cb06a45c4f970816225a31",
+    "dirty": false,
+    "dirtyDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scope": {
+    "engine": "WebKit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mobile": true,
+    "touch": true,
+    "physicalDevice": false
+  },
+  "cases": [
+    {
+      "id": "home-and-getting-started",
+      "startedAt": "2026-09-07T22:26:24.852Z",
+      "revision": {
+        "head": "9ac1fcd09966dcd696cb06a45c4f970816225a31",
+        "dirty": false,
+        "dirtyDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "detail": "Home and getting-started render; main component links and mobile navigation work by touch",
+      "homeLayout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "startedLayout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "navigationLayout": {
+        "viewport": 390,
+        "maximumDocumentWidth": 390,
+        "frames": 11,
+        "overflowFrames": 0,
+        "maximumContributors": []
+      },
+      "status": "PASS",
+      "input": {
+        "pointerTypes": [
+          "touch"
+        ],
+        "touchStarts": 4
+      },
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:26:27.852Z"
+    },
+    {
+      "id": "motion-settings",
+      "startedAt": "2026-09-07T22:26:28.098Z",
+      "revision": {
+        "head": "9ac1fcd09966dcd696cb06a45c4f970816225a31",
+        "dirty": false,
+        "dirtyDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "detail": "All nine motion choices respond; real preview, global Off, and touch close work",
+      "choices": [
+        "Glide",
+        "Stretch",
+        "Jelly",
+        "Comet",
+        "Ink drop",
+        "Rubber",
+        "Pebble",
+        "Ripple",
+        "Halo"
+      ],
+      "panelLayout": {
+        "width": 366,
+        "clientWidth": 354,
+        "scrollWidth": 354,
+        "scrollLeft": 0
+      },
+      "closeLayout": {
+        "viewport": 390,
+        "maximumDocumentWidth": 390,
+        "frames": 48,
+        "overflowFrames": 0,
+        "maximumContributors": []
+      },
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "touchPoints": 0,
+        "coarsePointer": true
+      },
+      "status": "PASS",
+      "input": {
+        "pointerTypes": [
+          "touch"
+        ],
+        "touchStarts": 16
+      },
+      "errors": [],
+      "consoleErrors": [],
+      "finishedAt": "2026-09-07T22:26:31.731Z"
+    }
+  ],
+  "browserVersion": "26.6",
+  "finishedAt": "2026-09-07T22:26:31.774Z",
+  "revisionEnd": {
+    "head": "9ac1fcd09966dcd696cb06a45c4f970816225a31",
+    "dirty": false,
+    "dirtyDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "runtimeSeconds": 8.357,
+  "status": "PASS"
+}
