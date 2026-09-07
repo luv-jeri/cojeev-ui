@@ -24,6 +24,7 @@ export function ResizablePanelGroup({
   direction,
   orientation,
   elementRef,
+  style,
   ...props
 }: ResizablePanelGroupProps) {
   const morphRef = useMorph<HTMLDivElement>("cards", elementRef);
@@ -36,6 +37,7 @@ export function ResizablePanelGroup({
       data-part="root"
       data-resizable=""
       orientation={resolved}
+      style={{ height: "var(--h,240px)", ...style }}
       className={cn(
         resizableVariants({ variant: resolved === "vertical" ? "v" : variant }),
         className,
