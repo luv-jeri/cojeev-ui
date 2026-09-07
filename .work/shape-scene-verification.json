@@ -1,0 +1,21 @@
+{
+  "started": "2026-09-07T21:37:51.471Z",
+  "finished": "2026-09-07T21:38:01.862Z",
+  "passed": true,
+  "results": [
+    "SSR renders four real Shape silhouettes before WebGL without a canvas",
+    "WebGL actually draws the sculpture",
+    "Rendered pixels contain visible shaded geometry",
+    "Renderer DPR is capped at1.5",
+    "Global Off stops animation and pointer frames",
+    "OS reduced motion stops continuous rendering",
+    "Offscreen scene pauses",
+    "Hidden document pauses",
+    "Still scene schedules no ongoing frames",
+    "Pointer changes the still sculpture then rendering settles to zero ongoing frames",
+    "Mobile and desktop rendering captured without page overflow",
+    "Unmount releases GPU resources/context and stops frames",
+    "Unavailable WebGL retains real Shape fallback with explicit status"
+  ],
+  "errors": []
+}
