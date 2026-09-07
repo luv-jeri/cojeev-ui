@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
+import { Icon } from "@/registry/sahajiv/ui/icon";
 import * as Primitive from "@radix-ui/react-select";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { useFlowPress } from "@/registry/sahajiv/motion/flow-press";
@@ -10,15 +11,21 @@ import {
   useFlowAppearance,
   useFlowGroup,
 } from "@/registry/sahajiv/motion/use-flow";
-export type SelectProps = React.ComponentProps<typeof Primitive.Root>;
-export function Select({ children, ...props }: SelectProps) {
+export type SelectProps = React.ComponentProps<typeof Primitive.Root> & {
+  containerProps?: React.ComponentProps<"span">;
+};
+export function Select({ children, containerProps, ...props }: SelectProps) {
   return (
     <Primitive.Root {...props}>
       <span
         data-slot="select"
         data-part="root"
         data-select=""
-        className="v-menuhost relative inline-block"
+        {...containerProps}
+        className={cn(
+          "v-menuhost relative inline-block",
+          containerProps?.className,
+        )}
       >
         {children}
       </span>
@@ -47,9 +54,7 @@ export function SelectTrigger({
     >
       {children}
       <Primitive.Icon asChild>
-        <svg aria-hidden="true" className="v-icon" viewBox="0 0 24 24">
-          <path d="m6 9 6 6 6-6" />
-        </svg>
+        <Icon name="chevron-down" />
       </Primitive.Icon>
     </Primitive.Trigger>
   );

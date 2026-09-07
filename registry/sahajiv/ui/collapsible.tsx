@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
+import { Icon } from "@/registry/sahajiv/ui/icon";
 import * as Primitive from "@radix-ui/react-collapsible";
 import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
 export const collapsibleVariants = cva("v-collapsible");
@@ -67,15 +68,14 @@ export function CollapsibleIndicator({
   ...props
 }: CollapsibleIndicatorProps) {
   return (
-    <svg
+    <Icon
+      name="chevron-down"
       data-slot="collapsible-indicator"
       data-part="indicator"
       aria-hidden="true"
       viewBox="0 0 24 24"
       className={cn("v-icon v-chev", className)}
       {...props}
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
+    />
   );
 }
