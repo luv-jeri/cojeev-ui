@@ -92,12 +92,6 @@
   }
 }
 
-[data-slot="dropdown-menu-content"],
-[data-slot="dropdown-menu-sub-content"] {
-  max-height: var(--radix-popper-available-height);
-  max-width: calc(100vw - 24px);
-  overflow: auto;
-}
 [data-slot^="dropdown-menu-"][data-inset] {
   padding-left: 32px;
 }

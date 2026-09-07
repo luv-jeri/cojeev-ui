@@ -530,3 +530,10 @@
     height: 36px;
   }
 }
+
+/* Semantic row headers retain the source span typography, including normal week weights. */
+.v-cal__wk:where([data-slot="calendar-week-number"]) {
+ font-weight: 400;
+ text-align: start;
+ vertical-align: baseline;
+}

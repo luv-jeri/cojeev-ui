@@ -1,0 +1,53 @@
+{
+  "revision": "315de5e",
+  "status": "stopped after DatePicker family at owner request to apply identified fixes and split remaining work",
+  "rows": 234,
+  "expectedRows": 924,
+  "exactRows": 150,
+  "verdicts": {
+    "PASS": 174,
+    "FAIL": 60
+  },
+  "families": {
+    "accordion": {
+      "rows": 24,
+      "exact": 24
+    },
+    "alert-dialog": {
+      "rows": 24,
+      "exact": 12
+    },
+    "calendar": {
+      "rows": 24,
+      "exact": 0
+    },
+    "checkbox": {
+      "rows": 48,
+      "exact": 48
+    },
+    "collapsible": {
+      "rows": 24,
+      "exact": 12
+    },
+    "combobox": {
+      "rows": 24,
+      "exact": 12
+    },
+    "command": {
+      "rows": 12,
+      "exact": 12
+    },
+    "context-menu": {
+      "rows": 24,
+      "exact": 12
+    },
+    "date-picker": {
+      "rows": 24,
+      "exact": 12
+    },
+    "dialog": {
+      "rows": 6,
+      "exact": 6
+    }
+  }
+}
