@@ -22,3 +22,8 @@ rtk proxy npx eslint registry/sahajiv/motion/use-morph.ts
 ## Native-touch handoff
 
 The composed owner established the release discrepancy with actual rectangle-call traces: source retains the last pressed rectangle until stale, while the previous port read every16ms. Four of six geometry fields were explained by premature resize; two additional path-only fields differ by one .01px serialized coordinate and remain subject to exact recheck. The implementation above is ready for that owner's normal-only light/dark AA/BB follow-up. This checkpoint does not yet claim those six native-touch deltas are closed. No nine-character travelling-selection repeat is needed: that fixture owns Flow and contains no Morph bodies.
+
+
+## Native-touch follow-up received
+
+The composed owner completed the normal-only light/dark follow-up at integrated revision `897fda6`: all six previously measured geometry differences are now exact in both themes, including the two single-coordinate .01px cases. Candidate repeats agree exactly. Source light repeats agree; source dark retains its separate final native `:active` transform instability. The remaining source/candidate field differences are the 38 previously identified hidden-echo fill values, with fixture/authored label paint accounting for remaining pixels. These are not waived by the geometry result, and this does not claim a complete native-touch visual PASS. Evidence: `.worktrees/composed/.work/native-touch-motion-normal-followup/results.json` (relative to the main checkout). No further Morph source changes were requested from that touch audit.
