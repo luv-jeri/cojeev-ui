@@ -143,7 +143,9 @@ finally{
   text.splice(2,0,`Candidate source SHA-256: ${candidateRevision}. Unchanged during run: ${unchanged?"yes":"NO"}.`,"");
   const adapters=[...new Set(results.flatMap(row=>row.oracleAdapters??[]))];
   const unavailable=[...new Set(results.flatMap(row=>(row.unavailableStyles??[]).map(part=>`${row.id} / ${part.part}: ${part.reason}`)))];
-  if(adapters.length)text.push("Oracle bootstrap adapters: "+adapters.join(", ")+". The original catalog's loader runtime is restored only where the isolation generator omitted it; reference files remain unchanged.","");
+  if(adapters.length)text.push("Recorded fixture adapters: "+adapters.join(", ")+". Reference files remain unchanged.","");
+  if(adapters.includes("original-alive-runtime"))text.push("The original catalog's loader runtime is restored only where the isolation generator omitted it.","");
+  if(adapters.includes("otp-catalog-sizing"))text.push("OTP uses the catalog's definite grid track and inline-size containment on BOTH sides. The isolation generator omitted that geometry, making native input intrinsic widths expand the scene. This adapter changes only the surrounding canvas, with no control styles or pixel masks (catalog/index.html:114,160,172).","");
   if(unavailable.length)text.push("Computed-style limitations (pixels remain fully compared; interaction proof is separate):",...unavailable.map(value=>`- ${value}`),"");
   fs.writeFileSync(arg("report")??"GATE.md",text.join("\n"));
   await browser.close();await server.close();
