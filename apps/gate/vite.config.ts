@@ -30,6 +30,9 @@ export default defineConfig({
           const types:Record<string,string>={".html":"text/html",".css":"text/css",".js":"text/javascript",".json":"application/json",".svg":"image/svg+xml",".ttf":"font/ttf",".woff2":"font/woff2"};
           res.setHeader("Content-Type",types[path.extname(file)]??"application/octet-stream");
           let content=fs.readFileSync(file);
+          if(file.endsWith('.html')&&['light','dark'].includes(url.searchParams.get('mode')??'')){
+            content=Buffer.from(content.toString('utf8').replace(/data-mode="(?:light|dark)"/,`data-mode="${url.searchParams.get('mode')}"`));
+          }
           if(file.includes(`${path.sep}isolation${path.sep}`)&&file.endsWith('.html')){
             const html=restoreCatalogSizing(content.toString('utf8'),path.basename(path.dirname(file)));
             content=Buffer.from(html);
@@ -48,7 +51,8 @@ export default defineConfig({
         const id = url.searchParams.get("id") ?? "button";
         const file = url.searchParams.get("file") ?? "default-default-rest.html";
         if (!/^[a-z-]+$/.test(id) || !/^[a-z0-9.-]+\.html$/.test(file)) { res.statusCode=400;res.end("Invalid fixture");return; }
-        const source = restoreCatalogSizing(fs.readFileSync(path.resolve("reference/sahajiv-handoff-v4/isolation", id, file), "utf8"),id);
+        const sourcePath=file==='demo.html'||file==='demo-dark.html'?path.resolve("reference/sahajiv-handoff-v4/entries",id,"demo.html"):path.resolve("reference/sahajiv-handoff-v4/isolation",id,file);
+        const source = restoreCatalogSizing(fs.readFileSync(sourcePath, "utf8"),id);
         const canvas = source.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? "";
         const mode = file.includes("-dark") ? "dark" : "light";
         // Only authored fixture markup and canvas geometry cross this boundary.
