@@ -47,6 +47,7 @@ export default defineConfig({
     },
   }],
   resolve: { alias: { "@": path.resolve(".") } },
+  optimizeDeps: { entries: ["apps/gate/candidate.tsx"] },
   css: { postcss: { plugins: [] } },
   // Verification runs must not reload when an independent docs build writes Next metadata.
   server: { host:"127.0.0.1", port: 4317, strictPort: true, hmr:false, watch:null },

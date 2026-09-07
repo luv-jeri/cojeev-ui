@@ -16,7 +16,7 @@ const portMap=JSON.parse(fs.readFileSync(`${reference}/data/port-map.json`,"utf8
 const semantics=JSON.parse(fs.readFileSync("apps/gate/fixture-semantic-map.json","utf8")).entries;
 const ids=requestedIds?requestedIds.split(","):Object.keys(registry).filter(id=>registry[id].tier==="base");
 const port=Number(arg("port")??4317);
-const properties=["background-color","color","font-family","font-size","font-weight","line-height","letter-spacing","padding-top","padding-right","padding-bottom","padding-left","height","min-height","border-top-width","border-top-style","border-top-color","border-radius","box-shadow","outline","outline-offset","gap","opacity","transform","transition-duration","transition-timing-function"];
+const properties=["background-color","color","font-family","font-size","font-weight","line-height","letter-spacing","padding-top","padding-right","padding-bottom","padding-left","width","height","min-height","border-top-width","border-top-style","border-top-color","border-radius","box-shadow","outline","outline-offset","gap","opacity","transform","transition-duration","transition-timing-function"];
 const out=path.resolve(arg("out")??"artifacts/gate");fs.mkdirSync(out,{recursive:true});
 const server=await createServer({configFile:path.resolve("apps/gate/vite.config.ts"),server:{port,strictPort:true}});
 await server.listen();
@@ -47,6 +47,9 @@ async function sample(url,id){
   const styles=await page.evaluate(({properties,parts,translations,candidate})=>{
     const visible=el=>{
       if(!el.getClientRects().length||getComputedStyle(el).visibility==="hidden"||getComputedStyle(el).display==="none")return false;
+      for(let parent=el;parent;parent=parent.parentElement){
+        if(Number(getComputedStyle(parent).opacity)===0)return false;
+      }
       // Chromium can report layout rectangles for the hidden contents of a
       // native closed details element. Its direct summary remains visible.
       for(let parent=el.parentElement;parent;parent=parent.parentElement){
@@ -61,12 +64,20 @@ async function sample(url,id){
     const key=(kind,name,el)=>{const prefix=`${visible(el)?"":"hidden-"}${kind}:${name}`;const count=counts.get(prefix)??0;counts.set(prefix,count+1);return `${prefix}:${count}`};
     const entries=roots.map(el=>({el,key:key("gate",el.getAttribute("data-gate"),el)}));
     for(const [selector,name] of Object.entries(parts)){
-      const resolved=candidate?(translations?.[selector]?.candidateSelector??selector):selector;
-      document.querySelectorAll(resolved).forEach(el=>{if(!roots.includes(el))entries.push({el,key:key("part",name,el)});});
+      const translation=translations?.[selector];
+      const resolved=candidate?(translation?.candidateSelector??selector):(translation?.referenceSelector??selector);
+      const pseudo=candidate?translation?.candidatePseudo:translation?.referencePseudo;
+      document.querySelectorAll(resolved).forEach(el=>{
+        if(pseudo||!roots.includes(el))entries.push({el,pseudo,key:key("part",name,el),unavailable:translation?.computedStyleUnavailable});
+      });
     }
-    return Object.fromEntries(entries.map(({el,key})=>{const cs=getComputedStyle(el);return[key,{__visible:String(visible(el)),...Object.fromEntries(properties.map(p=>[p,cs.getPropertyValue(p)]))}];}));
+    return Object.fromEntries(entries.map(({el,pseudo,key,unavailable})=>{
+      const cs=getComputedStyle(el,pseudo);
+      return[key,{__visible:String(visible(el)),...(unavailable?{__computedStyleUnavailable:unavailable}:Object.fromEntries(properties.map(p=>[p,cs.getPropertyValue(p)])))}];
+    }));
   },{properties,parts:portMap[id].parts,translations:semantics[id]?.parts,candidate:url.includes("/candidate?")});
-  frames[width]={styles,pixels:await page.screenshot(),errors:[...errors]};
+  const oracleAdapters=await page.locator('meta[name="sahajiv-oracle-adapter"]').evaluateAll(nodes=>nodes.map(node=>node.content));
+  frames[width]={styles,pixels:await page.screenshot(),errors:[...errors],oracleAdapters};
   }
   return frames;
 }
@@ -74,11 +85,22 @@ function styleDiff(a,b){const diff=[];for(const key of new Set([...Object.keys(a
  if(!a[key]||!b[key]){const existing=a[key]??b[key];if(existing?.__visible==="false")continue;diff.push({part:key,property:"presence",reference:!!a[key],candidate:!!b[key]});continue;}
  if(a[key].__visible!==b[key].__visible){diff.push({part:key,property:"visibility",reference:a[key].__visible,candidate:b[key].__visible});continue;}
  if(a[key].__visible==="false")continue;
+ if(a[key].__computedStyleUnavailable||b[key].__computedStyleUnavailable)continue;
  for(const property of properties)if(a[key][property]!==b[key][property])diff.push({part:key,property,reference:a[key][property],candidate:b[key][property]});
  }return diff;}
 
 function pixels(a,b){const x=PNG.sync.read(a),y=PNG.sync.read(b),d=new PNG({width:x.width,height:x.height});const count=pixelmatch(x.data,y.data,d.data,x.width,x.height,{threshold:0.1,includeAA:true});return {count,ratio:count/(x.width*x.height),diff:PNG.sync.write(d)};}
 try{
+  // Candidate HTML is served by middleware, so Vite does not discover it as an
+  // HTML entry. Warm its complete import graph before any evidence is sampled.
+  const warmId=ids[0];
+  const warmFile=registry[warmId].isolation.find(file=>!arg("file")||file.includes(arg("file")));
+  if(warmFile){
+    await page.goto(`http://127.0.0.1:${port}/candidate?id=${warmId}&file=${warmFile}`,{waitUntil:"load"});
+    await page.waitForFunction(()=>document.documentElement.dataset.ready==="1",{},{timeout:120000});
+    await page.evaluate(()=>document.fonts.ready);
+    await page.waitForTimeout(1800);
+  }
   for(const id of ids){
     if(registry[id]?.tier!=="base")throw new Error(`Not a base component: ${id}`);
     for(const file of registry[id].isolation.filter(file=>!arg("file")||file.includes(arg("file"))).slice(0,limit)){
@@ -103,7 +125,8 @@ try{
       if(verdict!=="PASS")process.exitCode=1;
       const name=`${id}-${file.replace(".html","")}-${width}`;
       if(verdict!=="PASS"){for(const [suffix,bytes]of[["reference",a.pixels],["candidate",b.pixels],["diff",delta.diff]])fs.writeFileSync(`${out}/${name}-${suffix}.png`,bytes);}
-      results.push({id,file,width,verdict,oracleStable,candidateStable,oracleByteStable,candidateByteStable,pixelDifference:delta.ratio,differences});
+      const unavailableStyles=Object.entries(a.styles).filter(([,value])=>value.__computedStyleUnavailable).map(([part,value])=>({part,reason:value.__computedStyleUnavailable}));
+      results.push({id,file,width,verdict,oracleStable,candidateStable,oracleByteStable,candidateByteStable,pixelDifference:delta.ratio,differences,oracleAdapters:a.oracleAdapters,unavailableStyles});
       fs.writeFileSync(`${out}/results.json`,JSON.stringify(results,null,2));
       console.log(`${verdict} ${name}: ${differences.length} style differences, ${(100*delta.ratio).toFixed(4)}% pixels`);
       // Default fail-fast for fixes; a diagnostic wave can collect independent failures.
@@ -118,6 +141,10 @@ finally{
   const complete=ids.every(id=>results.filter(r=>r.id===id).length===registry[id].isolation.length*widths.length)&&widths.length===6;
   const text=["# Fidelity gate","",`Scope: ${ids.join(", ")}. ${results.length} measured comparisons. Full six-width isolation coverage: ${complete?"yes":"NO"}.`,"","Oracle: handoff v4. Fonts ready + 1800ms settle; sequential independent reloads; rewind then step; no re-seeding. Static frames use reduced motion. Self agreement requires exact visible computed state and zero decoded-pixel differences using pixelmatch threshold 0.1 with anti-alias pixels included; raw PNG hash agreement is retained separately. Demonstrably hidden source content may correspond to unmounted Radix content; visible absence always fails. Motion and keyboard coverage are separate reports.","","| Component | Isolation variant / size / state / mode | Width | Verdict | Style differences | Pixel difference |","| --- | --- | ---: | --- | ---: | ---: |",...results.map(r=>`| ${r.id} | ${r.file} | ${r.width} | ${r.verdict} | ${r.differences.length} | ${(100*r.pixelDifference).toFixed(4)}% |`),""];
   text.splice(2,0,`Candidate source SHA-256: ${candidateRevision}. Unchanged during run: ${unchanged?"yes":"NO"}.`,"");
+  const adapters=[...new Set(results.flatMap(row=>row.oracleAdapters??[]))];
+  const unavailable=[...new Set(results.flatMap(row=>(row.unavailableStyles??[]).map(part=>`${row.id} / ${part.part}: ${part.reason}`)))];
+  if(adapters.length)text.push("Oracle bootstrap adapters: "+adapters.join(", ")+". The original catalog's loader runtime is restored only where the isolation generator omitted it; reference files remain unchanged.","");
+  if(unavailable.length)text.push("Computed-style limitations (pixels remain fully compared; interaction proof is separate):",...unavailable.map(value=>`- ${value}`),"");
   fs.writeFileSync(arg("report")??"GATE.md",text.join("\n"));
   await browser.close();await server.close();
 }
