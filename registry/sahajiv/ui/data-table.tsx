@@ -289,7 +289,7 @@ export function DataTableFilterButton({
     <button
       data-slot="data-table-filter-button"
       className={cn(
-        "v-tab shrink-0 h-[var(--ctl-sm)] px-[14px] rounded-[var(--r-pill)] bg-[var(--v-beige)] text-[13px] font-medium text-[color:var(--v-text-2)]",
+        "v-tab shrink-0 h-[var(--ctl-sm)] px-[14px] rounded-[var(--r-pill)] bg-[var(--v-beige)] text-[13px] font-medium text-[color:var(--v-text)]",
         className,
       )}
       type="button"

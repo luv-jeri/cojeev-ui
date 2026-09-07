@@ -123,3 +123,6 @@
     animation: none;
   }
 }
+
+/* Standalone authored rail; embedded rails keep the container sizing contract. */
+[data-slot="sidebar"][data-layout="viewport"] { position: sticky; top: var(--shell-inset); min-height: calc(100vh - var(--shell-inset)*2); max-height: calc(100vh - var(--shell-inset)*2); }

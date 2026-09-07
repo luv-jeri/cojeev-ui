@@ -53,7 +53,7 @@ export function BreadcrumbLink({
       data-slot="breadcrumb-link"
       data-part="item"
       className={cn(
-        "inline h-auto p-0 rounded-[4px] bg-transparent shadow-none text-[color:var(--v-text-2)] font-normal no-underline",
+        "inline h-auto p-0 rounded-[4px] bg-transparent [box-shadow:none] text-[color:var(--v-text-2)] font-normal no-underline",
         className,
       )}
       {...props}
@@ -121,7 +121,7 @@ export function BreadcrumbBack({
       type="button"
       aria-label="Back"
       className={cn(
-        "v-ibtn -dashed inline-grid place-items-center shrink-0 [width:36px] [height:36px] mr-[4px] rounded-full [border:0] [background:var(--v-canvas)] [color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
+        "v-ibtn inline-grid place-items-center shrink-0 [width:36px] [height:36px] mr-[4px] [border-radius:50%] [border:0] [background:var(--v-canvas)] [color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
         className,
       )}
       {...props}

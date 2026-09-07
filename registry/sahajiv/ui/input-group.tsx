@@ -10,7 +10,7 @@ import {
 } from "@/registry/sahajiv/ui/input";
 import { Textarea, type TextareaProps } from "@/registry/sahajiv/ui/textarea";
 export const inputGroupVariants = cva(
-  "v-igroup flex items-center h-[52px] gap-[10px] py-0 pl-[18px] pr-[6px] rounded-[var(--r-pill)] border-0 bg-[var(--input)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
+  "v-igroup flex items-center h-[52px] gap-[10px] py-0 pl-[18px] pr-[6px] rounded-[var(--r-pill)] [border:0] bg-[var(--input)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
 );
 export type InputGroupProps = React.ComponentProps<"div">;
 export function InputGroup({ref: externalMorphRef,  className, ...props }: InputGroupProps) {

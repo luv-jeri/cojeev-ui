@@ -9,7 +9,7 @@ const FieldContext = React.createContext<{
   invalid: boolean;
 } | null>(null);
 const fieldVariants = cva(
-  "v-field grid gap-[8px] border-0 bg-transparent shadow-none",
+  "v-field grid gap-[8px] [border:0] bg-transparent [box-shadow:none]",
   {
     variants: { variant: { default: "", invalid: "-invalid" } },
     defaultVariants: { variant: "default" },
@@ -110,7 +110,7 @@ export function FieldSet({ className, ...props }: FieldSetProps) {
   return (
     <fieldset
       data-slot="field-set"
-      className={cn("grid min-w-0 gap-[var(--s-5)] border-0 p-0", className)}
+      className={cn("grid min-w-0 gap-[var(--s-5)] [border:0] p-0", className)}
       {...props}
     />
   );

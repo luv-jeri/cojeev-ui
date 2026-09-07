@@ -6,7 +6,7 @@ import { cn } from "@/registry/sahajiv/lib/utils";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 
 const inputVariants = cva(
-  "v-input flex w-full items-center gap-[12px] h-[48px] px-[18px] py-0 rounded-[var(--r-pill)] border-0 bg-[var(--input)] text-[color:var(--v-text)] text-[length:var(--fs-body)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none",
+  "v-input flex w-full items-center gap-[12px] h-[48px] px-[18px] py-0 rounded-[var(--r-pill)] [border:0] bg-[var(--input)] text-[color:var(--v-text)] text-[length:var(--fs-body)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none",
   {
     variants: {
       variant: {
@@ -48,23 +48,23 @@ export function Input({
     />
   );
 }
-export type InputWrapperProps = React.ComponentProps<"div"> &
-  VariantProps<typeof inputVariants>;
+export type InputWrapperProps = React.HTMLAttributes<HTMLElement> &
+  VariantProps<typeof inputVariants> & { ref?: React.Ref<HTMLElement>; as?: "div" | "label" };
 export function InputWrapper({ref: externalMorphRef, 
   className,
   variant,
   size,
   ...props
 }: InputWrapperProps) {
-  const ownedMorphRef = useMorph<HTMLDivElement>("inputs", externalMorphRef);
-  return (
-    <div ref={ownedMorphRef}
-      data-slot="input"
-      data-part="root"
-      className={cn(inputVariants({ variant, size }), className)}
-      {...props}
-    />
-  );
+  const ownedMorphRef = useMorph<HTMLElement>("inputs", externalMorphRef);
+  const { as = "div", ...rest } = props;
+  return React.createElement(as, {
+    ref: ownedMorphRef,
+    "data-slot": "input",
+    "data-part": "root",
+    className: cn(inputVariants({ variant, size }), className),
+    ...rest,
+  });
 }
 export type InputControlProps = React.ComponentProps<"input">;
 export function InputControl({ className, ...props }: InputControlProps) {
@@ -73,7 +73,7 @@ export function InputControl({ className, ...props }: InputControlProps) {
       data-slot="input-control"
       data-part="input"
       className={cn(
-        "min-w-0 flex-1 h-full border-0 bg-transparent outline-none placeholder:text-[color:var(--v-text-2)]",
+        "min-w-0 flex-1 h-full [border:0] bg-transparent [outline:0] [padding:1px_2px] placeholder:text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}
@@ -87,7 +87,7 @@ export function InputAddon({ className, ...props }: InputAddonProps) {
       data-slot="input-addon"
       data-part="addon"
       className={cn(
-        "v-disk grid shrink-0 place-items-center size-[32px] bg-[var(--v-beige)] text-[color:var(--v-text)] [border-radius:46%_54%_50%_50%/50%_46%_54%_50%]",
+        "v-disk grid shrink-0 place-items-center size-[32px] bg-[var(--disk-bg,var(--v-beige))] text-[color:var(--v-text)] [border-radius:46%_54%_50%_50%/50%_46%_54%_50%]",
         className,
       )}
       {...props}
@@ -124,7 +124,7 @@ export function InputClear({
       type="button"
       aria-label="Clear input"
       className={cn(
-        "v-clear grid shrink-0 place-items-center size-[26px] rounded-full mr-[-8px] text-[color:var(--v-text-2)] hover:bg-[var(--v-canvas)] hover:text-[color:var(--v-text)]",
+        "v-clear grid shrink-0 place-items-center size-[26px] [border-radius:50%] mr-[-8px] text-[color:var(--v-text-2)] hover:bg-[var(--v-canvas)] hover:text-[color:var(--v-text)]",
         className,
       )}
       onClick={(event) => {

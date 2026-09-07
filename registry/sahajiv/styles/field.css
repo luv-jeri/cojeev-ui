@@ -24,3 +24,5 @@
 [data-slot="field"]:is(.-error, [data-invalid]) .v-input:focus-within {
   box-shadow: inset 0 0 0 2px var(--v-danger-fill);
 }
+
+[data-slot="field"].-invalid .v-input { border: 1.5px solid var(--v-danger); }

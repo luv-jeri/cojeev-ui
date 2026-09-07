@@ -63,7 +63,7 @@ export function QuestionnaireQuestion({
     <fieldset
       data-slot="questionnaire-question"
       className={cn(
-        "v-quest__q grid min-w-0 gap-[12px] border-0 p-0 bg-transparent shadow-none",
+        "v-quest__q grid min-w-0 gap-[12px] [border:0] p-0 bg-transparent [box-shadow:none]",
         className,
       )}
       {...props}
@@ -194,4 +194,14 @@ export function QuestionnaireOptionBody({
       {...props}
     />
   );
+}
+
+export type QuestionnaireWeekdaysProps = React.ComponentProps<"div">;
+export function QuestionnaireWeekdays({ ref, className, ...props }: QuestionnaireWeekdaysProps) {
+  const flowRef = useFlowGroup<HTMLDivElement>(ref);
+  return <div ref={flowRef} data-slot="questionnaire-weekdays" className={cn("v-weekdays flex gap-[6px]", className)} {...props} />;
+}
+export type QuestionnaireWeekdayProps = React.ComponentProps<"label">;
+export function QuestionnaireWeekday({ className, ...props }: QuestionnaireWeekdayProps) {
+  return <label data-slot="questionnaire-weekday" className={cn("relative grid place-items-center size-[40px] [border-radius:50%] text-[11.5px] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer", className)} {...props} />;
 }

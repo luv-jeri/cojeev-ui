@@ -113,7 +113,7 @@ export function StepperIndicator({
       data-slot="stepper-indicator"
       data-part="indicator"
       className={cn(
-        "v-step__n relative z-[1] col-start-1 grid place-items-center size-[38px] rounded-full text-[14.5px] font-semibold tabular-nums bg-[var(--v-canvas)] text-[color:var(--v-text-2)] [box-shadow:inset_0_0_0_1.5px_var(--v-edge)]",
+        "v-step__n relative z-[1] col-start-1 grid place-items-center size-[38px] [border-radius:50%] text-[14.5px] font-semibold tabular-nums bg-[var(--v-canvas)] text-[color:var(--v-text-2)] [box-shadow:inset_0_0_0_1.5px_var(--v-edge)]",
         className,
       )}
       {...props}

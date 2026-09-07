@@ -169,9 +169,13 @@
   color: var(--v-disabled-ink);
 }
 [data-slot="input"]:is(.-error, [aria-invalid="true"]) {
-  box-shadow: inset 0 0 0 1.5px var(--v-danger-fill);
-  background: var(--v-danger-soft);
+  box-shadow: inset 0 0 0 1.5px var(--v-danger-fill) !important;
+  background: var(--v-danger-soft) !important;
 }
 [data-slot="input"]:is(.-error, [aria-invalid="true"]):focus-within {
-  box-shadow: inset 0 0 0 2px var(--v-danger-fill);
+  box-shadow: inset 0 0 0 2px var(--v-danger-fill) !important;
 }
+
+[data-slot="input"].-cream { border-color: var(--v-border); }
+[data-slot="input"]:is(:focus, :focus-within) { border-color: transparent; }
+[data-slot="input"].-ink > .v-icon { color: rgba(251,244,230,.7); }
