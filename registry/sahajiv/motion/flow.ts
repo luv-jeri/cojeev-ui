@@ -82,13 +82,13 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
   const b={x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height,r:css.borderRadius&&css.borderRadius!=='0px'?css.borderRadius:'999px'}
   if(kind==='bar'){b.y+=b.h-2.5;b.h=2.5;b.r='2px'}return b
  }
- const paint=(b:Box,hover=false)=>{const prefix=hover?'hov':'glide';for(const [key,value]of Object.entries({x:b.x,y:b.y,w:b.w,h:b.h}))write('--'+prefix+'-'+key,Math.round(value)+'px');write('--'+prefix+'-r',b.r);write('--'+prefix+'-o','1')}
+ const paint=(b:Box,hover=false)=>{const prefix=hover?'hov':'glide';for(const [key,value]of Object.entries({x:b.x,y:b.y,w:b.w,h:b.h}))write('--'+prefix+'-'+key,Number(value.toFixed(3))+'px');write('--'+prefix+'-r',b.r);write('--'+prefix+'-o','1')}
  const active=()=>{
   const candidates=items()
   if(kind==='fill')return (options.activeSelector?candidates.find(item=>item.matches(options.activeSelector!)):null)??candidates.find(item=>item===document.activeElement||item.contains(document.activeElement))??null
   return candidates.find(item=>item.matches(options.activeSelector??ACTIVE)||(isMenu&&(item===document.activeElement||item.hasAttribute('data-highlighted'))))??null
  }
- const land=()=>{const inner=pill.firstElementChild as HTMLElement;inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';pill.classList.add('-land');later(()=>pill.classList.remove('-land'),flowTokenMs('--t-flow-land-hold',900))}
+ const land=()=>{if(g.dataset.flowV==='glide')return;const inner=pill.firstElementChild as HTMLElement;inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';pill.classList.add('-land');later(()=>pill.classList.remove('-land'),flowTokenMs('--t-flow-land-hold',900))}
  function suspend(){clearPhases();[pill,hov,trail].forEach(layer=>layer.remove());unmark();attached=false;prev=null;lastActive=null;for(const name of ['v-glide','-still'])if(!oldClasses.has(name))g.classList.remove(name);for(const name of ['data-flow-kind','data-flow-v','data-dir']){const old=oldAttrs.get(name);if(old==null)g.removeAttribute(name);else g.setAttribute(name,old)}for(const [name,old]of oldStyles){if(old)g.style.setProperty(name,old);else g.style.removeProperty(name)}}
  const place=(animate=true)=>{
   if(disposed)return;if(variantFor(g)==='off'){suspend();return}if(!g.isConnected){dispose();return}if(!seat())return
@@ -101,29 +101,38 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
   lastActive=a
   const b=box(a),v=g.dataset.flowV??variantFor(g),moved=prev&&(Math.abs(b.x-prev.x)>.5||Math.abs(b.y-prev.y)>.5||Math.abs(b.w-prev.w)>.5||Math.abs(b.h-prev.h)>.5)
   if(!moved&&prev)return
+  // A phased interruption starts from the body the person currently sees,
+  // rather than the destination of the previous selection.
+  let origin=prev
+  if(animate&&moved&&prev&&['stretch','drop','rubber'].includes(v)&&!isFlowQuiet(g)){
+   const r=pill.getBoundingClientRect(),gr=g.getBoundingClientRect()
+   origin={x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height,r:getComputedStyle(pill).borderRadius}
+  }
   clearPhases()
-  if(animate&&moved&&prev&&!document.hidden&&!isFlowQuiet(g)&&v!=='off'){
-   const dx=b.x-prev.x,dy=b.y-prev.y,horizontal=Math.abs(dx)>=Math.abs(dy)
+  if(animate&&moved&&origin&&!document.hidden&&!isFlowQuiet(g)&&v!=='off'){
+   const dx=b.x-origin.x,dy=b.y-origin.y,horizontal=Math.abs(dx)>=Math.abs(dy)
    g.dataset.dir=horizontal?'x':'y';dScale=Math.min(1.25,Math.max(.8,.8+Math.hypot(dx,dy)/600));write('--glide-d',dScale.toFixed(2))
    if(v==='stretch'){
-    const union={x:Math.min(b.x,prev.x),y:Math.min(b.y,prev.y),w:0,h:0,r:b.r};union.w=Math.max(b.x+b.w,prev.x+prev.w)-union.x;union.h=Math.max(b.y+b.h,prev.y+prev.h)-union.y
+    const union={x:Math.min(b.x,origin.x),y:Math.min(b.y,origin.y),w:0,h:0,r:b.r};union.w=Math.max(b.x+b.w,origin.x+origin.w)-union.x;union.h=Math.max(b.y+b.h,origin.y+origin.h)-union.y
     pill.classList.add('-phase1');paint(union);later(()=>{pill.classList.remove('-phase1');paint(b);land()},flowTokenMs('--t-flow-stretch-p1',165))
    }else if(v==='drop'){
-    const d=Math.max(6,Math.min(12,b.h)),c0={x:prev.x+prev.w/2-d/2,y:prev.y+prev.h/2-d/2,w:d,h:d,r:'999px'},c1={x:b.x+b.w/2-d/2,y:b.y+b.h/2-d/2,w:d,h:d,r:'999px'}
+    const d=Math.max(6,Math.min(12,b.h)),c0={x:origin.x+origin.w/2-d/2,y:origin.y+origin.h/2-d/2,w:d,h:d,r:'999px'},c1={x:b.x+b.w/2-d/2,y:b.y+b.h/2-d/2,w:d,h:d,r:'999px'}
     pill.classList.add('-gather');paint(c0);const gather=flowTokenMs('--t-flow-drop-gather',140),shoot=flowTokenMs('--t-flow-drop-shoot',180)
     later(()=>{pill.classList.remove('-gather');pill.classList.add('-shoot');paint(c1)},gather)
     later(()=>{pill.classList.remove('-shoot');paint(b);land()},gather+shoot)
    }else if(v==='rubber'){
     const lead={...b}
-    if(horizontal){if(dx>=0){lead.x=prev.x;lead.w=b.x+b.w-prev.x}else lead.w=prev.x+prev.w-b.x;lead.y=prev.y;lead.h=prev.h}
-    else{if(dy>=0){lead.y=prev.y;lead.h=b.y+b.h-prev.y}else lead.h=prev.y+prev.h-b.y;lead.x=prev.x;lead.w=prev.w}
+    if(horizontal){if(dx>=0){lead.x=origin.x;lead.w=b.x+b.w-origin.x}else lead.w=origin.x+origin.w-b.x;lead.y=origin.y;lead.h=origin.h}
+    else{if(dy>=0){lead.y=origin.y;lead.h=b.y+b.h-origin.y}else lead.h=origin.y+origin.h-b.y;lead.x=origin.x;lead.w=origin.w}
     pill.classList.add('-lead');paint(lead);later(()=>{pill.classList.remove('-lead');paint(b);land()},flowTokenMs('--t-flow-rubber-lead',200))
    }else{paint(b);land()}
   }else paint(b)
   prev=b
  }
  const hideHover=()=>{if(attached)write('--hov-o','0')}
- const resolve=()=>{if(disposed)return;const variant=variantFor(g);if(variant==='off'){suspend();return}g.dataset.flowV=variant
+ const resolve=()=>{if(disposed)return;const variant=variantFor(g);if(variant==='off'){suspend();return}
+  if(g.dataset.flowV&&g.dataset.flowV!==variant){clearPhases();prev=null;markStill()}
+  g.dataset.flowV=variant
   if(document.hidden||matchMedia('(prefers-reduced-motion: reduce)').matches){clearPhases();prev=null;markStill();place(false)}else place(false)
  }
  const q=()=>{if(queued||disposed)return;queued=scheduleMotion(()=>{queued=null;if(reseat){reseat=false;place(false)}else place(!initial)},16)}
@@ -132,7 +141,7 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  g.addEventListener('focusin',q,opts);g.addEventListener('focusout',event=>{if(!g.contains(event.relatedTarget as Node|null))q()},opts)
  g.addEventListener('pointerover',event=>{
   const it=event.target instanceof Element?event.target.closest<HTMLElement>(itemSel):null
-  if(!attached||variantFor(g)==='off'||!it||!g.contains(it)||!owned(it)||it.hasAttribute('data-glide-active')){hideHover();return}paint(box(it),true)
+  if(event.pointerType==='touch'||!getFlowSettings().hover||!attached||variantFor(g)==='off'||!it||!g.contains(it)||!owned(it)||it.hasAttribute('data-glide-active')){hideHover();return}paint(box(it),true)
  },opts)
  g.addEventListener('pointerleave',hideHover,opts);g.addEventListener('pointerdown',hideHover,opts)
  const mo=new MutationObserver(records=>{

@@ -79,10 +79,14 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    if(!resolved){automaticRadius=undefined;return}
    const {mode,tierName,explicit}=resolved,cs=getComputedStyle(el)
    const resolvedTier=resolveMorphTier(el,tierName,profile);if(!resolvedTier){automaticRadius=undefined;return};const tier={...resolvedTier}
-   const cfg={...profile.cfg};if(settings.mode==="off"||mq.matches)for(const k of ["rest","reach","merge","hold","jiggleOn","press"] as const)cfg[k]=false
+   // A selection group owns one travelling body. Its controls and container
+   // remain still, even when an authored profile enables breathing or press.
+   const selectionGroup=el.closest<HTMLElement>('[data-flow-owned].v-glide')
+   const groupBody=!!selectionGroup&&selectionGroup.dataset.flowKind!=='fill'&&selectionGroup.matches('.v-tabs,.v-seg,.v-pager,.v-iradios,[role="tablist"],[data-slot="toggle-group"]')
+   const cfg={...profile.cfg};if(settings.mode==="off"||mq.matches||groupBody)for(const k of ["rest","reach","merge","hold","jiggleOn","press"] as const)cfg[k]=false
    const b=retainedBody??createBody(tier,tierName,bodySeed(el));retainedBody=b
    b.tier=tier;b.tierName=tierName;b.w=b.h=0;b.focus=el===el.ownerDocument.activeElement||el.contains(el.ownerDocument.activeElement)
-   if(mq.matches||settings.mode==="off")rewindBody(b)
+   if(mq.matches||settings.mode==="off"||groupBody)rewindBody(b)
    const old={fill:el.style.getPropertyValue('--mfill'),stroke:el.style.getPropertyValue('--mstroke'),pad:el.style.getPropertyValue('--mpad'),transform:el.style.transform}
    const svg=svgNode('svg',{class:'v-morph','aria-hidden':'true','shape-rendering':'geometricPrecision'})
    const path=svgNode('path',{'data-morph-body':'',fill:mode!=='stroke'?'var(--mfill,var(--v-beige))':'none'})
@@ -91,7 +95,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    echo.style.display=dots.style.display='none';svg.append(path,echo,dots)
    const overlays=el.matches('.v-alive,.combo')?createMorphOverlays(svg):null
    const colors=el.dataset.colors?.split(',').map(color=>color.trim()).filter(color=>/^#[0-9a-f]{6}$/i.test(color))??[]
-   const staticBody=mq.matches||settings.mode==='off'
+   const staticBody=mq.matches||settings.mode==='off'||groupBody
    // Quiet bodies keep their authored CSS fill, including live theme/palette changes.
    // Only moving bodies opt out of that paint rule for animated color attributes.
    if(colors.length&&!staticBody)path.setAttribute('data-morph-colors','')

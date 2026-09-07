@@ -1,0 +1,758 @@
+{
+  "baselineRevision": "Before polish: worktree merged cc24a63; old docs preview density.",
+  "validationBase": "Updated docs 60596dc and authored quiet-paint 488cf3c, plus this scoped polish.",
+  "sources": {
+    "before": {
+      "path": "output/playwright/motion-polish/before/results.json",
+      "sha256": "40829808f01730ae1a65558b05156400825a5aa810f78d18b6f92cae8e8414e2"
+    },
+    "after": {
+      "path": "output/playwright/motion-polish/after/results.json",
+      "sha256": "48e053e441a4248a848653b001c2b22d853828b10f80b721390a053bac77c51c"
+    },
+    "quiet-final": {
+      "path": "output/playwright/motion-polish/quiet-final/results.json",
+      "sha256": "b04051852cc145d21dd26535cd5439fb4f80b778546f08d746ee4171a57a6c2d"
+    },
+    "presets": {
+      "path": "output/playwright/motion-polish/presets/results.json",
+      "sha256": "a139ce30df3462b354ce8d1dd47e7ca65b8d23929653f877692b62c8d945277c"
+    }
+  },
+  "tabs": {
+    "before": [
+      {
+        "name": "fresh",
+        "errors": [],
+        "frames": 265,
+        "p95": 16.700000000000728,
+        "maxGap": 49.90000000000009,
+        "over32": 1,
+        "hopOvershoot": 4.47589111328125,
+        "maxPanelAnimations": 2,
+        "maxConcurrentAnimations": 11,
+        "settledAnimations": [],
+        "settledSelection": "Ideas",
+        "settledError": {
+          "x": 0.328125,
+          "y": 0,
+          "width": -0.125
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": null,
+        "profilePersisted": false,
+        "flow": null
+      },
+      {
+        "name": "authored",
+        "errors": [],
+        "frames": 265,
+        "p95": 16.700000000000728,
+        "maxGap": 33.40000000000009,
+        "over32": 1,
+        "hopOvershoot": 4.47601318359375,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 9,
+        "settledAnimations": [],
+        "settledSelection": "Ideas",
+        "settledError": {
+          "x": 0.328125,
+          "y": 0,
+          "width": -0.125
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": "{\"v\":3,\"mode\":\"subtle\",\"cats\":{\"buttons\":true,\"icons\":true,\"pills\":true,\"cards\":false,\"skeleton\":true,\"nav\":true,\"controls\":true,\"inputs\":false,\"surfaces\":false}}",
+        "profilePersisted": true,
+        "flow": null
+      },
+      {
+        "name": "touch",
+        "errors": [],
+        "frames": 217,
+        "p95": 16.799999999999727,
+        "maxGap": 16.800000000000182,
+        "over32": 0,
+        "hopOvershoot": 4.476654052734375,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 6,
+        "settledAnimations": [],
+        "settledSelection": "Notes",
+        "settledError": {
+          "x": 0,
+          "y": 0,
+          "width": 0.328125
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": null,
+        "profilePersisted": false,
+        "flow": null
+      },
+      {
+        "name": "reduced",
+        "errors": [],
+        "frames": 267,
+        "p95": 16.700000000000728,
+        "maxGap": 16.800000000000182,
+        "over32": 0,
+        "hopOvershoot": 0.203125,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 2,
+        "settledAnimations": [],
+        "settledSelection": "Ideas",
+        "settledError": {
+          "x": 0.328125,
+          "y": 0,
+          "width": -0.125
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": null,
+        "profilePersisted": false,
+        "flow": null
+      },
+      {
+        "name": "off",
+        "errors": [],
+        "frames": 268,
+        "p95": 16.799999999999272,
+        "maxGap": 33.30000000000018,
+        "over32": 1,
+        "hopOvershoot": 0,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 0,
+        "settledAnimations": [],
+        "settledSelection": "Ideas",
+        "settledError": null,
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": "{\"v\":3,\"mode\":\"off\",\"cats\":{\"buttons\":true,\"icons\":true,\"pills\":true,\"cards\":false,\"skeleton\":true,\"nav\":true,\"controls\":true,\"inputs\":false,\"surfaces\":false}}",
+        "profilePersisted": false,
+        "flow": null
+      }
+    ],
+    "after": [
+      {
+        "name": "fresh",
+        "errors": [],
+        "frames": 274,
+        "p95": 16.700000000000728,
+        "maxGap": 33.29999999999973,
+        "over32": 1,
+        "hopOvershoot": 0.0001220703125,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 8,
+        "settledAnimations": [],
+        "settledSelection": "Reading",
+        "settledError": {
+          "x": 0.0001220703125,
+          "y": 0,
+          "width": -0.015625
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": null,
+        "profilePersisted": false,
+        "flow": null
+      },
+      {
+        "name": "authored",
+        "errors": [],
+        "frames": 266,
+        "p95": 16.799999999999272,
+        "maxGap": 16.800000000000182,
+        "over32": 0,
+        "hopOvershoot": 0.0001220703125,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 8,
+        "settledAnimations": [],
+        "settledSelection": "Reading",
+        "settledError": {
+          "x": 0.0001220703125,
+          "y": 0,
+          "width": -0.015625
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": "{\"v\":3,\"mode\":\"subtle\",\"cats\":{\"buttons\":true,\"icons\":true,\"pills\":true,\"cards\":false,\"skeleton\":true,\"nav\":true,\"controls\":true,\"inputs\":false,\"surfaces\":false}}",
+        "profilePersisted": true,
+        "flow": null
+      },
+      {
+        "name": "touch",
+        "errors": [],
+        "frames": 213,
+        "p95": 16.799999999999272,
+        "maxGap": 16.800000000000182,
+        "over32": 0,
+        "hopOvershoot": 0.0001220703125,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 4,
+        "settledAnimations": [],
+        "settledSelection": "Notes",
+        "settledError": {
+          "x": 0,
+          "y": 0,
+          "width": 0
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": null,
+        "profilePersisted": false,
+        "flow": null
+      },
+      {
+        "name": "reduced",
+        "errors": [],
+        "frames": 272,
+        "p95": 16.799999999999727,
+        "maxGap": 33.399999999999636,
+        "over32": 1,
+        "hopOvershoot": 0.0001220703125,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 2,
+        "settledAnimations": [],
+        "settledSelection": "Reading",
+        "settledError": {
+          "x": 0.0001220703125,
+          "y": 0,
+          "width": -0.015625
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": null,
+        "profilePersisted": false,
+        "flow": null
+      },
+      {
+        "name": "off",
+        "errors": [],
+        "frames": 267,
+        "p95": 16.700000000000728,
+        "maxGap": 16.800000000000182,
+        "over32": 0,
+        "hopOvershoot": 0,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 0,
+        "settledAnimations": [],
+        "settledSelection": "Reading",
+        "settledError": null,
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": "{\"v\":3,\"mode\":\"off\",\"cats\":{\"buttons\":true,\"icons\":true,\"pills\":true,\"cards\":false,\"skeleton\":true,\"nav\":true,\"controls\":true,\"inputs\":false,\"surfaces\":false}}",
+        "profilePersisted": false,
+        "flow": null
+      }
+    ],
+    "quiet-final": [
+      {
+        "name": "reduced",
+        "errors": [],
+        "frames": 270,
+        "p95": 16.799999999999727,
+        "maxGap": 33.30000000000018,
+        "over32": 1,
+        "hopOvershoot": 0.0001220703125,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 0,
+        "settledAnimations": [],
+        "settledSelection": "Reading",
+        "settledError": {
+          "x": 0.0001220703125,
+          "y": 0,
+          "width": -0.015625
+        },
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": null,
+        "profilePersisted": false,
+        "flow": null
+      },
+      {
+        "name": "off",
+        "errors": [],
+        "frames": 269,
+        "p95": 16.700000000000728,
+        "maxGap": 33.40000000000009,
+        "over32": 1,
+        "hopOvershoot": 0,
+        "maxPanelAnimations": 0,
+        "maxConcurrentAnimations": 0,
+        "settledAnimations": [],
+        "settledSelection": "Reading",
+        "settledError": null,
+        "settledHostTransforms": [
+          "none"
+        ],
+        "motion": "{\"v\":3,\"mode\":\"off\",\"cats\":{\"buttons\":true,\"icons\":true,\"pills\":true,\"cards\":false,\"skeleton\":true,\"nav\":true,\"controls\":true,\"inputs\":false,\"surfaces\":false}}",
+        "profilePersisted": false,
+        "flow": null
+      }
+    ]
+  },
+  "presets": [
+    {
+      "id": "glide",
+      "pass": true,
+      "variant": "glide",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "glide",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 97,
+      "observedPhases": [
+        "v-glide__pill"
+      ],
+      "observedAnimations": [
+        "none"
+      ],
+      "observedAfterAnimations": [
+        "none"
+      ]
+    },
+    {
+      "id": "stretch",
+      "pass": true,
+      "variant": "stretch",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "stretch",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 99,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -land",
+        "v-glide__pill -phase1"
+      ],
+      "observedAnimations": [
+        "none"
+      ],
+      "observedAfterAnimations": [
+        "none"
+      ]
+    },
+    {
+      "id": "jelly",
+      "pass": true,
+      "variant": "jelly",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "jelly",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 97,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -land"
+      ],
+      "observedAnimations": [
+        "none",
+        "vf-jellyx"
+      ],
+      "observedAfterAnimations": [
+        "none"
+      ]
+    },
+    {
+      "id": "comet",
+      "pass": true,
+      "variant": "comet",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "comet",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 97,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -land"
+      ],
+      "observedAnimations": [
+        "none"
+      ],
+      "observedAfterAnimations": [
+        "none"
+      ]
+    },
+    {
+      "id": "drop",
+      "pass": true,
+      "variant": "drop",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "drop",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 97,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -gather",
+        "v-glide__pill -land",
+        "v-glide__pill -shoot"
+      ],
+      "observedAnimations": [
+        "none",
+        "vf-bloom"
+      ],
+      "observedAfterAnimations": [
+        "none"
+      ]
+    },
+    {
+      "id": "rubber",
+      "pass": true,
+      "variant": "rubber",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "rubber",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 98,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -land",
+        "v-glide__pill -lead"
+      ],
+      "observedAnimations": [
+        "none"
+      ],
+      "observedAfterAnimations": [
+        "none"
+      ]
+    },
+    {
+      "id": "pebble",
+      "pass": true,
+      "variant": "pebble",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "pebble",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 97,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -land"
+      ],
+      "observedAnimations": [
+        "none",
+        "vf-pebble-x"
+      ],
+      "observedAfterAnimations": [
+        "none"
+      ]
+    },
+    {
+      "id": "ripple",
+      "pass": true,
+      "variant": "ripple",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "ripple",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 97,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -land"
+      ],
+      "observedAnimations": [
+        "none"
+      ],
+      "observedAfterAnimations": [
+        "none",
+        "vf-ripple"
+      ]
+    },
+    {
+      "id": "halo",
+      "pass": true,
+      "variant": "halo",
+      "active": "Overview",
+      "error": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "layers": [
+        1,
+        1,
+        1
+      ],
+      "hostTransforms": [
+        "none",
+        "none",
+        "none"
+      ],
+      "running": 0,
+      "phase": "v-glide__pill",
+      "stored": {
+        "variant": "halo",
+        "hover": true,
+        "speed": 1,
+        "intensity": 1,
+        "hoverStrength": 1
+      },
+      "sampledFrames": 96,
+      "observedPhases": [
+        "v-glide__pill",
+        "v-glide__pill -land"
+      ],
+      "observedAnimations": [
+        "none"
+      ],
+      "observedAfterAnimations": [
+        "none",
+        "vf-halo"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "speed and intensity controls persist independently of preset",
+      "pass": true,
+      "stored": {
+        "variant": "halo",
+        "hover": true,
+        "speed": 1.05,
+        "intensity": 1.05,
+        "hoverStrength": 1
+      }
+    },
+    {
+      "name": "preset and tuning survive page reload",
+      "pass": true,
+      "stored": {
+        "variant": "halo",
+        "hover": true,
+        "speed": 1.05,
+        "intensity": 1.05,
+        "hoverStrength": 1
+      }
+    },
+    {
+      "name": "no runtime errors",
+      "pass": true,
+      "errors": []
+    },
+    {
+      "name": "authored Pagination bodies remain still during pointer hold",
+      "pass": true,
+      "rest": {
+        "transform": "none",
+        "bodies": 1,
+        "pathSha256": "34f2c2da8fa62d6921063805c7c7e46b2684e6b146e3983436c37ea35d669719"
+      },
+      "held": {
+        "transform": "none",
+        "bodies": 1,
+        "pathSha256": "34f2c2da8fa62d6921063805c7c7e46b2684e6b146e3983436c37ea35d669719"
+      },
+      "heldLater": {
+        "transform": "none",
+        "bodies": 1,
+        "pathSha256": "34f2c2da8fa62d6921063805c7c7e46b2684e6b146e3983436c37ea35d669719"
+      },
+      "released": {
+        "transform": "none",
+        "bodies": 1,
+        "pathSha256": "34f2c2da8fa62d6921063805c7c7e46b2684e6b146e3983436c37ea35d669719"
+      }
+    },
+    {
+      "name": "Off disables native Button press movement after Morph detaches",
+      "pass": true,
+      "pressed": {
+        "transform": "none",
+        "translate": "none",
+        "duration": "0s",
+        "body": 0
+      }
+    }
+  ],
+  "keyboardProtocolNote": "The final diagnostic waits20ms between native ArrowRight presses so Radix deferred focus completes; baseline retained the earlier immediate two-key sequence. No keyboard implementation was changed."
+}
