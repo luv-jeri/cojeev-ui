@@ -124,7 +124,13 @@ function write(){writeMotionReport({rows,scenarios,fixtures,widths,modes,output,
 try{
  outer:for(const scenario of scenarios)for(const width of widths)for(const mode of modes){
   try{
-   if(scenario.family==='adjuster'||scenario.family==='behavior'){const a=await capture('candidate',scenario,width,mode,1),b=await capture('candidate',scenario,width,mode,2);const row={id:scenario.id,width,mode,verdict:a.checks.every(c=>c.pass)&&b.checks.every(c=>c.pass)?'PASS':'FAIL',checks:a.checks,candidateStable:JSON.stringify(a.checks)===JSON.stringify(b.checks)};rows.push(row);write();console.log(row.verdict,scenario.id,width,mode);if(row.verdict!=='PASS')process.exitCode=1;continue}
+   if(scenario.family==='adjuster'||scenario.family==='behavior'){
+    const a=await capture('candidate',scenario,width,mode,1),b=await capture('candidate',scenario,width,mode,2)
+    const candidateStable=JSON.stringify(a.checks)===JSON.stringify(b.checks),errors=[...a.errors,...b.errors]
+    const verdict=errors.length?'ERROR':!candidateStable?'HARNESS_UNSTABLE':a.checks.every(c=>c.pass)&&b.checks.every(c=>c.pass)?'PASS':'FAIL'
+    const row={id:scenario.id,width,mode,verdict,checks:a.checks,checksSecond:b.checks,errors,candidateStable}
+    rows.push(row);write();console.log(row.verdict,scenario.id,width,mode);if(row.verdict!=='PASS')process.exitCode=1;continue
+   }
    const a=await capture('oracle',scenario,width,mode,1),a2=await capture('oracle',scenario,width,mode,2),b=await capture('candidate',scenario,width,mode,1),b2=await capture('candidate',scenario,width,mode,2)
    const oracleDifferences=difference(a.frames,a2.frames),candidateDifferences=difference(b.frames,b2.frames),differences=difference(a.frames,b.frames)
    const pixels=a.pngs.map((image,index)=>{const pa=PNG.sync.read(fs.readFileSync(image.file)),pb=PNG.sync.read(fs.readFileSync(b.pngs[index].file));return {label:image.label,reference:image.file,candidate:b.pngs[index].file,pixels:pixelmatch(pa.data,pb.data,null,pa.width,pa.height,{threshold:.1,includeAA:true}),rawPixels:pixelmatch(pa.data,pb.data,null,pa.width,pa.height,{threshold:0,includeAA:true})}})
