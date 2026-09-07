@@ -5,11 +5,7 @@ import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-tabs";
-import {
-  useFlowGroup,
-  useFlowAppearance,
-} from "@/registry/sahajiv/motion/use-flow";
-import { useFlowPress } from "@/registry/sahajiv/motion/flow-press";
+import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
 export const tabsVariants = cva("v-tabs [display:flex] [gap:var(--s-6)]", {
   variants: {
     variant: {
@@ -64,10 +60,9 @@ export function TabsList({ className, variant, ref, ...props }: TabsListProps) {
 export type TabsTriggerProps = React.ComponentProps<typeof Primitive.Trigger>;
 export function TabsTrigger({ className, ref, ...props }: TabsTriggerProps) {
   const morphRef = useMorph<HTMLButtonElement>("nav", ref);
-  const flowRef = useFlowPress<HTMLButtonElement>(morphRef);
   return (
     <Primitive.Trigger
-      ref={flowRef}
+      ref={morphRef}
       data-slot="tabs-trigger"
       data-part="trigger"
       className={cn("v-tab shrink-0", className)}
@@ -77,10 +72,9 @@ export function TabsTrigger({ className, ref, ...props }: TabsTriggerProps) {
 }
 export type TabsContentProps = React.ComponentProps<typeof Primitive.Content>;
 export function TabsContent({ className, ref, ...props }: TabsContentProps) {
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "enter");
   return (
     <Primitive.Content
-      ref={flowRef}
+      ref={ref}
       data-slot="tabs-content"
       data-part="content"
       className={className}

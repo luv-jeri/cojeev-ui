@@ -63,7 +63,7 @@
 [data-flow-owned].v-glide>.v-glide__hover{transition:transform calc(var(--t-flow-hover) / var(--flow-speed,1)) var(--enter),width calc(var(--t-flow-hover) / var(--flow-speed,1)) var(--enter),height calc(var(--t-flow-hover) / var(--flow-speed,1)) var(--enter),border-radius var(--t-flow-radius-sm) ease,opacity var(--t-flow-fade-sm) ease}
 [data-flow-owned].v-glide>.v-glide__pill,[data-flow-owned].v-glide>.v-glide__trail{transition:border-radius var(--t-flow-radius) ease,opacity var(--t-flow-fade) ease}
 [data-flow-owned].v-glide[data-flow-v="glide"]>.v-glide__pill{transition:transform calc(var(--t-flow-glide) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-glide),width calc(var(--t-flow-glide) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-glide),height calc(var(--t-flow-glide-h) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-glide),border-radius var(--t-flow-radius) ease,opacity var(--t-flow-fade) ease}
-[data-flow-owned].v-glide[data-flow-v="glide"]>.v-glide__pill.-land>i{animation:vf-land calc(var(--t-flow-glide-land) / var(--flow-speed,1)) var(--e-flow-glide)}
+[data-flow-owned].v-glide[data-flow-v="glide"]>.v-glide__pill.-land>i{animation:none}
 @keyframes vf-land{0%{transform:scale(calc(1 + .05 * var(--flow-intensity,1)),calc(1 - .08 * var(--flow-intensity,1)))}60%{transform:scale(calc(1 - .015 * var(--flow-intensity,1)),calc(1 + .03 * var(--flow-intensity,1)))}100%{transform:scale(1)}}
 [data-flow-owned].v-glide[data-flow-v="stretch"]>.v-glide__pill{transition:transform calc(var(--t-flow-stretch) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-stretch),width calc(var(--t-flow-stretch) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-stretch),height calc(var(--t-flow-stretch) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-stretch),border-radius var(--t-flow-radius-sm) ease,opacity var(--t-flow-fade) ease}
 [data-flow-owned].v-glide[data-flow-v="stretch"]>.v-glide__pill.-phase1{transition:transform calc(var(--t-flow-stretch-p1) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-stretch-p1),width calc(var(--t-flow-stretch-p1) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-stretch-p1),height calc(var(--t-flow-stretch-p1) * var(--glide-d,1) / var(--flow-speed,1)) var(--e-flow-stretch-p1)}
@@ -105,7 +105,7 @@
 [data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__pill>i{animation:none}
 @media (prefers-reduced-motion:reduce){[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>.v-glide__pill,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>.v-glide__hover,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>.v-glide__trail{transition:none}[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>*>i,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>*>i::after{animation:none}}
 :root.-doc-hidden [data-flow-owned].v-glide>.v-glide__pill,:root.-doc-hidden [data-flow-owned].v-glide>.v-glide__trail{transition:none}
-:root{--flow-ease:var(--e-flow-glide);--flow-dur:var(--t-flow-glide);--flow-land:vf-land;--flow-glow:none/* @kind other */}
+:root{--flow-ease:var(--e-flow-glide);--flow-dur:var(--t-flow-glide);--flow-land:none;--flow-glow:none/* @kind other */}
 [data-flow-land]:where([data-slot],[data-slot] *){animation:var(--flow-land) calc(var(--flow-dur) * .85) var(--flow-ease),var(--flow-glow) calc(var(--flow-dur) * 1.6) var(--e-flow-settle)}
 @keyframes vf-lean{0%{transform:none}35%{transform:scale(calc(1 + .04 * var(--flow-intensity,1)),calc(1 - .07 * var(--flow-intensity,1))) skewX(calc(-3deg * var(--flow-intensity,1)))}70%{transform:scale(calc(1 - .01 * var(--flow-intensity,1)),calc(1 + .03 * var(--flow-intensity,1))) skewX(calc(1deg * var(--flow-intensity,1)))}100%{transform:none}}
 @keyframes vf-ring{0%{outline:0 solid color-mix(in oklab,var(--v-pink) 70%,transparent)}100%{outline:calc(12px * var(--flow-intensity,1)) solid transparent}}
@@ -172,3 +172,17 @@
 :root[data-mode="dark"] .v-quest__opts[data-flow-owned] .v-quest__opt[data-glide-active] {
  background: var(--v-beige);
 }
+
+/* Selection feedback belongs to the shared layer, keeping text and target
+   geometry still during pointer, keyboard and touch activation. */
+:is(.v-tabs,.v-seg,.v-pager,.v-iradios,[role="tablist"],[data-slot="toggle-group"])[data-flow-owned].v-glide:not([data-flow-kind="fill"]) :is(.v-tab,.v-btn,.v-toggle,.v-nav__item,[role="tab"],[role="radio"]):is(:hover,:active) { transform:none; }
+/* Off also covers CSS-only press feedback after automatic Morph detaches. */
+[data-flow="off"] [data-slot]:is(.v-btn,.v-ibtn,.v-toggle,.v-tab,.v-nav__item,.v-menu__item,.v-item):is(:hover,:active) { transform:none; }
+/* A zero-duration transition with a delay is still a running animation. */
+@media (prefers-reduced-motion:reduce) {
+ [data-flow-owned] { --t-flow-label-delay:0s; }
+ [data-flow-owned].v-glide, [data-flow-owned].v-glide * { transition-delay:0s; animation-delay:0s; }
+}
+:root[data-flow="off"] [data-flow-owned], :root[data-flow="off"] [data-flow-owned] * { transition-delay:0s; animation-delay:0s; }
+
+[data-flow="off"] [data-slot] { transition-duration:0s; transition-delay:0s; animation-duration:0s; animation-delay:0s; animation-iteration-count:1; }
