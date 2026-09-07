@@ -1,0 +1,55 @@
+{
+  "candidateRegistrySha256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6",
+  "copy": "/var/folders/zg/bhf3_vfs37ld0_7yp5k4cwlh0000gn/T/sahajiv-theme-proof-rDm2th/app",
+  "sourceCSSUnchanged": true,
+  "installedVia": "Public shadcn/registry addRegistryItems; only button/card explicitly requested; sahajiv is dependency; overwriteCssVars omitted",
+  "rows": [
+    {
+      "mode": "default",
+      "bodyBackground": "rgb(251, 244, 230)",
+      "expectedCanvas": "rgb(251, 244, 230)",
+      "bodyForeground": "rgb(14, 11, 11)",
+      "expectedForeground": "rgb(14, 11, 11)",
+      "cardBackground": "rgb(238, 231, 218)",
+      "expectedCard": "rgb(238, 231, 218)",
+      "cardForeground": "rgb(14, 11, 11)",
+      "darkUtility": "rgb(4, 5, 6)",
+      "sidebarForeground": "rgb(251, 244, 230)",
+      "expectedSidebar": "rgb(251, 244, 230)",
+      "fontSans": "'Geist Variable', sans-serif",
+      "bodyFont": "\"DM Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    },
+    {
+      "mode": "light",
+      "bodyBackground": "rgb(251, 244, 230)",
+      "expectedCanvas": "rgb(251, 244, 230)",
+      "bodyForeground": "rgb(14, 11, 11)",
+      "expectedForeground": "rgb(14, 11, 11)",
+      "cardBackground": "rgb(238, 231, 218)",
+      "expectedCard": "rgb(238, 231, 218)",
+      "cardForeground": "rgb(14, 11, 11)",
+      "darkUtility": "rgb(4, 5, 6)",
+      "sidebarForeground": "rgb(251, 244, 230)",
+      "expectedSidebar": "rgb(251, 244, 230)",
+      "fontSans": "'Geist Variable', sans-serif",
+      "bodyFont": "\"DM Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    },
+    {
+      "mode": "dark",
+      "bodyBackground": "rgb(23, 21, 18)",
+      "expectedCanvas": "rgb(23, 21, 18)",
+      "bodyForeground": "rgb(246, 239, 226)",
+      "expectedForeground": "rgb(246, 239, 226)",
+      "cardBackground": "rgb(34, 31, 27)",
+      "expectedCard": "rgb(34, 31, 27)",
+      "cardForeground": "rgb(246, 239, 226)",
+      "darkUtility": "rgb(1, 2, 3)",
+      "sidebarForeground": "rgb(246, 239, 226)",
+      "expectedSidebar": "rgb(246, 239, 226)",
+      "fontSans": "'Geist Variable', sans-serif",
+      "bodyFont": "\"DM Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    }
+  ],
+  "errors": [],
+  "seconds": 11.99
+}
