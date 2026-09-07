@@ -1,0 +1,190 @@
+{
+  "baseRevision": "808437149914098b70b832fdfec2892b71ed73e4",
+  "productionFile": "registry/sahajiv/motion/use-morph.ts",
+  "productionSHA256": "b4df9723467c353e240c35f536e45cb3f5ce4ec6cbeac275af603ba3cae99023",
+  "red": [
+    {
+      "theme": "light",
+      "checks": 17,
+      "failed": [
+        "Off spinner uses authored fill",
+        "reduced spinner preserves authored fill",
+        "static spinner follows live authored paint"
+      ]
+    },
+    {
+      "theme": "dark",
+      "checks": 17,
+      "failed": [
+        "Off spinner uses authored fill",
+        "reduced spinner preserves authored fill",
+        "static spinner follows live authored paint"
+      ]
+    }
+  ],
+  "green": [
+    {
+      "theme": "light",
+      "checks": [
+        {
+          "name": "normal spinner rotates",
+          "pass": true
+        },
+        {
+          "name": "normal spinner color cycles",
+          "pass": true
+        },
+        {
+          "name": "normal body deforms on press",
+          "pass": true
+        },
+        {
+          "name": "Off clears active press transform",
+          "pass": true
+        },
+        {
+          "name": "Off spinner uses authored fill",
+          "pass": true
+        },
+        {
+          "name": "Off clears spinner rotation",
+          "pass": true
+        },
+        {
+          "name": "Off pointer and keyboard cannot deform body",
+          "pass": true
+        },
+        {
+          "name": "Off spinner geometry and color stay still",
+          "pass": true
+        },
+        {
+          "name": "normal resumes rotation and colors after Off",
+          "pass": true
+        },
+        {
+          "name": "live reduced preference clears press",
+          "pass": true
+        },
+        {
+          "name": "reduced spinner preserves authored fill",
+          "pass": true
+        },
+        {
+          "name": "reduced spinner rotation is absent",
+          "pass": true
+        },
+        {
+          "name": "reduced pointer interaction stays static",
+          "pass": true
+        },
+        {
+          "name": "static spinner follows live authored paint",
+          "pass": true
+        },
+        {
+          "name": "normal resumes rotation and color after reduced",
+          "pass": true
+        },
+        {
+          "name": "mode switches retain exactly one explicit body each",
+          "pass": true
+        },
+        {
+          "name": "no runtime errors",
+          "pass": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "checks": [
+        {
+          "name": "normal spinner rotates",
+          "pass": true
+        },
+        {
+          "name": "normal spinner color cycles",
+          "pass": true
+        },
+        {
+          "name": "normal body deforms on press",
+          "pass": true
+        },
+        {
+          "name": "Off clears active press transform",
+          "pass": true
+        },
+        {
+          "name": "Off spinner uses authored fill",
+          "pass": true
+        },
+        {
+          "name": "Off clears spinner rotation",
+          "pass": true
+        },
+        {
+          "name": "Off pointer and keyboard cannot deform body",
+          "pass": true
+        },
+        {
+          "name": "Off spinner geometry and color stay still",
+          "pass": true
+        },
+        {
+          "name": "normal resumes rotation and colors after Off",
+          "pass": true
+        },
+        {
+          "name": "live reduced preference clears press",
+          "pass": true
+        },
+        {
+          "name": "reduced spinner preserves authored fill",
+          "pass": true
+        },
+        {
+          "name": "reduced spinner rotation is absent",
+          "pass": true
+        },
+        {
+          "name": "reduced pointer interaction stays static",
+          "pass": true
+        },
+        {
+          "name": "static spinner follows live authored paint",
+          "pass": true
+        },
+        {
+          "name": "normal resumes rotation and color after reduced",
+          "pass": true
+        },
+        {
+          "name": "mode switches retain exactly one explicit body each",
+          "pass": true
+        },
+        {
+          "name": "no runtime errors",
+          "pass": true
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "existingBehaviorRows": [
+    "live-settings 390 light twice",
+    "media-change 390 light twice"
+  ],
+  "logicTests": [
+    "settings",
+    "spring",
+    "motion-clock"
+  ],
+  "fullTypecheck": "Blocked by stale generated registry metadata: lib/catalog.ts meta.baseComponent missing; owned hook/transitive dependencies typecheck passed",
+  "artifacts": [
+    "artifacts/morph-static-mode-red/results.json",
+    "artifacts/morph-static-mode-green/results.json",
+    "artifacts/morph-static-mode-behavior/results.json"
+  ]
+}

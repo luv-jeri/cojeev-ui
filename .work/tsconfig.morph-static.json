@@ -1,0 +1,1 @@
+{"extends":"../tsconfig.json","include":["../registry/sahajiv/motion/use-morph.ts"],"exclude":["../node_modules"]}
