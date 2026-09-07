@@ -93,6 +93,8 @@ function propsFor(node: Element): FixtureProps {
             : key.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
         ] = value;
       }
+      // Source components-2.css:350 supplies layout on demo repeat-grid wrappers.
+      if (node.matches('.demo [style*="grid-template-columns:repeat"]')) style.alignItems = "start";
       props.style = style;
     } else if (booleanAttributes.has(attribute.name)) {
       props[attributeNames[attribute.name] ?? attribute.name] = true;

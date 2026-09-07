@@ -8,6 +8,8 @@
 .v-card[data-slot] > .v-wm.-br { top: auto; bottom: -16%; }
 .v-card[data-slot] > .v-wm.-tr-sm { width: 30%; right: 8%; top: 8%; }
 .v-card[data-slot] > .v-body-2 + * { margin-top: 20px; }
+/* The complete source cascade resets Stat control geometry (components-2.css). */
+.v-card[data-slot] .v-stat[data-slot].-ul { border: 0; box-shadow: none; }
 .v-card[data-slot]:is(.-pink,.-yellow,.-olive,.-blue) :is(.v-meta,.v-body-2) { color: rgba(17,17,17,.66); }
 .v-card[data-slot]:is(.-pink,.-yellow,.-olive,.-blue) :is(.v-caps,.v-stat span) { color: rgba(17,17,17,.6); }
 :root[data-mode="dark"] .v-card[data-slot] :is(.v-meta,.v-body-2,.v-caps) { color: var(--v-text-2); }
