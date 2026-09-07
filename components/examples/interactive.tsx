@@ -546,7 +546,7 @@ export function NavigationMenuExample() {
   const [active, setActive] = React.useState("Notes");
   return (
     <div style={{ display: "grid", gap: 16 }}>
-      <Card variant="ink" size="sm">
+      <Card variant="ink" size="sm" style={{ background: "var(--v-structure)", color: "var(--on-structure)" }}>
         <NavigationMenu aria-label="Example collections">
           <NavigationMenuList>
             {["Notes", "Ideas", "Reading"].map((name, i) => (
