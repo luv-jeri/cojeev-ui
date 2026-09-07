@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
+import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Label, type LabelProps } from "@/registry/sahajiv/ui/label";
@@ -106,9 +107,12 @@ export function FieldError({ errors, children, ...props }: FieldErrorProps) {
   );
 }
 export type FieldSetProps = React.ComponentProps<"fieldset">;
-export function FieldSet({ className, ...props }: FieldSetProps) {
+export function FieldSet({ ref, className, ...props }: FieldSetProps) {
+  const flowRef = useFlowGroup<HTMLFieldSetElement>(ref);
   return (
     <fieldset
+      ref={flowRef}
+      data-flow-fields=""
       data-slot="field-set"
       className={cn("grid min-w-0 gap-[var(--s-5)] [border:0] p-0", className)}
       {...props}
@@ -128,12 +132,16 @@ export function FieldLegend({ className, ...props }: FieldLegendProps) {
     />
   );
 }
-export type FieldGroupProps = React.ComponentProps<"div">;
-export function FieldGroup({ className, ...props }: FieldGroupProps) {
+export type FieldGroupProps = React.ComponentProps<"div"> & { asChild?: boolean };
+export function FieldGroup({ ref, asChild, className, ...props }: FieldGroupProps) {
+  const flowRef = useFlowGroup<HTMLDivElement>(ref);
+  const Comp = asChild ? Slot : "div";
   return (
-    <div
+    <Comp
+      ref={flowRef}
+      data-flow-fields=""
       data-slot="field-group"
-      className={cn("grid gap-[var(--s-5)]", className)}
+      className={cn(!asChild && "grid gap-[var(--s-5)]", className)}
       {...props}
     />
   );

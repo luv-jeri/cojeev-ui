@@ -27,7 +27,8 @@
   height: 18px;
   stroke-width: 2;
 }
-[data-slot="breadcrumb-separator"] .v-icon {
+[data-slot="breadcrumb-separator"] .v-icon,
+[data-slot="breadcrumb"] > .v-icon {
   width: 14px;
   height: 14px;
   color: var(--v-text-2);
