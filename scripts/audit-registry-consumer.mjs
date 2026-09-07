@@ -1,24 +1,43 @@
 /** Fresh local-registry install/build audit. Run with Node 22 after npm ci. */
 import fs from "node:fs/promises";
 import path from "node:path";
+import os from "node:os";
+import ts from "typescript";
 import http from "node:http";
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { PNG } from "pngjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.resolve(
-  root,
-  process.argv[2] ?? `.work/installer-audit-${Date.now()}`,
+  process.argv[2] ?? path.join(os.tmpdir(), `sahajiv-registry-consumer-${Date.now()}`),
 );
+if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/sahajiv-consumer-audit.");
 const registry = path.join(output, "registry-source");
 const consumer = path.join(output, "consumer");
 const env = {
   ...process.env,
   PATH: `${path.dirname(process.execPath)}:${process.env.PATH}`,
 };
-const receipt = { node: process.version, output, checks: {} };
+const receipt = { node: process.version, output, startedAt: new Date().toISOString(), sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(), checks: {} };
+function packageName(value) {
+  const version = value.indexOf("@", value.startsWith("@") ? value.indexOf("/") : 0);
+  return version < 0 ? value : value.slice(0, version);
+}
+function importedModules(content, file) {
+  const modules = new Set();
+  const source = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, file.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+  function visit(node) {
+    if ((ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) modules.add(node.moduleSpecifier.text);
+    if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword && node.arguments[0] && ts.isStringLiteral(node.arguments[0])) modules.add(node.arguments[0].text);
+    if (ts.isImportTypeNode(node) && ts.isLiteralTypeNode(node.argument) && ts.isStringLiteral(node.argument.literal)) modules.add(node.argument.literal.text);
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  return modules;
+}
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const json = async (file) => JSON.parse(await fs.readFile(file, "utf8"));
 const write = async (file, content) => {
@@ -34,7 +53,7 @@ async function run(name, executable, args, cwd, extraEnv = {}) {
   const log = [];
   console.log(`${name}…`);
   await new Promise((resolve, reject) => {
-    const child = spawn("rtk", ["proxy", executable, ...args], {
+    const child = spawn(executable, args, {
       cwd,
       env: { ...env, ...extraEnv },
     });
@@ -86,6 +105,8 @@ try {
     "registry/sahajiv",
     "scripts/build-registry.mjs",
     "scripts/component-api.mjs",
+    "data/component-guides.json",
+    "data/component-additions.json",
     "reference/sahajiv-handoff-v4/data/registry.json",
     "reference/sahajiv-handoff-v4/fonts/DMSans-OFL.txt",
     "reference/sahajiv-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
@@ -220,9 +241,17 @@ try {
     ],
     consumer,
   );
+  const sceneIndex = ids.indexOf("shape-scene");
+  const codeIndex = ids.indexOf("code-block");
+  const textIndex = ids.indexOf("text-reveal");
+  const specimen = [
+    sceneIndex >= 0 ? `<section style={{maxWidth:480,margin:"24px auto"}}><Item${sceneIndex}.ShapeScene animate={false} interactive={false}/></section>` : "",
+    codeIndex >= 0 ? `<Item${codeIndex}.CodeBlock code={'const installed = true;\\n'} title="installed.ts" language="ts"/>` : "",
+    textIndex >= 0 ? `<Item${textIndex}.TextReveal as="h2" text="Good things take shape."/>` : "",
+  ].join("");
   await write(
     path.join(consumer, "src/main.tsx"),
-    `import React from "react"; import {createRoot} from "react-dom/client"; import "./index.css";\n${ids.map((id, index) => `import * as Item${index} from "@/components/ui/${id}";`).join("\n")}\nconst entries=[${ids.map((id, index) => `{name:${JSON.stringify(id)},exports:Object.keys(Item${index})}`).join(",")}];\ncreateRoot(document.getElementById("root")!).render(<><div data-slot="table-container" style={{width:100,height:100,overflow:"scroll"}}><div style={{width:200,height:200}}>CSS cascade probe</div></div><ul>{entries.map(item=><li key={item.name}>{item.name}: {item.exports.join(", ")}</li>)}</ul></>);\n`,
+    `import React from "react"; import {createRoot} from "react-dom/client"; import "./index.css";\n${ids.map((id, index) => `import * as Item${index} from "@/components/ui/${id}";`).join("\n")}\nconst entries=[${ids.map((id, index) => `{name:${JSON.stringify(id)},exports:Object.keys(Item${index})}`).join(",")}];\ncreateRoot(document.getElementById("root")!).render(<>${specimen}<div data-slot="table-container" style={{width:100,height:100,overflow:"scroll"}}><div style={{width:200,height:200}}>CSS cascade probe</div></div><ul>{entries.map(item=><li key={item.name}>{item.name}: {item.exports.join(", ")}</li>)}</ul></>);\n`,
   );
   await run("consumer-build", "npm", ["run", "build"], consumer);
   const generated = new Map(
@@ -254,7 +283,7 @@ try {
     const packages = new Set([
       "react",
       "react-dom",
-      ...dependencies.flatMap((item) => item.dependencies ?? []),
+      ...dependencies.flatMap((item) => item.dependencies ?? []).map(packageName),
     ]);
     const files = new Set(
       dependencies
@@ -266,10 +295,7 @@ try {
     for (const item of dependencies)
       for (const file of item.files ?? []) {
         if (!/\.[cm]?[jt]sx?$/.test(file.path)) continue;
-        for (const match of file.content.matchAll(
-          /(?:from\s+|import\s+)["']([^"']+)["']/g,
-        )) {
-          const imported = match[1];
+        for (const imported of importedModules(file.content, file.path)) {
           if (imported.startsWith("@/")) {
             const target = imported.slice(2);
             if (
@@ -282,7 +308,7 @@ try {
             const name = imported.startsWith("@")
               ? imported.split("/").slice(0, 2).join("/")
               : imported.split("/")[0];
-            if (!packages.has(name) || !installedPackage.dependencies[name])
+            if (!packages.has(name) || !(installedPackage.dependencies?.[name] || installedPackage.devDependencies?.[name]))
               errors.push(`${id}: undeclared package ${name}`);
           } else errors.push(`${id}: unnormalized relative import ${imported}`);
         }
@@ -290,6 +316,19 @@ try {
   }
   if (errors.length) throw new Error(errors.join("\n"));
   receipt.checks.dependencyClosure = "PASS";
+  const basePackages = new Set([...closure("sahajiv")].flatMap(name => generated.get(name)?.dependencies ?? []).map(packageName));
+  if (basePackages.has("three") || basePackages.has("@types/three")) throw new Error("The foundation must not install optional Three.js packages");
+  receipt.checks.optionalSceneExcludedFromBase = "PASS";
+  if (ids.includes("shape-scene")) {
+    const scenePackages = new Set([...closure("shape-scene")].flatMap(name => generated.get(name)?.dependencies ?? []).map(packageName));
+    receipt.sceneDependencies = {};
+    for (const name of ["three", "@types/three"]) {
+      if (!scenePackages.has(name)) throw new Error(`ShapeScene registry closure must declare ${name}`);
+      if (!(installedPackage.dependencies?.[name] || installedPackage.devDependencies?.[name])) throw new Error(`ShapeScene did not install ${name}`);
+      receipt.sceneDependencies[name] = (await json(path.join(consumer, "node_modules", name, "package.json"))).version;
+    }
+    receipt.checks.optionalSceneDependencies = "PASS";
+  }
   receipt.styles = [];
   for (const item of generated.values())
     for (const file of item.files ?? []) {
@@ -328,12 +367,25 @@ try {
   )
     throw new Error("Unexpected layer order");
   receipt.checks.verbatimStylesAndLayers = "PASS";
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
   const page = await browser.newPage();
   const runtimeErrors = [];
   page.on("pageerror", (error) => runtimeErrors.push(error.message));
   await page.goto(`${baseURL}/consumer/`);
   await page.locator("li").last().waitFor();
+  if (ids.includes("shape-scene")) {
+    await page.waitForFunction(() => document.querySelector('[data-slot="shape-scene"]')?.getAttribute("data-renderer") === "webgl", undefined, { timeout: 30000 });
+    const canvas = page.locator('[data-slot="shape-scene-canvas"]');
+    if (!(await canvas.evaluate(element => element.width > 0 && element.height > 0))) throw new Error("Installed ShapeScene has an empty drawing buffer");
+    const pixels = PNG.sync.read(await canvas.screenshot({ path: path.join(output, "shape-scene.png") }));
+    const colors = new Set();
+    for (let offset = 0; offset < pixels.data.length; offset += 64) colors.add(pixels.data.subarray(offset, offset + 4).toString("hex"));
+    if (colors.size < 40) throw new Error("Installed ShapeScene canvas has no visible shaded geometry");
+    receipt.sceneRenderedColors = colors.size;
+    receipt.checks.optionalSceneRuntimeChunk = "PASS";
+  }
+  if (ids.includes("code-block") && await page.locator('[data-slot="code-block"] code').textContent() !== "const installed = true;\n") throw new Error("Installed CodeBlock altered source text");
+  if (ids.includes("text-reveal") && await page.locator('[data-slot="text-reveal"] .v-text-reveal__accessible').textContent() !== "Good things take shape.") throw new Error("Installed TextReveal lost accessible text");
   await page.mouse.move(500, 500);
   receipt.renderedEntries = await page.locator("li").count();
   receipt.tableInstalledBackgroundClip = await page
@@ -374,5 +426,7 @@ try {
 } finally {
   if (browser) await browser.close();
   await new Promise((resolve) => server.close(resolve));
+  receipt.finishedAt = new Date().toISOString();
+  receipt.runtimeSeconds = (Date.parse(receipt.finishedAt) - Date.parse(receipt.startedAt)) / 1000;
   await write(path.join(output, "receipt.json"), receipt);
 }
