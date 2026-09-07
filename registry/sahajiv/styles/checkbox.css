@@ -364,7 +364,7 @@
   .v-check:where([data-slot="checkbox"], [data-slot^="checkbox-"])
   [data-slot="checkbox-indicator"] {
   border-color: var(--v-text-2);
-  background: var(--v-beige-2);
+  background-color: var(--v-beige-2);
 }
 :root[data-mode="dark"]
   .v-check:where(
@@ -378,7 +378,7 @@
     [data-slot^="checkbox-"]
   )[data-state="indeterminate"]
   [data-slot="checkbox-indicator"] {
-  background: var(--v-pink);
+  background-color: var(--v-pink);
   border-color: var(--v-pink);
 }
 :root[data-mode="dark"]
