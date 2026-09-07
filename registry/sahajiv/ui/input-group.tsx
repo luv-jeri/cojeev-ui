@@ -108,5 +108,5 @@ export function InputSearchScope({
 export type InputSearchDiskProps=React.ComponentProps<"span">;
 export function InputSearchDisk({ref,className,...props}:InputSearchDiskProps){
   const ownedRef=useMorph<HTMLSpanElement>("icons",ref);
-  return <span ref={ownedRef} data-slot="input-search-disk" data-part="icon" className={cn("v-search__disk",className)} {...props}/>;
+  return <span ref={ownedRef} data-slot="input-search-disk" data-part="icon" className={cn("v-search__disk grid place-items-center shrink-0 size-[36px] [border-radius:50%] bg-[var(--v-pink)] text-[color:var(--v-on-accent)]",className)} {...props}/>;
 }

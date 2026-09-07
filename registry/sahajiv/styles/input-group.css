@@ -57,8 +57,8 @@
   background: var(--v-canvas);
 }
 [data-slot="input-search"] .v-search__disk {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   flex: none;
 }
 [data-slot="input-search-scope"] .v-badge {
@@ -88,4 +88,6 @@
 [data-slot="input-search-scope"] { font-size: 13px; color: var(--v-text); min-width: 0; flex-wrap: wrap; }
 [data-slot="input-search"] .v-input input { flex: 1 1 60px; min-width: 0; }
 @media (max-width: 640px) { [data-slot="input-search"] [data-slot="input-search-scope"] { display: none; } }
-@media (max-width: 640px) { [data-slot="input-group"] { min-height: var(--ctl-lg); flex-wrap: wrap; } [data-slot="input-group"] input { width: 100%; flex: 1 1 100%; } }
+@media (max-width: 640px) { [data-slot="input-group"] { min-height: var(--ctl-lg); flex-wrap: wrap; } [data-slot="input-group"] input { width: 100%; } }
+
+[data-slot="input-search-disk"] .v-icon { width: 20px; height: 20px; stroke-width: 2; }

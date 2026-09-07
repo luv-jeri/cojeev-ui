@@ -182,7 +182,7 @@ export function CarouselItem({
   const Comp = asChild ? Slot : "div";
   return (
     <Comp
-      data-slot={asChild ? undefined : "carousel-item"}
+      {...(!asChild ? { "data-slot": "carousel-item" } : {})}
       data-carousel-item=""
       data-part="item"
       role="group"

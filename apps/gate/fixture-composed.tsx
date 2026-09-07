@@ -83,7 +83,7 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
   if(matches(".v-ring")){
     const legends=(node.getAttribute("data-legend")??"").split(",");
     const segments=(node.getAttribute("data-segs")??"").split(",").filter(Boolean).map((part,i)=>{const[color,value]=part.split(":");return{label:legends[i]??color,color,value:Number(value)}});
-    return <React.Fragment key={index}>{render(chart.ChartRing,{segments,strokeWidth:Number(node.getAttribute("data-sw")??12),gap:Number(node.getAttribute("data-gap")??6),unit:node.getAttribute("data-unit")??"",draw:matches(".-draw"),showTable:false})}<chart.ChartDataTable data-gate="table/default/default/rest" data={segments} /></React.Fragment>;
+    return render(chart.ChartRing,{segments,strokeWidth:Number(node.getAttribute("data-sw")??12),gap:Number(node.getAttribute("data-gap")??6),unit:node.getAttribute("data-unit")??"",draw:matches(".-draw"),showTable:false});
   }
   if(matches(".v-table-wrap"))return render(ctx.id==="data-table"?data_table.DataTableViewport:table.TableContainer);
   if(matches(".v-tabs[data-filters]"))return render(data_table.DataTableFilters);
