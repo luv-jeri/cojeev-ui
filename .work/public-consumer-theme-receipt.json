@@ -1,0 +1,255 @@
+{
+  "startedAt": "2026-09-07T23:41:46.267Z",
+  "directory": "/tmp/sahajiv-ui-stranger-qFCcg0",
+  "publicManifest": {
+    "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+    "status": 200,
+    "sha256": "8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6",
+    "entryCount": 78
+  },
+  "publicFoundationSHA256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6",
+  "publicScene": {
+    "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+    "status": 200,
+    "sha256": "24d28f9a9bf111af79e6d7624c5a1d16f72abdd1842f63b4f3ca15678fd9b3c3"
+  },
+  "scope": "Theme aliases, fonts, Card title contrast, corrected ShapeScene shaded WebGL, and 390/1440 bounds/screenshots; prior unrelated interactions not repeated",
+  "measurements": [
+    {
+      "mode": "light",
+      "width": 1440,
+      "documentWidth": 1440,
+      "aliases": {
+        "background": "#fbf4e6",
+        "foreground": "#0e0b0b",
+        "card-foreground": "#0e0b0b",
+        "font-sans": "\"Geist Variable\", sans-serif",
+        "v-canvas": "#fbf4e6",
+        "v-text": "#0e0b0b",
+        "font-text": "\"DM Sans\",ui-sans-serif,system-ui,-apple-system,\"Segoe UI\",sans-serif"
+      },
+      "body": {
+        "background": "rgb(251, 244, 230)",
+        "color": "rgb(14, 11, 11)",
+        "fontFamily": "\"DM Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      },
+      "rootFont": "\"Geist Variable\", sans-serif",
+      "displayFont": "\"Bricolage Grotesque\", ui-sans-serif, system-ui, sans-serif",
+      "fontFaces": [
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "DM Sans",
+          "status": "loaded"
+        },
+        {
+          "family": "Bricolage Grotesque",
+          "status": "loaded"
+        }
+      ],
+      "card": {
+        "surface": "rgb(243, 236, 223)",
+        "ink": "rgb(14, 11, 11)",
+        "contrast": 16.68387202923028
+      }
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "documentWidth": 1440,
+      "aliases": {
+        "background": "#171512",
+        "foreground": "#f6efe2",
+        "card-foreground": "#f6efe2",
+        "font-sans": "\"Geist Variable\", sans-serif",
+        "v-canvas": "#171512",
+        "v-text": "#f6efe2",
+        "font-text": "\"DM Sans\",ui-sans-serif,system-ui,-apple-system,\"Segoe UI\",sans-serif"
+      },
+      "body": {
+        "background": "rgb(23, 21, 18)",
+        "color": "rgb(246, 239, 226)",
+        "fontFamily": "\"DM Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      },
+      "rootFont": "\"Geist Variable\", sans-serif",
+      "displayFont": "\"Bricolage Grotesque\", ui-sans-serif, system-ui, sans-serif",
+      "fontFaces": [
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "DM Sans",
+          "status": "loaded"
+        },
+        {
+          "family": "Bricolage Grotesque",
+          "status": "loaded"
+        }
+      ],
+      "card": {
+        "surface": "rgb(42, 38, 33)",
+        "ink": "rgb(246, 239, 226)",
+        "contrast": 13.13870075384429
+      }
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "aliases": {
+        "background": "#fbf4e6",
+        "foreground": "#0e0b0b",
+        "card-foreground": "#0e0b0b",
+        "font-sans": "\"Geist Variable\", sans-serif",
+        "v-canvas": "#fbf4e6",
+        "v-text": "#0e0b0b",
+        "font-text": "\"DM Sans\",ui-sans-serif,system-ui,-apple-system,\"Segoe UI\",sans-serif"
+      },
+      "body": {
+        "background": "rgb(251, 244, 230)",
+        "color": "rgb(14, 11, 11)",
+        "fontFamily": "\"DM Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      },
+      "rootFont": "\"Geist Variable\", sans-serif",
+      "displayFont": "\"Bricolage Grotesque\", ui-sans-serif, system-ui, sans-serif",
+      "fontFaces": [
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "DM Sans",
+          "status": "loaded"
+        },
+        {
+          "family": "Bricolage Grotesque",
+          "status": "loaded"
+        }
+      ],
+      "card": {
+        "surface": "rgb(243, 236, 223)",
+        "ink": "rgb(14, 11, 11)",
+        "contrast": 16.68387202923028
+      }
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "aliases": {
+        "background": "#171512",
+        "foreground": "#f6efe2",
+        "card-foreground": "#f6efe2",
+        "font-sans": "\"Geist Variable\", sans-serif",
+        "v-canvas": "#171512",
+        "v-text": "#f6efe2",
+        "font-text": "\"DM Sans\",ui-sans-serif,system-ui,-apple-system,\"Segoe UI\",sans-serif"
+      },
+      "body": {
+        "background": "rgb(23, 21, 18)",
+        "color": "rgb(246, 239, 226)",
+        "fontFamily": "\"DM Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      },
+      "rootFont": "\"Geist Variable\", sans-serif",
+      "displayFont": "\"Bricolage Grotesque\", ui-sans-serif, system-ui, sans-serif",
+      "fontFaces": [
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Variable",
+          "status": "unloaded"
+        },
+        {
+          "family": "DM Sans",
+          "status": "loaded"
+        },
+        {
+          "family": "Bricolage Grotesque",
+          "status": "loaded"
+        }
+      ],
+      "card": {
+        "surface": "rgb(42, 38, 33)",
+        "ink": "rgb(246, 239, 226)",
+        "contrast": 13.13870075384429
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "sceneRenderer": "webgl",
+  "sceneBuffer": {
+    "width": 852,
+    "height": 639
+  },
+  "sceneShadedColors": 1393,
+  "correctedSceneRuntime": "PASS",
+  "status": "PASS",
+  "finishedAt": "2026-09-07T23:41:52.524Z",
+  "runtimeSeconds": 6.257
+}

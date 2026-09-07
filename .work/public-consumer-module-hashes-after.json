@@ -1,0 +1,39 @@
+{
+  "at": "2026-09-07T23:42:36.527Z",
+  "files": {
+    "src/components/ui/accordion.tsx": "e2f789e472e5c9fef85fd18f59cb5d985dc96c8648bf8479480837c38f8077ee",
+    "src/components/ui/badge.tsx": "e63beb3a379841939df0a06786cc738aca92748abcf507c9988dc36172b49277",
+    "src/components/ui/button.tsx": "f73fe59707466aaa75a830355be16e862198423cc6b723bb1ea580ecf33c6dea",
+    "src/components/ui/card.tsx": "0cec609e0ba623826b36f91a0cd050dfa54478dec4dfeebb1a7be5aae05822ee",
+    "src/components/ui/code-block.tsx": "ded35f01bc02b37e9382b242f478fbedda8dcd68af877ced17ed344ffe1b96b3",
+    "src/components/ui/dialog.tsx": "6e9df71a37db11f14a9702d69fec06bfa8c7d7383dc971cb1f9bc947c77744ed",
+    "src/components/ui/icon.tsx": "a62fdff074f6722e5583199f2dea4b0b1cf3cae59bffbc614b4694f7d6418aa1",
+    "src/components/ui/shape-scene.tsx": "64fcbf3c39df4ddd0d1ec6991f7051498c046464b45f3881c117a2ee4fc11231",
+    "src/components/ui/shape.tsx": "c0f59fbe15b4bfa87385b114666abc09b56531b8e62467c1a926eac078e78398",
+    "src/components/ui/spinner.tsx": "481c34d94766999129c10f18cbe7681eff65af161dc9b690ef485aae31a0f4d4",
+    "src/components/ui/text-reveal.tsx": "05e8dc250ae6b7f0c185c24a24c9f2166dd86fc2e1cf3e4c24811db96f599330",
+    "src/components/ui/typography.tsx": "6adfe5c9ab965ce94dc4b3f0c0d1e40348ea56cb11f1fe95f1bb2615233c5ee8",
+    "src/lib/sahajiv/icon-data.ts": "a73fd8fd7ca2983bbae38b6e8f58f82aa417a6ef2ae3491dafcf1b39a2d3c2a3",
+    "src/lib/sahajiv/shape-data.ts": "042f4bf35659b80af08f17f6a2af371a5876aa6d505e3dfe4da5a7745e34ac35",
+    "src/lib/sahajiv-motion/body.ts": "f6d93f8a74e3fcb97566470f2c49647a2cb3a3b80fb595a8997f7bbe933392d5",
+    "src/lib/sahajiv-motion/category.ts": "f6b00fd7303d69d7ecc75744c8036ee1d95e817377aa46552bf374c3d1933f80",
+    "src/lib/sahajiv-motion/clock.ts": "5caff51cd21b478769e5bdcc566d02f551fff3f1ac5711f7baff737d83535eef",
+    "src/lib/sahajiv-motion/flow-press.ts": "c0f77b5ee9eb8b592369192cc9e3622beeea6e7c337ddc7d96c19232b0b60463",
+    "src/lib/sahajiv-motion/flow.ts": "71c04b0946a7a9e29e72208ae729c4ec708c9d9a5758416dd60601bb5d35f716",
+    "src/lib/sahajiv-motion/geometry.ts": "8309733ec149d7b744432cbc658af316a7338f77fcca6d45214fe1109a2d33c0",
+    "src/lib/sahajiv-motion/morph-paint.ts": "2ef053f84eb77180e521bf1d2896efde499d5359bad003ec2c5dfd145aa2e542",
+    "src/lib/sahajiv-motion/refs.ts": "dd8b87fcd54b1c8db64ae2ea8d8981d6713a6f3b354738c7b14194fe65e02325",
+    "src/lib/sahajiv-motion/settings.ts": "ebccc2875aed121cda39d923d3fd509397ed7e3fd0aac3007cbef04f8a762ac1",
+    "src/lib/sahajiv-motion/shapes.ts": "da5062122cc77550f59bed8870b407a1c44d96dbb666c00796519f45652ff0e4",
+    "src/lib/sahajiv-motion/use-flow.ts": "9c652620c7cb54ee412d3de20026c04216d2ba024801e77829d02eedd584fe1c",
+    "src/lib/sahajiv-motion/use-morph.ts": "5ce68e02bf16b1d39d2b8cb50b8339d82eb10902bd541e83ef731177777fcacd",
+    "src/lib/sahajiv-motion/use-motion-visibility.ts": "b5ee1f6ea27c0b889e6d2634a77e64f6b89eb6cfa714a97cde0fb16d5a48a84d",
+    "src/lib/sahajiv-motion/use-reduced-motion.ts": "ab7cabb876c0384aaa252c9acd27346110d462c8bbf7e5088a0ed86631bcea10",
+    "src/lib/utils.ts": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27"
+  },
+  "changed": [
+    "src/components/ui/card.tsx",
+    "src/components/ui/shape-scene.tsx"
+  ],
+  "unchangedCount": 27
+}

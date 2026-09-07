@@ -1,0 +1,16 @@
+{
+  "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+  "status": 200,
+  "publicJSONHash": "915e0a569b7c1c71f939d75bab241e3ebf3037f9ec68ec23a1223439b4afefb3",
+  "sourceHash": "0cec609e0ba623826b36f91a0cd050dfa54478dec4dfeebb1a7be5aae05822ee",
+  "originalInstalledHash": "e91f1026f1ee8cf7aa5d8c46b47bcceab7c8a515038b07667ce8cc5db50f5b44",
+  "currentInstalledHash": "0cec609e0ba623826b36f91a0cd050dfa54478dec4dfeebb1a7be5aae05822ee",
+  "sourceMatchesOriginal": false,
+  "normalizedSourceHash": "e8e9a2ecd46efbbbd9e5dfb0e57574ea033ba04c8a465f2915bba1ba1aaf56fa",
+  "normalizedInstalledHash": "e8e9a2ecd46efbbbd9e5dfb0e57574ea033ba04c8a465f2915bba1ba1aaf56fa",
+  "ASTPrintedEquivalent": true,
+  "originalRecoveredByExactHash": true,
+  "difference": "Current file adds the use client directive and its following blank line; all remaining bytes match the original installed file",
+  "runtimeEquivalentInVite": true,
+  "publicJSONUnchangedSinceFirstInstall": true
+}
