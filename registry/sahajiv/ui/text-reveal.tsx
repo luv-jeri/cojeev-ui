@@ -25,6 +25,7 @@ export function TextReveal({ text, as: Tag = "span", replayKey = 0, variant = "r
     if (!enabled) return;
     const words = Array.from(host.current.querySelectorAll<HTMLElement>("[data-reveal-word]"));
     const milliseconds = Number.isFinite(duration) ? Math.min(1500, Math.max(0, duration)) : 480;
+    if (milliseconds === 0) return;
     const animations = words.map((word, index) => word.animate([
       { opacity: 0, transform: variant === "rise" ? "translateY(.32em)" : "none" },
       { opacity: 1, transform: "none" },

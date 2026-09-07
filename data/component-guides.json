@@ -1167,7 +1167,7 @@
     "description": "A smooth, interruptible number transition for totals, metrics and small moments of progress.",
     "category": "Effects",
     "usage": [
-      "Pass a numeric value; updates animate from the current displayed value. The initial render shows the actual total.",
+      "Pass a numeric value; updates animate from the current displayed value. The initial render shows the actual total. Non-finite values show the fallback (an em dash by default), never a fabricated zero.",
       "Use locale and format for currency, percentages or compact notation. Reserve enough width for the largest expected value.",
       "Use an external live status only when the update needs announcing."
     ],
