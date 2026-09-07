@@ -134,9 +134,11 @@ function convert(
   let props: FixtureProps = { ...propsFor(node), key: index };
   let Component: string | React.ElementType =
     options.Component ?? node.tagName.toLowerCase();
-  const sourceClass = Array.from(node.classList).find(
-    (name) => staticComponents[name],
-  );
+  const sourceClasses=Array.from(node.classList).filter(name=>staticComponents[name]);
+  // Authored composite classes such as `v-card v-empty` select the more specific
+  // public component, which already carries its shared base styling.
+  const generic=new Set(["v-card","v-btn","v-disk"]);
+  const sourceClass=sourceClasses.find(name=>!generic.has(name))??sourceClasses[0];
   const entry = sourceClass ? staticComponents[sourceClass] : undefined;
   if (options.Component || entry) {
     Component = options.Component ?? entry!.Component;
@@ -151,6 +153,7 @@ function convert(
     mark(node);
   } else if (!options.Component && node.classList.contains("v-shape")) {
     Component = Shape;
+    props.as = node.tagName.toLowerCase();
     props.name =
       node.getAttribute("data-shape") ??
       Array.from(node.classList)
@@ -159,7 +162,7 @@ function convert(
     mark(node);
   } else if (
     !options.Component &&
-    payload.id === "direction" &&
+    !entry && payload.id === "direction" &&
     node.hasAttribute("dir")
   ) {
     Component = Direction;

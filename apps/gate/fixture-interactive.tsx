@@ -157,7 +157,7 @@ function modal(
         ctx.convert(child, i, { skipInteractive: true }),
       );
     }
-    let name = child.classList.contains("v-dialog__head")
+    const name = child.classList.contains("v-dialog__head")
       ? "Header"
       : child.classList.contains("v-dialog__actions")
         ? "Footer"
