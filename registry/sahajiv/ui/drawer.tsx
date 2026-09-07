@@ -109,7 +109,7 @@ export function DrawerTitle({ className, ...props }: DrawerTitleProps) {
       data-slot="drawer-title"
       data-part="title"
       className={cn(
-        "v-section font-[family-name:var(--font-display)] text-[24px] leading-[1.15] tracking-[-0.01em] pt-1.5 font-medium",
+        "v-dockpanel__title text-center text-[length:var(--fs-lead)] font-semibold mb-[var(--s-2)]",
         className,
       )}
       {...props}

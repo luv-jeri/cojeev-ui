@@ -167,7 +167,8 @@
 /* Source morph injects this after flow at specificity one. Keep stronger flow contexts intact. */
 [data-morph]:where([data-slot].v-morph-host) { transition: transform 0s; }
 
-/* Source alive.css:529 keeps pictographic radio tiles beige even under the travelling fill. */
-:root[data-mode="dark"] .v-iradios[data-flow-owned] .v-iradio[data-glide-active] {
+/* Source alive.css:529 keeps radio and questionnaire tiles beige even under the travelling fill. */
+:root[data-mode="dark"] .v-iradios[data-flow-owned] .v-iradio[data-glide-active],
+:root[data-mode="dark"] .v-quest__opts[data-flow-owned] .v-quest__opt[data-glide-active] {
  background: var(--v-beige);
 }

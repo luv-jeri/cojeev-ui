@@ -1,0 +1,254 @@
+{
+  "revision": "bda75de14a4b2b",
+  "harness": "040fefa",
+  "widths": [
+    360,
+    390,
+    768,
+    1024,
+    1440,
+    1920
+  ],
+  "sampledRows": 924,
+  "note": "PASS uses the gate 0.1% pixel threshold; exact requires zero differing pixels. Pending actual-open rows are only closed-state equivalence and are not open coverage. Root3dfedc9 adds the missing three real triggers. This receipt preserves pre-correction evidence.",
+  "families": {
+    "accordion": {
+      "rows": 24,
+      "exact": 24,
+      "passing": 24,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "alert-dialog": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "calendar": {
+      "rows": 24,
+      "exact": 0,
+      "passing": 0,
+      "failed": 24,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "checkbox": {
+      "rows": 48,
+      "exact": 48,
+      "passing": 48,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "collapsible": {
+      "rows": 24,
+      "exact": 24,
+      "passing": 24,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "combobox": {
+      "rows": 24,
+      "exact": 24,
+      "passing": 24,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 12
+    },
+    "command": {
+      "rows": 12,
+      "exact": 12,
+      "passing": 12,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "context-menu": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "date-picker": {
+      "rows": 24,
+      "exact": 24,
+      "passing": 24,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 12
+    },
+    "dialog": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "drawer": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "dropdown-menu": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "hover-card": {
+      "rows": 24,
+      "exact": 0,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "input-otp": {
+      "rows": 12,
+      "exact": 12,
+      "passing": 12,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "menubar": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "navigation-menu": {
+      "rows": 24,
+      "exact": 24,
+      "passing": 24,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "popover": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "radio-group": {
+      "rows": 36,
+      "exact": 36,
+      "passing": 36,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "resizable": {
+      "rows": 24,
+      "exact": 24,
+      "passing": 24,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "scroll-area": {
+      "rows": 24,
+      "exact": 0,
+      "passing": 24,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "select": {
+      "rows": 36,
+      "exact": 24,
+      "passing": 24,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 12
+    },
+    "sheet": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "slider": {
+      "rows": 12,
+      "exact": 12,
+      "passing": 12,
+      "failed": 0,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "switch": {
+      "rows": 36,
+      "exact": 30,
+      "passing": 30,
+      "failed": 6,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "tabs": {
+      "rows": 108,
+      "exact": 90,
+      "passing": 102,
+      "failed": 0,
+      "unstable": 6,
+      "pendingRealOpen": 0
+    },
+    "toast": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 12,
+      "failed": 12,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "toggle": {
+      "rows": 144,
+      "exact": 120,
+      "passing": 126,
+      "failed": 18,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "toggle-group": {
+      "rows": 24,
+      "exact": 8,
+      "passing": 8,
+      "failed": 16,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    },
+    "tooltip": {
+      "rows": 24,
+      "exact": 12,
+      "passing": 16,
+      "failed": 8,
+      "unstable": 0,
+      "pendingRealOpen": 0
+    }
+  },
+  "receipts": [
+    "artifacts/interactive-full-matrix/results.json",
+    "artifacts/interactive-partition-a/results.json",
+    "artifacts/interactive-partition-b/results.json",
+    "artifacts/interactive-partition-c/results.json"
+  ]
+}

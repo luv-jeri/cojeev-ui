@@ -306,3 +306,8 @@
     scroll-behavior: auto;
   }
 }
+
+/* Preserve the source :has(input:disabled:checked) precedence over the dark base. */
+:root[data-mode="dark"] .v-switch:where([data-slot="switch"])[data-disabled][data-state="checked"] {
+  background: color-mix(in oklab, var(--v-pink) 40%, var(--v-disabled-face));
+}
