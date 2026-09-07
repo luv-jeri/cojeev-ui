@@ -1,4 +1,4 @@
-@layer theme, base, components, utilities, sahajiv-states, sahajiv-morph, sahajiv-flow, sahajiv-accessibility;
+@layer theme, base, components, utilities, sahajiv-states, sahajiv-flow, sahajiv-morph, sahajiv-accessibility;
 @import "tailwindcss";
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
