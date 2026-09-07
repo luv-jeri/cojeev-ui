@@ -132,7 +132,7 @@ export default async function Page({
           </Typography>
           {entry.meta.api.map((api) => (
             <section key={api.name} className="docs-section">
-              <Title as="h3">{api.name}</Title>
+              <Title as="h3" className="docs-api-title">{api.name}</Title>
               {api.props.length ? (
                 <TableContainer className="docs-props">
                   <Table>
