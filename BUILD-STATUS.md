@@ -11,11 +11,11 @@ The active brief is the production refinement described in PRODUCTION-PLAN.md an
 | Motion | Nine selectable presets, persistent tuning, calmer Glide and static segmented bodies; focused tests pass |
 | Documentation | Fumadocs base with SahaJiv controls, source-derived code/API, individual guides, categories and getting-started page |
 | Local checks | Production build, TypeScript, lint and four core logic tests pass |
-| Browser checks | 462/462 layouts, all9motionpresets and7Safari-engine journeys pass. One numeric assertion failed once; unchanged-source targeted and six-entry sequence confirmations pass; final CI pending. |
-| Fresh consumer | All77 installed, imported, typechecked and built in an outside app; all246 copied snippets compile. Public URL install remains pending. |
-| Public repository | Created and public; first source push and Pages deployment pending |
+| Browser checks | Full GitHub CI passed: 462/462 layouts, all nine motion presets and seven Safari-engine journeys. Historical local assertion failure remains documented separately. |
+| Fresh consumer | All 77 installed, imported, typechecked and built in an outside app; all 246 copied snippets compile. Eight entries installed and built from the public URL; a real-init theme conflict is in final correction. |
+| Public repository | Public MIT source and GitHub Pages documentation are live |
 
-The live development preview runs on port 4320 under `/sahajiv-ui/`. Use the Mac's current Wi-Fi address on a phone connected to the same network.
+Open https://luv-jeri.github.io/sahajiv-ui/ on any device. The public site does not require this Mac or the same Wi-Fi. The live development preview runs separately on port 4320 under `/sahajiv-ui/`; that local preview requires the Mac's current Wi-Fi address and the same network.
 
 Historical source evidence remains in BASELINE-STATUS.md: 3,096/3,252 comparisons pass across recorded checkpoints, with 156 preserved failures. That is an archive of the original clone work, not a percentage-complete claim for this release. The production gate tests refined behavior separately.
 

@@ -17,7 +17,15 @@ function css(file){return declarations(postcss.parse(fs.readFileSync(file,"utf8"
 // selectors or the ordering of shorthand and longhand declarations.
 const foundationStyles=["tokens","theme","base","morph","flow-press"];
 const foundation=Object.fromEntries(["@/styles/sahajiv-fonts.css",...foundationStyles.map(name=>`@/styles/sahajiv/${name}.css`)].map(file=>[`@import "${file}"`,{}]));
-const theme=Object.fromEntries(Object.entries(css(`${source}/styles/theme.css`)["@theme inline"]).map(([key,value])=>[key.replace(/^--/,""),value]));
+const themeCSS=css(`${source}/styles/theme.css`);
+const theme=Object.fromEntries(Object.entries(themeCSS["@theme inline"]).map(([key,value])=>[key.replace(/^--/,""),value]));
+// A base installed as a component dependency does not replace shadcn's existing
+// cssVars. Merge the semantic aliases after its starter rules so the public
+// one-command install uses our surfaces in both documented data-mode states.
+const semanticNames=/^--(?:background|foreground|card(?:-.+)?|popover(?:-.+)?|primary(?:-.+)?|secondary(?:-.+)?|accent(?:-.+)?|muted(?:-.+)?|border|input|ring|destructive(?:-.+)?|chart-\d+|sidebar(?:-.+)?)$/;
+const layoutNames=new Set(["--card-pad","--card-gap","--sidebar-w","--sidebar-w-mini","--sidebar-gap"]);
+foundation[":root, :root[data-mode]"]=Object.fromEntries(Object.entries(css(`${source}/styles/tokens.css`)[":root"]).filter(([name])=>semanticNames.test(name)&&!layoutNames.has(name)));
+for(const [rule,value] of Object.entries(themeCSS))if(rule.startsWith("@custom-variant "))foundation[rule]=value;
 const base={name:"sahajiv",type:"registry:base",extends:"none",title:"SahaJiv",description:"SahaJiv tokens, fonts, reset, and Tailwind v4 theme bridge.",dependencies:["class-variance-authority","clsx","tailwind-merge","tw-animate-css"],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@sahajiv":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:foundation};
 function imports(id) {
   return [...fs.readFileSync(`${source}/ui/${id}.tsx`,"utf8").matchAll(/(?:from\s+|import\s+|import\s*\(\s*)["']([^"']+)["']/g)].map(match=>sourceImport(`${source}/ui/${id}.tsx`,match[1]));
