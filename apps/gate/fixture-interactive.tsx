@@ -616,6 +616,56 @@ function ToastFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
   );
 }
 
+
+/** Generated on fixtures can contain two pressed values in a single group.
+ * Preserve that invalid authored initial paint only, then let Radix own state
+ * after the first selection. Public ToggleGroup semantics remain unchanged. */
+function ToggleGroupFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
+  const [authoredInitial, setAuthoredInitial] = React.useState(true);
+  const items = elementChildren(node).filter((child) =>
+    child.matches("button"),
+  );
+  const active = items.flatMap((item, i) =>
+    item.getAttribute("aria-pressed") === "true" ? [String(i)] : [],
+  );
+  const multiple = node.getAttribute("data-togglegroup") === "multi";
+  return render(
+    ToggleGroupParts.ToggleGroup,
+    node,
+    ctx,
+    {
+      type: multiple ? "multiple" : "single",
+      defaultValue: multiple ? active : active[0],
+      onValueChange: () => setAuthoredInitial(false),
+      "data-source-invalid-selection": !multiple && active.length > 1 ? "multiple-in-single" : undefined,
+    },
+    items.map((item, i) => {
+      const extra = { ...controlledProps(item, ctx), value: String(i) };
+      if (item.matches(".v-btn"))
+        return React.createElement(
+          ToggleGroupParts.ToggleGroupItem,
+          { key: i, value: String(i), asChild: true },
+          ctx.convert(item, i, {
+            skipInteractive: true,
+            props: {
+              "aria-pressed": !multiple && active.length > 1 && authoredInitial
+                ? item.getAttribute("aria-pressed")
+                : undefined,
+            },
+          }),
+        );
+      return render(
+        ToggleGroupParts.ToggleGroupItem,
+        item,
+        ctx,
+        extra,
+        ctx.children(item),
+        i,
+      );
+    }),
+  );
+}
+
 export function convertInteractive(
   node: Element,
   index: number,
@@ -793,43 +843,8 @@ export function convertInteractive(
       index,
     );
   if (node.hasAttribute("data-togglegroup")) {
-    const items = elementChildren(node).filter((child) =>
-      child.matches("button"),
-    );
-    const active = items.flatMap((item, i) =>
-      item.getAttribute("aria-pressed") === "true" ? [String(i)] : [],
-    );
-    const multiple = node.getAttribute("data-togglegroup") === "multi";
-    return render(
-      ToggleGroupParts.ToggleGroup,
-      node,
-      ctx,
-      {
-        type: multiple ? "multiple" : "single",
-        defaultValue: multiple ? active : active[0],
-      },
-      items.map((item, i) => {
-        const extra = { ...controlledProps(item, ctx), value: String(i) };
-        if (item.matches(".v-btn"))
-          return React.createElement(
-            ToggleGroupParts.ToggleGroupItem,
-            { key: i, value: String(i), asChild: true },
-            ctx.convert(item, i, {
-              skipInteractive: true,
-              props: { "aria-pressed": undefined },
-            }),
-          );
-        return render(
-          ToggleGroupParts.ToggleGroupItem,
-          item,
-          ctx,
-          extra,
-          ctx.children(item),
-          i,
-        );
-      }),
-      index,
-    );
+    ctx.mark(node);
+    return <ToggleGroupFixture key={index} node={node} ctx={ctx} />;
   }
   if (node.matches(".v-toggle"))
     return render(

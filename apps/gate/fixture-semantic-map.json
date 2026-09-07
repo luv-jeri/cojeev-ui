@@ -73,6 +73,10 @@
         ".v-cal__wk": {
           "part": "week-number",
           "candidateSelector": "[data-slot=\"calendar-week-number\"]"
+        },
+        ".v-cal__wd": {
+          "part": "weekday",
+          "candidateSelector": ".v-cal__wd"
         }
       },
       "coverage": "mapping implemented; browser gate pending",
@@ -80,7 +84,8 @@
         "Real DayPicker produces a table instead of a flat div grid. All styled part classes survive; rows use display:contents. Parse local dates, never UTC dates."
       ],
       "additionalParts": {
-        ".v-cal__wk": "week-number"
+        ".v-cal__wk": "week-number",
+        ".v-cal__wd": "weekday"
       }
     },
     "checkbox": {
@@ -564,7 +569,8 @@
         }
       },
       "coverage": "mapping implemented; browser gate pending",
-      "semanticNotes": "Radix single selection uses radio roles and aria-checked, while multiple selection uses aria-pressed. Both select the authored state styles; asChild Button composition retains Button classes without injecting v-toggle."
+      "semanticNotes": "Radix single selection uses radio roles and aria-checked, while multiple selection uses aria-pressed. Both select the authored state styles; asChild Button composition retains Button classes without injecting v-toggle.",
+      "initialStateAdapter": "Generated single-group on scenes contain two pressed buttons. Fixture preserves their initial aria-pressed paint until the first real selection event, then yields all state to Radix. This invalid source state is recorded, not exposed by the public primitive."
     },
     "tooltip": {
       "parts": {
