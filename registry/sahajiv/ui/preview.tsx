@@ -2,14 +2,14 @@
 import * as React from "react";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Card } from "@/registry/sahajiv/ui/card";
-import { Button } from "@/registry/sahajiv/ui/button";
+import { CodeBlock, CopyButton } from "@/registry/sahajiv/ui/code-block";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
 } from "@/registry/sahajiv/ui/tabs";
-import { Title, BodySecondary, Meta } from "@/registry/sahajiv/ui/typography";
+import { Title, BodySecondary } from "@/registry/sahajiv/ui/typography";
 export type PreviewProps = React.ComponentProps<"section"> & {
   code: string;
   title?: string;
@@ -23,15 +23,6 @@ export function Preview({
   className,
   ...props
 }: PreviewProps) {
-  const [status, setStatus] = React.useState("");
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(code);
-      setStatus("Copied to clipboard.");
-    } catch {
-      setStatus("Copy unavailable. Select the code and copy it manually.");
-    }
-  }
   return (
     <section
       data-slot="preview"
@@ -46,9 +37,9 @@ export function Preview({
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="code">Code</TabsTrigger>
           </TabsList>
-          <Button size="sm" variant="ghost" onClick={copy}>
+          <CopyButton code={code}>
             Copy code
-          </Button>
+          </CopyButton>
         </div>
         <TabsContent value="preview">
           <Card
@@ -62,14 +53,9 @@ export function Preview({
           </Card>
         </TabsContent>
         <TabsContent value="code">
-          <pre className="v-preview__code" tabIndex={0}>
-            <code>{code}</code>
-          </pre>
+          <CodeBlock code={code} language="tsx" title="Example" />
         </TabsContent>
       </Tabs>
-      <Meta role="status" aria-live="polite">
-        {status}
-      </Meta>
     </section>
   );
 }

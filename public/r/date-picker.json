@@ -1,0 +1,151 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-picker",
+  "title": "Date Picker",
+  "description": "Opens a calendar from a compact trigger to choose and display one date.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/calendar.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/popover.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/date-picker.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cva } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport { Calendar, type CalendarProps } from \"@/components/ui/calendar\";\nimport {\n  Popover,\n  PopoverTrigger,\n  PopoverContent,\n} from \"@/components/ui/popover\";\nimport { Icon } from \"@/components/ui/icon\";\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport { useFlowPress } from \"@/lib/sahajiv-motion/flow-press\";\nexport const datePickerVariants = cva(\"v-menuhost [display:inline-block]\");\nexport type DatePickerProps = Omit<\n  React.ComponentProps<\"div\">,\n  \"defaultValue\" | \"onChange\"\n> & {\n  date?: Date;\n  defaultDate?: Date;\n  onDateChange?: (date: Date | undefined) => void;\n  open?: boolean;\n  defaultOpen?: boolean;\n  onOpenChange?: (open: boolean) => void;\n  placeholder?: string;\n  disabled?: boolean;\n  calendarProps?: Omit<CalendarProps, \"selected\" | \"onSelect\">;\n  formatDate?: (date: Date) => string;\n  triggerProps?: React.ComponentProps<\"button\">;\n};\nexport function DatePicker(datePickerProps: DatePickerProps) {\n  const {\n    className,\n    date,\n    defaultDate,\n    onDateChange,\n    open,\n    defaultOpen = false,\n    onOpenChange,\n    placeholder = \"Pick a date\",\n    disabled,\n    calendarProps,\n    formatDate = (date) =>\n      date.toLocaleDateString(undefined, {\n        day: \"numeric\",\n        month: \"short\",\n        year: \"numeric\",\n      }),\n    triggerProps,\n    ...props\n  } = datePickerProps;\n  const [internalDate, setInternalDate] = React.useState(defaultDate);\n  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);\n  const value = Object.prototype.hasOwnProperty.call(datePickerProps, \"date\")\n    ? date\n    : internalDate;\n  const setOpen = (next: boolean) => {\n    setInternalOpen(next);\n    onOpenChange?.(next);\n  };\n  return (\n    <Popover open={open ?? internalOpen} onOpenChange={setOpen}>\n      <div\n        data-slot=\"date-picker\"\n        data-part=\"root\"\n        data-datepicker=\"\"\n        className={cn(datePickerVariants(), className)}\n        {...props}\n      >\n        <DatePickerTrigger disabled={disabled} {...triggerProps}>\n          <Icon name=\"calendar\" />\n          <span data-value=\"\">{value ? formatDate(value) : placeholder}</span>\n          <Icon name=\"chevron-down\" />\n        </DatePickerTrigger>\n        <DatePickerContent>\n          <Calendar\n            autoFocus\n            defaultMonth={value}\n            {...calendarProps}\n            selected={value}\n            onSelect={(next) => {\n              setInternalDate(next);\n              onDateChange?.(next);\n              setOpen(false);\n            }}\n          />\n        </DatePickerContent>\n      </div>\n    </Popover>\n  );\n}\nexport type DatePickerTriggerProps = React.ComponentProps<\n  typeof PopoverTrigger\n>;\nexport function DatePickerTrigger({\n  className,\n  ref,\n  ...props\n}: DatePickerTriggerProps) {\n  const morphRef = useMorph<HTMLButtonElement>(\"buttons\", ref);\n  const pressRef = useFlowPress(morphRef);\n  return (\n    <PopoverTrigger\n      ref={pressRef}\n      data-slot=\"date-picker-trigger\"\n      data-part=\"trigger\"\n      className={cn(\"v-select -ink\", className)}\n      {...props}\n    />\n  );\n}\nexport type DatePickerContentProps = React.ComponentProps<\n  typeof PopoverContent\n>;\nexport function DatePickerContent({\n  className,\n  ...props\n}: DatePickerContentProps) {\n  return (\n    <PopoverContent\n      data-slot=\"date-picker-content\"\n      data-part=\"content\"\n      align=\"start\"\n      sideOffset={8}\n      className={className}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/date-picker.css",
+      "content": "@layer sahajiv-states {\n/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  )[data-morph] {\n  --mfill: var(--v-beige);\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ).-ink[data-morph] {\n  --mfill: var(--v-ink);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]) {\n  display: inline-flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: var(--s-3);\n  height: var(--ctl-md);\n  padding: 0 var(--s-4) 0 var(--s-5);\n  border-radius: var(--r-pill);\n  background: var(--v-beige);\n  font-size: var(--fs-control);\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-ink {\n  background: var(--v-ink);\n  color: var(--v-on-ink);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block {\n  width: 100%;\n  height: var(--ctl-lg);\n  font-size: var(--fs-body);\n  font-weight: 400;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-sm {\n  height: var(--ctl-sm);\n  font-size: 13px;\n  padding: 0 12px 0 14px;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"])\n  .v-icon {\n  width: 14px;\n  height: 14px;\n  stroke-width: 2.4;\n}\n.v-popover:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]) {\n  background: var(--popover);\n  border-radius: var(--r-card);\n  padding: var(--s-5);\n  box-shadow: var(--shadow-float);\n  border: 1px solid var(--v-border);\n}\n.v-menuhost:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"])\n  > .v-menu {\n  z-index: var(--z-dialog);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]):not(\n    .-ink\n  ) {\n  box-shadow: inset 0 0 0 1px var(--v-edge);\n}\n:root[data-mode=\"dark\"]\n  .v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]):not(\n    .-ink\n  ) {\n  color: var(--v-text);\n}\n:root[data-mode=\"dark\"]\n  .v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-ink {\n  background: var(--v-pink);\n  color: var(--v-on-accent);\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ):disabled {\n  background: var(--v-disabled-face);\n  color: var(--v-disabled-ink);\n  box-shadow: inset 0 0 0 1px var(--v-disabled-edge);\n  opacity: 1;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]) {\n  height: 40px;\n  padding: 0 12px 0 16px;\n  gap: 10px;\n  box-shadow: inset 0 0 0 1px var(--v-edge);\n  background: var(--v-canvas);\n  color: var(--v-text);\n  font-weight: 500;\n  transition:\n    background var(--t-micro),\n    box-shadow var(--t-micro);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]):hover {\n  background: var(--v-beige);\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  )[aria-expanded=\"true\"] {\n  box-shadow: inset 0 0 0 2px var(--v-brand);\n  background: var(--v-pink-soft);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"])\n  > .v-icon:last-child {\n  width: 14px;\n  height: 14px;\n  stroke-width: 2.4;\n  color: var(--v-text-2);\n  transition: transform var(--t-element) var(--enter);\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  )[aria-expanded=\"true\"]\n  > .v-icon:last-child {\n  transform: rotate(180deg);\n  color: var(--v-text);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-ink {\n  background: var(--v-ink);\n  color: var(--v-on-ink);\n  box-shadow: none;\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ).-ink:hover {\n  background: var(--v-ink-soft);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-ink\n  > .v-icon:last-child {\n  color: rgba(251, 244, 230, 0.7);\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ).-ink[aria-expanded=\"true\"] {\n  background: var(--v-ink);\n  box-shadow: inset 0 0 0 2px var(--v-pink);\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ).-ink[aria-expanded=\"true\"]\n  > .v-icon:last-child {\n  color: var(--v-pink);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block {\n  width: 100%;\n  height: 52px;\n  padding: 0 8px 0 8px;\n  font-size: var(--fs-body);\n  font-weight: 500;\n  background: var(--input);\n  box-shadow: inset 0 0 0 1px var(--v-edge);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block\n  > span:first-child {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  min-width: 0;\n  flex: 1;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block\n  > span:first-child\n  > [data-value],\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block\n  > span:first-child\n  > span:not(.v-disk) {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  text-align: left;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block\n  .v-disk {\n  width: 36px;\n  height: 36px;\n  flex: none;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block\n  .v-disk\n  .v-icon {\n  width: 17px;\n  height: 17px;\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block\n  > .v-icon:last-child {\n  width: 28px;\n  height: 28px;\n  padding: 7px;\n  border-radius: 50%;\n  background: var(--v-canvas);\n  box-shadow: inset 0 0 0 1px var(--v-border);\n  color: var(--v-text);\n  stroke-width: 2.2;\n  flex: none;\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ).-block[aria-expanded=\"true\"]\n  > .v-icon:last-child {\n  background: var(--v-ink);\n  color: var(--v-on-ink);\n  box-shadow: none;\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ).-block:hover {\n  background: color-mix(in oklab, var(--input) 90%, var(--v-canvas));\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ).-block[aria-expanded=\"true\"] {\n  background: var(--v-pink-soft);\n}\n.v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-sm {\n  height: 32px;\n  padding: 0 10px 0 14px;\n  font-size: 13px;\n}\n.v-select:where(\n    [data-slot=\"date-picker\"],\n    [data-slot^=\"date-picker-\"]\n  ):focus-visible {\n  outline: 2px solid var(--ring);\n  outline-offset: 2px;\n}\n:root[data-mode=\"dark\"]\n  .v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]):not(\n    .-ink\n  ) {\n  background: var(--v-beige);\n  box-shadow: inset 0 0 0 1px var(--v-border);\n}\n:root[data-mode=\"dark\"]\n  .v-select:where([data-slot=\"date-picker\"], [data-slot^=\"date-picker-\"]).-block\n  > .v-icon:last-child {\n  background: var(--v-beige-2);\n  box-shadow: none;\n  color: var(--v-text);\n}\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"date-picker\"],\n  [data-slot^=\"date-picker-\"],\n  [data-slot=\"date-picker\"]::before,\n  [data-slot=\"date-picker\"]::after,\n  [data-slot^=\"date-picker-\"]::before,\n  [data-slot^=\"date-picker-\"]::after {\n    animation-duration: 0s;\n    animation-iteration-count: 1;\n    transition-duration: 0s;\n    scroll-behavior: auto;\n  }\n}\n\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/date-picker.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/date-picker.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "date-picker",
+      "name": "Date Picker",
+      "tier": "base",
+      "evidence": "I07 I15",
+      "status": "source",
+      "root": ".v-menuhost[data-datepicker]",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "open",
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "surfaces",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "press",
+        "opens"
+      ],
+      "canvas": "480x520",
+      "contract": "entries/date-picker/contract.md",
+      "demo": "entries/date-picker/demo.html",
+      "isolation": [
+        "default-default-rest-480x520.html",
+        "default-default-rest-dark-480x520.html",
+        "default-default-open-480x520.html",
+        "default-default-open-dark-480x520.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "DatePickerProps",
+        "props": [
+          {
+            "name": "date",
+            "type": "Date | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultDate",
+            "type": "Date | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onDateChange",
+            "type": "((date: Date | undefined) => void) | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "open",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onOpenChange",
+            "type": "((open: boolean) => void) | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "placeholder",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "calendarProps",
+            "type": "Omit<CalendarProps, \"onSelect\" | \"selected\"> | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "formatDate",
+            "type": "((date: Date) => string) | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "triggerProps",
+            "type": "React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "DatePickerTriggerProps",
+        "props": []
+      },
+      {
+        "name": "DatePickerContentProps",
+        "props": []
+      }
+    ],
+    "category": "Forms",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

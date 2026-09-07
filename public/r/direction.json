@@ -1,0 +1,77 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "direction",
+  "title": "Direction",
+  "description": "Sets a text direction for a subtree and shares it with direction-aware primitives.",
+  "dependencies": [
+    "@radix-ui/react-direction"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/direction.tsx",
+      "content": "\"use client\"\nimport * as React from \"react\"\nimport { DirectionProvider } from \"@radix-ui/react-direction\"\nexport type DirectionProps=React.ComponentProps<\"div\"> & { dir?:\"ltr\"|\"rtl\" }\nexport function Direction({dir=\"rtl\",children,...props}:DirectionProps){return <DirectionProvider dir={dir}><div data-slot=\"direction\" dir={dir} {...props}>{children}</div></DirectionProvider>}\nexport { DirectionProvider }\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/direction.css",
+      "content": "@layer sahajiv-states {\n/* Direction is inherited through the DOM and Radix context. Brand geometry is never mirrored. */\n[data-slot=\"direction\"]{text-align:start}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/direction.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/direction.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "direction",
+      "name": "Direction",
+      "tier": "base",
+      "evidence": "Ext",
+      "status": "derived",
+      "root": "[dir=rtl]",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active",
+        "selected"
+      ],
+      "dataStates": [],
+      "category": "none",
+      "motionOnByDefault": false,
+      "flowRoles": [],
+      "canvas": "480x240",
+      "contract": "entries/direction/contract.md",
+      "demo": "entries/direction/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-selected.html",
+        "default-default-selected-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "DirectionProps",
+        "props": [
+          {
+            "name": "dir",
+            "type": "\"ltr\" | \"rtl\" | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Layout",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

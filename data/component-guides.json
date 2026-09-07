@@ -1162,5 +1162,40 @@
       "card",
       "code-block"
     ]
+  },
+  "animated-number": {
+    "description": "A smooth, interruptible number transition for totals, metrics and small moments of progress.",
+    "category": "Effects",
+    "usage": [
+      "Pass a numeric value; updates animate from the current displayed value. The initial render shows the actual total.",
+      "Use locale and format for currency, percentages or compact notation. Reserve enough width for the largest expected value.",
+      "Use an external live status only when the update needs announcing."
+    ],
+    "accessibility": [
+      "Assistive technology receives the final formatted value without every intermediate animation frame.",
+      "Reduced motion, global Off and offscreen updates settle immediately."
+    ],
+    "related": [
+      "card",
+      "progress",
+      "typography"
+    ]
+  },
+  "text-reveal": {
+    "description": "A quiet word-by-word entrance for headings and short editorial text, with rise and fade treatments.",
+    "category": "Effects",
+    "usage": [
+      "Use short phrases at meaningful entry points, and choose the correct heading level with as.",
+      "Change replayKey to replay deliberately. The text is fully available during server rendering and without animation."
+    ],
+    "accessibility": [
+      "The complete text is exposed once; animated word fragments are hidden from assistive technology.",
+      "Reduced motion and global Off leave text still. Leaving the viewport ends the reveal without hiding content."
+    ],
+    "related": [
+      "typography",
+      "shape",
+      "animated-number"
+    ]
   }
 }

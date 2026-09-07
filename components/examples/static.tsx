@@ -513,10 +513,10 @@ export function TypographyExample() {
     </Typography>
   );
 }
-export function IconExample({ size = "default" }: ExampleProps) {
+export function IconExample({ variant = "default", size = "default" }: ExampleProps) {
   const [query, setQuery] = React.useState("");
-  const [buttonVariant, setButtonVariant] = React.useState<NonNullable<React.ComponentProps<typeof IconButton>["variant"]>>("default");
-  const [buttonSize, setButtonSize] = React.useState<NonNullable<React.ComponentProps<typeof IconButton>["size"]>>("default");
+  const [buttonVariant, setButtonVariant] = React.useState<NonNullable<React.ComponentProps<typeof IconButton>["variant"]>>(variant as NonNullable<React.ComponentProps<typeof IconButton>["variant"]>);
+  const [buttonSize, setButtonSize] = React.useState<NonNullable<React.ComponentProps<typeof IconButton>["size"]>>(size as NonNullable<React.ComponentProps<typeof IconButton>["size"]>);
   const [saved, setSaved] = React.useState(false);
   const controlId = React.useId();
   const names = iconNames.filter((name) => name.includes(query.toLowerCase()));
@@ -552,7 +552,7 @@ export function IconExample({ size = "default" }: ExampleProps) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(96px,1fr))", gap: 18 }}>
         {names.map((name) => (
           <div key={name} style={{ display: "grid", justifyItems: "center", gap: 8 }}>
-            <Icon name={name} size={size as React.ComponentProps<typeof Icon>["size"]} />
+            <Icon name={name} size={(size === "xl" ? "lg" : size) as React.ComponentProps<typeof Icon>["size"]} />
             <Meta>{name}</Meta>
           </div>
         ))}

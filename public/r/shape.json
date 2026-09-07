@@ -1,0 +1,54 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shape",
+  "title": "Shape",
+  "description": "Renders a named decorative silhouette that inherits or accepts a fill color.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/shape.tsx",
+      "content": "import * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\nimport { shapeData } from \"@/lib/sahajiv/shape-data\"\nexport type ShapeProps = React.ComponentProps<\"span\"> & { name?: string; as?: React.ElementType }\nexport function Shape({as:Tag=\"i\",name=\"star-4\",className,style,...props}:ShapeProps){\n const mask=shapeData[name];\n if(!mask) throw new Error(`Unknown SahaJiv shape: ${name}`)\n return <Tag data-slot=\"shape\" aria-hidden=\"true\" className={cn(\"v-shape inline-block h-[1em] w-[1em] shrink-0 bg-[var(--c,currentColor)]\",`-${name}`,className)} style={{...style,\"--m\":mask,mask:\"var(--m) center / contain no-repeat\",WebkitMask:\"var(--m) center / contain no-repeat\"} as React.CSSProperties} {...props}/>\n}\nexport const shapeNames=Object.keys(shapeData)\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "source": {
+      "name": "Shape",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest"
+      ]
+    },
+    "api": [
+      {
+        "name": "ShapeProps",
+        "props": [
+          {
+            "name": "name",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Data display",
+    "fidelity": "verification-in-progress",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

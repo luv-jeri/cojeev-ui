@@ -11,6 +11,7 @@ export default function DocsLayout({
     name: entry.name,
     title: entry.title,
     baseComponent: entry.meta.baseComponent,
+    category: entry.meta.category,
   }));
   return (
     <RootProvider theme={{ enabled: false }} search={{ enabled: false }}>

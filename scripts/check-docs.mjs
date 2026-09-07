@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { chromium } from "playwright";
+import { preview as startPreview } from "vite";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -11,7 +12,13 @@ const args = Object.fromEntries(
     return [key, value.join("=") || "true"];
   }),
 );
-const base = args.url || "http://127.0.0.1:4320/sahajiv-ui";
+const staticServer = args.serve ? await startPreview({
+  configFile: false,
+  base: "/sahajiv-ui/",
+  build: { outDir: "out" },
+  preview: { host: "127.0.0.1", port: 4321, strictPort: true },
+}) : null;
+const base = args.url || `http://127.0.0.1:${staticServer ? 4321 : 4320}/sahajiv-ui`;
 const main = args.checkout ? path.resolve(args.checkout) : process.cwd();
 const output = path.resolve(args.output || "output/playwright/docs");
 fs.mkdirSync(output, { recursive: true });
@@ -35,14 +42,12 @@ const widths = args.widths
 const themes = args.themes ? args.themes.split(",") : ["light", "dark"];
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 function revision() {
-  const head = execFileSync("rtk", ["git", "-C", main, "rev-parse", "HEAD"], {
+  const head = execFileSync("git", ["-C", main, "rev-parse", "HEAD"], {
     encoding: "utf8",
   }).trim();
   const diff = execFileSync(
-    "rtk",
+    "git",
     [
-      "proxy",
-      "git",
       "-C",
       main,
       "diff",
@@ -183,15 +188,45 @@ const tests = {
   button: async ({ root }) => {
     const b = root.getByRole("button", { name: "Add a note", exact: true });
     await b.click();
-    await text(root, "1 note added");
+    await text(root, "Running the local example…");
+    assert(await root.getByRole("button", { name: "Adding…", exact: true }).isDisabled());
+    await text(root, "1 note added in this example.");
+    await root.getByLabel("Example outcome").selectOption("error");
     await key(b, "Enter");
-    await text(root, "2 notes added");
-    assert(
-      await root
-        .getByRole("button", { name: "Disabled", exact: true })
-        .isDisabled(),
-    );
-    return "Pointer/keyboard counters; disabled state";
+    await text(root, "The example action failed.");
+    await root.getByLabel("Example outcome").selectOption("success");
+    await key(root.getByRole("button", { name: "Retry example" }), "Enter");
+    await text(root, "2 notes added in this example.");
+    assert(await root.getByRole("button", { name: "Disabled", exact: true }).isDisabled());
+    return "Pointer loading, disabled pending state, keyboard failure and retry";
+  },
+  "animated-number": async ({ root }) => {
+    await root.getByRole("button", { name: "Add 125" }).click();
+    await text(root, "Current value: 1,365");
+    await eventually(() => root.locator('[data-slot="animated-number"] [aria-hidden]').innerText().then(value => value === "1,365"), "Number reaches exact target");
+    await key(root.getByRole("button", { name: "Subtract 75" }), "Enter");
+    await text(root, "Current value: 1,290");
+    await root.getByRole("button", { name: "Reset count" }).click();
+    await text(root, "Current value: 1,240");
+    return "Pointer and keyboard updates, final formatted number and reset";
+  },
+  "text-reveal": async ({ root }) => {
+    await root.getByRole("button", { name: "Replay reveal" }).click();
+    await text(root, "Replayed 1 time.");
+    await key(root.getByRole("button", { name: "Replay reveal" }), "Enter");
+    await text(root, "Replayed 2 times.");
+    assert(await root.getByRole("heading", { name: "Good things take shape." }).isVisible());
+    return "Pointer/keyboard replay; one accessible complete heading";
+  },
+  "code-block": async ({ root, page }) => {
+    await root.getByRole("button", { name: "Wrap long lines" }).click();
+    await attribute(root.locator('[data-slot="code-block"]'), "data-wrap", "true");
+    const expected = await root.locator("pre code").innerText();
+    await key(root.getByRole("button", { name: "Copy", exact: true }), "Enter");
+    await text(root, "Copied to clipboard.");
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected);
+    await root.getByRole("button", { name: "Keep lines unwrapped" }).click();
+    return "Wrap control and actual clipboard preserves exact code";
   },
   "button-group": async ({ root }) => {
     await root.getByRole("button", { name: "Day", exact: true }).click();
@@ -446,6 +481,16 @@ const tests = {
     return "Pointer hover and keyboard focus show card; Escape dismisses";
   },
   icon: async ({ root }) => {
+    const save = root.getByRole("button", { name: "Save example", exact: true });
+    await save.click();
+    await attribute(save, "aria-pressed", "true");
+    await text(root, "Example saved on this page.");
+    await key(save, "Space");
+    await attribute(save, "aria-pressed", "false");
+    await root.getByLabel("Button style", { exact: true }).selectOption("pink");
+    await root.getByLabel("Button size", { exact: true }).selectOption("xl");
+    assert(await save.evaluate(el => el.classList.contains("-pink") && el.classList.contains("-xl")));
+    assert(await root.getByRole("button", { name: "Unavailable settings" }).isDisabled());
     const input = root.getByRole("textbox", { name: "Filter icons" });
     await input.click();
     await input.fill("settings");
@@ -840,7 +885,7 @@ async function chromeCheck(page, width) {
     .first()
     .click();
   if (width < 850)
-    await page.getByRole("button", { name: "Browse components" }).click();
+    await page.getByRole("button", { name: "Browse", exact: true }).click();
   const filter = page.getByRole("searchbox", { name: "Find a component" });
   await filter.fill("questionnaire");
   await eventually(
@@ -864,7 +909,7 @@ async function chromeCheck(page, width) {
   );
   await theme.selectOption(current);
   if (width < 850) {
-    await key(page.getByRole("button", { name: "Close navigation" }), "Enter");
+    await key(page.getByRole("button", { name: "Close menu", exact: true }), "Enter");
     assert(!(await filter.isVisible()));
   }
   return "Filter, appearance and mobile keyboard close (where applicable)";
@@ -1024,8 +1069,17 @@ try {
           [...new Set(["default", ...entry.meta.source.sizes])].length;
         assert.equal(
           layout.metrics.examples.length,
-          layout.expectedCombinations,
+          1,
+          "Only the selected variant and size should mount",
         );
+        for (const [name, values] of [["Variant", entry.meta.source.variants], ["Size", entry.meta.source.sizes]]) {
+          const choices = [...new Set(["default", ...values])];
+          if (choices.length > 1) {
+            const select = page.getByLabel(name, { exact: true });
+            assert.deepEqual(await select.locator("option").evaluateAll((options) => options.map((option) => option.value)), choices);
+            assert.equal(await select.inputValue(), "default");
+          }
+        }
         await page
           .locator('[data-slot="preview"]')
           .first()
@@ -1047,7 +1101,7 @@ try {
         }
         layout.errors = [...errors];
         layout.status =
-          layout.metrics.overflow || layout.errors.length ? "issue" : "pass";
+          layout.metrics.overflow || layout.metrics.emptyNames.length || layout.errors.length ? "issue" : "pass";
       } catch (error) {
         layout.status = "failed";
         layout.error = error.message;
@@ -1148,6 +1202,7 @@ try {
     JSON.stringify(run, null, 2),
   );
   await browser.close();
+  if (staticServer) await new Promise((resolve) => staticServer.httpServer.close(resolve));
 }
 const failures = run.entries.filter(
   (e) =>

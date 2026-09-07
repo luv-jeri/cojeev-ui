@@ -1,0 +1,139 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination",
+  "title": "Pagination",
+  "description": "Lets users move between numbered pages and see their current position.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/pagination.tsx",
+      "content": "\"use client\";\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport * as React from \"react\";\nimport { cva } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport { useFlowGroup } from \"@/lib/sahajiv-motion/use-flow\";\nexport const paginationVariants = cva(\n  \"v-pager flex items-center gap-[var(--s-2)] flex-wrap\",\n);\nexport type PaginationProps = React.ComponentProps<\"nav\"> & {\n  page?: number;\n  defaultPage?: number;\n  totalPages?: number;\n  onPageChange?: (page: number) => void;\n};\nexport function Pagination({\n  ref,\n  className,\n  page,\n  defaultPage = 1,\n  totalPages,\n  onPageChange,\n  children,\n  ...props\n}: PaginationProps) {\n  const [local, setLocal] = React.useState(defaultPage);\n  const total = Math.max(\n    1,\n    Math.floor(Number.isFinite(totalPages) ? totalPages! : 1),\n  );\n  const current = Math.min(\n    total,\n    Math.max(\n      1,\n      Math.floor(Number.isFinite(page ?? local) ? (page ?? local) : 1),\n    ),\n  );\n  const flowRef = useFlowGroup<HTMLElement>(ref);\n  const pages = [...new Set([1, current - 1, current, current + 1, total])]\n    .filter((n) => n >= 1 && n <= total)\n    .sort((a, b) => a - b);\n  const change = (next: number) => {\n    const clamped = Math.max(1, Math.min(total, next));\n    if (page === undefined) setLocal(clamped);\n    if (clamped !== current) onPageChange?.(clamped);\n  };\n  return (\n    <nav\n      ref={flowRef}\n      data-slot=\"pagination\"\n      data-part=\"root\"\n      data-pager=\"\"\n      data-pages={total}\n      data-page={current}\n      aria-label=\"Pagination\"\n      className={cn(paginationVariants(), className)}\n      {...props}\n    >\n      {children ?? (\n        <>\n          <PaginationPrevious\n            disabled={current === 1}\n            onClick={() => change(current - 1)}\n          />\n          {pages.map((n, i) => (\n            <React.Fragment key={n}>\n              {i > 0 && n - pages[i - 1] > 1 && <PaginationEllipsis />}\n              <PaginationLink\n                isActive={n === current}\n                onClick={() => change(n)}\n              >\n                {n}\n              </PaginationLink>\n            </React.Fragment>\n          ))}\n          <PaginationNext\n            disabled={current === total}\n            onClick={() => change(current + 1)}\n          />\n          <span className=\"v-pager__info\" aria-live=\"polite\">\n            Page {current} of {total}\n          </span>\n        </>\n      )}\n    </nav>\n  );\n}\nexport type PaginationContentProps = React.ComponentProps<\"ul\">;\nexport function PaginationContent({\n  className,\n  ...props\n}: PaginationContentProps) {\n  return (\n    <ul\n      data-slot=\"pagination-content\"\n      className={cn(\"contents list-none\", className)}\n      {...props}\n    />\n  );\n}\nexport type PaginationItemProps = React.ComponentProps<\"li\">;\nexport function PaginationItem({ className, ...props }: PaginationItemProps) {\n  return (\n    <li\n      data-slot=\"pagination-item\"\n      className={cn(\"contents\", className)}\n      {...props}\n    />\n  );\n}\nexport type PaginationLinkProps = React.ComponentProps<\"button\"> & {\n  isActive?: boolean;\n};\nexport function PaginationLink({ref: externalMorphRef, \n  className,\n  isActive,\n  ...props\n}: PaginationLinkProps) {\n  const ownedMorphRef = useMorph<HTMLButtonElement>(\"pills\", externalMorphRef);\n  return (\n    <button ref={ownedMorphRef}\n      type=\"button\"\n      data-slot=\"pagination-link\"\n      data-part=\"item\"\n      aria-current={isActive ? \"page\" : undefined}\n      data-state={isActive ? \"active\" : \"inactive\"}\n      className={cn(\n        \"min-w-[36px] h-[36px] px-[10px] py-0 rounded-[var(--r-pill)] text-[13px] font-medium bg-[var(--card)]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type PaginationPreviousProps = PaginationLinkProps;\nexport function PaginationPrevious({\n  children,\n  ...props\n}: PaginationPreviousProps) {\n  return (\n    <PaginationLink aria-label=\"Previous\" {...props}>\n      {children ?? \"‹\"}\n    </PaginationLink>\n  );\n}\nexport type PaginationNextProps = PaginationLinkProps;\nexport function PaginationNext({ children, ...props }: PaginationNextProps) {\n  return (\n    <PaginationLink aria-label=\"Next\" {...props}>\n      {children ?? \"›\"}\n    </PaginationLink>\n  );\n}\nexport type PaginationEllipsisProps = React.ComponentProps<\"span\">;\nexport function PaginationEllipsis({\n  className,\n  ...props\n}: PaginationEllipsisProps) {\n  return (\n    <span\n      data-slot=\"pagination-ellipsis\"\n      aria-hidden=\"true\"\n      className={cn(\n        \"v-ellipsis px-[4px] text-[color:var(--muted-foreground)]\",\n        className,\n      )}\n      {...props}\n    >\n      …\n    </span>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/pagination.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"pagination\"]:not(.v-glide)\n  [data-slot=\"pagination-link\"][aria-current=\"page\"] {\n  background: var(--v-ink);\n  color: var(--v-on-ink);\n}\n[data-slot=\"pagination-link\"]:not([aria-current=\"page\"]) {\n  box-shadow: inset 0 0 0 1px var(--v-edge);\n}\n[data-slot=\"pagination-link\"]:disabled {\n  color: var(--v-disabled-ink);\n  opacity: 1;\n  cursor: not-allowed;\n}\n:root[data-mode=\"dark\"] [data-slot=\"pagination\"] [data-glide-active] {\n  color: var(--v-on-accent);\n}\n:root[data-mode=\"dark\"] [data-slot=\"pagination-link\"]:not([aria-current]) {\n  color: var(--v-text);\n}\n\n[data-slot=\"pagination\"] .v-pager__info { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin-left: auto; font-size: var(--fs-meta); color: var(--muted-foreground); }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/pagination.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/pagination.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "pagination",
+      "name": "Pagination",
+      "tier": "base",
+      "evidence": "Ext I18",
+      "status": "derived",
+      "root": ".v-pager",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "selected",
+        "rest"
+      ],
+      "dataStates": [],
+      "category": "nav",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "group"
+      ],
+      "canvas": "480x240",
+      "contract": "entries/pagination/contract.md",
+      "demo": "entries/pagination/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-selected.html",
+        "default-default-selected-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "PaginationProps",
+        "props": [
+          {
+            "name": "page",
+            "type": "number | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultPage",
+            "type": "number | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "totalPages",
+            "type": "number | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onPageChange",
+            "type": "((page: number) => void) | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "PaginationContentProps",
+        "props": []
+      },
+      {
+        "name": "PaginationItemProps",
+        "props": []
+      },
+      {
+        "name": "PaginationLinkProps",
+        "props": [
+          {
+            "name": "isActive",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "PaginationPreviousProps",
+        "props": [
+          {
+            "name": "isActive",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "PaginationNextProps",
+        "props": [
+          {
+            "name": "isActive",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "PaginationEllipsisProps",
+        "props": []
+      }
+    ],
+    "category": "Navigation",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

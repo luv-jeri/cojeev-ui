@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { DocsPage } from "fumadocs-ui/page";
-import { catalog, publicURL } from "@/lib/catalog";
+import { catalog, componentGuide, publicURL } from "@/lib/catalog";
 import { ComponentPreview } from "@/components/component-preview";
 import { InstallCommand } from "@/components/install-command";
 import { exampleSource } from "@/components/example-source";
@@ -46,6 +47,7 @@ export default async function Page({
   const { component } = await params;
   const entry = catalog().find((item) => item.name === component);
   if (!entry) notFound();
+  const guide = componentGuide(entry.name);
   const variants = [...new Set(["default", ...entry.meta.source.variants])];
   const sizes = [...new Set(["default", ...entry.meta.source.sizes])];
   const code = Object.fromEntries(
@@ -74,7 +76,7 @@ export default async function Page({
           <Badge
             variant={entry.meta.baseComponent ? "pink-soft" : "olive-soft"}
           >
-            {entry.meta.baseComponent ? "Component" : "Shared helper"}
+            {entry.meta.category}
           </Badge>
           <Display as="h1">{entry.title}</Display>
           <BodySecondary>{entry.description}</BodySecondary>
@@ -92,6 +94,12 @@ export default async function Page({
             sizes={sizes}
             code={code}
           />
+        </section>
+        <section className="docs-section" aria-labelledby="usage-heading">
+          <SectionTitle id="usage-heading">Using {entry.title.toLowerCase()}</SectionTitle>
+          <ul className="docs-guidance">
+            {guide.usage.map((note) => <li key={note}><Body>{note}</Body></li>)}
+          </ul>
         </section>
         <section className="docs-section" aria-labelledby="install-heading">
           <SectionTitle id="install-heading">Add to your project</SectionTitle>
@@ -170,6 +178,12 @@ export default async function Page({
             </section>
           ))}
         </section>
+        <section className="docs-section" aria-labelledby="accessibility-heading">
+          <SectionTitle id="accessibility-heading">Accessibility</SectionTitle>
+          <ul className="docs-guidance">
+            {guide.accessibility.map((note) => <li key={note}><Body>{note}</Body></li>)}
+          </ul>
+        </section>
         <section className="docs-section">
           <SectionTitle>States and appearance</SectionTitle>
           <div className="docs-section-heading">
@@ -185,6 +199,15 @@ export default async function Page({
             respects reduced motion preferences.
           </BodySecondary>
         </section>
+        <nav className="docs-section" aria-label="Related components">
+          <SectionTitle>Works well with</SectionTitle>
+          <div className="docs-related">
+            {guide.related.map((id) => {
+              const related = catalog().find((item) => item.name === id);
+              return related && <Link key={id} href={`/docs/${id}/`} className="docs-related-link">{related.title}<span aria-hidden="true">↗</span></Link>;
+            })}
+          </div>
+        </nav>
       </div>
     </DocsPage>
   );

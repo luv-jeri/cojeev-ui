@@ -1,0 +1,91 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator",
+  "title": "Separator",
+  "description": "Divides adjacent content with a horizontal or vertical rule.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/separator.tsx",
+      "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst SeparatorVariants=cva(\"v-sep [border:0] [height:1px] [color:gray] [background:var(--v-border)] [margin:var(--s-4)_0]\",{variants:{variant:{\"default\":\"\",\"v\":\"-v [width:1px] [height:auto] [align-self:stretch] [margin:0_var(--s-4)]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type SeparatorProps=React.ComponentProps<\"hr\"> & VariantProps<typeof SeparatorVariants> & { orientation?:\"horizontal\"|\"vertical\"; decorative?:boolean }\nexport function Separator({className,variant,size,orientation,decorative=false,...props}:SeparatorProps){return <hr data-slot=\"separator\" data-part=\"root\" role={decorative?\"none\":\"separator\"} aria-orientation={decorative?undefined:orientation??(variant===\"v\"?\"vertical\":\"horizontal\")} className={cn(SeparatorVariants({variant:orientation===\"vertical\"?\"v\":variant,size}),className)} {...props}/>}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/separator.css",
+      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-sep[data-slot].-v{width:1px;height:auto;align-self:stretch;margin:0 var(--s-4)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/separator.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/separator.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "separator",
+      "name": "Separator",
+      "tier": "base",
+      "evidence": "I11 I18",
+      "status": "source",
+      "root": ".v-sep",
+      "variants": [
+        "v"
+      ],
+      "sizes": [],
+      "states": [
+        "rest"
+      ],
+      "dataStates": [],
+      "category": "none",
+      "motionOnByDefault": false,
+      "flowRoles": [],
+      "canvas": "480x240",
+      "contract": "entries/separator/contract.md",
+      "demo": "entries/separator/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "SeparatorProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"v\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "orientation",
+            "type": "\"horizontal\" | \"vertical\" | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "decorative",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Layout",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

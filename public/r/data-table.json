@@ -1,0 +1,191 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-table",
+  "title": "Data Table",
+  "description": "Displays records with client-side filtering, sortable columns, and paginated rows.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/table.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/pagination.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/data-table.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Table,\n  TableContainer,\n  TableHeader,\n  TableBody,\n  TableRow,\n  TableHead,\n  TableCell,\n  type TableContainerProps,\n} from \"@/components/ui/table\";\nimport {\n  Pagination,\n  type PaginationProps,\n} from \"@/components/ui/pagination\";\nimport { Button } from \"@/components/ui/button\";\nimport { useFlowGroup } from \"@/lib/sahajiv-motion/use-flow\";\nexport type DataTableColumn<T> = {\n  id: string;\n  header: React.ReactNode;\n  accessorKey?: keyof T;\n  cell?: (row: T) => React.ReactNode;\n  numeric?: boolean;\n  sortValue?: (row: T) => string | number;\n  className?: string;\n};\nexport type DataTableFilter<T> = {\n  id: string;\n  label: React.ReactNode;\n  predicate: (row: T) => boolean;\n};\nexport type DataTableProps<T> = Omit<\n  React.ComponentProps<\"div\">,\n  \"children\"\n> & {\n  data: T[];\n  columns: DataTableColumn<T>[];\n  getRowId?: (row: T, index: number) => string;\n  filters?: DataTableFilter<T>[];\n  filter?: string;\n  defaultFilter?: string;\n  onFilterChange?: (filter: string) => void;\n  page?: number;\n  defaultPage?: number;\n  onPageChange?: (page: number) => void;\n  pageSize?: number;\n  emptyMessage?: React.ReactNode;\n  caption?: string;\n  onRowClick?: (row: T) => void;\n};\nexport function DataTable<T>({\n  data,\n  columns,\n  getRowId,\n  filters = [],\n  filter,\n  defaultFilter = \"all\",\n  onFilterChange,\n  page,\n  defaultPage = 1,\n  onPageChange,\n  pageSize = 10,\n  emptyMessage = \"No matching records\",\n  caption,\n  onRowClick,\n  className,\n  ...props\n}: DataTableProps<T>) {\n  const [localFilter, setLocalFilter] = React.useState(defaultFilter);\n  const [localPage, setLocalPage] = React.useState(defaultPage);\n  const [sort, setSort] = React.useState<{\n    id: string;\n    direction: \"asc\" | \"desc\";\n  } | null>(null);\n  const activeFilter = filter ?? localFilter;\n  const selectedFilter = filters.find((f) => f.id === activeFilter);\n  const filtered = React.useMemo(\n    () => (selectedFilter ? data.filter(selectedFilter.predicate) : data),\n    [data, selectedFilter],\n  );\n  const sorted = React.useMemo(() => {\n    const col = columns.find((c) => c.id === sort?.id);\n    if (!sort || !col?.sortValue) return filtered;\n    const value = col.sortValue;\n    return [...filtered].sort((a, b) => {\n      const av = value(a),\n        bv = value(b);\n      const delta =\n        typeof av === \"number\" && typeof bv === \"number\"\n          ? av - bv\n          : String(av).localeCompare(String(bv));\n      return sort.direction === \"asc\" ? delta : -delta;\n    });\n  }, [filtered, columns, sort]);\n  const size = Math.max(\n    1,\n    Math.floor(Number.isFinite(pageSize) ? pageSize : 10),\n  );\n  const totalPages = Math.max(1, Math.ceil(sorted.length / size));\n  const current = Math.max(\n    1,\n    Math.min(\n      totalPages,\n      Math.floor(Number.isFinite(page ?? localPage) ? (page ?? localPage) : 1),\n    ),\n  );\n  const visible = sorted.slice((current - 1) * size, current * size);\n  const setPage = (next: number) => {\n    if (page === undefined) setLocalPage(next);\n    onPageChange?.(next);\n  };\n  const setFilter = (next: string) => {\n    if (filter === undefined) setLocalFilter(next);\n    onFilterChange?.(next);\n    setPage(1);\n  };\n  return (\n    <div\n      data-slot=\"data-table\"\n      data-state={filtered.length ? \"full\" : \"filtered-empty\"}\n      className={cn(\"grid gap-[16px]\", className)}\n      {...props}\n    >\n      {filters.length > 0 && (\n        <DataTableFilters aria-label=\"Filter records\">\n          <DataTableFilterButton\n            pressed={activeFilter === \"all\"}\n            onClick={() => setFilter(\"all\")}\n          >\n            All <span>{data.length}</span>\n          </DataTableFilterButton>\n          {filters.map((f) => (\n            <DataTableFilterButton\n              key={f.id}\n              pressed={activeFilter === f.id}\n              onClick={() => setFilter(f.id)}\n            >\n              {f.label} <span>{data.filter(f.predicate).length}</span>\n            </DataTableFilterButton>\n          ))}\n        </DataTableFilters>\n      )}\n      <DataTableViewport>\n        <Table>\n          {caption && <caption className=\"v-sr\">{caption}</caption>}\n          <TableHeader>\n            <TableRow>\n              {columns.map((col) => (\n                <TableHead\n                  key={col.id}\n                  numeric={col.numeric}\n                  className={col.className}\n                  aria-sort={\n                    sort?.id === col.id\n                      ? sort.direction === \"asc\"\n                        ? \"ascending\"\n                        : \"descending\"\n                      : col.sortValue\n                        ? \"none\"\n                        : undefined\n                  }\n                >\n                  {col.sortValue ? (\n                    <button\n                      type=\"button\"\n                      className=\"text-inherit uppercase tracking-inherit\"\n                      onClick={() =>\n                        setSort((old) => ({\n                          id: col.id,\n                          direction:\n                            old?.id === col.id && old.direction === \"asc\"\n                              ? \"desc\"\n                              : \"asc\",\n                        }))\n                      }\n                    >\n                      {col.header}\n                      {sort?.id === col.id &&\n                        (sort.direction === \"asc\" ? \" ↑\" : \" ↓\")}\n                    </button>\n                  ) : (\n                    col.header\n                  )}\n                </TableHead>\n              ))}\n            </TableRow>\n          </TableHeader>\n          <TableBody>\n            {visible.map((row, index) => (\n              <TableRow\n                key={getRowId?.(row, index) ?? index}\n                tabIndex={onRowClick ? 0 : undefined}\n                onClick={() => onRowClick?.(row)}\n                onKeyDown={(event) => {\n                  if (\n                    onRowClick &&\n                    (event.key === \"Enter\" || event.key === \" \")\n                  ) {\n                    event.preventDefault();\n                    onRowClick(row);\n                  }\n                }}\n              >\n                {columns.map((col) => (\n                  <TableCell\n                    key={col.id}\n                    numeric={col.numeric}\n                    className={col.className}\n                  >\n                    {col.cell\n                      ? col.cell(row)\n                      : col.accessorKey === undefined\n                        ? null\n                        : String(row[col.accessorKey] ?? \"\")}\n                  </TableCell>\n                ))}\n              </TableRow>\n            ))}\n          </TableBody>\n        </Table>\n      </DataTableViewport>\n      {!filtered.length && (\n        <DataTableEmpty>\n          <b className=\"v-state__word\">{emptyMessage}</b>\n          <span className=\"v-state__why\">\n            Try another filter to see more records.\n          </span>\n          {activeFilter !== \"all\" && (\n            <Button\n              variant=\"secondary\"\n              size=\"sm\"\n              onClick={() => setFilter(\"all\")}\n            >\n              Clear filters\n            </Button>\n          )}\n        </DataTableEmpty>\n      )}\n      <div className=\"flex items-center justify-between gap-[12px] flex-wrap\">\n        <span className=\"v-meta\" role=\"status\">\n          {filtered.length} of {data.length} records\n        </span>\n        <DataTablePagination\n          page={current}\n          totalPages={totalPages}\n          onPageChange={setPage}\n        />\n      </div>\n    </div>\n  );\n}\nexport type DataTableViewportProps = TableContainerProps;\nexport function DataTableViewport(props: DataTableViewportProps) {\n  return <TableContainer data-part=\"viewport\" {...props} />;\n}\nexport type DataTableFiltersProps = React.ComponentProps<\"div\">;\nexport function DataTableFilters({\n  ref,\n  className,\n  ...props\n}: DataTableFiltersProps) {\n  const flowRef = useFlowGroup<HTMLDivElement>(ref);\n  return (\n    <div\n      ref={flowRef}\n      data-slot=\"data-table-filters\"\n      data-part=\"filters\"\n      data-filters=\"\"\n      role=\"group\"\n      className={cn(\n        \"v-tabs -pills flex gap-[var(--s-2)]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type DataTableFilterButtonProps = React.ComponentProps<\"button\"> & {\n  pressed?: boolean;\n};\nexport function DataTableFilterButton({\n  className,\n  pressed,\n  ...props\n}: DataTableFilterButtonProps) {\n  return (\n    <button\n      data-slot=\"data-table-filter-button\"\n      className={cn(\n        \"v-tab shrink-0 h-[var(--ctl-sm)] px-[14px] rounded-[var(--r-pill)] bg-[var(--v-beige)] text-[13px] font-medium text-[color:var(--v-text)]\",\n        className,\n      )}\n      type=\"button\"\n      aria-pressed={pressed}\n      data-state={pressed ? \"on\" : \"off\"}\n      {...props}\n    />\n  );\n}\nexport type DataTablePaginationProps = PaginationProps;\nexport function DataTablePagination(props: DataTablePaginationProps) {\n  return <Pagination data-part=\"pagination\" {...props} />;\n}\nexport type DataTableEmptyProps = React.ComponentProps<\"div\">;\nexport function DataTableEmpty({ className, ...props }: DataTableEmptyProps) {\n  return (\n    <div\n      data-slot=\"data-table-empty\"\n      data-part=\"empty\"\n      className={cn(\n        \"v-state -filtered grid content-center justify-items-start gap-[var(--s-3)] p-[var(--s-6)] rounded-[var(--r-card)] bg-transparent border border-dashed border-[var(--v-border)] min-h-[160px]\",\n        className,\n      )}\n      role=\"status\"\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/data-table.css",
+      "content": "@layer sahajiv-states {\n@media (max-width: 640px) {\n  [data-slot=\"data-table-filters\"] { overflow-x: auto; padding-bottom: 2px; }\n  [data-slot=\"data-table-filters\"]::-webkit-scrollbar { display: none; }\n}\n[data-slot=\"data-table-filter-button\"] {\n  box-shadow: inset 0 0 0 1px var(--v-edge);\n}\n[data-slot=\"data-table-filters\"]:not(.v-glide)\n  [data-slot=\"data-table-filter-button\"][aria-pressed=\"true\"] {\n  background: var(--v-ink);\n  color: var(--v-on-ink);\n}\n:root[data-mode=\"dark\"] [data-slot=\"data-table-filters\"] [data-glide-active] {\n  color: var(--v-on-accent);\n}\n\n[data-slot=\"data-table-empty\"] .v-state__word {\n  font-weight: 600;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n[data-slot=\"data-table-empty\"] .v-state__why {\n  color: var(--muted-foreground);\n  font-size: var(--fs-control);\n  max-width: 44ch;\n}\n:root[data-mode=\"dark\"] [data-slot=\"data-table-empty\"] .v-state__why {\n  color: var(--v-text-2);\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/data-table.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/data-table.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "data-table",
+      "name": "Data Table",
+      "tier": "base",
+      "evidence": "I18",
+      "status": "source",
+      "root": ".v-table-wrap",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active",
+        "on"
+      ],
+      "dataStates": [
+        "full",
+        "filtered-empty"
+      ],
+      "category": "surfaces",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "group",
+        "press",
+        "enters",
+        "breathes"
+      ],
+      "canvas": "960x560",
+      "contract": "entries/data-table/contract.md",
+      "demo": "entries/data-table/demo.html",
+      "isolation": [
+        "default-default-rest-960x560.html",
+        "default-default-rest-dark-960x560.html",
+        "default-default-on-960x560.html",
+        "default-default-on-dark-960x560.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "DataTableProps",
+        "props": [
+          {
+            "name": "data",
+            "type": "T[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "columns",
+            "type": "DataTableColumn<T>[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "getRowId",
+            "type": "((row: T, index: number) => string) | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "filters",
+            "type": "DataTableFilter<T>[] | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "filter",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultFilter",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onFilterChange",
+            "type": "((filter: string) => void) | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "page",
+            "type": "number | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultPage",
+            "type": "number | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onPageChange",
+            "type": "((page: number) => void) | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "number | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "emptyMessage",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "caption",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onRowClick",
+            "type": "((row: T) => void) | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "DataTableViewportProps",
+        "props": []
+      },
+      {
+        "name": "DataTableFiltersProps",
+        "props": []
+      },
+      {
+        "name": "DataTableFilterButtonProps",
+        "props": [
+          {
+            "name": "pressed",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "DataTablePaginationProps",
+        "props": []
+      },
+      {
+        "name": "DataTableEmptyProps",
+        "props": []
+      }
+    ],
+    "category": "Data display",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

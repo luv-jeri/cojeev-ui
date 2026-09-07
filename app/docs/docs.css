@@ -119,23 +119,7 @@
   gap: 12px;
   min-width: 0;
 }
-.docs-command {
-  display: grid;
-  gap: 12px;
-  justify-items: start;
-  min-width: 0;
-}
-.docs-command pre {
-  margin: 0;
-  padding: 20px;
-  width: 100%;
-  max-width: 100%;
-  overflow: auto;
-  border-radius: var(--r-card-sm);
-  background: var(--v-beige);
-  color: var(--v-text);
-  font-size: 13px;
-}
+.docs-command { width: 100%; min-width: 0; }
 .docs-main code {
   font-family: var(--font-mono);
 }
@@ -214,3 +198,10 @@
 .docs-size[data-example] { display: block; }
 .docs-size-label { display: block; margin-bottom: 8px; }
 .docs-api-title { overflow-wrap: anywhere; }
+
+.docs-guidance { display: grid; gap: 12px; padding-inline-start: 20px; margin: 0; max-width: 72ch; list-style: disc; }
+.docs-guidance li::marker { color: var(--v-text-2); }
+.docs-related { display: flex; flex-wrap: wrap; gap: 12px; }
+.docs-related-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 48px; padding: 12px 20px; border-radius: var(--r-pill); background: var(--v-beige); color: var(--v-text); font-weight: 500; text-decoration: none; }
+.docs-related-link:hover { background: var(--v-pink); color: var(--v-ink); }
+.docs-related-link:focus-visible { outline: 2px solid var(--v-text); outline-offset: 4px; }

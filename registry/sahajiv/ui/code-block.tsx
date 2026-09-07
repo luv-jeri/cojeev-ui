@@ -135,6 +135,7 @@ export type CodeBlockProps = Omit<React.ComponentProps<"figure">, "children" | "
   language?: string;
   title?: string;
   wrap?: boolean;
+  copyLabel?: string;
 };
 
 /** A plain-text code surface. `language` labels the source; it does not fake highlighting. */
@@ -143,6 +144,7 @@ export function CodeBlock({
   language,
   title,
   wrap = false,
+  copyLabel,
   className,
   ...props
 }: CodeBlockProps) {
@@ -158,7 +160,7 @@ export function CodeBlock({
           {title && <span data-slot="code-block-title">{title}</span>}
           {language && <Meta as="span">{language}</Meta>}
         </span>
-        <CopyButton code={code} />
+        <CopyButton code={code}>{copyLabel}</CopyButton>
       </figcaption>
       <pre tabIndex={0} aria-label={title ? `${title} source code` : "Source code"}>
         <code>{code}</code>
