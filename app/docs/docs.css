@@ -72,6 +72,7 @@
   margin: 0;
   max-width: none;
 }
+.docs-main > [data-layout-main] { display:block; padding:0; }
 .docs-main .docs-article {
   display: grid;
   gap: 40px;
@@ -80,6 +81,23 @@
   display: grid;
   gap: 16px;
 }
+.docs-intro > [data-slot="badge"] { width:fit-content; justify-self:start; }
+.docs-intro > p { max-width:65ch; }
+.docs-intro { padding-bottom:8px; }
+.docs-playground { display:grid; gap:20px; min-width:0; }
+.docs-playground-controls { display:flex; align-items:end; flex-wrap:wrap; gap:16px; }
+.docs-control { display:grid; gap:8px; min-width:140px; flex:0 1 180px; }
+.docs-control [data-slot="native-select"] { width:100%; text-transform:capitalize; }
+.docs-playground-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-left:auto; padding-bottom:4px; }
+.docs-specimen { min-width:0; width:100%; }
+.docs-playground .v-preview__canvas { min-height:260px; display:grid; align-content:center; }
+.docs-motion-heading { display:grid; gap:10px; }
+.docs-motion-panel { width:min(480px,calc(100vw - 24px)); right:12px; top:12px; bottom:12px; padding:24px; gap:28px; }
+.docs-motion-panel > [data-slot="sheet-header"] { align-items:flex-start; gap:12px; }
+.docs-motion-panel > [data-slot="sheet-header"] [data-slot="sheet-title"] { font-size:26px; }
+.docs-motion-panel > [data-slot="sheet-close"] { white-space:normal; }
+.docs-shell .docs-motion-launch { width:100%; }
+.docs-mobile-actions { display:flex; gap:8px; align-items:center; }
 .docs-section {
   display: grid;
   gap: 20px;
@@ -180,6 +198,17 @@
   .docs-main {
     padding: 20px 4px 64px;
   }
+  .docs-mobile-actions > [data-slot="sheet-trigger"] { font-size:12px; padding-inline:12px; }
+  .docs-playground-actions { margin-left:0; padding-bottom:0; }
+  .docs-control { flex:1; min-width:120px; }
+  .docs-playground .v-preview__canvas { min-height:220px; }
+}
+
+@media (max-width: 420px) {
+  .docs-mobile { flex-wrap:wrap; }
+  .docs-mobile-actions { flex:1; justify-content:flex-end; }
+  .docs-mobile-actions > button { font-size:12px; padding-inline:12px; }
+  .docs-motion-panel { padding:20px 16px; }
 }
 
 .docs-size[data-example] { display: block; }

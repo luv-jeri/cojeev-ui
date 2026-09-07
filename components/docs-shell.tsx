@@ -17,6 +17,7 @@ import { Label } from "@/registry/sahajiv/ui/label";
 import { Meta, Title } from "@/registry/sahajiv/ui/typography";
 import { Shape } from "@/registry/sahajiv/ui/shape";
 import { ThemeControl } from "@/components/theme-control";
+import { DocsMotion } from "@/components/docs-motion";
 export type DocsLink = { name: string; title: string; baseComponent: boolean };
 export function DocsShell({
   entries,
@@ -25,10 +26,16 @@ export function DocsShell({
   entries: DocsLink[];
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
+  const pathname = usePathname()?.replace(/\/$/, "");
   const [query, setQuery] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const queryId = React.useId();
+  React.useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [open]);
   const filtered = entries.filter((entry) =>
     `${entry.title} ${entry.name}`.toLowerCase().includes(query.toLowerCase()),
   );
@@ -39,6 +46,8 @@ export function DocsShell({
       </a>
       <header className="docs-mobile">
         <Title as="span">SahaJiv UI</Title>
+        <div className="docs-mobile-actions">
+        <DocsMotion />
         <Button
           size="sm"
           variant="secondary"
@@ -46,8 +55,9 @@ export function DocsShell({
           aria-controls="docs-navigation"
           onClick={() => setOpen(!open)}
         >
-          {open ? "Close navigation" : "Browse components"}
+          {open ? "Close menu" : "Browse"}
         </Button>
+        </div>
       </header>
       <Sidebar
         id="docs-navigation"
@@ -94,6 +104,7 @@ export function DocsShell({
                   >
                     <Link
                       href={`/docs/${entry.name}`}
+                      aria-current={pathname?.endsWith(`/docs/${entry.name}`) ? "page" : undefined}
                       onClick={() => setOpen(false)}
                     >
                       <SidebarMenuLabel>{entry.title}</SidebarMenuLabel>
@@ -107,13 +118,14 @@ export function DocsShell({
           )}
         </SidebarContent>
         <SidebarFooter>
+          <DocsMotion className="docs-motion-launch" />
           <ThemeControl />
           <Meta>Made for everyday work.</Meta>
         </SidebarFooter>
       </Sidebar>
-      <main id="docs-main" className="docs-main" tabIndex={-1}>
+      <div id="docs-main" className="docs-main" tabIndex={-1}>
         {children}
-      </main>
+      </div>
     </div>
   );
 }

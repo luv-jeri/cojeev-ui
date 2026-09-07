@@ -5,6 +5,13 @@ import { cva } from "class-variance-authority"
 import { DOMAIN, FLOW_CHARACTERS, PRODUCT_CATEGORIES, getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setMotionMode, setMotionCategory, setFlowSettings, resetFlow, setMorphConfig, setMorphTier, resetMorph, exportMorphJSON, importMorphJSON, type MorphConfig, type Tier, type TierName, type FlowVariant } from "../motion/settings"
 import { useMorph } from "../motion/use-morph"
 import { useFlowPress } from "../motion/flow-press"
+import { cn } from "../lib/utils"
+import { Button } from "./button"
+import { Label } from "./label"
+import { Slider } from "./slider"
+import { Switch } from "./switch"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs"
+import { BodySecondary, Meta } from "./typography"
 
 const adjusterVariants=cva([
  "v-adjuster @container box-border w-full max-w-[680px] rounded-[var(--r-card)] border border-[var(--v-border)] bg-[var(--v-canvas)] font-[family-name:var(--font-text)] text-[13px] leading-[1.5] text-[var(--v-text)]",
@@ -17,6 +24,64 @@ const adjusterVariants=cva([
 ])
 const fieldVariants=cva("box-border min-w-0 w-full rounded-[var(--r-sm)] border border-[var(--v-border)] bg-[var(--v-canvas)] px-[9px] py-[7px] text-[var(--v-text)]")
 export type AdjusterProps=React.ComponentProps<'section'> & {defaultOpen?:boolean}
+export type MotionControlsProps = React.ComponentProps<'section'> & { showPreview?: boolean }
+const CHARACTER_DESCRIPTIONS:Record<Exclude<FlowVariant,'off'>,string> = {
+ glide:'A smooth, direct slide for everyday interfaces.',
+ stretch:'An elastic stretch that follows the selection.',
+ jelly:'A soft, playful wobble as the selection lands.',
+ comet:'A quick movement with a trailing accent.',
+ drop:'An ink-like gather, movement and soft landing.',
+ rubber:'A flexible pull between neighbouring choices.',
+ pebble:'A rounded shape with a gentle rolling feel.',
+ ripple:'A moving selection with a ripple on arrival.',
+ halo:'A subtle glow around the selected item.',
+}
+function subscribeReducedMotion(listener:()=>void) {
+ const media=window.matchMedia('(prefers-reduced-motion: reduce)')
+ media.addEventListener('change',listener)
+ return ()=>media.removeEventListener('change',listener)
+}
+function readReducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches }
+/** Compact shared selection controls. Changes persist in the site's motion settings. */
+export function MotionControls({showPreview=true,className,...props}:MotionControlsProps) {
+ const {motion,flow}=React.useSyncExternalStore(subscribeSettings,getSettingsSnapshot,getServerSettingsSnapshot)
+ const reduced=React.useSyncExternalStore(subscribeReducedMotion,readReducedMotion,()=>false)
+ const id=React.useId()
+ const reset=()=>{setMotionMode('subtle');resetFlow()}
+ return <section data-slot="motion-controls" className={cn('v-motion-controls',className)} {...props}>
+  <div className="v-motion-controls__row">
+   <div><Label htmlFor={id+'-enabled'}>Enable motion</Label><Meta>Changes apply across this site.</Meta></div>
+   <Switch id={id+'-enabled'} checked={motion.mode!=='off'} onCheckedChange={enabled=>setMotionMode(enabled?'subtle':'off')}/>
+  </div>
+  {reduced&&<BodySecondary role="status">Your device prefers reduced motion. Selections stay still; your chosen settings are saved.</BodySecondary>}
+  <div className="v-motion-controls__section">
+   <Label id={id+'-characters'}>Choose a character</Label>
+   <div className="v-motion-controls__characters" role="group" aria-labelledby={id+'-characters'}>
+    {(Object.entries(FLOW_CHARACTERS) as [FlowVariant,typeof FLOW_CHARACTERS[FlowVariant]][]).filter(([value])=>value!=='off').map(([value,character])=><Button key={value} size="sm" variant={flow.variant===value?'default':'secondary'} aria-pressed={flow.variant===value} onClick={()=>setFlowSettings({variant:value})}>{character.label}</Button>)}
+   </div>
+   <BodySecondary className="v-motion-controls__description">{flow.variant==='off'?'Selection motion is paused. Choose a character to resume.':CHARACTER_DESCRIPTIONS[flow.variant]}</BodySecondary>
+  </div>
+  {showPreview&&<div className="v-motion-controls__preview">
+   <Meta>Try the movement</Meta>
+   <Tabs defaultValue="overview" variant="pills">
+    <TabsList aria-label="Motion preview"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
+    <TabsContent value="overview"><BodySecondary>Choose another tab to see {flow.variant==='off'?'the selection':FLOW_CHARACTERS[flow.variant].label.toLowerCase()} in action.</BodySecondary></TabsContent>
+    <TabsContent value="activity"><BodySecondary>Try switching back quickly. The indicator follows your latest choice.</BodySecondary></TabsContent>
+    <TabsContent value="settings"><BodySecondary>Keep the character you like, then adjust its speed and intensity below.</BodySecondary></TabsContent>
+   </Tabs>
+  </div>}
+  <div className="v-motion-controls__section">
+   <div className="v-motion-controls__row"><Label id={id+'-speed'}>Speed</Label><Meta>{flow.speed.toFixed(2)}×</Meta></div>
+   <Slider aria-labelledby={id+'-speed'} thumbLabel="Motion speed" min={.25} max={Math.max(3,flow.speed)} step={.05} value={[flow.speed]} onValueChange={([speed])=>setFlowSettings({speed})}/>
+  </div>
+  <div className="v-motion-controls__section">
+   <div className="v-motion-controls__row"><Label id={id+'-intensity'}>Intensity</Label><Meta>{flow.intensity.toFixed(2)}×</Meta></div>
+   <Slider aria-labelledby={id+'-intensity'} thumbLabel="Motion intensity" min={0} max={Math.max(2,flow.intensity)} step={.05} value={[flow.intensity]} onValueChange={([intensity])=>setFlowSettings({intensity})}/>
+  </div>
+  <div className="v-motion-controls__row"><div><Label htmlFor={id+'-hover'}>Pointer preview</Label><Meta>A hint before you select. Pointer devices only.</Meta></div><Switch id={id+'-hover'} checked={flow.hover} onCheckedChange={hover=>setFlowSettings({hover})}/></div>
+  <Button variant="ghost" size="sm" onClick={reset}>Reset motion settings</Button>
+ </section>
+}
 type Control=[label:string,min:number,max:number,step:number,unit:string]
 const BEHAVIORS={rest:'Rest breath',reach:'Reach',merge:'Merge on entry',hold:'Hold inside',jiggleOn:'Let-go wobble',press:'Press squash',echo:'Outline echo'} as const
 const CONFIG:Partial<Record<keyof MorphConfig,Control>>={

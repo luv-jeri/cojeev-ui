@@ -49,14 +49,14 @@ export default async function Page({
   const variants = [...new Set(["default", ...entry.meta.source.variants])];
   const sizes = [...new Set(["default", ...entry.meta.source.sizes])];
   const code = Object.fromEntries(
-    variants.map((variant) => [
-      variant,
-      exampleSource(entry.name, variant, sizes),
-    ]),
+    variants.flatMap((variant) => sizes.map((size) => [
+      `${variant}:${size}`,
+      exampleSource(entry.name, variant, size),
+    ])),
   );
   const exampleDependencies = [
     ...new Set(
-      [...code.default.matchAll(/"@\/components\/ui\/([^"\n]+)"/g)].map(
+      [...code["default:default"].matchAll(/"@\/components\/ui\/([^"\n]+)"/g)].map(
         (match) => match[1],
       ),
     ),
@@ -83,10 +83,10 @@ export default async function Page({
         <section className="docs-section" aria-labelledby="example-heading">
           <SectionTitle id="example-heading">Try it</SectionTitle>
           <Body>
-            Use the controls below. Each example keeps its own state in this
-            page.
+            Explore the variants, try the interaction, then copy the code.
           </Body>
           <ComponentPreview
+            key={entry.name}
             id={entry.name}
             variants={variants}
             sizes={sizes}
