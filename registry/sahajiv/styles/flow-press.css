@@ -7,7 +7,7 @@
 [data-flow-owned].v-glide>.v-glide__hover{width:var(--hov-w,0px);height:var(--hov-h,0px);border-radius:var(--hov-r,999px);opacity:calc(var(--hov-o,0) * var(--flow-hover,1));transform:translate3d(var(--hov-x,0px),var(--hov-y,0px),0)}
 [data-flow-owned].v-glide>.v-glide__pill>i,[data-flow-owned].v-glide>.v-glide__hover>i,[data-flow-owned].v-glide>.v-glide__trail>i{position:absolute;inset:0;border-radius:inherit;display:block}
 [data-flow-owned].v-glide>*>i::after{content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;pointer-events:none}
-:where([data-flow-owned].v-glide>*:not(.v-glide__pill):not(.v-glide__hover):not(.v-glide__trail)){position:relative;z-index:1}
+:where([data-flow-owned].v-glide>*:not(.v-glide__pill):not(.v-glide__hover):not(.v-glide__trail)),:where([data-slot="navigation-menu"][data-flow-owned].v-glide .v-nav__item[data-slot="navigation-menu-link"]){position:relative;z-index:1}
 [data-flow-owned].v-glide>.v-glide__hover{z-index:2}[data-flow-owned].v-glide>.v-glide__trail{z-index:-2;display:none}
 [data-flow-owned].v-glide>.v-glide__pill>i,[data-flow-owned].v-glide>.v-glide__trail>i{background:var(--glide-bg)}
 [data-flow-owned].v-glide>.v-glide__trail>i{opacity:.3}
@@ -19,11 +19,12 @@
 [data-flow-owned].v-glide.-underline [data-glide-active]{color:var(--v-text)}
 .v-nav[data-flow-owned].v-glide>.v-glide__pill>i,.v-nav[data-flow-owned].v-glide>.v-glide__trail>i{background:var(--rail-sel)}
 .v-nav[data-flow-owned].v-glide>.v-glide__hover>i{background:var(--rail-hover)}
-.v-nav[data-flow-owned].v-glide>.v-glide__pill{border-radius:var(--r-md)}
+.v-nav[data-flow-owned].v-glide>.v-glide__pill{border-radius:var(--r-md);background:rgba(251,244,230,.1)}
+.v-nav[data-flow-owned].v-glide .v-nav__item[data-glide-active]{color:var(--v-pink)}
 .v-seg[data-flow-owned].v-glide>.v-glide__pill{border-radius:999px}
 .v-seg.-pink[data-flow-owned].v-glide>.v-glide__pill>i,.v-seg.-pink[data-flow-owned].v-glide>.v-glide__trail>i{background:var(--v-pink)}
 .v-seg.-pink[data-flow-owned].v-glide [data-glide-active]{color:var(--v-on-accent)}
-.v-seg[data-flow-owned].v-glide .v-btn[aria-pressed="true"]{background:transparent}
+.v-seg[data-flow-owned].v-glide .v-btn:is([aria-pressed="true"],[aria-checked="true"]){background:transparent}
 :root[data-mode="dark"] .v-seg[data-flow-owned].v-glide>.v-glide__pill>i,:root[data-mode="dark"] .v-pager[data-flow-owned].v-glide>.v-glide__pill>i,:root[data-mode="dark"] .v-tabs.-pills[data-flow-owned].v-glide>.v-glide__pill>i{background:var(--v-pink)}
 :root[data-mode="dark"] .v-seg:where([data-slot],[data-slot] *) [data-glide-active],:root[data-mode="dark"] .v-pager:where([data-slot],[data-slot] *) [data-glide-active],:root[data-mode="dark"] .v-tabs:where([data-slot],[data-slot] *).-pills [data-glide-active]{color:var(--v-on-accent)}
 .v-weekdays[data-flow-owned].v-glide>.v-glide__pill>i,.v-iradios[data-flow-owned].v-glide>.v-glide__pill>i,.v-md__list[data-flow-owned].v-glide>.v-glide__pill>i{background:var(--sel-bg)}
@@ -38,7 +39,7 @@
 [data-flow-fields][data-flow-owned].v-glide>.v-glide__pill>i{background:var(--v-pink-soft)}
 [data-flow-fields][data-flow-owned].v-glide>.v-glide__hover{display:none}
 [data-flow-fields][data-flow-owned].v-glide [data-glide-active]{color:var(--v-text)}
-[data-flow-fields][data-flow-owned].v-glide [data-glide-active]:not(.v-otp input){box-shadow:inset 0 0 0 2px var(--v-brand)}
+[data-flow-fields][data-flow-owned].v-glide [data-glide-active]:not(.v-otp input):not([data-slot="input-otp-slot"]){box-shadow:inset 0 0 0 2px var(--v-brand)}
 [data-flow-fields][data-flow-owned].v-glide .v-field:has([data-glide-active]) .v-label{color:var(--v-accent-ink);transition:color var(--t-flow-radius-sm) ease}
 [data-flow-fields][data-flow-owned].v-glide>.v-glide__pill>i::after{inset:auto 0 0 auto}
 .v-menu[data-flow-owned].v-glide>.v-glide__pill>i,.v-cmd__list[data-flow-owned].v-glide>.v-glide__pill>i{background:var(--v-beige)}
@@ -96,9 +97,10 @@
 [data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still>.v-glide__pill,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still>.v-glide__hover,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still>.v-glide__trail{transition:none}
 [data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide[data-flow-kind="bar"]>.v-glide__pill>i,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide[data-flow-kind="bar"]>.v-glide__pill>i::after{animation:none}
 [data-flow-owned].v-glide.-underline>.v-glide__trail{display:none}
-[data-flow-owned].v-glide>.v-tab,[data-flow-owned].v-glide>.v-btn,[data-flow-owned].v-glide>.v-nav__item,[data-flow-owned].v-glide>.v-item,[data-flow-owned].v-glide>label,[data-flow-owned].v-glide>.v-iradio[data-slot="radio-group-item"]{transition:color var(--t-flow-label) ease calc(var(--t-flow-label-delay) / var(--flow-speed,1)),background-color var(--t-flow-hover) ease,box-shadow var(--t-flow-hover) ease,transform var(--t-micro) var(--enter)}
+[data-flow-owned].v-glide>.v-tab,[data-flow-owned].v-glide>.v-btn,[data-flow-owned].v-glide>.v-nav__item,[data-flow-owned].v-glide>.v-item,[data-flow-owned].v-glide>label,[data-flow-owned].v-glide>.v-iradio[data-slot="radio-group-item"],[data-slot="navigation-menu"][data-flow-owned].v-glide .v-nav__item[data-slot="navigation-menu-link"]{transition:color var(--t-flow-label) ease calc(var(--t-flow-label-delay) / var(--flow-speed,1)),background-color var(--t-flow-hover) ease,box-shadow var(--t-flow-hover) ease,transform var(--t-micro) var(--enter)}
 @media (hover:none){[data-flow-owned].v-glide>.v-glide__hover{display:none}}
-:root:not([data-flow-hover="off"]) [data-flow-owned].v-glide:not([data-flow-hover="off"])>:is(.v-btn,.v-tab,.v-nav__item):hover:not([data-glide-active]){background:transparent}
+:root:not([data-flow-hover="off"]) [data-flow-owned].v-glide:not([data-flow-hover="off"])>:is(.v-btn,.v-tab,.v-nav__item):hover:not([data-glide-active]),
+:root:not([data-flow-hover="off"]) [data-slot="navigation-menu"][data-flow-owned].v-glide:not([data-flow-hover="off"]) .v-nav__item[data-slot="navigation-menu-link"]:hover:not([data-glide-active]){background:transparent}
 [data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__pill,[data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__hover,[data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__trail{transition:none}
 [data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__pill>i{animation:none}
 @media (prefers-reduced-motion:reduce){[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>.v-glide__pill,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>.v-glide__hover,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>.v-glide__trail{transition:none}[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>*>i,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide>*>i::after{animation:none}}
@@ -162,3 +164,6 @@
  [data-slot="accordion-content"][data-state="open"], [data-slot="collapsible-content"][data-state="open"] { animation: none; }
  [data-slot="switch-thumb"], [data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"], [data-slot="progress-indicator"] { transition-duration: 0s; }
 }
+
+/* Source morph injects this after flow at specificity one. Keep stronger flow contexts intact. */
+[data-morph]:where([data-slot].v-morph-host) { transition: transform 0s; }
