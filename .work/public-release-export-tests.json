@@ -1,0 +1,14 @@
+{
+  "passed": 9,
+  "checks": [
+    "Missing explicitly required report blocks preflight",
+    "Reads current working bytes, including explicitly allowed untracked report",
+    "Copies to unique NEW external directories, regular files, relative paths, hashes, no .git",
+    "Rejects output parent inside source",
+    "Rejects traversal, absolute, private and historical gate paths",
+    "Rejects both escaping and internal symlinks",
+    "Rejects arbitrary untracked additions",
+    "Blocks public Markdown links to excluded targets",
+    "Sensitive scanner reports location/category only, never matched value"
+  ]
+}
