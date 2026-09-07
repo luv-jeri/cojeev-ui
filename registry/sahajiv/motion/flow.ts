@@ -83,7 +83,11 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
   if(kind==='bar'){b.y+=b.h-2.5;b.h=2.5;b.r='2px'}return b
  }
  const paint=(b:Box,hover=false)=>{const prefix=hover?'hov':'glide';for(const [key,value]of Object.entries({x:b.x,y:b.y,w:b.w,h:b.h}))write('--'+prefix+'-'+key,Math.round(value)+'px');write('--'+prefix+'-r',b.r);write('--'+prefix+'-o','1')}
- const active=()=>items().find(item=>kind==='fill'?(item===document.activeElement||item.contains(document.activeElement)):item.matches(options.activeSelector??ACTIVE)||(isMenu&&(item===document.activeElement||item.hasAttribute('data-highlighted'))))??null
+ const active=()=>{
+  const candidates=items()
+  if(kind==='fill')return (options.activeSelector?candidates.find(item=>item.matches(options.activeSelector!)):null)??candidates.find(item=>item===document.activeElement||item.contains(document.activeElement))??null
+  return candidates.find(item=>item.matches(options.activeSelector??ACTIVE)||(isMenu&&(item===document.activeElement||item.hasAttribute('data-highlighted'))))??null
+ }
  const land=()=>{const inner=pill.firstElementChild as HTMLElement;inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';pill.classList.add('-land');later(()=>pill.classList.remove('-land'),flowTokenMs('--t-flow-land-hold',900))}
  function suspend(){clearPhases();[pill,hov,trail].forEach(layer=>layer.remove());unmark();attached=false;prev=null;lastActive=null;for(const name of ['v-glide','-still'])if(!oldClasses.has(name))g.classList.remove(name);for(const name of ['data-flow-kind','data-flow-v','data-dir']){const old=oldAttrs.get(name);if(old==null)g.removeAttribute(name);else g.setAttribute(name,old)}for(const [name,old]of oldStyles){if(old)g.style.setProperty(name,old);else g.style.removeProperty(name)}}
  const place=(animate=true)=>{
