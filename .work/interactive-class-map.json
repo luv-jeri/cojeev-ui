@@ -1,0 +1,644 @@
+{
+  "accordion": {
+    "exports": [
+      "accordionVariants",
+      "Accordion",
+      "AccordionItem",
+      "AccordionTrigger",
+      "AccordionContent",
+      "AccordionIndicator"
+    ],
+    "types": [
+      "AccordionProps",
+      "AccordionItemProps",
+      "AccordionTriggerProps",
+      "AccordionContentProps",
+      "AccordionIndicatorProps"
+    ],
+    "mapping": ".v-acc \u2192 Accordion (type=single with collapsible or type=multiple); details \u2192 AccordionItem(value); summary \u2192 AccordionTrigger; .v-acc__body \u2192 AccordionContent; .v-chev \u2192 AccordionIndicator. Header is a display:contents h3; native open becomes root defaultValue containing the item value.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "alert-dialog": {
+    "exports": [
+      "AlertDialog",
+      "AlertDialogTrigger",
+      "AlertDialogPortal",
+      "AlertDialogOverlay",
+      "alertdialogContentVariants",
+      "AlertDialogContent",
+      "AlertDialogHeader",
+      "AlertDialogFooter",
+      "AlertDialogTitle",
+      "AlertDialogDescription",
+      "AlertDialogAction",
+      "AlertDialogCancel"
+    ],
+    "types": [
+      "AlertDialogProps",
+      "AlertDialogTriggerProps",
+      "AlertDialogPortalProps",
+      "AlertDialogOverlayProps",
+      "AlertDialogContentProps",
+      "AlertDialogHeaderProps",
+      "AlertDialogFooterProps",
+      "AlertDialogTitleProps",
+      "AlertDialogDescriptionProps",
+      "AlertDialogActionProps",
+      "AlertDialogCancelProps"
+    ],
+    "mapping": ".v-dialog[role=alertdialog] \u2192 AlertDialogContent inside AlertDialog; [data-dialog-open] \u2192 AlertDialogTrigger(asChild); .v-dialog__head \u2192 AlertDialogHeader; .v-dialog__actions \u2192 AlertDialogFooter; title/description \u2192 AlertDialogTitle/Description; destructive action \u2192 AlertDialogAction; cancel/close \u2192 AlertDialogCancel. Root defaultOpen follows fixture open state.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "calendar": {
+    "exports": [
+      "calendarVariants",
+      "Calendar",
+      "CalendarCaption",
+      "CalendarGrid",
+      "CalendarDayButton",
+      "CalendarWeekNumber"
+    ],
+    "types": [
+      "CalendarMark",
+      "CalendarProps"
+    ],
+    "mapping": ".v-cal \u2192 Calendar(mode=single, defaultMonth, selected, marks). Parse data-date/data-selected as local year/month/day. DayPicker generates the real header/grid/days; do not duplicate the static reference grid. .v-cal__grid \u2192 CalendarGrid, .v-cal__d \u2192 CalendarDayButton, month/head \u2192 CalendarCaption, week number \u2192 CalendarWeekNumber. Table structural rows use display:contents for the source eight-column grid.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "checkbox": {
+    "exports": [
+      "checkboxVariants",
+      "Checkbox",
+      "CheckboxGroup",
+      "CheckboxBody"
+    ],
+    "types": [
+      "CheckboxProps",
+      "CheckboxGroupProps",
+      "CheckboxBodyProps"
+    ],
+    "mapping": ".v-check label \u2192 Checkbox Radix button; move native input checked/indeterminate/disabled/name/value/id to root (defaultChecked can be indeterminate). Remove source input; visual span data-slot=checkbox-indicator replaces it. Preserve remaining label children inside Checkbox; .v-check__body \u2192 CheckboxBody; .v-checks \u2192 CheckboxGroup.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "collapsible": {
+    "exports": [
+      "collapsibleVariants",
+      "Collapsible",
+      "CollapsibleTrigger",
+      "CollapsibleContent",
+      "CollapsibleIndicator"
+    ],
+    "types": [
+      "CollapsibleProps",
+      "CollapsibleTriggerProps",
+      "CollapsibleContentProps",
+      "CollapsibleIndicatorProps"
+    ],
+    "mapping": "details.v-collapsible \u2192 Collapsible(defaultOpen); summary \u2192 CollapsibleTrigger; body \u2192 CollapsibleContent; .v-chev \u2192 CollapsibleIndicator. Native open becomes defaultOpen.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "combobox": {
+    "exports": [
+      "comboboxVariants",
+      "Combobox",
+      "ComboboxInput",
+      "ComboboxContent",
+      "ComboboxList",
+      "ComboboxItem",
+      "ComboboxEmpty",
+      "ComboboxGroup"
+    ],
+    "types": [
+      "ComboboxOption",
+      "ComboboxProps",
+      "ComboboxInputProps",
+      "ComboboxContentProps",
+      "ComboboxItemProps",
+      "ComboboxEmptyProps",
+      "ComboboxGroupProps"
+    ],
+    "mapping": ".v-combo \u2192 Combobox; source input \u2192 ComboboxInput; source menu \u2192 ComboboxContent; rows \u2192 ComboboxItem(value,label); no match row \u2192 ComboboxEmpty; headings/groups \u2192 ComboboxGroup. Root options prop also provides standalone composition. InputWrapper/InputControl and Icon/Disk come from sibling waves. cmdk owns filtering/highlight; Radix Popover owns dismissal/placement.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "command": {
+    "exports": [
+      "commandVariants",
+      "Command",
+      "CommandDialog",
+      "CommandInput",
+      "CommandList",
+      "CommandEmpty",
+      "CommandGroup",
+      "CommandItem",
+      "CommandSeparator",
+      "CommandShortcut"
+    ],
+    "types": [
+      "CommandProps",
+      "CommandDialogProps",
+      "CommandInputProps",
+      "CommandListProps",
+      "CommandEmptyProps",
+      "CommandGroupProps",
+      "CommandItemProps",
+      "CommandSeparatorProps",
+      "CommandShortcutProps"
+    ],
+    "mapping": ".v-cmd \u2192 Command; __input input \u2192 CommandInput (leading/trailing props preserve source glyph/kbd); __list \u2192 CommandList; each heading and following items \u2192 CommandGroup(heading); .v-menu__item \u2192 CommandItem; __empty \u2192 CommandEmpty. Also CommandDialog for accessible overlay composition.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "context-menu": {
+    "exports": [
+      "ContextMenu",
+      "ContextMenuPortal",
+      "ContextMenuGroup",
+      "ContextMenuRadioGroup",
+      "ContextMenuSub",
+      "ContextMenuTrigger",
+      "contextmenuContentVariants",
+      "ContextMenuContent",
+      "ContextMenuSubContent",
+      "ContextMenuItem",
+      "ContextMenuSubTrigger",
+      "ContextMenuCheckboxItem",
+      "ContextMenuRadioItem",
+      "ContextMenuLabel",
+      "ContextMenuSeparator",
+      "ContextMenuShortcut"
+    ],
+    "types": [
+      "ContextMenuProps",
+      "ContextMenuPortalProps",
+      "ContextMenuGroupProps",
+      "ContextMenuRadioGroupProps",
+      "ContextMenuSubProps",
+      "ContextMenuTriggerProps",
+      "ContextMenuContentProps",
+      "ContextMenuSubContentProps",
+      "ContextMenuItemProps",
+      "ContextMenuSubTriggerProps",
+      "ContextMenuCheckboxItemProps",
+      "ContextMenuRadioItemProps",
+      "ContextMenuLabelProps",
+      "ContextMenuSeparatorProps",
+      "ContextMenuShortcutProps"
+    ],
+    "mapping": "[data-context] \u2192 ContextMenuTrigger inside ContextMenu; .v-menu \u2192 ContextMenuContent; item/sep/group \u2192 ContextMenuItem/Separator/Label. Submenus use Sub/SubTrigger/SubContent. Checked/radio rows use CheckboxItem/RadioGroup/RadioItem. Keyboard ContextMenu and Shift+F10 dispatch the trigger-owned contextmenu event at its center; Radix handles actual focus and positioning.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "date-picker": {
+    "exports": [
+      "datePickerVariants",
+      "DatePicker",
+      "DatePickerTrigger",
+      "DatePickerContent"
+    ],
+    "types": [
+      "DatePickerProps",
+      "DatePickerTriggerProps",
+      "DatePickerContentProps"
+    ],
+    "mapping": ".v-menuhost[data-datepicker] \u2192 DatePicker(defaultDate, defaultOpen, calendarProps), which composes Popover and Calendar. Also DatePickerTrigger and DatePickerContent for custom Popover composition. Move fixture data-date/data-selected into calendarProps/defaultDate. Preserve formatted label through formatDate if fixture locale is fixed.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "dialog": {
+    "exports": [
+      "Dialog",
+      "DialogTrigger",
+      "DialogPortal",
+      "DialogOverlay",
+      "dialogContentVariants",
+      "DialogContent",
+      "DialogHeader",
+      "DialogFooter",
+      "DialogTitle",
+      "DialogDescription",
+      "DialogClose"
+    ],
+    "types": [
+      "DialogProps",
+      "DialogTriggerProps",
+      "DialogPortalProps",
+      "DialogOverlayProps",
+      "DialogContentProps",
+      "DialogHeaderProps",
+      "DialogFooterProps",
+      "DialogTitleProps",
+      "DialogDescriptionProps",
+      "DialogCloseProps"
+    ],
+    "mapping": ".v-dialog \u2192 DialogContent inside Dialog; opener \u2192 DialogTrigger(asChild); .v-dialog__head \u2192 DialogHeader; .v-dialog__actions \u2192 DialogFooter; title/description \u2192 DialogTitle/Description; [data-close] \u2192 DialogClose(asChild). Root defaultOpen follows fixture state. Content portals and includes scrim.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "drawer": {
+    "exports": [
+      "Drawer",
+      "DrawerTrigger",
+      "DrawerPortal",
+      "DrawerOverlay",
+      "drawerContentVariants",
+      "DrawerContent",
+      "DrawerHeader",
+      "DrawerFooter",
+      "DrawerTitle",
+      "DrawerDescription",
+      "DrawerClose"
+    ],
+    "types": [
+      "DrawerProps",
+      "DrawerTriggerProps",
+      "DrawerPortalProps",
+      "DrawerOverlayProps",
+      "DrawerContentProps",
+      "DrawerHeaderProps",
+      "DrawerFooterProps",
+      "DrawerTitleProps",
+      "DrawerDescriptionProps",
+      "DrawerCloseProps"
+    ],
+    "mapping": ".v-drawer \u2192 DrawerContent inside Drawer (Radix Dialog semantics); opener \u2192 DrawerTrigger(asChild); [data-close] \u2192 DrawerClose(asChild). Header/Footer/Title/Description available. Source bottom offset above dock retained; no swipe gesture added because reference only specifies scrim/Escape/close.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "dropdown-menu": {
+    "exports": [
+      "DropdownMenu",
+      "DropdownMenuPortal",
+      "DropdownMenuGroup",
+      "DropdownMenuRadioGroup",
+      "DropdownMenuSub",
+      "DropdownMenuTrigger",
+      "dropdownmenuContentVariants",
+      "DropdownMenuContent",
+      "DropdownMenuSubContent",
+      "DropdownMenuItem",
+      "DropdownMenuSubTrigger",
+      "DropdownMenuCheckboxItem",
+      "DropdownMenuRadioItem",
+      "DropdownMenuLabel",
+      "DropdownMenuSeparator",
+      "DropdownMenuShortcut"
+    ],
+    "types": [
+      "DropdownMenuProps",
+      "DropdownMenuPortalProps",
+      "DropdownMenuGroupProps",
+      "DropdownMenuRadioGroupProps",
+      "DropdownMenuSubProps",
+      "DropdownMenuTriggerProps",
+      "DropdownMenuContentProps",
+      "DropdownMenuSubContentProps",
+      "DropdownMenuItemProps",
+      "DropdownMenuSubTriggerProps",
+      "DropdownMenuCheckboxItemProps",
+      "DropdownMenuRadioItemProps",
+      "DropdownMenuLabelProps",
+      "DropdownMenuSeparatorProps",
+      "DropdownMenuShortcutProps"
+    ],
+    "mapping": "[data-menu] \u2192 DropdownMenuTrigger inside DropdownMenu; .v-menu \u2192 DropdownMenuContent; .v-menu__item \u2192 DropdownMenuItem; .v-menu__group \u2192 DropdownMenuLabel; separator \u2192 DropdownMenuSeparator. Submenu and checkbox/radio families are real Radix parts.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "hover-card": {
+    "exports": [
+      "HoverCard",
+      "HoverCardTrigger",
+      "HoverCardPortal",
+      "hoverCardContentVariants",
+      "HoverCardContent"
+    ],
+    "types": [
+      "HoverCardProps",
+      "HoverCardTriggerProps",
+      "HoverCardPortalProps",
+      "HoverCardContentProps"
+    ],
+    "mapping": "[data-hovercard] \u2192 HoverCardTrigger inside HoverCard; .v-hovercard>.v-popover \u2192 HoverCardContent. Default 300ms open delay, pointer/focus semantics from Radix. Existing source positioning wrapper is replaced by the portal.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "input-otp": {
+    "exports": [
+      "inputOTPVariants",
+      "InputOTP",
+      "InputOTPGroup",
+      "InputOTPSlot",
+      "InputOTPSeparator"
+    ],
+    "types": [
+      "InputOTPProps",
+      "InputOTPGroupProps",
+      "InputOTPSlotProps",
+      "InputOTPSeparatorProps"
+    ],
+    "mapping": ".v-otp \u2192 InputOTP(maxLength, defaultValue) with InputOTPGroup and InputOTPSlot(index) children. Join native input values into one defaultValue; source six native cells become six visible slots over the library-owned accessible input. Paste/backspace/arrows/complete come from input-otp. InputOTPSeparator available.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "menubar": {
+    "exports": [
+      "Menubar",
+      "MenubarMenu",
+      "MenubarPortal",
+      "MenubarGroup",
+      "MenubarRadioGroup",
+      "MenubarSub",
+      "MenubarTrigger",
+      "menubarContentVariants",
+      "MenubarContent",
+      "MenubarSubContent",
+      "MenubarItem",
+      "MenubarSubTrigger",
+      "MenubarCheckboxItem",
+      "MenubarRadioItem",
+      "MenubarLabel",
+      "MenubarSeparator",
+      "MenubarShortcut"
+    ],
+    "types": [
+      "MenubarProps",
+      "MenubarMenuProps",
+      "MenubarPortalProps",
+      "MenubarGroupProps",
+      "MenubarRadioGroupProps",
+      "MenubarSubProps",
+      "MenubarTriggerProps",
+      "MenubarContentProps",
+      "MenubarSubContentProps",
+      "MenubarItemProps",
+      "MenubarSubTriggerProps",
+      "MenubarCheckboxItemProps",
+      "MenubarRadioItemProps",
+      "MenubarLabelProps",
+      "MenubarSeparatorProps",
+      "MenubarShortcutProps"
+    ],
+    "mapping": ".v-menubar \u2192 Menubar; each host \u2192 MenubarMenu; __trigger \u2192 MenubarTrigger; .v-menu \u2192 MenubarContent; rows \u2192 MenubarItem; labels/separators/submenus/checkbox/radio families provided. Root value/defaultValue controls open menu.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "navigation-menu": {
+    "exports": [
+      "navigationMenuVariants",
+      "NavigationMenu",
+      "NavigationMenuList",
+      "NavigationMenuItem",
+      "NavigationMenuLink",
+      "NavigationMenuGroup",
+      "NavigationMenuCount",
+      "NavigationMenuTrigger",
+      "NavigationMenuContent",
+      "NavigationMenuViewport",
+      "NavigationMenuIndicator",
+      "NavigationMenuLabel"
+    ],
+    "types": [
+      "NavigationMenuProps",
+      "NavigationMenuListProps",
+      "NavigationMenuItemProps",
+      "NavigationMenuLinkProps",
+      "NavigationMenuGroupProps",
+      "NavigationMenuCountProps",
+      "NavigationMenuTriggerProps",
+      "NavigationMenuContentProps",
+      "NavigationMenuViewportProps",
+      "NavigationMenuIndicatorProps",
+      "NavigationMenuLabelProps"
+    ],
+    "mapping": ".v-nav \u2192 NavigationMenu; container \u2192 NavigationMenuList; each link uses NavigationMenuItem + NavigationMenuLink(active when aria-current=page); __group \u2192 NavigationMenuGroup; __label \u2192 NavigationMenuLabel; __count \u2192 NavigationMenuCount. Trigger/Content/Viewport/Indicator provided for Radix navigation disclosure composition.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "popover": {
+    "exports": [
+      "Popover",
+      "PopoverTrigger",
+      "PopoverPortal",
+      "PopoverAnchor",
+      "PopoverClose",
+      "popoverContentVariants",
+      "PopoverContent"
+    ],
+    "types": [
+      "PopoverProps",
+      "PopoverTriggerProps",
+      "PopoverPortalProps",
+      "PopoverAnchorProps",
+      "PopoverCloseProps",
+      "PopoverContentProps"
+    ],
+    "mapping": ".v-popover \u2192 PopoverContent inside Popover; opener \u2192 PopoverTrigger(asChild); PopoverAnchor and PopoverClose available. If fixture surface is initially visible, set root defaultOpen and supply a real anchor/trigger.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "radio-group": {
+    "exports": [
+      "radioGroupVariants",
+      "RadioGroup",
+      "RadioGroupItem",
+      "RadioGroupBody"
+    ],
+    "types": [
+      "RadioGroupProps",
+      "RadioGroupItemProps",
+      "RadioGroupBodyProps"
+    ],
+    "mapping": ".v-radios/.v-iradios \u2192 RadioGroup(defaultValue,pictographic); .v-radio/.v-iradio labels \u2192 RadioGroupItem(value,pictographic); remove source native radio and move disabled/name/value to appropriate root/item. Keep label children/body/icon. __body \u2192 RadioGroupBody. Visual indicator is span; Radix owns checked state and hidden form controls. Pictographic fill belongs to shared travelling layer.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "resizable": {
+    "exports": [
+      "resizableVariants",
+      "ResizablePanelGroup",
+      "ResizablePanel",
+      "ResizableHandle"
+    ],
+    "types": [
+      "ResizablePanelGroupProps",
+      "ResizablePanelProps",
+      "ResizableHandleProps"
+    ],
+    "mapping": ".v-resizable \u2192 ResizablePanelGroup(direction or orientation; variant=v for vertical); __pane \u2192 ResizablePanel(defaultSize/minSize/maxSize); __handle \u2192 ResizableHandle. Source --split maps to first defaultSize percentage; library API uses Group/Panel/Separator and elementRef rather than old PanelGroup/PanelResizeHandle names.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "scroll-area": {
+    "exports": [
+      "scrollAreaVariants",
+      "ScrollArea",
+      "ScrollBar"
+    ],
+    "types": [
+      "ScrollAreaProps",
+      "ScrollBarProps"
+    ],
+    "mapping": ".v-scroll \u2192 ScrollArea(variant=ink where applicable); children go into generated Radix Viewport. Keep --h in root style. ScrollBar is exported; source child paragraph rhythm is translated through Radix viewport/content wrappers.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "select": {
+    "exports": [
+      "Select",
+      "selectTriggerVariants",
+      "SelectTrigger",
+      "SelectValue",
+      "SelectContent",
+      "SelectItem",
+      "SelectGroup",
+      "SelectLabel",
+      "SelectSeparator",
+      "SelectScrollUpButton",
+      "SelectScrollDownButton"
+    ],
+    "types": [
+      "SelectProps",
+      "SelectTriggerProps",
+      "SelectValueProps",
+      "SelectContentProps",
+      "SelectItemProps",
+      "SelectGroupProps",
+      "SelectLabelProps",
+      "SelectSeparatorProps",
+      "SelectScrollUpButtonProps",
+      "SelectScrollDownButtonProps"
+    ],
+    "mapping": ".v-menuhost[data-select] \u2192 Select(defaultValue,defaultOpen); .v-select \u2192 SelectTrigger; [data-value] \u2192 SelectValue; .v-listbox \u2192 SelectContent; .v-menu__item \u2192 SelectItem(value); group/label/sep \u2192 SelectGroup/SelectLabel/SelectSeparator. Preserve row text and glyph children inside ItemText. Native selected option becomes root defaultValue.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "sheet": {
+    "exports": [
+      "Sheet",
+      "SheetTrigger",
+      "SheetPortal",
+      "SheetOverlay",
+      "sheetContentVariants",
+      "SheetContent",
+      "SheetHeader",
+      "SheetFooter",
+      "SheetTitle",
+      "SheetDescription",
+      "SheetClose"
+    ],
+    "types": [
+      "SheetProps",
+      "SheetTriggerProps",
+      "SheetPortalProps",
+      "SheetOverlayProps",
+      "SheetContentProps",
+      "SheetHeaderProps",
+      "SheetFooterProps",
+      "SheetTitleProps",
+      "SheetDescriptionProps",
+      "SheetCloseProps"
+    ],
+    "mapping": ".v-sheet \u2192 SheetContent inside Sheet; opener \u2192 SheetTrigger(asChild); [data-close] \u2192 SheetClose(asChild); header/footer/title/description use named Sheet parts. Content portals and includes scrim; nested Sheets use independent roots.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "slider": {
+    "exports": [
+      "sliderVariants",
+      "Slider",
+      "SliderWrapper",
+      "SliderRow",
+      "SliderOutput"
+    ],
+    "types": [
+      "SliderProps",
+      "SliderWrapperProps",
+      "SliderRowProps",
+      "SliderOutputProps"
+    ],
+    "mapping": ".v-sliderwrap \u2192 SliderWrapper; __row \u2192 SliderRow; output \u2192 SliderOutput; input.v-slider \u2192 Slider(value/defaultValue arrays, min,max,step,variant=pink). Radix Track/Range/Thumb replace native pseudo elements; scalar source value becomes one-element array. Caller may bind output with onValueChange.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "switch": {
+    "exports": [
+      "switchVariants",
+      "Switch",
+      "SwitchRow"
+    ],
+    "types": [
+      "SwitchProps",
+      "SwitchRowProps"
+    ],
+    "mapping": "label.v-switch \u2192 Switch; remove native checkbox and transfer checked/defaultChecked, disabled,name,value,id onto root. [data-slot=switch-thumb] is a real Radix thumb, replacing ::after. .v-switchrow \u2192 SwitchRow; source color/sm modifiers stay className.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "tabs": {
+    "exports": [
+      "tabsVariants",
+      "Tabs",
+      "TabsList",
+      "TabsTrigger",
+      "TabsContent"
+    ],
+    "types": [
+      "TabsProps",
+      "TabsListProps",
+      "TabsTriggerProps",
+      "TabsContentProps"
+    ],
+    "mapping": ".v-tabs \u2192 TabsList inside Tabs(defaultValue,variant). Each .v-tab \u2192 TabsTrigger(value); panels \u2192 TabsContent(value). aria-controls relationships become matching values. variant default maps source pills; underline/lenses are explicit variants. A source demo containing several independent tablists needs separate Tabs roots.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "toast": {
+    "exports": [
+      "toastVariants",
+      "ToastProvider",
+      "ToastViewport",
+      "Toast",
+      "ToastTitle",
+      "ToastDescription",
+      "ToastAction",
+      "ToastClose"
+    ],
+    "types": [
+      "ToastProviderProps",
+      "ToastViewportProps",
+      "ToastProps",
+      "ToastTitleProps",
+      "ToastDescriptionProps",
+      "ToastActionProps",
+      "ToastCloseProps"
+    ],
+    "mapping": ".v-toaster \u2192 ToastViewport under ToastProvider; .v-toast \u2192 Toast(open/defaultOpen,durable,variant); text \u2192 ToastDescription; optional title \u2192 ToastTitle; action \u2192 ToastAction(altText); dismiss \u2192 ToastClose. Durable enforces Infinity duration. Toast trigger fixtures need local state and a rendered Toast; there is deliberately no global VUI.toast.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "toggle": {
+    "exports": [
+      "toggleVariants",
+      "Toggle",
+      "ToggleWell"
+    ],
+    "types": [
+      "ToggleProps",
+      "ToggleWellProps"
+    ],
+    "mapping": ".v-toggle \u2192 Toggle(defaultPressed/pressed,variant), data-toggle removed from behavior but retained marker. aria-pressed becomes defaultPressed. Variants default/pressed/pink/circle are public; extra source hue classes remain className. .v-togglewell \u2192 ToggleWell.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "toggle-group": {
+    "exports": [
+      "toggleGroupVariants",
+      "ToggleGroup",
+      "ToggleGroupItem"
+    ],
+    "types": [
+      "ToggleGroupProps",
+      "ToggleGroupItemProps"
+    ],
+    "mapping": "[data-togglegroup] \u2192 ToggleGroup(type=single|multiple,defaultValue,variant). Child v-toggle \u2192 ToggleGroupItem(value). Single string or multiple string[] values come from aria-pressed. Existing .v-seg class enables shared travel; multi groups keep individual state paint.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  },
+  "tooltip": {
+    "exports": [
+      "Tooltip",
+      "TooltipProvider",
+      "TooltipTrigger",
+      "TooltipPortal",
+      "tooltipContentVariants",
+      "TooltipContent"
+    ],
+    "types": [
+      "TooltipProps",
+      "TooltipProviderProps",
+      "TooltipTriggerProps",
+      "TooltipPortalProps",
+      "TooltipContentProps"
+    ],
+    "mapping": "[data-tooltip] \u2192 TooltipTrigger(asChild) inside Tooltip under TooltipProvider; value text \u2192 TooltipContent. Default 220ms token delay. Preserve icon-only aria-label; use defaultOpen for explicit visible fixture state.",
+    "coverage": "implemented; integrated visual/interaction gate pending"
+  }
+}

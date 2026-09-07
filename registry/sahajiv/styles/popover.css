@@ -1,0 +1,19 @@
+/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="popover"],
+  [data-slot^="popover-"],
+  [data-slot="popover"]::before,
+  [data-slot="popover"]::after,
+  [data-slot^="popover-"]::before,
+  [data-slot^="popover-"]::after {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+
+[data-slot="popover-content"] {
+  max-width: calc(100vw - 24px);
+  max-height: var(--radix-popover-content-available-height);
+  overflow: auto;
+}
