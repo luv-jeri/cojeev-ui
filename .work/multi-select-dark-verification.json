@@ -1,0 +1,17 @@
+{
+  "base": "6315478 plus 74eb662",
+  "passed": true,
+  "checks": [
+    {
+      "check": "Initial selected dark checkbox retains the authored tick image",
+      "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E\")",
+      "fill": "rgb(245, 184, 219)"
+    },
+    {
+      "check": "Pointer-selected dark checkbox retains the authored tick image",
+      "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E\")",
+      "fill": "rgb(42, 38, 33)"
+    }
+  ],
+  "errors": []
+}
