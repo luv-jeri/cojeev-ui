@@ -26,16 +26,44 @@ const context=await browser.newContext({viewport:{width:widths[0],height:900},re
 const page=await context.newPage();
 const errors=[];page.on("pageerror",e=>errors.push(e.message));
 const results=[];
+const openActions={
+  "alert-dialog":{selector:"[data-dialog-open]",method:"click"},
+  dialog:{selector:"[data-dialog-open]",method:"click"},
+  sheet:{selector:"[data-sheet-open]",method:"click"},
+  drawer:{selector:"[data-drawer-open]",method:"click"},
+  "dropdown-menu":{selector:"[data-menu]",method:"click"},
+  popover:{selector:"[data-menu]",method:"click"},
+  menubar:{selector:".v-menubar__trigger",method:"click"},
+  "context-menu":{selector:"[data-context]",method:"contextmenu"},
+  "hover-card":{selector:"[data-hovercard]",method:"hover"},
+  tooltip:{selector:"[data-tooltip]",method:"hover"},
+  // The authored durable trigger keeps this static multi-width comparison
+  // independent of native toast timeout duration. Other triggers are behavioral tests.
+  toast:{selector:"[data-toast][data-durable]",method:"click"},
+};
+function fixtureScenario(id,file){
+  if(!file.includes("-open")||!openActions[id])return {sourceFile:file};
+  const sourceFile=file.replace("-open","-rest");
+  if(!registry[id].isolation.includes(sourceFile))throw new Error(`Missing paired rest fixture for ${id}/${file}`);
+  return {sourceFile,action:openActions[id]};
+}
 function hash(bytes){return crypto.createHash("sha256").update(bytes).digest("hex");}
 function candidateHash(){const files=[];function walk(dir){for(const name of fs.readdirSync(dir).sort()){const file=path.join(dir,name);if(fs.statSync(file).isDirectory())walk(file);else files.push(file);}}walk("registry/sahajiv");walk("apps/gate");return hash(files.map(file=>`${file}\n${fs.readFileSync(file,"utf8")}`).join("\n"));}
 const candidateRevision=candidateHash();
-async function sample(url,id){
+async function sample(url,id,action){
   errors.length=0;
   await page.setViewportSize({width:Math.max(...widths),height:Math.max(900,Number(registry[id].canvas.split("x")[1]))});
   await page.goto(url,{waitUntil:"load"});
   await page.waitForFunction(()=>document.documentElement.dataset.ready==="1");
   await page.evaluate(()=>document.fonts.ready);
   await page.waitForTimeout(1800);
+  if(action){
+    const trigger=page.locator(action.selector).first();
+    if(action.method==="hover")await trigger.hover();
+    else await trigger.click(action.method==="contextmenu"?{button:"right",position:{x:24,y:24}}:{});
+    await page.evaluate(()=>document.fonts.ready);
+    await page.waitForTimeout(1800);
+  }
   const frames={};
   for(const width of widths){
   await page.setViewportSize({width,height:Math.max(900,Number(registry[id].canvas.split("x")[1]))});
@@ -104,10 +132,11 @@ try{
   for(const id of ids){
     if(registry[id]?.tier!=="base")throw new Error(`Not a base component: ${id}`);
     for(const file of registry[id].isolation.filter(file=>!arg("file")||file.includes(arg("file"))).slice(0,limit)){
-      const oracle=`http://127.0.0.1:${port}/${reference}/isolation/${id}/${file}`;
-      const candidate=`http://127.0.0.1:${port}/candidate?id=${id}&file=${file}`;
+      const scenario=fixtureScenario(id,file);
+      const oracle=`http://127.0.0.1:${port}/${reference}/isolation/${id}/${scenario.sourceFile}`;
+      const candidate=`http://127.0.0.1:${port}/candidate?id=${id}&file=${scenario.sourceFile}`;
       let A,A2,B,B2;
-      try {A=await sample(oracle,id);A2=await sample(oracle,id);B=await sample(candidate,id);B2=await sample(candidate,id);}
+      try {A=await sample(oracle,id,scenario.action);A2=await sample(oracle,id,scenario.action);B=await sample(candidate,id,scenario.action);B2=await sample(candidate,id,scenario.action);}
       catch(error){
         process.exitCode=1;
         for(const width of widths)results.push({id,file,width,verdict:"RUNTIME_ERROR",oracleStable:false,candidateStable:false,pixelDifference:null,differences:[{part:"page",property:"runtime",reference:null,candidate:error.message}]});
@@ -126,7 +155,7 @@ try{
       const name=`${id}-${file.replace(".html","")}-${width}`;
       if(verdict!=="PASS"){for(const [suffix,bytes]of[["reference",a.pixels],["candidate",b.pixels],["diff",delta.diff]])fs.writeFileSync(`${out}/${name}-${suffix}.png`,bytes);}
       const unavailableStyles=Object.entries(a.styles).filter(([,value])=>value.__computedStyleUnavailable).map(([part,value])=>({part,reason:value.__computedStyleUnavailable}));
-      results.push({id,file,width,verdict,oracleStable,candidateStable,oracleByteStable,candidateByteStable,pixelDifference:delta.ratio,differences,oracleAdapters:a.oracleAdapters,unavailableStyles});
+      results.push({id,file,width,verdict,oracleStable,candidateStable,oracleByteStable,candidateByteStable,pixelDifference:delta.ratio,differences,oracleAdapters:a.oracleAdapters,unavailableStyles,...(scenario.action?{statePreparation:{sourceFile:scenario.sourceFile,...scenario.action}}:{})});
       fs.writeFileSync(`${out}/results.json`,JSON.stringify(results,null,2));
       console.log(`${verdict} ${name}: ${differences.length} style differences, ${(100*delta.ratio).toFixed(4)}% pixels`);
       // Default fail-fast for fixes; a diagnostic wave can collect independent failures.
@@ -147,6 +176,8 @@ finally{
   if(adapters.includes("original-alive-runtime"))text.push("The original catalog's loader runtime is restored only where the isolation generator omitted it.","");
   if(adapters.includes("otp-catalog-sizing"))text.push("OTP uses the catalog's definite grid track and inline-size containment on BOTH sides. The isolation generator omitted that geometry, making native input intrinsic widths expand the scene. This adapter changes only the surrounding canvas, with no control styles or pixel masks (catalog/index.html:114,160,172).","");
   if(unavailable.length)text.push("Computed-style limitations (pixels remain fully compared; interaction proof is separate):",...unavailable.map(value=>`- ${value}`),"");
+  const opened=results.filter(row=>row.statePreparation);
+  if(opened.length)text.push("Open-state preparation: the source UI bootstrap closes layers even when the generated isolation file is labeled open (ui.js:330–334). Those state rows load the paired authored rest scene, then perform the same recorded real click/right-click/hover on each side. This avoids stale simultaneous-open menu attributes and verifies an actually visible state. Each raw result names the source file and trigger; the durable authored Toast trigger is used to keep its native timeout out of the static width sweep. Original open files remain unchanged and earlier raw-scene diagnostics are retained.","");
   fs.writeFileSync(arg("report")??"GATE.md",text.join("\n"));
   await browser.close();await server.close();
 }
