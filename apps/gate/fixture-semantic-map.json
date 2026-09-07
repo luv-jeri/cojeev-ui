@@ -69,12 +69,19 @@
         ".v-cal__head .v-ibtn": {
           "part": "trigger",
           "candidateSelector": ".v-cal__head .v-ibtn"
+        },
+        ".v-cal__wk": {
+          "part": "week-number",
+          "candidateSelector": "[data-slot=\"calendar-week-number\"]"
         }
       },
       "coverage": "mapping implemented; browser gate pending",
       "notes": [
         "Real DayPicker produces a table instead of a flat div grid. All styled part classes survive; rows use display:contents. Parse local dates, never UTC dates."
-      ]
+      ],
+      "additionalParts": {
+        ".v-cal__wk": "week-number"
+      }
     },
     "checkbox": {
       "parts": {
@@ -578,7 +585,7 @@
       "id": "menubar",
       "files": "*open*.html",
       "status": "invalid-initial-scene",
-      "evidence": "All three sibling menus lose hidden and all three triggers receive aria-expanded=true. Real menu navigation selects one active menu.",
+      "evidence": "Raw open markup removes hidden from all three menus and sets all three triggers expanded. Source ui.js334 closes every menu at boot but leaves stale trigger expanded attributes. A real invocation from the paired rest fixture establishes one active menu.",
       "contract": "reference/sahajiv-handoff-v4/entries/menubar/contract.md:5,19,34",
       "replacement": "Start at rest. Open File with a real trigger, then ArrowRight/ArrowLeft and hover to move to Run and View on both oracle and candidate. Do not label the simultaneous-open original scene PASS."
     },
@@ -586,7 +593,7 @@
       "id": "context-menu",
       "files": "*open*.html",
       "status": "invalid-initial-scene",
-      "evidence": "Source removes hidden and injects position:static without dispatching an invocation event.",
+      "evidence": "Raw open markup removes hidden and inserts position:static, but source ui.js334 hides the menu at boot. The fixture starts closed; genuine open-state proof requires an actual contextmenu event from paired rest markup.",
       "contract": "reference/sahajiv-handoff-v4/entries/context-menu/contract.md:5,19,34",
       "replacement": "Start at rest. Dispatch the same real contextmenu event at the same pointer coordinates, or Shift+F10, on oracle and candidate. Candidate current open mapping invokes a real contextmenu event at trigger center, so original static scene remains deliberately unmatched."
     },
@@ -611,5 +618,28 @@
       "evidence": "Only outer data-gate state changes; no opening event or visible surface state is authored. Candidate mirrors actual initial closed state.",
       "replacement": "Click each toast trigger and verify real dismissal/action/durable behavior."
     }
-  ]
+  ],
+  "sourceBootstrap": {
+    "initiallyClosed": [
+      "alert-dialog",
+      "dialog",
+      "drawer",
+      "sheet",
+      "combobox",
+      "select",
+      "date-picker",
+      "dropdown-menu",
+      "context-menu",
+      "popover",
+      "menubar"
+    ],
+    "evidence": [
+      "reference/sahajiv-handoff-v4/js/ui.js:153",
+      "reference/sahajiv-handoff-v4/js/ui.js:166",
+      "reference/sahajiv-handoff-v4/js/ui.js:248",
+      "reference/sahajiv-handoff-v4/js/ui.js:330",
+      "reference/sahajiv-handoff-v4/js/ui.js:334"
+    ],
+    "note": "Source initialization closes all these layers even when generated open HTML removes hidden. Fixture providers mirror that runtime initial state. Open-state proof must use explicitly recorded real events after boot, from paired rest markup when raw open markup seeds inconsistent expanded states."
+  }
 }

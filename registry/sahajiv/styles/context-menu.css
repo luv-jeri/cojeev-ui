@@ -91,12 +91,6 @@
   outline-offset: 2px;
 }
 
-[data-slot="context-menu-content"],
-[data-slot="context-menu-sub-content"] {
-  max-height: var(--radix-popper-available-height);
-  max-width: calc(100vw - 24px);
-  overflow: auto;
-}
 [data-slot^="context-menu-"][data-inset] {
   padding-left: 32px;
 }
