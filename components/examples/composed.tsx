@@ -308,22 +308,22 @@ export function DataTableExample() {
       <DataTable
         data={data}
         columns={[
-          { id: "name", header: "Note", accessorKey: "name" },
+          { id: "name", header: "Note", accessorKey: "name", sortValue: row => row.name },
           {
             id: "status",
             header: "Status",
             accessorKey: "status",
+            sortValue: row => row.status,
             cell: (row) => (
               <Badge variant={row.status === "Ready" ? "olive" : "pending"}>
                 {row.status}
               </Badge>
             ),
           },
-          { id: "words", header: "Words", accessorKey: "words", numeric: true },
+          { id: "words", header: "Words", accessorKey: "words", numeric: true, sortValue: row => row.words },
         ]}
         getRowId={(row) => row.id}
         filters={[
-          { id: "all", label: "All", predicate: () => true },
           {
             id: "ready",
             label: "Ready",
