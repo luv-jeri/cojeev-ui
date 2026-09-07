@@ -1,6 +1,17 @@
 import type { Metadata } from "next";
 import "./globals.css";
-export const metadata: Metadata = { title:"SahaJiv UI", description:"SahaJiv React components and shadcn registry." };
-export default function RootLayout({children}:{children:React.ReactNode}) {
- return <html lang="en" data-mode="light"><body>{children}</body></html>;
+export const metadata: Metadata = {
+  title: "SahaJiv UI",
+  description: "SahaJiv React components and shadcn registry.",
+};
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" data-mode="light">
+      <body>{children}</body>
+    </html>
+  );
 }
