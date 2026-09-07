@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "sourceRevision": "bd4a2396f3ef6b88fdbe87643bc3740891372d5f",
+  "sourceRevision": "1baca066611a8650ad172fe87823c03eb91ede69",
   "files": [
     {
       "path": ".github/workflows/verify.yml",
@@ -19,8 +19,8 @@
     },
     {
       "path": "BUILD-STATUS.md",
-      "bytes": 2470,
-      "sha256": "ea8470b89746843620298ec7bf47d92381a7690b9f912355915814c1d3c07d4d"
+      "bytes": 2473,
+      "sha256": "222868a46407b7b1b5f77b006cd1cc74ee374a4bfdab7f11e69ffc997ef3ca33"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -49,8 +49,8 @@
     },
     {
       "path": "INSTALLATION.md",
-      "bytes": 2939,
-      "sha256": "d9c3777fb7804c70226caf95d6710b17fa38309ecf57d1c8e3ec5d4f43ab8ed1"
+      "bytes": 3305,
+      "sha256": "4b7cdd1cd6d755124d5137ea0ecc2c0d6bfaa70408eda9d2d1eecaef16cb6fa2"
     },
     {
       "path": "LICENCE",
@@ -64,8 +64,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3285,
-      "sha256": "59fe0261ed5ceab2a1ea3d5f5250cc33e959cce38b4ca4e3fe95e32fd6301566"
+      "bytes": 3253,
+      "sha256": "6141c767b79dcb76cf8526d67399c3f0b5fce5051f4ded2e696659fa2bcc6ee3"
     },
     {
       "path": "REFERENCE-ISSUES.md",
@@ -79,13 +79,13 @@
     },
     {
       "path": "REFINEMENTS.md",
-      "bytes": 4462,
-      "sha256": "55bbc30083a073c5717c77fd02f17e626b1489c01b89e5578ba75b4403ffb78a"
+      "bytes": 4694,
+      "sha256": "cd437578dc18e51548dd555c0761d6ee778233182bc1d0f4b5776bbdb3aecaf8"
     },
     {
       "path": "RELEASE-REPORT.md",
-      "bytes": 4883,
-      "sha256": "549de35f46dc230ee83ab3554517362f75cac0cf02881dd5d87c99ed520f8c2d"
+      "bytes": 5269,
+      "sha256": "d87bcc46bb610b3cf8c4613d58cc97e9ac8b9b5b4e8f62aa63bf03e650c21652"
     },
     {
       "path": "app/docs/[component]/page.tsx",
@@ -639,8 +639,8 @@
     },
     {
       "path": "public/r/shape-scene.json",
-      "bytes": 18572,
-      "sha256": "5c0adc70f8b4fb45b24b5ee04cab2ba38fa6ff4876b0e80130c3d1f70115d195"
+      "bytes": 19212,
+      "sha256": "24d28f9a9bf111af79e6d7624c5a1d16f72abdd1842f63b4f3ca15678fd9b3c3"
     },
     {
       "path": "public/r/shape.json",
@@ -6154,8 +6154,8 @@
     },
     {
       "path": "registry/sahajiv/ui/shape-scene.tsx",
-      "bytes": 13336,
-      "sha256": "0a5579d460b33fb6d70fb51683c612d8358a0f28fda1eaa3e7aaf383c3222fa4"
+      "bytes": 13962,
+      "sha256": "cdb2de9e459b86def1e89eed53db9893fb41acc374258ee56af720eb174abf2f"
     },
     {
       "path": "registry/sahajiv/ui/shape.tsx",
@@ -6274,8 +6274,8 @@
     },
     {
       "path": "scripts/check-mobile-webkit.mjs",
-      "bytes": 18521,
-      "sha256": "cca96bd210307b7491f79c59fd5add5c8378db9428036cfb0f14b8eb9d743b4f"
+      "bytes": 19041,
+      "sha256": "165dfbf67122b24cd4badea9e7c3d12920c949db5689bd161c219a08dfc9bc98"
     },
     {
       "path": "scripts/check-motion.mjs",

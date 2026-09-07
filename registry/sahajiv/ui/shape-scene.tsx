@@ -60,6 +60,7 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
     let camera: THREE.OrthographicCamera | undefined
     let group: THREE.Group | undefined
     let currentOptions = options.current
+    const hoverPointer = window.matchMedia("(any-hover: hover) and (any-pointer: fine)")
     let targetX = 0, targetY = 0
     let width = 0, height = 0
     const geometries = new Set<THREE.BufferGeometry>()
@@ -196,16 +197,20 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
     } }
     control.current = sceneControl
     const onPointer = (event: PointerEvent) => {
-      if (!currentOptions.interactive || currentOptions.quiet || event.pointerType === "touch") return
+      // Touch browsers can emit compatibility mouse events after a tap.
+      // Only a real hover-capable input should tilt the sculpture.
+      if (!hoverPointer.matches || !currentOptions.interactive || currentOptions.quiet || event.pointerType === "touch") return
       const rect = element.getBoundingClientRect()
       targetY = Math.max(-1, Math.min(1, (event.clientX - rect.left) / rect.width * 2 - 1)) * .16
       targetX = Math.max(-1, Math.min(1, (event.clientY - rect.top) / rect.height * 2 - 1)) * .1
       requestRender()
     }
-    const onLeave = () => { targetX = 0; targetY = 0; if (currentOptions.interactive && !currentOptions.quiet) requestRender() }
+    const onLeave = (event: PointerEvent) => { if (!hoverPointer.matches || event.pointerType === "touch") return; targetX = 0; targetY = 0; if (currentOptions.interactive && !currentOptions.quiet) requestRender() }
+    const onHoverCapability = () => { if (!hoverPointer.matches) { targetX = 0; targetY = 0; if (group) group.rotation.set(0, 0, 0); requestRender() } }
     const onVisibility = () => { if (document.hidden) cancel(); else requestRender() }
     element.addEventListener("pointermove", onPointer)
     element.addEventListener("pointerleave", onLeave)
+    hoverPointer.addEventListener("change", onHoverCapability)
     document.addEventListener("visibilitychange", onVisibility)
     const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(element)
     const intersection = new IntersectionObserver(entries => {
@@ -218,6 +223,7 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
       if (control.current === sceneControl) control.current = null
       intersection.disconnect(); resizeObserver.disconnect()
       element.removeEventListener("pointermove", onPointer); element.removeEventListener("pointerleave", onLeave)
+      hoverPointer.removeEventListener("change", onHoverCapability)
       document.removeEventListener("visibilitychange", onVisibility)
       release()
     }
