@@ -37,7 +37,7 @@ const openActions={
   "dropdown-menu":{selector:"[data-menu]",method:"click"},
   popover:{selector:"[data-menu]",method:"click"},
   menubar:{selector:".v-menubar__trigger",method:"click"},
-  select:{selector:"[data-select] > button",method:"click"},
+  select:{selector:"[data-select] > button",method:"click",viewport:"before-open"},
   combobox:{selector:"[data-combo] input",method:"click"},
   "date-picker":{selector:"[data-datepicker] > button",method:"click"},
   "context-menu":{selector:"[data-context]",method:"contextmenu"},
@@ -65,7 +65,9 @@ function candidateHash(){const files=[];function walk(dir){for(const name of fs.
 const candidateRevision=candidateHash();
 async function sample(url,id,action){
   errors.length=0;
-  await page.setViewportSize({width:Math.max(...widths),height:Math.max(900,Number(registry[id].canvas.split("x")[1]))});
+  const height=Math.max(900,Number(registry[id].canvas.split("x")[1]));
+  async function prepare(width){
+  await page.setViewportSize({width,height});
   await page.goto(url,{waitUntil:"load"});
   await page.waitForFunction(()=>document.documentElement.dataset.ready==="1");
   await page.evaluate(()=>document.fonts.ready);
@@ -77,9 +79,15 @@ async function sample(url,id,action){
     await page.evaluate(()=>document.fonts.ready);
     await page.waitForTimeout(1800);
   }
+  }
+  // Radix Select intentionally dismisses on resize. Judge its authored open
+  // state by opening after each viewport is established on BOTH sides.
+  const prepareAtWidth=action?.viewport==="before-open";
+  if(!prepareAtWidth)await prepare(Math.max(...widths));
   const frames={};
   for(const width of widths){
-  await page.setViewportSize({width,height:Math.max(900,Number(registry[id].canvas.split("x")[1]))});
+  if(prepareAtWidth)await prepare(width);
+  else await page.setViewportSize({width,height});
   // Let layout and ResizeObserver delivery complete; the engine clock below then
   // produces the exact frame. A fixed wall-clock pause adds no evidence here.
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
