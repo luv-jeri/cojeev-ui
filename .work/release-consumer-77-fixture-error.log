@@ -1,0 +1,9 @@
+
+> sahajiv-fresh-consumer-audit@0.0.0 build
+> tsc --noEmit && vite build --base=./
+
+src/main.tsx(80,1695): error TS1002: Unterminated string literal.
+src/main.tsx(81,1): error TS1005: '}' expected.
+src/main.tsx(81,2): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/main.tsx(81,63): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/main.tsx(81,1289): error TS1002: Unterminated string literal.

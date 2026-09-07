@@ -446,7 +446,7 @@ try {
   }
   receipt.checks.selectedSpecimenInteractions = "PASS";
   await page.mouse.move(500, 500);
-  receipt.renderedEntries = await page.locator("[data-audit-entry]").count();
+  receipt.loadedModuleCount = await page.locator("[data-audit-entry]").count();
   receipt.tableInstalledBackgroundClip = await page
     .locator('[data-slot="table-container"]')
     .evaluate(
@@ -464,7 +464,7 @@ try {
         getComputedStyle(element, "::-webkit-scrollbar-thumb").backgroundClip,
     );
   if (
-    receipt.renderedEntries !== ids.length ||
+    receipt.loadedModuleCount !== ids.length ||
     runtimeErrors.length ||
     receipt.tableInstalledBackgroundClip !== "border-box" ||
     receipt.tableSourceBackgroundClip !== receipt.tableInstalledBackgroundClip
@@ -472,6 +472,8 @@ try {
     throw new Error(
       `Browser evidence failed: ${JSON.stringify({ runtimeErrors, receipt })}`,
     );
+  receipt.renderedComponentCount = receipt.renderedComponents.length;
+  receipt.runtimeErrors = runtimeErrors;
   receipt.checks.consumerRuntimeAndTableCascade = "PASS";
   receipt.status = "PASS";
   console.log(

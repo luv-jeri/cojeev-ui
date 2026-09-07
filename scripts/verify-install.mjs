@@ -69,7 +69,7 @@ ${ids.filter(id => specimens[id]).map(id => `<section data-specimen="${id}" styl
       receipt.sceneDependencies[name] = JSON.parse(fs.readFileSync(path.join(directory, "node_modules", name, "package.json"), "utf8")).version;
     }
     receipt.checks.optionalSceneDependencies = "PASS";
-  } else if (installed.dependencies?.three || installed.dependencies?.["@types/three"]) throw new Error("Optional Three.js packages leaked into a specimen that did not request ShapeScene");
+  } else if (installed.dependencies?.three || installed.devDependencies?.three || installed.dependencies?.["@types/three"] || installed.devDependencies?.["@types/three"]) throw new Error("Optional Three.js packages leaked into a specimen that did not request ShapeScene");
   run("npm", ["run", "build"]);
   receipt.build = "PASS";
   receipt.checks.typecheckAndBuild = "PASS";

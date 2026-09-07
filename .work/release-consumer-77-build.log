@@ -1,0 +1,21 @@
+
+> sahajiv-fresh-consumer-audit@0.0.0 build
+> tsc --noEmit && vite build --base=./
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1166 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                0.30 kB │ gzip:   0.23 kB
+dist/assets/index-CpRuJk7z.css               734.31 kB │ gzip: 356.58 kB
+dist/assets/BufferGeometryUtils-DD0sLZHr.js   13.54 kB │ gzip:   4.61 kB
+dist/assets/SVGLoader-eyC1wU8M.js             25.14 kB │ gzip:   9.00 kB
+dist/assets/three.module-PDSP0dbZ.js         734.33 kB │ gzip: 189.46 kB
+dist/assets/index-BAetZG5q.js                832.66 kB │ gzip: 252.73 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.81s
