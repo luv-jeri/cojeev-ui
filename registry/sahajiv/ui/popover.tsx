@@ -53,6 +53,7 @@ export function PopoverContent({
   ref,
   children,
   sideOffset = 6,
+  align = "start",
   portal = true,
   ...props
 }: PopoverContentProps) {
@@ -64,6 +65,7 @@ export function PopoverContent({
       data-slot="popover-content"
       data-part="content"
       sideOffset={sideOffset}
+      align={align}
       className={cn(popoverContentVariants(), className)}
       {...props}
     >

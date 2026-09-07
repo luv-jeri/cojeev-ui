@@ -1,0 +1,1754 @@
+[
+  {
+    "id": "hover-card",
+    "file": "default-default-open-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.01898148148148148,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 72, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "6px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(95, 91, 85) none 3px",
+        "candidate": "rgb(14, 11, 11) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-480x360.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.017732193732193733,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 102, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "6px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(95, 91, 85) none 3px",
+        "candidate": "rgb(14, 11, 11) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-480x360.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.004059606481481482,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(95, 91, 85) none 3px",
+        "candidate": "rgb(14, 11, 11) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-480x360.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0030447048611111113,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(95, 91, 85) none 3px",
+        "candidate": "rgb(14, 11, 11) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-480x360.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0021651234567901237,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(95, 91, 85) none 3px",
+        "candidate": "rgb(14, 11, 11) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-480x360.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0016238425925925925,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(95, 91, 85) none 3px",
+        "candidate": "rgb(14, 11, 11) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.018824074074074073,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 72, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "6px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(181, 172, 158) none 3px",
+        "candidate": "rgb(246, 239, 226) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.01762962962962963,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 102, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "6px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(181, 172, 158) none 3px",
+        "candidate": "rgb(246, 239, 226) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.004092881944444444,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(181, 172, 158) none 3px",
+        "candidate": "rgb(246, 239, 226) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0030696614583333335,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(181, 172, 158) none 3px",
+        "candidate": "rgb(246, 239, 226) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.00218287037037037,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(181, 172, 158) none 3px",
+        "candidate": "rgb(246, 239, 226) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0016371527777777777,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 233, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "8px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(181, 172, 158) none 3px",
+        "candidate": "rgb(246, 239, 226) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  }
+]

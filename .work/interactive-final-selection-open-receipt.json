@@ -1,0 +1,1852 @@
+[
+  {
+    "id": "select",
+    "file": "default-default-open-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.038080246913580244,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "background-color",
+        "reference": "rgb(17, 17, 17)",
+        "candidate": "rgb(50, 48, 47)"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(251, 244, 230) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-480x360.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.03564387464387465,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "background-color",
+        "reference": "rgb(17, 17, 17)",
+        "candidate": "rgb(50, 48, 47)"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(251, 244, 230) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-480x360.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.018399884259259258,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "background-color",
+        "reference": "rgb(17, 17, 17)",
+        "candidate": "rgb(50, 48, 47)"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(251, 244, 230) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-480x360.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.013799913194444444,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "background-color",
+        "reference": "rgb(17, 17, 17)",
+        "candidate": "rgb(50, 48, 47)"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(251, 244, 230) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-480x360.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.009813271604938271,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "background-color",
+        "reference": "rgb(17, 17, 17)",
+        "candidate": "rgb(50, 48, 47)"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(251, 244, 230) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-480x360.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.007359953703703704,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "background-color",
+        "reference": "rgb(17, 17, 17)",
+        "candidate": "rgb(50, 48, 47)"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(251, 244, 230) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.037521604938271606,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(17, 17, 17) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.03499145299145299,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(17, 17, 17) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.017845775462962964,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(17, 17, 17) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.013384331597222222,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(17, 17, 17) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.009517746913580247,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(17, 17, 17) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "select",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.007138310185185185,
+    "differences": [
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/default/default/rest:0",
+        "property": "height",
+        "reference": "302px",
+        "candidate": "116px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "width",
+        "reference": "220px",
+        "candidate": "91.625px"
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:0",
+        "property": "height",
+        "reference": "182px",
+        "candidate": "40px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "box-shadow",
+        "reference": "rgb(245, 184, 219) 0px 0px 0px 2px inset",
+        "candidate": "none"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(17, 17, 17) none 3px",
+        "candidate": "rgb(156, 62, 110) solid 2px"
+      },
+      {
+        "part": "gate:select/ink/default/rest:0",
+        "property": "outline-offset",
+        "reference": "0px",
+        "candidate": "2px"
+      },
+      {
+        "part": "gate:select/v-listbox/default/rest:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "gate:date-picker/default/default/rest:3",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "gate:select/block/default/rest:0",
+        "property": "width",
+        "reference": "432px",
+        "candidate": "340.047px"
+      },
+      {
+        "part": "part:item:0",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:1",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      },
+      {
+        "part": "part:item:2",
+        "property": "presence",
+        "reference": true,
+        "candidate": false
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-select] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.03899382716049383,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-480x360.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.035994301994301994,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-480x360.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.018278356481481482,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-480x360.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.013708767361111112,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-480x360.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.009748456790123457,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-480x360.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.007311342592592592,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.038141975308641975,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.035207977207977206,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.017879050925925927,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.013409288194444445,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.009535493827160494,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "combobox",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.007151620370370371,
+    "differences": [
+      {
+        "part": "gate:combobox/default/default/rest:0",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      },
+      {
+        "part": "gate:combobox/default/default/rest:1",
+        "property": "height",
+        "reference": "278px",
+        "candidate": "48px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-combo] input",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.026796296296296297,
+    "differences": [
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "width",
+        "reference": "340px",
+        "candidate": "336px"
+      },
+      {
+        "part": "gate:calendar/default/default/rest:0",
+        "property": "width",
+        "reference": "298px",
+        "candidate": "294px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.025353276353276354,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.009270833333333334,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.006953125,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.004944444444444444,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0037083333333333334,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.029157407407407406,
+    "differences": [
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "width",
+        "reference": "340px",
+        "candidate": "336px"
+      },
+      {
+        "part": "gate:calendar/default/default/rest:0",
+        "property": "width",
+        "reference": "298px",
+        "candidate": "294px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 390,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": false,
+    "candidateByteStable": true,
+    "pixelDifference": 0.02747863247863248,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 768,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.009775752314814815,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 1024,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.007331814236111111,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 1440,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.005213734567901235,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 1920,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.003910300925925926,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  }
+]

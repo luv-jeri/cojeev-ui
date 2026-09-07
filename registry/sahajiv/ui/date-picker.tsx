@@ -122,6 +122,7 @@ export function DatePickerContent({
       data-slot="date-picker-content"
       data-part="content"
       align="start"
+      sideOffset={8}
       className={className}
       {...props}
     />
