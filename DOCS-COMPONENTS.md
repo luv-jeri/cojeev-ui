@@ -100,7 +100,7 @@ The other shared helpers are Icon, Shape and Motion Adjuster. All four have thei
 - Registry build: passed, 71 registry items = one base registry + 66 base components + four shared helpers.
 - Focused ESLint: passed for all documentation files and the Preview helper.
 - Generated HTML coverage: all 70 pages contained their live preview and SahaJiv sidebar; all 205 required variant/size combinations were present exactly once.
-- Full browser/fidelity gates were left to the root’s active sweep. No browser approval is claimed by this document.
-- Existing source warning surfaced during Next CSS optimization: malformed WebKit details marker selector in Accordion CSS. Reported to its owner; outside docs ownership.
+- Bounded docs browser QA now covers all 70 pages at three widths and both themes, with per-entry interaction and visual observations in [DOCS-VERIFICATION.md](DOCS-VERIFICATION.md). This remains separate from the root’s exact reference fidelity gate.
+- The earlier malformed WebKit details marker selector warning in Accordion CSS was resolved by its owner before the browser audit.
 
 No new runtime npm dependency was added for documentation or Preview. TypeScript is used at build time for source extraction; all example pages are statically exported.
