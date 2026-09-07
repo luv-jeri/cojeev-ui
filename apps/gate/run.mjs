@@ -26,6 +26,9 @@ const context=await browser.newContext({viewport:{width:widths[0],height:900},re
 const page=await context.newPage();
 const errors=[];page.on("pageerror",e=>errors.push(e.message));
 const results=[];
+const priorReceipt=arg("skip-results");
+const priorResults=priorReceipt?JSON.parse(fs.readFileSync(priorReceipt,"utf8")):[];
+const skipped=[];
 const openActions={
   "alert-dialog":{selector:"[data-dialog-open]",method:"click"},
   dialog:{selector:"[data-dialog-open]",method:"click"},
@@ -46,6 +49,13 @@ function fixtureScenario(id,file){
   const sourceFile=file.replace("-open","-rest");
   if(!registry[id].isolation.includes(sourceFile))throw new Error(`Missing paired rest fixture for ${id}/${file}`);
   return {sourceFile,action:openActions[id]};
+}
+function previouslyExact(id,file,scenario){
+  return widths.every(width=>priorResults.some(row=>
+    row.id===id&&row.file===file&&row.width===width&&row.verdict==="PASS"&&
+    row.oracleStable&&row.candidateStable&&row.pixelDifference===0&&row.differences?.length===0&&
+    (!scenario.action||JSON.stringify(row.statePreparation)===JSON.stringify({sourceFile:scenario.sourceFile,...scenario.action}))
+  ));
 }
 function hash(bytes){return crypto.createHash("sha256").update(bytes).digest("hex");}
 function candidateHash(){const files=[];function walk(dir){for(const name of fs.readdirSync(dir).sort()){const file=path.join(dir,name);if(fs.statSync(file).isDirectory())walk(file);else files.push(file);}}walk("registry/sahajiv");walk("apps/gate");return hash(files.map(file=>`${file}\n${fs.readFileSync(file,"utf8")}`).join("\n"));}
@@ -133,6 +143,11 @@ try{
     if(registry[id]?.tier!=="base")throw new Error(`Not a base component: ${id}`);
     for(const file of registry[id].isolation.filter(file=>!arg("file")||file.includes(arg("file"))).slice(0,limit)){
       const scenario=fixtureScenario(id,file);
+      if(priorReceipt&&previouslyExact(id,file,scenario)){
+        skipped.push({id,file,widths,receipt:priorReceipt});
+        fs.writeFileSync(`${out}/skipped-exact-cases.json`,JSON.stringify(skipped,null,2));
+        continue;
+      }
       const oracle=`http://127.0.0.1:${port}/${reference}/isolation/${id}/${scenario.sourceFile}`;
       const candidate=`http://127.0.0.1:${port}/candidate?id=${id}&file=${scenario.sourceFile}`;
       let A,A2,B,B2;
@@ -178,6 +193,7 @@ finally{
   if(unavailable.length)text.push("Computed-style limitations (pixels remain fully compared; interaction proof is separate):",...unavailable.map(value=>`- ${value}`),"");
   const opened=results.filter(row=>row.statePreparation);
   if(opened.length)text.push("Open-state preparation: the source UI bootstrap closes layers even when the generated isolation file is labeled open (ui.js:330–334). Those state rows load the paired authored rest scene, then perform the same recorded real click/right-click/hover on each side. This avoids stale simultaneous-open menu attributes and verifies an actually visible state. Each raw result names the source file and trigger; the durable authored Toast trigger is used to keep its native timeout out of the static width sweep. Original open files remain unchanged and earlier raw-scene diagnostics are retained.","");
+  if(skipped.length)text.push(`This bounded follow-up skipped ${skipped.length} files already exact at every requested width in ${priorReceipt}. The skipped-case manifest is retained separately; those earlier rows are not relabeled as measurements from this revision. The complete default command does not skip any cases.`,"");
   fs.writeFileSync(arg("report")??"GATE.md",text.join("\n"));
   await browser.close();await server.close();
 }
