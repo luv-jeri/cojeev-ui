@@ -103,6 +103,7 @@ export function Calendar(calendarProps: CalendarProps) {
 }
 export function CalendarCaption({
   calendarMonth,
+  displayIndex,
   className,
   ...props
 }: MonthCaptionProps) {
@@ -112,6 +113,7 @@ export function CalendarCaption({
   return (
     <div
       data-slot="calendar-header"
+      data-month-index={displayIndex}
       data-part="header"
       className={cn("v-cal__head", className)}
       {...props}
