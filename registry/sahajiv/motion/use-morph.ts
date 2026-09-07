@@ -93,8 +93,11 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    el.classList.add('v-morph-host','v-morph-live');const relative=cs.position==='static';if(relative)el.classList.add('v-morph-rel')
    const focused=el.ownerDocument.activeElement;el.prepend(svg);if(focused instanceof HTMLElement&&el.contains(focused)&&el.ownerDocument.activeElement!==focused)focused.focus({preventScroll:true})
    const repaint=()=>{
-    if(mode!=='fill')el.style.setProperty('--mstroke',old.stroke||(el.matches('.v-badge.-test')?'var(--v-ink)':el.matches('.v-badge.-dashed')?'var(--v-text-2)':'var(--v-border)'))
-    if(mode!=='stroke'){
+    // Explicit bodies take their paint from the author's live CSS variables.
+    // Only the automatic category adapter captures the host background. Copying
+    // inherited paint into an explicit body breaks its parent/theme inheritance.
+    if(!explicit&&mode!=='fill')el.style.setProperty('--mstroke',old.stroke||(el.matches('.v-badge.-test')?'var(--v-ink)':el.matches('.v-badge.-dashed')?'var(--v-text-2)':'var(--v-border)'))
+    if(!explicit&&mode!=='stroke'){
      // The generated layer suppresses its host background through :has() and
      // live-state rules. Read the real surface without that owned layer, including
      // after a theme change, then restore it before the browser can paint.
@@ -105,7 +108,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
      const paint=getComputedStyle(el),bg=paint.backgroundColor,cssFill=paint.getPropertyValue('--mfill').trim()
      // A transparent CSS fill is meaningful: selected controls reveal the
      // travelling flow layer underneath their own morph body.
-     const fill=explicit&&old.fill?old.fill:!clear(bg)?bg:old.fill||cssFill||surfaceFill(el)
+     const fill=!clear(bg)?bg:old.fill||cssFill||surfaceFill(el)
      if(attached)el.insertBefore(svg,next)
      if(live)el.classList.add('v-morph-live')
      el.style.setProperty('--mfill',fill)
