@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
@@ -69,10 +70,11 @@ export function Sidebar({
     </SidebarProvider>
   );
 }
-function SidebarRail({ className, ...props }: React.ComponentProps<"aside">) {
+function SidebarRail({ref: externalMorphRef,  className, ...props }: React.ComponentProps<"aside">) {
   const sidebar = useSidebar();
+  const ownedMorphRef = useMorph<HTMLElement>("surfaces", externalMorphRef);
   return (
-    <aside
+    <aside ref={ownedMorphRef}
       data-slot="sidebar"
       data-part="root"
       data-state={sidebar.open ? "expanded" : "collapsed"}
@@ -100,15 +102,16 @@ export function SidebarHeader({ className, ...props }: SidebarHeaderProps) {
   );
 }
 export type SidebarTriggerProps = React.ComponentProps<"button">;
-export function SidebarTrigger({
+export function SidebarTrigger({ref: externalMorphRef, 
   className,
   children,
   onClick,
   ...props
 }: SidebarTriggerProps) {
   const sidebar = useSidebar();
+  const ownedMorphRef = useMorph<HTMLButtonElement>("icons", externalMorphRef);
   return (
-    <button
+    <button ref={ownedMorphRef}
       data-slot="sidebar-trigger"
       data-part="trigger"
       data-rail-collapse=""
@@ -168,7 +171,7 @@ export type SidebarMenuButtonProps = React.ComponentProps<"a"> & {
   isActive?: boolean;
   label?: string;
 };
-export function SidebarMenuButton({
+export function SidebarMenuButton({ref: externalMorphRef, 
   className,
   asChild,
   isActive,
@@ -177,8 +180,9 @@ export function SidebarMenuButton({
 }: SidebarMenuButtonProps) {
   const Comp = asChild ? Slot : "a";
   const accessibleLabel = label ?? getSidebarText(props.children);
+  const ownedMorphRef = useMorph<HTMLAnchorElement>("nav", externalMorphRef);
   return (
-    <Comp
+    <Comp ref={ownedMorphRef}
       data-slot="sidebar-menu-button"
       data-state={isActive ? "active" : "inactive"}
       aria-current={isActive ? "page" : undefined}
@@ -219,12 +223,13 @@ export function SidebarFooter({ className, ...props }: SidebarFooterProps) {
   );
 }
 export type SidebarMenuBadgeProps = React.ComponentProps<"span">;
-export function SidebarMenuBadge({
+export function SidebarMenuBadge({ref: externalMorphRef, 
   className,
   ...props
 }: SidebarMenuBadgeProps) {
+  const ownedMorphRef = useMorph<HTMLSpanElement>("pills", externalMorphRef);
   return (
-    <span
+    <span ref={ownedMorphRef}
       data-slot="sidebar-menu-badge"
       className={cn(
         "v-nav__count grid place-items-center min-w-[18px] h-[18px] px-[5px] rounded-[var(--r-pill)] bg-[var(--v-pink)] text-[color:var(--v-on-accent)] text-[10px] font-bold",

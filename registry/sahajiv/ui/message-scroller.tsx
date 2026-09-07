@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -74,14 +75,15 @@ export function MessageScroller({
       resize.disconnect();
     };
   }, [jump]);
-  return (
-    <ScrollerContext.Provider value={{ detached, jump }}>
-      <div
-        ref={(node) => {
+  const ownedMorphRef = useMorph<HTMLDivElement>("surfaces", (node) => {
           element.current = node;
           if (typeof ref === "function") return ref(node);
           if (ref) ref.current = node;
-        }}
+        });
+  return (
+    <ScrollerContext.Provider value={{ detached, jump }}>
+      <div
+        ref={ownedMorphRef}
         data-slot="message-scroller"
         data-part="viewport"
         data-scroller=""

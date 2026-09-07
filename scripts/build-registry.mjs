@@ -22,7 +22,18 @@ foundation["@layer sahajiv-morph"]=css(`${source}/styles/morph.css`);
 foundation["@layer sahajiv-flow"]=css(`${source}/styles/flow-press.css`);
 const base={name:"sahajiv",type:"registry:base",extends:"none",title:"SahaJiv",description:"SahaJiv tokens, fonts, reset, and Tailwind v4 theme bridge.",dependencies:["class-variance-authority","clsx","tailwind-merge","tw-animate-css"],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@sahajiv":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:foundation};
 function imports(id) {
-  return [...fs.readFileSync(`${source}/ui/${id}.tsx`,"utf8").matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)].map(match=>match[1]);
+  return [...fs.readFileSync(`${source}/ui/${id}.tsx`,"utf8").matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)].map(match=>sourceImport(`${source}/ui/${id}.tsx`,match[1]));
+}
+function sourceImport(file, value) {
+  if(value.startsWith("."))return `@/${path.posix.normalize(path.posix.join(path.posix.dirname(file),value))}`;
+  return value;
+}
+function installedImport(file, value) {
+  const resolved=sourceImport(file,value);
+  return resolved.replace("@/registry/sahajiv/lib/utils","@/lib/utils")
+    .replace("@/registry/sahajiv/motion/","@/lib/sahajiv-motion/")
+    .replace("@/registry/sahajiv/lib/","@/lib/sahajiv/")
+    .replace("@/registry/sahajiv/ui/","@/components/ui/");
 }
 function npmPackage(value){return value.startsWith("@")?value.split("/").slice(0,2).join("/"):value.split("/")[0];}
 const extras={preview:{name:"Component preview",variants:["default"],sizes:["default"],states:["preview","code","copied"]},icon:{name:"Icon and icon controls",variants:["default"],sizes:["default","sm","lg"],states:["rest","hover","disabled"]},shape:{name:"Shape",variants:["default"],sizes:["default"],states:["rest"]},adjuster:{name:"Motion Adjuster",variants:["default"],sizes:["default"],states:["rest","open"]}};
@@ -45,6 +56,6 @@ const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"sahaj
 fs.writeFileSync("registry.json",JSON.stringify(registry,null,2)+"\n");
 fs.mkdirSync("public/r",{recursive:true});
 execFileSync(process.execPath,["node_modules/shadcn/dist/index.js","build"],{stdio:"inherit"});
-for(const item of items){const file=path.join("public/r",`${item.name}.json`);const data=JSON.parse(fs.readFileSync(file,"utf8"));for(const f of data.files??[])if(f.content){f.content=f.content.replaceAll("@/registry/sahajiv/lib/utils","@/lib/utils").replaceAll("@/registry/sahajiv/motion/","@/lib/sahajiv-motion/").replaceAll("@/registry/sahajiv/lib/","@/lib/sahajiv/").replaceAll("@/registry/sahajiv/ui/","@/components/ui/");if(f.path===`${source}/styles/fonts.css`)f.content=f.content.replace("sahajiv-states, sahajiv-accessibility","sahajiv-states, sahajiv-morph, sahajiv-flow, sahajiv-accessibility");}fs.writeFileSync(file,JSON.stringify(data,null,2)+"\n");}
+for(const item of items){const file=path.join("public/r",`${item.name}.json`);const data=JSON.parse(fs.readFileSync(file,"utf8"));for(const f of data.files??[])if(f.content){if(/\.[cm]?[jt]sx?$/.test(f.path))f.content=f.content.replace(/((?:from\s+|import\s+)["'])([^"']+)(["'])/g,(_match,start,value,end)=>`${start}${installedImport(f.path,value)}${end}`);if(f.path===`${source}/styles/fonts.css`)f.content=f.content.replace("sahajiv-states, sahajiv-accessibility","sahajiv-states, sahajiv-morph, sahajiv-flow, sahajiv-accessibility");}fs.writeFileSync(file,JSON.stringify(data,null,2)+"\n");}
 fs.copyFileSync("public/r/registry.json","public/registry.json");
 console.log(`Registry built: ${items.length} items (${ids.filter(id=>reference[id]?.tier==="base").length} base components, ${ids.filter(id=>reference[id]?.tier!=="base").length} shared helpers; verification in progress)`);

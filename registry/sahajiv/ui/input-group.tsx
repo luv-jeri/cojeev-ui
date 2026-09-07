@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -12,9 +13,10 @@ export const inputGroupVariants = cva(
   "v-igroup flex items-center h-[52px] gap-[10px] py-0 pl-[18px] pr-[6px] rounded-[var(--r-pill)] border-0 bg-[var(--input)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
 );
 export type InputGroupProps = React.ComponentProps<"div">;
-export function InputGroup({ className, ...props }: InputGroupProps) {
+export function InputGroup({ref: externalMorphRef,  className, ...props }: InputGroupProps) {
+  const ownedMorphRef = useMorph<HTMLDivElement>("inputs", externalMorphRef);
   return (
-    <div
+    <div ref={ownedMorphRef}
       data-slot="input-group"
       data-part="root"
       className={cn(inputGroupVariants(), className)}
@@ -101,4 +103,10 @@ export function InputSearchScope({
       {...props}
     />
   );
+}
+
+export type InputSearchDiskProps=React.ComponentProps<"span">;
+export function InputSearchDisk({ref,className,...props}:InputSearchDiskProps){
+  const ownedRef=useMorph<HTMLSpanElement>("icons",ref);
+  return <span ref={ownedRef} data-slot="input-search-disk" data-part="icon" className={cn("v-search__disk",className)} {...props}/>;
 }

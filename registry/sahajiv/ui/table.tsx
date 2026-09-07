@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -36,13 +37,14 @@ export function TableContainer({
       mutation.disconnect();
     };
   }, [mark]);
-  return (
-    <div
-      ref={(node) => {
+  const ownedMorphRef = useMorph<HTMLDivElement>("cards", (node) => {
         element.current = node;
         if (typeof ref === "function") return ref(node);
         if (ref) ref.current = node;
-      }}
+      });
+  return (
+    <div
+      ref={ownedMorphRef}
       data-slot="table-container"
       data-part="viewport"
       tabIndex={0}

@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -35,10 +36,11 @@ export function ButtonGroup({
     if (value === undefined) setLocal(next);
     onValueChange?.(next);
   };
+  const ownedMorphRef = useMorph<HTMLDivElement>("nav", flowRef);
   return (
     <ButtonGroupContext.Provider value={{ value: value ?? local, change }}>
       <div
-        ref={flowRef}
+        ref={ownedMorphRef}
         data-slot="button-group"
         data-part="root"
         data-togglegroup=""

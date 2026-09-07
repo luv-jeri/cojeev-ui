@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -110,13 +111,14 @@ export function PaginationItem({ className, ...props }: PaginationItemProps) {
 export type PaginationLinkProps = React.ComponentProps<"button"> & {
   isActive?: boolean;
 };
-export function PaginationLink({
+export function PaginationLink({ref: externalMorphRef, 
   className,
   isActive,
   ...props
 }: PaginationLinkProps) {
+  const ownedMorphRef = useMorph<HTMLButtonElement>("pills", externalMorphRef);
   return (
-    <button
+    <button ref={ownedMorphRef}
       type="button"
       data-slot="pagination-link"
       data-part="item"

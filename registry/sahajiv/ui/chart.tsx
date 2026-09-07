@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -193,7 +194,7 @@ export type ChartRingProps = React.ComponentProps<"div"> & {
   draw?: boolean;
   caption?: string;
 };
-export function ChartRing({
+export function ChartRing({ref: externalMorphRef, 
   segments,
   strokeWidth = 12,
   gap = 6,
@@ -224,9 +225,10 @@ export function ChartRing({
         (Number.isFinite(gap) ? Math.max(0, gap) : 6),
     ),
   }));
+  const ownedMorphRef = useMorph<HTMLDivElement>("surfaces", externalMorphRef);
   return (
     <>
-      <div
+      <div ref={ownedMorphRef}
         data-slot="chart-ring"
         data-part="root"
         data-empty={total ? undefined : ""}

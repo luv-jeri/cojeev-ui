@@ -26,7 +26,7 @@ const simple:Record<string,React.ElementType>={
   ".v-axis":chart.ChartAxis,".v-line":chart.ChartLine,".v-ring__c":chart.ChartRingCenter,".v-prow":chart.ChartRankedRow,".v-prow__lab":chart.ChartRankedLabel,".v-prow__val":chart.ChartRankedValue,
   ".v-drop":dropzone.Dropzone,
   ".v-affix":input.InputAffix,".v-clear":input.InputClear,
-  ".v-igroup":input_group.InputGroup,".v-addon":input_group.InputGroupAddon,".v-search":input_group.InputSearch,".v-scope":input_group.InputSearchScope,
+  ".v-igroup":input_group.InputGroup,".v-addon":input_group.InputGroupAddon,".v-search":input_group.InputSearch,".v-scope":input_group.InputSearchScope,".v-search__disk":input_group.InputSearchDisk,
   ".v-scroller":message_scroller.MessageScroller,".v-scroller__jump":message_scroller.MessageScrollerJump,
   ".v-native":native_select.NativeSelect,
   ".v-quest":questionnaire.Questionnaire,".v-quest__q":questionnaire.QuestionnaireQuestion,".v-quest__opt-body":questionnaire.QuestionnaireOptionBody,

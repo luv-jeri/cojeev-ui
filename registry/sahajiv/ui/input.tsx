@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -49,14 +50,15 @@ export function Input({
 }
 export type InputWrapperProps = React.ComponentProps<"div"> &
   VariantProps<typeof inputVariants>;
-export function InputWrapper({
+export function InputWrapper({ref: externalMorphRef, 
   className,
   variant,
   size,
   ...props
 }: InputWrapperProps) {
+  const ownedMorphRef = useMorph<HTMLDivElement>("inputs", externalMorphRef);
   return (
-    <div
+    <div ref={ownedMorphRef}
       data-slot="input"
       data-part="root"
       className={cn(inputVariants({ variant, size }), className)}

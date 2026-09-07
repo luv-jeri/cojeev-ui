@@ -1,4 +1,5 @@
 "use client";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -138,7 +139,7 @@ export type QuestionnaireOptionProps = React.ComponentProps<"label"> & {
   disabled?: boolean;
   inputProps?: Omit<React.ComponentProps<"input">, "value" | "type">;
 };
-export function QuestionnaireOption({
+export function QuestionnaireOption({ref: externalMorphRef, 
   value,
   disabled,
   inputProps,
@@ -149,8 +150,9 @@ export function QuestionnaireOption({
   const context = React.useContext(ChoiceContext);
   if (!context)
     throw new Error("QuestionnaireOption must be inside QuestionnaireOptions");
+  const ownedMorphRef = useMorph<HTMLLabelElement>("cards", externalMorphRef);
   return (
-    <label
+    <label ref={ownedMorphRef}
       data-slot="questionnaire-option"
       data-state={context.value === value ? "checked" : "unchecked"}
       className={cn(

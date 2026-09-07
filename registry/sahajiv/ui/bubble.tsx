@@ -1,4 +1,5 @@
 "use client"
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/registry/sahajiv/lib/utils"
@@ -13,7 +14,8 @@ export function BubbleRow({as:Tag="div",className,variant,size,...props}:BubbleR
 
 const BubbleContentVariants=cva("v-bubble [display:inline-block] [max-width:min(80%,52ch)] [padding:10px_14px_11px] [border-radius:18px_18px_18px_4px] [background:var(--v-canvas)] [color:var(--v-text)] [font-size:var(--fs-control)] [line-height:1.4] [overflow-wrap:anywhere] [position:relative]",{variants:{variant:{"default":"","me":"-me [background:var(--v-pink)] [border-radius:18px_18px_4px_18px] [color:var(--v-on-accent)]","tail":"-tail [border-bottom-left-radius:18px]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BubbleContentProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleContentVariants> & { as?:React.ElementType }
-export function BubbleContent({as:Tag="div",className,variant,size,...props}:BubbleContentProps){return <Tag data-slot="bubble-content" data-part="content" className={cn(BubbleContentVariants({variant,size}),className)} {...props}/>}
+export function BubbleContent({ref: externalMorphRef, as:Tag="div",className,variant,size,...props}:BubbleContentProps){const ownedMorphRef = useMorph<HTMLDivElement>("pills", externalMorphRef);
+  return <Tag ref={ownedMorphRef} data-slot="bubble-content" data-part="content" className={cn(BubbleContentVariants({variant,size}),className)} {...props}/>}
 
 const BubbleGapVariants=cva("v-chat__gap [height:10px]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BubbleGapProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleGapVariants> & { as?:React.ElementType }
