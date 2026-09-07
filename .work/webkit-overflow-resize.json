@@ -1,0 +1,1811 @@
+{
+  "trace": [
+    {
+      "t": 678,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6501:33\nuseMorph.useLayoutEffect@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6538:19"
+    },
+    {
+      "t": 679,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6502:31"
+    },
+    {
+      "t": 681,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6501:33\nuseMorph.useLayoutEffect@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6538:19"
+    },
+    {
+      "t": 681,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6502:31"
+    },
+    {
+      "t": 695,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 695,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 802,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6501:33\nuseMorph.useLayoutEffect.sync@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6543:31"
+    },
+    {
+      "t": 802,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6502:31"
+    },
+    {
+      "t": 898,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 31.999998092651367,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 960,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1145,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1212,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1385,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1385,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1472,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1472,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1632,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1632,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1711,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1711,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1850,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 1850,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--flow-ease: cubic-bezier(.2,.8,.2,1); --flow-dur: 0.240s; --flow-land: none; --flow-glow: none; --mfill: oklab(0.86974 0.002104 0.017294); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 2060,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6501:33\nuseMorph.useLayoutEffect.unsubscribe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6559:34"
+    },
+    {
+      "t": 2060,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6502:31"
+    },
+    {
+      "t": 2061,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6501:33\nuseMorph.useLayoutEffect.unsubscribe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6559:34"
+    },
+    {
+      "t": 2061,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6502:31"
+    },
+    {
+      "t": 2093,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 2093,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 2114,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6501:33\nuseMorph.useLayoutEffect.sync@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6543:31"
+    },
+    {
+      "t": 2114,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218);",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\nattach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6502:31"
+    },
+    {
+      "t": 2158,
+      "text": "Motion settings",
+      "w": 116.40373229980469,
+      "h": 30.237411499023438,
+      "offset": 112,
+      "x": 190.0968475341797,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 2158,
+      "text": "Motion settings",
+      "w": 116.40373229980469,
+      "h": 30.237411499023438,
+      "offset": 112,
+      "x": 190.0968475341797,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3816,
+      "text": "Browse",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 3816,
+      "text": "Motion settings",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 3816,
+      "text": "Browse",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3817,
+      "text": "Motion settings",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3874,
+      "text": "Browse",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 3874,
+      "text": "Motion settings",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 3874,
+      "text": "Browse",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3874,
+      "text": "Motion settings",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3877,
+      "text": "Browse",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3877,
+      "text": "Motion settings",
+      "w": 0,
+      "h": 0,
+      "offset": 0,
+      "x": 0,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3897,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 3897,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 3898,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\nmeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6286:55\nuseMorph.useLayoutEffect.attach@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6338:40\n@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5892:25"
+    },
+    {
+      "t": 3914,
+      "text": "Browse",
+      "w": 65.484375,
+      "h": 32,
+      "offset": 65,
+      "x": 312.515625,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    },
+    {
+      "t": 3914,
+      "text": "Motion settings",
+      "w": 112.4375,
+      "h": 32,
+      "offset": 112,
+      "x": 192.078125,
+      "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;",
+      "class": "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] py-0 rounded-[var(--r-pill)] font-[number:var(--fw-control)] whitespace-nowrap motion-safe:active:[transform:translateY(1px)] -secondary bg-[var(--v-beige)] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-text-2)] hover:[box-shadow:inset_0_0_0_1px_var(--v-text)] -sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px] leading-none v-morph-host v-morph-rel v-morph-live",
+      "stack": "@web-inspector://bootstrap.js:17:434\npremeasure@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:6315:55\nforEach@[native code]\nframe@http://127.0.0.1:4356/sahajiv-ui/_next/static/chunks/_02yi-vc._.js:5890:22"
+    }
+  ],
+  "frames": [
+    {
+      "t": 0,
+      "width": 1440,
+      "host": {
+        "w": 0,
+        "offset": 0,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 0,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 50px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 50"
+      }
+    },
+    {
+      "t": 12,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 136,
+        "style": "position: absolute; left: -10px; top: -10px; width: 136px; height: 50px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 136 50"
+      }
+    },
+    {
+      "t": 29,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 42,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 59,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 75,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 92,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 109,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 125,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 142,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 159,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 175,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 192,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 209,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 225,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 242,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 259,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 275,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 290,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 307,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 323,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 342,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 357,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 375,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 392,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 409,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 423,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 440,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 459,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 473,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 491,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 507,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 525,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 542,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 559,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 573,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 592,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 609,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 623,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 640,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 657,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 673,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 690,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 707,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 723,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 741,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 757,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 775,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 792,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 806,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 823,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 842,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 857,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 873,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 892,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 909,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 926,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 942,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 956,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 974,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 992,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1009,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1026,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1042,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1059,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1073,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1092,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1108,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1125,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1143,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1157,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1175,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1192,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1209,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1223,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1240,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1257,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1273,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1290,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1307,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1323,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1340,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1358,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1374,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1390,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1407,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1425,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1442,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1459,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1475,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1492,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    },
+    {
+      "t": 1508,
+      "width": 390,
+      "host": {
+        "w": 112.4375,
+        "offset": 112,
+        "style": "--mfill: rgb(238, 231, 218); --mpad: 10px; --flow-ease: cubic-bezier(.3,1.2,.4,1); --flow-dur: 0.400s; --flow-land: vf-land; --flow-glow: vf-glow;"
+      },
+      "svg": {
+        "w": 132,
+        "style": "position: absolute; left: -10px; top: -10px; width: 132px; height: 52px; pointer-events: none; overflow: visible; z-index: -1;",
+        "viewBox": "-10 -10 132 52"
+      }
+    }
+  ]
+}
