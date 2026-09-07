@@ -498,7 +498,7 @@
   height: 40px;
   padding: 0;
 }
-[data-slot="calendar-grid"] th:not(.v-cal__wk) {
+:where([data-slot="calendar-grid"]) th:where(:not(.v-cal__wk)) {
   padding: 0;
 }
 [data-slot="calendar-header"] {
@@ -533,4 +533,9 @@
  font-weight: 400;
  text-align: start;
  vertical-align: baseline;
+}
+
+/* Authored weekday labels are spans; semantic table headers keep their alignment. */
+.v-cal__wd:where([data-slot="calendar-weekday"], [data-slot="calendar-week-number-header"]) {
+  text-align: start;
 }

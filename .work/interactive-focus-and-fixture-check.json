@@ -1,0 +1,140 @@
+{
+  "select": [
+    {
+      "theme": "light",
+      "side": "reference",
+      "pointer": {
+        "focused": true,
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "outlineOffset": "0px"
+      },
+      "keyboard": {
+        "focused": true,
+        "outlineStyle": "solid"
+      },
+      "value": "This week"
+    },
+    {
+      "theme": "light",
+      "side": "candidate",
+      "pointer": {
+        "focused": true,
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "outlineOffset": "0px"
+      },
+      "keyboard": {
+        "focused": true,
+        "outlineStyle": "solid"
+      },
+      "value": "This week"
+    },
+    {
+      "theme": "dark",
+      "side": "reference",
+      "pointer": {
+        "focused": true,
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "outlineOffset": "0px"
+      },
+      "keyboard": {
+        "focused": true,
+        "outlineStyle": "solid"
+      },
+      "value": "This week"
+    },
+    {
+      "theme": "dark",
+      "side": "candidate",
+      "pointer": {
+        "focused": true,
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "outlineOffset": "0px"
+      },
+      "keyboard": {
+        "focused": true,
+        "outlineStyle": "solid"
+      },
+      "value": "This week"
+    }
+  ],
+  "toggleGroup": [
+    {
+      "side": "reference",
+      "initial": [
+        {
+          "text": "Today",
+          "pressed": "true",
+          "checked": null
+        },
+        {
+          "text": "Week",
+          "pressed": "true",
+          "checked": null
+        },
+        {
+          "text": "Month",
+          "pressed": "false",
+          "checked": null
+        }
+      ],
+      "selected": [
+        {
+          "text": "Today",
+          "pressed": "false",
+          "checked": null
+        },
+        {
+          "text": "Week",
+          "pressed": "false",
+          "checked": null
+        },
+        {
+          "text": "Month",
+          "pressed": "true",
+          "checked": null
+        }
+      ]
+    },
+    {
+      "side": "candidate",
+      "initial": [
+        {
+          "text": "Today",
+          "pressed": "true",
+          "checked": "true"
+        },
+        {
+          "text": "Week",
+          "pressed": "true",
+          "checked": "false"
+        },
+        {
+          "text": "Month",
+          "pressed": "false",
+          "checked": "false"
+        }
+      ],
+      "selected": [
+        {
+          "text": "Today",
+          "pressed": null,
+          "checked": "false"
+        },
+        {
+          "text": "Week",
+          "pressed": null,
+          "checked": "false"
+        },
+        {
+          "text": "Month",
+          "pressed": null,
+          "checked": "true"
+        }
+      ]
+    }
+  ]
+}
