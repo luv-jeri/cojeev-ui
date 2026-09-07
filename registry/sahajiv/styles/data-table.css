@@ -1,5 +1,6 @@
-[data-slot="data-table-filters"]::-webkit-scrollbar {
-  display: none;
+@media (max-width: 640px) {
+  [data-slot="data-table-filters"] { overflow-x: auto; padding-bottom: 2px; }
+  [data-slot="data-table-filters"]::-webkit-scrollbar { display: none; }
 }
 [data-slot="data-table-filter-button"] {
   box-shadow: inset 0 0 0 1px var(--v-edge);
