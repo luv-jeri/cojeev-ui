@@ -1,0 +1,181 @@
+{
+  "basis": "Live docs4320, exact old Card text rules removed from CSSOM then candidate CSS inserted in the same sahajiv-states layer; no server file or process changed.",
+  "removedOriginalCardTextRules": 3,
+  "rows": [
+    {
+      "component": "card",
+      "mode": "light",
+      "variant": "default",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(95, 91, 85)",
+      "opacity": "1",
+      "background": "rgb(238, 231, 218)",
+      "surface": "card",
+      "contrast": 5.48
+    },
+    {
+      "component": "card",
+      "mode": "light",
+      "variant": "pink",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(245, 184, 219)",
+      "surface": "card",
+      "contrast": 8.66
+    },
+    {
+      "component": "card",
+      "mode": "light",
+      "variant": "yellow",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(245, 216, 103)",
+      "surface": "card",
+      "contrast": 10.12
+    },
+    {
+      "component": "card",
+      "mode": "light",
+      "variant": "olive",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(154, 171, 99)",
+      "surface": "card",
+      "contrast": 5.69
+    },
+    {
+      "component": "card",
+      "mode": "light",
+      "variant": "blue",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(182, 202, 235)",
+      "surface": "card",
+      "contrast": 8.58
+    },
+    {
+      "component": "card",
+      "mode": "light",
+      "variant": "ink",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(251, 244, 230)",
+      "opacity": "1",
+      "background": "rgb(17, 17, 17)",
+      "surface": "card",
+      "contrast": 17.25
+    },
+    {
+      "component": "card",
+      "mode": "light",
+      "variant": "cream",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(74, 68, 60)",
+      "opacity": "1",
+      "background": "rgb(243, 236, 223)",
+      "surface": "card",
+      "contrast": 8.19
+    },
+    {
+      "component": "card",
+      "mode": "dark",
+      "variant": "default",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(181, 172, 158)",
+      "opacity": "1",
+      "background": "rgb(34, 31, 27)",
+      "surface": "card",
+      "contrast": 7.31
+    },
+    {
+      "component": "card",
+      "mode": "dark",
+      "variant": "pink",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(245, 184, 219)",
+      "surface": "card",
+      "contrast": 8.66
+    },
+    {
+      "component": "card",
+      "mode": "dark",
+      "variant": "yellow",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(245, 216, 103)",
+      "surface": "card",
+      "contrast": 10.12
+    },
+    {
+      "component": "card",
+      "mode": "dark",
+      "variant": "olive",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(154, 171, 99)",
+      "surface": "card",
+      "contrast": 5.69
+    },
+    {
+      "component": "card",
+      "mode": "dark",
+      "variant": "blue",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(46, 42, 36)",
+      "opacity": "1",
+      "background": "rgb(182, 202, 235)",
+      "surface": "card",
+      "contrast": 8.58
+    },
+    {
+      "component": "card",
+      "mode": "dark",
+      "variant": "ink",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(17, 17, 17)",
+      "opacity": "1",
+      "background": "rgb(251, 244, 230)",
+      "surface": "card",
+      "contrast": 17.25
+    },
+    {
+      "component": "card",
+      "mode": "dark",
+      "variant": "cream",
+      "text": "Keep your notes, ideas and next steps together.",
+      "color": "rgb(181, 172, 158)",
+      "opacity": "1",
+      "background": "rgb(42, 38, 33)",
+      "surface": "card",
+      "contrast": 6.7
+    },
+    {
+      "component": "bubble",
+      "mode": "light",
+      "text": "Today · 09:41",
+      "color": "rgb(228, 221, 205)",
+      "opacity": "0.7",
+      "background": "rgb(17, 17, 17)",
+      "surface": "bubble",
+      "contrast": 7.23
+    },
+    {
+      "component": "bubble",
+      "mode": "dark",
+      "text": "Today · 09:41",
+      "color": "rgb(17, 17, 17)",
+      "opacity": "0.7",
+      "background": "rgb(251, 244, 230)",
+      "surface": "bubble",
+      "contrast": 6.78
+    }
+  ],
+  "errors": []
+}
