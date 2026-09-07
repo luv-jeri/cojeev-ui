@@ -96,7 +96,7 @@
 [data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still>.v-glide__pill,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still>.v-glide__hover,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still>.v-glide__trail{transition:none}
 [data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide[data-flow-kind="bar"]>.v-glide__pill>i,[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide[data-flow-kind="bar"]>.v-glide__pill>i::after{animation:none}
 [data-flow-owned].v-glide.-underline>.v-glide__trail{display:none}
-[data-flow-owned].v-glide>.v-tab,[data-flow-owned].v-glide>.v-btn,[data-flow-owned].v-glide>.v-nav__item,[data-flow-owned].v-glide>.v-item,[data-flow-owned].v-glide>label{transition:color var(--t-flow-label) ease calc(var(--t-flow-label-delay) / var(--flow-speed,1)),background-color var(--t-flow-hover) ease,box-shadow var(--t-flow-hover) ease,transform var(--t-micro) var(--enter)}
+[data-flow-owned].v-glide>.v-tab,[data-flow-owned].v-glide>.v-btn,[data-flow-owned].v-glide>.v-nav__item,[data-flow-owned].v-glide>.v-item,[data-flow-owned].v-glide>label,[data-flow-owned].v-glide>.v-iradio[data-slot="radio-group-item"]{transition:color var(--t-flow-label) ease calc(var(--t-flow-label-delay) / var(--flow-speed,1)),background-color var(--t-flow-hover) ease,box-shadow var(--t-flow-hover) ease,transform var(--t-micro) var(--enter)}
 @media (hover:none){[data-flow-owned].v-glide>.v-glide__hover{display:none}}
 :root:not([data-flow-hover="off"]) [data-flow-owned].v-glide:not([data-flow-hover="off"])>:is(.v-btn,.v-tab,.v-nav__item):hover:not([data-glide-active]){background:transparent}
 [data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__pill,[data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__hover,[data-flow-owned].v-glide[data-flow-v="off"]>.v-glide__trail{transition:none}
@@ -122,7 +122,8 @@
 .v-acc:where([data-slot],[data-slot] *)>details[open]::details-content,.v-collapsible:where([data-slot],[data-slot] *)[open]::details-content{grid-template-rows:1fr;block-size:auto}
 .v-acc__body:where([data-slot],[data-slot] *),.v-collapsible__body:where([data-slot],[data-slot] *){min-height:0}
 .v-acc:where([data-slot],[data-slot] *)>details[open]>.v-acc__body,.v-collapsible:where([data-slot],[data-slot] *)[open]>.v-collapsible__body{animation:vf-enter var(--flow-dur) var(--flow-ease) both}
-.v-acc:where([data-slot],[data-slot] *) summary .v-chev{transition-timing-function:var(--flow-ease);transition-duration:var(--flow-dur)}
+.v-acc:where([data-slot],[data-slot] *) summary .v-chev,
+[data-slot="accordion-trigger"] .v-chev{transition-timing-function:var(--flow-ease);transition-duration:var(--flow-dur)}
 .v-avatar:where([data-slot],[data-slot] *),.v-hex:where([data-slot],[data-slot] *),.v-kbd:where([data-slot],[data-slot] *),.v-crumbs:where([data-slot],[data-slot] *) a,.v-bars:where([data-slot],[data-slot] *)>i,.v-ratio:where([data-slot],[data-slot] *){transition-property:transform;transition-duration:var(--flow-dur);transition-timing-function:var(--flow-ease)}
 .v-avatar:where([data-slot],[data-slot] *):hover,.v-hex:where([data-slot],[data-slot] *):hover,.v-kbd:where([data-slot],[data-slot] *):hover{transform:scale(calc(1 + .05 * var(--flow-intensity,1)))}
 .v-ratio:where([data-slot],[data-slot] *):hover{transform:scale(calc(1 + .015 * var(--flow-intensity,1)))}
@@ -154,11 +155,10 @@
 }
 
 /* Radix owns real thumb and indicator elements in the React port. */
-[data-slot="switch-thumb"], [data-slot="checkbox"], [data-slot="radio-group-item"],
-[data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"] { transition-timing-function: var(--flow-ease); transition-duration: var(--flow-dur); }
+[data-slot="switch-thumb"], [data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"] { transition-timing-function: var(--flow-ease); transition-duration: var(--flow-dur); }
 [data-slot="progress-indicator"] { transition: width var(--flow-dur) var(--flow-ease), transform var(--flow-dur) var(--flow-ease), background var(--t-flow-radius-sm) ease; }
 [data-slot="accordion-content"][data-state="open"], [data-slot="collapsible-content"][data-state="open"] { animation: vf-enter var(--flow-dur) var(--flow-ease) both; }
 @media (prefers-reduced-motion: reduce) {
  [data-slot="accordion-content"][data-state="open"], [data-slot="collapsible-content"][data-state="open"] { animation: none; }
- [data-slot="switch-thumb"], [data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"], [data-slot="progress-indicator"] { transition: none; }
+ [data-slot="switch-thumb"], [data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"], [data-slot="progress-indicator"] { transition-duration: 0s; }
 }

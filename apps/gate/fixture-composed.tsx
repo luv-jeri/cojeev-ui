@@ -39,6 +39,25 @@ const tableParts:Record<string,React.ElementType>={THEAD:table.TableHeader,TBODY
 function siblingIndex(node:Element,selector:string){return Array.from(node.parentElement?.querySelectorAll(":scope > "+selector)??[]).indexOf(node)}
 function chosenValue(input:Element|null,index:number){return input?.getAttribute("value")??String(index)}
 
+// Reproduce the source fixture's field-container boundaries as production FieldGroup
+// composition. Discovery only reads the detached fixture; hooks own their rendered subtree.
+const fieldContainers = new WeakMap<Document, Set<Element>>();
+const wrappedFields = new WeakSet<Element>();
+function fieldContainerSet(doc: Document) {
+  let groups = fieldContainers.get(doc);
+  if (groups) return groups;
+  groups = new Set(doc.querySelectorAll("[data-flow-fields],.v-otp"));
+  const fields = ".v-input,.v-textarea,.v-igroup,.v-native,.v-otp input";
+  const grouped = (node: Element) => { for (let p: Element | null = node; p; p = p.parentElement) if (groups!.has(p)) return true; return false; };
+  for (const control of doc.querySelectorAll(fields)) {
+    if (grouped(control)) continue;
+    let parent = control.parentElement;
+    while (parent && parent !== doc.body && !parent.matches("form,fieldset,.demo,main") && Array.from(parent.querySelectorAll(fields)).filter(node => !grouped(node)).length < 2) parent = parent.parentElement;
+    if (parent && parent !== doc.body && !parent.matches(".demo,main") && parent.querySelectorAll(fields).length >= 2) groups.add(parent);
+  }
+  fieldContainers.set(doc, groups);
+  return groups;
+}
 /** Translate authored content into production APIs; no reference behavior runs here. */
 export function convertComposed(node:Element,index:number,ctx:FixtureContext):React.ReactNode|undefined{
   const render=(Component:React.ElementType,props:FixtureProps={},children?:React.ReactNode)=>{
@@ -46,6 +65,11 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
     return ctx.convert(node,index,{skipComposed:true,skipInteractive:true,Component,props,...(children!==undefined?{children}:{})});
   };
   const matches=(selector:string)=>node.matches(selector);
+  if (["field", "input", "input-group", "textarea", "questionnaire", "data-table"].includes(ctx.id) && fieldContainerSet(ctx.fixture).has(node) && !wrappedFields.has(node)) {
+    wrappedFields.add(node);
+    ctx.mark(node);
+    return <field.FieldGroup key={index} asChild>{ctx.convert(node,index)}</field.FieldGroup>;
+  }
   if(node.querySelector(":scope > .v-stepper-flow")){
     const list=node.querySelector(":scope > .v-stepper-flow")!;
     const steps=Array.from(list.querySelectorAll(":scope > .v-step"));
