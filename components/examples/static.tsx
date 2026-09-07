@@ -55,7 +55,7 @@ import { Progress } from "@/registry/sahajiv/ui/progress";
 import { Separator } from "@/registry/sahajiv/ui/separator";
 import { Shape, shapeNames } from "@/registry/sahajiv/ui/shape";
 import { Skeleton, SkeletonGroup } from "@/registry/sahajiv/ui/skeleton";
-import { Spinner, SpinnerLabel } from "@/registry/sahajiv/ui/spinner";
+import { Spinner } from "@/registry/sahajiv/ui/spinner";
 import {
   Typography,
   Hero,
@@ -397,6 +397,7 @@ export function ProgressExample({
         size={size as React.ComponentProps<typeof Progress>["size"]}
         value={variant === "unavail" ? null : value}
         aria-label="Example progress"
+        style={{ "--c": "var(--v-yellow)" } as React.CSSProperties}
       />
       <Meta role="status">
         {variant === "unavail" ? "Progress unavailable" : `${value}% complete`}
@@ -459,12 +460,11 @@ export function SkeletonExample({ variant = "default" }: ExampleProps) {
 }
 export function SpinnerExample({ variant = "default" }: ExampleProps) {
   return (
-    <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+    <div style={{ display: "grid", justifyItems: "center", padding: "20px 0 32px" }}>
       <Spinner
         variant={variant as React.ComponentProps<typeof Spinner>["variant"]}
         label="Preparing your workspace"
       />
-      <SpinnerLabel>Preparing your workspace…</SpinnerLabel>
     </div>
   );
 }
@@ -555,7 +555,7 @@ export function ShapeExample() {
         >
           <Shape
             name={name}
-            style={{ width: 56, height: 56, color: "var(--v-pink-deep)" }}
+            style={{ width: 56, height: 56, "--c": "var(--v-pink-deep)" } as React.CSSProperties}
           />
           <Meta>{name}</Meta>
         </div>

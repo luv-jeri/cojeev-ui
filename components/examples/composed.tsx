@@ -445,7 +445,7 @@ export function InputGroupExample() {
   const [name, setName] = React.useState("personal-space");
   const [saved, setSaved] = React.useState("");
   return (
-    <div style={{ display: "grid", gap: 12 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 12 }}>
       <Label htmlFor="example-workspace-slug">Workspace address</Label>
       <InputGroup>
         <InputGroupAddon>
@@ -561,6 +561,7 @@ export function QuestionnaireExample() {
       <QuestionnaireProgress
         value={Number(!!focus) + Number(!!pace)}
         total={2}
+        style={{ "--c": "var(--v-yellow)" } as React.CSSProperties}
       />
       <QuestionnaireQuestion>
         <QuestionnaireLabel as="legend">
