@@ -70,7 +70,3 @@
   }
 }
 
-[data-slot="drawer-content"] {
-  max-height: calc(100dvh - var(--dock-h) - 32px);
-  overflow: auto;
-}

@@ -230,7 +230,7 @@
   .v-toggle:where(
     [data-slot="toggle"],
     [data-slot^="toggle-"]
-  )[aria-pressed="true"]:not(.-pink):not(.-yellow):not(.-olive):not(.-blue) {
+  )[aria-pressed="true"]:not(.-pink):not(.-yellow):not(.-olive):not(.-blue):not(.-circle) {
   background: var(--v-pink);
   color: var(--v-on-accent);
 }

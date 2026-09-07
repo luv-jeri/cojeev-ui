@@ -498,11 +498,8 @@
   height: 40px;
   padding: 0;
 }
-[data-slot="calendar-grid"] th {
+[data-slot="calendar-grid"] th:not(.v-cal__wk) {
   padding: 0;
-}
-[data-slot="calendar-grid"] .v-cal__wk {
-  padding: 0 6px;
 }
 [data-slot="calendar-header"] {
   display: flex;
