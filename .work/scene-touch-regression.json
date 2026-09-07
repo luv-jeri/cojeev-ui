@@ -1,0 +1,111 @@
+{
+  "beforeSourceSha256": "0a5579d460b33fb6d70fb51683c612d8358a0f28fda1eaa3e7aaf383c3222fa4",
+  "afterSourceSha256": "cdb2de9e459b86def1e89eed53db9893fb41acc374258ee56af720eb174abf2f",
+  "before": {
+    "startedAt": "2026-09-07T23:20:05.643Z",
+    "url": "http://127.0.0.1:49559/sahajiv-ui",
+    "revisionStart": null,
+    "scope": {
+      "engine": "WebKit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mobile": true,
+      "touch": true,
+      "physicalDevice": false
+    },
+    "cases": [
+      {
+        "id": "shape-scene",
+        "startedAt": "2026-09-07T23:20:06.586Z",
+        "revision": null,
+        "status": "FAIL",
+        "error": "Paused sculpture must stop WebGL draws\n\n324 !== 162\n",
+        "input": {
+          "pointerTypes": [
+            "touch"
+          ],
+          "touchStarts": 3
+        },
+        "errors": [],
+        "consoleErrors": [],
+        "finishedAt": "2026-09-07T23:20:08.186Z"
+      }
+    ],
+    "browserVersion": "26.6",
+    "finishedAt": "2026-09-07T23:20:08.202Z",
+    "revisionEnd": null,
+    "runtimeSeconds": 2.559,
+    "status": "FAIL"
+  },
+  "after": {
+    "startedAt": "2026-09-07T23:21:40.183Z",
+    "url": "http://127.0.0.1:49711/sahajiv-ui",
+    "revisionStart": null,
+    "scope": {
+      "engine": "WebKit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mobile": true,
+      "touch": true,
+      "physicalDevice": false
+    },
+    "cases": [
+      {
+        "id": "shape-scene",
+        "startedAt": "2026-09-07T23:21:41.061Z",
+        "revision": null,
+        "detail": "Supported 3D output, touch pause and compatibility mouse rejection checked",
+        "renderer": "webgl",
+        "shadedColors": 2857,
+        "canHover": false,
+        "pausedDrawCount": 216,
+        "layout": {
+          "viewport": 390,
+          "documentWidth": 390,
+          "touchPoints": 0,
+          "coarsePointer": true
+        },
+        "status": "PASS",
+        "input": {
+          "pointerTypes": [
+            "touch"
+          ],
+          "touchStarts": 3
+        },
+        "errors": [],
+        "consoleErrors": [],
+        "finishedAt": "2026-09-07T23:21:42.867Z"
+      }
+    ],
+    "browserVersion": "26.6",
+    "finishedAt": "2026-09-07T23:21:43.010Z",
+    "revisionEnd": null,
+    "runtimeSeconds": 2.827,
+    "status": "PASS"
+  },
+  "desktop": {
+    "started": "2026-09-07T23:22:02.196Z",
+    "finished": "2026-09-07T23:22:13.222Z",
+    "passed": true,
+    "results": [
+      "SSR renders four real Shape silhouettes before WebGL without a canvas",
+      "WebGL actually draws the sculpture",
+      "Rendered pixels contain visible shaded geometry",
+      "Renderer DPR is capped at1.5",
+      "Global Off stops animation and pointer frames",
+      "OS reduced motion stops continuous rendering",
+      "Offscreen scene pauses",
+      "Hidden document pauses",
+      "Still scene schedules no ongoing frames",
+      "Pointer changes the still sculpture then rendering settles to zero ongoing frames",
+      "Mobile and desktop rendering captured without page overflow",
+      "Unmount releases GPU resources/context and stops frames",
+      "Unavailable WebGL retains real Shape fallback with explicit status"
+    ],
+    "errors": []
+  }
+}
