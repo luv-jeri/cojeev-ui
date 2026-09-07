@@ -29,7 +29,7 @@ const simple:Record<string,React.ElementType>={
   ".v-igroup":input_group.InputGroup,".v-addon":input_group.InputGroupAddon,".v-search":input_group.InputSearch,".v-scope":input_group.InputSearchScope,".v-search__disk":input_group.InputSearchDisk,
   ".v-scroller":message_scroller.MessageScroller,".v-scroller__jump":message_scroller.MessageScrollerJump,
   ".v-native":native_select.NativeSelect,
-  ".v-quest":questionnaire.Questionnaire,".v-quest__q":questionnaire.QuestionnaireQuestion,".v-quest__opt-body":questionnaire.QuestionnaireOptionBody,
+  ".v-quest":questionnaire.Questionnaire,".v-weekdays":questionnaire.QuestionnaireWeekdays,".v-weekdays > label":questionnaire.QuestionnaireWeekday,".v-quest__q":questionnaire.QuestionnaireQuestion,".v-quest__opt-body":questionnaire.QuestionnaireOptionBody,
   ".v-stepper-flow":stepper.StepperList,".v-step__t":stepper.StepperTitle,"[data-step-back]":stepper.StepperPrevious,"[data-step-next]":stepper.StepperNext,"[data-step-say]":stepper.StepperStatus,
   ".v-table":table.Table,
   ".v-textarea":textarea.Textarea,".v-composer":textarea.TextareaComposer,".v-composer__bar":textarea.TextareaComposerBar,".v-composer__count":textarea.TextareaCount,
@@ -55,7 +55,7 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
     const step=matches(".v-step")?node:node.closest(".v-step")!;
     return render(matches(".v-step")?stepper.StepperItem:stepper.StepperIndicator,{step:siblingIndex(step,".v-step")+1});
   }
-  if(matches(".v-sidebar"))return render(sidebar.Sidebar,{defaultOpen:!matches(".-mini,.-collapsed")});
+  if(matches(".v-sidebar"))return render(sidebar.Sidebar,{defaultOpen:!matches(".-mini,.-collapsed"),layout:"viewport"});
   if(node.closest(".v-sidebar"))for(const[selector,Component]of Object.entries(sideParts))if(matches(selector))return render(Component,selector===".v-nav__item"?{isActive:node.getAttribute("aria-current")==="page"}:{});
   if(matches(".v-seg")&&ctx.id==="button-group"){
     const selected=node.querySelector(":scope > [aria-pressed=true]");
@@ -70,6 +70,8 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
   if(matches(".v-crumbs > .v-ibtn:first-child"))return render(breadcrumb.BreadcrumbBack);
   if(matches(".v-crumbs a"))return render(breadcrumb.BreadcrumbLink);
   if(matches(".v-crumbs [aria-current=page]"))return render(breadcrumb.BreadcrumbPage);
+  if(matches(".v-carousel__nav"))return render(carousel.CarouselNavigation,{},node.querySelector(".v-carousel__dots")?ctx.children(node):[<carousel.CarouselDots key="dots"/>,...ctx.children(node)]);
+  if(matches(".v-carousel__dots"))return render(carousel.CarouselDots,{},node.childNodes.length?ctx.children(node):null);
   if(matches(".v-carousel"))return render(carousel.Carousel);
   if(matches(".v-carousel__track > *"))return <carousel.CarouselItem key={index} asChild>{ctx.convert(node,index,{skipComposed:true})}</carousel.CarouselItem>;
   if(matches(".v-carousel__nav > button:first-of-type"))return render(carousel.CarouselPrevious);
@@ -81,7 +83,7 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
   if(matches(".v-ring")){
     const legends=(node.getAttribute("data-legend")??"").split(",");
     const segments=(node.getAttribute("data-segs")??"").split(",").filter(Boolean).map((part,i)=>{const[color,value]=part.split(":");return{label:legends[i]??color,color,value:Number(value)}});
-    return render(chart.ChartRing,{segments,strokeWidth:Number(node.getAttribute("data-sw")??12),gap:Number(node.getAttribute("data-gap")??6),unit:node.getAttribute("data-unit")??"",draw:matches(".-draw"),showTable:false});
+    return <React.Fragment key={index}>{render(chart.ChartRing,{segments,strokeWidth:Number(node.getAttribute("data-sw")??12),gap:Number(node.getAttribute("data-gap")??6),unit:node.getAttribute("data-unit")??"",draw:matches(".-draw"),showTable:false})}<chart.ChartDataTable data-gate="table/default/default/rest" data={segments} /></React.Fragment>;
   }
   if(matches(".v-table-wrap"))return render(ctx.id==="data-table"?data_table.DataTableViewport:table.TableContainer);
   if(matches(".v-tabs[data-filters]"))return render(data_table.DataTableFilters);
@@ -94,7 +96,7 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
   if(matches(".v-field"))return render(field.Field,{controlId:node.querySelector("[id]")?.id,invalid:matches(".-invalid")});
   if(matches(".v-field > .v-label"))return render(field.FieldLabel);
   if(matches(".v-help"))return render(node.closest(".v-field.-invalid")?field.FieldError:field.FieldDescription);
-  if(matches(".v-input"))return render(node.tagName==="INPUT"?input.Input:input.InputWrapper);
+  if(matches(".v-input"))return render(node.tagName==="INPUT"?input.Input:input.InputWrapper,node.tagName==="LABEL"?{as:"label"}:{});
   if(matches(".v-input input"))return render(input.InputControl);
   if(matches(".v-input .v-disk"))return render(input.InputAddon);
   if(matches(".v-igroup > input"))return render(input_group.InputGroupInput);

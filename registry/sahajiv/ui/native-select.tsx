@@ -4,12 +4,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 export const nativeSelectVariants = cva(
-  "v-native appearance-none h-[var(--ctl-md)] pl-[var(--s-5)] pr-[40px] py-0 rounded-[var(--r-pill)] border-0 bg-[var(--v-beige)] text-[length:var(--fs-control)] font-medium text-[color:var(--v-text)] cursor-pointer [box-shadow:inset_0_0_0_1px_var(--v-edge)] focus-visible:outline-2 focus-visible:outline-[var(--ring)] focus-visible:outline-offset-2",
+  "v-native appearance-none h-[var(--ctl-md)] pl-[var(--s-5)] pr-[40px] py-0 rounded-[var(--r-pill)] [border:0] bg-[var(--v-beige)] text-[length:var(--fs-control)] font-medium text-[color:var(--v-text)] cursor-pointer [box-shadow:inset_0_0_0_1px_var(--v-edge)] focus-visible:outline-2 focus-visible:outline-[var(--ring)] focus-visible:outline-offset-2",
   {
     variants: {
       variant: {
         default: "",
-        ink: "-ink bg-[var(--v-ink)] text-[color:var(--v-on-ink)] shadow-none",
+        ink: "-ink bg-[var(--v-ink)] text-[color:var(--v-on-ink)] [box-shadow:none]",
       },
     },
     defaultVariants: { variant: "default" },

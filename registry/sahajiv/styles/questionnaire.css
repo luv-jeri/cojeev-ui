@@ -36,7 +36,7 @@
     background var(--t-micro),
     border-color var(--t-micro);
 }
-[data-slot="questionnaire-option"] .v-disk {
+[data-slot="questionnaire-option"] .v-disk[data-slot] {
   order: 1;
   width: 36px;
   height: 36px;
@@ -106,3 +106,11 @@
     border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
   }
 }
+
+[data-slot="questionnaire-weekday"] { transition: background var(--t-micro), color var(--t-micro); }
+[data-slot="questionnaire-weekday"] input { position: absolute; opacity: 0; inset: 0; margin: 0; }
+[data-slot="questionnaire-weekday"]:hover { background: color-mix(in oklab,var(--card) 90%,var(--v-ink)); color: var(--v-text); }
+[data-slot="questionnaire-weekday"]:has(input:checked) { background: var(--v-pink); color: var(--v-on-accent); }
+[data-slot="questionnaire-weekday"]:has(input:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+@media (max-width: 640px) { [data-slot="questionnaire-weekday"] { flex: 1 1 0; min-width: 0; aspect-ratio: 1; } }
+:root[data-mode="dark"] [data-slot="questionnaire-weekday"] { background: var(--v-beige) !important; }

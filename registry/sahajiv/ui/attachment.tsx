@@ -4,7 +4,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Disk, IconButton } from "@/registry/sahajiv/ui/icon";
 export const attachmentVariants = cva(
-  "v-attach flex items-center gap-[var(--s-3)] min-h-[56px] pl-[8px] pr-[10px] py-[8px] rounded-full bg-[var(--card)]",
+  "v-attach flex items-center gap-[var(--s-3)] min-h-[56px] pl-[8px] pr-[10px] py-[8px] [border-radius:999px] bg-[var(--card)]",
 );
 export type AttachmentProps = React.ComponentProps<"div">;
 export function Attachment({ className, ...props }: AttachmentProps) {
@@ -28,7 +28,7 @@ export function AttachmentType({
       ref={ref}
       data-slot="attachment-type"
       className={cn(
-        "v-disk inline-grid place-items-center shrink-0 [width:40px] [height:40px] rounded-full [background:var(--v-ink)] [color:var(--v-on-ink)] text-[9px] font-bold tracking-[.04em]",
+        "v-disk inline-grid place-items-center shrink-0 [width:40px] [height:40px] [border-radius:50%] [background:var(--v-ink)] [color:var(--v-on-ink)] text-[9px] font-bold tracking-[.04em]",
         className,
       )}
       {...props}
@@ -89,7 +89,7 @@ export function AttachmentAction({
       type="button"
       data-slot="attachment-action"
       className={cn(
-        "v-ibtn inline-grid place-items-center shrink-0 [width:36px] [height:36px] rounded-full [background:var(--v-canvas)] [box-shadow:inset_0_0_0_1px_var(--v-border)]",
+        "v-ibtn inline-grid place-items-center shrink-0 [width:36px] [height:36px] [border-radius:50%] [background:var(--v-canvas)] [box-shadow:inset_0_0_0_1px_var(--v-border)]",
         className,
       )}
       {...props}

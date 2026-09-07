@@ -50,23 +50,26 @@ export type SidebarProps = React.ComponentProps<"aside"> & {
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** Container layout fills its parent; viewport layout follows the authored standalone rail. */
+  layout?: "container" | "viewport";
 };
 export function Sidebar({
   open,
   defaultOpen = true,
   onOpenChange,
+  layout = "container",
   ...props
 }: SidebarProps) {
   const parent = React.useContext(SidebarContext);
   return parent && open === undefined && onOpenChange === undefined ? (
-    <SidebarRail {...props} />
+    <SidebarRail data-layout={layout} {...props} />
   ) : (
     <SidebarProvider
       open={open}
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
-      <SidebarRail {...props} />
+      <SidebarRail data-layout={layout} {...props} />
     </SidebarProvider>
   );
 }
@@ -119,7 +122,7 @@ export function SidebarTrigger({ref: externalMorphRef,
       aria-expanded={sidebar.open}
       aria-label={sidebar.open ? "Collapse the rail" : "Expand the rail"}
       className={cn(
-        "v-collapse relative ml-auto shrink-0 grid place-items-center size-[30px] overflow-hidden rounded-full bg-[var(--v-pink)] text-[color:var(--v-on-accent)] text-[13px] font-medium leading-none tracking-normal",
+        "v-collapse relative ml-auto shrink-0 grid place-items-center size-[30px] overflow-hidden [border-radius:50%] bg-[var(--v-pink)] text-[color:var(--v-on-accent)] text-[13px] font-[family-name:var(--font-text)] font-medium leading-none tracking-normal",
         className,
       )}
       onClick={(event) => {

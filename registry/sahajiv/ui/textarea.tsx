@@ -3,7 +3,7 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 export const textareaVariants = cva(
-  "v-textarea block w-full min-h-[128px] resize-y rounded-[20px] border-0 bg-[var(--input)] px-[18px] py-[16px] text-[15px] leading-[1.5] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none placeholder:text-[color:var(--v-text-2)]",
+  "v-textarea block w-full min-h-[128px] resize-y rounded-[20px] [border:0] bg-[var(--input)] px-[18px] py-[16px] text-[15px] leading-[1.5] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none placeholder:text-[color:var(--v-text-2)]",
 );
 export type TextareaProps = React.ComponentProps<"textarea">;
 export function Textarea({ className, ...props }: TextareaProps) {

@@ -8,7 +8,7 @@
 [data-slot="carousel-content"] > .v-card {
   min-height: 150px;
 }
-[data-slot="carousel-navigation"] .v-ibtn {
+[data-slot="carousel-navigation"] .v-ibtn[data-slot] {
   cursor: pointer;
   background: var(--v-canvas);
   box-shadow: inset 0 0 0 1px var(--v-edge);
@@ -18,15 +18,15 @@
     transform var(--t-micro) var(--enter),
     opacity var(--t-micro);
 }
-[data-slot="carousel-navigation"] .v-ibtn:hover:not(:disabled) {
+[data-slot="carousel-navigation"] .v-ibtn[data-slot]:hover:not(:disabled) {
   background: var(--v-pink);
   box-shadow: none;
   color: var(--v-on-accent);
 }
-[data-slot="carousel-navigation"] .v-ibtn:active:not(:disabled) {
+[data-slot="carousel-navigation"] .v-ibtn[data-slot]:active:not(:disabled) {
   transform: scale(0.92);
 }
-[data-slot="carousel-navigation"] .v-ibtn:disabled {
+[data-slot="carousel-navigation"] .v-ibtn[data-slot]:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -77,3 +77,5 @@
 [data-slot="carousel-deck"]:hover > .v-card:nth-child(3) {
   transform: translate(24px, -22px) rotate(0) scale(0.97);
 }
+
+[data-slot="carousel-navigation"] .v-ibtn[data-slot]:disabled { background: var(--v-canvas); color: var(--v-text); box-shadow: inset 0 0 0 1px var(--v-edge); opacity: .4; }

@@ -182,7 +182,8 @@ export function CarouselItem({
   const Comp = asChild ? Slot : "div";
   return (
     <Comp
-      data-slot="carousel-item"
+      data-slot={asChild ? undefined : "carousel-item"}
+      data-carousel-item=""
       data-part="item"
       role="group"
       aria-roledescription="slide"
@@ -299,7 +300,7 @@ export function CarouselDot({
       aria-label={`Tile ${index + 1}`}
       aria-current={carousel.current === index ? "true" : undefined}
       className={cn(
-        "size-[8px] p-0 border-0 rounded-full bg-[var(--v-border)]",
+        "size-[8px] p-0 [border:0] [border-radius:999px] bg-[var(--v-border)]",
         className,
       )}
       onClick={(event) => {

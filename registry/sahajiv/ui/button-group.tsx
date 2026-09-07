@@ -11,7 +11,7 @@ const ButtonGroupContext = React.createContext<{
   change: (value: string) => void;
 } | null>(null);
 export const buttonGroupVariants = cva(
-  "v-seg inline-flex flex-wrap gap-[2px] p-[3px] rounded-full bg-[var(--card)] shadow-none",
+  "v-seg inline-flex flex-wrap gap-[2px] p-[3px] [border-radius:999px] bg-[var(--card)] [box-shadow:none]",
 );
 export type ButtonGroupProps = Omit<
   React.ComponentProps<"div">,
@@ -71,7 +71,7 @@ export function ButtonGroupItem({
       variant="ghost"
       size="sm"
       className={cn(
-        "h-[36px] px-[14px] text-[13.5px] font-medium border-0 shadow-none text-[color:var(--v-text-2)]",
+        "h-[36px] px-[14px] text-[13.5px] leading-none font-medium [border:0] [box-shadow:none] text-[color:var(--v-text-2)]",
         className,
       )}
       onClick={(event) => {
@@ -96,7 +96,7 @@ export function ButtonGroupUtility({
       data-shapes={shapes ? "" : undefined}
       role="group"
       className={cn(
-        "v-utility inline-flex gap-[2px] p-[3px] rounded-full bg-[var(--card)] shadow-none",
+        "v-utility inline-flex gap-[2px] p-[3px] [border-radius:999px] bg-[var(--card)] [box-shadow:none]",
         className,
       )}
       {...props}
@@ -115,7 +115,7 @@ export function ButtonGroupUtilityItem({
       data-slot="button-group-utility-item"
       type="button"
       className={cn(
-        "v-ibtn inline-grid place-items-center [width:38px] [height:38px] shrink-0 rounded-full [background:var(--v-ink)] [color:var(--v-on-accent)] [box-shadow:none]",
+        "v-ibtn inline-grid place-items-center [width:38px] [height:38px] shrink-0 [border-radius:50%] [background:var(--v-ink)] [color:var(--v-on-accent)] [box-shadow:none]",
         className,
       )}
       {...props}
