@@ -12,11 +12,11 @@ import { motionClock, registerMotionClock } from "./clock"
 export { motionClock } from "./clock"
 export { enableMorph, disableMorph } from "./category"
 
-const instances=new Set<{frame:(t:number,dt:number)=>boolean;rewind:()=>void;reseed:()=>void;refresh:()=>void}>()
+const instances=new Set<{measure:(t:number)=>void;invalidate:()=>void;frame:(t:number,dt:number)=>boolean;rewind:()=>void;reseed:()=>void;refresh:()=>void}>()
 let clock:number|null=null,previous:number|null=null,raf=0,seed:number|null=null
 const pointer={x:-1e4,y:-1e4}
 function stop(){if(raf)cancelAnimationFrame(raf);raf=0}
-function frame(t:number){const dt=previous===null?0:Math.min(.05,Math.max(0,(t-previous)/1000));previous=t;let active=false;instances.forEach(b=>{active=b.frame(t,dt)||active});return active}
+function frame(t:number){const dt=previous===null?0:Math.min(.05,Math.max(0,(t-previous)/1000));previous=t;let active=false;instances.forEach(b=>b.measure(t));instances.forEach(b=>{active=b.frame(t,dt)||active});return active}
 function wake(){if(clock!==null||raf||!instances.size||document.hidden)return;raf=requestAnimationFrame(t=>{raf=0;if(frame(t))wake()})}
 /** Deterministic milliseconds on the document time origin; null resumes rAF. */
 registerMotionClock(t=>{stop();if(t===null){clock=null;previous=performance.now();wake()}else{if(clock===null)previous=t;clock=t;frame(t)}})
@@ -41,7 +41,8 @@ function acquireEnvironment(){
   window.addEventListener('v-theme',refresh,opts);window.addEventListener('v-palette',refresh,opts)
   document.addEventListener('pointermove',e=>{pointer.x=e.clientX;pointer.y=e.clientY;wake()},{...opts,passive:true})
   document.addEventListener('pointerleave',()=>{pointer.x=pointer.y=-1e4;wake()},opts)
-  window.addEventListener('resize',wake,opts);window.addEventListener('scroll',wake,{...opts,capture:true,passive:true})
+  const layout=()=>{instances.forEach(b=>b.invalidate());wake()}
+  window.addEventListener('resize',layout,opts);window.addEventListener('scroll',layout,{...opts,capture:true,passive:true})
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else{previous=performance.now();wake()}},opts)
   disposeEnvironment=()=>{ac.abort();theme.disconnect();stop();previous=null}
  }
@@ -58,6 +59,10 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
   const mq=matchMedia("(prefers-reduced-motion: reduce)")
   let destroyBody:()=>void=()=>{},retuneProfile:()=>void=()=>attach()
   let retainedBody:Body|undefined,repairBody=()=>{},signature='',autoMode:string|undefined,lastPaint:{fill:string;stroke:string}|null=null
+  // Internal aria/class retunes rebuild decoration, but do not re-tag the host.
+  // The source keeps its finite CSS radius captured at autoTag (morph.js:298)
+  // until automatic decoration is removed, even if responsive dimensions shrink.
+  let automaticRadius:number|undefined
   const visualSignature=()=>JSON.stringify([
    el.className.split(/\s+/).filter(c=>!['v-morph-host','v-morph-live','v-morph-rel'].includes(c)).join(' '),
    ...['motion','tier','reach','inside','amp','lobes','depth','asym','spread','r','shape','sw','dash','colors'].map(k=>el.dataset[k]),
@@ -71,9 +76,9 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    for(const [key,value]of overrides){if(value)el.style.setProperty(key,value);else el.style.removeProperty(key)}
    repairBody=()=>{};retuneProfile=()=>attach();autoMode=undefined
    const settings=getMotionSettings(),profile=getMorphProfile(),resolved=resolveMorphHost(el,category,settings)
-   if(!resolved)return
+   if(!resolved){automaticRadius=undefined;return}
    const {mode,tierName,explicit}=resolved,cs=getComputedStyle(el)
-   const resolvedTier=resolveMorphTier(el,tierName,profile);if(!resolvedTier)return;const tier={...resolvedTier}
+   const resolvedTier=resolveMorphTier(el,tierName,profile);if(!resolvedTier){automaticRadius=undefined;return};const tier={...resolvedTier}
    const cfg={...profile.cfg};if(settings.mode==="off"||mq.matches)for(const k of ["rest","reach","merge","hold","jiggleOn","press"] as const)cfg[k]=false
    const b=retainedBody??createBody(tier,tierName,bodySeed(el));retainedBody=b
    b.tier=tier;b.tierName=tierName;b.w=b.h=0;b.focus=el===el.ownerDocument.activeElement||el.contains(el.ownerDocument.activeElement)
@@ -115,10 +120,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
     }
     lastPaint={fill:el.style.getPropertyValue('--mfill'),stroke:el.style.getPropertyValue('--mstroke')};signature=visualSignature()
    }
-   // The source category adapter captures a finite CSS corner radius once when
-   // attaching (morph.js:298). Resizing changes the rim dimensions, not that
-   // captured radius; re-clamping it makes responsive controls change outline.
-   let automaticRadius:number|undefined
+   let rectValid=false,rAt=0,resize=true
    let lastD='',dirty=true
    repairBody=()=>{
     if(svg.parentNode!==el){el.prepend(svg);dirty=true}
@@ -126,7 +128,18 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
     if(!explicit&&!el.dataset.morph)el.dataset.morph=mode
    }
    function measure(){const R=el.getBoundingClientRect();b.R=R;const w=Math.round(R.width),h=Math.round(R.height);if(!w||!h)return;if(w===b.w&&h===b.h)return;b.w=w;b.h=h;const authored=el.dataset.r;const original=parseFloat(getComputedStyle(el).borderTopLeftRadius);const radius=authored?+authored:explicit?Math.min(w,h)/2:original&&original<200?(automaticRadius??=Math.min(original,Math.min(el.offsetWidth,el.offsetHeight)/2)):Math.min(w,h)/2;b.base=el.dataset.shape&&SHAPES[el.dataset.shape]?fromShape(el.dataset.shape,w,h,Math.max(1,cfg.quality)*.7):rim(w,h,radius,Math.max(1,cfg.quality));const pad=bodyPadding(tier,cfg,w,h);svg.setAttribute('viewBox',`${-pad} ${-pad} ${w+2*pad} ${h+2*pad}`);svg.style.cssText=`position:absolute;left:${-pad}px;top:${-pad}px;width:${w+2*pad}px;height:${h+2*pad}px;pointer-events:none;overflow:visible;z-index:-1`;el.style.setProperty('--mpad',pad+'px');dirty=true}
-   const instance={frame:(t:number,dt:number)=>{measure();if(!b.w||!b.h)return false;const out=stepBody(b,pointer,dt,(staticBody?0:t/1000),cfg,staticBody,!dirty&&!colors.length&&tierName!=='spinner');if(out.d!==lastD){path.setAttribute('d',out.d);lastD=out.d}if(cfg.echo){const m=cfg.echoScale,ox=cfg.echoOff*Math.cos(b.seed),oy=cfg.echoOff*Math.sin(b.seed);echo.setAttribute('d',serializePath(out.points.map(([x,y])=>[b.w/2+(x-b.w/2)*m+ox,b.h/2+(y-b.h/2)*m+oy]),!!b.base.poly));echo.style.display=''}else echo.style.display='none';if(cfg.dots){while(dots.childElementCount>cfg.dots)dots.lastElementChild?.remove();while(dots.childElementCount<cfg.dots)dots.append(svgNode('circle',{r:(2+((dots.childElementCount*7+b.seed)%3)).toFixed(1)}));for(let i=0;i<cfg.dots;i++){const j=Math.floor((i/cfg.dots)*b.base.length+b.seed*3)%b.base.length,q=b.base[j],dot=dots.children[i];dot.setAttribute('cx',(out.points[j][0]+q[2]*(8+i*3)).toFixed(2));dot.setAttribute('cy',(out.points[j][1]+q[3]*(8+i*3)).toFixed(2))}dots.style.display=''}else dots.style.display='none';overlays?.paint(out.points,b,cfg);if(colors.length)path.setAttribute('fill',morphColor(colors,staticBody?0:t/1000));if(tierName==='spinner')svg.style.transform=staticBody?'':`rotate(${((t/1000)*40)%360}deg)`;if(out.press>.004&&!staticBody)el.style.transform=`scale(${1-out.press*.03},${1-out.press*.015})`;else el.style.transform=old.transform;const work=out.active||dirty||(!staticBody&&(colors.length>0||tierName==='spinner'||!!(tier.depth&&tier.lobes&&cfg.drift&&(b.near||b.inside))));dirty=false;return work},rewind:()=>{rewindBody(b);dirty=true;lastD=''},reseed:()=>{b.seed=bodySeed(el)},refresh:()=>{repaint();dirty=true;wake()}}
+   // Match the source's read pass before any body writes its press transform.
+   // A release keeps the last pressed rect until it is stale or interaction
+   // demands another read; reading every frame changes the pressure axis.
+   function premeasure(t:number){
+    if(!el.isConnected){automaticRadius=undefined;rectValid=false;return}
+    const R=b.R,margin=tier.R+40
+    const near=rectValid&&pointer.x>-1e3&&pointer.x>R.left-margin&&pointer.x<R.right+margin&&pointer.y>R.top-margin&&pointer.y<R.bottom+margin
+    if(!rectValid||t-rAt>250||near||b.press.to||b.lobe.x>.02||b.jiggle>0){b.R=el.getBoundingClientRect();rAt=t;rectValid=true}
+    resize=Math.round(b.R.width)!==b.w||Math.round(b.R.height)!==b.h
+   }
+   const invalidate=()=>{rectValid=false;dirty=true}
+   const instance={measure:premeasure,invalidate,frame:(t:number,dt:number)=>{if(!el.isConnected)return false;if(resize){resize=false;b.lob=null;dirty=true;lastD='';measure()}if(!b.w||!b.h||!b.R.width||!b.R.height)return false;const out=stepBody(b,pointer,dt,(staticBody?0:t/1000),cfg,staticBody,!dirty&&!colors.length&&tierName!=='spinner');if(out.d!==lastD){path.setAttribute('d',out.d);lastD=out.d}if(cfg.echo){const m=cfg.echoScale,ox=cfg.echoOff*Math.cos(b.seed),oy=cfg.echoOff*Math.sin(b.seed);echo.setAttribute('d',serializePath(out.points.map(([x,y])=>[b.w/2+(x-b.w/2)*m+ox,b.h/2+(y-b.h/2)*m+oy]),!!b.base.poly));echo.style.display=''}else echo.style.display='none';if(cfg.dots){while(dots.childElementCount>cfg.dots)dots.lastElementChild?.remove();while(dots.childElementCount<cfg.dots)dots.append(svgNode('circle',{r:(2+((dots.childElementCount*7+b.seed)%3)).toFixed(1)}));for(let i=0;i<cfg.dots;i++){const j=Math.floor((i/cfg.dots)*b.base.length+b.seed*3)%b.base.length,q=b.base[j],dot=dots.children[i];dot.setAttribute('cx',(out.points[j][0]+q[2]*(8+i*3)).toFixed(2));dot.setAttribute('cy',(out.points[j][1]+q[3]*(8+i*3)).toFixed(2))}dots.style.display=''}else dots.style.display='none';overlays?.paint(out.points,b,cfg);if(colors.length)path.setAttribute('fill',morphColor(colors,staticBody?0:t/1000));if(tierName==='spinner')svg.style.transform=staticBody?'':`rotate(${((t/1000)*40)%360}deg)`;if(out.press>.004&&!staticBody)el.style.transform=`scale(${1-out.press*.03},${1-out.press*.015})`;else el.style.transform=old.transform;const work=out.active||dirty||(!staticBody&&(colors.length>0||tierName==='spinner'||!!(tier.depth&&tier.lobes&&cfg.drift&&(b.near||b.inside))));dirty=false;return work},rewind:()=>{rewindBody(b);rectValid=false;rAt=0;dirty=true;lastD=''},reseed:()=>{b.seed=bodySeed(el)},refresh:()=>{repaint();dirty=true;wake()}}
    const bodyAC=new AbortController(),bo={signal:bodyAC.signal}
    const press=()=>{if(!cfg.press||el.matches(':disabled,[aria-disabled="true"]'))return;b.press.to=1;b.press.k=260;wake()}
    const release=()=>{if(b.press.to){b.press.to=0;b.ripple=1;wake()}}
@@ -134,7 +147,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    el.addEventListener('pointerenter',()=>{el.setAttribute('data-hover','');wake()},bo);el.addEventListener('pointerleave',()=>{el.removeAttribute('data-hover');wake()},bo)
    el.addEventListener('pointerdown',press,bo);el.addEventListener('pointercancel',release,bo);document.addEventListener('pointerup',release,bo)
    el.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter')press()},bo);el.addEventListener('keyup',release,bo)
-   const ro=new ResizeObserver(()=>{dirty=true;wake()});ro.observe(el)
+   const ro=new ResizeObserver(entries=>{for(const entry of entries){const R=entry.contentRect;if(Math.abs(Math.round(R.width)-b.w)<1&&Math.abs(Math.round(R.height)-b.h)<1)continue;invalidate();wake()}});ro.observe(el)
    retuneProfile=()=>{
     const nextSettings=getMotionSettings(),nextProfile=getMorphProfile()
     if(nextSettings.mode!==settings.mode||nextSettings.cats[category]!==settings.cats[category]){attach();signature=visualSignature();return}
@@ -144,9 +157,9 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
     const resize=cfg.quality!==nextCfg.quality||cfg.echo!==nextCfg.echo||cfg.echoOff!==nextCfg.echoOff||cfg.echoScale!==nextCfg.echoScale||cfg.dots!==nextCfg.dots||tier.reach!==nextTier.reach||tier.press!==nextTier.press||tier.depth!==nextTier.depth
     Object.assign(cfg,nextCfg);Object.assign(tier,nextTier)
     if(resize)b.w=b.h=0
-    dirty=true;instance.frame(clock??performance.now(),0);wake()
+    dirty=true;const time=clock??performance.now();instance.measure(time);instance.frame(time,0);wake()
    }
-   repaint();instances.add(instance);instance.frame(clock??performance.now(),0);wake()
+   repaint();instances.add(instance);const time=clock??performance.now();instance.measure(time);instance.frame(time,0);wake()
    destroyBody=()=>{instances.delete(instance);bodyAC.abort();ro.disconnect();overlays?.dispose();svg.remove();el.classList.remove('v-morph-host','v-morph-live');if(relative)el.classList.remove('v-morph-rel');el.removeAttribute('data-hover');if(!explicit&&el.dataset.morph===mode)delete el.dataset.morph;if(!explicit)delete el.dataset.autoMorph;for(const [key,value]of [['--mfill',old.fill],['--mstroke',old.stroke],['--mpad',old.pad]]){if(value)el.style.setProperty(key,value);else el.style.removeProperty(key)}el.style.transform=old.transform;if(!instances.size)stop()}
   }
   attach()
@@ -155,14 +168,14 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
   syncHost.current=sync
   const children=new MutationObserver(()=>{repairBody()});children.observe(el,{childList:true})
   const unsubscribe=subscribeMotion(()=>{retuneProfile();signature=visualSignature()})
-  const unregister=registerMorphHost(el,{refresh:()=>{attach();signature=visualSignature()},disable:()=>{destroyBody();destroyBody=()=>{};repairBody=()=>{}}})
+  const unregister=registerMorphHost(el,{refresh:()=>{attach();signature=visualSignature()},disable:()=>{destroyBody();automaticRadius=undefined;destroyBody=()=>{};repairBody=()=>{}}})
   const attributes=new MutationObserver(()=>{if(visualSignature()!==signature){attach();signature=visualSignature()}})
   attributes.observe(el,{attributes:true,attributeFilter:['class','style','data-morph','data-tier','data-motion','data-reach','data-inside','data-amp','data-lobes','data-depth','data-asym','data-spread','data-r','data-shape','data-sw','data-dash','data-colors','aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','data-state','data-highlighted']})
   const ancestors=new MutationObserver(()=>{attach();signature=visualSignature()})
   for(let parent=el.parentElement;parent;parent=parent.parentElement)ancestors.observe(parent,{attributes:true,attributeFilter:['data-motion','hidden']})
   mq.addEventListener('change',attach,opts)
   const releaseEnvironment=acquireEnvironment()
-  return ()=>{syncHost.current=()=>{};children.disconnect();attributes.disconnect();ancestors.disconnect();unregister();unsubscribe();destroyBody();ac.abort();releaseEnvironment()}
+  return ()=>{syncHost.current=()=>{};children.disconnect();attributes.disconnect();ancestors.disconnect();unregister();unsubscribe();destroyBody();automaticRadius=undefined;ac.abort();releaseEnvironment()}
  },[host,category])
  React.useLayoutEffect(()=>{syncHost.current()})
  return ref
