@@ -1,4 +1,4 @@
-@layer theme, base, components, utilities, sahajiv-states, sahajiv-accessibility;
+@layer theme, base, components, utilities, sahajiv-states, sahajiv-flow, sahajiv-morph, sahajiv-accessibility;
 @import "tailwindcss";
 @import "../../registry/sahajiv/styles/fonts.css";
 @import "../../registry/sahajiv/styles/tokens.css";

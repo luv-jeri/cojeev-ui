@@ -33,6 +33,7 @@ import {
 import {
   Chart,
   ChartLine,
+  ChartLinePath,
   ChartRing,
   ChartRankedRow,
   ChartRankedLabel,
@@ -267,12 +268,14 @@ export function ChartExample() {
       </Button>
       <Title as="h4">Focus minutes</Title>
       <Chart
-        data={data}
+        data={data.map(item => ({ ...item, variant: "pink" as const }))}
         max={40}
         showTable={showTable}
         caption="Focus minutes by weekday"
       />
-      <ChartLine data={data} showTable={showTable} caption="Focus trend" />
+      <ChartLine data={data} showTable={showTable} caption="Focus trend">
+        <ChartLinePath variant="hist" d={data.map((item,index) => `${index ? "L" : "M"}${index * 75},${100 - item.value * 2.5}`).join(" ")} style={{ stroke: "var(--v-pink)", fill: "none" }}/>
+      </ChartLine>
       <ChartRing
         segments={[
           { label: "Reading", value: 45, color: "pink" },
@@ -308,19 +311,30 @@ export function DataTableExample() {
       <DataTable
         data={data}
         columns={[
-          { id: "name", header: "Note", accessorKey: "name", sortValue: row => row.name },
+          {
+            id: "name",
+            header: "Note",
+            accessorKey: "name",
+            sortValue: (row) => row.name,
+          },
           {
             id: "status",
             header: "Status",
             accessorKey: "status",
-            sortValue: row => row.status,
+            sortValue: (row) => row.status,
             cell: (row) => (
               <Badge variant={row.status === "Ready" ? "olive" : "pending"}>
                 {row.status}
               </Badge>
             ),
           },
-          { id: "words", header: "Words", accessorKey: "words", numeric: true, sortValue: row => row.words },
+          {
+            id: "words",
+            header: "Words",
+            accessorKey: "words",
+            numeric: true,
+            sortValue: (row) => row.words,
+          },
         ]}
         getRowId={(row) => row.id}
         filters={[
@@ -431,7 +445,7 @@ export function InputGroupExample() {
   const [name, setName] = React.useState("personal-space");
   const [saved, setSaved] = React.useState("");
   return (
-    <div style={{ display: "grid", gap: 12 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 12 }}>
       <Label htmlFor="example-workspace-slug">Workspace address</Label>
       <InputGroup>
         <InputGroupAddon>
@@ -547,6 +561,7 @@ export function QuestionnaireExample() {
       <QuestionnaireProgress
         value={Number(!!focus) + Number(!!pace)}
         total={2}
+        style={{ "--c": "var(--v-yellow)" } as React.CSSProperties}
       />
       <QuestionnaireQuestion>
         <QuestionnaireLabel as="legend">
@@ -568,6 +583,7 @@ export function QuestionnaireExample() {
         <QuestionnaireOptions value={pace} onValueChange={setPace}>
           {["A little every day", "Once a week"].map((option) => (
             <QuestionnaireOption key={option} value={option}>
+              <Disk variant="blue"><Icon name="clock"/></Disk>
               <QuestionnaireOptionBody>{option}</QuestionnaireOptionBody>
             </QuestionnaireOption>
           ))}
@@ -584,7 +600,7 @@ export function QuestionnaireExample() {
 export function SidebarExample() {
   const [active, setActive] = React.useState("Notes");
   return (
-    <div style={{ display: "flex", gap: 24, minHeight: 360 }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 24, minHeight: 360 }}>
       <Sidebar>
         <SidebarHeader>
           <SidebarMenuLabel>Personal space</SidebarMenuLabel>
@@ -611,7 +627,7 @@ export function SidebarExample() {
           <SidebarGroupLabel>Everything stays close.</SidebarGroupLabel>
         </SidebarFooter>
       </Sidebar>
-      <div style={{ minWidth: 0, flex: 1 }}>
+      <div style={{ minWidth: 0, flex: "1 1 180px" }}>
         <Title>{active}</Title>
         <Body>Selected workspace section.</Body>
       </div>
@@ -619,7 +635,7 @@ export function SidebarExample() {
   );
 }
 export function StepperExample() {
-  const [step, setStep] = React.useState(0);
+  const [step, setStep] = React.useState(1);
   const labels = ["Name", "Preferences", "Ready"];
   return (
     <Stepper
@@ -630,17 +646,17 @@ export function StepperExample() {
     >
       <StepperList>
         {labels.map((label, i) => (
-          <StepperItem key={label} step={i}>
-            <StepperIndicator step={i} />
+          <StepperItem key={label} step={i+1}>
+            <StepperIndicator step={i+1} />
             <StepperTitle>{label}</StepperTitle>
           </StepperItem>
         ))}
       </StepperList>
       <Card>
-        <CardTitle>{labels[step]}</CardTitle>
-        {step === 0 ? (
+        <CardTitle>{labels[step-1]}</CardTitle>
+        {step === 1 ? (
           <Input aria-label="Space name" placeholder="Name your space" />
-        ) : step === 1 ? (
+        ) : step === 2 ? (
           <Body>Keep a little room for curiosity.</Body>
         ) : (
           <Body>Your example workspace is ready.</Body>
