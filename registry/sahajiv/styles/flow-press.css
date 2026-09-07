@@ -159,7 +159,7 @@
 /* Radix owns real thumb and indicator elements in the React port. */
 [data-slot="switch-thumb"], [data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"] { transition-timing-function: var(--flow-ease); transition-duration: var(--flow-dur); }
 [data-slot="progress-indicator"] { transition: width var(--flow-dur) var(--flow-ease), transform var(--flow-dur) var(--flow-ease), background var(--t-flow-radius-sm) ease; }
-[data-slot="accordion-content"][data-state="open"], [data-slot="collapsible-content"][data-state="open"] { animation: vf-enter var(--flow-dur) var(--flow-ease) both; }
+[data-slot="collapsible-content"][data-state="open"] { animation: vf-enter var(--flow-dur) var(--flow-ease) both; }
 @media (prefers-reduced-motion: reduce) {
  [data-slot="accordion-content"][data-state="open"], [data-slot="collapsible-content"][data-state="open"] { animation: none; }
  [data-slot="switch-thumb"], [data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"], [data-slot="progress-indicator"] { transition-duration: 0s; }
