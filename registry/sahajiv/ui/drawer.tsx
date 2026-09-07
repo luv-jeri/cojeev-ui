@@ -109,7 +109,7 @@ export function DrawerTitle({ className, ...props }: DrawerTitleProps) {
       data-slot="drawer-title"
       data-part="title"
       className={cn(
-        "v-section font-[family-name:var(--font-display)] text-[24px] leading-[1.15] pt-1.5 font-medium",
+        "v-section font-[family-name:var(--font-display)] text-[24px] leading-[1.15] tracking-[-0.01em] pt-1.5 font-medium",
         className,
       )}
       {...props}
@@ -128,7 +128,7 @@ export function DrawerDescription({
       data-slot="drawer-description"
       data-part="description"
       className={cn(
-        "v-body-2 text-[length:var(--fs-body)] leading-[var(--lh-body)] text-[color:var(--v-text-2)]",
+        "v-body-2 text-[15px] leading-[1.5] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}

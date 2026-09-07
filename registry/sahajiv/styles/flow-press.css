@@ -161,9 +161,13 @@
 [data-slot="progress-indicator"] { transition: width var(--flow-dur) var(--flow-ease), transform var(--flow-dur) var(--flow-ease), background var(--t-flow-radius-sm) ease; }
 [data-slot="accordion-content"][data-state="open"], [data-slot="collapsible-content"][data-state="open"] { animation: vf-enter var(--flow-dur) var(--flow-ease) both; }
 @media (prefers-reduced-motion: reduce) {
- [data-slot="collapsible-content"][data-state="open"] { animation: none; }
  [data-slot="switch-thumb"], [data-slot="checkbox-indicator"], [data-slot="radio-group-indicator"], [data-slot="progress-indicator"] { transition-duration: 0s; }
 }
 
 /* Source morph injects this after flow at specificity one. Keep stronger flow contexts intact. */
 [data-morph]:where([data-slot].v-morph-host) { transition: transform 0s; }
+
+/* Source alive.css:529 keeps pictographic radio tiles beige even under the travelling fill. */
+:root[data-mode="dark"] .v-iradios[data-flow-owned] .v-iradio[data-glide-active] {
+ background: var(--v-beige);
+}

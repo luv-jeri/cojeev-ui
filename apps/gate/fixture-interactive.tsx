@@ -50,7 +50,6 @@ const withoutInput = (node: Element, ctx: FixtureContext) =>
   Array.from(node.childNodes)
     .filter((child) => !(child instanceof Element && child.matches("input")))
     .map((child, i) => ctx.convert(child, i));
-const open = (node: Element) => !node.hasAttribute("hidden");
 function render(
   Component: React.ElementType,
   node: Element,
@@ -217,7 +216,7 @@ function modal(
   return native(
     node,
     ctx,
-    React.createElement(parts[kind], { defaultOpen: open(content) }, tree),
+    React.createElement(parts[kind], { defaultOpen: false }, tree),
     index,
   );
 }
@@ -263,28 +262,13 @@ function MenuFixture({
     (child) =>
       child.hasAttribute("data-menu") || child.hasAttribute("data-context"),
   )!;
-  const triggerRef = React.useRef<HTMLElement | null>(null);
-  React.useEffect(() => {
-    if (kind !== "ContextMenu" || !open(menu)) return;
-    const target = triggerRef.current;
-    if (!target) return;
-    const box = target.getBoundingClientRect();
-    target.dispatchEvent(
-      new MouseEvent("contextmenu", {
-        bubbles: true,
-        cancelable: true,
-        clientX: box.x + box.width / 2,
-        clientY: box.y + box.height / 2,
-      }),
-    );
-  }, [kind, menu]);
   const contentChildren =
     kind === "Popover" ? ctx.children(menu) : menuItems(menu, ctx, kind, parts);
   const tree = (
     <>
       {React.createElement(
         parts[kind + "Trigger"],
-        { asChild: true, ref: triggerRef },
+        { asChild: true },
         ctx.convert(trigger, 0, {
           skipInteractive: true,
           props: { "aria-expanded": undefined },
@@ -304,7 +288,7 @@ function MenuFixture({
     ctx,
     React.createElement(
       parts[kind],
-      kind === "ContextMenu" ? {} : { defaultOpen: open(menu) },
+      kind === "ContextMenu" ? {} : { defaultOpen: false },
       tree,
     ),
   );
@@ -356,7 +340,7 @@ function SelectFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
     <SelectParts.Select
       value={value}
       onValueChange={setValue}
-      defaultOpen={open(menu)}
+      defaultOpen={false}
       containerProps={ctx.props(node)}
     >
       {render(
@@ -397,7 +381,7 @@ function DateFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
   const [selected, setSelected] = React.useState(
     localDate(calendar.getAttribute("data-selected")),
   );
-  const [isOpen, setOpen] = React.useState(open(content));
+  const [isOpen, setOpen] = React.useState(false);
   const label = selected?.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
@@ -563,8 +547,9 @@ function RadioFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
   const items = elementChildren(node).filter((child) =>
     child.matches(".v-radio,.v-iradio"),
   );
-  const selected = items.findIndex((item) =>
-    item.querySelector("input")?.hasAttribute("checked"),
+  // Native radios with one name resolve duplicate checked attributes to the last input.
+  const selected = items.findLastIndex((item) =>
+    (item.querySelector("input") as HTMLInputElement | null)?.checked,
   );
   const pictographic = node.classList.contains("v-iradios");
   return render(
@@ -984,7 +969,7 @@ export function convertInteractive(
       ComboboxParts.Combobox,
       node,
       ctx,
-      { defaultOpen: open(menu) },
+      { defaultOpen: false },
       <>
         {render(
           ComboboxParts.ComboboxInput,
@@ -1094,15 +1079,11 @@ export function convertInteractive(
   }
   if (node.matches(".v-menubar")) {
     const hosts = elementChildren(node);
-    const initial = hosts.findIndex((host) => {
-      const menu = host.querySelector(".v-menu");
-      return menu && open(menu);
-    });
     return render(
       MenubarParts.Menubar,
       node,
       ctx,
-      { defaultValue: initial >= 0 ? String(initial) : undefined },
+      { defaultValue: "" },
       hosts.map((host, i) => {
         const trigger = host.querySelector(".v-menubar__trigger")!;
         const content = host.querySelector(".v-menu")!;

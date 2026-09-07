@@ -1,0 +1,343 @@
+{
+  "revision": "315de5e",
+  "widths": [
+    360,
+    390,
+    768,
+    1024,
+    1440,
+    1920
+  ],
+  "files": 154,
+  "expectedRows": 924,
+  "entries": [
+    {
+      "id": "accordion",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-open.html",
+        "default-default-open-dark.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "alert-dialog",
+      "files": [
+        "default-default-rest-720x480.html",
+        "default-default-rest-dark-720x480.html",
+        "default-default-open-720x480.html",
+        "default-default-open-dark-720x480.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "calendar",
+      "files": [
+        "default-default-rest-480x480.html",
+        "default-default-rest-dark-480x480.html",
+        "default-default-selected-480x480.html",
+        "default-default-selected-dark-480x480.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "checkbox",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-disabled.html",
+        "default-default-disabled-dark.html",
+        "default-default-checked.html",
+        "default-default-checked-dark.html",
+        "default-default-indeterminate.html",
+        "default-default-indeterminate-dark.html"
+      ],
+      "expectedRows": 48
+    },
+    {
+      "id": "collapsible",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-open.html",
+        "default-default-open-dark.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "combobox",
+      "files": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html",
+        "default-default-open-480x360.html",
+        "default-default-open-dark-480x360.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "command",
+      "files": [
+        "default-default-rest-480x420.html",
+        "default-default-rest-dark-480x420.html"
+      ],
+      "expectedRows": 12
+    },
+    {
+      "id": "context-menu",
+      "files": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html",
+        "default-default-open-480x360.html",
+        "default-default-open-dark-480x360.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "date-picker",
+      "files": [
+        "default-default-rest-480x520.html",
+        "default-default-rest-dark-480x520.html",
+        "default-default-open-480x520.html",
+        "default-default-open-dark-480x520.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "dialog",
+      "files": [
+        "default-default-rest-720x480.html",
+        "default-default-rest-dark-720x480.html",
+        "default-default-open-720x480.html",
+        "default-default-open-dark-720x480.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "drawer",
+      "files": [
+        "default-default-rest-480x480.html",
+        "default-default-rest-dark-480x480.html",
+        "default-default-open-480x480.html",
+        "default-default-open-dark-480x480.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "dropdown-menu",
+      "files": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html",
+        "default-default-open-480x360.html",
+        "default-default-open-dark-480x360.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "hover-card",
+      "files": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html",
+        "default-default-open-480x360.html",
+        "default-default-open-dark-480x360.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "input-otp",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ],
+      "expectedRows": 12
+    },
+    {
+      "id": "menubar",
+      "files": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html",
+        "default-default-open-480x360.html",
+        "default-default-open-dark-480x360.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "navigation-menu",
+      "files": [
+        "default-default-rest-480x480.html",
+        "default-default-rest-dark-480x480.html",
+        "default-default-selected-480x480.html",
+        "default-default-selected-dark-480x480.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "popover",
+      "files": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html",
+        "default-default-open-480x360.html",
+        "default-default-open-dark-480x360.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "radio-group",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-disabled.html",
+        "default-default-disabled-dark.html",
+        "default-default-checked.html",
+        "default-default-checked-dark.html"
+      ],
+      "expectedRows": 36
+    },
+    {
+      "id": "resizable",
+      "files": [
+        "default-default-rest-720x320.html",
+        "default-default-rest-dark-720x320.html",
+        "v-default-rest-720x320.html",
+        "v-default-rest-dark-720x320.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "scroll-area",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "ink-default-rest.html",
+        "ink-default-rest-dark.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "select",
+      "files": [
+        "default-default-rest-480x360.html",
+        "default-default-rest-dark-480x360.html",
+        "default-default-selected-480x360.html",
+        "default-default-selected-dark-480x360.html",
+        "default-default-open-480x360.html",
+        "default-default-open-dark-480x360.html"
+      ],
+      "expectedRows": 36
+    },
+    {
+      "id": "sheet",
+      "files": [
+        "default-default-rest-960x600.html",
+        "default-default-rest-dark-960x600.html",
+        "default-default-open-960x600.html",
+        "default-default-open-dark-960x600.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "slider",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ],
+      "expectedRows": 12
+    },
+    {
+      "id": "switch",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-disabled.html",
+        "default-default-disabled-dark.html",
+        "default-default-checked.html",
+        "default-default-checked-dark.html"
+      ],
+      "expectedRows": 36
+    },
+    {
+      "id": "tabs",
+      "files": [
+        "default-default-rest-720x320.html",
+        "default-default-rest-dark-720x320.html",
+        "default-default-selected-720x320.html",
+        "default-default-selected-dark-720x320.html",
+        "default-default-on-720x320.html",
+        "default-default-on-dark-720x320.html",
+        "underline-default-rest-720x320.html",
+        "underline-default-rest-dark-720x320.html",
+        "underline-default-selected-720x320.html",
+        "underline-default-selected-dark-720x320.html",
+        "underline-default-on-720x320.html",
+        "underline-default-on-dark-720x320.html",
+        "lenses-default-rest-720x320.html",
+        "lenses-default-rest-dark-720x320.html",
+        "lenses-default-selected-720x320.html",
+        "lenses-default-selected-dark-720x320.html",
+        "lenses-default-on-720x320.html",
+        "lenses-default-on-dark-720x320.html"
+      ],
+      "expectedRows": 108
+    },
+    {
+      "id": "toast",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-open.html",
+        "default-default-open-dark.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "toggle",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-disabled.html",
+        "default-default-disabled-dark.html",
+        "default-default-on.html",
+        "default-default-on-dark.html",
+        "pressed-default-rest.html",
+        "pressed-default-rest-dark.html",
+        "pressed-default-disabled.html",
+        "pressed-default-disabled-dark.html",
+        "pressed-default-on.html",
+        "pressed-default-on-dark.html",
+        "pink-default-rest.html",
+        "pink-default-rest-dark.html",
+        "pink-default-disabled.html",
+        "pink-default-disabled-dark.html",
+        "pink-default-on.html",
+        "pink-default-on-dark.html",
+        "circle-default-rest.html",
+        "circle-default-rest-dark.html",
+        "circle-default-disabled.html",
+        "circle-default-disabled-dark.html",
+        "circle-default-on.html",
+        "circle-default-on-dark.html"
+      ],
+      "expectedRows": 144
+    },
+    {
+      "id": "toggle-group",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-on.html",
+        "default-default-on-dark.html"
+      ],
+      "expectedRows": 24
+    },
+    {
+      "id": "tooltip",
+      "files": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html",
+        "default-default-open.html",
+        "default-default-open-dark.html"
+      ],
+      "expectedRows": 24
+    }
+  ]
+}
