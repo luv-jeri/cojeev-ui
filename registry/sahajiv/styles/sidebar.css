@@ -91,6 +91,10 @@
   ) {
   color: var(--structure-text);
 }
+/* The collapse icon sits on pink, independently of the rail surface. */
+:root[data-mode="dark"] [data-slot="sidebar"] [data-slot="sidebar-trigger"] .v-icon {
+  color: var(--v-on-accent);
+}
 :root[data-mode="dark"] [data-slot="sidebar"] .v-nav__item[aria-current="page"],
 :root[data-mode="dark"]
   [data-slot="sidebar"]

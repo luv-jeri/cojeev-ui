@@ -1,0 +1,702 @@
+{
+  "basis": "Existing main docs4320, isolated Chromium1440x1100; actual theme, selection, hover and collapse controls. Candidate whole scoped CSS appended in same sahajiv-states layer. No server file or process changes.",
+  "rows": [
+    {
+      "id": "navigation-menu",
+      "mode": "light",
+      "state": "notes-selected",
+      "targets": [
+        {
+          "text": "12",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(14, 11, 11)",
+          "beforeContrast": 11.91,
+          "contrast": 11.48
+        },
+        {
+          "text": "8",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(14, 11, 11)",
+          "beforeContrast": 11.91,
+          "contrast": 11.48
+        },
+        {
+          "text": "4",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(14, 11, 11)",
+          "beforeContrast": 11.91,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Reading",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        }
+      ],
+      "muted": []
+    },
+    {
+      "id": "navigation-menu",
+      "mode": "light",
+      "state": "ideas-selected",
+      "targets": [
+        {
+          "text": "12",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(14, 11, 11)",
+          "beforeContrast": 11.91,
+          "contrast": 11.48
+        },
+        {
+          "text": "8",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(14, 11, 11)",
+          "beforeContrast": 11.91,
+          "contrast": 11.48
+        },
+        {
+          "text": "4",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(14, 11, 11)",
+          "beforeContrast": 11.91,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Reading",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        }
+      ],
+      "muted": []
+    },
+    {
+      "id": "navigation-menu",
+      "mode": "dark",
+      "state": "notes-selected",
+      "targets": [
+        {
+          "text": "12",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(246, 239, 226)",
+          "beforeContrast": 1.44,
+          "contrast": 11.48
+        },
+        {
+          "text": "8",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(246, 239, 226)",
+          "beforeContrast": 1.44,
+          "contrast": 11.48
+        },
+        {
+          "text": "4",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(246, 239, 226)",
+          "beforeContrast": 1.44,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(246, 239, 226)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(246, 239, 226)"
+          },
+          "icon": "rgb(246, 239, 226)"
+        },
+        {
+          "current": null,
+          "color": "rgb(246, 239, 226)",
+          "label": {
+            "text": "Reading",
+            "color": "rgb(246, 239, 226)"
+          },
+          "icon": "rgb(246, 239, 226)"
+        }
+      ],
+      "muted": []
+    },
+    {
+      "id": "navigation-menu",
+      "mode": "dark",
+      "state": "ideas-selected",
+      "targets": [
+        {
+          "text": "12",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(246, 239, 226)",
+          "beforeContrast": 1.44,
+          "contrast": 11.48
+        },
+        {
+          "text": "8",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(246, 239, 226)",
+          "beforeContrast": 1.44,
+          "contrast": 11.48
+        },
+        {
+          "text": "4",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(246, 239, 226)",
+          "beforeContrast": 1.44,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(246, 239, 226)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(246, 239, 226)"
+          },
+          "icon": "rgb(246, 239, 226)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(246, 239, 226)",
+          "label": {
+            "text": "Reading",
+            "color": "rgb(246, 239, 226)"
+          },
+          "icon": "rgb(246, 239, 226)"
+        }
+      ],
+      "muted": []
+    },
+    {
+      "id": "sidebar",
+      "mode": "light",
+      "state": "notes-selected",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(17, 17, 17)",
+          "beforeContrast": 11.48,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "true"
+    },
+    {
+      "id": "sidebar",
+      "mode": "light",
+      "state": "ideas-selected",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(17, 17, 17)",
+          "beforeContrast": 11.48,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "true"
+    },
+    {
+      "id": "sidebar",
+      "mode": "light",
+      "state": "inactive-hover",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(17, 17, 17)",
+          "beforeContrast": 11.48,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "true"
+    },
+    {
+      "id": "sidebar",
+      "mode": "light",
+      "state": "collapsed",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(17, 17, 17)",
+          "beforeContrast": 11.48,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(251, 244, 230)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(251, 244, 230)"
+          },
+          "icon": "rgb(251, 244, 230)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "false"
+    },
+    {
+      "id": "sidebar",
+      "mode": "dark",
+      "state": "notes-selected",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(222, 214, 198)",
+          "beforeContrast": 1.14,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(222, 214, 198)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(222, 214, 198)"
+          },
+          "icon": "rgb(222, 214, 198)"
+        },
+        {
+          "current": null,
+          "color": "rgb(222, 214, 198)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(222, 214, 198)"
+          },
+          "icon": "rgb(222, 214, 198)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "true"
+    },
+    {
+      "id": "sidebar",
+      "mode": "dark",
+      "state": "ideas-selected",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(222, 214, 198)",
+          "beforeContrast": 1.14,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(222, 214, 198)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(222, 214, 198)"
+          },
+          "icon": "rgb(222, 214, 198)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(222, 214, 198)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(222, 214, 198)"
+          },
+          "icon": "rgb(222, 214, 198)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "true"
+    },
+    {
+      "id": "sidebar",
+      "mode": "dark",
+      "state": "inactive-hover",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(222, 214, 198)",
+          "beforeContrast": 1.14,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(222, 214, 198)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(222, 214, 198)"
+          },
+          "icon": "rgb(222, 214, 198)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(246, 239, 226)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(246, 239, 226)"
+          },
+          "icon": "rgb(246, 239, 226)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "true"
+    },
+    {
+      "id": "sidebar",
+      "mode": "dark",
+      "state": "collapsed",
+      "targets": [
+        {
+          "text": "",
+          "color": "rgb(17, 17, 17)",
+          "background": "rgb(245, 184, 219)",
+          "beforeColor": "rgb(222, 214, 198)",
+          "beforeContrast": 1.14,
+          "contrast": 11.48
+        }
+      ],
+      "navigationAndMutedUnchanged": true,
+      "items": [
+        {
+          "current": null,
+          "color": "rgb(222, 214, 198)",
+          "label": {
+            "text": "Notes",
+            "color": "rgb(222, 214, 198)"
+          },
+          "icon": "rgb(222, 214, 198)"
+        },
+        {
+          "current": "page",
+          "color": "rgb(245, 184, 219)",
+          "label": {
+            "text": "Ideas",
+            "color": "rgb(245, 184, 219)"
+          },
+          "icon": "rgb(245, 184, 219)"
+        },
+        {
+          "current": null,
+          "color": "rgb(222, 214, 198)",
+          "label": {
+            "text": "Archive",
+            "color": "rgb(222, 214, 198)"
+          },
+          "icon": "rgb(222, 214, 198)"
+        }
+      ],
+      "muted": [
+        {
+          "text": "Your space",
+          "color": "rgb(139, 132, 116)"
+        },
+        {
+          "text": "Everything stays close.",
+          "color": "rgb(139, 132, 116)"
+        }
+      ],
+      "expanded": "false"
+    }
+  ],
+  "errors": []
+}
