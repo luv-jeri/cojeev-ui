@@ -39,6 +39,26 @@ const tableParts:Record<string,React.ElementType>={THEAD:table.TableHeader,TBODY
 function siblingIndex(node:Element,selector:string){return Array.from(node.parentElement?.querySelectorAll(":scope > "+selector)??[]).indexOf(node)}
 function chosenValue(input:Element|null,index:number){return input?.getAttribute("value")??String(index)}
 
+function ButtonGroupFixture({node,index,ctx}:{node:Element;index:number;ctx:FixtureContext}) {
+  // Isolation state fixtures can mark a second button pressed. Preserve that
+  // initial markup; the first real selection returns ownership to the API.
+  const [authoredInitial,setAuthoredInitial] = React.useState(true);
+  const items = Array.from(node.children);
+  const selected = items.findIndex(item => item.getAttribute("aria-pressed") === "true");
+  return ctx.convert(node,index,{
+    skipComposed:true,skipInteractive:true,Component:button_group.ButtonGroup,
+    props:{defaultValue:selected < 0 ? undefined : String(selected),onValueChange:()=>setAuthoredInitial(false)},
+    children:Array.from(node.childNodes).map((child,key)=>{
+      if (!(child instanceof Element) || !child.matches(".v-btn")) return ctx.convert(child,key);
+      ctx.mark(child);
+      return ctx.convert(child,key,{
+        skipComposed:true,skipInteractive:true,Component:button_group.ButtonGroupItem,
+        props:{value:String(items.indexOf(child)),"aria-pressed":authoredInitial ? child.getAttribute("aria-pressed") ?? undefined : undefined},
+      });
+    }),
+  });
+}
+
 // Reproduce the source fixture's field-container boundaries as production FieldGroup
 // composition. Discovery only reads the detached fixture; hooks own their rendered subtree.
 const fieldContainers = new WeakMap<Document, Set<Element>>();
@@ -82,8 +102,8 @@ export function convertComposed(node:Element,index:number,ctx:FixtureContext):Re
   if(matches(".v-sidebar"))return render(sidebar.Sidebar,{defaultOpen:!matches(".-mini,.-collapsed"),layout:"viewport"});
   if(node.closest(".v-sidebar"))for(const[selector,Component]of Object.entries(sideParts))if(matches(selector))return render(Component,selector===".v-nav__item"?{isActive:node.getAttribute("aria-current")==="page"}:{});
   if(matches(".v-seg")&&ctx.id==="button-group"){
-    const selected=node.querySelector(":scope > [aria-pressed=true]");
-    return render(button_group.ButtonGroup,{defaultValue:selected?String(Array.from(node.children).indexOf(selected)):undefined});
+    ctx.mark(node);
+    return <ButtonGroupFixture key={index} node={node} index={index} ctx={ctx}/>;
   }
   if(matches(".v-seg > .v-btn")&&ctx.id==="button-group")return render(button_group.ButtonGroupItem,{value:String(Array.from(node.parentElement!.children).indexOf(node)),"aria-pressed":undefined});
   if(matches(".v-utility")&&ctx.id==="button-group")return render(button_group.ButtonGroupUtility,{shapes:node.hasAttribute("data-shapes")});
