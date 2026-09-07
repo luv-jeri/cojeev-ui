@@ -1197,5 +1197,78 @@
       "shape",
       "animated-number"
     ]
+  },
+  "shape-scene": {
+    "description": "A tactile 3D composition made from SahaJiv shapes, with a static fallback and motion preferences built in.",
+    "category": "3D",
+    "usage": [
+      "Place the sculpture beside generous typography. Its reserved aspect ratio keeps the surrounding layout stable while it loads.",
+      "Choose a palette, density or order of the four authored shapes. Set animate and interactive to false for a completely still sculpture.",
+      "This optional entry installs Three.js; the rest of the library does not require it. Initialization waits until the scene enters the viewport."
+    ],
+    "accessibility": [
+      "Provide a useful aria-label when the artwork conveys meaning, or aria-hidden for a decorative composition.",
+      "Global Off and reduced motion stop ambient and pointer motion. Offscreen and hidden scenes pause work.",
+      "Without WebGL2 the authored static shapes remain visible, with a clear fallback description."
+    ],
+    "related": [
+      "shape",
+      "text-reveal",
+      "card"
+    ]
+  },
+  "multi-select": {
+    "description": "Searchable multiple choices with removable selections, form values and clear validation.",
+    "category": "Forms",
+    "usage": [
+      "Use value and onValueChange for controlled selection, or defaultValue for internal state. A name submits repeated values with a native form.",
+      "Disabled options stay locked. Values no longer present in options stay visible and removable, so filtering does not silently discard a selection.",
+      "Use description for guidance and error for validation. This component handles a bounded local set of choices; it does not fetch or virtualize options."
+    ],
+    "accessibility": [
+      "The trigger has a visible label. Search, independently checked options and removable tokens expose their own accessible names.",
+      "Arrow keys, Home and End move through enabled choices; Space toggles. Escape closes the popup and returns focus.",
+      "A disabled field closes and locks its controls. Error text is announced and linked to the invalid trigger."
+    ],
+    "related": [
+      "select",
+      "checkbox",
+      "combobox",
+      "field"
+    ]
+  },
+  "ambient-background": {
+    "description": "Adds a quiet animated composition around content, with decorative shapes kept behind a readable surface.",
+    "category": "Backgrounds",
+    "usage": [
+      "Choose drift, orbit, or contour for a welcome section, introduction, or decorative pause between sections.",
+      "Pass children for foreground content and control paused when the surrounding experience should stop the decoration."
+    ],
+    "accessibility": [
+      "Decoration is hidden and inert; foreground children keep their own semantics.",
+      "Global motion Off and reduced-motion preferences produce a static composition; offscreen or hidden content pauses its animation."
+    ],
+    "related": [
+      "shape",
+      "card",
+      "adjuster"
+    ]
+  },
+  "marquee": {
+    "description": "Moves a repeating content list with an explicit pause control and a static reading layout when motion is reduced.",
+    "category": "Creative",
+    "usage": [
+      "Pass a short collection of responsive content items, then choose left or right direction and slow, normal, or fast speed.",
+      "Use the built-in pause control or paused and onPausedChange to coordinate playback with application state."
+    ],
+    "accessibility": [
+      "Only the original list is accessible; the visual copy is inert, hidden, and removed from keyboard navigation.",
+      "Hover and focus pause motion, focused content becomes a static list, and Off or reduced motion wraps all original items for reading."
+    ],
+    "related": [
+      "carousel",
+      "scroll-area",
+      "adjuster"
+    ]
   }
 }

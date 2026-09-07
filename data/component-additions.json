@@ -104,5 +104,71 @@
       "revealing",
       "reduced motion"
     ]
+  },
+  "shape-scene": {
+    "name": "Shape scene",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "loading",
+      "animated",
+      "still",
+      "fallback"
+    ],
+    "dependencies": [
+      "three@0.185.1"
+    ],
+    "devDependencies": [
+      "@types/three@0.185.4"
+    ]
+  },
+  "multi-select": {
+    "name": "Multi-select",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "open",
+      "searching",
+      "selected",
+      "empty",
+      "invalid",
+      "disabled"
+    ]
+  },
+  "ambient-background": {
+    "name": "Ambient background",
+    "variants": [
+      "drift",
+      "orbit",
+      "contour"
+    ],
+    "sizes": [],
+    "states": [
+      "running",
+      "paused",
+      "static"
+    ]
+  },
+  "marquee": {
+    "name": "Marquee",
+    "variants": [
+      "default"
+    ],
+    "sizes": [],
+    "states": [
+      "running",
+      "paused",
+      "static",
+      "focused"
+    ]
   }
 }

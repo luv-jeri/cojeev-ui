@@ -23,6 +23,6 @@
   [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(4) { left: 53%; top: 50%; transform: rotate(-18deg); }
   [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(5) { left: 39%; top: 9%; transform: scale(.3); }
   [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(6) { left: 40%; top: 67%; transform: scale(.25); }
-  [data-slot="shape-scene"] [data-slot="shape-scene-status"] { position: absolute; left: 16px; right: 16px; bottom: 12px; color: #635952; font: 12px/1.4 var(--font-body, sans-serif); text-align: center; }
+  [data-slot="shape-scene"] [data-slot="shape-scene-status"] { position: absolute; left: 16px; right: 16px; bottom: 12px; color: #635952; font: 12px/1.4 var(--font-text, sans-serif); text-align: center; }
   @media (max-width: 480px) { [data-slot="shape-scene"] { aspect-ratio: 1; border-radius: 24px; } }
 }

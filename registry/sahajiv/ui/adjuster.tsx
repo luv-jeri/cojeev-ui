@@ -7,6 +7,7 @@ import { useMorph } from "../motion/use-morph"
 import { useFlowPress } from "../motion/flow-press"
 import { cn } from "../lib/utils"
 import { Button } from "./button"
+import { CopyButton } from "./code-block"
 import { Label } from "./label"
 import { Slider } from "./slider"
 import { Switch } from "./switch"
@@ -80,7 +81,10 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
    <Meta id={id+'-intensity-note'}>{flow.variant==='glide'?'Glide stays calm. Choose an expressive character to tune intensity.':'Shapes the stretch, ripple or glow of expressive characters.'}</Meta>
   </div>
   <div className="v-motion-controls__row"><div><Label htmlFor={id+'-hover'}>Pointer preview</Label><Meta>A hint before you select. Pointer devices only.</Meta></div><Switch id={id+'-hover'} checked={flow.hover} onCheckedChange={hover=>setFlowSettings({hover})}/></div>
-  <Button variant="ghost" size="sm" onClick={reset}>Reset motion settings</Button>
+  <div className="v-motion-controls__row">
+   <Button variant="ghost" size="sm" onClick={reset}>Reset motion settings</Button>
+   <CopyButton code={`import { setMotionMode, setFlowSettings } from "@/lib/sahajiv-motion/settings";\n\nsetMotionMode(${JSON.stringify(motion.mode)});\nsetFlowSettings(${JSON.stringify(flow,null,2)});`}>Copy selection settings</CopyButton>
+  </div>
  </section>
 }
 type Control=[label:string,min:number,max:number,step:number,unit:string]

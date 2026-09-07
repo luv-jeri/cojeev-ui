@@ -205,3 +205,7 @@
 .docs-related-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 48px; padding: 12px 20px; border-radius: var(--r-pill); background: var(--v-beige); color: var(--v-text); font-weight: 500; text-decoration: none; }
 .docs-related-link:hover { background: var(--v-pink); color: var(--v-ink); }
 .docs-related-link:focus-visible { outline: 2px solid var(--v-text); outline-offset: 4px; }
+
+.docs-sidebar [data-slot="sidebar-footer"] > [data-slot="typography-meta"] { color: var(--v-on-ink); opacity: .75; }
+
+.docs-overview-link { padding: 0 16px; }

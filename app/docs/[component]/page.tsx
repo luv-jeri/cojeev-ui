@@ -4,6 +4,7 @@ import { DocsPage } from "fumadocs-ui/page";
 import { catalog, componentGuide, publicURL } from "@/lib/catalog";
 import { ComponentPreview } from "@/components/component-preview";
 import { InstallCommand } from "@/components/install-command";
+import { exampleManifest, type ExampleId } from "@/components/examples/manifest";
 import { exampleSource } from "@/components/example-source";
 import { Badge } from "@/registry/sahajiv/ui/badge";
 import {
@@ -50,15 +51,11 @@ export default async function Page({
   const guide = componentGuide(entry.name);
   const variants = [...new Set(["default", ...entry.meta.source.variants])];
   const sizes = [...new Set(["default", ...entry.meta.source.sizes])];
-  const code = Object.fromEntries(
-    variants.flatMap((variant) => sizes.map((size) => [
-      `${variant}:${size}`,
-      exampleSource(entry.name, variant, size),
-    ])),
-  );
+  const completeCode = exampleSource(entry.name);
+  const code = { source: completeCode.slice(0, completeCode.lastIndexOf("\nexport default function Demo()")), name: exampleManifest[entry.name as ExampleId].name };
   const exampleDependencies = [
     ...new Set(
-      [...code["default:default"].matchAll(/"@\/components\/ui\/([^"\n]+)"/g)].map(
+      [...completeCode.matchAll(/"@\/components\/ui\/([^"\n]+)"/g)].map(
         (match) => match[1],
       ),
     ),
@@ -107,8 +104,8 @@ export default async function Page({
             command={`npx shadcn@latest add ${publicURL}/r/${entry.name}.json`}
           />
           <BodySecondary>
-            The public install URL is available after this registry is
-            published. The command includes the component’s shared dependencies.
+            The command includes the component’s shared dependencies.
+            Your project keeps editable source files.
           </BodySecondary>
           {exampleDependencies.length > 1 && (
             <>

@@ -2,6 +2,10 @@
 import { lazy } from "react";
 import type { ExampleComponent } from "./types";
 export const examples: Record<string, ExampleComponent> = {
+  "ambient-background": lazy(() => import("./backgrounds").then((module) => ({ default: module.AmbientBackgroundExample }))),
+  marquee: lazy(() => import("./backgrounds").then((module) => ({ default: module.MarqueeExample }))),
+  "multi-select": lazy(() => import("./forms").then((module) => ({ default: module.MultiSelectExample }))),
+  "shape-scene": lazy(() => import("./creative").then((module) => ({ default: module.ShapeSceneExample }))),
   "animated-number": lazy(() => import("./effects").then((module) => ({ default: module.AnimatedNumberExample }))),
   "text-reveal": lazy(() => import("./effects").then((module) => ({ default: module.TextRevealExample }))),
   accordion: lazy(() => import("./interactive").then((module) => ({ default: module.AccordionExample }))),

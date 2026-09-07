@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import type { ExampleProps } from "./types";
 import { AmbientBackground, type AmbientBackgroundProps } from "@/registry/sahajiv/ui/ambient-background";
 import { Marquee, type MarqueeDirection, type MarqueeSpeed } from "@/registry/sahajiv/ui/marquee";
 import { Button } from "@/registry/sahajiv/ui/button";
@@ -9,8 +10,8 @@ import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-s
 import { Shape } from "@/registry/sahajiv/ui/shape";
 import { Title, BodySecondary, Meta } from "@/registry/sahajiv/ui/typography";
 
-export function AmbientBackgroundExample() {
-  const [variant, setVariant] = React.useState<NonNullable<AmbientBackgroundProps["variant"]>>("drift");
+export function AmbientBackgroundExample({ variant: initialVariant = "default" }: ExampleProps) {
+  const [variant, setVariant] = React.useState<NonNullable<AmbientBackgroundProps["variant"]>>(initialVariant === "default" ? "drift" : initialVariant as NonNullable<AmbientBackgroundProps["variant"]>);
   const [paused, setPaused] = React.useState(false);
   const id = React.useId();
   return (
@@ -37,14 +38,15 @@ export function AmbientBackgroundExample() {
   );
 }
 
-const topics = [
-  { title: "Make something useful", note: "Ideas into everyday tools", shape: "star-8", color: "var(--v-blue)" },
-  { title: "Leave room to explore", note: "Small experiments welcome", shape: "blob-4", color: "var(--v-olive)" },
-  { title: "Share what you learn", note: "A good idea travels", shape: "star-4", color: "var(--v-pink)" },
-  { title: "Find your own rhythm", note: "Steady is a good speed", shape: "circle", color: "var(--v-yellow)" },
-];
+
 
 export function MarqueeExample() {
+  const topics = [
+    { title: "Make something useful", note: "Ideas into everyday tools", shape: "star-8", color: "var(--v-blue)" },
+    { title: "Leave room to explore", note: "Small experiments welcome", shape: "blob-4", color: "var(--v-olive)" },
+    { title: "Share what you learn", note: "A good idea travels", shape: "star-4", color: "var(--v-pink)" },
+    { title: "Find your own rhythm", note: "Steady is a good speed", shape: "circle", color: "var(--v-yellow)" },
+  ];
   const [direction, setDirection] = React.useState<MarqueeDirection>("left");
   const [speed, setSpeed] = React.useState<MarqueeSpeed>("slow");
   const id = React.useId();

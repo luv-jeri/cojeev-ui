@@ -80,6 +80,10 @@
 @import "../registry/sahajiv/styles/typography.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/animated-number.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/text-reveal.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/shape-scene.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/multi-select.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/ambient-background.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/marquee.css" layer(sahajiv-states);
 @source "../registry/sahajiv";
 @source "../components";
 
@@ -196,3 +200,6 @@
     transform: none;
   }
 }
+
+.home-sculpture { min-width: 0; display: grid; gap: 16px; text-align: center; }
+.home-sculpture [data-slot="shape-scene"] { aspect-ratio: 1; border-radius: 50% 50% 42% 42%; }

@@ -1,11 +1,13 @@
 # Contributing
 
-Install Node.js 22.12+, run `npm ci`, and install Chromium with `npx playwright install chromium`.
+Use Node.js 22.12+, run `npm ci`, then `npm run dev -- --port 4320`. Documentation lives at `/sahajiv-ui/`.
 
-Each component starts with its contract, registry axes, and port map under `reference/sahajiv-handoff-v4`. Preserve the authored token values, `.v-*` classes, and settings keys. Use Tailwind utilities for simple rules, Radix for interaction semantics, and scoped CSS for irreducible effects.
+Keep every component in the same family: warm canvas, purposeful pink/olive/blue/yellow accents, Bricolage Grotesque headings, DM Sans body text, shared spacing and authored shapes. Moving parts should respond naturally without moving the surrounding layout. Respect reduced motion and global Off. Background effects and 3D should stop unnecessary work offscreen and release resources when removed.
 
-Run the build and fidelity gate for a change. Include `GATE.md` and describe any uncovered behavior. Do not weaken a comparison or modify the oracle to make a port pass. A changed design needs a new, versioned reference and a documented reason.
+Components live under `registry/sahajiv/ui/`, with scoped CSS sidecars under `registry/sahajiv/styles/`. Use existing primitives and tokens. Keep optional heavy dependencies in the entry that needs them. A new component also needs metadata in `data/component-additions.json`, a useful guide in `data/component-guides.json`, a real example registered in `components/examples/manifest.ts` and `index.ts`, and its stylesheet imported by the docs. Example functions must be self-contained because the docs extract their actual source.
 
-Use logic tests for springs, generators, settings, and authored hooks. The visual gate supplies component fidelity evidence; duplicating it with class-name assertions does not help.
+Before submitting a change, run `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, and the relevant production behavior checks. `npm run gate` checks the built docs and shared motion. Add meaningful behavior cases for new interactive entries in `scripts/check-docs.mjs`; static entries must be explicitly identified. Test pointer and keyboard separately, open/close and focus return, disabled/error states, light/dark themes and mobile layout.
 
-Do not commit credentials, local machine paths, or private application code. Font licences are separate from the MIT licence for the library.
+Use focused logic tests for hand-written behavior. Preserve source-comparison evidence; do not weaken a comparison or edit the reference to conceal a difference. The refinement brief permits intentional improvements to confirmed source defects, with the benefit and evidence recorded in REFINEMENTS.md and the release report.
+
+Do not commit credentials, machine-specific paths or private application code. Font licences remain separate from the MIT licence. Contributions use the repository's MIT licence.

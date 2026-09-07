@@ -1,4 +1,8 @@
 export const exampleManifest = {
+  "ambient-background": { file: "backgrounds", name: "AmbientBackgroundExample" },
+  marquee: { file: "backgrounds", name: "MarqueeExample" },
+  "multi-select": { file: "forms", name: "MultiSelectExample" },
+  "shape-scene": { file: "creative", name: "ShapeSceneExample" },
   "animated-number": { file: "effects", name: "AnimatedNumberExample" },
   "text-reveal": { file: "effects", name: "TextRevealExample" },
   accordion: { file: "interactive", name: "AccordionExample" },

@@ -200,7 +200,13 @@ const tests = {
     assert(await root.getByRole("button", { name: "Disabled", exact: true }).isDisabled());
     return "Pointer loading, disabled pending state, keyboard failure and retry";
   },
-  "animated-number": async ({ root }) => {
+  "animated-number": async ({ root, page }) => {
+    const visual = root.locator('[data-slot="animated-number"] [aria-hidden]');
+    await visual.evaluate(el => {
+      window.__numberSamples = [];
+      window.__numberObserver = new MutationObserver(() => window.__numberSamples.push(Number(el.textContent.replaceAll(",", ""))));
+      window.__numberObserver.observe(el, {childList:true,subtree:true,characterData:true});
+    });
     await root.getByRole("button", { name: "Add 125" }).click();
     await text(root, "Current value: 1,365");
     await eventually(() => root.locator('[data-slot="animated-number"] [aria-hidden]').innerText().then(value => value === "1,365"), "Number reaches exact target");
@@ -208,15 +214,88 @@ const tests = {
     await text(root, "Current value: 1,290");
     await root.getByRole("button", { name: "Reset count" }).click();
     await text(root, "Current value: 1,240");
-    return "Pointer and keyboard updates, final formatted number and reset";
+    await eventually(() => visual.innerText().then(value => value === "1,240"), "Interrupted number reaches reset target");
+    const samples = await page.evaluate(() => { window.__numberObserver.disconnect(); return window.__numberSamples; });
+    assert(samples.length > 2 && samples.every(value => value >= 1240 && value <= 1365), "Numeric transition remains within its endpoints");
+    await page.emulateMedia({reducedMotion:"reduce"});
+    await root.getByRole("button", { name: "Add 125" }).click();
+    assert.equal(await visual.innerText(), "1,365");
+    await page.emulateMedia({reducedMotion:"no-preference"});
+    return "Pointer/keyboard updates, interruption without overshoot, reduced motion and exact reset";
   },
-  "text-reveal": async ({ root }) => {
+  "ambient-background": async ({root}) => {
+    const background=root.locator('[data-slot="ambient-background"]');
+    await root.getByLabel("Composition").selectOption("contour");
+    await attribute(background,"data-variant","contour");
+    await root.getByRole("button",{name:"Pause background"}).click();
+    await attribute(background,"data-motion","paused");
+    await key(root.getByRole("button",{name:"Resume background"}),"Enter");
+    await attribute(background,"data-motion","running");
+    return "Composition control and pointer/keyboard pause-resume";
+  },
+  marquee: async ({root,page}) => {
+    const marquee=root.locator('[data-slot="marquee"]');
+    await root.getByRole("button",{name:"Pause motion",exact:true}).click();
+    await attribute(marquee,"data-motion","paused");
+    await root.getByLabel("Direction",{exact:true}).selectOption("right");
+    await root.getByLabel("Pace",{exact:true}).selectOption("normal");
+    await attribute(marquee,"data-direction","right");
+    await attribute(marquee,"data-speed","normal");
+    const copy=marquee.locator('[data-slot="marquee-copy"]');
+    assert(await copy.evaluate(el=>el.inert&&el.getAttribute("aria-hidden")==="true"));
+    await key(root.getByRole("button",{name:"Resume motion",exact:true}),"Enter");
+    await root.getByRole("button",{name:"Pause motion",exact:true}).waitFor();
+    await page.emulateMedia({reducedMotion:"reduce"});
+    await attribute(marquee,"data-motion","static");
+    assert(!(await copy.isVisible()));
+    await page.emulateMedia({reducedMotion:"no-preference"});
+    return "Explicit pause, direction/pace controls, inert copy and static reduced-motion reading";
+  },
+  "multi-select": async ({root,page}) => {
+    const trigger=root.getByRole("button",{name:"Topics",exact:true});
+    await trigger.click();
+    const search=page.getByRole("searchbox",{name:"Search Topics"});
+    await search.fill("research");
+    await page.getByRole("checkbox",{name:"Research",exact:true}).click();
+    await page.keyboard.press("Escape");
+    await eventually(()=>trigger.evaluate(el=>el===document.activeElement),"Multi-select restores trigger focus");
+    await text(root,"Following: Design, Engineering, Research.");
+    await key(root.getByRole("button",{name:"Remove Research",exact:true}),"Enter");
+    await text(root,"Following: Design, Engineering.");
+    await root.getByRole("button",{name:"Clear selection",exact:true}).click();
+    await page.getByRole("alert").waitFor();
+    await attribute(trigger,"aria-invalid","true");
+    await root.getByRole("button",{name:"Reset selection",exact:true}).click();
+    await text(root,"Following: Design, Engineering.");
+    return "Search selection, Escape/focus return, keyboard removal and visible validation/reset";
+  },
+  "shape-scene": async ({root}) => {
+    const scene = root.locator('[data-slot="shape-scene"]');
+    await eventually(() => scene.getAttribute("data-renderer").then(value => ["webgl","fallback"].includes(value)), "Scene renders or presents its supported fallback", 10000);
+    await root.getByRole("button", {name:"Pause sculpture"}).click();
+    await attribute(root.getByRole("button", {name:"Animate sculpture"}), "aria-pressed", "true");
+    await root.getByLabel("Palette", {exact:true}).selectOption("cool");
+    await attribute(scene,"data-palette","cool");
+    await key(root.getByRole("button", {name:"Animate sculpture"}), "Enter");
+    await root.getByRole("button", {name:"Pause sculpture"}).waitFor();
+    return "Scene rendering, pause/resume and palette update";
+  },
+  "text-reveal": async ({ root, page }) => {
+    const heading = root.getByRole("heading", { name: "Good things take shape." });
+    const before = await heading.boundingBox();
     await root.getByRole("button", { name: "Replay reveal" }).click();
+    assert(await heading.evaluate(el => document.getAnimations().some(animation => el.contains(animation.effect?.target))), "Replay starts a real word animation");
     await text(root, "Replayed 1 time.");
     await key(root.getByRole("button", { name: "Replay reveal" }), "Enter");
     await text(root, "Replayed 2 times.");
-    assert(await root.getByRole("heading", { name: "Good things take shape." }).isVisible());
-    return "Pointer/keyboard replay; one accessible complete heading";
+    assert(await heading.isVisible());
+    const after = await heading.boundingBox();
+    assert(Math.abs(before.width-after.width)<1 && Math.abs(before.height-after.height)<1, "Reveal keeps layout geometry stable");
+    await page.emulateMedia({reducedMotion:"reduce"});
+    await root.getByRole("button", {name:"Replay reveal"}).click();
+    assert(!(await heading.evaluate(el => document.getAnimations().some(animation => el.contains(animation.effect?.target)))), "Reduced-motion replay stays still");
+    await page.emulateMedia({reducedMotion:"no-preference"});
+    return "Real pointer/keyboard replay, stable layout and reduced-motion stillness";
   },
   "code-block": async ({ root, page }) => {
     await root.getByRole("button", { name: "Wrap long lines" }).click();
@@ -873,7 +952,20 @@ async function sharedPreview(page, id) {
   await p.locator("pre").first().waitFor();
   await p.getByRole("tab", { name: "Preview", exact: true }).first().click();
   await p.locator(`[data-example="${id}"]`).first().waitFor();
-  return "Pointer copy and preview tab; keyboard Code tab; actual clipboard verified";
+  for (const axis of ["Variant", "Size"]) {
+    const select=page.locator(".docs-playground-controls").getByLabel(axis,{exact:true});
+    if(await select.count()) {
+      const choice=await select.locator("option").last().getAttribute("value");
+      await select.selectOption(choice);
+      await attribute(p.locator(`[data-example="${id}"]`),`data-${axis.toLowerCase()}`,choice);
+      await p.getByRole("button",{name:"Copy code",exact:true}).first().click();
+      await text(p,"Copied to clipboard.");
+      const copied=await page.evaluate(()=>navigator.clipboard.readText());
+      assert(copied.slice(copied.lastIndexOf("export default function Demo")).includes(`${axis.toLowerCase()}="${choice}"`), "Copied code matches the selected axis");
+      await select.selectOption("default");
+    }
+  }
+  return "Exact clipboard content, preview/code keyboard controls and matching selected variant/size source";
 }
 async function chromeCheck(page, width) {
   const ready = page.locator('[data-slot="preview"]').first();

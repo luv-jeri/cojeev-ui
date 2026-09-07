@@ -1,4 +1,4 @@
-name: Build, fidelity, and publish
+name: Build, verify, and publish
 
 on:
   push:
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v7
@@ -25,20 +25,18 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run lint
+      - run: npm run typecheck
       - run: npm run test
       - run: npm run build
       - run: npm run gate
-      - name: Preserve fidelity evidence
+      - name: Preserve production evidence
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: fidelity-evidence
+          name: production-evidence
           path: |
-            GATE.md
-            GATE-INTERACTIONS.md
-            artifacts/gate/
-            artifacts/gate-interactions/
-            artifacts/gate-lifecycle/
+            artifacts/production-docs/
+            artifacts/production-motion/
           retention-days: 14
       - name: Package documentation
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'

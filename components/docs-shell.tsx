@@ -17,7 +17,7 @@ import { Label } from "@/registry/sahajiv/ui/label";
 import { Meta, Title } from "@/registry/sahajiv/ui/typography";
 import { Shape } from "@/registry/sahajiv/ui/shape";
 import { ThemeControl } from "@/components/theme-control";
-import { categories } from "@/lib/catalog";
+import { categories } from "@/lib/categories";
 import { DocsMotion } from "@/components/docs-motion";
 export type DocsLink = { name: string; title: string; baseComponent: boolean; category: string };
 export function DocsShell({
@@ -83,6 +83,11 @@ export function DocsShell({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
+        </div>
+        <div className="docs-overview-link">
+          <SidebarMenuButton asChild isActive={pathname?.endsWith("/docs")}>
+            <Link href="/docs/" aria-current={pathname?.endsWith("/docs") ? "page" : undefined} onClick={() => setOpen(false)}>Getting started</Link>
+          </SidebarMenuButton>
         </div>
         <SidebarContent
           aria-label="Component documentation"

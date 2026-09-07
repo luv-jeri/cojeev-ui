@@ -487,6 +487,7 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/label.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/slider.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/switch.json",
@@ -933,6 +934,71 @@
         "category": "Feedback",
         "fidelity": "verification-in-progress",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "ambient-background",
+      "type": "registry:ui",
+      "title": "Ambient background",
+      "description": "Adds a quiet animated composition around content, with decorative shapes kept behind a readable surface.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/shape.json"
+      ],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/ambient-background.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/ambient-background.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/ambient-background.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/ambient-background.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Ambient background",
+          "variants": [
+            "drift",
+            "orbit",
+            "contour"
+          ],
+          "sizes": [],
+          "states": [
+            "running",
+            "paused",
+            "static"
+          ]
+        },
+        "api": [
+          {
+            "name": "AmbientBackgroundProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"drift\" | \"orbit\" | \"contour\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean | undefined",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Backgrounds",
+        "fidelity": "verification-in-progress",
+        "baseComponent": false
       }
     },
     {
@@ -5786,6 +5852,93 @@
       }
     },
     {
+      "name": "marquee",
+      "type": "registry:ui",
+      "title": "Marquee",
+      "description": "Moves a repeating content list with an explicit pause control and a static reading layout when motion is reduced.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/typography.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/marquee.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/marquee.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/marquee.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/marquee.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Marquee",
+          "variants": [
+            "default"
+          ],
+          "sizes": [],
+          "states": [
+            "running",
+            "paused",
+            "static",
+            "focused"
+          ]
+        },
+        "api": [
+          {
+            "name": "MarqueeProps",
+            "props": [
+              {
+                "name": "direction",
+                "type": "MarqueeDirection | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "MarqueeSpeed | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultPaused",
+                "type": "boolean | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onPausedChange",
+                "type": "((paused: boolean) => void) | undefined",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Creative",
+        "fidelity": "verification-in-progress",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "menubar",
       "type": "registry:ui",
       "title": "Menubar",
@@ -6149,6 +6302,157 @@
         "category": "Conversation",
         "fidelity": "verification-in-progress",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "multi-select",
+      "type": "registry:ui",
+      "title": "Multi-select",
+      "description": "Searchable multiple choices with removable selections, form values and clear validation.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/checkbox.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/input.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/label.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/popover.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/multi-select.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/multi-select.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/multi-select.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/multi-select.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Multi-select",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "open",
+            "searching",
+            "selected",
+            "empty",
+            "invalid",
+            "disabled"
+          ]
+        },
+        "api": [
+          {
+            "name": "MultiSelectProps",
+            "props": [
+              {
+                "name": "label",
+                "type": "string",
+                "required": true,
+                "description": "Visible accessible label for the trigger and its choices."
+              },
+              {
+                "name": "options",
+                "type": "readonly MultiSelectOption[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "value",
+                "type": "readonly string[] | undefined",
+                "required": false,
+                "description": "Controlled selected values. Values absent from options remain removable."
+              },
+              {
+                "name": "defaultValue",
+                "type": "readonly string[] | undefined",
+                "required": false,
+                "description": "Initial selection when value is omitted."
+              },
+              {
+                "name": "onValueChange",
+                "type": "((value: string[]) => void) | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "name",
+                "type": "string | undefined",
+                "required": false,
+                "description": "Submits one hidden form entry per selected value."
+              },
+              {
+                "name": "id",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "error",
+                "type": "string | undefined",
+                "required": false,
+                "description": "Sets the trigger's invalid state and announces the error."
+              },
+              {
+                "name": "placeholder",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "searchPlaceholder",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "emptyMessage",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "noResultsMessage",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "className",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Forms",
+        "fidelity": "verification-in-progress",
+        "baseComponent": false
       }
     },
     {
@@ -7443,6 +7747,99 @@
           }
         ],
         "category": "Data display",
+        "fidelity": "verification-in-progress",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "shape-scene",
+      "type": "registry:ui",
+      "title": "Shape scene",
+      "description": "A tactile 3D composition made from SahaJiv shapes, with a static fallback and motion preferences built in.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/shape.json"
+      ],
+      "dependencies": [
+        "three@0.185.1"
+      ],
+      "devDependencies": [
+        "@types/three@0.185.4"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/shape-scene.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/shape-scene.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/shape-scene.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/shape-scene.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Shape scene",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "loading",
+            "animated",
+            "still",
+            "fallback"
+          ],
+          "dependencies": [
+            "three@0.185.1"
+          ],
+          "devDependencies": [
+            "@types/three@0.185.4"
+          ]
+        },
+        "api": [
+          {
+            "name": "ShapeSceneProps",
+            "props": [
+              {
+                "name": "palette",
+                "type": "\"sahajiv\" | \"warm\" | \"cool\" | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "shapes",
+                "type": "readonly SceneShape[] | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "density",
+                "type": "\"sparse\" | \"balanced\" | \"full\" | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "interactive",
+                "type": "boolean | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "animate",
+                "type": "boolean | undefined",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "3D",
         "fidelity": "verification-in-progress",
         "baseComponent": false
       }

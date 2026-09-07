@@ -16,13 +16,14 @@ export function ComponentPreview({
   id: string;
   variants: string[];
   sizes: string[];
-  code: Record<string, string>;
+  code: { source: string; name: string };
 }) {
   const [variant, setVariant] = React.useState(variants[0] ?? "default");
   const [size, setSize] = React.useState(sizes[0] ?? "default");
   const [revision, setRevision] = React.useState(0);
   const controlId = React.useId();
   const Example = examples[id];
+  const selectedCode = `${code.source}\n\nexport default function Demo() {\n  return (\n    <${code.name}${variant !== "default" ? ` variant="${variant}"` : ""}${size !== "default" ? ` size="${size}"` : ""} />\n  );\n}\n`;
   if (!Example)
     throw new Error(`No live documentation example registered for ${id}`);
   return (
@@ -49,7 +50,7 @@ export function ComponentPreview({
           <Button size="sm" variant="ghost" onClick={() => setRevision((value) => value + 1)}>Reset example</Button>
         </div>
       </div>
-      <Preview code={code[`${variant}:${size}`]}>
+      <Preview code={selectedCode}>
         <div key={`${id}:${variant}:${size}:${revision}`} className="docs-specimen" data-example={id} data-variant={variant} data-size={size}>
           <React.Suspense fallback={<Meta role="status">Loading preview…</Meta>}>
             <Example variant={variant} size={size} />

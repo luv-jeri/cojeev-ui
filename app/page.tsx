@@ -6,6 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuLabel,
 } from "@/registry/sahajiv/ui/sidebar";
+import { ShapeScene } from "@/registry/sahajiv/ui/shape-scene";
 import { Shape } from "@/registry/sahajiv/ui/shape";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import {
@@ -18,7 +19,6 @@ import {
 } from "@/registry/sahajiv/ui/typography";
 export default function Home() {
   const entries = catalog();
-  const baseCount = entries.filter((entry) => entry.meta.baseComponent).length;
   return (
     <main className="home-page">
       <header className="home-nav">
@@ -33,7 +33,7 @@ export default function Home() {
       <section className="home-hero">
         <Typography>
           <Badge variant="pink">
-            {baseCount} components · one considered system
+            {entries.length} components · one considered system
           </Badge>
           <Hero
             style={{ whiteSpace: "normal", fontSize: "clamp(48px,8vw,104px)" }}
@@ -56,32 +56,15 @@ export default function Home() {
             <Meta>Copy the code. Make it yours.</Meta>
           </div>
         </Typography>
-        <div
-          className="home-composition"
-          aria-label="A collection of SahaJiv surfaces"
-        >
-          <Card variant="pink">
-            <Shape name="star-4" style={{ width: 80, height: 80 }} />
-            <CardTitle>Small things, well made.</CardTitle>
-            <CardDescription>Keep the useful details close.</CardDescription>
-          </Card>
-          <Card variant="olive">
-            <Badge variant="ink">Your pace</Badge>
-            <CardTitle>A little room to think</CardTitle>
-            <CardDescription>
-              Designed for the work of everyday life.
-            </CardDescription>
-          </Card>
-          <Card variant="yellow">
-            <CardTitle>Built to belong together</CardTitle>
-            <CardDescription>One language for your interface.</CardDescription>
-          </Card>
+        <div className="home-sculpture">
+          <ShapeScene aria-label="Four familiar SahaJiv shapes, brought into three dimensions" />
+          <Meta>Familiar shapes. A new dimension.</Meta>
         </div>
       </section>
       <section className="home-components">
         <SectionTitle>Start with a useful part</SectionTitle>
         <BodySecondary>
-          Each entry includes live examples, every source variant and size,
+          Each entry includes configurable live examples,
           install instructions, and its TypeScript API.
         </BodySecondary>
         <div className="home-grid">
@@ -124,10 +107,17 @@ export default function Home() {
           ))}
         </div>
       </section>
+      <section className="home-components">
+        <SectionTitle>Room for a little expression</SectionTitle>
+        <BodySecondary>Backgrounds, tactile shapes and small effects that share the same colors, curves and sense of rhythm.</BodySecondary>
+        <div className="home-grid">
+          {[{id:"ambient-background",title:"A quieter backdrop",body:"Animated color and familiar silhouettes.",variant:"cream"},{id:"shape-scene",title:"Give your shapes depth",body:"Real 3D with a considered static fallback.",variant:"pink"},{id:"text-reveal",title:"Let a thought arrive",body:"A short, natural entrance for your words.",variant:"blue"},{id:"marquee",title:"Keep a good rhythm",body:"A moving track with room to pause.",variant:"olive"}].map(item=><Link key={item.id} href={`/docs/${item.id}/`}><Card variant={item.variant as "cream"|"pink"|"blue"|"olive"}><CardTitle>{item.title}</CardTitle><CardDescription>{item.body}</CardDescription><Icon name="arrow-ur" /></Card></Link>)}
+        </div>
+      </section>
       <footer className="home-footer">
         <Meta>SahaJiv UI · React components and a shadcn registry</Meta>
         <Meta>
-          Visual verification is tracked separately from implementation.
+          MIT licensed · Made to be made your own.
         </Meta>
       </footer>
     </main>
