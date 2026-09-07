@@ -54,7 +54,7 @@ function Badge({ ref: externalRef, className, variant = "default", size = "defau
   return <span ref={morphRef} data-slot="badge" data-part="root" data-state="rest" className={cn(badgeVariants({ variant, size }), badgeDimensions({ dimension }), (variant === "dashed" || variant === "test") && "h-[26px] px-[11px]", (variant === "test" || variant === "danger") && "font-semibold", "leading-none", className)} {...props} />
 }
 function BadgeIndicator({ className, ...props }: React.ComponentProps<"span">) {
-  return <span data-slot="badge-indicator" data-part="indicator" aria-hidden="true" className={cn("v-dot size-[7px] rounded-full flex-none m-0 bg-current", className)} {...props} />
+  return <span data-slot="badge-indicator" data-part="indicator" aria-hidden="true" className={cn("v-dot size-[7px] [border-radius:50%] flex-none m-0 bg-current", className)} {...props} />
 }
 export { Badge, BadgeIndicator, badgeVariants }
 export type { BadgeProps }
