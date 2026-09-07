@@ -32,7 +32,7 @@ export function acquireFlowEnvironment(){
  let released=false;return ()=>{if(released)return;released=true;if(--users===0)releaseEnvironment()}
 }
 function variantFor(el:HTMLElement):FlowVariant{
- if(isFlowQuiet(el))return 'off'
+ if(getMotionSettings().mode==='off'||getFlowSettings().variant==='off'||el.closest('[data-flow="off"],[data-no-glide]'))return 'off'
  const pin=el.closest<HTMLElement>('[data-flow]:not(html)')?.dataset.flow
  return pin&&Object.hasOwn(FLOW_CHARACTERS,pin)?pin as FlowVariant:getFlowSettings().variant
 }
@@ -65,15 +65,15 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  const items=(visible=true)=>all(itemSel,g).filter(item=>owned(item)&&(!visible||item.getClientRects().length>0))
  const mk=(className:string)=>{const span=document.createElement('span');span.className=className;span.setAttribute('aria-hidden','true');span.append(document.createElement('i'));return span}
  const [pill,hov,trail]=LAYERS.map(mk),timers=new Set<MotionTimer>()
- let prev:Box|null=null,lastActive:HTMLElement|null=null,dScale=1,queued:MotionTimer|null=null,resizeTimer:MotionTimer|null=null,stillTimer:MotionTimer|null=null,disposed=false,attached=false,reseat=false
+ let prev:Box|null=null,lastActive:HTMLElement|null=null,dScale=1,queued:MotionTimer|null=null,resizeTimer:MotionTimer|null=null,stillTimer:MotionTimer|null=null,disposed=false,attached=false,reseat=false,initial=true
  const later=(fn:()=>void,ms:number,scaled=true)=>{const timer=scheduleMotion(()=>{timers.delete(timer);if(!disposed)fn()},scaled?ms*dScale/getFlowSettings().speed:ms);timers.add(timer);return timer}
  const clearPhases=()=>{timers.forEach(cancelMotion);timers.clear();PHASES.forEach(c=>pill.classList.remove(c))}
  const markStill=()=>{g.classList.add('-still');cancelMotion(stillTimer);stillTimer=scheduleMotion(()=>{stillTimer=null;if(!oldClasses.has('-still'))g.classList.remove('-still')},flowTokenMs('--t-flow-still',60))}
  const unmark=()=>{for(const [item,old]of activeAttrs){if(old===null)item.removeAttribute('data-glide-active');else item.setAttribute('data-glide-active',old)}activeAttrs.clear()}
  const seat=()=>{
   const candidates=items(false),single=kind==='fill'||!candidates.some(item=>item.matches('[role="checkbox"]')||!!item.querySelector('input[type="checkbox"]'))||candidates.some(item=>item.matches('[role="radio"]')||!!item.querySelector('input[type="radio"]'))
-  if(candidates.length<2||!single){[pill,hov,trail].forEach(layer=>layer.remove());unmark();if(!oldClasses.has('v-glide'))g.classList.remove('v-glide');attached=false;prev=null;lastActive=null;clearPhases();return false}
-  if(!attached){attached=true;g.classList.add('v-glide');g.dataset.flowKind=kind;markStill()}
+  if(candidates.length<2||!single){[pill,hov,trail].forEach(layer=>layer.remove());unmark();if(!oldClasses.has('v-glide'))g.classList.remove('v-glide');attached=false;prev=null;lastActive=null;clearPhases();g.removeAttribute('data-flow-v');g.removeAttribute('data-flow-kind');return false}
+  if(!attached){attached=true;g.classList.add('v-glide');g.dataset.flowKind=kind;g.dataset.flowV=variantFor(g);markStill()}
   if(trail.parentNode!==g)g.prepend(trail);if(hov.parentNode!==g)g.prepend(hov);if(pill.parentNode!==g)g.prepend(pill)
   return true
  }
@@ -85,8 +85,9 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  const paint=(b:Box,hover=false)=>{const prefix=hover?'hov':'glide';for(const [key,value]of Object.entries({x:b.x,y:b.y,w:b.w,h:b.h}))write('--'+prefix+'-'+key,Math.round(value)+'px');write('--'+prefix+'-r',b.r);write('--'+prefix+'-o','1')}
  const active=()=>items().find(item=>kind==='fill'?(item===document.activeElement||item.contains(document.activeElement)):item.matches(options.activeSelector??ACTIVE)||(isMenu&&(item===document.activeElement||item.hasAttribute('data-highlighted'))))??null
  const land=()=>{const inner=pill.firstElementChild as HTMLElement;inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';pill.classList.add('-land');later(()=>pill.classList.remove('-land'),flowTokenMs('--t-flow-land-hold',900))}
+ function suspend(){clearPhases();[pill,hov,trail].forEach(layer=>layer.remove());unmark();attached=false;prev=null;lastActive=null;for(const name of ['v-glide','-still'])if(!oldClasses.has(name))g.classList.remove(name);for(const name of ['data-flow-kind','data-flow-v','data-dir']){const old=oldAttrs.get(name);if(old==null)g.removeAttribute(name);else g.setAttribute(name,old)}for(const [name,old]of oldStyles){if(old)g.style.setProperty(name,old);else g.style.removeProperty(name)}}
  const place=(animate=true)=>{
-  if(disposed)return;if(!g.isConnected){dispose();return}if(!seat())return
+  if(disposed)return;if(variantFor(g)==='off'){suspend();return}if(!g.isConnected){dispose();return}if(!seat())return
   const a=active()
   for(const item of activeAttrs.keys())if(item!==a){const old=activeAttrs.get(item);if(old===null)item.removeAttribute('data-glide-active');else item.setAttribute('data-glide-active',old!);activeAttrs.delete(item)}
   if(!a){clearPhases();write('--glide-o','0');prev=null;lastActive=null;return}
@@ -114,20 +115,20 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
     else{if(dy>=0){lead.y=prev.y;lead.h=b.y+b.h-prev.y}else lead.h=prev.y+prev.h-b.y;lead.x=prev.x;lead.w=prev.w}
     pill.classList.add('-lead');paint(lead);later(()=>{pill.classList.remove('-lead');paint(b);land()},flowTokenMs('--t-flow-rubber-lead',200))
    }else{paint(b);land()}
-  }else{if(!animate)markStill();paint(b)}
+  }else paint(b)
   prev=b
  }
- const hideHover=()=>write('--hov-o','0')
- const resolve=()=>{if(disposed)return;const variant=variantFor(g);g.dataset.flowV=variant
-  if(variant==='off'||document.hidden){clearPhases();prev=null;markStill();hideHover();place(false)}else place(false)
+ const hideHover=()=>{if(attached)write('--hov-o','0')}
+ const resolve=()=>{if(disposed)return;const variant=variantFor(g);if(variant==='off'){suspend();return}g.dataset.flowV=variant
+  if(document.hidden||matchMedia('(prefers-reduced-motion: reduce)').matches){clearPhases();prev=null;markStill();place(false)}else place(false)
  }
- const q=()=>{if(queued||disposed)return;queued=scheduleMotion(()=>{queued=null;if(reseat){reseat=false;place(false)}else place()},16)}
+ const q=()=>{if(queued||disposed)return;queued=scheduleMotion(()=>{queued=null;if(reseat){reseat=false;place(false)}else place(!initial)},16)}
  g.addEventListener('click',q,opts);g.addEventListener('change',q,opts);g.addEventListener('input',q,opts)
  g.addEventListener('keyup',event=>{if(/Arrow|Home|End| |Enter/.test(event.key))q()},opts)
  g.addEventListener('focusin',q,opts);g.addEventListener('focusout',event=>{if(!g.contains(event.relatedTarget as Node|null))q()},opts)
  g.addEventListener('pointerover',event=>{
   const it=event.target instanceof Element?event.target.closest<HTMLElement>(itemSel):null
-  if(isFlowQuiet(g)||!getFlowSettings().hover||g.closest('[data-flow-hover="off"]')||matchMedia('(hover:none)').matches||event.pointerType==='touch'||!it||!g.contains(it)||!owned(it)||it.hasAttribute('data-glide-active')){hideHover();return}paint(box(it),true)
+  if(!attached||variantFor(g)==='off'||!it||!g.contains(it)||!owned(it)||it.hasAttribute('data-glide-active')){hideHover();return}paint(box(it),true)
  },opts)
  g.addEventListener('pointerleave',hideHover,opts);g.addEventListener('pointerdown',hideHover,opts)
  const mo=new MutationObserver(records=>{
@@ -145,7 +146,7 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
   for(const [name,value]of oldAttrs){if(value===null)g.removeAttribute(name);else g.setAttribute(name,value)}
   for(const [name,value]of oldStyles){if(value)g.style.setProperty(name,value);else g.style.removeProperty(name)}release()
  }
- groups.set(g,{element:g,place,resolve,dispose});resolve();return dispose
+ groups.set(g,{element:g,place,resolve,dispose});resolve();void document.fonts.ready.then(()=>{initial=false;if(!disposed)place(false)});return dispose
 }
 export function replaceFlow(root?:HTMLElement){groups.forEach(group=>{if(!root||group.element===root||root.contains(group.element))group.place(false)})}
 export function detachFlowGroup(el:HTMLElement){groups.get(el)?.dispose()}

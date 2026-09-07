@@ -62,7 +62,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    el.className.split(/\s+/).filter(c=>!['v-morph-host','v-morph-live','v-morph-rel'].includes(c)).join(' '),
    ...['motion','tier','reach','inside','amp','lobes','depth','asym','spread','r','shape','sw','dash','colors'].map(k=>el.dataset[k]),
    el.dataset.morph===autoMode?'':el.dataset.morph,el.style.getPropertyValue('--mfill'),el.style.getPropertyValue('--mstroke'),
-   el.getAttribute('aria-selected'),el.getAttribute('aria-current'),el.getAttribute('aria-pressed'),
+   ...['aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','data-state','data-highlighted'].map(name=>el.getAttribute(name)),
   ])
   function attach(){
    const overrides=new Map<string,string>()
@@ -74,7 +74,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    if(!resolved)return
    const {mode,tierName,explicit}=resolved,cs=getComputedStyle(el)
    const resolvedTier=resolveMorphTier(el,tierName,profile);if(!resolvedTier)return;const tier={...resolvedTier}
-   const cfg={...profile.cfg};if(settings.mode==="off"||mq.matches)for(const k of ["rest","reach","merge","hold","jiggleOn","press","echo"] as const)cfg[k]=false
+   const cfg={...profile.cfg};if(settings.mode==="off"||mq.matches)for(const k of ["rest","reach","merge","hold","jiggleOn","press"] as const)cfg[k]=false
    const b=retainedBody??createBody(tier,tierName,bodySeed(el));retainedBody=b
    b.tier=tier;b.tierName=tierName;b.w=b.h=0;b.focus=el===el.ownerDocument.activeElement||el.contains(el.ownerDocument.activeElement)
    if(mq.matches||settings.mode==="off")rewindBody(b)
@@ -99,7 +99,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
     el.classList.add('v-morph-host','v-morph-live');if(relative)el.classList.add('v-morph-rel')
     if(!explicit&&!el.dataset.morph)el.dataset.morph=mode
    }
-   function measure(){const R=el.getBoundingClientRect();b.R=R;const w=Math.round(R.width),h=Math.round(R.height);if(!w||!h)return;if(w===b.w&&h===b.h)return;b.w=w;b.h=h;const authored=el.dataset.r;const original=parseFloat(getComputedStyle(el).borderTopLeftRadius);const radius=authored?+authored:original&&original<200?Math.min(original,Math.min(w,h)/2):Math.min(w,h)/2;b.base=el.dataset.shape&&SHAPES[el.dataset.shape]?fromShape(el.dataset.shape,w,h,Math.max(1,cfg.quality)*.7):rim(w,h,radius,Math.max(1,cfg.quality));const pad=bodyPadding(tier,cfg,w,h);svg.setAttribute('viewBox',`${-pad} ${-pad} ${w+2*pad} ${h+2*pad}`);svg.style.cssText=`position:absolute;left:${-pad}px;top:${-pad}px;width:${w+2*pad}px;height:${h+2*pad}px;pointer-events:none;overflow:visible;z-index:-1`;el.style.setProperty('--mpad',pad+'px');dirty=true}
+   function measure(){const R=el.getBoundingClientRect();b.R=R;const w=Math.round(R.width),h=Math.round(R.height);if(!w||!h)return;if(w===b.w&&h===b.h)return;b.w=w;b.h=h;const authored=el.dataset.r;const original=parseFloat(getComputedStyle(el).borderTopLeftRadius);const radius=authored?+authored:explicit?Math.min(w,h)/2:original&&original<200?Math.min(original,Math.min(w,h)/2):Math.min(w,h)/2;b.base=el.dataset.shape&&SHAPES[el.dataset.shape]?fromShape(el.dataset.shape,w,h,Math.max(1,cfg.quality)*.7):rim(w,h,radius,Math.max(1,cfg.quality));const pad=bodyPadding(tier,cfg,w,h);svg.setAttribute('viewBox',`${-pad} ${-pad} ${w+2*pad} ${h+2*pad}`);svg.style.cssText=`position:absolute;left:${-pad}px;top:${-pad}px;width:${w+2*pad}px;height:${h+2*pad}px;pointer-events:none;overflow:visible;z-index:-1`;el.style.setProperty('--mpad',pad+'px');dirty=true}
    const instance={frame:(t:number,dt:number)=>{measure();if(!b.w||!b.h)return false;const out=stepBody(b,pointer,dt,(staticBody?0:t/1000),cfg,staticBody,!dirty&&!colors.length&&tierName!=='spinner');if(out.d!==lastD){path.setAttribute('d',out.d);lastD=out.d}if(cfg.echo){const m=cfg.echoScale,ox=cfg.echoOff*Math.cos(b.seed),oy=cfg.echoOff*Math.sin(b.seed);echo.setAttribute('d',serializePath(out.points.map(([x,y])=>[b.w/2+(x-b.w/2)*m+ox,b.h/2+(y-b.h/2)*m+oy]),!!b.base.poly));echo.style.display=''}else echo.style.display='none';if(cfg.dots){while(dots.childElementCount>cfg.dots)dots.lastElementChild?.remove();while(dots.childElementCount<cfg.dots)dots.append(svgNode('circle',{r:(2+((dots.childElementCount*7+b.seed)%3)).toFixed(1)}));for(let i=0;i<cfg.dots;i++){const j=Math.floor((i/cfg.dots)*b.base.length+b.seed*3)%b.base.length,q=b.base[j],dot=dots.children[i];dot.setAttribute('cx',(out.points[j][0]+q[2]*(8+i*3)).toFixed(2));dot.setAttribute('cy',(out.points[j][1]+q[3]*(8+i*3)).toFixed(2))}dots.style.display=''}else dots.style.display='none';overlays?.paint(out.points,b,cfg);if(colors.length)path.setAttribute('fill',morphColor(colors,staticBody?0:t/1000));if(tierName==='spinner')svg.style.transform=staticBody?'':`rotate(${((t/1000)*40)%360}deg)`;if(out.press>.004&&!staticBody)el.style.transform=`scale(${1-out.press*.03},${1-out.press*.015})`;else el.style.transform=old.transform;const work=out.active||dirty||(!staticBody&&(colors.length>0||tierName==='spinner'||!!(tier.depth&&tier.lobes&&cfg.drift&&(b.near||b.inside))));dirty=false;return work},rewind:()=>{rewindBody(b);dirty=true;lastD=''},reseed:()=>{b.seed=bodySeed(el)},refresh:()=>{repaint();dirty=true;wake()}}
    const bodyAC=new AbortController(),bo={signal:bodyAC.signal}
    const press=()=>{if(!cfg.press||el.matches(':disabled,[aria-disabled="true"]'))return;b.press.to=1;b.press.k=260;wake()}
@@ -113,7 +113,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
     const nextSettings=getMotionSettings(),nextProfile=getMorphProfile()
     if(nextSettings.mode!==settings.mode||nextSettings.cats[category]!==settings.cats[category]){attach();signature=visualSignature();return}
     const nextTier=resolveMorphTier(el,tierName,nextProfile);if(!nextTier)return
-    const nextCfg={...nextProfile.cfg};if(staticBody)for(const key of ['rest','reach','merge','hold','jiggleOn','press','echo'] as const)nextCfg[key]=false
+    const nextCfg={...nextProfile.cfg};if(staticBody)for(const key of ['rest','reach','merge','hold','jiggleOn','press'] as const)nextCfg[key]=false
     if(JSON.stringify(cfg)===JSON.stringify(nextCfg)&&JSON.stringify(tier)===JSON.stringify(nextTier))return
     const resize=cfg.quality!==nextCfg.quality||cfg.echo!==nextCfg.echo||cfg.echoOff!==nextCfg.echoOff||cfg.echoScale!==nextCfg.echoScale||cfg.dots!==nextCfg.dots||tier.reach!==nextTier.reach||tier.press!==nextTier.press||tier.depth!==nextTier.depth
     Object.assign(cfg,nextCfg);Object.assign(tier,nextTier)
@@ -131,7 +131,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
   const unsubscribe=subscribeMotion(()=>{retuneProfile();signature=visualSignature()})
   const unregister=registerMorphHost(el,{refresh:()=>{attach();signature=visualSignature()},disable:()=>{destroyBody();destroyBody=()=>{};repairBody=()=>{}}})
   const attributes=new MutationObserver(()=>{if(visualSignature()!==signature){attach();signature=visualSignature()}})
-  attributes.observe(el,{attributes:true,attributeFilter:['class','style','data-morph','data-tier','data-motion','data-reach','data-inside','data-amp','data-lobes','data-depth','data-asym','data-spread','data-r','data-shape','data-sw','data-dash','data-colors','aria-selected','aria-current','aria-pressed']})
+  attributes.observe(el,{attributes:true,attributeFilter:['class','style','data-morph','data-tier','data-motion','data-reach','data-inside','data-amp','data-lobes','data-depth','data-asym','data-spread','data-r','data-shape','data-sw','data-dash','data-colors','aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','data-state','data-highlighted']})
   const ancestors=new MutationObserver(()=>{attach();signature=visualSignature()})
   for(let parent=el.parentElement;parent;parent=parent.parentElement)ancestors.observe(parent,{attributes:true,attributeFilter:['data-motion','hidden']})
   mq.addEventListener('change',attach,opts)
