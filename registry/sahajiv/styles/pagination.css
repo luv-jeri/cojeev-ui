@@ -17,3 +17,5 @@
 :root[data-mode="dark"] [data-slot="pagination-link"]:not([aria-current]) {
   color: var(--v-text);
 }
+
+[data-slot="pagination"] .v-pager__info { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin-left: auto; font-size: var(--fs-meta); color: var(--muted-foreground); }

@@ -77,7 +77,7 @@ export function Pagination({
             disabled={current === total}
             onClick={() => change(current + 1)}
           />
-          <span className="v-pager__info sr-only" aria-live="polite">
+          <span className="v-pager__info" aria-live="polite">
             Page {current} of {total}
           </span>
         </>
