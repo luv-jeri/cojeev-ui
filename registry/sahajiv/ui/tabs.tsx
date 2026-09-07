@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-tabs";
@@ -40,9 +41,10 @@ export function Tabs({
 export type TabsListProps = React.ComponentProps<typeof Primitive.List> &
   VariantProps<typeof tabsVariants>;
 export function TabsList({ className, variant, ref, ...props }: TabsListProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   const inherited = React.useContext(TabsVariantContext);
   const resolved = variant ?? inherited;
-  const flowRef = useFlowGroup<HTMLDivElement>(ref, {
+  const flowRef = useFlowGroup<HTMLDivElement>(morphRef, {
     kind: resolved === "underline" ? "bar" : "pill",
     itemSelector: '[data-slot="tabs-trigger"]',
     activeSelector: '[aria-selected="true"]',
@@ -60,7 +62,8 @@ export function TabsList({ className, variant, ref, ...props }: TabsListProps) {
 }
 export type TabsTriggerProps = React.ComponentProps<typeof Primitive.Trigger>;
 export function TabsTrigger({ className, ref, ...props }: TabsTriggerProps) {
-  const flowRef = useFlowPress<HTMLButtonElement>(ref ?? null);
+  const morphRef = useMorph<HTMLButtonElement>("nav", ref);
+  const flowRef = useFlowPress<HTMLButtonElement>(morphRef);
   return (
     <Primitive.Trigger
       ref={flowRef}

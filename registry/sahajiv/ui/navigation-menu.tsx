@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-navigation-menu";
@@ -55,10 +56,13 @@ export type NavigationMenuLinkProps = React.ComponentProps<
 export function NavigationMenuLink({
   className,
   active,
+  ref,
   ...props
 }: NavigationMenuLinkProps) {
+  const morphRef = useMorph<HTMLAnchorElement>("nav", ref);
   return (
     <Primitive.Link
+      ref={morphRef}
       data-slot="navigation-menu-link"
       data-part="item"
       active={active}
@@ -85,10 +89,13 @@ export function NavigationMenuGroup({
 export type NavigationMenuCountProps = React.ComponentProps<"span">;
 export function NavigationMenuCount({
   className,
+  ref,
   ...props
 }: NavigationMenuCountProps) {
+  const morphRef = useMorph<HTMLSpanElement>("pills", ref);
   return (
     <span
+      ref={morphRef}
       data-slot="navigation-menu-count"
       data-part="indicator"
       className={cn("v-nav__count", className)}

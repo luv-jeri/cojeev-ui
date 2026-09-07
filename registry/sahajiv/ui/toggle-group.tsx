@@ -21,7 +21,8 @@ export function ToggleGroup({
   children,
   ...props
 }: ToggleGroupProps) {
-  const flowRef = useFlowGroup<HTMLDivElement>(ref, {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
+  const flowRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: '[data-slot="toggle-group-item"]',
     activeSelector: '[aria-pressed="true"]',
   });
@@ -32,7 +33,12 @@ export function ToggleGroup({
         data-slot="toggle-group"
         data-part="root"
         data-togglegroup={props.type === "multiple" ? "multi" : "single"}
-        data-flow={props.type === "multiple" || !className?.split(/\s+/).includes("v-seg") ? "off" : undefined}
+        data-flow={
+          props.type === "multiple" ||
+          !className?.split(/\s+/).includes("v-seg")
+            ? "off"
+            : undefined
+        }
         className={cn(toggleGroupVariants(), className)}
         {...props}
       >
@@ -45,6 +51,7 @@ export type ToggleGroupItemProps = React.ComponentProps<typeof Primitive.Item> &
   VariantProps<typeof toggleVariants>;
 export function ToggleGroupItem({
   className,
+  asChild,
   variant,
   ref,
   ...props
@@ -54,7 +61,8 @@ export function ToggleGroupItem({
   const pressRef = useFlowPress(morphRef);
   return (
     <Primitive.Item
-      ref={pressRef}
+      asChild={asChild}
+      ref={asChild ? ref : pressRef}
       data-slot="toggle-group-item"
       data-part="item"
       className={cn(

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Command as Primitive } from "cmdk";
@@ -24,9 +25,11 @@ type ComboboxState = {
   query: string;
   setQuery: (value: string) => void;
   listId: string;
-  inputRef: React.RefObject<HTMLInputElement | null>;
 };
 const ComboboxContext = React.createContext<ComboboxState | null>(null);
+const ComboboxInputRefContext = React.createContext<
+  React.RefCallback<HTMLInputElement> | undefined
+>(undefined);
 function useCombobox() {
   const context = React.useContext(ComboboxContext);
   if (!context) throw new Error("Combobox parts must be inside Combobox");
@@ -65,16 +68,22 @@ export function Combobox({
   const [internalValue, setInternalValue] = React.useState(defaultValue);
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
   const selected = value ?? internalValue;
-  const [query, setQuery] = React.useState(
-    options?.find((option) => option.value === selected)?.label ?? selected,
-  );
-  const listId = React.useId();
-  const inputRef = React.useRef<HTMLInputElement>(null);
   const selectedLabel =
     options?.find((option) => option.value === selected)?.label ?? selected;
-  React.useEffect(() => {
-    setQuery(selectedLabel);
-  }, [selectedLabel]);
+  const selectionKey = JSON.stringify([selected, selectedLabel]);
+  const [search, setSearch] = React.useState({
+    selection: selectionKey,
+    query: selectedLabel,
+  });
+  const query =
+    search.selection === selectionKey ? search.query : selectedLabel;
+  const setQuery = (next: string) =>
+    setSearch({ selection: selectionKey, query: next });
+  const listId = React.useId();
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const registerInput = React.useCallback((node: HTMLInputElement | null) => {
+    inputRef.current = node;
+  }, []);
   const isOpen = open ?? internalOpen;
   const setOpen = (next: boolean) => {
     setInternalOpen(next);
@@ -83,7 +92,13 @@ export function Combobox({
   const select = (next: string, label: string) => {
     setInternalValue(next);
     onValueChange?.(next);
-    setQuery(label);
+    setSearch({
+      selection: JSON.stringify([
+        next,
+        options?.find((option) => option.value === next)?.label ?? next,
+      ]),
+      query: label,
+    });
     setOpen(false);
     inputRef.current?.focus();
   };
@@ -97,41 +112,42 @@ export function Combobox({
         query,
         setQuery,
         listId,
-        inputRef,
       }}
     >
-      <PopoverPrimitive.Root open={isOpen} onOpenChange={setOpen}>
-        <Primitive
-          data-slot="combobox"
-          data-part="root"
-          data-combo=""
-          data-state={isOpen ? "open" : "closed"}
-          className={cn(comboboxVariants(), className)}
-          {...props}
-        >
-          {children ?? (
-            <>
-              <ComboboxInput
-                placeholder={placeholder}
-                aria-label={props["aria-label"] ?? "Choose an option"}
-              />
-              <ComboboxContent>
-                <ComboboxEmpty>{emptyText}</ComboboxEmpty>
-                {options?.map((option) => (
-                  <ComboboxItem
-                    key={option.value}
-                    value={option.value}
-                    label={option.label}
-                    disabled={option.disabled}
-                  >
-                    {option.label}
-                  </ComboboxItem>
-                ))}
-              </ComboboxContent>
-            </>
-          )}
-        </Primitive>
-      </PopoverPrimitive.Root>
+      <ComboboxInputRefContext.Provider value={registerInput}>
+        <PopoverPrimitive.Root open={isOpen} onOpenChange={setOpen}>
+          <Primitive
+            data-slot="combobox"
+            data-part="root"
+            data-combo=""
+            data-state={isOpen ? "open" : "closed"}
+            className={cn(comboboxVariants(), className)}
+            {...props}
+          >
+            {children ?? (
+              <>
+                <ComboboxInput
+                  placeholder={placeholder}
+                  aria-label={props["aria-label"] ?? "Choose an option"}
+                />
+                <ComboboxContent>
+                  <ComboboxEmpty>{emptyText}</ComboboxEmpty>
+                  {options?.map((option) => (
+                    <ComboboxItem
+                      key={option.value}
+                      value={option.value}
+                      label={option.label}
+                      disabled={option.disabled}
+                    >
+                      {option.label}
+                    </ComboboxItem>
+                  ))}
+                </ComboboxContent>
+              </>
+            )}
+          </Primitive>
+        </PopoverPrimitive.Root>
+      </ComboboxInputRefContext.Provider>
     </ComboboxContext.Provider>
   );
 }
@@ -151,6 +167,7 @@ export function ComboboxInput({
   ...props
 }: ComboboxInputProps) {
   const state = useCombobox();
+  const inputRef = React.useContext(ComboboxInputRefContext);
   return (
     <PopoverPrimitive.Anchor asChild>
       <InputWrapper {...wrapperProps}>
@@ -160,7 +177,7 @@ export function ComboboxInput({
           </Disk>
         )}
         <Primitive.Input
-          ref={state.inputRef}
+          ref={inputRef}
           asChild
           value={state.query}
           onValueChange={(next) => {
@@ -201,8 +218,9 @@ export function ComboboxContent({
   ref,
   ...props
 }: ComboboxContentProps) {
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
   const state = useCombobox();
-  const groupRef = useFlowGroup<HTMLDivElement>(ref, {
+  const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[aria-selected=true]",
   });
@@ -246,11 +264,14 @@ export function ComboboxItem({
   onSelect,
   label,
   value,
+  ref,
   ...props
 }: ComboboxItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   const state = useCombobox();
   return (
     <Primitive.Item
+      ref={morphRef}
       data-slot="combobox-item"
       data-part="item"
       className={cn("v-menu__item", className)}

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-switch";
@@ -8,9 +9,11 @@ export const switchVariants = cva(
   "v-switch [position:relative] [display:inline-block] [border-radius:var(--r-pill)] [flex:none] [cursor:pointer] [width:48px] [height:28px] [background:var(--v-beige)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
 );
 export type SwitchProps = React.ComponentProps<typeof Primitive.Root>;
-export function Switch({ className, ...props }: SwitchProps) {
+export function Switch({ className, ref, ...props }: SwitchProps) {
+  const morphRef = useMorph<HTMLButtonElement>("controls", ref);
   return (
     <Primitive.Root
+      ref={morphRef}
       data-slot="switch"
       data-part="root"
       className={cn(switchVariants(), className)}

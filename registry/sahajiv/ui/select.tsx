@@ -72,7 +72,8 @@ export function SelectContent({
   sideOffset = 6,
   ...props
 }: SelectContentProps) {
-  const groupRef = useFlowGroup<HTMLDivElement>(ref, {
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[data-highlighted],[data-state=checked]",
   });
@@ -98,9 +99,16 @@ export function SelectContent({
   );
 }
 export type SelectItemProps = React.ComponentProps<typeof Primitive.Item>;
-export function SelectItem({ className, children, ...props }: SelectItemProps) {
+export function SelectItem({
+  className,
+  children,
+  ref,
+  ...props
+}: SelectItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.Item
+      ref={morphRef}
       data-slot="select-item"
       data-part="item"
       className={cn("v-menu__item outline-none", className)}

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-tooltip";
@@ -45,7 +46,8 @@ export function TooltipContent({
   portal = true,
   ...props
 }: TooltipContentProps) {
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "grow");
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "grow");
   const content = (
     <Primitive.Content
       ref={flowRef}

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-alert-dialog";
@@ -61,7 +62,8 @@ export function AlertDialogContent({
   showCloseButton = false,
   ...props
 }: AlertDialogContentProps) {
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "enter");
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "enter");
   return (
     <Primitive.Portal>
       <AlertDialogOverlay />

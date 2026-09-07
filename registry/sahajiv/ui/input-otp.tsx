@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { OTPInput, OTPInputContext, REGEXP_ONLY_DIGITS } from "input-otp";
@@ -25,9 +26,15 @@ export function InputOTP({
   );
 }
 export type InputOTPGroupProps = React.ComponentProps<"div">;
-export function InputOTPGroup({ className, ...props }: InputOTPGroupProps) {
+export function InputOTPGroup({
+  className,
+  ref,
+  ...props
+}: InputOTPGroupProps) {
+  const morphRef = useMorph<HTMLDivElement>("inputs", ref);
   return (
     <div
+      ref={morphRef}
       data-slot="input-otp-group"
       className={cn("v-otp flex gap-[var(--s-2)]", className)}
       {...props}

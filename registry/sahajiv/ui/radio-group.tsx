@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-radio-group";
@@ -46,12 +47,15 @@ export function RadioGroupItem({
   className,
   pictographic,
   children,
+  ref,
   ...props
 }: RadioGroupItemProps) {
+  const morphRef = useMorph<HTMLButtonElement>("controls", ref);
   const inherited = React.useContext(RadioStyleContext);
   const icon = pictographic ?? inherited;
   return (
     <Primitive.Item
+      ref={morphRef}
       data-slot="radio-group-item"
       data-part="item"
       data-pictographic={icon || undefined}

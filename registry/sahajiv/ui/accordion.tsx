@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Icon } from "@/registry/sahajiv/ui/icon";
@@ -19,9 +20,15 @@ export function Accordion({ className, ...props }: AccordionProps) {
   );
 }
 export type AccordionItemProps = React.ComponentProps<typeof Primitive.Item>;
-export function AccordionItem({ className, ...props }: AccordionItemProps) {
+export function AccordionItem({
+  className,
+  ref,
+  ...props
+}: AccordionItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("cards", ref);
   return (
     <Primitive.Item
+      ref={morphRef}
       data-slot="accordion-item"
       data-part="item"
       className={cn(

@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-dialog";
 import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
-import { Button } from "@/registry/sahajiv/ui/button";
 export type DrawerProps = React.ComponentProps<typeof Primitive.Root>;
 export function Drawer(props: DrawerProps) {
   return <Primitive.Root {...props} />;
@@ -52,7 +52,8 @@ export function DrawerContent({
   showCloseButton = false,
   ...props
 }: DrawerContentProps) {
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "enter");
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "enter");
   return (
     <Primitive.Portal>
       <DrawerOverlay />

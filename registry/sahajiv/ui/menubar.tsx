@@ -11,9 +11,11 @@ import {
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 
 export type MenubarProps = React.ComponentProps<typeof Primitive.Root>;
-export function Menubar({ className, ...props }: MenubarProps) {
+export function Menubar({ className, ref, ...props }: MenubarProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.Root
+      ref={morphRef}
       data-slot="menubar"
       data-part="root"
       className={cn(
@@ -82,7 +84,8 @@ export function MenubarContent({
   sideOffset = 6,
   ...props
 }: MenubarContentProps) {
-  const groupRef = useFlowGroup<HTMLDivElement>(ref, {
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[data-highlighted]",
   });
@@ -110,7 +113,8 @@ export function MenubarSubContent({
   ref,
   ...props
 }: MenubarSubContentProps) {
-  const groupRef = useFlowGroup<HTMLDivElement>(ref, {
+  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[data-highlighted]",
   });
@@ -135,10 +139,13 @@ export function MenubarItem({
   className,
   variant,
   inset,
+  ref,
   ...props
 }: MenubarItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.Item
+      ref={morphRef}
       data-slot="menubar-item"
       data-part="item"
       data-inset={inset || undefined}
@@ -158,10 +165,13 @@ export function MenubarSubTrigger({
   className,
   inset,
   children,
+  ref,
   ...props
 }: MenubarSubTriggerProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.SubTrigger
+      ref={morphRef}
       data-slot="menubar-sub-trigger"
       data-part="item"
       data-inset={inset || undefined}
@@ -181,10 +191,13 @@ export type MenubarCheckboxItemProps = React.ComponentProps<
 export function MenubarCheckboxItem({
   className,
   children,
+  ref,
   ...props
 }: MenubarCheckboxItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.CheckboxItem
+      ref={morphRef}
       data-slot="menubar-checkbox-item"
       data-part="item"
       className={cn("v-menu__item", className)}
@@ -206,10 +219,13 @@ export type MenubarRadioItemProps = React.ComponentProps<
 export function MenubarRadioItem({
   className,
   children,
+  ref,
   ...props
 }: MenubarRadioItemProps) {
+  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   return (
     <Primitive.RadioItem
+      ref={morphRef}
       data-slot="menubar-radio-item"
       data-part="item"
       className={cn("v-menu__item", className)}

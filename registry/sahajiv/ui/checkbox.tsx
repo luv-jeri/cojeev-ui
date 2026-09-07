@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-checkbox";
@@ -8,9 +9,16 @@ export const checkboxVariants = cva(
   "v-check [display:inline-flex] [cursor:pointer] [background:none] [gap:12px] [align-items:center] [font-size:var(--fs-body)] [box-shadow:none] [border:0]",
 );
 export type CheckboxProps = React.ComponentProps<typeof Primitive.Root>;
-export function Checkbox({ className, children, ...props }: CheckboxProps) {
+export function Checkbox({
+  className,
+  children,
+  ref,
+  ...props
+}: CheckboxProps) {
+  const morphRef = useMorph<HTMLButtonElement>("controls", ref);
   return (
     <Primitive.Root
+      ref={morphRef}
       data-slot="checkbox"
       data-part="root"
       className={cn(checkboxVariants(), className)}
