@@ -457,6 +457,55 @@ function DateFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
   );
 }
 
+/** Source --split includes the handle; the panel library percentages exclude it. */
+function ResizableFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
+  const vertical = node.classList.contains("-v");
+  const panels = elementChildren(node).filter(child => child.matches(".v-resizable__pane"));
+  const initialSplit = parseFloat((node as HTMLElement).style.getPropertyValue("--split")) || 50;
+  const splitRef = React.useRef(initialSplit);
+  const elementRef = React.useRef<HTMLDivElement>(null);
+  const groupRef = React.useRef<import("react-resizable-panels").GroupImperativeHandle>(null);
+  React.useEffect(() => {
+    const group = elementRef.current;
+    if (!group) return;
+    const observer = new ResizeObserver(() => {
+      const bounds = group.getBoundingClientRect();
+      const total = vertical ? bounds.height : bounds.width;
+      const handle = group.querySelector('[data-slot="resizable-handle"]')?.getBoundingClientRect();
+      const available = total - (vertical ? handle?.height ?? 0 : handle?.width ?? 0);
+      if (available <= 0) return;
+      // Chromium grid tracks floor to layout units; flex percentages round.
+      // Seed the actual source track size, then let the library own interaction.
+      const sourceTrack = Math.floor(splitRef.current * total / 100 * 64) / 64;
+      const first = sourceTrack * 100 / available;
+      groupRef.current?.setLayout({ "fixture-first": first, "fixture-last": 100 - first });
+    });
+    observer.observe(group);
+    return () => observer.disconnect();
+  }, [vertical]);
+  ctx.mark(node);
+  return <ResizableParts.ResizablePanelGroup
+    {...ctx.props(node)}
+    direction={vertical ? "vertical" : "horizontal"}
+    elementRef={elementRef}
+    groupRef={groupRef}
+    onLayoutChanged={(layout, meta) => {
+      const group = elementRef.current;
+      if (!meta.isUserInteraction || !group) return;
+      const bounds = group.getBoundingClientRect();
+      const total = vertical ? bounds.height : bounds.width;
+      const handle = group.querySelector('[data-slot="resizable-handle"]')?.getBoundingClientRect();
+      const available = total - (vertical ? handle?.height ?? 0 : handle?.width ?? 0);
+      splitRef.current = layout["fixture-first"] * available / total;
+    }}
+  >{elementChildren(node).map((child, i) => child.matches(".v-resizable__handle")
+    ? render(ResizableParts.ResizableHandle, child, ctx, {}, undefined, i)
+    : render(ResizableParts.ResizablePanel, child, ctx, {
+      id: panels.indexOf(child) === 0 ? "fixture-first" : "fixture-last",
+      defaultSize: `${panels.indexOf(child) === 0 ? initialSplit : 100 - initialSplit}%`,
+    }, ctx.children(child), i))}</ResizableParts.ResizablePanelGroup>;
+}
+
 function SliderFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
   const input = node.querySelector("input.v-slider")!;
   const [value, setValue] = React.useState([
@@ -873,32 +922,8 @@ export function convertInteractive(
       index,
     );
   if (node.matches(".v-resizable")) {
-    const panels = elementChildren(node).filter((child) =>
-      child.matches(".v-resizable__pane"),
-    );
-    const split =
-      parseFloat((node as HTMLElement).style.getPropertyValue("--split")) || 50;
-    return render(
-      ResizableParts.ResizablePanelGroup,
-      node,
-      ctx,
-      { direction: node.classList.contains("-v") ? "vertical" : "horizontal" },
-      elementChildren(node).map((child, i) =>
-        child.matches(".v-resizable__handle")
-          ? render(ResizableParts.ResizableHandle, child, ctx, {}, undefined, i)
-          : render(
-              ResizableParts.ResizablePanel,
-              child,
-              ctx,
-              {
-                defaultSize: `${panels.indexOf(child) === 0 ? split : 100 - split}%`,
-              },
-              ctx.children(child),
-              i,
-            ),
-      ),
-      index,
-    );
+    ctx.mark(node);
+    return <ResizableFixture key={index} node={node} ctx={ctx} />;
   }
   if (node.matches(".v-otp")) {
     const inputs = elementChildren(node).filter((child) =>

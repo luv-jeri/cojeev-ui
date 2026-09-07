@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -32,10 +33,16 @@ export function InputOTPGroup({
   ...props
 }: InputOTPGroupProps) {
   const morphRef = useMorph<HTMLDivElement>("inputs", ref);
+  const flowRef = useFlowGroup<HTMLDivElement>(morphRef, {
+    kind: "fill",
+    itemSelector: '[data-slot="input-otp-slot"]',
+    activeSelector: '[data-state="active"]',
+  });
   return (
     <div
-      ref={morphRef}
+      ref={flowRef}
       data-slot="input-otp-group"
+      data-flow-fields="auto"
       className={cn("v-otp flex gap-[var(--s-2)]", className)}
       {...props}
     />
@@ -54,6 +61,7 @@ export function InputOTPSlot({
       data-slot="input-otp-slot"
       data-part="item"
       data-active={slot?.isActive || undefined}
+      data-state={slot?.isActive ? "active" : "inactive"}
       className={cn("grid place-items-center relative", className)}
       {...props}
     >

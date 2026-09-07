@@ -194,7 +194,7 @@ All29 production component TSX files and their same-name scoped CSS are implemen
 
 - Coverage: production implementation complete; integrated gate pending.
 - Exports: `tabsVariants`, `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`.
-- Mapping: .v-tabs → TabsList inside Tabs(defaultValue,variant). Each .v-tab → TabsTrigger(value); panels → TabsContent(value). aria-controls relationships become matching values. variant default maps source pills; underline/lenses are explicit variants. A source demo containing several independent tablists needs separate Tabs roots.
+- Mapping: .v-tabs → TabsList inside Tabs(defaultValue,variant). Each .v-tab → TabsTrigger(value); panels → TabsContent(value). aria-controls relationships become matching values. variant default maps the authored plain list; pills, underline, and lenses are explicit variants. A source demo containing several independent tablists needs separate Tabs roots.
 
 ### toast
 

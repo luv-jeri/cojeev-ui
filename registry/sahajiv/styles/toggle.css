@@ -261,3 +261,12 @@
     scroll-behavior: auto;
   }
 }
+
+/* Authored circle selection precedence (components-2.css:1359). */
+.v-toggle:where([data-slot="toggle"],[data-slot^="toggle-"]).-circle[aria-pressed="true"]:not([data-glide-active]) {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+.v-toggle:where([data-slot="toggle"],[data-slot^="toggle-"]).-circle[aria-pressed="true"]:not([data-glide-active])[data-morph] {
+  --mfill: var(--v-ink);
+}

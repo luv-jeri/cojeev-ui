@@ -286,3 +286,9 @@
 [data-slot="command-item"] {
   cursor: pointer;
 }
+
+/* cmdk keeps its semantic group wrappers; items still paint above the shared selection layer. */
+[data-flow-owned][data-slot="command-list"] [data-slot="command-item"] {
+  position: relative;
+  z-index: 1;
+}

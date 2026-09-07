@@ -481,3 +481,6 @@
 [data-slot="radio-group-dot"] {
   display: none;
 }
+
+/* Radix uses a button for the source label; retain the label's inherited alignment. */
+.v-radio:where([data-slot="radio-group-item"]) { text-align: start; }

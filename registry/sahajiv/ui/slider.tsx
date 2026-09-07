@@ -23,18 +23,30 @@ export function Slider({
   min = 0,
   max = 100,
   thumbLabel,
+  onValueChange,
+  style,
   ...props
 }: SliderProps) {
-  const values = value ?? defaultValue;
+  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+  const values = value ?? uncontrolledValue;
+  const percent = max > min ? Math.min(100, Math.max(0, ((values[0] ?? min) - min) / (max - min) * 100)) : 0;
+  const range = values.length > 1 || props.orientation === "vertical";
+  const handleValueChange = (next: number[]) => {
+    if (value === undefined) setUncontrolledValue(next);
+    onValueChange?.(next);
+  };
   return (
     <Primitive.Root
       data-slot="slider"
       data-part="track"
+      data-range={range || undefined}
       className={cn(sliderVariants({ variant }), className)}
       value={value}
       defaultValue={defaultValue}
       min={min}
       max={max}
+      onValueChange={handleValueChange}
+      style={{ "--p": `${percent}%`, ...style } as React.CSSProperties}
       {...props}
     >
       <Primitive.Track

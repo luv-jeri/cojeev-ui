@@ -6,7 +6,6 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import * as Primitive from "@radix-ui/react-accordion";
-import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
 export const accordionVariants = cva("v-acc [display:grid] [gap:8px]");
 export type AccordionProps = React.ComponentProps<typeof Primitive.Root>;
 export function Accordion({ className, ...props }: AccordionProps) {
@@ -74,10 +73,19 @@ export function AccordionContent({
   children,
   ...props
 }: AccordionContentProps) {
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "enter");
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  React.useImperativeHandle(ref, () => contentRef.current!);
+  React.useEffect(() => {
+    const content = contentRef.current;
+    // Radix suppresses the first entrance while measuring. Restore the authored
+    // animation once that measurement has finished, including initially open items.
+    if (content?.dataset.state === "open" && content.style.animationName === "none") {
+      content.style.animationName = props.style?.animationName ?? "";
+    }
+  }, [props.style?.animationName]);
   return (
     <Primitive.Content
-      ref={flowRef}
+      ref={contentRef}
       data-slot="accordion-content"
       data-part="content"
       className={cn("v-acc__body", className)}
