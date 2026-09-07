@@ -578,6 +578,12 @@
         }
       },
       "coverage": "mapping implemented; browser gate pending"
+    },
+    "questionnaire": {
+      "additionalParts": {
+        ".v-quest__opt": "option",
+        ".v-quest__opt-body": "option-body"
+      }
     }
   },
   "oracleIssues": [

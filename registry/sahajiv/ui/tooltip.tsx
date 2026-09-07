@@ -42,7 +42,7 @@ export function TooltipContent({
   className,
   ref,
   children,
-  sideOffset = 6,
+  sideOffset = 8,
   portal = true,
   ...props
 }: TooltipContentProps) {

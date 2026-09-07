@@ -36,9 +36,12 @@ export default defineConfig({
           if(file.includes(`${path.sep}isolation${path.sep}`)&&file.endsWith('.html')){
             const html=restoreCatalogSizing(content.toString('utf8'),path.basename(path.dirname(file)));
             content=Buffer.from(html);
+          }
+          if(file.endsWith('.html')&&(file.includes(`${path.sep}isolation${path.sep}`)||file.includes(`${path.sep}entries${path.sep}`))){
+            const html=content.toString('utf8');
             if(/\bv-pulse\b/.test(html)&&!html.includes('js/alive.js')){
               // The full handoff catalog loads this original runtime, but its
-              // isolation generator omitted it and consequently draws no loader.
+              // isolation and entry generators omitted it and draw no loader.
               // Complete that bootstrap without editing any reference file.
               const completed=html.replace('<script src="../../js/flow.js">','<script src="../../js/alive.js"></script><script src="../../js/flow.js">');
               if(completed===html)throw new Error(`Missing loader bootstrap insertion point: ${file}`);
