@@ -15,7 +15,7 @@
   box-shadow: inset 0 0 0 1px var(--v-disabled-edge); cursor: not-allowed; transform: none;
 }
 :root[data-mode="dark"] [data-slot="button"]:is(.-secondary,.-ghost,.-outline) { color: var(--v-text); }
-[data-slot="button"] .v-icon { width: 18px; height: 18px; }
+.v-btn:where([data-slot]) .v-icon { width: 18px; height: 18px; }
 [data-slot="button"][aria-busy="true"] {
   position: relative; overflow: hidden; cursor: progress; pointer-events: none; gap: 10px;
 }
