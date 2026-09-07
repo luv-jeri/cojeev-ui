@@ -8,6 +8,8 @@
   button,input,select,textarea { font:inherit; color:inherit; }
   code,pre,samp { font-family:monospace; }
   button { background:none; border:0; padding:0; cursor:pointer; }
+  /* Preserve the original browser touch feedback on library elements. */
+  :where([data-slot]) { -webkit-tap-highlight-color:initial; }
   img,svg { display:block; max-width:100%; }
   a { color:var(--foreground); text-underline-offset:2px; }
   a:hover { color:var(--v-text-2); }
