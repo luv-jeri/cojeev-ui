@@ -7,8 +7,11 @@ import {
 } from "@/components/examples/manifest";
 
 // Read the same example functions that the live preview renders. This module only
-// runs on the server during the static documentation build.
-const cache = new Map<string, { code: string; name: string }>();
+// runs on the server during static builds and development page requests.
+const cache = new Map<
+  string,
+  { code: string; name: string; modified: number }
+>();
 export function exampleSource(
   id: string,
   variant = "default",
@@ -16,14 +19,15 @@ export function exampleSource(
 ) {
   const entry = exampleManifest[id as ExampleId];
   if (!entry) throw new Error(`Missing documentation example: ${id}`);
+  const filename = path.join(
+    process.cwd(),
+    "components",
+    "examples",
+    `${entry.file}.tsx`,
+  );
+  const modified = fs.statSync(filename).mtimeMs;
   let source = cache.get(id);
-  if (!source) {
-    const filename = path.join(
-      process.cwd(),
-      "components",
-      "examples",
-      `${entry.file}.tsx`,
-    );
+  if (!source || source.modified !== modified) {
     const text = fs.readFileSync(filename, "utf8");
     const tree = ts.createSourceFile(
       filename,
@@ -78,6 +82,7 @@ export function exampleSource(
       ? "type ExampleProps = { variant?: string; size?: string };\n\n"
       : "";
     source = {
+      modified,
       code: `"use client";\n\n${imports.join("\n")}\n\n${propType}${declaration.getText(tree)}`,
       name: entry.name,
     };

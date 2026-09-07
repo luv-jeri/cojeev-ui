@@ -45,7 +45,17 @@ async function sample(url,id){
   await page.evaluate(()=>{window.VMorph?.rewind?.();window.__sahajivGate?.rewind();window.V?.clock?.(100000);window.__sahajivGate?.clock(100000);window.V?.clock?.(100400);window.__sahajivGate?.clock(100400);});
   if(errors.length)throw new Error(errors.join("\n"));
   const styles=await page.evaluate(({properties,parts,translations,candidate})=>{
-    const visible=el=>!!el.getClientRects().length&&getComputedStyle(el).visibility!=="hidden"&&getComputedStyle(el).display!=="none";
+    const visible=el=>{
+      if(!el.getClientRects().length||getComputedStyle(el).visibility==="hidden"||getComputedStyle(el).display==="none")return false;
+      // Chromium can report layout rectangles for the hidden contents of a
+      // native closed details element. Its direct summary remains visible.
+      for(let parent=el.parentElement;parent;parent=parent.parentElement){
+        if(!parent.matches("details:not([open])"))continue;
+        const summary=Array.from(parent.children).find(child=>child.tagName==="SUMMARY");
+        if(!summary?.contains(el))return false;
+      }
+      return true;
+    };
     const roots=Array.from(document.querySelectorAll("[data-gate]"));
     const counts=new Map();
     const key=(kind,name,el)=>{const prefix=`${visible(el)?"":"hidden-"}${kind}:${name}`;const count=counts.get(prefix)??0;counts.set(prefix,count+1);return `${prefix}:${count}`};
