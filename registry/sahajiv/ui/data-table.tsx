@@ -270,7 +270,7 @@ export function DataTableFilters({
       data-filters=""
       role="group"
       className={cn(
-        "v-tabs -pills flex gap-[var(--s-2)] overflow-x-auto pb-[2px]",
+        "v-tabs -pills flex gap-[var(--s-2)]",
         className,
       )}
       {...props}

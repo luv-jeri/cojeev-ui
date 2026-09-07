@@ -8,12 +8,12 @@
   background: color-mix(in oklab, var(--card) 84%, var(--v-ink));
   color: var(--v-text);
 }
-[data-slot="button-group"]:not(.v-glide)
+[data-slot="button-group"]
   .v-btn:is([aria-pressed="true"], .-on) {
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
-[data-slot="button-group"].-pink:not(.v-glide)
+[data-slot="button-group"].-pink
   .v-btn:is([aria-pressed="true"], .-on) {
   background: var(--v-pink);
   color: var(--v-on-accent);
@@ -38,7 +38,7 @@
 [data-slot="button-group-utility"] .v-ibtn:not([class*=" -"]):nth-child(3n) {
   background: var(--v-pink);
 }
-[data-slot="button-group-utility"] .v-ibtn.-ink {
+.v-utility[data-slot="button-group-utility"] .v-ibtn.-ink {
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
@@ -72,3 +72,5 @@
 :root[data-mode="dark"] [data-slot="button-group"] [data-glide-active] {
   color: var(--v-on-accent);
 }
+
+:root[data-mode="dark"] [data-slot="button-group"] .v-btn[aria-pressed="true"] { border-color: var(--v-pink); }
