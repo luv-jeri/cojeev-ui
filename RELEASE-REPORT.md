@@ -1,45 +1,32 @@
 # SahaJiv UI 0.1.0
 
-The release contains **77 UI registry entries**: the original 66 components, four shared helpers, and seven additions. The separate foundation entry provides the shared tokens, fonts, styles and motion code. Documentation uses Fumadocs with SahaJiv's own visible components. Code is MIT licensed; bundled fonts retain their SIL Open Font Licences.
+**Released.** [Open the documentation](https://luv-jeri.github.io/sahajiv-ui/). Public source [`479d13a`](https://github.com/luv-jeri/sahajiv-ui/commit/479d13a) passed [all CI checks and deployment](https://github.com/luv-jeri/sahajiv-ui/actions/runs/34169905808), followed by a successful installation and rendered confirmation from the public registry.
 
-The [public documentation](https://luv-jeri.github.io/sahajiv-ui/) and [MIT source repository](https://github.com/luv-jeri/sahajiv-ui) are live. The first complete [GitHub verification and deployment](https://github.com/luv-jeri/sahajiv-ui/actions/runs/34167226450) passed. A final public-consumer theme correction is being verified before release acceptance.
+The library contains **77 UI entries**: 66 original components, four helpers (Icon, Shape, Preview and Adjuster), and seven additions (CodeBlock, MultiSelect, AnimatedNumber, TextReveal, AmbientBackground, Marquee and ShapeScene). A separate foundation brings the registry total to 78. Fumadocs supplies the documentation framework; visible navigation, controls and surfaces use SahaJiv components. Library code is [MIT licensed](LICENCE); bundled DM Sans and Bricolage Grotesque retain [SIL OFL 1.1 notices](FONT-NOTICES.md). Three.js belongs only to the optional ShapeScene dependency tree.
 
-## Scope and evidence
+## Recorded verification
 
-- **Installation:** all 77 entries installed through the real shadcn CLI into a fresh Vite/React/Tailwind project outside this repository. Every module imported, typechecked and built. Twelve component families rendered; selected actions, disclosure, copying, multiple selection and pause controls worked. The optional Three.js runtime loaded and drew shaded geometry. This audit used the local registry; public installation is a separate release check.
-- **Copied examples:** all 77 default snippets and 246 total extracted default/variant/size snippets compile. The check rejects local-only helper imports and missing catalog examples.
-- **Visual review:** all 77 default pages were reviewed at desktop light and mobile dark sizes, using 154 screenshots. Focused follow-ups corrected Alert glyphs and text, selected ButtonGroup state, Card/Bubble secondary text, navigation counts, Sidebar collapse controls and default Tabs targets. Contrast confirmations cover the stated affected surfaces; this is not an automated claim of universal accessibility compliance.
-- **Motion:** all nine presets remain available. Glide is calmer, fast changes follow the latest selection, and moving selection layers keep labels and hit targets still. Off and reduced motion preserve content and state. Separate focused checks cover Marquee pause/inert copies, effects stillness, and ShapeScene rendering, fallback and cleanup.
-- **Production pages:** the final reproducible static-build gate is recorded in [GATE.md](GATE.md). Raw receipts and screenshots are saved as CI artifacts. Each entry has an explicit meaningful behavior case or is identified as passive content.
+- **Build and examples:** a real fresh public clone at [`47e30c0`](https://github.com/luv-jeri/sahajiv-ui/commit/47e30c0) passed `npm ci` and `npm run build`, producing 82 pages and 78 registry entries with clean initial and final Git status. All 77 default examples and 246 total default/variant/size snippets compile.
+- **Documentation and motion:** the [first complete CI and deployment](https://github.com/luv-jeri/sahajiv-ui/actions/runs/34167226450) passed. Recorded coverage includes 462 default layouts (77 entries × three widths × two themes), 77 Preview/copy checks, six documentation-shell cases, all nine motion presets, five additional motion checks and seven WebKit touch journeys. [GATE.md](GATE.md) gives per-entry behavior coverage; [DOCS-VERIFICATION.md](DOCS-VERIFICATION.md) records the separate 154-image review.
+- **Installation:** all 77 entries installed, imported, typechecked and built through the real shadcn CLI against an isolated local registry. The initial deployed documentation/registry check passed **159/159 URLs**. A separate fresh public-only consumer installed and built eight specimens; their actions, disclosure, focus/Escape, exact clipboard copy, text content and real shaded WebGL output passed.
+- **Installer correction:** that public consumer exposed neutral starter-theme aliases overriding SahaJiv colors. The corrected foundation passed actual direct Button/Card installation into a copy of the initialized consumer, followed by default/light/dark canvas, Card and dark-utility checks. The original app stayed unchanged. The same public-only consumer then received the corrected foundation through real Button/Card/ShapeScene URL commands. Its build, light/dark colors, loaded fonts, Card contrast, 390/1440 layouts and shaded WebGL output all passed. No component source was copied locally to make it pass.
+- **Safari correction:** compatibility mouse movement after touch incorrectly started ShapeScene hover tilt. A deterministic focused WebKit regression failed on the old build and passed after requiring hover-capable input. Thirteen separate ShapeScene checks passed, covering server fallback, rendered geometry, bounded pixel ratio, Off/reduced motion, visibility, pointer settling and GPU cleanup. This is browser-engine coverage, not a physical iPhone claim.
 
-## Local release confirmation
+## Preserved failures and limits
 
-The final local static build produces 82 pages. TypeScript, lint, four core tests and 246 copied snippets pass. The documentation run passed 462/462 layouts, 77/77 Preview/copy checks and all six shell cases with zero runtime errors; its combined AnimatedNumber sample assertion failed once. The exact unchanged-source six-entry sequence and a focused check subsequently passed; 650 additional recorded values remained within endpoints. That initial failure is preserved and not relabeled. The checker now records raw text, numeric values and times, with separate sample-count and range assertions. The complete GitHub CI run subsequently passed every documentation behavior, all nine motion presets and mobile WebKit checks before the first publication.
+The historical source-comparison checkpoint remains **3,096/3,252 pass and 156 fail** in [BASELINE-STATUS.md](BASELINE-STATUS.md). It measures the earlier fidelity phase, not final production acceptance; [REFINEMENTS.md](REFINEMENTS.md) describes intentional corrections and additions.
 
-All nine motion presets and five additional motion checks pass. All seven WebKit touch journeys pass against the static build, including every-frame mobile navigation/close bounds, unclipped MotionControls and actual WebGL rendering. This is Safari-engine coverage, not a physical iPhone test.
+A local full documentation run failed one combined AnimatedNumber sampling assertion. Its original receipt could not distinguish insufficient samples from an endpoint violation. Focused unchanged-source checks then passed, including 650 recorded values within the endpoints; the checker now records separate sample-count and range evidence. The original failure remains recorded.
 
-The second publication run passed the full documentation and motion gate but caught a mobile ShapeScene pause failure. A browser trace identified compatibility mouse movement generated after touch, which incorrectly started hover tilt. A focused regression failed against the old build and passed after requiring hover-capable input. Deployment of the correction is awaiting final CI.
+The [second CI run](https://github.com/luv-jeri/sahajiv-ui/actions/runs/34168747473) passed all documentation, motion and snippet checks but failed ShapeScene pause in WebKit: six of seven mobile journeys passed, while draw calls increased from 306 to 333. That run did not deploy. The subsequent focused regression and final complete CI both passed. The original failure remains recorded.
 
-## Intentional differences and limits
+Coverage does not exhaust every variant, state, content length or browser combination. The native picker keyboard limitation remains documented; physical-device and hardware-specific WebGL performance are unmeasured. See [INSTALLATION.md](INSTALLATION.md) for reproduction commands and consumer setup.
 
-This release preserves the supplied design family and intentionally corrects broken source behavior. It is not a claim of pixel identity with every original export. [REFINEMENTS.md](REFINEMENTS.md) lists additions and changes; [BASELINE-STATUS.md](BASELINE-STATUS.md) preserves the historical 3,096/3,252 source comparison checkpoint and its 156 failures without relabeling them as passes.
+## Final confirmation
 
-The browser gate checks default layouts and interactions, with separate copied-source compilation for variants and sizes. It does not exhaust every combination of browser, state and content. Native select's programmatic selection and callbacks pass; the original headless Chromium native-picker keyboard check remains limited. Physical iPhone behavior and hardware-specific WebGL performance have not been measured. ShapeScene supplies a static fallback when WebGL is unavailable.
+- [Final CI and deployment](https://github.com/luv-jeri/sahajiv-ui/actions/runs/34169905808): **PASS** for source `479d13abfcfa0981d538a088d83f837a6acae8b8`. All 462 layouts, nine motion presets, 246 snippets and seven mobile journeys pass.
+- Public registry: manifest, foundation and corrected scene bytes match the built artifacts. The initial 159-URL sweep and final changed-payload checks passed.
+- Public consumer: **PASS**. The final rendered check completed at 2026-09-07T23:41:52.524Z; dark Card title contrast measured 13.14:1, both bundled font families loaded, and the sculpture contained 1,393 sampled shaded colors with zero browser errors.
+- The update restored Card's authored client directive; its remaining bytes were unchanged and the directive has no runtime effect in this Vite consumer. Six other specimen modules remained byte-identical. Earlier passing actions were retained; the changed theme and scene received the focused confirmation.
 
-## Reproduce
-
-```sh
-npm ci
-npx playwright install chromium webkit
-npm run lint
-npm run typecheck
-npm test
-npm run build
-npm run check:examples
-npm run gate
-npm run gate:mobile
-node scripts/audit-registry-consumer.mjs
-node scripts/verify-install.mjs
-```
-
-The full consumer audit installs all entries against an isolated local registry. The final command installs selected components from the public registry into a separate fresh project. See [INSTALLATION.md](INSTALLATION.md).
+[Machine-readable release results](verification/release-results.json) bind the final source, public payload hashes and verification scope. `PUBLIC-SNAPSHOT.json` records the imported source checkpoint; later release-evidence documentation is recorded in Git history.

@@ -1,8 +1,8 @@
 # Production gate
 
-Result: **PASS**. Started 2026-09-07T22:38:43.636Z; finished 2026-09-07T22:46:14.100Z.
+Result: **PASS**. Started 2026-09-07T23:26:49.311Z; finished 2026-09-07T23:34:23.576Z.
 
-Built registry SHA-256: `4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa`.
+Built registry SHA-256: `8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6`.
 
 Run `npm run build && npm run gate` to reproduce. This gate serves the static build. It checks default specimens at 360, 768 and 1440 pixels in both themes, documentation controls and meaningful component interactions. Copied variant/size snippets are separately compiled by `npm run check:examples`. It does not claim every state in every browser or physical-device verification.
 
