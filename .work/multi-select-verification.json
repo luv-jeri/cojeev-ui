@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "checks": [
+    "Opening focuses the labelled search field",
+    "Pointer selection updates the controlled value and token",
+    "Search exposes a no-match status",
+    "Arrow navigation skips disabled options and Space toggles selection",
+    "Escape closes and returns focus to the trigger",
+    "Token removal updates controlled state and preserves usable focus",
+    "Example clear/reset updates values, status and error semantics",
+    "Example availability filter changes actual options and reset restores it",
+    "Uncontrolled values submit as repeated native form entries and reset to defaultValue",
+    "Disabling an open field closes it and re-enabling stays closed; disabled selected options remain locked",
+    "Disabled fields and invalid/description associations are exposed correctly",
+    "Empty catalogs and unknown controlled values stay usable",
+    "Trigger has no nested interactive controls",
+    "360px light/dark layout and popup stay within the viewport"
+  ],
+  "errors": []
+}
