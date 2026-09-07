@@ -15,13 +15,24 @@ const output = path.resolve(
   process.argv[2] ?? path.join(os.tmpdir(), `sahajiv-registry-consumer-${Date.now()}`),
 );
 if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/sahajiv-consumer-audit.");
+const resume = process.argv.includes("--resume");
 const registry = path.join(output, "registry-source");
 const consumer = path.join(output, "consumer");
 const env = {
   ...process.env,
   PATH: `${path.dirname(process.execPath)}:${process.env.PATH}`,
 };
-const receipt = { node: process.version, output, startedAt: new Date().toISOString(), sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(), checks: {} };
+const runnerCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+const receipt = resume ? JSON.parse(await fs.readFile(path.join(output, "receipt.json"), "utf8")) : { node: process.version, output, startedAt: new Date().toISOString(), sourceCommit: runnerCommit, checks: {} };
+if (resume) {
+  for (const name of ["registry-build", "consumer-npm-install", "shadcn-install-all"]) if (receipt.checks[name] !== "PASS") throw new Error(`Cannot resume without successful ${name}`);
+  await fs.writeFile(path.join(output, `receipt-before-resume-${Date.now()}.json`), JSON.stringify(receipt, null, 2) + "\n");
+  receipt.resumedAt = new Date().toISOString();
+  receipt.auditRunnerCommit = runnerCommit;
+  receipt.resumedExistingFreshConsumer = true;
+  delete receipt.error;
+}
+receipt.logs ??= {};
 function packageName(value) {
   const version = value.indexOf("@", value.startsWith("@") ? value.indexOf("/") : 0);
   return version < 0 ? value : value.slice(0, version);
@@ -51,6 +62,8 @@ const write = async (file, content) => {
 };
 async function run(name, executable, args, cwd, extraEnv = {}) {
   const log = [];
+  const logFile = `${name}${resume ? `-resume-${Date.now()}` : ""}.log`;
+  receipt.logs[name] = logFile;
   console.log(`${name}…`);
   await new Promise((resolve, reject) => {
     const child = spawn(executable, args, {
@@ -61,14 +74,14 @@ async function run(name, executable, args, cwd, extraEnv = {}) {
     child.stderr.on("data", (chunk) => log.push(chunk.toString()));
     child.on("error", reject);
     child.on("close", async (code) => {
-      await write(path.join(output, `${name}.log`), log.join(""));
-      if (code) reject(new Error(`${name} exited ${code}; see ${name}.log`));
+      await write(path.join(output, logFile), log.join(""));
+      if (code) reject(new Error(`${name} exited ${code}; see ${logFile}`));
       else resolve();
     });
   });
   receipt.checks[name] = "PASS";
 }
-await fs.mkdir(output); // Refuse to overwrite an earlier consumer or receipt.
+if (!resume) await fs.mkdir(output); // A new audit never overwrites an earlier consumer. Resume preserves the installed source and package tree.
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, "http://localhost");
@@ -101,6 +114,7 @@ try {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const baseURL = `http://127.0.0.1:${server.address().port}`;
   receipt.registryURL = baseURL;
+  if (!resume) {
   for (const file of [
     "registry/sahajiv",
     "scripts/build-registry.mjs",
@@ -146,13 +160,16 @@ try {
     registry,
     { SAHAJIV_REGISTRY_URL: baseURL },
   );
+  }
   const items = (await json(path.join(registry, "registry.json"))).items;
   const ids = items
     .filter((item) => item.type === "registry:ui")
     .map((item) => item.name)
     .sort();
+  if (resume && JSON.stringify(receipt.entries) !== JSON.stringify(ids)) throw new Error("Stored registry catalog differs from the original fresh install");
   receipt.entries = ids;
   receipt.entryCount = ids.length;
+  if (!resume) {
   const packageFile = {
     name: "sahajiv-fresh-consumer-audit",
     version: "0.0.0",
@@ -241,6 +258,7 @@ try {
     ],
     consumer,
   );
+  }
   const renderedExamples = {
     "shape-scene": index => `<Item${index}.ShapeScene animate={false} interactive={false}/>` ,
     button: index => `<Item${index}.Button onClick={() => setCount(value => value + 1)}>Add schedule</Item${index}.Button><p data-audit-count>Schedules added: {count}</p>`,
@@ -248,7 +266,7 @@ try {
     card: index => `<Item${index}.Card><Item${index}.CardTitle>Installed card</Item${index}.CardTitle><Item${index}.CardDescription>Real registry source.</Item${index}.CardDescription></Item${index}.Card>`,
     accordion: index => `<Item${index}.Accordion type="single" collapsible><Item${index}.AccordionItem value="installed"><Item${index}.AccordionTrigger>What was installed?</Item${index}.AccordionTrigger><Item${index}.AccordionContent>Installed Radix behavior.</Item${index}.AccordionContent></Item${index}.AccordionItem></Item${index}.Accordion>`,
     dialog: index => `<Item${index}.Dialog><Item${index}.DialogTrigger>Open installation details</Item${index}.DialogTrigger><Item${index}.DialogContent><Item${index}.DialogTitle>Installation details</Item${index}.DialogTitle><Item${index}.DialogDescription>Installed through the registry CLI.</Item${index}.DialogDescription></Item${index}.DialogContent></Item${index}.Dialog>`,
-    "code-block": index => `<Item${index}.CodeBlock code={'const installed = true;\n'} title="installed.ts" language="ts" copyLabel="Copy source"/>`,
+    "code-block": index => `<Item${index}.CodeBlock code={${JSON.stringify("const installed = true;\n")}} title="installed.ts" language="ts" copyLabel="Copy source"/>`,
     "text-reveal": index => `<Item${index}.TextReveal as="h2" text="Good things take shape."/>`,
     "animated-number": index => `<Item${index}.AnimatedNumber value={1240}/>`,
     "ambient-background": index => `<Item${index}.AmbientBackground paused><h2>Room for useful ideas</h2></Item${index}.AmbientBackground>`,
