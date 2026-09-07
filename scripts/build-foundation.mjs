@@ -19,6 +19,12 @@ for (const [name, token] of Object.entries(tokens)) {
 }
 mapping["--font-sahajiv-text"] = "var(--font-text)";
 mapping["--font-sahajiv-display"] = "var(--font-display)";
+// These authored aliases are colors even where the original token metadata
+// omitted or misclassified their type.
+for (const name of ["primary-foreground", "sidebar", "sidebar-foreground"]) {
+  delete mapping[`--spacing-${name}`];
+  mapping[`--color-${name}`] = `var(--${name})`;
+}
 fs.writeFileSync(`${output}/theme.css`, `@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));\n@theme inline {\n${Object.entries(mapping).map(([key,value])=>`  ${key}: ${value};`).join("\n")}\n}\n`);
 
 const faces = [

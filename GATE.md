@@ -1,6 +1,6 @@
 # Production gate
 
-Result: **FAIL**. Started 2026-09-07T22:26:29.381Z; finished 2026-09-07T22:32:02.375Z.
+Result: **PASS**. Started 2026-09-07T22:38:43.636Z; finished 2026-09-07T22:46:14.100Z.
 
 Built registry SHA-256: `4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa`.
 
@@ -15,7 +15,7 @@ Documentation: 77 entries, 462 layouts. Shell checks: 6/6.
 | alert | 6/6 | pass | pass: Pointer dismissal and keyboard restoration | 0 |
 | alert-dialog | 6/6 | pass | pass: Pointer/keyboard opening, focus inside, Escape, confirmation and restore | 0 |
 | ambient-background | 6/6 | pass | pass: Composition control and pointer/keyboard pause-resume | 0 |
-| animated-number | 6/6 | pass | failed: Numeric transition remains within its endpoints | 0 |
+| animated-number | 6/6 | pass | pass: Pointer/keyboard updates, interruption without overshoot, reduced motion and exact reset | 0 |
 | aspect-ratio | 6/6 | pass | passive: Static content; no component-owned interaction. Shared Preview controls tested independently. | 0 |
 | attachment | 6/6 | pass | pass: Real text download by pointer, keyboard removal and restoration | 0 |
 | avatar | 6/6 | pass | passive: Static content; no component-owned interaction. Shared Preview controls tested independently. | 0 |
@@ -57,7 +57,7 @@ Documentation: 77 entries, 462 layouts. Shell checks: 6/6.
 | message | 6/6 | pass | passive: Static content; no component-owned interaction. Shared Preview controls tested independently. | 0 |
 | message-scroller | 6/6 | pass | pass: Pointer/keyboard append, detached scrolling and jump to latest | 0 |
 | multi-select | 6/6 | pass | pass: Search selection, Escape/focus return, keyboard removal and visible validation/reset | 0 |
-| native-select | 6/6 | pass | limited: Native selectOption updates the callback receipt. Native picker keyboard selection is unverified on this headless macOS Chromium platform; ArrowDown/Enter also failed on a separate bare unstyled select. | 0 |
+| native-select | 6/6 | pass | pass: Native selection and keyboard selection update receipt | 0 |
 | navigation-menu | 6/6 | pass | pass: Pointer and keyboard collection navigation | 0 |
 | pagination | 6/6 | pass | pass: Pointer next and keyboard previous update page content | 0 |
 | popover | 6/6 | pass | pass: Pointer edit and keyboard opening/Escape | 0 |
@@ -105,8 +105,4 @@ Motion presets: 9/9. Additional checks: 5/5.
 - authored Pagination bodies remain still during pointer hold: PASS
 - Off disables native Button press movement after Morph detaches: PASS
 
-Raw JSON, screenshots and frame samples are written under `artifacts/production-docs-final/` and `artifacts/production-motion/`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](BASELINE-STATUS.md).
-
-## Unchanged-source confirmation
-
-The AnimatedNumber assertion failed once in this full run. A subsequent focused check and the exact six-entry sequence ending with AnimatedNumber pass against the same static build. A separate 650-sample trace stays within both endpoints. The original failure remains preserved; the assertion now records samples and separates count from range diagnostics. Final CI remains the publication gate.
+Raw JSON, screenshots and frame samples are written under `artifacts/production-docs/` and `artifacts/production-motion/`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](BASELINE-STATUS.md).

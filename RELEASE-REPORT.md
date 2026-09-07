@@ -2,7 +2,7 @@
 
 The release contains **77 UI registry entries**: the original 66 components, four shared helpers, and seven additions. The separate foundation entry provides the shared tokens, fonts, styles and motion code. Documentation uses Fumadocs with SahaJiv's own visible components. Code is MIT licensed; bundled fonts retain their SIL Open Font Licences.
 
-Release candidate: source and local checks are ready. GitHub Pages publication and a fresh install from the public URL remain pending.
+The [public documentation](https://luv-jeri.github.io/sahajiv-ui/) and [MIT source repository](https://github.com/luv-jeri/sahajiv-ui) are live. The first complete [GitHub verification and deployment](https://github.com/luv-jeri/sahajiv-ui/actions/runs/34167226450) passed. A final public-consumer theme correction is being verified before release acceptance.
 
 ## Scope and evidence
 
@@ -14,7 +14,7 @@ Release candidate: source and local checks are ready. GitHub Pages publication a
 
 ## Local release confirmation
 
-The final local static build produces 82 pages. TypeScript, lint, four core tests and 246 copied snippets pass. The documentation run passed 462/462 layouts, 77/77 Preview/copy checks and all six shell cases with zero runtime errors; its combined AnimatedNumber sample assertion failed once. The exact unchanged-source six-entry sequence and a focused check subsequently passed; 650 additional recorded values remained within endpoints. That initial failure is preserved and not relabeled. The checker now records raw text, numeric values and times, with separate sample-count and range assertions. Final CI must run the complete gate before publication.
+The final local static build produces 82 pages. TypeScript, lint, four core tests and 246 copied snippets pass. The documentation run passed 462/462 layouts, 77/77 Preview/copy checks and all six shell cases with zero runtime errors; its combined AnimatedNumber sample assertion failed once. The exact unchanged-source six-entry sequence and a focused check subsequently passed; 650 additional recorded values remained within endpoints. That initial failure is preserved and not relabeled. The checker now records raw text, numeric values and times, with separate sample-count and range assertions. The complete GitHub CI run subsequently passed every documentation behavior, all nine motion presets and mobile WebKit checks before the first publication.
 
 All nine motion presets and five additional motion checks pass. All seven WebKit touch journeys pass against the static build, including every-frame mobile navigation/close bounds, unclipped MotionControls and actual WebGL rendering. This is Safari-engine coverage, not a physical iPhone test.
 
@@ -28,13 +28,14 @@ The browser gate checks default layouts and interactions, with separate copied-s
 
 ```sh
 npm ci
-npx playwright install chromium
+npx playwright install chromium webkit
 npm run lint
 npm run typecheck
 npm test
 npm run build
 npm run check:examples
 npm run gate
+npm run gate:mobile
 node scripts/audit-registry-consumer.mjs
 node scripts/verify-install.mjs
 ```

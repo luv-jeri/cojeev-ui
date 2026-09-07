@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "sourceRevision": "8443c7a599cac7cf26651983d31dcf14c9caa5ee",
+  "sourceRevision": "bd4a2396f3ef6b88fdbe87643bc3740891372d5f",
   "files": [
     {
       "path": ".github/workflows/verify.yml",
@@ -19,8 +19,8 @@
     },
     {
       "path": "BUILD-STATUS.md",
-      "bytes": 2298,
-      "sha256": "a91c7d1f2d775565b29869df0d108c18c8180fab35b164c097379792a589110d"
+      "bytes": 2470,
+      "sha256": "ea8470b89746843620298ec7bf47d92381a7690b9f912355915814c1d3c07d4d"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -44,8 +44,8 @@
     },
     {
       "path": "GATE.md",
-      "bytes": 9965,
-      "sha256": "16583187381c00cbc275aad703e4d6e518b47d4214e85540d5bfe98633875e20"
+      "bytes": 9416,
+      "sha256": "1f6828cf0c46ec6d73c16a5973e4e430edefa557ade7583c646dd0e6d3e749b0"
     },
     {
       "path": "INSTALLATION.md",
@@ -79,13 +79,13 @@
     },
     {
       "path": "REFINEMENTS.md",
-      "bytes": 3805,
-      "sha256": "61147f9fc6b0943b54231fab7833df675089ff5265b19245dc2d0f99ef263a92"
+      "bytes": 4462,
+      "sha256": "55bbc30083a073c5717c77fd02f17e626b1489c01b89e5578ba75b4403ffb78a"
     },
     {
       "path": "RELEASE-REPORT.md",
-      "bytes": 4531,
-      "sha256": "2e46acc64ea1f1661bd926c72a1e95a92e2ffc032e9716bf683e6c0cb7f5d216"
+      "bytes": 4883,
+      "sha256": "549de35f46dc230ee83ab3554517362f75cac0cf02881dd5d87c99ed520f8c2d"
     },
     {
       "path": "app/docs/[component]/page.tsx",
@@ -609,8 +609,8 @@
     },
     {
       "path": "public/r/registry.json",
-      "bytes": 284767,
-      "sha256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa"
+      "bytes": 286393,
+      "sha256": "8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6"
     },
     {
       "path": "public/r/resizable.json",
@@ -619,8 +619,8 @@
     },
     {
       "path": "public/r/sahajiv.json",
-      "bytes": 615399,
-      "sha256": "7d32c872f06b46f2248206b770652686a10ce671d579c1bbeff89cec18e1cfe6"
+      "bytes": 616973,
+      "sha256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6"
     },
     {
       "path": "public/r/scroll-area.json",
@@ -729,8 +729,8 @@
     },
     {
       "path": "public/registry.json",
-      "bytes": 284767,
-      "sha256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa"
+      "bytes": 286393,
+      "sha256": "8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6"
     },
     {
       "path": "reference/sahajiv-handoff-v4/CHANGELOG.md",
@@ -5359,8 +5359,8 @@
     },
     {
       "path": "registry.json",
-      "bytes": 284767,
-      "sha256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa"
+      "bytes": 286393,
+      "sha256": "8cdc014555da7eb2c07db8c6f91f51943d063f6d76f436a2c8ed184498aaf0b6"
     },
     {
       "path": "registry/sahajiv/lib/icon-data.ts",
@@ -5824,8 +5824,8 @@
     },
     {
       "path": "registry/sahajiv/styles/theme.css",
-      "bytes": 9157,
-      "sha256": "829aef6f248c46b2eba5e8dbc7f2c2475666e8ef8e13b636e7fc03a8a18ca89b"
+      "bytes": 9247,
+      "sha256": "1852542dd715b2124b8aa4f40cd34da772370f5dcade24e20e20b9227528626f"
     },
     {
       "path": "registry/sahajiv/styles/toast.css",
@@ -6254,13 +6254,13 @@
     },
     {
       "path": "scripts/build-foundation.mjs",
-      "bytes": 2308,
-      "sha256": "bdd612e0dd2fb91d4af0943957f9d4ed6e2c98d5ae72cd832f6d1618ea33ff48"
+      "bytes": 2592,
+      "sha256": "5cd5e8e1c05187dabb7d72d31ed302561d2e67e7a1dd2164c8782f42d1486151"
     },
     {
       "path": "scripts/build-registry.mjs",
-      "bytes": 6798,
-      "sha256": "2eff50833ee0aa61b9e42649ee96fb07807275b1768aa52fb9144d1a7c0d4039"
+      "bytes": 7673,
+      "sha256": "6c21e33c70cc051ee05af705de841319dd88e4daa3268e24daba08786e4815ff"
     },
     {
       "path": "scripts/check-docs.mjs",
