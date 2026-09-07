@@ -547,26 +547,28 @@ export function NavigationMenuExample() {
   return (
     <div style={{ display: "grid", gap: 16 }}>
       <Card variant="ink" size="sm">
-      <NavigationMenu aria-label="Example collections">
-        <NavigationMenuList>
-          {["Notes", "Ideas", "Reading"].map((name, i) => (
-            <NavigationMenuItem key={name}>
-              <NavigationMenuLink
-                href={`#collection-${name.toLowerCase()}`}
-                active={active === name}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActive(name);
-                }}
-              >
-                <Icon name={(["file-text", "sparkles", "brain"] as const)[i]} />
-                <NavigationMenuLabel>{name}</NavigationMenuLabel>
-                <NavigationMenuCount>{[12, 8, 4][i]}</NavigationMenuCount>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          ))}
-        </NavigationMenuList>
-      </NavigationMenu>
+        <NavigationMenu aria-label="Example collections">
+          <NavigationMenuList>
+            {["Notes", "Ideas", "Reading"].map((name, i) => (
+              <NavigationMenuItem key={name}>
+                <NavigationMenuLink
+                  href={`#collection-${name.toLowerCase()}`}
+                  active={active === name}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive(name);
+                  }}
+                >
+                  <Icon
+                    name={(["file-text", "sparkles", "brain"] as const)[i]}
+                  />
+                  <NavigationMenuLabel>{name}</NavigationMenuLabel>
+                  <NavigationMenuCount>{[12, 8, 4][i]}</NavigationMenuCount>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
       </Card>
       <Meta role="status">Collection: {active}</Meta>
     </div>

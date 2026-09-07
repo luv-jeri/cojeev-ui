@@ -8,7 +8,10 @@ import {
 
 // Read the same example functions that the live preview renders. This module only
 // runs on the server during static builds and development page requests.
-const cache = new Map<string, { code: string; name: string; modified: number }>();
+const cache = new Map<
+  string,
+  { code: string; name: string; modified: number }
+>();
 export function exampleSource(
   id: string,
   variant = "default",

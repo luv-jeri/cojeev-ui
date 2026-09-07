@@ -268,13 +268,22 @@ export function ChartExample() {
       </Button>
       <Title as="h4">Focus minutes</Title>
       <Chart
-        data={data.map(item => ({ ...item, variant: "pink" as const }))}
+        data={data.map((item) => ({ ...item, variant: "pink" as const }))}
         max={40}
         showTable={showTable}
         caption="Focus minutes by weekday"
       />
       <ChartLine data={data} showTable={showTable} caption="Focus trend">
-        <ChartLinePath variant="hist" d={data.map((item,index) => `${index ? "L" : "M"}${index * 75},${100 - item.value * 2.5}`).join(" ")} style={{ stroke: "var(--v-pink)", fill: "none" }}/>
+        <ChartLinePath
+          variant="hist"
+          d={data
+            .map(
+              (item, index) =>
+                `${index ? "L" : "M"}${index * 75},${100 - item.value * 2.5}`,
+            )
+            .join(" ")}
+          style={{ stroke: "var(--v-pink)", fill: "none" }}
+        />
       </ChartLine>
       <ChartRing
         segments={[
@@ -445,7 +454,13 @@ export function InputGroupExample() {
   const [name, setName] = React.useState("personal-space");
   const [saved, setSaved] = React.useState("");
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 12 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr)",
+        gap: 12,
+      }}
+    >
       <Label htmlFor="example-workspace-slug">Workspace address</Label>
       <InputGroup>
         <InputGroupAddon>
@@ -583,7 +598,9 @@ export function QuestionnaireExample() {
         <QuestionnaireOptions value={pace} onValueChange={setPace}>
           {["A little every day", "Once a week"].map((option) => (
             <QuestionnaireOption key={option} value={option}>
-              <Disk variant="blue"><Icon name="clock"/></Disk>
+              <Disk variant="blue">
+                <Icon name="clock" />
+              </Disk>
               <QuestionnaireOptionBody>{option}</QuestionnaireOptionBody>
             </QuestionnaireOption>
           ))}
@@ -646,14 +663,14 @@ export function StepperExample() {
     >
       <StepperList>
         {labels.map((label, i) => (
-          <StepperItem key={label} step={i+1}>
-            <StepperIndicator step={i+1} />
+          <StepperItem key={label} step={i + 1}>
+            <StepperIndicator step={i + 1} />
             <StepperTitle>{label}</StepperTitle>
           </StepperItem>
         ))}
       </StepperList>
       <Card>
-        <CardTitle>{labels[step-1]}</CardTitle>
+        <CardTitle>{labels[step - 1]}</CardTitle>
         {step === 1 ? (
           <Input aria-label="Space name" placeholder="Name your space" />
         ) : step === 2 ? (

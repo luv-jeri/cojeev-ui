@@ -34,7 +34,7 @@ export function ComponentPreview({
                 data-size={size}
               >
                 {sizes.length > 1 && (
-                  <Meta>
+                  <Meta className="docs-size-label">
                     {size === "default" ? "Default size" : `Size: ${size}`}
                   </Meta>
                 )}
