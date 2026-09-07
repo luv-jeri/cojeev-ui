@@ -1,0 +1,1 @@
+{"extends":"../tsconfig.json","compilerOptions":{"incremental":false},"include":["../registry/sahajiv/**/*.ts","../registry/sahajiv/**/*.tsx","../components/examples/forms.tsx"],"exclude":["../node_modules"]}
