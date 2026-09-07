@@ -23,6 +23,7 @@
 @import "../registry/sahajiv/styles/carousel.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/chart.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/checkbox.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/code-block.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/collapsible.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/combobox.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/command.css" layer(sahajiv-states);
@@ -77,6 +78,8 @@
 @import "../registry/sahajiv/styles/toggle.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/tooltip.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/typography.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/animated-number.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/text-reveal.css" layer(sahajiv-states);
 @source "../registry/sahajiv";
 @source "../components";
 

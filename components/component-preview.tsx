@@ -4,6 +4,7 @@ import { Preview } from "@/registry/sahajiv/ui/preview";
 import { Label } from "@/registry/sahajiv/ui/label";
 import { NativeSelect } from "@/registry/sahajiv/ui/native-select";
 import { Button } from "@/registry/sahajiv/ui/button";
+import { Meta } from "@/registry/sahajiv/ui/typography";
 import { DocsMotion } from "@/components/docs-motion";
 import { examples } from "@/components/examples";
 export function ComponentPreview({
@@ -50,7 +51,9 @@ export function ComponentPreview({
       </div>
       <Preview code={code[`${variant}:${size}`]}>
         <div key={`${id}:${variant}:${size}:${revision}`} className="docs-specimen" data-example={id} data-variant={variant} data-size={size}>
-          <Example variant={variant} size={size} />
+          <React.Suspense fallback={<Meta role="status">Loading preview…</Meta>}>
+            <Example variant={variant} size={size} />
+          </React.Suspense>
         </div>
       </Preview>
     </div>

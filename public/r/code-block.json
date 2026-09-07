@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "code-block",
+  "title": "Code block",
+  "description": "Displays a code snippet with an optional caption, language label, wrapping, and copy feedback.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/typography.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/code-block.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Button, type ButtonProps } from \"@/components/ui/button\";\nimport { Meta } from \"@/components/ui/typography\";\nimport { cn } from \"@/lib/utils\";\n\n/** The fallback stays inside the control's tree, including a modal focus scope. */\nfunction copyWithSelection(code: string, trigger: HTMLButtonElement): boolean {\n  const document = trigger.ownerDocument;\n  const active = document.activeElement as HTMLElement | null;\n  const selection = document.getSelection();\n  const ranges = selection\n    ? Array.from({ length: selection.rangeCount }, (_, i) =>\n        selection.getRangeAt(i).cloneRange(),\n      )\n    : [];\n  const field =\n    active?.tagName === \"INPUT\" || active?.tagName === \"TEXTAREA\"\n      ? (active as HTMLInputElement | HTMLTextAreaElement)\n      : null;\n  const fieldSelection = field && field.selectionStart !== null\n    ? [field.selectionStart, field.selectionEnd, field.selectionDirection ?? undefined] as const\n    : null;\n  const view = document.defaultView;\n  const scroll = view ? { x: view.scrollX, y: view.scrollY } : null;\n  const textarea = document.createElement(\"textarea\");\n  textarea.value = code;\n  textarea.readOnly = true;\n  textarea.tabIndex = -1;\n  textarea.setAttribute(\"aria-hidden\", \"true\");\n  textarea.setAttribute(\"data-copy-fallback\", \"\");\n  textarea.style.cssText = \"position:fixed;inset-block-start:0;inset-inline-start:-9999px;width:1px;height:1px;padding:0;border:0;font-size:16px;opacity:0;\";\n  (trigger.parentElement ?? document.body).append(textarea);\n  try {\n    textarea.focus({ preventScroll: true });\n    textarea.select();\n    textarea.setSelectionRange(0, code.length);\n    return typeof document.execCommand === \"function\" && document.execCommand(\"copy\");\n  } catch {\n    return false;\n  } finally {\n    textarea.remove();\n    if (active?.isConnected) active.focus({ preventScroll: true });\n    if (selection) {\n      selection.removeAllRanges();\n      for (const range of ranges) selection.addRange(range);\n    }\n    // Document selection restoration can reset a focused input's native range.\n    if (field?.isConnected && fieldSelection) {\n      field.setSelectionRange(...fieldSelection);\n    }\n    if (view && scroll) view.scrollTo(scroll.x, scroll.y);\n  }\n}\n\nasync function copyText(code: string, trigger: HTMLButtonElement): Promise<boolean> {\n  try {\n    const clipboard = trigger.ownerDocument.defaultView?.navigator.clipboard;\n    if (clipboard?.writeText) {\n      await clipboard.writeText(code);\n      return true;\n    }\n  } catch {\n    // An unavailable or denied Clipboard API can still allow a user-initiated copy.\n  }\n  return copyWithSelection(code, trigger);\n}\n\nexport type CopyButtonProps = ButtonProps & { code: string };\n\n/** Copies exactly `code`; success is reported only after a copy mechanism succeeds. */\nexport function CopyButton({\n  code,\n  children,\n  className,\n  size = \"sm\",\n  variant = \"ghost\",\n  disabled,\n  onClick,\n  ...props\n}: CopyButtonProps) {\n  const [result, setResult] = React.useState<{\n    code: string;\n    state: \"copying\" | \"copied\" | \"error\";\n  } | null>(null);\n  const pending = React.useRef(false);\n  const statusId = React.useId();\n  const state = result?.code === code ? result.state : \"idle\";\n  return (\n    <span data-slot=\"copy-control\" className=\"v-copy-control\">\n      <Button\n        {...props}\n        type=\"button\"\n        data-slot=\"copy-button\"\n        className={className}\n        size={size}\n        variant={variant}\n        disabled={disabled}\n        aria-disabled={disabled || state === \"copying\" || props[\"aria-disabled\"]}\n        aria-describedby={[props[\"aria-describedby\"], statusId].filter(Boolean).join(\" \")}\n        aria-busy={state === \"copying\" || undefined}\n        onClick={async (event) => {\n          onClick?.(event);\n          if (event.defaultPrevented || pending.current) return;\n          const trigger = event.currentTarget;\n          pending.current = true;\n          setResult({ code, state: \"copying\" });\n          let copied = false;\n          try {\n            copied = await copyText(code, trigger);\n          } catch {\n            // Preserve manual copying if the browser rejects both mechanisms.\n          } finally {\n            pending.current = false;\n            setResult({ code, state: copied ? \"copied\" : \"error\" });\n          }\n        }}\n      >\n        {children ?? (state === \"copied\" ? \"Copied\" : state === \"copying\" ? \"Copying…\" : \"Copy\")}\n      </Button>\n      <Meta as=\"span\" id={statusId} role=\"status\" aria-live=\"polite\" data-copy-state={state}>\n        {state === \"copied\"\n          ? \"Copied to clipboard.\"\n          : state === \"error\"\n            ? \"Copy unavailable. Select the text and copy it manually.\"\n            : \"\"}\n      </Meta>\n    </span>\n  );\n}\n\nexport type CodeBlockProps = Omit<React.ComponentProps<\"figure\">, \"children\" | \"title\"> & {\n  code: string;\n  language?: string;\n  title?: string;\n  wrap?: boolean;\n  copyLabel?: string;\n};\n\n/** A plain-text code surface. `language` labels the source; it does not fake highlighting. */\nexport function CodeBlock({\n  code,\n  language,\n  title,\n  wrap = false,\n  copyLabel,\n  className,\n  ...props\n}: CodeBlockProps) {\n  return (\n    <figure\n      {...props}\n      data-slot=\"code-block\"\n      data-wrap={wrap || undefined}\n      className={cn(\"v-code-block\", className)}\n    >\n      <figcaption data-slot=\"code-block-header\">\n        <span data-slot=\"code-block-label\">\n          {title && <span data-slot=\"code-block-title\">{title}</span>}\n          {language && <Meta as=\"span\">{language}</Meta>}\n        </span>\n        <CopyButton code={code}>{copyLabel}</CopyButton>\n      </figcaption>\n      <pre tabIndex={0} aria-label={title ? `${title} source code` : \"Source code\"}>\n        <code>{code}</code>\n      </pre>\n    </figure>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/code-block.css",
+      "content": "@layer sahajiv-states {\n.v-code-block[data-slot=\"code-block\"] {\n  margin: 0;\n  min-width: 0;\n  max-width: 100%;\n  overflow: hidden;\n  border: 1px solid var(--v-border);\n  border-radius: var(--r-card);\n  background: var(--v-beige);\n  color: var(--v-text);\n}\n.v-code-block[data-slot=\"code-block\"] > [data-slot=\"code-block-header\"] {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  flex-wrap: wrap;\n  gap: var(--s-3);\n  padding: var(--s-3) var(--s-4);\n  border-block-end: 1px solid var(--v-border);\n}\n.v-code-block[data-slot=\"code-block\"] [data-slot=\"code-block-label\"] {\n  display: grid;\n  min-width: 0;\n  gap: var(--s-1);\n  overflow-wrap: anywhere;\n}\n.v-code-block[data-slot=\"code-block\"] [data-slot=\"code-block-title\"] {\n  font-family: var(--font-text);\n  font-size: 13px;\n  font-weight: 600;\n}\n.v-code-block[data-slot=\"code-block\"] > pre {\n  box-sizing: border-box;\n  margin: 0;\n  max-width: 100%;\n  max-height: 24rem;\n  overflow: auto;\n  overscroll-behavior: contain;\n  padding: var(--s-4);\n  font-family: var(--font-mono);\n  font-size: 13px;\n  line-height: 1.65;\n  tab-size: 2;\n  white-space: pre;\n  user-select: text;\n}\n.v-code-block[data-slot=\"code-block\"][data-wrap] > pre {\n  white-space: pre-wrap;\n  overflow-wrap: anywhere;\n}\n.v-code-block[data-slot=\"code-block\"] > pre:focus-visible {\n  outline: 2px solid var(--v-pink);\n  outline-offset: -3px;\n}\n.v-code-block[data-slot=\"code-block\"] > pre > code {\n  font: inherit;\n  color: inherit;\n}\n.v-copy-control[data-slot=\"copy-control\"] {\n  display: inline-flex;\n  align-items: flex-start;\n  flex-direction: column;\n  gap: var(--s-1);\n  min-width: 0;\n  max-width: 100%;\n}\n.v-copy-control[data-slot=\"copy-control\"] > [role=\"status\"] {\n  max-width: 32ch;\n  overflow-wrap: anywhere;\n}\n.v-copy-control[data-slot=\"copy-control\"] > [role=\"status\"]:empty {\n  display: none;\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/code-block.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/code-block.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Code block",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "copying",
+        "copied",
+        "error"
+      ]
+    },
+    "api": [
+      {
+        "name": "CopyButtonProps",
+        "props": [
+          {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "CodeBlockProps",
+        "props": [
+          {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "language",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "title",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "wrap",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "copyLabel",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Tools",
+    "fidelity": "verification-in-progress",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

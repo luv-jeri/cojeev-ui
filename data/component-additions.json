@@ -1,0 +1,108 @@
+{
+  "preview": {
+    "name": "Component preview",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "preview",
+      "code",
+      "copied"
+    ]
+  },
+  "icon": {
+    "name": "Icon and icon button",
+    "variants": [
+      "default",
+      "dashed",
+      "ink",
+      "pink",
+      "beige",
+      "cream"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg",
+      "xl"
+    ],
+    "states": [
+      "rest",
+      "hover",
+      "pressed",
+      "disabled"
+    ]
+  },
+  "shape": {
+    "name": "Shape",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "adjuster": {
+    "name": "Motion Adjuster",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "open"
+    ]
+  },
+  "code-block": {
+    "name": "Code block",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "copying",
+      "copied",
+      "error"
+    ]
+  },
+  "animated-number": {
+    "name": "Animated number",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "updating",
+      "reduced motion"
+    ]
+  },
+  "text-reveal": {
+    "name": "Text reveal",
+    "variants": [
+      "rise",
+      "fade"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "revealing",
+      "reduced motion"
+    ]
+  }
+}

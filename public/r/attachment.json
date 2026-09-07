@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "attachment",
+  "title": "Attachment",
+  "description": "Presents a file name, type, metadata, and nearby actions as a compact attachment row.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/attachment.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cva } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport { Disk, IconButton } from \"@/components/ui/icon\";\nexport const attachmentVariants = cva(\n  \"v-attach flex items-center gap-[var(--s-3)] min-h-[56px] pl-[8px] pr-[10px] py-[8px] [border-radius:999px] bg-[var(--card)]\",\n);\nexport type AttachmentProps = React.ComponentProps<\"div\">;\nexport function Attachment({ className, ...props }: AttachmentProps) {\n  return (\n    <div\n      data-slot=\"attachment\"\n      data-part=\"root\"\n      className={cn(attachmentVariants(), className)}\n      {...props}\n    />\n  );\n}\nexport type AttachmentTypeProps = React.ComponentProps<\"span\">;\nexport function AttachmentType({\n  ref,\n  className,\n  ...props\n}: AttachmentTypeProps) {\n  return (\n    <Disk\n      ref={ref}\n      data-slot=\"attachment-type\"\n      className={cn(\n        \"v-disk inline-grid place-items-center shrink-0 [width:40px] [height:40px] [border-radius:50%] [background:var(--v-ink)] [color:var(--v-on-ink)] text-[9px] font-bold tracking-[.04em]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type AttachmentNameProps = React.ComponentProps<\"span\">;\nexport function AttachmentName({ className, ...props }: AttachmentNameProps) {\n  return (\n    <span\n      data-slot=\"attachment-name\"\n      data-part=\"title\"\n      className={cn(\n        \"v-attach__name flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap font-medium text-[length:var(--fs-body)] leading-[1.25]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type AttachmentMetaProps = React.ComponentProps<\"span\">;\nexport function AttachmentMeta({ className, ...props }: AttachmentMetaProps) {\n  return (\n    <span\n      data-slot=\"attachment-meta\"\n      data-part=\"description\"\n      className={cn(\n        \"v-attach__meta block mt-[2px] text-[length:var(--fs-meta)] text-[color:var(--muted-foreground)]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type AttachmentActionsProps = React.ComponentProps<\"span\">;\nexport function AttachmentActions({\n  className,\n  ...props\n}: AttachmentActionsProps) {\n  return (\n    <span\n      data-slot=\"attachment-actions\"\n      data-part=\"footer\"\n      className={cn(\"v-actions flex gap-[var(--s-2)]\", className)}\n      {...props}\n    />\n  );\n}\nexport type AttachmentActionProps = React.ComponentProps<\"button\">;\nexport function AttachmentAction({\n  ref,\n  className,\n  ...props\n}: AttachmentActionProps) {\n  return (\n    <IconButton\n      ref={ref}\n      type=\"button\"\n      data-slot=\"attachment-action\"\n      className={cn(\n        \"v-ibtn inline-grid place-items-center shrink-0 [width:36px] [height:36px] [border-radius:50%] [background:var(--v-canvas)] [box-shadow:inset_0_0_0_1px_var(--v-border)]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/attachment.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"attachment\"] {\n  transition: background var(--t-micro);\n}\n[data-slot=\"attachment\"]:hover {\n  background: var(--v-beige-2);\n}\n[data-slot=\"attachment-action\"] {\n  cursor: pointer;\n  transition:\n    background var(--t-micro),\n    transform var(--t-micro) var(--enter);\n}\n[data-slot=\"attachment-action\"]:hover {\n  background: var(--v-pink);\n  box-shadow: none;\n  color: var(--v-on-accent);\n}\n[data-slot=\"attachment-action\"]:active {\n  transform: scale(0.94);\n}\n[data-slot=\"attachment-action\"] .v-icon {\n  width: 17px;\n  height: 17px;\n}\n:root[data-mode=\"dark\"] [data-slot=\"attachment-action\"] {\n  background: var(--v-beige-2);\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/attachment.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/attachment.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "attachment",
+      "name": "Attachment",
+      "tier": "base",
+      "evidence": "I09 I16 I17",
+      "status": "source",
+      "root": ".v-attach",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active"
+      ],
+      "dataStates": [],
+      "category": "icons",
+      "motionOnByDefault": true,
+      "flowRoles": [
+        "press"
+      ],
+      "canvas": "480x240",
+      "contract": "entries/attachment/contract.md",
+      "demo": "entries/attachment/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "AttachmentProps",
+        "props": []
+      },
+      {
+        "name": "AttachmentTypeProps",
+        "props": []
+      },
+      {
+        "name": "AttachmentNameProps",
+        "props": []
+      },
+      {
+        "name": "AttachmentMetaProps",
+        "props": []
+      },
+      {
+        "name": "AttachmentActionsProps",
+        "props": []
+      },
+      {
+        "name": "AttachmentActionProps",
+        "props": []
+      }
+    ],
+    "category": "Conversation",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

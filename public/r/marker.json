@@ -1,0 +1,88 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marker",
+  "title": "Marker",
+  "description": "Separates or annotates a sequence with a short event, status, or time label.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/marker.tsx",
+      "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst MarkerVariants=cva(\"v-marker [display:flex] [align-items:center] [gap:var(--s-3)] [font-size:var(--fs-meta)] [color:var(--muted-foreground)] [margin:var(--s-2)_0]\",{variants:{variant:{\"default\":\"\",\"ok\":\"-ok [color:var(--v-olive-ink)]\",\"danger\":\"-danger [color:var(--v-danger-ink)]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type MarkerProps=React.ComponentProps<\"div\"> & VariantProps<typeof MarkerVariants> & { as?:React.ElementType }\nexport function Marker({as:Tag=\"div\",className,variant,size,...props}:MarkerProps){return <Tag data-slot=\"marker\" data-part=\"root\" className={cn(MarkerVariants({variant,size}),className)} {...props}/>}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/marker.css",
+      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-marker[data-slot].-ok{color:var(--v-olive-ink)}\n.v-marker[data-slot].-danger{color:var(--v-danger-ink)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-marker[data-slot]::before{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]::after{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]{box-shadow:none;border:0}\n\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/marker.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/marker.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "marker",
+      "name": "Marker",
+      "tier": "base",
+      "evidence": "Ext I09",
+      "status": "derived",
+      "root": ".v-marker",
+      "variants": [
+        "ok",
+        "danger"
+      ],
+      "sizes": [],
+      "states": [
+        "rest"
+      ],
+      "dataStates": [],
+      "category": "surfaces",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "enters"
+      ],
+      "canvas": "480x240",
+      "contract": "entries/marker/contract.md",
+      "demo": "entries/marker/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "MarkerProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"ok\" | \"danger\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Conversation",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

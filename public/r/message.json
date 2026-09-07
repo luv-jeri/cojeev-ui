@@ -1,0 +1,133 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "message",
+  "title": "Message",
+  "description": "Structures a conversational or activity entry with a main content area and supporting description.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/message.tsx",
+      "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst MessageVariants=cva(\"v-msg [display:flex] [gap:var(--s-3)] [align-items:flex-end] [min-width:0]\",{variants:{variant:{\"default\":\"\",\"me\":\"-me [flex-direction:row-reverse]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type MessageProps=React.ComponentProps<\"div\"> & VariantProps<typeof MessageVariants> & { as?:React.ElementType }\nexport function Message({as:Tag=\"div\",className,variant,size,...props}:MessageProps){return <Tag data-slot=\"message\" data-part=\"root\" className={cn(MessageVariants({variant,size}),className)} {...props}/>}\n\nconst MessageContentVariants=cva(\"v-msg__stack [display:grid] [gap:6px] [justify-items:start] [min-width:0]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type MessageContentProps=React.ComponentProps<\"div\"> & VariantProps<typeof MessageContentVariants> & { as?:React.ElementType }\nexport function MessageContent({as:Tag=\"div\",className,variant,size,...props}:MessageContentProps){return <Tag data-slot=\"message-content\" data-part=\"content\" className={cn(MessageContentVariants({variant,size}),className)} {...props}/>}\n\nconst MessageDescriptionVariants=cva(\"v-prov [font-size:11px] [color:var(--muted-foreground)]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type MessageDescriptionProps=React.ComponentProps<\"p\"> & VariantProps<typeof MessageDescriptionVariants> & { as?:React.ElementType }\nexport function MessageDescription({as:Tag=\"p\",className,variant,size,...props}:MessageDescriptionProps){return <Tag data-slot=\"message-description\" data-part=\"description\" className={cn(MessageDescriptionVariants({variant,size}),className)} {...props}/>}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/message.css",
+      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-msg[data-slot].-me{flex-direction:row-reverse}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-msg[data-slot].-me .v-msg__stack{justify-items:end}\n.v-prov[data-slot]{box-shadow:none;border:0}\n.v-msg[data-slot]{box-shadow:none;border:0}\n.v-msg__stack[data-slot]{box-shadow:none;border:0}\n.v-msg__stack[data-slot] .v-bubble{border-radius:18px}\n.v-msg__stack[data-slot] .v-bubble:last-of-type{border-radius:18px 18px 18px 4px}\n.v-msg[data-slot].-me .v-msg__stack .v-bubble:last-of-type{border-radius:18px 18px 4px 18px}\n\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/message.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/message.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "message",
+      "name": "Message",
+      "tier": "base",
+      "evidence": "I09 I16",
+      "status": "source",
+      "root": ".v-msg",
+      "variants": [
+        "me"
+      ],
+      "sizes": [],
+      "states": [
+        "rest"
+      ],
+      "dataStates": [],
+      "category": "surfaces",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "enters"
+      ],
+      "canvas": "480x240",
+      "contract": "entries/message/contract.md",
+      "demo": "entries/message/demo.html",
+      "isolation": [
+        "default-default-rest.html",
+        "default-default-rest-dark.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "MessageProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | \"me\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "MessageContentProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "MessageDescriptionProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"default\" | null | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "as",
+            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Conversation",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

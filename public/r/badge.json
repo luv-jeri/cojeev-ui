@@ -2,36 +2,28 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "badge",
   "title": "Badge",
-  "description": "Badge with SahaJiv variants and sizing.",
-  "dependencies": [],
+  "description": "Adds a compact status, count, or category label alongside other content.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
   ],
   "files": [
     {
       "path": "registry/sahajiv/ui/badge.tsx",
-      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst badgeVariants = cva(\n  \"v-badge inline-flex items-center justify-center gap-[6px] rounded-[var(--r-pill)] leading-none whitespace-nowrap bg-[var(--v-beige)] text-[color:var(--v-text)] tracking-[.005em]\",\n  {\n    variants: {\n      variant: {\n        default: \"\",\n        pink: \"-pink bg-[var(--v-pink)] text-[color:var(--v-on-accent)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        yellow: \"-yellow bg-[var(--status-warn-bg)] text-[color:var(--status-warn-ink)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        olive: \"-olive bg-[var(--status-ok-bg)] text-[color:var(--status-ok-ink)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        blue: \"-blue bg-[var(--status-info-bg)] text-[color:var(--status-info-ink)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        ink: \"-ink bg-[var(--v-ink)] text-[color:var(--v-on-ink)]\",\n        cream: \"-cream bg-[var(--v-canvas)]\",\n        \"pink-soft\": \"-pink-soft bg-[var(--v-pink-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        \"yellow-soft\": \"-yellow-soft bg-[var(--v-yellow-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        \"olive-soft\": \"-olive-soft bg-[var(--v-olive-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        \"blue-soft\": \"-blue-soft bg-[var(--v-blue-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        danger: \"-danger bg-[var(--status-danger-bg)] text-[color:var(--status-danger-ink)]\",\n        pending: \"-pending bg-[var(--v-ink)] text-[color:var(--v-on-ink)]\",\n        count: \"-count min-w-[22px] bg-[var(--v-ink)] text-[color:var(--v-on-ink)] tabular-nums\",\n        dashed: \"-dashed bg-[var(--v-canvas)] border border-dashed border-[var(--v-edge)]\",\n        caps: \"-caps uppercase tracking-[.08em]\",\n        test: \"-test bg-[var(--v-canvas)] border-[1.5px] border-solid border-[var(--v-ink)] tracking-[.03em]\",\n        live: \"-live bg-[var(--v-canvas)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]\",\n      },\n      size: { default: \"\", sm: \"-sm\", lg: \"-lg\" },\n    },\n    defaultVariants: { variant: \"default\", size: \"default\" },\n  },\n)\n// Later reference rules deliberately override sizes for count/caps/dashed/test.\nconst badgeDimensions = cva(\"\", {\n  variants: {\n    dimension: {\n      default: \"h-[26px] px-[11px] py-0 text-[12.5px] font-medium\",\n      sm: \"h-[20px] px-[8px] py-0 text-[11px] font-semibold\",\n      lg: \"h-[32px] px-[14px] py-0 text-[13.5px] font-medium\",\n      count: \"h-[22px] px-[7px] py-0 text-[11px] font-semibold\",\n      caps: \"h-[26px] px-[11px] py-0 text-[10.5px] font-semibold\",\n    },\n  },\n})\n\ntype BadgeProps = React.ComponentProps<\"span\"> & VariantProps<typeof badgeVariants>\nfunction Badge({ ref: externalRef, className, variant = \"default\", size = \"default\", ...props }: BadgeProps) {\n  const morphRef = useMorph<HTMLSpanElement>(\"pills\", externalRef)\n  const dimension = variant === \"count\" || variant === \"caps\" ? variant : size ?? \"default\"\n  return <span ref={morphRef} data-slot=\"badge\" data-part=\"root\" data-state=\"rest\" className={cn(badgeVariants({ variant, size }), badgeDimensions({ dimension }), (variant === \"dashed\" || variant === \"test\") && \"h-[26px] px-[11px]\", (variant === \"test\" || variant === \"danger\") && \"font-semibold\", \"leading-none\", className)} {...props} />\n}\nfunction BadgeIndicator({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"badge-indicator\" data-part=\"indicator\" aria-hidden=\"true\" className={cn(\"v-dot size-[7px] rounded-full flex-none m-0 bg-current\", className)} {...props} />\n}\nexport { Badge, BadgeIndicator, badgeVariants }\nexport type { BadgeProps }\n",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst badgeVariants = cva(\n  \"v-badge inline-flex items-center justify-center gap-[6px] rounded-[var(--r-pill)] leading-none whitespace-nowrap bg-[var(--v-beige)] text-[color:var(--v-text)] tracking-[.005em]\",\n  {\n    variants: {\n      variant: {\n        default: \"\",\n        pink: \"-pink bg-[var(--v-pink)] text-[color:var(--v-on-accent)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        yellow: \"-yellow bg-[var(--status-warn-bg)] text-[color:var(--status-warn-ink)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        olive: \"-olive bg-[var(--status-ok-bg)] text-[color:var(--status-ok-ink)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        blue: \"-blue bg-[var(--status-info-bg)] text-[color:var(--status-info-ink)] [--muted-foreground:var(--muted-foreground-ink)]\",\n        ink: \"-ink bg-[var(--v-ink)] text-[color:var(--v-on-ink)]\",\n        cream: \"-cream bg-[var(--v-canvas)]\",\n        \"pink-soft\": \"-pink-soft bg-[var(--v-pink-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        \"yellow-soft\": \"-yellow-soft bg-[var(--v-yellow-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        \"olive-soft\": \"-olive-soft bg-[var(--v-olive-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        \"blue-soft\": \"-blue-soft bg-[var(--v-blue-soft)] [--muted-foreground:var(--muted-foreground-tinted)]\",\n        danger: \"-danger bg-[var(--status-danger-bg)] text-[color:var(--status-danger-ink)]\",\n        pending: \"-pending bg-[var(--v-ink)] text-[color:var(--v-on-ink)]\",\n        count: \"-count min-w-[22px] bg-[var(--v-ink)] text-[color:var(--v-on-ink)] tabular-nums\",\n        dashed: \"-dashed bg-[var(--v-canvas)] border border-dashed border-[var(--v-edge)]\",\n        caps: \"-caps uppercase tracking-[.08em]\",\n        test: \"-test bg-[var(--v-canvas)] border-[1.5px] border-solid border-[var(--v-ink)] tracking-[.03em]\",\n        live: \"-live bg-[var(--v-canvas)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]\",\n      },\n      size: { default: \"\", sm: \"-sm\", lg: \"-lg\" },\n    },\n    defaultVariants: { variant: \"default\", size: \"default\" },\n  },\n)\n// Later reference rules deliberately override sizes for count/caps/dashed/test.\nconst badgeDimensions = cva(\"\", {\n  variants: {\n    dimension: {\n      default: \"h-[26px] px-[11px] py-0 text-[12.5px] font-medium\",\n      sm: \"h-[20px] px-[8px] py-0 text-[11px] font-semibold\",\n      lg: \"h-[32px] px-[14px] py-0 text-[13.5px] font-medium\",\n      count: \"h-[22px] px-[7px] py-0 text-[11px] font-semibold\",\n      caps: \"h-[26px] px-[11px] py-0 text-[10.5px] font-semibold\",\n    },\n  },\n})\n\ntype BadgeProps = React.ComponentProps<\"span\"> & VariantProps<typeof badgeVariants>\nfunction Badge({ ref: externalRef, className, variant = \"default\", size = \"default\", ...props }: BadgeProps) {\n  const morphRef = useMorph<HTMLSpanElement>(\"pills\", externalRef)\n  const dimension = variant === \"count\" || variant === \"caps\" ? variant : size ?? \"default\"\n  return <span ref={morphRef} data-slot=\"badge\" data-part=\"root\" data-state=\"rest\" className={cn(badgeVariants({ variant, size }), badgeDimensions({ dimension }), (variant === \"dashed\" || variant === \"test\") && \"h-[26px] px-[11px]\", (variant === \"test\" || variant === \"danger\") && \"font-semibold\", \"leading-none\", className)} {...props} />\n}\nfunction BadgeIndicator({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"badge-indicator\" data-part=\"indicator\" aria-hidden=\"true\" className={cn(\"v-dot size-[7px] [border-radius:50%] flex-none m-0 bg-current\", className)} {...props} />\n}\nexport { Badge, BadgeIndicator, badgeVariants }\nexport type { BadgeProps }\n",
       "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/badge.css",
+      "content": "@layer sahajiv-states {\n/* Descendant paint and explicit dark overrides from alive.css. */\n[data-slot=\"badge\"] > * { line-height: 1; }\n.v-badge[data-slot].-caps { height: 26px; padding: 0 11px; font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }\n[data-slot=\"badge\"] .v-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; margin: 0; background: currentColor; }\n[data-slot=\"badge\"]:is(.-live,.-pending) .v-dot { background: var(--v-olive); }\n:root[data-mode=\"dark\"] [data-slot=\"badge\"]:is(.-pink-soft,.-yellow-soft,.-olive-soft,.-blue-soft) { color: var(--v-on-accent); }\n:root[data-mode=\"dark\"] [data-slot=\"badge\"]:is(.-dashed,.-test,.-live) { background: var(--v-beige-2); }\n/* The moving SVG owns this edge; a painted DOM edge would double it. */\n[data-slot=\"badge\"]:is(.-dashed,.-test).v-morph-live { border-color: transparent; }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/badge.css"
     }
   ],
   "css": {
-    "@layer sahajiv-states": {
-      "[data-slot=\"badge\"] > *": {
-        "line-height": "1"
-      },
-      "[data-slot=\"badge\"]:is(.-live,.-pending) .v-dot": {
-        "background": "var(--v-olive)"
-      },
-      ":root[data-mode=\"dark\"] [data-slot=\"badge\"]:is(.-pink-soft,.-yellow-soft,.-olive-soft,.-blue-soft)": {
-        "color": "var(--v-on-accent)"
-      },
-      ":root[data-mode=\"dark\"] [data-slot=\"badge\"]:is(.-dashed,.-test,.-live)": {
-        "background": "var(--v-beige-2)"
-      },
-      "[data-slot=\"badge\"]:is(.-dashed,.-test).v-morph-live": {
-        "border-color": "transparent"
-      }
-    }
+    "@import \"@/styles/sahajiv/badge.css\"": {}
   },
   "meta": {
     "source": {
@@ -193,7 +185,7 @@
         "props": [
           {
             "name": "variant",
-            "type": "\"default\" | \"danger\" | \"pink\" | \"yellow\" | \"olive\" | \"blue\" | \"ink\" | \"cream\" | \"pink-soft\" | \"yellow-soft\" | \"olive-soft\" | \"blue-soft\" | \"pending\" | \"count\" | \"dashed\" | \"caps\" | \"test\" | \"live\" | null | undefined",
+            "type": "\"default\" | \"danger\" | \"pink\" | \"yellow\" | \"blue\" | \"olive\" | \"ink\" | \"cream\" | \"pink-soft\" | \"yellow-soft\" | \"olive-soft\" | \"blue-soft\" | \"pending\" | \"count\" | \"dashed\" | \"caps\" | \"test\" | \"live\" | null | undefined",
             "required": false,
             "description": ""
           },
@@ -206,7 +198,9 @@
         ]
       }
     ],
-    "fidelity": "pending-spike"
+    "category": "Data display",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
   },
   "type": "registry:ui"
 }

@@ -17,8 +17,9 @@ import { Label } from "@/registry/sahajiv/ui/label";
 import { Meta, Title } from "@/registry/sahajiv/ui/typography";
 import { Shape } from "@/registry/sahajiv/ui/shape";
 import { ThemeControl } from "@/components/theme-control";
+import { categories } from "@/lib/catalog";
 import { DocsMotion } from "@/components/docs-motion";
-export type DocsLink = { name: string; title: string; baseComponent: boolean };
+export type DocsLink = { name: string; title: string; baseComponent: boolean; category: string };
 export function DocsShell({
   entries,
   children,
@@ -87,15 +88,13 @@ export function DocsShell({
           aria-label="Component documentation"
           className="docs-navigation"
         >
-          {[true, false].map((base) => (
-            <React.Fragment key={String(base)}>
+          {categories.filter((category) => filtered.some((entry) => entry.category === category)).map((category) => (
+            <React.Fragment key={category}>
               <SidebarGroupLabel>
-                {base
-                  ? `Components · ${entries.filter((e) => e.baseComponent).length}`
-                  : "Shared helpers"}
+                {category}
               </SidebarGroupLabel>
               {filtered
-                .filter((e) => e.baseComponent === base)
+                .filter((e) => e.category === category)
                 .map((entry) => (
                   <SidebarMenuButton
                     key={entry.name}

@@ -1,0 +1,166 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "questionnaire",
+  "title": "Questionnaire",
+  "description": "Composes labeled questions, single-choice answers, and visible completion progress.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/label.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/progress.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/questionnaire.tsx",
+      "content": "\"use client\";\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\";\nimport * as React from \"react\";\nimport { cva } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport { Label, type LabelProps } from \"@/components/ui/label\";\nimport { Progress } from \"@/components/ui/progress\";\nimport { useFlowGroup } from \"@/lib/sahajiv-motion/use-flow\";\nexport const questionnaireVariants = cva(\"v-quest grid gap-[28px]\");\nexport type QuestionnaireProps = React.ComponentProps<\"div\">;\nexport function Questionnaire({ className, ...props }: QuestionnaireProps) {\n  return (\n    <div\n      data-slot=\"questionnaire\"\n      data-part=\"root\"\n      className={cn(questionnaireVariants(), className)}\n      {...props}\n    />\n  );\n}\nexport type QuestionnaireProgressProps = React.ComponentProps<\"div\"> & {\n  value: number;\n  total: number;\n};\nexport function QuestionnaireProgress({\n  value,\n  total,\n  className,\n  children,\n  ...props\n}: QuestionnaireProgressProps) {\n  const maximum = Math.max(0, Number.isFinite(total) ? total : 0);\n  const current = Math.max(\n    0,\n    Math.min(maximum, Number.isFinite(value) ? value : 0),\n  );\n  return (\n    <div\n      data-slot=\"questionnaire-progress\"\n      className={cn(\n        \"v-quest__progress flex items-center gap-[12px] text-[13px] text-[color:var(--v-text-2)]\",\n        className,\n      )}\n      {...props}\n    >\n      {children ?? (\n        <>\n          <b>\n            {current} of {maximum}\n          </b>\n          <Progress value={maximum > 0 ? (current / maximum) * 100 : 0} />\n        </>\n      )}\n    </div>\n  );\n}\nexport type QuestionnaireQuestionProps = React.ComponentProps<\"fieldset\">;\nexport function QuestionnaireQuestion({\n  className,\n  ...props\n}: QuestionnaireQuestionProps) {\n  return (\n    <fieldset\n      data-slot=\"questionnaire-question\"\n      className={cn(\n        \"v-quest__q grid min-w-0 gap-[12px] [border:0] p-0 bg-transparent [box-shadow:none]\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\nexport type QuestionnaireLabelProps = LabelProps;\nexport function QuestionnaireLabel({\n  className,\n  ...props\n}: QuestionnaireLabelProps) {\n  return (\n    <Label\n      data-slot=\"questionnaire-label\"\n      className={cn(\"[font-size:17px] [font-weight:600]\", className)}\n      {...props}\n    />\n  );\n}\ntype ChoiceContext = {\n  name: string;\n  value?: string;\n  change: (value: string) => void;\n};\nconst ChoiceContext = React.createContext<ChoiceContext | null>(null);\nexport type QuestionnaireOptionsProps = Omit<\n  React.ComponentProps<\"div\">,\n  \"defaultValue\"\n> & {\n  name?: string;\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string) => void;\n};\nexport function QuestionnaireOptions({\n  ref,\n  className,\n  name,\n  value,\n  defaultValue,\n  onValueChange,\n  children,\n  ...props\n}: QuestionnaireOptionsProps) {\n  const id = React.useId();\n  const [local, setLocal] = React.useState(defaultValue);\n  const flowRef = useFlowGroup<HTMLDivElement>(ref);\n  return (\n    <ChoiceContext.Provider\n      value={{\n        name: name ?? id,\n        value: value ?? local,\n        change: (next) => {\n          if (value === undefined) setLocal(next);\n          onValueChange?.(next);\n        },\n      }}\n    >\n      <div\n        ref={flowRef}\n        data-slot=\"questionnaire-options\"\n        className={cn(\"v-quest__opts grid gap-[8px]\", className)}\n        role=\"radiogroup\"\n        {...props}\n      >\n        {children}\n      </div>\n    </ChoiceContext.Provider>\n  );\n}\nexport type QuestionnaireOptionProps = React.ComponentProps<\"label\"> & {\n  value: string;\n  disabled?: boolean;\n  inputProps?: Omit<React.ComponentProps<\"input\">, \"value\" | \"type\">;\n};\nexport function QuestionnaireOption({ref: externalMorphRef, \n  value,\n  disabled,\n  inputProps,\n  className,\n  children,\n  ...props\n}: QuestionnaireOptionProps) {\n  const context = React.useContext(ChoiceContext);\n  if (!context)\n    throw new Error(\"QuestionnaireOption must be inside QuestionnaireOptions\");\n  const ownedMorphRef = useMorph<HTMLLabelElement>(\"cards\", externalMorphRef);\n  return (\n    <label ref={ownedMorphRef}\n      data-slot=\"questionnaire-option\"\n      data-state={context.value === value ? \"checked\" : \"unchecked\"}\n      className={cn(\n        \"v-quest__opt grid grid-cols-[36px_minmax(0,1fr)_22px] items-center gap-[14px] min-h-[64px] pt-[14px] pr-[16px] pb-[14px] pl-[14px] rounded-[20px] bg-[var(--v-canvas)] cursor-pointer\",\n        className,\n      )}\n      {...props}\n    >\n      <input\n        data-slot=\"questionnaire-option-input\"\n        type=\"radio\"\n        name={context.name}\n        value={value}\n        checked={context.value === value}\n        disabled={disabled}\n        {...inputProps}\n        onChange={(event) => {\n          inputProps?.onChange?.(event);\n          if (!event.defaultPrevented && event.target.checked)\n            context.change(value);\n        }}\n      />\n      {children}\n    </label>\n  );\n}\nexport type QuestionnaireOptionBodyProps = React.ComponentProps<\"span\">;\nexport function QuestionnaireOptionBody({\n  className,\n  ...props\n}: QuestionnaireOptionBodyProps) {\n  return (\n    <span\n      data-slot=\"questionnaire-option-body\"\n      className={cn(\n        \"v-quest__opt-body order-2 grid gap-[2px] min-w-0\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nexport type QuestionnaireWeekdaysProps = React.ComponentProps<\"div\">;\nexport function QuestionnaireWeekdays({ ref, className, ...props }: QuestionnaireWeekdaysProps) {\n  const flowRef = useFlowGroup<HTMLDivElement>(ref);\n  return <div ref={flowRef} data-slot=\"questionnaire-weekdays\" className={cn(\"v-weekdays flex gap-[6px]\", className)} {...props} />;\n}\nexport type QuestionnaireWeekdayProps = React.ComponentProps<\"label\">;\nexport function QuestionnaireWeekday({ className, ...props }: QuestionnaireWeekdayProps) {\n  return <label data-slot=\"questionnaire-weekday\" className={cn(\"relative grid place-items-center size-[40px] [border-radius:50%] text-[11.5px] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer\", className)} {...props} />;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/questionnaire.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"questionnaire-progress\"] b {\n  color: var(--v-text);\n}\n[data-slot=\"questionnaire-progress\"] .v-track {\n  flex: 1;\n  min-width: 80px;\n}\n[data-slot=\"questionnaire-option\"] {\n  transition:\n    background var(--t-element),\n    box-shadow var(--t-element),\n    transform var(--t-micro) var(--enter);\n}\n[data-slot=\"questionnaire-option\"]:not(:has(input:checked)) {\n  box-shadow: inset 0 0 0 1px var(--v-border);\n}\n[data-slot=\"questionnaire-option\"]:not(:has(input:checked)):hover {\n  background: var(--v-beige-2);\n  box-shadow: inset 0 0 0 1px var(--v-border);\n}\n[data-slot=\"questionnaire-option\"]:active {\n  transform: scale(0.99);\n}\n[data-slot=\"questionnaire-option\"] input {\n  order: 3;\n  appearance: none;\n  width: 22px;\n  height: 22px;\n  margin: 0;\n  border-radius: 50%;\n  border: 1.5px solid var(--v-edge);\n  background: var(--v-canvas);\n  display: grid;\n  place-items: center;\n  transition:\n    background var(--t-micro),\n    border-color var(--t-micro);\n}\n[data-slot=\"questionnaire-option\"] .v-disk[data-slot] {\n  order: 1;\n  width: 36px;\n  height: 36px;\n}\n[data-slot=\"questionnaire-option\"] input:checked {\n  background:\n    radial-gradient(circle, var(--ink-fixed) 0 4px, transparent 4.6px),\n    var(--v-pink);\n  border-color: var(--v-pink);\n  border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;\n  animation: v-questionnaire-tick var(--t-max) var(--enter) both;\n}\n[data-slot=\"questionnaire-options\"]:not(.v-glide)\n  [data-slot=\"questionnaire-option\"]:has(input:checked) {\n  background: var(--v-pink-soft);\n  color: var(--v-text);\n  box-shadow: none;\n}\n[data-slot=\"questionnaire-option\"]:has(input:checked) .v-quest__opt-body small {\n  color: var(--v-text);\n}\n[data-slot=\"questionnaire-option\"]:has(input:focus-visible) {\n  outline: 2px solid var(--ring);\n  outline-offset: 2px;\n}\n[data-slot=\"questionnaire-option-body\"] b {\n  font-weight: 600;\n  font-size: 15px;\n  line-height: 1.3;\n}\n[data-slot=\"questionnaire-option-body\"] small {\n  font-size: 13px;\n  color: var(--v-text-2);\n  line-height: 1.4;\n}\n[data-slot=\"questionnaire-option\"]:has(input:disabled) {\n  color: var(--v-disabled-ink);\n  cursor: not-allowed;\n}\n:root[data-mode=\"dark\"] [data-slot=\"questionnaire-option\"] {\n  background: var(--v-beige);\n}\n:root[data-mode=\"dark\"] [data-slot=\"questionnaire-option\"] input {\n  border-color: var(--v-text-2);\n  background: var(--v-beige-2);\n}\n:root[data-mode=\"dark\"] [data-slot=\"questionnaire-option\"] input:checked {\n  background:\n    radial-gradient(circle, var(--ink-fixed) 0 4px, transparent 4.6px),\n    var(--v-pink);\n  border-color: var(--v-pink);\n}\n@keyframes v-questionnaire-tick {\n  0% {\n    transform: scale(0.8);\n    border-radius: 54% 46% 50% 50%/46% 50% 50% 54%;\n  }\n  55% {\n    transform: scale(1.14, 0.94);\n    border-radius: 50% 50% 46% 54%/54% 50% 46% 50%;\n  }\n  80% {\n    transform: scale(0.98, 1.04);\n  }\n  100% {\n    transform: scale(1);\n    border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;\n  }\n}\n\n[data-slot=\"questionnaire-weekday\"] { transition: background var(--t-micro), color var(--t-micro); }\n[data-slot=\"questionnaire-weekday\"] input { position: absolute; opacity: 0; inset: 0; margin: 0; }\n[data-slot=\"questionnaire-weekday\"]:hover { background: color-mix(in oklab,var(--card) 90%,var(--v-ink)); color: var(--v-text); }\n[data-slot=\"questionnaire-weekday\"]:has(input:checked) { background: var(--v-pink); color: var(--v-on-accent); }\n[data-slot=\"questionnaire-weekday\"]:has(input:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }\n@media (max-width: 640px) { [data-slot=\"questionnaire-weekday\"] { flex: 1 1 0; min-width: 0; aspect-ratio: 1; } }\n:root[data-mode=\"dark\"] [data-slot=\"questionnaire-weekday\"] { background: var(--v-beige); }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/questionnaire.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/questionnaire.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "id": "questionnaire",
+      "name": "Questionnaire",
+      "tier": "base",
+      "evidence": "Ext I07",
+      "status": "derived",
+      "root": ".v-quest",
+      "variants": [],
+      "sizes": [],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "active",
+        "checked"
+      ],
+      "dataStates": [],
+      "category": "controls",
+      "motionOnByDefault": false,
+      "flowRoles": [
+        "group",
+        "press",
+        "toggles",
+        "paces"
+      ],
+      "canvas": "720x600",
+      "contract": "entries/questionnaire/contract.md",
+      "demo": "entries/questionnaire/demo.html",
+      "isolation": [
+        "default-default-rest-720x600.html",
+        "default-default-rest-dark-720x600.html",
+        "default-default-checked-720x600.html",
+        "default-default-checked-dark-720x600.html"
+      ]
+    },
+    "api": [
+      {
+        "name": "QuestionnaireProps",
+        "props": []
+      },
+      {
+        "name": "QuestionnaireProgressProps",
+        "props": [
+          {
+            "name": "value",
+            "type": "number",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "total",
+            "type": "number",
+            "required": true,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "QuestionnaireQuestionProps",
+        "props": []
+      },
+      {
+        "name": "QuestionnaireLabelProps",
+        "props": []
+      },
+      {
+        "name": "QuestionnaireOptionsProps",
+        "props": [
+          {
+            "name": "name",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "value",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultValue",
+            "type": "string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onValueChange",
+            "type": "((value: string) => void) | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "QuestionnaireOptionProps",
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "inputProps",
+            "type": "Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, \"type\" | \"value\"> | undefined",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "QuestionnaireOptionBodyProps",
+        "props": []
+      },
+      {
+        "name": "QuestionnaireWeekdaysProps",
+        "props": []
+      },
+      {
+        "name": "QuestionnaireWeekdayProps",
+        "props": []
+      }
+    ],
+    "category": "Forms",
+    "fidelity": "verification-in-progress",
+    "baseComponent": true
+  },
+  "type": "registry:ui"
+}

@@ -1,4 +1,6 @@
 export const exampleManifest = {
+  "animated-number": { file: "effects", name: "AnimatedNumberExample" },
+  "text-reveal": { file: "effects", name: "TextRevealExample" },
   accordion: { file: "interactive", name: "AccordionExample" },
   adjuster: { file: "static", name: "AdjusterExample" },
   alert: { file: "static", name: "AlertExample" },
@@ -16,6 +18,7 @@ export const exampleManifest = {
   carousel: { file: "composed", name: "CarouselExample" },
   chart: { file: "composed", name: "ChartExample" },
   checkbox: { file: "interactive", name: "CheckboxExample" },
+  "code-block": { file: "static", name: "CodeBlockExample" },
   collapsible: { file: "interactive", name: "CollapsibleExample" },
   combobox: { file: "interactive", name: "ComboboxExample" },
   command: { file: "interactive", name: "CommandExample" },
