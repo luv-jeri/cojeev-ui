@@ -263,8 +263,3 @@
   }
 }
 
-[data-slot="date-picker-content"] {
-  max-width: calc(100vw - 24px);
-  max-height: var(--radix-popover-content-available-height);
-  overflow: auto;
-}

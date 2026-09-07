@@ -8,7 +8,7 @@ import * as Primitive from "@radix-ui/react-hover-card";
 import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
 export type HoverCardProps = React.ComponentProps<typeof Primitive.Root>;
 export function HoverCard(props: HoverCardProps) {
-  return <Primitive.Root openDelay={300} closeDelay={100} {...props} />;
+  return <Primitive.Root openDelay={300} closeDelay={150} {...props} />;
 }
 export type HoverCardTriggerProps = React.ComponentProps<
   typeof Primitive.Trigger
@@ -38,7 +38,9 @@ export function HoverCardContent({
   className,
   ref,
   children,
-  sideOffset = 6,
+  sideOffset = 8,
+  align = "start",
+  collisionPadding = 8,
   portal = true,
   ...props
 }: HoverCardContentProps) {
@@ -50,6 +52,8 @@ export function HoverCardContent({
       data-slot="hover-card-content"
       data-part="content"
       sideOffset={sideOffset}
+      align={align}
+      collisionPadding={collisionPadding}
       className={cn(hoverCardContentVariants(), className)}
       {...props}
     >

@@ -13,8 +13,3 @@
   }
 }
 
-[data-slot="hover-card-content"] {
-  max-width: calc(100vw - 24px);
-  max-height: var(--radix-hover-card-content-available-height);
-  overflow: auto;
-}

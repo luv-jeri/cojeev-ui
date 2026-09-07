@@ -1,0 +1,384 @@
+[
+  {
+    "id": "hover-card",
+    "file": "default-default-open-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.006805555555555555,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 72, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "6px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(95, 91, 85)",
+        "candidate": "rgb(14, 11, 11)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(95, 91, 85) none 3px",
+        "candidate": "rgb(14, 11, 11) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "hover-card",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.0069166666666666664,
+    "differences": [
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:hover-card/v-hovercard/default/rest:0",
+        "property": "transform",
+        "reference": "none",
+        "candidate": "matrix(1, 0, 0, 1, 72, 198)"
+      },
+      {
+        "part": "gate:popover/default/default/rest:0",
+        "property": "height",
+        "reference": "125.234px",
+        "candidate": "146.688px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "41.75px"
+      },
+      {
+        "part": "gate:health-line/ok/default/rest:0",
+        "property": "gap",
+        "reference": "6px 12px",
+        "candidate": "normal"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-size",
+        "reference": "14px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "font-weight",
+        "reference": "600",
+        "candidate": "400"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "line-height",
+        "reference": "20.3px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "width",
+        "reference": "55.4688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "height",
+        "reference": "20.2969px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-word/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "font-size",
+        "reference": "12px",
+        "candidate": "15px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "line-height",
+        "reference": "17.4px",
+        "candidate": "21.75px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "width",
+        "reference": "104.688px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "height",
+        "reference": "17.3906px",
+        "candidate": "auto"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "min-height",
+        "reference": "auto",
+        "candidate": "0px"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "border-top-color",
+        "reference": "rgb(181, 172, 158)",
+        "candidate": "rgb(246, 239, 226)"
+      },
+      {
+        "part": "gate:hover-card/v-age/default/rest:0",
+        "property": "outline",
+        "reference": "rgb(181, 172, 158) none 3px",
+        "candidate": "rgb(246, 239, 226) none 3px"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-hovercard]",
+      "method": "hover"
+    }
+  },
+  {
+    "id": "popover",
+    "file": "default-default-open-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.024330246913580246,
+    "differences": [
+      {
+        "part": "gate:button/default/sm/rest:0",
+        "property": "transition-timing-function",
+        "reference": "cubic-bezier(0.2, 0.8, 0.2, 1), cubic-bezier(0.2, 0.8, 0.2, 1), ease",
+        "candidate": "ease"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x360.html",
+      "selector": "[data-menu]",
+      "method": "click"
+    }
+  },
+  {
+    "id": "popover",
+    "file": "default-default-open-dark-480x360.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.02419753086419753,
+    "differences": [
+      {
+        "part": "gate:button/default/sm/rest:0",
+        "property": "transition-timing-function",
+        "reference": "cubic-bezier(0.2, 0.8, 0.2, 1), cubic-bezier(0.2, 0.8, 0.2, 1), ease",
+        "candidate": "ease"
+      }
+    ],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x360.html",
+      "selector": "[data-menu]",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-480x520.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": false,
+    "pixelDifference": 0.024401234567901234,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  },
+  {
+    "id": "date-picker",
+    "file": "default-default-open-dark-480x520.html",
+    "width": 360,
+    "verdict": "FAIL",
+    "oracleStable": true,
+    "candidateStable": true,
+    "oracleByteStable": true,
+    "candidateByteStable": true,
+    "pixelDifference": 0.026466049382716048,
+    "differences": [],
+    "oracleAdapters": [],
+    "unavailableStyles": [],
+    "statePreparation": {
+      "sourceFile": "default-default-rest-dark-480x520.html",
+      "selector": "[data-datepicker] > button",
+      "method": "click"
+    }
+  }
+]
