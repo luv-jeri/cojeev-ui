@@ -85,8 +85,9 @@
   [data-slot="dropdown-menu"]::after,
   [data-slot^="dropdown-menu-"]::before,
   [data-slot^="dropdown-menu-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

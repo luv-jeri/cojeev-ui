@@ -177,8 +177,9 @@ input[type="range"].v-slider:where(
   [data-slot="slider"]::after,
   [data-slot^="slider-"]::before,
   [data-slot^="slider-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

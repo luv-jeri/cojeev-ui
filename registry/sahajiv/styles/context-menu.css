@@ -79,8 +79,9 @@
   [data-slot="context-menu"]::after,
   [data-slot^="context-menu-"]::before,
   [data-slot^="context-menu-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

@@ -11,6 +11,8 @@ import {
   type MonthCaptionProps,
   type MonthGridProps,
   type WeekNumberProps,
+  type WeekdayProps,
+  type WeekNumberHeaderProps,
 } from "react-day-picker";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -94,6 +96,8 @@ export function Calendar(calendarProps: CalendarProps) {
           DayButton: CalendarDayButton,
           MonthGrid: CalendarGrid,
           WeekNumber: CalendarWeekNumber,
+          Weekday: CalendarWeekday,
+          WeekNumberHeader: CalendarWeekNumberHeader,
           ...components,
         }}
         {...props}
@@ -215,8 +219,8 @@ export function CalendarWeekNumber({
   className,
   ...props
 }: WeekNumberProps) {
-  const { getModifiers } = useDayPicker();
-  const active = week.days.some((day) => getModifiers(day).selected);
+  const { isSelected } = useDayPicker();
+  const active = week.days.some((day) => isSelected?.(day.date));
   const weekRef = useMorph<HTMLTableCellElement>("pills");
   return (
     <th
@@ -226,4 +230,12 @@ export function CalendarWeekNumber({
       {...props}
     />
   );
+}
+
+function CalendarWeekday(props: WeekdayProps) {
+  return <th data-slot="calendar-weekday" {...props} />;
+}
+
+function CalendarWeekNumberHeader(props: WeekNumberHeaderProps) {
+  return <th data-slot="calendar-week-number-header" {...props} />;
 }

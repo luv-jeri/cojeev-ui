@@ -285,7 +285,8 @@
       },
       "coverage": "mapping implemented; browser gate pending",
       "notes": [
-        "Source outer v-hovercard is a positioning/visibility wrapper; the visible v-popover maps to HoverCardContent. Its authored closed wrapper remains empty in the converted tree. The source nested health-line composite is explicitly excluded from the 66-base scope."
+        "Source outer v-hovercard is a positioning/visibility wrapper; the visible v-popover maps to HoverCardContent. Its authored closed wrapper remains empty in the converted tree. The source nested health-line composite is explicitly excluded from the 66-base scope.",
+        "The empty source positioning wrapper explicitly preserves its closed hidden state; visible content is owned by the real HoverCard portal."
       ]
     },
     "input-otp": {
@@ -363,7 +364,7 @@
       "parts": {
         ".v-radios,.v-iradios": {
           "part": "root",
-          "candidateSelector": ".v-radios,.v-iradios"
+          "candidateSelector": "[data-fixture-authored-radio-root]"
         },
         ".v-radio,.v-iradio": {
           "part": "item",
@@ -376,7 +377,8 @@
       },
       "coverage": "mapping implemented; browser gate pending",
       "notes": [
-        "Inline radios without an authored v-radios wrapper receive the required Radix group provider; the original wrapping layout and data-gate attributes remain. Native inputs map to the visible indicator span; hidden form controls are excluded from visible-part comparison."
+        "Inline radios without an authored v-radios wrapper receive the required Radix group provider; the original wrapping layout and data-gate attributes remain. Native inputs map to the visible indicator span; hidden form controls are excluded from visible-part comparison.",
+        "Only source-authored group roots receive data-fixture-authored-radio-root; implicit Radix provider wrappers preserve all data-gate nodes but do not introduce additional sampled source parts."
       ]
     },
     "resizable": {
@@ -465,7 +467,10 @@
         },
         ".v-slider::-webkit-slider-thumb": {
           "part": "thumb",
-          "candidateSelector": "[data-slot=\"slider-thumb\"]"
+          "candidateSelector": "[data-slot=\"slider-thumb\"]",
+          "referenceSelector": ".v-slider",
+          "referencePseudo": "::-webkit-slider-thumb",
+          "computedStyleUnavailable": "Chromium getComputedStyle(input, ::-webkit-slider-thumb) returns the input host styles; verify physical thumb through pixel and drag evidence."
         },
         ".v-sliderwrap output": {
           "part": "indicator",
@@ -485,7 +490,9 @@
         },
         ".v-switch input": {
           "part": "thumb",
-          "candidateSelector": "[data-slot=\"switch-thumb\"]"
+          "candidateSelector": "[data-slot=\"switch-thumb\"]",
+          "referenceSelector": ".v-switch",
+          "referencePseudo": "::after"
         }
       },
       "coverage": "mapping implemented; browser gate pending",

@@ -362,8 +362,9 @@
   [data-slot="select"]::after,
   [data-slot^="select-"]::before,
   [data-slot^="select-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

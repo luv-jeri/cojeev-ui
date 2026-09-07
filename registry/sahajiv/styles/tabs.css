@@ -125,8 +125,9 @@
   [data-slot="tabs"]::after,
   [data-slot^="tabs-"]::before,
   [data-slot^="tabs-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

@@ -256,13 +256,15 @@
   [data-slot="command"]::after,
   [data-slot^="command-"]::before,
   [data-slot^="command-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }
 
 [data-slot="command-list"] > [cmdk-list-sizer],
+[data-slot="command-list"] [cmdk-group],
 [data-slot="command-list"] [cmdk-group-items] {
   display: contents;
 }

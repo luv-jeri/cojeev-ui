@@ -1,5 +1,5 @@
 /* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
-.v-resizable__pane:where([data-slot="resizable"], [data-slot^="resizable-"]) {
+.v-resizable__pane:where([data-slot="resizable-panel"] > *) {
   padding: var(--s-4);
   overflow: auto;
   min-width: 0;
@@ -39,26 +39,23 @@
   ):focus-visible::before {
   background: var(--v-pink);
 }
-.v-resizable__pane:where([data-slot="resizable"], [data-slot^="resizable-"]) {
+.v-resizable__pane:where([data-slot="resizable-panel"] > *) {
   padding: 18px 20px;
   gap: 6px;
   align-content: start;
   background: var(--v-canvas);
 }
-.v-resizable__pane:where(
-    [data-slot="resizable"],
-    [data-slot^="resizable-"]
-  ):last-child {
+:where([data-slot="resizable-panel"]:last-child) > .v-resizable__pane {
   background: var(--surface-work);
 }
-.v-resizable__pane:where([data-slot="resizable"], [data-slot^="resizable-"])
+.v-resizable__pane:where([data-slot="resizable-panel"] > *)
   > b {
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
-.v-resizable__pane:where([data-slot="resizable"], [data-slot^="resizable-"])
+.v-resizable__pane:where([data-slot="resizable-panel"] > *)
   .v-caps {
   margin-bottom: 4px;
 }
@@ -234,11 +231,11 @@
   width: 52px;
   height: 4px;
 }
-.v-resizable__pane:where([data-slot="resizable"], [data-slot^="resizable-"]) {
+.v-resizable__pane:where([data-slot="resizable-panel"] > *) {
   border-radius: 16px;
 }
 :root[data-mode="dark"]
-  .v-resizable__pane:where([data-slot="resizable"], [data-slot^="resizable-"]) {
+  .v-resizable__pane:where([data-slot="resizable-panel"] > *) {
   background: var(--v-beige);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -248,13 +245,14 @@
   [data-slot="resizable"]::after,
   [data-slot^="resizable-"]::before,
   [data-slot^="resizable-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }
 
-[data-slot="resizable-panel"] {
+[data-slot="resizable-panel"] > .v-resizable__pane {
   display: grid;
 }
 [data-slot="resizable-handle"] {

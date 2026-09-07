@@ -205,7 +205,7 @@ function convert(
   const children = Object.prototype.hasOwnProperty.call(options, "children")
     ? options.children
     : childNodes.map((child, i) => convert(child, i));
-  props = { ...props, ...options.props };
+  props = Object.fromEntries(Object.entries({ ...props, ...options.props }).filter(([, value]) => value !== undefined));
   if (Component === Icon || Component === Shape)
     return React.createElement(Component, props);
   if (

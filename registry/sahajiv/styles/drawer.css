@@ -63,8 +63,9 @@
   [data-slot="drawer"]::after,
   [data-slot^="drawer-"]::before,
   [data-slot^="drawer-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

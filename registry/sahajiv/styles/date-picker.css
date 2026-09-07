@@ -256,8 +256,9 @@
   [data-slot="date-picker"]::after,
   [data-slot^="date-picker-"]::before,
   [data-slot^="date-picker-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }

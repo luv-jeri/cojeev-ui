@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import * as AccordionParts from "@/registry/sahajiv/ui/accordion";
 import * as AlertDialogParts from "@/registry/sahajiv/ui/alert-dialog";
 import * as CalendarParts from "@/registry/sahajiv/ui/calendar";
@@ -61,7 +62,11 @@ function render(
   ctx.mark(node);
   return React.createElement(
     Component,
-    { ...ctx.props(node), ...extra, key },
+    Object.fromEntries(
+      Object.entries({ ...ctx.props(node), ...extra, key }).filter(
+        ([, value]) => value !== undefined,
+      ),
+    ),
     Array.isArray(children) && children.length === 0 ? undefined : children,
   );
 }
@@ -521,6 +526,7 @@ function RadioFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
       defaultValue: selected >= 0 ? String(selected) : undefined,
       name: items[0]?.querySelector("input")?.getAttribute("name") ?? undefined,
       pictographic,
+      "data-fixture-authored-radio-root": node.matches(".v-radios,.v-iradios") || undefined,
       // Source inline groups have only authored layout, without the v-radios gap.
       className: node.className || undefined,
     },
@@ -543,6 +549,7 @@ function RadioFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
 
 function ToastFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
   const [isOpen, setOpen] = React.useState(false);
+  const [hasOpened, setHasOpened] = React.useState(false);
   const kind = node.getAttribute("data-kind")?.replace(/^-/, "") as
     "cream" | "danger" | undefined;
   const action = node.getAttribute("data-action");
@@ -550,7 +557,7 @@ function ToastFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
     <ToastParts.ToastProvider>
       {ctx.convert(node, 0, {
         skipInteractive: true,
-        props: { onClick: () => setOpen(true) },
+        props: { onClick: () => { setHasOpened(true); setOpen(true); } },
       })}
       <ToastParts.Toast
         open={isOpen}
@@ -570,7 +577,7 @@ function ToastFixture({ node, ctx }: { node: Element; ctx: FixtureContext }) {
         )}
         <ToastParts.ToastClose />
       </ToastParts.Toast>
-      <ToastParts.ToastViewport />
+      {hasOpened && createPortal(<ToastParts.ToastViewport />, document.body)}
     </ToastParts.ToastProvider>
   );
 }
@@ -822,10 +829,13 @@ export function convertInteractive(
       ? "underline"
       : node.classList.contains("-lenses")
         ? "lenses"
-        : "default";
+        : node.classList.contains("-pills")
+          ? "pills"
+          : "default";
     ctx.mark(node);
     return (
       <TabsParts.Tabs
+        asChild
         key={index}
         defaultValue={String(Math.max(0, active))}
         variant={variant}
@@ -1195,7 +1205,8 @@ export function convertInteractive(
       </HoverCardParts.HoverCard>
     );
   }
-  if (node.matches(".v-hovercard")) return native(node, ctx, undefined, index);
+  if (node.matches(".v-hovercard"))
+    return React.createElement(node.tagName.toLowerCase(), { ...ctx.props(node), hidden: !node.classList.contains("-show"), key: index });
   if (node.hasAttribute("data-tooltip")) {
     ctx.mark(node);
     return (

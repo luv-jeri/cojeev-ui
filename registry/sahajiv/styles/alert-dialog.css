@@ -75,8 +75,9 @@
   [data-slot="alert-dialog"]::after,
   [data-slot^="alert-dialog-"]::before,
   [data-slot^="alert-dialog-"]::after {
-    animation: none;
-    transition: none;
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
     scroll-behavior: auto;
   }
 }
