@@ -387,3 +387,11 @@
   outline: 2px solid var(--ring);
   outline-offset: -2px;
 }
+
+/* The source focuses a native option button on pointer open. Radix focuses a
+   div, which Chromium marks focus-visible; retain the source pointer appearance
+   and reveal its authored focus ring as soon as keyboard navigation begins. */
+.v-listbox:where([data-slot="select-content"])[data-pointer-interaction] .v-menu__item:focus-visible {
+  outline: 3px none currentColor;
+  outline-offset: 0;
+}

@@ -11,25 +11,32 @@ import {
   useFlowAppearance,
   useFlowGroup,
 } from "@/registry/sahajiv/motion/use-flow";
+const SelectInteractionContext = React.createContext<{
+  pointer: boolean;
+  setPointer: (pointer: boolean) => void;
+}>({ pointer: false, setPointer: () => {} });
 export type SelectProps = React.ComponentProps<typeof Primitive.Root> & {
   containerProps?: React.ComponentProps<"span">;
 };
 export function Select({ children, containerProps, ...props }: SelectProps) {
+  const [pointer, setPointer] = React.useState(false);
   return (
-    <Primitive.Root {...props}>
-      <span
-        data-slot="select"
-        data-part="root"
-        data-select=""
-        {...containerProps}
-        className={cn(
-          "v-menuhost relative inline-block",
-          containerProps?.className,
-        )}
-      >
-        {children}
-      </span>
-    </Primitive.Root>
+    <SelectInteractionContext.Provider value={{ pointer, setPointer }}>
+      <Primitive.Root {...props}>
+        <span
+          data-slot="select"
+          data-part="root"
+          data-select=""
+          {...containerProps}
+          className={cn(
+            "v-menuhost relative inline-block",
+            containerProps?.className,
+          )}
+        >
+          {children}
+        </span>
+      </Primitive.Root>
+    </SelectInteractionContext.Provider>
   );
 }
 export const selectTriggerVariants = cva(
@@ -40,13 +47,24 @@ export function SelectTrigger({
   className,
   ref,
   children,
+  onPointerDown,
+  onKeyDown,
   ...props
 }: SelectTriggerProps) {
+  const { setPointer } = React.useContext(SelectInteractionContext);
   const morphRef = useMorph<HTMLButtonElement>("buttons", ref);
   const pressRef = useFlowPress(morphRef);
   return (
     <Primitive.Trigger
       ref={pressRef}
+      onPointerDown={(event) => {
+        onPointerDown?.(event);
+        if (!event.defaultPrevented && event.button === 0) setPointer(true);
+      }}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (!event.defaultPrevented) setPointer(false);
+      }}
       data-slot="select-trigger"
       data-part="trigger"
       className={cn(selectTriggerVariants(), className)}
@@ -70,8 +88,11 @@ export function SelectContent({
   children,
   position = "popper",
   sideOffset = 6,
+  onKeyDownCapture,
+  onPointerMove,
   ...props
 }: SelectContentProps) {
+  const { pointer, setPointer } = React.useContext(SelectInteractionContext);
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
   const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
@@ -84,6 +105,15 @@ export function SelectContent({
         ref={flowRef}
         data-slot="select-content"
         data-part="content"
+        data-pointer-interaction={pointer ? "" : undefined}
+        onKeyDownCapture={(event) => {
+          onKeyDownCapture?.(event);
+          if (!event.defaultPrevented) setPointer(false);
+        }}
+        onPointerMove={(event) => {
+          onPointerMove?.(event);
+          if (!event.defaultPrevented && event.pointerType === "mouse") setPointer(true);
+        }}
         className={cn("v-listbox v-menu", className)}
         position={position}
         sideOffset={sideOffset}
