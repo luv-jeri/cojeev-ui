@@ -1,0 +1,92 @@
+{
+  "revision": "e29d0f665c09d8bb5a685237a2e91cfa970c6901",
+  "runs": [
+    {
+      "id": "tabs",
+      "count": 6,
+      "port": 4342,
+      "filter": "default-default-on-720x320.html",
+      "exitCode": 0,
+      "revision": "e29d0f665c09d8bb5a685237a2e91cfa970c6901",
+      "report": ".work/interactive-closeout-tabs.md",
+      "receipt": ".work/interactive-closeout-tabs-receipt.json",
+      "artifactDirectory": "artifacts/interactive-closeout-tabs",
+      "sourceSha256": "ad0ae11ba614602076a2dbec4734e8d0b9b64e4be552bba97acc612aa6c70c92",
+      "startedAt": "2026-09-07T20:52:10.073Z",
+      "finishedAt": "2026-09-07T20:52:24.835Z",
+      "elapsedSeconds": 14.762,
+      "elapsedBoundary": "output-directory creation to final report write; excludes process startup and browser/server cleanup",
+      "rows": 6,
+      "pass": 6,
+      "fail": 0,
+      "runtimeErrors": 0,
+      "oracleUnstable": 0,
+      "candidateUnstable": 0,
+      "oracleByteUnstable": [],
+      "candidateByteUnstable": 0,
+      "styleDifferences": 0,
+      "minimumPixelPercent": 0.0023148148148148147,
+      "maximumPixelPercent": 0.01234567901234568,
+      "statePreparation": []
+    },
+    {
+      "id": "date-picker",
+      "count": 12,
+      "port": 4343,
+      "filter": "-open",
+      "exitCode": 1,
+      "revision": "e29d0f665c09d8bb5a685237a2e91cfa970c6901",
+      "report": ".work/interactive-closeout-date-picker.md",
+      "receipt": ".work/interactive-closeout-date-picker-receipt.json",
+      "artifactDirectory": "artifacts/interactive-closeout-date-picker",
+      "sourceSha256": "ad0ae11ba614602076a2dbec4734e8d0b9b64e4be552bba97acc612aa6c70c92",
+      "startedAt": "2026-09-07T20:52:10.073Z",
+      "finishedAt": "2026-09-07T20:52:50.634Z",
+      "elapsedSeconds": 40.561,
+      "elapsedBoundary": "output-directory creation to final report write; excludes process startup and browser/server cleanup",
+      "rows": 12,
+      "pass": 0,
+      "fail": 12,
+      "runtimeErrors": 0,
+      "oracleUnstable": 0,
+      "candidateUnstable": 0,
+      "oracleByteUnstable": [
+        {
+          "file": "default-default-open-480x520.html",
+          "width": 390
+        }
+      ],
+      "candidateByteUnstable": 0,
+      "styleDifferences": 0,
+      "minimumPixelPercent": 0.18790509259259258,
+      "maximumPixelPercent": 2.646604938271605,
+      "statePreparation": [
+        {
+          "sourceFile": "default-default-rest-480x520.html",
+          "selector": "[data-datepicker] > button",
+          "method": "click"
+        },
+        {
+          "sourceFile": "default-default-rest-dark-480x520.html",
+          "selector": "[data-datepicker] > button",
+          "method": "click"
+        }
+      ]
+    }
+  ],
+  "priorReceipts": [
+    {
+      "path": "artifacts/interactive-partition-b/results.json",
+      "sha256": "20577dbf6e6229d68d4d7bf42642ab53d61081e57b4c7ad4bd4628be1399306f"
+    },
+    {
+      "path": ".work/interactive-final-selection-open-receipt.json",
+      "sha256": "f13bcc0f1b6209e990e11da440507a201e109fdd61f52ed66426cddb507d6517"
+    },
+    {
+      "path": ".work/interactive-final-popup-defaults-receipt.json",
+      "sha256": "7aa86db1425dd45b0cadb5fa25fb3978555b169e0d54472633963c539e1e6a22"
+    }
+  ],
+  "scope": "Only six prior unstable light Tabs on cases and twelve DatePicker open light/dark cases. No production changes, additional browser tests, or acceptance of source behavior differences."
+}
