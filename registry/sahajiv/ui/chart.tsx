@@ -347,7 +347,7 @@ export function ChartRankedValue({
     />
   );
 }
-export type ChartDataTableProps = React.ComponentProps<"table"> & {
+export type ChartDataTableProps = {
   data: ChartDatum[];
   caption?: string;
   visuallyHidden?: boolean;
@@ -356,15 +356,11 @@ export function ChartDataTable({
   data,
   caption = "Chart data",
   visuallyHidden = true,
-  className,
-  ...props
 }: ChartDataTableProps) {
-  const Comp = visuallyHidden ? "table" : Table;
   return (
-    <Comp
+    <Table
       data-slot="chart-data-table"
-      className={cn(visuallyHidden && "v-sr", className)}
-      {...props}
+      className={visuallyHidden ? "v-sr" : undefined}
     >
       <TableCaption>{caption}</TableCaption>
       <TableHeader>
@@ -385,6 +381,6 @@ export function ChartDataTable({
           </TableRow>
         ))}
       </TableBody>
-    </Comp>
+    </Table>
   );
 }

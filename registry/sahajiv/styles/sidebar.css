@@ -125,4 +125,7 @@
 }
 
 /* Standalone authored rail; embedded rails keep the container sizing contract. */
-[data-slot="sidebar"][data-layout="viewport"] { position: sticky; top: var(--shell-inset); min-height: calc(100vh - var(--shell-inset)*2); max-height: calc(100vh - var(--shell-inset)*2); }
+[data-slot="sidebar"][data-layout="viewport"] { position: sticky; width: auto; top: var(--shell-inset); min-height: calc(100vh - var(--shell-inset)*2); max-height: calc(100vh - var(--shell-inset)*2); }
+
+[data-slot="sidebar-content"] { --glide-fg: var(--v-pink); }
+[data-slot="sidebar-content"].v-glide > .v-glide__pill { background: rgba(251,244,230,.1); }
