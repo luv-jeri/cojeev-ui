@@ -15,13 +15,24 @@ const output = path.resolve(
   process.argv[2] ?? path.join(os.tmpdir(), `sahajiv-registry-consumer-${Date.now()}`),
 );
 if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/sahajiv-consumer-audit.");
+const resume = process.argv.includes("--resume");
 const registry = path.join(output, "registry-source");
 const consumer = path.join(output, "consumer");
 const env = {
   ...process.env,
   PATH: `${path.dirname(process.execPath)}:${process.env.PATH}`,
 };
-const receipt = { node: process.version, output, startedAt: new Date().toISOString(), sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(), checks: {} };
+const runnerCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+const receipt = resume ? JSON.parse(await fs.readFile(path.join(output, "receipt.json"), "utf8")) : { node: process.version, output, startedAt: new Date().toISOString(), sourceCommit: runnerCommit, checks: {} };
+if (resume) {
+  for (const name of ["registry-build", "consumer-npm-install", "shadcn-install-all"]) if (receipt.checks[name] !== "PASS") throw new Error(`Cannot resume without successful ${name}`);
+  await fs.writeFile(path.join(output, `receipt-before-resume-${Date.now()}.json`), JSON.stringify(receipt, null, 2) + "\n");
+  receipt.resumedAt = new Date().toISOString();
+  receipt.auditRunnerCommit = runnerCommit;
+  receipt.resumedExistingFreshConsumer = true;
+  delete receipt.error;
+}
+receipt.logs ??= {};
 function packageName(value) {
   const version = value.indexOf("@", value.startsWith("@") ? value.indexOf("/") : 0);
   return version < 0 ? value : value.slice(0, version);
@@ -51,6 +62,8 @@ const write = async (file, content) => {
 };
 async function run(name, executable, args, cwd, extraEnv = {}) {
   const log = [];
+  const logFile = `${name}${resume ? `-resume-${Date.now()}` : ""}.log`;
+  receipt.logs[name] = logFile;
   console.log(`${name}…`);
   await new Promise((resolve, reject) => {
     const child = spawn(executable, args, {
@@ -61,14 +74,14 @@ async function run(name, executable, args, cwd, extraEnv = {}) {
     child.stderr.on("data", (chunk) => log.push(chunk.toString()));
     child.on("error", reject);
     child.on("close", async (code) => {
-      await write(path.join(output, `${name}.log`), log.join(""));
-      if (code) reject(new Error(`${name} exited ${code}; see ${name}.log`));
+      await write(path.join(output, logFile), log.join(""));
+      if (code) reject(new Error(`${name} exited ${code}; see ${logFile}`));
       else resolve();
     });
   });
   receipt.checks[name] = "PASS";
 }
-await fs.mkdir(output); // Refuse to overwrite an earlier consumer or receipt.
+if (!resume) await fs.mkdir(output); // A new audit never overwrites an earlier consumer. Resume preserves the installed source and package tree.
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, "http://localhost");
@@ -101,6 +114,7 @@ try {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const baseURL = `http://127.0.0.1:${server.address().port}`;
   receipt.registryURL = baseURL;
+  if (!resume) {
   for (const file of [
     "registry/sahajiv",
     "scripts/build-registry.mjs",
@@ -146,13 +160,16 @@ try {
     registry,
     { SAHAJIV_REGISTRY_URL: baseURL },
   );
+  }
   const items = (await json(path.join(registry, "registry.json"))).items;
   const ids = items
     .filter((item) => item.type === "registry:ui")
     .map((item) => item.name)
     .sort();
+  if (resume && JSON.stringify(receipt.entries) !== JSON.stringify(ids)) throw new Error("Stored registry catalog differs from the original fresh install");
   receipt.entries = ids;
   receipt.entryCount = ids.length;
+  if (!resume) {
   const packageFile = {
     name: "sahajiv-fresh-consumer-audit",
     version: "0.0.0",
@@ -241,17 +258,26 @@ try {
     ],
     consumer,
   );
-  const sceneIndex = ids.indexOf("shape-scene");
-  const codeIndex = ids.indexOf("code-block");
-  const textIndex = ids.indexOf("text-reveal");
-  const specimen = [
-    sceneIndex >= 0 ? `<section style={{maxWidth:480,margin:"24px auto"}}><Item${sceneIndex}.ShapeScene animate={false} interactive={false}/></section>` : "",
-    codeIndex >= 0 ? `<Item${codeIndex}.CodeBlock code={'const installed = true;\\n'} title="installed.ts" language="ts"/>` : "",
-    textIndex >= 0 ? `<Item${textIndex}.TextReveal as="h2" text="Good things take shape."/>` : "",
-  ].join("");
+  }
+  const renderedExamples = {
+    "shape-scene": index => `<Item${index}.ShapeScene animate={false} interactive={false}/>` ,
+    button: index => `<Item${index}.Button onClick={() => setCount(value => value + 1)}>Add schedule</Item${index}.Button><p data-audit-count>Schedules added: {count}</p>`,
+    badge: index => `<Item${index}.Badge variant="olive">Ready</Item${index}.Badge>`,
+    card: index => `<Item${index}.Card><Item${index}.CardTitle>Installed card</Item${index}.CardTitle><Item${index}.CardDescription>Real registry source.</Item${index}.CardDescription></Item${index}.Card>`,
+    accordion: index => `<Item${index}.Accordion type="single" collapsible><Item${index}.AccordionItem value="installed"><Item${index}.AccordionTrigger>What was installed?</Item${index}.AccordionTrigger><Item${index}.AccordionContent>Installed Radix behavior.</Item${index}.AccordionContent></Item${index}.AccordionItem></Item${index}.Accordion>`,
+    dialog: index => `<Item${index}.Dialog><Item${index}.DialogTrigger>Open installation details</Item${index}.DialogTrigger><Item${index}.DialogContent><Item${index}.DialogTitle>Installation details</Item${index}.DialogTitle><Item${index}.DialogDescription>Installed through the registry CLI.</Item${index}.DialogDescription></Item${index}.DialogContent></Item${index}.Dialog>`,
+    "code-block": index => `<Item${index}.CodeBlock code={${JSON.stringify("const installed = true;\n")}} title="installed.ts" language="ts" copyLabel="Copy source"/>`,
+    "text-reveal": index => `<Item${index}.TextReveal as="h2" text="Good things take shape."/>`,
+    "animated-number": index => `<Item${index}.AnimatedNumber value={1240}/>`,
+    "ambient-background": index => `<Item${index}.AmbientBackground paused><h2>Room for useful ideas</h2></Item${index}.AmbientBackground>`,
+    marquee: index => `<Item${index}.Marquee defaultPaused><span>Calm</span><span>Useful</span><span>Considered</span></Item${index}.Marquee>`,
+    "multi-select": index => `<Item${index}.MultiSelect label="Topics" options={[{value:"research",label:"Research"},{value:"design",label:"Design"}]}/>` ,
+  };
+  receipt.renderedComponents = Object.keys(renderedExamples).filter(id => ids.includes(id));
+  const specimen = receipt.renderedComponents.map(id => `<section data-audit-specimen="${id}" style={{maxWidth:480,margin:"24px auto"}}>${renderedExamples[id](ids.indexOf(id))}</section>`).join("");
   await write(
     path.join(consumer, "src/main.tsx"),
-    `import React from "react"; import {createRoot} from "react-dom/client"; import "./index.css";\n${ids.map((id, index) => `import * as Item${index} from "@/components/ui/${id}";`).join("\n")}\nconst entries=[${ids.map((id, index) => `{name:${JSON.stringify(id)},exports:Object.keys(Item${index})}`).join(",")}];\ncreateRoot(document.getElementById("root")!).render(<>${specimen}<div data-slot="table-container" style={{width:100,height:100,overflow:"scroll"}}><div style={{width:200,height:200}}>CSS cascade probe</div></div><ul>{entries.map(item=><li key={item.name}>{item.name}: {item.exports.join(", ")}</li>)}</ul></>);\n`,
+    `import React from "react"; import {createRoot} from "react-dom/client"; import "./index.css";\n${ids.map((id, index) => `import * as Item${index} from "@/components/ui/${id}";`).join("\n")}\nconst entries=[${ids.map((id, index) => `{name:${JSON.stringify(id)},exports:Object.keys(Item${index})}`).join(",")}];\nfunction Specimen(){const [count,setCount]=React.useState(0);return <>${specimen}<div data-slot="table-container" style={{width:100,height:100,overflow:"scroll"}}><div style={{width:200,height:200}}>CSS cascade probe</div></div><ul>{entries.map(item=><li data-audit-entry key={item.name}>{item.name}: {item.exports.join(", ")}</li>)}</ul></>;}createRoot(document.getElementById("root")!).render(<Specimen/>);\n`,
   );
   await run("consumer-build", "npm", ["run", "build"], consumer);
   const generated = new Map(
@@ -283,7 +309,7 @@ try {
     const packages = new Set([
       "react",
       "react-dom",
-      ...dependencies.flatMap((item) => item.dependencies ?? []).map(packageName),
+      ...dependencies.flatMap((item) => [...(item.dependencies ?? []), ...(item.devDependencies ?? [])]).map(packageName),
     ]);
     const files = new Set(
       dependencies
@@ -316,11 +342,11 @@ try {
   }
   if (errors.length) throw new Error(errors.join("\n"));
   receipt.checks.dependencyClosure = "PASS";
-  const basePackages = new Set([...closure("sahajiv")].flatMap(name => generated.get(name)?.dependencies ?? []).map(packageName));
+  const basePackages = new Set([...closure("sahajiv")].flatMap(name => [...(generated.get(name)?.dependencies ?? []), ...(generated.get(name)?.devDependencies ?? [])]).map(packageName));
   if (basePackages.has("three") || basePackages.has("@types/three")) throw new Error("The foundation must not install optional Three.js packages");
   receipt.checks.optionalSceneExcludedFromBase = "PASS";
   if (ids.includes("shape-scene")) {
-    const scenePackages = new Set([...closure("shape-scene")].flatMap(name => generated.get(name)?.dependencies ?? []).map(packageName));
+    const scenePackages = new Set([...closure("shape-scene")].flatMap(name => [...(generated.get(name)?.dependencies ?? []), ...(generated.get(name)?.devDependencies ?? [])]).map(packageName));
     receipt.sceneDependencies = {};
     for (const name of ["three", "@types/three"]) {
       if (!scenePackages.has(name)) throw new Error(`ShapeScene registry closure must declare ${name}`);
@@ -372,7 +398,7 @@ try {
   const runtimeErrors = [];
   page.on("pageerror", (error) => runtimeErrors.push(error.message));
   await page.goto(`${baseURL}/consumer/`);
-  await page.locator("li").last().waitFor();
+  await page.locator("[data-audit-entry]").last().waitFor();
   if (ids.includes("shape-scene")) {
     await page.waitForFunction(() => document.querySelector('[data-slot="shape-scene"]')?.getAttribute("data-renderer") === "webgl", undefined, { timeout: 30000 });
     const canvas = page.locator('[data-slot="shape-scene-canvas"]');
@@ -386,8 +412,41 @@ try {
   }
   if (ids.includes("code-block") && await page.locator('[data-slot="code-block"] code').textContent() !== "const installed = true;\n") throw new Error("Installed CodeBlock altered source text");
   if (ids.includes("text-reveal") && await page.locator('[data-slot="text-reveal"] .v-text-reveal__accessible').textContent() !== "Good things take shape.") throw new Error("Installed TextReveal lost accessible text");
+  if (ids.includes("button")) {
+    await page.getByRole("button", { name: "Add schedule", exact: true }).click();
+    if (await page.locator("[data-audit-count]").textContent() !== "Schedules added: 1") throw new Error("Installed Button did not perform its action");
+  }
+  if (ids.includes("accordion")) {
+    await page.getByRole("button", { name: "What was installed?", exact: true }).click();
+    await page.getByText("Installed Radix behavior.", { exact: true }).waitFor({ state: "visible" });
+  }
+  if (ids.includes("dialog")) {
+    await page.getByRole("button", { name: "Open installation details", exact: true }).click();
+    await page.getByRole("dialog", { name: "Installation details" }).waitFor({ state: "visible" });
+    await page.keyboard.press("Escape");
+    await page.getByRole("dialog", { name: "Installation details" }).waitFor({ state: "hidden" });
+  }
+  if (ids.includes("code-block")) {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseURL });
+    await page.getByRole("button", { name: "Copy source", exact: true }).click();
+    await page.getByText("Copied to clipboard.", { exact: true }).waitFor();
+    if (await page.evaluate(() => navigator.clipboard.readText()) !== "const installed = true;\n") throw new Error("Installed CodeBlock copied different text");
+  }
+  if (ids.includes("multi-select")) {
+    await page.getByRole("button", { name: "Topics", exact: true }).click();
+    await page.getByRole("checkbox", { name: "Research", exact: true }).click();
+    if (await page.getByRole("checkbox", { name: "Research", exact: true }).getAttribute("aria-checked") !== "true") throw new Error("Installed MultiSelect did not select an option");
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "Remove Research", exact: true }).waitFor();
+  }
+  if (ids.includes("marquee")) {
+    await page.getByRole("button", { name: "Resume motion", exact: true }).click();
+    await page.getByRole("button", { name: "Pause motion", exact: true }).click();
+    await page.getByRole("button", { name: "Resume motion", exact: true }).waitFor();
+  }
+  receipt.checks.selectedSpecimenInteractions = "PASS";
   await page.mouse.move(500, 500);
-  receipt.renderedEntries = await page.locator("li").count();
+  receipt.loadedModuleCount = await page.locator("[data-audit-entry]").count();
   receipt.tableInstalledBackgroundClip = await page
     .locator('[data-slot="table-container"]')
     .evaluate(
@@ -405,7 +464,7 @@ try {
         getComputedStyle(element, "::-webkit-scrollbar-thumb").backgroundClip,
     );
   if (
-    receipt.renderedEntries !== ids.length ||
+    receipt.loadedModuleCount !== ids.length ||
     runtimeErrors.length ||
     receipt.tableInstalledBackgroundClip !== "border-box" ||
     receipt.tableSourceBackgroundClip !== receipt.tableInstalledBackgroundClip
@@ -413,6 +472,8 @@ try {
     throw new Error(
       `Browser evidence failed: ${JSON.stringify({ runtimeErrors, receipt })}`,
     );
+  receipt.renderedComponentCount = receipt.renderedComponents.length;
+  receipt.runtimeErrors = runtimeErrors;
   receipt.checks.consumerRuntimeAndTableCascade = "PASS";
   receipt.status = "PASS";
   console.log(
