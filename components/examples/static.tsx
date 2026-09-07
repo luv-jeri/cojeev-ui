@@ -102,7 +102,9 @@ export function AspectRatioExample() {
     <div style={{ maxWidth: 420 }}>
       <AspectRatio ratio={16 / 9} variant="pink">
         <Shape name="star-4" style={{ width: 72, height: 72 }} />
-        <Meta>16:9 · a frame that keeps its proportions</Meta>
+        <Meta style={{ color: "var(--muted-foreground-ink)" }}>
+          16:9 · a frame that keeps its proportions
+        </Meta>
       </AspectRatio>
     </div>
   );
@@ -460,7 +462,13 @@ export function SkeletonExample({ variant = "default" }: ExampleProps) {
 }
 export function SpinnerExample({ variant = "default" }: ExampleProps) {
   return (
-    <div style={{ display: "grid", justifyItems: "center", padding: "20px 0 32px" }}>
+    <div
+      style={{
+        display: "grid",
+        justifyItems: "center",
+        padding: "20px 0 32px",
+      }}
+    >
       <Spinner
         variant={variant as React.ComponentProps<typeof Spinner>["variant"]}
         label="Preparing your workspace"
@@ -555,7 +563,13 @@ export function ShapeExample() {
         >
           <Shape
             name={name}
-            style={{ width: 56, height: 56, "--c": "var(--v-pink-deep)" } as React.CSSProperties}
+            style={
+              {
+                width: 56,
+                height: 56,
+                "--c": "var(--v-pink-deep)",
+              } as React.CSSProperties
+            }
           />
           <Meta>{name}</Meta>
         </div>
