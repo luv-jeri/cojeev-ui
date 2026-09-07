@@ -16,7 +16,19 @@ export default defineConfig({
           if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.statusCode=404;res.end("Not found");return;}
           const types:Record<string,string>={".html":"text/html",".css":"text/css",".js":"text/javascript",".json":"application/json",".svg":"image/svg+xml",".ttf":"font/ttf",".woff2":"font/woff2"};
           res.setHeader("Content-Type",types[path.extname(file)]??"application/octet-stream");
-          res.end(fs.readFileSync(file));return;
+          let content=fs.readFileSync(file);
+          if(file.includes(`${path.sep}isolation${path.sep}`)&&file.endsWith('.html')){
+            const html=content.toString('utf8');
+            if(/\bv-pulse\b/.test(html)&&!html.includes('js/alive.js')){
+              // The full handoff catalog loads this original runtime, but its
+              // isolation generator omitted it and consequently draws no loader.
+              // Complete that bootstrap without editing any reference file.
+              const completed=html.replace('<script src="../../js/flow.js">','<script src="../../js/alive.js"></script><script src="../../js/flow.js">');
+              if(completed===html)throw new Error(`Missing loader bootstrap insertion point: ${file}`);
+              content=Buffer.from(completed.replace('</head>','<meta name="sahajiv-oracle-adapter" content="original-alive-runtime"></head>'));
+            }
+          }
+          res.end(content);return;
         }
         if (url.pathname !== "/candidate") return next();
         const id = url.searchParams.get("id") ?? "button";

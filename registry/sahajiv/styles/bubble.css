@@ -19,4 +19,3 @@
 .v-chat[data-slot] .v-bubble{max-width:none;padding:10px 14px 11px}
 :root[data-mode="dark"] .v-bubble[data-slot]{background:var(--v-beige-2);color:var(--v-text)}
 :root[data-mode="dark"] .v-bubble[data-slot].-me{background:var(--v-pink);color:var(--v-on-accent)}
-:root[data-mode="dark"] .v-chat[data-slot] .v-chat__time{color:var(--v-on-ink)}
