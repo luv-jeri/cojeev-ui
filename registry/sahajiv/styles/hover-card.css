@@ -13,3 +13,8 @@
   }
 }
 
+
+/* The source anchor retains its native underline; Tailwind resets that default. */
+a:where([data-slot="hover-card-trigger"])[href] {
+  text-decoration-line: underline;
+}

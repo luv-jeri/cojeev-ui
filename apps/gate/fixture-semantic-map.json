@@ -297,7 +297,7 @@
       },
       "coverage": "mapping implemented; browser gate pending",
       "notes": [
-        "Source outer v-hovercard is a positioning/visibility wrapper; the visible v-popover maps to HoverCardContent. Its authored closed wrapper remains empty in the converted tree. The source nested health-line composite is explicitly excluded from the 66-base scope.",
+        "Source outer v-hovercard is a positioning/visibility wrapper; the visible v-popover maps to HoverCardContent. Its authored closed wrapper remains empty in the converted tree. The source nested health-line product surface is explicitly excluded from the 66-base scope.",
         "The empty source positioning wrapper explicitly preserves its closed hidden state; visible content is owned by the real HoverCard portal.",
         "On open, source v-hovercard data-gate/data-canvas identity is transferred to the actual Radix positioning wrapper. The hidden source placeholder is retained only for closed markup; no wrapper CSS is copied or synthesized."
       ]
