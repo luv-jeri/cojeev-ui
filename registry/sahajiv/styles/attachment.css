@@ -1,0 +1,27 @@
+[data-slot="attachment"] {
+  transition: background var(--t-micro);
+}
+[data-slot="attachment"]:hover {
+  background: var(--v-beige-2);
+}
+[data-slot="attachment-action"] {
+  cursor: pointer;
+  transition:
+    background var(--t-micro),
+    transform var(--t-micro) var(--enter);
+}
+[data-slot="attachment-action"]:hover {
+  background: var(--v-pink);
+  box-shadow: none;
+  color: var(--v-on-accent);
+}
+[data-slot="attachment-action"]:active {
+  transform: scale(0.94);
+}
+[data-slot="attachment-action"] .v-icon {
+  width: 17px;
+  height: 17px;
+}
+:root[data-mode="dark"] [data-slot="attachment-action"] {
+  background: var(--v-beige-2);
+}

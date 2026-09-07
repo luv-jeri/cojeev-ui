@@ -1,0 +1,34 @@
+[data-slot="message-scroller"] {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+[data-slot="message-scroller"] > * {
+  min-height: 0;
+  overflow: visible;
+}
+[data-slot="message-scroller"] .v-card {
+  height: auto;
+}
+[data-slot="message-scroller"] .v-bubble {
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+[data-slot="message-scroller-jump"][hidden] {
+  display: none;
+}
+[data-slot="message-scroller"]::-webkit-scrollbar {
+  width: 8px;
+}
+[data-slot="message-scroller"]::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-slot="message-scroller"]::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--v-edge) 55%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+[data-slot="message-scroller"] .v-bubble,
+[data-slot="message-scroller"] > div > * {
+  transition: transform var(--t-element) var(--enter);
+}

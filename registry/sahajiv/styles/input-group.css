@@ -1,0 +1,82 @@
+[data-slot="input-group"] {
+  transition:
+    background var(--t-micro),
+    box-shadow var(--t-micro);
+}
+[data-slot="input-group"]:focus-within {
+  background: var(--v-pink-soft);
+  box-shadow: inset 0 0 0 2px var(--v-brand);
+}
+[data-slot="input-group"] > .v-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--v-text-2);
+  flex: none;
+}
+[data-slot="input-group"] .v-badge {
+  height: 26px;
+  background: var(--v-canvas);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+  color: var(--v-text);
+  flex: none;
+}
+[data-slot="input-group"] .v-badge.-ink {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+  box-shadow: none;
+}
+[data-slot="input-group"] .v-badge.-dashed {
+  background: transparent;
+}
+[data-slot="input-group"] .v-btn {
+  height: 40px;
+  padding: 0 16px;
+  flex: none;
+}
+[data-slot="input-group"] .v-ibtn {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+[data-slot="input-group"] .v-sep.-v {
+  height: 24px;
+  margin: 0 2px;
+  background: var(--v-edge);
+  opacity: 0.5;
+}
+[data-slot="input-search"] .v-input {
+  height: 44px;
+  box-shadow: inset 0 0 0 1px var(--v-border);
+  background: var(--v-canvas);
+}
+[data-slot="input-search"] .v-input:focus-within {
+  box-shadow: inset 0 0 0 2px var(--v-brand);
+  background: var(--v-canvas);
+}
+[data-slot="input-search"] .v-search__disk {
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+[data-slot="input-search-scope"] .v-badge {
+  height: 24px;
+  font-size: 11.5px;
+  padding: 0 9px;
+}
+[data-slot="input-search-scope"] .v-badge.-dashed {
+  background: transparent;
+  border-color: var(--v-border);
+  color: var(--v-text-2);
+}
+:root[data-mode="dark"] [data-slot="input-group"] {
+  background: var(--v-beige);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+:root[data-mode="dark"] [data-slot="input-group"]:focus-within {
+  background: color-mix(in oklab, var(--v-pink) 14%, var(--v-canvas));
+  box-shadow: inset 0 0 0 2px var(--v-pink);
+}
+:root[data-mode="dark"] [data-slot="input-group"] .v-badge {
+  background: var(--v-beige-2);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}

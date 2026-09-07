@@ -1,0 +1,26 @@
+[data-slot="dropzone"] {
+  transition:
+    background var(--t-element) var(--enter),
+    border-color var(--t-element) var(--enter),
+    transform var(--t-micro) var(--enter);
+}
+[data-slot="dropzone"]:hover {
+  background: color-mix(in oklab, var(--v-olive) 8%, var(--v-canvas));
+}
+[data-slot="dropzone"].-over {
+  background: color-mix(in oklab, var(--v-olive) 16%, var(--v-canvas));
+  border-color: var(--v-olive);
+  border-style: solid;
+  transform: translateY(-1px);
+}
+[data-slot="dropzone"]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+[data-slot="dropzone"][aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+:root[data-mode="dark"] [data-slot="dropzone"] {
+  background: var(--v-beige);
+}
