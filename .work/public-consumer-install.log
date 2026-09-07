@@ -1,0 +1,1449 @@
+Fresh consumer: /tmp/sahajiv-ui-stranger-qFCcg0
+
+added 83 packages, and audited 84 packages in 14s
+
+12 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+- Preflight checks.
+✔ Preflight checks.
+- Verifying framework.
+✔ Verifying framework. Found Vite.
+- Validating Tailwind CSS. Found v4.
+✔ Validating Tailwind CSS. Found v4.
+- Validating import alias.
+✔ Validating import alias.
+- Writing components.json.
+✔ Writing components.json.
+- Checking registry.
+✔ Checking registry.
+- Installing dependencies.
+- Installing dependencies.
+✔ Installing dependencies.
+- Updating files.
+✔ Created 2 files:
+  - src/components/ui/button.tsx
+  - src/lib/utils.ts
+- Updating src/index.css
+✔ Updating src/index.css
+
+Project initialization completed.
+You may now add components.
+
+{"waitingForPublicRegistry":true,"failures":[{"id":"registry","url":"https://luv-jeri.github.io/sahajiv-ui/registry.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.450Z"},{"id":"button","url":"https://luv-jeri.github.io/sahajiv-ui/r/button.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.443Z"},{"id":"badge","url":"https://luv-jeri.github.io/sahajiv-ui/r/badge.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.451Z"},{"id":"card","url":"https://luv-jeri.github.io/sahajiv-ui/r/card.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.443Z"},{"id":"accordion","url":"https://luv-jeri.github.io/sahajiv-ui/r/accordion.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.450Z"},{"id":"dialog","url":"https://luv-jeri.github.io/sahajiv-ui/r/dialog.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.450Z"},{"id":"code-block","url":"https://luv-jeri.github.io/sahajiv-ui/r/code-block.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.451Z"},{"id":"text-reveal","url":"https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.497Z"},{"id":"shape-scene","url":"https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:03.443Z"}],"elapsedSeconds":0.704}
+{"waitingForPublicRegistry":true,"failures":[{"id":"registry","url":"https://luv-jeri.github.io/sahajiv-ui/registry.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.660Z"},{"id":"button","url":"https://luv-jeri.github.io/sahajiv-ui/r/button.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.659Z"},{"id":"badge","url":"https://luv-jeri.github.io/sahajiv-ui/r/badge.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.666Z"},{"id":"card","url":"https://luv-jeri.github.io/sahajiv-ui/r/card.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.666Z"},{"id":"accordion","url":"https://luv-jeri.github.io/sahajiv-ui/r/accordion.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.666Z"},{"id":"dialog","url":"https://luv-jeri.github.io/sahajiv-ui/r/dialog.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.659Z"},{"id":"code-block","url":"https://luv-jeri.github.io/sahajiv-ui/r/code-block.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.669Z"},{"id":"text-reveal","url":"https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.669Z"},{"id":"shape-scene","url":"https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:44:33.652Z"}],"elapsedSeconds":30.876}
+{"waitingForPublicRegistry":true,"failures":[{"id":"registry","url":"https://luv-jeri.github.io/sahajiv-ui/registry.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.017Z"},{"id":"button","url":"https://luv-jeri.github.io/sahajiv-ui/r/button.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.017Z"},{"id":"badge","url":"https://luv-jeri.github.io/sahajiv-ui/r/badge.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.040Z"},{"id":"card","url":"https://luv-jeri.github.io/sahajiv-ui/r/card.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.016Z"},{"id":"accordion","url":"https://luv-jeri.github.io/sahajiv-ui/r/accordion.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.040Z"},{"id":"dialog","url":"https://luv-jeri.github.io/sahajiv-ui/r/dialog.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.040Z"},{"id":"code-block","url":"https://luv-jeri.github.io/sahajiv-ui/r/code-block.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.017Z"},{"id":"text-reveal","url":"https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.017Z"},{"id":"shape-scene","url":"https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:04.040Z"}],"elapsedSeconds":61.247}
+{"waitingForPublicRegistry":true,"failures":[{"id":"registry","url":"https://luv-jeri.github.io/sahajiv-ui/registry.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.158Z"},{"id":"button","url":"https://luv-jeri.github.io/sahajiv-ui/r/button.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.158Z"},{"id":"badge","url":"https://luv-jeri.github.io/sahajiv-ui/r/badge.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.162Z"},{"id":"card","url":"https://luv-jeri.github.io/sahajiv-ui/r/card.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.162Z"},{"id":"accordion","url":"https://luv-jeri.github.io/sahajiv-ui/r/accordion.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.162Z"},{"id":"dialog","url":"https://luv-jeri.github.io/sahajiv-ui/r/dialog.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.173Z"},{"id":"code-block","url":"https://luv-jeri.github.io/sahajiv-ui/r/code-block.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.173Z"},{"id":"text-reveal","url":"https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.173Z"},{"id":"shape-scene","url":"https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:45:34.173Z"}],"elapsedSeconds":91.38}
+{"waitingForPublicRegistry":true,"failures":[{"id":"registry","url":"https://luv-jeri.github.io/sahajiv-ui/registry.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.275Z"},{"id":"button","url":"https://luv-jeri.github.io/sahajiv-ui/r/button.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.275Z"},{"id":"badge","url":"https://luv-jeri.github.io/sahajiv-ui/r/badge.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.275Z"},{"id":"card","url":"https://luv-jeri.github.io/sahajiv-ui/r/card.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.258Z"},{"id":"accordion","url":"https://luv-jeri.github.io/sahajiv-ui/r/accordion.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.275Z"},{"id":"dialog","url":"https://luv-jeri.github.io/sahajiv-ui/r/dialog.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.246Z"},{"id":"code-block","url":"https://luv-jeri.github.io/sahajiv-ui/r/code-block.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.275Z"},{"id":"text-reveal","url":"https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.253Z"},{"id":"shape-scene","url":"https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:04.275Z"}],"elapsedSeconds":121.482}
+{"waitingForPublicRegistry":true,"failures":[{"id":"registry","url":"https://luv-jeri.github.io/sahajiv-ui/registry.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.432Z"},{"id":"button","url":"https://luv-jeri.github.io/sahajiv-ui/r/button.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.432Z"},{"id":"badge","url":"https://luv-jeri.github.io/sahajiv-ui/r/badge.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.436Z"},{"id":"card","url":"https://luv-jeri.github.io/sahajiv-ui/r/card.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.443Z"},{"id":"accordion","url":"https://luv-jeri.github.io/sahajiv-ui/r/accordion.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.443Z"},{"id":"dialog","url":"https://luv-jeri.github.io/sahajiv-ui/r/dialog.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.446Z"},{"id":"code-block","url":"https://luv-jeri.github.io/sahajiv-ui/r/code-block.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.456Z"},{"id":"text-reveal","url":"https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.443Z"},{"id":"shape-scene","url":"https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:46:34.457Z"}],"elapsedSeconds":151.664}
+{"waitingForPublicRegistry":true,"failures":[{"id":"registry","url":"https://luv-jeri.github.io/sahajiv-ui/registry.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.805Z"},{"id":"button","url":"https://luv-jeri.github.io/sahajiv-ui/r/button.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.805Z"},{"id":"badge","url":"https://luv-jeri.github.io/sahajiv-ui/r/badge.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.627Z"},{"id":"card","url":"https://luv-jeri.github.io/sahajiv-ui/r/card.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.806Z"},{"id":"accordion","url":"https://luv-jeri.github.io/sahajiv-ui/r/accordion.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.805Z"},{"id":"dialog","url":"https://luv-jeri.github.io/sahajiv-ui/r/dialog.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.805Z"},{"id":"code-block","url":"https://luv-jeri.github.io/sahajiv-ui/r/code-block.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.805Z"},{"id":"text-reveal","url":"https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.805Z"},{"id":"shape-scene","url":"https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json","error":"Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON","checkedAt":"2026-09-07T22:47:04.806Z"}],"elapsedSeconds":182.013}
+- Checking registry.
+✔ Checking registry.
+- Installing dependencies.
+- Installing dependencies.
+✔ Installing dependencies.
+- Updating files.
+✔ Created 46 files:
+ℹ Updated 2 files:
+  - src/lib/sahajiv/icon-data.ts
+  - src/lib/sahajiv/shape-data.ts
+  - src/lib/sahajiv-motion/body.ts
+  - src/lib/sahajiv-motion/category.ts
+  - src/lib/sahajiv-motion/clock.ts
+  - src/lib/sahajiv-motion/flow-press.ts
+  - src/lib/sahajiv-motion/flow.ts
+  - src/lib/sahajiv-motion/geometry.ts
+  - src/lib/sahajiv-motion/morph-paint.ts
+  - src/lib/sahajiv-motion/refs.ts
+  - src/lib/sahajiv-motion/settings.ts
+  - src/lib/sahajiv-motion/shapes.ts
+  - src/lib/sahajiv-motion/use-flow.ts
+  - src/lib/sahajiv-motion/use-morph.ts
+  - src/lib/sahajiv-motion/use-motion-visibility.ts
+  - src/lib/sahajiv-motion/use-reduced-motion.ts
+  - src/styles/sahajiv-fonts.css
+  - src/styles/sahajiv/tokens.css
+  - src/styles/sahajiv/theme.css
+  - src/styles/sahajiv/base.css
+  - src/styles/sahajiv/morph.css
+  - src/styles/sahajiv/flow-press.css
+  - src/styles/fonts/DMSans-OFL.txt
+  - src/styles/fonts/BricolageGrotesque-OFL.txt
+  - src/components/ui/badge.tsx
+  - src/styles/sahajiv/badge.css
+  - src/components/ui/card.tsx
+  - src/styles/sahajiv/card.css
+  - src/components/ui/dialog.tsx
+  - src/styles/sahajiv/dialog.css
+  - src/components/ui/text-reveal.tsx
+  - src/styles/sahajiv/text-reveal.css
+  - src/components/ui/spinner.tsx
+  - src/styles/sahajiv/spinner.css
+  - src/components/ui/icon.tsx
+  - src/styles/sahajiv/icon.css
+  - src/components/ui/typography.tsx
+  - src/styles/sahajiv/typography.css
+  - src/components/ui/shape.tsx
+  - src/styles/sahajiv/button.css
+  - src/components/ui/accordion.tsx
+  - src/styles/sahajiv/accordion.css
+  - src/components/ui/shape-scene.tsx
+  - src/styles/sahajiv/shape-scene.css
+  - src/components/ui/code-block.tsx
+  - src/styles/sahajiv/code-block.css
+  - src/lib/utils.ts
+  - src/components/ui/button.tsx
+- Updating src/index.css
+✔ Updating src/index.css
+
+> sahajiv-stranger@0.0.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 125 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.38 kB │ gzip:   0.28 kB
+dist/assets/geist-cyrillic-ext-wght-normal-DjL33-gN.woff2    7.42 kB
+dist/assets/geist-vietnamese-wght-normal-6IgcOCM7.woff2      8.00 kB
+dist/assets/geist-cyrillic-wght-normal-BEAKL7Jp.woff2       15.08 kB
+dist/assets/geist-latin-ext-wght-normal-DC-KSUi6.woff2      16.51 kB
+dist/assets/geist-latin-wght-normal-BgDaEnEv.woff2          29.40 kB
+dist/assets/index-xB2q5Dwh.css                             515.83 kB │ gzip: 328.93 kB
+dist/assets/BufferGeometryUtils-DD0sLZHr.js                 13.54 kB │ gzip:   4.61 kB
+dist/assets/SVGLoader-eyC1wU8M.js                           25.14 kB │ gzip:   9.00 kB
+dist/assets/index-DdCyYxOG.js                              369.66 kB │ gzip: 118.24 kB
+dist/assets/three.module-PDSP0dbZ.js                       734.33 kB │ gzip: 189.46 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.61s
+{
+  "directory": "/tmp/sahajiv-ui-stranger-qFCcg0",
+  "baseURL": "https://luv-jeri.github.io/sahajiv-ui",
+  "components": [
+    "button",
+    "badge",
+    "card",
+    "accordion",
+    "dialog",
+    "code-block",
+    "text-reveal",
+    "shape-scene"
+  ],
+  "foundationOnly": false,
+  "node": "v22.22.0",
+  "startedAt": "2026-09-07T22:43:11.627Z",
+  "build": "PASS",
+  "freshDirectory": true,
+  "screenshotVerification": "not-run",
+  "checks": {
+    "publicCLIInstall": "PASS",
+    "optionalSceneDependencies": "PASS",
+    "typecheckAndBuild": "PASS"
+  },
+  "readiness": {
+    "startedAt": "2026-09-07T22:44:02.793Z",
+    "deadlineAt": "2026-09-07T22:54:02.793Z",
+    "attempts": [
+      {
+        "checkedAt": "2026-09-07T22:44:03.497Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.450Z"
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.443Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.451Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.443Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.450Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.450Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.451Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.497Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:03.443Z"
+          }
+        ]
+      },
+      {
+        "checkedAt": "2026-09-07T22:44:33.669Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.660Z"
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.659Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.666Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.666Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.666Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.659Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.669Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.669Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:44:33.652Z"
+          }
+        ]
+      },
+      {
+        "checkedAt": "2026-09-07T22:45:04.040Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.017Z"
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.017Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.040Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.016Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.040Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.040Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.017Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.017Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:04.040Z"
+          }
+        ]
+      },
+      {
+        "checkedAt": "2026-09-07T22:45:34.173Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.158Z"
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.158Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.162Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.162Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.162Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.173Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.173Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.173Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:45:34.173Z"
+          }
+        ]
+      },
+      {
+        "checkedAt": "2026-09-07T22:46:04.275Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.275Z"
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.275Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.275Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.258Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.275Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.246Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.275Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.253Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:04.275Z"
+          }
+        ]
+      },
+      {
+        "checkedAt": "2026-09-07T22:46:34.457Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.432Z"
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.432Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.436Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.443Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.443Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.446Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.456Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.443Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:46:34.457Z"
+          }
+        ]
+      },
+      {
+        "checkedAt": "2026-09-07T22:47:04.806Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.805Z"
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.805Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.627Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.806Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.805Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.805Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.805Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.805Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+            "checkedAt": "2026-09-07T22:47:04.806Z"
+          }
+        ]
+      },
+      {
+        "checkedAt": "2026-09-07T22:47:35.491Z",
+        "results": [
+          {
+            "id": "registry",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+            "bytes": 284767,
+            "fetchedAt": "2026-09-07T22:47:35.459Z",
+            "entryCount": 78,
+            "entryNames": [
+              "sahajiv",
+              "accordion",
+              "adjuster",
+              "alert",
+              "alert-dialog",
+              "ambient-background",
+              "animated-number",
+              "aspect-ratio",
+              "attachment",
+              "avatar",
+              "badge",
+              "breadcrumb",
+              "bubble",
+              "button",
+              "button-group",
+              "calendar",
+              "card",
+              "carousel",
+              "chart",
+              "checkbox",
+              "code-block",
+              "collapsible",
+              "combobox",
+              "command",
+              "context-menu",
+              "data-table",
+              "date-picker",
+              "dialog",
+              "direction",
+              "drawer",
+              "dropdown-menu",
+              "dropzone",
+              "empty",
+              "field",
+              "hover-card",
+              "icon",
+              "input",
+              "input-group",
+              "input-otp",
+              "item",
+              "kbd",
+              "label",
+              "marker",
+              "marquee",
+              "menubar",
+              "message",
+              "message-scroller",
+              "multi-select",
+              "native-select",
+              "navigation-menu",
+              "pagination",
+              "popover",
+              "preview",
+              "progress",
+              "questionnaire",
+              "radio-group",
+              "resizable",
+              "scroll-area",
+              "select",
+              "separator",
+              "shape",
+              "shape-scene",
+              "sheet",
+              "sidebar",
+              "skeleton",
+              "slider",
+              "spinner",
+              "stepper",
+              "switch",
+              "table",
+              "tabs",
+              "text-reveal",
+              "textarea",
+              "toast",
+              "toggle",
+              "toggle-group",
+              "tooltip",
+              "typography"
+            ]
+          },
+          {
+            "id": "button",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "86557867275732b31476bbea793d308ec4e9e7498b2157b8373e9b9160fc3dc8",
+            "bytes": 13445,
+            "fetchedAt": "2026-09-07T22:47:35.431Z"
+          },
+          {
+            "id": "badge",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "7dfc2adf32d8562f234c96369e144ab6df77be8c82e24e1e2b1fe3c63134b323",
+            "bytes": 11122,
+            "fetchedAt": "2026-09-07T22:47:35.441Z"
+          },
+          {
+            "id": "card",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "915e0a569b7c1c71f939d75bab241e3ebf3037f9ec68ec23a1223439b4afefb3",
+            "bytes": 9852,
+            "fetchedAt": "2026-09-07T22:47:35.491Z"
+          },
+          {
+            "id": "accordion",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "7b9fe6d1e46bac774cb089ac3761dab5c49a152358040d44b4064d60dce09c88",
+            "bytes": 24966,
+            "fetchedAt": "2026-09-07T22:47:35.450Z"
+          },
+          {
+            "id": "dialog",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "b73c46eb5c726b7944f5a745bfdab3164647927445ae248a76325ac63457003d",
+            "bytes": 9418,
+            "fetchedAt": "2026-09-07T22:47:35.431Z"
+          },
+          {
+            "id": "code-block",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "5d090f33451c5b161f229649049e6644ce10d21f8344ad4e82f6585495ee924d",
+            "bytes": 10330,
+            "fetchedAt": "2026-09-07T22:47:35.449Z"
+          },
+          {
+            "id": "text-reveal",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "12930ca9f7d7ea0adae648cda6c3ab2e726af7673b25d834427a1bc2c92f34ce",
+            "bytes": 4567,
+            "fetchedAt": "2026-09-07T22:47:35.429Z"
+          },
+          {
+            "id": "shape-scene",
+            "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+            "status": 200,
+            "contentType": "application/json; charset=utf-8",
+            "sha256": "5c0adc70f8b4fb45b24b5ee04cab2ba38fa6ff4876b0e80130c3d1f70115d195",
+            "bytes": 18572,
+            "fetchedAt": "2026-09-07T22:47:35.452Z"
+          }
+        ]
+      }
+    ],
+    "runtimeSeconds": 212.698
+  },
+  "publicManifest": {
+    "id": "registry",
+    "url": "https://luv-jeri.github.io/sahajiv-ui/registry.json",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "sha256": "4c0407f14271590148a00bc122b471fc61aa0e018e0c18c105e990f9ee8f5ffa",
+    "bytes": 284767,
+    "fetchedAt": "2026-09-07T22:47:35.459Z",
+    "entryCount": 78,
+    "entryNames": [
+      "sahajiv",
+      "accordion",
+      "adjuster",
+      "alert",
+      "alert-dialog",
+      "ambient-background",
+      "animated-number",
+      "aspect-ratio",
+      "attachment",
+      "avatar",
+      "badge",
+      "breadcrumb",
+      "bubble",
+      "button",
+      "button-group",
+      "calendar",
+      "card",
+      "carousel",
+      "chart",
+      "checkbox",
+      "code-block",
+      "collapsible",
+      "combobox",
+      "command",
+      "context-menu",
+      "data-table",
+      "date-picker",
+      "dialog",
+      "direction",
+      "drawer",
+      "dropdown-menu",
+      "dropzone",
+      "empty",
+      "field",
+      "hover-card",
+      "icon",
+      "input",
+      "input-group",
+      "input-otp",
+      "item",
+      "kbd",
+      "label",
+      "marker",
+      "marquee",
+      "menubar",
+      "message",
+      "message-scroller",
+      "multi-select",
+      "native-select",
+      "navigation-menu",
+      "pagination",
+      "popover",
+      "preview",
+      "progress",
+      "questionnaire",
+      "radio-group",
+      "resizable",
+      "scroll-area",
+      "select",
+      "separator",
+      "shape",
+      "shape-scene",
+      "sheet",
+      "sidebar",
+      "skeleton",
+      "slider",
+      "spinner",
+      "stepper",
+      "switch",
+      "table",
+      "tabs",
+      "text-reveal",
+      "textarea",
+      "toast",
+      "toggle",
+      "toggle-group",
+      "tooltip",
+      "typography"
+    ]
+  },
+  "publicEntries": [
+    {
+      "id": "button",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "86557867275732b31476bbea793d308ec4e9e7498b2157b8373e9b9160fc3dc8",
+      "bytes": 13445,
+      "fetchedAt": "2026-09-07T22:47:35.431Z"
+    },
+    {
+      "id": "badge",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "7dfc2adf32d8562f234c96369e144ab6df77be8c82e24e1e2b1fe3c63134b323",
+      "bytes": 11122,
+      "fetchedAt": "2026-09-07T22:47:35.441Z"
+    },
+    {
+      "id": "card",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "915e0a569b7c1c71f939d75bab241e3ebf3037f9ec68ec23a1223439b4afefb3",
+      "bytes": 9852,
+      "fetchedAt": "2026-09-07T22:47:35.491Z"
+    },
+    {
+      "id": "accordion",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/accordion.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "7b9fe6d1e46bac774cb089ac3761dab5c49a152358040d44b4064d60dce09c88",
+      "bytes": 24966,
+      "fetchedAt": "2026-09-07T22:47:35.450Z"
+    },
+    {
+      "id": "dialog",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "b73c46eb5c726b7944f5a745bfdab3164647927445ae248a76325ac63457003d",
+      "bytes": 9418,
+      "fetchedAt": "2026-09-07T22:47:35.431Z"
+    },
+    {
+      "id": "code-block",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/code-block.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "5d090f33451c5b161f229649049e6644ce10d21f8344ad4e82f6585495ee924d",
+      "bytes": 10330,
+      "fetchedAt": "2026-09-07T22:47:35.449Z"
+    },
+    {
+      "id": "text-reveal",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/text-reveal.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "12930ca9f7d7ea0adae648cda6c3ab2e726af7673b25d834427a1bc2c92f34ce",
+      "bytes": 4567,
+      "fetchedAt": "2026-09-07T22:47:35.429Z"
+    },
+    {
+      "id": "shape-scene",
+      "url": "https://luv-jeri.github.io/sahajiv-ui/r/shape-scene.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "sha256": "5c0adc70f8b4fb45b24b5ee04cab2ba38fa6ff4876b0e80130c3d1f70115d195",
+      "bytes": 18572,
+      "fetchedAt": "2026-09-07T22:47:35.452Z"
+    }
+  ],
+  "sceneDependencies": {
+    "three": "0.185.1",
+    "@types/three": "0.185.4"
+  },
+  "installedVersions": {
+    "@babel/code-frame": "7.29.7",
+    "@babel/compat-data": "7.29.7",
+    "@babel/core": "7.29.7",
+    "@babel/generator": "7.29.8",
+    "@babel/helper-annotate-as-pure": "7.29.7",
+    "@babel/helper-compilation-targets": "7.29.7",
+    "@babel/helper-create-class-features-plugin": "7.29.7",
+    "@babel/helper-globals": "7.29.7",
+    "@babel/helper-member-expression-to-functions": "7.29.7",
+    "@babel/helper-module-imports": "7.29.7",
+    "@babel/helper-module-transforms": "7.29.7",
+    "@babel/helper-optimise-call-expression": "7.29.7",
+    "@babel/helper-plugin-utils": "7.29.7",
+    "@babel/helper-replace-supers": "7.29.7",
+    "@babel/helper-skip-transparent-expression-wrappers": "7.29.7",
+    "@babel/helper-string-parser": "7.29.7",
+    "@babel/helper-validator-identifier": "7.29.7",
+    "@babel/helper-validator-option": "7.29.7",
+    "@babel/helpers": "7.29.7",
+    "@babel/parser": "7.29.8",
+    "@babel/plugin-syntax-jsx": "7.29.7",
+    "@babel/plugin-syntax-typescript": "7.29.7",
+    "@babel/plugin-transform-modules-commonjs": "7.29.7",
+    "@babel/plugin-transform-react-jsx-self": "7.29.7",
+    "@babel/plugin-transform-react-jsx-source": "7.29.7",
+    "@babel/plugin-transform-typescript": "7.29.7",
+    "@babel/preset-typescript": "7.29.7",
+    "@babel/template": "7.29.7",
+    "@babel/traverse": "7.29.8",
+    "@babel/types": "7.29.8",
+    "@dimforge/rapier3d-compat": "0.12.0",
+    "@dotenvx/dotenvx": "1.75.1",
+    "@dotenvx/dotenvx/node_modules/commander": "11.1.0",
+    "@dotenvx/dotenvx/node_modules/define-lazy-prop": "2.0.0",
+    "@dotenvx/dotenvx/node_modules/execa": "5.1.1",
+    "@dotenvx/dotenvx/node_modules/get-stream": "6.0.1",
+    "@dotenvx/dotenvx/node_modules/human-signals": "2.1.0",
+    "@dotenvx/dotenvx/node_modules/is-docker": "2.2.1",
+    "@dotenvx/dotenvx/node_modules/is-stream": "2.0.1",
+    "@dotenvx/dotenvx/node_modules/is-wsl": "2.2.0",
+    "@dotenvx/dotenvx/node_modules/npm-run-path": "4.0.1",
+    "@dotenvx/dotenvx/node_modules/open": "8.4.2",
+    "@dotenvx/dotenvx/node_modules/signal-exit": "3.0.7",
+    "@dotenvx/dotenvx/node_modules/strip-final-newline": "2.0.0",
+    "@dotenvx/primitives": "0.8.0",
+    "@esbuild/aix-ppc64": "0.28.2",
+    "@esbuild/android-arm": "0.28.2",
+    "@esbuild/android-arm64": "0.28.2",
+    "@esbuild/android-x64": "0.28.2",
+    "@esbuild/darwin-arm64": "0.28.2",
+    "@esbuild/darwin-x64": "0.28.2",
+    "@esbuild/freebsd-arm64": "0.28.2",
+    "@esbuild/freebsd-x64": "0.28.2",
+    "@esbuild/linux-arm": "0.28.2",
+    "@esbuild/linux-arm64": "0.28.2",
+    "@esbuild/linux-ia32": "0.28.2",
+    "@esbuild/linux-loong64": "0.28.2",
+    "@esbuild/linux-mips64el": "0.28.2",
+    "@esbuild/linux-ppc64": "0.28.2",
+    "@esbuild/linux-riscv64": "0.28.2",
+    "@esbuild/linux-s390x": "0.28.2",
+    "@esbuild/linux-x64": "0.28.2",
+    "@esbuild/netbsd-arm64": "0.28.2",
+    "@esbuild/netbsd-x64": "0.28.2",
+    "@esbuild/openbsd-arm64": "0.28.2",
+    "@esbuild/openbsd-x64": "0.28.2",
+    "@esbuild/openharmony-arm64": "0.28.2",
+    "@esbuild/sunos-x64": "0.28.2",
+    "@esbuild/win32-arm64": "0.28.2",
+    "@esbuild/win32-ia32": "0.28.2",
+    "@esbuild/win32-x64": "0.28.2",
+    "@floating-ui/core": "1.8.0",
+    "@floating-ui/dom": "1.8.0",
+    "@floating-ui/react-dom": "2.1.9",
+    "@floating-ui/utils": "0.2.12",
+    "@fontsource-variable/geist": "5.3.0",
+    "@hono/node-server": "2.1.1",
+    "@jridgewell/gen-mapping": "0.3.13",
+    "@jridgewell/remapping": "2.3.5",
+    "@jridgewell/resolve-uri": "3.1.2",
+    "@jridgewell/sourcemap-codec": "1.6.0",
+    "@jridgewell/trace-mapping": "0.3.31",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@napi-rs/lzma-linux-x64-gnu": "1.5.1",
+    "@nodelib/fs.scandir": "2.1.5",
+    "@nodelib/fs.stat": "2.0.5",
+    "@nodelib/fs.walk": "1.2.8",
+    "@radix-ui/number": "1.1.3",
+    "@radix-ui/primitive": "1.1.7",
+    "@radix-ui/react-accessible-icon": "1.1.15",
+    "@radix-ui/react-accordion": "1.2.20",
+    "@radix-ui/react-alert-dialog": "1.1.23",
+    "@radix-ui/react-arrow": "1.1.15",
+    "@radix-ui/react-aspect-ratio": "1.1.15",
+    "@radix-ui/react-avatar": "1.2.6",
+    "@radix-ui/react-checkbox": "1.3.11",
+    "@radix-ui/react-collapsible": "1.1.20",
+    "@radix-ui/react-collection": "1.1.15",
+    "@radix-ui/react-compose-refs": "1.1.5",
+    "@radix-ui/react-context": "1.2.2",
+    "@radix-ui/react-context-menu": "2.3.7",
+    "@radix-ui/react-dialog": "1.1.23",
+    "@radix-ui/react-direction": "1.1.4",
+    "@radix-ui/react-dismissable-layer": "1.1.19",
+    "@radix-ui/react-dropdown-menu": "2.1.24",
+    "@radix-ui/react-focus-guards": "1.1.6",
+    "@radix-ui/react-focus-scope": "1.1.16",
+    "@radix-ui/react-form": "0.1.16",
+    "@radix-ui/react-hover-card": "1.1.23",
+    "@radix-ui/react-id": "1.1.4",
+    "@radix-ui/react-label": "2.1.15",
+    "@radix-ui/react-menu": "2.1.24",
+    "@radix-ui/react-menubar": "1.1.24",
+    "@radix-ui/react-navigation-menu": "1.2.22",
+    "@radix-ui/react-one-time-password-field": "0.1.16",
+    "@radix-ui/react-password-toggle-field": "0.1.11",
+    "@radix-ui/react-popover": "1.1.23",
+    "@radix-ui/react-popper": "1.3.7",
+    "@radix-ui/react-portal": "1.1.17",
+    "@radix-ui/react-presence": "1.1.10",
+    "@radix-ui/react-primitive": "2.1.10",
+    "@radix-ui/react-progress": "1.1.16",
+    "@radix-ui/react-radio-group": "1.4.7",
+    "@radix-ui/react-roving-focus": "1.1.19",
+    "@radix-ui/react-scroll-area": "1.2.18",
+    "@radix-ui/react-select": "2.3.7",
+    "@radix-ui/react-separator": "1.1.15",
+    "@radix-ui/react-slider": "1.4.7",
+    "@radix-ui/react-slot": "1.3.3",
+    "@radix-ui/react-switch": "1.3.7",
+    "@radix-ui/react-tabs": "1.1.21",
+    "@radix-ui/react-toast": "1.2.23",
+    "@radix-ui/react-toggle": "1.1.18",
+    "@radix-ui/react-toggle-group": "1.1.19",
+    "@radix-ui/react-toolbar": "1.1.19",
+    "@radix-ui/react-tooltip": "1.2.16",
+    "@radix-ui/react-use-callback-ref": "1.1.4",
+    "@radix-ui/react-use-controllable-state": "1.2.6",
+    "@radix-ui/react-use-effect-event": "0.0.5",
+    "@radix-ui/react-use-escape-keydown": "1.1.5",
+    "@radix-ui/react-use-is-hydrated": "0.1.3",
+    "@radix-ui/react-use-layout-effect": "1.1.4",
+    "@radix-ui/react-use-previous": "1.1.4",
+    "@radix-ui/react-use-rect": "1.1.4",
+    "@radix-ui/react-use-size": "1.1.4",
+    "@radix-ui/react-visually-hidden": "1.2.11",
+    "@radix-ui/rect": "1.1.3",
+    "@rolldown/pluginutils": "1.0.0-rc.3",
+    "@rollup/rollup-android-arm-eabi": "4.63.1",
+    "@rollup/rollup-android-arm64": "4.63.1",
+    "@rollup/rollup-darwin-arm64": "4.63.1",
+    "@rollup/rollup-darwin-x64": "4.63.1",
+    "@rollup/rollup-freebsd-arm64": "4.63.1",
+    "@rollup/rollup-freebsd-x64": "4.63.1",
+    "@rollup/rollup-linux-arm-gnueabihf": "4.63.1",
+    "@rollup/rollup-linux-arm-musleabihf": "4.63.1",
+    "@rollup/rollup-linux-arm64-gnu": "4.63.1",
+    "@rollup/rollup-linux-arm64-musl": "4.63.1",
+    "@rollup/rollup-linux-loong64-gnu": "4.63.1",
+    "@rollup/rollup-linux-loong64-musl": "4.63.1",
+    "@rollup/rollup-linux-ppc64-gnu": "4.63.1",
+    "@rollup/rollup-linux-ppc64-musl": "4.63.1",
+    "@rollup/rollup-linux-riscv64-gnu": "4.63.1",
+    "@rollup/rollup-linux-riscv64-musl": "4.63.1",
+    "@rollup/rollup-linux-s390x-gnu": "4.63.1",
+    "@rollup/rollup-linux-x64-gnu": "4.63.1",
+    "@rollup/rollup-linux-x64-musl": "4.63.1",
+    "@rollup/rollup-openbsd-x64": "4.63.1",
+    "@rollup/rollup-openharmony-arm64": "4.63.1",
+    "@rollup/rollup-win32-arm64-msvc": "4.63.1",
+    "@rollup/rollup-win32-ia32-msvc": "4.63.1",
+    "@rollup/rollup-win32-x64-gnu": "4.63.1",
+    "@rollup/rollup-win32-x64-msvc": "4.63.1",
+    "@sec-ant/readable-stream": "0.4.1",
+    "@sindresorhus/merge-streams": "4.0.0",
+    "@tailwindcss/node": "4.3.3",
+    "@tailwindcss/oxide": "4.3.3",
+    "@tailwindcss/oxide-android-arm64": "4.3.3",
+    "@tailwindcss/oxide-darwin-arm64": "4.3.3",
+    "@tailwindcss/oxide-darwin-x64": "4.3.3",
+    "@tailwindcss/oxide-freebsd-x64": "4.3.3",
+    "@tailwindcss/oxide-linux-arm-gnueabihf": "4.3.3",
+    "@tailwindcss/oxide-linux-arm64-gnu": "4.3.3",
+    "@tailwindcss/oxide-linux-arm64-musl": "4.3.3",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.3.3",
+    "@tailwindcss/oxide-linux-x64-musl": "4.3.3",
+    "@tailwindcss/oxide-wasm32-wasi": "4.3.3",
+    "@tailwindcss/oxide-win32-arm64-msvc": "4.3.3",
+    "@tailwindcss/oxide-win32-x64-msvc": "4.3.3",
+    "@tailwindcss/vite": "4.3.3",
+    "@ts-morph/common": "0.27.0",
+    "@tweenjs/tween.js": "23.1.3",
+    "@types/babel__core": "7.20.5",
+    "@types/babel__generator": "7.27.0",
+    "@types/babel__template": "7.4.4",
+    "@types/babel__traverse": "7.28.0",
+    "@types/estree": "1.0.9",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@types/stats.js": "0.17.4",
+    "@types/three": "0.185.4",
+    "@types/validate-npm-package-name": "4.0.2",
+    "@types/webxr": "0.5.24",
+    "@vitejs/plugin-react": "5.2.0",
+    "accepts": "2.0.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "ansi-colors": "4.1.3",
+    "ansi-regex": "5.0.1",
+    "argparse": "2.0.1",
+    "aria-hidden": "1.2.6",
+    "ast-types": "0.16.3",
+    "atomically": "1.7.0",
+    "balanced-match": "4.0.4",
+    "baseline-browser-mapping": "2.11.21",
+    "body-parser": "2.3.0",
+    "body-parser/node_modules/content-type": "2.1.0",
+    "brace-expansion": "5.0.9",
+    "braces": "3.0.3",
+    "browserslist": "4.28.9",
+    "bundle-name": "4.1.0",
+    "bytes": "3.1.2",
+    "call-bind-apply-helpers": "1.0.2",
+    "call-bound": "1.0.4",
+    "callsites": "3.1.0",
+    "caniuse-lite": "1.0.30001810",
+    "chalk": "5.6.2",
+    "class-variance-authority": "0.7.1",
+    "cli-cursor": "5.0.0",
+    "cli-spinners": "2.9.2",
+    "clsx": "2.1.1",
+    "cn": "0.2.6",
+    "code-block-writer": "13.0.3",
+    "commander": "14.0.3",
+    "conf": "10.2.0",
+    "conf/node_modules/ajv-formats": "2.1.1",
+    "conf/node_modules/json-schema-typed": "7.0.3",
+    "conf/node_modules/semver": "7.8.5",
+    "content-disposition": "1.1.0",
+    "content-type": "1.0.5",
+    "convert-source-map": "2.0.0",
+    "cookie": "0.7.2",
+    "cookie-signature": "1.2.2",
+    "cors": "2.8.6",
+    "cosmiconfig": "9.0.2",
+    "cross-spawn": "7.0.6",
+    "cross-spawn/node_modules/isexe": "2.0.0",
+    "cross-spawn/node_modules/which": "2.0.2",
+    "cssesc": "3.0.0",
+    "csstype": "3.2.3",
+    "debounce-fn": "4.0.0",
+    "debug": "4.4.3",
+    "dedent": "1.7.2",
+    "deepmerge": "4.3.1",
+    "default-browser": "5.5.1",
+    "default-browser-id": "5.0.1",
+    "define-lazy-prop": "3.0.0",
+    "depd": "2.0.0",
+    "detect-libc": "2.1.2",
+    "detect-node-es": "1.1.0",
+    "diff": "8.0.4",
+    "dot-prop": "6.0.1",
+    "dotenv": "17.4.2",
+    "dunder-proto": "1.0.1",
+    "ee-first": "1.1.1",
+    "electron-to-chromium": "1.5.422",
+    "emoji-regex": "10.6.0",
+    "encodeurl": "2.0.0",
+    "enhanced-resolve": "5.24.5",
+    "enquirer": "2.4.1",
+    "env-paths": "2.2.1",
+    "error-ex": "1.3.4",
+    "es-define-property": "1.0.1",
+    "es-errors": "1.3.0",
+    "es-object-atoms": "1.1.2",
+    "esbuild": "0.28.2",
+    "escalade": "3.2.0",
+    "escape-html": "1.0.3",
+    "esprima": "4.0.1",
+    "etag": "1.8.1",
+    "eventsource": "3.0.7",
+    "eventsource-parser": "3.1.1",
+    "execa": "9.6.1",
+    "express": "5.2.1",
+    "express-rate-limit": "8.7.0",
+    "fast-deep-equal": "3.1.3",
+    "fast-glob": "3.3.3",
+    "fast-uri": "3.1.7",
+    "fastq": "1.20.3",
+    "fdir": "6.5.0",
+    "fflate": "0.8.3",
+    "figures": "6.1.0",
+    "fill-range": "7.1.1",
+    "finalhandler": "2.1.1",
+    "find-up": "3.0.0",
+    "forwarded": "0.2.0",
+    "fresh": "2.0.0",
+    "fs-extra": "11.4.0",
+    "fsevents": "2.3.3",
+    "function-bind": "1.1.2",
+    "fuzzysort": "3.1.0",
+    "gensync": "1.0.0-beta.2",
+    "get-east-asian-width": "1.6.0",
+    "get-intrinsic": "1.3.0",
+    "get-nonce": "1.0.1",
+    "get-own-enumerable-keys": "1.0.0",
+    "get-proto": "1.0.1",
+    "get-stream": "9.0.1",
+    "glob-parent": "5.1.2",
+    "gopd": "1.2.0",
+    "graceful-fs": "4.2.11",
+    "has-symbols": "1.1.0",
+    "hasown": "2.0.4",
+    "hono": "4.13.7",
+    "http-errors": "2.0.1",
+    "human-signals": "8.0.1",
+    "iconv-lite": "0.7.3",
+    "ignore": "5.3.2",
+    "import-fresh": "3.3.1",
+    "inherits": "2.0.4",
+    "ip-address": "10.7.0",
+    "ipaddr.js": "1.9.1",
+    "is-arrayish": "0.2.1",
+    "is-docker": "3.0.0",
+    "is-extglob": "2.1.1",
+    "is-glob": "4.0.3",
+    "is-in-ssh": "1.0.0",
+    "is-inside-container": "1.0.0",
+    "is-interactive": "2.0.0",
+    "is-number": "7.0.0",
+    "is-obj": "2.0.0",
+    "is-plain-obj": "4.1.0",
+    "is-promise": "4.0.0",
+    "is-regexp": "3.1.0",
+    "is-stream": "4.0.1",
+    "is-unicode-supported": "2.1.0",
+    "is-wsl": "3.1.1",
+    "isexe": "3.1.5",
+    "jiti": "2.7.0",
+    "jose": "6.2.12",
+    "js-tokens": "4.0.0",
+    "js-yaml": "4.3.2",
+    "jsesc": "3.1.0",
+    "json-parse-even-better-errors": "2.3.1",
+    "json-schema-traverse": "1.0.0",
+    "json-schema-typed": "8.0.2",
+    "json5": "2.2.3",
+    "jsonfile": "6.2.1",
+    "kleur": "4.1.5",
+    "lightningcss": "1.32.0",
+    "lightningcss-android-arm64": "1.32.0",
+    "lightningcss-darwin-arm64": "1.32.0",
+    "lightningcss-darwin-x64": "1.32.0",
+    "lightningcss-freebsd-x64": "1.32.0",
+    "lightningcss-linux-arm-gnueabihf": "1.32.0",
+    "lightningcss-linux-arm64-gnu": "1.32.0",
+    "lightningcss-linux-arm64-musl": "1.32.0",
+    "lightningcss-linux-x64-gnu": "1.32.0",
+    "lightningcss-linux-x64-musl": "1.32.0",
+    "lightningcss-win32-arm64-msvc": "1.32.0",
+    "lightningcss-win32-x64-msvc": "1.32.0",
+    "lines-and-columns": "1.2.4",
+    "locate-path": "3.0.0",
+    "log-symbols": "6.0.0",
+    "log-symbols/node_modules/is-unicode-supported": "1.3.0",
+    "lru-cache": "5.1.1",
+    "lucide-react": "1.42.0",
+    "magic-string": "0.30.21",
+    "math-intrinsics": "1.1.0",
+    "media-typer": "1.1.1",
+    "merge-descriptors": "2.0.0",
+    "merge-stream": "2.0.0",
+    "merge2": "1.4.1",
+    "meshoptimizer": "1.1.1",
+    "micromatch": "4.0.8",
+    "micromatch/node_modules/picomatch": "2.3.2",
+    "mime-db": "1.54.0",
+    "mime-types": "3.0.2",
+    "mimic-fn": "3.1.0",
+    "mimic-function": "5.0.1",
+    "minimatch": "10.2.6",
+    "minimist": "1.2.8",
+    "ms": "2.1.3",
+    "nanoid": "3.3.18",
+    "negotiator": "1.1.0",
+    "negotiator/node_modules/content-type": "2.1.0",
+    "node-releases": "2.0.54",
+    "npm-run-path": "6.0.0",
+    "npm-run-path/node_modules/path-key": "4.0.0",
+    "object-assign": "4.1.1",
+    "object-inspect": "1.13.4",
+    "object-treeify": "1.1.33",
+    "on-finished": "2.4.1",
+    "once": "1.4.0",
+    "onetime": "5.1.2",
+    "onetime/node_modules/mimic-fn": "2.1.0",
+    "open": "11.0.2",
+    "ora": "8.2.0",
+    "ora/node_modules/ansi-regex": "6.3.0",
+    "ora/node_modules/strip-ansi": "7.2.0",
+    "p-limit": "2.3.0",
+    "p-locate": "3.0.0",
+    "p-try": "2.2.0",
+    "parent-module": "1.0.1",
+    "parse-json": "5.2.0",
+    "parse-ms": "4.0.0",
+    "parseurl": "1.3.3",
+    "path-browserify": "1.0.1",
+    "path-exists": "3.0.0",
+    "path-key": "3.1.1",
+    "path-to-regexp": "8.4.2",
+    "picocolors": "1.1.1",
+    "picomatch": "4.0.7",
+    "pkce-challenge": "5.0.1",
+    "pkg-up": "3.1.0",
+    "postcss": "8.5.28",
+    "postcss-selector-parser": "7.1.6",
+    "powershell-utils": "0.2.1",
+    "pretty-ms": "9.3.1",
+    "prompts": "2.4.2",
+    "prompts/node_modules/kleur": "3.0.3",
+    "proxy-addr": "2.0.7",
+    "qs": "6.16.0",
+    "queue-microtask": "1.2.3",
+    "radix-ui": "1.6.7",
+    "range-parser": "1.3.0",
+    "raw-body": "3.0.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-refresh": "0.18.0",
+    "react-remove-scroll": "2.7.2",
+    "react-remove-scroll-bar": "2.3.8",
+    "react-style-singleton": "2.2.3",
+    "recast": "0.23.21",
+    "require-from-string": "2.0.2",
+    "resolve-from": "4.0.0",
+    "restore-cursor": "5.1.0",
+    "restore-cursor/node_modules/onetime": "7.0.0",
+    "reusify": "1.1.0",
+    "rollup": "4.63.1",
+    "router": "2.2.0",
+    "run-applescript": "7.1.0",
+    "run-parallel": "1.2.0",
+    "safer-buffer": "2.1.2",
+    "scheduler": "0.27.0",
+    "semver": "6.3.1",
+    "send": "1.2.1",
+    "serve-static": "2.2.1",
+    "setprototypeof": "1.2.0",
+    "shadcn": "4.21.0",
+    "shebang-command": "2.0.0",
+    "shebang-regex": "3.0.0",
+    "side-channel": "1.1.1",
+    "side-channel-list": "1.0.1",
+    "side-channel-map": "1.0.1",
+    "side-channel-weakmap": "1.0.2",
+    "signal-exit": "4.1.0",
+    "sisteransi": "1.0.5",
+    "smart-buffer": "4.2.0",
+    "socks": "2.8.10",
+    "source-map": "0.6.1",
+    "source-map-js": "1.2.1",
+    "statuses": "2.0.2",
+    "stdin-discarder": "0.2.2",
+    "string-width": "7.2.0",
+    "string-width/node_modules/ansi-regex": "6.3.0",
+    "string-width/node_modules/strip-ansi": "7.2.0",
+    "stringify-object": "5.0.0",
+    "stringify-object/node_modules/is-obj": "3.0.0",
+    "strip-ansi": "6.0.1",
+    "strip-bom": "3.0.0",
+    "strip-final-newline": "4.0.0",
+    "systeminformation": "5.33.9",
+    "tailwind-merge": "3.6.0",
+    "tailwindcss": "4.3.3",
+    "tapable": "2.3.3",
+    "three": "0.185.1",
+    "tiny-invariant": "1.3.3",
+    "tinyglobby": "0.2.17",
+    "to-regex-range": "5.0.1",
+    "toidentifier": "1.0.1",
+    "ts-morph": "26.0.0",
+    "tsconfig-paths": "4.2.0",
+    "tslib": "2.8.1",
+    "tw-animate-css": "1.4.0",
+    "type-is": "2.1.0",
+    "type-is/node_modules/content-type": "2.1.0",
+    "typescript": "5.9.3",
+    "undici": "7.29.1",
+    "undici-types": "6.21.0",
+    "unicorn-magic": "0.3.0",
+    "universalify": "2.0.1",
+    "unpipe": "1.0.0",
+    "update-browserslist-db": "1.3.2",
+    "use-callback-ref": "1.3.3",
+    "use-sidecar": "1.1.3",
+    "util-deprecate": "1.0.2",
+    "validate-npm-package-name": "7.0.2",
+    "vary": "1.1.2",
+    "vite": "7.3.6",
+    "which": "4.0.0",
+    "wrappy": "1.0.2",
+    "wsl-utils": "1.0.0",
+    "wsl-utils/node_modules/powershell-utils": "0.1.0",
+    "yallist": "3.1.1",
+    "yocto-spinner": "1.2.2",
+    "yoctocolors": "2.2.0",
+    "zod": "3.25.76",
+    "zod-to-json-schema": "3.25.2"
+  },
+  "directDependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@radix-ui/react-accordion": "^1.2.20",
+    "@radix-ui/react-dialog": "^1.1.23",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cn": "^0.2.6",
+    "lucide-react": "^1.42.0",
+    "radix-ui": "^1.6.7",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "shadcn": "^4.21.0",
+    "tailwind-merge": "^3.6.0",
+    "three": "^0.185.1",
+    "tw-animate-css": "^1.4.0"
+  },
+  "directDevDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/three": "^0.185.4",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.0"
+  },
+  "npmVersion": "10.9.4",
+  "shadcnVersion": "4.21.0",
+  "replacedGeneratedScaffold": true,
+  "finishedAt": "2026-09-07T22:47:54.579Z",
+  "runtimeSeconds": 282.952,
+  "receiptFile": "/Users/sanjaykumar/Documents/ChatGPT/sahajiv ui/.worktrees/interactive/.work/public-consumer-install-receipt.json"
+}
