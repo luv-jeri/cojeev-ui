@@ -59,31 +59,31 @@
         "props": [
           {
             "name": "onFilesSelected",
-            "type": "((files: File[]) => void) | undefined",
+            "type": "(files: File[]) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "accept",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "multiple",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "disabled",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "showReceipt",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -91,7 +91,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

@@ -79,7 +79,7 @@
           },
           {
             "name": "maxLength",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           }
@@ -87,7 +87,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

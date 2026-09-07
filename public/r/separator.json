@@ -70,13 +70,13 @@
           },
           {
             "name": "orientation",
-            "type": "\"horizontal\" | \"vertical\" | undefined",
+            "type": "\"horizontal\"|\"vertical\"",
             "required": false,
             "description": ""
           },
           {
             "name": "decorative",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -84,7 +84,7 @@
       }
     ],
     "category": "Layout",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

@@ -79,7 +79,7 @@
         "props": [
           {
             "name": "asChild",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -103,7 +103,7 @@
       }
     ],
     "category": "Navigation",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

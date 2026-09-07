@@ -69,7 +69,7 @@
           },
           {
             "name": "direction",
-            "type": "\"horizontal\" | \"vertical\" | undefined",
+            "type": "\"horizontal\" | \"vertical\"",
             "required": false,
             "description": ""
           }
@@ -84,7 +84,7 @@
         "props": [
           {
             "name": "withHandle",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -92,7 +92,7 @@
       }
     ],
     "category": "Layout",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

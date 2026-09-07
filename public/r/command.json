@@ -69,19 +69,19 @@
         "props": [
           {
             "name": "title",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "description",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "className",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -121,7 +121,7 @@
         "props": [
           {
             "name": "variant",
-            "type": "\"default\" | \"danger\" | undefined",
+            "type": "\"default\" | \"danger\"",
             "required": false,
             "description": ""
           }
@@ -137,7 +137,7 @@
       }
     ],
     "category": "Tools",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

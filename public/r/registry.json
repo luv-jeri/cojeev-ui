@@ -475,7 +475,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -531,7 +531,7 @@
             "props": [
               {
                 "name": "defaultOpen",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -542,7 +542,7 @@
             "props": [
               {
                 "name": "showPreview",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -550,7 +550,7 @@
           }
         ],
         "category": "Tools",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -644,7 +644,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -667,7 +667,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -690,7 +690,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -713,7 +713,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -736,7 +736,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -759,7 +759,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -782,7 +782,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -805,7 +805,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -813,7 +813,7 @@
           }
         ],
         "category": "Feedback",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -900,7 +900,7 @@
             "props": [
               {
                 "name": "showCloseButton",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -932,7 +932,7 @@
           }
         ],
         "category": "Feedback",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -989,7 +989,7 @@
               },
               {
                 "name": "paused",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -997,7 +997,7 @@
           }
         ],
         "category": "Backgrounds",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -1051,27 +1051,33 @@
               },
               {
                 "name": "locale",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "format",
-                "type": "Intl.NumberFormatOptions | undefined",
+                "type": "Intl.NumberFormatOptions",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "duration",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": "Transition time in milliseconds, bounded to 0–2000."
+              },
+              {
+                "name": "fallback",
+                "type": "string",
+                "required": false,
+                "description": "Text for NaN or infinite values; never presents missing data as zero."
               }
             ]
           }
         ],
         "category": "Effects",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -1145,7 +1151,7 @@
               },
               {
                 "name": "ratio",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               }
@@ -1153,7 +1159,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -1240,7 +1246,7 @@
           }
         ],
         "category": "Conversation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -1434,7 +1440,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -1637,7 +1643,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -1720,7 +1726,7 @@
             "props": [
               {
                 "name": "asChild",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -1744,7 +1750,7 @@
           }
         ],
         "category": "Navigation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -1819,7 +1825,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -1842,7 +1848,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -1865,7 +1871,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -1888,7 +1894,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -1911,7 +1917,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -1919,7 +1925,7 @@
           }
         ],
         "category": "Conversation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -2140,7 +2146,7 @@
               },
               {
                 "name": "loading",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
@@ -2154,7 +2160,7 @@
           }
         ],
         "category": "Actions",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -2225,19 +2231,19 @@
             "props": [
               {
                 "name": "value",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultValue",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onValueChange",
-                "type": "((value: string) => void) | undefined",
+                "type": "(value: string) => void",
                 "required": false,
                 "description": ""
               }
@@ -2248,7 +2254,7 @@
             "props": [
               {
                 "name": "value",
-                "type": "string | (readonly string[] & string)",
+                "type": "string | readonly string[] | number | undefined",
                 "required": true,
                 "description": ""
               }
@@ -2259,7 +2265,7 @@
             "props": [
               {
                 "name": "shapes",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -2271,7 +2277,7 @@
           }
         ],
         "category": "Actions",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -2336,43 +2342,43 @@
             "props": [
               {
                 "name": "mode",
-                "type": "\"single\" | undefined",
+                "type": "\"single\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "selected",
-                "type": "Date | undefined",
+                "type": "Date",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultSelected",
-                "type": "Date | undefined",
+                "type": "Date",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onSelect",
-                "type": "((date: Date | undefined) => void) | undefined",
+                "type": "(date: Date | undefined) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "disabled",
-                "type": "Matcher | Matcher[] | undefined",
+                "type": "Matcher | Matcher[]",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "marks",
-                "type": "Record<string, CalendarMark> | undefined",
+                "type": "Record<string, CalendarMark>",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "required",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -2380,7 +2386,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -2510,7 +2516,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -2578,7 +2584,7 @@
             "props": [
               {
                 "name": "onIndexChange",
-                "type": "((index: number) => void) | undefined",
+                "type": "(index: number) => void",
                 "required": false,
                 "description": ""
               }
@@ -2593,7 +2599,7 @@
             "props": [
               {
                 "name": "asChild",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -2632,7 +2638,7 @@
           }
         ],
         "category": "Navigation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -2704,25 +2710,25 @@
             "props": [
               {
                 "name": "data",
-                "type": "ChartDatum[] | undefined",
+                "type": "ChartDatum[]",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "max",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "showTable",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "caption",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -2745,7 +2751,7 @@
               },
               {
                 "name": "max",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               }
@@ -2760,19 +2766,19 @@
             "props": [
               {
                 "name": "data",
-                "type": "ChartDatum[] | undefined",
+                "type": "ChartDatum[]",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "showTable",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "caption",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -2783,7 +2789,7 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"next\" | \"hist\" | \"cross\" | undefined",
+                "type": "\"hist\" | \"next\" | \"cross\"",
                 "required": false,
                 "description": ""
               }
@@ -2800,37 +2806,37 @@
               },
               {
                 "name": "strokeWidth",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "gap",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "unit",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "showTable",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "draw",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "caption",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -2863,13 +2869,13 @@
               },
               {
                 "name": "caption",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "visuallyHidden",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -2877,7 +2883,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -2962,7 +2968,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -3030,25 +3036,25 @@
               },
               {
                 "name": "language",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "title",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "wrap",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "copyLabel",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -3056,7 +3062,7 @@
           }
         ],
         "category": "Tools",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -3139,7 +3145,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -3218,55 +3224,55 @@
               },
               {
                 "name": "value",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultValue",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onValueChange",
-                "type": "((value: string) => void) | undefined",
+                "type": "(value: string) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "open",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultOpen",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onOpenChange",
-                "type": "((open: boolean) => void) | undefined",
+                "type": "(open: boolean) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "options",
-                "type": "ComboboxOption[] | undefined",
+                "type": "ComboboxOption[]",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "placeholder",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "emptyText",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -3277,7 +3283,7 @@
             "props": [
               {
                 "name": "wrapperProps",
-                "type": "(React.HTMLAttributes<HTMLElement> & import(\"/Users/sanjaykumar/Documents/ChatGPT/sahajiv ui/node_modules/class-variance-authority/dist/index\").VariantProps<(props?: ({ variant?: \"default\" | \"cream\" | null | undefined; size?: \"default\" | \"sm\" | null | undefined; } & import(\"/Users/sanjaykumar/Documents/ChatGPT/sahajiv ui/node_modules/class-variance-authority/dist/types\").ClassProp) | undefined) => string> & { ref?: React.Ref<HTMLElement>; as?: \"div\" | \"label\"; }) | undefined",
+                "type": "React.ComponentProps<typeof InputWrapper>",
                 "required": false,
                 "description": ""
               },
@@ -3298,7 +3304,7 @@
             "props": [
               {
                 "name": "label",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -3314,7 +3320,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -3387,19 +3393,19 @@
             "props": [
               {
                 "name": "title",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "description",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "className",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -3439,7 +3445,7 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"default\" | \"danger\" | undefined",
+                "type": "\"default\" | \"danger\"",
                 "required": false,
                 "description": ""
               }
@@ -3455,7 +3461,7 @@
           }
         ],
         "category": "Tools",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -3554,13 +3560,13 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"default\" | \"danger\" | undefined",
+                "type": "\"default\" | \"danger\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "inset",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -3571,7 +3577,7 @@
             "props": [
               {
                 "name": "inset",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -3599,7 +3605,7 @@
           }
         ],
         "category": "Actions",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -3686,55 +3692,55 @@
               },
               {
                 "name": "getRowId",
-                "type": "((row: T, index: number) => string) | undefined",
+                "type": "(row: T, index: number) => string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "filters",
-                "type": "DataTableFilter<T>[] | undefined",
+                "type": "DataTableFilter<T>[]",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "filter",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultFilter",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onFilterChange",
-                "type": "((filter: string) => void) | undefined",
+                "type": "(filter: string) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "page",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultPage",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onPageChange",
-                "type": "((page: number) => void) | undefined",
+                "type": "(page: number) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "pageSize",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
@@ -3746,13 +3752,13 @@
               },
               {
                 "name": "caption",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onRowClick",
-                "type": "((row: T) => void) | undefined",
+                "type": "(row: T) => void",
                 "required": false,
                 "description": ""
               }
@@ -3771,7 +3777,7 @@
             "props": [
               {
                 "name": "pressed",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -3787,7 +3793,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -3859,67 +3865,67 @@
             "props": [
               {
                 "name": "date",
-                "type": "Date | undefined",
+                "type": "Date",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultDate",
-                "type": "Date | undefined",
+                "type": "Date",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onDateChange",
-                "type": "((date: Date | undefined) => void) | undefined",
+                "type": "(date: Date | undefined) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "open",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultOpen",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onOpenChange",
-                "type": "((open: boolean) => void) | undefined",
+                "type": "(open: boolean) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "placeholder",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "disabled",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "calendarProps",
-                "type": "Omit<CalendarProps, \"onSelect\" | \"selected\"> | undefined",
+                "type": "Omit<CalendarProps, \"selected\" | \"onSelect\">",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "formatDate",
-                "type": "((date: Date) => string) | undefined",
+                "type": "(date: Date) => string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "triggerProps",
-                "type": "React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> | undefined",
+                "type": "React.ComponentProps<\"button\">",
                 "required": false,
                 "description": ""
               }
@@ -3935,7 +3941,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4021,7 +4027,7 @@
             "props": [
               {
                 "name": "showCloseButton",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4049,7 +4055,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4115,7 +4121,7 @@
             "props": [
               {
                 "name": "dir",
-                "type": "\"ltr\" | \"rtl\" | undefined",
+                "type": "string | undefined",
                 "required": false,
                 "description": ""
               }
@@ -4123,7 +4129,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4209,7 +4215,7 @@
             "props": [
               {
                 "name": "showCloseButton",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4237,7 +4243,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4336,13 +4342,13 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"default\" | \"danger\" | undefined",
+                "type": "\"default\" | \"danger\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "inset",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4353,7 +4359,7 @@
             "props": [
               {
                 "name": "inset",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4381,7 +4387,7 @@
           }
         ],
         "category": "Actions",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4444,31 +4450,31 @@
             "props": [
               {
                 "name": "onFilesSelected",
-                "type": "((files: File[]) => void) | undefined",
+                "type": "(files: File[]) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "accept",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "multiple",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "disabled",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "showReceipt",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4476,7 +4482,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4560,7 +4566,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -4583,7 +4589,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -4606,7 +4612,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -4629,7 +4635,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -4652,7 +4658,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -4675,7 +4681,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -4683,7 +4689,7 @@
           }
         ],
         "category": "Feedback",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4759,13 +4765,13 @@
               },
               {
                 "name": "invalid",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "controlId",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -4788,7 +4794,7 @@
             "props": [
               {
                 "name": "errors",
-                "type": "({ message?: string; } | undefined)[] | undefined",
+                "type": "Array<{ message?: string } | undefined>",
                 "required": false,
                 "description": ""
               }
@@ -4807,7 +4813,7 @@
             "props": [
               {
                 "name": "asChild",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4815,7 +4821,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4894,7 +4900,7 @@
             "props": [
               {
                 "name": "portal",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4902,7 +4908,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -4961,13 +4967,13 @@
             "props": [
               {
                 "name": "name",
-                "type": "string",
+                "type": "string | undefined",
                 "required": true,
                 "description": ""
               },
               {
                 "name": "size",
-                "type": "\"default\" | \"sm\" | \"lg\" | undefined",
+                "type": "\"default\"|\"sm\"|\"lg\"",
                 "required": false,
                 "description": ""
               }
@@ -5009,7 +5015,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -5095,7 +5101,7 @@
               },
               {
                 "name": "nativeSize",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               }
@@ -5118,13 +5124,13 @@
               },
               {
                 "name": "ref",
-                "type": "React.Ref<HTMLElement> | undefined",
+                "type": "React.Ref<HTMLElement>",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "as",
-                "type": "\"div\" | \"label\" | undefined",
+                "type": "\"div\" | \"label\"",
                 "required": false,
                 "description": ""
               }
@@ -5147,7 +5153,7 @@
             "props": [
               {
                 "name": "onClear",
-                "type": "(() => void) | undefined",
+                "type": "() => void",
                 "required": false,
                 "description": ""
               }
@@ -5155,7 +5161,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -5257,7 +5263,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -5341,7 +5347,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -5426,7 +5432,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5449,7 +5455,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5472,7 +5478,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5495,7 +5501,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5518,7 +5524,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5541,7 +5547,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5549,7 +5555,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -5626,7 +5632,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5634,7 +5640,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -5708,7 +5714,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5731,7 +5737,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5754,7 +5760,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5762,7 +5768,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -5839,7 +5845,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -5847,7 +5853,7 @@
           }
         ],
         "category": "Conversation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -5896,37 +5902,37 @@
             "props": [
               {
                 "name": "direction",
-                "type": "MarqueeDirection | undefined",
+                "type": "MarqueeDirection",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "speed",
-                "type": "MarqueeSpeed | undefined",
+                "type": "MarqueeSpeed",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "label",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "paused",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultPaused",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onPausedChange",
-                "type": "((paused: boolean) => void) | undefined",
+                "type": "(paused: boolean) => void",
                 "required": false,
                 "description": ""
               }
@@ -5934,7 +5940,7 @@
           }
         ],
         "category": "Creative",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -6040,13 +6046,13 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"default\" | \"danger\" | undefined",
+                "type": "\"default\" | \"danger\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "inset",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -6057,7 +6063,7 @@
             "props": [
               {
                 "name": "inset",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -6085,7 +6091,7 @@
           }
         ],
         "category": "Actions",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -6161,7 +6167,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -6184,7 +6190,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -6207,7 +6213,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -6215,7 +6221,7 @@
           }
         ],
         "category": "Conversation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -6282,13 +6288,13 @@
             "props": [
               {
                 "name": "followThreshold",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onAtBottomChange",
-                "type": "((atBottom: boolean) => void) | undefined",
+                "type": "(atBottom: boolean) => void",
                 "required": false,
                 "description": ""
               }
@@ -6300,7 +6306,7 @@
           }
         ],
         "category": "Conversation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -6371,79 +6377,79 @@
               },
               {
                 "name": "value",
-                "type": "readonly string[] | undefined",
+                "type": "readonly string[]",
                 "required": false,
                 "description": "Controlled selected values. Values absent from options remain removable."
               },
               {
                 "name": "defaultValue",
-                "type": "readonly string[] | undefined",
+                "type": "readonly string[]",
                 "required": false,
                 "description": "Initial selection when value is omitted."
               },
               {
                 "name": "onValueChange",
-                "type": "((value: string[]) => void) | undefined",
+                "type": "(value: string[]) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "name",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": "Submits one hidden form entry per selected value."
               },
               {
                 "name": "id",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "disabled",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "description",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "error",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": "Sets the trigger's invalid state and announces the error."
               },
               {
                 "name": "placeholder",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "searchPlaceholder",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "emptyMessage",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "noResultsMessage",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "className",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -6451,7 +6457,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -6534,7 +6540,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -6644,7 +6650,7 @@
           }
         ],
         "category": "Navigation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -6709,25 +6715,25 @@
             "props": [
               {
                 "name": "page",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultPage",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "totalPages",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onPageChange",
-                "type": "((page: number) => void) | undefined",
+                "type": "(page: number) => void",
                 "required": false,
                 "description": ""
               }
@@ -6746,7 +6752,7 @@
             "props": [
               {
                 "name": "isActive",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -6757,7 +6763,7 @@
             "props": [
               {
                 "name": "isActive",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -6768,7 +6774,7 @@
             "props": [
               {
                 "name": "isActive",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -6780,7 +6786,7 @@
           }
         ],
         "category": "Navigation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -6871,7 +6877,7 @@
             "props": [
               {
                 "name": "portal",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -6879,7 +6885,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -6943,7 +6949,7 @@
               },
               {
                 "name": "description",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -6951,7 +6957,7 @@
           }
         ],
         "category": "Tools",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -7031,13 +7037,13 @@
               },
               {
                 "name": "value",
-                "type": "number | null | undefined",
+                "type": "number|null",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "max",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               }
@@ -7049,7 +7055,7 @@
           }
         ],
         "category": "Feedback",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -7151,25 +7157,25 @@
             "props": [
               {
                 "name": "name",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "value",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultValue",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onValueChange",
-                "type": "((value: string) => void) | undefined",
+                "type": "(value: string) => void",
                 "required": false,
                 "description": ""
               }
@@ -7186,13 +7192,13 @@
               },
               {
                 "name": "disabled",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "inputProps",
-                "type": "Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, \"type\" | \"value\"> | undefined",
+                "type": "Omit<React.ComponentProps<\"input\">, \"value\" | \"type\">",
                 "required": false,
                 "description": ""
               }
@@ -7212,7 +7218,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -7297,7 +7303,7 @@
             "props": [
               {
                 "name": "pictographic",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -7309,7 +7315,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -7382,7 +7388,7 @@
               },
               {
                 "name": "direction",
-                "type": "\"horizontal\" | \"vertical\" | undefined",
+                "type": "\"horizontal\" | \"vertical\"",
                 "required": false,
                 "description": ""
               }
@@ -7397,7 +7403,7 @@
             "props": [
               {
                 "name": "withHandle",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -7405,7 +7411,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -7476,7 +7482,7 @@
               },
               {
                 "name": "viewportClassName",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -7488,7 +7494,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -7563,7 +7569,7 @@
             "props": [
               {
                 "name": "containerProps",
-                "type": "React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> | undefined",
+                "type": "React.ComponentProps<\"span\">",
                 "required": false,
                 "description": ""
               }
@@ -7607,7 +7613,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -7681,13 +7687,13 @@
               },
               {
                 "name": "orientation",
-                "type": "\"horizontal\" | \"vertical\" | undefined",
+                "type": "\"horizontal\"|\"vertical\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "decorative",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -7695,7 +7701,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -7733,13 +7739,13 @@
             "props": [
               {
                 "name": "name",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -7747,7 +7753,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -7808,31 +7814,31 @@
             "props": [
               {
                 "name": "palette",
-                "type": "\"sahajiv\" | \"warm\" | \"cool\" | undefined",
+                "type": "\"sahajiv\" | \"warm\" | \"cool\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "shapes",
-                "type": "readonly SceneShape[] | undefined",
+                "type": "readonly SceneShape[]",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "density",
-                "type": "\"sparse\" | \"balanced\" | \"full\" | undefined",
+                "type": "\"sparse\" | \"balanced\" | \"full\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "interactive",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "animate",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -7840,7 +7846,7 @@
           }
         ],
         "category": "3D",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -7926,7 +7932,7 @@
             "props": [
               {
                 "name": "showCloseButton",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -7954,7 +7960,7 @@
           }
         ],
         "category": "Layout",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8035,19 +8041,19 @@
               },
               {
                 "name": "open",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultOpen",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onOpenChange",
-                "type": "((open: boolean) => void) | undefined",
+                "type": "(open: boolean) => void",
                 "required": false,
                 "description": ""
               }
@@ -8058,25 +8064,25 @@
             "props": [
               {
                 "name": "open",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "defaultOpen",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onOpenChange",
-                "type": "((open: boolean) => void) | undefined",
+                "type": "(open: boolean) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "layout",
-                "type": "\"container\" | \"viewport\" | undefined",
+                "type": "\"container\" | \"viewport\"",
                 "required": false,
                 "description": "Container layout fills its parent; viewport layout follows the authored standalone rail."
               }
@@ -8103,19 +8109,19 @@
             "props": [
               {
                 "name": "asChild",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "isActive",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "label",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -8135,7 +8141,7 @@
           }
         ],
         "category": "Navigation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8217,7 +8223,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -8240,7 +8246,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -8263,7 +8269,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -8286,7 +8292,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -8309,7 +8315,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -8317,7 +8323,7 @@
           }
         ],
         "category": "Feedback",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8391,7 +8397,7 @@
               },
               {
                 "name": "thumbLabel",
-                "type": "string | ((index: number) => string) | undefined",
+                "type": "string | ((index: number) => string)",
                 "required": false,
                 "description": ""
               }
@@ -8411,7 +8417,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8498,7 +8504,7 @@
               },
               {
                 "name": "label",
-                "type": "string | undefined",
+                "type": "string",
                 "required": false,
                 "description": ""
               }
@@ -8523,7 +8529,7 @@
           }
         ],
         "category": "Feedback",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8594,13 +8600,13 @@
             "props": [
               {
                 "name": "defaultValue",
-                "type": "number | (readonly string[] & number) | undefined",
+                "type": "string | number | readonly string[] | undefined",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "value",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
@@ -8612,13 +8618,13 @@
               },
               {
                 "name": "labels",
-                "type": "string[] | undefined",
+                "type": "string[]",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "onValueChange",
-                "type": "((value: number) => void) | undefined",
+                "type": "(value: number) => void",
                 "required": false,
                 "description": ""
               }
@@ -8668,7 +8674,7 @@
           }
         ],
         "category": "Navigation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8745,7 +8751,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8831,7 +8837,7 @@
             "props": [
               {
                 "name": "numeric",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -8842,7 +8848,7 @@
             "props": [
               {
                 "name": "numeric",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -8854,7 +8860,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -8971,7 +8977,7 @@
           }
         ],
         "category": "Navigation",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -9026,25 +9032,25 @@
               },
               {
                 "name": "as",
-                "type": "\"h2\" | \"h3\" | \"p\" | \"span\" | \"h1\" | undefined",
+                "type": "\"span\" | \"p\" | \"h1\" | \"h2\" | \"h3\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "replayKey",
-                "type": "string | number | undefined",
+                "type": "string | number",
                 "required": false,
                 "description": "Change this value to deliberately replay the reveal."
               },
               {
                 "name": "variant",
-                "type": "\"rise\" | \"fade\" | undefined",
+                "type": "\"rise\" | \"fade\"",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "duration",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               }
@@ -9052,7 +9058,7 @@
           }
         ],
         "category": "Effects",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": false
       }
     },
@@ -9135,7 +9141,7 @@
               },
               {
                 "name": "maxLength",
-                "type": "number | undefined",
+                "type": "number",
                 "required": false,
                 "description": ""
               }
@@ -9143,7 +9149,7 @@
           }
         ],
         "category": "Forms",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -9225,7 +9231,7 @@
               },
               {
                 "name": "durable",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -9249,7 +9255,7 @@
           }
         ],
         "category": "Feedback",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -9355,7 +9361,7 @@
           }
         ],
         "category": "Actions",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -9428,7 +9434,7 @@
           }
         ],
         "category": "Actions",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -9511,7 +9517,7 @@
             "props": [
               {
                 "name": "portal",
-                "type": "boolean | undefined",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -9519,7 +9525,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     },
@@ -9591,7 +9597,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9614,7 +9620,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9637,7 +9643,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9660,7 +9666,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9683,7 +9689,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9706,7 +9712,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9729,7 +9735,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9752,7 +9758,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9775,7 +9781,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9798,7 +9804,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9821,7 +9827,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9844,7 +9850,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9867,7 +9873,7 @@
               },
               {
                 "name": "as",
-                "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+                "type": "React.ElementType",
                 "required": false,
                 "description": ""
               }
@@ -9875,7 +9881,7 @@
           }
         ],
         "category": "Data display",
-        "fidelity": "verification-in-progress",
+        "fidelity": "refined-design-family",
         "baseComponent": true
       }
     }

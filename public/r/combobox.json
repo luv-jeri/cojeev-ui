@@ -75,55 +75,55 @@
           },
           {
             "name": "value",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultValue",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "onValueChange",
-            "type": "((value: string) => void) | undefined",
+            "type": "(value: string) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "open",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultOpen",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "onOpenChange",
-            "type": "((open: boolean) => void) | undefined",
+            "type": "(open: boolean) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "options",
-            "type": "ComboboxOption[] | undefined",
+            "type": "ComboboxOption[]",
             "required": false,
             "description": ""
           },
           {
             "name": "placeholder",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "emptyText",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -134,7 +134,7 @@
         "props": [
           {
             "name": "wrapperProps",
-            "type": "(React.HTMLAttributes<HTMLElement> & import(\"/Users/sanjaykumar/Documents/ChatGPT/sahajiv ui/node_modules/class-variance-authority/dist/index\").VariantProps<(props?: ({ variant?: \"default\" | \"cream\" | null | undefined; size?: \"default\" | \"sm\" | null | undefined; } & import(\"/Users/sanjaykumar/Documents/ChatGPT/sahajiv ui/node_modules/class-variance-authority/dist/types\").ClassProp) | undefined) => string> & { ref?: React.Ref<HTMLElement>; as?: \"div\" | \"label\"; }) | undefined",
+            "type": "React.ComponentProps<typeof InputWrapper>",
             "required": false,
             "description": ""
           },
@@ -155,7 +155,7 @@
         "props": [
           {
             "name": "label",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -171,7 +171,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

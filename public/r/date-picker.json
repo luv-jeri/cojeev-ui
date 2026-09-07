@@ -68,67 +68,67 @@
         "props": [
           {
             "name": "date",
-            "type": "Date | undefined",
+            "type": "Date",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultDate",
-            "type": "Date | undefined",
+            "type": "Date",
             "required": false,
             "description": ""
           },
           {
             "name": "onDateChange",
-            "type": "((date: Date | undefined) => void) | undefined",
+            "type": "(date: Date | undefined) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "open",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultOpen",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "onOpenChange",
-            "type": "((open: boolean) => void) | undefined",
+            "type": "(open: boolean) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "placeholder",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "disabled",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "calendarProps",
-            "type": "Omit<CalendarProps, \"onSelect\" | \"selected\"> | undefined",
+            "type": "Omit<CalendarProps, \"selected\" | \"onSelect\">",
             "required": false,
             "description": ""
           },
           {
             "name": "formatDate",
-            "type": "((date: Date) => string) | undefined",
+            "type": "(date: Date) => string",
             "required": false,
             "description": ""
           },
           {
             "name": "triggerProps",
-            "type": "React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> | undefined",
+            "type": "React.ComponentProps<\"button\">",
             "required": false,
             "description": ""
           }
@@ -144,7 +144,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

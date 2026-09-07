@@ -61,25 +61,25 @@
         "props": [
           {
             "name": "page",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultPage",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "totalPages",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "onPageChange",
-            "type": "((page: number) => void) | undefined",
+            "type": "(page: number) => void",
             "required": false,
             "description": ""
           }
@@ -98,7 +98,7 @@
         "props": [
           {
             "name": "isActive",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -109,7 +109,7 @@
         "props": [
           {
             "name": "isActive",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -120,7 +120,7 @@
         "props": [
           {
             "name": "isActive",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -132,7 +132,7 @@
       }
     ],
     "category": "Navigation",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

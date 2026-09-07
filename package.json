@@ -19,7 +19,8 @@
     "gate:reference": "npm run gate:static && npm run gate:interactions && npm run gate:lifecycle && node scripts/append-gate-report.mjs",
     "gate:docs": "node scripts/check-docs.mjs --serve --output=artifacts/production-docs",
     "gate:motion": "node --import tsx scripts/check-motion.mjs --serve",
-    "check:examples": "node scripts/check-example-source.mjs"
+    "check:examples": "node scripts/check-example-source.mjs",
+    "gate:mobile": "node scripts/check-mobile-webkit.mjs --serve --output=artifacts/mobile-webkit"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",

@@ -68,25 +68,25 @@
         "props": [
           {
             "name": "data",
-            "type": "ChartDatum[] | undefined",
+            "type": "ChartDatum[]",
             "required": false,
             "description": ""
           },
           {
             "name": "max",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "showTable",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "caption",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -109,7 +109,7 @@
           },
           {
             "name": "max",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           }
@@ -124,19 +124,19 @@
         "props": [
           {
             "name": "data",
-            "type": "ChartDatum[] | undefined",
+            "type": "ChartDatum[]",
             "required": false,
             "description": ""
           },
           {
             "name": "showTable",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "caption",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -147,7 +147,7 @@
         "props": [
           {
             "name": "variant",
-            "type": "\"next\" | \"hist\" | \"cross\" | undefined",
+            "type": "\"hist\" | \"next\" | \"cross\"",
             "required": false,
             "description": ""
           }
@@ -164,37 +164,37 @@
           },
           {
             "name": "strokeWidth",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "gap",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "unit",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "showTable",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "draw",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "caption",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -227,13 +227,13 @@
           },
           {
             "name": "caption",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "visuallyHidden",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -241,7 +241,7 @@
       }
     ],
     "category": "Data display",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

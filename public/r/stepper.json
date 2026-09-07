@@ -67,13 +67,13 @@
         "props": [
           {
             "name": "defaultValue",
-            "type": "number | (readonly string[] & number) | undefined",
+            "type": "string | number | readonly string[] | undefined",
             "required": false,
             "description": ""
           },
           {
             "name": "value",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
@@ -85,13 +85,13 @@
           },
           {
             "name": "labels",
-            "type": "string[] | undefined",
+            "type": "string[]",
             "required": false,
             "description": ""
           },
           {
             "name": "onValueChange",
-            "type": "((value: number) => void) | undefined",
+            "type": "(value: number) => void",
             "required": false,
             "description": ""
           }
@@ -141,7 +141,7 @@
       }
     ],
     "category": "Navigation",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

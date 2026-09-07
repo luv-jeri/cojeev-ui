@@ -64,25 +64,25 @@
           },
           {
             "name": "language",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "title",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "wrap",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "copyLabel",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -90,7 +90,7 @@
       }
     ],
     "category": "Tools",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

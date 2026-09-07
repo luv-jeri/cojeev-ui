@@ -2,7 +2,7 @@
 
 The release contains **77 UI registry entries**: the original 66 components, four shared helpers, and seven additions. The separate foundation entry provides the shared tokens, fonts, styles and motion code. Documentation uses Fumadocs with SahaJiv's own visible components. Code is MIT licensed; bundled fonts retain their SIL Open Font Licences.
 
-Publication verification is pending. This report will be completed after the final production gate and public installation.
+Release candidate: source and local checks are ready. GitHub Pages publication and a fresh install from the public URL remain pending.
 
 ## Scope and evidence
 
@@ -11,6 +11,12 @@ Publication verification is pending. This report will be completed after the fin
 - **Visual review:** all 77 default pages were reviewed at desktop light and mobile dark sizes, using 154 screenshots. Focused follow-ups corrected Alert glyphs and text, selected ButtonGroup state, Card/Bubble secondary text, navigation counts, Sidebar collapse controls and default Tabs targets. Contrast confirmations cover the stated affected surfaces; this is not an automated claim of universal accessibility compliance.
 - **Motion:** all nine presets remain available. Glide is calmer, fast changes follow the latest selection, and moving selection layers keep labels and hit targets still. Off and reduced motion preserve content and state. Separate focused checks cover Marquee pause/inert copies, effects stillness, and ShapeScene rendering, fallback and cleanup.
 - **Production pages:** the final reproducible static-build gate is recorded in [GATE.md](GATE.md). Raw receipts and screenshots are saved as CI artifacts. Each entry has an explicit meaningful behavior case or is identified as passive content.
+
+## Local release confirmation
+
+The final local static build produces 82 pages. TypeScript, lint, four core tests and 246 copied snippets pass. The documentation run passed 462/462 layouts, 77/77 Preview/copy checks and all six shell cases with zero runtime errors; its combined AnimatedNumber sample assertion failed once. The exact unchanged-source six-entry sequence and a focused check subsequently passed; 650 additional recorded values remained within endpoints. That initial failure is preserved and not relabeled. The checker now records raw text, numeric values and times, with separate sample-count and range assertions. Final CI must run the complete gate before publication.
+
+All nine motion presets and five additional motion checks pass. All seven WebKit touch journeys pass against the static build, including every-frame mobile navigation/close bounds, unclipped MotionControls and actual WebGL rendering. This is Safari-engine coverage, not a physical iPhone test.
 
 ## Intentional differences and limits
 

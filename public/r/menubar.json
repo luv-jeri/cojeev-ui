@@ -102,13 +102,13 @@
         "props": [
           {
             "name": "variant",
-            "type": "\"default\" | \"danger\" | undefined",
+            "type": "\"default\" | \"danger\"",
             "required": false,
             "description": ""
           },
           {
             "name": "inset",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -119,7 +119,7 @@
         "props": [
           {
             "name": "inset",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -147,7 +147,7 @@
       }
     ],
     "category": "Actions",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

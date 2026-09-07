@@ -82,7 +82,7 @@
           },
           {
             "name": "nativeSize",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           }
@@ -105,13 +105,13 @@
           },
           {
             "name": "ref",
-            "type": "React.Ref<HTMLElement> | undefined",
+            "type": "React.Ref<HTMLElement>",
             "required": false,
             "description": ""
           },
           {
             "name": "as",
-            "type": "\"div\" | \"label\" | undefined",
+            "type": "\"div\" | \"label\"",
             "required": false,
             "description": ""
           }
@@ -134,7 +134,7 @@
         "props": [
           {
             "name": "onClear",
-            "type": "(() => void) | undefined",
+            "type": "() => void",
             "required": false,
             "description": ""
           }
@@ -142,7 +142,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

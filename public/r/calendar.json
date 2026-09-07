@@ -61,43 +61,43 @@
         "props": [
           {
             "name": "mode",
-            "type": "\"single\" | undefined",
+            "type": "\"single\"",
             "required": false,
             "description": ""
           },
           {
             "name": "selected",
-            "type": "Date | undefined",
+            "type": "Date",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultSelected",
-            "type": "Date | undefined",
+            "type": "Date",
             "required": false,
             "description": ""
           },
           {
             "name": "onSelect",
-            "type": "((date: Date | undefined) => void) | undefined",
+            "type": "(date: Date | undefined) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "disabled",
-            "type": "Matcher | Matcher[] | undefined",
+            "type": "Matcher | Matcher[]",
             "required": false,
             "description": ""
           },
           {
             "name": "marks",
-            "type": "Record<string, CalendarMark> | undefined",
+            "type": "Record<string, CalendarMark>",
             "required": false,
             "description": ""
           },
           {
             "name": "required",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -105,7 +105,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

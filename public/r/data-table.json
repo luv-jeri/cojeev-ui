@@ -83,55 +83,55 @@
           },
           {
             "name": "getRowId",
-            "type": "((row: T, index: number) => string) | undefined",
+            "type": "(row: T, index: number) => string",
             "required": false,
             "description": ""
           },
           {
             "name": "filters",
-            "type": "DataTableFilter<T>[] | undefined",
+            "type": "DataTableFilter<T>[]",
             "required": false,
             "description": ""
           },
           {
             "name": "filter",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultFilter",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "onFilterChange",
-            "type": "((filter: string) => void) | undefined",
+            "type": "(filter: string) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "page",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultPage",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "onPageChange",
-            "type": "((page: number) => void) | undefined",
+            "type": "(page: number) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "pageSize",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
@@ -143,13 +143,13 @@
           },
           {
             "name": "caption",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "onRowClick",
-            "type": "((row: T) => void) | undefined",
+            "type": "(row: T) => void",
             "required": false,
             "description": ""
           }
@@ -168,7 +168,7 @@
         "props": [
           {
             "name": "pressed",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -184,7 +184,7 @@
       }
     ],
     "category": "Data display",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

@@ -98,25 +98,25 @@
         "props": [
           {
             "name": "name",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "value",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultValue",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "onValueChange",
-            "type": "((value: string) => void) | undefined",
+            "type": "(value: string) => void",
             "required": false,
             "description": ""
           }
@@ -133,13 +133,13 @@
           },
           {
             "name": "disabled",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "inputProps",
-            "type": "Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, \"type\" | \"value\"> | undefined",
+            "type": "Omit<React.ComponentProps<\"input\">, \"value\" | \"type\">",
             "required": false,
             "description": ""
           }
@@ -159,7 +159,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

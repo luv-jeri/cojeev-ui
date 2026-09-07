@@ -60,7 +60,7 @@
           },
           {
             "name": "description",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -68,7 +68,7 @@
       }
     ],
     "category": "Tools",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

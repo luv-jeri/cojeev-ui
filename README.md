@@ -40,8 +40,9 @@ npm run typecheck
 npm run lint
 npm test
 npm run build
-npx playwright install chromium
+npx playwright install chromium webkit
 npm run gate
+npm run gate:mobile
 ```
 
 `build` generates the installable registry and static documentation in `out/`. `gate` serves that build and checks every catalog page at three widths in both themes, meaningful pointer/keyboard interactions, exact code copying, and all nine motion presets. CI runs these checks before GitHub Pages publication. `npm start` previews the static build at [localhost:3000](http://localhost:3000/sahajiv-ui/).

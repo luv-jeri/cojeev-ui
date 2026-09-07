@@ -45,37 +45,37 @@
         "props": [
           {
             "name": "direction",
-            "type": "MarqueeDirection | undefined",
+            "type": "MarqueeDirection",
             "required": false,
             "description": ""
           },
           {
             "name": "speed",
-            "type": "MarqueeSpeed | undefined",
+            "type": "MarqueeSpeed",
             "required": false,
             "description": ""
           },
           {
             "name": "label",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "paused",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultPaused",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "onPausedChange",
-            "type": "((paused: boolean) => void) | undefined",
+            "type": "(paused: boolean) => void",
             "required": false,
             "description": ""
           }
@@ -83,7 +83,7 @@
       }
     ],
     "category": "Creative",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

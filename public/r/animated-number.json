@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "registry/sahajiv/ui/animated-number.tsx",
-      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\n\nexport type AnimatedNumberProps = Omit<React.ComponentProps<\"span\">, \"children\"> & {\n  value: number;\n  locale?: string;\n  format?: Intl.NumberFormatOptions;\n  /** Transition time in milliseconds, bounded to 0–2000. */\n  duration?: number;\n};\n\n/** Updates a number smoothly while exposing only the final value to assistive technology. */\nexport function AnimatedNumber({ value, locale = \"en-US\", format, duration = 500, className, ...props }: AnimatedNumberProps) {\n  const host = React.useRef<HTMLSpanElement>(null);\n  const visual = React.useRef<HTMLSpanElement>(null);\n  const safeValue = Number.isFinite(value) ? value : 0;\n  const current = React.useRef(safeValue);\n  const formatter = React.useMemo(() => new Intl.NumberFormat(locale, format), [locale, format]);\n  const { enabled, inView } = useMotionVisibility(host);\n  const formatted = formatter.format(safeValue);\n  React.useLayoutEffect(() => {\n    const element = visual.current;\n    if (!element) return;\n    const milliseconds = Number.isFinite(duration) ? Math.min(2000, Math.max(0, duration)) : 500;\n    const start = current.current;\n    if (!enabled || !inView || milliseconds === 0 || start === safeValue) {\n      current.current = safeValue;\n      element.textContent = formatted;\n      return;\n    }\n    let frame = 0;\n    const began = performance.now();\n    const tick = (now: number) => {\n      const progress = Math.min(1, (now - began) / milliseconds);\n      current.current = start + (safeValue - start) * (1 - Math.pow(1 - progress, 3));\n      element.textContent = formatter.format(current.current);\n      if (progress < 1) frame = requestAnimationFrame(tick);\n    };\n    element.textContent = formatter.format(start);\n    frame = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(frame);\n  }, [safeValue, formatted, formatter, duration, enabled, inView]);\n  return <span {...props} ref={host} data-slot=\"animated-number\" className={cn(\"v-animated-number\", className)}>\n    <span className=\"v-animated-number__accessible\">{formatted}</span>\n    <span ref={visual} aria-hidden=\"true\">{formatted}</span>\n  </span>;\n}\n",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\n\nexport type AnimatedNumberProps = Omit<React.ComponentProps<\"span\">, \"children\"> & {\n  value: number;\n  locale?: string;\n  format?: Intl.NumberFormatOptions;\n  /** Transition time in milliseconds, bounded to 0–2000. */\n  duration?: number;\n  /** Text for NaN or infinite values; never presents missing data as zero. */\n  fallback?: string;\n};\n\n/** Updates a number smoothly while exposing only the final value to assistive technology. */\nexport function AnimatedNumber({ value, locale = \"en-US\", format, duration = 500, fallback = \"—\", className, ref, ...props }: AnimatedNumberProps) {\n  const host = React.useRef<HTMLSpanElement>(null);\n  const visual = React.useRef<HTMLSpanElement>(null);\n  const safeValue = Number.isFinite(value) ? value : null;\n  const current = React.useRef(safeValue);\n  const formatter = React.useMemo(() => new Intl.NumberFormat(locale, format), [locale, format]);\n  const { enabled, inView } = useMotionVisibility(host);\n  const formatted = safeValue === null ? fallback : formatter.format(safeValue);\n  React.useLayoutEffect(() => {\n    const element = visual.current;\n    if (!element) return;\n    const milliseconds = Number.isFinite(duration) ? Math.min(2000, Math.max(0, duration)) : 500;\n    if (safeValue === null) {\n      current.current = null;\n      element.textContent = fallback;\n      return;\n    }\n    const start = current.current ?? safeValue;\n    if (!enabled || !inView || milliseconds === 0 || start === safeValue) {\n      current.current = safeValue;\n      element.textContent = formatted;\n      return;\n    }\n    let frame = 0;\n    const began = performance.now();\n    const tick = (now: number) => {\n      const progress = Math.min(1, (now - began) / milliseconds);\n      current.current = start + (safeValue - start) * (1 - Math.pow(1 - progress, 3));\n      element.textContent = formatter.format(current.current);\n      if (progress < 1) frame = requestAnimationFrame(tick);\n    };\n    element.textContent = formatter.format(start);\n    frame = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(frame);\n  }, [safeValue, formatted, formatter, duration, enabled, inView, fallback]);\n  return <span {...props} ref={React.useCallback((node: HTMLSpanElement | null) => { host.current = node; if (typeof ref === \"function\") return ref(node); if (ref) ref.current = node; }, [ref])} data-slot=\"animated-number\" className={cn(\"v-animated-number\", className)}>\n    <span className=\"v-animated-number__accessible\">{formatted}</span>\n    <span ref={visual} aria-hidden=\"true\">{formatted}</span>\n  </span>;\n}\n",
       "type": "registry:ui"
     },
     {
@@ -50,27 +50,33 @@
           },
           {
             "name": "locale",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "format",
-            "type": "Intl.NumberFormatOptions | undefined",
+            "type": "Intl.NumberFormatOptions",
             "required": false,
             "description": ""
           },
           {
             "name": "duration",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": "Transition time in milliseconds, bounded to 0–2000."
+          },
+          {
+            "name": "fallback",
+            "type": "string",
+            "required": false,
+            "description": "Text for NaN or infinite values; never presents missing data as zero."
           }
         ]
       }
     ],
     "category": "Effects",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

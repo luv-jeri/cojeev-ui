@@ -75,7 +75,7 @@
         "props": [
           {
             "name": "portal",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -83,7 +83,7 @@
       }
     ],
     "category": "Data display",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

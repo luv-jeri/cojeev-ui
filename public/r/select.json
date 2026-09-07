@@ -71,7 +71,7 @@
         "props": [
           {
             "name": "containerProps",
-            "type": "React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> | undefined",
+            "type": "React.ComponentProps<\"span\">",
             "required": false,
             "description": ""
           }
@@ -115,7 +115,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

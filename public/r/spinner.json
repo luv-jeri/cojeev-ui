@@ -83,7 +83,7 @@
           },
           {
             "name": "label",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -108,7 +108,7 @@
       }
     ],
     "category": "Feedback",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

@@ -3,13 +3,15 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 
 const started = new Date().toISOString();
+const docsOutput = process.env.SAHAJIV_DOCS_EVIDENCE ?? "artifacts/production-docs";
 const registryHash = createHash("sha256").update(fs.readFileSync("out/r/registry.json")).digest("hex");
 const runs = [
-  ["documentation", ["scripts/check-docs.mjs", "--serve", "--output=artifacts/production-docs"]],
+  ["documentation", ["scripts/check-docs.mjs", "--serve", `--output=${docsOutput}`]],
   ["motion", ["--import", "tsx", "scripts/check-motion.mjs", "--serve"]],
 ].map(([name, args]) => ({ name, status: spawnSync(process.execPath, args, { stdio: "inherit" }).status }));
-const read = (file) => fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : null;
-const docs = read("artifacts/production-docs/results.json");
+const read = (file) => fs.existsSync(file) && fs.statSync(file).mtimeMs >= Date.parse(started)
+  ? JSON.parse(fs.readFileSync(file, "utf8")) : null;
+const docs = read(`${docsOutput}/results.json`);
 const motion = read("artifacts/production-motion/results.json");
 const passed = runs.every(run => run.status === 0);
 const escape = (value) => String(value ?? "not run").replaceAll("|", "\\|").replaceAll("\n", " ");
@@ -25,7 +27,7 @@ const lines = [
   `Motion presets: ${motion?.rows.filter(r => r.pass).length ?? 0}/${motion?.rows.length ?? 0}. Additional checks: ${motion?.checks.filter(c => c.pass).length ?? 0}/${motion?.checks.length ?? 0}.`, "",
   ...(motion?.rows ?? []).map(r => `- ${r.id}: ${r.pass ? "PASS" : "FAIL"}`),
   ...(motion?.checks ?? []).map(c => `- ${c.name}: ${c.pass ? "PASS" : "FAIL"}`), "",
-  "Raw JSON, screenshots and frame samples are written under `artifacts/production-docs/` and `artifacts/production-motion/`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](BASELINE-STATUS.md).",
+  `Raw JSON, screenshots and frame samples are written under \`${docsOutput}/\` and \`artifacts/production-motion/\`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](BASELINE-STATUS.md).`,
 ];
 fs.writeFileSync("GATE.md", lines.join("\n") + "\n");
 if (!passed) process.exitCode = 1;

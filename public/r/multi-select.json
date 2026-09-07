@@ -67,79 +67,79 @@
           },
           {
             "name": "value",
-            "type": "readonly string[] | undefined",
+            "type": "readonly string[]",
             "required": false,
             "description": "Controlled selected values. Values absent from options remain removable."
           },
           {
             "name": "defaultValue",
-            "type": "readonly string[] | undefined",
+            "type": "readonly string[]",
             "required": false,
             "description": "Initial selection when value is omitted."
           },
           {
             "name": "onValueChange",
-            "type": "((value: string[]) => void) | undefined",
+            "type": "(value: string[]) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "name",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": "Submits one hidden form entry per selected value."
           },
           {
             "name": "id",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "disabled",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "description",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "error",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": "Sets the trigger's invalid state and announces the error."
           },
           {
             "name": "placeholder",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "searchPlaceholder",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "emptyMessage",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "noResultsMessage",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "className",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -147,7 +147,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

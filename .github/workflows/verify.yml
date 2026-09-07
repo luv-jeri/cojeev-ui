@@ -2,7 +2,9 @@ name: Build, verify, and publish
 
 on:
   push:
+    paths-ignore: ["*.md", "verification/**"]
   pull_request:
+    paths-ignore: ["*.md", "verification/**"]
   workflow_dispatch:
 
 permissions:
@@ -23,13 +25,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build
       - run: npm run check:examples
       - run: npm run gate
+      - run: npm run gate:mobile
       - name: Preserve production evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -38,6 +41,9 @@ jobs:
           path: |
             artifacts/production-docs/
             artifacts/production-motion/
+            artifacts/mobile-webkit/
+            artifacts/example-source/
+            GATE.md
           retention-days: 14
       - name: Package documentation
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'

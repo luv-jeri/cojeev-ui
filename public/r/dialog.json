@@ -82,7 +82,7 @@
         "props": [
           {
             "name": "showCloseButton",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -110,7 +110,7 @@
       }
     ],
     "category": "Layout",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

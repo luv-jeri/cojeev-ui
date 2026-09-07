@@ -64,7 +64,7 @@
         "props": [
           {
             "name": "onIndexChange",
-            "type": "((index: number) => void) | undefined",
+            "type": "(index: number) => void",
             "required": false,
             "description": ""
           }
@@ -79,7 +79,7 @@
         "props": [
           {
             "name": "asChild",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -118,7 +118,7 @@
       }
     ],
     "category": "Navigation",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

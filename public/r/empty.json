@@ -80,7 +80,7 @@
           },
           {
             "name": "as",
-            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "type": "React.ElementType",
             "required": false,
             "description": ""
           }
@@ -103,7 +103,7 @@
           },
           {
             "name": "as",
-            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "type": "React.ElementType",
             "required": false,
             "description": ""
           }
@@ -126,7 +126,7 @@
           },
           {
             "name": "as",
-            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "type": "React.ElementType",
             "required": false,
             "description": ""
           }
@@ -149,7 +149,7 @@
           },
           {
             "name": "as",
-            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "type": "React.ElementType",
             "required": false,
             "description": ""
           }
@@ -172,7 +172,7 @@
           },
           {
             "name": "as",
-            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "type": "React.ElementType",
             "required": false,
             "description": ""
           }
@@ -195,7 +195,7 @@
           },
           {
             "name": "as",
-            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "type": "React.ElementType",
             "required": false,
             "description": ""
           }
@@ -203,7 +203,7 @@
       }
     ],
     "category": "Feedback",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

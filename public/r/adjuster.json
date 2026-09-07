@@ -24,7 +24,7 @@
     },
     {
       "path": "registry/sahajiv/styles/adjuster.css",
-      "content": "@layer sahajiv-states {\n/* Content-driven narrow layout and morph-preview paint need the component boundary. */\n[data-slot=\"adjuster\"] [data-part=\"body\"][hidden] { display: none; }\n[data-slot=\"adjuster\"] [data-slot=\"adjuster-preview\"] { --mfill: var(--v-pink); background: var(--v-pink); padding: 12px 24px; }\n[data-slot=\"adjuster\"] [data-slot=\"adjuster-preview\"].v-morph-live { background: transparent; }\n[data-slot=\"adjuster\"] [data-part=\"error\"] { color: var(--v-danger-ink); }\n.v-motion-controls { display:grid; gap:24px; min-width:0; color:var(--v-text); }\n.v-motion-controls__row { display:flex; align-items:center; justify-content:space-between; gap:16px; }\n.v-motion-controls__row > div { display:grid; gap:4px; }\n.v-motion-controls__section { display:grid; gap:12px; }\n.v-motion-controls__characters { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }\n.v-motion-controls__characters > button { min-width:0; min-height:44px; padding-inline:8px; }\n.v-motion-controls__description { min-height:3em; }\n.v-motion-controls__preview { display:grid; gap:16px; padding:20px 16px; border-radius:var(--r-card-sm); background:var(--v-beige); }\n.v-motion-controls__preview [data-slot=\"tabs-list\"] { width:100%; gap:4px; }\n.v-motion-controls__preview [data-slot=\"tabs-trigger\"] { flex:1; min-width:0; padding-inline:8px; }\n.v-motion-controls__preview [data-slot=\"tabs-content\"] { min-height:82px; padding-top:20px; }\n.v-motion-controls [data-slot=\"slider\"] { margin-block:8px; }\n@container (max-width: 480px) {\n [data-slot=\"adjuster\"] [data-part=\"grid\"] { grid-template-columns: minmax(0, 1fr); }\n [data-slot=\"adjuster\"] [data-part=\"body\"] { padding: 0 12px 12px; }\n [data-slot=\"adjuster\"] fieldset { padding: 12px; }\n}\n\n}\n",
+      "content": "@layer sahajiv-states {\n/* Content-driven narrow layout and morph-preview paint need the component boundary. */\n[data-slot=\"adjuster\"] [data-part=\"body\"][hidden] { display: none; }\n[data-slot=\"adjuster\"] [data-slot=\"adjuster-preview\"] { --mfill: var(--v-pink); background: var(--v-pink); padding: 12px 24px; }\n[data-slot=\"adjuster\"] [data-slot=\"adjuster-preview\"].v-morph-live { background: transparent; }\n[data-slot=\"adjuster\"] [data-part=\"error\"] { color: var(--v-danger-ink); }\n.v-motion-controls { display:grid; gap:24px; min-width:0; color:var(--v-text); }\n.v-motion-controls__row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }\n.v-motion-controls__row > div { display:grid; gap:4px; min-width:0; }\n.v-motion-controls__section { display:grid; gap:12px; }\n.v-motion-controls__characters { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }\n.v-motion-controls__characters > button { min-width:0; min-height:44px; padding-inline:8px; }\n.v-motion-controls__description { min-height:3em; }\n.v-motion-controls__preview { display:grid; gap:16px; padding:20px 16px; border-radius:var(--r-card-sm); background:var(--v-beige); }\n.v-motion-controls__preview [data-slot=\"tabs-list\"] { width:100%; gap:4px; }\n.v-motion-controls__preview [data-slot=\"tabs-trigger\"] { flex:1; min-width:0; padding-inline:8px; }\n.v-motion-controls__preview [data-slot=\"tabs-content\"] { min-height:82px; padding-top:20px; }\n.v-motion-controls [data-slot=\"slider\"] { margin-block:8px; }\n@container (max-width: 480px) {\n [data-slot=\"adjuster\"] [data-part=\"grid\"] { grid-template-columns: minmax(0, 1fr); }\n [data-slot=\"adjuster\"] [data-part=\"body\"] { padding: 0 12px 12px; }\n [data-slot=\"adjuster\"] fieldset { padding: 12px; }\n}\n\n}\n",
       "type": "registry:file",
       "target": "styles/sahajiv/adjuster.css"
     }
@@ -52,7 +52,7 @@
         "props": [
           {
             "name": "defaultOpen",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -63,7 +63,7 @@
         "props": [
           {
             "name": "showPreview",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -71,7 +71,7 @@
       }
     ],
     "category": "Tools",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

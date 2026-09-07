@@ -19,7 +19,7 @@
     },
     {
       "path": "registry/sahajiv/styles/sidebar.css",
-      "content": "@layer sahajiv-states {\n[data-slot=\"sidebar\"] {\n  transition: width var(--t-element) var(--enter);\n}\n[data-slot=\"sidebar-trigger\"] .v-icon {\n  width: 12px;\n  height: 12px;\n  stroke-width: 2.5;\n}\n[data-slot=\"sidebar-menu-button\"] {\n  cursor: pointer;\n  transition:\n    background var(--t-micro),\n    color var(--t-micro);\n}\n[data-slot=\"sidebar-menu-button\"]:hover {\n  background: rgba(251, 244, 230, 0.07);\n}\n[data-slot=\"sidebar-menu-button\"] .v-icon {\n  width: 20px;\n  height: 20px;\n  transition: transform var(--t-element) var(--enter);\n}\n[data-slot=\"sidebar-menu-button\"]:hover .v-icon {\n  transform: translateY(-1px) rotate(-6deg);\n}\n[data-slot=\"sidebar-menu-button\"]:active .v-icon {\n  transform: scale(0.92);\n}\n[data-slot=\"sidebar-menu-button\"][aria-current=\"page\"],\n[data-slot=\"sidebar-menu-button\"][aria-current=\"page\"] .v-icon {\n  color: var(--v-pink);\n}\n[data-slot=\"sidebar-menu-button\"][aria-current=\"page\"]::after {\n  content: \"\";\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--sidebar-primary);\n  animation: v-sidebar-breathe var(--breath) ease-in-out infinite;\n}\n[data-slot=\"sidebar\"].-mini\n  :is(.v-nav__label, .v-nav__group, .v-brand span:not(.v-collapse)) {\n  display: none;\n}\n[data-slot=\"sidebar\"].-mini .v-brand {\n  justify-content: center;\n  font-size: 0;\n  min-height: 44px;\n  gap: 0;\n}\n[data-slot=\"sidebar\"].-mini .v-brand > *:not(.v-collapse) {\n  display: none;\n}\n[data-slot=\"sidebar\"].-mini .v-collapse {\n  margin: 0;\n  width: 36px;\n  height: 36px;\n  font-size: 13px;\n  box-shadow: 0 0 0 3px color-mix(in oklab, var(--v-pink) 28%, transparent);\n}\n[data-slot=\"sidebar\"].-mini .v-collapse .v-icon {\n  width: 15px;\n  height: 15px;\n  transform: rotate(180deg);\n}\n[data-slot=\"sidebar\"].-mini .v-nav__item {\n  justify-content: center;\n  padding: 0;\n}\n[data-slot=\"sidebar\"].-mini .v-nav__item::after {\n  display: none;\n}\n[data-slot=\"sidebar\"].-mini .v-nav__count {\n  position: absolute;\n  top: 4px;\n  right: 6px;\n  min-width: 16px;\n  height: 16px;\n  font-size: 9px;\n}\n:root[data-mode=\"dark\"] [data-slot=\"sidebar\"],\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  :is(\n    .v-nav,\n    .v-nav__item,\n    .v-nav__label,\n    .v-icon,\n    .v-sidebar__foot,\n    .v-brand\n  ) {\n  color: var(--structure-text);\n}\n:root[data-mode=\"dark\"] [data-slot=\"sidebar\"] .v-nav__item[aria-current=\"page\"],\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  .v-nav__item[aria-current=\"page\"]\n  :is(.v-nav__label, .v-icon) {\n  color: var(--v-pink);\n}\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  .v-nav__item:hover:not([aria-current=\"page\"]),\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  .v-nav__item:hover:not([aria-current=\"page\"])\n  :is(.v-nav__label, .v-icon) {\n  color: var(--on-structure);\n}\n@keyframes v-sidebar-breathe {\n  0%,\n  100% {\n    opacity: 0.35;\n    transform: scale(0.8);\n  }\n  50% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"sidebar-menu-button\"][aria-current=\"page\"]::after {\n    animation: none;\n  }\n}\n\n/* Standalone authored rail; embedded rails keep the container sizing contract. */\n[data-slot=\"sidebar\"][data-layout=\"viewport\"] { position: sticky; top: var(--shell-inset); min-height: calc(100vh - var(--shell-inset)*2); max-height: calc(100vh - var(--shell-inset)*2); }\n\n[data-slot=\"sidebar-content\"] { --glide-fg: var(--v-pink); }\n[data-slot=\"sidebar-content\"].v-glide > .v-glide__pill { background: rgba(251,244,230,.1); }\n\n[data-slot=\"sidebar\"][data-layout=\"viewport\"]:not(.-mini) { width: auto; }\n\n}\n",
+      "content": "@layer sahajiv-states {\n[data-slot=\"sidebar\"] {\n  transition: width var(--t-element) var(--enter);\n}\n[data-slot=\"sidebar-trigger\"] .v-icon {\n  width: 12px;\n  height: 12px;\n  stroke-width: 2.5;\n}\n[data-slot=\"sidebar-menu-button\"] {\n  cursor: pointer;\n  transition:\n    background var(--t-micro),\n    color var(--t-micro);\n}\n[data-slot=\"sidebar-menu-button\"]:hover {\n  background: rgba(251, 244, 230, 0.07);\n}\n[data-slot=\"sidebar-menu-button\"] .v-icon {\n  width: 20px;\n  height: 20px;\n  transition: transform var(--t-element) var(--enter);\n}\n[data-slot=\"sidebar-menu-button\"]:hover .v-icon {\n  transform: translateY(-1px) rotate(-6deg);\n}\n[data-slot=\"sidebar-menu-button\"]:active .v-icon {\n  transform: scale(0.92);\n}\n[data-slot=\"sidebar-menu-button\"][aria-current=\"page\"],\n[data-slot=\"sidebar-menu-button\"][aria-current=\"page\"] .v-icon {\n  color: var(--v-pink);\n}\n[data-slot=\"sidebar-menu-button\"][aria-current=\"page\"]::after {\n  content: \"\";\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--sidebar-primary);\n  animation: v-sidebar-breathe var(--breath) ease-in-out infinite;\n}\n[data-slot=\"sidebar\"].-mini\n  :is(.v-nav__label, .v-nav__group, .v-brand span:not(.v-collapse)) {\n  display: none;\n}\n[data-slot=\"sidebar\"].-mini .v-brand {\n  justify-content: center;\n  font-size: 0;\n  min-height: 44px;\n  gap: 0;\n}\n[data-slot=\"sidebar\"].-mini .v-brand > *:not(.v-collapse) {\n  display: none;\n}\n[data-slot=\"sidebar\"].-mini .v-collapse {\n  margin: 0;\n  width: 36px;\n  height: 36px;\n  font-size: 13px;\n  box-shadow: 0 0 0 3px color-mix(in oklab, var(--v-pink) 28%, transparent);\n}\n[data-slot=\"sidebar\"].-mini .v-collapse .v-icon {\n  width: 15px;\n  height: 15px;\n  transform: rotate(180deg);\n}\n[data-slot=\"sidebar\"].-mini .v-nav__item {\n  justify-content: center;\n  padding: 0;\n}\n[data-slot=\"sidebar\"].-mini .v-nav__item::after {\n  display: none;\n}\n[data-slot=\"sidebar\"].-mini .v-nav__count {\n  position: absolute;\n  top: 4px;\n  right: 6px;\n  min-width: 16px;\n  height: 16px;\n  font-size: 9px;\n}\n:root[data-mode=\"dark\"] [data-slot=\"sidebar\"],\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  :is(\n    .v-nav,\n    .v-nav__item,\n    .v-nav__label,\n    .v-icon,\n    .v-sidebar__foot,\n    .v-brand\n  ) {\n  color: var(--structure-text);\n}\n/* The collapse icon sits on pink, independently of the rail surface. */\n:root[data-mode=\"dark\"] [data-slot=\"sidebar\"] [data-slot=\"sidebar-trigger\"] .v-icon {\n  color: var(--v-on-accent);\n}\n:root[data-mode=\"dark\"] [data-slot=\"sidebar\"] .v-nav__item[aria-current=\"page\"],\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  .v-nav__item[aria-current=\"page\"]\n  :is(.v-nav__label, .v-icon) {\n  color: var(--v-pink);\n}\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  .v-nav__item:hover:not([aria-current=\"page\"]),\n:root[data-mode=\"dark\"]\n  [data-slot=\"sidebar\"]\n  .v-nav__item:hover:not([aria-current=\"page\"])\n  :is(.v-nav__label, .v-icon) {\n  color: var(--on-structure);\n}\n@keyframes v-sidebar-breathe {\n  0%,\n  100% {\n    opacity: 0.35;\n    transform: scale(0.8);\n  }\n  50% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"sidebar-menu-button\"][aria-current=\"page\"]::after {\n    animation: none;\n  }\n}\n\n/* Standalone authored rail; embedded rails keep the container sizing contract. */\n[data-slot=\"sidebar\"][data-layout=\"viewport\"] { position: sticky; top: var(--shell-inset); min-height: calc(100vh - var(--shell-inset)*2); max-height: calc(100vh - var(--shell-inset)*2); }\n\n[data-slot=\"sidebar-content\"] { --glide-fg: var(--v-pink); }\n[data-slot=\"sidebar-content\"].v-glide > .v-glide__pill { background: rgba(251,244,230,.1); }\n\n[data-slot=\"sidebar\"][data-layout=\"viewport\"]:not(.-mini) { width: auto; }\n\n}\n",
       "type": "registry:file",
       "target": "styles/sahajiv/sidebar.css"
     }
@@ -77,19 +77,19 @@
           },
           {
             "name": "open",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultOpen",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "onOpenChange",
-            "type": "((open: boolean) => void) | undefined",
+            "type": "(open: boolean) => void",
             "required": false,
             "description": ""
           }
@@ -100,25 +100,25 @@
         "props": [
           {
             "name": "open",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "defaultOpen",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "onOpenChange",
-            "type": "((open: boolean) => void) | undefined",
+            "type": "(open: boolean) => void",
             "required": false,
             "description": ""
           },
           {
             "name": "layout",
-            "type": "\"container\" | \"viewport\" | undefined",
+            "type": "\"container\" | \"viewport\"",
             "required": false,
             "description": "Container layout fills its parent; viewport layout follows the authored standalone rail."
           }
@@ -145,19 +145,19 @@
         "props": [
           {
             "name": "asChild",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "isActive",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "label",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -177,7 +177,7 @@
       }
     ],
     "category": "Navigation",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

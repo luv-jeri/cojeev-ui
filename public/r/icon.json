@@ -55,13 +55,13 @@
         "props": [
           {
             "name": "name",
-            "type": "string",
+            "type": "string | undefined",
             "required": true,
             "description": ""
           },
           {
             "name": "size",
-            "type": "\"default\" | \"sm\" | \"lg\" | undefined",
+            "type": "\"default\"|\"sm\"|\"lg\"",
             "required": false,
             "description": ""
           }
@@ -103,7 +103,7 @@
       }
     ],
     "category": "Data display",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

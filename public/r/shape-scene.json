@@ -57,31 +57,31 @@
         "props": [
           {
             "name": "palette",
-            "type": "\"sahajiv\" | \"warm\" | \"cool\" | undefined",
+            "type": "\"sahajiv\" | \"warm\" | \"cool\"",
             "required": false,
             "description": ""
           },
           {
             "name": "shapes",
-            "type": "readonly SceneShape[] | undefined",
+            "type": "readonly SceneShape[]",
             "required": false,
             "description": ""
           },
           {
             "name": "density",
-            "type": "\"sparse\" | \"balanced\" | \"full\" | undefined",
+            "type": "\"sparse\" | \"balanced\" | \"full\"",
             "required": false,
             "description": ""
           },
           {
             "name": "interactive",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "animate",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -89,7 +89,7 @@
       }
     ],
     "category": "3D",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

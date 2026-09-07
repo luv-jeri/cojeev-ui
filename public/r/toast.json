@@ -78,7 +78,7 @@
           },
           {
             "name": "durable",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -102,7 +102,7 @@
       }
     ],
     "category": "Feedback",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

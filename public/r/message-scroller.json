@@ -63,13 +63,13 @@
         "props": [
           {
             "name": "followThreshold",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           },
           {
             "name": "onAtBottomChange",
-            "type": "((atBottom: boolean) => void) | undefined",
+            "type": "(atBottom: boolean) => void",
             "required": false,
             "description": ""
           }
@@ -81,7 +81,7 @@
       }
     ],
     "category": "Conversation",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

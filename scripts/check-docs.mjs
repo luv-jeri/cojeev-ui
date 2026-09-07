@@ -204,7 +204,7 @@ const tests = {
     const visual = root.locator('[data-slot="animated-number"] [aria-hidden]');
     await visual.evaluate(el => {
       window.__numberSamples = [];
-      window.__numberObserver = new MutationObserver(() => window.__numberSamples.push(Number(el.textContent.replaceAll(",", ""))));
+      window.__numberObserver = new MutationObserver(() => window.__numberSamples.push({text:el.textContent,value:Number(el.textContent.replaceAll(",", "")),time:performance.now()}));
       window.__numberObserver.observe(el, {childList:true,subtree:true,characterData:true});
     });
     await root.getByRole("button", { name: "Add 125" }).click();
@@ -216,12 +216,13 @@ const tests = {
     await text(root, "Current value: 1,240");
     await eventually(() => visual.innerText().then(value => value === "1,240"), "Interrupted number reaches reset target");
     const samples = await page.evaluate(() => { window.__numberObserver.disconnect(); return window.__numberSamples; });
-    assert(samples.length > 2 && samples.every(value => value >= 1240 && value <= 1365), "Numeric transition remains within its endpoints");
+    assert(samples.length > 2, `Expected numeric updates: ${JSON.stringify(samples)}`);
+    assert(samples.every(sample => sample.value >= 1240 && sample.value <= 1365), `Numeric transition remains within its endpoints: ${JSON.stringify(samples)}`);
     await page.emulateMedia({reducedMotion:"reduce"});
     await root.getByRole("button", { name: "Add 125" }).click();
     assert.equal(await visual.innerText(), "1,365");
     await page.emulateMedia({reducedMotion:"no-preference"});
-    return "Pointer/keyboard updates, interruption without overshoot, reduced motion and exact reset";
+    return {status:"pass",detail:"Pointer/keyboard updates, interruption without overshoot, reduced motion and exact reset",samples};
   },
   "ambient-background": async ({root}) => {
     const background=root.locator('[data-slot="ambient-background"]');

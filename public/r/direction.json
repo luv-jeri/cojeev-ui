@@ -62,7 +62,7 @@
         "props": [
           {
             "name": "dir",
-            "type": "\"ltr\" | \"rtl\" | undefined",
+            "type": "string | undefined",
             "required": false,
             "description": ""
           }
@@ -70,7 +70,7 @@
       }
     ],
     "category": "Layout",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

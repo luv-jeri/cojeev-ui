@@ -82,7 +82,7 @@
         "props": [
           {
             "name": "numeric",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -93,7 +93,7 @@
         "props": [
           {
             "name": "numeric",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -105,7 +105,7 @@
       }
     ],
     "category": "Data display",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

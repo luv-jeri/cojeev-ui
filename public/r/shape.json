@@ -33,13 +33,13 @@
         "props": [
           {
             "name": "name",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           },
           {
             "name": "as",
-            "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+            "type": "React.ElementType",
             "required": false,
             "description": ""
           }
@@ -47,7 +47,7 @@
       }
     ],
     "category": "Data display",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": false
   },
   "type": "registry:ui"

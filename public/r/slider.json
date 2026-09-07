@@ -70,7 +70,7 @@
           },
           {
             "name": "thumbLabel",
-            "type": "string | ((index: number) => string) | undefined",
+            "type": "string | ((index: number) => string)",
             "required": false,
             "description": ""
           }
@@ -90,7 +90,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

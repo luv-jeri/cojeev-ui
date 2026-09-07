@@ -1257,6 +1257,7 @@
     "scripts/build-registry.mjs",
     "scripts/check-docs.mjs",
     "scripts/check-example-source.mjs",
+    "scripts/check-mobile-webkit.mjs",
     "scripts/check-motion.mjs",
     "scripts/component-api.mjs",
     "scripts/gate-interactions.mjs",

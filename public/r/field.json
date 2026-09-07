@@ -72,13 +72,13 @@
           },
           {
             "name": "invalid",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           },
           {
             "name": "controlId",
-            "type": "string | undefined",
+            "type": "string",
             "required": false,
             "description": ""
           }
@@ -101,7 +101,7 @@
         "props": [
           {
             "name": "errors",
-            "type": "({ message?: string; } | undefined)[] | undefined",
+            "type": "Array<{ message?: string } | undefined>",
             "required": false,
             "description": ""
           }
@@ -120,7 +120,7 @@
         "props": [
           {
             "name": "asChild",
-            "type": "boolean | undefined",
+            "type": "boolean",
             "required": false,
             "description": ""
           }
@@ -128,7 +128,7 @@
       }
     ],
     "category": "Forms",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"

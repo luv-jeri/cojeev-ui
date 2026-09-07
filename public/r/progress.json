@@ -76,13 +76,13 @@
           },
           {
             "name": "value",
-            "type": "number | null | undefined",
+            "type": "number|null",
             "required": false,
             "description": ""
           },
           {
             "name": "max",
-            "type": "number | undefined",
+            "type": "number",
             "required": false,
             "description": ""
           }
@@ -94,7 +94,7 @@
       }
     ],
     "category": "Feedback",
-    "fidelity": "verification-in-progress",
+    "fidelity": "refined-design-family",
     "baseComponent": true
   },
   "type": "registry:ui"
