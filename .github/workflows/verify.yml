@@ -34,6 +34,7 @@ jobs:
       - run: npm run gate
       - run: npm run gate:mobile
       - run: npm run gate:marketing
+      - run: npm run gate:smooth-scroll
       - name: Preserve production evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -43,6 +44,7 @@ jobs:
             artifacts/production-docs/
             artifacts/production-motion/
             artifacts/mobile-webkit/
+            artifacts/landing-smooth-scroll/
             artifacts/example-source/
             output/playwright/refinement-marketing/
             GATE.md
