@@ -1,4 +1,5 @@
 "use client";
+import { ScrollAreaList } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -142,6 +143,7 @@ export function MultiSelect({
             if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); focusChoice(event.key === "ArrowDown" ? 0 : -1); }
             if (event.key === "Enter") event.preventDefault();
           }} />
+          <ScrollAreaList maxHeight="min(280px,40dvh)">
           <div ref={choicesRef} data-slot="multi-select-options" className="v-multi-select__options" role="group" aria-label={`${label} choices`} onKeyDown={event => {
             if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
             const choices = [...(choicesRef.current?.querySelectorAll<HTMLButtonElement>('[role="checkbox"]:not(:disabled)') ?? [])];
@@ -159,6 +161,7 @@ export function MultiSelect({
             })}
             {!filtered.length && <p className="v-multi-select__empty" role="status">{indexed.length ? noResultsMessage : emptyMessage}</p>}
           </div>
+          </ScrollAreaList>
           <p className="v-multi-select__hint">Choose any number. Escape closes the list.</p>
         </PopoverContent>
       </Popover>

@@ -29,9 +29,6 @@
   margin-top: var(--s-2);
   gap: var(--s-3);
 }
-.v-drawer:where([data-slot="drawer"], [data-slot^="drawer-"]) {
-  animation: v-drawer-in var(--t-max) var(--enter) both;
-}
 @supports not selector(::-webkit-scrollbar) {
   .v-drawer:where([data-slot="drawer"], [data-slot^="drawer-"]) {
     scrollbar-color: rgba(251, 244, 230, 0.5) transparent;
@@ -46,12 +43,6 @@
 @keyframes v-scrim-in {
   from {
     opacity: 0;
-  }
-}
-@keyframes v-drawer-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
   }
 }
 @media (prefers-reduced-motion: reduce) {

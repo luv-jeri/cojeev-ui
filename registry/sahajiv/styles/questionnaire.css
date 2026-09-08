@@ -117,11 +117,11 @@
 
 /* The native input remains the focus/form owner; the same organic selector used
    by RadioGroup paints its checked state without replacing native behaviour. */
-[data-slot="questionnaire-option"] { position:relative; border-radius:16px; }
+[data-slot="questionnaire-option"] { position:relative; border-radius:16px; grid-template-columns:36px minmax(0,1fr) var(--selector-size,28px); }
 [data-slot="questionnaire-option"] [data-slot="questionnaire-option-input"] { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); border:0; white-space:nowrap; }
-[data-slot="questionnaire-selector"] { order:3; display:inline-grid; width:28px; height:28px; }
+[data-slot="questionnaire-selector"] { order:3; display:inline-grid; width:var(--selector-size,28px); height:var(--selector-size,28px); }
 [data-slot="questionnaire-option-body"] { overflow-wrap:anywhere; }
-[data-slot="questionnaire-option"]:not(:has(.v-disk)) { grid-template-columns:minmax(0,1fr) 28px; }
+[data-slot="questionnaire-option"]:not(:has(.v-disk)) { grid-template-columns:minmax(0,1fr) var(--selector-size,28px); }
 [data-slot="questionnaire-option"]:has(input:disabled) { background:var(--v-disabled-face); }
 
 /* The shared Button body engine owns the moving selector contour. The original

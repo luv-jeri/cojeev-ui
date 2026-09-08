@@ -259,6 +259,7 @@
 [data-slot="navigation-menu-viewport"] > [data-slot="navigation-menu-content"][data-motion-exiting="true"] { position:absolute; inset:0; pointer-events:none; }
 
 [data-slot="navigation-menu-link"], [data-slot="navigation-menu-trigger"] { gap:12px; text-align:start; overflow-wrap:anywhere; }
+[data-slot="navigation-menu-content"] [data-slot="navigation-menu-link"] { white-space:normal; min-width:0; }
 [data-slot="navigation-menu-link"] .v-item-adornment .v-icon, [data-slot="navigation-menu-trigger"] .v-item-adornment .v-icon { width:15px; height:15px; color:var(--adornment-foreground); transform:none; transition:none; }
 [data-slot="navigation-menu-trigger"]:is(:hover,[data-state="open"]) { background:var(--v-beige); color:var(--v-text); }
 [data-slot="navigation-menu-trigger"] > .v-state-chevron .v-icon { width:16px; height:16px; transform:none; transition:none; }

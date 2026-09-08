@@ -7,6 +7,11 @@ import { componentAPIs } from "./component-api.mjs";
 const baseURL=process.env.SAHAJIV_REGISTRY_URL??"https://luv-jeri.github.io/sahajiv-ui";
 const source="registry/sahajiv";
 const ids=fs.readdirSync(`${source}/ui`).filter(file=>file.endsWith(".tsx")).map(file=>file.slice(0,-4)).sort();
+// The shadcn installer resolves registered modules by basename. A helper with
+// the same basename as a UI entry can therefore become a circular UI import.
+for (const folder of ["lib", "motion"]) for (const file of fs.readdirSync(`${source}/${folder}`)) {
+  if (/\.tsx?$/.test(file) && ids.includes(file.replace(/\.tsx?$/, ""))) throw new Error(`Rename private helper ${folder}/${file}: its name collides with an installable UI entry.`);
+}
 const apis=componentAPIs(ids);
 const guides=JSON.parse(fs.readFileSync("data/component-guides.json","utf8"));
 const additions=JSON.parse(fs.readFileSync("data/component-additions.json","utf8"));
@@ -75,6 +80,12 @@ base.files.push(...foundationStyles.map(name=>({path:`${source}/styles/${name}.c
 base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({path:`reference/sahajiv-handoff-v4/fonts/${name}`,type:"registry:file",target:`styles/fonts/${name}`})));
 const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"sahajiv",homepage:baseURL,items};
 fs.writeFileSync("registry.json",JSON.stringify(registry,null,2)+"\n");
+// Refresh the live documentation catalogue without producing distributable
+// payloads, invoking the shadcn CLI, or running a production build.
+if(process.argv.includes("--metadata-only")) {
+  console.log(`Local documentation metadata refreshed: ${ids.length} entries; public payloads unchanged.`);
+  process.exit(0);
+}
 fs.mkdirSync("public/r",{recursive:true});
 execFileSync(process.execPath,["node_modules/shadcn/dist/index.js","build"],{stdio:"inherit"});
 for(const item of items){const file=path.join("public/r",`${item.name}.json`);const data=JSON.parse(fs.readFileSync(file,"utf8"));for(const f of data.files??[])if(f.content){if(/\.[cm]?[jt]sx?$/.test(f.path))f.content=f.content.replace(/((?:from\s+|import\s+)["'])([^"']+)(["'])/g,(_match,start,value,end)=>`${start}${installedImport(f.path,value)}${end}`);if(f.path.startsWith(`${source}/styles/`)){const name=path.basename(f.path,".css");if(!["fonts","tokens","theme","base"].includes(name)){const layer=name==="morph"?"sahajiv-morph":name==="flow-press"?"sahajiv-flow":"sahajiv-states";f.content=`@layer ${layer} {\n${f.content}\n}\n`;}}}fs.writeFileSync(file,JSON.stringify(data,null,2)+"\n");}

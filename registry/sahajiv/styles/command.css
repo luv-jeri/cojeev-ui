@@ -52,8 +52,8 @@
   font-size: var(--fs-body);
 }
 .v-cmd__list:where([data-slot="command"], [data-slot^="command-"]) {
-  max-height: 320px;
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
   padding: var(--s-2);
 }
 .v-cmd__empty:where([data-slot="command"], [data-slot^="command-"]) {
@@ -282,7 +282,6 @@
   display: none;
 }
 [data-slot="command-item"][data-disabled="true"] {
-  pointer-events: none;
   color: var(--v-disabled-ink);
   cursor: not-allowed;
 }

@@ -1,4 +1,5 @@
 "use client";
+import { scrollAreaListChildren } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
@@ -91,7 +92,7 @@ export function DropdownMenuContent({
         className={cn(dropdownmenuContentVariants(), className)}
         {...props}
       >
-        {children}
+        {scrollAreaListChildren(children, props.asChild)}
       </Primitive.Content>
     </Primitive.Portal>
   );
@@ -101,6 +102,7 @@ export type DropdownMenuSubContentProps = React.ComponentProps<
 >;
 export function DropdownMenuSubContent({
   className,
+  children,
   ref,
   ...props
 }: DropdownMenuSubContentProps) {
@@ -118,7 +120,7 @@ export function DropdownMenuSubContent({
         data-part="content"
         className={cn(dropdownmenuContentVariants(), className)}
         {...props}
-      />
+      >{scrollAreaListChildren(children, props.asChild)}</Primitive.SubContent>
     </Primitive.Portal>
   );
 }
@@ -146,9 +148,6 @@ export function DropdownMenuItem({
         "v-menu__item flex items-center gap-[var(--s-3)] min-h-10 px-[var(--s-3)] rounded-[var(--r-md)] text-[length:var(--fs-control)] w-full text-left whitespace-nowrap outline-none",
         variant === "danger" && "-danger",
         className,
-  children,
-  adornment,
-  adornmentId,
       )}
       {...props}
     >{adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>

@@ -29,12 +29,15 @@
 .v-ibtn:where([data-slot]).-cream[data-morph]{--mfill:var(--v-canvas)}
 .v-disk:where([data-slot])[data-morph]{--mfill:var(--disk-bg,var(--v-beige))}
 [data-colourful="1"] .v-disk:where([data-slot]):not([class*=" -"]){background:var(--v-blue-soft)}
-.v-ibtn:where([data-slot]):hover{background:var(--v-beige)}
-.v-ibtn:where([data-slot]).-ink:hover{background:var(--v-ink-soft)}
-.v-ibtn:where([data-slot]).-pink:hover{background:var(--v-pink-deep)}
+.v-ibtn:where([data-slot]):where(:hover,:focus-visible){background:var(--v-beige)}
+.v-ibtn:where([data-slot]).-ink:where(:hover,:focus-visible){background:var(--v-ink-soft)}
+.v-ibtn:where([data-slot]).-pink:where(:hover,:focus-visible){background:var(--v-pink-deep)}
 .v-ibtn:where([data-slot]).-sm .v-icon{width:16px;height:16px}
 .v-ibtn:where([data-slot]).-xl .v-icon{width:24px;height:24px}
 .v-ibtn:where([data-slot]):disabled{opacity:.4;cursor:not-allowed}
 .v-ibtn:where([data-slot]):not(.-ink):not(.-pink):not(.-beige):not(.-cream):not(.-dashed){box-shadow:inset 0 0 0 1px var(--v-edge)}
 :root[data-mode="dark"] .v-ibtn:where([data-slot]){color:var(--v-text)}
 .v-ibtn:where([data-slot]):disabled{background:var(--v-disabled-face);color:var(--v-disabled-ink);box-shadow:inset 0 0 0 1px var(--v-disabled-edge);opacity:1}
+
+/* Part motion can briefly travel beyond the glyph without changing its layout box. */
+.v-icon:where([data-slot]){overflow:visible}

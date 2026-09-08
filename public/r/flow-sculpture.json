@@ -1,0 +1,100 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "flow-sculpture",
+  "title": "Flow sculpture",
+  "description": "A rendered form responds to pointer strokes through a fluid distortion field.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/glass-sculpture.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/flow-sculpture.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { SculptureStage,type MaterialSculptureCommonProps } from \"@/components/ui/glass-sculpture\";\nimport { sculptureNumber } from \"@/lib/sahajiv/sculpture-raster\";\nexport type FlowSculptureProps=MaterialSculptureCommonProps&{distortion?:number;chromatic?:number;spread?:number;settle?:number;swirl?:number;pulse?:number};\n/** Pointer impulses advect and dissipate in a bounded field above a real rendered object. */\nexport function FlowSculpture({distortion=1,chromatic=.5,spread=.14,settle=1,swirl=.35,pulse=0,...props}:FlowSculptureProps){\n return <SculptureStage {...props} effect={{kind:\"flow\",distortion:sculptureNumber(distortion,1,0,2),chromatic:sculptureNumber(chromatic,.5,0,1),spread:sculptureNumber(spread,.14,.035,.3),settle:sculptureNumber(settle,1,.25,3),swirl:sculptureNumber(swirl,.35,0,1),pulse:sculptureNumber(pulse,0,0,Number.MAX_SAFE_INTEGER)}}/>;\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "source": {
+      "name": "Flow sculpture",
+      "variants": [
+        "default",
+        "soft",
+        "prismatic"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "moving",
+        "stirred",
+        "settling",
+        "paused",
+        "custom-geometry",
+        "fallback",
+        "context-lost",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "FlowSculptureProps",
+        "props": [
+          {
+            "name": "ref",
+            "type": "React.Ref<HTMLDivElement>",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onRendererChange",
+            "type": "(state:SculptureRendererState)=>void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "distortion",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "chromatic",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "spread",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "settle",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "swirl",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pulse",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "3D",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

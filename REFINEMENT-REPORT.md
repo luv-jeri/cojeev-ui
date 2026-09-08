@@ -1,5 +1,7 @@
 # Living showcase and component refinement
 
+**Historical pass:** this report describes source snapshot 6c16a3b. The owner subsequently requested a new local review pass. Deployment run34219556763 was cancelled and did not deploy. Public consumer verification and release builds are on hold; see REVIEW-PASS-PLAN.md for the current work.
+
 This refinement follows the owner's final direction: slower, varied theme reveals and subtle near-circle selectors that respond to the cursor. It also completes the requested narrative landing page, creator page, readable controls and reusable menu/icon language.
 
 ## Resulting experience
@@ -33,7 +35,7 @@ The final normal `npm run build` generated all 97 pages and exited 0. Lint and a
 
 Production checks passed 21 changed documentation entries across 84 light/dark layouts at 360 and 1440px. The narrative pages passed six phone/tablet/desktop contexts. Six WebKit mobile workflows passed on the first run; the remaining home case passed after correcting an over-specific whitespace assertion in the test. No application change was required for that assertion.
 
-Final integration passed AgentChat, Icon and AnimatedIcon across 12 additional layouts, plus both 360px marketing themes. The local consumer installed/refreshed all 90 entries through shadcn, compiled and loaded every entry, checked 89 exact stylesheet files and exercised 19 rendered specimens with no runtime errors. Public deployment and a separate fresh public-URL consumer are the remaining release checks.
+Final integration passed AgentChat, Icon and AnimatedIcon across 12 additional layouts, plus both 360px marketing themes. The local consumer installed/refreshed all 90 entries through shadcn, compiled and loaded every entry, checked 89 exact stylesheet files and exercised 19 rendered specimens with no runtime errors. Public deployment and a fresh public-URL consumer were not completed; the owner has now paused those release steps for local review.
 
 ## Scope and limits
 

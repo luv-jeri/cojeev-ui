@@ -5,7 +5,7 @@
 .v-multi-select[data-invalid] .v-multi-select__trigger { box-shadow:inset 0 0 0 1px var(--v-danger); }
 .v-multi-select[data-disabled] { opacity:.6; }
 .v-multi-select__popover.v-popover { width:var(--radix-popover-trigger-width); min-width:min(260px,calc(100vw - 32px)); max-width:calc(100vw - 32px); padding:12px; display:grid; gap:10px; }
-.v-multi-select__options { display:grid; gap:4px; max-height:min(280px,40vh); overflow-y:auto; overscroll-behavior:contain; }
+.v-multi-select__options { display:grid; gap:4px; min-width:0; overscroll-behavior:contain; }
 .v-multi-select__option { display:flex; align-items:center; gap:10px; min-height:42px; padding:4px 8px; border-radius:var(--r-sm); }
 .v-multi-select__option:hover:not([data-disabled]) { background:var(--v-beige); }
 .v-multi-select__option > label { flex:1; min-width:0; padding-block:6px; font-size:var(--fs-control); line-height:1.4; cursor:pointer; overflow-wrap:anywhere; }

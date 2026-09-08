@@ -1,4 +1,5 @@
 "use client";
+import { scrollAreaListChildren } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
@@ -108,7 +109,7 @@ export function ContextMenuContent({
         className={cn(contextmenuContentVariants(), className)}
         {...props}
       >
-        {children}
+        {scrollAreaListChildren(children, props.asChild)}
       </Primitive.Content>
     </Primitive.Portal>
   );
@@ -118,6 +119,7 @@ export type ContextMenuSubContentProps = React.ComponentProps<
 >;
 export function ContextMenuSubContent({
   className,
+  children,
   ref,
   ...props
 }: ContextMenuSubContentProps) {
@@ -135,7 +137,7 @@ export function ContextMenuSubContent({
         data-part="content"
         className={cn(contextmenuContentVariants(), className)}
         {...props}
-      />
+      >{scrollAreaListChildren(children, props.asChild)}</Primitive.SubContent>
     </Primitive.Portal>
   );
 }
@@ -163,9 +165,6 @@ export function ContextMenuItem({
         "v-menu__item flex items-center gap-[var(--s-3)] min-h-10 px-[var(--s-3)] rounded-[var(--r-md)] text-[length:var(--fs-control)] w-full text-left whitespace-nowrap outline-none",
         variant === "danger" && "-danger",
         className,
-  children,
-  adornment,
-  adornmentId,
       )}
       {...props}
     >{adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>

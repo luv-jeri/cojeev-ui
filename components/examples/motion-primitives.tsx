@@ -10,11 +10,17 @@ import { MotionPresence, MotionSurface, type PresencePreset } from "@/registry/s
 
 export function PresenceExample({variant="rise"}:ExampleProps) {
   const [visible,setVisible]=React.useState(true);
-  const presets:PresencePreset[]=["rise","fade","scale","slide","mask"];
+  const presets:PresencePreset[]=["rise","fade","scale","slide","mask","settle","soften","focus"];
   const preset=presets.includes(variant as PresencePreset)?variant as PresencePreset:"rise";
   return <div style={{display:"grid",gap:24,minHeight:260}}>
     <Button variant="secondary" onClick={()=>setVisible(value=>!value)}>{visible?"Hide result":"Show result"}</Button>
     <MotionPresence mode="wait"><MotionSurface key={visible?"result":"empty"} preset={preset} asChild><Card variant={visible?"olive":"cream"}><CardContent><CardTitle>{visible?"Your result is ready":"A little room for what is next"}</CardTitle><p>{visible?"The same Card keeps its semantics, shape and colors while the shared boundary controls its arrival and departure.":"Show the result again to see its entrance."}</p></CardContent></Card></MotionSurface></MotionPresence>
+    <div style={{minHeight:120,paddingBlock:16}}>
+      <MotionPresence>{visible && <MotionSurface key="thought" asChild preset="fade" initial={{opacity:1}} animate={{opacity:1}} exit={{opacity:1,transition:{duration:0}}}><h3 aria-label="Every thought deserves a little space." style={{margin:0,font:"500 clamp(24px,4vw,38px)/1.4 var(--font-display)"}}>
+        {"Every thought deserves a little space.".split(" ").map((word,index)=><React.Fragment key={index}><MotionSurface asChild preset={preset} delay={index*.045} exitDelay={index*.045}><span aria-hidden="true" style={{display:"inline-block"}}>{word}</span></MotionSurface>{" "}</React.Fragment>)}
+      </h3></MotionSurface>}</MotionPresence>
+    </div>
+    <Meta>Words can leave in the same rhythm. Exits retain their space until the final word settles.</Meta>
   </div>;
 }
 

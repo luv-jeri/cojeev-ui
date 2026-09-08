@@ -26,8 +26,8 @@ test("automatic, explicit, custom and none adornments have distinct SSR contract
 
 test("every advertised icon renders as SVG", () => {
   assert.equal(new Set(iconNames).size, iconNames.length);
-  assert.equal(iconNames.length, 136);
-  for(const name of ["github","arrow-up","paperclip","square","shield-check"])assert(iconNames.includes(name));
+  assert(iconNames.length >= 136, "preserve the original advertised icon set as the pack grows");
+  for(const name of ["github","arrow-up","paperclip","square","shield-check","pointer"])assert(iconNames.includes(name));
   for (const name of iconNames) assert.match(renderToStaticMarkup(React.createElement(Icon, {name})), /^<svg/);
 });
 

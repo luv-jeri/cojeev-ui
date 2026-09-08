@@ -311,3 +311,11 @@
 :root[data-mode="dark"] .v-switch:where([data-slot="switch"])[data-disabled][data-state="checked"] {
   background: color-mix(in oklab, var(--v-pink) 40%, var(--v-disabled-face));
 }
+
+/* The dark resting surface must not cover a checked accent track. */
+:root[data-mode="dark"] .v-switch[data-slot="switch"][data-state="checked"]:not([data-disabled]):not(.-ink) {
+  background:var(--sw,var(--v-pink));
+}
+:root[data-mode="dark"] .v-switch[data-slot="switch"][data-state="checked"]:not([data-disabled]):not(.-ink):hover {
+  background:color-mix(in oklab,var(--sw,var(--v-pink)) 88%,var(--ink-fixed));
+}

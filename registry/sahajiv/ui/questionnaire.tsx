@@ -5,10 +5,14 @@ import {
   selectorStyle,
   type SelectorShape,
   type SelectorTone,
+  type SelectorSize,
+  type SelectorIndicator,
 } from "@/registry/sahajiv/lib/selector";
 export type {
   SelectorShape,
   SelectorTone,
+  SelectorSize,
+  SelectorIndicator,
 } from "@/registry/sahajiv/lib/selector";
 import * as React from "react";
 import { cva } from "class-variance-authority";
@@ -97,6 +101,9 @@ type ChoiceContext = {
   name: string;
   selectorShape: SelectorShape;
   selectorTone: SelectorTone;
+  selectorSize: SelectorSize;
+  selectorIndicator: SelectorIndicator;
+  showSelectorIndicator: boolean;
   value?: string;
   change: (value: string) => void;
 };
@@ -108,6 +115,9 @@ export type QuestionnaireOptionsProps = Omit<
   name?: string;
   selectorShape?: SelectorShape;
   selectorTone?: SelectorTone;
+  selectorSize?: SelectorSize;
+  selectorIndicator?: SelectorIndicator;
+  showSelectorIndicator?: boolean;
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
@@ -118,6 +128,9 @@ export function QuestionnaireOptions({
   name,
   selectorShape = "organic",
   selectorTone = "pink",
+  selectorSize = "default",
+  selectorIndicator = "auto",
+  showSelectorIndicator = true,
   value,
   defaultValue,
   onValueChange,
@@ -133,6 +146,9 @@ export function QuestionnaireOptions({
         name: name ?? id,
         selectorShape,
         selectorTone,
+        selectorSize,
+        selectorIndicator,
+        showSelectorIndicator,
         value: value ?? local,
         change: (next) => {
           if (value === undefined) setLocal(next);
@@ -157,6 +173,9 @@ export type QuestionnaireOptionProps = React.ComponentProps<"label"> & {
   disabled?: boolean;
   selectorShape?: SelectorShape;
   selectorTone?: SelectorTone;
+  selectorSize?: SelectorSize;
+  selectorIndicator?: SelectorIndicator;
+  showSelectorIndicator?: boolean;
   inputProps?: Omit<React.ComponentProps<"input">, "value" | "type">;
 };
 export function QuestionnaireOption({
@@ -165,6 +184,9 @@ export function QuestionnaireOption({
   disabled,
   selectorShape,
   selectorTone,
+  selectorSize,
+  selectorIndicator,
+  showSelectorIndicator,
   style,
   inputProps,
   className,
@@ -180,7 +202,7 @@ export function QuestionnaireOption({
   return (
     <label
       ref={ownedMorphRef}
-      style={selectorStyle(tone, style)}
+      style={selectorStyle(tone, style, selectorSize ?? context.selectorSize)}
       data-selector-shape={shape}
       data-slot="questionnaire-option"
       data-state={context.value === value ? "checked" : "unchecked"}
@@ -209,6 +231,8 @@ export function QuestionnaireOption({
           shape={shape}
           tone={tone}
           state={context.value === value}
+          indicator={selectorIndicator ?? context.selectorIndicator}
+          showIndicator={showSelectorIndicator ?? context.showSelectorIndicator}
           disabled={disabled || inputProps?.disabled}
         />
       </span>

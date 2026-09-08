@@ -127,9 +127,13 @@
     "refreshedThroughRegistryCLI": true
   },
   "publication": {
-    "status": "PENDING",
+    "status": "HELD_FOR_OWNER_REVIEW",
     "site": "https://luv-jeri.github.io/sahajiv-ui/",
-    "repository": "https://github.com/luv-jeri/sahajiv-ui"
+    "repository": "https://github.com/luv-jeri/sahajiv-ui",
+    "cancelledRun": 34219556763,
+    "deployedByCancelledRun": false,
+    "sourceSnapshot": "6c16a3bfd0bbe32bd874650ab22c2640936999ab",
+    "publicConsumer": "STOPPED_NOT_VERIFIED"
   },
   "limits": [
     "Browser engines and mobile emulation, not physical iPhone testing.",

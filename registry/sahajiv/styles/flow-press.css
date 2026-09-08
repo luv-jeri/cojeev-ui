@@ -1,14 +1,14 @@
 /* Shared flow paint and nine authored characters. Scoped to component-owned groups and registry roles. */
 [data-flow-owned].v-glide{isolation:isolate}
 :where([data-flow-owned].v-glide){position:relative}
-[data-flow-owned].v-glide>.v-glide__pill,[data-flow-owned].v-glide>.v-glide__hover,[data-flow-owned].v-glide>.v-glide__trail{position:absolute;left:0;top:0;z-index:0;pointer-events:none;
+[data-flow-owned].v-glide>.v-glide__pill,[data-flow-owned].v-glide>.v-glide__hover,[data-flow-owned].v-glide>.v-glide__trail{position:absolute;left:0;top:0;z-index:var(--glide-layer-z,0);pointer-events:none;
  border-radius:var(--glide-r,999px);width:var(--glide-w,0px);height:var(--glide-h,0px);opacity:var(--glide-o,0);
  transform:translate3d(var(--glide-x,0px),var(--glide-y,0px),0);will-change:transform,width,height}
 [data-flow-owned].v-glide>.v-glide__hover{width:var(--hov-w,0px);height:var(--hov-h,0px);border-radius:var(--hov-r,999px);opacity:calc(var(--hov-o,0) * var(--flow-hover,1));transform:translate3d(var(--hov-x,0px),var(--hov-y,0px),0)}
 [data-flow-owned].v-glide>.v-glide__pill>i,[data-flow-owned].v-glide>.v-glide__hover>i,[data-flow-owned].v-glide>.v-glide__trail>i{position:absolute;inset:0;border-radius:inherit;display:block}
 [data-flow-owned].v-glide>*>i::after{content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;pointer-events:none}
-:where([data-flow-owned].v-glide>*:not(.v-glide__pill):not(.v-glide__hover):not(.v-glide__trail)),:where([data-slot="navigation-menu"][data-flow-owned].v-glide .v-nav__item[data-slot="navigation-menu-link"]){position:relative;z-index:1}
-[data-flow-owned].v-glide>.v-glide__hover{z-index:2}[data-flow-owned].v-glide>.v-glide__trail{z-index:-2;display:none}
+:where([data-flow-owned].v-glide>*:not([data-assembly-part]):not(.v-glide__pill):not(.v-glide__hover):not(.v-glide__trail)),:where([data-slot="navigation-menu"][data-flow-owned].v-glide .v-nav__item[data-slot="navigation-menu-link"]){position:relative;z-index:1}
+[data-flow-owned].v-glide>.v-glide__hover{z-index:var(--glide-hover-z,2)}[data-flow-owned].v-glide>.v-glide__trail{z-index:var(--glide-trail-z,-2);display:none}
 [data-flow-owned].v-glide>.v-glide__pill>i,[data-flow-owned].v-glide>.v-glide__trail>i{background:var(--glide-bg)}
 [data-flow-owned].v-glide>.v-glide__trail>i{opacity:.3}
 [data-flow-owned].v-glide>.v-glide__hover>i{background:color-mix(in oklab,var(--v-ink) 8%,transparent)}

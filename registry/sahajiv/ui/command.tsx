@@ -1,4 +1,5 @@
 "use client";
+import { ScrollAreaList } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
@@ -151,20 +152,22 @@ export function CommandInput({
   );
 }
 export type CommandListProps = React.ComponentProps<typeof Primitive.List>;
-export function CommandList({ className, ref, ...props }: CommandListProps) {
+export function CommandList({ className, ref, children, ...props }: CommandListProps) {
   const groupRef = useFlowGroup<HTMLDivElement>(ref, {
     itemSelector: ".v-menu__item",
     activeSelector: "[aria-selected=true]",
   });
   const resultsRef = useCommandResultsMotion(groupRef);
   return (
+    <ScrollAreaList>
     <Primitive.List
       ref={resultsRef}
       data-slot="command-list"
       data-part="content"
       className={cn("v-cmd__list v-command-results", className)}
       {...props}
-    />
+    >{children}</Primitive.List>
+    </ScrollAreaList>
   );
 }
 export type CommandEmptyProps = React.ComponentProps<typeof Primitive.Empty>;

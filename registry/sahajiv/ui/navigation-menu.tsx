@@ -1,4 +1,5 @@
 "use client";
+import { scrollAreaListChildren } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
@@ -150,7 +151,7 @@ export function NavigationMenuTrigger({
 export type NavigationMenuContentProps = React.ComponentProps<
   typeof Primitive.Content
 >;
-export function NavigationMenuContent({ref, forceMount, ...props}: NavigationMenuContentProps) {
+export function NavigationMenuContent({ref, forceMount, children, ...props}: NavigationMenuContentProps) {
   const selected = React.useContext(NavigationValueContext);
   const itemValue = React.useContext(NavigationItemContext);
   const open = selected === itemValue;
@@ -162,12 +163,12 @@ export function NavigationMenuContent({ref, forceMount, ...props}: NavigationMen
       data-slot="navigation-menu-content"
       data-part="content"
       {...props}
-    />
+    >{scrollAreaListChildren(children, props.asChild)}</Primitive.Content>
   );
   // Radix registers viewport content through a separate mounter. Retain that
   // actual registration until the surface exits, then let Radix unregister it.
   if (forceMount) return content;
-  return <MotionPresence>{open && <NavigationMenuRetainedContent key={itemValue} ref={ref} {...props}/>}</MotionPresence>;
+  return <MotionPresence>{open && <NavigationMenuRetainedContent key={itemValue} ref={ref} {...props}>{scrollAreaListChildren(children, props.asChild)}</NavigationMenuRetainedContent>}</MotionPresence>;
 }
 function NavigationMenuRetainedContent({ref, ...props}: NavigationMenuContentProps) {
   const [host, setHost] = React.useState<HTMLDivElement | null>(null);

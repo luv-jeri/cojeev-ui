@@ -4,6 +4,8 @@ import { ThemeToggle } from "@/registry/sahajiv/ui/theme-toggle";
 import { applyTheme } from "@/registry/sahajiv/motion/theme-transition";
 import { useChoreography } from "@/registry/sahajiv/motion/choreography";
 import { Label } from "@/registry/sahajiv/ui/label";
+import { AppearanceMenu } from "@/registry/sahajiv/ui/appearance";
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/registry/sahajiv/ui/tooltip";
 type Theme = "light" | "dark";
 const themeEvent = "sahajiv-docs-theme-change";
 let volatileTheme: Theme | null = null;
@@ -42,17 +44,20 @@ export function ThemeControl({ compact = false }: { compact?: boolean }) {
   const {quiet}=useChoreography();
   const initialized=React.useRef(false);
   React.useEffect(() => {
-    applyTheme(mode,!initialized.current||quiet);
+    applyTheme(initialized.current ? mode : readTheme(), !initialized.current || quiet);
     initialized.current=true;
   }, [mode,quiet]);
   return (
-    <div className={`docs-theme${compact ? " docs-theme-compact" : ""}`}>
+    <TooltipProvider><div className={`docs-theme${compact ? " docs-theme-compact" : ""}`}>
       <Label htmlFor={id} size="sm" className={compact ? "sr-only" : undefined}>
         Appearance
       </Label>
-      <ThemeToggle
+      <Tooltip><TooltipTrigger asChild><ThemeToggle
         id={id}
         mode={mode}
+        showLabel
+        label={compact ? "Theme" : undefined}
+        responsive={compact}
         onModeChange={(next) => {
           volatileTheme = next;
           try {
@@ -60,7 +65,8 @@ export function ThemeControl({ compact = false }: { compact?: boolean }) {
           } catch {}
           window.dispatchEvent(new Event(themeEvent));
         }}
-      />
-    </div>
+      /></TooltipTrigger><TooltipContent>Switch to {mode === "dark" ? "light" : "dark"} theme</TooltipContent></Tooltip>
+      <AppearanceMenu responsive={compact} />
+    </div></TooltipProvider>
   );
 }

@@ -8,6 +8,7 @@
   button,input,select,textarea { font:inherit; color:inherit; }
   code,pre,samp { font-family:monospace; }
   button { background:none; border:0; padding:0; cursor:pointer; }
+  :where(a[href],area[href],summary,label[for],label:has(input),select,input:is([type="checkbox"],[type="radio"],[type="range"],[type="button"],[type="submit"],[type="reset"],[type="file"]),[role="button"],[role="checkbox"],[role="radio"],[role="switch"],[role="tab"],[role="option"],[role="menuitem"],[role="menuitemcheckbox"],[role="menuitemradio"]) { cursor:pointer; }
   /* Preserve the original browser touch feedback on library elements. */
   :where([data-slot]) { -webkit-tap-highlight-color:initial; }
   img,svg { display:block; max-width:100%; }
@@ -18,6 +19,11 @@
   :focus-visible { outline:2px solid var(--ring); outline-offset:2px; border-radius:var(--r-sm); }
   ::selection { background:var(--v-pink); color:var(--ink-fixed); }
 }
+/* Disabled controls remain hit-testable so their unavailable cursor is visible.
+   Their native primitive or event guard still owns activation prevention. */
+:is(button,input,select,textarea,[role],[data-slot]):is(:disabled,[aria-disabled="true"],[data-disabled]:not([data-disabled="false"])),
+label:has(input:disabled) { cursor:not-allowed; }
+:is([aria-disabled="true"],[data-disabled]:not([data-disabled="false"]),label:has(input:disabled)) :where(span,svg,path) { cursor:inherit; }
 @layer components {
   .v-body-2 { font-size:var(--fs-body); line-height:1.5; color:var(--muted-foreground); }
   .v-meta { font-size:var(--fs-meta); line-height:1.3; color:var(--muted-foreground); }

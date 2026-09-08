@@ -6,7 +6,9 @@ import { ComponentPreview } from "@/components/component-preview";
 import { InstallCommand } from "@/components/install-command";
 import { exampleManifest, type ExampleId } from "@/components/examples/manifest";
 import { exampleSource } from "@/components/example-source";
+import { componentHandoffNotes } from "@/lib/component-handoff";
 import { Badge } from "@/registry/sahajiv/ui/badge";
+import { ReadingTrail } from "@/registry/sahajiv/ui/reading-trail";
 import {
   TableContainer,
   Table,
@@ -95,11 +97,13 @@ export default async function Page({
               variants={variants}
               sizes={sizes}
               code={code}
+              handoffNotes={componentHandoffNotes(entry, guide, exampleDependencies)}
             />
           </section>
           {entry.name === "agent-chat" && <Body><Link href="/workspace/">Open the full agent workspace example →</Link></Body>}
           <section className="docs-section" aria-labelledby="install-heading">
-            <SectionTitle id="install-heading">Add to your project</SectionTitle>
+            <SectionTitle id="install-heading">{entry.meta.source.reviewOnly ? "Local review" : "Add to your project"}</SectionTitle>
+            {entry.meta.source.reviewOnly ? <BodySecondary>This addition is available in the local preview. You can copy its example above; the installable registry entry will follow after owner review.</BodySecondary> : <>
             <InstallCommand
               command={`npx shadcn@latest add ${publicURL}/r/${entry.name}.json`}
             />
@@ -122,6 +126,7 @@ export default async function Page({
                 />
               </>
             )}
+            </>}
           </section>
           <section className="docs-section" aria-labelledby="usage-heading">
             <SectionTitle id="usage-heading">Using {entry.title.toLowerCase()}</SectionTitle>
@@ -216,16 +221,15 @@ export default async function Page({
           </nav>
         </article>
         <aside className="docs-contents">
-          <nav aria-label="On this page">
-            <Meta>On this page</Meta>
-            <a href="#example-heading">Try it</a>
-            <a href="#install-heading">Installation</a>
-            <a href="#usage-heading">Usage</a>
-            <a href="#props-heading">API</a>
-            <a href="#accessibility-heading">Accessibility</a>
-            <a href="#states-heading">States & appearance</a>
-            <a href="#related-heading">Related components</a>
-          </nav>
+          <ReadingTrail items={[
+            { id: "example-heading", label: "Try it" },
+            { id: "install-heading", label: entry.meta.source.reviewOnly ? "Local review" : "Installation" },
+            { id: "usage-heading", label: "Usage" },
+            { id: "props-heading", label: "API" },
+            { id: "accessibility-heading", label: "Accessibility" },
+            { id: "states-heading", label: "States & appearance" },
+            { id: "related-heading", label: "Related components" },
+          ]} offset={64} />
         </aside>
       </div>
     </DocsPage>

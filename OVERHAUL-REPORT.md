@@ -1,6 +1,6 @@
 # SahaJiv UI 0.2.0 — signature overhaul
 
-Implementation and local release checks are complete. Public deployment is in progress; the previous public 0.1.0 deployment is not described as the new release.
+**Historical evidence:** this report describes the earlier 89-entry overhaul snapshot. It does not certify the current 100-entry worktree. Publication is paused for owner review; GitHub deployment run `34219556763` is completed/cancelled. The current local preview and its focused checks are recorded in [REVIEW-PASS-REPORT.md](REVIEW-PASS-REPORT.md).
 
 ## Delivered source
 
@@ -52,4 +52,4 @@ node scripts/audit-registry-consumer.mjs
 
 The library code remains MIT licensed; bundled fonts retain SIL OFL notices. Original reference-gate differences remain historical evidence, not failures concealed by the new design direction. Caller-owned conditional removal needs a persistent external MotionPresence boundary. cmdk search semantics update immediately; the results surface receives a coordinated transition instead of retaining stale live keyboard options. Native Radix/DayPicker adapters and the bespoke contour solver remain purposeful implementation owners rather than a claim that every CSS rule was replaced by Motion.
 
-Coverage is finite: it does not exhaust every prop, data size, state, browser or hardware combination. Visual review is evidence against the supplied direction, not an invented owner-approved composition. The final publication URL, CI run and exact source revision will be recorded after deployment.
+Coverage is finite: it does not exhaust every prop, data size, state, browser or hardware combination. Visual review is evidence against the supplied direction, not an invented owner-approved composition. The final publication URL, CI run and exact source revision will be recorded only after the owner authorizes release work and deployment succeeds.

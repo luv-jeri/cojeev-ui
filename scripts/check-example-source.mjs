@@ -38,9 +38,11 @@ const extractionErrors = [];
 const outputIndex = process.argv.indexOf("--output");
 const output = path.resolve(root, outputIndex >= 0 ? process.argv[outputIndex + 1] : "artifacts/example-source/results.json");
 const keep = process.argv.includes("--keep");
+const only = process.argv.find(value => value.startsWith("--components="))?.split("=")[1].split(",");
+const selectedCatalog = only ? catalog.filter(entry => only.includes(entry.name)) : catalog;
 let diagnostics = [];
 try {
-  for (const entry of catalog) {
+  for (const entry of selectedCatalog) {
     if (!exampleManifest[entry.name]) continue;
     const variants = [...new Set(["default", ...(entry.meta.source.variants ?? [])])];
     const sizes = [...new Set(["default", ...(entry.meta.source.sizes ?? [])])];

@@ -4,20 +4,26 @@ import * as React from "react"
 import type * as THREE from "three"
 import { cn } from "@/registry/sahajiv/lib/utils"
 import { shapeData } from "@/registry/sahajiv/lib/shape-data"
+import { signatureShapePaths, type SignatureShapeName } from "@/registry/sahajiv/lib/signature-shapes"
+import { sculptureMaterial, type SculptureMaterial } from "@/registry/sahajiv/lib/sculpture-material"
 import { Shape } from "@/registry/sahajiv/ui/shape"
 import { getServerSettingsSnapshot, getSettingsSnapshot, subscribeSettings } from "@/registry/sahajiv/motion/settings"
 import { useReducedMotion } from "@/registry/sahajiv/motion/use-reduced-motion"
 
-export type SceneShape = "star-4" | "blob-4" | "heart" | "crescent"
+export type SceneShape = "star-4" | "blob-4" | "heart" | "crescent" | SignatureShapeName
+export type { SculptureMaterial }
 export type ShapeSceneProps = React.ComponentProps<"div"> & {
   palette?: "sahajiv" | "warm" | "cool"
   shapes?: readonly SceneShape[]
   density?: "sparse" | "balanced" | "full"
   interactive?: boolean
   animate?: boolean
+  /** Tactile procedural surfaces, including an animated ripple shader. */
+  material?: SculptureMaterial
 }
 
-const defaults: readonly SceneShape[] = ["star-4", "blob-4", "heart", "crescent"]
+const defaults: readonly SceneShape[] = ["clover-soft", "pebble-soft", "cushion", "ribbon-soft", "petal-7", "heart"]
+const supported: readonly string[] = ["star-4", "blob-4", "heart", "crescent", ...Object.keys(signatureShapePaths)]
 const colors = { sahajiv: ["#F5B8DB", "#9AAB63", "#B6CAEB", "#F5D867"], warm: ["#F5B8DB", "#F5D867", "#E1CDB2", "#9AAB63"], cool: ["#B6CAEB", "#9AAB63", "#F5B8DB", "#D5DFEC"] }
 const placements = [
   { x: -1.1, y: .8, z: .18, size: 1.2, rx: .18, ry: -.28, rz: -.16 },
@@ -31,17 +37,17 @@ type MotionOptions = { animate: boolean; interactive: boolean; quiet: boolean }
 type SceneControl = { configure: (options: MotionOptions) => void }
 
 /** An optional, lazily loaded WebGL sculpture with an authored static fallback. */
-export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "balanced", interactive = true, animate = true, className, ref, children, ...props }: ShapeSceneProps) {
+export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "balanced", interactive = true, animate = true, material = "mixed", className, ref, children, ...props }: ShapeSceneProps) {
   const host = React.useRef<HTMLDivElement>(null)
   const surface = React.useRef<HTMLDivElement>(null)
   const control = React.useRef<SceneControl | null>(null)
   const reduced = useReducedMotion()
   const settings = React.useSyncExternalStore(subscribeSettings, getSettingsSnapshot, getServerSettingsSnapshot)
   const quiet = reduced || settings.motion.mode === "off"
-  const shapeKey = (shapes.length ? shapes : defaults).filter(name => defaults.includes(name)).join(",") || defaults.join(",")
+  const shapeKey = (shapes.length ? shapes : defaults).filter(name => supported.includes(name)).join(",") || defaults.join(",")
   const names = shapeKey.split(",") as SceneShape[]
   const count = density === "full" ? 6 : density === "sparse" ? 3 : 4
-  const sceneKey = `${palette}:${count}:${shapeKey}`
+  const sceneKey = `${palette}:${count}:${shapeKey}:${material}`
   const [rendered, setRendered] = React.useState<{ key: string; kind: "webgl" | "fallback" } | null>(null)
   const rendererState = rendered?.key === sceneKey ? rendered.kind : "pending"
   // Options are updated separately so a preference change never rebuilds a WebGL context.
@@ -67,6 +73,9 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
     const materials = new Set<THREE.Material>()
     const lights: THREE.DirectionalLight[] = []
     const pieces: THREE.Mesh[] = []
+    const clock = { value: 0 }
+    const sceneColors = () => palette === "sahajiv" ? ["pink", "olive", "blue", "yellow"].map(tone => getComputedStyle(element!).getPropertyValue(`--v-${tone}`).trim() || colors.sahajiv[0]) : colors[palette]
+    const repaint = () => { const next = sceneColors(); pieces.forEach((piece, i) => (piece.material as THREE.MeshStandardMaterial).color.set(next[i % 4])); requestRender() }
     const cleanups: (() => void)[] = []
     const selected = shapeKey.split(",") as SceneShape[]
     function cancel() { if (frame) cancelAnimationFrame(frame); frame = 0; previousTime = 0 }
@@ -79,6 +88,7 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
       previousTime = time
       const moving = currentOptions.animate && !currentOptions.quiet
       if (moving) elapsed += delta
+      clock.value = currentOptions.quiet ? 0 : elapsed
       const allowPointer = currentOptions.interactive && !currentOptions.quiet
       const x = allowPointer ? targetX : 0, y = allowPointer ? targetY : 0
       const damping = 1 - Math.exp(-Math.max(delta, 1 / 60) * 18)
@@ -133,7 +143,7 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
         renderer.toneMapping = three.ACESFilmicToneMapping
         renderer.toneMappingExposure = 1.05
         renderer.shadowMap.enabled = true
-        renderer.shadowMap.type = three.PCFSoftShadowMap
+        renderer.shadowMap.type = three.PCFShadowMap
         renderer.domElement.setAttribute("aria-hidden", "true")
         renderer.domElement.dataset.slot = "shape-scene-canvas"
         mount!.append(renderer.domElement)
@@ -157,15 +167,16 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
           const name = selected[index % selected.length]
           const data = shapeData[name]
           const svg = decodeURIComponent(data.slice(data.indexOf(",") + 1, data.lastIndexOf('"')))
-          const paths = loader.parse(svg).paths.flatMap(path => SVGLoader.createShapes(path))
-          const extruded = new three.ExtrudeGeometry(paths, { depth: 18, bevelEnabled: true, bevelSegments: 8, steps: 1, bevelSize: 3.5, bevelThickness: 6, curveSegments: 40 })
+          const paths = loader.parse(svg).paths.flatMap(path => path.toShapes())
+          const extruded = new three.ExtrudeGeometry(paths, { depth: 18, bevelEnabled: true, bevelSegments: 5, steps: 1, bevelSize: 2.4, bevelThickness: 6, curveSegments: 8 })
           const geometry = toCreasedNormals(extruded, Math.PI / 3)
           if (geometry !== extruded) extruded.dispose()
           geometry.center(); geometry.rotateX(Math.PI); geometry.scale(.018, .018, .018)
           geometries.add(geometry)
-          const material = new three.MeshStandardMaterial({ color: colors[palette][index % 4], roughness: .48, metalness: 0 })
-          materials.add(material)
-          const piece = new three.Mesh(geometry, material)
+          const kind = material === "mixed" ? (["grain", "glazed", "ripple", "clay"] as const)[index % 4] : material
+          const face = sculptureMaterial(three, sceneColors()[index % 4], kind, clock)
+          materials.add(face)
+          const piece = new three.Mesh(geometry, face)
           const placement = placements[index]
           piece.position.set(placement.x, placement.y, placement.z)
           piece.rotation.set(placement.rx, placement.ry, placement.rz)
@@ -212,6 +223,7 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
     element.addEventListener("pointerleave", onLeave)
     hoverPointer.addEventListener("change", onHoverCapability)
     document.addEventListener("visibilitychange", onVisibility)
+    window.addEventListener("sahajiv:appearancechange", repaint)
     const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(element)
     const intersection = new IntersectionObserver(entries => {
       visible = entries[0]?.isIntersecting ?? false
@@ -225,14 +237,15 @@ export function ShapeScene({ palette = "sahajiv", shapes = defaults, density = "
       element.removeEventListener("pointermove", onPointer); element.removeEventListener("pointerleave", onLeave)
       hoverPointer.removeEventListener("change", onHoverCapability)
       document.removeEventListener("visibilitychange", onVisibility)
+      window.removeEventListener("sahajiv:appearancechange", repaint)
       release()
     }
-  }, [shapeKey, palette, count, sceneKey])
+  }, [shapeKey, palette, count, sceneKey, material])
 
   return (
-    <div ref={React.useCallback((node: HTMLDivElement | null) => { host.current = node; if (typeof ref === "function") return ref(node); if (ref) ref.current = node }, [ref])} data-slot="shape-scene" data-renderer={rendererState} data-palette={palette} className={cn("v-shape-scene", className)} aria-description={rendererState === "fallback" ? "3D is unavailable. Showing the static composition." : undefined} role="img" aria-label="A tactile composition of softly sculpted SahaJiv shapes" {...props}>
+    <div ref={React.useCallback((node: HTMLDivElement | null) => { host.current = node; if (typeof ref === "function") return ref(node); if (ref) ref.current = node }, [ref])} data-slot="shape-scene" data-renderer={rendererState} data-palette={palette} data-material={material} className={cn("v-shape-scene", className)} aria-description={rendererState === "fallback" ? "3D is unavailable. Showing the static composition." : undefined} role="img" aria-label="A tactile composition of softly sculpted SahaJiv shapes" {...props}>
       <div data-slot="shape-scene-fallback" aria-hidden="true">
-        {Array.from({ length: count }, (_, index) => <span key={index} style={{ "--scene-color": colors[palette][index % 4] } as React.CSSProperties}><Shape name={names[index % names.length]} /></span>)}
+        {Array.from({ length: count }, (_, index) => <span key={index} style={{ "--scene-color": (palette === "sahajiv" ? `var(--v-${["pink", "olive", "blue", "yellow"][index % 4]})` : colors[palette][index % 4]) } as React.CSSProperties}><Shape name={names[index % names.length]} /></span>)}
       </div>
       <div data-slot="shape-scene-surface" ref={surface} aria-hidden="true" />
       {rendererState === "fallback" && <span data-slot="shape-scene-status" role="status">3D is unavailable. Showing the static composition.</span>}

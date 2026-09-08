@@ -45,8 +45,8 @@
 }
 [data-slot="combobox-content"] {
   z-index: var(--z-dialog);
-  max-height: 280px;
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
 }
 [data-slot="combobox-item"]
   mark {
@@ -248,7 +248,6 @@
   display: none;
 }
 [data-slot="combobox-item"][data-disabled="true"] {
-  pointer-events: none;
   color: var(--v-disabled-ink);
   cursor: not-allowed;
 }
@@ -275,3 +274,6 @@
 [data-slot="combobox-item"]:not(:has(.v-item-adornment)) { grid-template-columns:minmax(0,1fr) auto; }
 [data-slot="combobox-item"]:not(:has(.v-item-adornment)) > .v-combo__label { grid-column:1; }
 [data-slot="combobox-item"]:active:not([data-disabled="true"]) { background:var(--v-pink-soft); color:var(--v-text); }
+
+[data-slot="combobox-item"] > .v-combo__selected { margin-inline-start: auto; display: inline-flex; flex: none; padding-inline-start: 8px; }
+[data-slot="combobox-item"] > .v-combo__selected .v-icon { width: 16px; height: 16px; }

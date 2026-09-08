@@ -5,6 +5,9 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { chromium } from "playwright";
 import { preview as startPreview } from "vite";
+import { createEffectTests } from "./docs-behaviors-effects.mjs";
+import { createDetailTests } from "./docs-behaviors-details.mjs";
+import { createCompositeTests } from "./docs-behaviors-composites.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -137,12 +140,23 @@ const tests = {
     await key(toggle,"Space");await attribute(toggle,"aria-checked","false");await text(root,"Selected appearance: light");
     return "Pointer and keyboard theme callback; morphing switch exposes checked state";
   },
-  "animated-icon": async ({root})=>{
-    await root.getByRole("button",{name:"Mark ready",exact:true}).click();await text(root,"Ready for review.");
-    await key(root.getByRole("button",{name:"Marked ready",exact:true}),"Enter");await text(root,"Waiting for review.");
-    await root.getByRole("button",{name:"Keep motion active",exact:true}).click();
-    await root.getByRole("button",{name:"Use hover and focus",exact:true}).click();
-    return "Pointer and keyboard contextual icon action; explicit active state toggles";
+  "animated-icon": async ({root,page})=>{
+    await root.getByRole("searchbox",{name:"Find an icon",exact:true}).fill("loader");
+    const loader=root.locator('[data-icon-option="loader"]');
+    const icon=loader.locator('[data-slot="animated-icon"]');
+    await loader.click();await attribute(loader,"aria-pressed","true");
+    await attribute(icon,"data-animated","true");
+    await root.getByRole("button",{name:"Release selection",exact:true}).click();
+    await attribute(loader,"aria-pressed","false");
+    await key(loader,"Enter");await attribute(loader,"aria-pressed","true");
+    await root.getByRole("button",{name:"Disable actions",exact:true}).click();
+    assert(await loader.isDisabled());await text(root,"Actions disabled.");
+    await eventually(()=>icon.getAttribute("data-animated").then(value=>value!=="true"),"Disabled action cancels icon motion");
+    await root.getByRole("button",{name:"Enable actions",exact:true}).click();
+    const wasReduced=await page.evaluate(()=>matchMedia("(prefers-reduced-motion: reduce)").matches);
+    try{await page.emulateMedia({reducedMotion:"reduce"});await eventually(()=>icon.getAttribute("data-animated").then(value=>value!=="true"),"Reduced motion settles an explicitly selected icon");}
+    finally{await page.emulateMedia({reducedMotion:wasReduced?"reduce":"no-preference"});}
+    return "Search, pointer/keyboard selection and release, disabled lifecycle and reduced-motion settling";
   },
   presence: async ({root})=>{
     await root.getByRole("button",{name:"Hide result",exact:true}).click();
@@ -325,44 +339,51 @@ const tests = {
     await root.getByLabel("Pace",{exact:true}).selectOption("normal");
     await attribute(marquee,"data-direction","right");
     await attribute(marquee,"data-speed","normal");
-    const copy=marquee.locator('[data-slot="marquee-copy"]');
-    assert(await copy.evaluate(el=>el.inert&&el.getAttribute("aria-hidden")==="true"));
+    const copies=marquee.locator('[data-slot="marquee-copy"]');
+    assert.equal(await copies.count(), 4, "Two copies on either side cover depth wraps");
+    assert(await copies.evaluateAll(elements=>elements.every(el=>el.inert&&el.getAttribute("aria-hidden")==="true")));
     await key(root.getByRole("button",{name:"Resume motion",exact:true}),"Enter");
     await root.getByRole("button",{name:"Pause motion",exact:true}).waitFor();
     await page.emulateMedia({reducedMotion:"reduce"});
     await attribute(marquee,"data-motion","static");
-    assert(!(await copy.isVisible()));
+    assert(await copies.evaluateAll(elements=>elements.every(el=>getComputedStyle(el).display==="none")));
     await page.emulateMedia({reducedMotion:"no-preference"});
-    return "Explicit pause, direction/pace controls, inert copy and static reduced-motion reading";
+    return "Explicit pause, direction/pace controls, four inert copies and static reduced-motion reading";
   },
   "multi-select": async ({root,page}) => {
-    const trigger=root.getByRole("button",{name:"Topics",exact:true});
+    const trigger=root.getByRole("button",{name:"Shared workspaces",exact:true});
     await trigger.click();
-    const search=page.getByRole("searchbox",{name:"Search Topics"});
-    await search.fill("research");
-    await page.getByRole("checkbox",{name:"Research",exact:true}).click();
+    const search=page.getByRole("searchbox",{name:"Search Shared workspaces",exact:true});
+    await search.fill("Workspace 05");
+    assert(await page.getByRole("checkbox",{name:"Workspace 05",exact:true}).isDisabled());
+    await search.fill("Workspace 23");
+    await page.getByRole("checkbox",{name:"Workspace 23",exact:true}).click();
     await page.keyboard.press("Escape");
     await eventually(()=>trigger.evaluate(el=>el===document.activeElement),"Multi-select restores trigger focus");
-    await text(root,"Following: Design, Engineering, Research.");
-    await key(root.getByRole("button",{name:"Remove Research",exact:true}),"Enter");
-    await text(root,"Following: Design, Engineering.");
-    await root.getByRole("button",{name:"Clear selection",exact:true}).click();
-    await root.getByRole("alert").waitFor();
-    await attribute(trigger,"aria-invalid","true");
-    await root.getByRole("button",{name:"Reset selection",exact:true}).click();
-    await text(root,"Following: Design, Engineering.");
-    return "Search selection, Escape/focus return, keyboard removal and visible validation/reset";
+    await text(root.getByRole("list",{name:"Selected Shared workspaces",exact:true}),"Workspace 23");
+    await key(root.getByRole("button",{name:"Remove Workspace 23",exact:true}),"Enter");
+    await eventually(()=>root.getByRole("button",{name:"Remove Workspace 23",exact:true}).count().then(n=>n===0),"Keyboard removal removes the selected token");
+    await root.getByRole("button",{name:"Remove Workspace 01",exact:true}).waitFor();
+    return "Real workspace search, disabled option, selection token, Escape/focus restoration and keyboard removal";
   },
-  "shape-scene": async ({root}) => {
+  "shape-scene": async ({root,page}) => {
     const scene = root.locator('[data-slot="shape-scene"]');
     await eventually(() => scene.getAttribute("data-renderer").then(value => ["webgl","fallback"].includes(value)), "Scene renders or presents its supported fallback", 10000);
-    await root.getByRole("button", {name:"Pause sculpture"}).click();
-    await attribute(root.getByRole("button", {name:"Animate sculpture"}), "aria-pressed", "true");
-    await root.getByLabel("Palette", {exact:true}).selectOption("cool");
-    await attribute(scene,"data-palette","cool");
-    await key(root.getByRole("button", {name:"Animate sculpture"}), "Enter");
-    await root.getByRole("button", {name:"Pause sculpture"}).waitFor();
-    return "Scene rendering, pause/resume and palette update";
+    const shapes=()=>scene.locator('[data-slot="shape"]').evaluateAll(nodes=>nodes.map(node=>node.style.getPropertyValue("--m")).join("|"));
+    const initial=await shapes();
+    const wasReduced=await page.evaluate(()=>matchMedia("(prefers-reduced-motion: reduce)").matches);
+    try{
+      await page.emulateMedia({reducedMotion:"reduce"});
+      await root.getByRole("button",{name:"Change the shapes",exact:true}).click();
+      await eventually(async()=>await shapes()!==initial,"Pointer changes the rendered composition geometry");
+      await eventually(()=>scene.getAttribute("data-renderer").then(value=>["webgl","fallback"].includes(value)),"Changed scene becomes ready",10000);
+      await scene.scrollIntoViewIfNeeded();
+      const still=await scene.screenshot();await wait(120);
+      assert((await scene.screenshot()).equals(still),"Reduced motion leaves the sculpture still");
+      await key(root.getByRole("button",{name:"Change the shapes",exact:true}),"Enter");
+      await eventually(async()=>await shapes()===initial,"Keyboard restores the original composition");
+    }finally{await page.emulateMedia({reducedMotion:wasReduced?"reduce":"no-preference"});}
+    return "Usable renderer/fallback, pointer and keyboard composition changes, and still reduced-motion paint";
   },
   "text-reveal": async ({ root, page }) => {
     const heading = root.getByRole("heading", { name: "Good things take shape." });
@@ -446,13 +467,17 @@ const tests = {
     return "Pointer reveals all three data tables; keyboard hides them; zero datum retained";
   },
   checkbox: async ({ root }) => {
-    const b = root.getByRole("checkbox").first();
+    const b = root.getByRole("checkbox", { name: "Keep this idea in my collection", exact: true });
     await b.click();
-    await attribute(b, "aria-checked", "true");
-    await key(b, "Space");
     await attribute(b, "aria-checked", "false");
-    assert(await root.getByRole("checkbox").last().isDisabled());
-    return "Pointer/Space checked changes, disabled option";
+    await text(root, "Idea excluded.");
+    await key(b, "Space");
+    await attribute(b, "aria-checked", "true");
+    await text(root, "Idea included.");
+    await root.getByRole("checkbox", { name: "Show selected mark", exact: true }).click();
+    await attribute(b.locator('[data-slot="selector-glyph"]'), "data-selector-indicator", "none");
+    await attribute(b, "aria-checked", "true");
+    return "Pointer/Space selection changes the result; mark visibility preserves checked semantics";
   },
   collapsible: async ({ root }) => {
     const b = root.getByRole("button").first();
@@ -660,31 +685,36 @@ const tests = {
     await page.keyboard.press("Escape");
     return "Pointer hover and keyboard focus show card; Escape dismisses";
   },
-  icon: async ({ root, page }) => {
-    const input = root.getByRole("textbox", { name: "Search icon pack" });
-    await input.fill("github");
-    const github = root.getByRole("button", { name: "github", exact: true });
-    await key(github, "Enter");
-    await text(root, "Selected: github");
+  icon: async ({ root }) => {
+    const input = root.getByRole("searchbox", { name: "Find an icon", exact: true });
+    await input.fill("camera");
+    const camera = root.locator('[data-icon-option="camera"]');
+    await key(camera, "Enter");
+    await attribute(camera, "aria-pressed", "true");
+    await text(root.locator("output"), "camera");
+    await attribute(camera.locator('svg[data-slot="icon"]'), "data-icon-name", "camera");
     await input.fill("unlikely-icon-name");
     await text(root, "No matching icons.");
-    await input.fill("arrow");
-    assert((await root.locator('svg[data-slot="icon"]').count()) > 1);
-    await root.getByRole("combobox", { name: "Icon effect" }).click();
-    await page.getByRole("option", { name: "draw", exact: true }).click();
-    await text(root, "the draw effect");
-    return "Keyboard icon selection, real pack search/empty results and library effect Select";
+    await root.getByRole("button", { name: "Clear search", exact: true }).click();
+    await root.getByRole("button", { name: "Next icons", exact: true }).click();
+    await text(root, "Page 2 of");
+    await key(root.getByRole("button", { name: "Previous icons", exact: true }), "Enter");
+    await text(root, "Page 1 of");
+    return "Keyboard icon selection, semantic search/empty results, clear and real result pagination";
   },
-  "item-adornment": async ({ root, page }) => {
-    await root.getByRole("button", { name: "Try the menu" }).click();
-    await page.getByRole("menuitem", { name: "Custom GitHub", exact: true }).click();
-    await text(root, "Custom GitHub selected");
-    await key(root.getByRole("button", { name: "Try the menu" }), "Enter");
-    const plain = page.getByRole("menuitem", { name: "Text only", exact: true });
-    assert(await plain.locator('[data-slot="item-adornment"]').count() === 0);
-    await key(plain, "Enter");
-    await text(root, "Text only selected");
-    return "Pointer custom icon item and keyboard item with adornment disabled";
+  "item-adornment": async ({ root }) => {
+    const adornment=root.locator('[data-slot="item-adornment"]');
+    const icon=root.getByRole("checkbox",{name:"Show icon",exact:true});
+    const background=root.getByRole("checkbox",{name:"Show blob background",exact:true});
+    await icon.click();
+    await attribute(adornment,"data-background","true");
+    assert.equal(await adornment.locator('[data-slot="icon"]').count(),0);
+    await background.click();await adornment.waitFor({state:"hidden"});
+    await text(root,"Project notes");
+    await key(icon,"Space");
+    await attribute(adornment,"data-icon","true");
+    assert.notEqual(await adornment.getAttribute("data-background"),"true");
+    return "Independent icon/background switches remove and restore decoration while preserving the item text";
   },
   input: async ({ root }) => {
     const input = root.getByRole("textbox", { name: "Find a note" });
@@ -835,7 +865,7 @@ const tests = {
     return "Nested preview pointer code tab and keyboard preview tab";
   },
   progress: async ({ root }) => {
-    const meter = root.getByRole("progressbar");
+    const meter = root.getByRole("progressbar", { name: "Example progress", exact: true });
     await root.getByRole("button", { name: "Increase", exact: true }).click();
     await attribute(meter, "aria-valuenow", "55");
     await key(
@@ -846,26 +876,26 @@ const tests = {
     return "Pointer and keyboard progress changes";
   },
   questionnaire: async ({ root }) => {
-    const learning = root.getByRole("radio", { name: /Learning/ });
-    await root.getByText("Learning", {exact:true}).click();
-    await text(root, "Learning has a place");
-    const making = root.getByRole("radio", { name: /Making/ });
-    await key(making, "Space");
-    await text(root, "Making has a place");
-    assert(await making.isChecked());
-    assert(!(await learning.isChecked()));
-    return "Pointer and keyboard questionnaire answers update completion and summary";
+    const experiment = root.getByRole("radio", { name: /Try something small/ });
+    await root.getByText("Try something small", { exact: true }).click();
+    await text(root, "A small experiment selected.");
+    const plan = root.getByRole("radio", { name: /Make a little room/ });
+    await key(plan, "Space");
+    await text(root, "A clear plan selected.");
+    assert(await plan.isChecked());
+    assert(!(await experiment.isChecked()));
+    return "Pointer and keyboard questionnaire choices update the controlled result";
   },
   "radio-group": async ({ root }) => {
-    const group = root.getByRole("radiogroup", { name: "Reflection frequency" });
-    const daily = group.getByRole("radio", { name: /A little every day/ });
-    const weekly = group.getByRole("radio", { name: /Once a week/ });
-    await weekly.click();
-    await text(root, "Selected rhythm: weekly");
-    await key(weekly, "ArrowUp");
-    await text(root, "Selected rhythm: daily");
-    assert(await daily.isChecked());
-    assert(await group.getByRole("radio", {name: /Monthly/}).isDisabled());
+    const group = root.getByRole("radiogroup", { name: "Working rhythm", exact: true });
+    const quiet = group.getByRole("radio", { name: "Quiet focus", exact: true });
+    const together = group.getByRole("radio", { name: "Think together", exact: true });
+    await together.click();
+    await text(root, "Thinking together selected.");
+    await key(together, "ArrowUp");
+    await text(root, "Quiet focus selected.");
+    assert(await quiet.isChecked());
+    assert(await group.getByRole("radio", {name: "Managed by your workspace",exact:true}).isDisabled());
     return "Pointer selection, arrow-key radio selection and disabled choice";
   },
   resizable: async ({ root, page }) => {
@@ -951,7 +981,7 @@ const tests = {
     return "Pointer navigation, keyboard collapse, collapsed accessible link and expansion";
   },
   slider: async ({ root }) => {
-    const slider = root.getByRole("slider");
+    const slider = root.getByRole("slider", { name: "Focus duration", exact: true });
     await slider.click();
     const before = await slider.getAttribute("aria-valuenow");
     await key(slider, "ArrowRight");
@@ -959,17 +989,22 @@ const tests = {
       async () => (await slider.getAttribute("aria-valuenow")) !== before,
       "Keyboard changes slider",
     );
-    return "Pointer slider placement and arrow-key increment";
+    const start=root.getByRole("slider",{name:"Range start",exact:true});
+    const end=root.getByRole("slider",{name:"Range end",exact:true});
+    await key(start,"End");
+    assert(Number(await start.getAttribute("aria-valuenow"))<Number(await end.getAttribute("aria-valuenow")),"Range thumbs preserve minimum separation");
+    return "Pointer slider placement, keyboard increment and separately named range thumbs preserve separation";
   },
   stepper: async ({ root }) => {
     const next = root.getByRole("button", { name: "Next", exact: true });
     await next.click();
-    await text(root, "Preferences");
+    await text(root.getByRole("status"), "Stage 2 of 3 · Make it your own");
+    await text(root.locator('[aria-current="step"]'), "Make it your own");
     await key(next, "Enter");
-    await text(root, "Your example workspace is ready");
+    await text(root.getByRole("status"), "Stage 3 of 3 · Ready to begin");
     assert(await next.isDisabled());
     await root.getByRole("button", { name: "Back", exact: true }).click();
-    await text(root, "Keep a little room for curiosity");
+    await text(root.getByRole("status"), "Stage 2 of 3 · Make it your own");
     return "Pointer/keyboard forward steps, final disabled boundary and back";
   },
   switch: async ({ root }) => {
@@ -1070,6 +1105,8 @@ for (const id of ["area-chart", "bar-chart", "line-chart", "pie-chart", "radar-c
     return "Keyboard inspection and Escape, legend hide/show, data table, empty state and new dataset; all chart layouts covered by chart gate";
   };
 }
+
+Object.assign(tests, createEffectTests({ assert, eventually, text, attribute, key }), createDetailTests({ assert, eventually, text, attribute, key }), createCompositeTests({ assert, eventually, text, attribute, key }));
 
 async function sharedPreview(page, id) {
   const p = page.locator('[data-slot="preview"]').first();

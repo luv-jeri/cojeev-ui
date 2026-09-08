@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Slot, Slottable } from "@radix-ui/react-slot";
 import { Spinner } from "@/registry/sahajiv/ui/spinner";
 import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
 import { useFlowPress } from "@/registry/sahajiv/motion/flow-press";
@@ -37,8 +38,11 @@ const buttonVariants = cva(
   },
 );
 
-type ButtonProps = React.ComponentProps<"button"> &
+type ButtonProps = Omit<React.ComponentProps<"button">, "ref"> &
   VariantProps<typeof buttonVariants> & {
+    /** Use one native element (for example a link) as the interactive root. */
+    asChild?: boolean;
+    ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;
     loading?: boolean;
     loadingIndicator?: React.ReactNode;
   };
@@ -52,26 +56,42 @@ function Button({
   loading,
   loadingIndicator,
   children,
+  asChild = false,
+  disabled,
   type = "button",
   "aria-busy": ariaBusy,
   "aria-disabled": ariaDisabled,
   onClick,
+  onClickCapture,
+  onAuxClickCapture,
   ...props
 }: ButtonProps) {
-  const morphRef = useMorph<HTMLButtonElement>("buttons", externalRef);
+  const morphRef = useMorph<HTMLButtonElement | HTMLAnchorElement>("buttons", externalRef);
   const pressRef = useFlowPress(morphRef);
   const busy = loading ?? (ariaBusy === true || ariaBusy === "true");
+  const blocked = disabled || busy || ariaDisabled === true || ariaDisabled === "true";
+  const Comp = asChild ? Slot : "button";
   return (
-    <button
+    <Comp
       ref={pressRef}
       data-slot="button"
       data-part="root"
-      data-state={props.disabled ? "disabled" : busy ? "busy" : "rest"}
-      type={type}
+      data-state={disabled ? "disabled" : busy ? "busy" : "rest"}
+      type={asChild ? undefined : type}
+      disabled={asChild ? undefined : disabled}
       aria-busy={busy || undefined}
-      aria-disabled={busy || ariaDisabled || undefined}
+      aria-disabled={blocked || undefined}
+      onClickCapture={(event) => {
+        // Stop a slotted link before its own router/click handler can activate.
+        if (asChild && blocked) { event.preventDefault(); event.stopPropagation(); return; }
+        onClickCapture?.(event);
+      }}
+      onAuxClickCapture={(event) => {
+        if (asChild && blocked) { event.preventDefault(); event.stopPropagation(); return; }
+        onAuxClickCapture?.(event);
+      }}
       onClick={(event) => {
-        if (busy || ariaDisabled === true || ariaDisabled === "true") {
+        if (blocked) {
           event.preventDefault();
           return;
         }
@@ -83,6 +103,7 @@ function Button({
         className,
       )}
       {...props}
+      tabIndex={asChild && disabled ? -1 : props.tabIndex}
     >
       <MotionPresence>
         {busy && (
@@ -97,8 +118,8 @@ function Button({
           </MotionSurface>
         )}
       </MotionPresence>
-      {children}
-    </button>
+      {asChild ? <Slottable>{children}</Slottable> : children}
+    </Comp>
   );
 }
 

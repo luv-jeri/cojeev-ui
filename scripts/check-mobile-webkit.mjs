@@ -109,10 +109,10 @@ async function layout(page) {
 const cases = {
   "home-and-getting-started": async page => {
     await go(page, "/");
-    await page.getByRole("heading", { name: /Little parts\.\s*Big personality\s*\./ }).waitFor();
+    await page.getByRole("heading", { level: 1, name: /Make it\s*feel\s*alive\s*\./ }).waitFor();
     const homeLayout = await layout(page);
     await page.screenshot({ path: path.join(output, "home-390.png"), fullPage: true });
-    await page.locator(".story-hero").getByRole("link", { name: "Explore components", exact: true }).tap();
+    await page.locator(".studio-hero").getByRole("link", { name: "Explore the library", exact: true }).tap();
     await page.waitForURL(/\/docs\/?$/);
     await page.getByRole("navigation", { name: "Start exploring" }).getByRole("link", { name: "Explore components" }).tap();
     await page.waitForURL(/\/docs\/button\/?$/);
@@ -182,17 +182,18 @@ const cases = {
   },
   "multi-select": async page => {
     const root = await example(page, "multi-select");
-    const trigger = root.getByRole("button", { name: "Topics", exact: true });
+    const trigger = root.getByRole("button", { name: "Shared workspaces", exact: true });
     await trigger.tap();
-    const search = page.getByRole("searchbox", { name: "Search Topics", exact: true });
-    await search.fill("research");
-    const option = page.getByRole("checkbox", { name: "Research", exact: true });
+    const search = page.getByRole("searchbox", { name: "Search Shared workspaces", exact: true });
+    await search.fill("Workspace 24");
+    const option = page.getByRole("checkbox", { name: "Workspace 24", exact: true });
     await option.tap(); await attribute(option, "aria-checked", "true");
     await page.screenshot({ path: path.join(output, "multi-select-open-390.png") });
     await page.keyboard.press("Escape", { delay: 60 });
     await search.waitFor({ state: "hidden" });
     assert(await trigger.evaluate(element => element === document.activeElement));
-    await checkText(root, "Following: Design, Engineering, Research.");
+    await checkText(trigger, "2 selected");
+    await root.getByRole("list", { name: "Selected Shared workspaces", exact: true }).getByText("Workspace 24", { exact: true }).waitFor();
     return { detail: "Touch open/search/select; Escape dismisses and restores trigger focus", layout: await layout(page) };
   },
   "shape-scene": async page => {
@@ -207,11 +208,14 @@ const cases = {
       const unique = new Set(); for (let offset = 0; offset < pixels.data.length; offset += 64) unique.add(pixels.data.subarray(offset, offset + 4).toString("hex"));
       colors = unique.size; assert(colors > 40, "WebGL sculpture must have real shaded pixels");
     } else {
-      assert.equal(await scene.locator('[data-slot="shape-scene-fallback"] [data-slot="shape"]').count(), 4);
-      await checkText(scene, "3D is unavailable. Showing the static composition.");
+      assert.equal(await scene.locator('[data-slot="shape-scene-fallback"] [data-slot="shape"]').count(), 6);
+      assert.equal(await scene.getAttribute("aria-description"), "3D is unavailable. Showing the static composition.");
     }
-    await root.getByRole("button", { name: "Pause sculpture", exact: true }).tap();
-    await root.getByRole("button", { name: "Animate sculpture", exact: true }).waitFor();
+    const initialShapes = await scene.locator('[data-slot="shape-scene-fallback"]').innerHTML();
+    await root.getByRole("button", { name: "Change the shapes", exact: true }).tap();
+    assert.notEqual(await scene.locator('[data-slot="shape-scene-fallback"]').innerHTML(), initialShapes);
+    await scene.scrollIntoViewIfNeeded();
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.waitForTimeout(250);
     const draws = await page.evaluate(() => window.__webkitSceneDraws);
     const canHover = await page.evaluate(() => matchMedia("(any-hover: hover) and (any-pointer: fine)").matches);
@@ -222,9 +226,9 @@ const cases = {
       await scene.dispatchEvent("pointermove", { pointerType: "mouse", clientX: box.x + box.width - 1, clientY: box.y + 1 });
     }
     await page.waitForTimeout(300);
-    assert.equal(await page.evaluate(() => window.__webkitSceneDraws), draws, "Paused sculpture must stop WebGL draws");
+    assert.equal(await page.evaluate(() => window.__webkitSceneDraws), draws, "Quiet sculpture must stop WebGL draws");
     await scene.screenshot({ path: path.join(output, "shape-scene-390.png") });
-    return { detail: "Supported 3D output, touch pause and compatibility mouse rejection checked", renderer, shadedColors: colors, canHover, pausedDrawCount: draws, layout: await layout(page) };
+    return { detail: "Supported 3D output, touch composition change, quiet rendering and compatibility mouse rejection checked", renderer, shadedColors: colors, canHover, pausedDrawCount: draws, layout: await layout(page) };
   },
   marquee: async page => {
     const root = await example(page, "marquee");

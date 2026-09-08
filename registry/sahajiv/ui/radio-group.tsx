@@ -6,10 +6,14 @@ import {
   selectorStyle,
   type SelectorShape,
   type SelectorTone,
+  type SelectorSize,
+  type SelectorIndicator,
 } from "@/registry/sahajiv/lib/selector";
 export type {
   SelectorShape,
   SelectorTone,
+  SelectorSize,
+  SelectorIndicator,
 } from "@/registry/sahajiv/lib/selector";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -23,13 +27,20 @@ const RadioStyleContext = React.createContext<{
   pictographic: boolean;
   shape: SelectorShape;
   tone: SelectorTone;
+  size?: SelectorSize;
+  indicator?: SelectorIndicator;
+  showIndicator?: boolean;
   value?: string;
   disabled?: boolean;
-}>({ pictographic: false, shape: "organic", tone: "pink" });
+  cancelKeyboardNavigation: () => void;
+}>({ pictographic: false, shape: "organic", tone: "pink", cancelKeyboardNavigation: () => {} });
 export type RadioGroupProps = React.ComponentProps<typeof Primitive.Root> &
   VariantProps<typeof radioGroupVariants> & {
     shape?: SelectorShape;
     tone?: SelectorTone;
+    size?: SelectorSize;
+    indicator?: SelectorIndicator;
+    showIndicator?: boolean;
   };
 export function RadioGroup({
   className,
@@ -38,13 +49,31 @@ export function RadioGroup({
   children,
   shape = "organic",
   tone = "pink",
+  size,
+  indicator = "auto",
+  showIndicator = true,
   value: controlled,
   defaultValue,
   onValueChange,
+  onKeyDownCapture,
+  onPointerDownCapture,
+  onClickCapture,
+  onFocus,
   ...props
 }: RadioGroupProps) {
   const [local, setLocal] = React.useState(defaultValue);
   const value = controlled ?? local;
+  const keyboardNavigation = React.useRef<{ origin: HTMLElement; activated: boolean } | null>(null);
+  const navigationExpiry = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const cancelKeyboardNavigation = React.useCallback(() => {
+    clearTimeout(navigationExpiry.current);
+    keyboardNavigation.current = null;
+  }, []);
+  React.useEffect(() => cancelKeyboardNavigation, [cancelKeyboardNavigation]);
+  const ownedRadio = (target: EventTarget | null, group: HTMLElement) => {
+    if (!(target instanceof HTMLElement) || target.getAttribute("role") !== "radio") return null;
+    return target.closest('[data-slot="radio-group"]') === group ? target : null;
+  };
   const flowRef = useFlowGroup<HTMLDivElement>(ref, {
     itemSelector: '[data-slot="radio-group-item"]',
     activeSelector: '[data-state="checked"]',
@@ -55,12 +84,53 @@ export function RadioGroup({
         pictographic: !!pictographic,
         shape,
         tone,
+        size,
+        indicator,
+        showIndicator,
         value,
         disabled: props.disabled,
+        cancelKeyboardNavigation,
       }}
     >
       <Primitive.Root
         ref={flowRef}
+        onKeyDownCapture={event => {
+          cancelKeyboardNavigation();
+          onKeyDownCapture?.(event);
+          if (event.defaultPrevented || props.disabled || event.altKey || event.ctrlKey || event.metaKey) return;
+          const origin = ownedRadio(event.target, event.currentTarget);
+          const key = event.key;
+          const navigationKey = ["Home", "End"].includes(key)
+            || (props.orientation !== "horizontal" && ["ArrowUp", "ArrowDown"].includes(key))
+            || (props.orientation !== "vertical" && ["ArrowLeft", "ArrowRight"].includes(key));
+          if (!origin || !navigationKey) return;
+          keyboardNavigation.current = { origin, activated: false };
+          // Radix defers roving focus to a task. Retain keyboard intent through
+          // that task even if a fast keyup has already cleared its document flag.
+          navigationExpiry.current = setTimeout(() => {
+            navigationExpiry.current = setTimeout(cancelKeyboardNavigation, 0);
+          }, 0);
+        }}
+        onPointerDownCapture={event => { cancelKeyboardNavigation(); onPointerDownCapture?.(event); }}
+        onClickCapture={event => {
+          const navigation = keyboardNavigation.current;
+          if (navigation && ownedRadio(event.target, event.currentTarget) !== navigation.origin) navigation.activated = true;
+          onClickCapture?.(event);
+        }}
+        onFocus={event => {
+          onFocus?.(event);
+          const navigation = keyboardNavigation.current;
+          const target = ownedRadio(event.target, event.currentTarget);
+          if (!navigation || !target || target === navigation.origin) return;
+          // A held arrow already clicks inside Radix's Item onFocus. The scoped
+          // click marker prevents a second callback, including rejected controlled changes.
+          if (!navigation.activated && !event.defaultPrevented && !props.disabled
+            && target.getAttribute("aria-checked") !== "true" && !target.matches(":disabled,[data-disabled]")) {
+            navigation.activated = true;
+            target.click();
+          }
+          cancelKeyboardNavigation();
+        }}
         data-slot="radio-group"
         data-part="root"
         value={value}
@@ -80,15 +150,19 @@ export function RadioGroup({
 }
 export type RadioGroupItemProps = React.ComponentProps<
   typeof Primitive.Item
-> & { pictographic?: boolean; shape?: SelectorShape; tone?: SelectorTone };
+> & { pictographic?: boolean; shape?: SelectorShape; tone?: SelectorTone; size?: SelectorSize; indicator?: SelectorIndicator; showIndicator?: boolean };
 export function RadioGroupItem({
   className,
   pictographic,
   shape,
   tone,
+  size,
+  indicator,
+  showIndicator,
   style,
   children,
   ref,
+  onKeyDown,
   ...props
 }: RadioGroupItemProps) {
   const inherited = React.useContext(RadioStyleContext);
@@ -98,10 +172,14 @@ export function RadioGroupItem({
   return (
     <Primitive.Item
       ref={ref}
+      onKeyDown={event => {
+        onKeyDown?.(event);
+        if (event.defaultPrevented) inherited.cancelKeyboardNavigation();
+      }}
       data-slot="radio-group-item"
       data-part="item"
       data-selector-shape={selectedShape}
-      style={selectorStyle(selectedTone, style)}
+      style={selectorStyle(selectedTone, style, size ?? inherited.size ?? (icon ? 16 : "default"))}
       data-pictographic={icon || undefined}
       className={cn(
         icon ? "v-iradio" : "v-radio inline-flex items-center gap-[var(--s-3)]",
@@ -114,6 +192,8 @@ export function RadioGroupItem({
           shape={selectedShape}
           tone={selectedTone}
           state={inherited.value === props.value}
+          indicator={indicator ?? inherited.indicator}
+          showIndicator={showIndicator ?? inherited.showIndicator}
           disabled={props.disabled || inherited.disabled}
         />
       </span>

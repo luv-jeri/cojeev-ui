@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createMotionLane, motionTokens, useChoreography } from "@/registry/sahajiv/motion/choreography";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -75,13 +76,68 @@ export function AccordionContent({
 }: AccordionContentProps) {
   const contentRef = React.useRef<HTMLDivElement>(null);
   React.useImperativeHandle(ref, () => contentRef.current!);
-  React.useEffect(() => {
+  const { quiet } = useChoreography();
+  const quietRef = React.useRef(quiet);
+  const settle = React.useRef<(() => void) | null>(null);
+  React.useLayoutEffect(() => {
+    quietRef.current = quiet;
+    if (quiet) settle.current?.();
+  }, [quiet]);
+  React.useLayoutEffect(() => {
     const content = contentRef.current;
-    // Radix suppresses the first entrance while measuring. Restore the authored
-    // animation once that measurement has finished, including initially open items.
-    if (content?.dataset.state === "open" && content.style.animationName === "none") {
-      content.style.animationName = props.style?.animationName ?? "";
-    }
+    if (!content) return;
+    const originalHeight = content.style.height;
+    const originalHidden = content.getAttribute("aria-hidden");
+    const originalInert = content.inert;
+    const lane = createMotionLane(content.getBoundingClientRect().height, height => {
+      content.style.height = `${Math.max(0, height)}px`;
+    });
+    let observed: Element | null = null;
+    let opened = content.dataset.state === "open";
+    let initialized = false;
+    const target = () => opened
+      ? content.querySelector<HTMLElement>('[data-slot="accordion-content-inner"]')?.offsetHeight ?? 0
+      : 0;
+    const sync = (animate = true) => {
+      opened = content.dataset.state === "open";
+      content.inert = !opened || originalInert;
+      if (!opened) content.setAttribute("aria-hidden", "true");
+      else if (originalHidden === null) content.removeAttribute("aria-hidden");
+      else content.setAttribute("aria-hidden", originalHidden);
+      content.style.setProperty("--acc-exit-duration", quietRef.current ? "0s" : `${motionTokens.duration.exit + .04}s`);
+      if (!animate || quietRef.current) lane.jump(target());
+      else lane.to(target(), {
+        duration: opened ? motionTokens.duration.enter : motionTokens.duration.exit,
+        ease: [...(opened ? motionTokens.ease.enter : motionTokens.ease.exit)],
+      });
+    };
+    const resize = new ResizeObserver(() => sync(initialized));
+    const observeInner = () => {
+      const inner = content.querySelector('[data-slot="accordion-content-inner"]');
+      if (inner === observed) return;
+      if (observed) resize.unobserve(observed);
+      observed = inner;
+      if (inner) resize.observe(inner);
+    };
+    const changes = new MutationObserver(() => { observeInner(); sync(); });
+    changes.observe(content, { attributes: true, attributeFilter: ["data-state"], childList: true });
+    observeInner();
+    sync(false);
+    initialized = true;
+    // Radix suppresses the first authored animation during its measurement.
+    content.style.animationName = props.style?.animationName ?? "";
+    settle.current = () => sync(false);
+    return () => {
+      settle.current = null;
+      changes.disconnect();
+      resize.disconnect();
+      lane.dispose();
+      content.style.height = originalHeight;
+      content.style.removeProperty("--acc-exit-duration");
+      content.inert = originalInert;
+      if (originalHidden === null) content.removeAttribute("aria-hidden");
+      else content.setAttribute("aria-hidden", originalHidden);
+    };
   }, [props.style?.animationName]);
   return (
     <Primitive.Content
@@ -91,7 +147,7 @@ export function AccordionContent({
       className={cn("v-acc__body", className)}
       {...props}
     >
-      {children}
+      <div data-slot="accordion-content-inner">{children}</div>
     </Primitive.Content>
   );
 }

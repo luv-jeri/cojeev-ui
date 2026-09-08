@@ -1,0 +1,18 @@
+.v-number-input{display:inline-flex;align-items:center;gap:4px;inline-size:100%;min-inline-size:0;block-size:48px;padding:4px;background:var(--input);color:var(--v-text);border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--v-edge);font-size:var(--fs-body);font-variant-numeric:tabular-nums}
+.v-number-input:focus-within{outline:2px solid var(--v-accent,var(--v-text));outline-offset:3px}
+.v-number-input__step{display:grid;place-items:center;flex:none;inline-size:38px;block-size:38px;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer}
+.v-number-input__step:hover:not(:disabled){background:var(--v-canvas)}
+.v-number-input__step:focus-visible{outline:2px solid currentColor;outline-offset:-3px}
+.v-number-input__step:disabled{opacity:.35;cursor:default}
+.v-number-input__field{position:relative;flex:1;min-inline-size:0;block-size:100%;display:grid;align-items:center}
+.v-number-input__control{inline-size:100%;min-inline-size:0;block-size:100%;border:0;outline:0;background:transparent;color:transparent;caret-color:var(--v-text);font:inherit;text-align:center;padding:0 6px;box-sizing:border-box}
+.v-number-input__control::placeholder{color:transparent}
+.v-number-input__display{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;white-space:nowrap}
+.v-number-input[data-focused="true"] .v-number-input__control{color:inherit}
+.v-number-input[data-focused="true"] .v-number-input__control::placeholder{color:var(--v-text-2)}
+.v-number-input[data-focused="true"] .v-number-input__display{visibility:hidden}
+.v-number-input[data-disabled="true"]{opacity:.5}
+.v-number-input[data-invalid="true"]{box-shadow:inset 0 0 0 2px var(--v-negative,#aa3434)}
+@media(forced-colors:active){.v-number-input{border:1px solid ButtonText}.v-number-input__control{color:CanvasText}.v-number-input__display{display:none}}
+.v-number-input__field{container-type:inline-size}
+.v-number-input__display .v-animated-number{font-size:min(1em,calc(100cqi / var(--number-length) * 1.55))}

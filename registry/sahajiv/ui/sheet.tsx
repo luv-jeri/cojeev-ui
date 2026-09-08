@@ -5,6 +5,7 @@ import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-dialog";
+import { useDirection } from "@radix-ui/react-direction";
 import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
 export type SheetProps = React.ComponentProps<typeof Primitive.Root>;
 export function Sheet(props: SheetProps) {
@@ -42,20 +43,23 @@ export function SheetOverlay({ className, ref, ...props }: SheetOverlayProps) {
   );
 }
 export const sheetContentVariants = cva(
-  "v-sheet [position:fixed] [top:var(--shell-inset)] [right:var(--shell-inset)] [bottom:var(--shell-inset)] [width:min(480px,calc(100%_-_56px))] [background:var(--v-canvas)] [border-radius:var(--r-panel)] [padding:var(--s-6)] [z-index:var(--z-sheet)] [overflow:auto] [display:grid] grid-cols-[minmax(0,1fr)] [gap:var(--s-5)] [align-content:start] [box-shadow:var(--shadow-float),inset_0_0_0_1px_var(--v-border)]",
+  "v-sheet [position:fixed] [top:var(--shell-inset)] [bottom:var(--shell-inset)] [width:min(480px,calc(100%_-_56px))] [background:var(--v-canvas)] [border-radius:var(--r-panel)] [padding:var(--s-6)] [z-index:var(--z-sheet)] [overflow:auto] [display:grid] grid-cols-[minmax(0,1fr)] [gap:var(--s-5)] [align-content:start] [box-shadow:var(--shadow-float),inset_0_0_0_1px_var(--v-border)]",
 );
 export type SheetContentProps = React.ComponentProps<
   typeof Primitive.Content
-> & { showCloseButton?: boolean };
+> & { showCloseButton?: boolean; /** Logical viewport edge; follows dir or DirectionProvider. */ side?: "start" | "end" };
 export function SheetContent({
   className,
   ref,
   children,
   showCloseButton = false,
+  side = "end",
+  dir,
   ...props
 }: SheetContentProps) {
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "enter");
+  const direction = useDirection(dir === "rtl" || dir === "ltr" ? dir : undefined);
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "slide-inline");
   return (
     <Primitive.Portal>
       <SheetOverlay />
@@ -63,6 +67,8 @@ export function SheetContent({
         ref={flowRef}
         data-slot="sheet-content"
         data-part="content"
+        data-side={side}
+        dir={direction}
         className={cn(sheetContentVariants(), className)}
         {...props}
       >

@@ -15,6 +15,10 @@ export type ItemAdornmentOptions = {
   foreground?: string;
   /** An Icon name, custom decorative node, or false for the silhouette alone. */
   icon?: string | React.ReactNode;
+  /** Hide the glyph independently of its background silhouette. */
+  showIcon?: boolean;
+  /** Hide the silhouette while keeping the glyph in the row's foreground. */
+  showBackground?: boolean;
   effect?: IconMotion;
 };
 export type ItemAdornmentValue = "auto" | "none" | false | ItemAdornmentOptions | React.ReactElement;
@@ -60,13 +64,16 @@ export type ItemAdornmentProps = Omit<React.ComponentProps<"span">, "children"> 
 };
 export function ItemAdornment({ identity, value = "auto", size = "default", className, style, ...props }: ItemAdornmentProps) {
   if (value === false || value === "none") return null;
-  if (React.isValidElement(value)) return <span {...props} data-slot="item-adornment" data-custom="" aria-hidden="true" className={cn("v-item-adornment", className)} data-size={size}>{value}</span>;
+  if (React.isValidElement(value)) return <span {...props} data-slot="item-adornment" data-custom="" aria-hidden="true" style={style} className={cn("v-item-adornment", className)} data-size={size}>{value}</span>;
   const options = typeof value === "object" ? value : {};
   const resolved = { ...resolveItemAdornment(identity), ...options };
+  const showIcon = resolved.showIcon !== false && resolved.icon !== false && resolved.icon != null;
+  const showBackground = resolved.showBackground !== false;
+  if (!showIcon && !showBackground) return null;
   const color = colors.includes(resolved.color as ItemAdornmentColor) ? `var(--v-${resolved.color})` : resolved.color;
-  return <span {...props} data-slot="item-adornment" data-shape={resolved.shape} data-color={resolved.color} data-size={size} aria-hidden="true" className={cn("v-item-adornment", className)} style={{ "--adornment-color": color, "--adornment-foreground": resolved.foreground ?? "var(--v-on-accent)", ...style } as React.CSSProperties}>
-    <ShapeMorph name={resolved.shape} className="v-item-adornment__shape" />
-    <span className="v-item-adornment__icon">{typeof resolved.icon === "string" ? <AnimatedIcon name={resolved.icon} preset={resolved.effect ?? "auto"} size="sm" /> : resolved.icon}</span>
+  return <span {...props} data-slot="item-adornment" data-shape={resolved.shape} data-color={resolved.color} data-size={size} data-background={showBackground || undefined} data-icon={showIcon || undefined} aria-hidden="true" className={cn("v-item-adornment", className)} style={{ "--adornment-color": color, "--adornment-foreground": resolved.foreground ?? (showBackground ? "var(--v-on-accent)" : "currentColor"), ...style } as React.CSSProperties}>
+    {showBackground && <ShapeMorph name={resolved.shape} className="v-item-adornment__shape" />}
+    {showIcon && <span className="v-item-adornment__icon">{typeof resolved.icon === "string" ? <AnimatedIcon name={resolved.icon} preset={resolved.effect ?? "auto"} size="sm" /> : resolved.icon}</span>}
   </span>;
 }
 

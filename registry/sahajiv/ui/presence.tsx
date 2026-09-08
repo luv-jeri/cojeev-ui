@@ -12,6 +12,9 @@ export const presencePresets = {
   rise: { initial: { ...shown, opacity: 0, "--presence-y": "10px" }, animate: shown, exit: { ...shown, opacity: 0, "--presence-y": "-6px" } },
   slide: { initial: { ...shown, opacity: 0, "--presence-x": "16px" }, animate: shown, exit: { ...shown, opacity: 0, "--presence-x": "-10px" } },
   scale: { initial: { ...shown, opacity: 0, "--presence-scale": .96 }, animate: shown, exit: { ...shown, opacity: 0, "--presence-scale": .985 } },
+  settle: { initial: { ...shown, opacity: 0, "--presence-y": "6px", "--presence-scale": 1.04 }, animate: shown, exit: { ...shown, opacity: 0, "--presence-y": "-5px", "--presence-scale": .94 } },
+  soften: { initial: { ...shown, opacity: 0, "--presence-y": "8px", "--presence-blur": "5px" }, animate: { ...shown, "--presence-blur": "0px" }, exit: { ...shown, opacity: 0, "--presence-y": "-10px", "--presence-blur": "6px" } },
+  focus: { initial: { ...shown, opacity: 0, "--presence-y": "10px", "--presence-scale": 1.015, "--presence-blur": "9px" }, animate: { ...shown, "--presence-blur": "0px" }, exit: { ...shown, opacity: 0, "--presence-y": "-8px", "--presence-blur": "7px" } },
   mask: {
     initial: { ...shown, opacity: 0, clipPath: "inset(0% 0% 100% 0% round 16px)" },
     animate: { ...shown, clipPath: "inset(0% 0% 0% 0% round 16px)" },
@@ -35,11 +38,15 @@ export type MotionSurfaceProps = HTMLMotionProps<"div"> & {
   preset?: PresencePreset;
   /** Seconds; use motionTokens.stagger for a coordinated sibling sequence. */
   delay?: number;
+  /** Seconds before exit; cap sibling staggering yourself to a short total window. */
+  exitDelay?: number;
+  /** Seconds. Soft-focus and settling presets use a gentler 420ms default. */
+  exitDuration?: number;
 };
 
 /** Defines lifecycle states. An external MotionPresence retains actual removals. */
 export function MotionSurface({
-  asChild = false, preset = "rise", delay = 0, className,
+  asChild = false, preset = "rise", delay = 0, exitDelay = 0, exitDuration, className,
   initial, animate, exit, transition: suppliedTransition, ...props
 }: MotionSurfaceProps) {
   const { quiet, transition } = useChoreography();
@@ -47,7 +54,9 @@ export function MotionSurface({
   const states = presencePresets[preset];
   const Element = asChild ? MotionSlot : motion.div;
   const entrance = { ...transition, delay: Math.max(0, Number.isFinite(delay) ? delay : 0), ...suppliedTransition };
-  const exitState: TargetAndTransition = { ...states.exit, transition: { duration: motionTokens.duration.exit, ease: [...motionTokens.ease.exit] } };
+  const soft = ["soften", "focus", "settle"].includes(preset);
+  const exitTime = exitDuration === undefined || !Number.isFinite(exitDuration) ? soft ? .42 : motionTokens.duration.exit : Math.min(2, Math.max(0, exitDuration));
+  const exitState: TargetAndTransition = { ...states.exit, transition: { duration: exitTime, delay: Number.isFinite(exitDelay) ? Math.min(.6, Math.max(0, exitDelay)) : 0, ease: [...(soft ? motionTokens.ease.settle : motionTokens.ease.exit)] } };
   const children = !isPresent && asChild && React.isValidElement(props.children)
     ? React.cloneElement(props.children as React.ReactElement<React.HTMLAttributes<HTMLElement>>, { inert: true, "aria-hidden": true })
     : props.children;

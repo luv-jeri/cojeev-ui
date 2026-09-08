@@ -1,0 +1,84 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "writing-caret",
+  "title": "Writing caret",
+  "description": "A quiet writing mark with a short, deliberate blink sequence.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/writing-caret.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { createMotionLane } from \"@/lib/sahajiv-motion/choreography\";\nimport { useGuidanceMotion } from \"@/lib/sahajiv-motion/use-guidance-motion\";\nimport { assignMotionRef } from \"@/lib/sahajiv-motion/refs\";\n\nconst bounded = (value: number, fallback: number, min: number, max: number) => Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : fallback;\nexport type WritingCaretProps = Omit<React.ComponentProps<\"span\">, \"children\" | \"role\" | \"tabIndex\"> & {\n  active?: boolean;\n  /** At most six cycles; zero leaves a still mark. */\n  blinkCount?: number;\n  /** Milliseconds per cycle. Total motion is bounded to six seconds. */\n  duration?: number;\n  replayKey?: string | number;\n  /** An explicit opacity disables blinking. */\n  opacity?: number;\n};\n\n/** A decorative writing mark. Real editable controls keep their browser caret. */\nexport function WritingCaret({ active = false, blinkCount = 3, duration = 880, replayKey = 0, opacity, className, style, ref, ...props }: WritingCaretProps) {\n  const host = React.useRef<HTMLSpanElement>(null);\n  const attach = React.useCallback((node: HTMLSpanElement | null) => { host.current = node; return assignMotionRef(ref, node); }, [ref]);\n  const { quiet, enabled, inView } = useGuidanceMotion(host);\n  const consumed = React.useRef(\"\");\n  const count = Math.floor(bounded(blinkCount, 3, 0, 6));\n  const cycle = bounded(duration, 880, 0, 2000);\n  const overridden = opacity !== undefined || style?.opacity !== undefined;\n  const request = JSON.stringify([active, count, cycle, replayKey, overridden]);\n  React.useEffect(() => {\n    const element = host.current;\n    if (!element) return;\n    const paint = (value: number) => { element.style.setProperty(\"--writing-caret-opacity\", String(value)); };\n    paint(1);\n    element.dataset.animating = \"false\";\n    if (!active || overridden || count === 0 || cycle === 0 || quiet || !enabled) { consumed.current = request; return; }\n    if (!inView || consumed.current === request) return;\n    consumed.current = request;\n    const lane = createMotionLane(0, progress => paint(progress >= count ? 1 : Math.floor(progress * 2) % 2 === 0 ? 1 : 0));\n    element.dataset.animating = \"true\";\n    lane.to(count, { duration: Math.min(6000, count * cycle) / 1000, ease: \"linear\" }, () => { paint(1); element.dataset.animating = \"false\"; });\n    return () => { lane.dispose(); paint(1); element.dataset.animating = \"false\"; };\n  }, [active, count, cycle, enabled, inView, overridden, quiet, request]);\n  return <span {...props} ref={attach} aria-hidden=\"true\" data-slot=\"writing-caret\" data-quiet={quiet || undefined} className={cn(\"v-writing-caret\", className)} style={{ ...style, opacity: opacity === undefined ? style?.opacity ?? \"var(--writing-caret-resolved-opacity, var(--writing-caret-opacity, 1))\" : bounded(opacity, 1, 0, 1), pointerEvents: \"none\" }} />;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/writing-caret.css",
+      "content": "@layer sahajiv-states {\n.v-writing-caret{display:inline-block;flex-shrink:0;inline-size:.12em;block-size:1em;border-radius:.08em;background:currentColor;vertical-align:-.12em;pointer-events:none;}\n.v-writing-caret[data-quiet=\"true\"],:where([data-flow=\"off\"],[data-no-glide]) .v-writing-caret{--writing-caret-resolved-opacity:1;}\n@media(prefers-reduced-motion:reduce){.v-writing-caret{--writing-caret-resolved-opacity:1;}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/writing-caret.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/writing-caret.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Writing caret",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "still",
+        "blinking",
+        "replayed",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "WritingCaretProps",
+        "props": [
+          {
+            "name": "active",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "blinkCount",
+            "type": "number",
+            "required": false,
+            "description": "At most six cycles; zero leaves a still mark."
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": "Milliseconds per cycle. Total motion is bounded to six seconds."
+          },
+          {
+            "name": "replayKey",
+            "type": "string | number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "opacity",
+            "type": "number",
+            "required": false,
+            "description": "An explicit opacity disables blinking."
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

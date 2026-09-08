@@ -1,0 +1,150 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "word-relay",
+  "title": "Word relay",
+  "description": "Exchanges phrases, words or letters inside a stable wrapping footprint, with interruptible motion and explicit navigation.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/word-relay.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport type { Transition } from \"motion\";\nimport { cn } from \"@/lib/utils\";\nimport { createMotionLane, motionTokens } from \"@/lib/sahajiv-motion/choreography\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\nimport { relayIndex, relayRank, relayTiming, type RelayOrder } from \"@/lib/sahajiv/text-relay\";\n\nexport type WordRelayHandle = { next: () => void; previous: () => void; jumpTo: (index: number) => void; reset: () => void };\n\nexport type WordRelayProps = Omit<React.ComponentProps<\"span\">, \"children\"> & {\n  words: readonly string[];\n  /** A controlled index. Omit for the internal timer. */\n  index?: number;\n  defaultIndex?: number;\n  /** Opt in to automatic changes and provide a nearby pause control. */\n  auto?: boolean;\n  /** When false, automatic and manual navigation stop at the first/last phrase. */\n  loop?: boolean;\n  paused?: boolean;\n  interval?: number;\n  duration?: number;\n  split?: \"phrase\" | \"word\" | \"grapheme\";\n  /** Milliseconds between units, compressed to a maximum 500ms stagger window. */\n  stagger?: number;\n  staggerFrom?: RelayOrder;\n  direction?: \"up\" | \"down\";\n  /** Keeps the normal ref pointing to the span; navigation has its own optional ref. */\n  controlsRef?: React.Ref<WordRelayHandle>;\n  tone?: \"inherit\" | \"pink\" | \"olive\" | \"blue\" | \"yellow\";\n  onIndexChange?: (index: number) => void;\n};\n\n/** A quiet exchange of phrases. All candidates reserve one shared, wrapping footprint. */\nexport function WordRelay({ words, index, defaultIndex = 0, auto = false, loop = true, paused = false, interval = 3000, duration = 650, split = \"phrase\", stagger = 24, staggerFrom = \"first\", direction = \"up\", controlsRef, tone = \"pink\", onIndexChange, className, ref, onPointerEnter, onPointerLeave, onFocusCapture, onBlurCapture, ...props }: WordRelayProps) {\n  const host = React.useRef<HTMLSpanElement>(null);\n  const [internal, setInternal] = React.useState(defaultIndex);\n  const [hovered, setHovered] = React.useState(false);\n  const [focused, setFocused] = React.useState(false);\n  const { enabled, inView } = useMotionVisibility(host);\n  const current = relayIndex(index ?? internal, words.length);\n  type Lane = ReturnType<typeof createMotionLane>;\n  const lanes = React.useRef<{ phrase: number; unit: number; count: number; opacity: Lane; y: Lane }[]>([]);\n  const callbacks = React.useRef({ onIndexChange });\n  React.useLayoutEffect(() => { callbacks.current = { onIndexChange }; });\n  const running = auto && !paused && !hovered && !focused && enabled && inView && words.length > 1 && (loop || current < words.length - 1);\n  const contentKey = JSON.stringify(words);\n  const segmenter = React.useMemo(() => new Intl.Segmenter(undefined, { granularity: \"grapheme\" }), []);\n  const longest = Math.max(1, ...words.map(word => split === \"phrase\" ? 1 : split === \"word\" ? word.split(/\\s+/).filter(Boolean).length : Array.from(segmenter.segment(word)).filter(({ segment }) => !/^\\s+$/.test(segment)).length));\n  const timing = relayTiming(duration, stagger, longest);\n\n  const navigate = React.useCallback((next: number) => {\n    if (!words.length) return;\n    const target = relayIndex(next, words.length);\n    if (index === undefined) setInternal(target);\n    if (target !== current) callbacks.current.onIndexChange?.(target);\n  }, [current, index, words.length]);\n  React.useImperativeHandle(controlsRef, () => ({\n    next: () => navigate(loop ? (current + 1) % words.length : current + 1),\n    previous: () => navigate(loop ? (current - 1 + words.length) % words.length : current - 1),\n    jumpTo: navigate,\n    reset: () => navigate(defaultIndex),\n  }), [current, defaultIndex, navigate, words.length, loop]);\n\n  React.useEffect(() => {\n    if (!running) return;\n    const milliseconds = Math.max(timing.window + 500, Number.isFinite(interval) ? Math.max(1200, Math.min(60000, interval)) : 3000);\n    const timer = setTimeout(() => {\n      const next = (current + 1) % words.length;\n      if (index === undefined) setInternal(next);\n      callbacks.current.onIndexChange?.(next);\n    }, milliseconds);\n    return () => clearTimeout(timer);\n  }, [running, interval, current, words.length, index, contentKey, timing.window]);\n\n  React.useLayoutEffect(() => {\n    const elements = host.current?.querySelectorAll<HTMLElement>(\"[data-relay-phrase]\") ?? [];\n    lanes.current = Array.from(elements).flatMap((phrase, position) => {\n      const units = Array.from(phrase.querySelectorAll<HTMLElement>(\"[data-relay-unit]\"));\n      const selected = phrase.dataset.selected === \"true\";\n      return units.map((element, unit) => ({\n        phrase: position, unit, count: units.length,\n        opacity: createMotionLane(selected ? 1 : 0, value => {\n          const visibility = Math.max(0, Math.min(1, value));\n          element.style.setProperty(\"--relay-opacity\", String(visibility));\n          element.style.setProperty(\"--relay-blur\", `${(1 - visibility) * 3}px`);\n        }),\n        y: createMotionLane(selected ? 0 : .28, value => element.style.setProperty(\"--relay-y\", `${value}em`)),\n      }));\n    });\n    return () => { lanes.current.forEach(lane => { lane.opacity.dispose(); lane.y.dispose(); }); lanes.current = []; };\n  }, [contentKey, split]);\n\n  React.useLayoutEffect(() => {\n    const sign = direction === \"up\" ? 1 : -1;\n    for (const lane of lanes.current) {\n      const selected = lane.phrase === current;\n      const target = selected ? 1 : 0;\n      const unitTiming = relayTiming(duration, stagger, lane.count);\n      if (!enabled || !inView || paused || unitTiming.duration === 0 || lane.opacity.get() === target) {\n        lane.opacity.jump(target);\n        lane.y.jump(selected ? 0 : .28 * sign);\n      } else {\n        if (selected && lane.opacity.get() === 0) lane.y.jump(.28 * sign);\n        const transition: Transition = { duration: unitTiming.duration, delay: relayRank(lane.unit, lane.count, staggerFrom) * unitTiming.step, ease: [...motionTokens.ease.settle] };\n        lane.opacity.to(target, transition);\n        lane.y.to(selected ? 0 : -.28 * sign, transition);\n      }\n    }\n    return () => lanes.current.forEach(lane => { lane.opacity.stop(); lane.y.stop(); });\n  }, [current, contentKey, enabled, inView, duration, paused, split, stagger, staggerFrom, direction]);\n\n  return <span {...props} ref={React.useCallback((node: HTMLSpanElement | null) => { host.current = node; if (typeof ref === \"function\") return ref(node); if (ref) ref.current = node; }, [ref])}\n    className={cn(\"v-word-relay\", className)} data-slot=\"word-relay\" data-tone={tone} data-relay-split={split} data-motion-quiet={!enabled || !inView || paused} data-running={running ? \"true\" : \"false\"}\n    onPointerEnter={event => { setHovered(true); onPointerEnter?.(event); }}\n    onPointerLeave={event => { setHovered(false); onPointerLeave?.(event); }}\n    onFocusCapture={event => { setFocused(true); onFocusCapture?.(event); }}\n    onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); onBlurCapture?.(event); }}>\n    <span className=\"v-word-relay__accessible\">{words[current] ?? \"\"}</span>\n    {words.map((word, position) => <span key={`${position}:${word}`} aria-hidden=\"true\" data-relay-phrase=\"\" data-selected={position === current ? \"true\" : \"false\"}>{split === \"phrase\" ? <span data-relay-unit=\"\">{word}</span> : word.split(/(\\s+)/).map((part, partIndex) => /^\\s+$/.test(part) ? part : <span key={partIndex} data-relay-word=\"\" {...(split === \"word\" ? { \"data-relay-unit\": \"\" } : {})}>{split === \"word\" ? part : Array.from(segmenter.segment(part), ({ segment }, letterIndex) => <span key={letterIndex} data-relay-unit=\"\">{segment}</span>)}</span>)}</span>)}\n  </span>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/word-relay.css",
+      "content": "@layer sahajiv-states {\n.v-word-relay {\n  display:inline-grid; position:relative; vertical-align:baseline; max-inline-size:100%;\n  padding:.08em .22em .12em; border-radius:.34em .27em .32em .24em;\n  background:var(--relay-face,transparent); color:var(--relay-ink,inherit);\n  line-height:1.25; isolation:isolate;\n}\n.v-word-relay[data-tone=\"pink\"] { --relay-face:var(--v-pink); --relay-ink:var(--v-on-accent); }\n.v-word-relay[data-tone=\"olive\"] { --relay-face:var(--v-olive); --relay-ink:var(--v-on-accent); }\n.v-word-relay[data-tone=\"blue\"] { --relay-face:var(--v-blue); --relay-ink:var(--v-on-accent); }\n.v-word-relay[data-tone=\"yellow\"] { --relay-face:var(--v-yellow); --relay-ink:var(--v-on-accent); }\n.v-word-relay [data-relay-phrase] {\n  grid-area:1/1; min-inline-size:0; overflow-wrap:anywhere; pointer-events:none;\n}\n.v-word-relay [data-relay-unit] {\n  display:inline-block; max-inline-size:100%;\n  opacity:var(--relay-opacity,0); transform:translateY(var(--relay-y,.38em));\n  filter:blur(var(--relay-blur,3px));\n}\n.v-word-relay [data-relay-word] { display:inline-block; max-inline-size:100%; overflow-wrap:anywhere; }\n.v-word-relay [data-relay-phrase][data-selected=\"true\"] { --relay-opacity:1; --relay-y:0em; --relay-blur:0px; }\n.v-word-relay__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }\n:root[data-flow=\"off\"] .v-word-relay [data-relay-unit],\n[data-flow=\"off\"] .v-word-relay [data-relay-unit],\n.v-word-relay[data-motion-quiet=\"true\"] [data-relay-unit] { opacity:0; transform:none; filter:none; }\n:root[data-flow=\"off\"] .v-word-relay [data-selected=\"true\"] [data-relay-unit],\n[data-flow=\"off\"] .v-word-relay [data-selected=\"true\"] [data-relay-unit],\n.v-word-relay[data-motion-quiet=\"true\"] [data-selected=\"true\"] [data-relay-unit] { opacity:1; }\n@media(prefers-reduced-motion:reduce) {\n  .v-word-relay [data-relay-unit] { opacity:0; transform:none; filter:none; }\n  .v-word-relay [data-selected=\"true\"] [data-relay-unit] { opacity:1; }\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/word-relay.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/word-relay.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Word relay",
+      "variants": [
+        "pink",
+        "olive",
+        "blue",
+        "yellow"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "changing",
+        "paused",
+        "reduced-motion",
+        "empty"
+      ]
+    },
+    "api": [
+      {
+        "name": "WordRelayProps",
+        "props": [
+          {
+            "name": "words",
+            "type": "readonly string[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "index",
+            "type": "number",
+            "required": false,
+            "description": "A controlled index. Omit for the internal timer."
+          },
+          {
+            "name": "defaultIndex",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "auto",
+            "type": "boolean",
+            "required": false,
+            "description": "Opt in to automatic changes and provide a nearby pause control."
+          },
+          {
+            "name": "loop",
+            "type": "boolean",
+            "required": false,
+            "description": "When false, automatic and manual navigation stop at the first/last phrase."
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "interval",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "split",
+            "type": "\"phrase\" | \"word\" | \"grapheme\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "stagger",
+            "type": "number",
+            "required": false,
+            "description": "Milliseconds between units, compressed to a maximum 500ms stagger window."
+          },
+          {
+            "name": "staggerFrom",
+            "type": "RelayOrder",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "direction",
+            "type": "\"up\" | \"down\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "controlsRef",
+            "type": "React.Ref<WordRelayHandle>",
+            "required": false,
+            "description": "Keeps the normal ref pointing to the span; navigation has its own optional ref."
+          },
+          {
+            "name": "tone",
+            "type": "\"inherit\" | \"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onIndexChange",
+            "type": "(index: number) => void",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

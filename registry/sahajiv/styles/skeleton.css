@@ -9,3 +9,9 @@
 .v-skel[data-slot]>svg.v-morph { z-index:0; }
 .v-skel-group[data-slot].v-card { padding:20px; background:var(--card); }
 .v-skel__sheen { position:absolute; inset:0; pointer-events:none; z-index:1; background:linear-gradient(100deg,transparent 12%,var(--v-skel-sheen) 46%,transparent 78%); }
+
+.v-async--controlled[data-slot] { justify-items: stretch; isolation: isolate; }
+.v-async__content, .v-async__fallback { grid-area: 1 / 1; min-width: 0; }
+.v-async__content { display: grid; gap: inherit; align-content: start; }
+.v-async__fallback { z-index: 1; display: grid; align-content: center; pointer-events: none; }
+.v-async__fallback > [data-slot="skeleton"] { width: 100%; gap: 12px; }

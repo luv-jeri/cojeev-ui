@@ -4,7 +4,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/registry/sahajiv/lib/utils"
 import { cardVariants } from "@/registry/sahajiv/ui/card"
 import { useMorph } from "@/registry/sahajiv/motion/use-morph"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
+import { motionTokens, useChoreography } from "@/registry/sahajiv/motion/choreography"
 import { useMotionVisibility } from "@/registry/sahajiv/motion/use-motion-visibility"
 import { assignMotionRef } from "@/registry/sahajiv/motion/refs"
 
@@ -24,8 +25,33 @@ export type SkeletonGroupProps=React.ComponentProps<"div"> & VariantProps<typeof
 export function SkeletonGroup({as:Tag="div",className,variant,size,...props}:SkeletonGroupProps){return <Tag data-slot="skeleton" data-part="root" className={cn(className?.split(/\s+/).includes("v-card")&&cardVariants(),SkeletonGroupVariants({variant,size}),className)} {...props}/>}
 
 const AsyncContentVariants=cva("v-async [display:grid] [gap:10px] [padding:18px] [border-radius:16px] [background:var(--v-beige)] [justify-items:start]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
-export type AsyncContentProps=React.ComponentProps<"div"> & VariantProps<typeof AsyncContentVariants> & { as?:React.ElementType }
-export function AsyncContent({as:Tag="div",className,variant,size,...props}:AsyncContentProps){return <Tag data-slot="skeleton-async" data-part="async" className={cn(AsyncContentVariants({variant,size}),className)} {...props}/>}
+export type AsyncContentProps=React.ComponentProps<"div"> & VariantProps<typeof AsyncContentVariants> & {
+  as?:React.ElementType
+  /** Caller-owned loading state. Omit to preserve the static composition. */
+  loading?:boolean
+  fallback?:React.ReactNode
+}
+export function AsyncContent({loading,fallback,...props}:AsyncContentProps){
+  if(loading!==undefined)return <LoadingContent {...props} loading={loading} fallback={fallback}/>
+  const {as:Tag="div",className,variant,size,...rest}=props
+  return <Tag data-slot="skeleton-async" data-part="async" className={cn(AsyncContentVariants({variant,size}),className)} {...rest}/>
+}
+function LoadingContent({as:Tag="div",className,variant,size,ref,children,loading,fallback,...props}:AsyncContentProps & {loading:boolean}){
+  const host=React.useRef<HTMLDivElement>(null)
+  const attach=React.useCallback((node:HTMLDivElement|null)=>{host.current=node;const release=assignMotionRef(ref,node);return ()=>{host.current=null;release()}},[ref])
+  const {enabled,inView}=useMotionVisibility(host)
+  const {quiet}=useChoreography()
+  const still=quiet||!enabled||!inView
+  const transition={duration:still?0:motionTokens.duration.enter,ease:[...motionTokens.ease.enter] as [number,number,number,number]}
+  return <Tag {...props} ref={attach} data-slot="skeleton-async" data-part="async" data-loading={loading} aria-busy={loading} className={cn(AsyncContentVariants({variant,size}),"v-async--controlled",className)}>
+    <motion.div data-slot="skeleton-async-content" className="v-async__content" inert={loading||undefined} aria-hidden={loading||undefined} initial={false} animate={{opacity:loading?0:1}} transition={transition}>{children}</motion.div>
+    <AnimatePresence initial={false}>
+      {loading&&<motion.div key="placeholder" data-slot="skeleton-async-fallback" className="v-async__fallback" aria-hidden="true" inert initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={transition}>
+        {fallback??<SkeletonGroup><Skeleton variant="line" style={{width:"92%"}}/><Skeleton variant="line" style={{width:"72%"}}/><Skeleton variant="line" style={{width:"54%"}}/></SkeletonGroup>}
+      </motion.div>}
+    </AnimatePresence>
+  </Tag>
+}
 
 const AsyncRowVariants=cva("v-async__row [display:flex] [align-items:center] [gap:10px] [font-size:14px] [color:var(--v-text-2)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type AsyncRowProps=React.ComponentProps<"div"> & VariantProps<typeof AsyncRowVariants> & { as?:React.ElementType }

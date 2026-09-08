@@ -1,3 +1,4 @@
+/* Keep library state, flow and morph layers in this order in every consumer. */
 @layer theme, base, components, utilities, sahajiv-states, sahajiv-flow, sahajiv-morph, sahajiv-accessibility;
 @import "tailwindcss";
 @import "fumadocs-ui/css/shadcn.css";
@@ -79,7 +80,17 @@
 @import "../registry/sahajiv/styles/tooltip.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/typography.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/animated-number.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/word-relay.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/reading-trail.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/living-link.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/pigment-field.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/contour-field.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/milestone-path.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/activity-feed.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/text-reveal.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/text-ribbon.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/glyph-sculpture.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/sculpture-orbit.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/shape-scene.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/multi-select.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/ambient-background.css" layer(sahajiv-states);
@@ -88,8 +99,21 @@
 @import "../registry/sahajiv/styles/agent-chat.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/theme-toggle.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/animated-icon.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/shape-artwork.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/shape.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/presence.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/item-adornment.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/appearance.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/assembly-part.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/organism-composition.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/organism-assembly.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/scroll-organism.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/hero-button.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/depth-background.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/float-layer.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/writing-caret.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/guided-pointer.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/glass-sculpture.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/number-input.css" layer(sahajiv-states);
 @source "../registry/sahajiv";
 @source "../components";

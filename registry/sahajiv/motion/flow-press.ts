@@ -22,10 +22,10 @@ export function useFlowPress<T extends HTMLElement>(externalRef?:React.Ref<T>):R
   el.addEventListener('pointerup',()=>pulse(el),options)
   el.addEventListener('keyup',event=>{if(event.key==='Enter'||event.key===' ')pulse(el)},options)
   el.addEventListener('change',change,options);el.addEventListener('input',change,options)
-  const states=new MutationObserver(records=>{if(records.some(record=>record.target===el))pulse(el)})
-  states.observe(el,{attributes:true,attributeFilter:['data-state','aria-checked','aria-pressed']})
-  const rm=matchMedia('(prefers-reduced-motion: reduce)'),quiet=()=>{if(isFlowQuiet(el))restore()}
-  rm.addEventListener('change',quiet,{signal:ac.signal});const unsubscribe=subscribeSettings(quiet)
+  const states=new MutationObserver(records=>{if(el.matches(':disabled,[aria-disabled="true"],[data-disabled]:not([data-disabled="false"]),[inert],[hidden]')){restore();return}if(records.some(record=>record.target===el))pulse(el)})
+  states.observe(el,{attributes:true,attributeFilter:['data-state','aria-checked','aria-pressed','disabled','aria-disabled','data-disabled','inert','hidden']})
+  const rm=matchMedia('(prefers-reduced-motion: reduce)'),quiet=()=>{if(isFlowQuiet(el)||document.hidden)restore()}
+  rm.addEventListener('change',quiet,{signal:ac.signal});document.addEventListener('visibilitychange',quiet,{signal:ac.signal});const unsubscribe=subscribeSettings(quiet)
   return ()=>{ac.abort();states.disconnect();unsubscribe();restore();release();if(typeof externalCleanup==='function')externalCleanup();else if(typeof externalRef==='function')externalRef(null);else if(externalRef)externalRef.current=null}
  },[externalRef])
 }

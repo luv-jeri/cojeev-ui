@@ -9,6 +9,14 @@ import { useMorph } from "../motion/use-morph";
 export type SelectorShape =
   "organic" | "rounded" | "circle" | "pebble" | "leaf" | "flower";
 export type SelectorTone = "pink" | "blue" | "olive" | "yellow";
+/** Numeric sizes are clamped to 16–64px; the containing control keeps its hit area. */
+export type SelectorSize = "sm" | "default" | "lg" | number;
+export type SelectorIndicator = "auto" | "dot" | "check" | "diamond" | "flower";
+export function selectorSize(size: SelectorSize = "default") {
+  return typeof size === "number"
+    ? Math.min(64, Math.max(16, Number.isFinite(size) ? size : 28))
+    : ({ sm: 20, default: 28, lg: 36 }[size] ?? 28);
+}
 export const selectorShapes: SelectorShape[] = [
   "organic",
   "pebble",
@@ -47,9 +55,11 @@ const paths: Record<SelectorShape, string> = {
 export function selectorStyle(
   tone: SelectorTone,
   style?: React.CSSProperties,
+  size: SelectorSize = "default",
 ): React.CSSProperties {
   return {
     "--selector-accent": `var(--v-${tone})`,
+    "--selector-size": `${selectorSize(size)}px`,
     ...style,
   } as React.CSSProperties;
 }
@@ -60,12 +70,16 @@ export function SelectorGlyph({
   state,
   kind = "radio",
   disabled = false,
+  indicator = "auto",
+  showIndicator = true,
 }: {
   shape?: SelectorShape;
   tone?: SelectorTone;
   state: boolean | "indeterminate";
   kind?: "checkbox" | "radio";
   disabled?: boolean;
+  indicator?: SelectorIndicator;
+  showIndicator?: boolean;
 }) {
   const { quiet, transition } = useChoreography();
   const surface = React.useRef<HTMLSpanElement>(null);
@@ -94,12 +108,14 @@ export function SelectorGlyph({
     return () => controller.abort();
   }, []);
   const active = state === true || state === "indeterminate";
+  const mark = indicator === "auto" ? (kind === "checkbox" ? "check" : "dot") : indicator;
+  const strokeWidth = active && !showIndicator ? 2.5 : active ? 1.25 : 1.5;
   const fill = disabled
     ? "var(--v-disabled-face)"
     : active
       ? `var(--v-${tone})`
       : "var(--v-canvas)";
-  const ink = disabled ? "var(--v-disabled-ink)" : "var(--ink-fixed)";
+  const ink = disabled ? "var(--v-disabled-ink)" : "var(--v-on-accent)";
   const stroke = disabled
     ? "var(--v-disabled-edge)"
     : active
@@ -117,6 +133,8 @@ export function SelectorGlyph({
       data-slot="selector-glyph"
       data-selector-shape={shape}
       data-selector-tone={tone}
+      data-selector-indicator={showIndicator ? mark : "none"}
+      data-state={state === "indeterminate" ? "indeterminate" : active ? "checked" : "unchecked"}
       data-motion-quiet={quiet || undefined}
       aria-hidden="true"
       style={{
@@ -137,8 +155,7 @@ export function SelectorGlyph({
         data-depth={shape === "organic" ? 0.018 : 0}
         data-lobes={shape === "organic" ? 3 : 0}
         data-asym=".1"
-        data-r="12"
-        data-sw={active ? "1.25" : "1.5"}
+        data-sw={strokeWidth}
         data-motion={quiet || disabled ? "off" : undefined}
         aria-disabled={disabled || undefined}
         style={
@@ -175,13 +192,13 @@ export function SelectorGlyph({
                 ? ink
                 : "var(--v-text-2)"
           }
-          strokeWidth={active ? 1.25 : 1.5}
+          strokeWidth={strokeWidth}
           vectorEffect="non-scaling-stroke"
         />
         <AnimatePresence initial={false}>
-          {active && (
+          {active && showIndicator && (
             <motion.g
-              key={String(state)}
+              key={`${state}-${mark}`}
               data-slot="selector-mark"
               initial={quiet ? false : { opacity: 0, scale: 0.55 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -196,7 +213,7 @@ export function SelectorGlyph({
                   strokeWidth="9"
                   strokeLinecap="round"
                 />
-              ) : kind === "checkbox" ? (
+              ) : mark === "check" ? (
                 <path
                   d="M28 50 43 65 73 35"
                   fill="none"
@@ -205,6 +222,10 @@ export function SelectorGlyph({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
+              ) : mark === "diamond" ? (
+                <path d="M50 29 71 50 50 71 29 50Z" fill={ink} />
+              ) : mark === "flower" ? (
+                <path d={paths.flower} transform="translate(28 28) scale(.44)" fill={ink} />
               ) : (
                 <circle cx="50" cy="50" r="13" fill={ink} />
               )}

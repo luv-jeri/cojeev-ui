@@ -247,6 +247,17 @@
   font-size: 17px;
   line-height: 1.6;
 }
+.docs-handoff { margin-block-start: 28px; }
+.docs-handoff > [data-slot="collapsible-content"] { margin:0; padding:0; background:transparent; }
+.docs-handoff-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; }
+.docs-handoff-intro { display:grid; gap:6px; flex:1 1 280px; }
+.docs-handoff-intro > * { margin:0; }
+.docs-handoff-intro > h3 { font-size:18px; }
+.docs-handoff-intro > p { max-width:52ch; }
+.docs-handoff-actions { display:flex; align-items:flex-start; flex-wrap:wrap; gap:12px; }
+.docs-handoff-scroll { height:min(440px,65svh); margin-block-start:20px; border-radius:var(--r-card); background:var(--v-beige); }
+.docs-handoff-scroll [data-radix-scroll-area-viewport]:focus-visible { outline:2px solid var(--v-text); outline-offset:-3px; }
+.docs-handoff-source { margin:0; padding:24px; font:13px/1.7 var(--font-mono); color:var(--v-text); white-space:pre-wrap; overflow-wrap:anywhere; user-select:text; }
 .docs-intro > .docs-intro-meta {
   padding-top: 4px;
   font-size: 12px;
@@ -381,27 +392,7 @@
 }
 .docs-related-link:hover { background: var(--v-pink); color: var(--v-on-accent); }
 .docs-contents { display: none; }
-.docs-contents nav {
-  position: sticky;
-  top: 48px;
-  display: grid;
-  justify-items: start;
-  gap: 12px;
-  padding-inline-start: 20px;
-  border-inline-start: 1px solid var(--v-border);
-}
-.docs-contents nav > p {
-  margin-bottom: 4px;
-  color: var(--v-text);
-  font-weight: 600;
-}
-.docs-contents a {
-  color: var(--v-text-2);
-  font-size: 12px;
-  line-height: 1.5;
-  text-decoration: none;
-}
-.docs-contents a:hover { color: var(--v-text); text-decoration: underline; text-underline-offset: 4px; }
+.docs-contents .v-reading-trail { position:sticky; top:32px; }
 .docs-motion-heading { display: grid; gap: 10px; }
 .docs-motion-panel {
   width: min(480px, calc(100vw - 24px));
@@ -526,3 +517,16 @@
 .docs-brand-links [data-slot="icon"] { width:14px; height:14px; }
 .docs-source-icon { display:inline-flex; align-items:center; justify-content:center; min-width:40px; min-height:40px; color:var(--v-text); }
 .docs-preview-select { width:auto; min-width:130px; max-width:100%; }
+
+/* Readability pass: clear page/panel separation and comfortable documentation text. */
+.docs-shell .docs-sidebar { background:var(--v-paper); }
+.docs-shell .docs-nav-link { font-size:14px; line-height:1.5; min-height:40px; color:var(--v-text-2); }
+.docs-shell .docs-nav-link[data-active=true] { color:var(--sel-ink); }
+.docs-main .docs-guidance { font-size:16px; line-height:1.75; }
+.docs-main .docs-section-lead > p { font-size:16px; line-height:1.7; }
+.docs-main .docs-intro-meta, .docs-breadcrumb, .docs-contents a { font-size:13px; }
+.docs-main .docs-props code { font-size:13px; }
+.docs-main .v-preview__toolbar, .docs-main .v-preview__controls { background:var(--v-paper); }
+.docs-theme { gap:10px; }
+.docs-theme > .v-appearance-trigger { width:100%; grid-column:1 / -1; }
+.docs-theme-compact > .v-appearance-trigger { width:40px; }

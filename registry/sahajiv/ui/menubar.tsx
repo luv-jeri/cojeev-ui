@@ -1,4 +1,5 @@
 "use client";
+import { scrollAreaListChildren } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { cva } from "class-variance-authority";
@@ -85,8 +86,6 @@ export function MenubarTrigger({
       className={cn(
         "v-menubar__trigger h-8 px-[var(--s-4)] rounded-[var(--r-pill)] text-[length:var(--fs-control)] font-medium",
         className,
-  children,
-  chevron = true,
       )}
       {...props}
     >{adornItem(children, false, "", props.asChild, chevron ? <StateChevron /> : null)}</Primitive.Trigger>
@@ -129,7 +128,7 @@ export function MenubarContent({
           if (nodeRef.current?.dataset.state === "closed") event.preventDefault();
         }}
       >
-        {children}
+        {scrollAreaListChildren(children, props.asChild)}
       </Primitive.Content>
     </Primitive.Portal>
   );
@@ -139,6 +138,7 @@ export type MenubarSubContentProps = React.ComponentProps<
 >;
 export function MenubarSubContent({
   className,
+  children,
   ref,
   onInteractOutside,
   ...props
@@ -162,7 +162,7 @@ export function MenubarSubContent({
           onInteractOutside?.(event);
           if (nodeRef.current?.dataset.state === "closed") event.preventDefault();
         }}
-      />
+      >{scrollAreaListChildren(children, props.asChild)}</Primitive.SubContent>
     </Primitive.Portal>
   );
 }

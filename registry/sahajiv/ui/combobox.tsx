@@ -1,4 +1,5 @@
 "use client";
+import { ScrollAreaList } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
@@ -7,6 +8,7 @@ import { cn } from "@/registry/sahajiv/lib/utils";
 import { Command as Primitive } from "cmdk";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { InputWrapper, InputControl } from "@/registry/sahajiv/ui/input";
+import { AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
 import { Icon, Disk } from "@/registry/sahajiv/ui/icon";
 import { useCommandResultsMotion } from "@/registry/sahajiv/ui/command";
 import {
@@ -219,10 +221,12 @@ export function ComboboxInput({
 export type ComboboxContentProps = React.ComponentProps<typeof Primitive.List>;
 export function ComboboxContent({
   className,
+  children,
   ref,
+  style,
   ...props
 }: ComboboxContentProps) {
-  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const morphRef = useMorph<HTMLDivElement>("surfaces");
   const state = useCombobox();
   const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
@@ -233,11 +237,15 @@ export function ComboboxContent({
     groupRef,
     "grow",
   );
-  const resultsRef = useCommandResultsMotion(flowRef);
+  const resultsRef = useCommandResultsMotion(ref);
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
-        asChild
+        ref={flowRef}
+        data-slot="combobox-content"
+        data-part="content"
+        className={cn("v-menu", className)}
+        style={style}
         sideOffset={6}
         collisionPadding={12}
         onCloseAutoFocus={(event) => event.preventDefault()}
@@ -250,14 +258,16 @@ export function ComboboxContent({
             event.preventDefault();
         }}
       >
+        <ScrollAreaList maxHeight="min(280px, calc(var(--radix-popover-content-available-height, 60dvh) - 20px))">
         <Primitive.List
           ref={resultsRef}
           id={state.listId}
-          data-slot="combobox-content"
+          data-slot="combobox-list"
           data-part="content"
-          className={cn("v-menu v-command-results", className)}
+          className="v-command-results"
           {...props}
-        />
+        >{children}</Primitive.List>
+        </ScrollAreaList>
       </PopoverPrimitive.Content>
     </PopoverPrimitive.Portal>
   );
@@ -265,8 +275,10 @@ export function ComboboxContent({
 export const ComboboxList = ComboboxContent;
 export type ComboboxItemProps = React.ComponentProps<typeof Primitive.Item> & {
   label?: string;
+  showIndicator?: boolean;
 } & ItemAdornmentItemProps;
 export function ComboboxItem({
+  showIndicator = true,
   className,
   adornment,
   adornmentId,
@@ -283,6 +295,7 @@ export function ComboboxItem({
     <Primitive.Item
       ref={morphRef}
       data-slot="combobox-item"
+      data-selected-option={state.selected === value || undefined}
       data-part="item"
       className={cn("v-menu__item", className)}
       value={value}
@@ -298,6 +311,7 @@ export function ComboboxItem({
     >
       <ItemAdornment identity={adornmentId ?? value ?? label ?? itemText(children)} value={adornment} />
       <span className="v-combo__label">{children}</span>
+      {showIndicator && state.selected === value && <span className="v-combo__selected" aria-hidden="true"><AnimatedIcon name="check" preset="validation" /></span>}
     </Primitive.Item>
   );
 }

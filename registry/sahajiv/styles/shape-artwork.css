@@ -1,0 +1,9 @@
+.v-shape-artwork {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+  flex-shrink: 0;
+}
+.v-shape-artwork > g { pointer-events: none; }

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-input",
+  "title": "Number input",
+  "description": "A number field with readable formatting, a native editing caret and expressive stepping.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/animated-number.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/number-input.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { numberInputText, parseNumberInput, stepNumber } from \"@/lib/sahajiv/number-motion\";\nimport { AnimatedNumber, type AnimatedNumberProps } from \"@/components/ui/animated-number\";\nimport { Icon } from \"@/components/ui/icon\";\nimport { useFlowPress } from \"@/lib/sahajiv-motion/flow-press\";\n\nexport type NumberInputProps = Omit<React.ComponentProps<\"input\">, \"type\" | \"value\" | \"defaultValue\" | \"min\" | \"max\" | \"step\" | \"size\"> & {\n  value?: number | null;\n  defaultValue?: number | null;\n  onValueChange?: (value: number | null) => void;\n  min?: number;\n  max?: number;\n  step?: number;\n  locale?: string;\n  format?: Intl.NumberFormatOptions;\n  treatment?: AnimatedNumberProps[\"treatment\"];\n  duration?: number;\n  /** Accessible labels for the two native step buttons. */\n  decrementLabel?: string;\n  incrementLabel?: string;\n};\n\n/** A formatted stepper that leaves the native input, caret and selection visible while editing. */\nexport function NumberInput({ value, defaultValue = null, onValueChange, min, max, step = 1, locale = \"en-US\", format, treatment = \"roll\", duration, decrementLabel = \"Decrease value\", incrementLabel = \"Increase value\", className, style, ref, disabled, readOnly, onChange, onFocus, onBlur, onKeyDown, onCompositionEnd, placeholder = \"—\", ...props }: NumberInputProps) {\n  const controlled = value !== undefined;\n  const [internal, setInternal] = React.useState<number | null>(defaultValue);\n  const current = controlled ? value : internal;\n  const finite = current !== null && Number.isFinite(current) ? current : null;\n  const [draft, setDraft] = React.useState(() => finite === null ? \"\" : numberInputText(finite, locale));\n  const [focused, setFocused] = React.useState(false);\n  const [invalid, setInvalid] = React.useState(false);\n  const input = React.useRef<HTMLInputElement>(null);\n  const previous = React.useRef({ value: finite, locale });\n  const displayText = finite === null ? placeholder : new Intl.NumberFormat(locale, format).format(finite);\n  const decreaseRef = useFlowPress<HTMLButtonElement>(), increaseRef = useFlowPress<HTMLButtonElement>();\n  const commit = (next: number | null) => { if (!controlled) setInternal(next); if (!Object.is(next, finite)) onValueChange?.(next); };\n  const clamp = (next: number) => Math.max(Number.isFinite(min) ? min! : -Infinity, Math.min(Number.isFinite(max) ? max! : Infinity, next));\n  const raw = React.useCallback((next: number | null) => next === null ? \"\" : numberInputText(next, locale), [locale]);\n  React.useEffect(() => {\n    if (!Object.is(previous.current.value, finite) || previous.current.locale !== locale) {\n      if (!focused || !Object.is(parseNumberInput(draft, locale), finite) || previous.current.locale !== locale) { setDraft(raw(finite)); setInvalid(false); }\n      previous.current = { value: finite, locale };\n    }\n  }, [finite, locale, focused, draft, raw]);\n  React.useEffect(() => {\n    const parsed = parseNumberInput(draft, locale);\n    input.current?.setCustomValidity(parsed === undefined ? \"Enter a number.\" : \"\");\n  }, [draft, locale]);\n  const stepValue = (direction: 1 | -1) => {\n    if (disabled || readOnly) return;\n    const parsed = parseNumberInput(draft, locale);\n    const next = stepNumber(focused && typeof parsed === \"number\" ? parsed : finite, direction, step, min, max);\n    commit(next); setDraft(raw(controlled ? finite : next)); setInvalid(false);\n  };\n  React.useEffect(() => {\n    const form = input.current?.form;\n    if (!form || controlled) return;\n    const reset = (event: Event) => { queueMicrotask(() => { if (event.defaultPrevented) return; const next = defaultValue !== null && Number.isFinite(defaultValue) ? defaultValue : null; setInternal(next); setDraft(next === null ? \"\" : numberInputText(next, locale)); setInvalid(false); }); };\n    form.addEventListener(\"reset\", reset); return () => form.removeEventListener(\"reset\", reset);\n  }, [controlled, defaultValue, locale]);\n  const ownedRef = React.useCallback((node: HTMLInputElement | null) => { input.current = node; if (typeof ref === \"function\") return ref(node); if (ref) ref.current = node; }, [ref]);\n  return <span className={cn(\"v-number-input\", className)} style={style} data-slot=\"number-input\" data-focused={focused} data-disabled={Boolean(disabled)} data-readonly={Boolean(readOnly)} data-invalid={invalid || props[\"aria-invalid\"] === true || props[\"aria-invalid\"] === \"true\"}>\n    <button ref={decreaseRef} className=\"v-number-input__step\" type=\"button\" disabled={disabled || readOnly || (finite !== null && Number.isFinite(min) && finite <= min!)} aria-label={decrementLabel} onClick={() => stepValue(-1)}><Icon name=\"minus\" size=\"sm\" /></button>\n    <span className=\"v-number-input__field\">\n      <input {...props} ref={ownedRef} className=\"v-number-input__control\" type=\"text\" inputMode=\"decimal\" role=\"spinbutton\" value={draft} placeholder={placeholder} disabled={disabled} readOnly={readOnly} aria-valuenow={finite ?? undefined} aria-valuemin={Number.isFinite(min) ? min : undefined} aria-valuemax={Number.isFinite(max) ? max : undefined} aria-invalid={invalid || props[\"aria-invalid\"] || undefined}\n        onChange={event => { onChange?.(event); if (event.defaultPrevented) return; const text = event.currentTarget.value; setDraft(text); const parsed = parseNumberInput(text, locale); setInvalid(false); if (parsed !== undefined && !(event.nativeEvent as InputEvent).isComposing) commit(parsed); }}\n        onCompositionEnd={event => { onCompositionEnd?.(event); if (event.defaultPrevented) return; const parsed = parseNumberInput(event.currentTarget.value, locale); if (parsed !== undefined) commit(parsed); }}\n        onFocus={event => { setFocused(true); onFocus?.(event); }}\n        onBlur={event => { setFocused(false); const parsed = parseNumberInput(event.currentTarget.value, locale); const next = typeof parsed === \"number\" ? clamp(parsed) : parsed === null ? null : finite; if (parsed !== undefined) commit(next); setDraft(raw(controlled ? finite : next)); setInvalid(false); onBlur?.(event); }}\n        onKeyDown={event => { onKeyDown?.(event); if (event.defaultPrevented || disabled || readOnly || event.nativeEvent.isComposing || event.altKey || event.ctrlKey || event.metaKey) return; if (event.key === \"ArrowUp\" || event.key === \"ArrowDown\") { event.preventDefault(); stepValue(event.key === \"ArrowUp\" ? 1 : -1); } else if (event.key === \"Enter\") { const parsed = parseNumberInput(draft, locale); if (parsed === undefined) setInvalid(true); else { const next = parsed === null ? null : clamp(parsed); commit(next); setDraft(raw(controlled ? finite : next)); } } else if (event.key === \"Escape\") { setDraft(raw(finite)); setInvalid(false); } }} />\n      <span className=\"v-number-input__display\" aria-hidden=\"true\" title={displayText} style={{ \"--number-length\": Math.max(1, Array.from(displayText).length) } as React.CSSProperties}><AnimatedNumber value={finite ?? NaN} fallback={placeholder} locale={locale} format={format} treatment={treatment} duration={duration} /></span>\n    </span>\n    <button ref={increaseRef} className=\"v-number-input__step\" type=\"button\" disabled={disabled || readOnly || (finite !== null && Number.isFinite(max) && finite >= max!)} aria-label={incrementLabel} onClick={() => stepValue(1)}><Icon name=\"plus\" size=\"sm\" /></button>\n  </span>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/number-input.css",
+      "content": "@layer sahajiv-states {\n.v-number-input{display:inline-flex;align-items:center;gap:4px;inline-size:100%;min-inline-size:0;block-size:48px;padding:4px;background:var(--input);color:var(--v-text);border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--v-edge);font-size:var(--fs-body);font-variant-numeric:tabular-nums}\n.v-number-input:focus-within{outline:2px solid var(--v-accent,var(--v-text));outline-offset:3px}\n.v-number-input__step{display:grid;place-items:center;flex:none;inline-size:38px;block-size:38px;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer}\n.v-number-input__step:hover:not(:disabled){background:var(--v-canvas)}\n.v-number-input__step:focus-visible{outline:2px solid currentColor;outline-offset:-3px}\n.v-number-input__step:disabled{opacity:.35;cursor:default}\n.v-number-input__field{position:relative;flex:1;min-inline-size:0;block-size:100%;display:grid;align-items:center}\n.v-number-input__control{inline-size:100%;min-inline-size:0;block-size:100%;border:0;outline:0;background:transparent;color:transparent;caret-color:var(--v-text);font:inherit;text-align:center;padding:0 6px;box-sizing:border-box}\n.v-number-input__control::placeholder{color:transparent}\n.v-number-input__display{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;white-space:nowrap}\n.v-number-input[data-focused=\"true\"] .v-number-input__control{color:inherit}\n.v-number-input[data-focused=\"true\"] .v-number-input__control::placeholder{color:var(--v-text-2)}\n.v-number-input[data-focused=\"true\"] .v-number-input__display{visibility:hidden}\n.v-number-input[data-disabled=\"true\"]{opacity:.5}\n.v-number-input[data-invalid=\"true\"]{box-shadow:inset 0 0 0 2px var(--v-negative,#aa3434)}\n@media(forced-colors:active){.v-number-input{border:1px solid ButtonText}.v-number-input__control{color:CanvasText}.v-number-input__display{display:none}}\n.v-number-input__field{container-type:inline-size}\n.v-number-input__display .v-animated-number{font-size:min(1em,calc(100cqi / var(--number-length) * 1.55))}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/number-input.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/number-input.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Number input",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "editing",
+        "stepping",
+        "invalid",
+        "empty",
+        "disabled",
+        "readonly",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "NumberInputProps",
+        "props": [
+          {
+            "name": "value",
+            "type": "number | null",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultValue",
+            "type": "number | null",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: number | null) => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "min",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "step",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "format",
+            "type": "Intl.NumberFormatOptions",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "treatment",
+            "type": "AnimatedNumberProps[\"treatment\"]",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "decrementLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible labels for the two native step buttons."
+          },
+          {
+            "name": "incrementLabel",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Forms",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

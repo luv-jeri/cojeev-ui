@@ -1,0 +1,223 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "glyph-sculpture",
+  "title": "Glyph sculpture",
+  "description": "A real 3D surface drawn with glyphs, optional contour marks and your own local geometry.",
+  "dependencies": [
+    "three@0.185.1"
+  ],
+  "devDependencies": [
+    "@types/three@0.185.4"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/glyph-sculpture.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { createGlyphMesh, glyphGrid, normalizeGlyphOptions, type GlyphForm, type GlyphTone } from \"@/lib/sahajiv/glyph-mesh\";\nimport { sculptureGeometry, type SculptureGeometryInput } from \"@/lib/sahajiv/sculpture-geometry\";\nimport { rasterizeSculpture, sculptureCharacters, sculptureGrid, sculptureNumber, sculpturePrint, sculpturePrintPath, type GlyphSet, type PrintOptions } from \"@/lib/sahajiv/sculpture-raster\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\n\nexport type { GlyphForm, GlyphTone, GlyphSet, SculptureGeometryInput };\nexport { loadSculptureFile, sculptureFromGLB, sculptureFromSVG } from \"@/lib/sahajiv/sculpture-loaders\";\nexport { sculptureFromPixels, sculptureGeometry } from \"@/lib/sahajiv/sculpture-geometry\";\nexport type SculptureCommonProps = Omit<React.ComponentPropsWithoutRef<\"div\">, \"children\"> & {\n  form?: GlyphForm; tone?: GlyphTone;\n  /** Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error. */\n  geometry?: SculptureGeometryInput;\n  speed?: number; turn?: number; pitch?: number; zoom?: number;\n  pointerTracking?: boolean; paused?: boolean;\n  onGeometryError?: (error: Error) => void;\n};\nexport type GlyphSculptureProps = SculptureCommonProps & {\n  /** Character-cell height in CSS pixels, bounded to 7–20. */\n  cellSize?: number;\n  glyphSet?: GlyphSet;\n  /** Trace the silhouette with directional marks in the density set. */\n  edgeMatching?: boolean;\n};\ntype SurfaceOptions = { kind: \"glyph\" | \"dither\" | \"ink\"; cellSize?: number; glyphSet?: GlyphSet; edgeMatching?: boolean; grainSize?: number } & Omit<PrintOptions, \"kind\">;\ntype Configuration = SurfaceOptions & { run: boolean; visible: boolean; pointer: boolean; speed: number; turn: number; pitch: number; zoom: number };\ntype Control = { configure: (configuration: Configuration) => void };\n\n/** Shared surface primitive: geometry, print treatment and motion have separate owners. */\nexport function SculptureSurface({ form = \"bloom\", tone = \"rose\", geometry, speed = 1, turn = 0, pitch = 0, zoom = 1, pointerTracking = false, paused = false, onGeometryError, className, surfaceOptions, ...props }: SculptureCommonProps & { surfaceOptions: SurfaceOptions }) {\n  const host = React.useRef<HTMLDivElement>(null), canvas = React.useRef<HTMLCanvasElement>(null), control = React.useRef<Control | null>(null);\n  const { enabled, inView } = useMotionVisibility(host);\n  const safeForm: GlyphForm = form === \"seed\" || form === \"pebble\" ? form : \"bloom\";\n  const safeTone: GlyphTone = [\"ink\", \"rose\", \"moss\", \"sky\"].includes(tone) ? tone : \"rose\";\n  const { speed: pace, cellSize: size, turn: degrees } = normalizeGlyphOptions({ speed, cellSize: surfaceOptions.cellSize, turn });\n  const tilt = sculptureNumber(pitch, 0, -80, 80), scale = sculptureNumber(zoom, 1, .6, 1.15), moving = enabled && inView && !paused && pace > 0;\n  const { kind, glyphSet = \"density\", edgeMatching = true, pattern, treatment, grainSize, markSize, density, angle, relief } = surfaceOptions;\n  const meshResult = React.useMemo(() => {\n    try { return { mesh: geometry ? sculptureGeometry(geometry) : sculptureGeometry(createGlyphMesh(safeForm)), error: null }; }\n    catch (error) { return { mesh: null, error: error instanceof Error ? error : new Error(\"The geometry could not be read.\") }; }\n  }, [geometry, safeForm]);\n  const mesh = meshResult.mesh;\n  React.useEffect(() => { if (meshResult.error) onGeometryError?.(meshResult.error); }, [meshResult.error, onGeometryError]);\n  const configuration = React.useRef<Configuration>({ ...surfaceOptions, run: moving, visible: inView, pointer: pointerTracking, speed: pace, cellSize: size, turn: degrees, pitch: tilt, zoom: scale });\n  const [renderer, setRenderer] = React.useState(\"pending\");\n  const still = React.useMemo(() => {\n    if (!mesh) return null;\n    const grid = kind === \"glyph\" ? glyphGrid(432, 324, 10.8) : sculptureGrid(384, 288, 4);\n    const frame = rasterizeSculpture(mesh, grid, .35 + degrees * Math.PI / 180, -.2 + tilt * Math.PI / 180, scale);\n    if (kind === \"glyph\") { const characters = sculptureCharacters(frame, glyphSet, edgeMatching), lines: string[] = []; for (let i = 0; i < characters.length; i += grid.columns) lines.push(characters.slice(i, i + grid.columns).join(\"\")); return { text: lines.join(\"\\n\"), grid }; }\n    return { path: sculpturePrintPath(sculpturePrint(frame, { kind, pattern, treatment, markSize, density, angle, relief }), grid.columns), grid };\n  }, [mesh, kind, degrees, tilt, scale, glyphSet, edgeMatching, pattern, treatment, markSize, density, angle, relief]);\n\n  React.useEffect(() => {\n    configuration.current = { kind, glyphSet, edgeMatching, pattern, treatment, grainSize, markSize, density, angle, relief, run: moving, visible: inView, pointer: pointerTracking, speed: pace, cellSize: size, turn: degrees, pitch: tilt, zoom: scale };\n    control.current?.configure(configuration.current);\n  }, [kind, glyphSet, edgeMatching, pattern, treatment, grainSize, markSize, density, angle, relief, moving, inView, pointerTracking, pace, size, degrees, tilt, scale, safeTone]);\n\n  React.useEffect(() => {\n    const element = host.current, surface = canvas.current;\n    if (!element || !surface || !mesh) return;\n    let context: CanvasRenderingContext2D | null;\n    try { context = surface.getContext(\"2d\"); } catch { context = null; }\n    if (!context) { setRenderer(\"fallback\"); return; }\n    let options = configuration.current, disposed = false, lost = false, frame = 0, last = 0, elapsed = 0, painted = false;\n    let width = 1, height = 1, ratio = 1, pointerX = 0, pointerY = 0, tiltX = 0, tiltY = 0, ink = \"#26282d\";\n    let grid = glyphGrid(width, height, options.cellSize ?? 10);\n    const hover = window.matchMedia(\"(any-hover: hover) and (any-pointer: fine)\");\n    function cancel() { if (frame) cancelAnimationFrame(frame); frame = 0; last = 0; }\n    function request() { if (!disposed && !lost && !frame && options.visible && !document.hidden) frame = requestAnimationFrame(draw); }\n    function draw(now: number) {\n      frame = 0;\n      if (disposed || lost || !options.visible || document.hidden) return;\n      if (options.run && last && now - last < 32) { request(); return; }\n      if (options.run) { elapsed += (last ? Math.min(now - last, 70) : 0) / 1000 * options.speed; tiltX += (pointerX - tiltX) * .18; tiltY += (pointerY - tiltY) * .18; }\n      last = now;\n      const yaw = .35 + options.turn * Math.PI / 180 + Math.sin(elapsed * .42) * .4 + tiltX, pitch = -.2 + options.pitch * Math.PI / 180 + Math.sin(elapsed * .31) * .12 + tiltY;\n      const result = rasterizeSculpture(mesh!, grid, yaw, pitch, options.zoom);\n      surface!.dataset.sampling = result.sampling > 1 ? \"adaptive\" : \"full\";\n      context!.setTransform(ratio, 0, 0, ratio, 0, 0); context!.clearRect(0, 0, width, height); context!.fillStyle = ink; context!.globalAlpha = 1;\n      if (options.kind === \"glyph\") {\n        const characters = sculptureCharacters(result, options.glyphSet, options.edgeMatching);\n        context!.font = `600 ${grid.cellHeight * .94}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`; context!.textAlign = \"center\"; context!.textBaseline = \"middle\";\n        for (let i = 0; i < characters.length; i++) if (characters[i] !== \" \") context!.fillText(characters[i], (i % grid.columns + .5) * grid.cellWidth, (Math.floor(i / grid.columns) + .5) * grid.cellHeight);\n      } else {\n        const marks = sculpturePrint(result, { ...options, kind: options.kind });\n        for (let i = 0; i < marks.length;) {\n          if (!marks[i]) { i++; continue; }\n          const x = i % grid.columns, y = Math.floor(i / grid.columns); let count = 1;\n          while (x + count < grid.columns && marks[i + count]) count++;\n          context!.fillRect(x * grid.cellWidth, y * grid.cellHeight, count * grid.cellWidth + .25, grid.cellHeight + .25); i += count;\n        }\n      }\n      if (!painted) { painted = true; setRenderer(\"canvas2d\"); }\n      if (options.run) request();\n    }\n    function resize() {\n      const rect = element!.getBoundingClientRect(); width = Math.max(1, rect.width); height = Math.max(1, rect.height);\n      ratio = Math.min(2, window.devicePixelRatio || 1, 2048 / Math.max(width, height), Math.sqrt(1500000 / (width * height)));\n      const backingWidth = Math.max(1, Math.floor(width * ratio)), backingHeight = Math.max(1, Math.floor(height * ratio));\n      if (surface!.width !== backingWidth || surface!.height !== backingHeight) { surface!.width = backingWidth; surface!.height = backingHeight; }\n      grid = options.kind === \"glyph\" ? glyphGrid(width, height, options.cellSize ?? 10) : sculptureGrid(width, height, options.kind === \"dither\" ? sculptureNumber(options.grainSize, 3, 1.5, 9) : 1.5);\n      repaint();\n    }\n    function repaint() { ink = getComputedStyle(element!).color; request(); }\n    const instance: Control = { configure(next) { options = next; if (!options.pointer || !options.run) { pointerX = 0; pointerY = 0; } cancel(); resize(); } };\n    control.current = instance;\n    const pointer = (event: PointerEvent) => {\n      if (!options.run || !options.pointer || !hover.matches || event.pointerType === \"touch\") return;\n      const rect = element.getBoundingClientRect(), x = (event.clientX - rect.left) / rect.width, y = (event.clientY - rect.top) / rect.height, inside = x >= 0 && x <= 1 && y >= 0 && y <= 1;\n      pointerX = inside ? (x * 2 - 1) * .3 : 0; pointerY = inside ? (y * 2 - 1) * .2 : 0;\n    };\n    const visibility = () => { cancel(); request(); }, onLost = (event: Event) => { event.preventDefault(); lost = true; cancel(); setRenderer(\"fallback\"); }, onRestored = () => { lost = false; painted = false; resize(); };\n    const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(element);\n    const appearance = new MutationObserver(repaint);\n    for (let ancestor: Element | null = element; ancestor; ancestor = ancestor.parentElement) appearance.observe(ancestor, { attributes: true, attributeFilter: [\"class\", \"style\", \"data-mode\", \"data-tone\"] });\n    window.addEventListener(\"pointermove\", pointer, { passive: true }); window.addEventListener(\"resize\", resize); window.addEventListener(\"sahajiv:appearancechange\", repaint); document.addEventListener(\"visibilitychange\", visibility);\n    surface.addEventListener(\"contextlost\", onLost); surface.addEventListener(\"contextrestored\", onRestored); resize();\n    return () => {\n      disposed = true; cancel(); if (control.current === instance) control.current = null;\n      resizeObserver.disconnect(); appearance.disconnect(); window.removeEventListener(\"pointermove\", pointer); window.removeEventListener(\"resize\", resize); window.removeEventListener(\"sahajiv:appearancechange\", repaint); document.removeEventListener(\"visibilitychange\", visibility);\n      surface.removeEventListener(\"contextlost\", onLost); surface.removeEventListener(\"contextrestored\", onRestored); context!.clearRect(0, 0, surface.width, surface.height); surface.width = 1; surface.height = 1;\n    };\n  }, [mesh]);\n\n  return <div {...props} ref={host} className={cn(\"v-sculpture-surface\", `v-${kind}-sculpture`, className)} data-slot={`${kind}-sculpture`} data-form={geometry ? \"custom\" : safeForm} data-tone={safeTone} data-renderer={meshResult.error ? \"error\" : renderer} data-moving={moving && renderer === \"canvas2d\" && mesh ? \"true\" : \"false\"} aria-hidden={meshResult.error ? undefined : true} inert={meshResult.error ? undefined : true} role={meshResult.error ? \"status\" : undefined}>\n    {meshResult.error ? <span data-slot=\"sculpture-error\">{meshResult.error.message}</span> : still && (\"text\" in still ? <pre data-slot=\"glyph-sculpture-still\">{still.text}</pre> : <svg data-slot=\"sculpture-print-still\" viewBox={`0 0 ${still.grid.columns} ${still.grid.rows}`}><path d={still.path} fill=\"currentColor\" /></svg>)}\n    <canvas ref={canvas} data-slot=\"glyph-sculpture-canvas\" />\n  </div>;\n}\n\n/** A decorative three-dimensional surface drawn with characters and optional contour marks. */\nexport function GlyphSculpture({ cellSize = 10, glyphSet = \"density\", edgeMatching = true, ...props }: GlyphSculptureProps) {\n  const set = glyphSet === \"digits\" || glyphSet === \"letters\" ? glyphSet : \"density\";\n  return <SculptureSurface {...props} surfaceOptions={{ kind: \"glyph\", cellSize, glyphSet: set, edgeMatching }} />;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/lib/sculpture-loaders.tsx",
+      "content": "import { sculptureFromPixels, sculptureGeometry, SCULPTURE_LIMITS, type SculptureGeometry } from \"@/lib/sahajiv/sculpture-geometry\";\n\ntype GLB = {\n  asset?: { version?: string }; extensionsRequired?: string[]; images?: { uri?: string }[];\n  buffers?: { uri?: string; byteLength: number }[];\n  bufferViews?: { buffer: number; byteOffset?: number; byteLength: number; byteStride?: number; extensions?: unknown }[];\n  accessors?: { bufferView?: number; byteOffset?: number; componentType: number; count: number; type: string; normalized?: boolean; sparse?: unknown }[];\n  meshes?: { primitives: { attributes: { POSITION?: number }; indices?: number; mode?: number; targets?: unknown[]; extensions?: unknown }[] }[];\n  nodes?: { mesh?: number; skin?: number; children?: number[]; matrix?: number[]; translation?: number[]; rotation?: number[]; scale?: number[] }[];\n  scenes?: { nodes?: number[] }[]; scene?: number;\n};\nconst identity = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];\nconst finiteArray = (value: number[] | undefined, fallback: number[], size: number) => {\n  const result = value ?? fallback;\n  if (!Array.isArray(result) || result.length !== size || !result.every(Number.isFinite)) throw new Error(\"A model transform is invalid.\");\n  return result;\n};\nfunction matrixFor(node: NonNullable<GLB[\"nodes\"]>[number]) {\n  if (node.matrix) return finiteArray(node.matrix, [], 16);\n  const [tx, ty, tz] = finiteArray(node.translation, [0, 0, 0], 3), [sx, sy, sz] = finiteArray(node.scale, [1, 1, 1], 3);\n  let [x, y, z, w] = finiteArray(node.rotation, [0, 0, 0, 1], 4);\n  const length = Math.hypot(x, y, z, w);\n  if (length < 1e-8) throw new Error(\"A model rotation has no orientation.\");\n  x /= length; y /= length; z /= length; w /= length;\n  return [(1 - 2 * (y * y + z * z)) * sx, 2 * (x * y + z * w) * sx, 2 * (x * z - y * w) * sx, 0, 2 * (x * y - z * w) * sy, (1 - 2 * (x * x + z * z)) * sy, 2 * (y * z + x * w) * sy, 0, 2 * (x * z + y * w) * sz, 2 * (y * z - x * w) * sz, (1 - 2 * (x * x + y * y)) * sz, 0, tx, ty, tz, 1];\n}\nfunction multiply(a: number[], b: number[]) {\n  const out = new Array<number>(16).fill(0);\n  for (let column = 0; column < 4; column++) for (let row = 0; row < 4; row++) for (let k = 0; k < 4; k++) out[column * 4 + row] += a[k * 4 + row] * b[column * 4 + k];\n  return out;\n}\nconst integer = (value: number, max: number) => Number.isInteger(value) && value >= 0 && value <= max;\n\n/** Reads geometry only from uncompressed, self-contained GLB 2.0. Never loads textures, URLs, scripts, or decoders. */\nexport function sculptureFromGLB(buffer: ArrayBuffer): SculptureGeometry {\n  if (buffer.byteLength < 28 || buffer.byteLength > SCULPTURE_LIMITS.fileBytes) throw new Error(\"Use a self-contained GLB file under 8 MiB.\");\n  const view = new DataView(buffer);\n  if (view.getUint32(0, true) !== 0x46546c67 || view.getUint32(4, true) !== 2 || view.getUint32(8, true) !== buffer.byteLength) throw new Error(\"Use a valid GLB 2.0 file.\");\n  let json: GLB | undefined, binary: DataView | undefined;\n  for (let offset = 12; offset < buffer.byteLength;) {\n    if (offset + 8 > buffer.byteLength) throw new Error(\"The GLB chunk header is incomplete.\");\n    const size = view.getUint32(offset, true), kind = view.getUint32(offset + 4, true); offset += 8;\n    if (size % 4 || offset + size > buffer.byteLength) throw new Error(\"The GLB chunk length is invalid.\");\n    if (kind === 0x4e4f534a) {\n      if (json || size > 1024 * 1024) throw new Error(\"The model metadata is too large or duplicated.\");\n      try { json = JSON.parse(new TextDecoder().decode(new Uint8Array(buffer, offset, size))) as GLB; } catch { throw new Error(\"The model metadata could not be read.\"); }\n    } else if (kind === 0x004e4942) { if (binary) throw new Error(\"Use one embedded GLB buffer.\"); binary = new DataView(buffer, offset, size); }\n    offset += size;\n  }\n  if (!json || json.asset?.version !== \"2.0\" || !binary) throw new Error(\"The GLB must contain its own geometry buffer.\");\n  if (json.extensionsRequired?.length) throw new Error(\"Export an uncompressed GLB without required extensions. Draco and mesh compression are not supported.\");\n  if (json.buffers?.length !== 1 || json.buffers[0].uri || !integer(json.buffers[0].byteLength, binary.byteLength)) throw new Error(\"Export a self-contained GLB without external buffers.\");\n  if (!Array.isArray(json.meshes) || json.meshes.length > 32 || !Array.isArray(json.nodes) || json.nodes.length > 128 || (json.accessors?.length ?? 0) > 512 || (json.bufferViews?.length ?? 0) > 512) throw new Error(\"Use a model with at most 32 meshes and 128 nodes.\");\n  if (json.images?.some(image => image.uri)) throw new Error(\"Embed image assets in the GLB or remove them before exporting.\");\n  const model = json, bin = binary, nodes = json.nodes;\n  function accessor(index: number | undefined, vector: boolean) {\n    if (index === undefined || !integer(index, 511)) throw new Error(\"A model accessor is missing.\");\n    const a = model.accessors?.[index], b = a?.bufferView === undefined ? undefined : model.bufferViews?.[a.bufferView];\n    if (!a || !b || b.buffer !== 0 || b.extensions || a.sparse || a.normalized || a.type !== (vector ? \"VEC3\" : \"SCALAR\")) throw new Error(\"Use ordinary, uncompressed vertex and index buffers.\");\n    if (vector ? a.componentType !== 5126 : ![5121, 5123, 5125].includes(a.componentType)) throw new Error(\"Use float positions and unsigned integer triangle indices.\");\n    const bytes = a.componentType === 5121 ? 1 : a.componentType === 5123 ? 2 : 4, components = vector ? 3 : 1;\n    const stride = b.byteStride ?? bytes * components, base = (b.byteOffset ?? 0) + (a.byteOffset ?? 0);\n    if (!integer(a.count, vector ? SCULPTURE_LIMITS.vertices : SCULPTURE_LIMITS.triangles * 3) || !a.count || !integer(stride, 252) || stride < bytes * components || stride % bytes || !integer(base, bin.byteLength) || !integer(b.byteLength, bin.byteLength) || !integer(b.byteOffset ?? 0, bin.byteLength) || (b.byteOffset ?? 0) + b.byteLength > bin.byteLength || (a.byteOffset ?? 0) + (a.count - 1) * stride + bytes * components > b.byteLength) throw new Error(\"A model buffer is invalid or exceeds the geometry budget.\");\n    const values = new Array<number>(a.count * components);\n    for (let i = 0; i < a.count; i++) for (let k = 0; k < components; k++) {\n      const at = base + i * stride + k * bytes;\n      values[i * components + k] = vector ? bin.getFloat32(at, true) : bytes === 1 ? bin.getUint8(at) : bytes === 2 ? bin.getUint16(at, true) : bin.getUint32(at, true);\n    }\n    return values;\n  }\n  const positions: number[] = [], triangles: number[] = [], visiting = new Set<number>();\n  let visits = 0;\n  function visit(index: number, parent: number[]) {\n    if (!integer(index, 127) || !model.nodes?.[index] || visiting.has(index) || ++visits > 128) throw new Error(\"The model hierarchy is cyclic or too large.\");\n    visiting.add(index);\n    const node = model.nodes[index];\n    if (node.skin !== undefined) throw new Error(\"Export a static mesh without skinning.\");\n    const matrix = multiply(parent, matrixFor(node));\n    if (node.mesh !== undefined) {\n      const mesh = model.meshes?.[node.mesh];\n      if (!mesh || !Array.isArray(mesh.primitives) || mesh.primitives.length > 64) throw new Error(\"A model mesh is missing or too complex.\");\n      for (const primitive of mesh.primitives) {\n        if ((primitive.mode ?? 4) !== 4 || primitive.targets?.length || primitive.extensions) throw new Error(\"Export static triangle geometry without compression or morph targets.\");\n        const source = accessor(primitive.attributes?.POSITION, true), count = source.length / 3, offset = positions.length / 3;\n        const indices = primitive.indices === undefined ? Array.from({ length: count }, (_, i) => i) : accessor(primitive.indices, false);\n        if (positions.length + source.length > SCULPTURE_LIMITS.vertices * 3 || triangles.length + indices.length > SCULPTURE_LIMITS.triangles * 3) throw new Error(\"Reduce the model to 16,000 vertices and 20,000 triangles.\");\n        if (indices.length % 3 || indices.some(value => !integer(value, count - 1))) throw new Error(\"A model triangle refers to a missing vertex.\");\n        for (let i = 0; i < source.length; i += 3) { const x = source[i], y = source[i + 1], z = source[i + 2]; positions.push(matrix[0] * x + matrix[4] * y + matrix[8] * z + matrix[12], matrix[1] * x + matrix[5] * y + matrix[9] * z + matrix[13], matrix[2] * x + matrix[6] * y + matrix[10] * z + matrix[14]); }\n        for (const index of indices) triangles.push(index + offset);\n      }\n    }\n    for (const child of node.children ?? []) visit(child, matrix);\n    visiting.delete(index);\n  }\n  const scene = model.scenes?.[model.scene ?? 0];\n  const children = new Set(nodes.flatMap(node => node.children ?? []));\n  const roots = scene?.nodes ?? nodes.map((_, index) => index).filter(index => !children.has(index));\n  for (const root of roots) visit(root, identity());\n  return sculptureGeometry({ positions, triangles });\n}\n\n/** Filled SVG shapes are extruded into original geometry; active/external SVG features are rejected. */\nexport async function sculptureFromSVG(source: string, depth = .14, { signal }: { signal?: AbortSignal } = {}): Promise<SculptureGeometry> {\n  checkAbort(signal);\n  if (source.length > SCULPTURE_LIMITS.svgBytes || /<!DOCTYPE|<!ENTITY/i.test(source)) throw new Error(\"Use a simple filled SVG under 128 KB without external definitions.\");\n  if (typeof DOMParser === \"undefined\") throw new Error(\"SVG import needs a browser.\");\n  const document = new DOMParser().parseFromString(source, \"image/svg+xml\");\n  if (document.querySelector(\"parsererror\") || document.documentElement.localName !== \"svg\") throw new Error(\"The SVG could not be read.\");\n  const allowed = new Set([\"svg\", \"g\", \"path\", \"circle\", \"ellipse\", \"rect\", \"polygon\", \"polyline\", \"title\", \"desc\"]), elements = [...document.querySelectorAll(\"*\")];\n  if (elements.length > 64 || (source.match(/[a-zA-Z]/g)?.length ?? 0) > 6000) throw new Error(\"Simplify the SVG to at most 64 elements and 6,000 path commands.\");\n  for (const element of elements) {\n    if (!allowed.has(element.localName)) throw new Error(\"Use filled SVG shapes only. Text, images, masks, scripts and references are not supported.\");\n    for (const attribute of [...element.attributes]) if (/^on|href|src/i.test(attribute.name) || /url\\s*\\(|@import|javascript:/i.test(attribute.value)) throw new Error(\"Remove external references and active content from the SVG.\");\n  }\n  const [{ SVGLoader }, { ExtrudeGeometry }] = await Promise.all([import(\"three/addons/loaders/SVGLoader.js\"), import(\"three\")]);\n  checkAbort(signal);\n  const paths = new SVGLoader().parse(new XMLSerializer().serializeToString(document));\n  const shapes = paths.paths.filter(path => (path.userData?.style as { fill?: string } | undefined)?.fill !== \"none\").flatMap(path => SVGLoader.createShapes(path));\n  if (!shapes.length || shapes.length > 64) throw new Error(\"Use an SVG with 1–64 closed, filled shapes.\");\n  const sampled = shapes.map(shape => shape.extractPoints(6));\n  const contourCount = sampled.reduce((sum, contour) => sum + contour.shape.length + contour.holes.reduce((total, hole) => total + hole.length, 0), 0);\n  const holeCount = sampled.reduce((sum, contour) => sum + contour.holes.length, 0);\n  // Both caps and sidewalls use at most twelve vertices per contour point; holes\n  // can add two triangles to each cap, so budget them before triangulation too.\n  if ((contourCount + holeCount) * 12 > SCULPTURE_LIMITS.vertices) throw new Error(\"Simplify the SVG to roughly 1,300 sampled contour points before importing.\");\n  const bounds = sampled.flatMap(contour => contour.shape);\n  let left = Infinity, right = -Infinity, top = Infinity, bottom = -Infinity;\n  for (const point of bounds) { left = Math.min(left, point.x); right = Math.max(right, point.x); top = Math.min(top, point.y); bottom = Math.max(bottom, point.y); }\n  const longest = Math.max(right - left, bottom - top), thickness = Number.isFinite(depth) ? Math.max(.01, Math.min(.5, depth)) : .14;\n  checkAbort(signal);\n  const geometry = new ExtrudeGeometry(shapes, { depth: longest * thickness, bevelEnabled: false, steps: 1, curveSegments: 6 });\n  try {\n    geometry.scale(1, -1, 1);\n    return sculptureGeometry({ positions: geometry.getAttribute(\"position\").array, triangles: geometry.index?.array });\n  } finally { geometry.dispose(); }\n}\n\nfunction imageDimensions(bytes: Uint8Array) {\n  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);\n  if (bytes.length >= 24 && view.getUint32(0) === 0x89504e47 && view.getUint32(4) === 0x0d0a1a0a) return { width: view.getUint32(16), height: view.getUint32(20), type: \"image/png\" };\n  if (bytes[0] === 255 && bytes[1] === 216) {\n    for (let i = 2; i + 9 < bytes.length;) {\n      if (bytes[i] !== 255) break;\n      const marker = bytes[i + 1]; i += 2;\n      if (marker === 255) { i--; continue; }\n      if (marker === 217 || marker === 218) break;\n      const size = view.getUint16(i);\n      if (size < 2 || i + size > bytes.length) break;\n      if ([192, 193, 194].includes(marker)) return { height: view.getUint16(i + 3), width: view.getUint16(i + 5), type: \"image/jpeg\" };\n      i += size;\n    }\n  }\n  return null;\n}\nconst checkAbort = (signal?: AbortSignal) => { if (signal?.aborted) throw new DOMException(\"Import cancelled.\", \"AbortError\"); };\n\n/** Local files only: self-contained GLB, filled SVG, PNG or JPEG. PNG/JPEG become luminance reliefs. */\nexport async function loadSculptureFile(file: Blob, { signal }: { signal?: AbortSignal } = {}): Promise<SculptureGeometry> {\n  if (!file.size || file.size > SCULPTURE_LIMITS.fileBytes) throw new Error(\"Choose a GLB, SVG, PNG or JPEG under 8 MiB.\");\n  checkAbort(signal);\n  const buffer = await file.arrayBuffer(), bytes = new Uint8Array(buffer);\n  checkAbort(signal);\n  if (bytes.length >= 4 && new DataView(buffer).getUint32(0, true) === 0x46546c67) return sculptureFromGLB(buffer);\n  const head = new TextDecoder().decode(bytes.subarray(0, 1024)).trimStart();\n  if (head.startsWith(\"<svg\") || head.startsWith(\"<?xml\")) { const mesh = await sculptureFromSVG(new TextDecoder().decode(bytes), .14, { signal }); checkAbort(signal); return mesh; }\n  const image = imageDimensions(bytes);\n  if (!image) throw new Error(\"Choose a self-contained GLB, a filled SVG, PNG or JPEG. Other image formats and .gltf sidecar files are not supported.\");\n  if (image.width < 2 || image.height < 2 || image.width * image.height > SCULPTURE_LIMITS.imagePixels) throw new Error(\"Resize the image to 4 million pixels or fewer before importing.\");\n  if (typeof createImageBitmap !== \"function\") throw new Error(\"This browser cannot import images. Use a GLB or SVG instead.\");\n  let bitmap: ImageBitmap | undefined, canvas: HTMLCanvasElement | undefined;\n  try {\n    bitmap = await createImageBitmap(new Blob([buffer], { type: image.type })); checkAbort(signal);\n    canvas = document.createElement(\"canvas\");\n    canvas.width = Math.min(144, bitmap.width); canvas.height = Math.min(144, bitmap.height);\n    const context = canvas.getContext(\"2d\", { willReadFrequently: true });\n    if (!context) throw new Error(\"Image import is unavailable. Use a GLB or SVG instead.\");\n    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);\n    const pixels = context.getImageData(0, 0, canvas.width, canvas.height);\n    // Keep the original aspect ratio even though sampling uses a bounded square grid.\n    const mesh = sculptureFromPixels(pixels), aspect = (bitmap.width / bitmap.height) / (canvas.width / canvas.height);\n    for (let i = 0; i < mesh.positions.length; i += 3) { mesh.positions[i] *= Math.min(1, aspect); mesh.positions[i + 1] /= Math.max(1, aspect); }\n    canvas.width = 1; canvas.height = 1;\n    return sculptureGeometry({ positions: mesh.positions, triangles: mesh.triangles });\n  } catch (error) {\n    if (error instanceof Error) throw error;\n    throw new Error(\"The image could not be decoded. Try another PNG or JPEG.\");\n  } finally { bitmap?.close(); if (canvas) { canvas.width = 1; canvas.height = 1; } }\n}\n",
+      "type": "registry:lib",
+      "target": "lib/sahajiv/sculpture-loaders.tsx"
+    },
+    {
+      "path": "registry/sahajiv/styles/glyph-sculpture.css",
+      "content": "@layer sahajiv-states {\n.v-sculpture-surface{position:relative;width:100%;min-width:0;height:clamp(240px,45vw,420px);overflow:hidden;container-type:inline-size;pointer-events:none;user-select:none;color:var(--v-text);contain:layout paint}\n.v-sculpture-surface[data-tone=\"rose\"]{color:color-mix(in srgb,var(--v-text) 68%,var(--v-pink) 32%)}\n.v-sculpture-surface[data-tone=\"moss\"]{color:color-mix(in srgb,var(--v-text) 68%,var(--v-olive) 32%)}\n.v-sculpture-surface[data-tone=\"sky\"]{color:color-mix(in srgb,var(--v-text) 68%,var(--v-blue) 32%)}\n.v-sculpture-surface>[data-slot=\"glyph-sculpture-canvas\"]{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;pointer-events:none}\n.v-sculpture-surface>[data-slot=\"glyph-sculpture-still\"]{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:0;border:0;background:none;color:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:min(2.25cqw,12px);line-height:1.075;font-weight:600;letter-spacing:0;white-space:pre;pointer-events:none}\n.v-sculpture-surface>[data-slot=\"sculpture-print-still\"]{position:absolute;inset:0;width:100%;height:100%}\n.v-sculpture-surface[data-renderer=\"canvas2d\"]>[data-slot=\"glyph-sculpture-canvas\"]{opacity:1}\n.v-sculpture-surface[data-renderer=\"canvas2d\"]>:is([data-slot=\"glyph-sculpture-still\"],[data-slot=\"sculpture-print-still\"]){visibility:hidden}\n.v-sculpture-surface>[data-slot=\"sculpture-error\"]{position:absolute;inset:24px;display:grid;place-content:center;color:var(--v-text);font:var(--fs-body,15px)/1.5 var(--font-body,system-ui);text-align:center}\n@media (forced-colors:active){.v-sculpture-surface{color:CanvasText}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/glyph-sculpture.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/glyph-sculpture.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Glyph sculpture",
+      "variants": [
+        "default",
+        "bloom",
+        "seed",
+        "pebble",
+        "digits",
+        "letters"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "moving",
+        "paused",
+        "turned",
+        "pointer-tilt",
+        "custom-geometry",
+        "import-error",
+        "fallback",
+        "reduced-motion"
+      ],
+      "dependencies": [
+        "three@0.185.1"
+      ],
+      "devDependencies": [
+        "@types/three@0.185.4"
+      ]
+    },
+    "api": [
+      {
+        "name": "SculptureCommonProps",
+        "props": [
+          {
+            "name": "form",
+            "type": "GlyphForm",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "tone",
+            "type": "GlyphTone",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "geometry",
+            "type": "SculptureGeometryInput",
+            "required": false,
+            "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+          },
+          {
+            "name": "speed",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "turn",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pitch",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "zoom",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pointerTracking",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onGeometryError",
+            "type": "(error: Error) => void",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "GlyphSculptureProps",
+        "props": [
+          {
+            "name": "form",
+            "type": "GlyphForm",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "tone",
+            "type": "GlyphTone",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "geometry",
+            "type": "SculptureGeometryInput",
+            "required": false,
+            "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+          },
+          {
+            "name": "speed",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "turn",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pitch",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "zoom",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pointerTracking",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onGeometryError",
+            "type": "(error: Error) => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "cellSize",
+            "type": "number",
+            "required": false,
+            "description": "Character-cell height in CSS pixels, bounded to 7–20."
+          },
+          {
+            "name": "glyphSet",
+            "type": "GlyphSet",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "edgeMatching",
+            "type": "boolean",
+            "required": false,
+            "description": "Trace the silhouette with directional marks in the density set."
+          }
+        ]
+      }
+    ],
+    "category": "3D",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -11,6 +11,12 @@
   box-shadow: inset 0 0 0 1px var(--v-border);
 }
 [data-slot="scroll-area"].-ink { background: var(--v-ink); color: var(--v-on-ink); }
+[data-slot="scroll-area"].-plain { min-width:0; max-width:100%; padding:0; background:transparent; color:inherit; box-shadow:none; border-radius:inherit; }
+/* Leave room for control paint so decorative SVG overhang cannot invent a
+   tiny scroll range (and an almost full-height thumb) when content fits. */
+[data-slot="scroll-area"].-plain > [data-slot="scroll-area-viewport"] { height:auto; max-height:var(--h,320px); padding:8px 24px 12px 8px; }
+[data-slot="scroll-area"].-plain > [data-slot="scroll-area-viewport"] > div { table-layout:fixed; width:100%; }
+.v-list-scroll { --h:min(320px,60dvh); }
 [data-slot="scroll-area-viewport"] {
   width: 100%;
   height: 100%;

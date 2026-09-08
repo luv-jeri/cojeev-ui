@@ -55,7 +55,7 @@ export function DrawerContent({
   ...props
 }: DrawerContentProps) {
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "enter");
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "slide-block");
   return (
     <Primitive.Portal>
       <DrawerOverlay />

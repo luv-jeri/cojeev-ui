@@ -1,12 +1,22 @@
-/* Orthogonal authored class modifiers remain composable with CVA axes. */
-.v-track[data-slot].-lg{height:var(--track-h-lg);background:var(--v-canvas)}
-.v-track[data-slot].-sm{height:var(--track-h-sm)}
-.v-track[data-slot].-cream{background:var(--v-canvas)}
-.v-track[data-slot].-unavail{background:repeating-linear-gradient(135deg,var(--v-border) 0 6px,transparent 6px 12px);box-shadow:inset 0 0 0 1px var(--v-skel-edge);background-color:var(--v-canvas);background-image:none}
-
-/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */
-.v-track[data-slot]>i{position:absolute;inset:0 auto 0 0;width:var(--p,0%);border-radius:inherit;background:var(--c,var(--v-yellow));transition:width var(--t-draw) var(--enter)}
-.v-track[data-slot].-unavail>i{display:none}
-.v-track[data-slot].-unavail>i{display:none}
-.v-track[data-slot].-unavail::after{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(135deg,var(--v-skel-edge) 0 3px,transparent 3px 9px);opacity:.8}
-
+[data-slot="progress"].v-track { --c:var(--v-yellow); position:relative; display:block; width:100%; min-width:0; height:var(--track-h,12px); flex:1; border-radius:var(--r-pill); color:var(--c); }
+[data-slot="progress"].-lg { height:var(--track-h-lg,20px); }
+[data-slot="progress"].-sm { height:var(--track-h-sm,6px); }
+[data-slot="progress"] > [data-slot="progress-indicator"] { position:absolute; inset:0 auto 0 0; width:var(--p,0%); border-radius:inherit; background:var(--c,var(--v-yellow)); }
+[data-slot="progress"][data-custom="true"] { background:var(--v-beige); overflow:hidden; }
+[data-slot="progress"] > [data-slot="progress-indicator"][data-organic="true"] { width:100%; height:100%; background:none; transition:none; }
+.v-progress__paint { display:block; width:100%; height:100%; overflow:visible; pointer-events:none; }
+.v-progress__track { fill:var(--v-beige); }
+.v-progress__fill { fill:currentColor; }
+[data-slot="progress"].-cream .v-progress__track { fill:var(--v-canvas); }
+[data-slot="progress"][data-appearance="line"] { height:12px; }
+[data-slot="progress"][data-appearance="line"] :is(.v-progress__track,.v-progress__fill) { fill:none; stroke:var(--v-beige); stroke-width:3px; stroke-linecap:round; }
+[data-slot="progress"][data-appearance="line"] .v-progress__fill { stroke:currentColor; }
+[data-slot="progress"][data-appearance="orbit"] { flex:none; width:var(--progress-diameter,112px); height:var(--progress-diameter,112px); display:inline-grid; place-items:center; }
+[data-slot="progress"][data-appearance="orbit"].-sm { --progress-diameter:72px; }
+[data-slot="progress"][data-appearance="orbit"].-lg { --progress-diameter:148px; }
+[data-slot="progress"][data-appearance="orbit"] :is(.v-progress__track,.v-progress__fill) { fill:none; stroke:var(--v-beige); stroke-width:7px; stroke-linecap:round; }
+[data-slot="progress"][data-appearance="orbit"] .v-progress__fill { stroke:currentColor; }
+.v-progress__value { color:var(--v-text); font-size:var(--fs-label); font-weight:600; font-variant-numeric:tabular-nums; }
+[data-slot="progress"].-unavail { background:repeating-linear-gradient(135deg,var(--v-skel-edge) 0 3px,transparent 3px 9px); box-shadow:inset 0 0 0 1px var(--v-skel-edge); }
+[data-slot="progress"].-unavail > [data-slot="progress-indicator"] { display:none; }
+[data-slot="progress"].-unavail[data-appearance="orbit"] { border-radius:50%; }

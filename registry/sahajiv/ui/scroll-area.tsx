@@ -60,7 +60,7 @@ function ScrollThumbPaint({feedback,orientation="vertical"}:{feedback:ReturnType
 }
 
 export const scrollAreaVariants = cva("v-scroll", {
-  variants: { variant: { default: "", ink: "-ink" } },
+  variants: { variant: { default: "", ink: "-ink", plain: "-plain" } },
   defaultVariants: { variant: "default" },
 });
 export type ScrollAreaProps = React.ComponentProps<typeof Primitive.Root> &
@@ -68,25 +68,47 @@ export type ScrollAreaProps = React.ComponentProps<typeof Primitive.Root> &
     viewportClassName?: string;
     /** Native viewport attributes, including a ref, scroll listener or accessible name. */
     viewportProps?: React.ComponentProps<typeof Primitive.Viewport>;
+    /** Compose a primitive around the actual scrolling element, preserving its ref. */
+    viewportWrapper?: (viewport: React.ReactElement) => React.ReactNode;
   };
-export function ScrollArea({ className, variant, children, viewportClassName, viewportProps, type = "auto", ...props }: ScrollAreaProps) {
+function ScrollViewport({ style, ...props }: React.ComponentProps<typeof Primitive.Viewport>) {
+  // An asChild parent such as Select.Viewport supplies an overflow shorthand.
+  // Normalize it before Radix writes its own axis styles to the same DOM node.
+  const { overflow, ...rest } = style ?? {};
+  const axes = typeof overflow === "string" ? overflow.split(/\s+/) : [];
+  const normalized = axes.length ? { ...rest, overflowX: rest.overflowX ?? axes[0], overflowY: rest.overflowY ?? axes[1] ?? axes[0] } as React.CSSProperties : rest;
+  return <Primitive.Viewport {...props} style={normalized} />;
+}
+export function ScrollArea({ className, variant, children, viewportClassName, viewportProps, viewportWrapper, type = "auto", ...props }: ScrollAreaProps) {
+  const viewport = (
+    <ScrollViewport
+      data-slot="scroll-area-viewport"
+      data-part="viewport"
+      tabIndex={0}
+      role="region"
+      aria-label={props["aria-label"] ?? "Scrollable content"}
+      {...viewportProps}
+      className={cn("v-scroll__viewport", viewportClassName, viewportProps?.className)}
+    >{children}</ScrollViewport>
+  );
   return (
     <Primitive.Root data-slot="scroll-area" data-part="root" type={type} className={cn(scrollAreaVariants({ variant }), className)} {...props}>
-      <Primitive.Viewport
-        data-slot="scroll-area-viewport"
-        data-part="viewport"
-        tabIndex={0}
-        role="region"
-        aria-label={props["aria-label"] ?? "Scrollable content"}
-        {...viewportProps}
-        className={cn("v-scroll__viewport", viewportClassName, viewportProps?.className)}
-      >
-        {children}
-      </Primitive.Viewport>
+      {viewportWrapper ? viewportWrapper(viewport) : viewport}
       <ScrollBar />
       <Primitive.Corner data-slot="scroll-area-corner" />
     </Primitive.Root>
   );
+}
+export type ScrollAreaListProps = ScrollAreaProps & { maxHeight?: React.CSSProperties["maxHeight"] };
+/** Internal list scrollport: its owning menu/list retains focus and semantics. */
+export function ScrollAreaList({ maxHeight = "var(--list-scroll-max-height, min(320px, 60dvh))", className, style, viewportProps, ...props }: ScrollAreaListProps) {
+  return <ScrollArea variant="plain" className={cn("v-list-scroll", className)} style={{ "--h": typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight, ...style } as React.CSSProperties} viewportProps={{ role: undefined, "aria-label": undefined, tabIndex: -1, ...viewportProps }} {...props} />;
+}
+/** Preserve a consumer's native asChild element while wrapping only its contents. */
+export function scrollAreaListChildren(children: React.ReactNode, asChild?: boolean) {
+  if (asChild && React.isValidElement<{ children?: React.ReactNode }>(children))
+    return React.cloneElement(children, { children: <ScrollAreaList>{children.props.children}</ScrollAreaList> });
+  return <ScrollAreaList>{children}</ScrollAreaList>;
 }
 export type ScrollBarProps = React.ComponentProps<typeof Primitive.Scrollbar>;
 export function ScrollBar({

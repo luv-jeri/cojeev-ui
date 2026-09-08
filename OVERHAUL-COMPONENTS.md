@@ -1,5 +1,7 @@
 # Overhaul component audit
 
+**Historical snapshot:** the counts and rendered results below predate the current review changes. Current source/registration includes all 68 named entries, but this older visual ledger does not certify their current variants, palettes or motion. See [REVIEW-PASS-REPORT.md](REVIEW-PASS-REPORT.md) for the latest focused evidence and [GOAL-REVIEW-AUDIT.md](GOAL-REVIEW-AUDIT.md) for remaining full-goal verification.
+
 The active brief names **68 entries: 61 non-chart components and seven chart entries**. Every named entry has a source review and rendered evidence. This ledger separates documented variant coverage from behavior, motion and content-length checks. The full registry contains 89 UI entries plus one shared foundation.
 
 ## Documented variants and sizes

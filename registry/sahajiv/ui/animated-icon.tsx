@@ -1,8 +1,8 @@
 "use client";
 import * as React from "react";
 import { motion } from "motion/react";
-import { Icon, iconClassName, type IconProps } from "@/registry/sahajiv/ui/icon";
-import { useChoreography } from "@/registry/sahajiv/motion/choreography";
+import { Icon, iconClassName, createIconMotionPainter, getIconDirection, type IconProps } from "@/registry/sahajiv/ui/icon";
+import { createMotionLane, useChoreography } from "@/registry/sahajiv/motion/choreography";
 import { useMotionVisibility } from "@/registry/sahajiv/motion/use-motion-visibility";
 
 export type IconMotion = "auto" | "tremor" | "draw" | "spin" | "bounce" | "validation" | "pulse" | "none";
@@ -21,7 +21,7 @@ export function AnimatedIcon({name,preset="auto",active,amplitude=1,duration,cla
     const eligible=()=>!node.closest('[inert],[hidden],[data-motion="off"],[data-flow="off"]')&&!node.matches(':disabled,[disabled],[aria-disabled="true"],[data-disabled]:not([data-disabled="false"])')&&!associated?.matches(':disabled,[disabled],[aria-disabled="true"],[data-disabled]:not([data-disabled="false"])');
     const sync=()=>{const next=eligible();setAllowed(next);if(!next){setHovered(false);setFocused(false)}};
     sync();
-    const enter=()=>setHovered(eligible()),leave=()=>setHovered(false);
+    const enter=(event:PointerEvent)=>{if(event.pointerType!=="touch")setHovered(eligible())},leave=()=>setHovered(false);
     const focus=()=>setFocused(eligible()),blur=(event:FocusEvent)=>{if(!node.contains(event.relatedTarget as Node|null))setFocused(false)};
     node.addEventListener("pointerenter",enter);node.addEventListener("pointerleave",leave);node.addEventListener("focusin",focus);node.addEventListener("focusout",blur);
     const attributes=new MutationObserver(sync);
@@ -30,17 +30,30 @@ export function AnimatedIcon({name,preset="auto",active,amplitude=1,duration,cla
     if(associated&&associated!==node)observe(associated);
     return ()=>{node.removeEventListener("pointerenter",enter);node.removeEventListener("pointerleave",leave);node.removeEventListener("focusin",focus);node.removeEventListener("focusout",blur);attributes.disconnect()};
   },[]);
-  const permitted=allowed&&!quiet&&enabled&&inView;
+  const amount=Number.isFinite(amplitude)?Math.max(0,Math.min(amplitude,3)):1;
+  const permitted=allowed&&!quiet&&enabled&&inView&&amount>0;
   const running=permitted&&(active??(hovered||focused));
   const settle=permitted?transition:{duration:0};
-  const intent=preset!=="auto"?preset:/setting|gear|loader/.test(name)?"spin":/arrow|chevron/.test(name)?"bounce":/check|close|^x$/.test(name)?"validation":"tremor";
-  const amount=Number.isFinite(amplitude)?Math.max(0,Math.min(amplitude,3)):1;
+  const intent=preset!=="auto"?preset:"semantic";
   const seconds=duration!==undefined&&Number.isFinite(duration)?Math.max(.08,Math.min(duration,10)):undefined;
+  React.useEffect(()=>{
+    if(intent!=="semantic"||!running)return;
+    const svg=host.current?.querySelector<SVGSVGElement>("[data-slot=icon]");if(!svg)return;
+    const painter=createIconMotionPainter(svg,name,amount);
+    const lane=createMotionLane(0,painter.paint);
+    const looping=name==="loader"||name==="loader-circle";
+    lane.jump(0);
+    lane.to(1,{duration:seconds??(looping?1.35:.55),ease:"linear",repeat:looping?Infinity:0},painter.restore);
+    return ()=>{lane.dispose();painter.restore()};
+  },[intent,running,name,amount,seconds,active]);
   const rotate=running&&intent==="spin"?[0,360]:running&&intent==="tremor"?[0,-9*amount,7*amount,-3*amount,0]:0;
-  const x=running&&intent==="bounce"?[0,3*amount,0]:0;
+  const direction=getIconDirection(name);
+  const [dx,dy]=direction[0]||direction[1]?direction:[1,0];
+  const x=running&&intent==="bounce"?[0,3*amount*dx,0]:0;
+  const y=running&&intent==="bounce"?[0,3*amount*dy,0]:0;
   const scale=running&&intent==="validation"?[1,1-.15*amount,1+.08*amount,1]:running&&intent==="pulse"?[1,1+.12*amount,1]:1;
   return <span ref={host} data-slot="animated-icon" data-preset={intent} data-animated={(running&&intent!=="none")||undefined} className="v-animated-icon">
-    <motion.span initial={false} animate={{rotate,x,scale}} transition={running?{duration:seconds??(intent==="spin"?1.6:.48),repeat:intent==="spin"?Infinity:0,ease:intent==="spin"?"linear":[.2,.8,.2,1]}:settle}>
+    <motion.span initial={false} animate={{rotate,x,y,scale}} transition={running?{duration:seconds??(intent==="spin"?1.6:.48),repeat:intent==="spin"?Infinity:0,ease:intent==="spin"?"linear":[.2,.8,.2,1]}:settle}>
       {intent==="validation"&&/^(check|x)$/.test(name)?<svg data-slot="icon" data-icon-name={name} viewBox="0 0 24 24" aria-hidden="true" className={iconClassName(size,className)} {...props}><motion.path initial={false} animate={{d:name==="check"?"M5 12L10 17L20 6M10 17L10 17":"M6 6L12 12L18 18M6 18L18 6"}} transition={settle}/>{children}</svg>:<Icon name={name} size={size} className={className} draw={intent==="draw"?running:undefined} {...props} feedback={false}>{children}</Icon>}
     </motion.span>
   </span>;

@@ -3,7 +3,7 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Button, type ButtonProps } from "@/registry/sahajiv/ui/button";
-import { Icon } from "@/registry/sahajiv/ui/icon";
+import { AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
 const StepperContext = React.createContext<{
   value: number;
@@ -59,8 +59,8 @@ export function Stepper({
 export const stepperVariants = cva(
   "v-stepper-flow grid gap-0 m-0 p-0 list-none [counter-reset:none]",
 );
-export type StepperListProps = React.ComponentProps<"ol">;
-export function StepperList({ ref, className, ...props }: StepperListProps) {
+export type StepperListProps = React.ComponentProps<"ol"> & { orientation?: "vertical" | "horizontal" };
+export function StepperList({ ref, className, orientation = "vertical", ...props }: StepperListProps) {
   const flowRef = useFlowGroup<HTMLOListElement>(ref);
   return (
     <ol
@@ -68,6 +68,8 @@ export function StepperList({ ref, className, ...props }: StepperListProps) {
       data-slot="stepper"
       data-part="root"
       data-stepper=""
+      data-orientation={orientation}
+      data-flow={orientation === "horizontal" ? "off" : undefined}
       className={cn(stepperVariants(), className)}
       {...props}
     />
@@ -118,7 +120,7 @@ export function StepperIndicator({
       )}
       {...props}
     >
-      {children ?? (step < context.value ? <Icon name="check" /> : step)}
+      {children ?? (step < context.value ? <AnimatedIcon name="check" preset="validation" /> : step)}
     </span>
   );
 }

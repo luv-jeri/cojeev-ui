@@ -8,16 +8,19 @@ import { Meta } from "@/registry/sahajiv/ui/typography";
 import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
 import { DocsMotion } from "@/components/docs-motion";
 import { examples } from "@/components/examples";
+import { ComponentHandoff } from "@/components/component-handoff";
 export function ComponentPreview({
   id,
   variants,
   sizes,
   code,
+  handoffNotes,
 }: {
   id: string;
   variants: string[];
   sizes: string[];
   code: { source: string; name: string };
+  handoffNotes?: string;
 }) {
   const [variant, setVariant] = React.useState(variants[0] ?? "default");
   const [size, setSize] = React.useState(sizes[0] ?? "default");
@@ -93,6 +96,7 @@ export function ComponentPreview({
         </MotionSurface>
         </MotionPresence>
       </Preview>
+      {handoffNotes && <ComponentHandoff notes={handoffNotes} code={selectedCode} variant={variant} size={size} />}
     </div>
   );
 }

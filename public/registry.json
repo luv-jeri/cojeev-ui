@@ -33,14 +33,74 @@
           "target": "lib/utils.ts"
         },
         {
+          "path": "registry/sahajiv/lib/appearance-tokens.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/appearance-tokens.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/assembly-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/assembly-geometry.ts"
+        },
+        {
           "path": "registry/sahajiv/lib/chart-geometry.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv/chart-geometry.ts"
         },
         {
+          "path": "registry/sahajiv/lib/glyph-mesh.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/glyph-mesh.ts"
+        },
+        {
           "path": "registry/sahajiv/lib/icon-data.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv/icon-data.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/living-shader.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/living-shader.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/marquee-motion.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/marquee-motion.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/number-motion.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/number-motion.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/pointer-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/pointer-geometry.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-flow.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-flow.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-geometry.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-particles.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-particles.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-raster.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-raster.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-stage-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-stage-geometry.ts"
         },
         {
           "path": "registry/sahajiv/lib/shape-data.ts",
@@ -51,6 +111,21 @@
           "path": "registry/sahajiv/lib/signature-shapes.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv/signature-shapes.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/text-lines.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/text-lines.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/text-relay.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/text-relay.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/text-ribbon-path.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/text-ribbon-path.ts"
         },
         {
           "path": "registry/sahajiv/lib/use-chart-motion.ts",
@@ -103,6 +178,11 @@
           "target": "lib/sahajiv-motion/morph-paint.ts"
         },
         {
+          "path": "registry/sahajiv/motion/progress-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/progress-geometry.ts"
+        },
+        {
           "path": "registry/sahajiv/motion/refs.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv-motion/refs.ts"
@@ -138,6 +218,11 @@
           "target": "lib/sahajiv-motion/use-flow.ts"
         },
         {
+          "path": "registry/sahajiv/motion/use-guidance-motion.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/use-guidance-motion.ts"
+        },
+        {
           "path": "registry/sahajiv/motion/use-morph.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv-motion/use-morph.ts"
@@ -146,6 +231,11 @@
           "path": "registry/sahajiv/motion/use-motion-visibility.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv-motion/use-motion-visibility.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/use-organic-value.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/use-organic-value.ts"
         },
         {
           "path": "registry/sahajiv/motion/use-reduced-motion.ts",
@@ -203,23 +293,23 @@
         ":root, :root[data-mode]": {
           "--background": "var(--v-canvas)",
           "--foreground": "var(--v-text)",
-          "--card": "var(--v-beige)",
+          "--card": "var(--v-paper)",
           "--card-foreground": "var(--v-text)",
           "--card-2": "var(--v-beige-2)",
-          "--popover": "var(--v-canvas)",
+          "--popover": "var(--v-paper)",
           "--popover-foreground": "var(--v-text)",
           "--primary": "var(--v-ink)",
           "--primary-foreground": "var(--v-on-ink)",
           "--secondary": "var(--v-beige)",
           "--secondary-foreground": "var(--v-text)",
           "--accent": "var(--v-pink)",
-          "--accent-foreground": "var(--v-text)",
+          "--accent-foreground": "var(--v-on-accent)",
           "--muted": "var(--v-beige-2)",
           "--muted-foreground": "var(--v-text-2)",
           "--border": "var(--v-border)",
           "--input": "var(--v-beige)",
           "--ring": "var(--v-brand)",
-          "--destructive": "var(--v-danger)",
+          "--destructive": "var(--v-danger-fill)",
           "--destructive-foreground": "#fff",
           "--chart-1": "var(--v-yellow)",
           "--chart-2": "var(--v-pink)",
@@ -228,7 +318,7 @@
           "--chart-5": "var(--v-ink)",
           "--sidebar": "var(--v-structure)",
           "--sidebar-foreground": "var(--on-structure)",
-          "--sidebar-muted": "#8B8474",
+          "--sidebar-muted": "#B4BDCA",
           "--sidebar-primary": "var(--v-pink)",
           "--muted-foreground-ink": "#2E2A24",
           "--muted-foreground-tinted": "#4A443C"
@@ -554,6 +644,145 @@
         "category": "Layout",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "action-dock",
+      "type": "registry:ui",
+      "title": "Action dock",
+      "description": "A reusable action dock composed from SahaJiv base components.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/action-dock.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Action dock",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "activity-feed",
+      "type": "registry:ui",
+      "title": "Activity feed",
+      "description": "Chronological activity composed from native avatars, badges, content rows and motion surfaces.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/avatar.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/empty.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/typography.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/activity-feed.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/activity-feed.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/activity-feed.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/activity-feed.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Activity feed",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "appended",
+            "expanded",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ActivityFeedProps",
+            "props": [
+              {
+                "name": "entries",
+                "type": "readonly ActivityEntry[]",
+                "required": true,
+                "description": "Caller supplies the chronological order; the feed never reorders entries."
+              },
+              {
+                "name": "title",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "empty",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "initialVisible",
+                "type": "number",
+                "required": false,
+                "description": "Omit to show every supplied entry, including later appends."
+              },
+              {
+                "name": "pageSize",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showMoreLabel",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -1672,7 +1901,9 @@
         "source": {
           "name": "Animated number",
           "variants": [
-            "default"
+            "default",
+            "roll",
+            "steps"
           ],
           "sizes": [
             "default"
@@ -1709,7 +1940,19 @@
                 "name": "duration",
                 "type": "number",
                 "required": false,
-                "description": "Transition time in milliseconds, bounded to 0–2000."
+                "description": "Transition time in milliseconds, bounded to 0–2000 and scaled by Flow speed."
+              },
+              {
+                "name": "treatment",
+                "type": "\"count\" | \"roll\" | \"steps\"",
+                "required": false,
+                "description": "Count through values, roll each digit, or count in twelve drawn poses."
+              },
+              {
+                "name": "from",
+                "type": "number",
+                "required": false,
+                "description": "Optional starting value for the first visible entrance. SSR always shows the final value."
               },
               {
                 "name": "fallback",
@@ -1720,7 +1963,101 @@
             ]
           }
         ],
-        "category": "Effects",
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "appearance",
+      "type": "registry:ui",
+      "title": "Appearance",
+      "description": "Choose from six coordinated palettes and adjust reading contrast across the application.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/label.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/slider.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/select.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/popover.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/shape.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/tooltip.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/appearance.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/appearance.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/appearance.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/appearance.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Appearance",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "AppearanceControlsProps",
+            "props": [
+              {
+                "name": "value",
+                "type": "AppearanceSettings",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value: AppearanceSettings) => void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "AppearanceMenuProps",
+            "props": [
+              {
+                "name": "compact",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "responsive",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "className",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Tools",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -1865,6 +2202,179 @@
         "category": "Layout",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "assembly-part",
+      "type": "registry:ui",
+      "title": "Assembly part",
+      "description": "A persistent native component moving between a floating organism and its measured layout.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/assembly-part.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/assembly-part.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/assembly-part.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/assembly-part.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Assembly part",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "AssemblyPartProps",
+            "props": [
+              {
+                "name": "children",
+                "type": "React.ReactElement",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "identity",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "transitionKey",
+                "type": "string",
+                "required": false,
+                "description": "Marks a new composition even when a reused part has identical target geometry."
+              },
+              {
+                "name": "rect",
+                "type": "AssemblyRect",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "from",
+                "type": "AssemblyRect",
+                "required": false,
+                "description": "Initial geometry for a newly introduced native part; existing roots keep current motion values."
+              },
+              {
+                "name": "fromContour",
+                "type": "AssemblyContour",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "contour",
+                "type": "AssemblyContour",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "reveal",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "interactive",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "immediate",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "delay",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "curve",
+                "type": "number",
+                "required": false,
+                "description": "Curved travel strength from 0 (straight) to 1."
+              },
+              {
+                "name": "onProgress",
+                "type": "(progress:number)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "release",
+                "type": "boolean",
+                "required": false,
+                "description": "Give native paint, clipping, focus and hover motion back after arrival."
+              },
+              {
+                "name": "floating",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\"|\"blue\"|\"olive\"|\"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onRest",
+                "type": "()=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "className",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -2524,9 +3034,11 @@
       "title": "Bubble",
       "description": "Groups conversational content and timestamps into visually distinct message bubbles.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
       ],
       "dependencies": [
+        "motion",
         "class-variance-authority"
       ],
       "files": [
@@ -2686,6 +3198,28 @@
                 "description": ""
               }
             ]
+          },
+          {
+            "name": "BubbleReactionProps",
+            "props": [
+              {
+                "name": "aria-label",
+                "type": "string | undefined",
+                "required": true,
+                "description": "Defines a string value that labels the current element."
+              }
+            ]
+          },
+          {
+            "name": "BubbleTypingProps",
+            "props": [
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
           }
         ],
         "category": "Conversation",
@@ -2704,6 +3238,7 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
       ],
       "dependencies": [
+        "@radix-ui/react-slot",
         "class-variance-authority"
       ],
       "files": [
@@ -2906,6 +3441,18 @@
               {
                 "name": "fullWidth",
                 "type": "boolean | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "asChild",
+                "type": "boolean",
+                "required": false,
+                "description": "Use one native element (for example a link) as the interactive root."
+              },
+              {
+                "name": "ref",
+                "type": "React.Ref<HTMLButtonElement | HTMLAnchorElement>",
                 "required": false,
                 "description": ""
               },
@@ -3866,7 +4413,9 @@
             "flower"
           ],
           "sizes": [
-            "default"
+            "default",
+            "sm",
+            "lg"
           ],
           "states": [
             "unchecked",
@@ -3909,6 +4458,24 @@
               {
                 "name": "tone",
                 "type": "SelectorTone",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "SelectorSize",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "indicator",
+                "type": "SelectorIndicator",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showIndicator",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -4112,7 +4679,9 @@
       "description": "Filters a list of options through text input and stores one selected value.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/input.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/command.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json"
@@ -4265,6 +4834,12 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "showIndicator",
+                "type": "boolean",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -4289,6 +4864,7 @@
       "description": "Builds a searchable command list that users can navigate and activate from the keyboard.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
@@ -4425,12 +5001,50 @@
       }
     },
     {
+      "name": "compact-dashboard",
+      "type": "registry:ui",
+      "title": "Compact dashboard",
+      "description": "Historical compatibility alias for WorkSidePanel; use the dedicated panel composition in new work.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/compact-dashboard.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Compact dashboard",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Context Menu",
       "description": "Reveals contextual actions for a target through a context-menu interaction.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
@@ -4568,6 +5182,121 @@
         "category": "Actions",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "contour-field",
+      "type": "registry:ui",
+      "title": "Contour field",
+      "description": "Original topographic lines on the inherited paper surface, with a bounded GPU renderer.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/contour-field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/contour-field.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/contour-field.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/contour-field.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Contour field",
+          "variants": [
+            "balanced",
+            "warm",
+            "cool"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "animated",
+            "paused",
+            "fallback",
+            "context-lost",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ContourFieldProps",
+            "props": [
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": "Relative pace, from 0 (still) to 3."
+              },
+              {
+                "name": "intensity",
+                "type": "number",
+                "required": false,
+                "description": "Color and relief strength, from 0 to 2."
+              },
+              {
+                "name": "tone",
+                "type": "FieldTone",
+                "required": false,
+                "description": "Accent selection from the inherited SahaJiv theme."
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Freeze the current artwork without removing it."
+              }
+            ]
+          }
+        ],
+        "category": "Backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "conversation-panel",
+      "type": "registry:ui",
+      "title": "Conversation panel",
+      "description": "A reusable conversation panel composed from SahaJiv base components.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/conversation-panel.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Conversation panel",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -4908,6 +5637,85 @@
       }
     },
     {
+      "name": "depth-background",
+      "type": "registry:ui",
+      "title": "Depth background",
+      "description": "Layered pollen, contours and orbital shapes with perspective, native-scroll depth and pointer response.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/depth-background.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/depth-background.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/depth-background.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/depth-background.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Depth background",
+          "variants": [
+            "pollen",
+            "contour",
+            "orbital"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "pointer",
+            "scroll",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "DepthBackgroundProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "DepthBackgroundVariant",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "density",
+                "type": "number",
+                "required": false,
+                "description": "Relative piece count, bounded to .35–2."
+              },
+              {
+                "name": "intensity",
+                "type": "number",
+                "required": false,
+                "description": "Motion strength, bounded to 0–2; zero preserves the still artwork."
+              },
+              {
+                "name": "seed",
+                "type": "number | string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Visual effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
@@ -5096,6 +5904,133 @@
       }
     },
     {
+      "name": "dither-sculpture",
+      "type": "registry:ui",
+      "title": "Dither sculpture",
+      "description": "Depth-tested sculptural forms printed as ordered dots, halftone, error diffusion or stipple.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/glyph-sculpture.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/dither-sculpture.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Dither sculpture",
+          "variants": [
+            "default",
+            "halftone",
+            "diffusion",
+            "stipple"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "moving",
+            "paused",
+            "custom-geometry",
+            "orbit",
+            "fallback",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "DitherSculptureProps",
+            "props": [
+              {
+                "name": "form",
+                "type": "GlyphForm",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "GlyphTone",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "geometry",
+                "type": "SculptureGeometryInput",
+                "required": false,
+                "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "turn",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pitch",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "zoom",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pointerTracking",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onGeometryError",
+                "type": "(error: Error) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pattern",
+                "type": "DitherPattern",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "grainSize",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "density",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "drawer",
       "type": "registry:ui",
       "title": "Drawer",
@@ -5216,6 +6151,7 @@
       "description": "Opens a compact menu of actions or stateful choices from a visible trigger.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
@@ -5826,6 +6762,755 @@
       }
     },
     {
+      "name": "float-layer",
+      "type": "registry:ui",
+      "title": "Float layer",
+      "description": "An entrance, scroll depth and gentle idle movement for a real component or a group of elements.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/float-layer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/float-layer.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/float-layer.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/float-layer.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Float layer",
+          "variants": [
+            "default",
+            "scroll-only"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "entrance",
+            "scroll",
+            "idle",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "FloatLayerProps",
+            "props": [
+              {
+                "name": "depth",
+                "type": "number",
+                "required": false,
+                "description": "Total native-scroll displacement in px. Negative values reverse the plane."
+              },
+              {
+                "name": "delay",
+                "type": "number",
+                "required": false,
+                "description": "Entrance delay in seconds; bounded to one second."
+              },
+              {
+                "name": "drift",
+                "type": "number",
+                "required": false,
+                "description": "Gentle idle excursion in px. Set zero for scroll-only depth."
+              },
+              {
+                "name": "replay",
+                "type": "boolean",
+                "required": false,
+                "description": "Repeat the entrance when the layer leaves and re-enters the viewport."
+              },
+              {
+                "name": "revealDuration",
+                "type": "number",
+                "required": false,
+                "description": "Entrance duration in seconds, clamped to 0.2–2."
+              },
+              {
+                "name": "revealDistance",
+                "type": "number",
+                "required": false,
+                "description": "Initial vertical entrance offset in px, clamped to 0–80."
+              },
+              {
+                "name": "asChild",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "ref",
+                "type": "React.Ref<HTMLElement>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "data-slot",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Motion",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "flow-sculpture",
+      "type": "registry:ui",
+      "title": "Flow sculpture",
+      "description": "A rendered form responds to pointer strokes through a fluid distortion field.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/glass-sculpture.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/flow-sculpture.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Flow sculpture",
+          "variants": [
+            "default",
+            "soft",
+            "prismatic"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "moving",
+            "stirred",
+            "settling",
+            "paused",
+            "custom-geometry",
+            "fallback",
+            "context-lost",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "FlowSculptureProps",
+            "props": [
+              {
+                "name": "ref",
+                "type": "React.Ref<HTMLDivElement>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onRendererChange",
+                "type": "(state:SculptureRendererState)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "distortion",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "chromatic",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "spread",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "settle",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "swirl",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pulse",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "focus-session",
+      "type": "registry:ui",
+      "title": "Focus session",
+      "description": "A local focus timer composed from SahaJiv cards, progress, badges and native controls.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/focus-session.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Focus session",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "running",
+            "paused",
+            "complete",
+            "reduced-motion"
+          ]
+        },
+        "api": [],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "glass-sculpture",
+      "type": "registry:ui",
+      "title": "Glass sculpture",
+      "description": "Translucent geometry bends an original patterned studio through a softly lit glass surface.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/glyph-sculpture.json"
+      ],
+      "dependencies": [
+        "three@0.185.1"
+      ],
+      "devDependencies": [
+        "@types/three@0.185.4"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/glass-sculpture.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-stage.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-stage.tsx"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-renderer.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-renderer.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/glass-sculpture.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/glass-sculpture.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/glass-sculpture.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Glass sculpture",
+          "variants": [
+            "default",
+            "frosted",
+            "petals",
+            "tiles"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "moving",
+            "paused",
+            "orbit",
+            "custom-geometry",
+            "fallback",
+            "context-lost",
+            "reduced-motion"
+          ],
+          "dependencies": [
+            "three@0.185.1"
+          ],
+          "devDependencies": [
+            "@types/three@0.185.4"
+          ]
+        },
+        "api": [
+          {
+            "name": "GlassSculptureProps",
+            "props": [
+              {
+                "name": "ref",
+                "type": "React.Ref<HTMLDivElement>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onRendererChange",
+                "type": "(state:SculptureRendererState)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "refraction",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "frost",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "thickness",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "dispersion",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "studio",
+                "type": "SculptureStudio",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "glyph-sculpture",
+      "type": "registry:ui",
+      "title": "Glyph sculpture",
+      "description": "A real 3D surface drawn with glyphs, optional contour marks and your own local geometry.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "three@0.185.1"
+      ],
+      "devDependencies": [
+        "@types/three@0.185.4"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/glyph-sculpture.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/sculpture-loaders.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-loaders.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/glyph-sculpture.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/glyph-sculpture.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/glyph-sculpture.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Glyph sculpture",
+          "variants": [
+            "default",
+            "bloom",
+            "seed",
+            "pebble",
+            "digits",
+            "letters"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "moving",
+            "paused",
+            "turned",
+            "pointer-tilt",
+            "custom-geometry",
+            "import-error",
+            "fallback",
+            "reduced-motion"
+          ],
+          "dependencies": [
+            "three@0.185.1"
+          ],
+          "devDependencies": [
+            "@types/three@0.185.4"
+          ]
+        },
+        "api": [
+          {
+            "name": "SculptureCommonProps",
+            "props": [
+              {
+                "name": "form",
+                "type": "GlyphForm",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "GlyphTone",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "geometry",
+                "type": "SculptureGeometryInput",
+                "required": false,
+                "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "turn",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pitch",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "zoom",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pointerTracking",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onGeometryError",
+                "type": "(error: Error) => void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "GlyphSculptureProps",
+            "props": [
+              {
+                "name": "form",
+                "type": "GlyphForm",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "GlyphTone",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "geometry",
+                "type": "SculptureGeometryInput",
+                "required": false,
+                "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "turn",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pitch",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "zoom",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pointerTracking",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onGeometryError",
+                "type": "(error: Error) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "cellSize",
+                "type": "number",
+                "required": false,
+                "description": "Character-cell height in CSS pixels, bounded to 7–20."
+              },
+              {
+                "name": "glyphSet",
+                "type": "GlyphSet",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "edgeMatching",
+                "type": "boolean",
+                "required": false,
+                "description": "Trace the silhouette with directional marks in the density set."
+              }
+            ]
+          }
+        ],
+        "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "guided-pointer",
+      "type": "registry:ui",
+      "title": "Guided pointer",
+      "description": "An illustrated pointer moves between story waypoints, with a small arrival or hold cue.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/guided-pointer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/guided-pointer.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/guided-pointer.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/guided-pointer.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Guided pointer",
+          "variants": [
+            "default",
+            "hand"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "still",
+            "moving",
+            "pressed",
+            "arrival",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "GuidedPointerProps",
+            "props": [
+              {
+                "name": "points",
+                "type": "readonly GuidedPointerPoint[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "activeId",
+                "type": "string",
+                "required": false,
+                "description": "Omit to use the first valid point. An unknown ID hides the pointer."
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": "Milliseconds per move, capped at two seconds."
+              },
+              {
+                "name": "replayKey",
+                "type": "string | number",
+                "required": false,
+                "description": "Change to repeat a finite arrival cue at the current waypoint."
+              },
+              {
+                "name": "glyph",
+                "type": "\"arrow\" | \"hand\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "number",
+                "required": false,
+                "description": "Glyph size in pixels. Coordinates use the stage area minus this size."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "hero-button",
+      "type": "registry:ui",
+      "title": "Hero button",
+      "description": "An organic call to action with a drawing arrow and the shared button morph response.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/hero-button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/hero-button.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/hero-button.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/hero-button.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Hero button",
+          "variants": [
+            "organic",
+            "capsule"
+          ],
+          "sizes": [
+            "default",
+            "sm",
+            "lg"
+          ],
+          "states": [
+            "rest",
+            "hover",
+            "focus",
+            "pressed",
+            "disabled",
+            "loading",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "HeroButtonProps",
+            "props": [
+              {
+                "name": "shape",
+                "type": "\"organic\" | \"capsule\"",
+                "required": false,
+                "description": "Organic keeps a restrained living contour; capsule has a regular resting rim."
+              },
+              {
+                "name": "showArrow",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Actions",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "hover-card",
       "type": "registry:ui",
       "title": "Hover Card",
@@ -6028,6 +7713,144 @@
           }
         ],
         "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "ink-sculpture",
+      "type": "registry:ui",
+      "title": "Ink sculpture",
+      "description": "Hatched and engraved marks follow the light and relief of a 3D form.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/glyph-sculpture.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/ink-sculpture.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Ink sculpture",
+          "variants": [
+            "default",
+            "crosshatch",
+            "contour"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "moving",
+            "paused",
+            "custom-geometry",
+            "orbit",
+            "fallback",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "InkSculptureProps",
+            "props": [
+              {
+                "name": "form",
+                "type": "GlyphForm",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "GlyphTone",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "geometry",
+                "type": "SculptureGeometryInput",
+                "required": false,
+                "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "turn",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pitch",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "zoom",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pointerTracking",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onGeometryError",
+                "type": "(error: Error) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "treatment",
+                "type": "InkTreatment",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "markSize",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "density",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "angle",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "relief",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "3D",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -6365,6 +8188,44 @@
       }
     },
     {
+      "name": "invite-card",
+      "type": "registry:ui",
+      "title": "Invite card",
+      "description": "An event invitation with participant avatars and a reversible local RSVP, composed from SahaJiv primitives.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/invite-card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Invite card",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "accepted",
+            "declined",
+            "reduced-motion"
+          ]
+        },
+        "api": [],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "item",
       "type": "registry:ui",
       "title": "Item",
@@ -6602,9 +8463,9 @@
         "source": {
           "name": "Item adornment",
           "variants": [
-            "auto",
-            "explicit",
-            "custom",
+            "both",
+            "icon-only",
+            "blob-only",
             "none"
           ],
           "sizes": [
@@ -6940,6 +8801,94 @@
       }
     },
     {
+      "name": "living-link",
+      "type": "registry:ui",
+      "title": "Living link",
+      "description": "A native link with a drawn ink contour, directional underline reveals, or an organic pigment wash.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/living-link.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/living-link.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/living-link.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/living-link.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Living link",
+          "variants": [
+            "forward",
+            "up-right",
+            "underline-start",
+            "underline-end",
+            "underline-center",
+            "wash-up",
+            "wash-across"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "hover",
+            "focus",
+            "disabled",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "LivingLinkProps",
+            "props": [
+              {
+                "name": "href",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": "Anchors have no native disabled attribute: remove href and leave an announced label."
+              },
+              {
+                "name": "direction",
+                "type": "\"forward\" | \"up-right\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "treatment",
+                "type": "\"contour\" | \"underline-start\" | \"underline-end\" | \"underline-center\" | \"wash-up\" | \"wash-across\"",
+                "required": false,
+                "description": "Directional ink reveals or a soft pigment wash; contour preserves the original resting mark."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Navigation",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "marker",
       "type": "registry:ui",
       "title": "Marker",
@@ -7028,7 +8977,7 @@
       "name": "marquee",
       "type": "registry:ui",
       "title": "Marquee",
-      "description": "Moves a repeating content list with an explicit pause control and a static reading layout when motion is reduced.",
+      "description": "A measured moving list with optional perspective and a rhythm that follows scrolling.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
@@ -7053,14 +9002,20 @@
         "source": {
           "name": "Marquee",
           "variants": [
-            "default"
+            "default",
+            "depth",
+            "scroll",
+            "outline"
           ],
           "sizes": [],
           "states": [
             "running",
             "paused",
             "static",
-            "focused"
+            "focused",
+            "scroll-responsive",
+            "reversing",
+            "interactive-list"
           ]
         },
         "api": [
@@ -7076,6 +9031,54 @@
               {
                 "name": "speed",
                 "type": "MarqueeSpeed",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pixelsPerSecond",
+                "type": "number",
+                "required": false,
+                "description": "Override the named pace with 0–160 CSS pixels per second."
+              },
+              {
+                "name": "respondToScroll",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "scrollTarget",
+                "type": "React.RefObject<HTMLElement | null>",
+                "required": false,
+                "description": "Omit to follow document scrolling. The target should be mounted with the marquee."
+              },
+              {
+                "name": "presentation",
+                "type": "\"flat\" | \"depth\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tiltX",
+                "type": "number",
+                "required": false,
+                "description": "Depth presentation only. Perspective also scales to the viewport to keep the strip continuous."
+              },
+              {
+                "name": "tiltY",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "perspective",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "depth",
+                "type": "number",
                 "required": false,
                 "description": ""
               },
@@ -7106,7 +9109,7 @@
             ]
           }
         ],
-        "category": "Creative",
+        "category": "Effects",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -7118,6 +9121,7 @@
       "description": "Groups application commands into a horizontal row of keyboard-navigable menus.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
@@ -7474,6 +9478,12 @@
                 "type": "(atBottom: boolean) => void",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "scrollbarType",
+                "type": "React.ComponentProps<typeof ScrollArea>[\"type\"]",
+                "required": false,
+                "description": "Auto shows the custom rail only when content actually overflows."
               }
             ]
           },
@@ -7488,12 +9498,110 @@
       }
     },
     {
+      "name": "milestone-path",
+      "type": "registry:ui",
+      "title": "Milestone path",
+      "description": "A readable sequence of milestones with supplied status, details and optional actions.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/empty.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/stepper.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/typography.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/milestone-path.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/milestone-path.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/milestone-path.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/milestone-path.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Milestone path",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "complete",
+            "current",
+            "upcoming",
+            "disabled",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "MilestonePathProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "readonly Milestone[]",
+                "required": true,
+                "description": "Ordered journey. Supply at most one current milestone."
+              },
+              {
+                "name": "title",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "empty",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "statusLabels",
+                "type": "Partial<Record<MilestoneState, React.ReactNode>>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onMilestoneSelect",
+                "type": "(id: string) => void",
+                "required": false,
+                "description": "Makes titles native buttons. Progress remains owned by the caller."
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "multi-select",
       "type": "registry:ui",
       "title": "Multi-select",
       "description": "Searchable multiple choices with removable selections, form values and clear validation.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/checkbox.json",
@@ -7523,7 +9631,10 @@
         "source": {
           "name": "Multi-select",
           "variants": [
-            "default"
+            "both",
+            "icon-only",
+            "blob-only",
+            "none"
           ],
           "sizes": [
             "default"
@@ -7736,6 +9847,7 @@
       "description": "Organizes destination links and optional expandable navigation panels.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/presence.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
@@ -7848,6 +9960,476 @@
         "category": "Navigation",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "number-input",
+      "type": "registry:ui",
+      "title": "Number input",
+      "description": "A number field with readable formatting, a native editing caret and expressive stepping.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-number.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/number-input.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/number-input.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/number-input.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/number-input.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Number input",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "editing",
+            "stepping",
+            "invalid",
+            "empty",
+            "disabled",
+            "readonly",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "NumberInputProps",
+            "props": [
+              {
+                "name": "value",
+                "type": "number | null",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultValue",
+                "type": "number | null",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value: number | null) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "min",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "max",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "step",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "locale",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "format",
+                "type": "Intl.NumberFormatOptions",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "treatment",
+                "type": "AnimatedNumberProps[\"treatment\"]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "decrementLabel",
+                "type": "string",
+                "required": false,
+                "description": "Accessible labels for the two native step buttons."
+              },
+              {
+                "name": "incrementLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Forms",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "organism-assembly",
+      "type": "registry:ui",
+      "title": "Organism assembly",
+      "description": "An interactive studio that gathers floating shapes into six reusable compositions.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/organism-assembly.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/organism-assembly.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/organism-assembly.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/organism-assembly.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Organism assembly",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "OrganismAssemblyProps",
+            "props": [
+              {
+                "name": "defaultValue",
+                "type": "string | number | readonly string[] | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "value",
+                "type": "OrganismKind",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value:OrganismKind)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultAssembled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "compositionProps",
+                "type": "Omit<OrganismCompositionProps,\"kind\"|\"assembled\"|\"onSettledChange\">",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "organism-composition",
+      "type": "registry:ui",
+      "title": "Organism composition",
+      "description": "Six useful compositions made from persistent SahaJiv base components, with organic assembly and native controls.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/avatar.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/bubble.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/input-group.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/message-scroller.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/progress.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/typography.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/shape.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/assembly-part.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/organism-composition.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/organism-composition.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/organism-composition.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/organism-composition.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Organism composition",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "OrganismCompositionProps",
+            "props": [
+              {
+                "name": "kind",
+                "type": "OrganismKind",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "assembled",
+                "type": "boolean",
+                "required": false,
+                "description": "False separates the native roots into floating silhouettes. Quiet mode stays usable."
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "initials",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "items",
+                "type": "OrganismItem[]",
+                "required": false,
+                "description": "Up to four task or dock items."
+              },
+              {
+                "name": "durationSeconds",
+                "type": "number",
+                "required": false,
+                "description": "Real local session length, clamped to 1–86400 seconds. Changing it resets the session."
+              },
+              {
+                "name": "inviteDate",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "inviteTime",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "inviteLocation",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "participants",
+                "type": "{name:string;initials:string}[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "state",
+                "type": "OrganismState",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultState",
+                "type": "Partial<OrganismState>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onStateChange",
+                "type": "(state:OrganismState)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onAction",
+                "type": "(action:OrganismAction)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onSettledChange",
+                "type": "(settled:boolean)=>void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "OrganismProps",
+            "props": [
+              {
+                "name": "name",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "assembled",
+                "type": "boolean",
+                "required": false,
+                "description": "False separates the native roots into floating silhouettes. Quiet mode stays usable."
+              },
+              {
+                "name": "initials",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "items",
+                "type": "OrganismItem[]",
+                "required": false,
+                "description": "Up to four task or dock items."
+              },
+              {
+                "name": "durationSeconds",
+                "type": "number",
+                "required": false,
+                "description": "Real local session length, clamped to 1–86400 seconds. Changing it resets the session."
+              },
+              {
+                "name": "inviteDate",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "inviteTime",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "inviteLocation",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "participants",
+                "type": "{name:string;initials:string}[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "state",
+                "type": "OrganismState",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultState",
+                "type": "Partial<OrganismState>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onStateChange",
+                "type": "(state:OrganismState)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onAction",
+                "type": "(action:OrganismAction)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onSettledChange",
+                "type": "(settled:boolean)=>void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -7989,6 +10571,116 @@
       }
     },
     {
+      "name": "particle-sculpture",
+      "type": "registry:ui",
+      "title": "Particle sculpture",
+      "description": "A cloud sampled from a real surface yields to the pointer and springs back into form.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/glass-sculpture.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/particle-sculpture.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Particle sculpture",
+          "variants": [
+            "default",
+            "fine",
+            "dense"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "moving",
+            "repelled",
+            "settling",
+            "paused",
+            "custom-geometry",
+            "fallback",
+            "context-lost",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ParticleSculptureProps",
+            "props": [
+              {
+                "name": "ref",
+                "type": "React.Ref<HTMLDivElement>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onRendererChange",
+                "type": "(state:SculptureRendererState)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "strength",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "spring",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "damping",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "swirl",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pulse",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "pie-chart",
       "type": "registry:ui",
       "title": "Pie chart",
@@ -8043,6 +10735,84 @@
           }
         ],
         "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "pigment-field",
+      "type": "registry:ui",
+      "title": "Pigment field",
+      "description": "An original GPU pigment wash using the current SahaJiv palette.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/pigment-field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/pigment-field.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/pigment-field.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/pigment-field.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Pigment field",
+          "variants": [
+            "balanced",
+            "warm",
+            "cool"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "animated",
+            "paused",
+            "fallback",
+            "context-lost",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "PigmentFieldProps",
+            "props": [
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": "Relative pace, from 0 (still) to 3."
+              },
+              {
+                "name": "intensity",
+                "type": "number",
+                "required": false,
+                "description": "Color and relief strength, from 0 to 2."
+              },
+              {
+                "name": "tone",
+                "type": "FieldTone",
+                "required": false,
+                "description": "Accent selection from the inherited SahaJiv theme."
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Freeze the current artwork without removing it."
+              }
+            ]
+          }
+        ],
+        "category": "Backgrounds",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -8180,7 +10950,10 @@
             "fade",
             "scale",
             "slide",
-            "mask"
+            "mask",
+            "settle",
+            "soften",
+            "focus"
           ],
           "sizes": [
             "default"
@@ -8224,6 +10997,18 @@
                 "type": "number",
                 "required": false,
                 "description": "Seconds; use motionTokens.stagger for a coordinated sibling sequence."
+              },
+              {
+                "name": "exitDelay",
+                "type": "number",
+                "required": false,
+                "description": "Seconds before exit; cap sibling staggering yourself to a short total window."
+              },
+              {
+                "name": "exitDuration",
+                "type": "number",
+                "required": false,
+                "description": "Seconds. Soft-focus and settling presets use a gentler 420ms default."
               }
             ]
           }
@@ -8318,6 +11103,43 @@
       }
     },
     {
+      "name": "profile-card",
+      "type": "registry:ui",
+      "title": "Profile card",
+      "description": "A reusable profile card composed from SahaJiv base components.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/profile-card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Profile card",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
@@ -8326,6 +11148,7 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
       "dependencies": [
+        "motion",
         "class-variance-authority"
       ],
       "files": [
@@ -8351,12 +11174,17 @@
           "status": "source",
           "root": ".v-track",
           "variants": [
+            "organic",
+            "line",
+            "segmented",
+            "orbit",
             "cream",
             "unavail"
           ],
           "sizes": [
-            "lg",
-            "sm"
+            "default",
+            "sm",
+            "lg"
           ],
           "states": [
             "rest"
@@ -8399,6 +11227,18 @@
               },
               {
                 "name": "max",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "ProgressAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "segments",
                 "type": "number",
                 "required": false,
                 "description": ""
@@ -8465,7 +11305,9 @@
             "flower"
           ],
           "sizes": [
-            "default"
+            "default",
+            "sm",
+            "lg"
           ],
           "states": [
             "unchecked",
@@ -8545,6 +11387,24 @@
                 "description": ""
               },
               {
+                "name": "selectorSize",
+                "type": "SelectorSize",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectorIndicator",
+                "type": "SelectorIndicator",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showSelectorIndicator",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "value",
                 "type": "string",
                 "required": false,
@@ -8588,6 +11448,24 @@
               {
                 "name": "selectorTone",
                 "type": "SelectorTone",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectorSize",
+                "type": "SelectorSize",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectorIndicator",
+                "type": "SelectorIndicator",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showSelectorIndicator",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
@@ -8792,7 +11670,9 @@
             "flower"
           ],
           "sizes": [
-            "default"
+            "default",
+            "sm",
+            "lg"
           ],
           "states": [
             "unchecked",
@@ -8842,6 +11722,24 @@
                 "type": "SelectorTone",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "size",
+                "type": "SelectorSize",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "indicator",
+                "type": "SelectorIndicator",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showIndicator",
+                "type": "boolean",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -8865,6 +11763,24 @@
                 "type": "SelectorTone",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "size",
+                "type": "SelectorSize",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "indicator",
+                "type": "SelectorIndicator",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showIndicator",
+                "type": "boolean",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -8876,6 +11792,81 @@
         "category": "Forms",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "reading-trail",
+      "type": "registry:ui",
+      "title": "Reading trail",
+      "description": "Tracks actual reading progress and links to named sections with a quiet organic marker.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/reading-trail.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/reading-trail.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/reading-trail.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/reading-trail.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Reading trail",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "scrolling",
+            "focused",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ReadingTrailProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "readonly ReadingTrailItem[]",
+                "required": true,
+                "description": "IDs of sections in this document. Labels and links render on the server."
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "scrollRoot",
+                "type": "HTMLElement | null",
+                "required": false,
+                "description": "Omit to track the document; pass a mounted scroll container for a panel."
+              },
+              {
+                "name": "offset",
+                "type": "number",
+                "required": false,
+                "description": "Activation line below the scroll viewport's top, in pixels."
+              }
+            ]
+          }
+        ],
+        "category": "Navigation",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -9036,7 +12027,7 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"default\" | \"ink\" | null | undefined",
+                "type": "\"default\" | \"ink\" | \"plain\" | null | undefined",
                 "required": false,
                 "description": ""
               },
@@ -9051,6 +12042,47 @@
                 "type": "React.ComponentProps<typeof Primitive.Viewport>",
                 "required": false,
                 "description": "Native viewport attributes, including a ref, scroll listener or accessible name."
+              },
+              {
+                "name": "viewportWrapper",
+                "type": "(viewport: React.ReactElement) => React.ReactNode",
+                "required": false,
+                "description": "Compose a primitive around the actual scrolling element, preserving its ref."
+              }
+            ]
+          },
+          {
+            "name": "ScrollAreaListProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"default\" | \"ink\" | \"plain\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "viewportClassName",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "viewportProps",
+                "type": "React.ComponentProps<typeof Primitive.Viewport>",
+                "required": false,
+                "description": "Native viewport attributes, including a ref, scroll listener or accessible name."
+              },
+              {
+                "name": "viewportWrapper",
+                "type": "(viewport: React.ReactElement) => React.ReactNode",
+                "required": false,
+                "description": "Compose a primitive around the actual scrolling element, preserving its ref."
+              },
+              {
+                "name": "maxHeight",
+                "type": "React.CSSProperties[\"maxHeight\"]",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -9069,12 +12101,177 @@
       }
     },
     {
+      "name": "scroll-organism",
+      "type": "registry:ui",
+      "title": "Scroll organism",
+      "description": "A softly stretching companion driven by native document scrolling.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/shape.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/scroll-organism.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/scroll-organism.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/scroll-organism.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/scroll-organism.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Scroll organism",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ScrollOrganismProps",
+            "props": [
+              {
+                "name": "shape",
+                "type": "SignatureShapeName",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "travel",
+                "type": "number",
+                "required": false,
+                "description": "Percentage of the viewport traversed vertically over the document."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "sculpture-orbit",
+      "type": "registry:ui",
+      "title": "Sculpture orbit",
+      "description": "A shared sculpture viewer with pointer rotation, touch-friendly navigation and complete keyboard controls.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/slider.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/label.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/typography.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/sculpture-orbit.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/sculpture-orbit.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/sculpture-orbit.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/sculpture-orbit.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Sculpture orbit",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "dragging",
+            "keyboard",
+            "zoomed",
+            "disabled"
+          ]
+        },
+        "api": [
+          {
+            "name": "SculptureOrbitProps",
+            "props": [
+              {
+                "name": "children",
+                "type": "(view: SculptureView & { interacting: boolean }) => React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "value",
+                "type": "SculptureView",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultValue",
+                "type": "Partial<SculptureView>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(view: SculptureView) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
       "description": "Opens a list of options from a trigger and stores one selected value.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
@@ -9161,7 +12358,14 @@
           },
           {
             "name": "SelectItemProps",
-            "props": []
+            "props": [
+              {
+                "name": "showIndicator",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "SelectGroupProps",
@@ -9363,6 +12567,115 @@
       }
     },
     {
+      "name": "shape-artwork",
+      "type": "registry:ui",
+      "title": "Shape artwork",
+      "description": "An original SVG silhouette with a cast shadow and a rotated rear outline. The same vector layers power its live preview and standalone SVG export.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/shape-artwork.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/shape-artwork.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/shape-artwork.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/shape-artwork.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Shape artwork",
+          "variants": [
+            "default",
+            "outline"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "morph",
+            "rotation",
+            "layers",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ShapeArtworkProps",
+            "props": [
+              {
+                "name": "name",
+                "type": "SignatureShapeName",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "ShapeArtworkTone",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "rotation",
+                "type": "number",
+                "required": false,
+                "description": "Foreground rotation, in degrees."
+              },
+              {
+                "name": "filled",
+                "type": "boolean",
+                "required": false,
+                "description": "False draws the foreground as an outline."
+              },
+              {
+                "name": "shadow",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "shadowAngle",
+                "type": "number",
+                "required": false,
+                "description": "Direction of the cast shadow, clockwise from the right."
+              },
+              {
+                "name": "echo",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "echoAngle",
+                "type": "number",
+                "required": false,
+                "description": "Rear outline rotation relative to the foreground."
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": "Omit when decorative."
+              }
+            ]
+          }
+        ],
+        "category": "Visual effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "shape-scene",
       "type": "registry:ui",
       "title": "Shape scene",
@@ -9383,6 +12696,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "registry/sahajiv/lib/sculpture-material.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/sculpture-material.tsx"
+        },
+        {
           "path": "registry/sahajiv/styles/shape-scene.css",
           "type": "registry:file",
           "target": "styles/sahajiv/shape-scene.css"
@@ -9395,7 +12713,11 @@
         "source": {
           "name": "Shape scene",
           "variants": [
-            "default"
+            "mixed",
+            "clay",
+            "glazed",
+            "grain",
+            "ripple"
           ],
           "sizes": [
             "default"
@@ -9446,6 +12768,12 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "material",
+                "type": "SculptureMaterial",
+                "required": false,
+                "description": "Tactile procedural surfaces, including an animated ripple shader."
               }
             ]
           }
@@ -9465,7 +12793,8 @@
       ],
       "dependencies": [
         "class-variance-authority",
-        "@radix-ui/react-dialog"
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-direction"
       ],
       "files": [
         {
@@ -9538,6 +12867,12 @@
               {
                 "name": "showCloseButton",
                 "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "side",
+                "type": "\"start\" | \"end\"",
                 "required": false,
                 "description": ""
               }
@@ -9878,6 +13213,18 @@
                 "type": "React.ElementType",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "loading",
+                "type": "boolean",
+                "required": false,
+                "description": "Caller-owned loading state. Omit to preserve the static composition."
+              },
+              {
+                "name": "fallback",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -9942,6 +13289,7 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
       "dependencies": [
+        "motion",
         "class-variance-authority",
         "@radix-ui/react-slider"
       ],
@@ -9968,6 +13316,9 @@
           "status": "derived",
           "root": ".v-slider",
           "variants": [
+            "organic",
+            "line",
+            "segmented",
             "pink"
           ],
           "sizes": [],
@@ -10003,7 +13354,13 @@
               },
               {
                 "name": "thumbLabel",
-                "type": "string | ((index: number) => string)",
+                "type": "string|((index:number)=>string)",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "SliderAppearance",
                 "required": false,
                 "description": ""
               }
@@ -10148,7 +13505,7 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
-        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -10239,7 +13596,14 @@
           },
           {
             "name": "StepperListProps",
-            "props": []
+            "props": [
+              {
+                "name": "orientation",
+                "type": "\"vertical\" | \"horizontal\"",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "StepperItemProps",
@@ -10593,7 +13957,7 @@
       "name": "text-reveal",
       "type": "registry:ui",
       "title": "Text reveal",
-      "description": "A quiet word-by-word entrance for headings and short editorial text, with rise and fade treatments.",
+      "description": "Readable word, grapheme, phrase or measured-line arrivals with soft focus, fold and organic scale choices.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
@@ -10619,7 +13983,12 @@
           "name": "Text reveal",
           "variants": [
             "rise",
-            "fade"
+            "fade",
+            "soften",
+            "fold",
+            "bloom",
+            "scale",
+            "settle"
           ],
           "sizes": [
             "default"
@@ -10654,7 +14023,25 @@
               },
               {
                 "name": "variant",
-                "type": "\"rise\" | \"fade\"",
+                "type": "\"rise\" | \"fade\" | \"soften\" | \"fold\" | \"bloom\" | \"scale\" | \"settle\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "split",
+                "type": "\"word\" | \"grapheme\" | \"text\" | \"line\"",
+                "required": false,
+                "description": "Lines use the browser's actual wrapping; graphemes keep emoji and marks intact."
+              },
+              {
+                "name": "stagger",
+                "type": "number",
+                "required": false,
+                "description": "Milliseconds between units. The total delay is capped for long text."
+              },
+              {
+                "name": "direction",
+                "type": "\"up\" | \"down\"",
                 "required": false,
                 "description": ""
               },
@@ -10667,7 +14054,153 @@
             ]
           }
         ],
-        "category": "Effects",
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "text-ribbon",
+      "type": "registry:ui",
+      "title": "Text ribbon",
+      "description": "A measured phrase follows six original SVG paths, with direct manipulation and gentle changes of pace.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/text-ribbon.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/text-ribbon.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/text-ribbon.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/text-ribbon.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Text ribbon",
+          "variants": [
+            "default",
+            "circle",
+            "loop",
+            "wave",
+            "arch",
+            "line",
+            "figure-eight"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "still",
+            "moving",
+            "paused",
+            "reversed",
+            "empty",
+            "reduced-motion",
+            "dragging",
+            "keyboard",
+            "hover-paced"
+          ]
+        },
+        "api": [
+          {
+            "name": "TextRibbonProps",
+            "props": [
+              {
+                "name": "draggable",
+                "type": "Booleanish | undefined",
+                "required": false,
+                "description": "Horizontal drag, arrow keys and Home directly position the ribbon."
+              },
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "shape",
+                "type": "TextRibbonShape",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "auto",
+                "type": "boolean",
+                "required": false,
+                "description": "Automatic movement is opt-in. Pair it with a visible pause control."
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": "SVG units per second, bounded to 0–120."
+              },
+              {
+                "name": "direction",
+                "type": "TextRibbonDirection",
+                "required": false,
+                "description": "Supply direction/onDirectionChange to control direction after dragging."
+              },
+              {
+                "name": "onDirectionChange",
+                "type": "(direction: TextRibbonDirection) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "curvature",
+                "type": "number",
+                "required": false,
+                "description": "Wave and arch curvature, from a straight path (0) to the full curve (1)."
+              },
+              {
+                "name": "hoverBehavior",
+                "type": "\"pause\" | \"slow\" | \"quicken\" | \"none\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "fontSize",
+                "type": "number",
+                "required": false,
+                "description": "Size in the 640 × 280 SVG, bounded to 24–56. The entire ribbon scales responsively."
+              },
+              {
+                "name": "separator",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "guide",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "\"ink\" | \"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -10767,7 +14300,7 @@
       "name": "theme-toggle",
       "type": "registry:ui",
       "title": "Theme toggle",
-      "description": "A controlled light/dark switch with a morphing sun and moon. The shared applyTheme helper crossfades inherited surface and text colors.",
+      "description": "A controlled light/dark switch with a morphing sun and moon and a smooth organic page reveal.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
@@ -10829,6 +14362,18 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "label",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "responsive",
+                "type": "boolean",
+                "required": false,
+                "description": "Keep a label on desktop and the same 44px icon target on small screens."
               }
             ]
           }
@@ -11565,9 +15110,274 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Typography",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "word-relay",
+      "type": "registry:ui",
+      "title": "Word relay",
+      "description": "Exchanges phrases, words or letters inside a stable wrapping footprint, with interruptible motion and explicit navigation.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/word-relay.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/word-relay.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/word-relay.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/word-relay.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Word relay",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "changing",
+            "paused",
+            "reduced-motion",
+            "empty"
+          ]
+        },
+        "api": [
+          {
+            "name": "WordRelayProps",
+            "props": [
+              {
+                "name": "words",
+                "type": "readonly string[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "index",
+                "type": "number",
+                "required": false,
+                "description": "A controlled index. Omit for the internal timer."
+              },
+              {
+                "name": "defaultIndex",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "auto",
+                "type": "boolean",
+                "required": false,
+                "description": "Opt in to automatic changes and provide a nearby pause control."
+              },
+              {
+                "name": "loop",
+                "type": "boolean",
+                "required": false,
+                "description": "When false, automatic and manual navigation stop at the first/last phrase."
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "interval",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "split",
+                "type": "\"phrase\" | \"word\" | \"grapheme\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "stagger",
+                "type": "number",
+                "required": false,
+                "description": "Milliseconds between units, compressed to a maximum 500ms stagger window."
+              },
+              {
+                "name": "staggerFrom",
+                "type": "RelayOrder",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "direction",
+                "type": "\"up\" | \"down\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "controlsRef",
+                "type": "React.Ref<WordRelayHandle>",
+                "required": false,
+                "description": "Keeps the normal ref pointing to the span; navigation has its own optional ref."
+              },
+              {
+                "name": "tone",
+                "type": "\"inherit\" | \"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onIndexChange",
+                "type": "(index: number) => void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "work-side-panel",
+      "type": "registry:ui",
+      "title": "Work side panel",
+      "description": "A reusable work side panel composed from SahaJiv base components.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/work-side-panel.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Work side panel",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "interactive",
+            "reduced-motion"
+          ]
+        },
+        "api": [],
+        "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "writing-caret",
+      "type": "registry:ui",
+      "title": "Writing caret",
+      "description": "A quiet writing mark with a short, deliberate blink sequence.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/writing-caret.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/writing-caret.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/writing-caret.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/writing-caret.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Writing caret",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "still",
+            "blinking",
+            "replayed",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "WritingCaretProps",
+            "props": [
+              {
+                "name": "active",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "blinkCount",
+                "type": "number",
+                "required": false,
+                "description": "At most six cycles; zero leaves a still mark."
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": "Milliseconds per cycle. Total motion is bounded to six seconds."
+              },
+              {
+                "name": "replayKey",
+                "type": "string | number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "An explicit opacity disables blinking."
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     }
   ]

@@ -43,6 +43,7 @@ next-env.d.ts
 .work/
 .superpowers/
 artifacts/
+output/
 out/
 node_modules/
 .next/
@@ -52,3 +53,6 @@ node_modules/
 .worktrees/
 
 .next-dev/
+
+# Upstream research captures retain their source licenses; never publish them as our code.
+/reference/expansion/*/receipts/

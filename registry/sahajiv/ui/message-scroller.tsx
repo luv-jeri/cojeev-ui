@@ -15,12 +15,15 @@ export const messageScrollerVariants = cva(
 export type MessageScrollerProps = React.ComponentProps<"div"> & {
   followThreshold?: number;
   onAtBottomChange?: (atBottom: boolean) => void;
+  /** Auto shows the custom rail only when content actually overflows. */
+  scrollbarType?: React.ComponentProps<typeof ScrollArea>["type"];
 };
 export function MessageScroller({
   ref,
   className,
   children,
   followThreshold = 24,
+  scrollbarType = "always",
   onAtBottomChange,
   onScroll,
   style,
@@ -88,7 +91,7 @@ export function MessageScroller({
   const ownedMorphRef = useMorph<HTMLDivElement>("surfaces", attach);
   return (
     <ScrollerContext.Provider value={{ detached, jump }}>
-      <ScrollArea className="v-message-scroll-root" style={style} type="always" viewportProps={{
+      <ScrollArea className="v-message-scroll-root" style={style} type={scrollbarType} viewportProps={{
         ref:ownedMorphRef,
         "data-slot":"message-scroller",
         "data-part":"viewport",

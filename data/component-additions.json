@@ -79,7 +79,9 @@
   "animated-number": {
     "name": "Animated number",
     "variants": [
-      "default"
+      "default",
+      "roll",
+      "steps"
     ],
     "sizes": [
       "default"
@@ -94,7 +96,12 @@
     "name": "Text reveal",
     "variants": [
       "rise",
-      "fade"
+      "fade",
+      "soften",
+      "fold",
+      "bloom",
+      "scale",
+      "settle"
     ],
     "sizes": [
       "default"
@@ -108,7 +115,11 @@
   "shape-scene": {
     "name": "Shape scene",
     "variants": [
-      "default"
+      "mixed",
+      "clay",
+      "glazed",
+      "grain",
+      "ripple"
     ],
     "sizes": [
       "default"
@@ -129,7 +140,10 @@
   "multi-select": {
     "name": "Multi-select",
     "variants": [
-      "default"
+      "both",
+      "icon-only",
+      "blob-only",
+      "none"
     ],
     "sizes": [
       "default"
@@ -161,14 +175,20 @@
   "marquee": {
     "name": "Marquee",
     "variants": [
-      "default"
+      "default",
+      "depth",
+      "scroll",
+      "outline"
     ],
     "sizes": [],
     "states": [
       "running",
       "paused",
       "static",
-      "focused"
+      "focused",
+      "scroll-responsive",
+      "reversing",
+      "interactive-list"
     ]
   },
   "agent-state": {
@@ -269,7 +289,10 @@
       "fade",
       "scale",
       "slide",
-      "mask"
+      "mask",
+      "settle",
+      "soften",
+      "focus"
     ],
     "sizes": [
       "default"
@@ -407,9 +430,9 @@
   "item-adornment": {
     "name": "Item adornment",
     "variants": [
-      "auto",
-      "explicit",
-      "custom",
+      "both",
+      "icon-only",
+      "blob-only",
       "none"
     ],
     "sizes": [
@@ -435,7 +458,9 @@
       "flower"
     ],
     "sizes": [
-      "default"
+      "default",
+      "sm",
+      "lg"
     ],
     "states": [
       "unchecked",
@@ -456,7 +481,9 @@
       "flower"
     ],
     "sizes": [
-      "default"
+      "default",
+      "sm",
+      "lg"
     ],
     "states": [
       "unchecked",
@@ -477,7 +504,9 @@
       "flower"
     ],
     "sizes": [
-      "default"
+      "default",
+      "sm",
+      "lg"
     ],
     "states": [
       "unchecked",
@@ -502,6 +531,628 @@
       "selected",
       "invalid",
       "disabled"
+    ]
+  },
+  "appearance": {
+    "name": "Appearance",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "scroll-organism": {
+    "name": "Scroll organism",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "assembly-part": {
+    "name": "Assembly part",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "organism-composition": {
+    "name": "Organism composition",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "organism-assembly": {
+    "name": "Organism assembly",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "focus-session": {
+    "name": "Focus session",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "running",
+      "paused",
+      "complete",
+      "reduced-motion"
+    ]
+  },
+  "invite-card": {
+    "name": "Invite card",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "accepted",
+      "declined",
+      "reduced-motion"
+    ]
+  },
+  "profile-card": {
+    "name": "Profile card",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "work-side-panel": {
+    "name": "Work side panel",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "action-dock": {
+    "name": "Action dock",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "conversation-panel": {
+    "name": "Conversation panel",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "compact-dashboard": {
+    "name": "Compact dashboard",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "interactive",
+      "reduced-motion"
+    ]
+  },
+  "progress": {
+    "variants": [
+      "organic",
+      "line",
+      "segmented",
+      "orbit",
+      "cream",
+      "unavail"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg"
+    ]
+  },
+  "slider": {
+    "variants": [
+      "organic",
+      "line",
+      "segmented",
+      "pink"
+    ]
+  },
+  "hero-button": {
+    "name": "Hero button",
+    "variants": [
+      "organic",
+      "capsule"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg"
+    ],
+    "states": [
+      "rest",
+      "hover",
+      "focus",
+      "pressed",
+      "disabled",
+      "loading",
+      "reduced-motion"
+    ]
+  },
+  "depth-background": {
+    "name": "Depth background",
+    "variants": [
+      "pollen",
+      "contour",
+      "orbital"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "pointer",
+      "scroll",
+      "reduced-motion"
+    ]
+  },
+  "float-layer": {
+    "name": "Float layer",
+    "variants": [
+      "default",
+      "scroll-only"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "entrance",
+      "scroll",
+      "idle",
+      "reduced-motion"
+    ]
+  },
+  "shape-artwork": {
+    "name": "Shape artwork",
+    "variants": [
+      "default",
+      "outline"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "morph",
+      "rotation",
+      "layers",
+      "reduced-motion"
+    ]
+  },
+  "word-relay": {
+    "name": "Word relay",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "changing",
+      "paused",
+      "reduced-motion",
+      "empty"
+    ]
+  },
+  "reading-trail": {
+    "name": "Reading trail",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "scrolling",
+      "focused",
+      "reduced-motion"
+    ]
+  },
+  "living-link": {
+    "name": "Living link",
+    "variants": [
+      "forward",
+      "up-right",
+      "underline-start",
+      "underline-end",
+      "underline-center",
+      "wash-up",
+      "wash-across"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "hover",
+      "focus",
+      "disabled",
+      "reduced-motion"
+    ]
+  },
+  "pigment-field": {
+    "name": "Pigment field",
+    "variants": [
+      "balanced",
+      "warm",
+      "cool"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "animated",
+      "paused",
+      "fallback",
+      "context-lost",
+      "reduced-motion"
+    ]
+  },
+  "contour-field": {
+    "name": "Contour field",
+    "variants": [
+      "balanced",
+      "warm",
+      "cool"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "animated",
+      "paused",
+      "fallback",
+      "context-lost",
+      "reduced-motion"
+    ]
+  },
+  "milestone-path": {
+    "name": "Milestone path",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "complete",
+      "current",
+      "upcoming",
+      "disabled",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "activity-feed": {
+    "name": "Activity feed",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "appended",
+      "expanded",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "text-ribbon": {
+    "name": "Text ribbon",
+    "variants": [
+      "default",
+      "circle",
+      "loop",
+      "wave",
+      "arch",
+      "line",
+      "figure-eight"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "still",
+      "moving",
+      "paused",
+      "reversed",
+      "empty",
+      "reduced-motion",
+      "dragging",
+      "keyboard",
+      "hover-paced"
+    ]
+  },
+  "glyph-sculpture": {
+    "name": "Glyph sculpture",
+    "variants": [
+      "default",
+      "bloom",
+      "seed",
+      "pebble",
+      "digits",
+      "letters"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "moving",
+      "paused",
+      "turned",
+      "pointer-tilt",
+      "custom-geometry",
+      "import-error",
+      "fallback",
+      "reduced-motion"
+    ],
+    "dependencies": [
+      "three@0.185.1"
+    ],
+    "devDependencies": [
+      "@types/three@0.185.4"
+    ]
+  },
+  "dither-sculpture": {
+    "name": "Dither sculpture",
+    "variants": [
+      "default",
+      "halftone",
+      "diffusion",
+      "stipple"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "moving",
+      "paused",
+      "custom-geometry",
+      "orbit",
+      "fallback",
+      "reduced-motion"
+    ]
+  },
+  "ink-sculpture": {
+    "name": "Ink sculpture",
+    "variants": [
+      "default",
+      "crosshatch",
+      "contour"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "moving",
+      "paused",
+      "custom-geometry",
+      "orbit",
+      "fallback",
+      "reduced-motion"
+    ]
+  },
+  "sculpture-orbit": {
+    "name": "Sculpture orbit",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "dragging",
+      "keyboard",
+      "zoomed",
+      "disabled"
+    ]
+  },
+  "writing-caret": {
+    "name": "Writing caret",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "still",
+      "blinking",
+      "replayed",
+      "reduced-motion"
+    ]
+  },
+  "guided-pointer": {
+    "name": "Guided pointer",
+    "variants": [
+      "default",
+      "hand"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "still",
+      "moving",
+      "pressed",
+      "arrival",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "glass-sculpture": {
+    "name": "Glass sculpture",
+    "variants": [
+      "default",
+      "frosted",
+      "petals",
+      "tiles"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "moving",
+      "paused",
+      "orbit",
+      "custom-geometry",
+      "fallback",
+      "context-lost",
+      "reduced-motion"
+    ],
+    "dependencies": [
+      "three@0.185.1"
+    ],
+    "devDependencies": [
+      "@types/three@0.185.4"
+    ]
+  },
+  "flow-sculpture": {
+    "name": "Flow sculpture",
+    "variants": [
+      "default",
+      "soft",
+      "prismatic"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "moving",
+      "stirred",
+      "settling",
+      "paused",
+      "custom-geometry",
+      "fallback",
+      "context-lost",
+      "reduced-motion"
+    ]
+  },
+  "particle-sculpture": {
+    "name": "Particle sculpture",
+    "variants": [
+      "default",
+      "fine",
+      "dense"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "moving",
+      "repelled",
+      "settling",
+      "paused",
+      "custom-geometry",
+      "fallback",
+      "context-lost",
+      "reduced-motion"
+    ]
+  },
+  "number-input": {
+    "name": "Number input",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "editing",
+      "stepping",
+      "invalid",
+      "empty",
+      "disabled",
+      "readonly",
+      "reduced-motion"
     ]
   }
 }

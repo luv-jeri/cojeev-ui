@@ -56,6 +56,7 @@ export function MarketingHeader() {
         <nav ref={panel} id={id} className="story-mobile-nav" aria-label="Main navigation" onClick={event => { if ((event.target as HTMLElement).closest("a")) setOpen(false); }}>
           <MarketingLink href="/docs/">Components</MarketingLink>
           <MarketingLink href="/work-with-me/">Work with me</MarketingLink>
+          <MarketingLink href={sourceUrl}><AnimatedIcon name="github" />GitHub</MarketingLink>
         </nav>
       </MotionSurface>}</MotionPresence>
     </header>

@@ -1,14 +1,16 @@
 "use client";
+import { ScrollAreaList } from "@/registry/sahajiv/ui/scroll-area";
 
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { ItemAdornment, itemText, type ItemAdornmentItemProps } from "@/registry/sahajiv/ui/item-adornment";
-import { StateChevron } from "@/registry/sahajiv/ui/animated-icon";
+import { StateChevron, AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import * as Primitive from "@radix-ui/react-select";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { useFlowPress } from "@/registry/sahajiv/motion/flow-press";
+import { assignMotionRef } from "@/registry/sahajiv/motion/refs";
 import {
   useFlowAppearance,
   useFlowGroup,
@@ -16,14 +18,17 @@ import {
 const SelectInteractionContext = React.createContext<{
   pointer: boolean;
   setPointer: (pointer: boolean) => void;
-}>({ pointer: false, setPointer: () => {} });
+  triggerWidth: number;
+  setTriggerWidth: (width: number) => void;
+}>({ pointer: false, setPointer: () => {}, triggerWidth: 0, setTriggerWidth: () => {} });
 export type SelectProps = React.ComponentProps<typeof Primitive.Root> & {
   containerProps?: React.ComponentProps<"span">;
 };
 export function Select({ children, containerProps, ...props }: SelectProps) {
   const [pointer, setPointer] = React.useState(false);
+  const [triggerWidth, setTriggerWidth] = React.useState(0);
   return (
-    <SelectInteractionContext.Provider value={{ pointer, setPointer }}>
+    <SelectInteractionContext.Provider value={{ pointer, setPointer, triggerWidth, setTriggerWidth }}>
       <Primitive.Root {...props}>
         <span
           data-slot="select"
@@ -53,12 +58,23 @@ export function SelectTrigger({
   onKeyDown,
   ...props
 }: SelectTriggerProps) {
-  const { setPointer } = React.useContext(SelectInteractionContext);
+  const { setPointer, setTriggerWidth } = React.useContext(SelectInteractionContext);
   const morphRef = useMorph<HTMLButtonElement>("buttons", ref);
   const pressRef = useFlowPress(morphRef);
+  const attach = React.useCallback((node: HTMLButtonElement | null) => {
+    const release = assignMotionRef(pressRef, node);
+    if (!node) return release;
+    // Popper reports a transformed rect. Use layout width so the press spring
+    // cannot resize a portalled menu or feed its ScrollArea observers in Safari.
+    const measure = () => setTriggerWidth(node.offsetWidth);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    return () => { observer.disconnect(); release(); };
+  }, [pressRef, setTriggerWidth]);
   return (
     <Primitive.Trigger
-      ref={pressRef}
+      ref={attach}
       onPointerDown={(event) => {
         onPointerDown?.(event);
         if (!event.defaultPrevented && event.button === 0) setPointer(true);
@@ -90,9 +106,10 @@ export function SelectContent({
   sideOffset = 6,
   onKeyDownCapture,
   onPointerMove,
+  style,
   ...props
 }: SelectContentProps) {
-  const { pointer, setPointer } = React.useContext(SelectInteractionContext);
+  const { pointer, setPointer, triggerWidth } = React.useContext(SelectInteractionContext);
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
   const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
@@ -118,19 +135,21 @@ export function SelectContent({
         position={position}
         sideOffset={sideOffset}
         collisionPadding={12}
+        style={{ "--select-anchor-width": `${triggerWidth}px`, ...style } as React.CSSProperties}
         {...props}
       >
         <SelectScrollUpButton />
-        <Primitive.Viewport data-slot="select-viewport">
+        <ScrollAreaList maxHeight="min(320px, calc(var(--radix-select-content-available-height, 60dvh) - 24px))" viewportWrapper={viewport => <Primitive.Viewport asChild>{viewport}</Primitive.Viewport>}>
           {children}
-        </Primitive.Viewport>
+        </ScrollAreaList>
         <SelectScrollDownButton />
       </Primitive.Content>
     </Primitive.Portal>
   );
 }
-export type SelectItemProps = React.ComponentProps<typeof Primitive.Item> & ItemAdornmentItemProps;
+export type SelectItemProps = React.ComponentProps<typeof Primitive.Item> & ItemAdornmentItemProps & { showIndicator?: boolean };
 export function SelectItem({
+  showIndicator = true,
   className,
   adornment,
   adornmentId,
@@ -149,6 +168,7 @@ export function SelectItem({
     >
       <ItemAdornment identity={adornmentId ?? props.value ?? itemText(children)} value={adornment} />
       <Primitive.ItemText>{children}</Primitive.ItemText>
+      {showIndicator && <Primitive.ItemIndicator className="v-select__indicator" aria-hidden="true"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator>}
     </Primitive.Item>
   );
 }

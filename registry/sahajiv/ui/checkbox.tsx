@@ -6,10 +6,14 @@ import {
   selectorStyle,
   type SelectorShape,
   type SelectorTone,
+  type SelectorSize,
+  type SelectorIndicator,
 } from "@/registry/sahajiv/lib/selector";
 export type {
   SelectorShape,
   SelectorTone,
+  SelectorSize,
+  SelectorIndicator,
 } from "@/registry/sahajiv/lib/selector";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -20,6 +24,9 @@ export const checkboxVariants = cva(
 export type CheckboxProps = React.ComponentProps<typeof Primitive.Root> & {
   shape?: SelectorShape;
   tone?: SelectorTone;
+  size?: SelectorSize;
+  indicator?: SelectorIndicator;
+  showIndicator?: boolean;
 };
 export function Checkbox({
   className,
@@ -27,6 +34,9 @@ export function Checkbox({
   ref,
   shape = "organic",
   tone = "pink",
+  size = "default",
+  indicator = "auto",
+  showIndicator = true,
   style,
   checked: controlled,
   defaultChecked = false,
@@ -43,7 +53,7 @@ export function Checkbox({
       data-slot="checkbox"
       data-part="root"
       data-selector-shape={shape}
-      style={selectorStyle(tone, style)}
+      style={selectorStyle(tone, style, size)}
       checked={checked}
       onCheckedChange={(next) => {
         if (controlled === undefined) setLocal(next);
@@ -57,6 +67,8 @@ export function Checkbox({
           shape={shape}
           tone={tone}
           state={checked}
+          indicator={indicator}
+          showIndicator={showIndicator}
           kind="checkbox"
           disabled={props.disabled}
         />
