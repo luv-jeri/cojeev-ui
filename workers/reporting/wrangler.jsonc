@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "sahajiv-ui-reporting",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "ALLOWED_ORIGINS": "https://luv-jeri.github.io",
+    "SITE_URL": "https://luv-jeri.github.io/sahajiv-ui",
+    "LOCAL_MODE": "false",
+    "EMAIL_ENABLED": "false",
+    "EMAIL_FROM": "hello@your-domain.invalid",
+    "GITHUB_REPOSITORY": "luv-jeri/sahajiv-ui",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAEtNmwo_V5i5pkgF"
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sahajiv-ui-reports",
+      "database_id": "f6e16465-468d-43df-911e-1757e5682423"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "sahajiv-ui-report-media",
+      "binding": "MEDIA"
+    }
+  ]
+}
