@@ -9,6 +9,20 @@ import {
   useFlowGroup,
 } from "@/registry/sahajiv/motion/use-flow";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
+import { assignMotionRef } from "@/registry/sahajiv/motion/refs";
+
+function useRetainedMenuContentRef(ref?: React.Ref<HTMLDivElement>) {
+  const nodeRef = React.useRef<HTMLDivElement | null>(null);
+  const composedRef = React.useCallback((node: HTMLDivElement | null) => {
+    nodeRef.current = node;
+    const release = assignMotionRef(ref, node);
+    return () => {
+      nodeRef.current = null;
+      release();
+    };
+  }, [ref]);
+  return { nodeRef, composedRef };
+}
 
 export type MenubarProps = React.ComponentProps<typeof Primitive.Root>;
 export function Menubar({ className, ref, ...props }: MenubarProps) {
@@ -82,9 +96,11 @@ export function MenubarContent({
   ref,
   children,
   sideOffset = 6,
+  onInteractOutside,
   ...props
 }: MenubarContentProps) {
-  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const { nodeRef, composedRef } = useRetainedMenuContentRef(ref);
+  const morphRef = useMorph<HTMLDivElement>("surfaces", composedRef);
   const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[data-highlighted]",
@@ -99,6 +115,12 @@ export function MenubarContent({
         sideOffset={sideOffset}
         className={cn(menubarContentVariants(), className)}
         {...props}
+        onInteractOutside={(event) => {
+          onInteractOutside?.(event);
+          // A retained closing menu must not dismiss the next menu when its
+          // keyboard focus enters that sibling before the old exit finishes.
+          if (nodeRef.current?.dataset.state === "closed") event.preventDefault();
+        }}
       >
         {children}
       </Primitive.Content>
@@ -111,9 +133,11 @@ export type MenubarSubContentProps = React.ComponentProps<
 export function MenubarSubContent({
   className,
   ref,
+  onInteractOutside,
   ...props
 }: MenubarSubContentProps) {
-  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
+  const { nodeRef, composedRef } = useRetainedMenuContentRef(ref);
+  const morphRef = useMorph<HTMLDivElement>("surfaces", composedRef);
   const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
     activeSelector: "[data-highlighted]",
@@ -127,6 +151,10 @@ export function MenubarSubContent({
         data-part="content"
         className={cn(menubarContentVariants(), className)}
         {...props}
+        onInteractOutside={(event) => {
+          onInteractOutside?.(event);
+          if (nodeRef.current?.dataset.state === "closed") event.preventDefault();
+        }}
       />
     </Primitive.Portal>
   );

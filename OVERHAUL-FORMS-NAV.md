@@ -74,3 +74,8 @@ After the user reported current dark readability/stacking/entrance problems, per
 The motion owner corrected the shared origin to Radix's live transform-origin. This stream moved all relevant menu surfaces to popover45, added DatePicker's overridden-slot bounds/collision padding, and positioned Combobox options above the selection paint. Added changes are `ui/{date-picker,select}.tsx` and `styles/{menubar,navigation-menu}.css`, in addition to the files listed earlier.
 
 Final direct results: all eight open width/component cases have opacity1, opaque warm-dark backgrounds, cream text, z45, correct center hit targets, bounded origins (top edge, not far outside the menu), and Escape focus return after exit. No runtime errors. The formerly hidden Combobox selected row is visible. Current settled transparency was not reproduced after these fixes; the earlier concern is superseded by this direct evidence. Final captures and measurements: `output/playwright/overhaul-forms-navigation/dark-open/`. Menubar is the tested navigation popup; NavigationMenu's dropdown-style optional composition still lacks a separate open-state example. Typecheck passed following these component changes.
+
+
+## Final Menubar correction
+
+The production keyboard journey reproduced a closing-layer race: after selecting a Notebook item, quickly opening View with ArrowDown focused the new checkbox, then the retained closed Notebook layer dismissed the shared menu value. Closed retained Menubar content now prevents its outside-interaction dismissal while retaining caller callbacks. The same guard covers submenu content. The exact pointer-then-keyboard production journey is the regression check; shared focus behavior and active open-menu dismissal remain native Radix responsibilities.

@@ -368,7 +368,11 @@ const tests = {
     const heading = root.getByRole("heading", { name: "Good things take shape." });
     const before = await heading.boundingBox();
     await root.getByRole("button", { name: "Replay reveal" }).click();
-    assert(await heading.evaluate(el => document.getAnimations().some(animation => el.contains(animation.effect?.target))), "Replay starts a real word animation");
+    await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).some(word => {
+      const opacity = Number(getComputedStyle(word).opacity);
+      return opacity > 0 && opacity < .99;
+    })), "Replay produces a visible intermediate word opacity");
+    await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).every(word => Number(getComputedStyle(word).opacity) >= .999)), "Replay finishes with fully readable words");
     await text(root, "Replayed 1 time.");
     await key(root.getByRole("button", { name: "Replay reveal" }), "Enter");
     await text(root, "Replayed 2 times.");
@@ -377,7 +381,16 @@ const tests = {
     assert(Math.abs(before.width-after.width)<1 && Math.abs(before.height-after.height)<1, "Reveal keeps layout geometry stable");
     await page.emulateMedia({reducedMotion:"reduce"});
     await root.getByRole("button", {name:"Replay reveal"}).click();
-    assert(!(await heading.evaluate(el => document.getAnimations().some(animation => el.contains(animation.effect?.target)))), "Reduced-motion replay stays still");
+    assert(await heading.evaluate(async el => {
+      for (let frame = 0; frame < 12; frame++) {
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        if (Array.from(el.querySelectorAll('[data-reveal-word]')).some(word => {
+          const style = getComputedStyle(word);
+          return Number(style.opacity) !== 1 || style.transform !== 'none';
+        })) return false;
+      }
+      return true;
+    }), "Reduced-motion replay stays fully readable and still across actual frames");
     await page.emulateMedia({reducedMotion:"no-preference"});
     return "Real pointer/keyboard replay, stable layout and reduced-motion stillness";
   },

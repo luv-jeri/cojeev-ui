@@ -77,7 +77,7 @@
       "status": "PASS-with-targeted-confirmation",
       "entries": 89,
       "layouts": 534,
-      "previewAndBehavior": "PASS",
+      "previewAndBehavior": "Preview PASS; initial behavior 87/89, both subsequent corrections targeted separately",
       "initialErrors": [
         "area-chart SVG starting values",
         "line-chart SVG starting values",
@@ -87,7 +87,17 @@
       "finalAffectedEntries": 21,
       "finalAffectedLayouts": 126,
       "documentationShellCases": 6,
-      "tableExitTimingAssertion": "Updated to await actual removal; targeted production rerun PASS"
+      "tableExitTimingAssertion": "Updated to await actual removal; targeted production rerun PASS",
+      "initialBehaviorFailures": [
+        "Menubar closing layer dismissed newly opened sibling",
+        "Text Reveal check observed only browser-native animations"
+      ],
+      "menuRevealFinal": {
+        "entries": 2,
+        "layouts": 8,
+        "shellChecks": 4,
+        "status": "PASS"
+      }
     },
     "mobileWebKit": {
       "status": "PASS",
@@ -149,6 +159,8 @@
   "publication": {
     "repository": "https://github.com/luv-jeri/sahajiv-ui",
     "documentation": "https://luv-jeri.github.io/sahajiv-ui/",
-    "status": "pending"
+    "status": "final-correction-ready",
+    "sourceCommit": "0a983a438a517834ffc264e079d3018020005ae7",
+    "supersededCI": "https://github.com/luv-jeri/sahajiv-ui/actions/runs/34211647898"
   }
 }
