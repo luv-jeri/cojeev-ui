@@ -12,7 +12,7 @@ Use a React 19 + TypeScript project configured with Tailwind CSS v4 and shadcn. 
 npx shadcn@latest add https://luv-jeri.github.io/sahajiv-ui/r/button.json
 ```
 
-The registry contains 89 UI entries, including six chart types, agent chat, animated icons, a theme toggle and reusable presence controls. It includes component source, dependency primitives, exact styles, shared Motion utilities and licensed fonts. The optional `shape-scene` entry adds Three.js; ordinary components do not require it.
+The registry contains 90 UI entries, including six chart types, agent chat, animated icons, a theme toggle and reusable presence controls. Default menu adornments, gently organic selectors and a slower, varied theme reveal share the same design language. It includes component source, dependency primitives, exact styles, shared Motion utilities and licensed fonts. The optional `shape-scene` entry adds Three.js; ordinary components do not require it.
 
 ```tsx
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ npm run gate:mobile
 
 ## Design and verification
 
-The original 66 components remain the base. Additional components and intentional motion refinements are tracked in [REFINEMENTS.md](REFINEMENTS.md). [OVERHAUL-REPORT.md](OVERHAUL-REPORT.md) records the 0.2.0 implementation and verification; [RELEASE-REPORT.md](RELEASE-REPORT.md) preserves the earlier 0.1.0 release evidence.
+The original 66 components remain the base. Additional components and intentional motion refinements are tracked in [REFINEMENTS.md](REFINEMENTS.md). [REFINEMENT-REPORT.md](REFINEMENT-REPORT.md) records the latest landing-page and control refinement. [OVERHAUL-REPORT.md](OVERHAUL-REPORT.md) records the 0.2.0 implementation and verification; [RELEASE-REPORT.md](RELEASE-REPORT.md) preserves the earlier 0.1.0 release evidence.
 
 The supplied design system remains versioned under `reference/sahajiv-handoff-v4`. Production code never imports its CSS or JavaScript. The historical source comparison can be run with `npm run gate:reference`; its differences are retained separately from the refined production behavior. New work should preserve the same palette, typography, spacing, shapes and motion semantics.
 

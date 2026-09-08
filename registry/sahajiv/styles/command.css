@@ -303,3 +303,8 @@
 .v-command-results > [cmdk-list-sizer] {
   opacity: var(--command-results-opacity, 1);
 }
+
+/* Automatic identity adds the first column; legacy/custom icon compositions keep theirs. */
+[data-slot="command-item"]:has(> .v-item-adornment) { display:grid; grid-template-columns:30px minmax(0,1fr) auto; align-items:center; gap:10px; min-height:46px; padding-block:8px; }
+[data-slot="command-item"] > .v-item-adornment { grid-column:1; }
+[data-slot="command-item"]:has(> .v-item-adornment) > [data-slot="command-shortcut"] { grid-column:3; }

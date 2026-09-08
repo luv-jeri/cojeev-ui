@@ -20,7 +20,8 @@
     "gate:docs": "node scripts/check-docs.mjs --serve --output=artifacts/production-docs",
     "gate:motion": "node --import tsx scripts/check-motion.mjs --serve",
     "check:examples": "node scripts/check-example-source.mjs",
-    "gate:mobile": "node scripts/check-mobile-webkit.mjs --serve --output=artifacts/mobile-webkit"
+    "gate:mobile": "node scripts/check-mobile-webkit.mjs --serve --output=artifacts/mobile-webkit",
+    "gate:marketing": "node scripts/check-refinement-marketing.mjs --serve"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",

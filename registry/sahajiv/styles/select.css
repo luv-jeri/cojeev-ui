@@ -289,7 +289,7 @@
   font-size: 14.5px;
 }
 .v-listbox:where([data-slot="select"], [data-slot^="select-"])
-  .v-menu__item:not(:has(.v-disk)) {
+  .v-menu__item:not(:has(.v-disk,.v-item-adornment)) {
   grid-template-columns: minmax(0, 1fr) auto;
   padding-left: 12px;
 }
@@ -402,3 +402,12 @@
 
 /* Nested menus live above dialog surfaces as well as the document. */
 [data-slot="select-content"] { z-index: var(--z-popover); }
+
+/* The label owns the flexible column; decorative identity never enters ItemText. */
+[data-slot="select-item"] { grid-template-columns:30px minmax(0,1fr) auto; min-height:44px; }
+[data-slot="select-item"]:not(:has(.v-item-adornment,.v-disk)) { grid-template-columns:minmax(0,1fr) auto; }
+[data-slot="select-item"] > .v-item-adornment { grid-column:1; }
+[data-slot="select-item"] > span:not(.v-item-adornment) { min-width:0; overflow-wrap:anywhere; }
+[data-slot="select-content"] { width:var(--menu-width,max(var(--radix-select-trigger-width,0px),240px)); min-width:0; max-width:calc(100vw - 24px); }
+[data-slot="select-trigger"] > .v-state-chevron { margin-inline-start:auto; }
+[data-slot="select-trigger"]:active:not(:disabled) { background:var(--v-pink-soft); color:var(--v-text); }

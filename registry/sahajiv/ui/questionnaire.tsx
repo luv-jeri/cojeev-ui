@@ -1,5 +1,15 @@
 "use client";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
+import {
+  SelectorGlyph,
+  selectorStyle,
+  type SelectorShape,
+  type SelectorTone,
+} from "@/registry/sahajiv/lib/selector";
+export type {
+  SelectorShape,
+  SelectorTone,
+} from "@/registry/sahajiv/lib/selector";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
@@ -85,6 +95,8 @@ export function QuestionnaireLabel({
 }
 type ChoiceContext = {
   name: string;
+  selectorShape: SelectorShape;
+  selectorTone: SelectorTone;
   value?: string;
   change: (value: string) => void;
 };
@@ -94,6 +106,8 @@ export type QuestionnaireOptionsProps = Omit<
   "defaultValue"
 > & {
   name?: string;
+  selectorShape?: SelectorShape;
+  selectorTone?: SelectorTone;
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
@@ -102,6 +116,8 @@ export function QuestionnaireOptions({
   ref,
   className,
   name,
+  selectorShape = "organic",
+  selectorTone = "pink",
   value,
   defaultValue,
   onValueChange,
@@ -115,6 +131,8 @@ export function QuestionnaireOptions({
     <ChoiceContext.Provider
       value={{
         name: name ?? id,
+        selectorShape,
+        selectorTone,
         value: value ?? local,
         change: (next) => {
           if (value === undefined) setLocal(next);
@@ -137,11 +155,17 @@ export function QuestionnaireOptions({
 export type QuestionnaireOptionProps = React.ComponentProps<"label"> & {
   value: string;
   disabled?: boolean;
+  selectorShape?: SelectorShape;
+  selectorTone?: SelectorTone;
   inputProps?: Omit<React.ComponentProps<"input">, "value" | "type">;
 };
-export function QuestionnaireOption({ref: externalMorphRef, 
+export function QuestionnaireOption({
+  ref: externalMorphRef,
   value,
   disabled,
+  selectorShape,
+  selectorTone,
+  style,
   inputProps,
   className,
   children,
@@ -151,12 +175,17 @@ export function QuestionnaireOption({ref: externalMorphRef,
   if (!context)
     throw new Error("QuestionnaireOption must be inside QuestionnaireOptions");
   const ownedMorphRef = useMorph<HTMLLabelElement>("cards", externalMorphRef);
+  const shape = selectorShape ?? context.selectorShape;
+  const tone = selectorTone ?? context.selectorTone;
   return (
-    <label ref={ownedMorphRef}
+    <label
+      ref={ownedMorphRef}
+      style={selectorStyle(tone, style)}
+      data-selector-shape={shape}
       data-slot="questionnaire-option"
       data-state={context.value === value ? "checked" : "unchecked"}
       className={cn(
-        "v-quest__opt grid grid-cols-[36px_minmax(0,1fr)_22px] items-center gap-[14px] min-h-[64px] pt-[14px] pr-[16px] pb-[14px] pl-[14px] rounded-[20px] bg-[var(--v-canvas)] cursor-pointer",
+        "v-quest__opt grid grid-cols-[36px_minmax(0,1fr)_28px] items-center gap-[14px] min-h-[64px] pt-[14px] pr-[16px] pb-[14px] pl-[14px] rounded-[20px] bg-[var(--v-canvas)] cursor-pointer",
         className,
       )}
       {...props}
@@ -175,6 +204,14 @@ export function QuestionnaireOption({ref: externalMorphRef,
             context.change(value);
         }}
       />
+      <span data-slot="questionnaire-selector">
+        <SelectorGlyph
+          shape={shape}
+          tone={tone}
+          state={context.value === value}
+          disabled={disabled || inputProps?.disabled}
+        />
+      </span>
       {children}
     </label>
   );
@@ -197,11 +234,34 @@ export function QuestionnaireOptionBody({
 }
 
 export type QuestionnaireWeekdaysProps = React.ComponentProps<"div">;
-export function QuestionnaireWeekdays({ ref, className, ...props }: QuestionnaireWeekdaysProps) {
+export function QuestionnaireWeekdays({
+  ref,
+  className,
+  ...props
+}: QuestionnaireWeekdaysProps) {
   const flowRef = useFlowGroup<HTMLDivElement>(ref);
-  return <div ref={flowRef} data-slot="questionnaire-weekdays" className={cn("v-weekdays flex gap-[6px]", className)} {...props} />;
+  return (
+    <div
+      ref={flowRef}
+      data-slot="questionnaire-weekdays"
+      className={cn("v-weekdays flex gap-[6px]", className)}
+      {...props}
+    />
+  );
 }
 export type QuestionnaireWeekdayProps = React.ComponentProps<"label">;
-export function QuestionnaireWeekday({ className, ...props }: QuestionnaireWeekdayProps) {
-  return <label data-slot="questionnaire-weekday" className={cn("relative grid place-items-center size-[40px] [border-radius:50%] text-[11.5px] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer", className)} {...props} />;
+export function QuestionnaireWeekday({
+  className,
+  ...props
+}: QuestionnaireWeekdayProps) {
+  return (
+    <label
+      data-slot="questionnaire-weekday"
+      className={cn(
+        "relative grid place-items-center size-[40px] [border-radius:50%] text-[11.5px] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer",
+        className,
+      )}
+      {...props}
+    />
+  );
 }

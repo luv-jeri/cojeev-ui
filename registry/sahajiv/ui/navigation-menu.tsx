@@ -10,6 +10,8 @@ import { MotionPresence } from "@/registry/sahajiv/ui/presence";
 import { usePresence } from "motion/react";
 import { createMotionLane, motionTokens, useChoreography } from "@/registry/sahajiv/motion/choreography";
 import { assignMotionRef } from "@/registry/sahajiv/motion/refs";
+import { adornItem, itemText, type ItemAdornmentItemProps } from "@/registry/sahajiv/ui/item-adornment";
+import { StateChevron } from "@/registry/sahajiv/ui/animated-icon";
 const NavigationValueContext = React.createContext("");
 const NavigationItemContext = React.createContext("");
 export const navigationMenuVariants = cva("v-nav [display:grid] [gap:2px]");
@@ -69,9 +71,12 @@ export function NavigationMenuItem({value, ...props}: NavigationMenuItemProps) {
 }
 export type NavigationMenuLinkProps = React.ComponentProps<
   typeof Primitive.Link
->;
+> & ItemAdornmentItemProps;
 export function NavigationMenuLink({
   className,
+  children,
+  adornment,
+  adornmentId,
   active,
   ref,
   ...props
@@ -86,7 +91,7 @@ export function NavigationMenuLink({
       aria-current={active ? "page" : undefined}
       className={cn("v-nav__item", className)}
       {...props}
-    />
+    >{adornItem(children, adornment, adornmentId ?? props.href ?? itemText(children), props.asChild)}</Primitive.Link>
   );
 }
 export type NavigationMenuGroupProps = React.ComponentProps<"div">;
@@ -122,18 +127,24 @@ export function NavigationMenuCount({
 }
 export type NavigationMenuTriggerProps = React.ComponentProps<
   typeof Primitive.Trigger
->;
+> & ItemAdornmentItemProps & { chevron?: boolean };
 export function NavigationMenuTrigger({
   className,
+  children,
+  adornment,
+  adornmentId,
+  chevron = true,
   ...props
 }: NavigationMenuTriggerProps) {
+  const selected = React.useContext(NavigationValueContext);
+  const itemValue = React.useContext(NavigationItemContext);
   return (
     <Primitive.Trigger
       data-slot="navigation-menu-trigger"
       data-part="trigger"
       className={cn("v-nav__item", className)}
       {...props}
-    />
+    >{adornItem(children, adornment, adornmentId ?? itemText(children), props.asChild, chevron ? <StateChevron open={selected === itemValue} /> : null)}</Primitive.Trigger>
   );
 }
 export type NavigationMenuContentProps = React.ComponentProps<

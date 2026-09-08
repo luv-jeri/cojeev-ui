@@ -13,10 +13,12 @@ import {
   useFlowAppearance,
   useFlowGroup,
 } from "@/registry/sahajiv/motion/use-flow";
+import { ItemAdornment, itemText, type ItemAdornmentItemProps, type ItemAdornmentValue } from "@/registry/sahajiv/ui/item-adornment";
 export type ComboboxOption = {
   value: string;
   label: string;
   disabled?: boolean;
+  adornment?: ItemAdornmentValue;
 };
 type ComboboxState = {
   open: boolean;
@@ -139,6 +141,7 @@ export function Combobox({
                       value={option.value}
                       label={option.label}
                       disabled={option.disabled}
+                      adornment={option.adornment}
                     >
                       {option.label}
                     </ComboboxItem>
@@ -262,9 +265,11 @@ export function ComboboxContent({
 export const ComboboxList = ComboboxContent;
 export type ComboboxItemProps = React.ComponentProps<typeof Primitive.Item> & {
   label?: string;
-};
+} & ItemAdornmentItemProps;
 export function ComboboxItem({
   className,
+  adornment,
+  adornmentId,
   children,
   onSelect,
   label,
@@ -291,6 +296,7 @@ export function ComboboxItem({
       }}
       {...props}
     >
+      <ItemAdornment identity={adornmentId ?? value ?? label ?? itemText(children)} value={adornment} />
       <span className="v-combo__label">{children}</span>
     </Primitive.Item>
   );

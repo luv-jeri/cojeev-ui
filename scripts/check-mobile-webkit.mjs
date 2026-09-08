@@ -109,10 +109,12 @@ async function layout(page) {
 const cases = {
   "home-and-getting-started": async page => {
     await go(page, "/");
-    await page.getByRole("heading", { name: "Room for the things that matter." }).waitFor();
+    await page.getByRole("heading", { name: /Little parts\.\s*Big personality\s*\./ }).waitFor();
     const homeLayout = await layout(page);
     await page.screenshot({ path: path.join(output, "home-390.png"), fullPage: true });
-    await page.locator(".home-nav").getByRole("link", { name: "Explore components" }).tap();
+    await page.locator(".story-hero").getByRole("link", { name: "Explore components", exact: true }).tap();
+    await page.waitForURL(/\/docs\/?$/);
+    await page.getByRole("navigation", { name: "Start exploring" }).getByRole("link", { name: "Explore components" }).tap();
     await page.waitForURL(/\/docs\/button\/?$/);
     await page.locator('[data-slot="tabs-list"][data-flow-owned]').first().waitFor({ state: "attached" });
     await page.getByRole("button", { name: "Browse", exact: true }).tap();

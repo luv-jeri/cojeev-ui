@@ -41,7 +41,7 @@ The script was promoted to its final descriptive filename after verification; it
 | Quiet behavior | Motion Off and system reduced motion produce immediate table/empty membership updates and no retained Pagination delay; Command/Combobox results opacity settles immediately to 1. |
 | Geometry / visuals | No page overflow in the fixture. All eight main screenshots and both final Command correction screenshots were opened and inspected. Final Command text/hint geometry and real container paint were measured separately. |
 
-Receipts: [combined results](output/playwright/data-table-lifecycle/results.json) and [targeted final results](output/playwright/data-table-lifecycle-followup/results.json). The combined run passed both contexts with zero browser errors. The targeted final run passed both contexts with zero browser errors; it records the visible container box, intermediate opacity, separated label/hint geometry and cleared current state on exiting links. Final focused TypeScript checking passed.
+Receipts: combined results (`output/playwright/data-table-lifecycle/results.json`, local artifact) and targeted final results (`output/playwright/data-table-lifecycle-followup/results.json`, local artifact). The combined run passed both contexts with zero browser errors. The targeted final run passed both contexts with zero browser errors; it records the visible container box, intermediate opacity, separated label/hint geometry and cleared current state on exiting links. Final focused TypeScript checking passed.
 
 ## cmdk boundary and remaining scope
 

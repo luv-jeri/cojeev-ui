@@ -58,7 +58,7 @@ function installedImport(file, value) {
 function npmPackage(value){return value.startsWith("@")?value.split("/").slice(0,2).join("/"):value.split("/")[0];}
 const extras=additions;
 const items=[base,...ids.map(id=>{
-  const entry=reference[id]??extras[id];
+  const entry=reference[id] ? {...reference[id],...extras[id]} : extras[id];
   if(!entry)throw new Error(`Undeclared registry helper: ${id}`);
   const {imported,helpers}=componentImports(id);
   const siblings=[...new Set(imported.filter(value=>value.startsWith("@/registry/sahajiv/ui/")).map(value=>value.split("/").at(-1)))];

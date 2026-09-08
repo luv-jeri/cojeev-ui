@@ -16,6 +16,7 @@ import { Input } from "@/registry/sahajiv/ui/input";
 import { Label } from "@/registry/sahajiv/ui/label";
 import { Meta } from "@/registry/sahajiv/ui/typography";
 import { Shape } from "@/registry/sahajiv/ui/shape";
+import { AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
 import { ScrollArea } from "@/registry/sahajiv/ui/scroll-area";
 import { ThemeControl } from "@/components/theme-control";
 import { categories } from "@/lib/categories";
@@ -60,6 +61,7 @@ export function DocsShell({
           SahaJiv UI
         </Link>
         <div className="docs-mobile-actions">
+          <Link href="https://github.com/luv-jeri/sahajiv-ui" className="docs-source-icon" aria-label="SahaJiv UI on GitHub"><AnimatedIcon name="github" /></Link>
           <Button
             ref={browseRef}
             size="sm"
@@ -83,6 +85,7 @@ export function DocsShell({
             SahaJiv UI
           </Link>
           <Meta>Components for everyday work.</Meta>
+          <div className="docs-brand-links"><Link href="https://github.com/luv-jeri/sahajiv-ui"><AnimatedIcon name="github" /> GitHub</Link><Link href="/work-with-me/">Work with me <AnimatedIcon name="arrow-up-right" /></Link></div>
         </SidebarHeader>
         <div className="docs-filter">
           <Label htmlFor={queryId} size="sm">
@@ -149,7 +152,7 @@ export function DocsShell({
           <ThemeControl />
           <div className="docs-footer-links">
             <Link href="https://github.com/luv-jeri/sahajiv-ui">
-              Source on GitHub <span aria-hidden="true">↗</span>
+              <AnimatedIcon name="github" /> Source on GitHub
             </Link>
             <Meta as="span">MIT</Meta>
           </div>

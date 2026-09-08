@@ -451,7 +451,7 @@ const tests = {
     await attribute(b, "aria-checked", "true");
     await key(b, "Space");
     await attribute(b, "aria-checked", "false");
-    assert(await root.getByRole("checkbox").nth(2).isDisabled());
+    assert(await root.getByRole("checkbox").last().isDisabled());
     return "Pointer/Space checked changes, disabled option";
   },
   collapsible: async ({ root }) => {
@@ -526,13 +526,13 @@ const tests = {
   },
   "date-picker": async ({ root, page }) => {
     const trigger = root.getByRole("button", {
-      name: "Choose a reflection date",
+      name: "Choose a reminder date",
     });
     await trigger.click();
     await page.getByRole("grid").waitFor();
     const buttons = page.getByRole("gridcell").locator("button");
     await buttons.nth(12).click();
-    await text(root, "Reflection date:");
+    await text(root, "Reminder set for");
     await key(trigger, "Enter");
     await page.getByRole("grid").waitFor();
     await page.keyboard.press("Escape");
@@ -617,7 +617,7 @@ const tests = {
     await (
       await choose2
     ).setFiles([
-      { name: "a.md", mimeType: "text/markdown", buffer: Buffer.from("A") },
+      { name: "a.txt", mimeType: "text/plain", buffer: Buffer.from("A") },
       { name: "b.pdf", mimeType: "application/pdf", buffer: Buffer.from("B") },
     ]);
     await text(root, "2 files selected");
@@ -631,7 +631,8 @@ const tests = {
     return "Pointer note creation; keyboard reset; partial/error/filtered states rendered";
   },
   field: async ({ page }) => {
-    await page.locator(".docs-playground-controls").getByLabel("Variant", {exact:true}).selectOption("invalid");
+    await page.locator(".docs-playground-controls").getByRole("combobox", {name:"Variant",exact:true}).click();
+    await page.getByRole("option", {name:"invalid",exact:true}).click();
     const root = page.locator('[data-example="field"][data-variant="invalid"]');
     const input = root.getByRole("textbox");
     await attribute(input, "aria-invalid", "true");
@@ -659,25 +660,31 @@ const tests = {
     await page.keyboard.press("Escape");
     return "Pointer hover and keyboard focus show card; Escape dismisses";
   },
-  icon: async ({ root }) => {
-    const save = root.getByRole("button", { name: "Save example", exact: true });
-    await save.click();
-    await attribute(save, "aria-pressed", "true");
-    await text(root, "Example saved on this page.");
-    await key(save, "Space");
-    await attribute(save, "aria-pressed", "false");
-    await root.getByLabel("Button style", { exact: true }).selectOption("pink");
-    await root.getByLabel("Button size", { exact: true }).selectOption("xl");
-    assert(await save.evaluate(el => el.classList.contains("-pink") && el.classList.contains("-xl")));
-    assert(await root.getByRole("button", { name: "Unavailable settings" }).isDisabled());
-    const input = root.getByRole("textbox", { name: "Filter icons" });
-    await input.click();
-    await input.fill("settings");
-    await text(root, "1 glyphs");
-    await input.press("ControlOrMeta+A");
-    await input.press("Backspace");
+  icon: async ({ root, page }) => {
+    const input = root.getByRole("textbox", { name: "Search icon pack" });
+    await input.fill("github");
+    const github = root.getByRole("button", { name: "github", exact: true });
+    await key(github, "Enter");
+    await text(root, "Selected: github");
+    await input.fill("unlikely-icon-name");
+    await text(root, "No matching icons.");
+    await input.fill("arrow");
     assert((await root.locator('svg[data-slot="icon"]').count()) > 1);
-    return "Pointer/keyboard icon-name filtering and reset";
+    await root.getByRole("combobox", { name: "Icon effect" }).click();
+    await page.getByRole("option", { name: "draw", exact: true }).click();
+    await text(root, "the draw effect");
+    return "Keyboard icon selection, real pack search/empty results and library effect Select";
+  },
+  "item-adornment": async ({ root, page }) => {
+    await root.getByRole("button", { name: "Try the menu" }).click();
+    await page.getByRole("menuitem", { name: "Custom GitHub", exact: true }).click();
+    await text(root, "Custom GitHub selected");
+    await key(root.getByRole("button", { name: "Try the menu" }), "Enter");
+    const plain = page.getByRole("menuitem", { name: "Text only", exact: true });
+    assert(await plain.locator('[data-slot="item-adornment"]').count() === 0);
+    await key(plain, "Enter");
+    await text(root, "Text only selected");
+    return "Pointer custom icon item and keyboard item with adornment disabled";
   },
   input: async ({ root }) => {
     const input = root.getByRole("textbox", { name: "Find a note" });
@@ -839,26 +846,27 @@ const tests = {
     return "Pointer and keyboard progress changes";
   },
   questionnaire: async ({ root }) => {
-    await root.getByText("Learning", { exact: true }).click();
-    await text(root, "1 of 2");
-    const radio = root.getByRole("radio").nth(3);
-    await key(radio, "Space");
-    await text(root, "Learning · a little every day");
-    assert(await radio.isChecked());
-    return "Pointer and keyboard answers update completion and summary";
+    const learning = root.getByRole("radio", { name: /Learning/ });
+    await root.getByText("Learning", {exact:true}).click();
+    await text(root, "Learning has a place");
+    const making = root.getByRole("radio", { name: /Making/ });
+    await key(making, "Space");
+    await text(root, "Making has a place");
+    assert(await making.isChecked());
+    assert(!(await learning.isChecked()));
+    return "Pointer and keyboard questionnaire answers update completion and summary";
   },
   "radio-group": async ({ root }) => {
-    const group = root.getByRole("radiogroup", {
-      name: "Reflection frequency",
-    });
-    const daily = group.getByRole("radio", { name: "Every day" });
-    const weekly = group.getByRole("radio", { name: "Every week" });
+    const group = root.getByRole("radiogroup", { name: "Reflection frequency" });
+    const daily = group.getByRole("radio", { name: /A little every day/ });
+    const weekly = group.getByRole("radio", { name: /Once a week/ });
     await weekly.click();
-    await text(root, "Selected schedule: weekly");
+    await text(root, "Selected rhythm: weekly");
     await key(weekly, "ArrowUp");
-    await text(root, "Selected schedule: daily");
+    await text(root, "Selected rhythm: daily");
     assert(await daily.isChecked());
-    return "Pointer selection and arrow-key radio selection";
+    assert(await group.getByRole("radio", {name: /Monthly/}).isDisabled());
+    return "Pointer selection, arrow-key radio selection and disabled choice";
   },
   resizable: async ({ root, page }) => {
     const panel = root.locator('[data-slot="resizable-panel"]').first();
@@ -1081,16 +1089,19 @@ async function sharedPreview(page, id) {
   await p.getByRole("tab", { name: "Preview", exact: true }).first().click();
   await p.locator(`[data-example="${id}"]`).first().waitFor();
   for (const axis of ["Variant", "Size"]) {
-    const select=page.locator(".docs-playground-controls").getByLabel(axis,{exact:true});
+    const select=page.locator(".docs-playground-controls").getByRole("combobox",{name:axis,exact:true});
     if(await select.count()) {
-      const choice=await select.locator("option").last().getAttribute("value");
-      await select.selectOption(choice);
+      const values=registry.items.find(entry=>entry.name===id).meta.source[axis === "Variant" ? "variants" : "sizes"];
+      const choice=values.at(-1);
+      await select.click();
+      await page.getByRole("option").last().click();
       await attribute(p.locator(`[data-example="${id}"]`),`data-${axis.toLowerCase()}`,choice);
       await p.getByRole("button",{name:"Copy code",exact:true}).first().click();
       await text(p,"Copied to clipboard.");
       const copied=await page.evaluate(()=>navigator.clipboard.readText());
       assert(copied.slice(copied.lastIndexOf("export default function Demo")).includes(`${axis.toLowerCase()}="${choice}"`), "Copied code matches the selected axis");
-      await select.selectOption("default");
+      await select.click();
+      await page.getByRole("option").first().click();
     }
   }
   return "Exact clipboard content, preview/code keyboard controls and matching selected variant/size source";
@@ -1299,9 +1310,12 @@ try {
         for (const [name, values] of [["Variant", entry.meta.source.variants], ["Size", entry.meta.source.sizes]]) {
           const choices = [...new Set(["default", ...values])];
           if (choices.length > 1) {
-            const select = page.getByLabel(name, { exact: true });
-            assert.deepEqual(await select.locator("option").evaluateAll((options) => options.map((option) => option.value)), choices);
-            assert.equal(await select.inputValue(), "default");
+            const select = page.locator(".docs-playground-controls").getByRole("combobox", { name, exact: true });
+            await select.click();
+            const labels = choices.map(value => name === "Size" ? ({default:"Default",xs:"Extra small",sm:"Small",md:"Medium",lg:"Large",xl:"Extra large"})[value] ?? value : value.replaceAll("-", " "));
+            assert.deepEqual((await page.getByRole("option").allTextContents()).map(value => value.trim()), labels);
+            await page.getByRole("option").first().click();
+            await attribute(page.locator(`[data-example="${entry.name}"]`).first(), `data-${name.toLowerCase()}`, "default");
           }
         }
         await page

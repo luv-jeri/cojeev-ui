@@ -275,3 +275,16 @@
   overflow-y: auto; overscroll-behavior: contain;
   color: var(--popover-foreground);
 }
+
+/* A field-like trigger keeps the chosen date prominent; the popup remains an
+   opaque, viewport-bounded extension of the same paper surface. */
+[data-slot="date-picker"] { max-width:100%; }
+:root [data-slot="date-picker-trigger"].v-select { min-width:200px; max-width:100%; height:46px; gap:12px; padding:0 15px; border-radius:14px; background:var(--card); color:var(--v-text); box-shadow:inset 0 0 0 1px var(--v-border); font-size:14px; }
+:root [data-slot="date-picker-trigger"].v-select:not(:disabled):hover { background:var(--v-beige-2); }
+:root [data-slot="date-picker-trigger"].v-select[aria-expanded="true"] { background:var(--v-blue); color:var(--v-on-accent); box-shadow:none; }
+:root [data-slot="date-picker-trigger"].v-select > .v-icon:last-child { color:currentColor; opacity:1; }
+[data-slot="date-picker-trigger"] [data-value] { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:start; }
+[data-slot="date-picker-trigger"] > .v-icon:first-child { width:18px; height:18px; flex:none; }
+:root [data-slot="date-picker-trigger"].v-select:disabled { background:var(--v-disabled-face); color:var(--v-disabled-ink); box-shadow:inset 0 0 0 1px var(--v-disabled-edge); }
+[data-slot="date-picker-content"] { padding:20px; border-radius:20px; background:var(--popover); color:var(--popover-foreground); }
+@media(max-width:420px) { [data-slot="date-picker-content"] { padding:16px; } [data-slot="date-picker-trigger"].v-select { min-width:0; width:100%; } }

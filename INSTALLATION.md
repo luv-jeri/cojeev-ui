@@ -72,7 +72,7 @@ This renders only the base typography and canvas. Its separate timestamped recei
 node scripts/audit-registry-consumer.mjs
 ```
 
-This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 89 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See [the overhaul report](OVERHAUL-REPORT.md) for the exact tested scope.
+This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 90 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See [the refinement report](REFINEMENT-REPORT.md) for the current tested scope.
 
 To retest a successfully installed consumer after changing library source, use `node scripts/audit-registry-consumer.mjs <existing-audit-directory> --resume --refresh`. This preserves the original receipt, regenerates the registry snapshot and updates the consumer through the real shadcn CLI. `--resume` alone reruns build/runtime checks against the original installed snapshot.
 

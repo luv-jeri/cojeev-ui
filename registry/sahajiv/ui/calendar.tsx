@@ -19,7 +19,10 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Icon, IconButton } from "@/registry/sahajiv/ui/icon";
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
-import { motionTokens, useChoreography } from "@/registry/sahajiv/motion/choreography";
+import {
+  motionTokens,
+  useChoreography,
+} from "@/registry/sahajiv/motion/choreography";
 import { assignMotionRef } from "@/registry/sahajiv/motion/refs";
 export type CalendarMark = "pink" | "blue" | "olive" | "yellow" | "ink";
 const MarksContext = React.createContext<Record<string, CalendarMark>>({});
@@ -79,7 +82,13 @@ export function Calendar(calendarProps: CalendarProps) {
         data-part="root"
         data-cal=""
         className={cn(calendarVariants(), className)}
-        style={{ ...style, "--v-calendar-duration": `${quiet ? 0 : motionTokens.duration.enter}s`, "--v-calendar-ease": `cubic-bezier(${motionTokens.ease.enter.join(",")})` } as React.CSSProperties}
+        style={
+          {
+            ...style,
+            "--v-calendar-duration": `${quiet ? 0 : motionTokens.duration.enter}s`,
+            "--v-calendar-ease": `cubic-bezier(${motionTokens.ease.enter.join(",")})`,
+          } as React.CSSProperties
+        }
         classNames={{
           months: "v-cal__months",
           month: "v-cal__month-wrap",
@@ -126,18 +135,31 @@ export function Calendar(calendarProps: CalendarProps) {
 /** DayPicker retains an aria-hidden DOM snapshot during its finite month exit. */
 function CalendarRoot({ rootRef, ...props }: RootProps) {
   const host = React.useRef<HTMLDivElement>(null);
-  const ref = React.useCallback((node: HTMLDivElement | null) => {
-    host.current = node;
-    const release = assignMotionRef(rootRef, node);
-    return () => { host.current = null; release(); };
-  }, [rootRef]);
+  const ref = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      host.current = node;
+      const release = assignMotionRef(rootRef, node);
+      return () => {
+        host.current = null;
+        release();
+      };
+    },
+    [rootRef],
+  );
   React.useLayoutEffect(() => {
     const root = host.current;
     if (!root) return;
-    const protectSnapshots = () => root.querySelectorAll<HTMLElement>('[data-animated-month][aria-hidden="true"]').forEach(snapshot => {
-      snapshot.inert = true;
-      snapshot.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
-    });
+    const protectSnapshots = () =>
+      root
+        .querySelectorAll<HTMLElement>(
+          '[data-animated-month][aria-hidden="true"]',
+        )
+        .forEach((snapshot) => {
+          snapshot.inert = true;
+          snapshot
+            .querySelectorAll("[id]")
+            .forEach((element) => element.removeAttribute("id"));
+        });
     const observer = new MutationObserver(protectSnapshots);
     observer.observe(root, { childList: true, subtree: true });
     protectSnapshots();
@@ -153,7 +175,6 @@ export function CalendarCaption({
 }: MonthCaptionProps) {
   const { goToMonth, previousMonth, nextMonth } = useDayPicker();
   const month = calendarMonth.date;
-  const monthRef = useMorph<HTMLSpanElement>("buttons");
   return (
     <div
       data-slot="calendar-header"
@@ -163,7 +184,6 @@ export function CalendarCaption({
       {...props}
     >
       <span
-        ref={monthRef}
         data-slot="calendar-caption"
         className="v-cal__month"
         aria-live="polite"
@@ -233,6 +253,10 @@ export function CalendarDayButton({
       data-slot="calendar-day"
       data-part="item"
       data-d={date.getDate()}
+      data-today={modifiers.today || undefined}
+      data-range-start={modifiers.range_start || undefined}
+      data-range-middle={modifiers.range_middle || undefined}
+      data-range-end={modifiers.range_end || undefined}
       data-state={modifiers.selected ? "active" : "inactive"}
       aria-pressed={modifiers.selected || undefined}
       className={cn(

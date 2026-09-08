@@ -265,6 +265,8 @@
     "description": "Captures an independent checked, unchecked, or indeterminate choice.",
     "category": "Forms",
     "usage": [
+      "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
+      "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Use checked and onCheckedChange for controlled state or defaultChecked for a local default.",
       "Group related options when users may choose more than one, and use indeterminate for a partially selected collection."
     ],
@@ -315,6 +317,7 @@
     "description": "Filters a list of options through text input and stores one selected value.",
     "category": "Forms",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Provide options with distinct values and readable labels for the built-in input, results, and empty state.",
       "Use value and onValueChange to store the selection, or compose the input and item parts for custom option content."
     ],
@@ -332,6 +335,7 @@
     "description": "Builds a searchable command list that users can navigate and activate from the keyboard.",
     "category": "Tools",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Compose CommandInput, CommandList, groups, and items, then run each command from its onSelect handler.",
       "Use CommandDialog for a command palette and add CommandShortcut text to communicate shortcuts you implement."
     ],
@@ -349,6 +353,7 @@
     "description": "Reveals contextual actions for a target through a context-menu interaction.",
     "category": "Actions",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Wrap the relevant target with ContextMenuTrigger and compose actions in ContextMenuContent.",
       "Use checkbox, radio, or submenu items when the actions include stateful choices or another level."
     ],
@@ -449,6 +454,7 @@
     "description": "Opens a compact menu of actions or stateful choices from a visible trigger.",
     "category": "Actions",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use DropdownMenuTrigger with a named button and place related commands in the content.",
       "Compose checkbox items, radio groups, separators, or submenus to match the action structure."
     ],
@@ -532,6 +538,7 @@
     "description": "Renders named SVG icons and provides supporting icon-button and decorative disk primitives.",
     "category": "Data display",
     "usage": [
+      "Browse and search the icon pack in the live example. AnimatedIcon adds configurable motion; StateChevron follows open and closed trigger state.",
       "Choose a supported icon name and size, then pair it with text to reinforce an action or status.",
       "Use IconButton for an icon-only action and Disk when the icon needs a containing surface."
     ],
@@ -663,6 +670,7 @@
     "description": "Groups application commands into a horizontal row of keyboard-navigable menus.",
     "category": "Actions",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Create one MenubarMenu per command family and connect each item to its action.",
       "Use checkbox or radio items for persistent command settings and submenus for another level."
     ],
@@ -710,14 +718,14 @@
     ]
   },
   "native-select": {
-    "description": "Uses the browser’s native select control to choose from a compact list of options.",
+    "description": "Uses the browser\u2019s native select control to choose from a compact list of options.",
     "category": "Forms",
     "usage": [
       "Pass native name, value, and onChange props and compose NativeSelectOption children.",
       "Use NativeSelectOptGroup to label related choices and disabled options for unavailable selections."
     ],
     "accessibility": [
-      "Associate the select with a visible label and retain clear option text for the browser’s keyboard and assistive-technology behavior."
+      "Associate the select with a visible label and retain clear option text for the browser\u2019s keyboard and assistive-technology behavior."
     ],
     "related": [
       "select",
@@ -729,6 +737,7 @@
     "description": "Organizes destination links and optional expandable navigation panels.",
     "category": "Navigation",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use NavigationMenuLink for destinations and set active for the current page.",
       "Compose triggers, content, and a viewport when a destination group needs an expandable panel."
     ],
@@ -810,6 +819,8 @@
     "description": "Composes labeled questions, single-choice answers, and visible completion progress.",
     "category": "Forms",
     "usage": [
+      "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
+      "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Group each question in QuestionnaireQuestion and place value-based QuestionnaireOption parts inside QuestionnaireOptions.",
       "Store answers through onValueChange and update QuestionnaireProgress from your own completion logic."
     ],
@@ -827,6 +838,8 @@
     "description": "Lets users select one option from a labeled set of mutually exclusive choices.",
     "category": "Forms",
     "usage": [
+      "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
+      "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Give each RadioGroupItem a distinct value and use value or defaultValue on the root.",
       "Handle onValueChange to update the setting or form answer represented by the group."
     ],
@@ -875,6 +888,7 @@
     "description": "Opens a list of options from a trigger and stores one selected value.",
     "category": "Forms",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Compose SelectTrigger, SelectValue, SelectContent, and value-based SelectItem parts.",
       "Use value and onValueChange for controlled state, and groups or labels to organize a longer list."
     ],
@@ -945,7 +959,7 @@
     ],
     "accessibility": [
       "Provide a label for icon-only destinations and set isActive on the current link.",
-      "Preserve the trigger’s expanded state and the navigation label when composing custom content."
+      "Preserve the trigger\u2019s expanded state and the navigation label when composing custom content."
     ],
     "related": [
       "navigation-menu",
@@ -1091,7 +1105,7 @@
       "Use durable for a message that should not time out and provide a close action; use ToastAction for a relevant optional follow-up."
     ],
     "accessibility": [
-      "Provide ToastAction altText that explains the action’s purpose and keep a reachable dismissal control.",
+      "Provide ToastAction altText that explains the action\u2019s purpose and keep a reachable dismissal control.",
       "Keep critical instructions available outside a timed toast when users need time to act on them."
     ],
     "related": [
@@ -1223,6 +1237,7 @@
     "description": "Searchable multiple choices with removable selections, form values and clear validation.",
     "category": "Forms",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use value and onValueChange for controlled selection, or defaultValue for internal state. A name submits repeated values with a native form.",
       "Disabled options stay locked. Values no longer present in options stay visible and removable, so filtering does not silently discard a selection.",
       "Use description for guidance and error for validation. This component handles a bounded local set of choices; it does not fetch or virtualize options."
@@ -1319,6 +1334,7 @@
     "description": "A controlled light/dark switch with a morphing sun and moon. The shared applyTheme helper crossfades inherited surface and text colors.",
     "category": "Actions",
     "usage": [
+      "The destination theme opens through a slower organic reveal with a varied viewport origin. Explicit origin options remain available; reduced motion and Motion Off settle immediately.",
       "Pass mode and onModeChange. Keep persistence in the application.",
       "Call applyTheme(nextMode, quiet) to animate the document theme, or update your own theme scope.",
       "Use the shared motion preference so reduced motion and Motion Off switch immediately."
@@ -1521,6 +1537,25 @@
       "pie-chart",
       "radar-chart",
       "radial-chart"
+    ]
+  },
+  "item-adornment": {
+    "description": "Coloured organic shapes for list items, with deterministic automatic selection and custom icon or no-icon options.",
+    "category": "Tools",
+    "usage": [
+      "Menu and select items use adornment=\"auto\" by default. Stable item identity keeps the same shape and colour across renders.",
+      "Pass adornment={false} or \"none\" to hide it, {shape,color} to choose a shape and tone, or a React element for your own icon.",
+      "Use ItemAdornment directly in your own lists. Meaningful state must also have a text or semantic label."
+    ],
+    "accessibility": [
+      "Decorative adornments are hidden from assistive technology.",
+      "Text labels remain the accessible item names; selection does not depend on colour alone."
+    ],
+    "related": [
+      "shape",
+      "animated-icon",
+      "select",
+      "dropdown-menu"
     ]
   }
 }

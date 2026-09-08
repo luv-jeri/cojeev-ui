@@ -246,7 +246,9 @@
       "draw",
       "spin",
       "bounce",
-      "validation"
+      "validation",
+      "none",
+      "pulse"
     ],
     "sizes": [
       "default"
@@ -400,6 +402,106 @@
       "hovered",
       "empty",
       "reduced-motion"
+    ]
+  },
+  "item-adornment": {
+    "name": "Item adornment",
+    "variants": [
+      "auto",
+      "explicit",
+      "custom",
+      "none"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg"
+    ],
+    "states": [
+      "rest",
+      "selected",
+      "hovered",
+      "disabled"
+    ]
+  },
+  "checkbox": {
+    "name": "Checkbox",
+    "variants": [
+      "organic",
+      "circle",
+      "rounded",
+      "pebble",
+      "leaf",
+      "flower"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "unchecked",
+      "checked",
+      "focused",
+      "disabled",
+      "reduced-motion"
+    ]
+  },
+  "radio-group": {
+    "name": "Radio group",
+    "variants": [
+      "organic",
+      "circle",
+      "rounded",
+      "pebble",
+      "leaf",
+      "flower"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "unchecked",
+      "checked",
+      "focused",
+      "disabled",
+      "reduced-motion"
+    ]
+  },
+  "questionnaire": {
+    "name": "Questionnaire",
+    "variants": [
+      "organic",
+      "circle",
+      "rounded",
+      "pebble",
+      "leaf",
+      "flower"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "unchecked",
+      "checked",
+      "focused",
+      "disabled",
+      "reduced-motion"
+    ]
+  },
+  "dropzone": {
+    "name": "Dropzone",
+    "variants": [
+      "default",
+      "compact"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "empty",
+      "dragging",
+      "selected",
+      "invalid",
+      "disabled"
     ]
   }
 }

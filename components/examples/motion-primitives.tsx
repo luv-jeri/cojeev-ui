@@ -25,14 +25,14 @@ export function ThemeToggleExample({size="default"}:ExampleProps) {
     <Card style={{width:"100%",background:mode==="dark"?"var(--ink-fixed)":"var(--cream-fixed)",color:mode==="dark"?"var(--cream-fixed)":"var(--ink-fixed)"}}>
       <CardContent><CardTitle>{mode==="dark"?"A quieter evening":"Room for a bright idea"}</CardTitle><p>Selected appearance: {mode}. This preview keeps the choice local.</p></CardContent>
     </Card>
-    <Meta>The documentation’s appearance switch also applies the shared color crossfade.</Meta>
+    <Meta>Use the page’s appearance switch for the full organic reveal from a different part of the screen.</Meta>
   </div>;
 }
 
 export function AnimatedIconExample({variant="auto"}:ExampleProps) {
   const [checked,setChecked]=React.useState(false);
   const [active,setActive]=React.useState(false);
-  const presets:IconMotion[]=["auto","tremor","draw","spin","bounce","validation"];
+  const presets:IconMotion[]=["auto","tremor","draw","spin","bounce","pulse","validation","none"];
   const preset=presets.includes(variant as IconMotion)?variant as IconMotion:"auto";
   const name=preset==="spin"?"settings":preset==="bounce"?"arrow-right":preset==="validation"?(checked?"check":"x"):"star";
   return <div style={{display:"grid",gap:24}}>

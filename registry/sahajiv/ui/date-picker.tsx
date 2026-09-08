@@ -105,7 +105,7 @@ export function DatePickerTrigger({
       ref={pressRef}
       data-slot="date-picker-trigger"
       data-part="trigger"
-      className={cn("v-select -ink", className)}
+      className={cn("v-select", className)}
       {...props}
     />
   );

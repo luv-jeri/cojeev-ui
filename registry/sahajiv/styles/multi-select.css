@@ -23,3 +23,8 @@
 .v-multi-select__error { color:var(--v-danger-ink); }
 .v-multi-select__empty { padding:16px 8px; text-align:center; }
 @media (prefers-reduced-motion:reduce) { .v-multi-select *, .v-multi-select__popover * { transition-duration:0s; animation-duration:0s; } }
+
+.v-multi-select__option > label { display:flex; flex:1; align-items:center; gap:10px; min-width:0; }
+.v-multi-select__option > label > span:not(.v-item-adornment) { min-width:0; overflow-wrap:anywhere; }
+.v-multi-select__option { min-height:46px; }
+.v-multi-select__option:active:not([data-disabled]) { background:var(--v-pink-soft); color:var(--v-text); }

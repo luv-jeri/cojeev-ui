@@ -257,3 +257,16 @@
 [data-slot="navigation-menu-content"], [data-slot="navigation-menu-viewport"] { z-index: var(--z-popover); }
 [data-slot="navigation-menu-viewport"] > [data-slot="navigation-menu-content"][data-state="closed"] { position:absolute; inset:0; pointer-events:none; }
 [data-slot="navigation-menu-viewport"] > [data-slot="navigation-menu-content"][data-motion-exiting="true"] { position:absolute; inset:0; pointer-events:none; }
+
+[data-slot="navigation-menu-link"], [data-slot="navigation-menu-trigger"] { gap:12px; text-align:start; overflow-wrap:anywhere; }
+[data-slot="navigation-menu-link"] .v-item-adornment .v-icon, [data-slot="navigation-menu-trigger"] .v-item-adornment .v-icon { width:15px; height:15px; color:var(--adornment-foreground); transform:none; transition:none; }
+[data-slot="navigation-menu-trigger"]:is(:hover,[data-state="open"]) { background:var(--v-beige); color:var(--v-text); }
+[data-slot="navigation-menu-trigger"] > .v-state-chevron .v-icon { width:16px; height:16px; transform:none; transition:none; }
+
+/* Standalone navigation uses its surrounding surface; an inverse rail can
+   override these local variables without recoloring the icon palette. */
+[data-slot="navigation-menu"] { --nav-ink:var(--v-text); --nav-active-ink:var(--v-text); --rail-sel:var(--v-pink-soft); --rail-hover:color-mix(in oklab,var(--v-ink) 6%,transparent); }
+[data-slot="navigation-menu-link"] { color:var(--nav-ink); }
+[data-slot="navigation-menu-link"][aria-current="page"], [data-slot="navigation-menu-link"][aria-current="page"] > .v-icon { color:var(--nav-active-ink); }
+[data-slot="navigation-menu-link"][aria-current="page"]::after { background:var(--v-accent-ink); }
+[data-slot="navigation-menu-link"] > .v-item-adornment[data-custom] { color:inherit; }

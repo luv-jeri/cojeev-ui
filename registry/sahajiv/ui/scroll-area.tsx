@@ -7,8 +7,57 @@ import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-scroll-area";
 import { motionTokens, useChoreography } from "../motion/choreography";
 import { useMotionVisibility } from "../motion/use-motion-visibility";
-import { acquirePageScrollbar, pageScrollGeometry, scrollThumbPath } from "../motion/scroll-thumb";
+import { acquirePageScrollbar, pageScrollGeometry, scrollThumbPath, scrollVelocity } from "../motion/scroll-thumb";
 import { assignMotionRef } from "../motion/refs";
+
+function useScrollFeedback(host:React.RefObject<HTMLDivElement|null>,mountedElement:HTMLDivElement|null,orientation:"vertical"|"horizontal",documentScroll=false) {
+  const {quiet}=useChoreography();
+  const {enabled,inView}=useMotionVisibility(host,mountedElement);
+  const [dragging,setDragging]=React.useState(false);
+  const hovered=React.useRef(false);
+  const engagementTarget=useMotionValue(0),pointerTarget=useMotionValue(0),velocityTarget=useMotionValue(0),pressureTarget=useMotionValue(0);
+  const engagement=useSpring(engagementTarget,motionTokens.spring.responsive),bend=useSpring(pointerTarget,motionTokens.spring.gentle),velocity=useSpring(velocityTarget,motionTokens.spring.responsive),pressure=useSpring(pressureTarget,motionTokens.spring.expressive);
+  const contour=useTransform([engagement,bend,velocity,pressure],values=>scrollThumbPath(...values as [number,number,number,number]));
+  const gripOffset=useTransform(velocity,value=>value*5);
+  const active=!quiet&&enabled&&inView;
+  React.useEffect(()=>{
+    if(!active){
+      for(const value of [engagementTarget,pointerTarget,velocityTarget,pressureTarget,engagement,bend,velocity,pressure])value.jump(0);
+      host.current?.removeAttribute("data-scrolling");
+    }else{engagementTarget.set(dragging?1:hovered.current ? .65 : 0);pressureTarget.set(dragging?1:0);}
+  },[active,dragging,host,engagementTarget,pointerTarget,velocityTarget,pressureTarget,engagement,bend,velocity,pressure]);
+  React.useEffect(()=>{
+    const rail=host.current;
+    const owner=documentScroll?document.scrollingElement:rail?.closest('[data-slot="scroll-area"]')?.querySelector<HTMLElement>('[data-radix-scroll-area-viewport]');
+    if(!rail||!owner)return;
+    const read=()=>orientation==="vertical"?owner.scrollTop:owner.scrollLeft;
+    let previous=read(),time=performance.now(),timer:ReturnType<typeof setTimeout>|undefined;
+    const onScroll=()=>{
+      const next=read(),now=performance.now(),delta=next-previous,impulse=scrollVelocity(delta,now-time);
+      previous=next;time=now;
+      if(!delta)return;
+      rail.dataset.direction=delta>0?"forward":"backward";
+      if(!active)return;
+      rail.dataset.scrolling="true";rail.dataset.scrollVelocity=String(Number(impulse.toFixed(3)));velocityTarget.set(impulse);
+      clearTimeout(timer);timer=setTimeout(()=>{velocityTarget.set(0);rail.removeAttribute("data-scrolling");rail.removeAttribute("data-scroll-velocity")},120);
+    };
+    const source=documentScroll?window:owner;
+    source.addEventListener("scroll",onScroll,{passive:true});
+    return()=>{clearTimeout(timer);source.removeEventListener("scroll",onScroll);};
+  },[host,mountedElement,orientation,documentScroll,active,velocityTarget]);
+  const hover=(value:boolean)=>{hovered.current=value;if(active)engagementTarget.set(dragging?1:value ? .65 : 0);if(!value&&!dragging)pointerTarget.set(0);};
+  const press=(value:boolean)=>{setDragging(value);if(active){pressureTarget.set(value?1:0);engagementTarget.set(value?1:hovered.current ? .65 : 0);}if(!value)pointerTarget.set(0);};
+  const point=(event:React.PointerEvent<HTMLDivElement>)=>{
+    const thumb=host.current?.querySelector<HTMLElement>('[data-slot="scroll-area-thumb"],[data-slot="page-scrollbar-thumb"]');
+    if(!active||!thumb)return;
+    const rect=thumb.getBoundingClientRect(),offset=orientation==="vertical"?event.clientY-rect.top:event.clientX-rect.left,length=orientation==="vertical"?rect.height:rect.width;
+    pointerTarget.set(Math.max(-1,Math.min(1,offset/Math.max(1,length)*2-1)));
+  };
+  return {contour,gripOffset,active,dragging,hover,press,point};
+}
+function ScrollThumbPaint({feedback,orientation="vertical"}:{feedback:ReturnType<typeof useScrollFeedback>;orientation?:"vertical"|"horizontal"}) {
+  return <><svg className="v-scroll__contour" viewBox={orientation==="vertical"?"0 0 20 100":"0 0 100 20"} preserveAspectRatio="none" aria-hidden="true" focusable="false"><motion.path d={feedback.contour} transform={orientation==="horizontal"?"matrix(0 1 1 0 0 0)":undefined}/></svg><motion.span className="v-scroll__grip" aria-hidden="true" style={orientation==="vertical"?{y:feedback.gripOffset}:{x:feedback.gripOffset}}><i/><i/><i/></motion.span></>;
+}
 
 export const scrollAreaVariants = cva("v-scroll", {
   variants: { variant: { default: "", ink: "-ink" } },
@@ -61,35 +110,8 @@ export function ScrollBar({
     const release = assignMotionRef(ref, element);
     return () => { host.current = null; setMountedElement(null); release(); };
   }, [ref]);
-  const thumb = React.useRef<HTMLDivElement>(null);
-  const { quiet } = useChoreography();
-  const { enabled, inView } = useMotionVisibility(host, mountedElement);
-  const target = useMotionValue(0);
-  const pointer = useMotionValue(0);
-  const engagement = useSpring(target, motionTokens.spring.responsive);
-  const bend = useSpring(pointer, motionTokens.spring.gentle);
-  const contour = useTransform([engagement, bend], values => scrollThumbPath(values[0] as number, values[1] as number));
-  const [dragging, setDragging] = React.useState(false);
-  const hovered = React.useRef(false);
-  const active = !quiet && enabled && inView;
-  React.useEffect(() => {
-    if (!active) {
-      engagement.jump(0);
-      bend.jump(0);
-    } else target.set(dragging ? 1 : hovered.current ? .65 : 0);
-  }, [active, dragging, target, engagement, bend]);
-  const point = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!active || !thumb.current) return;
-    const rect = thumb.current.getBoundingClientRect();
-    const offset = orientation === "vertical" ? event.clientY - rect.top : event.clientX - rect.left;
-    const length = orientation === "vertical" ? rect.height : rect.width;
-    pointer.set(Math.max(-1, Math.min(1, offset / Math.max(1, length) * 2 - 1)));
-  };
-  const release = () => {
-    setDragging(false);
-    if (active) target.set(hovered.current ? .65 : 0);
-    pointer.set(0);
-  };
+  const feedback=useScrollFeedback(host,mountedElement,orientation);
+  const {active,dragging}=feedback;
   return (
     <Primitive.Scrollbar
       ref={hostRef}
@@ -99,18 +121,16 @@ export function ScrollBar({
       orientation={orientation}
       className={cn("v-scroll__bar", className)}
       {...props}
-      onPointerEnter={event => { onPointerEnter?.(event); hovered.current = true; if (active) target.set(dragging ? 1 : .65); point(event); }}
-      onPointerLeave={event => { onPointerLeave?.(event); hovered.current = false; if (!dragging) { target.set(0); pointer.set(0); } }}
-      onPointerDown={event => { onPointerDown?.(event); if (event.defaultPrevented || event.button !== 0) return; setDragging(true); if (active) target.set(1); point(event); }}
-      onPointerMove={event => { onPointerMove?.(event); point(event); }}
-      onPointerUp={event => { onPointerUp?.(event); release(); }}
-      onPointerCancel={event => { onPointerCancel?.(event); release(); }}
-      onLostPointerCapture={event => { onLostPointerCapture?.(event); release(); }}
+      onPointerEnter={event => { onPointerEnter?.(event); feedback.hover(true); feedback.point(event); }}
+      onPointerLeave={event => { onPointerLeave?.(event); feedback.hover(false); }}
+      onPointerDown={event => { onPointerDown?.(event); if (event.defaultPrevented || event.button !== 0) return; feedback.press(true); feedback.point(event); }}
+      onPointerMove={event => { onPointerMove?.(event); feedback.point(event); }}
+      onPointerUp={event => { onPointerUp?.(event); feedback.press(false); }}
+      onPointerCancel={event => { onPointerCancel?.(event); feedback.press(false); }}
+      onLostPointerCapture={event => { onLostPointerCapture?.(event); feedback.press(false); }}
     >
-      <Primitive.Thumb ref={thumb} data-slot="scroll-area-thumb" data-part="thumb" className="v-scroll__thumb">
-        <svg className="v-scroll__contour" viewBox={orientation === "vertical" ? "0 0 20 100" : "0 0 100 20"} preserveAspectRatio="none" aria-hidden="true" focusable="false">
-          <motion.path d={contour} transform={orientation === "horizontal" ? "matrix(0 1 1 0 0 0)" : undefined} />
-        </svg>
+      <Primitive.Thumb data-slot="scroll-area-thumb" data-part="thumb" className="v-scroll__thumb">
+        <ScrollThumbPaint feedback={feedback} orientation={orientation}/>
       </Primitive.Thumb>
     </Primitive.Scrollbar>
   );
@@ -120,29 +140,19 @@ export type PageScrollBarProps = React.ComponentProps<"div">;
 /** Mount once near the application root. The document remains the scroll owner. */
 export function PageScrollBar({ className, ref, onKeyDown, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, onLostPointerCapture, ...props }: PageScrollBarProps) {
   const host = React.useRef<HTMLDivElement>(null);
+  const [mountedElement,setMountedElement]=React.useState<HTMLDivElement|null>(null);
   const externalRef = React.useCallback((element: HTMLDivElement | null) => {
-    host.current = element;
+    host.current = element; setMountedElement(element);
     const release = assignMotionRef(ref, element);
-    return () => { host.current = null; release(); };
+    return () => { host.current = null; setMountedElement(null); release(); };
   }, [ref]);
   const generatedId = `page-scroll-${React.useId().replace(/:/g, "")}`;
   const [controlledId, setControlledId] = React.useState(generatedId);
   const [metrics, setMetrics] = React.useState({ maxScroll: 0, thumbSize: 0, thumbOffset: 0, travel: 0, scrollTop: 0, viewport: 0 });
   const metricsRef = React.useRef(metrics);
   const drag = React.useRef<{ pointerId: number; grabOffset: number } | null>(null);
-  const [dragging, setDragging] = React.useState(false);
-  const hovered = React.useRef(false);
-  const { quiet } = useChoreography();
-  const { enabled, inView } = useMotionVisibility(host);
-  const target = useMotionValue(0), pointer = useMotionValue(0);
-  const engagement = useSpring(target, motionTokens.spring.responsive);
-  const bend = useSpring(pointer, motionTokens.spring.gentle);
-  const contour = useTransform([engagement, bend], values => scrollThumbPath(values[0] as number, values[1] as number));
-  const active = !quiet && enabled && inView;
-  React.useEffect(() => {
-    if (!active) { engagement.jump(0); bend.jump(0); }
-    else target.set(dragging ? 1 : hovered.current ? .65 : 0);
-  }, [active, dragging, engagement, bend, target]);
+  const feedback=useScrollFeedback(host,mountedElement,"vertical",true);
+  const {active,dragging}=feedback;
   React.useEffect(() => {
     const rail = host.current, documentElement = document.documentElement;
     if (!rail) return;
@@ -186,11 +196,7 @@ export function PageScrollBar({ className, ref, onKeyDown, onPointerDown, onPoin
     const owner = document.scrollingElement ?? document.documentElement;
     owner.scrollTo({ top: Math.max(0, Math.min(metricsRef.current.maxScroll, top)), behavior: "instant" });
   };
-  const point = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!active || !host.current) return;
-    const relative = event.clientY - host.current.getBoundingClientRect().top - metricsRef.current.thumbOffset;
-    pointer.set(Math.max(-1, Math.min(1, relative / Math.max(1, metricsRef.current.thumbSize) * 2 - 1)));
-  };
+  const point=feedback.point;
   const move = (clientY: number) => {
     if (!drag.current || !host.current) return;
     const { travel, maxScroll } = metricsRef.current;
@@ -198,9 +204,7 @@ export function PageScrollBar({ className, ref, onKeyDown, onPointerDown, onPoin
     scrollTo(travel > 0 ? position / travel * maxScroll : 0);
   };
   const release = () => {
-    drag.current = null; setDragging(false);
-    if (active) target.set(hovered.current ? .65 : 0);
-    pointer.set(0);
+    drag.current = null; feedback.press(false);
   };
   return (
     <div
@@ -220,8 +224,8 @@ export function PageScrollBar({ className, ref, onKeyDown, onPointerDown, onPoin
       aria-hidden={metrics.maxScroll <= 0 || undefined}
       tabIndex={metrics.maxScroll > 0 ? 0 : -1}
       className={cn("v-page-scrollbar", className)}
-      onPointerEnter={event => { hovered.current = true; if (active) target.set(dragging ? 1 : .65); point(event); props.onPointerEnter?.(event); }}
-      onPointerLeave={event => { hovered.current = false; if (!dragging) { target.set(0); pointer.set(0); } props.onPointerLeave?.(event); }}
+      onPointerEnter={event => { feedback.hover(true); point(event); props.onPointerEnter?.(event); }}
+      onPointerLeave={event => { feedback.hover(false); props.onPointerLeave?.(event); }}
       onPointerDown={event => {
         onPointerDown?.(event);
         if (event.defaultPrevented || event.button !== 0 || metrics.maxScroll <= 0) return;
@@ -230,7 +234,7 @@ export function PageScrollBar({ className, ref, onKeyDown, onPointerDown, onPoin
         drag.current = { pointerId: event.pointerId, grabOffset: onThumb ? relative : metrics.thumbSize / 2 };
         event.currentTarget.setPointerCapture(event.pointerId);
         event.preventDefault();
-        setDragging(true); if (active) target.set(1); move(event.clientY); point(event);
+        feedback.press(true); move(event.clientY); point(event);
       }}
       onPointerMove={event => { onPointerMove?.(event); if (drag.current?.pointerId === event.pointerId) move(event.clientY); point(event); }}
       onPointerUp={event => { onPointerUp?.(event); release(); if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }}
@@ -244,7 +248,7 @@ export function PageScrollBar({ className, ref, onKeyDown, onPointerDown, onPoin
       }}
     >
       <div data-slot="page-scrollbar-thumb" style={{ height: metrics.thumbSize, transform: `translateY(${metrics.thumbOffset}px)` }}>
-        <svg viewBox="0 0 20 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><motion.path d={contour} /></svg>
+        <ScrollThumbPaint feedback={feedback}/>
       </div>
     </div>
   );

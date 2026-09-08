@@ -174,7 +174,7 @@
   white-space: normal;
 }
 [data-slot="combobox-item"]
-  > span:not(.v-disk),
+  > span:not(.v-disk,.v-item-adornment),
 [data-slot="combobox-item"]
   .v-combo__label {
   grid-column: 2;
@@ -186,23 +186,6 @@
 [data-slot="combobox-item"]
   mark {
   display: inline;
-}
-[data-slot="combobox-item"]::before {
-  content: "";
-  width: 22px;
-  height: 22px;
-  flex: none;
-  border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
-  background: var(--v-blue);
-}
-[data-slot="combobox-item"]:nth-child(4n + 2)::before {
-  background: var(--v-yellow);
-}
-[data-slot="combobox-item"]:nth-child(4n + 3)::before {
-  background: var(--v-olive);
-}
-[data-slot="combobox-item"]:nth-child(4n)::before {
-  background: var(--v-pink);
 }
 [data-slot="combobox-item"]:hover,
 [data-slot="combobox-item"][aria-selected="true"] {
@@ -286,3 +269,9 @@
 
 /* cmdk's contents-only sizer has no stacking box: each option sits above the moving selection paint. */
 [data-flow-owned][data-slot="combobox-content"] [data-slot="combobox-item"] { position: relative; z-index: 1; }
+
+[data-slot="combobox-item"] { grid-template-columns:30px minmax(0,1fr) auto; min-height:46px; }
+[data-slot="combobox-item"] > .v-item-adornment { grid-column:1; display:inline-grid; overflow:visible; }
+[data-slot="combobox-item"]:not(:has(.v-item-adornment)) { grid-template-columns:minmax(0,1fr) auto; }
+[data-slot="combobox-item"]:not(:has(.v-item-adornment)) > .v-combo__label { grid-column:1; }
+[data-slot="combobox-item"]:active:not([data-disabled="true"]) { background:var(--v-pink-soft); color:var(--v-text); }

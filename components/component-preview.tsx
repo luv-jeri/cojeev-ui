@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Preview } from "@/registry/sahajiv/ui/preview";
 import { Label } from "@/registry/sahajiv/ui/label";
-import { NativeSelect } from "@/registry/sahajiv/ui/native-select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/sahajiv/ui/select";
 import { Button } from "@/registry/sahajiv/ui/button";
 import { Meta } from "@/registry/sahajiv/ui/typography";
 import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
@@ -46,31 +46,25 @@ export function ComponentPreview({
         {variants.length > 1 && (
           <div className="docs-control">
             <Label htmlFor={`${controlId}-variant`} size="sm">Variant</Label>
-            <NativeSelect
-              id={`${controlId}-variant`}
-              value={variant}
-              onChange={(event) => setVariant(event.target.value)}
-            >
-              {variants.map((value) => (
-                <option key={value} value={value}>{value.replaceAll("-", " ")}</option>
-              ))}
-            </NativeSelect>
+            <Select value={variant} onValueChange={setVariant}>
+              <SelectTrigger id={`${controlId}-variant`} className="docs-preview-select"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {variants.map(value => <SelectItem key={value} value={value} adornmentId={`variant:${value}`}>{value.replaceAll("-", " ")}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
         )}
         {sizes.length > 1 && (
           <div className="docs-control">
             <Label htmlFor={`${controlId}-size`} size="sm">Size</Label>
-            <NativeSelect
-              id={`${controlId}-size`}
-              value={size}
-              onChange={(event) => setSize(event.target.value)}
-            >
-              {sizes.map((value) => (
-                <option key={value} value={value}>
-                  {({ default: "Default", xs: "Extra small", sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" } as Record<string, string>)[value] ?? value}
-                </option>
-              ))}
-            </NativeSelect>
+            <Select value={size} onValueChange={setSize}>
+              <SelectTrigger id={`${controlId}-size`} className="docs-preview-select"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {sizes.map(value => <SelectItem key={value} value={value} adornmentId={`size:${value}`}>
+                  {({ default: "Default", xs: "Extra small", sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" } as Record<string,string>)[value] ?? value}
+                </SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
         )}
       </div>

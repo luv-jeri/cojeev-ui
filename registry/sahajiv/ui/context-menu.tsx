@@ -10,6 +10,9 @@ import {
   useFlowGroup,
 } from "@/registry/sahajiv/motion/use-flow";
 
+import { adornItem, itemText, type ItemAdornmentItemProps } from "@/registry/sahajiv/ui/item-adornment";
+import { StateChevron, AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
+
 export type ContextMenuProps = React.ComponentProps<typeof Primitive.Root>;
 export function ContextMenu(props: ContextMenuProps) {
   return <Primitive.Root {...props} />;
@@ -138,9 +141,12 @@ export function ContextMenuSubContent({
 }
 export type ContextMenuItemProps = React.ComponentProps<
   typeof Primitive.Item
-> & { variant?: "default" | "danger"; inset?: boolean };
+> & { variant?: "default" | "danger"; inset?: boolean } & ItemAdornmentItemProps;
 export function ContextMenuItem({
   className,
+  children,
+  adornment,
+  adornmentId,
   variant,
   inset,
   ref,
@@ -157,16 +163,21 @@ export function ContextMenuItem({
         "v-menu__item flex items-center gap-[var(--s-3)] min-h-10 px-[var(--s-3)] rounded-[var(--r-md)] text-[length:var(--fs-control)] w-full text-left whitespace-nowrap outline-none",
         variant === "danger" && "-danger",
         className,
+  children,
+  adornment,
+  adornmentId,
       )}
       {...props}
-    />
+    >{adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>
   );
 }
 export type ContextMenuSubTriggerProps = React.ComponentProps<
   typeof Primitive.SubTrigger
-> & { inset?: boolean };
+> & { inset?: boolean } & ItemAdornmentItemProps;
 export function ContextMenuSubTrigger({
   className,
+  adornment,
+  adornmentId,
   inset,
   children,
   ref,
@@ -182,18 +193,17 @@ export function ContextMenuSubTrigger({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {children}
-      <span aria-hidden="true" className="ml-auto">
-        ›
-      </span>
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <StateChevron direction="right" />)}
     </Primitive.SubTrigger>
   );
 }
 export type ContextMenuCheckboxItemProps = React.ComponentProps<
   typeof Primitive.CheckboxItem
->;
+> & ItemAdornmentItemProps;
 export function ContextMenuCheckboxItem({
   className,
+  adornment,
+  adornmentId,
   children,
   ref,
   ...props
@@ -207,21 +217,17 @@ export function ContextMenuCheckboxItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      <Primitive.ItemIndicator
-        data-slot="context-menu-item-indicator"
-        data-part="indicator"
-      >
-        ✓
-      </Primitive.ItemIndicator>
-      {children}
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="context-menu-item-indicator" data-part="indicator"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.CheckboxItem>
   );
 }
 export type ContextMenuRadioItemProps = React.ComponentProps<
   typeof Primitive.RadioItem
->;
+> & ItemAdornmentItemProps;
 export function ContextMenuRadioItem({
   className,
+  adornment,
+  adornmentId,
   children,
   ref,
   ...props
@@ -235,13 +241,7 @@ export function ContextMenuRadioItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      <Primitive.ItemIndicator
-        data-slot="context-menu-item-indicator"
-        data-part="indicator"
-      >
-        ●
-      </Primitive.ItemIndicator>
-      {children}
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="context-menu-item-indicator" data-part="indicator"><AnimatedIcon name="dot" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.RadioItem>
   );
 }

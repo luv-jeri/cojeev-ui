@@ -67,7 +67,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    el.className.split(/\s+/).filter(c=>!['v-morph-host','v-morph-live','v-morph-rel'].includes(c)).join(' '),
    ...['motion','tier','reach','inside','amp','lobes','depth','asym','spread','r','shape','sw','dash','colors'].map(k=>el.dataset[k]),
    el.dataset.morph===autoMode?'':el.dataset.morph,el.style.getPropertyValue('--mfill'),el.style.getPropertyValue('--mstroke'),
-   ...['aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','data-state','data-highlighted'].map(name=>el.getAttribute(name)),
+   ...['aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','disabled','aria-disabled','aria-busy','data-state','data-highlighted'].map(name=>el.getAttribute(name)),
   ])
   function attach(){
    const overrides=new Map<string,string>()
@@ -159,8 +159,8 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    const bodyAC=new AbortController(),bo={signal:bodyAC.signal}
    const press=()=>{if(!cfg.press||el.matches(':disabled,[aria-disabled="true"]'))return;b.press.to=1;b.press.k=260;wake()}
    const release=()=>{if(b.press.to){b.press.to=0;b.ripple=1;wake()}}
-   el.addEventListener('focusin',()=>{b.focus=true;wake()},bo);el.addEventListener('focusout',()=>{b.focus=false;release();wake()},bo)
-   el.addEventListener('pointerenter',()=>{el.setAttribute('data-hover','');wake()},bo);el.addEventListener('pointerleave',()=>{el.removeAttribute('data-hover');wake()},bo)
+   el.addEventListener('focusin',()=>{b.focus=true;repaint();wake()},bo);el.addEventListener('focusout',()=>{b.focus=false;release();repaint();wake()},bo)
+   el.addEventListener('pointerenter',()=>{el.setAttribute('data-hover','');repaint();wake()},bo);el.addEventListener('pointerleave',()=>{el.removeAttribute('data-hover');repaint();wake()},bo)
    el.addEventListener('pointerdown',press,bo);el.addEventListener('pointercancel',release,bo);document.addEventListener('pointerup',release,bo)
    el.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter')press()},bo);el.addEventListener('keyup',release,bo)
    const ro=new ResizeObserver(entries=>{for(const entry of entries){const R=entry.contentRect;if(Math.abs(Math.round(R.width)-b.w)<1&&Math.abs(Math.round(R.height)-b.h)<1)continue;invalidate();wake()}});ro.observe(el)
@@ -186,7 +186,7 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
   const unsubscribe=subscribeMotion(()=>{retuneProfile();signature=visualSignature()})
   const unregister=registerMorphHost(el,{refresh:()=>{attach();signature=visualSignature()},disable:()=>{destroyBody();automaticRadius=undefined;destroyBody=()=>{};repairBody=()=>{}}})
   const attributes=new MutationObserver(()=>{if(visualSignature()!==signature){attach();signature=visualSignature()}})
-  attributes.observe(el,{attributes:true,attributeFilter:['class','style','data-morph','data-tier','data-motion','data-reach','data-inside','data-amp','data-lobes','data-depth','data-asym','data-spread','data-r','data-shape','data-sw','data-dash','data-colors','aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','data-state','data-highlighted']})
+  attributes.observe(el,{attributes:true,attributeFilter:['class','style','data-morph','data-tier','data-motion','data-reach','data-inside','data-amp','data-lobes','data-depth','data-asym','data-spread','data-r','data-shape','data-sw','data-dash','data-colors','aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','disabled','aria-disabled','aria-busy','data-state','data-highlighted']})
   const ancestors=new MutationObserver(()=>{attach();signature=visualSignature()})
   for(let parent=el.parentElement;parent;parent=parent.parentElement)ancestors.observe(parent,{attributes:true,attributeFilter:['data-motion','hidden']})
   mq.addEventListener('change',attach,opts)

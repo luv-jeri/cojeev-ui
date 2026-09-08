@@ -10,6 +10,9 @@ import {
   useFlowGroup,
 } from "@/registry/sahajiv/motion/use-flow";
 
+import { adornItem, itemText, type ItemAdornmentItemProps } from "@/registry/sahajiv/ui/item-adornment";
+import { StateChevron, AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
+
 export type DropdownMenuProps = React.ComponentProps<typeof Primitive.Root>;
 export function DropdownMenu(props: DropdownMenuProps) {
   return <Primitive.Root {...props} />;
@@ -40,9 +43,11 @@ export function DropdownMenuSub(props: DropdownMenuSubProps) {
 }
 export type DropdownMenuTriggerProps = React.ComponentProps<
   typeof Primitive.Trigger
->;
+> & { chevron?: boolean };
 export function DropdownMenuTrigger({
   className,
+  children,
+  chevron = false,
   ref,
   ...props
 }: DropdownMenuTriggerProps) {
@@ -54,7 +59,7 @@ export function DropdownMenuTrigger({
       data-menu=""
       className={cn("", className)}
       {...props}
-    />
+    >{adornItem(children, false, "", props.asChild, chevron ? <StateChevron /> : null)}</Primitive.Trigger>
   );
 }
 export const dropdownmenuContentVariants = cva(
@@ -119,9 +124,12 @@ export function DropdownMenuSubContent({
 }
 export type DropdownMenuItemProps = React.ComponentProps<
   typeof Primitive.Item
-> & { variant?: "default" | "danger"; inset?: boolean };
+> & { variant?: "default" | "danger"; inset?: boolean } & ItemAdornmentItemProps;
 export function DropdownMenuItem({
   className,
+  children,
+  adornment,
+  adornmentId,
   variant,
   inset,
   ref,
@@ -138,16 +146,21 @@ export function DropdownMenuItem({
         "v-menu__item flex items-center gap-[var(--s-3)] min-h-10 px-[var(--s-3)] rounded-[var(--r-md)] text-[length:var(--fs-control)] w-full text-left whitespace-nowrap outline-none",
         variant === "danger" && "-danger",
         className,
+  children,
+  adornment,
+  adornmentId,
       )}
       {...props}
-    />
+    >{adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>
   );
 }
 export type DropdownMenuSubTriggerProps = React.ComponentProps<
   typeof Primitive.SubTrigger
-> & { inset?: boolean };
+> & { inset?: boolean } & ItemAdornmentItemProps;
 export function DropdownMenuSubTrigger({
   className,
+  adornment,
+  adornmentId,
   inset,
   children,
   ref,
@@ -163,18 +176,17 @@ export function DropdownMenuSubTrigger({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {children}
-      <span aria-hidden="true" className="ml-auto">
-        ›
-      </span>
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <StateChevron direction="right" />)}
     </Primitive.SubTrigger>
   );
 }
 export type DropdownMenuCheckboxItemProps = React.ComponentProps<
   typeof Primitive.CheckboxItem
->;
+> & ItemAdornmentItemProps;
 export function DropdownMenuCheckboxItem({
   className,
+  adornment,
+  adornmentId,
   children,
   ref,
   ...props
@@ -188,21 +200,17 @@ export function DropdownMenuCheckboxItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      <Primitive.ItemIndicator
-        data-slot="dropdown-menu-item-indicator"
-        data-part="indicator"
-      >
-        ✓
-      </Primitive.ItemIndicator>
-      {children}
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="dropdown-menu-item-indicator" data-part="indicator"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.CheckboxItem>
   );
 }
 export type DropdownMenuRadioItemProps = React.ComponentProps<
   typeof Primitive.RadioItem
->;
+> & ItemAdornmentItemProps;
 export function DropdownMenuRadioItem({
   className,
+  adornment,
+  adornmentId,
   children,
   ref,
   ...props
@@ -216,13 +224,7 @@ export function DropdownMenuRadioItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      <Primitive.ItemIndicator
-        data-slot="dropdown-menu-item-indicator"
-        data-part="indicator"
-      >
-        ●
-      </Primitive.ItemIndicator>
-      {children}
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="dropdown-menu-item-indicator" data-part="indicator"><AnimatedIcon name="dot" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.RadioItem>
   );
 }

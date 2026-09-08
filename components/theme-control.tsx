@@ -32,7 +32,7 @@ function subscribeTheme(listener: () => void) {
     media.removeEventListener("change", listener);
   };
 }
-export function ThemeControl() {
+export function ThemeControl({ compact = false }: { compact?: boolean }) {
   const mode = React.useSyncExternalStore(
     subscribeTheme,
     readTheme,
@@ -46,8 +46,8 @@ export function ThemeControl() {
     initialized.current=true;
   }, [mode,quiet]);
   return (
-    <div className="docs-theme">
-      <Label htmlFor={id} size="sm">
+    <div className={`docs-theme${compact ? " docs-theme-compact" : ""}`}>
+      <Label htmlFor={id} size="sm" className={compact ? "sr-only" : undefined}>
         Appearance
       </Label>
       <ThemeToggle

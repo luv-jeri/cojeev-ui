@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
+  // Next 16.3.4 can stall during the production cache flush at native shutdown.
+  // Keep Turbopack while opting out of its build filesystem cache.
+  experimental: { turbopackFileSystemCacheForBuild: false },
   distDir: process.env.SAHAJIV_NEXT_DIST_DIR ?? ".next",
   allowedDevOrigins: [
     "127.0.0.1",

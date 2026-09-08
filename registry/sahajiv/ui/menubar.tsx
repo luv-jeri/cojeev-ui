@@ -24,6 +24,9 @@ function useRetainedMenuContentRef(ref?: React.Ref<HTMLDivElement>) {
   return { nodeRef, composedRef };
 }
 
+import { adornItem, itemText, type ItemAdornmentItemProps } from "@/registry/sahajiv/ui/item-adornment";
+import { StateChevron, AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
+
 export type MenubarProps = React.ComponentProps<typeof Primitive.Root>;
 export function Menubar({ className, ref, ...props }: MenubarProps) {
   const morphRef = useMorph<HTMLDivElement>("nav", ref);
@@ -64,9 +67,11 @@ export function MenubarSub(props: MenubarSubProps) {
 }
 export type MenubarTriggerProps = React.ComponentProps<
   typeof Primitive.Trigger
->;
+> & { chevron?: boolean };
 export function MenubarTrigger({
   className,
+  children,
+  chevron = true,
   ref,
   ...props
 }: MenubarTriggerProps) {
@@ -80,9 +85,11 @@ export function MenubarTrigger({
       className={cn(
         "v-menubar__trigger h-8 px-[var(--s-4)] rounded-[var(--r-pill)] text-[length:var(--fs-control)] font-medium",
         className,
+  children,
+  chevron = true,
       )}
       {...props}
-    />
+    >{adornItem(children, false, "", props.asChild, chevron ? <StateChevron /> : null)}</Primitive.Trigger>
   );
 }
 export const menubarContentVariants = cva(
@@ -162,9 +169,12 @@ export function MenubarSubContent({
 export type MenubarItemProps = React.ComponentProps<typeof Primitive.Item> & {
   variant?: "default" | "danger";
   inset?: boolean;
-};
+} & ItemAdornmentItemProps;
 export function MenubarItem({
   className,
+  children,
+  adornment,
+  adornmentId,
   variant,
   inset,
   ref,
@@ -181,16 +191,21 @@ export function MenubarItem({
         "v-menu__item flex items-center gap-[var(--s-3)] min-h-10 px-[var(--s-3)] rounded-[var(--r-md)] text-[length:var(--fs-control)] w-full text-left whitespace-nowrap outline-none",
         variant === "danger" && "-danger",
         className,
+  children,
+  adornment,
+  adornmentId,
       )}
       {...props}
-    />
+    >{adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>
   );
 }
 export type MenubarSubTriggerProps = React.ComponentProps<
   typeof Primitive.SubTrigger
-> & { inset?: boolean };
+> & { inset?: boolean } & ItemAdornmentItemProps;
 export function MenubarSubTrigger({
   className,
+  adornment,
+  adornmentId,
   inset,
   children,
   ref,
@@ -206,18 +221,17 @@ export function MenubarSubTrigger({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {children}
-      <span aria-hidden="true" className="ml-auto">
-        ›
-      </span>
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <StateChevron direction="right" />)}
     </Primitive.SubTrigger>
   );
 }
 export type MenubarCheckboxItemProps = React.ComponentProps<
   typeof Primitive.CheckboxItem
->;
+> & ItemAdornmentItemProps;
 export function MenubarCheckboxItem({
   className,
+  adornment,
+  adornmentId,
   children,
   ref,
   ...props
@@ -231,21 +245,17 @@ export function MenubarCheckboxItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      <Primitive.ItemIndicator
-        data-slot="menubar-item-indicator"
-        data-part="indicator"
-      >
-        ✓
-      </Primitive.ItemIndicator>
-      {children}
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="menubar-item-indicator" data-part="indicator"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.CheckboxItem>
   );
 }
 export type MenubarRadioItemProps = React.ComponentProps<
   typeof Primitive.RadioItem
->;
+> & ItemAdornmentItemProps;
 export function MenubarRadioItem({
   className,
+  adornment,
+  adornmentId,
   children,
   ref,
   ...props
@@ -259,13 +269,7 @@ export function MenubarRadioItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      <Primitive.ItemIndicator
-        data-slot="menubar-item-indicator"
-        data-part="indicator"
-      >
-        ●
-      </Primitive.ItemIndicator>
-      {children}
+      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="menubar-item-indicator" data-part="indicator"><AnimatedIcon name="dot" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.RadioItem>
   );
 }

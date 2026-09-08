@@ -20,7 +20,7 @@
 .v-nav[data-flow-owned].v-glide>.v-glide__pill>i,.v-nav[data-flow-owned].v-glide>.v-glide__trail>i{background:var(--rail-sel)}
 .v-nav[data-flow-owned].v-glide>.v-glide__hover>i{background:var(--rail-hover)}
 .v-nav[data-flow-owned].v-glide>.v-glide__pill{border-radius:var(--r-md);background:rgba(251,244,230,.1)}
-.v-nav[data-flow-owned].v-glide .v-nav__item[data-glide-active]{color:var(--v-pink)}
+.v-nav[data-flow-owned].v-glide .v-nav__item[data-glide-active]{color:var(--nav-active-ink,var(--v-pink))}
 .v-seg[data-flow-owned].v-glide>.v-glide__pill{border-radius:999px}
 .v-seg.-pink[data-flow-owned].v-glide>.v-glide__pill>i,.v-seg.-pink[data-flow-owned].v-glide>.v-glide__trail>i{background:var(--v-pink)}
 .v-seg.-pink[data-flow-owned].v-glide [data-glide-active]{color:var(--v-on-accent)}

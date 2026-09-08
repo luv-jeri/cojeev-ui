@@ -45,3 +45,14 @@ Dark foregrounds, anchored overlay origins, popup stacking, long-word wrapping, 
 ## Verification
 
 The production gate checks the real documentation and component behavior. The historical source fidelity tools remain available as an audit; intentional improvements do not need to recreate confirmed source defects. A release also requires a successful build, fresh consumer installation, public registry URLs and passing deployment checks. A local implementation checkpoint is not a publication receipt.
+
+
+## Living showcase and control refinement
+
+The registry adds ItemAdornment for deterministic automatic shapes, selected shape/colour, custom icons and no adornment. It now has 90 UI entries: 66 original components and 24 additional entries. DropdownMenu, Menubar, ContextMenu, Select, Command, Combobox, MultiSelect and NavigationMenu share this API. The icon pack contains 136 names; AnimatedIcon adds configurable effects and StateChevron follows native disclosure state.
+
+Checkbox, RadioGroup and Questionnaire use a gently organic near-circle by default, with cursor-responsive contour motion. Circle, rounded, pebble, leaf and flower remain selectable. Secondary/disabled/loading Button paint, Calendar/DatePicker composition and Dropzone presentation were refined. The default Button demonstration retains its success/error/retry flow.
+
+ThemeToggle reveals the actual destination page through a slower organic contour with varied viewport origins. Consumers can specify an explicit origin. Native scrollbars respond to direction, velocity, hover and held dragging. Quiet settings settle the page immediately.
+
+The home route tells the library's story through a real 3D scene, native-scroll assembly, interactive conversation and shape playground, principles and installation. The Work with Me route links to the creator's confirmed GitHub profile. Both pages compose the library's own primitives. See [REFINEMENT-REPORT.md](REFINEMENT-REPORT.md) for final evidence and limits.

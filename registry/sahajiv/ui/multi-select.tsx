@@ -5,6 +5,8 @@ import { cn } from "@/registry/sahajiv/lib/utils";
 import { Badge } from "@/registry/sahajiv/ui/badge";
 import { Button } from "@/registry/sahajiv/ui/button";
 import { Checkbox } from "@/registry/sahajiv/ui/checkbox";
+import { ItemAdornment, type ItemAdornmentValue } from "@/registry/sahajiv/ui/item-adornment";
+import { StateChevron } from "@/registry/sahajiv/ui/animated-icon";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import { Input } from "@/registry/sahajiv/ui/input";
 import { Label } from "@/registry/sahajiv/ui/label";
@@ -16,12 +18,15 @@ export type MultiSelectOption = {
   label: string;
   /** A disabled option cannot be selected or removed. */
   disabled?: boolean;
+  adornment?: ItemAdornmentValue;
 };
 
 export type MultiSelectProps = {
   /** Visible accessible label for the trigger and its choices. */
   label: string;
   options: readonly MultiSelectOption[];
+  /** Per-option adornments take precedence over this shared default. */
+  adornment?: ItemAdornmentValue;
   /** Controlled selected values. Values absent from options remain removable. */
   value?: readonly string[];
   /** Initial selection when value is omitted. */
@@ -46,6 +51,7 @@ const unique = (values: readonly string[]) => [...new Set(values)];
 export function MultiSelect({
   label,
   options,
+  adornment = "auto",
   value,
   defaultValue = [],
   onValueChange,
@@ -126,7 +132,7 @@ export function MultiSelect({
             <PopoverTrigger asChild>
               <Button ref={triggerRef} id={controlId} data-motion="off" variant="outline" disabled={disabled} aria-labelledby={`${controlId}-label`} aria-describedby={descriptions} aria-invalid={!!error || undefined} className="v-multi-select__trigger">
                 <span>{selected.length ? `${selected.length} selected` : placeholder}</span>
-                <Icon name="chevron-down" aria-hidden="true" />
+                <StateChevron open={popover.open && !disabled} />
               </Button>
             </PopoverTrigger>
           </div>
@@ -148,7 +154,7 @@ export function MultiSelect({
               const optionId = `${controlId}-option-${indexed.indexOf(option)}`;
               return <div key={option.value} className="v-multi-select__option" data-disabled={option.disabled || undefined} data-selected={selectedSet.has(option.value) || undefined}>
                 <Checkbox id={optionId} checked={selectedSet.has(option.value)} disabled={disabled || option.disabled} onCheckedChange={() => toggle(option)} />
-                <label htmlFor={optionId}>{option.label}</label>
+                <label htmlFor={optionId}><ItemAdornment identity={option.value} value={option.adornment ?? adornment} /><span>{option.label}</span></label>
               </div>;
             })}
             {!filtered.length && <p className="v-multi-select__empty" role="status">{indexed.length ? noResultsMessage : emptyMessage}</p>}

@@ -520,3 +520,9 @@
   .docs-shell .docs-navigation [data-slot="sidebar-menu-button"] { min-height: 44px; }
   .docs-control [data-slot="native-select"], .docs-playground-actions > button { min-height: 44px; }
 }
+
+.docs-brand-links { display:flex; flex-wrap:wrap; align-items:center; gap:16px; font-size:11px; }
+.docs-brand-links a, .docs-footer-links a { display:inline-flex; align-items:center; gap:6px; }
+.docs-brand-links [data-slot="icon"] { width:14px; height:14px; }
+.docs-source-icon { display:inline-flex; align-items:center; justify-content:center; min-width:40px; min-height:40px; color:var(--v-text); }
+.docs-preview-select { width:auto; min-width:130px; max-width:100%; }

@@ -1,3 +1,14 @@
-[data-slot="theme-toggle"] { gap:var(--s-2); min-width:88px; padding-inline:var(--s-3); color:var(--v-accent-ink,var(--v-pink-deep)); }
+[data-slot="theme-toggle"] { gap:var(--s-2); min-width:88px; padding-inline:var(--s-3); color:var(--ink-fixed); }
 [data-slot="theme-toggle"] svg { flex-shrink:0; overflow:visible; }
-[data-slot="theme-toggle"] span { color:var(--v-text); font-size:var(--fs-meta); }
+[data-slot="theme-toggle"] span { color:inherit; font-size:var(--fs-meta); }
+[data-slot="theme-toggle"][data-label="hidden"] { min-width:40px; width:40px; padding-inline:8px; }
+
+/* The destination DOM is clipped; Motion owns the changing organic contour. */
+:root[data-theme-reveal]::view-transition { pointer-events:none; }
+:root[data-theme-reveal]::view-transition-group(root) { animation:none; background-image:var(--v-theme-glyph,none); background-position:var(--v-theme-glyph-position,0 0); background-size:var(--v-theme-glyph-size,0 0); background-repeat:no-repeat; }
+:root[data-theme-reveal]::view-transition-image-pair(root) { isolation:isolate; }
+:root[data-theme-reveal]::view-transition-old(root),
+:root[data-theme-reveal]::view-transition-new(root) { mix-blend-mode:normal; opacity:1; mask-image:var(--v-theme-glyph-mask,none); mask-size:100% 100%; }
+:root[data-theme-reveal]::view-transition-old(root) { animation:none; z-index:1; }
+:root[data-theme-reveal]::view-transition-new(root) { animation:v-theme-retain 8s linear; clip-path:var(--v-theme-clip); z-index:2; }
+@keyframes v-theme-retain { from { opacity:1; } to { opacity:1; } }

@@ -3,6 +3,8 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
+import { ItemAdornment, itemText, type ItemAdornmentItemProps } from "@/registry/sahajiv/ui/item-adornment";
+import { StateChevron } from "@/registry/sahajiv/ui/animated-icon";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import * as Primitive from "@radix-ui/react-select";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
@@ -71,9 +73,7 @@ export function SelectTrigger({
       {...props}
     >
       {children}
-      <Primitive.Icon asChild>
-        <Icon name="chevron-down" />
-      </Primitive.Icon>
+      <StateChevron />
     </Primitive.Trigger>
   );
 }
@@ -129,9 +129,11 @@ export function SelectContent({
     </Primitive.Portal>
   );
 }
-export type SelectItemProps = React.ComponentProps<typeof Primitive.Item>;
+export type SelectItemProps = React.ComponentProps<typeof Primitive.Item> & ItemAdornmentItemProps;
 export function SelectItem({
   className,
+  adornment,
+  adornmentId,
   children,
   ref,
   ...props
@@ -145,6 +147,7 @@ export function SelectItem({
       className={cn("v-menu__item outline-none", className)}
       {...props}
     >
+      <ItemAdornment identity={adornmentId ?? props.value ?? itemText(children)} value={adornment} />
       <Primitive.ItemText>{children}</Primitive.ItemText>
     </Primitive.Item>
   );
@@ -190,7 +193,7 @@ export function SelectScrollUpButton({
       className="flex justify-center"
       {...props}
     >
-      {children ?? "⌃"}
+      {children ?? <Icon name="chevron-up" size="sm" />}
     </Primitive.ScrollUpButton>
   );
 }
@@ -207,7 +210,7 @@ export function SelectScrollDownButton({
       className="flex justify-center"
       {...props}
     >
-      {children ?? "⌄"}
+      {children ?? <Icon name="chevron-down" size="sm" />}
     </Primitive.ScrollDownButton>
   );
 }

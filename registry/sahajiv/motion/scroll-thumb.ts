@@ -1,13 +1,21 @@
 /** A fixed-topology contour in a 20 × 100 viewBox. Only its edges deform. */
-export function scrollThumbPath(engagement: number, bias: number) {
+export function scrollThumbPath(engagement: number, bias: number, velocity = 0, pressure = 0) {
   const active = Math.max(0, Math.min(1, Number.isFinite(engagement) ? engagement : 0));
+  const speed = Math.max(-1, Math.min(1, Number.isFinite(velocity) ? velocity : 0));
+  const pressed = Math.max(0, Math.min(1, Number.isFinite(pressure) ? pressure : 0));
   const bend = Math.max(-1, Math.min(1, Number.isFinite(bias) ? bias : 0)) * active;
-  const left = 6 - active * 2.8;
-  const right = 14 + active * 2.8;
-  const waist = 1 + active * 2;
-  const shoulder = 27 + bend * 12;
+  const half = 5.4 + active * 1.6 + pressed * .8;
+  const upper = half - speed * 1.15, lower = half + speed * 1.15;
+  const waist = half - pressed * 2.2;
+  const lean = bend * .8;
   const f = (n: number) => Number(n.toFixed(3));
-  return `M 10 1 C ${f(right - 1)} 1 ${f(right)} 5 ${f(right)} 12 C ${f(right + active)} ${f(shoulder)} ${f(right - waist)} 38 ${f(right - waist)} 50 C ${f(right - waist)} 65 ${f(right + active * .7)} ${f(82 + bend * 8)} ${f(right)} 90 C ${f(right)} 97 12 99 10 99 C ${f(left + 1)} 99 ${f(left)} 95 ${f(left)} 88 C ${f(left - active)} ${f(73 - bend * 12)} ${f(left + waist)} 62 ${f(left + waist)} 50 C ${f(left + waist)} 36 ${f(left - active * .6)} ${f(18 - bend * 8)} ${f(left)} 10 C ${f(left)} 4 8 1 10 1 Z`;
+  return `M 10 1 C ${f(10 + upper * .7)} 1 ${f(10 + upper)} 5 ${f(10 + upper)} 14 C ${f(10 + upper)} 28 ${f(10 + waist + lean)} 36 ${f(10 + waist + lean)} 50 C ${f(10 + waist + lean)} 66 ${f(10 + lower)} 75 ${f(10 + lower)} 87 C ${f(10 + lower)} 95 ${f(10 + lower * .65)} 99 10 99 C ${f(10 - lower * .7)} 99 ${f(10 - lower)} 95 ${f(10 - lower)} 86 C ${f(10 - lower)} 72 ${f(10 - waist + lean)} 64 ${f(10 - waist + lean)} 50 C ${f(10 - waist + lean)} 34 ${f(10 - upper)} 25 ${f(10 - upper)} 13 C ${f(10 - upper)} 5 ${f(10 - upper * .65)} 1 10 1 Z`;
+}
+
+/** Signed native pixels/ms become a bounded contour impulse, never scroll momentum. */
+export function scrollVelocity(delta:number,elapsed:number) {
+  if(!Number.isFinite(delta)||!Number.isFinite(elapsed)||elapsed<=0)return 0;
+  return Math.tanh(delta/Math.max(8,elapsed)*.85);
 }
 
 /** The overlay follows document scroll; it never creates a second scroll owner. */

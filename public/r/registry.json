@@ -638,6 +638,7 @@
       "description": "A composable agent conversation with a bounded thread, draft composer, attachments, progress, explicit permissions and choice prompts.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/agent-state.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/message.json",
@@ -650,9 +651,7 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/presence.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/input-group.json"
       ],
-      "dependencies": [
-        "lucide-react"
-      ],
+      "dependencies": [],
       "files": [
         {
           "path": "registry/sahajiv/ui/agent-chat.tsx",
@@ -1577,7 +1576,9 @@
             "draw",
             "spin",
             "bounce",
-            "validation"
+            "validation",
+            "none",
+            "pulse"
           ],
           "sizes": [
             "default"
@@ -1596,6 +1597,12 @@
             "name": "AnimatedIconProps",
             "props": [
               {
+                "name": "amplitude",
+                "type": "number | string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "preset",
                 "type": "IconMotion",
                 "required": false,
@@ -1604,6 +1611,29 @@
               {
                 "name": "active",
                 "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "StateChevronProps",
+            "props": [
+              {
+                "name": "open",
+                "type": "boolean",
+                "required": false,
+                "description": "Omit to follow the closest native trigger's data-state/aria-expanded."
+              },
+              {
+                "name": "direction",
+                "type": "\"down\" | \"right\"",
                 "required": false,
                 "description": ""
               }
@@ -3797,12 +3827,18 @@
       ],
       "dependencies": [
         "class-variance-authority",
-        "@radix-ui/react-checkbox"
+        "@radix-ui/react-checkbox",
+        "motion"
       ],
       "files": [
         {
           "path": "registry/sahajiv/ui/checkbox.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/selector.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/selector.tsx"
         },
         {
           "path": "registry/sahajiv/styles/checkbox.css",
@@ -3821,16 +3857,23 @@
           "evidence": "I07",
           "status": "source",
           "root": ".v-check",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "organic",
+            "circle",
+            "rounded",
+            "pebble",
+            "leaf",
+            "flower"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
+            "unchecked",
             "checked",
-            "indeterminate",
-            "rest",
-            "hover",
-            "focus",
-            "active",
-            "disabled"
+            "focused",
+            "disabled",
+            "reduced-motion"
           ],
           "dataStates": [],
           "category": "controls",
@@ -3856,7 +3899,20 @@
         "api": [
           {
             "name": "CheckboxProps",
-            "props": []
+            "props": [
+              {
+                "name": "shape",
+                "type": "SelectorShape",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "SelectorTone",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "CheckboxGroupProps",
@@ -4058,7 +4114,8 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/input.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
-        "https://luv-jeri.github.io/sahajiv-ui/r/command.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/command.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -4233,6 +4290,7 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
       ],
       "dependencies": [
@@ -4372,7 +4430,9 @@
       "title": "Context Menu",
       "description": "Reveals contextual actions for a target through a context-menu interaction.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -5155,7 +5215,9 @@
       "title": "Dropdown Menu",
       "description": "Opens a compact menu of actions or stateful choices from a visible trigger.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -5229,7 +5291,14 @@
           },
           {
             "name": "DropdownMenuTriggerProps",
-            "props": []
+            "props": [
+              {
+                "name": "chevron",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "DropdownMenuContentProps",
@@ -5299,7 +5368,10 @@
       "title": "Dropzone",
       "description": "Collects local files through drag and drop or a native file picker and reports the selection.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/shape.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -5326,11 +5398,19 @@
           "evidence": "Ext",
           "status": "derived",
           "root": ".v-drop",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "default",
+            "compact"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
-            "over",
-            "rest"
+            "empty",
+            "dragging",
+            "selected",
+            "invalid",
+            "disabled"
           ],
           "dataStates": [],
           "category": "controls",
@@ -5351,8 +5431,20 @@
             "name": "DropzoneProps",
             "props": [
               {
+                "name": "variant",
+                "type": "\"default\" | \"compact\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "onFilesSelected",
                 "type": "(files: File[]) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onFilesRejected",
+                "type": "(files: DropzoneRejection[]) => void",
                 "required": false,
                 "description": ""
               },
@@ -5361,6 +5453,12 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "maxSize",
+                "type": "number",
+                "required": false,
+                "description": "Maximum bytes per file. Omit to leave file size unrestricted."
               },
               {
                 "name": "multiple",
@@ -5885,6 +5983,12 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "feedback",
+                "type": "boolean",
+                "required": false,
+                "description": "One-shot feedback from the nearest control. Disable when another owner animates this icon."
               }
             ]
           },
@@ -6469,6 +6573,100 @@
       }
     },
     {
+      "name": "item-adornment",
+      "type": "registry:ui",
+      "title": "Item adornment",
+      "description": "Coloured organic shapes for list items, with deterministic automatic selection and custom icon or no-icon options.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/shape.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/item-adornment.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/item-adornment.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/item-adornment.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/item-adornment.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Item adornment",
+          "variants": [
+            "auto",
+            "explicit",
+            "custom",
+            "none"
+          ],
+          "sizes": [
+            "default",
+            "sm",
+            "lg"
+          ],
+          "states": [
+            "rest",
+            "selected",
+            "hovered",
+            "disabled"
+          ]
+        },
+        "api": [
+          {
+            "name": "ItemAdornmentItemProps",
+            "props": [
+              {
+                "name": "adornment",
+                "type": "ItemAdornmentValue",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "adornmentId",
+                "type": "string",
+                "required": false,
+                "description": "Keeps the visual identity stable when a label changes or is translated."
+              }
+            ]
+          },
+          {
+            "name": "ItemAdornmentProps",
+            "props": [
+              {
+                "name": "identity",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "value",
+                "type": "ItemAdornmentValue",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "\"sm\" | \"default\" | \"lg\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Tools",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "kbd",
       "type": "registry:ui",
       "title": "Kbd",
@@ -6919,7 +7117,9 @@
       "title": "Menubar",
       "description": "Groups application commands into a horizontal row of keyboard-navigable menus.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -7000,7 +7200,14 @@
           },
           {
             "name": "MenubarTriggerProps",
-            "props": []
+            "props": [
+              {
+                "name": "chevron",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "MenubarContentProps",
@@ -7290,6 +7497,8 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/badge.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/checkbox.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/input.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/label.json",
@@ -7344,6 +7553,12 @@
                 "type": "readonly MultiSelectOption[]",
                 "required": true,
                 "description": ""
+              },
+              {
+                "name": "adornment",
+                "type": "ItemAdornmentValue",
+                "required": false,
+                "description": "Per-option adornments take precedence over this shared default."
               },
               {
                 "name": "value",
@@ -7521,7 +7736,9 @@
       "description": "Organizes destination links and optional expandable navigation panels.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -7602,7 +7819,14 @@
           },
           {
             "name": "NavigationMenuTriggerProps",
-            "props": []
+            "props": [
+              {
+                "name": "chevron",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "NavigationMenuContentProps",
@@ -8202,12 +8426,18 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/progress.json"
       ],
       "dependencies": [
-        "class-variance-authority"
+        "class-variance-authority",
+        "motion"
       ],
       "files": [
         {
           "path": "registry/sahajiv/ui/questionnaire.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/selector.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/selector.tsx"
         },
         {
           "path": "registry/sahajiv/styles/questionnaire.css",
@@ -8226,14 +8456,23 @@
           "evidence": "Ext I07",
           "status": "derived",
           "root": ".v-quest",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "organic",
+            "circle",
+            "rounded",
+            "pebble",
+            "leaf",
+            "flower"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
-            "rest",
-            "hover",
-            "focus",
-            "active",
-            "checked"
+            "unchecked",
+            "checked",
+            "focused",
+            "disabled",
+            "reduced-motion"
           ],
           "dataStates": [],
           "category": "controls",
@@ -8294,6 +8533,18 @@
                 "description": ""
               },
               {
+                "name": "selectorShape",
+                "type": "SelectorShape",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectorTone",
+                "type": "SelectorTone",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "value",
                 "type": "string",
                 "required": false,
@@ -8325,6 +8576,18 @@
               {
                 "name": "disabled",
                 "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectorShape",
+                "type": "SelectorShape",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectorTone",
+                "type": "SelectorTone",
                 "required": false,
                 "description": ""
               },
@@ -8483,19 +8746,25 @@
     {
       "name": "radio-group",
       "type": "registry:ui",
-      "title": "Radio Group",
+      "title": "Radio group",
       "description": "Lets users select one option from a labeled set of mutually exclusive choices.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
       "dependencies": [
         "class-variance-authority",
-        "@radix-ui/react-radio-group"
+        "@radix-ui/react-radio-group",
+        "motion"
       ],
       "files": [
         {
           "path": "registry/sahajiv/ui/radio-group.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/selector.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/selector.tsx"
         },
         {
           "path": "registry/sahajiv/styles/radio-group.css",
@@ -8509,20 +8778,28 @@
       "meta": {
         "source": {
           "id": "radio-group",
-          "name": "Radio Group",
+          "name": "Radio group",
           "tier": "base",
           "evidence": "I07",
           "status": "source",
           "root": ".v-radios",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "organic",
+            "circle",
+            "rounded",
+            "pebble",
+            "leaf",
+            "flower"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
+            "unchecked",
             "checked",
-            "rest",
-            "hover",
-            "focus",
-            "active",
-            "disabled"
+            "focused",
+            "disabled",
+            "reduced-motion"
           ],
           "dataStates": [],
           "category": "controls",
@@ -8553,6 +8830,18 @@
                 "type": "boolean | null | undefined",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "shape",
+                "type": "SelectorShape",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "SelectorTone",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -8562,6 +8851,18 @@
               {
                 "name": "pictographic",
                 "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "shape",
+                "type": "SelectorShape",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "SelectorTone",
                 "required": false,
                 "description": ""
               }
@@ -8774,6 +9075,8 @@
       "description": "Opens a list of options from a trigger and stores one selected value.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/item-adornment.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/animated-icon.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
       ],
       "dependencies": [
@@ -10517,7 +10820,7 @@
               },
               {
                 "name": "onModeChange",
-                "type": "(mode: ThemeMode) => void",
+                "type": "(mode: ThemeMode, details?:ThemeChangeDetails) => void",
                 "required": true,
                 "description": ""
               },

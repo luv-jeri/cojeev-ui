@@ -13,6 +13,7 @@ import {
   type DialogProps,
 } from "@/registry/sahajiv/ui/dialog";
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
+import { adornItem, itemText, type ItemAdornmentItemProps } from "@/registry/sahajiv/ui/item-adornment";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import {
   createMotionLane,
@@ -190,9 +191,11 @@ export function CommandGroup({ className, ...props }: CommandGroupProps) {
 }
 export type CommandItemProps = React.ComponentProps<typeof Primitive.Item> & {
   variant?: "default" | "danger";
-};
+} & ItemAdornmentItemProps;
 export function CommandItem({
   className,
+  adornment,
+  adornmentId,
   variant,
   ref,
   children,
@@ -216,7 +219,7 @@ export function CommandItem({
       )}
       {...props}
     >
-      {children}
+      {adornItem(children, adornment, adornmentId ?? props.value ?? itemText(children), props.asChild)}
     </Primitive.Item>
   );
 }

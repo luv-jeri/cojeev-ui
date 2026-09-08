@@ -1,31 +1,65 @@
 "use client";
 
 import * as React from "react";
-import { useMorph } from "@/registry/sahajiv/motion/use-morph";
+import {
+  SelectorGlyph,
+  selectorStyle,
+  type SelectorShape,
+  type SelectorTone,
+} from "@/registry/sahajiv/lib/selector";
+export type {
+  SelectorShape,
+  SelectorTone,
+} from "@/registry/sahajiv/lib/selector";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-checkbox";
 export const checkboxVariants = cva(
   "v-check [display:inline-flex] [cursor:pointer] [background:none] [gap:12px] [align-items:center] [font-size:var(--fs-body)] [box-shadow:none] [border:0]",
 );
-export type CheckboxProps = React.ComponentProps<typeof Primitive.Root>;
+export type CheckboxProps = React.ComponentProps<typeof Primitive.Root> & {
+  shape?: SelectorShape;
+  tone?: SelectorTone;
+};
 export function Checkbox({
   className,
   children,
   ref,
+  shape = "organic",
+  tone = "pink",
+  style,
+  checked: controlled,
+  defaultChecked = false,
+  onCheckedChange,
   ...props
 }: CheckboxProps) {
-  const morphRef = useMorph<HTMLButtonElement>("controls", ref);
+  const [local, setLocal] = React.useState<boolean | "indeterminate">(
+    defaultChecked,
+  );
+  const checked = controlled ?? local;
   return (
     <Primitive.Root
-      ref={morphRef}
+      ref={ref}
       data-slot="checkbox"
       data-part="root"
+      data-selector-shape={shape}
+      style={selectorStyle(tone, style)}
+      checked={checked}
+      onCheckedChange={(next) => {
+        if (controlled === undefined) setLocal(next);
+        onCheckedChange?.(next);
+      }}
       className={cn(checkboxVariants(), className)}
       {...props}
     >
       <span data-slot="checkbox-indicator" data-part="indicator">
-        <Primitive.Indicator data-slot="checkbox-mark" hidden forceMount />
+        <SelectorGlyph
+          shape={shape}
+          tone={tone}
+          state={checked}
+          kind="checkbox"
+          disabled={props.disabled}
+        />
       </span>
       {children}
     </Primitive.Root>
