@@ -48,6 +48,23 @@ export function exampleSource(
       ts.forEachChild(node, visit);
     }
     visit(declaration);
+    // A runnable example includes its local datasets, types and helper functions.
+    // Follow only declarations referenced by the selected example, recursively.
+    const localDeclarations = new Map<string, ts.Statement>();
+    for (const statement of tree.statements) {
+      if ((ts.isFunctionDeclaration(statement) || ts.isTypeAliasDeclaration(statement) || ts.isInterfaceDeclaration(statement) || ts.isEnumDeclaration(statement) || ts.isClassDeclaration(statement)) && statement.name) {
+        localDeclarations.set(statement.name.text, statement);
+      } else if (ts.isVariableStatement(statement)) {
+        for (const variable of statement.declarationList.declarations) {
+          if (ts.isIdentifier(variable.name)) localDeclarations.set(variable.name.text, statement);
+        }
+      }
+    }
+    const included = new Set<ts.Statement>([declaration]);
+    for (const name of identifiers) {
+      const helper = localDeclarations.get(name);
+      if (helper && !included.has(helper)) { included.add(helper); visit(helper); }
+    }
     const imports: string[] = [];
     for (const statement of tree.statements) {
       if (
@@ -64,6 +81,8 @@ export function exampleSource(
         "@/registry/sahajiv/ui/",
         "@/components/ui/",
       );
+      if (clause.name && identifiers.has(clause.name.text))
+        imports.push(`import ${clause.isTypeOnly ? "type " : ""}${clause.name.text} from "${moduleName}";`);
       if (
         bindings &&
         ts.isNamespaceImport(bindings) &&
@@ -75,7 +94,7 @@ export function exampleSource(
           .filter((binding) => identifiers.has(binding.name.text))
           .map((binding) => binding.getText(tree));
         if (names.length)
-          imports.push(`import { ${names.join(", ")} } from "${moduleName}";`);
+          imports.push(`import ${clause.isTypeOnly ? "type " : ""}{ ${names.join(", ")} } from "${moduleName}";`);
       }
     }
     const propType = identifiers.has("ExampleProps")
@@ -83,7 +102,7 @@ export function exampleSource(
       : "";
     source = {
       modified,
-      code: `"use client";\n\n${imports.join("\n")}\n\n${propType}${declaration.getText(tree)}`,
+      code: `"use client";\n\n${imports.join("\n")}\n\n${propType}${tree.statements.filter(statement => included.has(statement)).map(statement => statement.getText(tree)).join("\n\n")}`,
       name: entry.name,
     };
     cache.set(id, source);

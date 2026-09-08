@@ -2,19 +2,19 @@
 .v-btn:where([data-slot]) {
   transition: background var(--t-micro) var(--enter), transform var(--t-micro) var(--enter), opacity var(--t-micro);
 }
-.v-btn:where([data-slot]):not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):hover {
+.v-btn:where([data-slot]):not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):not(:disabled):not([aria-disabled="true"]):hover {
   background: color-mix(in oklab, var(--primary) 88%, var(--v-canvas));
 }
-.v-btn:where([data-slot]).-secondary:hover { background: color-mix(in oklab, var(--v-beige) 92%, var(--v-ink)); }
-.v-btn:where([data-slot]).-danger:hover { background: color-mix(in oklab, var(--v-danger-fill) 88%, black); }
-:root[data-mode="dark"] .v-btn:where([data-slot]):not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger) {
+.v-btn:where([data-slot]).-secondary:not(:disabled):not([aria-disabled="true"]):hover { background: color-mix(in oklab, var(--v-beige) 92%, var(--v-ink)); }
+.v-btn:where([data-slot]).-danger:not(:disabled):not([aria-disabled="true"]):hover { background: color-mix(in oklab, var(--v-danger-fill) 88%, black); }
+:root[data-mode="dark"] .v-btn:where([data-slot]):not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):not(:disabled):not([aria-disabled="true"]) {
   background: var(--v-pink); color: var(--v-on-accent);
 }
 .v-btn:where([data-slot]):is(:disabled, [aria-disabled="true"]) {
   background: var(--v-disabled-face); color: var(--v-disabled-ink);
   box-shadow: inset 0 0 0 1px var(--v-disabled-edge); cursor: not-allowed; transform: none;
 }
-:root[data-mode="dark"] .v-btn:where([data-slot]):is(.-secondary,.-ghost,.-outline) { color: var(--v-text); }
+:root[data-mode="dark"] .v-btn:where([data-slot]):is(.-secondary,.-ghost,.-outline):not(:disabled):not([aria-disabled="true"]) { color: var(--v-text); }
 .v-btn:where([data-slot]) .v-icon { width: 18px; height: 18px; }
 .v-btn:where([data-slot])[aria-busy="true"] {
   position: relative; overflow: hidden; cursor: progress; pointer-events: none; gap: 10px;
@@ -39,3 +39,4 @@
 @media (prefers-reduced-motion: reduce) {
   .v-btn:where([data-slot])[aria-busy="true"]::after { animation: none; display: none; }
 }
+.v-btn__loading[data-slot] { --pulse:20px; display:inline-flex; align-items:center; justify-content:center; flex:none; pointer-events:none; }

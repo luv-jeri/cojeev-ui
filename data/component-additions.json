@@ -170,5 +170,236 @@
       "static",
       "focused"
     ]
+  },
+  "agent-state": {
+    "name": "Agent state",
+    "variants": [
+      "idle",
+      "thinking",
+      "working",
+      "needs-input",
+      "complete",
+      "error"
+    ],
+    "sizes": [
+      "md",
+      "sm",
+      "lg"
+    ],
+    "states": [
+      "idle",
+      "thinking",
+      "working",
+      "needs-input",
+      "complete",
+      "error",
+      "offscreen",
+      "reduced-motion"
+    ]
+  },
+  "agent-chat": {
+    "name": "Agent chat",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "idle",
+      "thinking",
+      "permission",
+      "options",
+      "working",
+      "complete",
+      "denied",
+      "stopped",
+      "error",
+      "retry",
+      "attached",
+      "detached"
+    ]
+  },
+  "theme-toggle": {
+    "name": "Theme toggle",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg"
+    ],
+    "states": [
+      "light",
+      "dark",
+      "focused",
+      "disabled",
+      "reduced-motion"
+    ]
+  },
+  "animated-icon": {
+    "name": "Animated icon",
+    "variants": [
+      "auto",
+      "tremor",
+      "draw",
+      "spin",
+      "bounce",
+      "validation"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "idle",
+      "hovered",
+      "focused",
+      "active",
+      "offscreen",
+      "reduced-motion"
+    ]
+  },
+  "presence": {
+    "name": "Presence",
+    "variants": [
+      "rise",
+      "fade",
+      "scale",
+      "slide",
+      "mask"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "entering",
+      "visible",
+      "exiting",
+      "removed",
+      "reduced-motion"
+    ]
+  },
+  "area-chart": {
+    "name": "Area chart",
+    "variants": [
+      "linear",
+      "step",
+      "stacked"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "focused",
+      "hovered",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "bar-chart": {
+    "name": "Bar chart",
+    "variants": [
+      "grouped",
+      "stacked",
+      "horizontal"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "focused",
+      "hovered",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "line-chart": {
+    "name": "Line chart",
+    "variants": [
+      "linear",
+      "smooth",
+      "step"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "focused",
+      "hovered",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "pie-chart": {
+    "name": "Pie chart",
+    "variants": [
+      "pie",
+      "donut"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "focused",
+      "hovered",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "radar-chart": {
+    "name": "Radar chart",
+    "variants": [
+      "polygon",
+      "rounded",
+      "grid"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "focused",
+      "hovered",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "radial-chart": {
+    "name": "Radial chart",
+    "variants": [
+      "full",
+      "semicircle"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "focused",
+      "hovered",
+      "empty",
+      "reduced-motion"
+    ]
+  },
+  "chart-tooltip": {
+    "name": "Dynamic chart tooltip",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "focused",
+      "hovered",
+      "empty",
+      "reduced-motion"
+    ]
   }
 }

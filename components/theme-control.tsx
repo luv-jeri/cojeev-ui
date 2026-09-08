@@ -1,9 +1,8 @@
 "use client";
 import * as React from "react";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/registry/sahajiv/ui/native-select";
+import { ThemeToggle } from "@/registry/sahajiv/ui/theme-toggle";
+import { applyTheme } from "@/registry/sahajiv/motion/theme-transition";
+import { useChoreography } from "@/registry/sahajiv/motion/choreography";
 import { Label } from "@/registry/sahajiv/ui/label";
 type Theme = "light" | "dark";
 const themeEvent = "sahajiv-docs-theme-change";
@@ -40,29 +39,28 @@ export function ThemeControl() {
     () => "light" as const,
   );
   const id = React.useId();
+  const {quiet}=useChoreography();
+  const initialized=React.useRef(false);
   React.useEffect(() => {
-    document.documentElement.dataset.mode = mode;
-  }, [mode]);
+    applyTheme(mode,!initialized.current||quiet);
+    initialized.current=true;
+  }, [mode,quiet]);
   return (
     <div className="docs-theme">
       <Label htmlFor={id} size="sm">
         Appearance
       </Label>
-      <NativeSelect
+      <ThemeToggle
         id={id}
-        value={mode}
-        onChange={(event) => {
-          const next = event.target.value as Theme;
+        mode={mode}
+        onModeChange={(next) => {
           volatileTheme = next;
           try {
             localStorage.setItem("sahajiv-docs-theme", next);
           } catch {}
           window.dispatchEvent(new Event(themeEvent));
         }}
-      >
-        <NativeSelectOption value="light">Light</NativeSelectOption>
-        <NativeSelectOption value="dark">Dark</NativeSelectOption>
-      </NativeSelect>
+      />
     </div>
   );
 }

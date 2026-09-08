@@ -5,9 +5,15 @@ import {cn} from "@/registry/sahajiv/lib/utils"
 import {iconData,type IconNode} from "@/registry/sahajiv/lib/icon-data"
 import {useMorph} from "@/registry/sahajiv/motion/use-morph"
 import {useFlowPress} from "@/registry/sahajiv/motion/flow-press"
-function renderNode(node:IconNode,key:number):React.ReactNode{return React.createElement(node.tag,{...node.attrs,key},...node.children.map(renderNode))}
-export type IconProps=React.ComponentProps<"svg"> & {name:string;size?:"default"|"sm"|"lg"}
-export function Icon({name,size="default",className,...props}:IconProps){const nodes=iconData[name];if(!nodes)throw new Error(`Unknown SahaJiv icon: ${name}`);return <svg data-slot="icon" data-icon-name={name} viewBox="0 0 24 24" aria-hidden="true" className={cn("v-icon [width:var(--icon-md)] [height:var(--icon-md)] [stroke:currentColor] [stroke-width:var(--icon-stroke)] [stroke-linecap:round] [stroke-linejoin:round] [fill:none] [flex:none]",size!=="default"&&`-${size}`,className)} {...props}>{nodes.map(renderNode)}</svg>}
+import {motion} from "motion/react"
+import {useChoreography} from "@/registry/sahajiv/motion/choreography"
+function renderNode(node:IconNode,key:number,draw?:boolean):React.ReactNode{
+  if(node.tag==="path"&&draw!==undefined)return <motion.path key={key} {...node.attrs} initial={false} animate={{pathLength:draw?[0,1]:1}} transition={{duration:draw?.5:0,ease:[.2,.8,.2,1]}}/>;
+  return React.createElement(node.tag,{...node.attrs,key},...node.children.map((child,index)=>renderNode(child,index,draw)))
+}
+export type IconProps=React.ComponentProps<"svg"> & {name:string;size?:"default"|"sm"|"lg";draw?:boolean}
+export function iconClassName(size:IconProps["size"]="default",className?:string){return cn("v-icon [width:var(--icon-md)] [height:var(--icon-md)] [stroke:currentColor] [stroke-width:var(--icon-stroke)] [stroke-linecap:round] [stroke-linejoin:round] [fill:none] [flex:none]",size!=="default"&&`-${size}`,className)}
+export function Icon({name,size="default",className,draw,...props}:IconProps){const {quiet}=useChoreography();const nodes=iconData[name];if(!nodes)throw new Error(`Unknown SahaJiv icon: ${name}`);return <svg data-slot="icon" data-icon-name={name} viewBox="0 0 24 24" aria-hidden="true" className={iconClassName(size,className)} {...props}>{nodes.map((node,index)=>renderNode(node,index,draw===undefined?undefined:draw&&!quiet))}</svg>}
 export const iconNames=Object.keys(iconData)
 const DiskVariants=cva("v-disk [display:inline-grid] [place-items:center] [width:var(--disk-md)] [height:var(--disk-md)] [border-radius:50%] [background:var(--disk-bg,var(--v-beige))] [color:var(--v-text)] [flex:none]",{variants:{variant:{"default":"","pink":"-pink [--disk-bg:var(--v-pink)] [color:var(--v-on-accent)]","yellow":"-yellow [--disk-bg:var(--v-yellow)] [color:var(--v-on-accent)]","olive":"-olive [--disk-bg:var(--v-olive)] [color:var(--v-on-accent)]","blue":"-blue [--disk-bg:var(--v-blue)] [color:var(--v-on-accent)]","ink":"-ink [--disk-bg:var(--v-ink)] [color:var(--v-on-ink)]","cream":"-cream [--disk-bg:var(--v-canvas)]","beige":"-beige [--disk-bg:var(--v-beige)]"},size:{"default":"","sm":"-sm [width:var(--disk-sm)] [height:var(--disk-sm)]","lg":"-lg [width:var(--disk-lg)] [height:var(--disk-lg)]"}},defaultVariants:{variant:"default",size:"default"}})
 export type DiskProps=React.ComponentProps<"span"> & VariantProps<typeof DiskVariants>

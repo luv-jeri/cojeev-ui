@@ -26,9 +26,11 @@ export function SheetPortal(props: SheetPortalProps) {
   return <Primitive.Portal {...props} />;
 }
 export type SheetOverlayProps = React.ComponentProps<typeof Primitive.Overlay>;
-export function SheetOverlay({ className, ...props }: SheetOverlayProps) {
+export function SheetOverlay({ className, ref, ...props }: SheetOverlayProps) {
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "fade");
   return (
     <Primitive.Overlay
+      ref={flowRef}
       data-slot="sheet-overlay"
       data-part="overlay"
       className={cn(

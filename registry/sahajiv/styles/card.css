@@ -8,6 +8,12 @@
 .v-card[data-slot] > .v-wm.-br { top: auto; bottom: -16%; }
 .v-card[data-slot] > .v-wm.-tr-sm { width: 30%; right: 8%; top: 8%; }
 .v-card[data-slot] > .v-body-2 + * { margin-top: 20px; }
+.v-card[data-slot] :is([data-slot="card-title"], [data-slot="card-description"]) { min-width: 0; overflow-wrap: anywhere; }
+.v-card[data-slot] [data-slot="card-header"] > :is(button,svg,[data-slot="badge"]) { flex-shrink: 0; }
+.v-card[data-slot][data-depth="on"] { rotate:var(--depth-axis-x,0) var(--depth-axis-y,1) 0 var(--depth-angle,0deg); translate:var(--presence-x,0px) calc(var(--presence-y,0px) + var(--depth-lift,0px)); perspective:900px; }
+.v-card[data-depth="on"]::after { content:""; position:absolute; inset:0; pointer-events:none; z-index:2; opacity:var(--depth-light,0); background:radial-gradient(ellipse at var(--depth-light-x,50%) var(--depth-light-y,50%),var(--cream-fixed),transparent 65%); mix-blend-mode:soft-light; }
+.v-card[data-depth="on"] > .v-wm { translate:var(--depth-x,0px) var(--depth-y,0px); }
+.v-card[data-depth="on"] > :not(.v-wm,.v-morph) { translate:calc(var(--depth-x,0px) * -.2) calc(var(--depth-y,0px) * -.2); }
 /* The complete source cascade resets Stat control geometry (components-2.css). */
 .v-card[data-slot] .v-stat[data-slot].-ul { border: 0; box-shadow: none; }
 /* A nested card supplies its own secondary ink instead of inheriting its host's. */

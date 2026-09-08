@@ -184,17 +184,17 @@ input[type="range"].v-slider:where(
   }
 }
 
-/* The native source gradient remains on the host; multiple values use Radix range geometry. */
-[data-slot="slider"][data-range].v-slider {
+/* Radix owns range geometry for single, multiple, RTL, inverted, and vertical values. */
+[data-slot="slider"].v-slider {
   background: var(--v-beige);
 }
 [data-slot="slider-range"] {
   background: transparent;
 }
-[data-slot="slider"][data-range] [data-slot="slider-range"] {
+[data-slot="slider"] [data-slot="slider-range"] {
   background: var(--v-pink);
 }
-[data-slot="slider"][data-range].-ink [data-slot="slider-range"] {
+[data-slot="slider"].-ink [data-slot="slider-range"] {
   background: var(--v-ink);
 }
 [data-slot="slider-thumb"] {
@@ -225,3 +225,6 @@ input[type="range"].v-slider:where(
 [data-slot="slider"][data-disabled] [data-slot="slider-thumb"] {
   background: var(--v-disabled-fill);
 }
+
+[data-slot="slider"][data-disabled] [data-slot="slider-range"] { background: var(--v-disabled-fill); }
+[data-slot="slider"][data-disabled] [data-slot="slider-thumb"] { transform: none; }

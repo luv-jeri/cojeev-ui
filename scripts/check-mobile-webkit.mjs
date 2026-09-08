@@ -153,7 +153,7 @@ const cases = {
   },
   "motion-settings": async page => {
     await example(page, "button");
-    await page.locator(".docs-mobile").getByRole("button", { name: "Motion settings", exact: true }).tap();
+    await page.locator('[data-slot="preview"]').first().getByRole("button", { name: "Motion settings", exact: true }).tap();
     const dialog = page.getByRole("dialog", { name: "Make it feel right" });
     await dialog.waitFor();
     const controls = dialog.locator('[data-slot="motion-controls"]');

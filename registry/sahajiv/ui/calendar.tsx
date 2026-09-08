@@ -13,11 +13,14 @@ import {
   type WeekNumberProps,
   type WeekdayProps,
   type WeekNumberHeaderProps,
+  type RootProps,
 } from "react-day-picker";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Icon, IconButton } from "@/registry/sahajiv/ui/icon";
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
+import { motionTokens, useChoreography } from "@/registry/sahajiv/motion/choreography";
+import { assignMotionRef } from "@/registry/sahajiv/motion/refs";
 export type CalendarMark = "pink" | "blue" | "olive" | "yellow" | "ink";
 const MarksContext = React.createContext<Record<string, CalendarMark>>({});
 export const calendarVariants = cva("v-cal [display:grid] [gap:14px]");
@@ -44,8 +47,11 @@ export function Calendar(calendarProps: CalendarProps) {
     components,
     mode = "single",
     required = false,
+    animate = true,
+    style,
     ...props
   } = calendarProps;
+  const { quiet } = useChoreography();
   const [internalSelected, setInternalSelected] =
     React.useState(defaultSelected);
   const controlled = Object.prototype.hasOwnProperty.call(
@@ -68,10 +74,12 @@ export function Calendar(calendarProps: CalendarProps) {
         ISOWeek
         showOutsideDays={false}
         hideNavigation
+        animate={animate && !quiet}
         data-slot="calendar"
         data-part="root"
         data-cal=""
         className={cn(calendarVariants(), className)}
+        style={{ ...style, "--v-calendar-duration": `${quiet ? 0 : motionTokens.duration.enter}s`, "--v-calendar-ease": `cubic-bezier(${motionTokens.ease.enter.join(",")})` } as React.CSSProperties}
         classNames={{
           months: "v-cal__months",
           month: "v-cal__month-wrap",
@@ -81,6 +89,14 @@ export function Calendar(calendarProps: CalendarProps) {
           week_number: "v-cal__wk",
           week_number_header: "v-cal__wd -wk",
           day_button: "v-cal__d",
+          weeks_before_enter: "v-cal__weeks-before-enter",
+          weeks_after_enter: "v-cal__weeks-after-enter",
+          weeks_before_exit: "v-cal__weeks-before-exit",
+          weeks_after_exit: "v-cal__weeks-after-exit",
+          caption_before_enter: "v-cal__caption-enter",
+          caption_after_enter: "v-cal__caption-enter",
+          caption_before_exit: "v-cal__caption-exit",
+          caption_after_exit: "v-cal__caption-exit",
           ...classNames,
         }}
         formatters={{
@@ -92,6 +108,7 @@ export function Calendar(calendarProps: CalendarProps) {
           formatWeekNumberHeader: () => "WK",
         }}
         components={{
+          Root: CalendarRoot,
           MonthCaption: CalendarCaption,
           DayButton: CalendarDayButton,
           MonthGrid: CalendarGrid,
@@ -104,6 +121,29 @@ export function Calendar(calendarProps: CalendarProps) {
       />
     </MarksContext.Provider>
   );
+}
+
+/** DayPicker retains an aria-hidden DOM snapshot during its finite month exit. */
+function CalendarRoot({ rootRef, ...props }: RootProps) {
+  const host = React.useRef<HTMLDivElement>(null);
+  const ref = React.useCallback((node: HTMLDivElement | null) => {
+    host.current = node;
+    const release = assignMotionRef(rootRef, node);
+    return () => { host.current = null; release(); };
+  }, [rootRef]);
+  React.useLayoutEffect(() => {
+    const root = host.current;
+    if (!root) return;
+    const protectSnapshots = () => root.querySelectorAll<HTMLElement>('[data-animated-month][aria-hidden="true"]').forEach(snapshot => {
+      snapshot.inert = true;
+      snapshot.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+    });
+    const observer = new MutationObserver(protectSnapshots);
+    observer.observe(root, { childList: true, subtree: true });
+    protectSnapshots();
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={ref} {...props} />;
 }
 export function CalendarCaption({
   calendarMonth,

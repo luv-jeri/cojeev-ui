@@ -26,9 +26,23 @@ const semanticNames=/^--(?:background|foreground|card(?:-.+)?|popover(?:-.+)?|pr
 const layoutNames=new Set(["--card-pad","--card-gap","--sidebar-w","--sidebar-w-mini","--sidebar-gap"]);
 foundation[":root, :root[data-mode]"]=Object.fromEntries(Object.entries(css(`${source}/styles/tokens.css`)[":root"]).filter(([name])=>semanticNames.test(name)&&!layoutNames.has(name)));
 for(const [rule,value] of Object.entries(themeCSS))if(rule.startsWith("@custom-variant "))foundation[rule]=value;
-const base={name:"sahajiv",type:"registry:base",extends:"none",title:"SahaJiv",description:"SahaJiv tokens, fonts, reset, and Tailwind v4 theme bridge.",dependencies:["class-variance-authority","clsx","tailwind-merge","tw-animate-css"],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@sahajiv":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:foundation};
-function imports(id) {
-  return [...fs.readFileSync(`${source}/ui/${id}.tsx`,"utf8").matchAll(/(?:from\s+|import\s+|import\s*\(\s*)["']([^"']+)["']/g)].map(match=>sourceImport(`${source}/ui/${id}.tsx`,match[1]));
+const base={name:"sahajiv",type:"registry:base",extends:"none",title:"SahaJiv",description:"SahaJiv tokens, fonts, reset, and Tailwind v4 theme bridge.",dependencies:["class-variance-authority","clsx","tailwind-merge","tw-animate-css","motion"],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@sahajiv":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:foundation};
+function fileImports(file) {
+  return [...fs.readFileSync(file,"utf8").matchAll(/(?:from\s+|import\s+|import\s*\(\s*)["']([^"']+)["']/g)].map(match=>sourceImport(file,match[1]));
+}
+function componentImports(id) {
+  const imported = new Set(fileImports(`${source}/ui/${id}.tsx`));
+  const helpers = new Set();
+  // JSX helpers depend on UI primitives, so install them with their owning
+  // components instead of making every foundation consumer depend on charts.
+  for (const value of imported) {
+    if (!value.startsWith(`@/${source}/lib/`)) continue;
+    const file = `${value.slice(2)}.tsx`;
+    if (!fs.existsSync(file) || helpers.has(file)) continue;
+    helpers.add(file);
+    for (const dependency of fileImports(file)) imported.add(dependency);
+  }
+  return { imported: [...imported], helpers: [...helpers] };
 }
 function sourceImport(file, value) {
   if(value.startsWith("."))return `@/${path.posix.normalize(path.posix.join(path.posix.dirname(file),value))}`;
@@ -46,12 +60,12 @@ const extras=additions;
 const items=[base,...ids.map(id=>{
   const entry=reference[id]??extras[id];
   if(!entry)throw new Error(`Undeclared registry helper: ${id}`);
-  const imported=imports(id);
+  const {imported,helpers}=componentImports(id);
   const siblings=[...new Set(imported.filter(value=>value.startsWith("@/registry/sahajiv/ui/")).map(value=>value.split("/").at(-1)))];
   for(const sibling of siblings)if(!ids.includes(sibling))throw new Error(`Missing dependency ${sibling} of ${id}`);
   const dependencies=[...new Set(imported.filter(value=>!value.startsWith(".")&&!value.startsWith("@/")&&value!=="react").map(npmPackage))].map(name=>(entry.dependencies??[]).find(value=>value===name||value.startsWith(`${name}@`))??name);
   const style=`${source}/styles/${id}.css`;
-  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with SahaJiv styling.`,registryDependencies:[`${baseURL}/r/sahajiv.json`,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,...(entry.devDependencies?{devDependencies:entry.devDependencies}:{}),files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...(fs.existsSync(style)?[{path:style,type:"registry:file",target:`styles/sahajiv/${id}.css`}]:[])],...(fs.existsSync(style)?{css:{[`@import "@/styles/sahajiv/${id}.css"`]:{}}}:{}),meta:{source:entry,api:apis[id],category:guides[id]?.category??"Tools",fidelity:"refined-design-family",baseComponent:reference[id]?.tier==="base"}};
+  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with SahaJiv styling.`,registryDependencies:[`${baseURL}/r/sahajiv.json`,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,...(entry.devDependencies?{devDependencies:entry.devDependencies}:{}),files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...helpers.map(file=>({path:file,type:"registry:lib",target:`lib/sahajiv/${path.basename(file)}`})),...(fs.existsSync(style)?[{path:style,type:"registry:file",target:`styles/sahajiv/${id}.css`}]:[])],...(fs.existsSync(style)?{css:{[`@import "@/styles/sahajiv/${id}.css"`]:{}}}:{}),meta:{source:entry,api:apis[id],category:guides[id]?.category??"Tools",fidelity:"refined-design-family",baseComponent:reference[id]?.tier==="base"}};
 })];
 base.cssVars={theme};
 base.files.push(...fs.readdirSync(`${source}/lib`).filter(name=>name.endsWith(".ts")&&name!=="utils.ts").map(name=>({path:`${source}/lib/${name}`,type:"registry:lib",target:`lib/sahajiv/${name}`})));

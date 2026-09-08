@@ -84,6 +84,12 @@
 @import "../registry/sahajiv/styles/multi-select.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/ambient-background.css" layer(sahajiv-states);
 @import "../registry/sahajiv/styles/marquee.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/agent-state.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/agent-chat.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/theme-toggle.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/animated-icon.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/shape.css" layer(sahajiv-states);
+@import "../registry/sahajiv/styles/presence.css" layer(sahajiv-states);
 @source "../registry/sahajiv";
 @source "../components";
 

@@ -61,6 +61,7 @@ import {
   InputGroupInput,
   InputGroupButton,
   InputGroupText,
+  InputGroupTextarea,
 } from "@/registry/sahajiv/ui/input-group";
 import {
   MessageScroller,
@@ -128,6 +129,7 @@ import {
   MessageDescription,
 } from "@/registry/sahajiv/ui/message";
 import { Body, Meta, Title } from "@/registry/sahajiv/ui/typography";
+import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
 
 export function AttachmentExample() {
   const [present, setPresent] = React.useState(true);
@@ -146,8 +148,8 @@ export function AttachmentExample() {
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
-  return present ? (
-    <Attachment>
+  return <MotionPresence mode="wait">{present ? (
+    <MotionSurface key="attachment" asChild preset="slide"><Attachment>
       <AttachmentType>TXT</AttachmentType>
       <AttachmentName>
         weekly-notes.txt
@@ -164,10 +166,10 @@ export function AttachmentExample() {
           <Icon name="x" />
         </AttachmentAction>
       </AttachmentActions>
-    </Attachment>
+    </Attachment></MotionSurface>
   ) : (
-    <Button onClick={() => setPresent(true)}>Restore attachment</Button>
-  );
+    <MotionSurface key="restore" asChild preset="fade"><Button onClick={() => setPresent(true)}>Restore attachment</Button></MotionSurface>
+  )}</MotionPresence>;
 }
 export function BreadcrumbExample() {
   return (
@@ -403,11 +405,8 @@ export function FieldExample({ variant = "default" }: ExampleProps) {
           required
         />
       </FieldControl>
-      {invalid ? (
-        <FieldError>Use at least three characters.</FieldError>
-      ) : (
-        <FieldDescription>A name that feels like yours.</FieldDescription>
-      )}
+      <FieldDescription>A name that feels like yours.</FieldDescription>
+      {invalid && <FieldError>Use at least three characters.</FieldError>}
     </Field>
   );
 }
@@ -453,6 +452,9 @@ export function InputExample({
 export function InputGroupExample() {
   const [name, setName] = React.useState("personal-space");
   const [saved, setSaved] = React.useState("");
+  const [note, setNote] = React.useState("");
+  const [sent, setSent] = React.useState(false);
+  const id = React.useId();
   return (
     <div
       style={{
@@ -461,13 +463,13 @@ export function InputGroupExample() {
         gap: 12,
       }}
     >
-      <Label htmlFor="example-workspace-slug">Workspace address</Label>
+      <Label htmlFor={`${id}-slug`}>Workspace address</Label>
       <InputGroup>
         <InputGroupAddon>
           <InputGroupText>notes /</InputGroupText>
         </InputGroupAddon>
         <InputGroupInput
-          id="example-workspace-slug"
+          id={`${id}-slug`}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -485,6 +487,20 @@ export function InputGroupExample() {
           ? `Saved example address: notes / ${saved}`
           : "Choose a short, memorable address."}
       </Meta>
+      <Label htmlFor={`${id}-note`}>An instruction with room to grow</Label>
+      <InputGroup>
+        <InputGroupTextarea
+          id={`${id}-note`}
+          value={note}
+          onChange={event => { setNote(event.target.value); setSent(false); }}
+          placeholder="Describe what the agent should watch for…"
+          rows={3}
+        />
+        <InputGroupButton disabled={!note.trim()} onClick={() => setSent(true)}>
+          Add instruction
+        </InputGroupButton>
+      </InputGroup>
+      <Meta role="status">{sent ? "Instruction added to this demo." : "The group expands to fit a multiline input."}</Meta>
     </div>
   );
 }
@@ -756,12 +772,12 @@ export function TextareaExample() {
           </Button>
         </TextareaComposerBar>
       </TextareaComposer>
-      {saved && (
-        <Card>
+      <MotionPresence>{saved && (
+        <MotionSurface key={saved} asChild preset="rise"><Card>
           <CardTitle>Saved in this example</CardTitle>
           <CardDescription>{saved}</CardDescription>
-        </Card>
-      )}
+        </Card></MotionSurface>
+      )}</MotionPresence>
     </div>
   );
 }

@@ -12,15 +12,29 @@
 .v-prose[data-slot] blockquote{border-left:2px solid var(--v-pink);padding-left:var(--s-4);color:var(--muted-foreground)}
 .v-prose[data-slot] code{background:var(--v-beige);padding:1px 6px;border-radius:4px;font-size:.92em}
 .v-prose[data-slot] a{text-decoration:underline;text-underline-offset:3px}
-.v-hero[data-slot] .u{color:rgba(17,17,17,.62)}
-.v-display[data-slot] .u{color:rgba(17,17,17,.62)}
-.v-value[data-slot] .u{color:rgba(17,17,17,.62)}
+.v-hero[data-slot] .u{color:var(--muted-foreground)}
+.v-display[data-slot] .u{color:var(--muted-foreground)}
+.v-value[data-slot] .u{color:var(--muted-foreground)}
 :root[data-mode="dark"] .v-meta[data-slot]{color:var(--v-text-2)}
 :root[data-mode="dark"] .v-body-2[data-slot]{color:var(--v-text-2)}
 :root[data-mode="dark"] .v-caps[data-slot]{color:var(--v-text-2)}
 .v-caps[data-slot]{box-shadow:none;border:0}
 .v-meta[data-slot]{box-shadow:none;border:0}
 .v-prose[data-slot]{box-shadow:none;border:0}
-.v-prose[data-slot] *{box-shadow:none;border:0}
 .v-tnum[data-slot]{font-variant-numeric:tabular-nums lining-nums}
 
+/* Content determines line breaks; long titles must not enlarge their parent. */
+:is(.v-hero,.v-display,.v-section,.v-title,.v-lead,.v-body,.v-body-2,.v-prose)[data-slot] {
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+.v-hero[data-slot] { white-space:normal; text-wrap:balance; }
+.v-prose[data-slot] { max-width:70ch; gap:var(--s-4); }
+.v-prose[data-slot] :is(h2,h3):not(:first-child) { margin-block-start:var(--s-5); }
+.v-prose[data-slot] :is(p,li) { line-height:1.65; }
+.v-prose[data-slot] :is(pre,table) { max-width:100%; overflow-x:auto; }
+@media (max-width:640px) {
+  .v-hero[data-slot] { font-size:3rem; line-height:1.05; }
+  .v-display[data-slot] { font-size:2.25rem; line-height:1.1; }
+}

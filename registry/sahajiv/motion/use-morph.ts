@@ -89,9 +89,9 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
    if(mq.matches||settings.mode==="off"||groupBody)rewindBody(b)
    const old={fill:el.style.getPropertyValue('--mfill'),stroke:el.style.getPropertyValue('--mstroke'),pad:el.style.getPropertyValue('--mpad'),transform:el.style.transform}
    const svg=svgNode('svg',{class:'v-morph','aria-hidden':'true','shape-rendering':'geometricPrecision'})
-   // Keep the new layer out of layout before measuring its host. An unstyled
-   // SVG has a 300px intrinsic width and would inflate flex controls on attach.
-   svg.style.position="absolute"
+   // Hidden hosts cannot be measured yet. Keep their new layer at zero size
+   // until measure() replaces it, avoiding SVG's 300px intrinsic first frame.
+   svg.style.cssText="position:absolute;width:0;height:0"
    const path=svgNode('path',{'data-morph-body':'',fill:mode!=='stroke'?'var(--mfill,var(--v-beige))':'none'})
    if(mode!=='fill'){path.setAttribute('stroke','var(--mstroke,transparent)');path.setAttribute('stroke-width',el.dataset.sw||(el.matches('.v-badge.-test')?'1.5':'1'));path.setAttribute('stroke-linejoin','round');const dash=el.dataset.dash||(el.matches('.v-badge.-dashed')?'3 3':'');if(dash)path.setAttribute('stroke-dasharray',dash)}
    const echo=svgNode('path',{'data-morph-echo':'',fill:'none',stroke:'var(--mstroke,var(--mfill,transparent))','stroke-width':'1.5','vector-effect':'non-scaling-stroke'}),dots=svgNode('g',{fill:'var(--mfill,transparent)'})
@@ -116,6 +116,11 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
      // live-state rules. Read the real surface without that owned layer, including
      // after a theme change, then restore it before the browser can paint.
      const next=svg.nextSibling,attached=svg.parentNode===el,live=el.classList.contains('v-morph-live')
+     // Capture the authored endpoint, not an in-flight background transition.
+     // Otherwise busy/selected state changes can freeze the previous paint into
+     // --mfill after the host's CSS transition has already finished.
+     const transition=el.style.getPropertyValue('transition-property'),transitionPriority=el.style.getPropertyPriority('transition-property')
+     el.style.setProperty('transition-property','none','important')
      if(attached)svg.remove()
      if(live)el.classList.remove('v-morph-live')
      el.style.removeProperty('--mfill')
@@ -126,6 +131,8 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
      if(attached)el.insertBefore(svg,next)
      if(live)el.classList.add('v-morph-live')
      el.style.setProperty('--mfill',fill)
+     if(transition)el.style.setProperty('transition-property',transition,transitionPriority)
+     else el.style.removeProperty('transition-property')
     }
     lastPaint={fill:el.style.getPropertyValue('--mfill'),stroke:el.style.getPropertyValue('--mstroke')};signature=visualSignature()
    }

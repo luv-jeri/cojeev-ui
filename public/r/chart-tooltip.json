@@ -1,0 +1,85 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-tooltip",
+  "title": "Dynamic chart tooltip",
+  "description": "A shared bounded data pill with kinetic tracking and pointer/keyboard access.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/card.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/chart-tooltip.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { Card } from \"@/components/ui/card\";\nimport { cn } from \"@/lib/utils\";\nimport { motionTokens, useChoreography } from \"@/lib/sahajiv-motion/choreography\";\nimport { chartColor, tooltipPosition, type ChartColor } from \"@/lib/sahajiv/chart-geometry\";\n\nexport type ChartTooltipItem = { label: string; value: number | null; color?: ChartColor };\nexport type ChartTooltipProps = {\n  id?: string;\n  active?: { label: string; items: ChartTooltipItem[] } | null;\n  position?: { x: number; y: number };\n  bounds?: { width: number; height: number };\n  valueFormatter?: (value: number) => string;\n  className?: string;\n};\n\n/** A controlled tooltip shared by every chart; coordinates are local to its plot. */\nexport function ChartTooltip({ id, active, position = { x: 0, y: 0 }, bounds = { width: 320, height: 280 }, valueFormatter = value => value.toLocaleString(), className }: ChartTooltipProps) {\n  const { quiet, transition } = useChoreography();\n  const ref = React.useRef<HTMLDivElement>(null);\n  const [size, setSize] = React.useState({ width: 220, height: 100 });\n  React.useLayoutEffect(() => {\n    const node = ref.current;\n    if (!node) return;\n    const measure = () => setSize({ width: node.offsetWidth, height: node.offsetHeight });\n    measure();\n    const observer = new ResizeObserver(measure); observer.observe(node);\n    return () => observer.disconnect();\n  }, [active?.label, active?.items.length]);\n  const target = tooltipPosition(position.x, position.y, bounds.width, bounds.height, Math.min(size.width, bounds.width - 16), size.height);\n  return <AnimatePresence initial={!quiet}>\n    {active && <motion.div\n      key=\"tooltip\" ref={ref} id={id} role=\"tooltip\" data-slot=\"chart-tooltip\"\n      className={cn(\"v-chart-tooltip\", className)}\n      initial={quiet ? false : { opacity: 1, scale: .97, x: target.x, y: target.y }}\n      animate={{ opacity: 1, scale: 1, x: target.x, y: target.y }}\n      exit={{ opacity: 0, scale: quiet ? 1 : .98 }} transition={{ ...transition, x: { type: \"tween\", duration: quiet ? 0 : motionTokens.duration.quick, ease: [...motionTokens.ease.enter] }, y: { type: \"tween\", duration: quiet ? 0 : motionTokens.duration.quick, ease: [...motionTokens.ease.enter] } }}\n      style={{ width: Math.min(220, Math.max(1, bounds.width - 16)), maxHeight: Math.max(1, bounds.height - 16) }}\n    >\n      <Card className=\"v-chart-tooltip__card\">\n        <div className=\"v-chart-tooltip__label\">{active.label}</div>\n        <AnimatePresence initial={false} mode=\"popLayout\">\n          {active.items.map((item, index) => <motion.div key={`${active.label}-${item.label}-${index}`} className=\"v-chart-tooltip__row\"\n            initial={quiet ? false : { opacity: 1, y: 3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={transition}>\n            <span className=\"v-chart-key\" style={{ background: chartColor(item.color, index) }} aria-hidden=\"true\" />\n            <span>{item.label}</span><strong>{item.value === null ? \"No observation\" : valueFormatter(item.value)}</strong>\n          </motion.div>)}\n        </AnimatePresence>\n      </Card>\n    </motion.div>}\n  </AnimatePresence>;\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "source": {
+      "name": "Dynamic chart tooltip",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "focused",
+        "hovered",
+        "empty",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "ChartTooltipProps",
+        "props": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "active",
+            "type": "{ label: string; items: ChartTooltipItem[] } | null",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "position",
+            "type": "{ x: number; y: number }",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "bounds",
+            "type": "{ width: number; height: number }",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "valueFormatter",
+            "type": "(value: number) => string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Data display",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -16,6 +16,8 @@ import {
   type PaginationProps,
 } from "@/registry/sahajiv/ui/pagination";
 import { Button } from "@/registry/sahajiv/ui/button";
+import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
+import { motionTokens } from "@/registry/sahajiv/motion/choreography";
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
 export type DataTableColumn<T> = {
   id: string;
@@ -37,6 +39,7 @@ export type DataTableProps<T> = Omit<
 > & {
   data: T[];
   columns: DataTableColumn<T>[];
+  /** The index is the row's position in data, before filtering or sorting. */
   getRowId?: (row: T, index: number) => string;
   filters?: DataTableFilter<T>[];
   filter?: string;
@@ -76,17 +79,30 @@ export function DataTable<T>({
   } | null>(null);
   const activeFilter = filter ?? localFilter;
   const selectedFilter = filters.find((f) => f.id === activeFilter);
+  // Membership must retain a row's identity across filters, sorting and pages.
+  // Consumers that insert/reorder source data should supply getRowId.
+  const rows = React.useMemo(
+    () =>
+      data.map((row, sourceIndex) => ({
+        row,
+        id: getRowId?.(row, sourceIndex) ?? sourceIndex,
+      })),
+    [data, getRowId],
+  );
   const filtered = React.useMemo(
-    () => (selectedFilter ? data.filter(selectedFilter.predicate) : data),
-    [data, selectedFilter],
+    () =>
+      selectedFilter
+        ? rows.filter(({ row }) => selectedFilter.predicate(row))
+        : rows,
+    [rows, selectedFilter],
   );
   const sorted = React.useMemo(() => {
     const col = columns.find((c) => c.id === sort?.id);
     if (!sort || !col?.sortValue) return filtered;
     const value = col.sortValue;
     return [...filtered].sort((a, b) => {
-      const av = value(a),
-        bv = value(b);
+      const av = value(a.row),
+        bv = value(b.row);
       const delta =
         typeof av === "number" && typeof bv === "number"
           ? av - bv
@@ -188,56 +204,81 @@ export function DataTable<T>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {visible.map((row, index) => (
-              <TableRow
-                key={getRowId?.(row, index) ?? index}
-                tabIndex={onRowClick ? 0 : undefined}
-                onClick={() => onRowClick?.(row)}
-                onKeyDown={(event) => {
-                  if (
-                    onRowClick &&
-                    (event.key === "Enter" || event.key === " ")
-                  ) {
-                    event.preventDefault();
-                    onRowClick(row);
-                  }
-                }}
-              >
-                {columns.map((col) => (
-                  <TableCell
-                    key={col.id}
-                    numeric={col.numeric}
-                    className={col.className}
+            <MotionPresence>
+              {visible.map(({ row, id }, index) => (
+                <MotionSurface
+                  key={id}
+                  asChild
+                  preset="fade"
+                  delay={Math.min(index, 5) * motionTokens.stagger}
+                >
+                  <TableRow
+                    data-row-id={id}
+                    tabIndex={onRowClick ? 0 : undefined}
+                    onClick={(event) => {
+                      if (event.defaultPrevented) return;
+                      const target = event.target as Element;
+                      if (
+                        target.closest(
+                          "button,a,input,select,textarea,summary,[role='button'],[role='link'],[role='checkbox'],[role='switch'],[role='radio'],[contenteditable='true'],[data-row-action]",
+                        )
+                      )
+                        return;
+                      onRowClick?.(row);
+                    }}
+                    onKeyDown={(event) => {
+                      if (
+                        onRowClick &&
+                        !event.defaultPrevented &&
+                        event.target === event.currentTarget &&
+                        (event.key === "Enter" || event.key === " ")
+                      ) {
+                        event.preventDefault();
+                        onRowClick(row);
+                      }
+                    }}
                   >
-                    {col.cell
-                      ? col.cell(row)
-                      : col.accessorKey === undefined
-                        ? null
-                        : String(row[col.accessorKey] ?? "")}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                    {columns.map((col) => (
+                      <TableCell
+                        key={col.id}
+                        numeric={col.numeric}
+                        className={col.className}
+                      >
+                        {col.cell
+                          ? col.cell(row)
+                          : col.accessorKey === undefined
+                            ? null
+                            : String(row[col.accessorKey] ?? "")}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </MotionSurface>
+              ))}
+            </MotionPresence>
           </TableBody>
         </Table>
       </DataTableViewport>
-      {!filtered.length && (
-        <DataTableEmpty>
-          <b className="v-state__word">{emptyMessage}</b>
-          <span className="v-state__why">
-            Try another filter to see more records.
-          </span>
-          {activeFilter !== "all" && (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setFilter("all")}
-            >
-              Clear filters
-            </Button>
-          )}
-        </DataTableEmpty>
-      )}
+      <MotionPresence>
+        {!filtered.length && (
+          <MotionSurface key="empty" asChild preset="rise">
+            <DataTableEmpty>
+              <b className="v-state__word">{emptyMessage}</b>
+              <span className="v-state__why">
+                Try another filter to see more records.
+              </span>
+              {activeFilter !== "all" && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setFilter("all")}
+                >
+                  Clear filters
+                </Button>
+              )}
+            </DataTableEmpty>
+          </MotionSurface>
+        )}
+      </MotionPresence>
       <div className="flex items-center justify-between gap-[12px] flex-wrap">
         <span className="v-meta" role="status">
           {filtered.length} of {data.length} records
@@ -269,10 +310,7 @@ export function DataTableFilters({
       data-part="filters"
       data-filters=""
       role="group"
-      className={cn(
-        "v-tabs -pills flex gap-[var(--s-2)]",
-        className,
-      )}
+      className={cn("v-tabs -pills flex gap-[var(--s-2)]", className)}
       {...props}
     />
   );

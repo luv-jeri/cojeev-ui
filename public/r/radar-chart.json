@@ -1,0 +1,63 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radar-chart",
+  "title": "Radar chart",
+  "description": "Compare several dimensions with a shared radar scale and contextual series highlighting.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/chart.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/radar-chart.tsx",
+      "content": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { ChartFrame, type ChartFrameProps } from \"@/components/ui/chart\";\nimport { useChartMotion } from \"@/lib/sahajiv/use-chart-motion\";\nimport { chartColor, finiteValue, polarPoint, radarPath } from \"@/lib/sahajiv/chart-geometry\";\n\nexport type RadarChartProps = Omit<ChartFrameProps, \"children\" | \"legendMode\" | \"interaction\"> & { variant?: \"polygon\" | \"rounded\" | \"grid\"; max?: number };\nexport function RadarChart({ variant = \"polygon\", caption = \"Radar chart\", max, ...props }: RadarChartProps) {\n  const { quiet, transition, geometryTransition } = useChartMotion();\n  return <ChartFrame {...props} caption={caption} interaction=\"radar\">{plot => {\n    const { data, series, width, height, active } = plot;\n    const ceiling = Number.isFinite(max) && max! > 0 ? max! : Math.max(1, ...data.flatMap(point => series.map(item => Math.max(0, finiteValue(point[item.key]) ?? 0))));\n    const cx = width / 2, cy = height / 2, radius = Math.max(1, Math.min(108, width / 2 - 72));\n    const axes = data.map((point, index) => ({ point, angle: index / data.length * Math.PI * 2 - Math.PI / 2 }));\n    if (data.length < 3) return <text x={cx} y={cy} textAnchor=\"middle\" className=\"v-chart-note\">Add at least three categories.</text>;\n    return <>\n      <g className=\"v-chart-grid\" aria-hidden=\"true\">{[.25, .5, .75, 1].map(level => variant === \"grid\" ? <circle key={level} cx={cx} cy={cy} r={radius * level} fill=\"none\" /> : <path key={level} d={radarPath(axes.map(axis => polarPoint(cx, cy, radius * level, axis.angle)))} fill=\"none\" />)}\n        {axes.map((axis, index) => { const point = polarPoint(cx, cy, radius, axis.angle); return <line key={index} x1={cx} x2={point.x} y1={cy} y2={point.y} />; })}\n      </g>\n      <g className=\"v-chart-axis\" aria-hidden=\"true\">{axes.map((axis, index) => { const point = polarPoint(cx, cy, radius + 16, axis.angle); return <text key={index} x={point.x} y={point.y + 4} textAnchor={Math.abs(point.x - cx) < 2 ? \"middle\" : point.x < cx ? \"end\" : \"start\"}>{axis.point.label.length > 11 ? `${axis.point.label.slice(0, 10)}…` : axis.point.label}</text>; })}</g>\n      <AnimatePresence initial={!quiet}>{series.map((item, index) => {\n        const points = axes.map(axis => polarPoint(cx, cy, radius * Math.max(0, Math.min(1, (finiteValue(axis.point[item.key]) ?? 0) / ceiling)), axis.angle));\n        const d = radarPath(points, variant === \"rounded\");\n        return <motion.g key={item.key} initial={quiet ? false : { opacity: 0, scale: .94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={transition} style={{ transformOrigin: `${cx}px ${cy}px` }}>\n          <motion.path data-slot=\"chart-mark\" d={d} fill={chartColor(item.color, index)} fillOpacity=\".18\" stroke={chartColor(item.color, index)} strokeWidth=\"2\" initial={false} animate={{ d }} transition={transition} />\n          <AnimatePresence initial={!quiet}>{points.map((point, pointIndex) => <motion.circle key={`${data[pointIndex].label}-${pointIndex}`} cx={point.x} cy={point.y} initial={quiet ? false : { cx: point.x, cy: point.y, r: 0, opacity: 0 }} animate={{ cx: point.x, cy: point.y, r: active === pointIndex ? 5 : 2.5, opacity: 1 }} exit={{ r: 0, opacity: 0 }} fill={chartColor(item.color, index)} stroke=\"var(--card)\" strokeWidth=\"1.5\" transition={{ ...transition, r: geometryTransition }} onPointerEnter={() => plot.inspect(pointIndex)} />)}</AnimatePresence>\n        </motion.g>;\n      })}</AnimatePresence>\n    </>;\n  }}</ChartFrame>;\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "source": {
+      "name": "Radar chart",
+      "variants": [
+        "polygon",
+        "rounded",
+        "grid"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "focused",
+        "hovered",
+        "empty",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "RadarChartProps",
+        "props": [
+          {
+            "name": "variant",
+            "type": "\"polygon\" | \"rounded\" | \"grid\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Data display",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

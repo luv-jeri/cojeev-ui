@@ -117,6 +117,7 @@ export function SelectContent({
         className={cn("v-listbox v-menu", className)}
         position={position}
         sideOffset={sideOffset}
+        collisionPadding={12}
         {...props}
       >
         <SelectScrollUpButton />

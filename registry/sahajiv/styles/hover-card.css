@@ -12,3 +12,11 @@
     scroll-behavior: auto;
   }
 }
+
+[data-slot="hover-card-content"], [data-slot="hover-card-sub-content"] {
+ min-width:min(200px,calc(100vw - 24px)); max-width:calc(100vw - 24px);
+ max-height:min(480px,var(--radix-hover-card-content-available-height,calc(100dvh - 32px)));
+ overflow-y:auto; overscroll-behavior:contain; overflow-wrap:anywhere;
+}
+[data-slot="hover-card-item"] { min-width:0; height:auto; min-height:36px; white-space:normal; }
+[data-slot="hover-card-content"] { z-index:var(--z-popover); }

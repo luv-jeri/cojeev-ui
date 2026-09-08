@@ -123,6 +123,7 @@ export function DatePickerContent({
       data-part="content"
       align="start"
       sideOffset={8}
+      collisionPadding={12}
       className={className}
       {...props}
     />

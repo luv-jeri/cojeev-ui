@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Spinner } from "@/registry/sahajiv/ui/spinner"
+import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence"
 import { useFlowPress } from "@/registry/sahajiv/motion/flow-press"
 import { useMorph } from "@/registry/sahajiv/motion/use-morph"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -36,13 +37,21 @@ type ButtonProps = React.ComponentProps<"button"> & VariantProps<typeof buttonVa
   loadingIndicator?: React.ReactNode
 }
 
-function Button({ ref: externalRef, className, variant, size, fullWidth, loading, loadingIndicator, children, type = "button", "aria-busy": ariaBusy, ...props }: ButtonProps) {
+function Button({ ref: externalRef, className, variant, size, fullWidth, loading, loadingIndicator, children, type = "button", "aria-busy": ariaBusy, "aria-disabled": ariaDisabled, onClick, ...props }: ButtonProps) {
   const morphRef = useMorph<HTMLButtonElement>("buttons", externalRef)
   const pressRef = useFlowPress(morphRef)
   const busy = loading ?? (ariaBusy === true || ariaBusy === "true")
   return (
-    <button ref={pressRef} data-slot="button" data-part="root" data-state={props.disabled ? "disabled" : busy ? "busy" : "rest"} type={type} aria-busy={busy || undefined} className={cn(buttonVariants({ variant, size, fullWidth }), "leading-none", className)} {...props}>
-      {busy && (loadingIndicator ?? <ButtonIndicator />)}
+    <button ref={pressRef} data-slot="button" data-part="root" data-state={props.disabled ? "disabled" : busy ? "busy" : "rest"} type={type} aria-busy={busy || undefined} aria-disabled={busy || ariaDisabled || undefined} onClick={(event) => {
+      if (busy || ariaDisabled === true || ariaDisabled === "true") {
+        event.preventDefault()
+        return
+      }
+      onClick?.(event)
+    }} className={cn(buttonVariants({ variant, size, fullWidth }), "leading-none", className)} {...props}>
+      <MotionPresence>
+        {busy && <MotionSurface key="loading" asChild preset="scale"><span data-slot="button-loading" className="v-btn__loading" aria-hidden="true">{loadingIndicator ?? <ButtonIndicator />}</span></MotionSurface>}
+      </MotionPresence>
       {children}
     </button>
   )

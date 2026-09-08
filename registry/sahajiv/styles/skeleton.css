@@ -1,30 +1,11 @@
-/* Orthogonal authored class modifiers remain composable with CVA axes. */
-.v-skel[data-slot].-pill{border-radius:var(--r-pill)}
-.v-skel[data-slot].-card{border-radius:20px}
-.v-skel[data-slot].-disk{border-radius:50%}
-.v-skel[data-slot].-line{height:12px;border-radius:999px}
-
-/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */
-.v-skel[data-slot]::after{background:linear-gradient(100deg,transparent 15%,rgba(251,244,230,.7) 48%,transparent 82%);animation-duration:2s;z-index:1}
-.v-skel[data-slot]:has(>svg.v-morph){background:transparent}
-.v-skel[data-slot]>svg.v-morph{z-index:0}
-:root[data-mode="dark"] .v-skel[data-slot]::after{background:linear-gradient(100deg,transparent 15%,rgba(251,244,230,.14) 48%,transparent 82%)}
-.v-skel-group[data-slot].v-card{padding:20px;background:var(--card)}
-.v-skel[data-slot]::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 12%,var(--v-skel-sheen) 46%,transparent 78%);transform:translateX(-100%);animation:v-sweep 2.4s cubic-bezier(.4,0,.2,1) infinite}
-.v-skel[data-slot].-line:nth-of-type(2n){width:82%}
-.v-skel[data-slot].-line:nth-of-type(3n){width:64%}
-.v-skel-group[data-slot]>*{animation-delay:calc(var(--i,0)*.16s)}
-@media (prefers-reduced-motion:reduce){.v-skel[data-slot]::after{animation:none;opacity:.5}}
-.v-skel[data-slot].-paused{animation-play-state:paused}
-.-paused .v-skel[data-slot]{animation-play-state:paused}
-.v-skel[data-slot].-paused::before{animation-play-state:paused}
-.v-skel[data-slot].-paused::after{animation-play-state:paused}
-.-paused .v-skel[data-slot]::before{animation-play-state:paused}
-.-paused .v-skel[data-slot]::after{animation-play-state:paused}
-:root.-doc-hidden .v-skel[data-slot]{animation-play-state:paused}
-:root.-doc-hidden .v-skel[data-slot]::before{animation-play-state:paused}
-:root.-doc-hidden .v-skel[data-slot]::after{animation-play-state:paused}
-
-
-@keyframes v-shimmer{to{background-position:-200% 0}}
-@keyframes v-sweep{to{transform:translateX(100%)}}
+.v-skel[data-slot] { min-width:0; max-width:100%; animation:none; }
+.v-skel[data-slot].-pill { border-radius:var(--r-pill); }
+.v-skel[data-slot].-card { border-radius:20px; }
+.v-skel[data-slot].-disk { border-radius:50%; }
+.v-skel[data-slot].-line { height:12px; border-radius:999px; }
+.v-skel[data-slot].-line:nth-of-type(2n) { width:82%; }
+.v-skel[data-slot].-line:nth-of-type(3n) { width:64%; }
+.v-skel[data-slot]:has(>svg.v-morph) { background:transparent; }
+.v-skel[data-slot]>svg.v-morph { z-index:0; }
+.v-skel-group[data-slot].v-card { padding:20px; background:var(--card); }
+.v-skel__sheen { position:absolute; inset:0; pointer-events:none; z-index:1; background:linear-gradient(100deg,transparent 12%,var(--v-skel-sheen) 46%,transparent 78%); }

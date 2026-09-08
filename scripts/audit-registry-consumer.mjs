@@ -16,6 +16,8 @@ const output = path.resolve(
 );
 if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/sahajiv-consumer-audit.");
 const resume = process.argv.includes("--resume");
+const refresh = process.argv.includes("--refresh");
+if (refresh && !resume) throw new Error("--refresh requires --resume of a successfully installed consumer");
 const registry = path.join(output, "registry-source");
 const consumer = path.join(output, "consumer");
 const env = {
@@ -30,6 +32,7 @@ if (resume) {
   receipt.resumedAt = new Date().toISOString();
   receipt.auditRunnerCommit = runnerCommit;
   receipt.resumedExistingFreshConsumer = true;
+  if (refresh) receipt.refreshedThroughRegistryCLI = true;
   delete receipt.error;
 }
 receipt.logs ??= {};
@@ -114,7 +117,7 @@ try {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const baseURL = `http://127.0.0.1:${server.address().port}`;
   receipt.registryURL = baseURL;
-  if (!resume) {
+  if (!resume || refresh) {
   for (const file of [
     "registry/sahajiv",
     "scripts/build-registry.mjs",
@@ -134,7 +137,7 @@ try {
       recursive: true,
     });
   }
-  await fs.symlink(
+  if (!resume) await fs.symlink(
     path.join(root, "node_modules"),
     path.join(registry, "node_modules"),
     "dir",
@@ -259,7 +262,20 @@ try {
     consumer,
   );
   }
+  if (refresh) await run(
+    "shadcn-refresh-all",
+    process.execPath,
+    [path.join(root, "node_modules/shadcn/dist/index.js"), "add", "--yes", "--overwrite", ...ids.map(id => `${baseURL}/r/${id}.json`)],
+    consumer,
+  );
   const renderedExamples = {
+    "area-chart": index => `<Item${index}.AreaChart data={[{label:"Mon",value:12},{label:"Tue",value:24},{label:"Wed",value:18}]} series={[{key:"value",label:"Notes",color:"pink"}]} caption="Installed area chart"/>`,
+    "bar-chart": index => `<Item${index}.BarChart data={[{label:"Mon",value:12},{label:"Tue",value:24}]} series={[{key:"value",label:"Notes",color:"blue"}]} caption="Installed bar chart"/>`,
+    "line-chart": index => `<Item${index}.LineChart data={[{label:"Mon",value:12},{label:"Tue",value:24},{label:"Wed",value:18}]} series={[{key:"value",label:"Notes",color:"pink"}]} caption="Installed line chart"/>`,
+    "pie-chart": index => `<Item${index}.PieChart data={[{label:"Work",value:60,color:"pink"},{label:"Rest",value:40,color:"blue"}]} caption="Installed pie chart"/>`,
+    "radar-chart": index => `<Item${index}.RadarChart data={[{label:"Work",value:60},{label:"Rest",value:40},{label:"Learn",value:80}]} series={[{key:"value",label:"Balance",color:"olive"}]} caption="Installed radar chart"/>`,
+    "radial-chart": index => `<Item${index}.RadialChart data={[{label:"Reading",value:65,color:"pink"},{label:"Making",value:80,color:"blue"}]} caption="Installed radial chart"/>`,
+    "agent-state": index => `<Item${index}.AgentState status="idle" description="Ready in the installed library."/>`,
     "shape-scene": index => `<Item${index}.ShapeScene animate={false} interactive={false}/>` ,
     button: index => `<Item${index}.Button onClick={() => setCount(value => value + 1)}>Add schedule</Item${index}.Button><p data-audit-count>Schedules added: {count}</p>`,
     badge: index => `<Item${index}.Badge variant="olive">Ready</Item${index}.Badge>`,
@@ -400,6 +416,7 @@ try {
   await page.goto(`${baseURL}/consumer/`);
   await page.locator("[data-audit-entry]").last().waitFor();
   if (ids.includes("shape-scene")) {
+    await page.locator('[data-audit-specimen="shape-scene"]').scrollIntoViewIfNeeded();
     await page.waitForFunction(() => document.querySelector('[data-slot="shape-scene"]')?.getAttribute("data-renderer") === "webgl", undefined, { timeout: 30000 });
     const canvas = page.locator('[data-slot="shape-scene-canvas"]');
     if (!(await canvas.evaluate(element => element.width > 0 && element.height > 0))) throw new Error("Installed ShapeScene has an empty drawing buffer");
@@ -443,6 +460,19 @@ try {
     await page.getByRole("button", { name: "Resume motion", exact: true }).click();
     await page.getByRole("button", { name: "Pause motion", exact: true }).click();
     await page.getByRole("button", { name: "Resume motion", exact: true }).waitFor();
+  }
+  for (const id of ["area-chart", "bar-chart", "line-chart", "pie-chart", "radar-chart", "radial-chart"]) {
+    if (!ids.includes(id)) continue;
+    const chart = page.locator(`[data-audit-specimen="${id}"]`);
+    const plot = chart.locator('[data-slot="chart-svg"]');
+    await plot.waitFor();
+    await plot.focus();
+    await plot.press("End");
+    await chart.getByRole("tooltip").waitFor();
+    await plot.press("Escape");
+    await chart.getByRole("tooltip").waitFor({ state: "hidden" });
+    await chart.getByRole("button", { name: "Show data", exact: true }).click();
+    await chart.locator('[data-slot="chart-data-table"]').waitFor({ state: "visible" });
   }
   receipt.checks.selectedSpecimenInteractions = "PASS";
   await page.mouse.move(500, 500);

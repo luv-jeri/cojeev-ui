@@ -26,3 +26,5 @@
 }
 
 [data-slot="field"].-invalid .v-input { border: 1.5px solid var(--v-danger); }
+[data-slot="field"], [data-slot="field-group"] { min-width:0; }
+[data-slot="field-description"] { overflow-wrap:anywhere; line-height:1.5; }

@@ -1,0 +1,2 @@
+[data-slot="animated-icon"], [data-slot="animated-icon"] > span { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; vertical-align:middle; }
+[data-slot="animated-icon"] svg { overflow:visible; }

@@ -1,7 +1,7 @@
 "use client"
 import * as React from "react"
 import { assignMotionRef } from "./refs"
-import { acquireFlowEnvironment, appearFlow, attachFlowGroup, isFlowQuiet, replaceFlow, type FlowGroupOptions } from "./flow"
+import { acquireFlowEnvironment, createFlowPresence, attachFlowGroup, isFlowQuiet, replaceFlow, type FlowGroupOptions } from "./flow"
 import { subscribeSettings } from "./settings"
 
 export function useFlowGroup<T extends HTMLElement>(externalRef?:React.Ref<T>,options?:FlowGroupOptions):React.RefCallback<T>{
@@ -14,22 +14,29 @@ export function useFlowGroup<T extends HTMLElement>(externalRef?:React.Ref<T>,op
  },[externalRef,kind,itemSelector,activeSelector])
 }
 /** Initial content is quiet; an actual opening or later mount uses the shared surface animation. */
-export function useFlowAppearance<T extends HTMLElement>(open:boolean,externalRef?:React.Ref<T>,kind:'grow'|'enter'='grow'):React.RefCallback<T>{
+export function useFlowAppearance<T extends HTMLElement>(open:boolean,externalRef?:React.Ref<T>,kind:'grow'|'enter'|'fade'='grow'):React.RefCallback<T>{
  const [host,setHost]=React.useState<T|null>(null),previous=React.useRef<boolean|undefined>(undefined)
+ const openRef=React.useRef(open),owner=React.useRef<ReturnType<typeof createFlowPresence>|null>(null)
  const ref=React.useCallback((el:T|null)=>{
   setHost(el);const releaseRef=assignMotionRef(externalRef,el)
   return ()=>{setHost(null);releaseRef()}
  },[externalRef])
+ React.useLayoutEffect(()=>{openRef.current=open;owner.current?.set(open);if(!open)previous.current=false},[open])
  React.useLayoutEffect(()=>{
-  if(!host){if(!open)previous.current=false;return}
-  const release=acquireFlowEnvironment(),was=previous.current;previous.current=open
-  let cleanup=()=>{}
-  if(open&&(was===false||(was===undefined&&performance.now()>1500)))cleanup=appearFlow(host,kind==='grow')
+  if(!host)return
+  const open=openRef.current,release=acquireFlowEnvironment(),was=previous.current;previous.current=open
+  const presence=createFlowPresence(host,kind==='fade'?'fade':kind==='grow')
+  owner.current=presence
+  if(open&&(was===false||(was===undefined&&performance.now()>1500)))presence.enter()
+  else presence.set(open,false)
   if(open)replaceFlow(host)
-  const quiet=()=>{if(isFlowQuiet(host)){cleanup();cleanup=()=>{};replaceFlow(host)}}
+  const state=new MutationObserver(()=>presence.set(host.getAttribute('data-state')!=='closed'))
+  state.observe(host,{attributes:true,attributeFilter:['data-state']})
+  const quiet=()=>{if(isFlowQuiet(host)||document.hidden){presence.quiet();replaceFlow(host)}}
   const rm=matchMedia('(prefers-reduced-motion: reduce)');rm.addEventListener('change',quiet)
+  document.addEventListener('visibilitychange',quiet)
   const unsubscribe=subscribeSettings(quiet)
-  return ()=>{cleanup();unsubscribe();rm.removeEventListener('change',quiet);release()}
- },[host,open,kind])
+  return ()=>{if(owner.current===presence)owner.current=null;presence.dispose();state.disconnect();unsubscribe();rm.removeEventListener('change',quiet);document.removeEventListener('visibilitychange',quiet);release()}
+ },[host,kind])
  return ref
 }

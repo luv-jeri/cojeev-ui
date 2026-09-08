@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/registry/sahajiv/ui/button";
+import { AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
 import { MotionControls } from "@/registry/sahajiv/ui/adjuster";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/registry/sahajiv/ui/sheet";
 
@@ -9,7 +10,7 @@ export function DocsMotion({ className }: { className?: string }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size="sm" variant="secondary" className={className}>Motion settings</Button>
+        <Button size="sm" variant="secondary" className={className}><AnimatedIcon name="settings"/>Motion settings</Button>
       </SheetTrigger>
       <SheetContent className="docs-motion-panel">
         <SheetHeader>

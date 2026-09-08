@@ -1,9 +1,11 @@
 "use client";
 import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import * as React from "react";
+import { useIsPresent } from "motion/react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
+import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
 export const paginationVariants = cva(
   "v-pager flex items-center gap-[var(--s-2)] flex-wrap",
 );
@@ -62,17 +64,29 @@ export function Pagination({
             disabled={current === 1}
             onClick={() => change(current - 1)}
           />
-          {pages.map((n, i) => (
-            <React.Fragment key={n}>
-              {i > 0 && n - pages[i - 1] > 1 && <PaginationEllipsis />}
-              <PaginationLink
-                isActive={n === current}
-                onClick={() => change(n)}
-              >
-                {n}
-              </PaginationLink>
-            </React.Fragment>
-          ))}
+          <MotionPresence>
+            {pages.flatMap((n, i) => [
+              ...(i > 0 && n - pages[i - 1] > 1
+                ? [
+                    <MotionSurface
+                      key={`gap:${pages[i - 1]}:${n}`}
+                      asChild
+                      preset="fade"
+                    >
+                      <PaginationEllipsis />
+                    </MotionSurface>,
+                  ]
+                : []),
+              <MotionSurface key={`page:${n}`} asChild preset="scale">
+                <PaginationLink
+                  isActive={n === current}
+                  onClick={() => change(n)}
+                >
+                  {n}
+                </PaginationLink>
+              </MotionSurface>,
+            ])}
+          </MotionPresence>
           <PaginationNext
             disabled={current === total}
             onClick={() => change(current + 1)}
@@ -111,19 +125,22 @@ export function PaginationItem({ className, ...props }: PaginationItemProps) {
 export type PaginationLinkProps = React.ComponentProps<"button"> & {
   isActive?: boolean;
 };
-export function PaginationLink({ref: externalMorphRef, 
+export function PaginationLink({
+  ref: externalMorphRef,
   className,
   isActive,
   ...props
 }: PaginationLinkProps) {
+  const present = useIsPresent();
   const ownedMorphRef = useMorph<HTMLButtonElement>("pills", externalMorphRef);
   return (
-    <button ref={ownedMorphRef}
+    <button
+      ref={ownedMorphRef}
       type="button"
       data-slot="pagination-link"
       data-part="item"
-      aria-current={isActive ? "page" : undefined}
-      data-state={isActive ? "active" : "inactive"}
+      aria-current={present && isActive ? "page" : undefined}
+      data-state={present && isActive ? "active" : "inactive"}
       className={cn(
         "min-w-[36px] h-[36px] px-[10px] py-0 rounded-[var(--r-pill)] text-[13px] font-medium bg-[var(--card)]",
         className,

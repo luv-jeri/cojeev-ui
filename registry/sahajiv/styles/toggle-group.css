@@ -20,7 +20,7 @@
   color: var(--v-text);
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]),
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled),
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
   .v-btn.-on {
   background: var(--v-ink);
@@ -45,7 +45,7 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-pink:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-pink:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   color: var(--v-on-accent);
 }
 .v-toggle:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]) {
@@ -63,14 +63,14 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ):is([aria-pressed="true"],[aria-checked="true"]) {
+  ):is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-pink:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-pink:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-pink);
   color: var(--v-text);
 }
@@ -83,7 +83,7 @@
   border-radius: 50%;
 }
 .v-toggle:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]):not(
-    :is([aria-pressed="true"],[aria-checked="true"])
+    :is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)
   ) {
   box-shadow: inset 0 0 0 1px var(--v-edge);
 }
@@ -101,7 +101,7 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-pink:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-pink:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--sel-bg);
   color: var(--sel-ink);
   box-shadow: inset 0 0 0 1px var(--sel-edge);
@@ -110,17 +110,17 @@
   .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ):is([aria-pressed="true"],[aria-checked="true"]),
+  ):is([aria-pressed="true"],[aria-checked="true"]):not(:disabled),
 :root[data-mode="dark"]
   .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]) {
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-pink);
   color: var(--v-on-accent);
   border-color: var(--v-pink);
 }
 :root[data-mode="dark"]
   .v-toggle:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]):not(
-    :is([aria-pressed="true"],[aria-checked="true"])
+    :is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)
   ) {
   color: var(--v-text);
 }
@@ -150,27 +150,27 @@
   color: var(--v-text);
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]),
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled),
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
   .v-btn.-on {
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]).-pink
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]),
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled),
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]).-pink
   .v-btn.-on {
   background: var(--v-pink);
   color: var(--v-on-accent);
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]),
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled),
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
   .v-btn.-on {
   color: var(--v-on-ink);
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]).-pink
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]),
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled),
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]).-pink
   .v-btn.-on {
   color: var(--v-on-accent);
@@ -216,7 +216,7 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ):is([aria-pressed="true"],[aria-checked="true"]) {
+  ):is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-ink);
   color: var(--v-on-ink);
   box-shadow: none;
@@ -225,28 +225,28 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-pink:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-pink:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-pink);
   color: var(--v-on-accent);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-yellow:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-yellow:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-yellow);
   color: var(--v-on-accent);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-olive:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-olive:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-olive);
   color: var(--v-on-accent);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-blue:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-blue:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-blue);
   color: var(--v-on-accent);
 }
@@ -263,7 +263,7 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-circle:is([aria-pressed="true"],[aria-checked="true"]) {
+  ).-circle:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
 }
 .v-toggle:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
@@ -280,31 +280,31 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ):is([aria-pressed="true"],[aria-checked="true"])[data-morph] {
+  ):is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)[data-morph] {
   --mfill: var(--v-ink);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-pink:is([aria-pressed="true"],[aria-checked="true"])[data-morph] {
+  ).-pink:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)[data-morph] {
   --mfill: var(--v-pink);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-yellow:is([aria-pressed="true"],[aria-checked="true"])[data-morph] {
+  ).-yellow:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)[data-morph] {
   --mfill: var(--v-yellow);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-olive:is([aria-pressed="true"],[aria-checked="true"])[data-morph] {
+  ).-olive:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)[data-morph] {
   --mfill: var(--v-olive);
 }
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ).-blue:is([aria-pressed="true"],[aria-checked="true"])[data-morph] {
+  ).-blue:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)[data-morph] {
   --mfill: var(--v-blue);
 }
 .v-togglewell:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]) {
@@ -356,7 +356,7 @@
 .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ):is([aria-pressed="true"],[aria-checked="true"])
+  ):is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)
   .v-icon {
   transform: scale(1.1) rotate(-8deg);
 }
@@ -374,17 +374,17 @@
   border: 0;
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
-  .v-btn:hover:not(:is([aria-pressed="true"],[aria-checked="true"])) {
+  .v-btn:hover:not(:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled)) {
   background: color-mix(in oklab, var(--card) 84%, var(--v-ink));
   color: var(--v-text);
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"])
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]) {
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
 .v-seg:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]).-pink
-  .v-btn:is([aria-pressed="true"],[aria-checked="true"]) {
+  .v-btn:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled) {
   background: var(--v-pink);
   color: var(--v-on-accent);
 }
@@ -404,7 +404,7 @@
   .v-toggle:where(
     [data-slot="toggle-group"],
     [data-slot^="toggle-group-"]
-  ):is([aria-pressed="true"],[aria-checked="true"]):not(.-pink):not(.-yellow):not(.-olive):not(.-blue) {
+  ):is([aria-pressed="true"],[aria-checked="true"]):not(:disabled):not(.-pink):not(.-yellow):not(.-olive):not(.-blue) {
   background: var(--v-pink);
   color: var(--v-on-accent);
 }
@@ -448,10 +448,16 @@
 }
 
 /* Authored circle selection precedence (components-2.css:1359). */
-.v-toggle:where([data-slot="toggle-group"],[data-slot^="toggle-group-"]).-circle:is([aria-pressed="true"],[aria-checked="true"]):not([data-glide-active]) {
+.v-toggle:where([data-slot="toggle-group"],[data-slot^="toggle-group-"]).-circle:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled):not([data-glide-active]) {
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
-.v-toggle:where([data-slot="toggle-group"],[data-slot^="toggle-group-"]).-circle:is([aria-pressed="true"],[aria-checked="true"]):not([data-glide-active])[data-morph] {
+.v-toggle:where([data-slot="toggle-group"],[data-slot^="toggle-group-"]).-circle:is([aria-pressed="true"],[aria-checked="true"]):not(:disabled):not([data-glide-active])[data-morph] {
   --mfill: var(--v-ink);
+}
+
+:root .v-toggle:where([data-slot="toggle-group"], [data-slot^="toggle-group-"]):disabled {
+  background: var(--v-disabled-face); color: var(--v-disabled-ink);
+  box-shadow: inset 0 0 0 1px var(--v-disabled-edge);
+  --mfill: var(--v-disabled-face);
 }

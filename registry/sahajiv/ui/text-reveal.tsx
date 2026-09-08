@@ -1,7 +1,9 @@
 "use client";
 import * as React from "react";
+import { animate, stagger } from "motion";
 import { cn } from "../lib/utils";
 import { useMotionVisibility } from "../motion/use-motion-visibility";
+import { motionTokens, trackMotion } from "../motion/choreography";
 
 export type TextRevealProps = Omit<React.HTMLAttributes<HTMLElement>, "children"> & {
   text: string;
@@ -26,11 +28,23 @@ export function TextReveal({ text, as: Tag = "span", replayKey = 0, variant = "r
     const words = Array.from(host.current.querySelectorAll<HTMLElement>("[data-reveal-word]"));
     const milliseconds = Number.isFinite(duration) ? Math.min(1500, Math.max(0, duration)) : 480;
     if (milliseconds === 0) return;
-    const animations = words.map((word, index) => word.animate([
-      { opacity: 0, transform: variant === "rise" ? "translateY(.32em)" : "none" },
-      { opacity: 1, transform: "none" },
-    ], { duration: milliseconds, delay: Math.min(index * 28, 420), easing: "cubic-bezier(.2,.65,.25,1)", fill: "backwards" }));
-    return () => animations.forEach((animation) => animation.cancel());
+    const sequence = stagger(motionTokens.stagger);
+    const controls = animate(words, {
+      "--reveal-opacity": [0, 1],
+      "--reveal-y": variant === "rise" ? [".32em", "0em"] : ["0em", "0em"],
+    }, {
+      duration: milliseconds / 1000,
+      delay: (index, total) => Math.min(sequence(index, total), .42),
+      ease: [...motionTokens.ease.settle],
+    });
+    const stop = trackMotion(controls);
+    return () => {
+      stop();
+      // Settle through the same Motion values so its queued render cannot
+      // overwrite an inline cleanup with a half-revealed word on the next frame.
+      const mounted = words.filter(word => word.isConnected);
+      if (mounted.length) animate(mounted, { "--reveal-opacity": 1, "--reveal-y": "0em" }, { duration: 0 });
+    };
   }, [token, enabled, inView, duration, variant]);
   return <Tag {...props} ref={host as React.Ref<HTMLHeadingElement>} data-slot="text-reveal" className={cn("v-text-reveal", className)}>
     <span className="v-text-reveal__accessible">{text}</span>

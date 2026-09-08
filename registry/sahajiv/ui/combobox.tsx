@@ -8,6 +8,7 @@ import { Command as Primitive } from "cmdk";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { InputWrapper, InputControl } from "@/registry/sahajiv/ui/input";
 import { Icon, Disk } from "@/registry/sahajiv/ui/icon";
+import { useCommandResultsMotion } from "@/registry/sahajiv/ui/command";
 import {
   useFlowAppearance,
   useFlowGroup,
@@ -229,29 +230,33 @@ export function ComboboxContent({
     groupRef,
     "grow",
   );
+  const resultsRef = useCommandResultsMotion(flowRef);
   return (
-    <PopoverPrimitive.Content
-      asChild
-      sideOffset={6}
-      onCloseAutoFocus={(event) => event.preventDefault()}
-      onOpenAutoFocus={(event) => event.preventDefault()}
-      onInteractOutside={(event) => {
-        if (
-          event.target instanceof Element &&
-          event.target.closest('[data-slot="combobox"]')
-        )
-          event.preventDefault();
-      }}
-    >
-      <Primitive.List
-        ref={flowRef}
-        id={state.listId}
-        data-slot="combobox-content"
-        data-part="content"
-        className={cn("v-menu", className)}
-        {...props}
-      />
-    </PopoverPrimitive.Content>
+    <PopoverPrimitive.Portal>
+      <PopoverPrimitive.Content
+        asChild
+        sideOffset={6}
+        collisionPadding={12}
+        onCloseAutoFocus={(event) => event.preventDefault()}
+        onOpenAutoFocus={(event) => event.preventDefault()}
+        onInteractOutside={(event) => {
+          if (
+            event.target instanceof Element &&
+            event.target.closest('[data-slot="combobox"]')
+          )
+            event.preventDefault();
+        }}
+      >
+        <Primitive.List
+          ref={resultsRef}
+          id={state.listId}
+          data-slot="combobox-content"
+          data-part="content"
+          className={cn("v-menu v-command-results", className)}
+          {...props}
+        />
+      </PopoverPrimitive.Content>
+    </PopoverPrimitive.Portal>
   );
 }
 export const ComboboxList = ComboboxContent;

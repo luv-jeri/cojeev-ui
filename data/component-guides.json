@@ -904,14 +904,15 @@
     ]
   },
   "shape": {
-    "description": "Renders a named decorative silhouette that inherits or accepts a fill color.",
+    "description": "A shared catalogue of 36 SVG silhouettes, with 12 original contours that morph smoothly between shapes.",
     "category": "Data display",
     "usage": [
-      "Choose a supported name from shapeNames and size the shape through its surrounding text or className.",
-      "Use shapes to support a composition or visual marker without replacing meaningful text."
+      "Use Shape with a name from shapeNames for a static mask. Size it through className or style and set its fill with the --c custom property.",
+      "Use ShapeMorph with a name from signatureShapeNames for an animated contour. Change name to morph from the visible shape; choose fill or outline and set color through ordinary SVG styles.",
+      "Use the shared silhouettes for card accents, empty states and dividers. Motion Off, reduced motion and offscreen rendering settle to a static shape."
     ],
     "accessibility": [
-      "Shapes are hidden from assistive technology by default; communicate any essential meaning in nearby text."
+      "Shapes are decorative by default. Give ShapeMorph a label only when the graphic conveys meaning; keep descriptive text beside decorative accents."
     ],
     "related": [
       "icon",
@@ -1054,7 +1055,8 @@
     "category": "Navigation",
     "usage": [
       "Match each TabsTrigger value to a TabsContent value inside a shared Tabs root.",
-      "Use value and onValueChange when another control needs to select a view, and choose a variant for its visual hierarchy."
+      "Use value and onValueChange when another control needs to select a view, and choose a variant for its visual hierarchy.",
+      "Panel changes use the shared presence transition. Exiting panels become inert and leave after their exit; forceMount opts into consumer-managed visibility."
     ],
     "accessibility": [
       "Give TabsList a descriptive accessible name and preserve the supplied trigger and panel relationships for keyboard navigation."
@@ -1269,6 +1271,256 @@
       "carousel",
       "scroll-area",
       "adjuster"
+    ]
+  },
+  "agent-state": {
+    "description": "A sculpted, living status field that changes contour and color as an agent thinks, works, asks for input, or finishes.",
+    "category": "Conversation",
+    "usage": [
+      "Use status to convey actual activity: idle, thinking, working, needs-input, complete or error.",
+      "Use sm beside a task, md in a conversation, and lg for a focused empty or waiting state.",
+      "The field pauses outside the viewport, when the document is hidden, and when motion is disabled."
+    ],
+    "accessibility": [
+      "Visible labels accompany color and shape; provide a precise label for your workflow.",
+      "Status is announced politely. Use one live state indicator per active task to avoid duplicate announcements.",
+      "Reduced motion preserves the status contour without continuous animation."
+    ],
+    "related": [
+      "agent-chat",
+      "progress",
+      "spinner"
+    ]
+  },
+  "agent-chat": {
+    "description": "A composable agent conversation with a bounded thread, draft composer, attachments, progress, explicit permissions and choice prompts.",
+    "category": "Conversation",
+    "usage": [
+      "Compose AgentChatHeader, AgentChatThread and AgentChatComposer inside AgentChat.",
+      "Keep messages, draft, selected files and request status in your application. Clear a draft only after onSend accepts it.",
+      "Use AgentChatPermission for deliberate allow/deny decisions. Render its receipt after a decision.",
+      "Use AgentChatOptions to collect one valid choice; Continue remains disabled until a valid enabled option is selected.",
+      "The documentation runs a local simulation. Connect callbacks to your own application to perform real work."
+    ],
+    "accessibility": [
+      "The thread is a keyboard-reachable live log and follows only while the reader stays near its end.",
+      "Enter inserts a new line. Command/Ctrl+Enter sends. Stop preserves the conversation.",
+      "Label attachments and permission scope clearly. Do not treat a preset option as submitted consent.",
+      "Return focus to the next useful control after a request resolves or is cancelled."
+    ],
+    "related": [
+      "agent-state",
+      "message-scroller",
+      "attachment",
+      "questionnaire"
+    ]
+  },
+  "theme-toggle": {
+    "description": "A controlled light/dark switch with a morphing sun and moon. The shared applyTheme helper crossfades inherited surface and text colors.",
+    "category": "Actions",
+    "usage": [
+      "Pass mode and onModeChange. Keep persistence in the application.",
+      "Call applyTheme(nextMode, quiet) to animate the document theme, or update your own theme scope.",
+      "Use the shared motion preference so reduced motion and Motion Off switch immediately."
+    ],
+    "accessibility": [
+      "The button exposes a named switch and aria-checked.",
+      "Both keyboard Space and Enter change the controlled mode."
+    ],
+    "related": [
+      "button",
+      "animated-icon",
+      "shape"
+    ]
+  },
+  "animated-icon": {
+    "description": "Contextual motion for the shared icon catalog: draw, tremor, spinning settings, bouncing navigation and morphing validation.",
+    "category": "Effects",
+    "usage": [
+      "Use inside a named Button or link. Hover and focus are inherited from that control.",
+      "Set active for a processing state; omit it for pointer and focus interaction.",
+      "Choose a preset to override the name-based default."
+    ],
+    "accessibility": [
+      "Icons remain decorative beside a text label.",
+      "Motion pauses offscreen, while the document is hidden, and when reduced motion or Motion Off is enabled."
+    ],
+    "related": [
+      "icon",
+      "button",
+      "theme-toggle"
+    ]
+  },
+  "presence": {
+    "description": "MotionPresence keeps keyed children mounted for their exits. MotionSurface adds coordinated lifecycle states to an existing primitive.",
+    "category": "Effects",
+    "usage": [
+      "Keep the MotionPresence boundary mounted and give changing children stable keys.",
+      "Use MotionSurface asChild around exactly one ref-capable primitive.",
+      "Use quiet motion to settle immediately; the shared preference is inherited."
+    ],
+    "accessibility": [
+      "Preserve native semantics with asChild.",
+      "Put presence outside the actual conditional removal; an inner boundary cannot retain its own parent."
+    ],
+    "related": [
+      "card",
+      "agent-chat",
+      "preview"
+    ]
+  },
+  "area-chart": {
+    "description": "Layered area charts with shared series colors, responsive bounds and a keyboard data inspector.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "bar-chart": {
+    "description": "Compare series with grouped, stacked or horizontal bars and a shared interactive tooltip.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "line-chart": {
+    "description": "Track changes using linear, smooth or step lines with accessible point inspection.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "pie-chart": {
+    "description": "Show proportions using themed pie and donut layouts, with readable totals and segment inspection.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "radar-chart": {
+    "description": "Compare several dimensions with a shared radar scale and contextual series highlighting.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "radial-chart": {
+    "description": "Show progress against a shared maximum using full rings or semicircles.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "chart-tooltip"
+    ]
+  },
+  "chart-tooltip": {
+    "description": "A shared bounded data pill with kinetic tracking and pointer/keyboard access.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart"
     ]
   }
 }

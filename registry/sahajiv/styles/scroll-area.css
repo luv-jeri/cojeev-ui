@@ -1,288 +1,101 @@
-/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar-thumb {
-  background: var(--v-border);
-  border-radius: 3px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink::-webkit-scrollbar-thumb {
-  background: rgba(251, 244, 230, 0.5);
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]).-ink {
-  color: var(--v-on-ink);
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]) {
-  scrollbar-gutter: stable;
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]) {
-  scrollbar-gutter: stable;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 999px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ):hover::-webkit-scrollbar-track {
-  background: color-mix(in oklab, var(--v-pink) 22%, transparent);
-  border: 4px solid transparent;
-  background-clip: content-box;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar-thumb {
-  background: color-mix(in oklab, var(--v-ink) 34%, transparent);
-  border-radius: 999px;
-  border: 4px solid transparent;
-  background-clip: content-box;
-  min-height: 36px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ):hover::-webkit-scrollbar-thumb {
-  background: var(--v-ink);
-  background-clip: content-box;
-  border-width: 3px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar-thumb:hover {
-  background: var(--v-brand);
-  background-clip: content-box;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar-thumb:active {
-  background: var(--v-pink-deep);
-  background-clip: content-box;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink::-webkit-scrollbar-thumb {
-  background: rgba(251, 244, 230, 0.5);
-  background-clip: content-box;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink:hover::-webkit-scrollbar-thumb {
-  background: var(--v-canvas);
-  background-clip: content-box;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink::-webkit-scrollbar-thumb:hover {
-  background: var(--v-pink);
-  background-clip: content-box;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink:hover::-webkit-scrollbar-track {
-  background: rgba(251, 244, 230, 0.1);
-  border: 4px solid transparent;
-  background-clip: content-box;
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]).v-card {
+/* The Radix viewport owns scroll. The thumb's SVG is decorative geometry only. */
+[data-slot="scroll-area"].v-scroll {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  max-height: var(--h, 240px);
   padding: 6px 6px 6px 18px;
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]) > p,
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"])
-  > .v-body {
-  padding: 10px 0;
-  border-bottom: 1px solid color-mix(in oklab, var(--v-border) 70%, transparent);
-  font-size: 14.5px;
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"])
-  > p:last-child {
-  border-bottom: 0;
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]).-ink
-  > p {
-  border-bottom-color: rgba(251, 244, 230, 0.12);
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )[data-scrollable] {
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    var(--mask-ink) 0,
-    var(--mask-ink) calc(100% - 28px),
-    color-mix(in oklab, var(--mask-ink) 20%, transparent) 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    var(--mask-ink) 0,
-    var(--mask-ink) calc(100% - 28px),
-    color-mix(in oklab, var(--mask-ink) 20%, transparent) 100%
-  );
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )[data-scrollable="end"] {
-  -webkit-mask-image: none;
-  mask-image: none;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar-track {
-  background: transparent;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  )::-webkit-scrollbar-thumb {
-  background: color-mix(in oklab, var(--v-edge) 55%, transparent);
-  border: 2px solid transparent;
-  background-clip: content-box;
-  border-radius: 999px;
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink::-webkit-scrollbar-thumb {
-  background: rgba(251, 244, 230, 0.4);
-  background-clip: content-box;
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]) {
-  scrollbar-gutter: stable;
-}
-@supports not selector(::-webkit-scrollbar) {
-  .v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]).-ink {
-    scrollbar-color: rgba(251, 244, 230, 0.5) transparent;
-  }
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink::-webkit-scrollbar-thumb {
-  background-color: rgba(251, 244, 230, 0.42);
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(251, 244, 230, 0.7);
-}
-.v-scroll:where(
-    [data-slot="scroll-area"],
-    [data-slot^="scroll-area-"]
-  ).-ink::-webkit-scrollbar-thumb:hover {
-  background-color: var(--v-pink);
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]) {
-  scrollbar-gutter: stable;
-}
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]) > p,
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"])
-  > .v-body {
-  margin-right: 6px;
-}
-:root[data-mode="dark"]
-  .v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]) {
-  background: var(--v-beige);
-  box-shadow: inset 0 0 0 1px var(--v-border);
-}
-:root[data-mode="dark"]
-  .v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]).-ink {
+  border-radius: var(--r-card-sm, 20px);
+  background: var(--v-canvas);
   color: var(--v-text);
   box-shadow: inset 0 0 0 1px var(--v-border);
 }
-.v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]).-ink {
-  background: var(--v-ink);
-}
-:root[data-mode="dark"]
-  .v-scroll:where([data-slot="scroll-area"], [data-slot^="scroll-area-"]).-ink {
-  background: var(--v-canvas);
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-slot="scroll-area"],
-  [data-slot^="scroll-area-"],
-  [data-slot="scroll-area"]::before,
-  [data-slot="scroll-area"]::after,
-  [data-slot^="scroll-area-"]::before,
-  [data-slot^="scroll-area-"]::after {
-    animation-duration: 0s;
-    animation-iteration-count: 1;
-    transition-duration: 0s;
-    scroll-behavior: auto;
-  }
-}
-
-/* The viewport is Radix's scroll owner; content keeps the reference's direct-child rhythm. */
-[data-slot="scroll-area"] {
-  overflow: hidden;
-}
+[data-slot="scroll-area"].-ink { background: var(--v-ink); color: var(--v-on-ink); }
 [data-slot="scroll-area-viewport"] {
+  width: 100%;
+  height: 100%;
   max-height: calc(var(--h, 240px) - 12px);
+  border-radius: inherit;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  padding-right: 18px;
 }
-[data-slot="scroll-area-viewport"] > div > :is(p, .v-body) {
-  padding: 10px 0;
-  margin-right: 6px;
-  border-bottom: 1px solid color-mix(in oklab, var(--v-border) 70%, transparent);
-  font-size: 14.5px;
+[data-slot="scroll-area-viewport"]:focus-visible {
+  outline: 2px solid var(--v-brand);
+  outline-offset: -3px;
 }
-[data-slot="scroll-area-viewport"] > div > p:last-child {
-  border-bottom: 0;
+[data-slot="scroll-area-viewport"] > div > :is(p,.v-body) {
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid color-mix(in oklab,var(--v-border) 70%,transparent);
+  font-size: var(--fs-body, 14px);
+  line-height: 1.6;
 }
-[data-slot="scroll-area"].-ink [data-slot="scroll-area-viewport"] > div > p {
-  border-bottom-color: rgba(251, 244, 230, 0.12);
+[data-slot="scroll-area-viewport"] > div > :is(p,.v-body):last-child { border-bottom: 0; }
+[data-slot="scroll-area"].-ink [data-slot="scroll-area-viewport"] > div > :is(p,.v-body) {
+  border-bottom-color: color-mix(in oklab,var(--v-on-ink) 14%,transparent);
 }
-[data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
-  width: 8px;
-  padding: 2px;
+[data-slot="scroll-area-scrollbar"] {
+  display: flex;
+  padding: 3px;
+  touch-action: none;
+  user-select: none;
+  border-radius: 999px;
+  background: transparent;
+  transition: background-color 160ms ease;
+  z-index: 2;
 }
-[data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] {
-  height: 8px;
-  padding: 2px;
+[data-slot="scroll-area-scrollbar"][data-orientation="vertical"] { width: 20px; }
+[data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] { height: 20px; flex-direction: column; }
+[data-slot="scroll-area-scrollbar"]:hover,
+[data-slot="scroll-area-scrollbar"][data-dragging="true"] {
+  background: color-mix(in oklab,var(--v-pink) 24%,transparent);
 }
 [data-slot="scroll-area-thumb"] {
-  background: color-mix(in oklab, var(--v-edge) 55%, transparent);
+  position: relative;
+  flex: 1;
+  min-height: 36px;
+  background: transparent;
+  color: color-mix(in oklab,var(--v-edge) 64%,var(--v-ink));
 }
-[data-slot="scroll-area"].-ink [data-slot="scroll-area-thumb"] {
-  background: rgba(251, 244, 230, 0.42);
+[data-slot="scroll-area-thumb"]::before { content: ""; position: absolute; inset: -3px; }
+[data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] [data-slot="scroll-area-thumb"] { min-width: 36px; min-height: 0; }
+.v-scroll__contour { display: block; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; fill: currentColor; }
+[data-slot="scroll-area-scrollbar"]:hover [data-slot="scroll-area-thumb"] { color: var(--v-brand); }
+[data-slot="scroll-area-scrollbar"][data-dragging="true"] [data-slot="scroll-area-thumb"] { color: var(--v-pink-deep); }
+[data-slot="scroll-area"].-ink [data-slot="scroll-area-thumb"] { color: color-mix(in oklab,var(--v-on-ink) 65%,transparent); }
+[data-slot="scroll-area"].-ink [data-slot="scroll-area-scrollbar"]:hover [data-slot="scroll-area-thumb"] { color: var(--v-pink); }
+:root[data-mode="dark"] [data-slot="scroll-area"].-ink { background: var(--v-canvas); color: var(--v-text); }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="scroll-area-scrollbar"] { transition: none; }
+  [data-slot="scroll-area-viewport"] { scroll-behavior: auto; }
 }
-[data-slot="scroll-area"].-ink:hover [data-slot="scroll-area-thumb"] {
-  background: rgba(251, 244, 230, 0.7);
+[data-slot="scroll-area-scrollbar"][data-motion="off"] { transition: none; }
+
+/* Document scrolling stays native; this attribute exists only while mounted. */
+html[data-page-scrollbar="mounted"] { scrollbar-width: none; }
+html[data-page-scrollbar="mounted"]::-webkit-scrollbar,
+html[data-page-scrollbar="mounted"] body::-webkit-scrollbar { width: 0; height: 0; }
+[data-slot="page-scrollbar"] {
+  position: fixed;
+  right: 2px;
+  top: 8px;
+  bottom: 8px;
+  width: 18px;
+  border-radius: 999px;
+  z-index: 50;
+  touch-action: none;
+  user-select: none;
+  color: color-mix(in oklab,var(--v-edge) 64%,var(--v-ink));
+  background: transparent;
+  transition: background-color 160ms ease;
 }
-[data-slot="scroll-area"].-ink [data-slot="scroll-area-thumb"]:hover {
-  background: var(--v-pink);
-}
+[data-slot="page-scrollbar"][data-overflow="false"] { visibility: hidden; pointer-events: none; }
+[data-slot="page-scrollbar"]:hover,
+[data-slot="page-scrollbar"][data-dragging="true"] { color: var(--v-brand); background: color-mix(in oklab,var(--v-pink) 22%,transparent); }
+[data-slot="page-scrollbar"]:focus-visible { outline: 2px solid var(--v-brand); outline-offset: -1px; }
+[data-slot="page-scrollbar-thumb"] { position: absolute; inset: 0 2px auto; min-height: 0; }
+[data-slot="page-scrollbar-thumb"] svg { display: block; width: 100%; height: 100%; fill: currentColor; pointer-events: none; }
+[data-slot="page-scrollbar"][data-motion="off"] { transition: none; }
+@media (pointer: coarse) { [data-slot="page-scrollbar"] { right: 0; width: 14px; } }
+@media (prefers-reduced-motion: reduce) { [data-slot="page-scrollbar"] { transition: none; } }

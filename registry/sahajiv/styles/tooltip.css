@@ -7,10 +7,11 @@
   line-height: 1.3;
   padding: 6px 10px;
   border-radius: var(--r-sm);
-  pointer-events: none;
+  pointer-events: auto;
   opacity: 0;
   transition: opacity var(--t-micro);
-  max-width: 260px;
+  max-width: min(260px, calc(100vw - 24px));
+  overflow-wrap: anywhere;
 }
 .v-tip:where([data-slot="tooltip"], [data-slot^="tooltip-"]).-show {
   opacity: 1;

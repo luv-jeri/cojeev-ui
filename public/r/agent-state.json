@@ -1,0 +1,91 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "agent-state",
+  "title": "Agent state",
+  "description": "A sculpted, living status field that changes contour and color as an agent thinks, works, asks for input, or finishes.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/agent-state.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useInView } from \"motion/react\";\nimport { cn } from \"@/lib/utils\";\nimport { useChoreography } from \"@/lib/sahajiv-motion/choreography\";\n\nexport type AgentStatus = \"idle\" | \"thinking\" | \"working\" | \"needs-input\" | \"complete\" | \"error\";\nexport type AgentStateProps = Omit<React.ComponentProps<\"div\">, \"children\"> & {\n  status?: AgentStatus;\n  size?: \"sm\" | \"md\" | \"lg\";\n  label?: string;\n  description?: string;\n};\n\nconst stateLabels: Record<AgentStatus, string> = {\n  idle: \"Ready when you are\", thinking: \"Thinking\", working: \"Working\",\n  \"needs-input\": \"Your decision\", complete: \"Complete\", error: \"Needs attention\",\n};\n\n// Equal cubic topology lets Motion interpolate a folded fluid silhouette without\n// a second animation clock. Each state remains recognizable when motion is off.\nconst silhouettes: Record<AgentStatus, string> = {\n  idle: \"M90 24C116 17 151 32 153 60C157 84 139 96 124 116C111 135 81 141 59 126C34 113 22 85 32 61C43 36 65 31 90 24Z\",\n  thinking: \"M90 18C120 27 132 19 148 51C163 78 141 92 135 116C127 146 94 137 68 129C40 123 18 98 30 70C40 48 66 7 90 18Z\",\n  working: \"M90 17C114 11 156 41 151 65C146 85 165 110 134 123C106 140 85 121 61 131C34 140 17 94 30 71C44 47 68 25 90 17Z\",\n  \"needs-input\": \"M90 27C121 20 147 29 145 61C143 82 162 111 134 125C108 138 91 114 65 127C35 140 28 101 31 76C34 48 62 33 90 27Z\",\n  complete: \"M90 24C118 24 145 36 150 63C155 91 134 116 112 125C87 137 63 128 47 113C29 95 25 69 40 47C53 28 66 24 90 24Z\",\n  error: \"M90 30C113 7 131 35 147 54C167 77 135 93 139 117C142 142 105 128 83 132C55 139 18 117 28 89C37 65 60 40 90 30Z\",\n};\n\nexport function AgentState({ status = \"idle\", size = \"md\", label, description, className, ...props }: AgentStateProps) {\n  const id = React.useId().replace(/:/g, \"\");\n  const ref = React.useRef<HTMLDivElement>(null);\n  const inView = useInView(ref, { margin: \"40px\" });\n  const { quiet, transition } = useChoreography();\n  const [visible, setVisible] = React.useState(true);\n  React.useEffect(() => {\n    const update = () => setVisible(document.visibilityState !== \"hidden\");\n    update();\n    document.addEventListener(\"visibilitychange\", update);\n    return () => document.removeEventListener(\"visibilitychange\", update);\n  }, []);\n  const active = !quiet && inView && visible && (status === \"thinking\" || status === \"working\");\n  const contour = silhouettes[status];\n  const alternate = silhouettes[status === \"thinking\" ? \"working\" : \"thinking\"];\n  const pathAnimation = active ? { d: [contour, alternate, contour] } : { d: contour };\n  const fieldTransition = active ? { duration: status === \"working\" ? 5 : 7, repeat: Infinity, ease: \"easeInOut\" as const } : transition;\n  return (\n    <div ref={ref} data-slot=\"agent-state\" data-status={status} data-size={size} data-animated={active || undefined} className={cn(\"v-agent-state\", className)} role=\"status\" aria-live=\"polite\" aria-atomic=\"true\" {...props}>\n      <svg className=\"v-agent-state__field\" viewBox=\"0 0 180 160\" fill=\"none\" aria-hidden=\"true\" focusable=\"false\">\n        <defs>\n          <radialGradient id={`${id}-body`} cx=\".3\" cy=\".2\" r=\".85\">\n            <stop stopColor=\"var(--agent-light)\" />\n            <stop offset=\".5\" stopColor=\"var(--agent-base)\" />\n            <stop offset=\"1\" stopColor=\"var(--agent-deep)\" />\n          </radialGradient>\n          <radialGradient id={`${id}-fold`} cx=\".65\" cy=\".22\" r=\".8\">\n            <stop stopColor=\"var(--cream-fixed)\" stopOpacity=\".84\" />\n            <stop offset=\".4\" stopColor=\"var(--agent-light)\" stopOpacity=\".7\" />\n            <stop offset=\"1\" stopColor=\"var(--agent-deep)\" stopOpacity=\".2\" />\n          </radialGradient>\n          <linearGradient id={`${id}-rim`} x1=\"30\" y1=\"30\" x2=\"138\" y2=\"134\" gradientUnits=\"userSpaceOnUse\">\n            <stop stopColor=\"var(--cream-fixed)\" stopOpacity=\".92\" />\n            <stop offset=\".48\" stopColor=\"var(--agent-light)\" stopOpacity=\".2\" />\n            <stop offset=\"1\" stopColor=\"var(--agent-deep)\" stopOpacity=\".8\" />\n          </linearGradient>\n          <clipPath id={`${id}-clip`}>\n            <motion.path initial={false} d={contour} animate={pathAnimation} transition={fieldTransition} />\n          </clipPath>\n        </defs>\n        <ellipse cx=\"92\" cy=\"139\" rx=\"43\" ry=\"5\" fill=\"var(--agent-deep)\" opacity=\".12\" />\n        <motion.path initial={false} d={contour} animate={pathAnimation} transition={fieldTransition} fill={`url(#${id}-body)`} />\n        <g clipPath={`url(#${id}-clip)`}>\n          <motion.g initial={false} animate={active ? { rotate: [0, 12, -6, 0], x: [0, 5, -3, 0] } : { rotate: 0, x: 0 }} transition={active ? { duration: 10, repeat: Infinity, ease: \"easeInOut\" } : transition} style={{ transformOrigin: \"90px 80px\" }}>\n            <path d=\"M15 61C51 32 81 110 128 89C165 72 142 24 105 14C163 7 181 113 125 142C74 168 20 125 15 61Z\" fill={`url(#${id}-fold)`} />\n            <path d=\"M26 48C64 18 59 134 119 110C147 99 132 71 155 47\" stroke={`url(#${id}-rim)`} strokeWidth=\"1.2\" />\n            <path d=\"M30 44C69 19 58 139 125 111C151 99 136 69 159 43\" stroke={`url(#${id}-rim)`} strokeWidth=\".65\" opacity=\".75\" />\n            <path d=\"M35 42C74 26 64 143 131 109C154 97 141 65 162 40\" stroke={`url(#${id}-rim)`} strokeWidth=\".5\" opacity=\".5\" />\n            <path d=\"M24 92C47 78 93 148 139 118\" stroke=\"var(--agent-deep)\" strokeOpacity=\".25\" strokeWidth=\"14\" />\n          </motion.g>\n        </g>\n        <motion.path initial={false} d={contour} animate={pathAnimation} transition={fieldTransition} stroke={`url(#${id}-rim)`} strokeWidth=\"1.2\" />\n        <g className=\"v-agent-state__mark\" stroke=\"var(--ink-fixed)\" strokeWidth=\"2.3\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n          {status === \"complete\" ? <path d=\"m77 79 9 9 19-21\" /> : status === \"error\" ? <><path d=\"M90 66v16\" /><path d=\"M90 91h.01\" /></> : status === \"needs-input\" ? <><path d=\"M84 72a7 7 0 0 1 14 0c0 5-8 6-8 11\" /><path d=\"M90 92h.01\" /></> : <><path d=\"M77 77v5M101 77v5\" /><path d={status === \"idle\" ? \"M84 91q6 4 12 0\" : \"M85 91h10\"} /></>}\n        </g>\n      </svg>\n      <div className=\"v-agent-state__copy\"><span className=\"v-agent-state__label\">{label ?? stateLabels[status]}</span>{description && <span className=\"v-agent-state__description\">{description}</span>}</div>\n    </div>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/agent-state.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"agent-state\"] {\n  --agent-base: var(--v-pink);\n  --agent-light: var(--v-yellow);\n  --agent-deep: var(--v-pink-deep);\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  gap: 12px;\n  color: var(--v-text);\n}\n[data-slot=\"agent-state\"][data-status=\"thinking\"] { --agent-base: var(--v-blue); --agent-light: var(--v-pink); --agent-deep: var(--v-blue-deep); }\n[data-slot=\"agent-state\"][data-status=\"working\"] { --agent-base: var(--v-pink); --agent-light: var(--v-yellow); --agent-deep: var(--v-pink-deep); }\n[data-slot=\"agent-state\"][data-status=\"needs-input\"] { --agent-base: var(--v-yellow); --agent-light: var(--cream-fixed); --agent-deep: var(--v-yellow-deep); }\n[data-slot=\"agent-state\"][data-status=\"complete\"] { --agent-base: var(--v-olive); --agent-light: var(--v-yellow); --agent-deep: var(--v-olive-deep); }\n[data-slot=\"agent-state\"][data-status=\"error\"] { --agent-base: var(--v-pink); --agent-light: var(--v-yellow); --agent-deep: var(--v-danger); }\n.v-agent-state__field { display: block; width: 88px; height: auto; flex: 0 0 auto; overflow: visible; pointer-events: none; }\n.v-agent-state__copy { display: grid; min-width: 0; gap: 4px; }\n.v-agent-state__label { font: 600 17px/1.25 var(--font-display); letter-spacing: -.02em; overflow-wrap: anywhere; }\n.v-agent-state__description { font: 400 13px/1.45 var(--font-text); color: var(--v-text-2); max-width: 35ch; overflow-wrap: anywhere; }\n[data-slot=\"agent-state\"][data-size=\"sm\"] { gap: 4px; }\n[data-slot=\"agent-state\"][data-size=\"sm\"] .v-agent-state__field { width: 48px; }\n[data-slot=\"agent-state\"][data-size=\"sm\"] .v-agent-state__label { font-family: var(--font-text); font-size: 13px; letter-spacing: 0; }\n[data-slot=\"agent-state\"][data-size=\"sm\"] .v-agent-state__description { font-size: 12px; }\n[data-slot=\"agent-state\"][data-size=\"lg\"] { flex-direction: column; text-align: center; gap: 0; }\n[data-slot=\"agent-state\"][data-size=\"lg\"] .v-agent-state__field { width: min(100%, 216px); }\n[data-slot=\"agent-state\"][data-size=\"lg\"] .v-agent-state__label { font-size: 26px; }\n[data-slot=\"agent-state\"][data-size=\"lg\"] .v-agent-state__description { max-width: 32ch; margin-inline: auto; font-size: 14px; }\n@media (forced-colors: active) {\n  .v-agent-state__field { forced-color-adjust: none; }\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/agent-state.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/agent-state.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Agent state",
+      "variants": [
+        "idle",
+        "thinking",
+        "working",
+        "needs-input",
+        "complete",
+        "error"
+      ],
+      "sizes": [
+        "md",
+        "sm",
+        "lg"
+      ],
+      "states": [
+        "idle",
+        "thinking",
+        "working",
+        "needs-input",
+        "complete",
+        "error",
+        "offscreen",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "AgentStateProps",
+        "props": [
+          {
+            "name": "status",
+            "type": "AgentStatus",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"md\" | \"lg\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Conversation",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

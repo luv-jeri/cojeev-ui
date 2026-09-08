@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageScrollBar } from "@/registry/sahajiv/ui/scroll-area";
 import "./globals.css";
 export const metadata: Metadata = {
   title: "SahaJiv UI",
@@ -11,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-mode="light">
-      <body>{children}</body>
+      <body>{children}<PageScrollBar /></body>
     </html>
   );
 }

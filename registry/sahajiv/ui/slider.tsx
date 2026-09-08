@@ -29,7 +29,6 @@ export function Slider({
 }: SliderProps) {
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
   const values = value ?? uncontrolledValue;
-  const percent = max > min ? Math.min(100, Math.max(0, ((values[0] ?? min) - min) / (max - min) * 100)) : 0;
   const range = values.length > 1 || props.orientation === "vertical";
   const handleValueChange = (next: number[]) => {
     if (value === undefined) setUncontrolledValue(next);
@@ -46,7 +45,7 @@ export function Slider({
       min={min}
       max={max}
       onValueChange={handleValueChange}
-      style={{ "--p": `${percent}%`, ...style } as React.CSSProperties}
+      style={style}
       {...props}
     >
       <Primitive.Track
@@ -63,11 +62,14 @@ export function Slider({
           key={index}
           data-slot="slider-thumb"
           data-part="thumb"
+          aria-labelledby={thumbLabel === undefined && values.length === 1 ? props["aria-labelledby"] : undefined}
+          aria-describedby={props["aria-describedby"]}
+          aria-invalid={props["aria-invalid"]}
           aria-label={
             typeof thumbLabel === "function"
               ? thumbLabel(index)
               : (thumbLabel ??
-                (values.length > 1 ? `Value ${index + 1}` : undefined))
+                (values.length > 1 ? `Value ${index + 1}` : props["aria-label"]))
           }
         />
       ))}

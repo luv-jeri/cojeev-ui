@@ -254,6 +254,8 @@
 
 [data-slot="resizable-panel"] > .v-resizable__pane {
   display: grid;
+  /* The panel owns scrolling; its composed content owns spacing. */
+  padding: 0;
 }
 [data-slot="resizable-handle"] {
   display: grid;

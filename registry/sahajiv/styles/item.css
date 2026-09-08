@@ -15,7 +15,7 @@
 .v-time[data-slot].-yellow[data-morph]{--mfill:var(--v-yellow)}
 [data-colourful="1"] .v-item[data-slot]:not(.-selected){background:color-mix(in oklab,var(--v-blue-soft) 40%,var(--card-2))}
 .v-item[data-slot]:hover{background:color-mix(in oklab,var(--card-2) 94%,var(--v-ink))}
-.v-item[data-slot].-selected .v-disk{background:var(--v-canvas)}
+.v-item[data-slot].-selected .v-disk{background:var(--v-canvas);color:var(--v-text)}
 .v-list[data-slot].-grouped .v-item{background:transparent;min-height:56px}
 .v-list[data-slot].-grouped .v-item:hover{background:var(--card-2)}
 @media (max-width:640px){.v-item__title[data-slot]{overflow-wrap:anywhere}}
@@ -26,4 +26,8 @@
 :root[data-mode="dark"] .v-item[data-slot].-selected .v-item__sub{color:var(--v-text-2)}
 .v-item__body[data-slot]{box-shadow:none;border:0}
 .v-item[data-slot] .v-time{flex:none}
-
+.v-item[data-slot] { min-width:0; gap:var(--s-3); }
+.v-item__body[data-slot] { min-width:0; }
+.v-item__title[data-slot] { overflow-wrap:anywhere; line-height:1.4; }
+.v-item__sub[data-slot] { min-width:0; overflow-wrap:anywhere; }
+.v-item[data-slot] :is([data-slot="item-actions"],[data-slot="item-media"]) { flex-shrink:0; }

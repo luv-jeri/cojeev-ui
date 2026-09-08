@@ -14,8 +14,9 @@ import {
 import { Button } from "@/registry/sahajiv/ui/button";
 import { Input } from "@/registry/sahajiv/ui/input";
 import { Label } from "@/registry/sahajiv/ui/label";
-import { Meta, Title } from "@/registry/sahajiv/ui/typography";
+import { Meta } from "@/registry/sahajiv/ui/typography";
 import { Shape } from "@/registry/sahajiv/ui/shape";
+import { ScrollArea } from "@/registry/sahajiv/ui/scroll-area";
 import { ThemeControl } from "@/components/theme-control";
 import { categories } from "@/lib/categories";
 import { DocsMotion } from "@/components/docs-motion";
@@ -31,14 +32,22 @@ export function DocsShell({
   const [query, setQuery] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const queryId = React.useId();
+  const browseRef = React.useRef<HTMLButtonElement>(null);
+  const searchRef = React.useRef<HTMLInputElement>(null);
   React.useEffect(() => {
     if (!open) return;
-    const close = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
+    searchRef.current?.focus({ preventScroll: true });
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !event.defaultPrevented) {
+        setOpen(false);
+        browseRef.current?.focus({ preventScroll: true });
+      }
+    };
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, [open]);
   const filtered = entries.filter((entry) =>
-    `${entry.title} ${entry.name}`.toLowerCase().includes(query.toLowerCase()),
+    `${entry.title} ${entry.name}`.toLowerCase().includes(query.trim().toLowerCase()),
   );
   return (
     <div className="docs-shell">
@@ -46,18 +55,21 @@ export function DocsShell({
         Skip to content
       </a>
       <header className="docs-mobile">
-        <Title as="span">SahaJiv UI</Title>
+        <Link href="/" className="docs-brand">
+          <Shape name="star-4" className="docs-brand-mark" />
+          SahaJiv UI
+        </Link>
         <div className="docs-mobile-actions">
-        <DocsMotion />
-        <Button
-          size="sm"
-          variant="secondary"
-          aria-expanded={open}
-          aria-controls="docs-navigation"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? "Close menu" : "Browse"}
-        </Button>
+          <Button
+            ref={browseRef}
+            size="sm"
+            variant="secondary"
+            aria-expanded={open}
+            aria-controls="docs-navigation"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? "Close menu" : "Browse"}
+          </Button>
         </div>
       </header>
       <Sidebar
@@ -67,15 +79,17 @@ export function DocsShell({
       >
         <SidebarHeader>
           <Link href="/" className="docs-brand">
-            <Shape name="star-4" style={{ width: 28, height: 28 }} />
+            <Shape name="star-4" className="docs-brand-mark" />
             SahaJiv UI
           </Link>
+          <Meta>Components for everyday work.</Meta>
         </SidebarHeader>
         <div className="docs-filter">
           <Label htmlFor={queryId} size="sm">
             Find a component
           </Label>
           <Input
+            ref={searchRef}
             id={queryId}
             size="sm"
             type="search"
@@ -84,47 +98,61 @@ export function DocsShell({
             onChange={(event) => setQuery(event.target.value)}
           />
         </div>
-        <div className="docs-overview-link">
-          <SidebarMenuButton asChild isActive={pathname?.endsWith("/docs")}>
-            <Link href="/docs/" aria-current={pathname?.endsWith("/docs") ? "page" : undefined} onClick={() => setOpen(false)}>Getting started</Link>
-          </SidebarMenuButton>
-        </div>
-        <SidebarContent
-          aria-label="Component documentation"
-          className="docs-navigation"
+        <ScrollArea
+          className="docs-navigation-scroll"
+          viewportClassName="docs-navigation-viewport"
+          type="always"
         >
-          {categories.filter((category) => filtered.some((entry) => entry.category === category)).map((category) => (
-            <React.Fragment key={category}>
-              <SidebarGroupLabel>
-                {category}
-              </SidebarGroupLabel>
-              {filtered
-                .filter((e) => e.category === category)
-                .map((entry) => (
-                  <SidebarMenuButton
-                    key={entry.name}
-                    asChild
-                    isActive={pathname?.endsWith(`/docs/${entry.name}`)}
-                  >
-                    <Link
-                      href={`/docs/${entry.name}`}
-                      aria-current={pathname?.endsWith(`/docs/${entry.name}`) ? "page" : undefined}
-                      onClick={() => setOpen(false)}
+          <SidebarContent
+            aria-label="Component documentation"
+            className="docs-navigation"
+          >
+            {!query.trim() && <div className="docs-overview-link">
+              <SidebarMenuButton asChild isActive={pathname?.endsWith("/docs")}>
+                <Link href="/docs/" aria-current={pathname?.endsWith("/docs") ? "page" : undefined} onClick={() => setOpen(false)}>Getting started</Link>
+              </SidebarMenuButton>
+            </div>}
+            {categories.filter((category) => filtered.some((entry) => entry.category === category)).map((category) => (
+              <React.Fragment key={category}>
+                <SidebarGroupLabel>
+                  {category}
+                </SidebarGroupLabel>
+                {filtered
+                  .filter((e) => e.category === category)
+                  .map((entry) => (
+                    <SidebarMenuButton
+                      key={entry.name}
+                      asChild
+                      isActive={pathname?.endsWith(`/docs/${entry.name}`)}
                     >
-                      <SidebarMenuLabel>{entry.title}</SidebarMenuLabel>
-                    </Link>
-                  </SidebarMenuButton>
-                ))}
-            </React.Fragment>
-          ))}
-          {!filtered.length && (
-            <Meta role="status">No matching components.</Meta>
-          )}
-        </SidebarContent>
+                      <Link
+                        href={`/docs/${entry.name}`}
+                        aria-current={pathname?.endsWith(`/docs/${entry.name}`) ? "page" : undefined}
+                        onClick={() => setOpen(false)}
+                      >
+                        <SidebarMenuLabel>{entry.title}</SidebarMenuLabel>
+                      </Link>
+                    </SidebarMenuButton>
+                  ))}
+              </React.Fragment>
+            ))}
+            {query.trim() && (
+              <div className="docs-filter-result">
+                <Meta role="status">{filtered.length ? `${filtered.length} matching component${filtered.length === 1 ? "" : "s"}.` : "No matching components."}</Meta>
+                <Button size="sm" variant="ghost" onClick={() => { setQuery(""); searchRef.current?.focus(); }}>Clear search</Button>
+              </div>
+            )}
+          </SidebarContent>
+        </ScrollArea>
         <SidebarFooter>
           <DocsMotion className="docs-motion-launch" />
           <ThemeControl />
-          <Meta>Made for everyday work.</Meta>
+          <div className="docs-footer-links">
+            <Link href="https://github.com/luv-jeri/sahajiv-ui">
+              Source on GitHub <span aria-hidden="true">↗</span>
+            </Link>
+            <Meta as="span">MIT</Meta>
+          </div>
         </SidebarFooter>
       </Sidebar>
       <div id="docs-main" className="docs-main" tabIndex={-1}>

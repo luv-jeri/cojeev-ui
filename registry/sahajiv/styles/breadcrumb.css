@@ -43,3 +43,7 @@
   background: var(--v-beige-2);
   box-shadow: inset 0 0 0 1px var(--v-border);
 }
+
+[data-slot="breadcrumb"], [data-slot="breadcrumb-item"] { min-width:0; max-width:100%; }
+[data-slot="breadcrumb-link"], [data-slot="breadcrumb-page"] { overflow-wrap:anywhere; }
+[data-slot="breadcrumb-separator"] { flex-shrink:0; }

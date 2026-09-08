@@ -5,28 +5,43 @@ import { useMorph } from "@/registry/sahajiv/motion/use-morph";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-navigation-menu";
-import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
+import { useFlowAppearance, useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
+import { MotionPresence } from "@/registry/sahajiv/ui/presence";
+import { usePresence } from "motion/react";
+import { createMotionLane, motionTokens, useChoreography } from "@/registry/sahajiv/motion/choreography";
+import { assignMotionRef } from "@/registry/sahajiv/motion/refs";
+const NavigationValueContext = React.createContext("");
+const NavigationItemContext = React.createContext("");
 export const navigationMenuVariants = cva("v-nav [display:grid] [gap:2px]");
 export type NavigationMenuProps = React.ComponentProps<typeof Primitive.Root>;
 export function NavigationMenu({
   className,
   ref,
   orientation = "vertical",
+  value,
+  defaultValue = "",
+  onValueChange,
   ...props
 }: NavigationMenuProps) {
+  const [localValue, setLocalValue] = React.useState(defaultValue);
+  const selected = value ?? localValue;
   const flowRef = useFlowGroup<HTMLElement>(ref, {
     itemSelector: ".v-nav__item",
     activeSelector: '[aria-current="page"]',
   });
   return (
+    <NavigationValueContext.Provider value={selected}>
     <Primitive.Root
       ref={flowRef}
       orientation={orientation}
+      value={selected}
+      onValueChange={next => { if (value === undefined) setLocalValue(next); onValueChange?.(next); }}
       data-slot="navigation-menu"
       data-part="root"
       className={cn(navigationMenuVariants(), className)}
       {...props}
     />
+    </NavigationValueContext.Provider>
   );
 }
 export type NavigationMenuListProps = React.ComponentProps<
@@ -47,8 +62,10 @@ export function NavigationMenuList({
 export type NavigationMenuItemProps = React.ComponentProps<
   typeof Primitive.Item
 >;
-export function NavigationMenuItem(props: NavigationMenuItemProps) {
-  return <Primitive.Item data-slot="navigation-menu-item" {...props} />;
+export function NavigationMenuItem({value, ...props}: NavigationMenuItemProps) {
+  const generated = React.useId();
+  const itemValue = value ?? generated;
+  return <NavigationItemContext.Provider value={itemValue}><Primitive.Item value={itemValue} data-slot="navigation-menu-item" {...props} /></NavigationItemContext.Provider>;
 }
 export type NavigationMenuLinkProps = React.ComponentProps<
   typeof Primitive.Link
@@ -122,21 +139,63 @@ export function NavigationMenuTrigger({
 export type NavigationMenuContentProps = React.ComponentProps<
   typeof Primitive.Content
 >;
-export function NavigationMenuContent(props: NavigationMenuContentProps) {
-  return (
+export function NavigationMenuContent({ref, forceMount, ...props}: NavigationMenuContentProps) {
+  const selected = React.useContext(NavigationValueContext);
+  const itemValue = React.useContext(NavigationItemContext);
+  const open = selected === itemValue;
+  const content = (
     <Primitive.Content
+      ref={ref}
+      forceMount
+      data-state={open ? "open" : "closed"}
       data-slot="navigation-menu-content"
       data-part="content"
       {...props}
     />
   );
+  // Radix registers viewport content through a separate mounter. Retain that
+  // actual registration until the surface exits, then let Radix unregister it.
+  if (forceMount) return content;
+  return <MotionPresence>{open && <NavigationMenuRetainedContent key={itemValue} ref={ref} {...props}/>}</MotionPresence>;
+}
+function NavigationMenuRetainedContent({ref, ...props}: NavigationMenuContentProps) {
+  const [host, setHost] = React.useState<HTMLDivElement | null>(null);
+  const [present, safeToRemove] = usePresence();
+  const {quiet, transition} = useChoreography();
+  const attach = React.useCallback((node: HTMLDivElement | null) => {
+    setHost(node);
+    const release = assignMotionRef(ref, node);
+    return () => { setHost(null); release(); };
+  }, [ref]);
+  React.useLayoutEffect(() => {
+    if (!host) return;
+    // The native viewport renders its registered node outside this component's
+    // React subtree. Drive that actual node, and release its registration only
+    // when this Motion lane completes; no elapsed-time unmount approximation.
+    const lane = createMotionLane(Number.parseFloat(host.style.opacity || (present ? "0" : "1")), value => {
+      host.style.opacity = String(Math.max(0, Math.min(1, value)));
+      host.style.scale = String(.975 + .025 * value);
+    });
+    lane.jump(lane.get());
+    const finish = () => { if (!present) safeToRemove?.(); };
+    if (quiet) lane.jump(present ? 1 : 0);
+    else lane.to(present ? 1 : 0, present ? transition : { duration:motionTokens.duration.exit, ease:[...motionTokens.ease.exit] }, finish);
+    return () => lane.dispose();
+  }, [host, present, quiet, transition, safeToRemove]);
+  // AnimatePresence records its exiting keys in a parent layout effect. Quiet
+  // paint is synchronous, but removal must run after that registration commits.
+  React.useEffect(() => { if (quiet && !present) safeToRemove?.(); }, [quiet, present, safeToRemove]);
+  return <Primitive.Content {...props} ref={attach} forceMount data-slot="navigation-menu-content" data-part="content" data-state={present ? "open" : "closed"} data-motion-exiting={!present ? "true" : undefined} inert={!present || props.inert || undefined} aria-hidden={!present ? true : props["aria-hidden"]}/>;
 }
 export type NavigationMenuViewportProps = React.ComponentProps<
   typeof Primitive.Viewport
 >;
-export function NavigationMenuViewport(props: NavigationMenuViewportProps) {
+export function NavigationMenuViewport({ref, ...props}: NavigationMenuViewportProps) {
+  const selected = React.useContext(NavigationValueContext);
+  const flowRef = useFlowAppearance<HTMLDivElement>(!!selected, ref, "fade");
   return (
     <Primitive.Viewport
+      ref={flowRef}
       data-slot="navigation-menu-viewport"
       data-part="viewport"
       {...props}

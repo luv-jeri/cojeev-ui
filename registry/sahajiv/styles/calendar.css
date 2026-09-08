@@ -539,3 +539,30 @@
 .v-cal__wd:where([data-slot="calendar-weekday"], [data-slot="calendar-week-number-header"]) {
   text-align: start;
 }
+
+/* A month remains a compact date grid inside a wide specimen or a multi-month picker. */
+[data-slot="calendar-months"], [data-slot="calendar"] .v-cal__months { flex-wrap: wrap; }
+[data-slot="calendar"] .v-cal__month-wrap { flex: 0 1 360px; width: 100%; max-width: 360px; }
+[data-slot="calendar-day"].v-cal__d { max-width: 100%; }
+[data-slot="calendar-day"]:disabled::before { opacity: 0; transform: none; }
+
+[data-slot="calendar"], [data-slot="calendar"] .v-cal__months { min-width: 0; max-width: 100%; }
+/* DayPicker owns retained month snapshots; shared timing keeps both sides finite. */
+.v-cal [data-animated-weeks] { display:grid; grid-column:1 / -1; grid-template-columns:inherit; gap:inherit; align-items:inherit; justify-items:inherit; }
+.v-cal .v-cal__caption-enter { animation:v-cal-caption-in var(--v-calendar-duration) var(--v-calendar-ease) both; }
+.v-cal .v-cal__caption-exit { animation:v-cal-caption-out var(--v-calendar-duration) var(--v-calendar-ease) both; }
+.v-cal .v-cal__weeks-after-enter,
+.v-cal:dir(rtl) .v-cal__weeks-before-enter { animation:v-cal-month-in-right var(--v-calendar-duration) var(--v-calendar-ease) both; }
+.v-cal .v-cal__weeks-before-enter,
+.v-cal:dir(rtl) .v-cal__weeks-after-enter { animation:v-cal-month-in-left var(--v-calendar-duration) var(--v-calendar-ease) both; }
+.v-cal .v-cal__weeks-before-exit,
+.v-cal:dir(rtl) .v-cal__weeks-after-exit { animation:v-cal-month-out-left var(--v-calendar-duration) var(--v-calendar-ease) both; }
+.v-cal .v-cal__weeks-after-exit,
+.v-cal:dir(rtl) .v-cal__weeks-before-exit { animation:v-cal-month-out-right var(--v-calendar-duration) var(--v-calendar-ease) both; }
+.v-cal [data-animated-month][aria-hidden="true"] { width:100%; inset:0 auto auto 0; }
+@keyframes v-cal-caption-in { from { opacity:0; } to { opacity:1; } }
+@keyframes v-cal-caption-out { from { opacity:1; } to { opacity:0; } }
+@keyframes v-cal-month-in-right { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:translateX(0); } }
+@keyframes v-cal-month-in-left { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
+@keyframes v-cal-month-out-left { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(-12px); } }
+@keyframes v-cal-month-out-right { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(12px); } }

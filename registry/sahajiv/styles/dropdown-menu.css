@@ -104,3 +104,12 @@
   outline: none;
   background: var(--v-beige);
 }
+
+[data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"] {
+ min-width:min(200px,calc(100vw - 24px)); max-width:calc(100vw - 24px);
+ max-height:min(480px,var(--radix-dropdown-menu-content-available-height,calc(100dvh - 32px)));
+ overflow-y:auto; overscroll-behavior:contain; overflow-wrap:anywhere;
+}
+[data-slot="dropdown-menu-item"] { min-width:0; height:auto; min-height:36px; white-space:normal; }
+[data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"] { z-index:var(--z-popover); }
+[data-slot^="dropdown-menu-"][data-part="item"] { min-width:0; white-space:normal; overflow-wrap:anywhere; padding-block:8px; }

@@ -30,7 +30,7 @@
 .v-weekdays[data-flow-owned].v-glide>.v-glide__pill>i,.v-iradios[data-flow-owned].v-glide>.v-glide__pill>i,.v-md__list[data-flow-owned].v-glide>.v-glide__pill>i{background:var(--sel-bg)}
 .v-weekdays[data-flow-owned].v-glide [data-glide-active],.v-iradios[data-flow-owned].v-glide [data-glide-active],.v-md__list[data-flow-owned].v-glide [data-glide-active]{color:var(--sel-ink)}
 .v-quest__opts[data-flow-owned].v-glide>.v-glide__pill>i{background:var(--v-pink-soft)}
-.v-quest__opts[data-flow-owned].v-glide>.v-glide__hover>i{background:var(--v-beige-2)}
+.v-quest__opts[data-flow-owned].v-glide>.v-glide__hover>i{background:color-mix(in oklab,var(--v-ink) 8%,transparent)}
 .v-quest__opts[data-flow-owned].v-glide [data-glide-active]{color:var(--v-text)}
 .v-quest__opts[data-flow-owned].v-glide [data-glide-active] small{color:var(--v-text)}
 :root[data-mode="dark"] .v-quest__opts[data-flow-owned].v-glide>.v-glide__pill>i{background:color-mix(in oklab,var(--v-pink) 28%,var(--v-beige-2))}
@@ -186,3 +186,33 @@
 :root[data-flow="off"] [data-flow-owned], :root[data-flow="off"] [data-flow-owned] * { transition-delay:0s; animation-delay:0s; }
 
 [data-flow="off"] [data-slot] { transition-duration:0s; transition-delay:0s; animation-duration:0s; animation-delay:0s; animation-iteration-count:1; }
+
+/* Motion owns travel and feedback. CSS still supplies colors and layer layout. */
+:root [data-flow-owned][data-flow-engine="motion"].v-glide[data-flow-v] > :is(.v-glide__pill,.v-glide__hover,.v-glide__trail) {
+  transition: none;
+  will-change: auto;
+}
+:root [data-flow-owned][data-flow-engine="motion"].v-glide[data-flow-v] > :is(.v-glide__pill,.v-glide__hover,.v-glide__trail) > i,
+:root [data-flow-owned][data-flow-engine="motion"].v-glide[data-flow-v] > :is(.v-glide__pill,.v-glide__hover,.v-glide__trail) > i::after {
+  animation: none;
+}
+[data-flow-engine="motion"] > .v-glide__trail {
+  transform: translate3d(var(--trail-x,0px),var(--trail-y,0px),0);
+  width: var(--trail-w,0px);
+  height: var(--trail-h,0px);
+  border-radius: var(--trail-r,999px);
+  opacity: var(--trail-o,0);
+}
+[data-flow-presence] { animation: none; }
+/* This animation changes no visible property. Its end event lets Radix unmount
+   after Motion's exit, keeping focus management and component contracts intact. */
+@keyframes v-motion-presence { from { --v-presence-beat: 0; } to { --v-presence-beat: 1; } }
+[data-flow-presence][data-state="closed"] {
+  animation: v-motion-presence var(--flow-exit-duration,.22s) linear;
+  pointer-events: none;
+}
+:root[data-flow="off"] [data-flow-presence][data-state="closed"],
+[data-flow="off"] [data-flow-presence][data-state="closed"] { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-flow-presence][data-state="closed"] { animation: none; }
+}

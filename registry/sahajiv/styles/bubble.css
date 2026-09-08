@@ -1,6 +1,7 @@
 /* Orthogonal authored class modifiers remain composable with CVA axes. */
 .v-bubble[data-slot].-me{background:var(--v-pink);border-radius:18px 18px 4px 18px;color:var(--v-on-accent)}
 .v-bubble[data-slot].-tail{border-bottom-left-radius:18px}
+.v-bubble[data-slot] { min-width:0; max-width:min(100%,65ch); overflow-wrap:anywhere; }
 .v-chat__row[data-slot].-me{justify-self:end;flex-direction:row-reverse}
 
 /* Authored contextual and pseudo-element rules, scoped to component-owned roots. */

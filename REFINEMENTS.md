@@ -34,6 +34,14 @@ The original 66 components remain the foundation. The September 2026 refinement 
 
 Every addition uses the shared design language. Heavy 3D code is restricted to its optional registry entry.
 
+## Signature overhaul — 0.2.0
+
+The registry now includes 89 UI entries: the original 66 and 23 additional entries. This update adds ThemeToggle, AnimatedIcon, Presence, AgentState, AgentChat, AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart and ChartTooltip. Existing Shape gains 12 original fixed-topology silhouettes and ShapeMorph, bringing its catalogue to 36. The supplied raster moodboards remain inspiration; their watermarked images are not distributed as library assets.
+
+Shared Motion lanes now drive selection travel, disclosure and popup paint, theme crossfades, organic scrolling, contextual iconography and keyed content changes. Native Radix/cmdk/DayPicker contracts remain responsible for accessible interaction. Compound agent and chart surfaces reuse the library's existing atoms. The refreshed documentation uses the same installable Preview, ScrollArea, buttons, inputs and theme controls.
+
+Dark foregrounds, anchored overlay origins, popup stacking, long-word wrapping, hidden-control geometry and Safari popup anchoring received concrete corrections. [OVERHAUL-COMPONENTS.md](OVERHAUL-COMPONENTS.md) lists all 68 entries in the overhaul brief; [OVERHAUL-LIFECYCLE.md](OVERHAUL-LIFECYCLE.md) explains the actual retained boundaries and native-filtering limit.
+
 ## Verification
 
 The production gate checks the real documentation and component behavior. The historical source fidelity tools remain available as an audit; intentional improvements do not need to recreate confirmed source defects. A release also requires a successful build, fresh consumer installation, public registry URLs and passing deployment checks. A local implementation checkpoint is not a publication receipt.

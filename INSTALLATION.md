@@ -72,4 +72,25 @@ This renders only the base typography and canvas. Its separate timestamped recei
 node scripts/audit-registry-consumer.mjs
 ```
 
-This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 77 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See the release report for the exact tested scope.
+This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 89 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See [the overhaul report](OVERHAUL-REPORT.md) for the exact tested scope.
+
+To retest a successfully installed consumer after changing library source, use `node scripts/audit-registry-consumer.mjs <existing-audit-directory> --resume --refresh`. This preserves the original receipt, regenerates the registry snapshot and updates the consumer through the real shadcn CLI. `--resume` alone reruns build/runtime checks against the original installed snapshot.
+
+## Conditional content and motion
+
+Install `presence` when your application adds or removes components conditionally. Keep `MotionPresence` mounted outside the conditional; `asChild` preserves the native component and its semantics:
+
+```tsx
+import { MotionPresence, MotionSurface } from "@/components/ui/presence";
+import { Card, CardTitle } from "@/components/ui/card";
+
+<MotionPresence>
+  {visible && (
+    <MotionSurface key="result" asChild preset="rise">
+      <Card><CardTitle>Your result is ready</CardTitle></Card>
+    </MotionSurface>
+  )}
+</MotionPresence>
+```
+
+The library retains its own dynamic panels and rows. Caller-owned conditionals need the boundary above. Exiting interactive content becomes inert and hidden from accessibility APIs. Global Off and system reduced motion settle immediately. Command and Combobox preserve cmdk's immediate semantic filtering and animate their results surface; filtered options are not kept as live keyboard targets during an exit.

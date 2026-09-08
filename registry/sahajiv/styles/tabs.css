@@ -141,3 +141,8 @@
     scroll-behavior: auto;
   }
 }
+
+[data-slot="tabs-list"] { min-width: 0; max-width: 100%; }
+[data-slot="tabs-list"][data-orientation="vertical"] { flex-direction: column; align-items: stretch; }
+[data-slot="tabs-trigger"][data-disabled] { color: var(--v-disabled-ink); cursor: not-allowed; }
+[data-slot="tabs-content"] { min-width: 0; }

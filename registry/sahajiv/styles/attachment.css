@@ -1,6 +1,11 @@
 [data-slot="attachment"] {
   transition: background var(--t-micro);
+  min-width:0;
+  max-width:100%;
 }
+[data-slot="attachment-actions"] { flex-shrink:0; }
+[data-slot="attachment-name"] { display:block; max-width:100%; }
+[data-slot="attachment"] > div { min-width:0; flex:1; }
 [data-slot="attachment"]:hover {
   background: var(--v-beige-2);
 }

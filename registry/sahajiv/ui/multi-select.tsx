@@ -8,7 +8,7 @@ import { Checkbox } from "@/registry/sahajiv/ui/checkbox";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import { Input } from "@/registry/sahajiv/ui/input";
 import { Label } from "@/registry/sahajiv/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/registry/sahajiv/ui/popover";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/registry/sahajiv/ui/popover";
 
 export type MultiSelectOption = {
   /** Stable, unique value submitted with the form. */
@@ -120,12 +120,17 @@ export function MultiSelect({
     <div ref={rootRef} data-slot="multi-select" data-disabled={disabled || undefined} data-invalid={!!error || undefined} className={cn("v-multi-select", className)}>
       <Label id={`${controlId}-label`} htmlFor={controlId} size="sm">{label}</Label>
       <Popover open={popover.open && !disabled} onOpenChange={changeOpen}>
-        <PopoverTrigger asChild>
-          <Button ref={triggerRef} id={controlId} data-motion="off" variant="outline" disabled={disabled} aria-labelledby={`${controlId}-label`} aria-describedby={descriptions} aria-invalid={!!error || undefined} className="v-multi-select__trigger">
-            <span>{selected.length ? `${selected.length} selected` : placeholder}</span>
-            <Icon name="chevron-down" aria-hidden="true" />
-          </Button>
-        </PopoverTrigger>
+        {/* Anchor sizing stays stable while the trigger's press feedback scales its paint. */}
+        <PopoverAnchor asChild>
+          <div>
+            <PopoverTrigger asChild>
+              <Button ref={triggerRef} id={controlId} data-motion="off" variant="outline" disabled={disabled} aria-labelledby={`${controlId}-label`} aria-describedby={descriptions} aria-invalid={!!error || undefined} className="v-multi-select__trigger">
+                <span>{selected.length ? `${selected.length} selected` : placeholder}</span>
+                <Icon name="chevron-down" aria-hidden="true" />
+              </Button>
+            </PopoverTrigger>
+          </div>
+        </PopoverAnchor>
         <PopoverContent className="v-multi-select__popover" aria-labelledby={`${controlId}-label`} onOpenAutoFocus={event => { event.preventDefault(); searchRef.current?.focus(); }}>
           <Input ref={searchRef} type="search" size="sm" value={query} onChange={event => setQuery(event.target.value)} placeholder={searchPlaceholder} aria-label={`Search ${label}`} autoComplete="off" onKeyDown={event => {
             if (event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); focusChoice(event.key === "ArrowDown" ? 0 : -1); }

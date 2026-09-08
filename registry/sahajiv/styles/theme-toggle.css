@@ -1,0 +1,3 @@
+[data-slot="theme-toggle"] { gap:var(--s-2); min-width:88px; padding-inline:var(--s-3); color:var(--v-accent-ink,var(--v-pink-deep)); }
+[data-slot="theme-toggle"] svg { flex-shrink:0; overflow:visible; }
+[data-slot="theme-toggle"] span { color:var(--v-text); font-size:var(--fs-meta); }

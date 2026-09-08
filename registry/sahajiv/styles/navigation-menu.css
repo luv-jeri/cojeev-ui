@@ -245,3 +245,15 @@
   flex: 1;
   min-width: 0;
 }
+
+[data-slot="navigation-menu"] { position:relative; min-width:0; }
+[data-slot="navigation-menu"][data-orientation="horizontal"] [data-slot="navigation-menu-list"] { display:flex; flex-wrap:wrap; }
+[data-slot="navigation-menu-content"] { min-width:0; max-width:min(520px,calc(100vw - 32px)); padding:var(--s-4); background:var(--popover); color:var(--popover-foreground); border-radius:var(--r-card-sm); box-shadow:var(--shadow-float); }
+[data-slot="navigation-menu-viewport"] { position:relative; max-width:calc(100vw - 32px); overflow:hidden; }
+[data-slot="navigation-menu-link"], [data-slot="navigation-menu-trigger"] { min-width:0; min-height:var(--nav-row); height:auto; padding-block:var(--s-2); }
+[data-slot="navigation-menu-link"] > svg, [data-slot="navigation-menu-count"] { flex-shrink:0; }
+
+/* Nested menus live above dialog surfaces as well as the document. */
+[data-slot="navigation-menu-content"], [data-slot="navigation-menu-viewport"] { z-index: var(--z-popover); }
+[data-slot="navigation-menu-viewport"] > [data-slot="navigation-menu-content"][data-state="closed"] { position:absolute; inset:0; pointer-events:none; }
+[data-slot="navigation-menu-viewport"] > [data-slot="navigation-menu-content"][data-motion-exiting="true"] { position:absolute; inset:0; pointer-events:none; }

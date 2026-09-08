@@ -4,10 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/registry/sahajiv/lib/utils"
 import { cardVariants } from "@/registry/sahajiv/ui/card"
 import { useMorph } from "@/registry/sahajiv/motion/use-morph"
+import { motion } from "motion/react"
+import { useMotionVisibility } from "@/registry/sahajiv/motion/use-motion-visibility"
+import { assignMotionRef } from "@/registry/sahajiv/motion/refs"
 
 const SkeletonVariants=cva("v-skel [border-radius:999px] [background:var(--v-skel-face)] [background-size:200%_100%] [animation:v-shimmer_1.4s_linear_infinite] [box-shadow:none] [position:relative] [overflow:hidden]",{variants:{variant:{"default":"","pill":"-pill [border-radius:var(--r-pill)]","card":"-card [border-radius:20px]","disk":"-disk [border-radius:50%]","line":"-line [height:12px] [border-radius:999px]","skel-group":"-skel-group"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type SkeletonProps=React.ComponentProps<"div"> & VariantProps<typeof SkeletonVariants> & { as?:React.ElementType }
-export function Skeleton({as:Tag="div",className,variant,size,ref,...props}:SkeletonProps){const ownedRef=useMorph<HTMLDivElement>("skeleton",ref);return <Tag ref={ownedRef} data-slot="skeleton-item" data-part="item" className={cn(SkeletonVariants({variant,size}),className)} {...props}/>}
+export function Skeleton({as:Tag="div",className,variant,size,ref,children,...props}:SkeletonProps){
+  const host=React.useRef<HTMLDivElement>(null)
+  const attach=React.useCallback((element:HTMLDivElement|null)=>{host.current=element;const release=assignMotionRef(ref,element);return ()=>{host.current=null;release()}},[ref])
+  const ownedRef=useMorph<HTMLDivElement>("skeleton",attach)
+  const {enabled,inView}=useMotionVisibility(host)
+  const active=enabled&&inView&&!className?.split(/\s+/).includes("-paused")
+  return <Tag ref={ownedRef} data-slot="skeleton-item" data-part="item" data-animated={active||undefined} className={cn(SkeletonVariants({variant,size}),className)} {...props}>{children}<motion.span aria-hidden="true" className="v-skel__sheen" initial={false} animate={{x:active?["-100%","100%"]:"0%",opacity:active?1:.25}} transition={active?{x:{duration:2.4,repeat:Infinity,ease:[.4,0,.2,1]},opacity:{duration:0}}:{duration:0}}/></Tag>
+}
 
 const SkeletonGroupVariants=cva("v-skel-group [gap:8px] [display:grid]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type SkeletonGroupProps=React.ComponentProps<"div"> & VariantProps<typeof SkeletonGroupVariants> & { as?:React.ElementType }

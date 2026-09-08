@@ -68,143 +68,165 @@ export default async function Page({
       tableOfContent={{ enabled: false }}
       tableOfContentPopover={{ enabled: false }}
     >
-      <div className="docs-article">
-        <header className="docs-intro">
-          <Badge
-            variant={entry.meta.baseComponent ? "pink-soft" : "olive-soft"}
-          >
-            {entry.meta.category}
-          </Badge>
-          <Display as="h1">{entry.title}</Display>
-          <BodySecondary>{entry.description}</BodySecondary>
-          <Meta>React · copy into your project · light and dark themes</Meta>
-        </header>
-        <section className="docs-section" aria-labelledby="example-heading">
-          <SectionTitle id="example-heading">Try it</SectionTitle>
-          <Body>
-            Explore the variants, try the interaction, then copy the code.
-          </Body>
-          <ComponentPreview
-            key={entry.name}
-            id={entry.name}
-            variants={variants}
-            sizes={sizes}
-            code={code}
-          />
-        </section>
-        <section className="docs-section" aria-labelledby="usage-heading">
-          <SectionTitle id="usage-heading">Using {entry.title.toLowerCase()}</SectionTitle>
-          <ul className="docs-guidance">
-            {guide.usage.map((note) => <li key={note}><Body>{note}</Body></li>)}
-          </ul>
-        </section>
-        <section className="docs-section" aria-labelledby="install-heading">
-          <SectionTitle id="install-heading">Add to your project</SectionTitle>
-          <InstallCommand
-            command={`npx shadcn@latest add ${publicURL}/r/${entry.name}.json`}
-          />
-          <BodySecondary>
-            The command includes the component’s shared dependencies.
-            Your project keeps editable source files.
-          </BodySecondary>
-          {exampleDependencies.length > 1 && (
-            <>
-              <Title as="h3">Include the complete example</Title>
-              <BodySecondary>
-                This example also composes{" "}
-                {exampleDependencies
-                  .filter((id) => id !== entry.name)
-                  .join(", ")}
-                . Install its parts together:
-              </BodySecondary>
-              <InstallCommand
-                command={`npx shadcn@latest add ${exampleDependencies.map((id) => `${publicURL}/r/${id}.json`).join(" ")}`}
-              />
-            </>
-          )}
-        </section>
-        <section className="docs-section" aria-labelledby="props-heading">
-          <SectionTitle id="props-heading">API</SectionTitle>
-          <Typography>
-            <Body>
-              Compose the exported parts below. The prop types are read from the
-              React source during the registry build.
-            </Body>
-            <BodySecondary>
-              Native element or underlying primitive props are inherited where
-              declared, including accessible labels, event handlers and refs.
-            </BodySecondary>
-          </Typography>
-          {entry.meta.api.map((api) => (
-            <section key={api.name} className="docs-section">
-              <Title as="h3" className="docs-api-title">{api.name}</Title>
-              {api.props.length ? (
-                <TableContainer className="docs-props">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Prop</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Required</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {api.props.map((prop) => (
-                        <TableRow key={prop.name}>
-                          <TableCell>
-                            <Identifier>{prop.name}</Identifier>
-                            {prop.description && (
-                              <BodySecondary>{prop.description}</BodySecondary>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <code>{prop.type}</code>
-                          </TableCell>
-                          <TableCell>{prop.required ? "Yes" : "No"}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              ) : (
-                <BodySecondary>
-                  Accepts the native or primitive props declared by its exported
-                  TypeScript type.
-                </BodySecondary>
-              )}
-            </section>
-          ))}
-        </section>
-        <section className="docs-section" aria-labelledby="accessibility-heading">
-          <SectionTitle id="accessibility-heading">Accessibility</SectionTitle>
-          <ul className="docs-guidance">
-            {guide.accessibility.map((note) => <li key={note}><Body>{note}</Body></li>)}
-          </ul>
-        </section>
-        <section className="docs-section">
-          <SectionTitle>States and appearance</SectionTitle>
-          <div className="docs-section-heading">
-            {entry.meta.source.states.map((state) => (
-              <Badge key={state} variant="cream" size="sm">
-                {state}
+      <div className="docs-page-grid">
+        <article className="docs-article">
+          <header className="docs-intro">
+            <nav className="docs-breadcrumb" aria-label="Breadcrumb">
+              <Link href="/docs/">Components</Link>
+              <span aria-hidden="true">/</span>
+              <span>{entry.title}</span>
+            </nav>
+            <div className="docs-title-row">
+              <Display as="h1">{entry.title}</Display>
+              <Badge variant={entry.meta.baseComponent ? "pink-soft" : "olive-soft"}>
+                {entry.meta.category}
               </Badge>
+            </div>
+            <BodySecondary>{entry.description}</BodySecondary>
+            <Meta className="docs-intro-meta">React · copy into your project · light and dark themes</Meta>
+          </header>
+          <section className="docs-section docs-example-section" aria-labelledby="example-heading">
+            <div className="docs-section-lead">
+              <SectionTitle id="example-heading">Try it</SectionTitle>
+            </div>
+            <ComponentPreview
+              key={entry.name}
+              id={entry.name}
+              variants={variants}
+              sizes={sizes}
+              code={code}
+            />
+          </section>
+          {entry.name === "agent-chat" && <Body><Link href="/workspace/">Open the full agent workspace example →</Link></Body>}
+          <section className="docs-section" aria-labelledby="install-heading">
+            <SectionTitle id="install-heading">Add to your project</SectionTitle>
+            <InstallCommand
+              command={`npx shadcn@latest add ${publicURL}/r/${entry.name}.json`}
+            />
+            <BodySecondary>
+              The command includes the component’s shared dependencies.
+              Your project keeps editable source files.
+            </BodySecondary>
+            {exampleDependencies.length > 1 && (
+              <>
+                <Title as="h3">Include the complete example</Title>
+                <BodySecondary>
+                  This example also composes{" "}
+                  {exampleDependencies
+                    .filter((id) => id !== entry.name)
+                    .join(", ")}
+                  . Install its parts together:
+                </BodySecondary>
+                <InstallCommand
+                  command={`npx shadcn@latest add ${exampleDependencies.map((id) => `${publicURL}/r/${id}.json`).join(" ")}`}
+                />
+              </>
+            )}
+          </section>
+          <section className="docs-section" aria-labelledby="usage-heading">
+            <SectionTitle id="usage-heading">Using {entry.title.toLowerCase()}</SectionTitle>
+            <ul className="docs-guidance">
+              {guide.usage.map((note) => <li key={note}><Body>{note}</Body></li>)}
+            </ul>
+          </section>
+          <section className="docs-section" aria-labelledby="props-heading">
+            <SectionTitle id="props-heading">API</SectionTitle>
+            <Typography>
+              <Body>
+                Compose the exported parts below. The prop types are read from the
+                React source during the registry build.
+              </Body>
+              <BodySecondary>
+                Native element or underlying primitive props are inherited where
+                declared, including accessible labels, event handlers and refs.
+              </BodySecondary>
+            </Typography>
+            {entry.meta.api.map((api) => (
+              <section key={api.name} className="docs-api-section">
+                <Title as="h3" className="docs-api-title">{api.name}</Title>
+                {api.props.length ? (
+                  <TableContainer className="docs-props">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Prop</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Required</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {api.props.map((prop) => (
+                          <TableRow key={prop.name}>
+                            <TableCell>
+                              <Identifier>{prop.name}</Identifier>
+                              {prop.description && (
+                                <BodySecondary>{prop.description}</BodySecondary>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <code>{prop.type}</code>
+                            </TableCell>
+                            <TableCell>{prop.required ? "Yes" : "No"}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <BodySecondary>
+                    Accepts the native or primitive props declared by its exported
+                    TypeScript type.
+                  </BodySecondary>
+                )}
+              </section>
             ))}
-          </div>
-          <BodySecondary>
-            Try pointer and keyboard interaction, and switch the appearance
-            control in the navigation to compare light and dark mode. Motion
-            respects reduced motion preferences.
-          </BodySecondary>
-        </section>
-        <nav className="docs-section" aria-label="Related components">
-          <SectionTitle>Works well with</SectionTitle>
-          <div className="docs-related">
-            {guide.related.map((id) => {
-              const related = catalog().find((item) => item.name === id);
-              return related && <Link key={id} href={`/docs/${id}/`} className="docs-related-link">{related.title}<span aria-hidden="true">↗</span></Link>;
-            })}
-          </div>
-        </nav>
+          </section>
+          <section className="docs-section" aria-labelledby="accessibility-heading">
+            <SectionTitle id="accessibility-heading">Accessibility</SectionTitle>
+            <ul className="docs-guidance">
+              {guide.accessibility.map((note) => <li key={note}><Body>{note}</Body></li>)}
+            </ul>
+          </section>
+          <section className="docs-section" aria-labelledby="states-heading">
+            <SectionTitle id="states-heading">States and appearance</SectionTitle>
+            <div className="docs-section-heading">
+              {entry.meta.source.states.map((state) => (
+                <Badge key={state} variant="cream" size="sm">
+                  {state}
+                </Badge>
+              ))}
+            </div>
+            <BodySecondary>
+              For conditional content, keep a <Link href="/docs/presence/">MotionPresence boundary</Link> around keyed MotionSurface children. The shared entrance and exit states work with native primitives and respect your motion preference.
+            </BodySecondary>
+            <BodySecondary>
+              Try pointer and keyboard interaction, and switch the appearance
+              control in the navigation to compare light and dark mode. Motion
+              respects reduced motion preferences.
+            </BodySecondary>
+          </section>
+          <nav className="docs-section" aria-label="Related components">
+            <SectionTitle id="related-heading">Works well with</SectionTitle>
+            <div className="docs-related">
+              {guide.related.map((id) => {
+                const related = catalog().find((item) => item.name === id);
+                return related && <Link key={id} href={`/docs/${id}/`} className="docs-related-link">{related.title}<span aria-hidden="true">↗</span></Link>;
+              })}
+            </div>
+          </nav>
+        </article>
+        <aside className="docs-contents">
+          <nav aria-label="On this page">
+            <Meta>On this page</Meta>
+            <a href="#example-heading">Try it</a>
+            <a href="#install-heading">Installation</a>
+            <a href="#usage-heading">Usage</a>
+            <a href="#props-heading">API</a>
+            <a href="#accessibility-heading">Accessibility</a>
+            <a href="#states-heading">States & appearance</a>
+            <a href="#related-heading">Related components</a>
+          </nav>
+        </aside>
       </div>
     </DocsPage>
   );

@@ -4,6 +4,7 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Button, type ButtonProps } from "@/registry/sahajiv/ui/button";
+import { ScrollArea } from "@/registry/sahajiv/ui/scroll-area";
 const ScrollerContext = React.createContext<{
   detached: boolean;
   jump: () => void;
@@ -22,6 +23,7 @@ export function MessageScroller({
   followThreshold = 24,
   onAtBottomChange,
   onScroll,
+  style,
   ...props
 }: MessageScrollerProps) {
   const element = React.useRef<HTMLDivElement>(null);
@@ -35,7 +37,8 @@ export function MessageScroller({
     const el = element.current;
     if (!el) return;
     const bottom =
-      el.scrollHeight - el.scrollTop - el.clientHeight < followThreshold;
+      el.scrollHeight - el.scrollTop - el.clientHeight <=
+      Math.max(1, Number.isFinite(followThreshold) ? followThreshold : 24);
     if (attached.current !== bottom) {
       attached.current = bottom;
       setDetached(!bottom);
@@ -45,7 +48,9 @@ export function MessageScroller({
   const jump = React.useCallback(() => {
     const el = element.current;
     if (el) {
-      el.scrollTop = el.scrollHeight;
+      // Streaming follows instantly. Smooth CSS scrolling fires intermediate
+      // scroll events, which can incorrectly detach a reader already at the end.
+      el.scrollTo({ top: el.scrollHeight, behavior: "instant" });
       mark();
     }
   }, [mark]);
@@ -75,32 +80,27 @@ export function MessageScroller({
       resize.disconnect();
     };
   }, [jump]);
-  const ownedMorphRef = useMorph<HTMLDivElement>("surfaces", (node) => {
-          element.current = node;
-          if (typeof ref === "function") return ref(node);
-          if (ref) ref.current = node;
-        });
+  const attach = React.useCallback((node: HTMLDivElement | null) => {
+    element.current = node;
+    if (typeof ref === "function") return ref(node);
+    if (ref) ref.current = node;
+  }, [ref]);
+  const ownedMorphRef = useMorph<HTMLDivElement>("surfaces", attach);
   return (
     <ScrollerContext.Provider value={{ detached, jump }}>
-      <div
-        ref={ownedMorphRef}
-        data-slot="message-scroller"
-        data-part="viewport"
-        data-scroller=""
-        data-state={detached ? "detached" : "attached"}
-        className={cn(
-          messageScrollerVariants(),
-          detached && "-detached",
-          className,
-        )}
-        onScroll={(event) => {
-          mark();
-          onScroll?.(event);
-        }}
-        {...props}
-      >
-        {children}
-      </div>
+      <ScrollArea className="v-message-scroll-root" style={style} type="always" viewportProps={{
+        ref:ownedMorphRef,
+        "data-slot":"message-scroller",
+        "data-part":"viewport",
+        "data-scroller":"",
+        "data-state":detached ? "detached" : "attached",
+        tabIndex:0,
+        className:cn(messageScrollerVariants(),detached && "-detached",className),
+        onScroll(event) {mark();onScroll?.(event)},
+        ...props,
+      } as React.ComponentProps<typeof ScrollArea>["viewportProps"]}>
+        <div className="v-scroller__content">{children}</div>
+      </ScrollArea>
     </ScrollerContext.Provider>
   );
 }

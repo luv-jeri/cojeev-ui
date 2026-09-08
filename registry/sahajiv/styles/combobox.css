@@ -43,25 +43,23 @@
   color: var(--muted-foreground);
   padding: 8px 12px 4px;
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"]) .v-menu {
+[data-slot="combobox-content"] {
   z-index: var(--z-dialog);
   max-height: 280px;
   overflow: auto;
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item
+[data-slot="combobox-item"]
   mark {
   background: var(--v-yellow);
   border-radius: 3px;
   padding: 0 1px;
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"]) .v-menu__item {
+[data-slot="combobox-item"] {
   display: block;
   line-height: 40px;
   padding: 0 var(--s-3);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item
+[data-slot="combobox-item"]
   mark {
   background: var(--v-yellow);
   color: var(--v-on-accent);
@@ -109,7 +107,7 @@
   font-size: var(--fs-body);
   color: var(--v-text);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"]) .v-menu {
+[data-slot="combobox-content"] {
   padding: 6px;
   border-radius: 16px;
 }
@@ -154,7 +152,7 @@
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"]) .v-menu {
+[data-slot="combobox-content"] {
   display: grid;
   gap: 2px;
   padding: 6px;
@@ -164,7 +162,7 @@
     inset 0 0 0 1px var(--v-border);
   border: 0;
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"]) .v-menu__item {
+[data-slot="combobox-item"] {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr) auto;
   align-items: center;
@@ -175,11 +173,9 @@
   border-radius: 12px;
   white-space: normal;
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item
+[data-slot="combobox-item"]
   > span:not(.v-disk),
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item
+[data-slot="combobox-item"]
   .v-combo__label {
   grid-column: 2;
   display: block;
@@ -187,13 +183,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item
+[data-slot="combobox-item"]
   mark {
   display: inline;
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item::before {
+[data-slot="combobox-item"]::before {
   content: "";
   width: 22px;
   height: 22px;
@@ -201,36 +195,29 @@
   border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
   background: var(--v-blue);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item:nth-child(4n + 2)::before {
+[data-slot="combobox-item"]:nth-child(4n + 2)::before {
   background: var(--v-yellow);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item:nth-child(4n + 3)::before {
+[data-slot="combobox-item"]:nth-child(4n + 3)::before {
   background: var(--v-olive);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item:nth-child(4n)::before {
+[data-slot="combobox-item"]:nth-child(4n)::before {
   background: var(--v-pink);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item:hover,
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item[aria-selected="true"] {
+[data-slot="combobox-item"]:hover,
+[data-slot="combobox-item"][aria-selected="true"] {
   background: var(--v-pink-soft);
   color: var(--v-text);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item[aria-selected="true"]::after {
+[data-slot="combobox-item"][aria-selected="true"]::after {
   content: "";
   grid-column: 3;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--ink-fixed);
+  background: var(--v-text);
 }
-.v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu__item
+[data-slot="combobox-item"]
   mark {
   background: transparent;
   color: inherit;
@@ -249,8 +236,7 @@
   scrollbar-gutter: stable;
 }
 :root[data-mode="dark"]
-  .v-combo:where([data-slot="combobox"], [data-slot^="combobox-"])
-  .v-menu {
+  [data-slot="combobox-content"] {
   background: var(--v-beige);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -283,3 +269,20 @@
   color: var(--v-disabled-ink);
   cursor: not-allowed;
 }
+
+/* Portalled list keeps its own surface, bounds, and wrapping contract. */
+[data-slot="combobox-content"] {
+  min-width: 0;
+  max-height: min(280px, var(--radix-popover-content-available-height));
+  overscroll-behavior: contain;
+}
+[data-slot="combobox-item"] { padding-block: 8px; text-align: start; }
+[data-slot="combobox-item"] .v-combo__label { overflow-wrap: anywhere; }
+[data-slot="combobox-item"][data-disabled="true"] { background: transparent; color: var(--v-disabled-ink); }
+[data-slot="combobox-item"][data-disabled="true"]::before { background: var(--v-disabled-fill); }
+
+/* Nested menus live above dialog surfaces as well as the document. */
+[data-slot="combobox-content"] { z-index: var(--z-popover); }
+
+/* cmdk's contents-only sizer has no stacking box: each option sits above the moving selection paint. */
+[data-flow-owned][data-slot="combobox-content"] [data-slot="combobox-item"] { position: relative; z-index: 1; }

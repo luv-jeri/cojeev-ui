@@ -437,3 +437,7 @@
 [data-slot="checkbox-mark"] {
   display: none;
 }
+
+[data-slot="checkbox"] { text-align: start; min-width: 0; }
+[data-slot="checkbox-body"] { overflow-wrap: anywhere; }
+@media (pointer: coarse) { [data-slot="checkbox"] { min-height: 44px; } }

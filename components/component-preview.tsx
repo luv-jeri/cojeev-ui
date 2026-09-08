@@ -5,6 +5,7 @@ import { Label } from "@/registry/sahajiv/ui/label";
 import { NativeSelect } from "@/registry/sahajiv/ui/native-select";
 import { Button } from "@/registry/sahajiv/ui/button";
 import { Meta } from "@/registry/sahajiv/ui/typography";
+import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
 import { DocsMotion } from "@/components/docs-motion";
 import { examples } from "@/components/examples";
 export function ComponentPreview({
@@ -26,36 +27,77 @@ export function ComponentPreview({
   const selectedCode = `${code.source}\n\nexport default function Demo() {\n  return (\n    <${code.name}${variant !== "default" ? ` variant="${variant}"` : ""}${size !== "default" ? ` size="${size}"` : ""} />\n  );\n}\n`;
   if (!Example)
     throw new Error(`No live documentation example registered for ${id}`);
-  return (
-    <div className="docs-playground">
-      <div className="docs-playground-controls">
+  const hasVariantControls = variants.length > 1 || sizes.length > 1;
+  const actions = (
+    <div className="docs-playground-actions">
+      <DocsMotion />
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => setRevision((value) => value + 1)}
+      >
+        Reset example
+      </Button>
+    </div>
+  );
+  const controls = hasVariantControls ? (
+    <div className="docs-playground-controls">
+      <div className="docs-variant-controls">
         {variants.length > 1 && (
           <div className="docs-control">
             <Label htmlFor={`${controlId}-variant`} size="sm">Variant</Label>
-            <NativeSelect id={`${controlId}-variant`} value={variant} onChange={(event) => setVariant(event.target.value)}>
-              {variants.map((value) => <option key={value} value={value}>{value.replaceAll("-", " ")}</option>)}
+            <NativeSelect
+              id={`${controlId}-variant`}
+              value={variant}
+              onChange={(event) => setVariant(event.target.value)}
+            >
+              {variants.map((value) => (
+                <option key={value} value={value}>{value.replaceAll("-", " ")}</option>
+              ))}
             </NativeSelect>
           </div>
         )}
         {sizes.length > 1 && (
           <div className="docs-control">
             <Label htmlFor={`${controlId}-size`} size="sm">Size</Label>
-            <NativeSelect id={`${controlId}-size`} value={size} onChange={(event) => setSize(event.target.value)}>
-              {sizes.map((value) => <option key={value} value={value}>{({ default: "Default", xs: "Extra small", sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" } as Record<string, string>)[value] ?? value}</option>)}
+            <NativeSelect
+              id={`${controlId}-size`}
+              value={size}
+              onChange={(event) => setSize(event.target.value)}
+            >
+              {sizes.map((value) => (
+                <option key={value} value={value}>
+                  {({ default: "Default", xs: "Extra small", sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" } as Record<string, string>)[value] ?? value}
+                </option>
+              ))}
             </NativeSelect>
           </div>
         )}
-        <div className="docs-playground-actions">
-          <DocsMotion />
-          <Button size="sm" variant="ghost" onClick={() => setRevision((value) => value + 1)}>Reset example</Button>
-        </div>
       </div>
-      <Preview code={selectedCode}>
-        <div key={`${id}:${variant}:${size}:${revision}`} className="docs-specimen" data-example={id} data-variant={variant} data-size={size}>
+      {actions}
+    </div>
+  ) : undefined;
+  return (
+    <div className="docs-playground">
+      <Preview
+        code={selectedCode}
+        controls={controls}
+        actions={hasVariantControls ? undefined : actions}
+      >
+        <MotionPresence initial mode="wait">
+        <MotionSurface
+          preset="rise"
+          key={`${id}:${variant}:${size}:${revision}`}
+          className="docs-specimen"
+          data-example={id}
+          data-variant={variant}
+          data-size={size}
+        >
           <React.Suspense fallback={<Meta role="status">Loading preview…</Meta>}>
             <Example variant={variant} size={size} />
           </React.Suspense>
-        </div>
+        </MotionSurface>
+        </MotionPresence>
       </Preview>
     </div>
   );

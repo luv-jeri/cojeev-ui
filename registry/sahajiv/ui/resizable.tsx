@@ -39,7 +39,7 @@ export function ResizablePanelGroup({
       orientation={resolved}
       style={{ height: "var(--h,240px)", ...style }}
       className={cn(
-        resizableVariants({ variant: resolved === "vertical" ? "v" : variant }),
+        resizableVariants({ variant: resolved === "vertical" ? "v" : "default" }),
         className,
       )}
       {...props}
@@ -60,7 +60,7 @@ export function ResizablePanel({
       minSize={minSize}
       maxSize={maxSize}
       className={cn(
-        "v-resizable__pane min-w-0 overflow-auto p-[var(--s-4)]",
+        "v-resizable__pane min-w-0 overflow-auto",
         className,
       )}
       {...props}

@@ -35,10 +35,13 @@ export type AlertDialogOverlayProps = React.ComponentProps<
 >;
 export function AlertDialogOverlay({
   className,
+  ref,
   ...props
 }: AlertDialogOverlayProps) {
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "fade");
   return (
     <Primitive.Overlay
+      ref={flowRef}
       data-slot="alert-dialog-overlay"
       data-part="overlay"
       className={cn(

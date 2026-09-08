@@ -1,3 +1,9 @@
 .v-text-reveal { overflow-wrap: anywhere; }
-.v-text-reveal [data-reveal-word] { display: inline-block; }
+.v-text-reveal [data-reveal-word] { display: inline-block; opacity:var(--reveal-opacity,1); transform:translateY(var(--reveal-y,0em)); }
 .v-text-reveal__accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+/* Preference changes reveal content immediately, including a pending Motion frame. */
+:root[data-flow="off"] .v-text-reveal [data-reveal-word],
+[data-flow="off"] .v-text-reveal [data-reveal-word] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .v-text-reveal [data-reveal-word] { opacity: 1; transform: none; }
+}

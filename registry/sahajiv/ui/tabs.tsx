@@ -6,6 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import * as Primitive from "@radix-ui/react-tabs";
 import { useFlowGroup } from "@/registry/sahajiv/motion/use-flow";
+import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
 export const tabsVariants = cva("v-tabs [display:flex] [gap:var(--s-6)]", {
   variants: {
     variant: {
@@ -19,19 +20,27 @@ export const tabsVariants = cva("v-tabs [display:flex] [gap:var(--s-6)]", {
 });
 const TabsVariantContext =
   React.createContext<VariantProps<typeof tabsVariants>["variant"]>("default");
+const TabsValueContext = React.createContext<string | undefined>(undefined);
 export type TabsProps = React.ComponentProps<typeof Primitive.Root> &
   VariantProps<typeof tabsVariants>;
 export function Tabs({
   className,
   variant = "default",
   children,
+  value,
+  defaultValue,
+  onValueChange,
   ...props
 }: TabsProps) {
+  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+  const selected = value ?? uncontrolledValue;
   return (
     <TabsVariantContext.Provider value={variant}>
-      <Primitive.Root data-slot="tabs" className={className} {...props}>
+      <TabsValueContext.Provider value={selected}>
+      <Primitive.Root data-slot="tabs" className={cn("grid min-w-0 gap-[var(--s-4)]", className)} value={selected} onValueChange={next => { if (value === undefined) setUncontrolledValue(next); onValueChange?.(next); }} {...props}>
         {children}
       </Primitive.Root>
+      </TabsValueContext.Provider>
     </TabsVariantContext.Provider>
   );
 }
@@ -71,14 +80,20 @@ export function TabsTrigger({ className, ref, ...props }: TabsTriggerProps) {
   );
 }
 export type TabsContentProps = React.ComponentProps<typeof Primitive.Content>;
-export function TabsContent({ className, ref, ...props }: TabsContentProps) {
-  return (
+export function TabsContent({ className, ref, forceMount, value, ...props }: TabsContentProps) {
+  const selected = React.useContext(TabsValueContext);
+  const content = (
     <Primitive.Content
       ref={ref}
+      value={value}
+      forceMount
       data-slot="tabs-content"
       data-part="content"
       className={className}
       {...props}
     />
   );
+  // Explicit forceMount leaves visibility under the consumer's control.
+  if (forceMount) return content;
+  return <MotionPresence>{selected === value && <MotionSurface key={value} asChild preset="rise">{content}</MotionSurface>}</MotionPresence>;
 }

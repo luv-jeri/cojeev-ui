@@ -88,3 +88,5 @@
 :root[data-mode="dark"] .v-alert[data-slot].-pink .v-alert__text{color:var(--alert-ink)}
 .v-alert[data-slot].-pink .v-btn.-ghost:not(:disabled):not([aria-disabled="true"]){color:var(--v-on-accent)}
 .v-alert[data-slot].-pink .v-btn.-ghost:not(:disabled):not([aria-disabled="true"]):hover{background:color-mix(in oklab,var(--v-pink) 88%,var(--ink-fixed))}
+.v-alert__body[data-slot] { grid-template-columns:minmax(0,1fr); }
+.v-alert[data-slot] :is(.v-alert__title,.v-alert__text) { min-width:0; overflow-wrap:anywhere; }

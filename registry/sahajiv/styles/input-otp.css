@@ -78,8 +78,8 @@
 }
 
 [data-slot="input-otp-group"] {
-  flex: 1;
-  min-height: 0;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 [data-slot="input-otp-slot"] {
   flex-shrink: 0;
@@ -93,3 +93,12 @@
 
 /* Preserve the authored native input inset on the semantic visual slots. */
 [data-slot="input-otp-slot"] { padding: 1px 2px; }
+
+/* Keep the two groups visually connected while allowing a narrow form to shrink. */
+[data-input-otp-container] { width: fit-content; max-width: 100%; align-items: center; }
+[data-slot="input-otp-group"] { align-items: center; }
+[data-slot="input-otp-slot"]:nth-child(3) { margin-right: 0; }
+[data-slot="input-otp-separator"] { flex: none; }
+@media (max-width: 640px) {
+  [data-slot="input-otp-slot"] { width: 40px; flex: 0 1 40px; }
+}

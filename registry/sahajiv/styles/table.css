@@ -219,6 +219,14 @@
   -webkit-mask-image: none;
   mask-image: none;
 }
+[data-slot="table-container"]:dir(rtl)[data-scrollable="more"] {
+  -webkit-mask-image: linear-gradient(to left, var(--mask-ink) 0, var(--mask-ink) calc(100% - 26px), color-mix(in oklab, var(--mask-ink) 25%, transparent) 100%);
+  mask-image: linear-gradient(to left, var(--mask-ink) 0, var(--mask-ink) calc(100% - 26px), color-mix(in oklab, var(--mask-ink) 25%, transparent) 100%);
+}
+[data-slot="table"] tbody tr[tabindex]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
 :root[data-mode="dark"] [data-slot="table"] tbody tr:hover,
 :root[data-mode="dark"] [data-slot="table"] tbody tr:focus-visible {
   background: var(--v-beige-2);

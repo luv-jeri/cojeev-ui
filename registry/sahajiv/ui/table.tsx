@@ -17,7 +17,11 @@ export function TableContainer({
     if (!el) return;
     const room = el.scrollWidth - el.clientWidth;
     if (room < 2) el.removeAttribute("data-scrollable");
-    else el.dataset.scrollable = el.scrollLeft >= room - 14 ? "end" : "more";
+    else {
+      const rtl = getComputedStyle(el).direction === "rtl";
+      const travelled = rtl ? -el.scrollLeft : el.scrollLeft;
+      el.dataset.scrollable = travelled >= room - 14 ? "end" : "more";
+    }
   }, []);
   React.useLayoutEffect(() => {
     const el = element.current;
@@ -37,11 +41,12 @@ export function TableContainer({
       mutation.disconnect();
     };
   }, [mark]);
-  const ownedMorphRef = useMorph<HTMLDivElement>("cards", (node) => {
+  const mergeRef = React.useCallback((node: HTMLDivElement | null) => {
         element.current = node;
         if (typeof ref === "function") return ref(node);
         if (ref) ref.current = node;
-      });
+      }, [ref]);
+  const ownedMorphRef = useMorph<HTMLDivElement>("cards", mergeRef);
   return (
     <div
       ref={ownedMorphRef}

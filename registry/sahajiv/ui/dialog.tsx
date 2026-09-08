@@ -26,9 +26,11 @@ export function DialogPortal(props: DialogPortalProps) {
   return <Primitive.Portal {...props} />;
 }
 export type DialogOverlayProps = React.ComponentProps<typeof Primitive.Overlay>;
-export function DialogOverlay({ className, ...props }: DialogOverlayProps) {
+export function DialogOverlay({ className, ref, ...props }: DialogOverlayProps) {
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "fade");
   return (
     <Primitive.Overlay
+      ref={flowRef}
       data-slot="dialog-overlay"
       data-part="overlay"
       className={cn(

@@ -14,3 +14,6 @@
 :root[data-mode="dark"] .v-state[data-slot] .v-state__why{color:var(--v-text-2)}
 .v-state[data-slot].-unavail .v-state__word{color:var(--v-text-2)}
 .v-state[data-slot].-error .v-state__word{color:var(--v-danger-ink)}
+.v-state[data-slot].-partial { color:var(--v-on-accent); }
+:root[data-mode="dark"] .v-state[data-slot].-partial .v-state__why { color:var(--alert-ink); }
+:is(.v-empty,.v-state)[data-slot] { min-width:0; max-width:100%; overflow-wrap:anywhere; }

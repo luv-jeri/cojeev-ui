@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { acquireFlowEnvironment, isFlowQuiet, pulseFlow } from "./flow"
+import { acquireFlowEnvironment, isFlowQuiet, pulseFlow, cancelFlowPulse } from "./flow"
 import { subscribeSettings } from "./settings"
 export const pulseFlowPress=pulseFlow
 /** Standalone release/change pulse; selected children defer to their group's travelling body. */
@@ -14,7 +14,7 @@ export function useFlowPress<T extends HTMLElement>(externalRef?:React.Ref<T>):R
    if(!touched.has(target))touched.set(target,{attribute:target.getAttribute('data-flow-land'),styles:new Map(['--flow-ease','--flow-dur','--flow-land','--flow-glow'].map(key=>[key,target.style.getPropertyValue(key)]))})
    pulseFlow(target)
   }
-  const restore=()=>{for(const [target,old]of touched){if(old.attribute===null)target.removeAttribute('data-flow-land');else target.setAttribute('data-flow-land',old.attribute);for(const [key,value]of old.styles){if(value)target.style.setProperty(key,value);else target.style.removeProperty(key)}}touched.clear()}
+  const restore=()=>{for(const [target,old]of touched){cancelFlowPulse(target);if(old.attribute===null)target.removeAttribute('data-flow-land');else target.setAttribute('data-flow-land',old.attribute);for(const [key,value]of old.styles){if(value)target.style.setProperty(key,value);else target.style.removeProperty(key)}}touched.clear()}
   const change=(event:Event)=>{const target=event.target
    if(el.matches('.v-slider,.v-sliderwrap')||target instanceof Element&&target.matches('.v-slider,[role="slider"]')){const output=el.closest('.v-sliderwrap')?.querySelector<HTMLElement>('output');if(output)pulse(output);return}
    if(target instanceof HTMLElement&&target.matches('input[type="checkbox"],input[type="radio"]')){const host=target.closest<HTMLElement>('.v-switch,.v-check,.v-radio,.v-iradio,.v-quest__opt');pulse(host?.matches('.v-check,.v-radio')?target:host??el)}else pulse(el)

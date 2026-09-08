@@ -89,6 +89,17 @@
 [data-slot="input-search-scope"] { font-size: 13px; color: var(--v-text); min-width: 0; flex-wrap: wrap; }
 [data-slot="input-search"] .v-input input { flex: 1 1 60px; min-width: 0; }
 @media (max-width: 640px) { [data-slot="input-search"] [data-slot="input-search-scope"] { display: none; } }
-@media (max-width: 640px) { [data-slot="input-group"] { min-height: var(--ctl-lg); flex-wrap: wrap; } [data-slot="input-group"] input { width: 100%; } }
+[data-slot="input-group"] { min-width:0; min-height:52px; height:auto; padding-block:6px; }
+[data-slot="input-group"] [data-slot="input-group-input"] { min-height:40px; width:0; flex:1 1 80px; }
+[data-slot="input-group-addon"] { min-width:0; max-width:45%; white-space:normal; overflow-wrap:anywhere; }
+[data-slot="input-group-text"] { min-width:0; max-width:100%; overflow-wrap:anywhere; }
+[data-slot="input-group"]:has(textarea) { align-items:flex-end; flex-wrap:wrap; border-radius:var(--r-card); padding:var(--s-3); }
+[data-slot="input-group"] [data-slot="input-group-textarea"] { min-width:0; width:100%; min-height:96px; max-height:320px; flex:1 0 100%; padding:var(--s-2); background:transparent; box-shadow:none; border-radius:var(--r-sm); }
+[data-slot="input-group"]:has(textarea) > [data-slot="input-group-button"] { margin-inline-start:auto; }
+[data-slot="input-group"] [data-slot="input-group-textarea"]:focus { box-shadow:none; }
+@media (max-width: 640px) {
+  [data-slot="input-group"] { flex-wrap:wrap; }
+  [data-slot="input-group"] [data-slot="input-group-input"] { flex-basis:100px; }
+}
 
 [data-slot="input-search-disk"] .v-icon { width: 20px; height: 20px; stroke-width: 2; }

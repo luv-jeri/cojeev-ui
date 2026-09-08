@@ -13,7 +13,8 @@
         "class-variance-authority",
         "clsx",
         "tailwind-merge",
-        "tw-animate-css"
+        "tw-animate-css",
+        "motion"
       ],
       "config": {
         "style": "new-york",
@@ -32,6 +33,11 @@
           "target": "lib/utils.ts"
         },
         {
+          "path": "registry/sahajiv/lib/chart-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/chart-geometry.ts"
+        },
+        {
           "path": "registry/sahajiv/lib/icon-data.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv/icon-data.ts"
@@ -40,6 +46,16 @@
           "path": "registry/sahajiv/lib/shape-data.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv/shape-data.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/signature-shapes.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/signature-shapes.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/use-chart-motion.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/use-chart-motion.ts"
         },
         {
           "path": "registry/sahajiv/motion/body.ts",
@@ -52,9 +68,19 @@
           "target": "lib/sahajiv-motion/category.ts"
         },
         {
+          "path": "registry/sahajiv/motion/choreography.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/choreography.ts"
+        },
+        {
           "path": "registry/sahajiv/motion/clock.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv-motion/clock.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/flow-motion.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/flow-motion.ts"
         },
         {
           "path": "registry/sahajiv/motion/flow-press.ts",
@@ -82,6 +108,11 @@
           "target": "lib/sahajiv-motion/refs.ts"
         },
         {
+          "path": "registry/sahajiv/motion/scroll-thumb.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/scroll-thumb.ts"
+        },
+        {
           "path": "registry/sahajiv/motion/settings.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv-motion/settings.ts"
@@ -90,6 +121,16 @@
           "path": "registry/sahajiv/motion/shapes.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv-motion/shapes.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/theme-transition.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/theme-transition.ts"
+        },
+        {
+          "path": "registry/sahajiv/motion/use-depth.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv-motion/use-depth.ts"
         },
         {
           "path": "registry/sahajiv/motion/use-flow.ts",
@@ -591,6 +632,470 @@
       }
     },
     {
+      "name": "agent-chat",
+      "type": "registry:ui",
+      "title": "Agent chat",
+      "description": "A composable agent conversation with a bounded thread, draft composer, attachments, progress, explicit permissions and choice prompts.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/agent-state.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/message.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/message-scroller.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/attachment.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/questionnaire.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/avatar.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/bubble.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/input.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/input-group.json"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/agent-chat.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/agent-chat.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/agent-chat.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/agent-chat.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Agent chat",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "idle",
+            "thinking",
+            "permission",
+            "options",
+            "working",
+            "complete",
+            "denied",
+            "stopped",
+            "error",
+            "retry",
+            "attached",
+            "detached"
+          ]
+        },
+        "api": [
+          {
+            "name": "AgentChatLayoutProps",
+            "props": []
+          },
+          {
+            "name": "AgentChatMainProps",
+            "props": []
+          },
+          {
+            "name": "AgentChatAsideProps",
+            "props": []
+          },
+          {
+            "name": "AgentChatProps",
+            "props": []
+          },
+          {
+            "name": "AgentChatHeaderProps",
+            "props": [
+              {
+                "name": "title",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "status",
+                "type": "AgentStatus",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "statusLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "actions",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "AgentChatThreadProps",
+            "props": [
+              {
+                "name": "jumpLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "AgentChatMessageProps",
+            "props": [
+              {
+                "name": "author",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "avatar",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "from",
+                "type": "\"agent\" | \"user\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "meta",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "actions",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "AgentChatComposerProps",
+            "props": [
+              {
+                "name": "value",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value: string) => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "onSend",
+                "type": "() => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "status",
+                "type": "AgentStatus",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onStop",
+                "type": "() => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "attachments",
+                "type": "readonly AgentChatAttachment[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onAttach",
+                "type": "(files: File[]) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onRemoveAttachment",
+                "type": "(id: string) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "accept",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "placeholder",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "hint",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "error",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onRetry",
+                "type": "() => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "maxLength",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "AgentChatPermissionProps",
+            "props": [
+              {
+                "name": "title",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "scope",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "decision",
+                "type": "\"pending\" | \"allowed\" | \"denied\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onDecision",
+                "type": "(decision: \"allowed\" | \"denied\") => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "allowLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "denyLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "AgentChatOptionsProps",
+            "props": [
+              {
+                "name": "title",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "options",
+                "type": "readonly AgentChatOption[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "value",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value: string) => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "onConfirm",
+                "type": "(value: string) => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "confirmLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "AgentChatProgressProps",
+            "props": [
+              {
+                "name": "steps",
+                "type": "readonly AgentChatStep[]",
+                "required": true,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Conversation",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "agent-state",
+      "type": "registry:ui",
+      "title": "Agent state",
+      "description": "A sculpted, living status field that changes contour and color as an agent thinks, works, asks for input, or finishes.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/agent-state.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/agent-state.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/agent-state.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/agent-state.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Agent state",
+          "variants": [
+            "idle",
+            "thinking",
+            "working",
+            "needs-input",
+            "complete",
+            "error"
+          ],
+          "sizes": [
+            "md",
+            "sm",
+            "lg"
+          ],
+          "states": [
+            "idle",
+            "thinking",
+            "working",
+            "needs-input",
+            "complete",
+            "error",
+            "offscreen",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "AgentStateProps",
+            "props": [
+              {
+                "name": "status",
+                "type": "AgentStatus",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "\"sm\" | \"md\" | \"lg\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Conversation",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "alert",
       "type": "registry:ui",
       "title": "Alert",
@@ -1038,6 +1543,79 @@
       }
     },
     {
+      "name": "animated-icon",
+      "type": "registry:ui",
+      "title": "Animated icon",
+      "description": "Contextual motion for the shared icon catalog: draw, tremor, spinning settings, bouncing navigation and morphing validation.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/animated-icon.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/animated-icon.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/animated-icon.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/animated-icon.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Animated icon",
+          "variants": [
+            "auto",
+            "tremor",
+            "draw",
+            "spin",
+            "bounce",
+            "validation"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "idle",
+            "hovered",
+            "focused",
+            "active",
+            "offscreen",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "AnimatedIconProps",
+            "props": [
+              {
+                "name": "preset",
+                "type": "IconMotion",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "active",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "animated-number",
       "type": "registry:ui",
       "title": "Animated number",
@@ -1113,6 +1691,66 @@
           }
         ],
         "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "area-chart",
+      "type": "registry:ui",
+      "title": "Area chart",
+      "description": "Layered area charts with shared series colors, responsive bounds and a keyboard data inspector.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/chart.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/area-chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/chart-cartesian.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/chart-cartesian.tsx"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Area chart",
+          "variants": [
+            "linear",
+            "step",
+            "stacked"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "focused",
+            "hovered",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "AreaChartProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"linear\" | \"step\" | \"stacked\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -1684,6 +2322,66 @@
       }
     },
     {
+      "name": "bar-chart",
+      "type": "registry:ui",
+      "title": "Bar chart",
+      "description": "Compare series with grouped, stacked or horizontal bars and a shared interactive tooltip.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/chart.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/bar-chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/chart-cartesian.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/chart-cartesian.tsx"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Bar chart",
+          "variants": [
+            "grouped",
+            "stacked",
+            "horizontal"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "focused",
+            "hovered",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "BarChartProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"grouped\" | \"stacked\" | \"horizontal\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
@@ -1972,7 +2670,8 @@
       "description": "Triggers an action with native button behavior and an optional busy indicator.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-        "https://luv-jeri.github.io/sahajiv-ui/r/spinner.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/spinner.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -2685,9 +3384,14 @@
       "description": "Presents numeric comparisons as bars, lines, rings, or ranked rows with companion data-table primitives.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/card.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/chart-tooltip.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/table.json"
       ],
       "dependencies": [
+        "motion",
         "class-variance-authority"
       ],
       "files": [
@@ -2916,11 +3620,171 @@
                 "description": ""
               }
             ]
+          },
+          {
+            "name": "ChartFrameProps",
+            "props": [
+              {
+                "name": "data",
+                "type": "ChartPoint[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "series",
+                "type": "ChartSeries[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "caption",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showTable",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tableVisible",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "valueFormatter",
+                "type": "(value: number) => string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "className",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "legendMode",
+                "type": "\"series\" | \"points\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "interaction",
+                "type": "\"x\" | \"columns\" | \"y\" | \"radar\" | \"shape\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "emptyMessage",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "children",
+                "type": "(plot: ChartPlotState) => React.ReactNode",
+                "required": true,
+                "description": ""
+              }
+            ]
           }
         ],
         "category": "Data display",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "chart-tooltip",
+      "type": "registry:ui",
+      "title": "Dynamic chart tooltip",
+      "description": "A shared bounded data pill with kinetic tracking and pointer/keyboard access.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/card.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/chart-tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Dynamic chart tooltip",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "focused",
+            "hovered",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ChartTooltipProps",
+            "props": [
+              {
+                "name": "id",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "active",
+                "type": "{ label: string; items: ChartTooltipItem[] } | null",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "position",
+                "type": "{ x: number; y: number }",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "bounds",
+                "type": "{ width: number; height: number }",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "valueFormatter",
+                "type": "(value: number) => string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "className",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -3193,7 +4057,8 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/input.json",
-        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/icon.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/command.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -3654,7 +4519,8 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/table.json",
         "https://luv-jeri.github.io/sahajiv-ui/r/pagination.json",
-        "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
       ],
       "dependencies": [],
       "files": [
@@ -3730,7 +4596,7 @@
                 "name": "getRowId",
                 "type": "(row: T, index: number) => string",
                 "required": false,
-                "description": ""
+                "description": "The index is the row's position in data, before filtering or sorting."
               },
               {
                 "name": "filters",
@@ -4957,7 +5823,8 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
       "dependencies": [
-        "class-variance-authority"
+        "class-variance-authority",
+        "motion"
       ],
       "files": [
         {
@@ -5010,6 +5877,12 @@
               {
                 "name": "size",
                 "type": "\"default\"|\"sm\"|\"lg\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "draw",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -5809,6 +6682,66 @@
       }
     },
     {
+      "name": "line-chart",
+      "type": "registry:ui",
+      "title": "Line chart",
+      "description": "Track changes using linear, smooth or step lines with accessible point inspection.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/chart.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/line-chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/chart-cartesian.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/chart-cartesian.tsx"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Line chart",
+          "variants": [
+            "linear",
+            "smooth",
+            "step"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "focused",
+            "hovered",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "LineChartProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"linear\" | \"smooth\" | \"step\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "marker",
       "type": "registry:ui",
       "title": "Marker",
@@ -6268,7 +7201,8 @@
       "description": "Keeps a conversation near its latest content while allowing readers to scroll back without being pulled down.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-        "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -6586,11 +7520,13 @@
       "title": "Navigation Menu",
       "description": "Organizes destination links and optional expandable navigation panels.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
       ],
       "dependencies": [
         "class-variance-authority",
-        "@radix-ui/react-navigation-menu"
+        "@radix-ui/react-navigation-menu",
+        "motion"
       ],
       "files": [
         {
@@ -6696,9 +7632,11 @@
       "title": "Pagination",
       "description": "Lets users move between numbered pages and see their current position.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
       ],
       "dependencies": [
+        "motion",
         "class-variance-authority"
       ],
       "files": [
@@ -6827,6 +7765,65 @@
       }
     },
     {
+      "name": "pie-chart",
+      "type": "registry:ui",
+      "title": "Pie chart",
+      "description": "Show proportions using themed pie and donut layouts, with readable totals and segment inspection.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/chart.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/pie-chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/chart-circular.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/chart-circular.tsx"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Pie chart",
+          "variants": [
+            "pie",
+            "donut"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "focused",
+            "hovered",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "PieChartProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"pie\" | \"donut\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
@@ -6926,6 +7923,93 @@
       }
     },
     {
+      "name": "presence",
+      "type": "registry:ui",
+      "title": "Presence",
+      "description": "MotionPresence keeps keyed children mounted for their exits. MotionSurface adds coordinated lifecycle states to an existing primitive.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion",
+        "@radix-ui/react-slot"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/presence.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/presence.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/presence.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/presence.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Presence",
+          "variants": [
+            "rise",
+            "fade",
+            "scale",
+            "slide",
+            "mask"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "entering",
+            "visible",
+            "exiting",
+            "removed",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "MotionPresenceProps",
+            "props": []
+          },
+          {
+            "name": "MotionSurfaceProps",
+            "props": [
+              {
+                "name": "data-slot",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "asChild",
+                "type": "boolean",
+                "required": false,
+                "description": "Merge onto exactly one ref-capable child, preserving its native element."
+              },
+              {
+                "name": "preset",
+                "type": "PresencePreset",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "delay",
+                "type": "number",
+                "required": false,
+                "description": "Seconds; use motionTokens.stagger for a coordinated sibling sequence."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "preview",
       "type": "registry:ui",
       "title": "Component preview",
@@ -6988,6 +8072,18 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "controls",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": "Variant selectors or other controls shown with the live specimen."
+              },
+              {
+                "name": "actions",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": "Optional actions beside the view switcher."
               }
             ]
           }
@@ -7259,6 +8355,132 @@
       }
     },
     {
+      "name": "radar-chart",
+      "type": "registry:ui",
+      "title": "Radar chart",
+      "description": "Compare several dimensions with a shared radar scale and contextual series highlighting.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/chart.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/radar-chart.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Radar chart",
+          "variants": [
+            "polygon",
+            "rounded",
+            "grid"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "focused",
+            "hovered",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "RadarChartProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"polygon\" | \"rounded\" | \"grid\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "max",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "radial-chart",
+      "type": "registry:ui",
+      "title": "Radial chart",
+      "description": "Show progress against a shared maximum using full rings or semicircles.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/chart.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/radial-chart.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/chart-circular.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/chart-circular.tsx"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Radial chart",
+          "variants": [
+            "full",
+            "semicircle"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "focused",
+            "hovered",
+            "empty",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "RadialChartProps",
+            "props": [
+              {
+                "name": "variant",
+                "type": "\"full\" | \"semicircle\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "max",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "radio-group",
       "type": "registry:ui",
       "title": "Radio Group",
@@ -7460,6 +8682,7 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
       "dependencies": [
+        "motion",
         "class-variance-authority",
         "@radix-ui/react-scroll-area"
       ],
@@ -7521,11 +8744,21 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "viewportProps",
+                "type": "React.ComponentProps<typeof Primitive.Viewport>",
+                "required": false,
+                "description": "Native viewport attributes, including a ref, scroll listener or accessible name."
               }
             ]
           },
           {
             "name": "ScrollBarProps",
+            "props": []
+          },
+          {
+            "name": "PageScrollBarProps",
             "props": []
           }
         ],
@@ -7745,17 +8978,27 @@
       "name": "shape",
       "type": "registry:ui",
       "title": "Shape",
-      "description": "Renders a named decorative silhouette that inherits or accepts a fill color.",
+      "description": "A shared catalogue of 36 SVG silhouettes, with 12 original contours that morph smoothly between shapes.",
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "motion"
+      ],
       "files": [
         {
           "path": "registry/sahajiv/ui/shape.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/shape.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/shape.css"
         }
       ],
+      "css": {
+        "@import \"@/styles/sahajiv/shape.css\"": {}
+      },
       "meta": {
         "source": {
           "name": "Shape",
@@ -7784,6 +9027,29 @@
                 "type": "React.ElementType",
                 "required": false,
                 "description": ""
+              }
+            ]
+          },
+          {
+            "name": "ShapeMorphProps",
+            "props": [
+              {
+                "name": "name",
+                "type": "SignatureShapeName",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "\"fill\" | \"outline\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": "Omit for a decorative shape; supply when the graphic carries meaning."
               }
             ]
           }
@@ -8191,7 +9457,8 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/card.json"
       ],
       "dependencies": [
-        "class-variance-authority"
+        "class-variance-authority",
+        "motion"
       ],
       "files": [
         {
@@ -8466,7 +9733,8 @@
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
       "dependencies": [
-        "class-variance-authority"
+        "class-variance-authority",
+        "motion"
       ],
       "files": [
         {
@@ -8906,7 +10174,8 @@
       "title": "Tabs",
       "description": "Switches between related content panels while keeping the available views visible.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/presence.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -9025,7 +10294,9 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "motion"
+      ],
       "files": [
         {
           "path": "registry/sahajiv/ui/text-reveal.tsx",
@@ -9187,6 +10458,81 @@
         "category": "Forms",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "theme-toggle",
+      "type": "registry:ui",
+      "title": "Theme toggle",
+      "description": "A controlled light/dark switch with a morphing sun and moon. The shared applyTheme helper crossfades inherited surface and text colors.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/theme-toggle.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/theme-toggle.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/theme-toggle.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/theme-toggle.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Theme toggle",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default",
+            "sm",
+            "lg"
+          ],
+          "states": [
+            "light",
+            "dark",
+            "focused",
+            "disabled",
+            "reduced-motion"
+          ]
+        },
+        "api": [
+          {
+            "name": "ThemeToggleProps",
+            "props": [
+              {
+                "name": "mode",
+                "type": "ThemeMode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "onModeChange",
+                "type": "(mode: ThemeMode) => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "showLabel",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Actions",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {

@@ -26,9 +26,11 @@ export function DrawerPortal(props: DrawerPortalProps) {
   return <Primitive.Portal {...props} />;
 }
 export type DrawerOverlayProps = React.ComponentProps<typeof Primitive.Overlay>;
-export function DrawerOverlay({ className, ...props }: DrawerOverlayProps) {
+export function DrawerOverlay({ className, ref, ...props }: DrawerOverlayProps) {
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "fade");
   return (
     <Primitive.Overlay
+      ref={flowRef}
       data-slot="drawer-overlay"
       data-part="overlay"
       className={cn(

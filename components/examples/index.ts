@@ -2,6 +2,18 @@
 import { lazy } from "react";
 import type { ExampleComponent } from "./types";
 export const examples: Record<string, ExampleComponent> = {
+  "area-chart": lazy(() => import("./charts").then((module) => ({ default: module.AreaChartExample }))),
+  "bar-chart": lazy(() => import("./charts").then((module) => ({ default: module.BarChartExample }))),
+  "line-chart": lazy(() => import("./charts").then((module) => ({ default: module.LineChartExample }))),
+  "pie-chart": lazy(() => import("./charts").then((module) => ({ default: module.PieChartExample }))),
+  "radar-chart": lazy(() => import("./charts").then((module) => ({ default: module.RadarChartExample }))),
+  "radial-chart": lazy(() => import("./charts").then((module) => ({ default: module.RadialChartExample }))),
+  "chart-tooltip": lazy(() => import("./charts").then((module) => ({ default: module.ChartTooltipExample }))),
+  "presence": lazy(() => import("./motion-primitives").then((module) => ({ default: module.PresenceExample }))),
+  "theme-toggle": lazy(() => import("./motion-primitives").then((module) => ({ default: module.ThemeToggleExample }))),
+  "animated-icon": lazy(() => import("./motion-primitives").then((module) => ({ default: module.AnimatedIconExample }))),
+  "agent-state": lazy(() => import("./agent").then((module) => ({ default: module.AgentStateExample }))),
+  "agent-chat": lazy(() => import("./agent").then((module) => ({ default: module.AgentChatExample }))),
   "ambient-background": lazy(() => import("./backgrounds").then((module) => ({ default: module.AmbientBackgroundExample }))),
   marquee: lazy(() => import("./backgrounds").then((module) => ({ default: module.MarqueeExample }))),
   "multi-select": lazy(() => import("./forms").then((module) => ({ default: module.MultiSelectExample }))),

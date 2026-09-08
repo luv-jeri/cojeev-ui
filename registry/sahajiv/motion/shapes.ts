@@ -1,8 +1,10 @@
 import type {Rim} from "./geometry"
+import { signatureShapePaths } from "../lib/signature-shapes"
 // Authored true shapes, sampled by arc length using a detached SVG probe.
 const star=(n:number,ro:number,ri:number)=>{const a=[];for(let i=0;i<n*2;i++){const r=i%2?ri:ro,t=-Math.PI/2+i*Math.PI/n;a.push([50+r*Math.cos(t),50+r*Math.sin(t)])}return 'M'+a.map(p=>p.map(v=>v.toFixed(2)).join(' ')).join('L')+'Z'};
 const polar=(f:(th:number)=>number)=>(t:number)=>{const th=t*Math.PI*2;const r=f(th);return [50+r*Math.cos(th),50+r*Math.sin(th)]};
 export const SHAPES:Record<string,string|((t:number)=>number[])>={
+...signatureShapePaths,
 heart:'M50 90C22 68 6 52 6 33A20 20 0 0 1 50 21A20 20 0 0 1 94 33C94 52 78 68 50 90Z',
 crescent:'M60 5A45 45 0 1 0 60 95A50 50 0 0 1 60 5Z',
 'star-8':star(8,48,30),'star-5':star(5,48,22),'star-6':star(6,48,28),

@@ -1,4 +1,6 @@
-import { FLOW_CHARACTERS, applyFlowSettings, getFlowSettings, getMotionSettings, subscribeSettings, flowTokenMs, flowToken, type FlowVariant } from "./settings"
+import { createMotionLane, motionTokens, resolveChoreography } from "./choreography"
+import { createFlowPainter, animateFlowLanding } from "./flow-motion"
+import { FLOW_CHARACTERS, getSettingsSnapshot, applyFlowSettings, getFlowSettings, getMotionSettings, subscribeSettings, flowTokenMs, type FlowVariant } from "./settings"
 import { scheduleMotion, cancelMotion, getMotionTime, type MotionTimer } from "./clock"
 export { flowClock, motionClock } from "./clock"
 
@@ -36,13 +38,6 @@ function variantFor(el:HTMLElement):FlowVariant{
  const pin=el.closest<HTMLElement>('[data-flow]:not(html)')?.dataset.flow
  return pin&&Object.hasOwn(FLOW_CHARACTERS,pin)?pin as FlowVariant:getFlowSettings().variant
 }
-function applyCharacter(el:HTMLElement){
- const variant=variantFor(el),cfg=getFlowSettings(),c=FLOW_CHARACTERS[variant]
- el.style.setProperty('--flow-ease',flowToken('--e-flow-'+variant,c.ease,el))
- el.style.setProperty('--flow-dur',((variant==='off'?0:flowTokenMs('--t-flow-'+variant,c.duration*1000,el))/1000/cfg.speed).toFixed(3)+'s')
- el.style.setProperty('--flow-land',c.land);el.style.setProperty('--flow-glow',c.glow||'none')
- return variant
-}
 /** Only this mounted host and its own nearest-group items are measured or mutated. */
 export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>void{
  const existing=groups.get(g);if(existing){existing.resolve();return ()=>{}}
@@ -50,10 +45,10 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  const kind=options.kind??(g.hasAttribute('data-flow-fields')?'fill':g.classList.contains('-underline')?'bar':'pill')
  const spec=SPECIAL.find(([selector])=>g.matches(selector)),anchor=spec?.[2]
  const itemSel=options.itemSelector??(kind==='fill'?FLOW_FIELD_ITEMS:spec?.[1]??ITEMS),isMenu=g.matches('.v-menu,.v-cmd__list,[role="menu"],[role="listbox"]')
- const oldAttrs=new Map(['data-flow-owned','data-flow-kind','data-flow-v','data-dir'].map(name=>[name,g.getAttribute(name)]))
+ const oldAttrs=new Map(['data-flow-owned','data-flow-kind','data-flow-v','data-dir','data-flow-engine'].map(name=>[name,g.getAttribute(name)]))
  const oldClasses=new Set(g.classList),oldStyles=new Map<string,string>(),activeAttrs=new Map<HTMLElement,string|null>()
  const write=(name:string,value:string)=>{if(!oldStyles.has(name))oldStyles.set(name,g.style.getPropertyValue(name));if(g.style.getPropertyValue(name)!==value)g.style.setProperty(name,value)}
- g.setAttribute('data-flow-owned','')
+ g.setAttribute('data-flow-owned','');g.setAttribute('data-flow-engine','motion')
  const owned=(item:HTMLElement)=>{
   if(item.closest(FLOW_GROUPS)!==g)return false
   if(kind==='fill'){
@@ -64,10 +59,12 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  }
  const items=(visible=true)=>all(itemSel,g).filter(item=>owned(item)&&(!visible||item.getClientRects().length>0))
  const mk=(className:string)=>{const span=document.createElement('span');span.className=className;span.setAttribute('aria-hidden','true');span.append(document.createElement('i'));return span}
- const [pill,hov,trail]=LAYERS.map(mk),timers=new Set<MotionTimer>()
+ const [pill,hov,trail]=LAYERS.map(mk),timers=new Set<MotionTimer>(),painter=createFlowPainter(write)
+ let cancelLanding=()=>{}
+ const stopMovement=()=>{painter.stop();cancelLanding();cancelLanding=()=>{}}
  let prev:Box|null=null,lastActive:HTMLElement|null=null,dScale=1,queued:MotionTimer|null=null,resizeTimer:MotionTimer|null=null,stillTimer:MotionTimer|null=null,disposed=false,attached=false,reseat=false,initial=true
  const later=(fn:()=>void,ms:number,scaled=true)=>{const timer=scheduleMotion(()=>{timers.delete(timer);if(!disposed)fn()},scaled?ms*dScale/getFlowSettings().speed:ms);timers.add(timer);return timer}
- const clearPhases=()=>{timers.forEach(cancelMotion);timers.clear();PHASES.forEach(c=>pill.classList.remove(c))}
+ const clearPhases=()=>{stopMovement();timers.forEach(cancelMotion);timers.clear();PHASES.forEach(c=>pill.classList.remove(c))}
  const markStill=()=>{g.classList.add('-still');cancelMotion(stillTimer);stillTimer=scheduleMotion(()=>{stillTimer=null;if(!oldClasses.has('-still'))g.classList.remove('-still')},flowTokenMs('--t-flow-still',60))}
  const unmark=()=>{for(const [item,old]of activeAttrs){if(old===null)item.removeAttribute('data-glide-active');else item.setAttribute('data-glide-active',old)}activeAttrs.clear()}
  const seat=()=>{
@@ -82,19 +79,19 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
   const b={x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height,r:css.borderRadius&&css.borderRadius!=='0px'?css.borderRadius:'999px'}
   if(kind==='bar'){b.y+=b.h-2.5;b.h=2.5;b.r='2px'}return b
  }
- const paint=(b:Box,hover=false)=>{const prefix=hover?'hov':'glide';for(const [key,value]of Object.entries({x:b.x,y:b.y,w:b.w,h:b.h}))write('--'+prefix+'-'+key,Number(value.toFixed(3))+'px');write('--'+prefix+'-r',b.r);write('--'+prefix+'-o','1')}
+ const paint=(b:Box,hover=false,immediate=false)=>painter.paint(b,hover,immediate||isFlowQuiet(g)||document.hidden)
  const active=()=>{
   const candidates=items()
   if(kind==='fill')return (options.activeSelector?candidates.find(item=>item.matches(options.activeSelector!)):null)??candidates.find(item=>item===document.activeElement||item.contains(document.activeElement))??null
   return candidates.find(item=>item.matches(options.activeSelector??ACTIVE)||(isMenu&&(item===document.activeElement||item.hasAttribute('data-highlighted'))))??null
  }
- const land=()=>{if(g.dataset.flowV==='glide')return;const inner=pill.firstElementChild as HTMLElement;inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';pill.classList.add('-land');later(()=>pill.classList.remove('-land'),flowTokenMs('--t-flow-land-hold',900))}
+ const land=()=>{if(g.dataset.flowV==='glide'||isFlowQuiet(g)||document.hidden)return;cancelLanding();cancelLanding=animateFlowLanding(pill.firstElementChild as HTMLElement,g.dataset.flowV??'glide',g.dataset.dir)}
  function suspend(){clearPhases();[pill,hov,trail].forEach(layer=>layer.remove());unmark();attached=false;prev=null;lastActive=null;for(const name of ['v-glide','-still'])if(!oldClasses.has(name))g.classList.remove(name);for(const name of ['data-flow-kind','data-flow-v','data-dir']){const old=oldAttrs.get(name);if(old==null)g.removeAttribute(name);else g.setAttribute(name,old)}for(const [name,old]of oldStyles){if(old)g.style.setProperty(name,old);else g.style.removeProperty(name)}}
  const place=(animate=true)=>{
   if(disposed)return;if(variantFor(g)==='off'){suspend();return}if(!g.isConnected){dispose();return}if(!seat())return
   const a=active()
   for(const item of activeAttrs.keys())if(item!==a){const old=activeAttrs.get(item);if(old===null)item.removeAttribute('data-glide-active');else item.setAttribute('data-glide-active',old!);activeAttrs.delete(item)}
-  if(!a){clearPhases();write('--glide-o','0');prev=null;lastActive=null;return}
+  if(!a){clearPhases();painter.hide(false,isFlowQuiet(g));prev=null;lastActive=null;return}
   if(!activeAttrs.has(a))activeAttrs.set(a,a.getAttribute('data-glide-active'))
   if(!a.hasAttribute('data-glide-active'))a.setAttribute('data-glide-active','')
   if(!animate&&lastActive&&a!==lastActive&&prev)animate=true
@@ -126,10 +123,10 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
     else{if(dy>=0){lead.y=origin.y;lead.h=b.y+b.h-origin.y}else lead.h=origin.y+origin.h-b.y;lead.x=origin.x;lead.w=origin.w}
     pill.classList.add('-lead');paint(lead);later(()=>{pill.classList.remove('-lead');paint(b);land()},flowTokenMs('--t-flow-rubber-lead',200))
    }else{paint(b);land()}
-  }else paint(b)
+  }else paint(b,false,true)
   prev=b
  }
- const hideHover=()=>{if(attached)write('--hov-o','0')}
+ const hideHover=()=>{if(attached)painter.hide(true,isFlowQuiet(g)||document.hidden)}
  const resolve=()=>{if(disposed)return;const variant=variantFor(g);if(variant==='off'){suspend();return}
   if(g.dataset.flowV&&g.dataset.flowV!==variant){clearPhases();prev=null;markStill()}
   g.dataset.flowV=variant
@@ -154,7 +151,8 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  const ancestor=new MutationObserver(resolve)
  for(let parent=g.parentElement;parent;parent=parent.parentElement)ancestor.observe(parent,{attributes:true,attributeFilter:['data-flow','data-no-glide','hidden','open','data-state']})
  const ro=new ResizeObserver(()=>{if(!resizeTimer)resizeTimer=scheduleMotion(()=>{resizeTimer=null;place(false)},16)});ro.observe(g)
- function dispose(){if(disposed)return;disposed=true;groups.delete(g);ac.abort();mo.disconnect();ancestor.disconnect();ro.disconnect();cancelMotion(queued);cancelMotion(resizeTimer);cancelMotion(stillTimer);clearPhases();[pill,hov,trail].forEach(layer=>layer.remove());unmark()
+ const visibility=new IntersectionObserver(([entry])=>{if(!entry.isIntersecting){clearPhases();if(prev)painter.paint(prev,false,true);painter.hide(true,true)}},{threshold:0});visibility.observe(g)
+ function dispose(){if(disposed)return;disposed=true;groups.delete(g);ac.abort();mo.disconnect();ancestor.disconnect();ro.disconnect();visibility.disconnect();cancelMotion(queued);cancelMotion(resizeTimer);cancelMotion(stillTimer);clearPhases();painter.dispose();[pill,hov,trail].forEach(layer=>layer.remove());unmark()
   for(const name of ['v-glide','-still'])if(!oldClasses.has(name))g.classList.remove(name)
   for(const [name,value]of oldAttrs){if(value===null)g.removeAttribute(name);else g.setAttribute(name,value)}
   for(const [name,value]of oldStyles){if(value)g.style.setProperty(name,value);else g.style.removeProperty(name)}release()
@@ -163,20 +161,52 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
 }
 export function replaceFlow(root?:HTMLElement){groups.forEach(group=>{if(!root||group.element===root||root.contains(group.element))group.place(false)})}
 export function detachFlowGroup(el:HTMLElement){groups.get(el)?.dispose()}
-function restart(el:HTMLElement,attribute:string,value:string){el.removeAttribute(attribute);void el.offsetWidth;el.setAttribute(attribute,value)}
-/** Returns a cleanup for the current appearance, including the nested-group reseat timer. */
-export function appearFlow(el:HTMLElement,grow=true){
- if(isFlowQuiet(el))return ()=>{}
- const original=new Map(['--flow-ease','--flow-dur','--flow-land','--flow-glow','--flow-ox','--flow-oy'].map(key=>[key,el.style.getPropertyValue(key)])),old=el.getAttribute('data-flow-in')
- applyCharacter(el)
- if(grow){const r=el.getBoundingClientRect(),fresh=trigger&&getMotionTime()-trigger.t<1500;el.style.setProperty('--flow-ox',Math.round(fresh?trigger!.x-r.left:r.width/2)+'px');el.style.setProperty('--flow-oy',Math.round(fresh?trigger!.y-r.top:r.height)+'px')}
- restart(el,'data-flow-in',grow?'grow':'enter')
- const seat=(event?:AnimationEvent)=>{if(!event||event.target===el)replaceFlow(el)}
- if(grow)el.addEventListener('animationend',seat)
- const timer=grow?scheduleMotion(()=>seat(),900/getFlowSettings().speed):null
- return ()=>{cancelMotion(timer);el.removeEventListener('animationend',seat);if(old===null)el.removeAttribute('data-flow-in');else el.setAttribute('data-flow-in',old);for(const [key,value]of original){if(value)el.style.setProperty(key,value);else el.style.removeProperty(key)}}
+/** Presence keeps one progress owner through rapid open/close reversals. Radix
+ * retains closed nodes through the nonvisual CSS sentinel in flow-press.css. */
+export function createFlowPresence(el:HTMLElement,grow:boolean|'fade'=true){
+ const names=['opacity','scale','translate','transform-origin','animation','--flow-exit-duration'],original=new Map(names.map(name=>[name,el.style.getPropertyValue(name)])),old=el.getAttribute('data-flow-presence')
+ el.setAttribute('data-flow-presence','')
+ const fade=grow==='fade',rect=el.getBoundingClientRect(),fresh=grow===true&&trigger&&getMotionTime()-trigger.t<1500
+ // Radix initially measures an offscreen wrapper. Its live origin variable
+ // follows final collision/side placement; a captured client rect does not.
+ const anchored=!!el.closest('[data-radix-popper-content-wrapper]')
+ el.style.transformOrigin=anchored?'var(--radix-popper-transform-origin, 50% 50%)':fresh?`${Math.max(0,Math.min(rect.width,trigger!.x-rect.left))}px ${Math.max(0,Math.min(rect.height,trigger!.y-rect.top))}px`:getComputedStyle(el).transformOrigin
+ let opened=true,disposed=false
+ const restorePaint=()=>{for(const name of ['opacity','scale','translate']){const value=original.get(name);if(value)el.style.setProperty(name,value);else el.style.removeProperty(name)}}
+ const lane=createMotionLane(1,value=>{
+  if(disposed)return
+  el.style.opacity=String(Math.max(0,Math.min(1,value)))
+  if(!fade){el.style.setProperty('scale',String(.975+.025*value));el.style.setProperty('translate',`0 ${(grow?4:10)*(1-value)}px`)}
+ })
+ function set(open:boolean,animate=true){
+  opened=open
+  const quiet=isFlowQuiet(el)||document.hidden,snapshot=getSettingsSnapshot(),{transition}=resolveChoreography(snapshot,quiet)
+  el.style.setProperty('--flow-exit-duration',quiet?'0s':`${(motionTokens.duration.exit+.04)/snapshot.flow.speed}s`)
+  if(quiet||!animate){lane.jump(open?1:0);if(open)restorePaint();return}
+  lane.to(open?1:0,open?transition:{duration:motionTokens.duration.exit/snapshot.flow.speed,ease:[...motionTokens.ease.exit]},()=>{if(opened&&open){restorePaint();replaceFlow(el)}})
+ }
+ return {
+  set,
+  enter(){lane.jump(0);set(true)},
+  quiet(){set(opened,false)},
+  dispose(){if(disposed)return;disposed=true;lane.dispose();if(old===null)el.removeAttribute('data-flow-presence');else el.setAttribute('data-flow-presence',old);for(const [name,value]of original){if(value)el.style.setProperty(name,value);else el.style.removeProperty(name)}},
+ }
 }
+/** Bounded surface appearance; callers own cleanup. */
+export function appearFlow(el:HTMLElement,grow=true){
+ const presence=createFlowPresence(el,grow)
+ if(!isFlowQuiet(el))presence.enter()
+ return ()=>presence.dispose()
+}
+const pulses=new WeakMap<HTMLElement,()=>void>()
+export function cancelFlowPulse(el:HTMLElement){pulses.get(el)?.();pulses.delete(el)}
 export function pulseFlow(el:HTMLElement){
- if(isFlowQuiet(el)||el.closest('.v-glide')||el.matches(':disabled,[aria-disabled="true"]'))return
- applyCharacter(el);restart(el,'data-flow-land','')
+ cancelFlowPulse(el)
+ if(isFlowQuiet(el)||document.hidden||el.closest('.v-glide')||el.matches(':disabled,[aria-disabled="true"]'))return
+ const scale=el.style.getPropertyValue('scale'),intensity=Math.min(getFlowSettings().intensity,2)
+ let active=true
+ const lane=createMotionLane(.975,value=>{if(active)el.style.setProperty('scale',String(1+(value-1)*intensity))})
+ const cleanup=()=>{if(!active)return;active=false;lane.dispose();if(scale)el.style.setProperty('scale',scale);else el.style.removeProperty('scale');pulses.delete(el)}
+ pulses.set(el,cleanup)
+ lane.to(1,resolveChoreography(getSettingsSnapshot(),false).transition,cleanup)
 }

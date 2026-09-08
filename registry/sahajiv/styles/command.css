@@ -263,10 +263,13 @@
   }
 }
 
-[data-slot="command-list"] > [cmdk-list-sizer],
 [data-slot="command-list"] [cmdk-group],
 [data-slot="command-list"] [cmdk-group-items] {
   display: contents;
+}
+[data-slot="command-list"] > [cmdk-list-sizer] {
+  display: grid;
+  gap: 2px;
 }
 [data-slot="command-group"] [cmdk-group-heading] {
   padding: 12px 12px 6px;
@@ -286,9 +289,17 @@
 [data-slot="command-item"] {
   cursor: pointer;
 }
+[data-slot="command-item"][data-text-only] {
+  grid-template-columns: minmax(0, 1fr) auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 
 /* cmdk keeps its semantic group wrappers; items still paint above the shared selection layer. */
 [data-flow-owned][data-slot="command-list"] [data-slot="command-item"] {
   position: relative;
   z-index: 1;
+}
+.v-command-results > [cmdk-list-sizer] {
+  opacity: var(--command-results-opacity, 1);
 }

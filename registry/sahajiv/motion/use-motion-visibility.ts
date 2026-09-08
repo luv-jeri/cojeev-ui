@@ -15,16 +15,16 @@ function readPreferences() {
   return document.visibilityState === "visible" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 /** A shared stillness boundary for optional landing-page effects. */
-export function useMotionVisibility(ref: React.RefObject<HTMLElement | null>) {
-  const { motion } = React.useSyncExternalStore(subscribeSettings, getSettingsSnapshot, getServerSettingsSnapshot);
+export function useMotionVisibility(ref: React.RefObject<Element | null>, mountedElement?: Element | null) {
+  const { motion, flow } = React.useSyncExternalStore(subscribeSettings, getSettingsSnapshot, getServerSettingsSnapshot);
   const permitted = React.useSyncExternalStore(subscribePreferences, readPreferences, () => false);
   const [inView, setInView] = React.useState(false);
   React.useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
+    const element = mountedElement ?? ref.current;
+    if (!element) { setInView(false); return; }
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.1 });
     observer.observe(element);
     return () => observer.disconnect();
-  }, [ref]);
-  return { enabled: permitted && motion.mode !== "off", inView };
+  }, [ref, mountedElement]);
+  return { enabled: permitted && motion.mode !== "off" && flow.variant !== "off", inView };
 }

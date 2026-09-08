@@ -1,0 +1,78 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-toggle",
+  "title": "Theme toggle",
+  "description": "A controlled light/dark switch with a morphing sun and moon. The shared applyTheme helper crossfades inherited surface and text colors.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/button.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/theme-toggle.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion } from \"motion/react\";\nimport { Button, type ButtonProps } from \"@/components/ui/button\";\nimport { useChoreography } from \"@/lib/sahajiv-motion/choreography\";\nimport { cn } from \"@/lib/utils\";\n\nexport type ThemeMode = \"light\" | \"dark\";\nexport { applyTheme } from \"@/lib/sahajiv-motion/theme-transition\";\nexport type ThemeToggleProps = Omit<ButtonProps,\"onChange\"> & {\n  mode: ThemeMode;\n  onModeChange: (mode: ThemeMode) => void;\n  showLabel?: boolean;\n};\nconst sun = \"M12 5C15.866 5 19 8.134 19 12C19 15.866 15.866 19 12 19C8.134 19 5 15.866 5 12C5 8.134 8.134 5 12 5Z\";\nconst moon = \"M18.9 15.2C17.2 19.3 12.9 21.2 8.8 19.4C4.7 17.6 2.7 13 4.4 8.8C5.4 6.2 7.7 4.3 10.4 3.8C8.1 10.4 12.3 16.8 18.9 15.2Z\";\n\n/** Controlled theme switch: the application owns persistence and the theme scope. */\nexport function ThemeToggle({mode,onModeChange,showLabel=true,className,onClick,...props}:ThemeToggleProps) {\n  const {quiet,transition}=useChoreography();\n  const dark=mode===\"dark\";\n  return <Button variant=\"secondary\" size=\"sm\" data-slot=\"theme-toggle\" role=\"switch\" aria-checked={dark} aria-label=\"Dark appearance\" className={cn(\"v-theme-toggle\",className)} onClick={event=>{onClick?.(event);if(!event.defaultPrevented)onModeChange(dark?\"light\":\"dark\")}} {...props}>\n    <svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" aria-hidden=\"true\" focusable=\"false\">\n      <motion.g initial={false} animate={{rotate:dark?45:0}} transition={transition} style={{transformOrigin:\"12px 12px\"}}>\n        {Array.from({length:8},(_,i)=><motion.path key={i} d=\"M12 1.5V3\" transform={`rotate(${i*45} 12 12)`} stroke=\"currentColor\" strokeWidth=\"1.6\" strokeLinecap=\"round\" initial={false} animate={{pathLength:dark?0:1,opacity:dark?0:1}} transition={{duration:quiet?0:.2,delay:quiet?0:i*.015}}/>)}\n      </motion.g>\n      <motion.path initial={false} d={dark?moon:sun} animate={{d:dark?moon:sun,rotate:dark?-12:0}} transition={transition} fill=\"currentColor\" style={{transformOrigin:\"12px 12px\"}}/>\n    </svg>\n    {showLabel&&<span>{dark?\"Dark\":\"Light\"}</span>}\n  </Button>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/theme-toggle.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"theme-toggle\"] { gap:var(--s-2); min-width:88px; padding-inline:var(--s-3); color:var(--v-accent-ink,var(--v-pink-deep)); }\n[data-slot=\"theme-toggle\"] svg { flex-shrink:0; overflow:visible; }\n[data-slot=\"theme-toggle\"] span { color:var(--v-text); font-size:var(--fs-meta); }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/theme-toggle.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/theme-toggle.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Theme toggle",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default",
+        "sm",
+        "lg"
+      ],
+      "states": [
+        "light",
+        "dark",
+        "focused",
+        "disabled",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "ThemeToggleProps",
+        "props": [
+          {
+            "name": "mode",
+            "type": "ThemeMode",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "onModeChange",
+            "type": "(mode: ThemeMode) => void",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "showLabel",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Actions",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

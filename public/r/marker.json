@@ -17,7 +17,7 @@
     },
     {
       "path": "registry/sahajiv/styles/marker.css",
-      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-marker[data-slot].-ok{color:var(--v-olive-ink)}\n.v-marker[data-slot].-danger{color:var(--v-danger-ink)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-marker[data-slot]::before{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]::after{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]{box-shadow:none;border:0}\n\n\n}\n",
+      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-marker[data-slot].-ok{color:var(--status-ok-ink)}\n.v-marker[data-slot].-danger{color:var(--v-danger-ink)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-marker[data-slot]::before{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]::after{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]{box-shadow:none;border:0}\n\n}\n",
       "type": "registry:file",
       "target": "styles/sahajiv/marker.css"
     }

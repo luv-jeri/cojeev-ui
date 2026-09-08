@@ -1,0 +1,76 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animated-icon",
+  "title": "Animated icon",
+  "description": "Contextual motion for the shared icon catalog: draw, tremor, spinning settings, bouncing navigation and morphing validation.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+    "https://luv-jeri.github.io/sahajiv-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/animated-icon.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { motion } from \"motion/react\";\nimport { Icon, iconClassName, type IconProps } from \"@/components/ui/icon\";\nimport { useChoreography } from \"@/lib/sahajiv-motion/choreography\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\n\nexport type IconMotion = \"auto\" | \"tremor\" | \"draw\" | \"spin\" | \"bounce\" | \"validation\";\nexport type AnimatedIconProps = Omit<IconProps,\"draw\"> & { preset?:IconMotion; active?:boolean };\nexport function AnimatedIcon({name,preset=\"auto\",active,className,size=\"default\",children,...props}:AnimatedIconProps) {\n  const host=React.useRef<HTMLSpanElement>(null);\n  const {quiet,transition}=useChoreography();\n  const {enabled,inView}=useMotionVisibility(host);\n  const [hovered,setHovered]=React.useState(false);\n  const [focused,setFocused]=React.useState(false);\n  React.useEffect(()=>{\n    const node=host.current?.closest<HTMLElement>(\"button,a,[role=button]\")??host.current;\n    if(!node)return;\n    const enter=()=>setHovered(true),leave=()=>setHovered(false);\n    const focus=()=>setFocused(true),blur=(event:FocusEvent)=>{if(!node.contains(event.relatedTarget as Node|null))setFocused(false)};\n    node.addEventListener(\"pointerenter\",enter);node.addEventListener(\"pointerleave\",leave);node.addEventListener(\"focusin\",focus);node.addEventListener(\"focusout\",blur);\n    return ()=>{node.removeEventListener(\"pointerenter\",enter);node.removeEventListener(\"pointerleave\",leave);node.removeEventListener(\"focusin\",focus);node.removeEventListener(\"focusout\",blur)};\n  },[]);\n  const permitted=!quiet&&enabled&&inView;\n  const running=permitted&&(active??(hovered||focused));\n  const settle=permitted?transition:{duration:0};\n  const intent=preset!==\"auto\"?preset:/setting|gear|loader/.test(name)?\"spin\":/arrow|chevron/.test(name)?\"bounce\":/check|close|^x$/.test(name)?\"validation\":\"tremor\";\n  const rotate=running&&intent===\"spin\"?[0,360]:running&&intent===\"tremor\"?[0,-9,7,-3,0]:0;\n  const x=running&&intent===\"bounce\"?[0,3,0]:0;\n  const scale=running&&intent===\"validation\"?[1,.85,1.08,1]:1;\n  return <span ref={host} data-slot=\"animated-icon\" data-preset={intent} data-animated={running||undefined} className=\"v-animated-icon\">\n    <motion.span initial={false} animate={{rotate,x,scale}} transition={running?{duration:intent===\"spin\"?1.6:.48,repeat:intent===\"spin\"?Infinity:0,ease:intent===\"spin\"?\"linear\":[.2,.8,.2,1]}:settle}>\n      {intent===\"validation\"&&/^(check|x)$/.test(name)?<svg data-slot=\"icon\" data-icon-name={name} viewBox=\"0 0 24 24\" aria-hidden=\"true\" className={iconClassName(size,className)} {...props}><motion.path initial={false} animate={{d:name===\"check\"?\"M5 12L10 17L20 6M10 17L10 17\":\"M6 6L12 12L18 18M6 18L18 6\"}} transition={settle}/>{children}</svg>:<Icon name={name} size={size} className={className} draw={intent===\"draw\"?running:undefined} {...props}>{children}</Icon>}\n    </motion.span>\n  </span>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/animated-icon.css",
+      "content": "@layer sahajiv-states {\n[data-slot=\"animated-icon\"], [data-slot=\"animated-icon\"] > span { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; vertical-align:middle; }\n[data-slot=\"animated-icon\"] svg { overflow:visible; }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/animated-icon.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/animated-icon.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Animated icon",
+      "variants": [
+        "auto",
+        "tremor",
+        "draw",
+        "spin",
+        "bounce",
+        "validation"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "idle",
+        "hovered",
+        "focused",
+        "active",
+        "offscreen",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "AnimatedIconProps",
+        "props": [
+          {
+            "name": "preset",
+            "type": "IconMotion",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Effects",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

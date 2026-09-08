@@ -6,6 +6,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/sahajiv/lib/utils";
 import { Icon } from "@/registry/sahajiv/ui/icon";
 import * as Primitive from "@radix-ui/react-collapsible";
+import { useFlowAppearance } from "@/registry/sahajiv/motion/use-flow";
 export const collapsibleVariants = cva("v-collapsible");
 export type CollapsibleProps = React.ComponentProps<typeof Primitive.Root>;
 export function Collapsible({ className, ...props }: CollapsibleProps) {
@@ -51,16 +52,18 @@ export function CollapsibleContent({
   const contentRef = React.useRef<HTMLDivElement>(null);
   React.useImperativeHandle(ref, () => contentRef.current!);
   const morphRef = useMorph<HTMLDivElement>("cards", contentRef);
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "enter");
   React.useEffect(() => {
     const content = contentRef.current;
-    // Restore the source CSS entrance after Radix's initial size measurement.
+    // Radix temporarily disables CSS while measuring. Release that override so
+    // its Presence can observe the shared nonvisual exit sentinel on close.
     if (content?.dataset.state === "open" && content.style.animationName === "none") {
       content.style.animationName = props.style?.animationName ?? "";
     }
   }, [props.style?.animationName]);
   return (
     <Primitive.Content
-      ref={morphRef}
+      ref={flowRef}
       data-slot="collapsible-content"
       data-part="content"
       className={cn(

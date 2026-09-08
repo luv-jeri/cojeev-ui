@@ -18,7 +18,7 @@
     },
     {
       "path": "registry/sahajiv/styles/hover-card.css",
-      "content": "@layer sahajiv-states {\n/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"hover-card\"],\n  [data-slot^=\"hover-card-\"],\n  [data-slot=\"hover-card\"]::before,\n  [data-slot=\"hover-card\"]::after,\n  [data-slot^=\"hover-card-\"]::before,\n  [data-slot^=\"hover-card-\"]::after {\n    animation-duration: 0s;\n    animation-iteration-count: 1;\n    transition-duration: 0s;\n    scroll-behavior: auto;\n  }\n}\n\n}\n",
+      "content": "@layer sahajiv-states {\n/* SahaJiv authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */\n@media (prefers-reduced-motion: reduce) {\n  [data-slot=\"hover-card\"],\n  [data-slot^=\"hover-card-\"],\n  [data-slot=\"hover-card\"]::before,\n  [data-slot=\"hover-card\"]::after,\n  [data-slot^=\"hover-card-\"]::before,\n  [data-slot^=\"hover-card-\"]::after {\n    animation-duration: 0s;\n    animation-iteration-count: 1;\n    transition-duration: 0s;\n    scroll-behavior: auto;\n  }\n}\n\n[data-slot=\"hover-card-content\"], [data-slot=\"hover-card-sub-content\"] {\n min-width:min(200px,calc(100vw - 24px)); max-width:calc(100vw - 24px);\n max-height:min(480px,var(--radix-hover-card-content-available-height,calc(100dvh - 32px)));\n overflow-y:auto; overscroll-behavior:contain; overflow-wrap:anywhere;\n}\n[data-slot=\"hover-card-item\"] { min-width:0; height:auto; min-height:36px; white-space:normal; }\n[data-slot=\"hover-card-content\"] { z-index:var(--z-popover); }\n\n}\n",
       "type": "registry:file",
       "target": "styles/sahajiv/hover-card.css"
     }
