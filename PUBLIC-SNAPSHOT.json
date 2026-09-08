@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "release": "0.2.0",
-  "generatedAt": "2026-09-08T19:16:30.643256+00:00",
+  "generatedAt": "2026-09-08T19:55:00.799537+00:00",
   "sourceRevision": "a50d2d4a538d13c1e808cc94344f48a6fb58686b",
   "sourceWorkingTree": true,
   "releaseBase": "63cfb3e11d276ba359c794bf1766df79514e5445",
@@ -65,8 +65,8 @@
     },
     {
       "path": "GATE.md",
-      "bytes": 11847,
-      "sha256": "29c92e6ceb71ed9932bfa21ee705c0091f6add5ac13a6fa67d0b689ca3fa19e6"
+      "bytes": 17427,
+      "sha256": "115ecf22f33f007c5f90921332d4e0d635ea608e54afe970bda885fe2b14d761"
     },
     {
       "path": "INSTALLATION.md",
@@ -225,8 +225,8 @@
     },
     {
       "path": "RELEASE-0.2.0.md",
-      "bytes": 1742,
-      "sha256": "0e560097b765812d648ef5abc4932e4f86488c62731833fca3f4f24e8c593014"
+      "bytes": 2719,
+      "sha256": "d63555c0724ac3a688e19d848a915872caf0cadf855b58b5d16dd0dc9e3c7dd2"
     },
     {
       "path": "RELEASE-REPORT.md",
