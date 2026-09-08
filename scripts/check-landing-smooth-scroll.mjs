@@ -40,22 +40,27 @@ try {
     await page.goto(`${base}/`, { waitUntil: "networkidle" });
     await page.locator("[data-landing-smooth-scroll]").waitFor();
     assert.equal(await page.locator("html.lenis").count(), 1, "Landing page must mount one Lenis root");
-    await page.evaluate(() => scrollTo(0, 0));
-    await page.mouse.wheel(0, 700);
-    const frames = [];
-    for (let index = 0; index < 8; index += 1) {
-      await page.waitForTimeout(32);
-      frames.push(await page.evaluate(() => scrollY));
-    }
-    assert(frames[0] > 0, `Wheel must start scrolling: ${frames.join(", ")}`);
-    assert(frames.some((value, index) => index > 0 && value > frames[index - 1]), `Scroll must advance over several frames: ${frames.join(", ")}`);
-    assert(frames.at(-1) < 690, `Balanced smoothing must not jump directly to the wheel target: ${frames.join(", ")}`);
+    const frames = await page.evaluate(async () => {
+      scrollTo(0, 0);
+      const samples = [];
+      dispatchEvent(new WheelEvent("wheel", { bubbles: true, cancelable: true, deltaMode: 0, deltaY: 700 }));
+      for (let frame = 0; frame < 12; frame += 1) {
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        samples.push({ at: performance.now(), y: scrollY });
+      }
+      return samples;
+    });
+    const positions = [...new Set(frames.map(frame => Math.round(frame.y)))];
+    assert(positions[0] > 0, `Wheel must start scrolling: ${positions.join(", ")}`);
+    assert(positions.length >= 4, `Scroll must advance through several rendered positions: ${positions.join(", ")}`);
+    assert(positions[0] < 350, `Balanced smoothing must begin well before the wheel target: ${positions.join(", ")}`);
+    assert(positions.some((value, index) => index > 0 && value > positions[index - 1]), `Scroll must advance over time: ${positions.join(", ")}`);
     await page.getByRole("link", { name: "Explore the library", exact: true }).click();
     await page.waitForURL(url => url.pathname.endsWith("/sahajiv-ui/docs/"));
     assert.equal(await page.locator("html.lenis").count(), 0, "Documentation must return to native scrolling");
     assert.deepEqual(errors, [], "No landing or navigation runtime errors");
     await context.close();
-    return { frames, docsNative: true };
+    return { frames, positions, docsNative: true };
   });
 
   await record("landing anchor scroll reaches the requested section", async () => {
