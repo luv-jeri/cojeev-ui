@@ -21,6 +21,7 @@ import { useChoreography } from "@/registry/sahajiv/motion/choreography";
 import { getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setFlowSettings, type FlowVariant } from "@/registry/sahajiv/motion/settings";
 import { ShapePlayground } from "./shape-playground";
 import { MarketingHeader, MarketingFooter, MarketingLink, sourceUrl } from "./marketing-shell";
+import { LandingSmoothScroll } from "./landing-smooth-scroll";
 
 /* THESIS: living components demonstrate personality before copy explains it.
    OWN-WORLD: SahaJiv ink, four accent roles, sculpted contours and six live palettes.
@@ -143,10 +144,10 @@ function Principles() {
 
 export function LandingPage({ componentCount }: { componentCount: number }) {
   const { quiet } = useChoreography();
-  return <div className="story-page studio-page" data-quiet={quiet}><MarketingHeader /><main id="story-main">
+  return <LandingSmoothScroll><div className="story-page studio-page" data-quiet={quiet}><MarketingHeader /><main id="story-main">
     <StudioHero count={componentCount} /><ComponentRibbon /><Assembly /><ShapePlayground /><MotionPlayground /><MaterialStudy /><Principles />
     <section className="studio-install story-section" aria-labelledby="install-title"><FloatLayer depth={0} drift={0} replay><ToneShape name="seed-wing" tone="yellow" className="studio-install-shape" /><SectionTitle id="install-title">Your turn.</SectionTitle><HeroButton asChild><Link href="/docs/">Make something yours</Link></HeroButton></FloatLayer>
       <FloatLayer depth={0} drift={0} replay className="studio-install-code"><CodeBlock title="Start with a button" language="Terminal" wrap code="npx shadcn@latest add https://luv-jeri.github.io/sahajiv-ui/r/button.json" /><Meta>New project? The setup guide has you covered.</Meta><MarketingLink href={sourceUrl}><AnimatedIcon name="github" />Take the source</MarketingLink></FloatLayer>
     </section>
-  </main><MarketingFooter /></div>;
+  </main><MarketingFooter /></div></LandingSmoothScroll>;
 }

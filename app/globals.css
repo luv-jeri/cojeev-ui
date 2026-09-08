@@ -3,6 +3,7 @@
 @import "tailwindcss";
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
+@import "lenis/dist/lenis.css";
 @import "../registry/sahajiv/styles/fonts.css";
 @import "../registry/sahajiv/styles/tokens.css";
 @import "../registry/sahajiv/styles/theme.css";
