@@ -29,7 +29,10 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test
+      - run: npm run reporting:test
       - run: npm run build
+        env:
+          NEXT_PUBLIC_REPORTING_API_URL: ${{ vars.REPORTING_API_URL }}
       - run: npm run check:examples
       - run: npm run gate
       - run: npm run gate:mobile
