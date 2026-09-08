@@ -1,0 +1,94 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "caret-swap",
+  "title": "Caret Swap",
+  "description": "A colored caret block consumes a phrase before typing its replacement in whole graphemes.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/caret-swap.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { useReferenceRef } from \"@/lib/sahajiv/reference-ref\";\nimport { cn } from \"@/lib/utils\";\nimport { bounded,caretFrame } from \"@/lib/sahajiv/reference-text-math\";\nimport { useReferenceText,useReferenceClock,type ReferenceTextSize } from \"@/lib/sahajiv/reference-text-motion\";\nexport type CaretSwapProps=Omit<React.ComponentProps<\"div\">,\"children\">&{fromText:string;toText:string;duration?:number;paused?:boolean;replayKey?:string|number;size?:ReferenceTextSize};\n/** A caret expands right-to-left, collapses, then types whole graphemes into the reserved footprint. */\nexport function CaretSwap({fromText,toText,duration=4200,paused=false,replayKey=0,size=\"default\",className,ref,...props}:CaretSwapProps){\n const {host:hostRef,running}=useReferenceText(paused),[progress,setProgress]=React.useState(1);\n const cycle=bounded(duration,1600,12000,4200);\n useReferenceClock(running,time=>{const p=bounded(time/cycle,0,1,1);setProgress(p);return p<1;},`${replayKey}:${fromText}:${toText}:${cycle}`);\n const state=caretFrame(fromText,toText,running?progress:1);\n return <div {...props} ref={useReferenceRef(hostRef,ref)} data-slot=\"caret-swap\" data-size={size} data-running={running&&progress<1} data-state={state.phase} className={cn(\"v-caret-swap\",className)}>\n <span className=\"v-caret-swap__accessible\">{toText}</span>\n <span aria-hidden=\"true\" className=\"v-caret-swap__frame\"><span className=\"v-caret-swap__measure\">{fromText}</span><span className=\"v-caret-swap__measure\">{toText}</span>\n <span className=\"v-caret-swap__text\">{state.text}{(state.phase===\"typing\"||state.phase===\"complete\")&&<span className=\"v-caret-swap__caret\"/>}</span>\n {(state.phase===\"covering\"||state.phase===\"collapsing\")&&<span className=\"v-caret-swap__block\" style={{width:`${state.cover*100}%`,left:state.phase===\"collapsing\"?0:undefined,right:state.phase===\"covering\"?0:undefined}}/>}\n </span></div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/caret-swap.css",
+      "content": "@layer sahajiv-states {\n.v-caret-swap { display:grid; position:relative; place-items:center; min-inline-size:0; inline-size:100%; min-block-size:260px; padding:24px; overflow:hidden; border-radius:var(--radius-panel,24px); color:var(--v-text); background:var(--v-beige); font-family:var(--font-display,\"Bricolage Grotesque\",sans-serif); font-size:clamp(2rem,5vw,3.5rem); line-height:1.15; isolation:isolate; }\n.v-caret-swap[data-size=\"sm\"] { min-block-size:200px; font-size:clamp(1.5rem,4vw,2.5rem); padding:16px; }\n.v-caret-swap[data-size=\"lg\"] { min-block-size:340px; font-size:clamp(2.25rem,6vw,4.5rem); }\n.v-caret-swap__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }\n.v-caret-swap__frame {position:relative;display:grid;max-inline-size:100%;overflow-wrap:anywhere;line-height:1.3;}\n.v-caret-swap__measure,.v-caret-swap__text {grid-area:1/1;max-inline-size:100%;padding-inline-end:.16em;}\n.v-caret-swap__measure {visibility:hidden;}\n.v-caret-swap__caret {display:inline-block;inline-size:.07em;block-size:.85em;background:var(--v-accent-ink);margin-inline-start:.04em;vertical-align:-.04em;}\n.v-caret-swap__block {position:absolute;inset-block:0;background:linear-gradient(150deg,var(--v-pink),var(--v-blue));border-radius:.08em;}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/caret-swap.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/caret-swap.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Caret Swap",
+      "variants": [
+        "thought",
+        "memory"
+      ],
+      "sizes": [
+        "sm",
+        "default",
+        "lg"
+      ],
+      "states": [
+        "playing",
+        "paused",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "CaretSwapProps",
+        "props": [
+          {
+            "name": "fromText",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "toText",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "replayKey",
+            "type": "string|number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "ReferenceTextSize",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

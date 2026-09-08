@@ -1,0 +1,2 @@
+.v-ghost-cursor { --effect-accent:var(--v-pink); }
+.v-ghost-cursor canvas { display:block; }

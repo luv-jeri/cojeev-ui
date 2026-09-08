@@ -1,0 +1,9 @@
+.v-caret-swap { display:grid; position:relative; place-items:center; min-inline-size:0; inline-size:100%; min-block-size:260px; padding:24px; overflow:hidden; border-radius:var(--radius-panel,24px); color:var(--v-text); background:var(--v-beige); font-family:var(--font-display,"Bricolage Grotesque",sans-serif); font-size:clamp(2rem,5vw,3.5rem); line-height:1.15; isolation:isolate; }
+.v-caret-swap[data-size="sm"] { min-block-size:200px; font-size:clamp(1.5rem,4vw,2.5rem); padding:16px; }
+.v-caret-swap[data-size="lg"] { min-block-size:340px; font-size:clamp(2.25rem,6vw,4.5rem); }
+.v-caret-swap__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+.v-caret-swap__frame {position:relative;display:grid;max-inline-size:100%;overflow-wrap:anywhere;line-height:1.3;}
+.v-caret-swap__measure,.v-caret-swap__text {grid-area:1/1;max-inline-size:100%;padding-inline-end:.16em;}
+.v-caret-swap__measure {visibility:hidden;}
+.v-caret-swap__caret {display:inline-block;inline-size:.07em;block-size:.85em;background:var(--v-accent-ink);margin-inline-start:.04em;vertical-align:-.04em;}
+.v-caret-swap__block {position:absolute;inset-block:0;background:linear-gradient(150deg,var(--v-pink),var(--v-blue));border-radius:.08em;}

@@ -1,0 +1,7 @@
+.v-target-cursor { position:relative; isolation:isolate; min-width:0; padding:20px; }
+.v-target-cursor__mark { position:absolute; top:0; left:0; opacity:0; pointer-events:none; z-index:3; color:var(--v-text); }
+.v-target-cursor__mark i { position:absolute; width:10px; height:10px; border:2px solid currentColor; }
+.v-target-cursor__mark i:nth-child(1) { left:0; top:0; border-right:0; border-bottom:0; border-radius:5px 0 0; }
+.v-target-cursor__mark i:nth-child(2) { right:0; top:0; border-left:0; border-bottom:0; border-radius:0 5px 0 0; }
+.v-target-cursor__mark i:nth-child(3) { right:0; bottom:0; border-left:0; border-top:0; border-radius:0 0 5px; }
+.v-target-cursor__mark i:nth-child(4) { left:0; bottom:0; border-right:0; border-top:0; border-radius:0 0 0 5px; }

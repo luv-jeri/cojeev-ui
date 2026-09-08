@@ -23,6 +23,10 @@ const { exampleSource } = await import("../components/example-source.ts");
 const { exampleManifest } = await import("../components/examples/manifest.ts");
 const registry = JSON.parse(fs.readFileSync(path.join(root, "registry.json"), "utf8"));
 const catalog = registry.items.filter(item => item.type === "registry:ui");
+const installedModules = new Set(registry.items.flatMap(item => item.files ?? []).map(file => {
+  if (file.type === "registry:ui") return `@/components/ui/${path.basename(file.path, ".tsx")}`;
+  return file.target ? `@/${file.target.replace(/\.tsx?$/, "")}` : null;
+}).filter(Boolean));
 const sourceIds = fs.readdirSync(path.join(root, "registry/sahajiv/ui")).filter(file => file.endsWith(".tsx")).map(file => file.slice(0, -4)).sort();
 const manifestIds = Object.keys(exampleManifest).sort();
 const catalogIds = catalog.map(item => item.name).sort();
@@ -61,7 +65,7 @@ try {
         for (const statement of tree.statements) {
           if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
           const moduleName = statement.moduleSpecifier.text;
-          if ((moduleName.startsWith("@/") && !moduleName.startsWith("@/components/ui/")) || moduleName.startsWith(".") || path.isAbsolute(moduleName)) {
+          if ((moduleName.startsWith("@/") && !installedModules.has(moduleName)) || moduleName.startsWith(".") || path.isAbsolute(moduleName)) {
             throw new Error(`Copied source depends on a repository-local module: ${moduleName}`);
           }
         }
@@ -88,6 +92,9 @@ try {
     isolatedModules: true,
     paths: {
       "@/components/ui/*": [path.join(root, "registry/sahajiv/ui/*")],
+      "@/lib/utils": [path.join(root, "registry/sahajiv/lib/utils.ts")],
+      "@/lib/sahajiv/*": [path.join(root, "registry/sahajiv/lib/*")],
+      "@/lib/sahajiv-motion/*": [path.join(root, "registry/sahajiv/motion/*")],
       "@/*": [path.join(root, "*")],
     },
   };

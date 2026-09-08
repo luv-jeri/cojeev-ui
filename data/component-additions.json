@@ -1154,5 +1154,637 @@
       "readonly",
       "reduced-motion"
     ]
+  },
+  "typography-vortex": {
+    "name": "Typography Vortex",
+    "variants": [
+      "orbit",
+      "focused"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "particle-text": {
+    "name": "Particle Text",
+    "variants": [
+      "gather",
+      "fine"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "warp-text": {
+    "name": "Warp Text",
+    "variants": [
+      "liquid",
+      "gentle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "falling-text": {
+    "name": "Falling Text",
+    "variants": [
+      "scatter",
+      "gentle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "scroll-reveal": {
+    "name": "Scroll Reveal",
+    "variants": [
+      "scroll",
+      "controlled"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "variable-proximity": {
+    "name": "Variable Proximity",
+    "variants": [
+      "weight",
+      "pressure"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "word-stream": {
+    "name": "Word Stream",
+    "variants": [
+      "flow",
+      "calm"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "caret-swap": {
+    "name": "Caret Swap",
+    "variants": [
+      "thought",
+      "memory"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "zoom-words": {
+    "name": "Zoom Words",
+    "variants": [
+      "close",
+      "wide"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "scroll-expand": {
+    "name": "Scroll Expand",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "ripple-distortion": {
+    "name": "Ripple Distortion",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "elastic-mesh": {
+    "name": "Elastic Mesh",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "swarm-cursor": {
+    "name": "Swarm Cursor",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "pixel-swap": {
+    "name": "Pixel Swap",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "orbit-images": {
+    "name": "Orbit Images",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "target-cursor": {
+    "name": "Target Cursor",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "magic-rings": {
+    "name": "Magic Rings",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "ghost-cursor": {
+    "name": "Ghost Cursor",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "click-spark": {
+    "name": "Click Spark",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "strands": {
+    "name": "Strands",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "image-trail": {
+    "name": "Image Trail",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "meta-balls": {
+    "name": "Meta Balls",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "infinite-spiral": {
+    "name": "Infinite Spiral",
+    "variants": [
+      "up",
+      "down"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "accordion-gallery": {
+    "name": "Accordion Gallery",
+    "variants": [
+      "horizontal",
+      "vertical"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "option-wheel": {
+    "name": "Option Wheel",
+    "variants": [
+      "left",
+      "right"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "grain-dissolve": {
+    "name": "Grain Dissolve",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "wave-wipe": {
+    "name": "Wave Wipe",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "dither-dissolve": {
+    "name": "Dither Dissolve",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "portal-field": {
+    "name": "Portal Field",
+    "variants": [
+      "balanced",
+      "warm",
+      "cool"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen",
+      "fallback",
+      "lost"
+    ],
+    "reviewOnly": false
+  },
+  "article-headings": {
+    "name": "Article Headings",
+    "variants": [
+      "decode",
+      "deliberate"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "decoding",
+      "complete",
+      "still",
+      "offscreen"
+    ],
+    "reviewOnly": false
+  },
+  "motion-drawer": {
+    "name": "Motion Drawer",
+    "variants": [
+      "start",
+      "end"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "reviewOnly": false
+  },
+  "linear-modal": {
+    "name": "Linear Modal",
+    "variants": [
+      "card",
+      "compact"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "reviewOnly": false
+  },
+  "image-masking": {
+    "name": "Image Masking",
+    "variants": [
+      "mask",
+      "clip"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "reviewOnly": false
+  },
+  "buy-me-coffee": {
+    "name": "Buy Me Coffee",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "reviewOnly": false
+  },
+  "swapy": {
+    "name": "Swapy",
+    "variants": [
+      "grid",
+      "list"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "reviewOnly": false
   }
 }

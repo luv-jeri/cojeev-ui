@@ -1,0 +1,100 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "particle-text",
+  "title": "Particle Text",
+  "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/particle-text.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { useReferenceRef } from \"@/lib/sahajiv/reference-ref\";\nimport { cn } from \"@/lib/utils\";\nimport { bounded } from \"@/lib/sahajiv/reference-text-math\";\nimport { useReferenceText,type ReferenceTextSize } from \"@/lib/sahajiv/reference-text-motion\";\nexport type ParticleTextProps=Omit<React.ComponentProps<\"div\">,\"children\">&{text:string;density?:number;particleSize?:number;repelRadius?:number;paused?:boolean;replayKey?:number|string;size?:ReferenceTextSize};\n/** Samples the actual font's alpha mask, then gathers those samples into text. */\nexport function ParticleText({text,density=5,particleSize=1.5,repelRadius=70,paused=false,replayKey=0,size=\"default\",className,ref,onPointerMove,onPointerLeave,...props}:ParticleTextProps){\n const {host:hostRef,running}=useReferenceText(paused),canvas=React.useRef<HTMLCanvasElement>(null),pointer=React.useRef<{x:number;y:number}|null>(null);\n React.useEffect(()=>{\n  const el=hostRef.current,surface=canvas.current;if(!el||!surface||!running)return;\n  const ctx=surface.getContext(\"2d\");if(!ctx)return;\n  let disposed=false,frame=0,start=0,w=1,h=1,ink=\"\",particles:{x:number;y:number;tx:number;ty:number;seed:number}[]=[];\n  const build=()=>{\n   if(disposed)return;const r=el.getBoundingClientRect();w=Math.round(Math.min(900,Math.max(1,r.width)));h=Math.round(Math.min(420,Math.max(1,r.height)));surface.width=w;surface.height=h;\n   const style=getComputedStyle(el);ink=style.color;\n   const sample=document.createElement(\"canvas\");sample.width=w;sample.height=h;const mask=sample.getContext(\"2d\",{willReadFrequently:true});if(!mask)return;\n   let font=bounded(parseFloat(style.fontSize)*1.3,20,100,64);mask.font=`650 ${font}px ${style.fontFamily}`;\n   const words=text.trim().split(/\\s+/),lines:string[]=[];let line=\"\";\n   for(const word of words){const next=line?line+\" \"+word:word;if(line&&mask.measureText(next).width>w*.85){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);\n   const maxWidth=Math.max(1,...lines.map(x=>mask.measureText(x).width));font*=Math.min(1,w*.85/maxWidth,h*.7/Math.max(font,lines.length*font*1.2));\n   mask.font=`650 ${font}px ${style.fontFamily}`;mask.fillStyle=\"#000\";mask.textAlign=\"center\";mask.textBaseline=\"middle\";\n   lines.forEach((l,i)=>mask.fillText(l,w/2,h/2+(i-(lines.length-1)/2)*font*1.2));\n   const alpha=mask.getImageData(0,0,w,h).data,step=Math.max(bounded(density,3,10,5),Math.sqrt(w*h/4000));particles=[];\n   for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step){if(alpha[(Math.floor(y)*sample.width+Math.floor(x))*4+3]>100){const seed=((x*13+y*7)%101)/101;particles.push({tx:x,ty:y,x:w/2+Math.cos(seed*16)*w*.6,y:h/2+Math.sin(seed*19)*h*.7,seed});}}\n   el.dataset.ready=String(particles.length>0);start=0;\n  };\n  const draw=(now:number)=>{\n   if(disposed)return;if(!start)start=now;ctx.clearRect(0,0,w,h);ctx.fillStyle=ink;\n   const p=bounded((now-start)/1800,0,1,1),gather=1-Math.pow(1-p,3),radius=bounded(repelRadius,10,200,70);\n   for(const dot of particles){let x=dot.tx+(dot.x-dot.tx)*(1-gather),y=dot.ty+(dot.y-dot.ty)*(1-gather);\n    if(pointer.current){const dx=x-pointer.current.x,dy=y-pointer.current.y,d=Math.hypot(dx,dy);if(d<radius&&d>0){const force=(1-d/radius)**2*34;x+=dx/d*force;y+=dy/d*force;}}\n    ctx.beginPath();ctx.arc(x,y,bounded(particleSize,.7,4,1.5),0,Math.PI*2);ctx.fill();\n   }frame=requestAnimationFrame(draw);\n  };\n  const observer=new ResizeObserver(build);observer.observe(el);const appearance=new MutationObserver(build);for(let parent:HTMLElement|null=el;parent;parent=parent.parentElement)appearance.observe(parent,{attributes:true,attributeFilter:[\"data-mode\",\"class\"]});window.addEventListener(\"sahajiv:appearancechange\",build);build();void document.fonts.ready.then(()=>{if(!disposed)build();});frame=requestAnimationFrame(draw);\n  return()=>{disposed=true;cancelAnimationFrame(frame);observer.disconnect();appearance.disconnect();window.removeEventListener(\"sahajiv:appearancechange\",build);el.dataset.ready=\"false\";pointer.current=null;};\n },[hostRef,running,text,density,particleSize,repelRadius,replayKey]);\n return <div {...props} ref={useReferenceRef(hostRef,ref)} data-slot=\"particle-text\" data-size={size} data-running={running} className={cn(\"v-particle-text\",className)}\n onPointerMove={event=>{onPointerMove?.(event);if(!running||event.defaultPrevented||event.pointerType===\"touch\")return;const r=event.currentTarget.getBoundingClientRect();pointer.current={x:(event.clientX-r.left)*Math.min(900,r.width)/r.width,y:(event.clientY-r.top)*Math.min(420,r.height)/r.height};}}\n onPointerLeave={event=>{onPointerLeave?.(event);pointer.current=null;}}>\n <span className=\"v-particle-text__words\">{text}</span><canvas ref={canvas} aria-hidden=\"true\"/>\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/particle-text.css",
+      "content": "@layer sahajiv-states {\n.v-particle-text { display:grid; position:relative; place-items:center; min-inline-size:0; inline-size:100%; min-block-size:260px; padding:24px; overflow:hidden; border-radius:var(--radius-panel,24px); color:var(--v-text); background:var(--v-beige); font-family:var(--font-display,\"Bricolage Grotesque\",sans-serif); font-size:clamp(2rem,5vw,3.5rem); line-height:1.15; isolation:isolate; }\n.v-particle-text[data-size=\"sm\"] { min-block-size:200px; font-size:clamp(1.5rem,4vw,2.5rem); padding:16px; }\n.v-particle-text[data-size=\"lg\"] { min-block-size:340px; font-size:clamp(2.25rem,6vw,4.5rem); }\n.v-particle-text__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }\n.v-particle-text__words {max-inline-size:100%;text-align:center;overflow-wrap:anywhere;font-weight:650;}\n.v-particle-text canvas {position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;}\n.v-particle-text[data-running=\"true\"][data-ready=\"true\"] canvas {opacity:1;}\n.v-particle-text[data-running=\"true\"][data-ready=\"true\"] .v-particle-text__words {opacity:0;}\n@media(prefers-reduced-motion:reduce){.v-particle-text[data-running] canvas{opacity:0;}.v-particle-text[data-running] .v-particle-text__words{opacity:1;}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/particle-text.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/particle-text.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Particle Text",
+      "variants": [
+        "gather",
+        "fine"
+      ],
+      "sizes": [
+        "sm",
+        "default",
+        "lg"
+      ],
+      "states": [
+        "playing",
+        "paused",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "ParticleTextProps",
+        "props": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "density",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "particleSize",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "repelRadius",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "replayKey",
+            "type": "number|string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "ReferenceTextSize",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

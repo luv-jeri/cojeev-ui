@@ -114,6 +114,9 @@ export function DocsShell({
               <SidebarMenuButton asChild isActive={pathname?.endsWith("/docs")}>
                 <Link href="/docs/" aria-current={pathname?.endsWith("/docs") ? "page" : undefined} onClick={() => setOpen(false)}>Getting started</Link>
               </SidebarMenuButton>
+              <SidebarMenuButton asChild isActive={pathname?.endsWith("/docs/reference-guide")}>
+                <Link href="/docs/reference-guide/" aria-current={pathname?.endsWith("/docs/reference-guide") ? "page" : undefined} onClick={() => setOpen(false)}>Reference effects</Link>
+              </SidebarMenuButton>
             </div>}
             {categories.filter((category) => filtered.some((entry) => entry.category === category)).map((category) => (
               <React.Fragment key={category}>

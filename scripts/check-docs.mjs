@@ -5,6 +5,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { chromium } from "playwright";
 import { preview as startPreview } from "vite";
+import { createReferenceTests } from "./docs-behaviors-reference.mjs";
 import { createEffectTests } from "./docs-behaviors-effects.mjs";
 import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
@@ -114,6 +115,7 @@ const passive = new Set([
   "typography",
 ]);
 const tests = {
+  ...createReferenceTests(),
   shape: async ({root}) => {
     await root.getByRole("button",{name:"Morph to cloud-3",exact:true}).click();
     await root.getByRole("img",{name:"Selected shape: cloud-3",exact:true}).waitFor();

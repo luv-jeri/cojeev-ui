@@ -1,0 +1,494 @@
+[
+  {
+    "id": "scroll-expand",
+    "name": "Scroll Expand",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A framed composition opens as native scroll or controlled progress advances.",
+    "usage": [
+      "Use a single product demonstration after the hero.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/scroll-expand",
+    "landing": "Use a single product demonstration after the hero.",
+    "notes": "ScrollOrganism only deforms an ornament; FloatLayer reveals/translates. Neither expands caller content.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ScrollExpand"
+  },
+  {
+    "id": "ripple-distortion",
+    "name": "Ripple Distortion",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Pointer impulses send expanding waves through a textured print.",
+    "usage": [
+      "Optional material playground; keep important text outside.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/ripple-distortion",
+    "landing": "Optional material playground; keep important text outside.",
+    "notes": "FlowSculpture distorts a rendered 3D object, not a supplied flat image.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/RippleDistortion"
+  },
+  {
+    "id": "elastic-mesh",
+    "name": "Elastic Mesh",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A triangulated printed sheet stretches toward the pointer and springs home.",
+    "usage": [
+      "Optional playground specimen.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/elastic-mesh",
+    "landing": "Optional playground specimen.",
+    "notes": "No existing elastic 2D textured grid.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ElasticMesh"
+  },
+  {
+    "id": "swarm-cursor",
+    "name": "Swarm Cursor",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A local flock of colored seeds follows the pointer and scatters on activation.",
+    "usage": [
+      "Optional playground only; avoid global landing cursors.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/swarm-cursor",
+    "landing": "Optional playground only; avoid global landing cursors.",
+    "notes": "SemanticBloom attracts particles to words and liquid joins; GuidedPointer travels through prescribed waypoints. Neither is a scoped pointer-following flock.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/SwarmCursor"
+  },
+  {
+    "id": "pixel-swap",
+    "name": "Pixel Swap",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A staggered tile mask exchanges two compositions without duplicating their interactive content.",
+    "usage": [
+      "Use in one before/after demonstration.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/pixel-swap",
+    "landing": "Use in one before/after demonstration.",
+    "notes": "Presence mask is a single shape reveal, not a tiled content exchange.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/PixelSwap"
+  },
+  {
+    "id": "orbit-images",
+    "name": "Orbit Images",
+    "category": "Creative",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "An orbit of supplied images frames stationary content.",
+    "usage": [
+      "Optional library family vignette with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/orbit-images",
+    "landing": "Optional library family vignette with pause.",
+    "notes": "SculptureOrbit is a 3D viewer camera; AmbientBackground orbit uses decorative shapes, not caller image cards.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/OrbitImages"
+  },
+  {
+    "id": "target-cursor",
+    "name": "Target Cursor",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Local corner brackets follow real controls on hover and keyboard focus.",
+    "usage": [
+      "Use within an interactive specimen only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/target-cursor",
+    "landing": "Use within an interactive specimen only.",
+    "notes": "GuidedPointer uses author-defined coordinates rather than tracking real controls.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/TargetCursor"
+  },
+  {
+    "id": "magic-rings",
+    "name": "Magic Rings",
+    "category": "Backgrounds",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Open concentric rings expand in SahaJiv colors and respond to pointer position.",
+    "usage": [
+      "Optional small closing accent, with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/magic-rings",
+    "landing": "Optional small closing accent, with pause.",
+    "notes": "No existing expanding ring field.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/MagicRings"
+  },
+  {
+    "id": "ghost-cursor",
+    "name": "Ghost Cursor",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A translucent ink impression follows a local pointer with soft inertia.",
+    "usage": [
+      "Playground only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/ghost-cursor",
+    "landing": "Playground only.",
+    "notes": "No existing local free-pointer translucent trail.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/GhostCursor"
+  },
+  {
+    "id": "click-spark",
+    "name": "Click Spark",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A finite spray of accent marks responds to a real activation.",
+    "usage": [
+      "Optional single CTA feedback; retain ordinary pressed and focus states.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/click-spark",
+    "landing": "Optional single CTA feedback; retain ordinary pressed and focus states.",
+    "notes": "Flow press deforms the control edge but does not paint radial sparks.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ClickSpark"
+  },
+  {
+    "id": "strands",
+    "name": "Strands",
+    "category": "Backgrounds",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A bundle of colored ribbons moves through a bounded sine field.",
+    "usage": [
+      "Optional quiet section accent; one instance at a time.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/strands",
+    "landing": "Optional quiet section accent; one instance at a time.",
+    "notes": "ContourField draws topographic lines, not bundled crossing strands.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/Strands"
+  },
+  {
+    "id": "image-trail",
+    "name": "Image Trail",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Distance-triggered image impressions follow the pointer and fade away.",
+    "usage": [
+      "An optional gallery playground.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/image-trail",
+    "landing": "An optional gallery playground.",
+    "notes": "No existing pointer image-trail buffer.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ImageTrail"
+  },
+  {
+    "id": "meta-balls",
+    "name": "Meta Balls",
+    "category": "Backgrounds",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Moving scalar-field bodies merge and separate through liquid contours.",
+    "usage": [
+      "Optional material specimen with a still frame.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/meta-balls",
+    "landing": "Optional material specimen with a still frame.",
+    "notes": "SemanticBloom combines a wordmark and particles; this is a standalone continuous scalar-field contour surface.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/MetaBalls"
+  }
+]

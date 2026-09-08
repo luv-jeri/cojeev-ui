@@ -1,0 +1,100 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "word-stream",
+  "title": "Word Stream",
+  "description": "Phrases build word by word, drift left and run out before the final phrase holds.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/word-stream.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { useReferenceRef } from \"@/lib/sahajiv/reference-ref\";\nimport { cn } from \"@/lib/utils\";\nimport { bounded } from \"@/lib/sahajiv/reference-text-math\";\nimport { useReferenceText,useReferenceClock,type ReferenceTextSize } from \"@/lib/sahajiv/reference-text-motion\";\nexport type WordStreamProps=Omit<React.ComponentProps<\"div\">,\"children\">&{text:string;wordGap?:number;hold?:number;drift?:number;paused?:boolean;replayKey?:string|number;size?:ReferenceTextSize};\n/** Pipe-separated phrases build word by word, drift left and run out; the final phrase stays. */\nexport function WordStream({text,wordGap=250,hold=900,drift=12,paused=false,replayKey=0,size=\"default\",className,ref,...props}:WordStreamProps){\n const {host:hostRef,running}=useReferenceText(paused),gap=bounded(wordGap,100,1000,250),rest=bounded(hold,300,4000,900);\n const phrases=text.split(\"|\").map(x=>x.trim()).filter(Boolean);\n const schedule=React.useMemo(()=>text.split(\"|\").map(x=>x.trim()).filter(Boolean).reduce<{words:string[];start:number;end:number}[]>((items,phrase)=>{const words=phrase.split(/\\s+/),start=items.at(-1)?.end??0;return [...items,{words,start,end:start+400+words.length*gap+rest}];},[]),[text,gap,rest]);\n useReferenceClock(running,time=>{\n  const el=hostRef.current;if(!el)return false;el.dataset.ready=\"true\";const final=schedule[schedule.length-1];\n  el.querySelectorAll<HTMLElement>(\"[data-stream-phrase]\").forEach((phrase,i)=>{\n   const item=schedule[i],last=i===schedule.length-1,active=time>=item.start&&(last||time<item.end);phrase.style.visibility=active?\"visible\":\"hidden\";\n   if(!active)return;const life=Math.min(time-item.start,item.end-item.start),enter=1-bounded(life/400,0,1,1),exit=last?0:bounded((time-item.end+240)/240,0,1,0);\n   phrase.style.transform=`translateX(${enter*24-Math.min(24,bounded(drift,0,40,12)*life/1000)-exit*80}px)`;\n   phrase.querySelectorAll<HTMLElement>(\"[data-stream-word]\").forEach((word,j)=>{const p=bounded((life-150-j*gap)/200,0,1,1);word.style.opacity=String(p);word.style.filter=`blur(${(1-p)*2}px)`;});\n  });\n  const done=!final||time>=final.end;if(done)el.dataset.state=\"complete\";else el.dataset.state=\"streaming\";return !done;\n },`${replayKey}:${text}:${gap}:${rest}`);\n return <div {...props} ref={useReferenceRef(hostRef,ref)} data-slot=\"word-stream\" data-size={size} data-running={running} className={cn(\"v-word-stream\",className)}>\n <span className=\"v-word-stream__words\">{phrases.join(\". \")}</span>\n <div aria-hidden=\"true\" className=\"v-word-stream__visual\">{schedule.map((phrase,i)=><span key={i} data-stream-phrase=\"\">{phrase.words.map((word,j)=><React.Fragment key={j}><span data-stream-word=\"\">{word}</span>{\" \"}</React.Fragment>)}</span>)}</div>\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/word-stream.css",
+      "content": "@layer sahajiv-states {\n.v-word-stream { display:grid; position:relative; place-items:center; min-inline-size:0; inline-size:100%; min-block-size:260px; padding:24px; overflow:hidden; border-radius:var(--radius-panel,24px); color:var(--v-text); background:var(--v-beige); font-family:var(--font-display,\"Bricolage Grotesque\",sans-serif); font-size:clamp(2rem,5vw,3.5rem); line-height:1.15; isolation:isolate; }\n.v-word-stream[data-size=\"sm\"] { min-block-size:200px; font-size:clamp(1.5rem,4vw,2.5rem); padding:16px; }\n.v-word-stream[data-size=\"lg\"] { min-block-size:340px; font-size:clamp(2.25rem,6vw,4.5rem); }\n.v-word-stream__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }\n.v-word-stream__words {max-inline-size:100%;overflow-wrap:anywhere;text-align:center;}\n.v-word-stream__visual {display:none;position:absolute;inset:24px;place-items:center;}\n.v-word-stream [data-stream-phrase] {grid-area:1/1;max-inline-size:calc(100% - 36px);overflow-wrap:anywhere;visibility:hidden;line-height:1.35;}\n.v-word-stream [data-stream-word] {display:inline-block;max-inline-size:100%;}\n.v-word-stream[data-running=\"true\"][data-ready=\"true\"] .v-word-stream__visual {display:grid;}\n.v-word-stream[data-running=\"true\"][data-ready=\"true\"] .v-word-stream__words {opacity:0;}\n@media(prefers-reduced-motion:reduce){.v-word-stream[data-running] .v-word-stream__visual{display:none;}.v-word-stream[data-running] .v-word-stream__words{opacity:1;}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/word-stream.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/word-stream.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Word Stream",
+      "variants": [
+        "flow",
+        "calm"
+      ],
+      "sizes": [
+        "sm",
+        "default",
+        "lg"
+      ],
+      "states": [
+        "playing",
+        "paused",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "WordStreamProps",
+        "props": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "wordGap",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "hold",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "drift",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "replayKey",
+            "type": "string|number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "ReferenceTextSize",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

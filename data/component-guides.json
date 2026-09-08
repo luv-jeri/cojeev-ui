@@ -2224,5 +2224,552 @@
       "input",
       "slider"
     ]
+  },
+  "typography-vortex": {
+    "description": "Nested rotating glyph rings with a local dissolution lens and a finite suction pulse.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "particle-text": {
+    "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "warp-text": {
+    "description": "Rendered text deforms through a slowly changing noise displacement.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "falling-text": {
+    "description": "Measured word rectangles fall, collide and settle inside a bounded stage.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "scroll-reveal": {
+    "description": "Native scroll progress resolves word opacity and blur while leveling the phrase.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "variable-proximity": {
+    "description": "Pointer distance changes the real variable-font weight of individual graphemes.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "word-stream": {
+    "description": "Phrases build word by word, drift left and run out before the final phrase holds.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "caret-swap": {
+    "description": "A colored caret block consumes a phrase before typing its replacement in whole graphemes.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "zoom-words": {
+    "description": "An enlarged camera follows measured centers along a growing word line.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "scroll-expand": {
+    "description": "A framed composition opens as native scroll or controlled progress advances.",
+    "category": "Effects",
+    "usage": [
+      "Use a single product demonstration after the hero.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "ripple-distortion": {
+    "description": "Pointer impulses send expanding waves through a textured print.",
+    "category": "Effects",
+    "usage": [
+      "Optional material playground; keep important text outside.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "elastic-mesh": {
+    "description": "A triangulated printed sheet stretches toward the pointer and springs home.",
+    "category": "Effects",
+    "usage": [
+      "Optional playground specimen.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "swarm-cursor": {
+    "description": "A local flock of colored seeds follows the pointer and scatters on activation.",
+    "category": "Effects",
+    "usage": [
+      "Optional playground only; avoid global landing cursors.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "pixel-swap": {
+    "description": "A staggered tile mask exchanges two compositions without duplicating their interactive content.",
+    "category": "Effects",
+    "usage": [
+      "Use in one before/after demonstration.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "orbit-images": {
+    "description": "An orbit of supplied images frames stationary content.",
+    "category": "Creative",
+    "usage": [
+      "Optional library family vignette with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "target-cursor": {
+    "description": "Local corner brackets follow real controls on hover and keyboard focus.",
+    "category": "Effects",
+    "usage": [
+      "Use within an interactive specimen only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "magic-rings": {
+    "description": "Open concentric rings expand in SahaJiv colors and respond to pointer position.",
+    "category": "Backgrounds",
+    "usage": [
+      "Optional small closing accent, with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "ghost-cursor": {
+    "description": "A translucent ink impression follows a local pointer with soft inertia.",
+    "category": "Effects",
+    "usage": [
+      "Playground only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "click-spark": {
+    "description": "A finite spray of accent marks responds to a real activation.",
+    "category": "Effects",
+    "usage": [
+      "Optional single CTA feedback; retain ordinary pressed and focus states.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "strands": {
+    "description": "A bundle of colored ribbons moves through a bounded sine field.",
+    "category": "Backgrounds",
+    "usage": [
+      "Optional quiet section accent; one instance at a time.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "image-trail": {
+    "description": "Distance-triggered image impressions follow the pointer and fade away.",
+    "category": "Effects",
+    "usage": [
+      "An optional gallery playground.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "meta-balls": {
+    "description": "Moving scalar-field bodies merge and separate through liquid contours.",
+    "category": "Backgrounds",
+    "usage": [
+      "Optional material specimen with a still frame.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "infinite-spiral": {
+    "description": "Helical image cards recycle through depth with explicit previous, next and pause controls.",
+    "category": "Creative",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "carousel",
+      "accordion"
+    ]
+  },
+  "accordion-gallery": {
+    "description": "A selected image panel opens to reveal its label, story and action.",
+    "category": "Creative",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "carousel",
+      "accordion"
+    ]
+  },
+  "option-wheel": {
+    "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+    "category": "Forms",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "carousel",
+      "accordion"
+    ]
+  },
+  "grain-dissolve": {
+    "description": "Caller scenes dissolve through a grainy pigment field with a soft focus exchange.",
+    "category": "Effects",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "presence",
+      "pixel-swap"
+    ]
+  },
+  "wave-wipe": {
+    "description": "An organic wave rises across caller content to reveal the next scene.",
+    "category": "Effects",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "presence",
+      "pixel-swap"
+    ]
+  },
+  "dither-dissolve": {
+    "description": "Caller scenes exchange beneath a deterministic ordered dither cover.",
+    "category": "Effects",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "presence",
+      "pixel-swap"
+    ]
+  },
+  "portal-field": {
+    "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
+    "category": "Backgrounds",
+    "usage": [
+      "Compose real content as children; keep essential controls above the decorative field.",
+      "Choose balanced, warm or cool SahaJiv accents and keep a visible pause control for continuous movement."
+    ],
+    "accessibility": [
+      "The canvas and static SVG are decorative and hidden from assistive technology; children retain native semantics.",
+      "Reduced motion, shared motion/flow off, hidden tabs and offscreen stages stop animation. Local pointer response never captures the native cursor or touch scroll.",
+      "A deterministic static organic halo remains when WebGL is unavailable or lost."
+    ],
+    "related": [
+      "magic-rings",
+      "contour-field",
+      "pigment-field"
+    ]
+  },
+  "article-headings": {
+    "description": "Semantic article headings resolve through a brief, grapheme-safe noise frontier.",
+    "category": "Typography",
+    "usage": [
+      "Supply stable unique item ids, full titles and optional metadata or hrefs; choose the correct heading level for the surrounding page.",
+      "Change replayKey to deliberately decode again. Pausing or leaving view restores complete text and cancels the current sequence.",
+      "Use on a compact editorial list; duration and total stagger are bounded, and large titles/lists retain readable static text."
+    ],
+    "accessibility": [
+      "Actual complete heading text remains in the accessibility tree throughout; decorative changing glyphs are aria-hidden and never announced.",
+      "Each glyph reserves its true footprint so noise does not move the heading, metadata or neighboring content.",
+      "Reduced motion, shared motion/flow off and hidden/offscreen stages keep exact still headings. Optional links remain keyboard accessible with visible focus."
+    ],
+    "related": [
+      "text-reveal",
+      "word-relay",
+      "writing-caret"
+    ]
+  },
+  "motion-drawer": {
+    "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
+    "category": "Layout",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "sheet",
+      "drawer"
+    ]
+  },
+  "linear-modal": {
+    "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+    "category": "Layout",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "dialog",
+      "card"
+    ]
+  },
+  "image-masking": {
+    "description": "Caller images are framed by original SahaJiv silhouettes using CSS masks or SVG clip paths.",
+    "category": "Creative",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "shape",
+      "presence"
+    ]
+  },
+  "buy-me-coffee": {
+    "description": "A support poster reveals an inviting cup illustration and a real caller destination.",
+    "category": "Actions",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "hero-button",
+      "card"
+    ]
+  },
+  "swapy": {
+    "description": "Cards swap positions through a drag handle or keyboard controls and retain their order in React state.",
+    "category": "Layout",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "card",
+      "grid"
+    ]
   }
 }

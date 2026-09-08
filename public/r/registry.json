@@ -78,6 +78,56 @@
           "target": "lib/sahajiv/pointer-geometry.ts"
         },
         {
+          "path": "registry/sahajiv/lib/reference-additions-math.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-additions-math.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-additions-portal.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-additions-portal.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-effect-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-effect-geometry.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field-paint.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field-paint.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-gallery-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-gallery-geometry.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-gallery-motion.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-gallery-motion.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-layouts.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-layouts.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-ref.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-ref.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-text-math.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-text-math.ts"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-text-motion.ts",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-text-motion.ts"
+        },
+        {
           "path": "registry/sahajiv/lib/sculpture-flow.ts",
           "type": "registry:lib",
           "target": "lib/sahajiv/sculpture-flow.ts"
@@ -644,6 +694,88 @@
         "category": "Layout",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "accordion-gallery",
+      "type": "registry:ui",
+      "title": "Accordion Gallery",
+      "description": "A selected image panel opens to reveal its label, story and action.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/accordion-gallery.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/accordion-gallery.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/accordion-gallery.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/accordion-gallery.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Accordion Gallery",
+          "variants": [
+            "horizontal",
+            "vertical"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "selected",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "AccordionGalleryProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "readonly AccordionGalleryItem[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "defaultIndex",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectedIndex",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onSelectionChange",
+                "type": "(index:number)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "orientation",
+                "type": "\"horizontal\"|\"vertical\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Creative",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -2123,6 +2255,133 @@
       }
     },
     {
+      "name": "article-headings",
+      "type": "registry:ui",
+      "title": "Article Headings",
+      "description": "Semantic article headings resolve through a brief, grapheme-safe noise frontier.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/article-headings.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/article-headings.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/article-headings.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/article-headings.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Article Headings",
+          "variants": [
+            "decode",
+            "deliberate"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "decoding",
+            "complete",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ArticleHeadingsProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "readonly ArticleHeadingItem[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "headingLevel",
+                "type": "2|3|4",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "stagger",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "scrambleLength",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "preserveChance",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tailChance",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "replayKey",
+                "type": "string|number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "\"sm\"|\"default\"|\"lg\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onDecodeComplete",
+                "type": "()=>void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "aspect-ratio",
       "type": "registry:ui",
       "title": "Aspect Ratio",
@@ -3594,6 +3853,90 @@
       }
     },
     {
+      "name": "buy-me-coffee",
+      "type": "registry:ui",
+      "title": "Buy Me Coffee",
+      "description": "A support poster reveals an inviting cup illustration and a real caller destination.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/buy-me-coffee.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/buy-me-coffee.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/buy-me-coffee.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/buy-me-coffee.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Buy Me Coffee",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "active",
+            "still"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "BuyMeCoffeeProps",
+            "props": [
+              {
+                "name": "href",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "actionLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\"|\"olive\"|\"blue\"|\"yellow\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Actions",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "calendar",
       "type": "registry:ui",
       "title": "Calendar",
@@ -3830,6 +4173,97 @@
         "category": "Layout",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "caret-swap",
+      "type": "registry:ui",
+      "title": "Caret Swap",
+      "description": "A colored caret block consumes a phrase before typing its replacement in whole graphemes.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/caret-swap.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/caret-swap.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/caret-swap.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/caret-swap.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Caret Swap",
+          "variants": [
+            "thought",
+            "memory"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "CaretSwapProps",
+            "props": [
+              {
+                "name": "fromText",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "toText",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "replayKey",
+                "type": "string|number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -4493,6 +4927,107 @@
         "category": "Forms",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "click-spark",
+      "type": "registry:ui",
+      "title": "Click Spark",
+      "description": "A finite spray of accent marks responds to a real activation.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/click-spark.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/click-spark.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/click-spark.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/click-spark.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Click Spark",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ClickSparkProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -5904,6 +6439,97 @@
       }
     },
     {
+      "name": "dither-dissolve",
+      "type": "registry:ui",
+      "title": "Dither Dissolve",
+      "description": "Caller scenes exchange beneath a deterministic ordered dither cover.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/dither-dissolve.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/dither-dissolve.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/dither-dissolve.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/dither-dissolve.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Dither Dissolve",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "DitherDissolveProps",
+            "props": [
+              {
+                "name": "first",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "second",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "active",
+                "type": "boolean",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\"|\"olive\"|\"blue\"|\"yellow\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "dither-sculpture",
       "type": "registry:ui",
       "title": "Dither sculpture",
@@ -6423,6 +7049,110 @@
       }
     },
     {
+      "name": "elastic-mesh",
+      "type": "registry:ui",
+      "title": "Elastic Mesh",
+      "description": "A triangulated printed sheet stretches toward the pointer and springs home.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/elastic-mesh.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/elastic-mesh.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/elastic-mesh.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/elastic-mesh.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Elastic Mesh",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ElasticMeshProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "empty",
       "type": "registry:ui",
       "title": "Empty",
@@ -6627,6 +7357,91 @@
         "category": "Feedback",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "falling-text",
+      "type": "registry:ui",
+      "title": "Falling Text",
+      "description": "Measured word rectangles fall, collide and settle inside a bounded stage.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/falling-text.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/falling-text.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/falling-text.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/falling-text.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Falling Text",
+          "variants": [
+            "scatter",
+            "gentle"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "FallingTextProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "gravity",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "replayKey",
+                "type": "string|number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -7008,6 +7823,110 @@
       }
     },
     {
+      "name": "ghost-cursor",
+      "type": "registry:ui",
+      "title": "Ghost Cursor",
+      "description": "A translucent ink impression follows a local pointer with soft inertia.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/ghost-cursor.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/ghost-cursor.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/ghost-cursor.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/ghost-cursor.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Ghost Cursor",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "GhostCursorProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "glass-sculpture",
       "type": "registry:ui",
       "title": "Glass sculpture",
@@ -7343,6 +8262,97 @@
           }
         ],
         "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "grain-dissolve",
+      "type": "registry:ui",
+      "title": "Grain Dissolve",
+      "description": "Caller scenes dissolve through a grainy pigment field with a soft focus exchange.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/grain-dissolve.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/grain-dissolve.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/grain-dissolve.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/grain-dissolve.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Grain Dissolve",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "GrainDissolveProps",
+            "props": [
+              {
+                "name": "first",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "second",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "active",
+                "type": "boolean",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\"|\"olive\"|\"blue\"|\"yellow\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -7713,6 +8723,281 @@
           }
         ],
         "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "image-masking",
+      "type": "registry:ui",
+      "title": "Image Masking",
+      "description": "Caller images are framed by original SahaJiv silhouettes using CSS masks or SVG clip paths.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/image-masking.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/image-masking.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/image-masking.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/image-masking.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Image Masking",
+          "variants": [
+            "mask",
+            "clip"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "active",
+            "still"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ImageMaskingProps",
+            "props": [
+              {
+                "name": "src",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "alt",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "shape",
+                "type": "SignatureShapeName",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "method",
+                "type": "\"mask\"|\"clip\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "caption",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "fit",
+                "type": "\"cover\"|\"contain\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "imagePosition",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Creative",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "image-trail",
+      "type": "registry:ui",
+      "title": "Image Trail",
+      "description": "Distance-triggered image impressions follow the pointer and fade away.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/image-trail.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/image-trail.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/image-trail.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/image-trail.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Image Trail",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ImageTrailProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "infinite-spiral",
+      "type": "registry:ui",
+      "title": "Infinite Spiral",
+      "description": "Helical image cards recycle through depth with explicit previous, next and pause controls.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/infinite-spiral.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/infinite-spiral.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/infinite-spiral.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/infinite-spiral.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Infinite Spiral",
+          "variants": [
+            "up",
+            "down"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "InfiniteSpiralProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "readonly InfiniteSpiralItem[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "direction",
+                "type": "\"up\"|\"down\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Creative",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -8801,6 +10086,111 @@
       }
     },
     {
+      "name": "linear-modal",
+      "type": "registry:ui",
+      "title": "Linear Modal",
+      "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/dialog.json"
+      ],
+      "dependencies": [
+        "@radix-ui/react-dialog",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/linear-modal.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/linear-modal.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/linear-modal.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/linear-modal.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Linear Modal",
+          "variants": [
+            "card",
+            "compact"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "active",
+            "still"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "LinearModalProps",
+            "props": [
+              {
+                "name": "title",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "alt",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "open",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultOpen",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onOpenChange",
+                "type": "(open:boolean)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "\"card\"|\"compact\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Layout",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "living-link",
       "type": "registry:ui",
       "title": "Living link",
@@ -8884,6 +10274,110 @@
           }
         ],
         "category": "Navigation",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "magic-rings",
+      "type": "registry:ui",
+      "title": "Magic Rings",
+      "description": "Open concentric rings expand in SahaJiv colors and respond to pointer position.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/magic-rings.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/magic-rings.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/magic-rings.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/magic-rings.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Magic Rings",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "MagicRingsProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Backgrounds",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -9498,6 +10992,110 @@
       }
     },
     {
+      "name": "meta-balls",
+      "type": "registry:ui",
+      "title": "Meta Balls",
+      "description": "Moving scalar-field bodies merge and separate through liquid contours.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/meta-balls.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/meta-balls.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/meta-balls.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/meta-balls.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Meta Balls",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "MetaBallsProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "milestone-path",
       "type": "registry:ui",
       "title": "Milestone path",
@@ -9590,6 +11188,110 @@
           }
         ],
         "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "motion-drawer",
+      "type": "registry:ui",
+      "title": "Motion Drawer",
+      "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/button.json",
+        "https://luv-jeri.github.io/sahajiv-ui/r/sheet.json"
+      ],
+      "dependencies": [
+        "@radix-ui/react-direction"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/motion-drawer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/motion-drawer.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/motion-drawer.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/motion-drawer.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Motion Drawer",
+          "variants": [
+            "start",
+            "end"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "active",
+            "still"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "MotionDrawerProps",
+            "props": [
+              {
+                "name": "title",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "triggerLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "open",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultOpen",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onOpenChange",
+                "type": "(open:boolean)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "side",
+                "type": "\"start\"|\"end\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "enableDrag",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Layout",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -10087,6 +11789,166 @@
           }
         ],
         "category": "Forms",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "option-wheel",
+      "type": "registry:ui",
+      "title": "Option Wheel",
+      "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/option-wheel.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/option-wheel.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/option-wheel.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/option-wheel.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Option Wheel",
+          "variants": [
+            "left",
+            "right"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "selected",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "OptionWheelProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "readonly OptionWheelItem[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "defaultIndex",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selectedIndex",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onSelectionChange",
+                "type": "(index:number)=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "side",
+                "type": "\"left\"|\"right\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Forms",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "orbit-images",
+      "type": "registry:ui",
+      "title": "Orbit Images",
+      "description": "An orbit of supplied images frames stationary content.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/orbit-images.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/orbit-images.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/orbit-images.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/orbit-images.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Orbit Images",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "OrbitImagesProps",
+            "props": [
+              {
+                "name": "images",
+                "type": "readonly OrbitImage[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "reverse",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Creative",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -10681,6 +12543,103 @@
       }
     },
     {
+      "name": "particle-text",
+      "type": "registry:ui",
+      "title": "Particle Text",
+      "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/particle-text.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/particle-text.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/particle-text.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/particle-text.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Particle Text",
+          "variants": [
+            "gather",
+            "fine"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ParticleTextProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "density",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "particleSize",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "repelRadius",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "replayKey",
+                "type": "number|string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "pie-chart",
       "type": "registry:ui",
       "title": "Pie chart",
@@ -10818,6 +12777,90 @@
       }
     },
     {
+      "name": "pixel-swap",
+      "type": "registry:ui",
+      "title": "Pixel Swap",
+      "description": "A staggered tile mask exchanges two compositions without duplicating their interactive content.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/pixel-swap.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/pixel-swap.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/pixel-swap.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/pixel-swap.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Pixel Swap",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "PixelSwapProps",
+            "props": [
+              {
+                "name": "first",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "second",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "active",
+                "type": "boolean",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "columns",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
@@ -10914,6 +12957,106 @@
         "category": "Layout",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "portal-field",
+      "type": "registry:ui",
+      "title": "Portal Field",
+      "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/portal-field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/portal-field.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/portal-field.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/portal-field.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Portal Field",
+          "variants": [
+            "balanced",
+            "warm",
+            "cool"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen",
+            "fallback",
+            "lost"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "PortalFieldProps",
+            "props": [
+              {
+                "name": "tone",
+                "type": "\"balanced\"|\"warm\"|\"cool\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "intensity",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "distortion",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "interactive",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "\"sm\"|\"default\"|\"lg\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -11966,6 +14109,110 @@
       }
     },
     {
+      "name": "ripple-distortion",
+      "type": "registry:ui",
+      "title": "Ripple Distortion",
+      "description": "Pointer impulses send expanding waves through a textured print.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/ripple-distortion.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/ripple-distortion.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/ripple-distortion.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/ripple-distortion.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Ripple Distortion",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "RippleDistortionProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "scroll-area",
       "type": "registry:ui",
       "title": "Scroll Area",
@@ -12101,6 +14348,76 @@
       }
     },
     {
+      "name": "scroll-expand",
+      "type": "registry:ui",
+      "title": "Scroll Expand",
+      "description": "A framed composition opens as native scroll or controlled progress advances.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/scroll-expand.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/scroll-expand.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/scroll-expand.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/scroll-expand.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Scroll Expand",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ScrollExpandProps",
+            "props": [
+              {
+                "name": "progress",
+                "type": "number",
+                "required": false,
+                "description": "Controlled 0–1 progress; omit to follow the document's native scroll."
+              },
+              {
+                "name": "startScale",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "scroll-organism",
       "type": "registry:ui",
       "title": "Scroll organism",
@@ -12167,6 +14484,103 @@
           }
         ],
         "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "scroll-reveal",
+      "type": "registry:ui",
+      "title": "Scroll Reveal",
+      "description": "Native scroll progress resolves word opacity and blur while leveling the phrase.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/scroll-reveal.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/scroll-reveal.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/scroll-reveal.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/scroll-reveal.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Scroll Reveal",
+          "variants": [
+            "scroll",
+            "controlled"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ScrollRevealProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "progress",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "scrollTarget",
+                "type": "React.RefObject<HTMLElement|null>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "blur",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "rotation",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -13650,6 +16064,304 @@
       }
     },
     {
+      "name": "strands",
+      "type": "registry:ui",
+      "title": "Strands",
+      "description": "A bundle of colored ribbons moves through a bounded sine field.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/strands.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/strands.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/strands.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/strands.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Strands",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "StrandsProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "swapy",
+      "type": "registry:ui",
+      "title": "Swapy",
+      "description": "Cards swap positions through a drag handle or keyboard controls and retain their order in React state.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/swapy.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/swapy.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/swapy.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/swapy.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Swapy",
+          "variants": [
+            "grid",
+            "list"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "default",
+            "active",
+            "still"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "SwapyProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "readonly SwapyItem[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "order",
+                "type": "readonly string[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultOrder",
+                "type": "readonly string[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onOrderChange",
+                "type": "(order:string[])=>void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "\"grid\"|\"list\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Layout",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "swarm-cursor",
+      "type": "registry:ui",
+      "title": "Swarm Cursor",
+      "description": "A local flock of colored seeds follows the pointer and scatters on activation.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/swarm-cursor.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/lib/reference-field.tsx",
+          "type": "registry:lib",
+          "target": "lib/sahajiv/reference-field.tsx"
+        },
+        {
+          "path": "registry/sahajiv/styles/swarm-cursor.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/swarm-cursor.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/swarm-cursor.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Swarm Cursor",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "SwarmCursorProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Stop movement while retaining a composed, meaningful still frame."
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "count",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "height",
+                "type": "number",
+                "required": false,
+                "description": "Height of the local effect stage, in CSS pixels."
+              },
+              {
+                "name": "src",
+                "type": "string",
+                "required": false,
+                "description": "Optional texture for the elastic sheet or ripple."
+              },
+              {
+                "name": "images",
+                "type": "readonly string[]",
+                "required": false,
+                "description": "Optional image cards for the trail. Decorative; describe their subject nearby."
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Switch",
@@ -13951,6 +16663,66 @@
         "category": "Navigation",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "target-cursor",
+      "type": "registry:ui",
+      "title": "Target Cursor",
+      "description": "Local corner brackets follow real controls on hover and keyboard focus.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/target-cursor.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/target-cursor.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/target-cursor.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/target-cursor.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Target Cursor",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest",
+            "active",
+            "paused",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "TargetCursorProps",
+            "props": [
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
@@ -15116,6 +17888,370 @@
       }
     },
     {
+      "name": "typography-vortex",
+      "type": "registry:ui",
+      "title": "Typography Vortex",
+      "description": "Nested rotating glyph rings with a local dissolution lens and a finite suction pulse.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/typography-vortex.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/typography-vortex.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/typography-vortex.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/typography-vortex.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Typography Vortex",
+          "variants": [
+            "orbit",
+            "focused"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "TypographyVortexProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "rings",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "pulse",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "variable-proximity",
+      "type": "registry:ui",
+      "title": "Variable Proximity",
+      "description": "Pointer distance changes the real variable-font weight of individual graphemes.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/variable-proximity.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/variable-proximity.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/variable-proximity.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/variable-proximity.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Variable Proximity",
+          "variants": [
+            "weight",
+            "pressure"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "VariableProximityProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "\"weight\" | \"pressure\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "fromWeight",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "toWeight",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "warp-text",
+      "type": "registry:ui",
+      "title": "Warp Text",
+      "description": "Rendered text deforms through a slowly changing noise displacement.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/warp-text.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/warp-text.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/warp-text.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/warp-text.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Warp Text",
+          "variants": [
+            "liquid",
+            "gentle"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "WarpTextProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "strength",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "speed",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "wave-wipe",
+      "type": "registry:ui",
+      "title": "Wave Wipe",
+      "description": "An organic wave rises across caller content to reveal the next scene.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/wave-wipe.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/wave-wipe.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/wave-wipe.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/wave-wipe.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Wave Wipe",
+          "variants": [
+            "pink",
+            "olive",
+            "blue",
+            "yellow"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "WaveWipeProps",
+            "props": [
+              {
+                "name": "first",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "second",
+                "type": "React.ReactNode",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "active",
+                "type": "boolean",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "duration",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "tone",
+                "type": "\"pink\"|\"olive\"|\"blue\"|\"yellow\"",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "word-relay",
       "type": "registry:ui",
       "title": "Word relay",
@@ -15263,6 +18399,103 @@
       }
     },
     {
+      "name": "word-stream",
+      "type": "registry:ui",
+      "title": "Word Stream",
+      "description": "Phrases build word by word, drift left and run out before the final phrase holds.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/word-stream.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/word-stream.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/word-stream.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/word-stream.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Word Stream",
+          "variants": [
+            "flow",
+            "calm"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "WordStreamProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "wordGap",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "hold",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "drift",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "replayKey",
+                "type": "string|number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "work-side-panel",
       "type": "registry:ui",
       "title": "Work side panel",
@@ -15371,6 +18604,97 @@
                 "type": "number",
                 "required": false,
                 "description": "An explicit opacity disables blinking."
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "zoom-words",
+      "type": "registry:ui",
+      "title": "Zoom Words",
+      "description": "An enlarged camera follows measured centers along a growing word line.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/sahajiv/ui/zoom-words.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/sahajiv/styles/zoom-words.css",
+          "type": "registry:file",
+          "target": "styles/sahajiv/zoom-words.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/sahajiv/zoom-words.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Zoom Words",
+          "variants": [
+            "close",
+            "wide"
+          ],
+          "sizes": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "states": [
+            "playing",
+            "paused",
+            "still",
+            "offscreen"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "ZoomWordsProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "wordGap",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "zoom",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "replayKey",
+                "type": "string|number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "size",
+                "type": "ReferenceTextSize",
+                "required": false,
+                "description": ""
               }
             ]
           }

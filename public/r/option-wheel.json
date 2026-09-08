@@ -1,0 +1,85 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "option-wheel",
+  "title": "Option Wheel",
+  "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/option-wheel.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { galleryOffset } from \"@/lib/sahajiv/reference-gallery-geometry\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\nimport { useGalleryRef, useGallerySelection } from \"@/lib/sahajiv/reference-gallery-motion\";\nexport type OptionWheelItem={id:string;label:string;description?:string};\nexport type OptionWheelProps=Omit<React.ComponentProps<\"div\">,\"onChange\"> & {items:readonly OptionWheelItem[];defaultIndex?:number;selectedIndex?:number;onSelectionChange?:(index:number)=>void;side?:\"left\"|\"right\"};\nexport function OptionWheel({items,defaultIndex=0,selectedIndex,onSelectionChange,side=\"left\",className,ref,...props}:OptionWheelProps){\n const host=React.useRef<HTMLDivElement>(null),id=React.useId();const {enabled,inView}=useMotionVisibility(host);\n const {selected,select}=useGallerySelection(items.length,defaultIndex,selectedIndex,onSelectionChange);\n const key=(event:React.KeyboardEvent<HTMLDivElement>)=>{let next=selected;if(event.key===\"ArrowDown\"||event.key===\"ArrowRight\")next++;else if(event.key===\"ArrowUp\"||event.key===\"ArrowLeft\")next--;else if(event.key===\"Home\")next=0;else if(event.key===\"End\")next=items.length-1;else return;event.preventDefault();select(next);};\n return <div {...props} ref={useGalleryRef(host,ref)} data-slot=\"option-wheel\" data-motion={enabled&&inView ? \"on\":\"off\"} data-side={side} className={cn(\"v-option-wheel\",className)}>\n <div role=\"listbox\" aria-label={props[\"aria-label\"]??\"Choose an option\"} aria-activedescendant={selected>=0 ? `${id}-${selected}`:undefined} tabIndex={items.length?0:-1} onKeyDown={key} className=\"v-option-wheel__stage\">\n <span aria-hidden=\"true\" className=\"v-option-wheel__marker\">↳</span>\n {items.map((item,index)=>{const d=galleryOffset(index,selected,items.length),angle=d*.15;return <div key={item.id} id={`${id}-${index}`} role=\"option\" aria-selected={index===selected} onClick={event=>{select(index);event.currentTarget.parentElement?.focus();}} className=\"v-option-wheel__option\" style={{transform:`translate(${((side===\"left\"?1:-1)*(1-Math.cos(angle))*180).toFixed(3)}px, calc(-50% + ${d*58}px)) rotate(${(side===\"left\"?-1:1)*d*4}deg)`,opacity:Math.abs(d)>2?0:Math.max(.45,1-Math.abs(d)*.24),pointerEvents:Math.abs(d)>2?\"none\":\"auto\"}}>{item.label}</div>;})}\n {!items.length&&<p>No options available.</p>}\n </div>\n <div className=\"v-option-wheel__footer\"><button type=\"button\" aria-label=\"Previous option\" disabled={items.length<2} onClick={()=>select(selected-1)}>↑</button><p role=\"status\">{items[selected]?.description??items[selected]?.label??\"No selection\"}</p><button type=\"button\" aria-label=\"Next option\" disabled={items.length<2} onClick={()=>select(selected+1)}>↓</button></div>\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/option-wheel.css",
+      "content": "@layer sahajiv-states {\n.v-option-wheel{width:100%;min-width:0;border-radius:24px;background:var(--v-beige);overflow:hidden;color:var(--v-ink)}.v-option-wheel__stage{position:relative;height:330px;overflow:hidden;outline-offset:-5px}.v-option-wheel__marker{position:absolute;top:50%;left:7%;transform:translateY(-50%);font-size:36px;color:var(--v-accent-ink)}.v-option-wheel__option{position:absolute;top:50%;left:21%;right:10%;font:clamp(23px,4vw,36px)/1.1 var(--font-display);padding:8px 12px;cursor:pointer;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .35s;color:var(--v-text);overflow-wrap:anywhere;border-radius:12px;transform-origin:left center}.v-option-wheel__option[aria-selected=true]{background:var(--v-pink);color:var(--v-on-accent);font-weight:650}.v-option-wheel__footer{display:flex;align-items:center;gap:16px;min-height:80px;border-top:1px solid var(--v-border);padding:16px 20px}.v-option-wheel__footer p{flex:1;margin:0;font-size:14px;line-height:1.4}.v-option-wheel__footer button{width:44px;height:44px;flex-shrink:0;border:1px solid var(--v-edge);border-radius:50%;background:var(--v-paper);color:var(--v-ink);cursor:pointer;font-size:20px}.v-option-wheel button:focus-visible,.v-option-wheel__stage:focus-visible{outline:2px solid var(--v-brand);outline-offset:-4px}.v-option-wheel button:disabled{opacity:.5;cursor:default}.v-option-wheel[data-side=right] .v-option-wheel__option{transform-origin:right center;text-align:right}.v-option-wheel[data-motion=off] *{transition:none}@media(prefers-reduced-motion:reduce){.v-option-wheel *{transition:none}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/option-wheel.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/option-wheel.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Option Wheel",
+      "variants": [
+        "left",
+        "right"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "selected",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "OptionWheelProps",
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly OptionWheelItem[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "defaultIndex",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "selectedIndex",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onSelectionChange",
+            "type": "(index:number)=>void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "side",
+            "type": "\"left\"|\"right\"",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Forms",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,2 @@
+.v-swarm-cursor { --effect-accent:var(--v-pink); }
+.v-swarm-cursor canvas { display:block; }

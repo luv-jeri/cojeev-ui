@@ -1,0 +1,87 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pixel-swap",
+  "title": "Pixel Swap",
+  "description": "A staggered tile mask exchanges two compositions without duplicating their interactive content.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/pixel-swap.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { animate } from \"motion\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\nimport { boundedNumber, boundedCount } from \"@/lib/sahajiv/reference-effect-geometry\";\nimport { cn } from \"@/lib/utils\";\n\nexport type PixelSwapProps = Omit<React.ComponentProps<\"div\">, \"children\"> & {\n  first: React.ReactNode; second: React.ReactNode;\n  active: boolean; duration?: number; columns?: number;\n};\n/** A staggered tiled mask reveals the selected content without cloning interactive DOM. */\nexport function PixelSwap({ first, second, active, duration = 850, columns = 10, className, ref, ...props }: PixelSwapProps) {\n  const host = React.useRef<HTMLDivElement>(null), clip = React.useRef<SVGClipPathElement>(null), outgoing = React.useRef<HTMLDivElement>(null);\n  const id = `pixel-${React.useId().replace(/:/g, \"\")}`;\n  const { enabled, inView } = useMotionVisibility(host);\n  const [initialActive] = React.useState(active);\n  const previous = React.useRef(active), n = boundedCount(columns, 10, 20), rows = Math.max(3, Math.round(n * .6));\n  React.useEffect(() => {\n    const changed = previous.current !== active; previous.current = active;\n    let cancelled = false;\n    if (outgoing.current) outgoing.current.style.visibility = \"visible\";\n    const rects = Array.from(clip.current?.children ?? []);\n    const animations = rects.map((node, i) => {\n      const x = (i % n) / n, y = Math.floor(i / n) / rows;\n      const target = active ? 1 : 0;\n      if (!changed || !enabled || !inView) { node.setAttribute(\"x\", String(x)); node.setAttribute(\"y\", String(y)); node.setAttribute(\"width\", String(target / n + (target ? .001 : 0))); node.setAttribute(\"height\", String(target / rows + (target ? .001 : 0))); return null; }\n      const from = Number(node.getAttribute(\"width\")) * n;\n      return animate(from, target, { duration: boundedNumber(duration, 850, 0, 3000) / 1000 * .58, delay: ((i * 17) % rects.length) / rects.length * boundedNumber(duration, 850, 0, 3000) / 1000 * .42, ease: [.22, 1, .36, 1], onUpdate: value => { node.setAttribute(\"x\", String(x + (1 - value) / n / 2)); node.setAttribute(\"y\", String(y + (1 - value) / rows / 2)); node.setAttribute(\"width\", String(Math.max(0, value / n + (value ? .001 : 0)))); node.setAttribute(\"height\", String(Math.max(0, value / rows + (value ? .001 : 0)))); } });\n    });\n    const settle = () => { if (!cancelled && outgoing.current) outgoing.current.style.visibility = active ? \"hidden\" : \"visible\"; };\n    if (!changed || !enabled || !inView) settle();\n    else void Promise.all(animations).then(settle);\n    return () => { cancelled = true; animations.forEach(animation => animation?.stop()); };\n  }, [active, enabled, inView, duration, n, rows]);\n  return <div {...props} ref={React.useCallback((node: HTMLDivElement | null) => { host.current = node; if (typeof ref === \"function\") return ref(node); if (ref) ref.current = node; }, [ref])} data-slot=\"pixel-swap\" data-active={active ? \"true\" : \"false\"} className={cn(\"v-pixel-swap\", className)}>\n    <svg aria-hidden=\"true\" width=\"0\" height=\"0\" style={{ position: \"absolute\" }}><defs><clipPath id={id} ref={clip} clipPathUnits=\"objectBoundingBox\">{Array.from({ length: n * rows }, (_, i) => <rect key={i} x={(i % n) / n} y={Math.floor(i / n) / rows} width={initialActive ? 1 / n + .001 : 0} height={initialActive ? 1 / rows + .001 : 0} />)}</clipPath></defs></svg>\n    <div ref={outgoing} className=\"v-pixel-swap__layer\" inert={active} aria-hidden={active} style={{ visibility: initialActive ? \"hidden\" : \"visible\" }}>{first}</div>\n    <div className=\"v-pixel-swap__layer v-pixel-swap__incoming\" inert={!active} aria-hidden={!active} style={{ clipPath: `url(#${id})` }}>{second}</div>\n  </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/pixel-swap.css",
+      "content": "@layer sahajiv-states {\n.v-pixel-swap { position:relative; display:grid; width:100%; min-width:0; overflow:hidden; border-radius:24px; }\n.v-pixel-swap__layer { grid-area:1/1; min-width:0; }\n.v-pixel-swap__incoming { z-index:1; }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/pixel-swap.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/pixel-swap.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Pixel Swap",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "active",
+        "paused",
+        "reduced-motion"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "PixelSwapProps",
+        "props": [
+          {
+            "name": "first",
+            "type": "React.ReactNode",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "second",
+            "type": "React.ReactNode",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "columns",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Effects",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-gallery",
+  "title": "Accordion Gallery",
+  "description": "A selected image panel opens to reveal its label, story and action.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+  ],
+  "files": [
+    {
+      "path": "registry/sahajiv/ui/accordion-gallery.tsx",
+      "content": "\"use client\";\n/* eslint-disable @next/next/no-img-element -- Installable React image gallery. */\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\nimport { useGalleryRef, useGallerySelection } from \"@/lib/sahajiv/reference-gallery-motion\";\nexport type AccordionGalleryItem={id:string;src:string;alt:string;title:string;description?:string;href?:string};\nexport type AccordionGalleryProps=Omit<React.ComponentProps<\"div\">,\"onChange\"> & {items:readonly AccordionGalleryItem[];defaultIndex?:number;selectedIndex?:number;onSelectionChange?:(index:number)=>void;orientation?:\"horizontal\"|\"vertical\"};\nexport function AccordionGallery({items,defaultIndex=0,selectedIndex,onSelectionChange,orientation=\"horizontal\",className,ref,...props}:AccordionGalleryProps){\n const host=React.useRef<HTMLDivElement>(null),buttons=React.useRef<(HTMLButtonElement|null)[]>([]),id=React.useId();\n const {enabled,inView}=useMotionVisibility(host);\n const {selected,select}=useGallerySelection(items.length,defaultIndex,selectedIndex,onSelectionChange);\n const key=(event:React.KeyboardEvent<HTMLButtonElement>,index:number)=>{let next=index;if(event.key===\"ArrowRight\"||event.key===\"ArrowDown\")next=(index+1)%items.length;else if(event.key===\"ArrowLeft\"||event.key===\"ArrowUp\")next=(index-1+items.length)%items.length;else if(event.key===\"Home\")next=0;else if(event.key===\"End\")next=items.length-1;else return;event.preventDefault();select(next);buttons.current[next]?.focus();};\n return <div {...props} ref={useGalleryRef(host,ref)} data-slot=\"accordion-gallery\" data-motion={enabled&&inView ? \"on\":\"off\"} data-orientation={orientation} className={cn(\"v-accordion-gallery\",className)}>\n {items.length===0 ? <p>No gallery items.</p> : items.map((item,index)=><section key={item.id} className=\"v-accordion-gallery__panel\" data-selected={selected===index}>\n <img className=\"v-accordion-gallery__image\" src={item.src} alt={item.alt}/>\n <h3 className=\"v-accordion-gallery__heading\"><button type=\"button\" ref={node=>{buttons.current[index]=node;}} aria-expanded={selected===index} aria-controls={`${id}-${index}`} onClick={()=>select(index)} onKeyDown={event=>key(event,index)}><span className=\"v-accordion-gallery__number\">{String(index+1).padStart(2,\"0\")}</span><span>{item.title}</span></button></h3>\n <div id={`${id}-${index}`} className=\"v-accordion-gallery__story\" hidden={selected!==index}>{item.description&&<p>{item.description}</p>}{item.href&&<a href={item.href}>Explore {item.title}<span aria-hidden=\"true\"> ↗</span></a>}</div>\n </section>)}\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/sahajiv/styles/accordion-gallery.css",
+      "content": "@layer sahajiv-states {\n.v-accordion-gallery{display:flex;gap:10px;width:100%;min-width:0;min-height:380px;isolation:isolate}.v-accordion-gallery__panel{position:relative;overflow:hidden;flex:1 1 0;min-width:64px;border:1px solid var(--v-border);border-radius:20px;background:var(--v-paper);transition:flex-grow .55s cubic-bezier(.22,1,.36,1)}.v-accordion-gallery__panel[data-selected=true]{flex-grow:4}.v-accordion-gallery__image{position:absolute;width:100%;height:100%;object-fit:cover;inset:0;filter:grayscale(.7);opacity:.55;transition:filter .5s,opacity .5s,transform .5s}.v-accordion-gallery__panel[data-selected=true] .v-accordion-gallery__image{filter:none;opacity:1;transform:scale(1.025)}.v-accordion-gallery__heading{position:relative;z-index:1;margin:0}.v-accordion-gallery__heading button{appearance:none;width:100%;border:0;border-bottom:1px solid var(--v-border);background:var(--v-paper);color:var(--v-ink);padding:16px 12px;font:inherit;font-family:var(--font-display);font-size:18px;display:flex;gap:12px;align-items:center;text-align:left;cursor:pointer;min-height:56px;overflow-wrap:anywhere}.v-accordion-gallery__number{font-size:12px;flex-shrink:0}.v-accordion-gallery__story{position:absolute;inset:auto 12px 12px;background:var(--v-paper);color:var(--v-ink);padding:16px;border-radius:12px;max-height:60%;overflow:auto;font-size:14px}.v-accordion-gallery__story p{margin:0 0 12px;line-height:1.5}.v-accordion-gallery__story a{color:inherit;font-weight:600;text-underline-offset:4px}.v-accordion-gallery button:focus-visible,.v-accordion-gallery a:focus-visible{outline:2px solid var(--v-ink);outline-offset:-4px}.v-accordion-gallery[data-motion=off] *{transition:none}.v-accordion-gallery[data-orientation=vertical]{flex-direction:column;height:570px}.v-accordion-gallery[data-orientation=vertical] .v-accordion-gallery__panel{min-height:56px}.v-accordion-gallery[data-orientation=vertical] .v-accordion-gallery__panel[data-selected=true]{flex-grow:6}@media(max-width:600px){.v-accordion-gallery{flex-direction:column;height:570px}.v-accordion-gallery__panel{min-height:56px}.v-accordion-gallery__panel[data-selected=true]{flex-grow:6}.v-accordion-gallery__heading button{padding:12px 16px}}@media(prefers-reduced-motion:reduce){.v-accordion-gallery *{transition:none}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/sahajiv/accordion-gallery.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/sahajiv/accordion-gallery.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Accordion Gallery",
+      "variants": [
+        "horizontal",
+        "vertical"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "selected",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "AccordionGalleryProps",
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly AccordionGalleryItem[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "defaultIndex",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "selectedIndex",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onSelectionChange",
+            "type": "(index:number)=>void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "orientation",
+            "type": "\"horizontal\"|\"vertical\"",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Creative",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

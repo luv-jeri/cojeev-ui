@@ -1,0 +1,4 @@
+.v-orbit-images { position:relative; width:100%; min-width:0; height:340px; overflow:hidden; border-radius:24px; background:var(--v-beige); }
+.v-orbit-images__center { position:absolute; inset:25% 22%; display:grid; place-items:center; text-align:center; }
+.v-orbit-images__image { position:absolute; top:0; left:0; width:72px; height:88px; object-fit:cover; border-radius:12px; }
+@media(max-width:480px) { .v-orbit-images { height:280px; } .v-orbit-images__image { width:58px; height:72px; } }
