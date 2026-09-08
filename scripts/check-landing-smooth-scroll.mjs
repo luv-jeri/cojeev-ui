@@ -115,6 +115,7 @@ try {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.goto(`${base}/`, { waitUntil: "networkidle" });
+    await page.locator("html.lenis").waitFor();
     assert.equal(await page.locator("html.lenis").count(), 1);
     await page.evaluate(() => scrollTo(0, 640));
     assert(await page.evaluate(() => scrollY > 0), "Touch viewport remains scrollable");
