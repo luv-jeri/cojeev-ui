@@ -745,7 +745,7 @@
       "paused",
       "reduced-motion"
     ],
-    "description": "Open concentric rings expand in SahaJiv colors and respond to pointer position.",
+    "description": "Open concentric rings expand in Cojeev colors and respond to pointer position.",
     "usage": [
       "Optional small closing accent, with pause.",
       "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
@@ -1166,7 +1166,7 @@
     "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
     "usage": [
       "Compose real content as children; keep essential controls above the decorative field.",
-      "Choose balanced, warm or cool SahaJiv accents and keep a visible pause control for continuous movement."
+      "Choose balanced, warm or cool Cojeev accents and keep a visible pause control for continuous movement."
     ],
     "accessibility": [
       "The canvas and static SVG are decorative and hidden from assistive technology; children retain native semantics.",
@@ -1197,7 +1197,7 @@
             "name": "tone",
             "type": "\"balanced\" | \"warm\" | \"cool\"",
             "default": "\"balanced\"",
-            "description": "Pairs existing theme-aware SahaJiv accent colors."
+            "description": "Pairs existing theme-aware Cojeev accent colors."
           },
           {
             "name": "speed",
@@ -1445,7 +1445,7 @@
       "active",
       "still"
     ],
-    "description": "Caller images are framed by original SahaJiv silhouettes using CSS masks or SVG clip paths.",
+    "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
     "usage": "Supply caller content and preserve the native labels and example controls.",
     "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
     "related": [
@@ -1473,7 +1473,7 @@
       "active",
       "still"
     ],
-    "description": "Caller images take the outline of a SahaJiv signature silhouette.",
+    "description": "Caller images take the outline of a Cojeev signature silhouette.",
     "usage": "Supply caller content and preserve the native labels and example controls.",
     "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
     "related": [

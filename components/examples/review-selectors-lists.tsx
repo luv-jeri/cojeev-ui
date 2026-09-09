@@ -2,14 +2,14 @@
 
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { Checkbox, type SelectorIndicator, type SelectorShape, type SelectorSize } from "@/registry/sahajiv/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/registry/sahajiv/ui/radio-group";
-import { Questionnaire, QuestionnaireQuestion, QuestionnaireOptions, QuestionnaireOption, QuestionnaireOptionBody } from "@/registry/sahajiv/ui/questionnaire";
-import { ItemAdornment, type ItemAdornmentOptions } from "@/registry/sahajiv/ui/item-adornment";
-import { MultiSelect } from "@/registry/sahajiv/ui/multi-select";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/sahajiv/ui/select";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { Meta } from "@/registry/sahajiv/ui/typography";
+import { Checkbox, type SelectorIndicator, type SelectorShape, type SelectorSize } from "@/registry/cojeev/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/registry/cojeev/ui/radio-group";
+import { Questionnaire, QuestionnaireQuestion, QuestionnaireOptions, QuestionnaireOption, QuestionnaireOptionBody } from "@/registry/cojeev/ui/questionnaire";
+import { ItemAdornment, type ItemAdornmentOptions } from "@/registry/cojeev/ui/item-adornment";
+import { MultiSelect } from "@/registry/cojeev/ui/multi-select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/cojeev/ui/select";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Meta } from "@/registry/cojeev/ui/typography";
 
 function reviewShape(variant?: string): SelectorShape {
   return variant === "pebble" || variant === "rounded" || variant === "circle" || variant === "leaf" || variant === "flower" ? variant : "organic";

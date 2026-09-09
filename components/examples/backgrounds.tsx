@@ -2,15 +2,15 @@
 
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { AmbientBackground, type AmbientBackgroundProps } from "@/registry/sahajiv/ui/ambient-background";
-import { Marquee, type MarqueeDirection, type MarqueeSpeed } from "@/registry/sahajiv/ui/marquee";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import { Shape } from "@/registry/sahajiv/ui/shape";
-import { ScrollArea } from "@/registry/sahajiv/ui/scroll-area";
-import { Slider } from "@/registry/sahajiv/ui/slider";
-import { Title, BodySecondary, Meta } from "@/registry/sahajiv/ui/typography";
+import { AmbientBackground, type AmbientBackgroundProps } from "@/registry/cojeev/ui/ambient-background";
+import { Marquee, type MarqueeDirection, type MarqueeSpeed } from "@/registry/cojeev/ui/marquee";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Label } from "@/registry/cojeev/ui/label";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import { Shape } from "@/registry/cojeev/ui/shape";
+import { ScrollArea } from "@/registry/cojeev/ui/scroll-area";
+import { Slider } from "@/registry/cojeev/ui/slider";
+import { Title, BodySecondary, Meta } from "@/registry/cojeev/ui/typography";
 
 export function AmbientBackgroundExample({ variant: initialVariant = "default" }: ExampleProps) {
   const [variant, setVariant] = React.useState<NonNullable<AmbientBackgroundProps["variant"]>>(initialVariant === "default" ? "drift" : initialVariant as NonNullable<AmbientBackgroundProps["variant"]>);

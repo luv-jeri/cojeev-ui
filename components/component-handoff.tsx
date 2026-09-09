@@ -1,12 +1,12 @@
 "use client";
 
 import { componentHandoffPacket } from "@/lib/component-handoff";
-import { CopyButton } from "@/registry/sahajiv/ui/code-block";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/registry/sahajiv/ui/collapsible";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { StateChevron } from "@/registry/sahajiv/ui/animated-icon";
-import { ScrollArea } from "@/registry/sahajiv/ui/scroll-area";
-import { BodySecondary, Title } from "@/registry/sahajiv/ui/typography";
+import { CopyButton } from "@/registry/cojeev/ui/code-block";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/registry/cojeev/ui/collapsible";
+import { Button } from "@/registry/cojeev/ui/button";
+import { StateChevron } from "@/registry/cojeev/ui/animated-icon";
+import { ScrollArea } from "@/registry/cojeev/ui/scroll-area";
+import { BodySecondary, Title } from "@/registry/cojeev/ui/typography";
 
 /** An inline reading aid composed from the library's disclosure, copy and scroll controls. */
 export function ComponentHandoff({ notes, code, variant, size }: { notes: string; code: string; variant: string; size: string }) {

@@ -1,19 +1,19 @@
 "use client";
 import * as React from "react";
-import {GlassSculpture,type SculptureStudio,type SculptureRendererState} from "@/registry/sahajiv/ui/glass-sculpture";
-import {FlowSculpture} from "@/registry/sahajiv/ui/flow-sculpture";
-import {ParticleSculpture} from "@/registry/sahajiv/ui/particle-sculpture";
-import {SculptureOrbit} from "@/registry/sahajiv/ui/sculpture-orbit";
-import {loadSculptureFile,type SculptureGeometryInput,type GlyphForm,type GlyphTone} from "@/registry/sahajiv/ui/glyph-sculpture";
-import {Button} from "@/registry/sahajiv/ui/button";
-import {Card} from "@/registry/sahajiv/ui/card";
-import {Icon} from "@/registry/sahajiv/ui/icon";
-import {Input} from "@/registry/sahajiv/ui/input";
-import {Label} from "@/registry/sahajiv/ui/label";
-import {NativeSelect,NativeSelectOption} from "@/registry/sahajiv/ui/native-select";
-import {Slider,SliderOutput} from "@/registry/sahajiv/ui/slider";
-import {Switch} from "@/registry/sahajiv/ui/switch";
-import {SectionTitle,BodySecondary,Meta} from "@/registry/sahajiv/ui/typography";
+import {GlassSculpture,type SculptureStudio,type SculptureRendererState} from "@/registry/cojeev/ui/glass-sculpture";
+import {FlowSculpture} from "@/registry/cojeev/ui/flow-sculpture";
+import {ParticleSculpture} from "@/registry/cojeev/ui/particle-sculpture";
+import {SculptureOrbit} from "@/registry/cojeev/ui/sculpture-orbit";
+import {loadSculptureFile,type SculptureGeometryInput,type GlyphForm,type GlyphTone} from "@/registry/cojeev/ui/glyph-sculpture";
+import {Button} from "@/registry/cojeev/ui/button";
+import {Card} from "@/registry/cojeev/ui/card";
+import {Icon} from "@/registry/cojeev/ui/icon";
+import {Input} from "@/registry/cojeev/ui/input";
+import {Label} from "@/registry/cojeev/ui/label";
+import {NativeSelect,NativeSelectOption} from "@/registry/cojeev/ui/native-select";
+import {Slider,SliderOutput} from "@/registry/cojeev/ui/slider";
+import {Switch} from "@/registry/cojeev/ui/switch";
+import {SectionTitle,BodySecondary,Meta} from "@/registry/cojeev/ui/typography";
 import type {ExampleProps} from "./types";
 
 function MaterialNumber({label,value,onChange,min,max,step=.05,disabled=false}:{label:string;value:number;onChange:(value:number)=>void;min:number;max:number;step?:number;disabled?:boolean}){

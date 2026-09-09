@@ -8,7 +8,7 @@ import { execFileSync } from "node:child_process";
 import { componentAPIs } from "../scripts/component-api.mjs";
 
 function fixture(files: Record<string, string>, ids: string[]) {
-  const root = mkdtempSync(join(tmpdir(), "sahajiv-component-api-"));
+  const root = mkdtempSync(join(tmpdir(), "cojeev-component-api-"));
   try {
     const contents = { "tsconfig.json": JSON.stringify({ compilerOptions: { strict: true, jsx: "preserve", moduleResolution: "node", skipLibCheck: true }, include: ["registry/**/*"] }), ...files };
     for (const [name, content] of Object.entries(contents)) { const path = join(root, name); mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, content); }
@@ -21,16 +21,16 @@ function fixture(files: Record<string, string>, ids: string[]) {
 
 test("imported aliases and interfaces document shared props while retaining Omit and Partial semantics", () => {
   const rows = fixture({
-    "registry/sahajiv/ui/demo.tsx": `import type { Shared as Common } from "../lib/barrel";
+    "registry/cojeev/ui/demo.tsx": `import type { Shared as Common } from "../lib/barrel";
 export type DemoProps = Omit<Partial<Common>, "hidden"> & { /** Local mode. */ mode: "still" | "moving" };
 export interface ExtendedProps extends Common { extra?: boolean }`,
-    "registry/sahajiv/lib/barrel.ts": `export type { Shared } from "./shared";`,
-    "registry/sahajiv/lib/shared.ts": `import type { Geometry } from "./geometry";
+    "registry/cojeev/lib/barrel.ts": `export type { Shared } from "./shared";`,
+    "registry/cojeev/lib/shared.ts": `import type { Geometry } from "./geometry";
 export interface Shared {
 /** Source geometry. */
 geometry: Geometry; turn?: number; hidden?: boolean }
 `,
-    "registry/sahajiv/lib/geometry.ts": `export type Geometry = { positions: readonly number[] };`,
+    "registry/cojeev/lib/geometry.ts": `export type Geometry = { positions: readonly number[] };`,
   }, ["demo"]).demo;
     const props = rows.find((row: { name: string }) => row.name === "DemoProps")!.props;
     assert.deepEqual(props.map((prop: { name: string }) => prop.name), ["geometry", "turn", "mode"]);
@@ -41,12 +41,12 @@ geometry: Geometry; turn?: number; hidden?: boolean }
 
 test("unresolved and cyclic local imports retain known authored props without recursing indefinitely", () => {
   const rows = fixture({
-    "registry/sahajiv/ui/broken.tsx": `import type { Missing } from "../lib/missing";
+    "registry/cojeev/ui/broken.tsx": `import type { Missing } from "../lib/missing";
 import type { Loop } from "../lib/loop";
 export type BrokenProps = Missing & { label: string };
 export type CyclicProps = Loop & { active?: boolean };`,
-    "registry/sahajiv/lib/loop.ts": `import type { Other } from "./other"; export type Loop = Other & { turn?: number };`,
-    "registry/sahajiv/lib/other.ts": `import type { Loop } from "./loop"; export type Other = Loop & { pitch?: number };`,
+    "registry/cojeev/lib/loop.ts": `import type { Other } from "./other"; export type Loop = Other & { turn?: number };`,
+    "registry/cojeev/lib/other.ts": `import type { Loop } from "./loop"; export type Other = Loop & { pitch?: number };`,
   }, ["broken"]).broken;
     assert.deepEqual(rows[0].props.map((prop: { name: string }) => prop.name), ["label"]);
     assert.deepEqual(rows[1].props.map((prop: { name: string }) => prop.name).sort(), ["active", "pitch", "turn"]);

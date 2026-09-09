@@ -1,20 +1,20 @@
 # Production refinements
 
-The original 66 components remain the foundation. The September 2026 refinement brief explicitly authorizes improving broken or excessive source behavior while preserving SahaJiv's visual family: warm canvas, expressive silhouettes, black structure, pink/olive/blue/yellow accents, Bricolage Grotesque headings and DM Sans body text. Historical source-comparison results remain in BASELINE-STATUS.md and the original gate reports; they are not claims of final production acceptance.
+The original 66 components remain the foundation. The September 2026 refinement brief explicitly authorizes improving broken or excessive source behavior while preserving Cojeev's visual family: warm canvas, expressive silhouettes, black structure, pink/olive/blue/yellow accents, Bricolage Grotesque headings and DM Sans body text. Historical source-comparison results remain in BASELINE-STATUS.md and the original gate reports; they are not claims of final production acceptance.
 
 ## Implemented
 
 - **Selection motion:** Glide now follows a calm, monotonic 240 ms path. Tabs no longer stack content entry and landing effects. Segment labels and bodies stay still; rapid changes settle on the most recent selection. All nine expressive presets remain selectable, with persistent speed and intensity controls.
 - **Checkbox:** Preserve the checked and indeterminate glyphs in dark mode. Final dark surface rules change the background color without clearing the authored SVG image.
 - **Stillness:** Reduced motion and global Off preserve readable content, authored fills and selected state. Off removes native press translation as well as generated body motion.
-- **Documentation:** One configurable example per page, exact variant/size code, visible motion controls, grouped catalog, individual usage/accessibility notes and related components. Fumadocs provides the documentation base; SahaJiv supplies its visible controls and surfaces.
+- **Documentation:** One configurable example per page, exact variant/size code, visible motion controls, grouped catalog, individual usage/accessibility notes and related components. Fumadocs provides the documentation base; Cojeev supplies its visible controls and surfaces.
 - **Examples:** Button includes local loading, failure and retry. IconButton exposes its six existing treatments and four sizes with a working toggle action. Example code describes actual local effects.
 
 - **Final visual corrections:** Readable secondary text on pastel/ink Cards and Bubble timestamps; contrasting Alert glyphs, navigation counts and collapse controls; selected ButtonGroup state stays distinct in dark mode. Default Tabs now have padded targets, including 48 px height for coarse pointers. Popovers sit above ordinary content and dialogs.
 - **Effects edge cases:** AnimatedNumber preserves caller refs and displays an em dash for unavailable values. Zero-duration TextReveal shows its entire text immediately.
 - **Mobile geometry:** Generated Morph SVGs are positioned before insertion, preventing their default size from inflating a control during measurement. Sheet columns and MotionControls can shrink and wrap within narrow screens.
 - **Touch sculpture:** Hover tilt requires a hover-capable input. Safari's compatibility mouse events after touch no longer start an unwanted tilt animation after Pause; real mouse interaction remains independent of idle animation.
-- **Fresh installation:** Foundation metadata merges SahaJiv's semantic color aliases after the initialized app's starter theme and registers the documented data-mode dark variant. Components retain their warm surfaces and readable dark text when installed directly by URL into an existing shadcn scaffold. Body and display fonts use the bundled DM Sans and Bricolage faces; explicit host font utilities remain the app's choice.
+- **Fresh installation:** Foundation metadata merges Cojeev's semantic color aliases after the initialized app's starter theme and registers the documented data-mode dark variant. Components retain their warm surfaces and readable dark text when installed directly by URL into an existing shadcn scaffold. Body and display fonts use the bundled DM Sans and Bricolage faces; explicit host font utilities remain the app's choice.
 
 ## Additional components
 

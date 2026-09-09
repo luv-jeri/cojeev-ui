@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Input } from "@/registry/sahajiv/ui/input";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Input } from "@/registry/cojeev/ui/input";
 import { LIMITS, type Pin } from "@/lib/reporting/contracts";
 import { structuralPath } from "@/lib/reporting/diagnostics";
 import { cropImage, type Crop } from "@/lib/reporting/capture";

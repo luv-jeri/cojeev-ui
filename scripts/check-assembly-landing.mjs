@@ -3,14 +3,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
-const base=process.env.BASE_URL??'http://127.0.0.1:4320/sahajiv-ui';
+const base=process.env.BASE_URL??'http://127.0.0.1:4320/cojeev-ui';
 const output=path.resolve(process.env.OUTPUT_DIR??'output/playwright/review-assembly-redesign');
 fs.mkdirSync(output,{recursive:true});
 const browser=await chromium.launch(),results={checks:[],errors:[]};
 try{
  for(const width of [360,390,1440].filter(width=>!process.env.WIDTH||width===Number(process.env.WIDTH)))for(const theme of ['light','dark']){
   const context=await browser.newContext({viewport:{width,height:1050},colorScheme:theme});
-  await context.addInitScript(theme=>{localStorage.setItem('sahajiv-docs-theme',theme);localStorage.removeItem('v-motion');localStorage.removeItem('v-flow-v1')},theme);
+  await context.addInitScript(theme=>{localStorage.setItem('cojeev-docs-theme',theme);localStorage.removeItem('v-motion');localStorage.removeItem('v-flow-v1')},theme);
   const page=await context.newPage();page.on('pageerror',error=>results.errors.push(error.message));
   await page.goto(base+'/');
   const assembly=page.locator('#assembly [data-slot="organism-assembly"]'),organism=assembly.locator('[data-slot="organism-composition"]');

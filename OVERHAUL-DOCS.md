@@ -20,8 +20,8 @@ September 8, 2026. Implemented within the documentation work stream in `OVERHAUL
 | `components/component-preview.tsx` | Integrates controls/actions with Preview while retaining selected source, variant/size state, reset and Suspense fallback |
 | `app/docs/docs.css` | Documentation-only layout, type hierarchy, rail roles, controls, responsive arrangements and local contents styles |
 | `app/docs/[component]/page.tsx` | Article/contents composition, title/category row, installation before usage, anchor targets and API grouping |
-| `registry/sahajiv/ui/preview.tsx` | Backward-compatible optional `controls` and `actions` ReactNode slots plus named frame/toolbar/panel subparts |
-| `registry/sahajiv/styles/preview.css` | Installable integrated specimen frame, canvas and responsive toolbar styles |
+| `registry/cojeev/ui/preview.tsx` | Backward-compatible optional `controls` and `actions` ReactNode slots plus named frame/toolbar/panel subparts |
+| `registry/cojeev/styles/preview.css` | Installable integrated specimen frame, canvas and responsive toolbar styles |
 
 ## Evidence and limits
 

@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { FocusSession } from "@/registry/sahajiv/ui/focus-session";
-import { InviteCard } from "@/registry/sahajiv/ui/invite-card";
-import type { OrganismAction } from "@/registry/sahajiv/ui/organism-composition";
-import { ToggleGroup, ToggleGroupItem } from "@/registry/sahajiv/ui/toggle-group";
-import { Meta } from "@/registry/sahajiv/ui/typography";
+import { FocusSession } from "@/registry/cojeev/ui/focus-session";
+import { InviteCard } from "@/registry/cojeev/ui/invite-card";
+import type { OrganismAction } from "@/registry/cojeev/ui/organism-composition";
+import { ToggleGroup, ToggleGroupItem } from "@/registry/cojeev/ui/toggle-group";
+import { Meta } from "@/registry/cojeev/ui/typography";
 
 const frame: React.CSSProperties = { display: "grid", gap: 20, width: "100%", maxWidth: 440, marginInline: "auto", minWidth: 0 };
 

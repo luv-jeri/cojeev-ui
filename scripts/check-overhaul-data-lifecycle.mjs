@@ -10,7 +10,7 @@ const args = Object.fromEntries(
     return [k, v.join("=")];
   }),
 );
-const base = (args.url || "http://127.0.0.1:4320/sahajiv-ui").replace(
+const base = (args.url || "http://127.0.0.1:4320/cojeev-ui").replace(
   /\/$/,
   "",
 );
@@ -25,11 +25,11 @@ const bundle = await build({
     loader: "tsx",
     contents: `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {DataTable} from './registry/sahajiv/ui/data-table';import {Button} from './registry/sahajiv/ui/button';
-import {Pagination} from './registry/sahajiv/ui/pagination';
-import {Command,CommandInput,CommandList,CommandGroup,CommandItem,CommandEmpty} from './registry/sahajiv/ui/command';
-import {Combobox} from './registry/sahajiv/ui/combobox';
-import {setMotionMode} from './registry/sahajiv/motion/settings';
+import {DataTable} from './registry/cojeev/ui/data-table';import {Button} from './registry/cojeev/ui/button';
+import {Pagination} from './registry/cojeev/ui/pagination';
+import {Command,CommandInput,CommandList,CommandGroup,CommandItem,CommandEmpty} from './registry/cojeev/ui/command';
+import {Combobox} from './registry/cojeev/ui/combobox';
+import {setMotionMode} from './registry/cojeev/motion/settings';
 const records=['Alpha','Bravo','Charlie','Delta','Echo','Foxtrot'].map((name,index)=>({id:index+1,name,odd:index%2===0}));
 const filters=[{id:'odd',label:'Odd',predicate:r=>r.odd},{id:'none',label:'No records',predicate:()=>false}];
 function Fixture(){const [epoch,reset]=React.useReducer(n=>n+1,0);const [ids,setIds]=React.useState(true);const [events,setEvents]=React.useState([]);const [page,setPage]=React.useState(1);const [custom,setCustom]=React.useState(false);const [external,setExternal]=React.useState(false);const [label,setLabel]=React.useState('Alpha');const [selection,setSelection]=React.useState('');const [combo,setCombo]=React.useState('alpha');
@@ -107,7 +107,7 @@ try {
     page.setDefaultTimeout(5000);
     page.on("pageerror", (e) => result.errors.push(e.message));
     await page.addInitScript((theme) => {
-      localStorage.setItem("sahajiv-docs-theme", theme);
+      localStorage.setItem("cojeev-docs-theme", theme);
       localStorage.removeItem("v-motion");
       localStorage.removeItem("v-flow-v1");
     }, theme);

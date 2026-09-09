@@ -18,7 +18,7 @@
 
 ## Group A — theme and scrolling (motion_scroll)
 
-Own: `registry/sahajiv/motion/theme-transition.ts`, `ui/theme-toggle.tsx`, `styles/theme-toggle.css`, `motion/scroll-thumb.ts`, `ui/scroll-area.tsx`, `styles/scroll-area.css`, related focused checks and examples in `components/examples/motion-primitives.tsx` when needed.
+Own: `registry/cojeev/motion/theme-transition.ts`, `ui/theme-toggle.tsx`, `styles/theme-toggle.css`, `motion/scroll-thumb.ts`, `ui/scroll-area.tsx`, `styles/scroll-area.css`, related focused checks and examples in `components/examples/motion-primitives.tsx` when needed.
 
 - [x] Replace the uniform theme crossfade with a slower organic reveal from varied corners, edges and centre. Reveal both destination colours and actual page text/components coherently.
 - [x] Preserve sun/moon morphing and expose the origin through the existing theme callback contract, without coupling registry code to the docs app.

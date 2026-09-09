@@ -4,7 +4,7 @@ Updated 2026-09-08. This extends the [initial Glyph Sculpture slice](glyph-sculp
 
 ## Per-source result
 
-| Canonical source | Public inspection in this slice | SahaJiv implementation | Coverage judgment |
+| Canonical source | Public inspection in this slice | Cojeev implementation | Coverage judgment |
 | --- | --- | --- | --- |
 | [ASCII Object](https://canvasui.dev/docs/components/ascii-object) | The live duck consisted of glyphs. Dragging changed its visible face; Full → Digits changed the character repertoire. Public options/docs were read. | `GlyphSculpture` uses actual triangle depth and shaded normals, three character sets, directional contour marks, fitted custom geometry and `SculptureOrbit`. | Partial original adaptation. Geometry intake, orbit and zoom now work. Measured glyph-template matching remains unimplemented; directional contour marks are a simpler algorithm. |
 | [Dithered Object](https://canvasui.dev/docs/components/dithered-object) | The live duck used shaded dots. Bayer → Halftone changed the print pattern; dragging exposed its opposite face. Other public options were read, not all exercised. | `DitherSculpture`: ordered Bayer thresholds, clustered halftone, Floyd-style error diffusion, and deterministic stipple share the actual depth-tested 3D surface. | Useful core verified. Original algorithms reproduce the useful geometry-to-print role; source API, studio materials, renderer and exact visual parity are not claimed. |
@@ -14,7 +14,7 @@ The three live references were individually inspected through the native browser
 
 ## Native APIs
 
-The native files are under `registry/sahajiv/`:
+The native files are under `registry/cojeev/`:
 
 - `ui/glyph-sculpture.tsx`: `GlyphSculpture`, common `SculptureSurface`, and geometry/import helper exports.
 - `ui/dither-sculpture.tsx`: `DitherSculpture` and `DitherPattern`.

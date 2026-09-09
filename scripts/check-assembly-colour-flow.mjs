@@ -3,13 +3,13 @@ import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-const base=process.env.BASE_URL??'http://127.0.0.1:4320/sahajiv-ui';
+const base=process.env.BASE_URL??'http://127.0.0.1:4320/cojeev-ui';
 const out=path.resolve(process.env.OUTPUT_DIR??'output/playwright/review-assembly-colour-flow');
 const browser=await chromium.launch(),results=[];
 try {
  for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width:390,height:1050},colorScheme:theme});
-  await page.addInitScript(theme=>{localStorage.setItem('sahajiv-docs-theme',theme);localStorage.setItem('v-motion',JSON.stringify({v:3,mode:'subtle'}));localStorage.setItem('v-flow-v1',JSON.stringify({variant:'glide'}))},theme);
+  await page.addInitScript(theme=>{localStorage.setItem('cojeev-docs-theme',theme);localStorage.setItem('v-motion',JSON.stringify({v:3,mode:'subtle'}));localStorage.setItem('v-flow-v1',JSON.stringify({variant:'glide'}))},theme);
   await page.goto(base+'/');const studio=page.locator('#assembly [data-slot=organism-assembly]');await studio.waitFor();await studio.scrollIntoViewIfNeeded();await page.waitForTimeout(180);
   const captures=[],pointers=[],quiet=[];results.push({theme,captures,pointers,quiet});
   const startCapture=()=>page.evaluate(()=>{
@@ -80,7 +80,7 @@ try {
   await page.setViewportSize({width:390,height:1050});await page.waitForTimeout(200);
   await startCapture();await studio.getByRole('button',{name:'Replay assembly'}).click();await page.waitForTimeout(120);await studio.getByRole('button',{name:'Chat',exact:true}).click();await page.waitForTimeout(220);
   await page.evaluate(()=>{document.documentElement.dataset.mode=document.documentElement.dataset.mode==='dark'?'light':'dark'});await page.waitForTimeout(170);
-  await page.evaluate(()=>{localStorage.setItem('sahajiv-appearance',JSON.stringify({palette:'tide',contrast:60}));window.dispatchEvent(new StorageEvent('storage',{key:'sahajiv-appearance'}))});
+  await page.evaluate(()=>{localStorage.setItem('cojeev-appearance',JSON.stringify({palette:'tide',contrast:60}));window.dispatchEvent(new StorageEvent('storage',{key:'cojeev-appearance'}))});
   await finishCapture('Rapid replay / theme / palette','chat');
   for(const mode of ['off','reduced']){
    await page.emulateMedia({reducedMotion:'no-preference'});await page.evaluate(()=>{localStorage.setItem('v-motion',JSON.stringify({v:3,mode:'subtle'}));window.dispatchEvent(new Event('v-motion-change'))});

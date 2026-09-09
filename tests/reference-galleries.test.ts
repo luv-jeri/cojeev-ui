@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { galleryIndex, galleryOffset, spiralPlacement, waveBoundary, transitionLayers, ditherCells, stepGalleryTransition } from "../registry/sahajiv/lib/reference-gallery-geometry";
+import { galleryIndex, galleryOffset, spiralPlacement, waveBoundary, transitionLayers, ditherCells, stepGalleryTransition } from "../registry/cojeev/lib/reference-gallery-geometry";
 
 test("selection wraps in either direction and remains valid after item removal", () => {
  assert.equal(galleryIndex(-1, 4), 3); assert.equal(galleryIndex(12, 5), 2);
@@ -40,11 +40,11 @@ test("ordered dither is deterministic, bounded, and fills at cover peak", () => 
 
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { GrainDissolve } from "../registry/sahajiv/ui/grain-dissolve";
-import { WaveWipe } from "../registry/sahajiv/ui/wave-wipe";
-import { DitherDissolve } from "../registry/sahajiv/ui/dither-dissolve";
-import { AccordionGallery } from "../registry/sahajiv/ui/accordion-gallery";
-import { OptionWheel } from "../registry/sahajiv/ui/option-wheel";
+import { GrainDissolve } from "../registry/cojeev/ui/grain-dissolve";
+import { WaveWipe } from "../registry/cojeev/ui/wave-wipe";
+import { DitherDissolve } from "../registry/cojeev/ui/dither-dissolve";
+import { AccordionGallery } from "../registry/cojeev/ui/accordion-gallery";
+import { OptionWheel } from "../registry/cojeev/ui/option-wheel";
 
 test("all transitions keep the outgoing interactive subtree inert for both initial targets",()=>{
  for(const Component of [GrainDissolve,WaveWipe,DitherDissolve]) for(const active of [false,true]) {

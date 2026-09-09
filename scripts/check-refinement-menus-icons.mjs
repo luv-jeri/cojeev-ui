@@ -5,21 +5,21 @@ import assert from "node:assert/strict";
 import {build} from "esbuild";
 import {chromium} from "playwright";
 const args=Object.fromEntries(process.argv.slice(2).map(x=>{const [k,...v]=x.replace(/^--/,"").split("=");return[k,v.join("=")]}));
-const base=(args.url||"http://127.0.0.1:4320/sahajiv-ui").replace(/\/$/,"");
+const base=(args.url||"http://127.0.0.1:4320/cojeev-ui").replace(/\/$/,"");
 const output=path.resolve(args.output||"output/playwright/refinement-menus-icons");fs.mkdirSync(output,{recursive:true});
 const source=String.raw`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {Button} from './registry/sahajiv/ui/button';import {Icon} from './registry/sahajiv/ui/icon';
-import {AnimatedIcon} from './registry/sahajiv/ui/animated-icon';
-import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem,DropdownMenuCheckboxItem,DropdownMenuRadioGroup,DropdownMenuRadioItem,DropdownMenuSub,DropdownMenuSubTrigger,DropdownMenuSubContent} from './registry/sahajiv/ui/dropdown-menu';
-import {Menubar,MenubarMenu,MenubarTrigger,MenubarContent,MenubarItem} from './registry/sahajiv/ui/menubar';
-import {Select,SelectTrigger,SelectValue,SelectContent,SelectItem} from './registry/sahajiv/ui/select';
-import {Combobox} from './registry/sahajiv/ui/combobox';import {MultiSelect} from './registry/sahajiv/ui/multi-select';
-import {NavigationMenu,NavigationMenuList,NavigationMenuItem,NavigationMenuLink,NavigationMenuTrigger,NavigationMenuContent} from './registry/sahajiv/ui/navigation-menu';
-import {Command,CommandInput,CommandList,CommandItem,CommandEmpty,CommandShortcut} from './registry/sahajiv/ui/command';
-import {ContextMenu,ContextMenuTrigger,ContextMenuContent,ContextMenuItem,ContextMenuCheckboxItem} from './registry/sahajiv/ui/context-menu';
+import {Button} from './registry/cojeev/ui/button';import {Icon} from './registry/cojeev/ui/icon';
+import {AnimatedIcon} from './registry/cojeev/ui/animated-icon';
+import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem,DropdownMenuCheckboxItem,DropdownMenuRadioGroup,DropdownMenuRadioItem,DropdownMenuSub,DropdownMenuSubTrigger,DropdownMenuSubContent} from './registry/cojeev/ui/dropdown-menu';
+import {Menubar,MenubarMenu,MenubarTrigger,MenubarContent,MenubarItem} from './registry/cojeev/ui/menubar';
+import {Select,SelectTrigger,SelectValue,SelectContent,SelectItem} from './registry/cojeev/ui/select';
+import {Combobox} from './registry/cojeev/ui/combobox';import {MultiSelect} from './registry/cojeev/ui/multi-select';
+import {NavigationMenu,NavigationMenuList,NavigationMenuItem,NavigationMenuLink,NavigationMenuTrigger,NavigationMenuContent} from './registry/cojeev/ui/navigation-menu';
+import {Command,CommandInput,CommandList,CommandItem,CommandEmpty,CommandShortcut} from './registry/cojeev/ui/command';
+import {ContextMenu,ContextMenuTrigger,ContextMenuContent,ContextMenuItem,ContextMenuCheckboxItem} from './registry/cojeev/ui/context-menu';
 import {IconPackExample,ItemAdornmentExample} from './components/examples/menu-icons';
-import {setMotionMode} from './registry/sahajiv/motion/settings';
+import {setMotionMode} from './registry/cojeev/motion/settings';
 const options=[{value:'alpha',label:'Alpha project'},{value:'bravo',label:'Bravo project'},{value:'charlie',label:'Charlie project'},{value:'disabled',label:'Unavailable project',disabled:true}];
 function Fixture(){const [event,setEvent]=React.useState('None');const [checked,setChecked]=React.useState(false);const [radio,setRadio]=React.useState('daily');const [select,setSelect]=React.useState('alpha');const [combo,setCombo]=React.useState('');const [multi,setMulti]=React.useState([]);const [nav,setNav]=React.useState('home');const [active,setActive]=React.useState(false);
 return <main id='menu-fixture' style={{maxWidth:800,margin:'0 auto',padding:24,display:'grid',gap:28,color:'var(--v-text)',background:'var(--v-canvas)'}}>
@@ -54,7 +54,7 @@ async function settle(page){await page.waitForTimeout(350)}
 async function capture(page,locator,name,width,theme){await settle(page);await locator.screenshot({path:path.join(output,`${name}-${width}-${theme}.png`)});const bounds=await locator.evaluate(e=>({x:e.getBoundingClientRect().x,right:e.getBoundingClientRect().right,width:e.getBoundingClientRect().width,scroll:e.scrollWidth,client:e.clientWidth}));if(!(bounds.x>=-1&&bounds.right<=width+1))results.defects.push({name,width,theme,bounds});return bounds;}
 async function identity(list){return list.locator('[data-slot=item-adornment]').evaluateAll(es=>es.map(e=>({label:e.parentElement.getAttribute('data-value')??e.parentElement.textContent,shape:e.dataset.shape,color:e.dataset.color})));}
 try{for(const [width,theme] of [[390,'dark'],[1440,'light']]){
-const context=await browser.newContext({viewport:{width,height:1000},colorScheme:theme});const page=await context.newPage();page.setDefaultTimeout(6000);page.on('pageerror',e=>results.errors.push(e.message));await page.addInitScript(theme=>{localStorage.setItem('sahajiv-docs-theme',theme);localStorage.removeItem('v-motion');localStorage.removeItem('v-flow-v1')},theme);
+const context=await browser.newContext({viewport:{width,height:1000},colorScheme:theme});const page=await context.newPage();page.setDefaultTimeout(6000);page.on('pageerror',e=>results.errors.push(e.message));await page.addInitScript(theme=>{localStorage.setItem('cojeev-docs-theme',theme);localStorage.removeItem('v-motion');localStorage.removeItem('v-flow-v1')},theme);
 await page.goto(base+'/docs/button/');await page.locator('.docs-specimen [data-slot=button]').first().waitFor();
 const variant=page.getByRole('combobox',{name:'Variant',exact:true});await variant.click();await page.getByRole('option',{name:'secondary',exact:true}).click();await page.locator('.docs-specimen[data-variant=secondary] [data-slot=button]').first().waitFor();const sizeControl=page.getByRole('combobox',{name:'Size',exact:true});await sizeControl.click();await page.getByRole('option',{name:'Large',exact:true}).click();await page.locator('.docs-specimen[data-variant=secondary][data-size=lg] [data-slot=button]').first().waitFor();await capture(page,page.locator('.docs-playground'),'docs-controls',width,theme);
 await page.addScriptTag({content:bundle.outputFiles[0].text});await page.locator('#menu-fixture').waitFor();await page.locator('#menu-fixture').getByRole('button',{name:'Motion on',exact:true}).click();await settle(page);

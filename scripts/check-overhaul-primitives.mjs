@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 import { build } from "esbuild";
 
 const args = Object.fromEntries(process.argv.slice(2).map(arg => { const [key, ...value] = arg.replace(/^--/, "").split("="); return [key, value.join("=")]; }));
-const base = (args.url || "http://127.0.0.1:4320/sahajiv-ui").replace(/\/$/, "");
+const base = (args.url || "http://127.0.0.1:4320/cojeev-ui").replace(/\/$/, "");
 const output = path.resolve(args.output || "output/playwright/overhaul-primitives");
 const widths = (args.widths || "1440,390").split(",").map(Number);
 const only = args.only?.split(",");
@@ -52,11 +52,11 @@ async function stable(page, locator) {
 const fixture = await build({
   stdin: { sourcefile: "primitives-audit.tsx", loader: "tsx", resolveDir: process.cwd(), contents: `
     import React from 'react'; import {createRoot} from 'react-dom/client';
-    import {AnimatedIcon} from './registry/sahajiv/ui/animated-icon';
-    import {Card} from './registry/sahajiv/ui/card';
-    import {MotionSurface} from './registry/sahajiv/ui/presence';
-    import {ThemeToggle,applyTheme} from './registry/sahajiv/ui/theme-toggle';
-    import {useChoreography} from './registry/sahajiv/motion/choreography';
+    import {AnimatedIcon} from './registry/cojeev/ui/animated-icon';
+    import {Card} from './registry/cojeev/ui/card';
+    import {MotionSurface} from './registry/cojeev/ui/presence';
+    import {ThemeToggle,applyTheme} from './registry/cojeev/ui/theme-toggle';
+    import {useChoreography} from './registry/cojeev/motion/choreography';
     const host=document.createElement('div'); host.id='primitives-fixture';
     host.style.cssText='position:fixed;top:40px;left:16px;width:min(340px,calc(100vw - 32px));padding:20px;background:var(--v-canvas);z-index:999999;border:1px solid var(--v-border)'; document.body.append(host);
     function Audit(){const [mode,setMode]=React.useState('light');const {quiet}=useChoreography();

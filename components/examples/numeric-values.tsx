@@ -1,10 +1,10 @@
 "use client";
 import * as React from "react";
-import { AnimatedNumber } from "@/registry/sahajiv/ui/animated-number";
-import { NumberInput } from "@/registry/sahajiv/ui/number-input";
-import { Button } from "@/registry/sahajiv/ui/button";
+import { AnimatedNumber } from "@/registry/cojeev/ui/animated-number";
+import { NumberInput } from "@/registry/cojeev/ui/number-input";
+import { Button } from "@/registry/cojeev/ui/button";
 import type { ExampleProps } from "./types";
-import { BodySecondary, Display, Meta } from "@/registry/sahajiv/ui/typography";
+import { BodySecondary, Display, Meta } from "@/registry/cojeev/ui/typography";
 
 export function AnimatedNumberExample({ variant = "default" }: ExampleProps) {
   const [value, setValue] = React.useState(1240.75);

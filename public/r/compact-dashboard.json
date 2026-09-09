@@ -5,12 +5,12 @@
   "description": "Historical compatibility alias for WorkSidePanel; use the dedicated panel composition in new work.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/compact-dashboard.tsx",
+      "path": "registry/cojeev/ui/compact-dashboard.tsx",
       "content": "\"use client\";\nexport { CompactDashboard, type OrganismProps as CompactDashboardProps } from \"@/components/ui/organism-composition\";\n",
       "type": "registry:ui"
     }

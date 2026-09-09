@@ -2,15 +2,15 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "conversation-panel",
   "title": "Conversation panel",
-  "description": "A reusable conversation panel composed from SahaJiv base components.",
+  "description": "A reusable conversation panel composed from Cojeev base components.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/conversation-panel.tsx",
+      "path": "registry/cojeev/ui/conversation-panel.tsx",
       "content": "\"use client\";\nexport { ConversationPanel, type OrganismProps as ConversationPanelProps } from \"@/components/ui/organism-composition\";\n",
       "type": "registry:ui"
     }

@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { ActivityFeed, type ActivityEntry } from "@/registry/sahajiv/ui/activity-feed";
-import { MilestonePath, type Milestone } from "@/registry/sahajiv/ui/milestone-path";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Meta } from "@/registry/sahajiv/ui/typography";
+import { ActivityFeed, type ActivityEntry } from "@/registry/cojeev/ui/activity-feed";
+import { MilestonePath, type Milestone } from "@/registry/cojeev/ui/milestone-path";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Meta } from "@/registry/cojeev/ui/typography";
 
 const milestoneTitles = ["Find the right question", "Make a first version", "Invite a fresh perspective", "Bring it into the day"];
 const milestoneDescriptions = [

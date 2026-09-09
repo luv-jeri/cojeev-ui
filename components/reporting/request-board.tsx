@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search, Sparkles } from "lucide-react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Input } from "@/registry/sahajiv/ui/input";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Input } from "@/registry/cojeev/ui/input";
 import { REPORTING_API, reportingFetch } from "@/lib/reporting/client";
 import type { RequestTopic } from "@/lib/reporting/contracts";
 import { openRequest, STATUS_LABELS } from "./reporting-widget";
@@ -25,7 +25,7 @@ export function RequestBoard() {
   }, [query]);
   useEffect(() => { if (!REPORTING_API) return; const abort = new AbortController(); const timeout = setTimeout(() => { void load(0, abort.signal); }, 250); return () => { clearTimeout(timeout); abort.abort(); }; }, [load, reload]);
   return <main className="requests-page">
-    <nav className="requests-nav" aria-label="Request board navigation"><Link href="/">SahaJiv UI</Link><Link href="/docs">Explore the library <ArrowUpRight size={15} /></Link></nav>
+    <nav className="requests-nav" aria-label="Request board navigation"><Link href="/">Cojeev UI</Link><Link href="/docs">Explore the library <ArrowUpRight size={15} /></Link></nav>
     <header className="requests-header"><div><span className="requests-kicker">Made with your input</span><h1>What should we<br />build next?</h1><p>Ask for the component you wish existed. Join an idea that would help you, and follow it from request to release.</p></div><div className="requests-invitation"><Sparkles size={28} aria-hidden="true" /><p>We aim to build requested components within <strong>36 hours</strong>. Timing depends on demand and complexity.</p><Button onClick={() => openRequest()}>Request a component <ArrowUpRight size={17} /></Button></div></header>
     <section className="requests-list" aria-labelledby="requests-heading"><div className="requests-list-head"><h2 id="requests-heading">The request board</h2><label className="requests-search"><Search size={16} aria-hidden="true" /><span className="sr-only">Search component requests</span><Input type="search" placeholder="Search requests" value={query} onChange={event => setQuery(event.target.value)} /></label></div>
       {!REPORTING_API ? <div className="requests-empty"><h3>The board is being connected.</h3><p>You can prepare a request using the panel. Sending and live demand will appear when the report service is ready.</p><Button variant="outline" onClick={() => openRequest()}>Prepare a request</Button></div> : <>

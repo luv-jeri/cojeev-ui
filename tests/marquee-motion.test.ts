@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { advanceMarquee, marqueeDepth, marqueeScrollVelocity } from "../registry/sahajiv/lib/marquee-motion";
+import { advanceMarquee, marqueeDepth, marqueeScrollVelocity } from "../registry/cojeev/lib/marquee-motion";
 
 test("scroll reversal passes through the current velocity and stays on the same periodic strip", () => {
   const state = { phase: 290, velocity: 40, scrollVelocity: -1200, scrollDirection: 1 };

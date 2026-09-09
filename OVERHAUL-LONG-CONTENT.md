@@ -6,10 +6,10 @@ Completed 2026-09-08. Scope: fourteen consumer compositions at 320px, light and 
 
 | File | Reproduced defect | Correction |
 | --- | --- | --- |
-| `registry/sahajiv/styles/item.css` | Description's unbroken filename forced the inner grid track beyond the row; page expanded to 1223px. | Description gets `min-width:0` and `overflow-wrap:anywhere`. Existing selected Disk foreground is preserved. |
-| `registry/sahajiv/styles/attachment.css` | An AttachmentName nested in a body div remained inline, so ellipsis did not apply; page expanded to 1592px. | Name is a block with `max-width:100%`, preserving its existing ellipsis and full DOM text. |
-| `registry/sahajiv/styles/input-group.css` | Long InputGroupText expanded beyond the multiline composer; page expanded to 1317px. | Helper text gets bounded width and unbroken-word wrapping. |
-| `registry/sahajiv/styles/alert.css` | Inner grid track expanded behind the Alert's clipped surface, hiding most prose despite correct outer width. This was found in screenshot review. | Body uses `minmax(0,1fr)`; title and description wrap long words. |
+| `registry/cojeev/styles/item.css` | Description's unbroken filename forced the inner grid track beyond the row; page expanded to 1223px. | Description gets `min-width:0` and `overflow-wrap:anywhere`. Existing selected Disk foreground is preserved. |
+| `registry/cojeev/styles/attachment.css` | An AttachmentName nested in a body div remained inline, so ellipsis did not apply; page expanded to 1592px. | Name is a block with `max-width:100%`, preserving its existing ellipsis and full DOM text. |
+| `registry/cojeev/styles/input-group.css` | Long InputGroupText expanded beyond the multiline composer; page expanded to 1317px. | Helper text gets bounded width and unbroken-word wrapping. |
+| `registry/cojeev/styles/alert.css` | Inner grid track expanded behind the Alert's clipped surface, hiding most prose despite correct outer width. This was found in screenshot review. | Body uses `minmax(0,1fr)`; title and description wrap long words. |
 
 These are the only product source files changed during this pass. Sources were frozen after the Alert correction.
 
@@ -39,7 +39,7 @@ Every row below was rendered in both themes at 320px. Final light and dark scree
 Added `scripts/check-overhaul-long-content.mjs`. It bundles only an isolated in-memory React consumer with esbuild, loads CSS links from the running docs page, and mounts each case on a separate audit route. It writes its fixture source, screenshots, and result records to the selected artifact folder. It does not generate the registry or build Next.
 
 ```sh
-rtk proxy node scripts/check-overhaul-long-content.mjs --url=http://127.0.0.1:4320/sahajiv-ui --output=output/playwright/overhaul-long-content/verified
+rtk proxy node scripts/check-overhaul-long-content.mjs --url=http://127.0.0.1:4320/cojeev-ui --output=output/playwright/overhaul-long-content/verified
 ```
 
 The gate checks outer viewport width, actual text ranges against the owning element **and the surface bounds**, accessible filename retention for deliberate truncation, table scrolling, multiline caret/scroll reachability, and the stated actions. Text-range measurement excludes morph decorations; their painted overhang must not be mistaken for clipped text.

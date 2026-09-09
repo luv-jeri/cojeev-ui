@@ -1,4 +1,4 @@
-# SahaJiv UI 0.2.0 — signature overhaul
+# Cojeev UI 0.2.0 — signature overhaul
 
 **Historical evidence:** this report describes the earlier 89-entry overhaul snapshot. It does not certify the current 100-entry worktree. Publication is paused for owner review; GitHub deployment run `34219556763` is completed/cancelled. The current local preview and its focused checks are recorded in [REVIEW-PASS-REPORT.md](REVIEW-PASS-REPORT.md).
 
@@ -9,7 +9,7 @@
 - **Six chart types and dynamic tooltips:** 16 layout variants, responsive geometry, light/dark tokens, actual legend filtering, pointer/keyboard inspection, accessible data tables and updated/zero/missing/empty examples.
 - **Agent interfaces:** AgentState and AgentChat compose Bubble, Avatar, InputGroup/Input, Button, Attachment, Questionnaire and MessageScroller. Local demonstrations cover permission, denial, options, cancel, file attachment, progress, failure and retry. These are explicitly simulated; no agent backend is implied.
 - **Shared motion:** Motion for React drives selection and popup paint, organic document/region scrollbars, theme/icon morphs, pointer depth and retained content. Off and reduced motion preserve static usable content. [The lifecycle checklist](OVERHAUL-LIFECYCLE.md) records actual conditional boundaries and native-library limits.
-- **Library-built documentation:** Fumadocs remains the framework; visible navigation, previews, controls, inputs, scrolling and theme controls use SahaJiv components. [DESIGN.md](DESIGN.md) records the implemented palette, typography, spacing and motion ownership.
+- **Library-built documentation:** Fumadocs remains the framework; visible navigation, previews, controls, inputs, scrolling and theme controls use Cojeev components. [DESIGN.md](DESIGN.md) records the implemented palette, typography, spacing and motion ownership.
 
 ## Confirmed checks
 
@@ -46,7 +46,7 @@ npm run gate:mobile
 node scripts/audit-registry-consumer.mjs
 ```
 
-`npm run dev -- --hostname 0.0.0.0 --port 4320` serves live changes at `/sahajiv-ui/`. The workspace demonstration is at `/sahajiv-ui/workspace/`; the shape catalogue is at `/sahajiv-ui/docs/shape/`.
+`npm run dev -- --hostname 0.0.0.0 --port 4320` serves live changes at `/cojeev-ui/`. The workspace demonstration is at `/cojeev-ui/workspace/`; the shape catalogue is at `/cojeev-ui/docs/shape/`.
 
 ## Boundaries
 

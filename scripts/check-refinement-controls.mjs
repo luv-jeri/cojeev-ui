@@ -18,7 +18,7 @@ const output = path.resolve(
   args.output || "output/playwright/refinement-controls/round-1",
 );
 fs.mkdirSync(output, { recursive: true });
-const base = args.url || "http://127.0.0.1:4320/sahajiv-ui";
+const base = args.url || "http://127.0.0.1:4320/cojeev-ui";
 const bundle = await build({
   entryPoints: [path.join(root, "scripts/fixtures/refined-controls.tsx")],
   tsconfig: path.join(root, "tsconfig.json"),

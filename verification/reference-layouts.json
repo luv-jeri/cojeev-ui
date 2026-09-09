@@ -73,7 +73,7 @@
       "active",
       "still"
     ],
-    "description": "Caller images are framed by original SahaJiv silhouettes using CSS masks or SVG clip paths.",
+    "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
     "usage": "Supply caller content and preserve the native labels and example controls.",
     "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
     "related": [
@@ -101,7 +101,7 @@
       "active",
       "still"
     ],
-    "description": "Caller images take the outline of a SahaJiv signature silhouette.",
+    "description": "Caller images take the outline of a Cojeev signature silhouette.",
     "usage": "Supply caller content and preserve the native labels and example controls.",
     "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
     "related": [

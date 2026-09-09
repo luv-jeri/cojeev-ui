@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { chromium } from "playwright";
 
 const args = Object.fromEntries(process.argv.slice(2).map(arg => { const [key, ...value] = arg.replace(/^--/, "").split("="); return [key, value.join("=")]; }));
-const base = args.url ?? "http://127.0.0.1:4320/sahajiv-ui";
+const base = args.url ?? "http://127.0.0.1:4320/cojeev-ui";
 const output = args.output ?? "output/playwright/overhaul-charts/docs";
 fs.mkdirSync(output, { recursive: true });
 const variants = { "area-chart": ["linear", "step", "stacked"], "bar-chart": ["grouped", "stacked", "horizontal"], "line-chart": ["linear", "smooth", "step"], "pie-chart": ["pie", "donut"], "radar-chart": ["polygon", "rounded", "grid"], "radial-chart": ["full", "semicircle"], "chart-tooltip": ["default"] };
@@ -15,7 +15,7 @@ const results = { started: new Date().toISOString(), url: base, scope: "All seve
 try {
   for (const [width, theme] of [[390, "dark"], [1440, "light"]]) {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, colorScheme: theme });
-    await context.addInitScript(theme => localStorage.setItem("sahajiv-docs-theme", theme), theme);
+    await context.addInitScript(theme => localStorage.setItem("cojeev-docs-theme", theme), theme);
     const page = await context.newPage(); page.setDefaultTimeout(7000);
     for (const [id, choices] of Object.entries(variants)) for (const variant of choices) {
       if (args.ids && !args.ids.split(",").includes(id)) continue;

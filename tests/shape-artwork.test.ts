@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { load } from "cheerio";
-import { signatureShapePaths, type SignatureShapeName } from "../registry/sahajiv/lib/signature-shapes";
-import { ShapeArtwork, shapeArtworkSvg, shapeArtworkCode, type ShapeArtworkOptions } from "../registry/sahajiv/ui/shape-artwork";
+import { signatureShapePaths, type SignatureShapeName } from "../registry/cojeev/lib/signature-shapes";
+import { ShapeArtwork, shapeArtworkSvg, shapeArtworkCode, type ShapeArtworkOptions } from "../registry/cojeev/ui/shape-artwork";
 
 test("every original contour shares identical live and exported layers, paint, rotation and offsets", () => {
   for (const name of Object.keys(signatureShapePaths) as SignatureShapeName[]) {

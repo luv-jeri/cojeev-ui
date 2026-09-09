@@ -40,7 +40,7 @@ The documentation preview's Variant and Size controls now use Select, SelectTrig
 Run from the repository root against the existing development server:
 
 ```sh
-rtk proxy node scripts/check-refinement-menus-icons.mjs --url=http://127.0.0.1:4320/sahajiv-ui --output=output/playwright/refinement-menus-icons
+rtk proxy node scripts/check-refinement-menus-icons.mjs --url=http://127.0.0.1:4320/cojeev-ui --output=output/playwright/refinement-menus-icons
 rtk proxy node --import tsx --test tests/item-adornment.test.ts
 rtk tsc --noEmit
 ```
@@ -73,8 +73,8 @@ Four focused tests pass: stable identity after reorder/filter, automatic/explici
 
 ## Changed paths
 
-- UI: `registry/sahajiv/ui/{item-adornment,icon,animated-icon,dropdown-menu,menubar,context-menu,select,combobox,multi-select,navigation-menu,command}.tsx`.
-- Styles: `registry/sahajiv/styles/{item-adornment,animated-icon,dropdown-menu,menubar,context-menu,select,combobox,multi-select,navigation-menu,command}.css`, plus the one authorized navigation foreground variable in `styles/flow-press.css`. Existing `styles/icon.css` needed no edit.
+- UI: `registry/cojeev/ui/{item-adornment,icon,animated-icon,dropdown-menu,menubar,context-menu,select,combobox,multi-select,navigation-menu,command}.tsx`.
+- Styles: `registry/cojeev/styles/{item-adornment,animated-icon,dropdown-menu,menubar,context-menu,select,combobox,multi-select,navigation-menu,command}.css`, plus the one authorized navigation foreground variable in `styles/flow-press.css`. Existing `styles/icon.css` needed no edit.
 - Examples and documentation control: `components/examples/menu-icons.tsx`, `components/component-preview.tsx`.
 - Reproducible checks: `scripts/check-refinement-menus-icons.mjs`, `tests/item-adornment.test.ts`.
 - This report: `REFINEMENT-MENUS-ICONS.md`.

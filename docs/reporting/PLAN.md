@@ -1,6 +1,6 @@
 # Reporting implementation
 
-User contract: a morphing launcher opens a SahaJiv side panel for component requests and bug reports. Required email; links, images and videos; multiple pins and screenshot crop; useful reviewable diagnostics; public demand and age; existing component suggestions; durable receipt; automatic GitHub and email lifecycle. Email is intentionally unconfigured until the owner supplies a domain.
+User contract: a morphing launcher opens a Cojeev side panel for component requests and bug reports. Required email; links, images and videos; multiple pins and screenshot crop; useful reviewable diagnostics; public demand and age; existing component suggestions; durable receipt; automatic GitHub and email lifecycle. Email is intentionally unconfigured until the owner supplies a domain.
 
 ## Architecture decision
 
@@ -16,7 +16,7 @@ Delivery target: “We aim to build requested components within 36 hours. Timing
 - [x] Worker: D1 migration, receipt intake, token-authorized R2 uploads, public board, admin status/read APIs and outbox.
 - [x] Delivery: Cloudflare Email Service templates, GitHub issue reconciliation, optional Project association and signed lifecycle webhooks.
 - [x] Browser: warm bounded console/error/network/click buffers; opt-in capture, crop, pins and previews; draft persistence and retry.
-- [x] UI: existing SahaJiv primitives, keyboard accessible responsive side panel, request board, private maintainer screen.
+- [x] UI: existing Cojeev primitives, keyboard accessible responsive side panel, request board, private maintainer screen.
 - [x] Verification: real local workerd D1/R2 integration, external-provider fault tests, typecheck/lint/build, browser pointer/keyboard flows and light/dark/mobile screenshots.
 - [x] Operations: local start, Cloudflare provisioning/deploy scripts, environment setup and honest email placeholder.
 
@@ -36,6 +36,6 @@ Remote activation and evidence are tracked in [VERIFICATION.md](VERIFICATION.md)
 ## References inspected
 
 - `gamenightowl/src/components/BugWidget.astro`, sibling `packages/bug-capture/src/{screenshot,region}.ts`, and `worker/src/intake.ts`.
-- SahaJiv `docs/product/DESIGN-PROMPT-13-REPORT-PANEL.md` and reporting intake reconnaissance under `docs/research/2026-09-03-v1-update-report/inputs/`.
+- Cojeev `docs/product/DESIGN-PROMPT-13-REPORT-PANEL.md` and reporting intake reconnaissance under `docs/research/2026-09-03-v1-update-report/inputs/`.
 - Local Next 16.3.4 static-export and client-component guides.
 - Cloudflare [D1 batch API](https://developers.cloudflare.com/d1/worker-api/d1-database/), [Email Workers API](https://developers.cloudflare.com/email-service/api/send-emails/workers-api/), [Turnstile validation](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/).

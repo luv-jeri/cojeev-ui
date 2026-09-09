@@ -7,23 +7,23 @@
     "@radix-ui/react-direction"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/direction.tsx",
+      "path": "registry/cojeev/ui/direction.tsx",
       "content": "\"use client\"\nimport * as React from \"react\"\nimport { DirectionProvider } from \"@radix-ui/react-direction\"\nexport type DirectionProps=React.ComponentProps<\"div\"> & { dir?:\"ltr\"|\"rtl\" }\nexport function Direction({dir=\"rtl\",children,...props}:DirectionProps){return <DirectionProvider dir={dir}><div data-slot=\"direction\" dir={dir} {...props}>{children}</div></DirectionProvider>}\nexport { DirectionProvider }\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/direction.css",
-      "content": "@layer sahajiv-states {\n/* Direction is inherited through the DOM and Radix context. Brand geometry is never mirrored. */\n[data-slot=\"direction\"]{text-align:start}\n\n}\n",
+      "path": "registry/cojeev/styles/direction.css",
+      "content": "@layer cojeev-states {\n/* Direction is inherited through the DOM and Radix context. Brand geometry is never mirrored. */\n[data-slot=\"direction\"]{text-align:start}\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/direction.css"
+      "target": "styles/cojeev/direction.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/direction.css\"": {}
+    "@import \"@/styles/cojeev/direction.css\"": {}
   },
   "meta": {
     "source": {

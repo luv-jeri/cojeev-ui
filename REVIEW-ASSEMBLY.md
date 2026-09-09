@@ -33,13 +33,13 @@ The chooser uses four native Buttons with pressed state, arrow-key traversal and
 
 Implementation:
 
-- [assembly-geometry.ts](registry/sahajiv/lib/assembly-geometry.ts)
-- [assembly-part.tsx](registry/sahajiv/ui/assembly-part.tsx)
-- [organism-composition.tsx](registry/sahajiv/ui/organism-composition.tsx)
-- [organism-assembly.tsx](registry/sahajiv/ui/organism-assembly.tsx)
-- [assembly-part.css](registry/sahajiv/styles/assembly-part.css)
-- [organism-composition.css](registry/sahajiv/styles/organism-composition.css)
-- [organism-assembly.css](registry/sahajiv/styles/organism-assembly.css)
+- [assembly-geometry.ts](registry/cojeev/lib/assembly-geometry.ts)
+- [assembly-part.tsx](registry/cojeev/ui/assembly-part.tsx)
+- [organism-composition.tsx](registry/cojeev/ui/organism-composition.tsx)
+- [organism-assembly.tsx](registry/cojeev/ui/organism-assembly.tsx)
+- [assembly-part.css](registry/cojeev/styles/assembly-part.css)
+- [organism-composition.css](registry/cojeev/styles/organism-composition.css)
+- [organism-assembly.css](registry/cojeev/styles/organism-assembly.css)
 - [assembly.tsx](components/examples/assembly.tsx)
 
 Evidence and runnable confirmation:
@@ -65,7 +65,7 @@ rtk proxy node --import tsx --test tests/assembly-geometry.test.ts tests/assembl
 rtk proxy node scripts/check-assembly-landing.mjs
 ```
 
-The proof uses the existing local server at `http://127.0.0.1:4320/sahajiv-ui`, supports `BASE_URL`, `OUTPUT_DIR` and optional `WIDTH`, and writes screenshots/results under `output/playwright/review-assembly-redesign`. It performs no build, registry generation, installation, commit or publication.
+The proof uses the existing local server at `http://127.0.0.1:4320/cojeev-ui`, supports `BASE_URL`, `OUTPUT_DIR` and optional `WIDTH`, and writes screenshots/results under `output/playwright/review-assembly-redesign`. It performs no build, registry generation, installation, commit or publication.
 
 Root owns the canonical typecheck and landing integration. This stream corrected its geometry-test type narrowing; the prior canonical check also reported an unrelated FloatLayer MotionStyle diagnostic being handled by root. No universal browser or release-readiness claim is made here.
 

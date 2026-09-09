@@ -30,9 +30,9 @@ Finite-value normalization preserves zero, treats invalid observations as missin
 
 ## Exact source scope
 
-- Added UI modules: `registry/sahajiv/ui/{area-chart,bar-chart,line-chart,pie-chart,radar-chart,radial-chart,chart-tooltip}.tsx`.
-- Added shared helpers: `registry/sahajiv/lib/chart-geometry.ts`, `chart-cartesian.tsx`, `chart-circular.tsx`.
-- Extended `registry/sahajiv/ui/chart.tsx` and `registry/sahajiv/styles/chart.css`; preserved the existing ChartRing conditional table announcement.
+- Added UI modules: `registry/cojeev/ui/{area-chart,bar-chart,line-chart,pie-chart,radar-chart,radial-chart,chart-tooltip}.tsx`.
+- Added shared helpers: `registry/cojeev/lib/chart-geometry.ts`, `chart-cartesian.tsx`, `chart-circular.tsx`.
+- Extended `registry/cojeev/ui/chart.tsx` and `registry/cojeev/styles/chart.css`; preserved the existing ChartRing conditional table announcement.
 - Added `components/examples/charts.tsx` with `AreaChartExample`, `BarChartExample`, `LineChartExample`, `PieChartExample`, `RadarChartExample`, `RadialChartExample`, and `ChartTooltipExample`.
 - Added `tests/chart-suite.test.ts` and `scripts/check-overhaul-charts.mjs`.
 - Table visibility prop reconciliation now occurs through guarded render state, preserving user toggles and later prop changes without an effect that immediately updates state.
@@ -41,12 +41,12 @@ Finite-value normalization preserves zero, treats invalid observations as missin
 
 `rtk proxy npx tsx --test tests/chart-suite.test.ts`: 6/6 passed. These cover invalid/missing/zero domains, diverging stacks, line/area gaps, full-circle pie paths, radar geometry, and bounded tooltip placement.
 
-`rtk proxy npx tsc --noEmit`, `rtk proxy npx eslint registry/sahajiv/ui/chart.tsx`, and `rtk git diff --check` passed after the final table state adjustment.
+`rtk proxy npx tsc --noEmit`, `rtk proxy npx eslint registry/cojeev/ui/chart.tsx`, and `rtk git diff --check` passed after the final table state adjustment.
 
 Reusable browser command:
 
 ```sh
-rtk proxy node scripts/check-overhaul-charts.mjs --url=http://127.0.0.1:4320/sahajiv-ui --output=output/playwright/overhaul-charts/docs
+rtk proxy node scripts/check-overhaul-charts.mjs --url=http://127.0.0.1:4320/cojeev-ui --output=output/playwright/overhaul-charts/docs
 ```
 
 The gate runs all 16 chart variants plus the standalone tooltip at 390px dark and 1440px light, with motion enabled. Every chart case requires real nonzero SVG geometry, pointer and keyboard tooltips, bounded tooltip coordinates, Escape, actual legend removal, visible table controls, no page overflow, and no runtime errors. Each default chart also exercises updated/zero/missing/empty data. It cannot pass an empty placeholder as a chart.

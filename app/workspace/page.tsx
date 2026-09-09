@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AgentWorkspaceExample } from "@/components/examples/agent";
-import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbItem } from "@/registry/sahajiv/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbItem } from "@/registry/cojeev/ui/breadcrumb";
 import { ThemeControl } from "@/components/theme-control";
 import "./workspace.css";
 
-export const metadata: Metadata = { title: "Agent workspace · SahaJiv UI", description: "An interactive monitoring workspace built with SahaJiv UI components." };
+export const metadata: Metadata = { title: "Agent workspace · Cojeev UI", description: "An interactive monitoring workspace built with Cojeev UI components." };
 
 export default function WorkspacePage() {
   return <main className="workspace-page">

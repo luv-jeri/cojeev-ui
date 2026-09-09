@@ -15,7 +15,7 @@ Captured 2026-09-08. This bounded slice covers eight canonical source entries. E
 
 Remocn source is pinned to `3e03565f5c0001e143c2ed941eea7c3181f13260`; React Bits is pinned to `4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3`. The live deployments are observations, not claims that the deployed revision equals those commits. `receipts/numeric-family/source-index.json` records source URLs, timestamps and SHA-256 hashes. Research captures use `.tsx.txt` so they never enter TypeScript compilation.
 
-No source implementation was copied. Skiper has custom usage/attribution terms; its Pro source stayed restricted. The pinned React Bits license contains a component-redistribution restriction, so it was used only to understand behavior. Remocn is MIT with a separately licensed Remotion dependency; the native implementation imports neither Remocn code nor Remotion. Existing Motion and native SahaJiv primitives supply the runtime.
+No source implementation was copied. Skiper has custom usage/attribution terms; its Pro source stayed restricted. The pinned React Bits license contains a component-redistribution restriction, so it was used only to understand behavior. Remocn is MIT with a separately licensed Remotion dependency; the native implementation imports neither Remocn code nor Remotion. Existing Motion and native Cojeev primitives supply the runtime.
 
 ## Native API and behavior
 

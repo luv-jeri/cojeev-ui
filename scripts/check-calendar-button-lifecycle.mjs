@@ -26,11 +26,11 @@ fs.mkdirSync(output, { recursive: true });
 const server = await preview({
   configFile: false,
   root: repoRoot,
-  base: "/sahajiv-ui/",
+  base: "/cojeev-ui/",
   build: { outDir: path.join(repoRoot, "out") },
   preview: { host: "127.0.0.1", port: 0 },
 });
-const base = `http://127.0.0.1:${server.httpServer.address().port}/sahajiv-ui`;
+const base = `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`;
 const fixture = await build({
   tsconfig: path.join(repoRoot, "tsconfig.json"),
   stdin: {
@@ -38,7 +38,7 @@ const fixture = await build({
     loader: "tsx",
     resolveDir: repoRoot,
     contents: `
-import React from'react';import{createRoot}from'react-dom/client';import{Calendar}from'./registry/sahajiv/ui/calendar';import{Button}from'./registry/sahajiv/ui/button';
+import React from'react';import{createRoot}from'react-dom/client';import{Calendar}from'./registry/cojeev/ui/calendar';import{Button}from'./registry/cojeev/ui/button';
 const host=document.createElement('div');host.id='finite-fixture';host.style.cssText='position:fixed;top:16px;left:16px;width:min(358px,calc(100vw - 32px));padding:16px;background:var(--v-canvas);z-index:10';document.body.append(host);
 function Fixture(){const[loading,setLoading]=React.useState(false);return <><Calendar defaultMonth={new Date(2026,8,1)}/><div style={{display:'flex',gap:10,marginTop:16}}><Button id='subject-button' loading={loading}>Submit</Button><Button onClick={()=>setLoading(v=>!v)}>Toggle loading</Button></div></>};createRoot(host).render(<Fixture/>);
 `,
@@ -73,12 +73,12 @@ try {
       await page.addStyleTag({
         content:
           fs.readFileSync(
-            path.join(repoRoot, "registry/sahajiv/styles/calendar.css"),
+            path.join(repoRoot, "registry/cojeev/styles/calendar.css"),
             "utf8",
           ) +
           "\n" +
           fs.readFileSync(
-            path.join(repoRoot, "registry/sahajiv/styles/button.css"),
+            path.join(repoRoot, "registry/cojeev/styles/button.css"),
             "utf8",
           ),
       });

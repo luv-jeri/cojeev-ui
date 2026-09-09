@@ -1,7 +1,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {themeRevealPath,variedThemeOrigin} from "../registry/sahajiv/motion/theme-transition";
-import {scrollThumbPath,scrollVelocity} from "../registry/sahajiv/motion/scroll-thumb";
+import {themeRevealPath,variedThemeOrigin} from "../registry/cojeev/motion/theme-transition";
+import {scrollThumbPath,scrollVelocity} from "../registry/cojeev/motion/scroll-thumb";
 
 function outline(path:string) {
   const numbers=path.match(/-?\d+(?:\.\d+)?/g)!.map(Number),points:[number,number][]=[];

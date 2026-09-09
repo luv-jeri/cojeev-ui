@@ -211,7 +211,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         }
       ],
       "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
@@ -271,7 +271,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         }
       ],
       "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
@@ -331,7 +331,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         }
       ],
       "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
@@ -362,7 +362,7 @@
         ],
         "treatment": "steps",
         "sourceContract": "Pinned source quantizes count timing, redraws each glyph with seeded rotation/vertical pose, supports toFixed decimal prefix/suffix, and freezes on its exact target in a Caveat scene.",
-        "usefulDifferences": "Twelve authored poses use inherited SahaJiv typography, Intl formatting, monotonic actual values and a stable final target. Each update is finite and honors shared quiet/visibility.",
+        "usefulDifferences": "Twelve authored poses use inherited Cojeev typography, Intl formatting, monotonic actual values and a stable final target. Each update is finite and honors shared quiet/visibility.",
         "sourceCodeCopied": false,
         "evidence": [
           "output/playwright/expansion/numeric-family/results.json",
@@ -391,7 +391,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         }
       ],
       "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
@@ -481,23 +481,23 @@
   ],
   "sourceFiles": [
     {
-      "path": "registry/sahajiv/ui/animated-number.tsx",
+      "path": "registry/cojeev/ui/animated-number.tsx",
       "sha256": "09784c958402ebdc9d5242b5e31baa3135b3b2a20cde8b31136e1f101c80ef44"
     },
     {
-      "path": "registry/sahajiv/styles/animated-number.css",
+      "path": "registry/cojeev/styles/animated-number.css",
       "sha256": "f5ec2e0a4e7c11fe2256889bac909fb580684681863679427677edb06c8d5348"
     },
     {
-      "path": "registry/sahajiv/ui/number-input.tsx",
+      "path": "registry/cojeev/ui/number-input.tsx",
       "sha256": "5580cab8735952e0824639bdef36833b96e22d5db51ec6dbf95bb90f90c33a04"
     },
     {
-      "path": "registry/sahajiv/styles/number-input.css",
+      "path": "registry/cojeev/styles/number-input.css",
       "sha256": "eea2655e494ecb29727464ca1c332e6511b0c41c8f9144142a736adebbd6d58b"
     },
     {
-      "path": "registry/sahajiv/lib/number-motion.ts",
+      "path": "registry/cojeev/lib/number-motion.ts",
       "sha256": "8f28d1b41fe2e2b0d85d52b65c010345234023e2b4257ff6685eecd5e2a6e060"
     },
     {

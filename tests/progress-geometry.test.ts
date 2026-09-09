@@ -1,7 +1,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {organicBandPath,organicLinePath,organicThumbPath,organicOrbitPath,progressRatio,segmentCount} from "../registry/sahajiv/motion/progress-geometry";
-import {flowTravelTransition} from "../registry/sahajiv/motion/flow-motion";
+import {organicBandPath,organicLinePath,organicThumbPath,organicOrbitPath,progressRatio,segmentCount} from "../registry/cojeev/motion/progress-geometry";
+import {flowTravelTransition} from "../registry/cojeev/motion/flow-motion";
 test("progress values and segment counts are bounded without pretending unavailable data is complete",()=>{
  assert.equal(progressRatio(50,200),.25);assert.equal(progressRatio(-20),0);assert.equal(progressRatio(Infinity),0);assert.equal(progressRatio(400,200),1);assert.equal(segmentCount(100),32);assert.equal(segmentCount(-1),3);
 });

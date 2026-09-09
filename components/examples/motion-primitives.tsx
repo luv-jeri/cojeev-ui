@@ -1,12 +1,12 @@
 "use client";
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { ThemeToggle } from "@/registry/sahajiv/ui/theme-toggle";
-import { AnimatedIcon, type IconMotion } from "@/registry/sahajiv/ui/animated-icon";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Card, CardTitle, CardContent } from "@/registry/sahajiv/ui/card";
-import { Meta } from "@/registry/sahajiv/ui/typography";
-import { MotionPresence, MotionSurface, type PresencePreset } from "@/registry/sahajiv/ui/presence";
+import { ThemeToggle } from "@/registry/cojeev/ui/theme-toggle";
+import { AnimatedIcon, type IconMotion } from "@/registry/cojeev/ui/animated-icon";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Card, CardTitle, CardContent } from "@/registry/cojeev/ui/card";
+import { Meta } from "@/registry/cojeev/ui/typography";
+import { MotionPresence, MotionSurface, type PresencePreset } from "@/registry/cojeev/ui/presence";
 
 export function PresenceExample({variant="rise"}:ExampleProps) {
   const [visible,setVisible]=React.useState(true);

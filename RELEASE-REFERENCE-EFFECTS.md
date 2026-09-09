@@ -1,6 +1,6 @@
 # Reference collection release
 
-Adds 35 new SahaJiv components covering 41 requested references. Six mappings reuse or consolidate existing APIs. The public guide explains each mapping, category and landing-page placement.
+Adds 35 new Cojeev components covering 41 requested references. Six mappings reuse or consolidate existing APIs. The public guide explains each mapping, category and landing-page placement.
 
 Text Loop/Circular Text/Curved Loop reuse Text Ribbon; Split Text reuses Text Reveal; Text Pressure uses Variable Proximity pressure; Clip Path uses Image Masking clip. New Motion Drawer and Linear Modal reuse existing Sheet/Dialog semantics.
 

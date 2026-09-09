@@ -32,10 +32,10 @@ Browser evidence is in `.work/reporting/browser/results.json` and the adjacent P
 
 ## Production evidence
 
-- API: `https://sahajiv-ui-reporting.unread-fyi.workers.dev`
+- API: `https://cojeev-ui-reporting.unread-fyi.workers.dev`
 - Worker version: `d755a819-019c-4b6e-bd3c-13b3d48f2c2b`
-- D1: `sahajiv-ui-reports`, migration `0001_reporting.sql` applied remotely.
-- R2: `sahajiv-ui-report-media`, private.
+- D1: `cojeev-ui-reports`, migration `0001_reporting.sql` applied remotely.
+- R2: `cojeev-ui-report-media`, private.
 - Turnstile: managed widget restricted to `luv-jeri.github.io`.
 - Cron: every five minutes, for delivery and retention.
 - GitHub webhook: `676398504`, Issues events only; GitHub reported a successful HTTP 202 callback.

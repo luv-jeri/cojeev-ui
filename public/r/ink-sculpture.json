@@ -5,13 +5,13 @@
   "description": "Hatched and engraved marks follow the light and relief of a 3D form.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/glyph-sculpture.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/glyph-sculpture.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/ink-sculpture.tsx",
-      "content": "\"use client\";\nimport { SculptureSurface, type SculptureCommonProps } from \"@/components/ui/glyph-sculpture\";\nimport type { InkTreatment } from \"@/lib/sahajiv/sculpture-raster\";\nexport type { InkTreatment };\nexport type InkSculptureProps = SculptureCommonProps & { treatment?: InkTreatment; markSize?: number; density?: number; angle?: number; relief?: number };\n/** Engraved lines bend with real surface depth, opening into dashes toward the light. */\nexport function InkSculpture({ treatment = \"hatch\", markSize = 8, density = 1, angle = -25, relief = .55, ...props }: InkSculptureProps) {\n  const safeTreatment = treatment === \"crosshatch\" || treatment === \"contour\" ? treatment : \"hatch\";\n  return <SculptureSurface {...props} surfaceOptions={{ kind: \"ink\", treatment: safeTreatment, markSize, density, angle, relief }} />;\n}\n",
+      "path": "registry/cojeev/ui/ink-sculpture.tsx",
+      "content": "\"use client\";\nimport { SculptureSurface, type SculptureCommonProps } from \"@/components/ui/glyph-sculpture\";\nimport type { InkTreatment } from \"@/lib/cojeev/sculpture-raster\";\nexport type { InkTreatment };\nexport type InkSculptureProps = SculptureCommonProps & { treatment?: InkTreatment; markSize?: number; density?: number; angle?: number; relief?: number };\n/** Engraved lines bend with real surface depth, opening into dashes toward the light. */\nexport function InkSculpture({ treatment = \"hatch\", markSize = 8, density = 1, angle = -25, relief = .55, ...props }: InkSculptureProps) {\n  const safeTreatment = treatment === \"crosshatch\" || treatment === \"contour\" ? treatment : \"hatch\";\n  return <SculptureSurface {...props} surfaceOptions={{ kind: \"ink\", treatment: safeTreatment, markSize, density, angle, relief }} />;\n}\n",
       "type": "registry:ui"
     }
   ],

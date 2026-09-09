@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { GlyphSculpture } from "../registry/sahajiv/ui/glyph-sculpture";
-import { createGlyphMesh, glyphGrid, normalizeGlyphOptions, rasterizeGlyphs, glyphText } from "../registry/sahajiv/lib/glyph-mesh";
+import { GlyphSculpture } from "../registry/cojeev/ui/glyph-sculpture";
+import { createGlyphMesh, glyphGrid, normalizeGlyphOptions, rasterizeGlyphs, glyphText } from "../registry/cojeev/lib/glyph-mesh";
 
 test("untrusted sizes and motion values stay within a finite rendering budget", () => {
   assert.deepEqual(normalizeGlyphOptions({ speed: Infinity, cellSize: NaN, turn: -900 }), { speed: 1, cellSize: 10, turn: -180 });

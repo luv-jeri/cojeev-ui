@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {test} from "node:test";
 import {createElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
-import {Icon, iconActionNames, getIconDirection, getIconMotionFrame} from "../registry/sahajiv/ui/icon";
+import {Icon, iconActionNames, getIconDirection, getIconMotionFrame} from "../registry/cojeev/ui/icon";
 
 const names = ["check", "check-circle", "close", "activity", "alert", "info", "loader", "refresh", "search", "bell", "download", "upload", "copy", "settings", "trash", "plus", "send", "heart", "star", "thumbs-up"];
 test("action names render recognizable geometry with visible SSR state", () => {

@@ -6,20 +6,20 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/registry/sahajiv/ui/accordion";
-import * as AlertDialogParts from "@/registry/sahajiv/ui/alert-dialog";
-import { Calendar } from "@/registry/sahajiv/ui/calendar";
+} from "@/registry/cojeev/ui/accordion";
+import * as AlertDialogParts from "@/registry/cojeev/ui/alert-dialog";
+import { Calendar } from "@/registry/cojeev/ui/calendar";
 import {
   Checkbox,
   CheckboxGroup,
   CheckboxBody,
-} from "@/registry/sahajiv/ui/checkbox";
+} from "@/registry/cojeev/ui/checkbox";
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from "@/registry/sahajiv/ui/collapsible";
-import { Combobox } from "@/registry/sahajiv/ui/combobox";
+} from "@/registry/cojeev/ui/collapsible";
+import { Combobox } from "@/registry/cojeev/ui/combobox";
 import {
   Command,
   CommandInput,
@@ -28,24 +28,24 @@ import {
   CommandGroup,
   CommandItem,
   CommandShortcut,
-} from "@/registry/sahajiv/ui/command";
-import * as ContextMenuParts from "@/registry/sahajiv/ui/context-menu";
-import { DatePicker } from "@/registry/sahajiv/ui/date-picker";
-import * as DialogParts from "@/registry/sahajiv/ui/dialog";
-import * as DrawerParts from "@/registry/sahajiv/ui/drawer";
-import * as DropdownMenuParts from "@/registry/sahajiv/ui/dropdown-menu";
+} from "@/registry/cojeev/ui/command";
+import * as ContextMenuParts from "@/registry/cojeev/ui/context-menu";
+import { DatePicker } from "@/registry/cojeev/ui/date-picker";
+import * as DialogParts from "@/registry/cojeev/ui/dialog";
+import * as DrawerParts from "@/registry/cojeev/ui/drawer";
+import * as DropdownMenuParts from "@/registry/cojeev/ui/dropdown-menu";
 import {
   HoverCard,
   HoverCardTrigger,
   HoverCardContent,
-} from "@/registry/sahajiv/ui/hover-card";
+} from "@/registry/cojeev/ui/hover-card";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
   InputOTPSeparator,
-} from "@/registry/sahajiv/ui/input-otp";
-import * as MenubarParts from "@/registry/sahajiv/ui/menubar";
+} from "@/registry/cojeev/ui/input-otp";
+import * as MenubarParts from "@/registry/cojeev/ui/menubar";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -53,24 +53,24 @@ import {
   NavigationMenuLink,
   NavigationMenuLabel,
   NavigationMenuCount,
-} from "@/registry/sahajiv/ui/navigation-menu";
+} from "@/registry/cojeev/ui/navigation-menu";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
   PopoverClose,
-} from "@/registry/sahajiv/ui/popover";
+} from "@/registry/cojeev/ui/popover";
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupBody,
-} from "@/registry/sahajiv/ui/radio-group";
+} from "@/registry/cojeev/ui/radio-group";
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
-} from "@/registry/sahajiv/ui/resizable";
-import { ScrollArea } from "@/registry/sahajiv/ui/scroll-area";
+} from "@/registry/cojeev/ui/resizable";
+import { ScrollArea } from "@/registry/cojeev/ui/scroll-area";
 import {
   Select,
   SelectTrigger,
@@ -79,21 +79,21 @@ import {
   SelectItem,
   SelectGroup,
   SelectLabel,
-} from "@/registry/sahajiv/ui/select";
-import * as SheetParts from "@/registry/sahajiv/ui/sheet";
+} from "@/registry/cojeev/ui/select";
+import * as SheetParts from "@/registry/cojeev/ui/sheet";
 import {
   Slider,
   SliderWrapper,
   SliderRow,
   SliderOutput,
-} from "@/registry/sahajiv/ui/slider";
-import { Switch, SwitchRow } from "@/registry/sahajiv/ui/switch";
+} from "@/registry/cojeev/ui/slider";
+import { Switch, SwitchRow } from "@/registry/cojeev/ui/switch";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/registry/sahajiv/ui/tabs";
+} from "@/registry/cojeev/ui/tabs";
 import {
   ToastProvider,
   Toast,
@@ -102,25 +102,25 @@ import {
   ToastAction,
   ToastClose,
   ToastViewport,
-} from "@/registry/sahajiv/ui/toast";
-import { Toggle } from "@/registry/sahajiv/ui/toggle";
+} from "@/registry/cojeev/ui/toast";
+import { Toggle } from "@/registry/cojeev/ui/toggle";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@/registry/sahajiv/ui/toggle-group";
+} from "@/registry/cojeev/ui/toggle-group";
 import {
   TooltipProvider,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/registry/sahajiv/ui/tooltip";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Card, CardTitle, CardDescription } from "@/registry/sahajiv/ui/card";
-import { Input } from "@/registry/sahajiv/ui/input";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { Avatar, AvatarFallback } from "@/registry/sahajiv/ui/avatar";
-import { Icon, IconButton, Disk } from "@/registry/sahajiv/ui/icon";
-import { Body, Meta, Title } from "@/registry/sahajiv/ui/typography";
+} from "@/registry/cojeev/ui/tooltip";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Card, CardTitle, CardDescription } from "@/registry/cojeev/ui/card";
+import { Input } from "@/registry/cojeev/ui/input";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Avatar, AvatarFallback } from "@/registry/cojeev/ui/avatar";
+import { Icon, IconButton, Disk } from "@/registry/cojeev/ui/icon";
+import { Body, Meta, Title } from "@/registry/cojeev/ui/typography";
 
 export function AccordionExample() {
   return (

@@ -36,11 +36,11 @@ Final `tsc --noEmit`, ESLint on the four owned TypeScript modules, and the six-s
 
 Frozen product paths for this final batch:
 
-- `registry/sahajiv/motion/use-morph.ts`
-- `registry/sahajiv/ui/multi-select.tsx`
-- `registry/sahajiv/ui/calendar.tsx`
-- `registry/sahajiv/styles/calendar.css`
-- `registry/sahajiv/ui/button.tsx`
-- `registry/sahajiv/styles/button.css`
+- `registry/cojeev/motion/use-morph.ts`
+- `registry/cojeev/ui/multi-select.tsx`
+- `registry/cojeev/ui/calendar.tsx`
+- `registry/cojeev/styles/calendar.css`
+- `registry/cojeev/ui/button.tsx`
+- `registry/cojeev/styles/button.css`
 
 The parent still owns the fresh registry/build and original production `check-mobile-webkit.mjs --serve --ids=home-and-getting-started,multi-select` rerun. Diagnostic rules against old assets and current-source fixtures prove the individual causes/corrections; they do not substitute for that final rebuilt-docs integration receipt.

@@ -8,12 +8,12 @@ import type {
   FixtureContext,
   FixtureProps,
 } from "./fixture-shared";
-import { morphClock, rewindMorph } from "@/registry/sahajiv/motion/use-morph";
+import { morphClock, rewindMorph } from "@/registry/cojeev/motion/use-morph";
 import "./styles.css";
 
 declare global {
   interface Window {
-    __sahajivGate?: {
+    __cojeevGate?: {
       rewind: () => void;
       clock: (t: number | null) => void;
       mapped: string[];
@@ -21,7 +21,7 @@ declare global {
   }
 }
 const mapped = new Set<string>();
-window.__sahajivGate = { rewind: rewindMorph, clock: morphClock, mapped: [] };
+window.__cojeevGate = { rewind: rewindMorph, clock: morphClock, mapped: [] };
 const payload = JSON.parse(
   document.getElementById("fixture")!.textContent!,
 ) as { id: string; fixture: string };
@@ -242,7 +242,7 @@ const children = Array.from(fixture.body.childNodes).map((node, i) =>
 );
 if (!mapped.size)
   throw new Error(`No production component mapped for ${payload.id}`);
-window.__sahajivGate.mapped = Array.from(mapped);
+window.__cojeevGate.mapped = Array.from(mapped);
 document.body.replaceChildren();
 createRoot(document.body).render(<>{children}</>);
 requestAnimationFrame(() =>

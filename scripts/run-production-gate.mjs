@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 
 const started = new Date().toISOString();
-const docsOutput = process.env.SAHAJIV_DOCS_EVIDENCE ?? "artifacts/production-docs";
+const docsOutput = process.env.COJEEV_DOCS_EVIDENCE ?? "artifacts/production-docs";
 const registryHash = createHash("sha256").update(fs.readFileSync("out/r/registry.json")).digest("hex");
 const runs = [
   ["documentation", ["scripts/check-docs.mjs", "--serve", `--output=${docsOutput}`]],

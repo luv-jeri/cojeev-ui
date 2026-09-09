@@ -1,0 +1,148 @@
+/* Cojeev authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-tab:where(
+    [data-slot="tabs"],
+    [data-slot^="tabs-"]
+  )[aria-selected="true"][data-morph] {
+  --mfill: var(--v-ink);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline .v-tab {
+  padding: 6px 0 8px;
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  color: var(--v-text-2);
+  border-bottom: 2px solid transparent;
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline
+  .v-tab[aria-selected="true"] {
+  color: var(--v-text);
+  border-color: var(--v-ink);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills {
+  gap: var(--s-2);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills .v-tab {
+  height: var(--ctl-sm);
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--v-beige);
+  font-size: 13px;
+  font-weight: 500;
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+  .v-tab[aria-selected="true"] {
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-default .v-tab {
+  height: var(--ctl-md);
+  padding-inline: var(--s-4);
+  font-size: var(--fs-control);
+}
+@media (pointer: coarse) {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-default .v-tab {
+    min-height: var(--ctl-lg);
+  }
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses .v-tab {
+  height: var(--ctl-md);
+  padding: 0 var(--s-4);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-control);
+  font-weight: 500;
+  color: var(--v-text-2);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
+  .v-tab[aria-selected="true"] {
+  background: var(--v-beige);
+  color: var(--v-text);
+}
+@media (max-width: 640px) {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]) {
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+}
+@media (max-width: 640px) {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])::-webkit-scrollbar {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]) .v-tab {
+    flex: none;
+  }
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+  .v-tab:not([aria-selected="true"]),
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
+  .v-tab[aria-selected="true"] {
+  box-shadow: inset 0 0 0 1px var(--v-edge);
+}
+:root[data-mode="dark"]
+  .v-tab:where([data-slot="tabs"], [data-slot^="tabs-"])[aria-selected="true"] {
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+  border-color: var(--v-pink);
+}
+:root[data-mode="dark"]
+  .v-tab:where([data-slot="tabs"], [data-slot^="tabs-"]):not(
+    [aria-selected="true"]
+  ) {
+  color: var(--v-text);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+  .v-tab[data-ink="light"],
+.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"])[data-ink="light"] {
+  color: var(--cream-fixed);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]) .v-tab[data-ink="dark"],
+.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"])[data-ink="dark"] {
+  color: var(--v-text-2);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+  .v-tab[data-ink="dark"]:hover,
+.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"])[data-ink="dark"]:hover {
+  color: var(--v-text);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+  .v-tab[data-ink="light"][aria-selected="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+  .v-tab[data-ink="light"][aria-pressed="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+  .v-tab[data-ink="light"][aria-selected="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+  .v-tab[data-ink="light"][aria-pressed="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
+  .v-tab[data-ink="light"][aria-selected="true"] {
+  color: var(--cream-fixed);
+}
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+  .v-tab[data-ink="dark"][aria-selected="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+  .v-tab[data-ink="dark"][aria-pressed="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+  .v-tab[data-ink="dark"][aria-selected="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+  .v-tab[data-ink="dark"][aria-pressed="true"],
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
+  .v-tab[data-ink="dark"][aria-selected="true"] {
+  color: var(--v-on-accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="tabs"],
+  [data-slot^="tabs-"],
+  [data-slot="tabs"]::before,
+  [data-slot="tabs"]::after,
+  [data-slot^="tabs-"]::before,
+  [data-slot^="tabs-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}
+
+[data-slot="tabs-list"] { min-width: 0; max-width: 100%; }
+[data-slot="tabs-list"][data-orientation="vertical"] { flex-direction: column; align-items: stretch; }
+[data-slot="tabs-trigger"][data-disabled] { color: var(--v-disabled-ink); cursor: not-allowed; }
+[data-slot="tabs-content"] { min-width: 0; }

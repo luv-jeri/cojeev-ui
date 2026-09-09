@@ -11,15 +11,15 @@ const pascal = id => id.split("-").map(word => word[0].toUpperCase() + word.slic
 const list = value => Array.isArray(value) ? value : value ? [value] : [];
 for (const row of rows.filter(row => row.status === "new" || !row.status)) {
   const { id, name, category, variants, sizes, states, description, usage, accessibility, related } = row;
-  if (!fs.existsSync(`registry/sahajiv/ui/${id}.tsx`)) throw new Error(`Missing implementation: ${id}`);
+  if (!fs.existsSync(`registry/cojeev/ui/${id}.tsx`)) throw new Error(`Missing implementation: ${id}`);
   additions[id] = { name, variants, sizes, states, reviewOnly: process.argv.includes("--publish") ? false : additions[id]?.reviewOnly ?? true };
   guides[id] = { description, category: category === "Composed" ? "Creative" : category, usage: list(usage), accessibility: list(accessibility), related: list(related) };
   const file = reports.find(report => JSON.parse(fs.readFileSync(`verification/${report}.json`, "utf8")).some(item => item.id === id));
   const example = `${pascal(id)}Example`;
   if (!examples.includes(`"${id}":`)) examples = examples.replace("export const examples: Record<string, ExampleComponent> = {", `export const examples: Record<string, ExampleComponent> = {\n  "${id}": lazy(() => import("./${file}").then((module) => ({ default: module.${example} }))),`);
   if (!manifest.includes(`"${id}":`)) manifest = manifest.replace("export const exampleManifest = {", `export const exampleManifest = {\n  "${id}": { file: "${file}", name: "${example}" },`);
-  const declaration = `@import "../registry/sahajiv/styles/${id}.css" layer(sahajiv-states);`;
-  if (!css.includes(declaration)) css = css.replace('@import "../registry/sahajiv/styles/base.css";', `@import "../registry/sahajiv/styles/base.css";\n${declaration}`);
+  const declaration = `@import "../registry/cojeev/styles/${id}.css" layer(cojeev-states);`;
+  if (!css.includes(declaration)) css = css.replace('@import "../registry/cojeev/styles/base.css";', `@import "../registry/cojeev/styles/base.css";\n${declaration}`);
 }
 fs.writeFileSync("data/component-additions.json", JSON.stringify(additions, null, 2) + "\n");
 fs.writeFileSync("data/component-guides.json", JSON.stringify(guides, null, 2) + "\n");

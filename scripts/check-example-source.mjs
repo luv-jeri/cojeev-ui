@@ -9,11 +9,11 @@ import ts from "typescript";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // Preload tsx in a child so both ESM and CJS aliases in the real extractor work.
-if (process.env.SAHAJIV_EXAMPLE_SOURCE_CHILD !== "1") {
+if (process.env.COJEEV_EXAMPLE_SOURCE_CHILD !== "1") {
   const child = spawnSync(process.execPath, ["--import", "tsx", fileURLToPath(import.meta.url), ...process.argv.slice(2)], {
     cwd: root,
     stdio: "inherit",
-    env: { ...process.env, SAHAJIV_EXAMPLE_SOURCE_CHILD: "1" },
+    env: { ...process.env, COJEEV_EXAMPLE_SOURCE_CHILD: "1" },
   });
   if (child.error) console.error(child.error.message);
   process.exit(child.status ?? 1);
@@ -27,7 +27,7 @@ const installedModules = new Set(registry.items.flatMap(item => item.files ?? []
   if (file.type === "registry:ui") return `@/components/ui/${path.basename(file.path, ".tsx")}`;
   return file.target ? `@/${file.target.replace(/\.tsx?$/, "")}` : null;
 }).filter(Boolean));
-const sourceIds = fs.readdirSync(path.join(root, "registry/sahajiv/ui")).filter(file => file.endsWith(".tsx")).map(file => file.slice(0, -4)).sort();
+const sourceIds = fs.readdirSync(path.join(root, "registry/cojeev/ui")).filter(file => file.endsWith(".tsx")).map(file => file.slice(0, -4)).sort();
 const manifestIds = Object.keys(exampleManifest).sort();
 const catalogIds = catalog.map(item => item.name).sort();
 const coverageErrors = [];
@@ -91,10 +91,10 @@ try {
     resolveJsonModule: true,
     isolatedModules: true,
     paths: {
-      "@/components/ui/*": [path.join(root, "registry/sahajiv/ui/*")],
-      "@/lib/utils": [path.join(root, "registry/sahajiv/lib/utils.ts")],
-      "@/lib/sahajiv/*": [path.join(root, "registry/sahajiv/lib/*")],
-      "@/lib/sahajiv-motion/*": [path.join(root, "registry/sahajiv/motion/*")],
+      "@/components/ui/*": [path.join(root, "registry/cojeev/ui/*")],
+      "@/lib/utils": [path.join(root, "registry/cojeev/lib/utils.ts")],
+      "@/lib/cojeev/*": [path.join(root, "registry/cojeev/lib/*")],
+      "@/lib/cojeev-motion/*": [path.join(root, "registry/cojeev/motion/*")],
       "@/*": [path.join(root, "*")],
     },
   };

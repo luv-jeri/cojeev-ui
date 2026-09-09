@@ -3,16 +3,16 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
-import { Shape } from "@/registry/sahajiv/ui/shape";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { SidebarMenuButton } from "@/registry/sahajiv/ui/sidebar";
-import { Meta } from "@/registry/sahajiv/ui/typography";
+import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
+import { Shape } from "@/registry/cojeev/ui/shape";
+import { Button } from "@/registry/cojeev/ui/button";
+import { SidebarMenuButton } from "@/registry/cojeev/ui/sidebar";
+import { Meta } from "@/registry/cojeev/ui/typography";
 import { ThemeControl } from "@/components/theme-control";
 import { DocsMotion } from "@/components/docs-motion";
-import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 
-export const sourceUrl = "https://github.com/luv-jeri/sahajiv-ui";
+export const sourceUrl = "https://github.com/luv-jeri/cojeev-ui";
 export const creatorUrl = "https://github.com/luv-jeri";
 
 export function MarketingLink({ href, children, primary = false, className = "" }: {
@@ -42,7 +42,7 @@ export function MarketingHeader() {
   return <>
     <a className="story-skip" href="#story-main">Skip to content</a>
     <header className="story-header">
-      <Link className="story-brand" href="/" aria-label="SahaJiv UI home"><Shape name="clover-soft" /><span>SahaJiv <span className="story-brand-ui">UI</span></span></Link>
+      <Link className="story-brand" href="/" aria-label="Cojeev UI home"><Shape name="clover-soft" /><span>Cojeev <span className="story-brand-ui">UI</span></span></Link>
       <nav className="story-nav" aria-label="Main navigation">
         <MarketingLink href="/docs/">Components</MarketingLink>
         <SidebarMenuButton asChild className="story-link" isActive={pathname?.includes("work-with-me")}><Link href="/work-with-me/" onClick={() => setOpen(false)}>Work with me</Link></SidebarMenuButton>
@@ -66,7 +66,7 @@ export function MarketingHeader() {
 export function MarketingFooter() {
   return <footer className="story-footer">
     <div className="story-footer-wordmark" aria-hidden="true">Make it feel <em>human.</em><Shape name="aster-9" /></div>
-    <div className="story-footer-row"><Meta>SahaJiv UI · Made by Sanjay Kumar · MIT licensed</Meta>
+    <div className="story-footer-row"><Meta>Cojeev UI · Made by Sanjay Kumar · MIT licensed</Meta>
       <div className="story-footer-links"><MarketingLink href="/work-with-me/">Work with me <AnimatedIcon name="arrow-up-right" /></MarketingLink><MarketingLink href={sourceUrl}><AnimatedIcon name="github" /> Source</MarketingLink><DocsMotion className="story-motion-control" /></div>
     </div>
   </footer>;

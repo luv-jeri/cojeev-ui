@@ -6,7 +6,7 @@
   "sourceRepository": "https://github.com/DavidHDev/canvas-ui",
   "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
   "sourceCommitDate": "2026-09-04T13:58:04Z",
-  "scope": "Complete canonical catalog inventory; three detailed engine inspections and seven public rendered/pointer samples. Original SahaJiv object treatments have separate native runtime and visual evidence.",
+  "scope": "Complete canonical catalog inventory; three detailed engine inspections and seven public rendered/pointer samples. Original Cojeev object treatments have separate native runtime and visual evidence.",
   "counts": {
     "canonicalEntries": 35,
     "shaderEffects": 35,
@@ -33,7 +33,7 @@
     "Discovery is complete against site catalog, src/data/components.ts, src/lib/registry.ts, and 35 route pages in pinned tree.",
     "Source-inspected means one of the three detailed samples; downloading or mechanically extracting imports is not full source review.",
     "Rendered means inspected real-browser output. Liquid, ASCII Object, Dithered Object, Ink Object, Glass Object, Liquid Object and Particle Object were individually rendered and pointer-operated. Selected source controls were also exercised. Public source inspection is distinct from native implementation verification.",
-    "Upstream WebGPU, reduced-motion, context-loss, mobile and broad keyboard/accessibility behavior were not audited. Specific public form controls were keyboard-operated for the material-object observations; original SahaJiv implementations have separate runtime receipts.",
+    "Upstream WebGPU, reduced-motion, context-loss, mobile and broad keyboard/accessibility behavior were not audited. Specific public form controls were keyboard-operated for the material-object observations; original Cojeev implementations have separate runtime receipts.",
     "Receipt source copies remain restricted upstream material; they are internal research evidence, not MIT implementation or distributable package content."
   ],
   "existingSahajivSnapshot": {
@@ -291,7 +291,7 @@
         ],
         "objectTreatments": "receipts/object-treatments-handoff.json"
       },
-      "sahajivImplementation": {
+      "cojeevImplementation": {
         "componentId": "glyph-sculpture",
         "companionComponentId": "sculpture-orbit",
         "status": "partial-original-core",
@@ -879,7 +879,7 @@
           "bubble"
         ],
         "kind": "conceptual-neighbor",
-        "notes": "Same-name collision: existing SahaJiv bubble is a chat component, not this optical effect."
+        "notes": "Same-name collision: existing Cojeev bubble is a chat component, not this optical effect."
       },
       "notes": [
         "A trailing cluster of refractive droplets responds to pointer motion.",
@@ -1551,7 +1551,7 @@
         ],
         "objectTreatments": "receipts/object-treatments-handoff.json"
       },
-      "sahajivImplementation": {
+      "cojeevImplementation": {
         "componentId": "dither-sculpture",
         "companionComponentId": "sculpture-orbit",
         "status": "verified-original-useful-core",
@@ -2443,7 +2443,7 @@
         "publicBehavior": "receipts/material-source-observations.json#glass-object",
         "nativeImplementation": "receipts/material-sculptures-handoff.json#glass-object"
       },
-      "sahajivImplementation": {
+      "cojeevImplementation": {
         "componentId": "glass-sculpture",
         "companionComponentId": "sculpture-orbit",
         "status": "verified-original-useful-core",
@@ -3081,7 +3081,7 @@
         ],
         "objectTreatments": "receipts/object-treatments-handoff.json"
       },
-      "sahajivImplementation": {
+      "cojeevImplementation": {
         "componentId": "ink-sculpture",
         "companionComponentId": "sculpture-orbit",
         "status": "verified-original-useful-core",
@@ -3600,7 +3600,7 @@
         "publicBehavior": "receipts/material-source-observations.json#particle-object",
         "nativeImplementation": "receipts/material-sculptures-handoff.json#particle-object"
       },
-      "sahajivImplementation": {
+      "cojeevImplementation": {
         "componentId": "particle-sculpture",
         "companionComponentId": "sculpture-orbit",
         "status": "verified-original-useful-core",
@@ -4493,7 +4493,7 @@
         "publicBehavior": "receipts/material-source-observations.json#liquid-object",
         "nativeImplementation": "receipts/material-sculptures-handoff.json#liquid-object"
       },
-      "sahajivImplementation": {
+      "cojeevImplementation": {
         "componentId": "flow-sculpture",
         "companionComponentId": "sculpture-orbit",
         "status": "verified-original-useful-core",

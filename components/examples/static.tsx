@@ -8,25 +8,25 @@ import {
   AlertDescription,
   AlertIcon,
   AlertActions,
-} from "@/registry/sahajiv/ui/alert";
-import { AspectRatio } from "@/registry/sahajiv/ui/aspect-ratio";
+} from "@/registry/cojeev/ui/alert";
+import { AspectRatio } from "@/registry/cojeev/ui/aspect-ratio";
 import {
   Avatar,
   AvatarFallback,
   AvatarGroup,
-} from "@/registry/sahajiv/ui/avatar";
-import { Badge } from "@/registry/sahajiv/ui/badge";
+} from "@/registry/cojeev/ui/avatar";
+import { Badge } from "@/registry/cojeev/ui/badge";
 import {
   Bubble,
   BubbleRow,
   BubbleContent,
   BubbleTime,
-} from "@/registry/sahajiv/ui/bubble";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { CodeBlock } from "@/registry/sahajiv/ui/code-block";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import { Card, CardTitle, CardDescription, CardContent, CardFooter } from "@/registry/sahajiv/ui/card";
-import { Direction } from "@/registry/sahajiv/ui/direction";
+} from "@/registry/cojeev/ui/bubble";
+import { Button } from "@/registry/cojeev/ui/button";
+import { CodeBlock } from "@/registry/cojeev/ui/code-block";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import { Card, CardTitle, CardDescription, CardContent, CardFooter } from "@/registry/cojeev/ui/card";
+import { Direction } from "@/registry/cojeev/ui/direction";
 import {
   Empty,
   EmptyTitle,
@@ -34,9 +34,9 @@ import {
   EmptyState,
   EmptyStateTitle,
   EmptyStateDescription,
-} from "@/registry/sahajiv/ui/empty";
-import { Icon, IconButton, Disk, iconNames } from "@/registry/sahajiv/ui/icon";
-import { Input } from "@/registry/sahajiv/ui/input";
+} from "@/registry/cojeev/ui/empty";
+import { Icon, IconButton, Disk, iconNames } from "@/registry/cojeev/ui/icon";
+import { Input } from "@/registry/cojeev/ui/input";
 import {
   Item,
   ItemGroup,
@@ -44,20 +44,20 @@ import {
   ItemTitle,
   ItemDescription,
   ItemTrailing,
-} from "@/registry/sahajiv/ui/item";
-import { Kbd } from "@/registry/sahajiv/ui/kbd";
-import { Label, Stats, Stat } from "@/registry/sahajiv/ui/label";
-import { Marker } from "@/registry/sahajiv/ui/marker";
+} from "@/registry/cojeev/ui/item";
+import { Kbd } from "@/registry/cojeev/ui/kbd";
+import { Label, Stats, Stat } from "@/registry/cojeev/ui/label";
+import { Marker } from "@/registry/cojeev/ui/marker";
 import {
   Message,
   MessageContent,
   MessageDescription,
-} from "@/registry/sahajiv/ui/message";
-import { Progress } from "@/registry/sahajiv/ui/progress";
-import { Separator } from "@/registry/sahajiv/ui/separator";
-import { Shape, ShapeMorph, shapeNames, signatureShapeNames, type SignatureShapeName } from "@/registry/sahajiv/ui/shape";
-import { Skeleton, SkeletonGroup } from "@/registry/sahajiv/ui/skeleton";
-import { Spinner } from "@/registry/sahajiv/ui/spinner";
+} from "@/registry/cojeev/ui/message";
+import { Progress } from "@/registry/cojeev/ui/progress";
+import { Separator } from "@/registry/cojeev/ui/separator";
+import { Shape, ShapeMorph, shapeNames, signatureShapeNames, type SignatureShapeName } from "@/registry/cojeev/ui/shape";
+import { Skeleton, SkeletonGroup } from "@/registry/cojeev/ui/skeleton";
+import { Spinner } from "@/registry/cojeev/ui/spinner";
 import {
   Typography,
   Hero,
@@ -72,10 +72,10 @@ import {
   Caps,
   Value,
   Identifier,
-} from "@/registry/sahajiv/ui/typography";
-import { Adjuster } from "@/registry/sahajiv/ui/adjuster";
-import { Preview } from "@/registry/sahajiv/ui/preview";
-import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
+} from "@/registry/cojeev/ui/typography";
+import { Adjuster } from "@/registry/cojeev/ui/adjuster";
+import { Preview } from "@/registry/cojeev/ui/preview";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 
 export function AlertExample({ variant = "default" }: ExampleProps) {
   const [visible, setVisible] = React.useState(true);
@@ -398,7 +398,7 @@ export function MessageExample({ variant = "default" }: ExampleProps) {
             : "I have grouped your notes into three themes."}
         </Body>
         <MessageDescription>
-          {variant === "me" ? "You" : "SahaJiv"} · 09:41
+          {variant === "me" ? "You" : "Cojeev"} · 09:41
         </MessageDescription>
       </MessageContent>
     </Message>

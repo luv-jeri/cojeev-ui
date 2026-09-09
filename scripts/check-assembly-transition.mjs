@@ -3,12 +3,12 @@ import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-const base=process.env.BASE_URL??'http://127.0.0.1:4320/sahajiv-ui';
+const base=process.env.BASE_URL??'http://127.0.0.1:4320/cojeev-ui';
 const output=path.resolve(process.env.OUTPUT_DIR??'output/playwright/review-assembly-redesign');
 const browser=await chromium.launch(),results=[];
 try{for(const theme of ['light','dark']){
  const page=await browser.newPage({viewport:{width:390,height:1050},colorScheme:theme});
- await page.addInitScript(theme=>{localStorage.setItem('sahajiv-docs-theme',theme);localStorage.removeItem('v-motion')},theme);
+ await page.addInitScript(theme=>{localStorage.setItem('cojeev-docs-theme',theme);localStorage.removeItem('v-motion')},theme);
  await page.goto(base+'/');
  const a=page.locator('#assembly [data-slot=organism-assembly]');await a.waitFor();await a.scrollIntoViewIfNeeded();await page.waitForTimeout(120);
  const ready=kind=>page.waitForFunction(kind=>{const o=document.querySelector('#assembly [data-slot=organism-composition]');return o?.dataset.kind===kind&&o.dataset.settled==='true'&&o.dataset.assembled==='true'},kind);

@@ -14,7 +14,7 @@ import {writeMotionReport} from './gate-motion-report.mjs'
 const port=Number(process.env.MOTION_GATE_PORT||4325),base=`http://127.0.0.1:${port}`,output=process.env.MOTION_GATE_OUTPUT||'artifacts/gate-motion',report=process.env.MOTION_GATE_REPORT||'GATE-MOTION.md'
 const requested=(process.env.MOTION_CASES||'').split(',').filter(Boolean),widths=(process.env.MOTION_WIDTHS||'360,390,768,1024,1440,1920').split(',').map(Number),modes=(process.env.MOTION_MODES||'light,dark').split(',')
 let fixtures
-const referenceRoot='/reference/sahajiv-handoff-v4'
+const referenceRoot='/reference/cojeev-handoff-v4'
 const sourceScripts=['v','flow','morph','motion','alive']
 const commonScript=`
 const g=document.getElementById('group');if(SCENARIO.vertical)g?.classList.add('-vertical');if(SCENARIO.pin)g?.setAttribute('data-flow',SCENARIO.pin);
@@ -22,7 +22,7 @@ document.addEventListener('click',event=>{if(!(event.target instanceof Element))
 window.motionGate={clock:V.clock,rewind:VMorph.rewind,flow:VFlow.set,mode:VMotion.setMode,category:VMotion.setCat,profile:VMorph.importJSON,replace:VFlow.replace,open:value=>{document.getElementById('surface').hidden=!value},arrive:()=>{document.getElementById('feedback').hidden=false},appearance:(id,grow)=>VFlow.appear(document.getElementById(id),grow),enable:id=>VMotion.enable(document.getElementById(id)),disable:id=>VMotion.disable(document.getElementById(id)),rerender:()=>{const el=document.getElementById('group');[...el.children].filter(x=>!x.classList.contains('v-glide__pill')&&!x.classList.contains('v-glide__hover')&&!x.classList.contains('v-glide__trail')).forEach(x=>{const copy=x.cloneNode(true);x.replaceWith(copy)})}};
 addEventListener('load',()=>{VFlow.replace();document.documentElement.dataset.ready='1'});
 `
-const server=await createServer({configFile:false,plugins:[react(),tailwindcss(),{name:'sahajiv-motion-gate',configureServer(server){server.middlewares.use(async(req,res,next)=>{
+const server=await createServer({configFile:false,plugins:[react(),tailwindcss(),{name:'cojeev-motion-gate',configureServer(server){server.middlewares.use(async(req,res,next)=>{
  const url=new URL(req.url||'/',base)
  if(url.pathname.startsWith(referenceRoot+'/')){const file=path.resolve('.','.'+decodeURIComponent(url.pathname)),root=path.resolve('.'+referenceRoot);if(!file.startsWith(root+path.sep)||!fs.existsSync(file)){res.statusCode=404;res.end();return}const types={'.css':'text/css','.js':'text/javascript','.ttf':'font/ttf','.woff2':'font/woff2','.svg':'image/svg+xml'};res.setHeader('Content-Type',types[path.extname(file)]||'text/html');res.end(fs.readFileSync(file));return}
  if(url.pathname!=='/motion')return next()
@@ -31,11 +31,11 @@ const server=await createServer({configFile:false,plugins:[react(),tailwindcss()
  const markup=fixtures.fixtureMarkup(scenario)
  const sourceCSS=scenario.family==='roles'||scenario.fullCascade?`<link rel="stylesheet" href="${referenceRoot}/css/vriksha.css">`:`<style>@layer vriksha;@import url("${referenceRoot}/fonts/fonts.css") layer(vriksha);@import url("${referenceRoot}/tokens/tokens.css") layer(vriksha);@import url("${referenceRoot}/css/base.css") layer(vriksha);@import url("${referenceRoot}/css/alive.css") layer(vriksha);@import url("${referenceRoot}/css/flow.css");</style>`
  const scripts=candidate?'<script type="module" src="/apps/gate/motion-candidate.tsx"></script>':sourceScripts.map(name=>`<script src="${referenceRoot}/js/${name}.js" data-base="${referenceRoot}"></script>`).join('')+`<script>const SCENARIO=${payload};${commonScript}</script>`
- const html=`<!doctype html><html lang="en" data-mode="${mode}" data-seed="42"><head><meta charset="utf-8"><style>@layer theme,base,components,utilities,sahajiv-states,accessibility,vriksha,motion-fixture;</style>${candidate?'':sourceCSS}<style>@layer motion-fixture{${fixtures.fixtureCSS}}</style></head><body><div id="v-sprites" style="display:none"></div><main id="motion-stage">${candidate?'':markup}</main><script id="motion-fixture" type="application/json">${payload}</script>${scripts}</body></html>`
+ const html=`<!doctype html><html lang="en" data-mode="${mode}" data-seed="42"><head><meta charset="utf-8"><style>@layer theme,base,components,utilities,cojeev-states,accessibility,vriksha,motion-fixture;</style>${candidate?'':sourceCSS}<style>@layer motion-fixture{${fixtures.fixtureCSS}}</style></head><body><div id="v-sprites" style="display:none"></div><main id="motion-stage">${candidate?'':markup}</main><script id="motion-fixture" type="application/json">${payload}</script>${scripts}</body></html>`
  res.setHeader('Content-Type','text/html');res.end(candidate?await server.transformIndexHtml(req.url,html):html)
  })}}],resolve:{alias:{'@':path.resolve('.')}},css:{postcss:{plugins:[]}},server:{host:'127.0.0.1',port,strictPort:true,hmr:false,watch:null}})
 fixtures=await server.ssrLoadModule('/apps/gate/motion-fixtures.ts')
-const store=await server.ssrLoadModule('/registry/sahajiv/motion/settings.ts'),authored=store.getMorphProfile()
+const store=await server.ssrLoadModule('/registry/cojeev/motion/settings.ts'),authored=store.getMorphProfile()
 Object.assign(authored.cfg,{rest:true,echo:true,dots:3,grain:.12,sheen:1});Object.assign(authored.TIER.blob,{reach:9,inside:3,amp:.01,lobes:5,depth:.08,asym:.6,spread:.55})
 const scenarios=fixtures.motionScenarios.filter(s=>!requested.length||requested.includes(s.id))
 if(requested.some(id=>!scenarios.some(s=>s.id===id)))throw Error('Unknown requested case')

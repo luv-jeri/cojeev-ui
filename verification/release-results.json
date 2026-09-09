@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "release": {
-    "name": "SahaJiv UI",
+    "name": "Cojeev UI",
     "version": "0.1.0",
     "status": "RELEASED",
     "sourceCommit": "479d13abfcfa0981d538a088d83f837a6acae8b8",
-    "sourceUrl": "https://github.com/luv-jeri/sahajiv-ui/commit/479d13abfcfa0981d538a088d83f837a6acae8b8",
-    "repository": "https://github.com/luv-jeri/sahajiv-ui",
+    "sourceUrl": "https://github.com/luv-jeri/cojeev-ui/commit/479d13abfcfa0981d538a088d83f837a6acae8b8",
+    "repository": "https://github.com/luv-jeri/cojeev-ui",
     "registryItems": 78,
     "uiEntries": 77,
     "originalComponents": 66,
@@ -26,7 +26,7 @@
       "shape-scene"
     ],
     "foundationEntries": 1,
-    "documentation": "Fumadocs framework with SahaJiv visible navigation, controls and surfaces",
+    "documentation": "Fumadocs framework with Cojeev visible navigation, controls and surfaces",
     "codeLicense": "MIT",
     "fontLicense": "SIL OFL-1.1",
     "fontFamilies": [
@@ -38,18 +38,18 @@
       "FONT-NOTICES.md"
     ],
     "optionalThreeDependency": "shape-scene only",
-    "documentationUrl": "https://luv-jeri.github.io/sahajiv-ui/"
+    "documentationUrl": "https://luv-jeri.github.io/cojeev-ui/"
   },
   "recordedVerification": {
     "firstCompleteCI": {
       "status": "PASS",
-      "url": "https://github.com/luv-jeri/sahajiv-ui/actions/runs/34167226450",
+      "url": "https://github.com/luv-jeri/cojeev-ui/actions/runs/34167226450",
       "deployment": "PASS"
     },
     "freshPublicClone": {
       "status": "PASS",
       "commit": "47e30c08dd2083612aedf7347f9504fe4183a427",
-      "sourceUrl": "https://github.com/luv-jeri/sahajiv-ui/commit/47e30c08dd2083612aedf7347f9504fe4183a427",
+      "sourceUrl": "https://github.com/luv-jeri/cojeev-ui/commit/47e30c08dd2083612aedf7347f9504fe4183a427",
       "commands": [
         "git clone",
         "npm ci",
@@ -251,13 +251,13 @@
       "id": "public-consumer-theme",
       "phase": "initial public-only consumer",
       "originalStatus": "FAIL",
-      "detail": "Later neutral starter-theme aliases overrode imported SahaJiv semantic colors, including dark Card foreground",
+      "detail": "Later neutral starter-theme aliases overrode imported Cojeev semantic colors, including dark Card foreground",
       "localCorrectionStatus": "PASS",
       "finalPublicCorrectionStatus": "PASS"
     },
     {
       "id": "second-ci-mobile-shape-scene",
-      "url": "https://github.com/luv-jeri/sahajiv-ui/actions/runs/34168747473",
+      "url": "https://github.com/luv-jeri/cojeev-ui/actions/runs/34168747473",
       "originalStatus": "FAIL",
       "documentation": "PASS",
       "motion": "PASS",
@@ -279,7 +279,7 @@
     "targetSourceCommit": "479d13abfcfa0981d538a088d83f837a6acae8b8",
     "ci": {
       "status": "PASS",
-      "runUrl": "https://github.com/luv-jeri/sahajiv-ui/actions/runs/34169905808",
+      "runUrl": "https://github.com/luv-jeri/cojeev-ui/actions/runs/34169905808",
       "finishedAt": "2026-09-07T23:35:26Z",
       "mobilePassed": 7,
       "mobileTotal": 7
@@ -290,7 +290,7 @@
       "foundationSha256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6",
       "shapeSceneSha256": "24d28f9a9bf111af79e6d7624c5a1d16f72abdd1842f63b4f3ca15678fd9b3c3",
       "finalUrlChecks": {
-        "base": "https://luv-jeri.github.io/sahajiv-ui/",
+        "base": "https://luv-jeri.github.io/cojeev-ui/",
         "checkedAt": "2026-09-07T23:36:47.218436+00:00",
         "rows": [
           {
@@ -306,7 +306,7 @@
             "matchesBuilt": true
           },
           {
-            "path": "r/sahajiv.json",
+            "path": "r/cojeev.json",
             "status": 200,
             "sha256": "7f7324e45bec802c4b18bbb1c09d74b3597dc2cce9ea87db49e166c7b5d7d3b6",
             "matchesBuilt": true

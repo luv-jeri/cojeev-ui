@@ -22,7 +22,7 @@ New reusable primitives for the September 8 landing redesign. Only these source 
 | `variant` | `pollen` (default), `contour`, `orbital` |
 | `density` | Relative count; default 1, bounded .35–2 |
 | `intensity` | Motion strength; default 1, bounded 0–2. Zero preserves still artwork |
-| `seed` | Number or string; default `sahajiv`. Identical inputs yield identical server/client geometry |
+| `seed` | Number or string; default `cojeev`. Identical inputs yield identical server/client geometry |
 
 Pollen has small authored seed silhouettes with different sizes and focus at three depths. Contour has large asymmetric, nested topographic drawings. Orbital has four small structured line motifs with satellites, ellipses, ticks and rounded intersections. All use the existing pink, olive, blue and yellow roles. The reading centre is cleared through seeded placement rather than a gradient cover. No gradient clouds, downloaded artwork or WebGL context is used.
 
@@ -53,9 +53,9 @@ Scoped ESLint passed. The Impeccable detector returned no findings. Root owns th
 
 Files:
 
-- `registry/sahajiv/ui/depth-background.tsx`
-- `registry/sahajiv/styles/depth-background.css`
-- `registry/sahajiv/ui/float-layer.tsx`
-- `registry/sahajiv/styles/float-layer.css`
+- `registry/cojeev/ui/depth-background.tsx`
+- `registry/cojeev/styles/depth-background.css`
+- `registry/cojeev/ui/float-layer.tsx`
+- `registry/cojeev/styles/float-layer.css`
 - `tests/depth-background.test.ts`
 - `REVIEW-DEPTH-LAYERS.md`

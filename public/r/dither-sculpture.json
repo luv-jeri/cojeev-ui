@@ -5,13 +5,13 @@
   "description": "Depth-tested sculptural forms printed as ordered dots, halftone, error diffusion or stipple.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/glyph-sculpture.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/glyph-sculpture.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/dither-sculpture.tsx",
-      "content": "\"use client\";\nimport { SculptureSurface, type SculptureCommonProps } from \"@/components/ui/glyph-sculpture\";\nimport type { DitherPattern } from \"@/lib/sahajiv/sculpture-raster\";\nexport type { DitherPattern };\nexport type DitherSculptureProps = SculptureCommonProps & { pattern?: DitherPattern; grainSize?: number; density?: number };\n/** A depth-tested object printed as ordered dots, halftone, error diffusion or seeded stipple. */\nexport function DitherSculpture({ pattern = \"ordered\", grainSize = 3, density = 1, ...props }: DitherSculptureProps) {\n  const safePattern = [\"ordered\", \"halftone\", \"diffusion\", \"stipple\"].includes(pattern) ? pattern : \"ordered\";\n  return <SculptureSurface {...props} surfaceOptions={{ kind: \"dither\", pattern: safePattern, grainSize, density }} />;\n}\n",
+      "path": "registry/cojeev/ui/dither-sculpture.tsx",
+      "content": "\"use client\";\nimport { SculptureSurface, type SculptureCommonProps } from \"@/components/ui/glyph-sculpture\";\nimport type { DitherPattern } from \"@/lib/cojeev/sculpture-raster\";\nexport type { DitherPattern };\nexport type DitherSculptureProps = SculptureCommonProps & { pattern?: DitherPattern; grainSize?: number; density?: number };\n/** A depth-tested object printed as ordered dots, halftone, error diffusion or seeded stipple. */\nexport function DitherSculpture({ pattern = \"ordered\", grainSize = 3, density = 1, ...props }: DitherSculptureProps) {\n  const safePattern = [\"ordered\", \"halftone\", \"diffusion\", \"stipple\"].includes(pattern) ? pattern : \"ordered\";\n  return <SculptureSurface {...props} surfaceOptions={{ kind: \"dither\", pattern: safePattern, grainSize, density }} />;\n}\n",
       "type": "registry:ui"
     }
   ],

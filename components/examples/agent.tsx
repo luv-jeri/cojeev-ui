@@ -3,15 +3,15 @@
 import * as React from "react";
 import { ArrowUpRight, RotateCcw } from "lucide-react";
 import type { ExampleProps } from "./types";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Badge } from "@/registry/sahajiv/ui/badge";
-import { Card } from "@/registry/sahajiv/ui/card";
-import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
-import { AgentState, type AgentStatus } from "@/registry/sahajiv/ui/agent-state";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Badge } from "@/registry/cojeev/ui/badge";
+import { Card } from "@/registry/cojeev/ui/card";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
+import { AgentState, type AgentStatus } from "@/registry/cojeev/ui/agent-state";
 import {
   AgentChat, AgentChatLayout, AgentChatMain, AgentChatAside, AgentChatHeader, AgentChatThread, AgentChatMessage, AgentChatComposer,
   AgentChatPermission, AgentChatOptions, AgentChatProgress, type AgentChatAttachment,
-} from "@/registry/sahajiv/ui/agent-chat";
+} from "@/registry/cojeev/ui/agent-chat";
 
 export function AgentStateExample({ variant = "idle", size = "lg" }: ExampleProps) {
   const states: AgentStatus[] = ["idle", "thinking", "working", "needs-input", "complete", "error"];
@@ -125,7 +125,7 @@ export function AgentChatExample() {
   return <div className="v-agent-chat-demo">
     <div className="v-agent-chat-demo__tools"><p>Interactive demo · runs locally</p><Button size="sm" variant="ghost" disabled={active} onClick={() => start("Create a brief, then show me the retry state.", true)}>Try an error</Button><Button size="sm" variant="ghost" onClick={reset} aria-label="Reset demo"><RotateCcw size={14} aria-hidden="true" />Reset</Button></div>
     <AgentChat>
-      <AgentChatHeader title="A little room to think" description="SahaJiv · your working companion" status={status} statusLabel={phase === "stopped" ? "Stopped" : phase === "denied" ? "Permission denied" : undefined} />
+      <AgentChatHeader title="A little room to think" description="Cojeev · your working companion" status={status} statusLabel={phase === "stopped" ? "Stopped" : phase === "denied" ? "Permission denied" : undefined} />
       <AgentChatThread ref={thread}>
         <MotionPresence>
         {messages.length === 0 && <MotionSurface key="welcome" preset="fade" className="v-agent-chat-demo__welcome">
@@ -134,7 +134,7 @@ export function AgentChatExample() {
             {["Turn my notes into a clear next step", "Help me make room for a new idea"].map((prompt) => <Button key={prompt} variant="secondary" onClick={() => start(prompt)}>{prompt}<ArrowUpRight size={16} aria-hidden="true" /></Button>)}
           </div>
         </MotionSurface>}
-        {messages.map((message) => <AgentChatMessage key={message.id} from={message.from} author={message.from === "user" ? "You" : "SahaJiv"}><p>{message.text}</p></AgentChatMessage>)}
+        {messages.map((message) => <AgentChatMessage key={message.id} from={message.from} author={message.from === "user" ? "You" : "Cojeev"}><p>{message.text}</p></AgentChatMessage>)}
         {(active || phase === "error") && <AgentChatMessage key="workflow" meta="Demo workflow">
           <p>{phase === "thinking" ? "I’m putting a small plan together. You can stop at any point." : phase === "permission" ? "A little context would help. You decide what I can use." : phase === "options" ? "How would you like the result?" : phase === "error" ? "The simulated run was interrupted. Retry will replay this request." : "I’m shaping the sample result into something useful."}</p>
           <AgentChatProgress steps={[

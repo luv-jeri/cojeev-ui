@@ -1,13 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createMotionLane, resolveChoreography } from "../registry/sahajiv/motion/choreography";
-import { getServerSettingsSnapshot } from "../registry/sahajiv/motion/settings";
-import { motionClock } from "../registry/sahajiv/motion/clock";
+import { createMotionLane, resolveChoreography } from "../registry/cojeev/motion/choreography";
+import { getServerSettingsSnapshot } from "../registry/cojeev/motion/settings";
+import { motionClock } from "../registry/cojeev/motion/clock";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { load } from "cheerio";
-import { MotionPresence, MotionSurface } from "../registry/sahajiv/ui/presence";
-import { acquirePageScrollbar, pageScrollGeometry, scrollThumbPath } from "../registry/sahajiv/motion/scroll-thumb";
+import { MotionPresence, MotionSurface } from "../registry/cojeev/ui/presence";
+import { acquirePageScrollbar, pageScrollGeometry, scrollThumbPath } from "../registry/cojeev/motion/scroll-thumb";
 
 // Motion checks browser constructors even for unowned scalar values. No DOM is
 // needed here: the real scalar animator runs under the deterministic clock.

@@ -1,6 +1,6 @@
 # Original material sculptures
 
-Glass Sculpture, Flow Sculpture and Particle Sculpture are three distinct original 3D components. Their source concepts were individually inspected and their native useful cores are implemented and verified. Exact Canvas renderer, source API and visual parity are **false**. No restricted rendering code or source artwork was copied or translated. Canvas is MIT + Commons Clause; the SahaJiv implementation uses original geometry, algorithms and procedural patterns with the existing MIT-licensed Three dependency.
+Glass Sculpture, Flow Sculpture and Particle Sculpture are three distinct original 3D components. Their source concepts were individually inspected and their native useful cores are implemented and verified. Exact Canvas renderer, source API and visual parity are **false**. No restricted rendering code or source artwork was copied or translated. Canvas is MIT + Commons Clause; the Cojeev implementation uses original geometry, algorithms and procedural patterns with the existing MIT-licensed Three dependency.
 
 ## Per-entry result
 
@@ -28,7 +28,7 @@ The existing geometry and file adapters are unchanged. Supported local inputs re
 
 ## Implementation and performance boundaries
 
-New native files are `registry/sahajiv/ui/{glass,flow,particle}-sculpture.tsx`, the shared `lib/sculpture-stage.tsx` / `sculpture-renderer.tsx`, original `sculpture-flow.ts` / `sculpture-particles.ts`, `sculpture-stage-geometry.ts`, and `styles/glass-sculpture.css`. Native examples live in `components/examples/material-sculptures.tsx`.
+New native files are `registry/cojeev/ui/{glass,flow,particle}-sculpture.tsx`, the shared `lib/sculpture-stage.tsx` / `sculpture-renderer.tsx`, original `sculpture-flow.ts` / `sculpture-particles.ts`, `sculpture-stage-geometry.ts`, and `styles/glass-sculpture.css`. Native examples live in `components/examples/material-sculptures.tsx`.
 
 The scene lazily initializes Three when visible. Backing dimensions are at most 2,048 per axis, one million pixels total, and DPR 1.5. The field is capped at 96 × 72 cells (80 × 60 by default); point arrays are capped at 8,000. Frames target at most 30 Hz. Pointer work is scoped to the stage and does not capture page scroll. These are resource limits, not a guaranteed frame rate on every device.
 

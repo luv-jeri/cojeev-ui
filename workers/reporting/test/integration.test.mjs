@@ -15,7 +15,7 @@ const request = (path, method='GET', body, auth, headers={}) => mf.dispatchFetch
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
-  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/sahajiv-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret'}}));
+  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret'}}));
   db=await mf.getD1Database('DB'); await db.exec((await readFile('workers/reporting/migrations/0001_reporting.sql','utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
   const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { componentURL } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
@@ -61,7 +61,7 @@ test('completion updates all topic subscribers and queues one notification each'
   const b=payload({kind:'request',title:a.title,topicId:a.id,email:'second@example.com'});await submit(b);
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',{status:'resolved'},admin)).status,422);
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',{status:'resolved',componentUrl:'https://evil.test/docs/button/'},admin)).status,422);
-  const update={status:'resolved',componentUrl:'https://library.example.com/sahajiv-ui/docs/button/'};
+  const update={status:'resolved',componentUrl:'https://library.example.com/cojeev-ui/docs/button/'};
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',update,admin)).status,200);
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',update,admin)).status,200);
   const jobs=await db.prepare("SELECT * FROM outbox WHERE kind='email_resolved' AND report_id IN (?,?)").bind(a.id,b.id).all();assert.equal(jobs.results.length,2);
@@ -75,10 +75,10 @@ test('production protection fails closed and GitHub signatures are mandatory',as
   assert.equal((await request('/v1/github/webhook','POST',body,null,{'X-Hub-Signature-256':sig,'X-GitHub-Event':'issues','X-GitHub-Delivery':randomUUID()})).status,202);
 });
 
-const backendEnv=more=>({DB:db,MEDIA:media,LOCAL_MODE:'true',SITE_URL:'https://library.example.com/sahajiv-ui',IP_HASH_SECRET:ipSecret,...more});
+const backendEnv=more=>({DB:db,MEDIA:media,LOCAL_MODE:'true',SITE_URL:'https://library.example.com/cojeev-ui',IP_HASH_SECRET:ipSecret,...more});
 test('joining a resolved request returns its live URL and sends an already-available acknowledgment',async()=>{
   const first=payload({kind:'request',title:'Already available component'});await submit(first);
-  const componentUrl='https://library.example.com/sahajiv-ui/docs/timeline/';
+  const componentUrl='https://library.example.com/cojeev-ui/docs/timeline/';
   assert.equal((await request(`/v1/admin/reports/${first.id}`,'PATCH',{status:'resolved',componentUrl},admin)).status,200);
   const joined=payload({kind:'request',title:first.title,topicId:first.id,email:'late-requester@example.com'});
   const response=await submit(joined);assert.equal(response.status,201);const receipt=await response.json();
@@ -106,7 +106,7 @@ test('local request resolution permits matching loopback HTTP while all other HT
     {site:'http://localhost:3100',url:'http://user@localhost:3100/docs/button/',local:'true'},
   ];
   for(const item of cases) assert.throws(()=>backend.componentURL(item.url,backendEnv({SITE_URL:item.site,LOCAL_MODE:item.local})),error=>error.status===422);
-  assert.equal(backend.componentURL('https://library.example.com/sahajiv-ui/docs/button/',backendEnv({LOCAL_MODE:'false'})),'https://library.example.com/sahajiv-ui/docs/button/');
+  assert.equal(backend.componentURL('https://library.example.com/cojeev-ui/docs/button/',backendEnv({LOCAL_MODE:'false'})),'https://library.example.com/cojeev-ui/docs/button/');
 });
 test('contact expiry preserves distinct demand across old and new contributions',async()=>{
   const a=payload({kind:'request',title:'Retention demand example',email:'retention-a@example.com'});
@@ -235,7 +235,7 @@ test('GitHub release automation requires release label and component URL and ded
   assert.equal((await db.prepare('SELECT status FROM reports WHERE id=?').bind(p.id).first()).status,'received');
   const released={...base,issue:{...base.issue,labels:[{name:'feedback:released'}]}};
   assert.equal((await send(released)).status,422);
-  released.issue.body='Component: https://library.example.com/sahajiv-ui/docs/timeline/';
+  released.issue.body='Component: https://library.example.com/cojeev-ui/docs/timeline/';
   const eventId=randomUUID();assert.equal((await send(released,eventId)).status,202);
   const replay=await send(released,eventId);assert.equal((await replay.json()).duplicate,true);
   assert.equal((await db.prepare('SELECT status FROM reports WHERE id=?').bind(p.id).first()).status,'resolved');

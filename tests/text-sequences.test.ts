@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { groupTextLines } from "../registry/sahajiv/lib/text-lines";
-import { relayIndex, relayRank, relayTiming } from "../registry/sahajiv/lib/text-relay";
+import { groupTextLines } from "../registry/cojeev/lib/text-lines";
+import { relayIndex, relayRank, relayTiming } from "../registry/cojeev/lib/text-relay";
 
 test("measured lines preserve original Unicode and explicit empty lines", () => {
   const text = "A 👩‍👩‍👧‍👦\n\nनमस्ते";

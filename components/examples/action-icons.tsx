@@ -1,10 +1,10 @@
 "use client";
 import * as React from "react";
-import {Icon,iconActionNames,iconActionDescriptions} from "@/registry/sahajiv/ui/icon";
-import {AnimatedIcon,type IconMotion} from "@/registry/sahajiv/ui/animated-icon";
-import {Button} from "@/registry/sahajiv/ui/button";
-import {Input} from "@/registry/sahajiv/ui/input";
-import {Label} from "@/registry/sahajiv/ui/label";
+import {Icon,iconActionNames,iconActionDescriptions} from "@/registry/cojeev/ui/icon";
+import {AnimatedIcon,type IconMotion} from "@/registry/cojeev/ui/animated-icon";
+import {Button} from "@/registry/cojeev/ui/button";
+import {Input} from "@/registry/cojeev/ui/input";
+import {Label} from "@/registry/cojeev/ui/label";
 import type {ExampleProps} from "./types";
 
 const label=(name:string)=>name.split("-").map(word=>word[0].toUpperCase()+word.slice(1)).join(" ");

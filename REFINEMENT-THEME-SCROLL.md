@@ -25,12 +25,12 @@ Latest owner steering supersedes fixed toggle origins: default activation select
 
 ## Final implementation files
 
-- `registry/sahajiv/motion/theme-transition.ts`: varied origin selection; native destination capture; interruptible Motion path lane; controlled glyph compatibility paint; quiet, resize, scroll and visibility cancellation; exact final theme and temporary-state cleanup.
-- `registry/sahajiv/ui/theme-toggle.tsx`: existing controlled contract and sun/moon Motion retained; optional callback details and activation-time origin capture.
-- `registry/sahajiv/styles/theme-toggle.css`: organic destination clip, bounded native retention, glyph mask/paint, fixed-ink label contrast and compact shape.
-- `registry/sahajiv/motion/scroll-thumb.ts`: seed contour with signed velocity, pointer lean and pressure; existing document geometry/ref-counted native scrollbar restoration retained.
-- `registry/sahajiv/ui/scroll-area.tsx`: one feedback hook shared by Radix regions and the document rail; native pointer/keyboard ownership preserved; decorative grip and contour.
-- `registry/sahajiv/styles/scroll-area.css`: 24px hit rails, wider seed paint, fixed-size grip, pressed/hover/scroll color feedback, coarse-pointer positioning.
+- `registry/cojeev/motion/theme-transition.ts`: varied origin selection; native destination capture; interruptible Motion path lane; controlled glyph compatibility paint; quiet, resize, scroll and visibility cancellation; exact final theme and temporary-state cleanup.
+- `registry/cojeev/ui/theme-toggle.tsx`: existing controlled contract and sun/moon Motion retained; optional callback details and activation-time origin capture.
+- `registry/cojeev/styles/theme-toggle.css`: organic destination clip, bounded native retention, glyph mask/paint, fixed-ink label contrast and compact shape.
+- `registry/cojeev/motion/scroll-thumb.ts`: seed contour with signed velocity, pointer lean and pressure; existing document geometry/ref-counted native scrollbar restoration retained.
+- `registry/cojeev/ui/scroll-area.tsx`: one feedback hook shared by Radix regions and the document rail; native pointer/keyboard ownership preserved; decorative grip and contour.
+- `registry/cojeev/styles/scroll-area.css`: 24px hit rails, wider seed paint, fixed-size grip, pressed/hover/scroll color feedback, coarse-pointer positioning.
 - `components/examples/motion-primitives.tsx`: ThemeToggle preview copy points to the global appearance control. At the icon owner's request, only `pulse` and `none` were added to its AnimatedIcon preset list.
 - `tests/refinement-theme-scroll.test.ts`, `scripts/check-refinement-theme-scroll.mjs`, this report, and `output/playwright/refinement-theme-scroll/`.
 
@@ -49,7 +49,7 @@ Track clicks seek once to their position and a held pointer compresses the thumb
 ## Reproduction
 
 ```sh
-rtk proxy node scripts/check-refinement-theme-scroll.mjs --url=http://127.0.0.1:4320/sahajiv-ui
+rtk proxy node scripts/check-refinement-theme-scroll.mjs --url=http://127.0.0.1:4320/cojeev-ui
 rtk proxy npx tsx --test tests/refinement-theme-scroll.test.ts tests/choreography.test.ts
 ```
 
@@ -68,4 +68,4 @@ The final theme cases prove both destination colors and actual old/new screensho
 
 The scrollbar cases prove distinct idle/hover/pressed contours, native Radix thumb drag, forward/backward response, PageDown/PageUp, document thumb drag and track click, Home/End/arrow scrolling, 24px hit width, idle/quiet/offscreen stillness, no horizontal document overflow, and restoration of the native document scrollbar marker on unmount. Chromium additionally passed a real CDP touch swipe on the native region. The held thumb screenshots show the compressed seed and fixed three-dot grip at narrow and wide widths.
 
-Final source is frozen. Since the earlier provisional freeze, only `registry/sahajiv/motion/theme-transition.ts` and `registry/sahajiv/styles/theme-toggle.css` changed for the WebKit glyph adapter. Root was notified before refreshing its build/consumer output. No equivalent full scrollbar check was rerun after the theme-only correction.
+Final source is frozen. Since the earlier provisional freeze, only `registry/cojeev/motion/theme-transition.ts` and `registry/cojeev/styles/theme-toggle.css` changed for the WebKit glyph adapter. Root was notified before refreshing its build/consumer output. No equivalent full scrollbar check was rerun after the theme-only correction.

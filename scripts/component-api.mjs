@@ -9,7 +9,7 @@ export function componentAPIs(ids) {
   const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, ".");
   const program = ts.createProgram(parsed.fileNames, parsed.options);
   const checker = program.getTypeChecker();
-  const registryRoot = path.resolve("registry/sahajiv");
+  const registryRoot = path.resolve("registry/cojeev");
   function localSources(source, visited = new Set()) {
     if (visited.has(source)) return visited;
     visited.add(source);
@@ -58,14 +58,14 @@ export function componentAPIs(ids) {
       const normalized = specifier.replaceAll("\\", "/");
       const modules = normalized.lastIndexOf("/node_modules/");
       if (modules !== -1) return `import(${JSON.stringify(normalized.slice(modules + 14).replace(/\/dist\/index$/, ""))})`;
-      const component = normalized.match(/\/registry\/sahajiv\/ui\/([^/]+?)(?:\.tsx)?$/);
+      const component = normalized.match(/\/registry\/cojeev\/ui\/([^/]+?)(?:\.tsx)?$/);
       if (component) return `import("@/components/ui/${component[1]}")`;
       if (normalized.startsWith("/") || /^[A-Z]:\//i.test(normalized)) throw new Error(`Nonportable API type in ${declaration.name.text}`);
       return `import(${JSON.stringify(normalized)})`;
     });
   };
   return Object.fromEntries(ids.map(id => {
-    const source = program.getSourceFile(`registry/sahajiv/ui/${id}.tsx`);
+    const source = program.getSourceFile(`registry/cojeev/ui/${id}.tsx`);
     if (!source) throw new Error(`Missing component source: ${id}`);
     const sources = localSources(source);
     const props = source.statements.filter(node => (ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) && node.name.text.endsWith("Props"));

@@ -2,18 +2,18 @@
 
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { AreaChart } from "@/registry/sahajiv/ui/area-chart";
-import { BarChart } from "@/registry/sahajiv/ui/bar-chart";
-import { LineChart } from "@/registry/sahajiv/ui/line-chart";
-import { PieChart } from "@/registry/sahajiv/ui/pie-chart";
-import { RadarChart } from "@/registry/sahajiv/ui/radar-chart";
-import { RadialChart } from "@/registry/sahajiv/ui/radial-chart";
-import { ChartTooltip } from "@/registry/sahajiv/ui/chart-tooltip";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/registry/sahajiv/ui/card";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import type { ChartPoint, ChartSeries, ChartSlice } from "@/registry/sahajiv/ui/chart";
+import { AreaChart } from "@/registry/cojeev/ui/area-chart";
+import { BarChart } from "@/registry/cojeev/ui/bar-chart";
+import { LineChart } from "@/registry/cojeev/ui/line-chart";
+import { PieChart } from "@/registry/cojeev/ui/pie-chart";
+import { RadarChart } from "@/registry/cojeev/ui/radar-chart";
+import { RadialChart } from "@/registry/cojeev/ui/radial-chart";
+import { ChartTooltip } from "@/registry/cojeev/ui/chart-tooltip";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/registry/cojeev/ui/card";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Button } from "@/registry/cojeev/ui/button";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import type { ChartPoint, ChartSeries, ChartSlice } from "@/registry/cojeev/ui/chart";
 
 const week: ChartPoint[] = [
   { label: "Mon", notes: 18, ideas: 10 }, { label: "Tue", notes: 26, ideas: 14 },

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Give only the SahaJiv UI landing page a balanced Lenis smooth-scroll experience while preserving native mobile scrolling, anchors, documentation scrolling, and reduced-motion behavior.
+**Goal:** Give only the Cojeev UI landing page a balanced Lenis smooth-scroll experience while preserving native mobile scrolling, anchors, documentation scrolling, and reduced-motion behavior.
 
 **Architecture:** A focused client wrapper owns one Lenis instance while `LandingPage` is mounted. The application imports Lenis's recommended CSS once, while route scoping comes from mounting the wrapper only on `/`. A focused Playwright script proves real wheel interpolation, anchors, reduced motion, mobile touch, cleanup, and native documentation behavior.
 
@@ -108,7 +108,7 @@ git commit -m "feat: smooth landing page scrolling with Lenis"
 - Modify: `.github/workflows/verify.yml`
 
 **Interfaces:**
-- Consumes: static site under `/sahajiv-ui/`, `[data-landing-smooth-scroll]`, Lenis root classes, and the existing `#playground` anchor.
+- Consumes: static site under `/cojeev-ui/`, `[data-landing-smooth-scroll]`, Lenis root classes, and the existing `#playground` anchor.
 - Produces: `npm run gate:smooth-scroll` and `artifacts/landing-smooth-scroll/results.json`.
 
 - [ ] **Step 1: Write the browser test before validating the implementation**
@@ -215,8 +215,8 @@ Record Lenis 1.3.26, the focused test result, changed file hashes, and the new s
 Push the commits to `main`, wait for the existing verification workflow, then confirm:
 
 ```text
-https://luv-jeri.github.io/sahajiv-ui/
-https://luv-jeri.github.io/sahajiv-ui/r/registry.json
+https://luv-jeri.github.io/cojeev-ui/
+https://luv-jeri.github.io/cojeev-ui/r/registry.json
 ```
 
 The landing page must expose the Lenis root class after hydration, the registry must still contain 124 UI entries, and documentation pages must remain native-scroll pages.

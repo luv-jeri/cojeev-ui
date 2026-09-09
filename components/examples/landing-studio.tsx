@@ -1,12 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { HeroButton } from "@/registry/sahajiv/ui/hero-button";
-import { DepthBackground, type DepthBackgroundProps } from "@/registry/sahajiv/ui/depth-background";
-import { FloatLayer } from "@/registry/sahajiv/ui/float-layer";
-import { Card, CardContent, CardTitle } from "@/registry/sahajiv/ui/card";
-import { Shape } from "@/registry/sahajiv/ui/shape";
-import { Meta, Body } from "@/registry/sahajiv/ui/typography";
+import { HeroButton } from "@/registry/cojeev/ui/hero-button";
+import { DepthBackground, type DepthBackgroundProps } from "@/registry/cojeev/ui/depth-background";
+import { FloatLayer } from "@/registry/cojeev/ui/float-layer";
+import { Card, CardContent, CardTitle } from "@/registry/cojeev/ui/card";
+import { Shape } from "@/registry/cojeev/ui/shape";
+import { Meta, Body } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 
 export function HeroButtonExample({ variant, size }: ExampleProps) {

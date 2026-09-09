@@ -1,7 +1,7 @@
 /** Behavioral assertions use production hooks/APIs; no source markup is counted as a component. */
 export function instrumentMotion(){
  const observers=new Set(),listeners=new Set(),nativeAdd=EventTarget.prototype.addEventListener,nativeRemove=EventTarget.prototype.removeEventListener
- const owned=()=>new Error().stack?.includes('/registry/sahajiv/motion/')
+ const owned=()=>new Error().stack?.includes('/registry/cojeev/motion/')
  for(const name of ['MutationObserver','ResizeObserver']){const Original=window[name];window[name]=class extends Original{constructor(fn){super(fn);this.owned=owned()}observe(...args){if(this.owned)observers.add(this);return super.observe(...args)}disconnect(){observers.delete(this);return super.disconnect()}}}
  EventTarget.prototype.addEventListener=function(type,fn,options){
   const capture=typeof options==='boolean'?options:!!options?.capture,global=this===window||this===document||this instanceof MediaQueryList

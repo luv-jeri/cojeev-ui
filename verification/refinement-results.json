@@ -128,8 +128,8 @@
   },
   "publication": {
     "status": "HELD_FOR_OWNER_REVIEW",
-    "site": "https://luv-jeri.github.io/sahajiv-ui/",
-    "repository": "https://github.com/luv-jeri/sahajiv-ui",
+    "site": "https://luv-jeri.github.io/cojeev-ui/",
+    "repository": "https://github.com/luv-jeri/cojeev-ui",
     "cancelledRun": 34219556763,
     "deployedByCancelledRun": false,
     "sourceSnapshot": "6c16a3bfd0bbe32bd874650ab22c2640936999ab",

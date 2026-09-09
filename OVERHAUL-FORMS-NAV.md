@@ -16,7 +16,7 @@ Audited all 26 Form & Input and Navigation entries in the current shared checkou
 - Toggle and ToggleGroup disabled selections retain disabled paint instead of inheriting the enabled pink state in dark mode.
 - Documentation filtering omits Getting Started while a query is present, restoring the one-result filter contract.
 
-Files changed in this stream: `components/docs-shell.tsx`; `registry/sahajiv/ui/{button,combobox,slider,tabs}.tsx`; `registry/sahajiv/styles/{button,calendar,checkbox,combobox,date-picker,input-otp,native-select,preview,select,slider,tabs,toggle,toggle-group}.css`. No example content or metadata was edited.
+Files changed in this stream: `components/docs-shell.tsx`; `registry/cojeev/ui/{button,combobox,slider,tabs}.tsx`; `registry/cojeev/styles/{button,calendar,checkbox,combobox,date-picker,input-otp,native-select,preview,select,slider,tabs,toggle,toggle-group}.css`. No example content or metadata was edited.
 
 ## Evidence boundaries
 

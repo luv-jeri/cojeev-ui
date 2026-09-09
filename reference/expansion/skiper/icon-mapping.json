@@ -198,7 +198,7 @@
       "plus-circle",
       "more-horizontal"
     ],
-    "geometryNotice": "registry/sahajiv/lib/icon-data.ts retains installed Lucide ISC and Feather MIT notices"
+    "geometryNotice": "registry/cojeev/lib/icon-data.ts retains installed Lucide ISC and Feather MIT notices"
   },
   "rows": [
     {
@@ -222,7 +222,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -296,7 +296,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -370,7 +370,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -444,7 +444,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -518,7 +518,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -592,7 +592,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -666,7 +666,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -740,7 +740,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -814,7 +814,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -888,7 +888,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -962,7 +962,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1036,7 +1036,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1110,7 +1110,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1184,7 +1184,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1258,7 +1258,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1332,7 +1332,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1406,7 +1406,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1480,7 +1480,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1554,7 +1554,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1628,7 +1628,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1702,7 +1702,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1759,7 +1759,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/party-popper.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -1784,7 +1784,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1859,7 +1859,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -1934,7 +1934,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2009,7 +2009,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2066,7 +2066,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/arrow-down.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2091,7 +2091,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2166,7 +2166,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2241,7 +2241,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2316,7 +2316,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2373,7 +2373,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/skip-forward.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2398,7 +2398,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2455,7 +2455,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/volume-2.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2480,7 +2480,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2537,7 +2537,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/volume-x.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2562,7 +2562,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2619,7 +2619,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/mic.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2644,7 +2644,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2701,7 +2701,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/video.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2726,7 +2726,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2783,7 +2783,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/camera.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2808,7 +2808,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2865,7 +2865,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/image.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -2890,7 +2890,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -2965,7 +2965,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3040,7 +3040,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3115,7 +3115,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3190,7 +3190,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3265,7 +3265,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3340,7 +3340,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3397,7 +3397,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/maximize.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -3422,7 +3422,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3497,7 +3497,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3572,7 +3572,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3647,7 +3647,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3722,7 +3722,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3797,7 +3797,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3872,7 +3872,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -3947,7 +3947,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4022,7 +4022,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4097,7 +4097,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4172,7 +4172,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4247,7 +4247,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4304,7 +4304,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/key.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -4329,7 +4329,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4404,7 +4404,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4479,7 +4479,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4554,7 +4554,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4611,7 +4611,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/phone.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -4636,7 +4636,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4711,7 +4711,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4786,7 +4786,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4861,7 +4861,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -4936,7 +4936,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5011,7 +5011,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5068,7 +5068,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/x-circle.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -5093,7 +5093,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5168,7 +5168,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5243,7 +5243,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5300,7 +5300,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/timer.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -5325,7 +5325,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5400,7 +5400,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5475,7 +5475,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5550,7 +5550,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5625,7 +5625,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5682,7 +5682,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/target.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -5707,7 +5707,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5782,7 +5782,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5857,7 +5857,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -5914,7 +5914,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/cloud.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -5939,7 +5939,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6014,7 +6014,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6089,7 +6089,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6146,7 +6146,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/smartphone.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6171,7 +6171,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6246,7 +6246,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6321,7 +6321,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6378,7 +6378,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/shopping-cart.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6403,7 +6403,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6460,7 +6460,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/credit-card.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6485,7 +6485,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6542,7 +6542,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/crown.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6567,7 +6567,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6624,7 +6624,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/dollar-sign.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6649,7 +6649,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6724,7 +6724,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6781,7 +6781,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/package.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6806,7 +6806,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6863,7 +6863,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/gem.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6888,7 +6888,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -6945,7 +6945,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/gift.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -6970,7 +6970,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7027,7 +7027,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/wallet.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -7052,7 +7052,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7109,7 +7109,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/award.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -7134,7 +7134,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7209,7 +7209,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7284,7 +7284,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7359,7 +7359,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7416,7 +7416,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/trophy.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -7441,7 +7441,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7516,7 +7516,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7591,7 +7591,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7648,7 +7648,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/user-plus.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     },
@@ -7673,7 +7673,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7748,7 +7748,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7823,7 +7823,7 @@
           "scope": "Runtime dependency; not covered by Remocn MIT",
           "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
           "receipt": "receipts/remotion-LICENSE",
-          "condition": "Prefer native SahaJiv implementation; installing or redistributing Remotion requires checking its own terms."
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
         },
         {
           "license": "ISC / MIT for Feather-derived icons",
@@ -7880,7 +7880,7 @@
         "installedSource": "node_modules/lucide-react/dist/esm/icons/flame.js",
         "installedVersion": "0.577.0",
         "license": "ISC; Feather-derived portions MIT",
-        "noticeRetainedIn": "registry/sahajiv/lib/icon-data.ts",
+        "noticeRetainedIn": "registry/cojeev/lib/icon-data.ts",
         "receipt": "receipts/remocn-icons/installed-lucide-LICENSE.txt"
       }
     }

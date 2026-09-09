@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "source": "reference/sahajiv-handoff-v4/data/port-map.json",
+  "source": "reference/cojeev-handoff-v4/data/port-map.json",
   "policy": {
     "closedContent": "Only treat closed Radix unmount as equivalent when the corresponding source is demonstrably not visible. Never ignore a missing visible source part.",
     "identities": "Authored data-gate attributes are preserved on production boundaries or structural wrappers. Select and combobox expose wrapper props for this purpose.",
@@ -599,7 +599,7 @@
       "files": "*open*.html",
       "status": "invalid-initial-scene",
       "evidence": "Raw open markup removes hidden from all three menus and sets all three triggers expanded. Source ui.js334 closes every menu at boot but leaves stale trigger expanded attributes. A real invocation from the paired rest fixture establishes one active menu.",
-      "contract": "reference/sahajiv-handoff-v4/entries/menubar/contract.md:5,19,34",
+      "contract": "reference/cojeev-handoff-v4/entries/menubar/contract.md:5,19,34",
       "replacement": "Start at rest. Open File with a real trigger, then ArrowRight/ArrowLeft and hover to move to Run and View on both oracle and candidate. Do not label the simultaneous-open original scene PASS."
     },
     {
@@ -607,7 +607,7 @@
       "files": "*open*.html",
       "status": "invalid-initial-scene",
       "evidence": "Raw open markup removes hidden and inserts position:static, but source ui.js334 hides the menu at boot. The fixture starts closed; genuine open-state proof requires an actual contextmenu event from paired rest markup.",
-      "contract": "reference/sahajiv-handoff-v4/entries/context-menu/contract.md:5,19,34",
+      "contract": "reference/cojeev-handoff-v4/entries/context-menu/contract.md:5,19,34",
       "replacement": "Start at rest. Dispatch the same real contextmenu event at the same pointer coordinates, or Shift+F10, on oracle and candidate. Candidate current open mapping invokes a real contextmenu event at trigger center, so original static scene remains deliberately unmatched."
     },
     {
@@ -647,11 +647,11 @@
       "menubar"
     ],
     "evidence": [
-      "reference/sahajiv-handoff-v4/js/ui.js:153",
-      "reference/sahajiv-handoff-v4/js/ui.js:166",
-      "reference/sahajiv-handoff-v4/js/ui.js:248",
-      "reference/sahajiv-handoff-v4/js/ui.js:330",
-      "reference/sahajiv-handoff-v4/js/ui.js:334"
+      "reference/cojeev-handoff-v4/js/ui.js:153",
+      "reference/cojeev-handoff-v4/js/ui.js:166",
+      "reference/cojeev-handoff-v4/js/ui.js:248",
+      "reference/cojeev-handoff-v4/js/ui.js:330",
+      "reference/cojeev-handoff-v4/js/ui.js:334"
     ],
     "note": "Source initialization closes all these layers even when generated open HTML removes hidden. Fixture providers mirror that runtime initial state. Open-state proof must use explicitly recorded real events after boot, from paired rest markup when raw open markup seeds inconsistent expanded states."
   }

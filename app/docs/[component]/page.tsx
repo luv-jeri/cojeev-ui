@@ -7,8 +7,8 @@ import { InstallCommand } from "@/components/install-command";
 import { exampleManifest, type ExampleId } from "@/components/examples/manifest";
 import { exampleSource } from "@/components/example-source";
 import { componentHandoffNotes } from "@/lib/component-handoff";
-import { Badge } from "@/registry/sahajiv/ui/badge";
-import { ReadingTrail } from "@/registry/sahajiv/ui/reading-trail";
+import { Badge } from "@/registry/cojeev/ui/badge";
+import { ReadingTrail } from "@/registry/cojeev/ui/reading-trail";
 import {
   TableContainer,
   Table,
@@ -17,7 +17,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "@/registry/sahajiv/ui/table";
+} from "@/registry/cojeev/ui/table";
 import {
   Typography,
   Display,
@@ -27,7 +27,7 @@ import {
   BodySecondary,
   Meta,
   Identifier,
-} from "@/registry/sahajiv/ui/typography";
+} from "@/registry/cojeev/ui/typography";
 export function generateStaticParams() {
   return catalog().map((item) => ({ component: item.name }));
 }
@@ -39,7 +39,7 @@ export async function generateMetadata({
   const { component } = await params;
   const entry = catalog().find((item) => item.name === component);
   return {
-    title: entry ? `${entry.title} · SahaJiv UI` : "Component not found",
+    title: entry ? `${entry.title} · Cojeev UI` : "Component not found",
   };
 }
 export default async function Page({

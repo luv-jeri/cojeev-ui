@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createElement as h } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from "../registry/sahajiv/ui/field";
+import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from "../registry/cojeev/ui/field";
 
 test("a field can show help and an error without duplicate document IDs", () => {
   const html = renderToStaticMarkup(h(Field, { invalid: true, controlId: "project" },

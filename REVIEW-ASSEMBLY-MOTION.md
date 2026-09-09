@@ -23,10 +23,10 @@ Existing `duration`, `delay`, `from`, `fromContour`, `release` and `onRest` rema
 
 ## Files and proof
 
-- [assembly-part.tsx](registry/sahajiv/ui/assembly-part.tsx)
-- [assembly-part.css](registry/sahajiv/styles/assembly-part.css)
-- [organism-assembly.tsx](registry/sahajiv/ui/organism-assembly.tsx)
-- [organism-assembly.css](registry/sahajiv/styles/organism-assembly.css)
+- [assembly-part.tsx](registry/cojeev/ui/assembly-part.tsx)
+- [assembly-part.css](registry/cojeev/styles/assembly-part.css)
+- [organism-assembly.tsx](registry/cojeev/ui/organism-assembly.tsx)
+- [organism-assembly.css](registry/cojeev/styles/organism-assembly.css)
 - [check-assembly-transition.mjs](scripts/check-assembly-transition.mjs)
 
 Owned-source ESLint passes. The earlier focused quiet correction passed 24 Chromium samples at390px in light/dark, including rapid Profile→Replay→Chat and delayed observations after Off/reduced. The inherited ScrollArea inset shadow was removed only in the local chat composition and verified as no shadow/zero border before its source ownership transferred.

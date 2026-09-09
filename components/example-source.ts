@@ -78,10 +78,10 @@ export function exampleSource(
       const clause = statement.importClause;
       const bindings = clause.namedBindings;
       const moduleName = specifier
-        .replace("@/registry/sahajiv/ui/", "@/components/ui/")
-        .replace("@/registry/sahajiv/lib/utils", "@/lib/utils")
-        .replace("@/registry/sahajiv/lib/", "@/lib/sahajiv/")
-        .replace("@/registry/sahajiv/motion/", "@/lib/sahajiv-motion/");
+        .replace("@/registry/cojeev/ui/", "@/components/ui/")
+        .replace("@/registry/cojeev/lib/utils", "@/lib/utils")
+        .replace("@/registry/cojeev/lib/", "@/lib/cojeev/")
+        .replace("@/registry/cojeev/motion/", "@/lib/cojeev-motion/");
       if (clause.name && identifiers.has(clause.name.text))
         imports.push(`import ${clause.isTypeOnly ? "type " : ""}${clause.name.text} from "${moduleName}";`);
       if (

@@ -2,14 +2,14 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { sculptureGeometry, sculptureFromPixels, SCULPTURE_LIMITS } from "../registry/sahajiv/lib/sculpture-geometry";
-import { sculptureFromGLB, loadSculptureFile } from "../registry/sahajiv/lib/sculpture-loaders";
-import { createGlyphMesh, glyphGrid } from "../registry/sahajiv/lib/glyph-mesh";
-import { rasterizeSculpture, sculptureGrid, sculpturePrint, sculptureCharacters } from "../registry/sahajiv/lib/sculpture-raster";
-import { GlyphSculpture } from "../registry/sahajiv/ui/glyph-sculpture";
-import { DitherSculpture } from "../registry/sahajiv/ui/dither-sculpture";
-import { InkSculpture } from "../registry/sahajiv/ui/ink-sculpture";
-import { normalizeSculptureView } from "../registry/sahajiv/ui/sculpture-orbit";
+import { sculptureGeometry, sculptureFromPixels, SCULPTURE_LIMITS } from "../registry/cojeev/lib/sculpture-geometry";
+import { sculptureFromGLB, loadSculptureFile } from "../registry/cojeev/lib/sculpture-loaders";
+import { createGlyphMesh, glyphGrid } from "../registry/cojeev/lib/glyph-mesh";
+import { rasterizeSculpture, sculptureGrid, sculpturePrint, sculptureCharacters } from "../registry/cojeev/lib/sculpture-raster";
+import { GlyphSculpture } from "../registry/cojeev/ui/glyph-sculpture";
+import { DitherSculpture } from "../registry/cojeev/ui/dither-sculpture";
+import { InkSculpture } from "../registry/cojeev/ui/ink-sculpture";
+import { normalizeSculptureView } from "../registry/cojeev/ui/sculpture-orbit";
 
 const triangle = { positions: [0, 0, 0, 2, 0, 0, 0, 2, 0], triangles: [0, 1, 2] };
 function makeGLB(modify: (json: Record<string, unknown>) => void = () => {}) {

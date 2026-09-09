@@ -22,7 +22,7 @@ const entries = ids.map((id) => {
 });
 for (const entry of entries) assert(entry.selectedVariants.length, `No selected variants for ${entry.id}`);
 const output = path.resolve(args.output || "output/playwright/overhaul-variants");
-const base = (args.url || "http://127.0.0.1:4320/sahajiv-ui").replace(/\/$/, "");
+const base = (args.url || "http://127.0.0.1:4320/cojeev-ui").replace(/\/$/, "");
 fs.mkdirSync(output, { recursive: true });
 const run = {
   started: new Date().toISOString(), url: base,
@@ -35,7 +35,7 @@ const browser = await chromium.launch({ headless: true });
 const surfaces = [];
 for (const contextInfo of run.scope.contexts) {
   const context = await browser.newContext({ viewport: { width: contextInfo.width, height: 1000 }, colorScheme: contextInfo.theme });
-  await context.addInitScript((theme) => localStorage.setItem("sahajiv-docs-theme", theme), contextInfo.theme);
+  await context.addInitScript((theme) => localStorage.setItem("cojeev-docs-theme", theme), contextInfo.theme);
   const page = await context.newPage();
   page.setDefaultTimeout(10000);
   const errors = [];
