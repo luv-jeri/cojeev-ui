@@ -1418,6 +1418,7 @@ try {
         `[data-example="${entry.name}"][data-variant="default"][data-size="default"]`,
       );
       await root.waitFor();
+      await root.scrollIntoViewIfNeeded();
       if (tests[entry.name]) {
         const outcome = await tests[entry.name]({ page, root, entry });
         record.behavior =

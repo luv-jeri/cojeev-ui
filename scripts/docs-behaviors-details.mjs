@@ -50,7 +50,6 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       return "Palette updates actual theme tokens, keyboard contrast persists, and reset restores Paper at 60%";
     },
     "guided-pointer": async ({ page, root }) => {
-      await root.scrollIntoViewIfNeeded();
       const pointer = root.locator('[data-slot="guided-pointer"]');
       const position = pointer.locator('[data-slot="guided-pointer-position"]');
       const ring = pointer.locator('[data-slot="guided-pointer-ring"]');
