@@ -1174,6 +1174,28 @@
     ],
     "reviewOnly": false
   },
+  "semantic-bloom": {
+    "name": "Semantic bloom",
+    "variants": [
+      "signature",
+      "memory",
+      "together",
+      "ink"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "moving",
+      "paused",
+      "pointer-attraction",
+      "gathering",
+      "scattered",
+      "reduced-motion",
+      "fallback"
+    ],
+    "reviewOnly": false
+  },
   "particle-text": {
     "name": "Particle Text",
     "variants": [

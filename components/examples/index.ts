@@ -37,6 +37,7 @@ export const examples: Record<string, ExampleComponent> = {
   "warp-text": lazy(() => import("./reference-typography").then((module) => ({ default: module.WarpTextExample }))),
   "particle-text": lazy(() => import("./reference-typography").then((module) => ({ default: module.ParticleTextExample }))),
   "typography-vortex": lazy(() => import("./reference-typography").then((module) => ({ default: module.TypographyVortexExample }))),
+  "semantic-bloom": lazy(() => import("./semantic-bloom").then((module) => ({ default: module.SemanticBloomExample }))),
   "activity-feed": lazy(() => import("./activity-details").then((module) => ({ default: module.ActivityFeedExample }))),
   "milestone-path": lazy(() => import("./activity-details").then((module) => ({ default: module.MilestonePathExample }))),
   "contour-field": lazy(() => import("./shader-fields").then((module) => ({ default: module.ContourFieldExample }))),

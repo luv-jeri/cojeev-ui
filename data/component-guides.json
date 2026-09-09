@@ -2240,6 +2240,29 @@
       "word-relay"
     ]
   },
+  "semantic-bloom": {
+    "description": "A living wordmark whose particles wander, connect and gather into a liquid organism. Adapted from ThreeUI with Cojeev colors and motion controls.",
+    "category": "Typography",
+    "usage": [
+      "Use text for a readable DOM wordmark. Choose tone=\"signature\", \"memory\", \"together\" or \"ink\"; colors follow the surrounding design tokens. The host has a default minimum height and accepts className/style.",
+      "Tune physics: particleCount (8–100), radius (6–28), speed (0–2), wander (0–1), damping (0.8–0.98), pointerAttraction (0–3), pointerRadius (0–600), textAttraction (0–3), textRadius (0–400), connectionDistance (0–240). Distances are CSS pixels. Invalid numeric values fall back to safe defaults.",
+      "Tune size (0.55–1.6), opacity (0–1, artwork only), softness (0–20), edgeTexture (0–40), and connectionWidth (0–8). Zero connection width removes links. Very small particles with a large blur can dissolve; reduce softness to expose individual particles.",
+      "Pass controlsRef for gather(), scatter() and reset(); connect these to native buttons or real application events. seed provides a repeatable initial arrangement. onWordActive reports decorative proximity only, not semantic analysis.",
+      "Source-based adaptation of ThreeUI Semantic Bloom (MIT, copyright 2026 Meng To). Original force defaults and liquid filter retained; native container coordinates, fixed 60Hz simulation, palette and lifecycle replace the iframe. See docs/semantic-bloom.md and reference/semantic-bloom for attribution and a runnable baseline."
+    ],
+    "accessibility": [
+      "The complete wordmark is selectable, wrapping DOM text. The canvas/filter/fallback are decorative and hidden from assistive technology. Essential meaning must not depend on particles or onWordActive.",
+      "Provide a Pause button for an ongoing animation. paused, speed=0, system reduced motion, Motion Off, Flow Off, hidden tabs and offscreen hosts suspend continuous rendering. Direct gather/scatter/reset controls remain available; no essential action requires hovering.",
+      "Pointer tracking stays local, leaves the cursor visible and releases on leave/cancel/touch end. Touch retains vertical scrolling. Context failure keeps a static organic fallback and readable text.",
+      "Particle count, DPR, canvas area and catch-up steps are bounded. Resize observers, theme/font listeners and animation frames are disposed on unmount. This example is an interactive visual demo, not connected agent activity."
+    ],
+    "related": [
+      "word-relay",
+      "agent-state",
+      "organism-assembly",
+      "pigment-field"
+    ]
+  },
   "particle-text": {
     "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
     "category": "Typography",

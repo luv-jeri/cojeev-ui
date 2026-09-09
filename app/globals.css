@@ -5,6 +5,7 @@
 @import "fumadocs-ui/css/preset.css";
 @import "lenis/dist/lenis.css";
 @import "../registry/cojeev/styles/fonts.css";
+@import "../registry/cojeev/styles/semantic-bloom.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/tokens.css";
 @import "../registry/cojeev/styles/theme.css";
 @import "../registry/cojeev/styles/base.css";

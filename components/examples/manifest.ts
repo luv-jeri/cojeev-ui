@@ -34,6 +34,7 @@ export const exampleManifest = {
   "warp-text": { file: "reference-typography", name: "WarpTextExample" },
   "particle-text": { file: "reference-typography", name: "ParticleTextExample" },
   "typography-vortex": { file: "reference-typography", name: "TypographyVortexExample" },
+  "semantic-bloom": { file: "semantic-bloom", name: "SemanticBloomExample" },
   "activity-feed": { file: "activity-details", name: "ActivityFeedExample" },
   "milestone-path": { file: "activity-details", name: "MilestonePathExample" },
   "contour-field": { file: "shader-fields", name: "ContourFieldExample" },

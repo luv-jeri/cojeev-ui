@@ -43,6 +43,11 @@
           "target": "lib/cojeev/assembly-geometry.ts"
         },
         {
+          "path": "registry/cojeev/lib/bloom-engine.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/bloom-engine.ts"
+        },
+        {
           "path": "registry/cojeev/lib/chart-geometry.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/chart-geometry.ts"
@@ -14805,6 +14810,142 @@
         "category": "Forms",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "semantic-bloom",
+      "type": "registry:ui",
+      "title": "Semantic bloom",
+      "description": "A living wordmark whose particles wander, connect and gather into a liquid organism. Adapted from ThreeUI with Cojeev colors and motion controls.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/semantic-bloom.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/styles/semantic-bloom.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/semantic-bloom.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/cojeev/semantic-bloom.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Semantic bloom",
+          "variants": [
+            "signature",
+            "memory",
+            "together",
+            "ink"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "moving",
+            "paused",
+            "pointer-attraction",
+            "gathering",
+            "scattered",
+            "reduced-motion",
+            "fallback"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "SemanticBloomProps",
+            "props": [
+              {
+                "name": "text",
+                "type": "string",
+                "required": false,
+                "description": "Readable DOM wordmark. Whitespace and long text wrap naturally."
+              },
+              {
+                "name": "tone",
+                "type": "\"signature\" | \"memory\" | \"together\" | \"ink\"",
+                "required": false,
+                "description": "Cojeev color presets. Inherits the surrounding light/dark theme."
+              },
+              {
+                "name": "size",
+                "type": "number",
+                "required": false,
+                "description": "Wordmark scale, 0.55–1.6."
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Canvas opacity, 0–1; text always remains readable."
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": "Freeze decorative movement and pointer response."
+              },
+              {
+                "name": "interactive",
+                "type": "boolean",
+                "required": false,
+                "description": "Enable local pointer attraction without capturing scroll or clicks."
+              },
+              {
+                "name": "physics",
+                "type": "BloomOptions",
+                "required": false,
+                "description": "Editable simulation forces, distances and density."
+              },
+              {
+                "name": "softness",
+                "type": "number",
+                "required": false,
+                "description": "Liquid edge blur, 0–20 CSS pixels. Default 12 (upstream)."
+              },
+              {
+                "name": "edgeTexture",
+                "type": "number",
+                "required": false,
+                "description": "Organic edge displacement, 0–40. Default 20 (upstream)."
+              },
+              {
+                "name": "connectionWidth",
+                "type": "number",
+                "required": false,
+                "description": "Connection stroke width, 0–8 CSS pixels. Default 4."
+              },
+              {
+                "name": "seed",
+                "type": "number",
+                "required": false,
+                "description": "Repeatable initial particle arrangement."
+              },
+              {
+                "name": "controlsRef",
+                "type": "React.Ref<SemanticBloomControls>",
+                "required": false,
+                "description": "Imperative commands for native buttons or application events."
+              },
+              {
+                "name": "onWordActive",
+                "type": "(word: string, index: number) => void",
+                "required": false,
+                "description": "Optional decorative word proximity event; does not represent semantic understanding."
+              }
+            ]
+          }
+        ],
+        "category": "Typography",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {
