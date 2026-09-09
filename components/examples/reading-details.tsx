@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { ReadingTrail } from "@/registry/sahajiv/ui/reading-trail";
-import { LivingLink } from "@/registry/sahajiv/ui/living-link";
+import { ReadingTrail } from "@/registry/cojeev/ui/reading-trail";
+import { LivingLink } from "@/registry/cojeev/ui/living-link";
 
 export function ReadingTrailExample() {
   const prefix = React.useId();

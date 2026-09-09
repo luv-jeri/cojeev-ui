@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-09-08T09:06:59.606875+00:00",
-  "title": "Design System: SahaJiv UI",
+  "title": "Design System: Cojeev UI",
   "extensions": {
     "colorMeta": {
       "pink": {
@@ -530,7 +530,7 @@
   ],
   "narrative": {
     "northStar": "Warm paper, precise ink, living contours",
-    "overview": "SahaJiv pairs warm paper surfaces and precise ink typography with soft pink, olive, blue and yellow accents. Organic contours give controls and agent states a recognizable character while clear text, deliberate spacing and explicit state feedback keep monitoring and decisions legible. This continues the established Intelly and SahaJiv handoff direction while allowing the component system to evolve.\n\nThe interface has two complementary modes: calm reading surfaces for documentation and tactile operating surfaces for actions. Motion for React provides shared springs, selection travel and reusable presence; bespoke SVG geometry supplies fluid edges and expressive fields. Chromatic gradients, masks and restrained spatial depth are part of this vocabulary where the component implements them.",
+    "overview": "Cojeev pairs warm paper surfaces and precise ink typography with soft pink, olive, blue and yellow accents. Organic contours give controls and agent states a recognizable character while clear text, deliberate spacing and explicit state feedback keep monitoring and decisions legible. This continues the established Intelly and Cojeev handoff direction while allowing the component system to evolve.\n\nThe interface has two complementary modes: calm reading surfaces for documentation and tactile operating surfaces for actions. Motion for React provides shared springs, selection travel and reusable presence; bespoke SVG geometry supplies fluid edges and expressive fields. Chromatic gradients, masks and restrained spatial depth are part of this vocabulary where the component implements them.",
     "keyCharacteristics": [
       "Warm neutral surfaces with paired, theme-aware foregrounds.",
       "Bricolage Grotesque headings with DM Sans reading and controls.",

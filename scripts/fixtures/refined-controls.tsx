@@ -1,15 +1,15 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { Button } from "../../registry/sahajiv/ui/button";
+import { Button } from "../../registry/cojeev/ui/button";
 import {
   Checkbox,
   type SelectorShape,
-} from "../../registry/sahajiv/ui/checkbox";
+} from "../../registry/cojeev/ui/checkbox";
 import {
   RadioGroup,
   RadioGroupItem,
-} from "../../registry/sahajiv/ui/radio-group";
-import { Dropzone } from "../../registry/sahajiv/ui/dropzone";
+} from "../../registry/cojeev/ui/radio-group";
+import { Dropzone } from "../../registry/cojeev/ui/dropzone";
 import {
   RefinedCalendarExample,
   RefinedDatePickerExample,
@@ -19,7 +19,7 @@ import {
 import {
   setMotionMode,
   setFlowSettings,
-} from "../../registry/sahajiv/motion/settings";
+} from "../../registry/cojeev/motion/settings";
 const shapes: SelectorShape[] = [
   "organic",
   "pebble",

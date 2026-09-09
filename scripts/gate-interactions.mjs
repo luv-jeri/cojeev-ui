@@ -15,7 +15,7 @@ const report = 'GATE-INTERACTIONS.md';
 const limit = Number(process.env.GATE_INTERACTION_LIMIT || Infinity);
 const modes = (process.env.GATE_INTERACTION_MODES || 'light,dark').split(',');
 const motions = (process.env.GATE_INTERACTION_MOTIONS || 'reduce,no-preference').split(',');
-const catalog = JSON.parse(fs.readFileSync('reference/sahajiv-handoff-v4/data/registry.json','utf8')).entries;
+const catalog = JSON.parse(fs.readFileSync('reference/cojeev-handoff-v4/data/registry.json','utf8')).entries;
 const ids = (process.env.GATE_INTERACTION_COMPONENTS || 'button,card').split(',');
 if (ids.some(id=>!['button','card'].includes(id))) throw new Error('This interaction gate currently covers Button and Card.');
 const compare = (a,b,prefix='') => {
@@ -29,19 +29,19 @@ async function capture(side,id,variant,size,mode,motion) {
   const errors=[];
   page.on('pageerror', e=>errors.push(e.message));
   const filename=`${variant}-${size}-rest${mode==='dark'?'-dark':''}.html`;
-  const url = side==='oracle'?`${base}/reference/sahajiv-handoff-v4/isolation/${id}/${filename}`:`${base}/candidate?id=${id}&file=${filename}`;
+  const url = side==='oracle'?`${base}/reference/cojeev-handoff-v4/isolation/${id}/${filename}`:`${base}/candidate?id=${id}&file=${filename}`;
   try {
     await page.goto(url,{waitUntil:'load'});
     await page.waitForFunction(()=>document.documentElement.dataset.ready==='1');
     await page.evaluate(()=>document.fonts.ready);
     await page.waitForTimeout(1800);
-    await page.evaluate(()=>{window.VMorph?.rewind();window.__sahajivGate?.rewind();(window.V?.clock||window.__sahajivGate.clock)(100000);});
+    await page.evaluate(()=>{window.VMorph?.rewind();window.__cojeevGate?.rewind();(window.V?.clock||window.__cojeevGate.clock)(100000);});
     const point=await page.locator('[data-gate]').first().evaluate(el=>{const r=el.getBoundingClientRect();return {x:r.x+r.width*.75,y:r.y+r.height*.5};});
     const frames=[];
     let previous=100000;
     async function frame(state,t) {
       const snapshot=await page.evaluate(({t,previous,properties})=>{
-        const tick=window.V?.clock||window.__sahajivGate.clock;
+        const tick=window.V?.clock||window.__cojeevGate.clock;
         for(let time=previous+16;time<t;time+=16)tick(time);
         tick(t);
         const el=document.querySelector('[data-gate]'), cs=getComputedStyle(el);
@@ -60,7 +60,7 @@ async function capture(side,id,variant,size,mode,motion) {
     for(const dt of [0,16,32,64,120,200,400,700]) await frame('release',100600+dt);
     await page.mouse.move(470,800);
     await page.locator('[data-gate]').first().evaluate(el=>el.blur());
-    await page.evaluate(()=>{window.VMorph?.rewind();window.__sahajivGate?.rewind();});
+    await page.evaluate(()=>{window.VMorph?.rewind();window.__cojeevGate?.rewind();});
     await frame('focus-rest',101300);
     await page.keyboard.press('Tab');
     for(const dt of [0,16,32,64,120,200,400]) await frame('keyboard-focus',101300+dt);

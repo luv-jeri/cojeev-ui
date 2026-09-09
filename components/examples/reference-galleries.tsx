@@ -1,14 +1,14 @@
 "use client";
 import * as React from "react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { ShapeArtwork } from "@/registry/sahajiv/ui/shape-artwork";
-import { InfiniteSpiral } from "@/registry/sahajiv/ui/infinite-spiral";
-import { AccordionGallery } from "@/registry/sahajiv/ui/accordion-gallery";
-import { OptionWheel } from "@/registry/sahajiv/ui/option-wheel";
-import { GrainDissolve } from "@/registry/sahajiv/ui/grain-dissolve";
-import { WaveWipe } from "@/registry/sahajiv/ui/wave-wipe";
-import { DitherDissolve } from "@/registry/sahajiv/ui/dither-dissolve";
-import { signatureShapePaths } from "@/registry/sahajiv/lib/signature-shapes";
+import { Button } from "@/registry/cojeev/ui/button";
+import { ShapeArtwork } from "@/registry/cojeev/ui/shape-artwork";
+import { InfiniteSpiral } from "@/registry/cojeev/ui/infinite-spiral";
+import { AccordionGallery } from "@/registry/cojeev/ui/accordion-gallery";
+import { OptionWheel } from "@/registry/cojeev/ui/option-wheel";
+import { GrainDissolve } from "@/registry/cojeev/ui/grain-dissolve";
+import { WaveWipe } from "@/registry/cojeev/ui/wave-wipe";
+import { DitherDissolve } from "@/registry/cojeev/ui/dither-dissolve";
+import { signatureShapePaths } from "@/registry/cojeev/lib/signature-shapes";
 import type { ExampleProps } from "./types";
 
 const galleryStudies = Object.entries(signatureShapePaths).slice(0,6).map(([name,path],index)=>({

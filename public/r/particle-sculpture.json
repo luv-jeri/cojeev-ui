@@ -5,13 +5,13 @@
   "description": "A cloud sampled from a real surface yields to the pointer and springs back into form.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/glass-sculpture.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/glass-sculpture.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/particle-sculpture.tsx",
-      "content": "\"use client\";\nimport * as React from \"react\";\nimport { SculptureStage,type MaterialSculptureCommonProps } from \"@/components/ui/glass-sculpture\";\nimport { sculptureNumber } from \"@/lib/sahajiv/sculpture-raster\";\nexport type ParticleSculptureProps=MaterialSculptureCommonProps&{count?:number;size?:number;strength?:number;radius?:number;spring?:number;damping?:number;swirl?:number;pulse?:number};\n/** Area-sampled points leave their real surface under pointer forces, then spring home. */\nexport function ParticleSculpture({count=3600,size=2.3,strength=1,radius=.4,spring=1,damping=1,swirl=.35,pulse=0,...props}:ParticleSculptureProps){\n return <SculptureStage {...props} effect={{kind:\"particle\",count:Math.round(sculptureNumber(count,3600,300,8000)),size:sculptureNumber(size,2.3,1,6),strength:sculptureNumber(strength,1,0,2),radius:sculptureNumber(radius,.4,.1,.8),spring:sculptureNumber(spring,1,.25,3),damping:sculptureNumber(damping,1,.25,2),swirl:sculptureNumber(swirl,.35,0,1),pulse:sculptureNumber(pulse,0,0,Number.MAX_SAFE_INTEGER)}}/>;\n}\n",
+      "path": "registry/cojeev/ui/particle-sculpture.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { SculptureStage,type MaterialSculptureCommonProps } from \"@/components/ui/glass-sculpture\";\nimport { sculptureNumber } from \"@/lib/cojeev/sculpture-raster\";\nexport type ParticleSculptureProps=MaterialSculptureCommonProps&{count?:number;size?:number;strength?:number;radius?:number;spring?:number;damping?:number;swirl?:number;pulse?:number};\n/** Area-sampled points leave their real surface under pointer forces, then spring home. */\nexport function ParticleSculpture({count=3600,size=2.3,strength=1,radius=.4,spring=1,damping=1,swirl=.35,pulse=0,...props}:ParticleSculptureProps){\n return <SculptureStage {...props} effect={{kind:\"particle\",count:Math.round(sculptureNumber(count,3600,300,8000)),size:sculptureNumber(size,2.3,1,6),strength:sculptureNumber(strength,1,0,2),radius:sculptureNumber(radius,.4,.1,.8),spring:sculptureNumber(spring,1,.25,3),damping:sculptureNumber(damping,1,.25,2),swirl:sculptureNumber(swirl,.35,0,1),pulse:sculptureNumber(pulse,0,0,Number.MAX_SAFE_INTEGER)}}/>;\n}\n",
       "type": "registry:ui"
     }
   ],

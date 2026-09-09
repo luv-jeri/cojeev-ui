@@ -4,10 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, Bug, Check, Camera, Paperclip, Pin as PinIcon, Sparkles, X } from "lucide-react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Input } from "@/registry/sahajiv/ui/input";
-import { Textarea } from "@/registry/sahajiv/ui/textarea";
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/registry/sahajiv/ui/sheet";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Input } from "@/registry/cojeev/ui/input";
+import { Textarea } from "@/registry/cojeev/ui/textarea";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/registry/cojeev/ui/sheet";
 import { findComponents, isUUID, LIMITS, MEDIA_TYPES, validateReport, type ComponentMatch, type Diagnostics, type Receipt, type ReportKind, type RequestTopic } from "@/lib/reporting/contracts";
 import { canEditRejectedSubmission, fetchReceipt, manifestFiles, receiptSecret, REPORTING_API, REPORTING_SITE_KEY, ReportingError, reportingFetch, submitReport, uploadAttachment, type ReportFile, type ReportingConfig } from "@/lib/reporting/client";
 import { capturePage } from "@/lib/reporting/capture";
@@ -18,7 +18,7 @@ import { Turnstile } from "./turnstile";
 import "./reporting.css";
 
 export const STATUS_LABELS = { received: "Received", planned: "Planned", in_progress: "In progress", resolved: "Live", declined: "Not planned" } as const;
-export function openRequest(topic?: RequestTopic) { window.dispatchEvent(new CustomEvent("sahajiv:report", { detail: { kind: "request", topic } })); }
+export function openRequest(topic?: RequestTopic) { window.dispatchEvent(new CustomEvent("cojeev:report", { detail: { kind: "request", topic } })); }
 const message = (error: unknown) => error instanceof Error ? error.message : "Something went wrong. Your draft is still here.";
 const sentFile = (state: string) => state === "uploaded" || state === "ready";
 
@@ -55,8 +55,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       if (draftRef.current.attempted) { setError("Your previous report is still here. Finish or clear it before starting another."); setOpen(true); return; }
       setDraft(value => ({ ...value, kind: kind ?? "request", diagnostics: kind === "bug" ? snapshotDiagnostics() : null, topicId: topic?.id, title: topic?.title ?? value.title, frozen: null })); setStep("edit"); setOpen(true);
     };
-    window.addEventListener("pagehide", save); window.addEventListener("sahajiv:report", event);
-    return () => { window.removeEventListener("pagehide", save); window.removeEventListener("sahajiv:report", event); };
+    window.addEventListener("pagehide", save); window.addEventListener("cojeev:report", event);
+    return () => { window.removeEventListener("pagehide", save); window.removeEventListener("cojeev:report", event); };
   }, [loaded, persist]);
   const loadConfig = useCallback(() => {
     if (!REPORTING_API) return;
@@ -137,9 +137,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   async function importReceipt(file: File) {
     setBusy("Checking receipt…"); setError("");
     try {
-      if (file.size > 100000) throw new Error("Choose a SahaJiv receipt JSON file.");
+      if (file.size > 100000) throw new Error("Choose a Cojeev receipt JSON file.");
       const imported = JSON.parse(await file.text()) as { id?: unknown; token?: unknown };
-      if (!isUUID(imported.id) || typeof imported.token !== "string" || !/^[a-f0-9]{64}$/.test(imported.token)) throw new Error("This file is not a valid SahaJiv receipt.");
+      if (!isUUID(imported.id) || typeof imported.token !== "string" || !/^[a-f0-9]{64}$/.test(imported.token)) throw new Error("This file is not a valid Cojeev receipt.");
       const receipt = await fetchReceipt(imported.id, imported.token);
       setDraft({ ...emptyDraft(), kind: "bug", attempted: true, receipt }); setStep("receipt");
     } catch (cause) { setError(message(cause)); } finally { setBusy(""); }
@@ -195,10 +195,10 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
             {config && !config.local && (siteKey ? <><Turnstile siteKey={siteKey} onToken={setTurnstileToken} attempt={verificationAttempt} /><Button variant="ghost" size="sm" onClick={() => setVerificationAttempt(value => value + 1)}>Retry verification</Button></> : <p className="report-error">Verification is not configured. Sending is unavailable until it is connected.</p>)}
             <Button fullWidth loading={!!busy} disabled={!REPORTING_API || !config || (!config.local && !turnstileToken)} onClick={send}>{draft.attempted ? "Retry this exact report" : "Send " + (draft.kind === "request" ? "request" : "report")}</Button><p className="report-help" role="status">{busy || storage}</p>
             {!draft.attempted && <Button variant="ghost" onClick={() => { update({ frozen: null }); setStep("edit"); }}>Back to edit</Button>}
-          </div> : receipt ? <section className="report-receipt"><span className="report-receipt-seal" aria-hidden="true"><Check size={28} /></span><h2 ref={reviewTitle} tabIndex={-1}>Your {draft.kind === "request" ? "request" : "report"} is received.</h2><p>{remainingFiles ? "The text is safely stored. Finish uploading the remaining files below." : "Thank you for helping shape SahaJiv."}</p><dl><div><dt>Status</dt><dd>{draft.kind === "bug" && receipt.status === "resolved" ? "Resolved" : STATUS_LABELS[receipt.status]}</dd></div><div><dt>Email receipt</dt><dd>{({ pending: "Queued", sent: "Sent", setup_required: "Email is not connected yet", needs_review: "Delivery needs maintainer review" })[receipt.email]}</dd></div><div><dt>Issue</dt><dd>{({ pending: "Queued", created: "Created", setup_required: "Issue tracker is not connected yet", needs_review: "Needs maintainer review" })[receipt.issue]}</dd></div><div><dt>Attachments</dt><dd>{uploadedFiles} of {receipt.attachments.length} uploaded{expiredFiles ? ` · ${expiredFiles} expired` : ""}</dd></div></dl>
+          </div> : receipt ? <section className="report-receipt"><span className="report-receipt-seal" aria-hidden="true"><Check size={28} /></span><h2 ref={reviewTitle} tabIndex={-1}>Your {draft.kind === "request" ? "request" : "report"} is received.</h2><p>{remainingFiles ? "The text is safely stored. Finish uploading the remaining files below." : "Thank you for helping shape Cojeev."}</p><dl><div><dt>Status</dt><dd>{draft.kind === "bug" && receipt.status === "resolved" ? "Resolved" : STATUS_LABELS[receipt.status]}</dd></div><div><dt>Email receipt</dt><dd>{({ pending: "Queued", sent: "Sent", setup_required: "Email is not connected yet", needs_review: "Delivery needs maintainer review" })[receipt.email]}</dd></div><div><dt>Issue</dt><dd>{({ pending: "Queued", created: "Created", setup_required: "Issue tracker is not connected yet", needs_review: "Needs maintainer review" })[receipt.issue]}</dd></div><div><dt>Attachments</dt><dd>{uploadedFiles} of {receipt.attachments.length} uploaded{expiredFiles ? ` · ${expiredFiles} expired` : ""}</dd></div></dl>
             {receipt.componentUrl && <Button asChild fullWidth><a href={receipt.componentUrl}>Open component <ArrowUpRight size={17} /></a></Button>}<div className="report-receipt-id"><span>Report ID</span><code>{receipt.id}</code></div>
             <p className="report-help">This private receipt is saved on this device. Download a copy before clearing it; the secret token lets you check this report.</p>
-            <div className="report-row"><Button variant="outline" disabled={!!busy} onClick={refreshReceipt}>Refresh status</Button><Button variant="outline" onClick={() => { const url = URL.createObjectURL(new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" })); const anchor = document.createElement("a"); anchor.href = url; anchor.download = `sahajiv-receipt-${receipt.id}.json`; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }}>Download receipt</Button></div>
+            <div className="report-row"><Button variant="outline" disabled={!!busy} onClick={refreshReceipt}>Refresh status</Button><Button variant="outline" onClick={() => { const url = URL.createObjectURL(new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" })); const anchor = document.createElement("a"); anchor.href = url; anchor.download = `cojeev-receipt-${receipt.id}.json`; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }}>Download receipt</Button></div>
             {!!remainingFiles && (draft.files.length ? <Button fullWidth loading={!!busy} onClick={() => { setError(""); void uploadFiles(receipt); }}>Retry remaining uploads</Button> : <p className="report-help">The original files are not on this device. Reopen the original draft to finish its uploads. Expired attachments are no longer available.</p>)}
             <p className="report-help" role="status">{busy || storage}</p><Button variant="ghost" disabled={!!busy} onClick={clear}>Clear receipt & start another</Button><Link href="/requests" onClick={() => setOpen(false)}>See what’s being requested <ArrowUpRight size={15} /></Link>
           </section> : null}

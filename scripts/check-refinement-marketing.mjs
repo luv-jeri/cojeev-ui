@@ -5,12 +5,12 @@ import path from "node:path";
 import { chromium, webkit } from "playwright";
 
 const staticServer = process.argv.includes("--serve") ? await (await import("vite")).preview({
-  configFile: false, base: "/sahajiv-ui/", build: { outDir: "out" },
+  configFile: false, base: "/cojeev-ui/", build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
 const base = (process.env.BASE_URL ?? (staticServer
-  ? `http://127.0.0.1:${staticServer.httpServer.address().port}/sahajiv-ui`
-  : "http://127.0.0.1:4320/sahajiv-ui")).replace(/\/$/, "");
+  ? `http://127.0.0.1:${staticServer.httpServer.address().port}/cojeev-ui`
+  : "http://127.0.0.1:4320/cojeev-ui")).replace(/\/$/, "");
 const output = process.env.OUTPUT_DIR ?? "output/playwright/refinement-marketing";
 const widths = (process.env.WIDTHS ?? "390,768,1440").split(",").map(Number);
 const engine = process.env.WEBKIT ? webkit : chromium;
@@ -89,7 +89,7 @@ async function shapeExport(page, name) {
   const downloadEvent = page.waitForEvent("download");
   await workbench.getByRole("button", { name: "Download SVG", exact: true }).click();
   const download = await downloadEvent;
-  assert.equal(download.suggestedFilename(), "sahajiv-clover-soft.svg");
+  assert.equal(download.suggestedFilename(), "cojeev-clover-soft.svg");
   const file = path.join(output, `${name}-clover.svg`);
   await download.saveAs(file);
   const svg = await fs.readFile(file, "utf8");
@@ -112,7 +112,7 @@ try {
   for (const width of widths) for (const theme of ["light", "dark"]) {
     const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme, acceptDownloads: true });
     await context.addInitScript(value => {
-      localStorage.setItem("sahajiv-docs-theme", value);
+      localStorage.setItem("cojeev-docs-theme", value);
       localStorage.removeItem("v-motion"); localStorage.removeItem("v-flow-v1");
     }, theme);
     const page = await context.newPage();

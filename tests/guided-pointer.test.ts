@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { normalizePointerPoints, resolvePointerPoint, type GuidedPointerPoint } from "../registry/sahajiv/lib/pointer-geometry";
+import { normalizePointerPoints, resolvePointerPoint, type GuidedPointerPoint } from "../registry/cojeev/lib/pointer-geometry";
 
 test("waypoints discard unusable data and retain the first valid stable ID without mutation", () => {
   const input: GuidedPointerPoint[] = [{ id: "bad", x: NaN, y: 0 }, { id: "edge", x: -5, y: 4, click: true }, { id: "edge", x: .5, y: .5 }, { id: " ", x: 0, y: 0 }, { id: "held", x: .2, y: .8, pressed: true }];

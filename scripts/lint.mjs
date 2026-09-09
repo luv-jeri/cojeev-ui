@@ -13,6 +13,6 @@ function checkCSS(directory) {
     });
   }
 }
-checkCSS("registry/sahajiv");
+checkCSS("registry/cojeev");
 if(cssIssues.length)throw new Error(cssIssues.join("\n"));
-execFileSync(process.execPath, ["node_modules/eslint/bin/eslint.js", "app", "components", "lib", "registry/sahajiv", "apps", "scripts", "tests", "--max-warnings=0"], { stdio: "inherit" });
+execFileSync(process.execPath, ["node_modules/eslint/bin/eslint.js", "app", "components", "lib", "registry/cojeev", "apps", "scripts", "tests", "--max-warnings=0"], { stdio: "inherit" });

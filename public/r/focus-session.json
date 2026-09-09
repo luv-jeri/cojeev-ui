@@ -2,15 +2,15 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "focus-session",
   "title": "Focus session",
-  "description": "A local focus timer composed from SahaJiv cards, progress, badges and native controls.",
+  "description": "A local focus timer composed from Cojeev cards, progress, badges and native controls.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/focus-session.tsx",
+      "path": "registry/cojeev/ui/focus-session.tsx",
       "content": "\"use client\";\nexport { FocusSession, type OrganismProps as FocusSessionProps } from \"@/components/ui/organism-composition\";\n",
       "type": "registry:ui"
     }

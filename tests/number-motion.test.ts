@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { numberParts, rollingTarget, mixNumber, stepNumber, parseNumberInput, numberInputText } from "../registry/sahajiv/lib/number-motion";
+import { numberParts, rollingTarget, mixNumber, stepNumber, parseNumberInput, numberInputText } from "../registry/cojeev/lib/number-motion";
 
 test("formatted parts retain localized signs, grouping, fractions and exponent text", () => {
   for (const [locale, options] of [["en-US", { style: "currency", currency: "USD", currencySign: "accounting" }], ["de-DE", { minimumFractionDigits: 2 }], ["ar-EG", { minimumFractionDigits: 2 }], ["hi-IN", { useGrouping: true }], ["en-US", { notation: "scientific" }]] as const) {
@@ -51,8 +51,8 @@ test("editing retains partial text and preserves localized high-precision values
 test("SSR exposes the final formatted value and a real editable input without client motion", async () => {
   const React = await import("react");
   const { renderToStaticMarkup } = await import("react-dom/server");
-  const { AnimatedNumber } = await import("../registry/sahajiv/ui/animated-number");
-  const { NumberInput } = await import("../registry/sahajiv/ui/number-input");
+  const { AnimatedNumber } = await import("../registry/cojeev/ui/animated-number");
+  const { NumberInput } = await import("../registry/cojeev/ui/number-input");
   const markup = renderToStaticMarkup(React.createElement(AnimatedNumber, { value: -1250.5, from: 0, treatment: "roll", locale: "de-DE", format: { minimumFractionDigits: 2 } }));
   assert.match(markup, /-1\.250,50/);
   assert.match(markup, /aria-hidden="true"/);

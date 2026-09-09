@@ -11,7 +11,7 @@ import { preview as startPreview } from "vite";
 const args = Object.fromEntries(process.argv.slice(2).map(argument => { const [name, ...value] = argument.replace(/^--/, "").split("="); return [name, value.join("=") || "true"]; }));
 const staticServer = args.serve && !args.url ? await startPreview({
   configFile: false,
-  base: "/sahajiv-ui/",
+  base: "/cojeev-ui/",
   build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
@@ -19,14 +19,14 @@ async function closeStaticServer() {
   if (staticServer?.httpServer.listening) await new Promise((resolve, reject) => staticServer.httpServer.close(error => error ? reject(error) : resolve()));
 }
 const address = staticServer?.httpServer.address();
-const base = (args.url || `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/sahajiv-ui`).replace(/\/$/, "");
+const base = (args.url || `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/cojeev-ui`).replace(/\/$/, "");
 const output = path.resolve(args.output || `output/playwright/mobile-webkit-${Date.now()}`);
 fs.mkdirSync(output, { recursive: true });
 function revision() {
   if (!args.checkout) return null;
   const checkout = path.resolve(args.checkout);
   const head = execFileSync("git", ["-C", checkout, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-  const diff = execFileSync("git", ["-C", checkout, "diff", "--", "app", "components", "registry/sahajiv"], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+  const diff = execFileSync("git", ["-C", checkout, "diff", "--", "app", "components", "registry/cojeev"], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
   return { head, dirty: !!diff, dirtyDiffSHA256: createHash("sha256").update(diff).digest("hex") };
 }
 const report = { startedAt: new Date().toISOString(), url: base, revisionStart: revision(), scope: { engine: "WebKit", viewport: { width: 390, height: 844 }, mobile: true, touch: true, physicalDevice: false }, cases: [] };
@@ -123,7 +123,7 @@ const cases = {
     await page.waitForURL(/\/docs\/?$/);
     await page.getByRole("heading", { name: "Make it yours.", exact: true }).waitFor();
     assert((await page.locator('[data-slot="code-block"] code').first().textContent()).includes("shadcn"));
-    assert.equal(await page.getByRole("link", { name: "Source on GitHub" }).getAttribute("href"), "https://github.com/luv-jeri/sahajiv-ui");
+    assert.equal(await page.getByRole("link", { name: "Source on GitHub" }).getAttribute("href"), "https://github.com/luv-jeri/cojeev-ui");
     const navigationLayout = await endLayoutObservation(page);
     const startedLayout = await layout(page);
     await page.screenshot({ path: path.join(output, "getting-started-390.png"), fullPage: true });
@@ -251,7 +251,7 @@ try {
     if (args.ids && !args.ids.split(",").includes(id)) continue;
     const context = await browser.newContext({ ...devices["iPhone 13"], viewport: { width: 390, height: 844 }, colorScheme: "light", reducedMotion: "no-preference" });
     await context.addInitScript(() => {
-      localStorage.setItem("sahajiv-docs-theme", "light");
+      localStorage.setItem("cojeev-docs-theme", "light");
       window.__webkitSceneDraws = 0;
       window.__webkitInput = { pointerTypes: [], touchStarts: 0 };
       addEventListener("pointerdown", event => { if (!window.__webkitInput.pointerTypes.includes(event.pointerType)) window.__webkitInput.pointerTypes.push(event.pointerType); }, true);

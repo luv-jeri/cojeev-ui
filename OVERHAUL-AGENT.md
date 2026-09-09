@@ -19,7 +19,7 @@ September 8, 2026. Scope: new reusable agent components, their styles, examples 
 
 - Agent state: React, `motion/react`, the shared `useChoreography`, and `cn`.
 - Agent chat: agent-state, Message, MessageScroller, Bubble, Avatar, Attachment, Questionnaire, Button, Input, InputGroup and Presence; React, `lucide-react` and utilities. InputGroupTextarea delegates to the existing Textarea for multiline semantics and inherits input-family surface/focus tokens. Input is the actual native file-picker primitive. InputGroupButton delegates to Button. Presence supplies AnimatePresence and shared choreography; no independent animation engine is introduced.
-- Styles: `registry/sahajiv/styles/agent-state.css` and `agent-chat.css`; existing semantic typography, color, surface and foreground tokens are used in both themes.
+- Styles: `registry/cojeev/styles/agent-state.css` and `agent-chat.css`; existing semantic typography, color, surface and foreground tokens are used in both themes.
 - Examples: `AgentStateExample` supports status variants and sm/md/lg sizes; `AgentChatExample` is a self-contained local simulation. Both use the existing function-based source extraction architecture.
 - `AgentWorkspaceExample` composes the layout parts, Badge, Card, Button, and AgentChatExample for a standalone workspace route. Three selectable sample tasks reveal their own result. Mark reviewed/Reopen review changes local review state and the reviewed count. Sample results and the separate conversation demo are labelled explicitly; the review area does not pretend to be receiving backend activity.
 - Parent owns registry metadata/dependency closure, example manifest/index, guides, global CSS imports, build and consumer verification.
@@ -47,7 +47,7 @@ September 8, 2026. Scope: new reusable agent components, their styles, examples 
 
 ## Files owned by this stream
 
-`registry/sahajiv/ui/agent-state.tsx`, `registry/sahajiv/ui/agent-chat.tsx`, `registry/sahajiv/styles/agent-state.css`, `registry/sahajiv/styles/agent-chat.css`, `components/examples/agent.tsx`, `tests/agent-chat.test.ts`, and this report.
+`registry/cojeev/ui/agent-state.tsx`, `registry/cojeev/ui/agent-chat.tsx`, `registry/cojeev/styles/agent-state.css`, `registry/cojeev/styles/agent-chat.css`, `components/examples/agent.tsx`, `tests/agent-chat.test.ts`, and this report.
 
 ## Keyed lifecycle composition
 

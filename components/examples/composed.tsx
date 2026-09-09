@@ -8,7 +8,7 @@ import {
   AttachmentMeta,
   AttachmentActions,
   AttachmentAction,
-} from "@/registry/sahajiv/ui/attachment";
+} from "@/registry/cojeev/ui/attachment";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -16,11 +16,11 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbPage,
-} from "@/registry/sahajiv/ui/breadcrumb";
+} from "@/registry/cojeev/ui/breadcrumb";
 import {
   ButtonGroup,
   ButtonGroupItem,
-} from "@/registry/sahajiv/ui/button-group";
+} from "@/registry/cojeev/ui/button-group";
 import {
   Carousel,
   CarouselContent,
@@ -29,7 +29,7 @@ import {
   CarouselPrevious,
   CarouselNext,
   CarouselDots,
-} from "@/registry/sahajiv/ui/carousel";
+} from "@/registry/cojeev/ui/carousel";
 import {
   Chart,
   ChartLine,
@@ -38,23 +38,23 @@ import {
   ChartRankedRow,
   ChartRankedLabel,
   ChartRankedValue,
-} from "@/registry/sahajiv/ui/chart";
-import { DataTable } from "@/registry/sahajiv/ui/data-table";
-import { Dropzone } from "@/registry/sahajiv/ui/dropzone";
+} from "@/registry/cojeev/ui/chart";
+import { DataTable } from "@/registry/cojeev/ui/data-table";
+import { Dropzone } from "@/registry/cojeev/ui/dropzone";
 import {
   Field,
   FieldLabel,
   FieldControl,
   FieldDescription,
   FieldError,
-} from "@/registry/sahajiv/ui/field";
+} from "@/registry/cojeev/ui/field";
 import {
   Input,
   InputWrapper,
   InputControl,
   InputAddon,
   InputClear,
-} from "@/registry/sahajiv/ui/input";
+} from "@/registry/cojeev/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -62,17 +62,17 @@ import {
   InputGroupButton,
   InputGroupText,
   InputGroupTextarea,
-} from "@/registry/sahajiv/ui/input-group";
+} from "@/registry/cojeev/ui/input-group";
 import {
   MessageScroller,
   MessageScrollerJump,
-} from "@/registry/sahajiv/ui/message-scroller";
+} from "@/registry/cojeev/ui/message-scroller";
 import {
   NativeSelect,
   NativeSelectOption,
   NativeSelectOptGroup,
-} from "@/registry/sahajiv/ui/native-select";
-import { Pagination } from "@/registry/sahajiv/ui/pagination";
+} from "@/registry/cojeev/ui/native-select";
+import { Pagination } from "@/registry/cojeev/ui/pagination";
 import {
   Questionnaire,
   QuestionnaireProgress,
@@ -81,7 +81,7 @@ import {
   QuestionnaireOptions,
   QuestionnaireOption,
   QuestionnaireOptionBody,
-} from "@/registry/sahajiv/ui/questionnaire";
+} from "@/registry/cojeev/ui/questionnaire";
 import {
   Sidebar,
   SidebarHeader,
@@ -91,7 +91,7 @@ import {
   SidebarMenuButton,
   SidebarMenuLabel,
   SidebarFooter,
-} from "@/registry/sahajiv/ui/sidebar";
+} from "@/registry/cojeev/ui/sidebar";
 import {
   Stepper,
   StepperList,
@@ -101,7 +101,7 @@ import {
   StepperPrevious,
   StepperNext,
   StepperStatus,
-} from "@/registry/sahajiv/ui/stepper";
+} from "@/registry/cojeev/ui/stepper";
 import {
   TableContainer,
   Table,
@@ -111,25 +111,25 @@ import {
   TableHead,
   TableCell,
   TableCaption,
-} from "@/registry/sahajiv/ui/table";
+} from "@/registry/cojeev/ui/table";
 import {
   Textarea,
   TextareaComposer,
   TextareaComposerBar,
   TextareaCount,
-} from "@/registry/sahajiv/ui/textarea";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Badge } from "@/registry/sahajiv/ui/badge";
-import { Card, CardTitle, CardDescription } from "@/registry/sahajiv/ui/card";
-import { Icon, Disk } from "@/registry/sahajiv/ui/icon";
-import { Label } from "@/registry/sahajiv/ui/label";
+} from "@/registry/cojeev/ui/textarea";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Badge } from "@/registry/cojeev/ui/badge";
+import { Card, CardTitle, CardDescription } from "@/registry/cojeev/ui/card";
+import { Icon, Disk } from "@/registry/cojeev/ui/icon";
+import { Label } from "@/registry/cojeev/ui/label";
 import {
   Message,
   MessageContent,
   MessageDescription,
-} from "@/registry/sahajiv/ui/message";
-import { Body, Meta, Title } from "@/registry/sahajiv/ui/typography";
-import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
+} from "@/registry/cojeev/ui/message";
+import { Body, Meta, Title } from "@/registry/cojeev/ui/typography";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 
 export function AttachmentExample() {
   const [present, setPresent] = React.useState(true);
@@ -519,7 +519,7 @@ export function MessageScrollerExample() {
             <MessageContent>
               <Body>{message}</Body>
               <MessageDescription>
-                {i % 2 ? "You" : "SahaJiv"} · note {i + 1}
+                {i % 2 ? "You" : "Cojeev"} · note {i + 1}
               </MessageDescription>
             </MessageContent>
           </Message>

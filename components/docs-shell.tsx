@@ -10,14 +10,14 @@ import {
   SidebarMenuButton,
   SidebarMenuLabel,
   SidebarFooter,
-} from "@/registry/sahajiv/ui/sidebar";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Input } from "@/registry/sahajiv/ui/input";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { Meta } from "@/registry/sahajiv/ui/typography";
-import { Shape } from "@/registry/sahajiv/ui/shape";
-import { AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
-import { ScrollArea } from "@/registry/sahajiv/ui/scroll-area";
+} from "@/registry/cojeev/ui/sidebar";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Input } from "@/registry/cojeev/ui/input";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Meta } from "@/registry/cojeev/ui/typography";
+import { Shape } from "@/registry/cojeev/ui/shape";
+import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
+import { ScrollArea } from "@/registry/cojeev/ui/scroll-area";
 import { ThemeControl } from "@/components/theme-control";
 import { categories } from "@/lib/categories";
 import { DocsMotion } from "@/components/docs-motion";
@@ -58,10 +58,10 @@ export function DocsShell({
       <header className="docs-mobile">
         <Link href="/" className="docs-brand">
           <Shape name="star-4" className="docs-brand-mark" />
-          SahaJiv UI
+          Cojeev UI
         </Link>
         <div className="docs-mobile-actions">
-          <Link href="https://github.com/luv-jeri/sahajiv-ui" className="docs-source-icon" aria-label="SahaJiv UI on GitHub"><AnimatedIcon name="github" /></Link>
+          <Link href="https://github.com/luv-jeri/cojeev-ui" className="docs-source-icon" aria-label="Cojeev UI on GitHub"><AnimatedIcon name="github" /></Link>
           <Button
             ref={browseRef}
             size="sm"
@@ -82,10 +82,10 @@ export function DocsShell({
         <SidebarHeader>
           <Link href="/" className="docs-brand">
             <Shape name="star-4" className="docs-brand-mark" />
-            SahaJiv UI
+            Cojeev UI
           </Link>
           <Meta>Components for everyday work.</Meta>
-          <div className="docs-brand-links"><Link href="https://github.com/luv-jeri/sahajiv-ui"><AnimatedIcon name="github" /> GitHub</Link><Link href="/work-with-me/">Work with me <AnimatedIcon name="arrow-up-right" /></Link></div>
+          <div className="docs-brand-links"><Link href="https://github.com/luv-jeri/cojeev-ui"><AnimatedIcon name="github" /> GitHub</Link><Link href="/work-with-me/">Work with me <AnimatedIcon name="arrow-up-right" /></Link></div>
         </SidebarHeader>
         <div className="docs-filter">
           <Label htmlFor={queryId} size="sm">
@@ -154,7 +154,7 @@ export function DocsShell({
           <DocsMotion className="docs-motion-launch" />
           <ThemeControl />
           <div className="docs-footer-links">
-            <Link href="https://github.com/luv-jeri/sahajiv-ui">
+            <Link href="https://github.com/luv-jeri/cojeev-ui">
               <AnimatedIcon name="github" /> Source on GitHub
             </Link>
             <Meta as="span">MIT</Meta>

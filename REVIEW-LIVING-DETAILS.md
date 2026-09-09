@@ -1,11 +1,11 @@
 # Living details — local review, 8 September 2026
 
-The latest owner feedback is implemented in the development site at http://127.0.0.1:4320/sahajiv-ui/. This review contains source and documentation changes only. No production build, package installation, commit, push or publication was performed. The public registry payloads remain held for owner approval.
+The latest owner feedback is implemented in the development site at http://127.0.0.1:4320/cojeev-ui/. This review contains source and documentation changes only. No production build, package installation, commit, push or publication was performed. The public registry payloads remain held for owner approval.
 
 ## Result
 
 - Assembly keeps its curved first half. Native background and ink now blend progressively toward the real component endpoint before motion releases it. Rapid replay, theme/palette changes and quiet interruptions preserve usable paint. See `REVIEW-ASSEMBLY-COLOUR-FLOW.md` for the frame-level evidence and precise boundary.
-- Profile, task panel, dock, chat, focus session and invitation remain reusable library compositions in `registry/sahajiv/ui/organism-composition.tsx`. Chat uses the native Bubble/BubbleRow/BubbleContent family with its received tail; its send arrow draws on hover/focus and acknowledges a local send. Its custom scrollbar appears only when needed.
+- Profile, task panel, dock, chat, focus session and invitation remain reusable library compositions in `registry/cojeev/ui/organism-composition.tsx`. Chat uses the native Bubble/BubbleRow/BubbleContent family with its received tail; its send arrow draws on hover/focus and acknowledges a local send. Its custom scrollbar appears only when needed.
 - Real single-selection groups use shared Flow: composition chooser, dock, shape/tone choices, motion character, materials and atmosphere. The landing no longer forces local Jelly over the global character. Independent Item task rows receive native press feedback without becoming one mutually exclusive group.
 - The hero has fewer foreground objects and more space. Headline, CTA and interactive specimens stop moving once their entrance finishes. Drift and depth are reserved for background decoration. FloatLayer adds `replay`, `revealDuration` and `revealDistance`; repeated viewport entrances are observable while reduced-motion content stays visible.
 - ShapeArtwork is a new reusable SVG primitive. Its workbench controls shape, tone, foreground rotation, fill, cast-shadow visibility/direction and rear-outline visibility/angle. Download SVG bakes the current palette and enabled layers; Copy React snippet supplies the same configuration. See `REVIEW-SHAPE-ARTWORK.md` for API and geometry proof.

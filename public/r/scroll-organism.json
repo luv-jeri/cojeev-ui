@@ -7,24 +7,24 @@
     "motion"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/shape.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/shape.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/scroll-organism.tsx",
-      "content": "\"use client\";\nimport * as React from \"react\";\nimport { motion, useScroll, useTransform, useSpring } from \"motion/react\";\nimport { ShapeMorph, type SignatureShapeName } from \"@/components/ui/shape\";\nimport { useChoreography } from \"@/lib/sahajiv-motion/choreography\";\nimport { cn } from \"@/lib/utils\";\n\nexport type ScrollOrganismProps = Omit<React.ComponentProps<\"div\">, \"children\"> & {\n  shape?: SignatureShapeName;\n  size?: number;\n  /** Percentage of the viewport traversed vertically over the document. */\n  travel?: number;\n};\n/** A decorative companion driven by native document scroll; no scroll hijacking,\n * frame-by-frame React state, or idle animation. Place at the edge of a story. */\nexport function ScrollOrganism({ shape = \"pebble-soft\", size = 104, travel = 50, className, style, ...props }: ScrollOrganismProps) {\n  const { quiet } = useChoreography();\n  const { scrollYProgress } = useScroll();\n  const progress = useSpring(scrollYProgress, { stiffness: 85, damping: 26, mass: .65 });\n  const y = useTransform(progress, [0, 1], [`${-travel / 2}vh`, `${travel / 2}vh`]);\n  const x = useTransform(progress, [0, .25, .5, .75, 1], [0, -24, 10, -36, 0]);\n  const rotate = useTransform(progress, [0, 1], [-18, 220]);\n  const scaleX = useTransform(progress, [0, .25, .5, .75, 1], [1, 1.12, .88, 1.08, 1]);\n  const scaleY = useTransform(scaleX, value => 1 / value);\n  return <div {...props} data-slot=\"scroll-organism\" data-quiet={quiet} className={cn(\"v-scroll-organism\", className)} style={{ ...style, \"--organism-size\": `${Math.max(24, Math.min(300, size))}px` } as React.CSSProperties} aria-hidden=\"true\">\n    <motion.div style={quiet ? undefined : { x, y, rotate, scaleX, scaleY }}><ShapeMorph name={shape} /></motion.div>\n  </div>;\n}\n",
+      "path": "registry/cojeev/ui/scroll-organism.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { motion, useScroll, useTransform, useSpring } from \"motion/react\";\nimport { ShapeMorph, type SignatureShapeName } from \"@/components/ui/shape\";\nimport { useChoreography } from \"@/lib/cojeev-motion/choreography\";\nimport { cn } from \"@/lib/utils\";\n\nexport type ScrollOrganismProps = Omit<React.ComponentProps<\"div\">, \"children\"> & {\n  shape?: SignatureShapeName;\n  size?: number;\n  /** Percentage of the viewport traversed vertically over the document. */\n  travel?: number;\n};\n/** A decorative companion driven by native document scroll; no scroll hijacking,\n * frame-by-frame React state, or idle animation. Place at the edge of a story. */\nexport function ScrollOrganism({ shape = \"pebble-soft\", size = 104, travel = 50, className, style, ...props }: ScrollOrganismProps) {\n  const { quiet } = useChoreography();\n  const { scrollYProgress } = useScroll();\n  const progress = useSpring(scrollYProgress, { stiffness: 85, damping: 26, mass: .65 });\n  const y = useTransform(progress, [0, 1], [`${-travel / 2}vh`, `${travel / 2}vh`]);\n  const x = useTransform(progress, [0, .25, .5, .75, 1], [0, -24, 10, -36, 0]);\n  const rotate = useTransform(progress, [0, 1], [-18, 220]);\n  const scaleX = useTransform(progress, [0, .25, .5, .75, 1], [1, 1.12, .88, 1.08, 1]);\n  const scaleY = useTransform(scaleX, value => 1 / value);\n  return <div {...props} data-slot=\"scroll-organism\" data-quiet={quiet} className={cn(\"v-scroll-organism\", className)} style={{ ...style, \"--organism-size\": `${Math.max(24, Math.min(300, size))}px` } as React.CSSProperties} aria-hidden=\"true\">\n    <motion.div style={quiet ? undefined : { x, y, rotate, scaleX, scaleY }}><ShapeMorph name={shape} /></motion.div>\n  </div>;\n}\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/scroll-organism.css",
-      "content": "@layer sahajiv-states {\n.v-scroll-organism { position:fixed; z-index:0; top:48%; right:1%; width:var(--organism-size,104px); height:var(--organism-size,104px); color:var(--v-olive); pointer-events:none; opacity:.55; }\n.v-scroll-organism > div, .v-scroll-organism svg { width:100%; height:100%; }\n.v-scroll-organism > div { filter:drop-shadow(3px 9px 0 color-mix(in srgb,var(--v-olive-deep) 30%,transparent)); }\n.v-scroll-organism[data-quiet=true] { opacity:.2; }\n@media(max-width:700px) { .v-scroll-organism { width:46px; height:46px; right:-9px; opacity:.25; } }\n\n}\n",
+      "path": "registry/cojeev/styles/scroll-organism.css",
+      "content": "@layer cojeev-states {\n.v-scroll-organism { position:fixed; z-index:0; top:48%; right:1%; width:var(--organism-size,104px); height:var(--organism-size,104px); color:var(--v-olive); pointer-events:none; opacity:.55; }\n.v-scroll-organism > div, .v-scroll-organism svg { width:100%; height:100%; }\n.v-scroll-organism > div { filter:drop-shadow(3px 9px 0 color-mix(in srgb,var(--v-olive-deep) 30%,transparent)); }\n.v-scroll-organism[data-quiet=true] { opacity:.2; }\n@media(max-width:700px) { .v-scroll-organism { width:46px; height:46px; right:-9px; opacity:.25; } }\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/scroll-organism.css"
+      "target": "styles/cojeev/scroll-organism.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/scroll-organism.css\"": {}
+    "@import \"@/styles/cojeev/scroll-organism.css\"": {}
   },
   "meta": {
     "source": {

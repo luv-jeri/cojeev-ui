@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { DepthBackground, depthBackgroundPoints } from "../registry/sahajiv/ui/depth-background";
-import { FloatLayer } from "../registry/sahajiv/ui/float-layer";
+import { DepthBackground, depthBackgroundPoints } from "../registry/cojeev/ui/depth-background";
+import { FloatLayer } from "../registry/cojeev/ui/float-layer";
 
 test("depth artwork is seeded, bounded and retains three distinct perspective planes", () => {
   for (const variant of ["pollen", "contour", "orbital"] as const) {

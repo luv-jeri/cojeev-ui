@@ -1,18 +1,18 @@
 "use client";
 import * as React from "react";
-import { ThemeToggle } from "@/registry/sahajiv/ui/theme-toggle";
-import { applyTheme } from "@/registry/sahajiv/motion/theme-transition";
-import { useChoreography } from "@/registry/sahajiv/motion/choreography";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { AppearanceMenu } from "@/registry/sahajiv/ui/appearance";
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/registry/sahajiv/ui/tooltip";
+import { ThemeToggle } from "@/registry/cojeev/ui/theme-toggle";
+import { applyTheme } from "@/registry/cojeev/motion/theme-transition";
+import { useChoreography } from "@/registry/cojeev/motion/choreography";
+import { Label } from "@/registry/cojeev/ui/label";
+import { AppearanceMenu } from "@/registry/cojeev/ui/appearance";
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/registry/cojeev/ui/tooltip";
 type Theme = "light" | "dark";
-const themeEvent = "sahajiv-docs-theme-change";
+const themeEvent = "cojeev-docs-theme-change";
 let volatileTheme: Theme | null = null;
 function readTheme(): Theme {
   if (volatileTheme) return volatileTheme;
   try {
-    const stored = localStorage.getItem("sahajiv-docs-theme");
+    const stored = localStorage.getItem("cojeev-docs-theme");
     if (stored === "dark" || stored === "light") return stored;
   } catch {}
   return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -20,7 +20,7 @@ function readTheme(): Theme {
 function subscribeTheme(listener: () => void) {
   const media = matchMedia("(prefers-color-scheme: dark)");
   function onStorage(event: StorageEvent) {
-    if (event.key === "sahajiv-docs-theme" || event.key === null) {
+    if (event.key === "cojeev-docs-theme" || event.key === null) {
       volatileTheme = null;
       listener();
     }
@@ -61,7 +61,7 @@ export function ThemeControl({ compact = false }: { compact?: boolean }) {
         onModeChange={(next) => {
           volatileTheme = next;
           try {
-            localStorage.setItem("sahajiv-docs-theme", next);
+            localStorage.setItem("cojeev-docs-theme", next);
           } catch {}
           window.dispatchEvent(new Event(themeEvent));
         }}

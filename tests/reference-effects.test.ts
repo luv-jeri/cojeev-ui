@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { makeSwarm, stepSwarm, orbitPoint, rippleOffset, boundedCount } from "../registry/sahajiv/lib/reference-effect-geometry";
+import { makeSwarm, stepSwarm, orbitPoint, rippleOffset, boundedCount } from "../registry/cojeev/lib/reference-effect-geometry";
 
 test("swarm stays finite and approaches a moved pointer after a suspended tab", () => {
   const particles = makeSwarm(18);

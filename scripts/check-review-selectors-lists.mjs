@@ -10,7 +10,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(arg => { const [key, .
 const output = path.resolve(root, args.output || "output/playwright/review-selectors-lists/round-1");
 fs.mkdirSync(output, { recursive: true });
 const bundle = await build({ entryPoints: [path.join(root, "scripts/fixtures/review-selectors-lists.tsx")], tsconfig: path.join(root, "tsconfig.json"), bundle: true, write: false, format: "iife", jsx: "automatic", define: { "process.env.NODE_ENV": '"development"' }, logLevel: "silent" });
-const styles = ["base", "checkbox", "radio-group", "questionnaire", "item-adornment", "scroll-area", "select", "combobox", "multi-select", "dropdown-menu", "context-menu", "menubar", "command", "navigation-menu"].map(name => fs.readFileSync(path.join(root, `registry/sahajiv/styles/${name}.css`), "utf8")).join("\n");
+const styles = ["base", "checkbox", "radio-group", "questionnaire", "item-adornment", "scroll-area", "select", "combobox", "multi-select", "dropdown-menu", "context-menu", "menubar", "command", "navigation-menu"].map(name => fs.readFileSync(path.join(root, `registry/cojeev/styles/${name}.css`), "utf8")).join("\n");
 const fixtureCss = `#review-list-fixture{max-width:1160px;margin:0 auto;padding:28px 24px;min-width:0}#review-list-fixture h1{font:500 32px/1.2 var(--font-display);margin-bottom:32px}#review-list-fixture h2{font:500 25px/1.2 var(--font-display);margin-bottom:20px}#review-list-fixture h3{font:600 13px/1.4 var(--font-text);margin-bottom:12px}#review-list-fixture section{margin-bottom:40px;min-width:0}.review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;align-items:start}.review-grid>div{min-width:0}.review-grid>div>[data-slot=checkbox]{display:flex}.review-mark-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}#review-form{display:grid;gap:18px;margin-top:28px;max-width:640px}.review-adornments{display:flex;flex-wrap:wrap;gap:20px}.review-adornments>div{display:flex;align-items:center;gap:8px;min-height:44px}#review-events{display:block;overflow-wrap:anywhere}#navigation-case [data-slot=navigation-menu-content]{position:relative;min-width:0;width:100%}#navigation-case [data-slot=navigation-menu-link]{display:flex;min-height:44px}#command-case [data-slot=command]{max-width:600px}@media(max-width:600px){.review-grid{grid-template-columns:1fr;gap:24px}#review-list-fixture{padding:24px 18px}.review-mark-row{grid-template-columns:1fr 1fr}}`;
 const browser = await chromium.launch();
 const results = [];
@@ -27,7 +27,7 @@ try {
     const verify = async (name, run) => { if (args.only && !args.only.split(",").some(part => name.toLowerCase().includes(part.toLowerCase()))) return; try { await run(); record.checks.push(name); } catch (error) { record.failures.push({ name, message: error.message }); } };
     const shot = async (name, locator) => { await locator.scrollIntoViewIfNeeded(); await locator.screenshot({ path: path.join(output, `${width}-${theme}-${name}.png`) }); };
     try {
-      const base = args.url || "http://127.0.0.1:4320/sahajiv-ui";
+      const base = args.url || "http://127.0.0.1:4320/cojeev-ui";
       const response = await context.request.get(`${base}/docs/checkbox/`);
       const source = await response.text();
       const links = source.match(/<link[^>]+rel="stylesheet"[^>]*>/g) || [];

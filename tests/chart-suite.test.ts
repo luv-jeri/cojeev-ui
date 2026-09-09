@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { areaPath, arcPath, chartDomain, cleanChartData, finiteValue, linePath, pieAngles, polarPoint, radarPath, scaleValue, stackChartData, tooltipPosition } from "../registry/sahajiv/lib/chart-geometry";
+import { areaPath, arcPath, chartDomain, cleanChartData, finiteValue, linePath, pieAngles, polarPoint, radarPath, scaleValue, stackChartData, tooltipPosition } from "../registry/cojeev/lib/chart-geometry";
 
 const series = [{ key: "a", label: "A" }, { key: "b", label: "B" }];
 test("missing observations remain missing while zero-only charts have a finite domain", () => {

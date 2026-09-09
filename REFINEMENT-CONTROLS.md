@@ -58,10 +58,10 @@ Runnable gate: `node scripts/check-refinement-controls.mjs --output=output/playw
 
 Product source:
 
-- `registry/sahajiv/ui/{button,calendar,date-picker,dropzone,checkbox,radio-group,questionnaire}.tsx`
-- `registry/sahajiv/styles/{button,calendar,date-picker,dropzone,checkbox,radio-group,questionnaire}.css`
-- `registry/sahajiv/lib/selector.tsx`
-- `registry/sahajiv/motion/use-morph.ts`
+- `registry/cojeev/ui/{button,calendar,date-picker,dropzone,checkbox,radio-group,questionnaire}.tsx`
+- `registry/cojeev/styles/{button,calendar,date-picker,dropzone,checkbox,radio-group,questionnaire}.css`
+- `registry/cojeev/lib/selector.tsx`
+- `registry/cojeev/motion/use-morph.ts`
 
 Examples, proof, report:
 

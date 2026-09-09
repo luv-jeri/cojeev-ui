@@ -1,12 +1,12 @@
 # Glyph Sculpture result
 
-Implemented on 2026-09-08 from high-level public behavior and the original SahaJiv DESIGN.md. All rendering math and geometry in this slice are independently authored. No new dependency, external model, texture, copied shader, build, install, commit, push, or publication. Root owns registry, guide, global CSS and example index integration.
+Implemented on 2026-09-08 from high-level public behavior and the original Cojeev DESIGN.md. All rendering math and geometry in this slice are independently authored. No new dependency, external model, texture, copied shader, build, install, commit, push, or publication. Root owns registry, guide, global CSS and example index integration.
 
 ## Delivered files and API
 
-- `registry/sahajiv/ui/glyph-sculpture.tsx`: `GlyphSculpture`, `GlyphSculptureProps`, `GlyphForm`, `GlyphTone`.
-- `registry/sahajiv/lib/glyph-sculpture.ts`: organic parametric geometry, depth-tested triangle rasterizer, finite options and grid sizing, deterministic glyph text.
-- `registry/sahajiv/styles/glyph-sculpture.css`: intrinsic responsive sizing, theme ink, transparent canvas and still glyph fallback.
+- `registry/cojeev/ui/glyph-sculpture.tsx`: `GlyphSculpture`, `GlyphSculptureProps`, `GlyphForm`, `GlyphTone`.
+- `registry/cojeev/lib/glyph-sculpture.ts`: organic parametric geometry, depth-tested triangle rasterizer, finite options and grid sizing, deterministic glyph text.
+- `registry/cojeev/styles/glyph-sculpture.css`: intrinsic responsive sizing, theme ink, transparent canvas and still glyph fallback.
 - `components/examples/glyph-sculpture.tsx`: `GlyphSculptureExample`; variants default/bloom, seed, pebble. Only native Card, Button, ToggleGroup, Label, Slider, Switch and Typography controls.
 - `tests/glyph-sculpture.test.ts`: finite budgets, distinct true 3D shading and deterministic server-rendered fallback.
 
@@ -34,7 +34,7 @@ Three unit/SSR tests pass via `node --import tsx --test tests/glyph-sculpture.te
 
 The no-canvas test replaced `getContext("2d")` with null before mounting: renderer=fallback, visible nonempty glyph pre, 1364 trimmed characters, no 390px page overflow. [Fallback screenshot](receipts/glyph-fallback-mobile.png).
 
-The live integrated route `http://127.0.0.1:4320/sahajiv-ui/docs/glyph-sculpture/` renders `canvas2d`. A fresh reload had zero console errors, with 390px scrollWidth/clientWidth both 390. Concurrent AnimatedIcon edits had caused transient HMR dependency-array warnings before the reload; none returned on fresh load. The Next development portal is present normally and its presence was not treated as an error. The integrated dark check switched root appearance tokens and fired the appearance event; the native example theme fixture separately proves paused repaint.
+The live integrated route `http://127.0.0.1:4320/cojeev-ui/docs/glyph-sculpture/` renders `canvas2d`. A fresh reload had zero console errors, with 390px scrollWidth/clientWidth both 390. Concurrent AnimatedIcon edits had caused transient HMR dependency-array warnings before the reload; none returned on fresh load. The Next development portal is present normally and its presence was not treated as an error. The integrated dark check switched root appearance tokens and fired the appearance event; the native example theme fixture separately proves paused repaint.
 
 Inspected screenshots:
 

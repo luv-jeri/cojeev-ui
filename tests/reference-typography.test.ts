@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { graphemes, bounded, proximityWeight, caretFrame, fallStep, scrollWordProgress } from "../registry/sahajiv/lib/reference-text-math";
+import { graphemes, bounded, proximityWeight, caretFrame, fallStep, scrollWordProgress } from "../registry/cojeev/lib/reference-text-math";
 
 test("grapheme segmentation preserves families, flags, and combining marks", () => {
   assert.deepEqual(graphemes("A👨‍👩‍👧‍👦🇮🇳é"), ["A", "👨‍👩‍👧‍👦", "🇮🇳", "é"]);
@@ -41,7 +41,7 @@ test("all new effects render readable still content before browser APIs exist", 
     ["word-stream", "WordStream"], ["caret-swap", "CaretSwap"], ["zoom-words", "ZoomWords"],
   ];
   for (const [id, name] of cases) {
-    const imported = await import(`../registry/sahajiv/ui/${id}.tsx`);
+    const imported = await import(`../registry/cojeev/ui/${id}.tsx`);
     const html = renderToStaticMarkup(React.createElement(imported[name], id === "caret-swap" ? { fromText: "Before", toText: "A 👩‍🚀 thought", paused: true } : { text: "A 👩‍🚀 thought", paused: true }));
     assert.ok(html.includes(`data-slot="${id}"`), id);
     assert.ok(html.includes("A 👩‍🚀 thought"), `${id}: complete text remains in DOM`);
@@ -53,7 +53,7 @@ test("all new effects render readable still content before browser APIs exist", 
 test("pressure extreme axes produce finite still output", async () => {
   const React = await import("react");
   const { renderToStaticMarkup } = await import("react-dom/server");
-  const { VariableProximity } = await import("../registry/sahajiv/ui/variable-proximity");
+  const { VariableProximity } = await import("../registry/cojeev/ui/variable-proximity");
   const html = renderToStaticMarkup(React.createElement(VariableProximity, { text: "wide", variant: "pressure", fromWeight: -999, toWeight: Infinity, radius: NaN }));
   assert.ok(html.includes('&quot;wght&quot; 200, &quot;wdth&quot; 75'));
   assert.ok(!html.includes("Infinity") && !html.includes("NaN"));

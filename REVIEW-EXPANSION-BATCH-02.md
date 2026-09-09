@@ -31,8 +31,8 @@ The fresh bounded source/screenshot review is `.work/expansion/finish-review-02.
 
 ## Whole-goal status
 
-All **613 canonical source entries** are accounted for. The ledger currently records **28 verified core adaptations, 8 in progress and 577 pending**. Verified means an individually reviewed core behavior adapted and checked in original SahaJiv form; it does not mean exact source code, API, media assets or timing parity. Six entrance treatments and 20 icon entries map into existing native families rather than adding redundant catalogue components.
+All **613 canonical source entries** are accounted for. The ledger currently records **28 verified core adaptations, 8 in progress and 577 pending**. Verified means an individually reviewed core behavior adapted and checked in original Cojeev form; it does not mean exact source code, API, media assets or timing parity. Six entrance treatments and 20 icon entries map into existing native families rather than adding redundant catalogue components.
 
 Remaining work includes additional text/exit families, source navigation/controls/cards/media/compositions, most shaders and 3D effects, and the other icon actions. Source-only inspection, rendered sampling and native verification remain separate in the inventories. This is material progress, not completion of the four-source objective.
 
-No dependency installation, production build, commit, push or publication was performed. Owner review remains the release boundary. The live review is at `http://127.0.0.1:4320/sahajiv-ui/`.
+No dependency installation, production build, commit, push or publication was performed. Owner review remains the release boundary. The live review is at `http://127.0.0.1:4320/cojeev-ui/`.

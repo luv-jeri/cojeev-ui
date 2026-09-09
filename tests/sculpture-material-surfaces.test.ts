@@ -2,9 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
-import {GlassSculpture} from "../registry/sahajiv/ui/glass-sculpture";
-import {FlowSculpture} from "../registry/sahajiv/ui/flow-sculpture";
-import {ParticleSculpture} from "../registry/sahajiv/ui/particle-sculpture";
+import {GlassSculpture} from "../registry/cojeev/ui/glass-sculpture";
+import {FlowSculpture} from "../registry/cojeev/ui/flow-sculpture";
+import {ParticleSculpture} from "../registry/cojeev/ui/particle-sculpture";
 
 test("all three materials have geometry-derived still previews before GPU initialization",()=>{
  for(const Component of [GlassSculpture,FlowSculpture,ParticleSculpture]){

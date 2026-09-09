@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { WritingCaret } from "@/registry/sahajiv/ui/writing-caret";
-import { GuidedPointer, type GuidedPointerPoint } from "@/registry/sahajiv/ui/guided-pointer";
+import { Button } from "@/registry/cojeev/ui/button";
+import { WritingCaret } from "@/registry/cojeev/ui/writing-caret";
+import { GuidedPointer, type GuidedPointerPoint } from "@/registry/cojeev/ui/guided-pointer";
 import type { ExampleProps } from "./types";
 
 export function WritingCaretExample() {

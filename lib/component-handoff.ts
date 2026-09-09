@@ -12,7 +12,7 @@ export function componentHandoffNotes(entry: CatalogEntry, guide: ComponentGuide
   const unique = [...new Set([entry.name, ...dependencies])];
   const list = (notes: string[]) => notes.map(note => `- ${note}`).join("\n");
   return [
-    `# ${entry.title} · SahaJiv UI`,
+    `# ${entry.title} · Cojeev UI`,
     entry.description,
     `Category: ${entry.meta.category}\nComponent ID: ${entry.name}`,
     entry.meta.source.reviewOnly

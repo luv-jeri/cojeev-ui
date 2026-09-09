@@ -1,12 +1,12 @@
-# SahaJiv UI production refinement
+# Cojeev UI production refinement
 
-The owner updated the goal on 8 September 2026: retain the supplied design philosophy, refine broken or excessive motion, expand useful general-purpose variants, and publish a polished MIT registry with Fumadocs documentation built from SahaJiv components. This supersedes the earlier requirement to reproduce confirmed source bugs. Historical comparisons remain evidence; an intentional, documented improvement does not have to reproduce a broken export.
+The owner updated the goal on 8 September 2026: retain the supplied design philosophy, refine broken or excessive motion, expand useful general-purpose variants, and publish a polished MIT registry with Fumadocs documentation built from Cojeev components. This supersedes the earlier requirement to reproduce confirmed source bugs. Historical comparisons remain evidence; an intentional, documented improvement does not have to reproduce a broken export.
 
 ## Design
 
 Preserve the warm canvas, physical accent colors, typefaces, rounded controls and distinct nine selection characters. Use a calm, interruptible Glide by default. Moving selection indicators should carry the motion while labels remain readable and still. Expressive presets remain opt-in. Reduced motion and Off must be still without hiding content or losing state.
 
-Documentation is a reading and experimentation surface. Keep the existing SahaJiv navigation and components, improve hierarchy and touch access, and show one live configurable specimen at a time. Place variant and size controls beside the preview; copied code must reproduce that exact selection. Put motion settings within one action of every example and include an adjacent real selection example. Advanced body tuning stays available in Adjuster, with clear persistence and reset behavior.
+Documentation is a reading and experimentation surface. Keep the existing Cojeev navigation and components, improve hierarchy and touch access, and show one live configurable specimen at a time. Place variant and size controls beside the preview; copied code must reproduce that exact selection. Put motion settings within one action of every example and include an adjacent real selection example. Advanced body tuning stays available in Adjuster, with clear persistence and reset behavior.
 
 Expand proven gaps in reusable components and examples, rather than duplicating APIs that already exist. IconButton is already implemented and needs a proper catalog presence. Research recommendations must identify current missing behavior and cite primary documentation. No private product screens belong in this public release.
 

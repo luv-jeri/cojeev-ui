@@ -1,0 +1,28 @@
+@layer cojeev-components {
+  [data-slot="shape-scene"] {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--r-card, 32px);
+    background: radial-gradient(ellipse at 36% 22%, var(--v-paper), var(--v-beige));
+  }
+  [data-slot="shape-scene"][data-palette="cool"] { background: radial-gradient(ellipse at 36% 22%, #f0f3fd, #dce4f1 65%, #cbd4e5); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-surface"],
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] { position: absolute; inset: 0; }
+  [data-slot="shape-scene"] [data-slot="shape-scene-canvas"] { display: block; width: 100%; height: 100%; }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] { pointer-events: none; }
+  [data-slot="shape-scene"][data-renderer="webgl"] [data-slot="shape-scene-fallback"] { visibility: hidden; }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > span { position: absolute; width: 25%; aspect-ratio: 1; filter: drop-shadow(6px 12px 9px #6c48552b); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] [data-slot="shape"] { width: 100%; height: 100%; background: linear-gradient(145deg, color-mix(in srgb, var(--scene-color) 65%, white), var(--scene-color) 60%, color-mix(in srgb, var(--scene-color) 75%, #79615c)); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(1) { left: 22%; top: 20%; transform: rotate(-12deg); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(2) { left: 52%; top: 20%; transform: rotate(16deg) scale(.9); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(3) { left: 25%; top: 53%; transform: rotate(12deg) scale(.85); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(4) { left: 53%; top: 50%; transform: rotate(-18deg); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(5) { left: 39%; top: 9%; transform: scale(.3); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-fallback"] > :nth-child(6) { left: 40%; top: 67%; transform: scale(.25); }
+  [data-slot="shape-scene"] [data-slot="shape-scene-status"] { position: absolute; left: 16px; right: 16px; bottom: 12px; color: var(--v-text-2); font: 12px/1.4 var(--font-text, sans-serif); text-align: center; }
+  @media (max-width: 480px) { [data-slot="shape-scene"] { aspect-ratio: 1; border-radius: 24px; } }
+}

@@ -17,7 +17,7 @@ test("redacts credential and personal patterns and strips dynamic route values",
   const text = redact("Bearer abcdef123456 email=user@example.com token=abc123 https://site.test/api/person/alice?key=secret");
   assert.ok(!text.includes("abcdef123456") && !text.includes("user@example.com") && !text.includes("abc123"));
   assert.equal(safeRoute("https://site.test/api/person/alice?key=secret"), "/:segment/:segment/:segment");
-  assert.equal(safeRoute("https://site.test/sahajiv-ui/docs/button/?token=x"), "/sahajiv-ui/docs/button/");
+  assert.equal(safeRoute("https://site.test/cojeev-ui/docs/button/?token=x"), "/cojeev-ui/docs/button/");
 });
 test("redacts quoted JSON credentials and secrets containing spaces", () => {
   const source = String.raw`{"password":"private phrase","api_key":"private-key","cookie":"session=private-cookie","secret":"escaped\"private-value"} token='private token'`;

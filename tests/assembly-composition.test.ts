@@ -3,10 +3,10 @@ import {test} from "node:test";
 import {createElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {load} from "cheerio";
-import {OrganismComposition,FocusSession,InviteCard,normalizeFocusDuration,focusSecondsRemaining} from "../registry/sahajiv/ui/organism-composition";
-import {OrganismAssembly} from "../registry/sahajiv/ui/organism-assembly";
-import {AssemblyPart} from "../registry/sahajiv/ui/assembly-part";
-import {Button} from "../registry/sahajiv/ui/button";
+import {OrganismComposition,FocusSession,InviteCard,normalizeFocusDuration,focusSecondsRemaining} from "../registry/cojeev/ui/organism-composition";
+import {OrganismAssembly} from "../registry/cojeev/ui/organism-assembly";
+import {AssemblyPart} from "../registry/cojeev/ui/assembly-part";
+import {Button} from "../registry/cojeev/ui/button";
 
 test("profile uses native actions without a permanent form; expanded notes reuse InputGroup",()=>{
  const $=load(renderToStaticMarkup(createElement(OrganismComposition,{kind:"profile"})));

@@ -2,26 +2,26 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "pigment-field",
   "title": "Pigment field",
-  "description": "An original GPU pigment wash using the current SahaJiv palette.",
+  "description": "An original GPU pigment wash using the current Cojeev palette.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/pigment-field.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useLivingShader, type FieldMotionProps } from \"@/lib/sahajiv/living-shader\";\n\nexport type PigmentFieldProps = Omit<React.ComponentProps<\"div\">, \"children\" | \"ref\"> & FieldMotionProps;\n\n/** A decorative pigment wash. Give its parent a height and place content beside it. */\nexport function PigmentField({ speed = 1, intensity = 1, tone = \"balanced\", paused = false, className, style, ...props }: PigmentFieldProps) {\n  const { host: hostRef, canvas: canvasRef, status, tone: safeTone, intensity: safeIntensity, moving } = useLivingShader(\"pigment\", { speed, intensity, tone, paused });\n  return (\n    <div {...props} ref={hostRef} data-slot=\"pigment-field\" data-tone={safeTone} data-renderer={status} data-moving={moving ? \"true\" : \"false\"} className={cn(\"v-pigment-field\", className)} style={{ ...style, \"--field-intensity\": safeIntensity } as React.CSSProperties} aria-hidden=\"true\" inert>\n      <span data-slot=\"field-fallback\" />\n      <canvas ref={canvasRef} data-slot=\"field-canvas\" aria-hidden=\"true\" />\n    </div>\n  );\n}\n",
+      "path": "registry/cojeev/ui/pigment-field.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useLivingShader, type FieldMotionProps } from \"@/lib/cojeev/living-shader\";\n\nexport type PigmentFieldProps = Omit<React.ComponentProps<\"div\">, \"children\" | \"ref\"> & FieldMotionProps;\n\n/** A decorative pigment wash. Give its parent a height and place content beside it. */\nexport function PigmentField({ speed = 1, intensity = 1, tone = \"balanced\", paused = false, className, style, ...props }: PigmentFieldProps) {\n  const { host: hostRef, canvas: canvasRef, status, tone: safeTone, intensity: safeIntensity, moving } = useLivingShader(\"pigment\", { speed, intensity, tone, paused });\n  return (\n    <div {...props} ref={hostRef} data-slot=\"pigment-field\" data-tone={safeTone} data-renderer={status} data-moving={moving ? \"true\" : \"false\"} className={cn(\"v-pigment-field\", className)} style={{ ...style, \"--field-intensity\": safeIntensity } as React.CSSProperties} aria-hidden=\"true\" inert>\n      <span data-slot=\"field-fallback\" />\n      <canvas ref={canvasRef} data-slot=\"field-canvas\" aria-hidden=\"true\" />\n    </div>\n  );\n}\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/pigment-field.css",
-      "content": "@layer sahajiv-states {\n.v-pigment-field {\n  --field-a: var(--v-pink, #f5b8db);\n  --field-b: var(--v-blue, #b6caeb);\n  --field-c: var(--v-yellow, #f5d867);\n  position: absolute;\n  inset: 0;\n  overflow: hidden;\n  border-radius: inherit;\n  pointer-events: none;\n  user-select: none;\n  isolation: isolate;\n  background: var(--v-paper, #fbf4e6);\n  contain: paint;\n}\n.v-pigment-field[data-tone=\"warm\"] { --field-b: var(--v-yellow, #f5d867); --field-c: var(--v-olive, #9aab63); }\n.v-pigment-field[data-tone=\"cool\"] { --field-a: var(--v-blue, #b6caeb); --field-b: var(--v-olive, #9aab63); --field-c: var(--v-pink, #f5b8db); }\n.v-pigment-field > [data-slot=\"field-fallback\"] {\n  position: absolute;\n  inset: 0;\n  opacity: clamp(0, var(--field-intensity, 1), 1);\n  background: radial-gradient(ellipse at 18% 35%, color-mix(in srgb, var(--field-a) 65%, transparent), transparent 62%), radial-gradient(ellipse at 82% 72%, color-mix(in srgb, var(--field-b) 60%, transparent), transparent 62%), radial-gradient(ellipse at 56% 8%, color-mix(in srgb, var(--field-c) 40%, transparent), transparent 56%);\n}\n.v-pigment-field > [data-slot=\"field-canvas\"] { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; pointer-events: none; }\n.v-pigment-field[data-renderer=\"webgl\"] > [data-slot=\"field-canvas\"] { opacity: 1; }\n@media (forced-colors: active) { .v-pigment-field { visibility: hidden; } }\n\n}\n",
+      "path": "registry/cojeev/styles/pigment-field.css",
+      "content": "@layer cojeev-states {\n.v-pigment-field {\n  --field-a: var(--v-pink, #f5b8db);\n  --field-b: var(--v-blue, #b6caeb);\n  --field-c: var(--v-yellow, #f5d867);\n  position: absolute;\n  inset: 0;\n  overflow: hidden;\n  border-radius: inherit;\n  pointer-events: none;\n  user-select: none;\n  isolation: isolate;\n  background: var(--v-paper, #fbf4e6);\n  contain: paint;\n}\n.v-pigment-field[data-tone=\"warm\"] { --field-b: var(--v-yellow, #f5d867); --field-c: var(--v-olive, #9aab63); }\n.v-pigment-field[data-tone=\"cool\"] { --field-a: var(--v-blue, #b6caeb); --field-b: var(--v-olive, #9aab63); --field-c: var(--v-pink, #f5b8db); }\n.v-pigment-field > [data-slot=\"field-fallback\"] {\n  position: absolute;\n  inset: 0;\n  opacity: clamp(0, var(--field-intensity, 1), 1);\n  background: radial-gradient(ellipse at 18% 35%, color-mix(in srgb, var(--field-a) 65%, transparent), transparent 62%), radial-gradient(ellipse at 82% 72%, color-mix(in srgb, var(--field-b) 60%, transparent), transparent 62%), radial-gradient(ellipse at 56% 8%, color-mix(in srgb, var(--field-c) 40%, transparent), transparent 56%);\n}\n.v-pigment-field > [data-slot=\"field-canvas\"] { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; pointer-events: none; }\n.v-pigment-field[data-renderer=\"webgl\"] > [data-slot=\"field-canvas\"] { opacity: 1; }\n@media (forced-colors: active) { .v-pigment-field { visibility: hidden; } }\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/pigment-field.css"
+      "target": "styles/cojeev/pigment-field.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/pigment-field.css\"": {}
+    "@import \"@/styles/cojeev/pigment-field.css\"": {}
   },
   "meta": {
     "source": {
@@ -62,7 +62,7 @@
             "name": "tone",
             "type": "FieldTone",
             "required": false,
-            "description": "Accent selection from the inherited SahaJiv theme."
+            "description": "Accent selection from the inherited Cojeev theme."
           },
           {
             "name": "paused",

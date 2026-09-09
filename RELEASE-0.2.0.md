@@ -1,13 +1,13 @@
-# SahaJiv UI 0.2.0
+# Cojeev UI 0.2.0
 
 The owner approved publication on **2026-09-09** of the existing **124 UI entries**: 66 base entries and 58 additions, including the 18 entries added during the four-source expansion. **Further cloning is stopped.**
 
 **Published and verified on 2026-09-09 (Asia/Kolkata).**
 
-- [Live documentation](https://luv-jeri.github.io/sahajiv-ui/)
-- [Installable registry](https://luv-jeri.github.io/sahajiv-ui/r/registry.json)
-- [Successful verification and deployment](https://github.com/luv-jeri/sahajiv-ui/actions/runs/34268018156)
-- Deployed source: [`e48abe289534de51b0a50f603fb296a06928ff50`](https://github.com/luv-jeri/sahajiv-ui/commit/e48abe289534de51b0a50f603fb296a06928ff50)
+- [Live documentation](https://luv-jeri.github.io/cojeev-ui/)
+- [Installable registry](https://luv-jeri.github.io/cojeev-ui/r/registry.json)
+- [Successful verification and deployment](https://github.com/luv-jeri/cojeev-ui/actions/runs/34268018156)
+- Deployed source: [`e48abe289534de51b0a50f603fb296a06928ff50`](https://github.com/luv-jeri/cojeev-ui/commit/e48abe289534de51b0a50f603fb296a06928ff50)
 
 | Release check | Status |
 | --- | --- |

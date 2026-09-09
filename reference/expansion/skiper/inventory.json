@@ -106,8 +106,8 @@
       "originalImplementation": {
         "id": "reading-trail",
         "status": "implemented-with-focused-validation",
-        "sourcePath": "registry/sahajiv/ui/reading-trail.tsx",
-        "approach": "Original SahaJiv code and visual design informed by public behavior; no source copied.",
+        "sourcePath": "registry/cojeev/ui/reading-trail.tsx",
+        "approach": "Original Cojeev code and visual design informed by public behavior; no source copied.",
         "validationReceipt": ".work/skiper-originals/output/interactions.json",
         "productionIntegrationOwner": "root agent"
       }
@@ -1780,7 +1780,7 @@
       ],
       "notes": [
         "Discovered in first-party catalogue metadata; category is collection_name, not the temporary New Releases grouping.",
-        "Free registry source inspected. Countdown and in-view number examples are demo-oriented; original SahaJiv adaptation should build on existing animated-number. Registry dependency metadata omits imported packages.",
+        "Free registry source inspected. Countdown and in-view number examples are demo-oriented; original Cojeev adaptation should build on existing animated-number. Registry dependency metadata omits imported packages.",
         "Pointer pause, reset, keyboard resume, and second-panel value 500 observed. Pause label remains Pause timer while paused.",
         "Four demonstration scenes: Number Flow countdown with pause/reset; spring-based in-view 500; twelve random poses ending at 2146000; in-view Number Flow with prefix/suffix.",
         "A reusable value-driven span instead of timers or random data. Callers own countdown state; from supplies a one-time visible entrance. Twelve deterministic poses convey a drawn count without inventing random financial values."
@@ -1982,8 +1982,8 @@
       "originalImplementation": {
         "id": "living-link",
         "status": "verified-original-useful-core",
-        "sourcePath": "registry/sahajiv/ui/living-link.tsx",
-        "approach": "Original SahaJiv code and visual design informed by public behavior; no source copied.",
+        "sourcePath": "registry/cojeev/ui/living-link.tsx",
+        "approach": "Original Cojeev code and visual design informed by public behavior; no source copied.",
         "validationReceipt": "output/playwright/expansion/living-link/results.json",
         "productionIntegrationOwner": "root agent",
         "coverage": "Directional underline reveals from either reading edge or center, and vertical/horizontal background fills on link interaction.",

@@ -43,7 +43,7 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
         await attribute(contrast, "aria-valuenow", "100");
         await text(root, "100%");
         await eventually(() => page.evaluate(() => document.documentElement.dataset.contrast === "100"), "Contrast reaches the provider");
-        assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("sahajiv-appearance")).palette), "tide");
+        assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("cojeev-appearance")).palette), "tide");
       } finally { await reset.click(); }
       await text(root, "Warm paper, crisp ink");
       await attribute(root.getByRole("slider", { name: "Contrast", exact: true }), "aria-valuenow", "60");

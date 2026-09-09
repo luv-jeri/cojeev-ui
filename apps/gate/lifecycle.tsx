@@ -1,9 +1,9 @@
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
-import { Button } from '@/registry/sahajiv/ui/button';
-import { Card, CardWatermark } from '@/registry/sahajiv/ui/card';
-import { morphClock } from '@/registry/sahajiv/motion/use-morph';
+import { Button } from '@/registry/cojeev/ui/button';
+import { Card, CardWatermark } from '@/registry/cojeev/ui/card';
+import { morphClock } from '@/registry/cojeev/motion/use-morph';
 import './styles.css';
 
 const root=createRoot(document.getElementById('root')!);

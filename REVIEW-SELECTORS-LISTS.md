@@ -90,9 +90,9 @@ Root separately traced a WebKit ResizeObserver warning to the press-scaled Selec
 
 ## Exact changed paths in this pass
 
-- `registry/sahajiv/lib/selector.tsx`
-- `registry/sahajiv/ui/checkbox.tsx`, `radio-group.tsx`, `questionnaire.tsx`, `item-adornment.tsx`, `scroll-area.tsx`, `select.tsx`, `combobox.tsx`, `multi-select.tsx`, `command.tsx`, `dropdown-menu.tsx`, `context-menu.tsx`, `menubar.tsx`, `navigation-menu.tsx`
-- `registry/sahajiv/styles/base.css`, `checkbox.css`, `radio-group.css`, `questionnaire.css`, `scroll-area.css`, `select.css`, `combobox.css`, `multi-select.css`, `command.css`, `dropdown-menu.css`, `context-menu.css`, `menubar.css`, `navigation-menu.css`
+- `registry/cojeev/lib/selector.tsx`
+- `registry/cojeev/ui/checkbox.tsx`, `radio-group.tsx`, `questionnaire.tsx`, `item-adornment.tsx`, `scroll-area.tsx`, `select.tsx`, `combobox.tsx`, `multi-select.tsx`, `command.tsx`, `dropdown-menu.tsx`, `context-menu.tsx`, `menubar.tsx`, `navigation-menu.tsx`
+- `registry/cojeev/styles/base.css`, `checkbox.css`, `radio-group.css`, `questionnaire.css`, `scroll-area.css`, `select.css`, `combobox.css`, `multi-select.css`, `command.css`, `dropdown-menu.css`, `context-menu.css`, `menubar.css`, `navigation-menu.css`
 - `components/examples/review-selectors-lists.tsx`
 - `scripts/check-review-selectors-lists.mjs`
 - `scripts/fixtures/review-selectors-lists.tsx`

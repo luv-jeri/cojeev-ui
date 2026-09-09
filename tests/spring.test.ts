@@ -1,10 +1,10 @@
 import {test} from "node:test"
 import assert from "node:assert/strict"
 import {readFileSync} from "node:fs"
-import {spring,type Spring} from "../registry/sahajiv/motion/geometry"
+import {spring,type Spring} from "../registry/cojeev/motion/geometry"
 
 test("literal spring matches authored integrator across held, merge, release and long-frame trajectories",()=>{
- const source=readFileSync(new URL("../reference/sahajiv-handoff-v4/js/morph.js",import.meta.url),"utf8")
+ const source=readFileSync(new URL("../reference/cojeev-handoff-v4/js/morph.js",import.meta.url),"utf8")
  const expression=source.match(/const spring=(\(s,dt\)=>\{.*?\});/)?.[1]
  assert.ok(expression,"authored spring must be extracted, not copied into the expected implementation")
  const reference=Function("SETTLE","return ("+expression+")")(.0008) as (s:Spring,dt:number)=>void

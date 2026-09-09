@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { decodeHeading, headingTiming, portalContour, normalizePortal } from "../registry/sahajiv/lib/reference-additions-math";
+import { decodeHeading, headingTiming, portalContour, normalizePortal } from "../registry/cojeev/lib/reference-additions-math";
 
 test("heading decode preserves graphemes, spaces and exact completed content",()=>{
  const text="A 👩‍🚀 é idea";
@@ -29,8 +29,8 @@ test("portal fallback paths are finite, repeatable and actually distorted",()=>{
 
 test("new components render real readable semantics and a deterministic still portal on the server",async()=>{
  const React=await import("react"),{renderToStaticMarkup}=await import("react-dom/server");
- const {ArticleHeadings}=await import("../registry/sahajiv/ui/article-headings");
- const {PortalField}=await import("../registry/sahajiv/ui/portal-field");
+ const {ArticleHeadings}=await import("../registry/cojeev/ui/article-headings");
+ const {PortalField}=await import("../registry/cojeev/ui/portal-field");
  const article=renderToStaticMarkup(React.createElement(ArticleHeadings,{items:[{id:"one",title:"A 👩‍🚀 idea",href:"#idea",meta:"6 min read"}],headingLevel:3,paused:true}));
  assert.ok(article.includes("<h3>"));assert.ok(article.includes('href="#idea"'));assert.ok(article.includes("A 👩‍🚀 idea"));assert.ok(article.includes('data-running="false"'));assert.ok(article.includes('aria-hidden="true" data-heading-visual'));
  const node=React.createElement(PortalField,{paused:true,distortion:NaN},React.createElement("h2",null,"An open possibility"));

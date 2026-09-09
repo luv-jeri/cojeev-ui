@@ -1,4 +1,4 @@
-# SahaJiv catalogue expansion
+# Cojeev catalogue expansion
 
 The owner fixed the release scope on **2026-09-09**: publish the **124 existing UI entries**, including the **18 entries added during the four-source expansion**. Further cloning and source expansion are stopped. Remaining work is release verification and publication of this existing scope.
 
@@ -22,7 +22,7 @@ Remocn's count includes five helpers and 100 icons. Framework/language variants 
 
 Canvas UI and React Bits restrict redistributing their components, including ports. Skiper has custom attribution/paid terms without a verified MIT source grant. Remocn's own source is MIT, with separate terms for some runtime dependencies. Restricted source downloads and receipts are internal research material, outside the native MIT registry payload.
 
-The released SahaJiv components preserve selected useful behaviors through their documented native implementations. A renamed component, a similar appearance or a family-level implementation does not establish exact source equivalence.
+The released Cojeev components preserve selected useful behaviors through their documented native implementations. A renamed component, a similar appearance or a family-level implementation does not establish exact source equivalence.
 
 Reading Trail and Glyph Sculpture retain documented differences from their reference concepts. Glyph Sculpture uses native density/contour glyph selection rather than measured source glyph-template matching. Glass Sculpture refracts its own procedural studio; Flow Sculpture uses a bounded original dissipative field; Particle Sculpture limits its native surface to 8,000 points. Full source renderer, material, asset and API breadth is not claimed.
 

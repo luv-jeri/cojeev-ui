@@ -5,23 +5,23 @@
   "description": "An organic wave rises across caller content to reveal the next scene.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/wave-wipe.tsx",
-      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { waveBoundary } from \"@/lib/sahajiv/reference-gallery-geometry\";\nimport { useGalleryRef, useGalleryTransition, type GalleryTransitionProps } from \"@/lib/sahajiv/reference-gallery-motion\";\nexport type WaveWipeProps=GalleryTransitionProps & {tone?:\"pink\"|\"olive\"|\"blue\"|\"yellow\"};\nexport function WaveWipe({first,second,active,duration=1100,paused=false,tone=\"blue\",className,ref,...props}:WaveWipeProps){\n const {host,progress}=useGalleryTransition(active,duration,paused),id=`wave-${React.useId().replace(/[^a-zA-Z0-9_-]/g,\"\")}`;\n const points=Array.from({length:33},(_,i)=>`${i/32},${waveBoundary(progress,i/32)}`).join(\" \");\n const edge=Array.from({length:33},(_,i)=>`${i/32*600},${waveBoundary(progress,i/32)*400}`).join(\" \");\n return <div {...props} ref={useGalleryRef(host,ref)} data-slot=\"wave-wipe\" data-active={active} className={cn(\"v-wave-wipe\",className)}>\n <svg width=\"0\" height=\"0\" aria-hidden=\"true\" style={{position:\"absolute\"}}><defs><clipPath id={id} clipPathUnits=\"objectBoundingBox\"><polygon points={`0,1.3 ${points} 1,1.3`}/></clipPath></defs></svg>\n <div className=\"v-wave-wipe__layer\" aria-hidden={active} inert={active} style={{transform:`translateY(${-progress*8}%)`,opacity:progress===1?0:1}}>{first}</div>\n <div className=\"v-wave-wipe__layer\" aria-hidden={!active} inert={!active} style={{clipPath:progress===1?undefined:`url(#${id})`}}>{second}</div>\n {progress>0&&progress<1&&<svg className=\"v-wave-wipe__field\" aria-hidden=\"true\" viewBox=\"0 0 600 400\" preserveAspectRatio=\"none\"><polyline points={edge} fill=\"none\" stroke={`var(--v-${tone})`} strokeWidth=\"34\"/><polyline points={edge} fill=\"none\" stroke=\"var(--v-paper)\" strokeWidth=\"2\"/></svg>}\n </div>;\n}\n",
+      "path": "registry/cojeev/ui/wave-wipe.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { waveBoundary } from \"@/lib/cojeev/reference-gallery-geometry\";\nimport { useGalleryRef, useGalleryTransition, type GalleryTransitionProps } from \"@/lib/cojeev/reference-gallery-motion\";\nexport type WaveWipeProps=GalleryTransitionProps & {tone?:\"pink\"|\"olive\"|\"blue\"|\"yellow\"};\nexport function WaveWipe({first,second,active,duration=1100,paused=false,tone=\"blue\",className,ref,...props}:WaveWipeProps){\n const {host,progress}=useGalleryTransition(active,duration,paused),id=`wave-${React.useId().replace(/[^a-zA-Z0-9_-]/g,\"\")}`;\n const points=Array.from({length:33},(_,i)=>`${i/32},${waveBoundary(progress,i/32)}`).join(\" \");\n const edge=Array.from({length:33},(_,i)=>`${i/32*600},${waveBoundary(progress,i/32)*400}`).join(\" \");\n return <div {...props} ref={useGalleryRef(host,ref)} data-slot=\"wave-wipe\" data-active={active} className={cn(\"v-wave-wipe\",className)}>\n <svg width=\"0\" height=\"0\" aria-hidden=\"true\" style={{position:\"absolute\"}}><defs><clipPath id={id} clipPathUnits=\"objectBoundingBox\"><polygon points={`0,1.3 ${points} 1,1.3`}/></clipPath></defs></svg>\n <div className=\"v-wave-wipe__layer\" aria-hidden={active} inert={active} style={{transform:`translateY(${-progress*8}%)`,opacity:progress===1?0:1}}>{first}</div>\n <div className=\"v-wave-wipe__layer\" aria-hidden={!active} inert={!active} style={{clipPath:progress===1?undefined:`url(#${id})`}}>{second}</div>\n {progress>0&&progress<1&&<svg className=\"v-wave-wipe__field\" aria-hidden=\"true\" viewBox=\"0 0 600 400\" preserveAspectRatio=\"none\"><polyline points={edge} fill=\"none\" stroke={`var(--v-${tone})`} strokeWidth=\"34\"/><polyline points={edge} fill=\"none\" stroke=\"var(--v-paper)\" strokeWidth=\"2\"/></svg>}\n </div>;\n}\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/wave-wipe.css",
-      "content": "@layer sahajiv-states {\n.v-wave-wipe{display:grid;position:relative;isolation:isolate;overflow:hidden;width:100%;min-width:0;border-radius:24px;background:var(--v-paper)}.v-wave-wipe__layer{grid-area:1/1;min-width:0;align-self:stretch}.v-wave-wipe__layer[inert]{pointer-events:none;user-select:none}.v-wave-wipe__field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}\n\n}\n",
+      "path": "registry/cojeev/styles/wave-wipe.css",
+      "content": "@layer cojeev-states {\n.v-wave-wipe{display:grid;position:relative;isolation:isolate;overflow:hidden;width:100%;min-width:0;border-radius:24px;background:var(--v-paper)}.v-wave-wipe__layer{grid-area:1/1;min-width:0;align-self:stretch}.v-wave-wipe__layer[inert]{pointer-events:none;user-select:none}.v-wave-wipe__field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/wave-wipe.css"
+      "target": "styles/cojeev/wave-wipe.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/wave-wipe.css\"": {}
+    "@import \"@/styles/cojeev/wave-wipe.css\"": {}
   },
   "meta": {
     "source": {

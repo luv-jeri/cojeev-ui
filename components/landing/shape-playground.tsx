@@ -1,17 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { CodeBlock } from "@/registry/sahajiv/ui/code-block";
-import { DepthBackground } from "@/registry/sahajiv/ui/depth-background";
-import { FloatLayer } from "@/registry/sahajiv/ui/float-layer";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { ShapeMorph, signatureShapeNames, type SignatureShapeName } from "@/registry/sahajiv/ui/shape";
-import { ShapeArtwork, shapeArtworkCode, shapeArtworkSvg, type ShapeArtworkOptions, type ShapeArtworkColors, type ShapeArtworkTone } from "@/registry/sahajiv/ui/shape-artwork";
-import { Slider } from "@/registry/sahajiv/ui/slider";
-import { Switch } from "@/registry/sahajiv/ui/switch";
-import { ToggleGroup, ToggleGroupItem } from "@/registry/sahajiv/ui/toggle-group";
-import { Body, Meta, SectionTitle, Title } from "@/registry/sahajiv/ui/typography";
+import { Button } from "@/registry/cojeev/ui/button";
+import { CodeBlock } from "@/registry/cojeev/ui/code-block";
+import { DepthBackground } from "@/registry/cojeev/ui/depth-background";
+import { FloatLayer } from "@/registry/cojeev/ui/float-layer";
+import { Label } from "@/registry/cojeev/ui/label";
+import { ShapeMorph, signatureShapeNames, type SignatureShapeName } from "@/registry/cojeev/ui/shape";
+import { ShapeArtwork, shapeArtworkCode, shapeArtworkSvg, type ShapeArtworkOptions, type ShapeArtworkColors, type ShapeArtworkTone } from "@/registry/cojeev/ui/shape-artwork";
+import { Slider } from "@/registry/cojeev/ui/slider";
+import { Switch } from "@/registry/cojeev/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/registry/cojeev/ui/toggle-group";
+import { Body, Meta, SectionTitle, Title } from "@/registry/cojeev/ui/typography";
 import { MarketingLink } from "./marketing-shell";
 
 const shapeLabels: Record<SignatureShapeName, string> = {
@@ -61,7 +61,7 @@ export function ShapePlayground() {
       url = URL.createObjectURL(new Blob([shapeArtworkSvg(options, colors)], { type: "image/svg+xml;charset=utf-8" }));
       link = document.createElement("a");
       link.href = url;
-      link.download = `sahajiv-${name}.svg`;
+      link.download = `cojeev-${name}.svg`;
       document.body.append(link);
       link.click();
       const downloadUrl = url;

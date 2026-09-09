@@ -5,7 +5,7 @@ import ts from "typescript";
 import { generateComponent } from "../scripts/generate-component.mjs";
 
 test("generator covers every authored base axis and slot and emits parseable TSX",()=>{
- const reference="reference/sahajiv-handoff-v4/data";
+ const reference="reference/cojeev-handoff-v4/data";
  const entries:Record<string,{id:string;tier:string;variants:string[];sizes:string[]}>=JSON.parse(fs.readFileSync(`${reference}/registry.json`,"utf8")).entries;
  const map=JSON.parse(fs.readFileSync(`${reference}/port-map.json`,"utf8")).entries;
  const base=Object.values(entries).filter(entry=>entry.tier==="base");

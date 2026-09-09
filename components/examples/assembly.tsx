@@ -1,11 +1,11 @@
 "use client";
 import * as React from "react";
-import { OrganismAssembly } from "@/registry/sahajiv/ui/organism-assembly";
-import { OrganismComposition, ProfileCard, WorkSidePanel, ActionDock, ConversationPanel, CompactDashboard } from "@/registry/sahajiv/ui/organism-composition";
-import { AssemblyPart } from "@/registry/sahajiv/ui/assembly-part";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Meta } from "@/registry/sahajiv/ui/typography";
-import { Icon } from "@/registry/sahajiv/ui/icon";
+import { OrganismAssembly } from "@/registry/cojeev/ui/organism-assembly";
+import { OrganismComposition, ProfileCard, WorkSidePanel, ActionDock, ConversationPanel, CompactDashboard } from "@/registry/cojeev/ui/organism-composition";
+import { AssemblyPart } from "@/registry/cojeev/ui/assembly-part";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Meta } from "@/registry/cojeev/ui/typography";
+import { Icon } from "@/registry/cojeev/ui/icon";
 export function OrganismAssemblyExample(){return <OrganismAssembly/>}
 export function OrganismCompositionExample(){return <OrganismComposition kind="chat"/>}
 export function AssemblyPartExample(){

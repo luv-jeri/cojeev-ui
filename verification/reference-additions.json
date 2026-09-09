@@ -24,7 +24,7 @@
     "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
     "usage": [
       "Compose real content as children; keep essential controls above the decorative field.",
-      "Choose balanced, warm or cool SahaJiv accents and keep a visible pause control for continuous movement."
+      "Choose balanced, warm or cool Cojeev accents and keep a visible pause control for continuous movement."
     ],
     "accessibility": [
       "The canvas and static SVG are decorative and hidden from assistive technology; children retain native semantics.",
@@ -55,7 +55,7 @@
             "name": "tone",
             "type": "\"balanced\" | \"warm\" | \"cool\"",
             "default": "\"balanced\"",
-            "description": "Pairs existing theme-aware SahaJiv accent colors."
+            "description": "Pairs existing theme-aware Cojeev accent colors."
           },
           {
             "name": "speed",

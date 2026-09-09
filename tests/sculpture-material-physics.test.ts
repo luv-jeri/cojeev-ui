@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { sculptureGeometry } from "@/registry/sahajiv/lib/sculpture-geometry";
-import { createVelocityField, stirVelocityField, advanceVelocityField, clearVelocityField } from "../registry/sahajiv/lib/sculpture-flow";
-import { sampleSculptureSurface, createParticleSpring, stepParticleSpring, pulseParticleSpring, resetParticleSpring } from "../registry/sahajiv/lib/sculpture-particles";
-import { materialPixelSize, orientSculptureTriangles } from "../registry/sahajiv/lib/sculpture-stage-geometry";
+import { sculptureGeometry } from "@/registry/cojeev/lib/sculpture-geometry";
+import { createVelocityField, stirVelocityField, advanceVelocityField, clearVelocityField } from "../registry/cojeev/lib/sculpture-flow";
+import { sampleSculptureSurface, createParticleSpring, stepParticleSpring, pulseParticleSpring, resetParticleSpring } from "../registry/cojeev/lib/sculpture-particles";
+import { materialPixelSize, orientSculptureTriangles } from "../registry/cojeev/lib/sculpture-stage-geometry";
 
 test("native surface preparation respects supplied outward normals and pixel budgets",()=>{
  const mesh=sculptureGeometry({positions:[0,0,0,0,1,0,1,0,0],normals:[0,0,1,0,0,1,0,0,1]});

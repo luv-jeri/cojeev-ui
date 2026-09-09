@@ -2,7 +2,7 @@
 
 ## Goal
 
-Add a balanced, natural smooth-scroll feel to the SahaJiv UI marketing landing page with Lenis 1.3.26. Keep documentation pages on native scrolling and preserve the current landing-page composition, anchor links, reveal effects, keyboard behavior, mobile behavior, and reduced-motion support.
+Add a balanced, natural smooth-scroll feel to the Cojeev UI marketing landing page with Lenis 1.3.26. Keep documentation pages on native scrolling and preserve the current landing-page composition, anchor links, reveal effects, keyboard behavior, mobile behavior, and reduced-motion support.
 
 ## Chosen approach
 

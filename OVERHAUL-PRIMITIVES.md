@@ -1,10 +1,10 @@
 # Final primitive motion audit
 
-September 8, 2026. Working-tree audit against the existing Next dev server at `http://127.0.0.1:4320/sahajiv-ui`. No registry generation, Next build, commit, or publication was performed by this stream.
+September 8, 2026. Working-tree audit against the existing Next dev server at `http://127.0.0.1:4320/cojeev-ui`. No registry generation, Next build, commit, or publication was performed by this stream.
 
 ## Repeatable check
 
-Run `rtk proxy node scripts/check-overhaul-primitives.mjs --url=http://127.0.0.1:4320/sahajiv-ui`. Optional arguments: `--widths=1440,390`, `--only=theme,icons,depth,spinner,skeleton`, and `--output=PATH`.
+Run `rtk proxy node scripts/check-overhaul-primitives.mjs --url=http://127.0.0.1:4320/cojeev-ui`. Optional arguments: `--widths=1440,390`, `--only=theme,icons,depth,spinner,skeleton`, and `--output=PATH`.
 
 The check opens an independent Chromium browser. It uses actual docs examples for component behavior, plus an isolated in-memory React consumer fixture for native SVG props/ref, Card+MotionSurface composition, and applying shared theme colors. The fixture uses the real components and existing page styles. It does not change application examples or generate registry/build output.
 
@@ -57,6 +57,6 @@ The final primitive audit changed these nine registry files; the source stream i
 - `styles/presence.css`
 - `styles/text-reveal.css`
 
-Paths are relative to `registry/sahajiv/`. ThemeToggle TSX, Card TSX, use-depth, Skeleton, and their other styles were inspected and not edited by this final audit. The only additional source artifact is `scripts/check-overhaul-primitives.mjs`.
+Paths are relative to `registry/cojeev/`. ThemeToggle TSX, Card TSX, use-depth, Skeleton, and their other styles were inspected and not edited by this final audit. The only additional source artifact is `scripts/check-overhaul-primitives.mjs`.
 
 After the freeze request, the finish reviewer supplied a separate Questionnaire hover-opacity defect. This stream forwarded its selector and screenshot to the parent and made no further source edit. It is outside this completed primitives pass, not silently marked resolved here.

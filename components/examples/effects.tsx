@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
-import { AnimatedNumber } from "@/registry/sahajiv/ui/animated-number";
-import { TextReveal } from "@/registry/sahajiv/ui/text-reveal";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { BodySecondary, Display, Meta } from "@/registry/sahajiv/ui/typography";
+import { AnimatedNumber } from "@/registry/cojeev/ui/animated-number";
+import { TextReveal } from "@/registry/cojeev/ui/text-reveal";
+import { Button } from "@/registry/cojeev/ui/button";
+import { BodySecondary, Display, Meta } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 
 export function AnimatedNumberExample() {

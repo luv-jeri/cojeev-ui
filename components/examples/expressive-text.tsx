@@ -1,12 +1,12 @@
 "use client";
 import * as React from "react";
-import { WordRelay, type WordRelayHandle, type WordRelayProps } from "@/registry/sahajiv/ui/word-relay";
-import { TextReveal, type TextRevealProps } from "@/registry/sahajiv/ui/text-reveal";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import { Switch } from "@/registry/sahajiv/ui/switch";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { BodySecondary, Meta } from "@/registry/sahajiv/ui/typography";
+import { WordRelay, type WordRelayHandle, type WordRelayProps } from "@/registry/cojeev/ui/word-relay";
+import { TextReveal, type TextRevealProps } from "@/registry/cojeev/ui/text-reveal";
+import { Button } from "@/registry/cojeev/ui/button";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import { Switch } from "@/registry/cojeev/ui/switch";
+import { Label } from "@/registry/cojeev/ui/label";
+import { BodySecondary, Meta } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 
 export function WordRelayExample({ variant = "default" }: ExampleProps) {

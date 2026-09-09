@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { AsyncContent, Skeleton, SkeletonGroup } from "@/registry/sahajiv/ui/skeleton";
-import { RadioGroup, RadioGroupItem, RadioGroupBody } from "@/registry/sahajiv/ui/radio-group";
-import { Input } from "@/registry/sahajiv/ui/input";
-import { Field, FieldControl, FieldLabel, FieldDescription } from "@/registry/sahajiv/ui/field";
-import { Stepper, StepperList, StepperItem, StepperIndicator, StepperTitle, StepperPrevious, StepperNext, StepperStatus } from "@/registry/sahajiv/ui/stepper";
-import { Bubble, BubbleRow, BubbleContent, BubbleReaction, BubbleTyping } from "@/registry/sahajiv/ui/bubble";
-import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
+import { Button } from "@/registry/cojeev/ui/button";
+import { AsyncContent, Skeleton, SkeletonGroup } from "@/registry/cojeev/ui/skeleton";
+import { RadioGroup, RadioGroupItem, RadioGroupBody } from "@/registry/cojeev/ui/radio-group";
+import { Input } from "@/registry/cojeev/ui/input";
+import { Field, FieldControl, FieldLabel, FieldDescription } from "@/registry/cojeev/ui/field";
+import { Stepper, StepperList, StepperItem, StepperIndicator, StepperTitle, StepperPrevious, StepperNext, StepperStatus } from "@/registry/cojeev/ui/stepper";
+import { Bubble, BubbleRow, BubbleContent, BubbleReaction, BubbleTyping } from "@/registry/cojeev/ui/bubble";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 import type { ExampleProps } from "./types";
 
 export function LoadingContentExample({ variant = "default" }: ExampleProps) {

@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ItemAdornment, resolveItemAdornment, adornItem } from "../registry/sahajiv/ui/item-adornment";
-import { Icon, Disk, iconNames } from "../registry/sahajiv/ui/icon";
+import { ItemAdornment, resolveItemAdornment, adornItem } from "../registry/cojeev/ui/item-adornment";
+import { Icon, Disk, iconNames } from "../registry/cojeev/ui/icon";
 
 test("visual identities are deterministic across reorder and filtering", () => {
   const identities = ["Save document", "Share link", "Open settings", "Visit GitHub", "Create project"];

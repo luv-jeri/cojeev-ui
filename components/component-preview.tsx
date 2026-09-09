@@ -1,11 +1,11 @@
 "use client";
 import * as React from "react";
-import { Preview } from "@/registry/sahajiv/ui/preview";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/sahajiv/ui/select";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Meta } from "@/registry/sahajiv/ui/typography";
-import { MotionPresence, MotionSurface } from "@/registry/sahajiv/ui/presence";
+import { Preview } from "@/registry/cojeev/ui/preview";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/cojeev/ui/select";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Meta } from "@/registry/cojeev/ui/typography";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 import { DocsMotion } from "@/components/docs-motion";
 import { examples } from "@/components/examples";
 import { ComponentHandoff } from "@/components/component-handoff";

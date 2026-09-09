@@ -2,29 +2,29 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Hero, SectionTitle, Body, Meta, Title } from "@/registry/sahajiv/ui/typography";
-import { Shape } from "@/registry/sahajiv/ui/shape";
-import { ShapeScene, type SculptureMaterial } from "@/registry/sahajiv/ui/shape-scene";
-import { DepthBackground } from "@/registry/sahajiv/ui/depth-background";
-import { FloatLayer } from "@/registry/sahajiv/ui/float-layer";
-import { HeroButton } from "@/registry/sahajiv/ui/hero-button";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { AnimatedIcon } from "@/registry/sahajiv/ui/animated-icon";
-import { Switch, SwitchRow } from "@/registry/sahajiv/ui/switch";
-import { ToggleGroup, ToggleGroupItem } from "@/registry/sahajiv/ui/toggle-group";
-import { AgentState, type AgentStatus } from "@/registry/sahajiv/ui/agent-state";
-import { OrganismAssembly } from "@/registry/sahajiv/ui/organism-assembly";
-import type { OrganismKind } from "@/registry/sahajiv/ui/organism-composition";
-import { Marquee } from "@/registry/sahajiv/ui/marquee";
-import { CodeBlock } from "@/registry/sahajiv/ui/code-block";
-import { useChoreography } from "@/registry/sahajiv/motion/choreography";
-import { getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setFlowSettings, type FlowVariant } from "@/registry/sahajiv/motion/settings";
+import { Hero, SectionTitle, Body, Meta, Title } from "@/registry/cojeev/ui/typography";
+import { Shape } from "@/registry/cojeev/ui/shape";
+import { ShapeScene, type SculptureMaterial } from "@/registry/cojeev/ui/shape-scene";
+import { DepthBackground } from "@/registry/cojeev/ui/depth-background";
+import { FloatLayer } from "@/registry/cojeev/ui/float-layer";
+import { HeroButton } from "@/registry/cojeev/ui/hero-button";
+import { Button } from "@/registry/cojeev/ui/button";
+import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
+import { Switch, SwitchRow } from "@/registry/cojeev/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/registry/cojeev/ui/toggle-group";
+import { AgentState, type AgentStatus } from "@/registry/cojeev/ui/agent-state";
+import { OrganismAssembly } from "@/registry/cojeev/ui/organism-assembly";
+import type { OrganismKind } from "@/registry/cojeev/ui/organism-composition";
+import { Marquee } from "@/registry/cojeev/ui/marquee";
+import { CodeBlock } from "@/registry/cojeev/ui/code-block";
+import { useChoreography } from "@/registry/cojeev/motion/choreography";
+import { getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setFlowSettings, type FlowVariant } from "@/registry/cojeev/motion/settings";
 import { ShapePlayground } from "./shape-playground";
 import { MarketingHeader, MarketingFooter, MarketingLink, sourceUrl } from "./marketing-shell";
 import { LandingSmoothScroll } from "./landing-smooth-scroll";
 
 /* THESIS: living components demonstrate personality before copy explains it.
-   OWN-WORLD: SahaJiv ink, four accent roles, sculpted contours and six live palettes.
+   OWN-WORLD: Cojeev ink, four accent roles, sculpted contours and six live palettes.
    STORY: touch a part, compose it, change its material, take its source.
    FIRST VIEWPORT: central type/CTA with an asymmetric constellation of live controls.
    FORM: a specimen studio, followed by workbench, motion instrument and material exhibition. */
@@ -42,9 +42,9 @@ function StudioHero({ count }: { count: number }) {
   const { quiet } = useChoreography();
   const switchId = React.useId();
   return <section className="studio-hero" aria-labelledby="hero-title" data-playing={playing}>
-    <DepthBackground variant="pollen" seed="sahajiv-hero" density={.4} intensity={playing ? .35 : 0} />
+    <DepthBackground variant="pollen" seed="cojeev-hero" density={.4} intensity={playing ? .35 : 0} />
     <div className="studio-hero-core">
-      <FloatLayer delay={.08} depth={0} drift={0}><Meta className="studio-kicker">SahaJiv UI · Open-source React components</Meta></FloatLayer>
+      <FloatLayer delay={.08} depth={0} drift={0}><Meta className="studio-kicker">Cojeev UI · Open-source React components</Meta></FloatLayer>
       <FloatLayer delay={.18} depth={0} drift={0} revealDistance={36} revealDuration={1.1}>
         <Hero id="hero-title">Make it<br />feel <span className="studio-alive">alive<ToneShape name="aster-9" tone="pink" /></span>.</Hero>
       </FloatLayer>
@@ -125,7 +125,7 @@ function MaterialStudy() {
     <DepthBackground variant={atmosphere} seed="material-room" density={.7} intensity={.8} />
     <StoryReveal className="studio-material-title"><Meta className="studio-section-label">Texture you can almost touch</Meta><SectionTitle id="material-title">A softer dimension.</SectionTitle></StoryReveal>
     <ToggleGroup className="studio-material-switches v-seg" type="single" value={material} onValueChange={value => { if (value) setMaterial(value as SculptureMaterial); }} aria-label="Sculpture material">{[["clay", "Soft clay"], ["glazed", "Glazed"], ["grain", "Speckled"], ["ripple", "Flowing"]].map(([value, label]) => <ToggleGroupItem key={value} value={value}>{label}</ToggleGroupItem>)}</ToggleGroup>
-    <FloatLayer depth={0} drift={0} replay className="studio-material-scene"><ShapeScene density="full" material={material} shapes={sculpture ? ["daisy-12", "seed-wing", "pebble-tall", "scalloped-square", "crescent", "cloud-3"] : undefined} aria-label="Interactive SahaJiv sculptures with procedural surface textures" /></FloatLayer>
+    <FloatLayer depth={0} drift={0} replay className="studio-material-scene"><ShapeScene density="full" material={material} shapes={sculpture ? ["daisy-12", "seed-wing", "pebble-tall", "scalloped-square", "crescent", "cloud-3"] : undefined} aria-label="Interactive Cojeev sculptures with procedural surface textures" /></FloatLayer>
     <FloatLayer className="studio-material-note" depth={-35} drift={4}><ToneShape name="petal-7" tone="yellow" /><Meta>Light catches.<br />Edges soften.<br />Ideas take shape.</Meta></FloatLayer>
     <div className="studio-material-toolbar"><Button variant="secondary" onClick={() => setSculpture(v => !v)}><AnimatedIcon name="refresh-cw" />Rearrange the room</Button><div className="studio-atmosphere"><Meta>Atmosphere</Meta><ToggleGroup className="v-seg" type="single" value={atmosphere} onValueChange={value => { if (value) setAtmosphere(value as typeof atmosphere); }} aria-label="Background atmosphere">{(["pollen", "contour", "orbital"] as const).map(value => <ToggleGroupItem key={value} value={value}>{value === "pollen" ? "Pollen" : value === "contour" ? "Contours" : "Orbit"}</ToggleGroupItem>)}</ToggleGroup></div></div>
     <MarketingLink href="/docs/depth-background/">Bring the atmosphere with you <AnimatedIcon name="arrow-up-right" /></MarketingLink>
@@ -147,7 +147,7 @@ export function LandingPage({ componentCount }: { componentCount: number }) {
   return <LandingSmoothScroll><div className="story-page studio-page" data-quiet={quiet}><MarketingHeader /><main id="story-main">
     <StudioHero count={componentCount} /><ComponentRibbon /><Assembly /><ShapePlayground /><MotionPlayground /><MaterialStudy /><Principles />
     <section className="studio-install story-section" aria-labelledby="install-title"><FloatLayer depth={0} drift={0} replay><ToneShape name="seed-wing" tone="yellow" className="studio-install-shape" /><SectionTitle id="install-title">Your turn.</SectionTitle><HeroButton asChild><Link href="/docs/">Make something yours</Link></HeroButton></FloatLayer>
-      <FloatLayer depth={0} drift={0} replay className="studio-install-code"><CodeBlock title="Start with a button" language="Terminal" wrap code="npx shadcn@latest add https://luv-jeri.github.io/sahajiv-ui/r/button.json" /><Meta>New project? The setup guide has you covered.</Meta><MarketingLink href={sourceUrl}><AnimatedIcon name="github" />Take the source</MarketingLink></FloatLayer>
+      <FloatLayer depth={0} drift={0} replay className="studio-install-code"><CodeBlock title="Start with a button" language="Terminal" wrap code="npx shadcn@latest add https://luv-jeri.github.io/cojeev-ui/r/button.json" /><Meta>New project? The setup guide has you covered.</Meta><MarketingLink href={sourceUrl}><AnimatedIcon name="github" />Take the source</MarketingLink></FloatLayer>
     </section>
   </main><MarketingFooter /></div></LandingSmoothScroll>;
 }

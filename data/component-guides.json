@@ -1234,7 +1234,7 @@
     ]
   },
   "shape-scene": {
-    "description": "A tactile 3D composition made from SahaJiv shapes, with a static fallback and motion preferences built in.",
+    "description": "A tactile 3D composition made from Cojeev shapes, with a static fallback and motion preferences built in.",
     "category": "3D",
     "usage": [
       "Place the sculpture beside generous typography. Its reserved aspect ratio keeps the surrounding layout stable while it loads.",
@@ -1643,7 +1643,7 @@
     ]
   },
   "organism-composition": {
-    "description": "Six useful compositions made from persistent SahaJiv base components, with organic assembly and native controls.",
+    "description": "Six useful compositions made from persistent Cojeev base components, with organic assembly and native controls.",
     "category": "Composition",
     "usage": [
       "Choose profile, side-panel, dock, chat, focus or invite. Each layout uses the actual library primitives.",
@@ -1680,7 +1680,7 @@
     ]
   },
   "focus-session": {
-    "description": "A local focus timer composed from SahaJiv cards, progress, badges and native controls.",
+    "description": "A local focus timer composed from Cojeev cards, progress, badges and native controls.",
     "category": "Composition",
     "usage": [
       "Import FocusSession from the focus-session entry. Set durationSeconds (default 1500, bounded to 1–86400) and optional name or description.",
@@ -1700,7 +1700,7 @@
     ]
   },
   "invite-card": {
-    "description": "An event invitation with participant avatars and a reversible local RSVP, composed from SahaJiv primitives.",
+    "description": "An event invitation with participant avatars and a reversible local RSVP, composed from Cojeev primitives.",
     "category": "Composition",
     "usage": [
       "Import InviteCard from the invite-card entry. Set name, description, inviteDate, inviteTime and inviteLocation to describe the event.",
@@ -1720,7 +1720,7 @@
     ]
   },
   "profile-card": {
-    "description": "A reusable profile card composed from SahaJiv base components.",
+    "description": "A reusable profile card composed from Cojeev base components.",
     "category": "Composition",
     "usage": [
       "Use the standalone wrapper for an immediately usable composition.",
@@ -1736,7 +1736,7 @@
     ]
   },
   "work-side-panel": {
-    "description": "A reusable work side panel composed from SahaJiv base components.",
+    "description": "A reusable work side panel composed from Cojeev base components.",
     "category": "Composition",
     "usage": [
       "Use the standalone wrapper for an immediately usable composition.",
@@ -1752,7 +1752,7 @@
     ]
   },
   "action-dock": {
-    "description": "A reusable action dock composed from SahaJiv base components.",
+    "description": "A reusable action dock composed from Cojeev base components.",
     "category": "Composition",
     "usage": [
       "Use the standalone wrapper for an immediately usable composition.",
@@ -1768,7 +1768,7 @@
     ]
   },
   "conversation-panel": {
-    "description": "A reusable conversation panel composed from SahaJiv base components.",
+    "description": "A reusable conversation panel composed from Cojeev base components.",
     "category": "Composition",
     "usage": [
       "Use the standalone wrapper for an immediately usable composition.",
@@ -1931,7 +1931,7 @@
     ]
   },
   "pigment-field": {
-    "description": "An original GPU pigment wash using the current SahaJiv palette.",
+    "description": "An original GPU pigment wash using the current Cojeev palette.",
     "category": "Backgrounds",
     "usage": [
       "Place inside a positioned parent with a height. Keep meaningful content in a sibling above the decorative field.",
@@ -2480,7 +2480,7 @@
     ]
   },
   "magic-rings": {
-    "description": "Open concentric rings expand in SahaJiv colors and respond to pointer position.",
+    "description": "Open concentric rings expand in Cojeev colors and respond to pointer position.",
     "category": "Backgrounds",
     "usage": [
       "Optional small closing accent, with pause.",
@@ -2670,7 +2670,7 @@
     "category": "Backgrounds",
     "usage": [
       "Compose real content as children; keep essential controls above the decorative field.",
-      "Choose balanced, warm or cool SahaJiv accents and keep a visible pause control for continuous movement."
+      "Choose balanced, warm or cool Cojeev accents and keep a visible pause control for continuous movement."
     ],
     "accessibility": [
       "The canvas and static SVG are decorative and hidden from assistive technology; children retain native semantics.",
@@ -2731,7 +2731,7 @@
     ]
   },
   "image-masking": {
-    "description": "Caller images are framed by original SahaJiv silhouettes using CSS masks or SVG clip paths.",
+    "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
     "category": "Creative",
     "usage": [
       "Supply caller content and preserve the native labels and example controls."

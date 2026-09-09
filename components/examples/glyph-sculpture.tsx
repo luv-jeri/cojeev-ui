@@ -1,18 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { GlyphSculpture, loadSculptureFile, type GlyphForm, type GlyphTone, type GlyphSet, type SculptureGeometryInput } from "@/registry/sahajiv/ui/glyph-sculpture";
-import { DitherSculpture, type DitherPattern } from "@/registry/sahajiv/ui/dither-sculpture";
-import { InkSculpture, type InkTreatment } from "@/registry/sahajiv/ui/ink-sculpture";
-import { SculptureOrbit } from "@/registry/sahajiv/ui/sculpture-orbit";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Card } from "@/registry/sahajiv/ui/card";
-import { Input } from "@/registry/sahajiv/ui/input";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import { Slider, SliderOutput } from "@/registry/sahajiv/ui/slider";
-import { Switch } from "@/registry/sahajiv/ui/switch";
-import { Meta, SectionTitle, BodySecondary } from "@/registry/sahajiv/ui/typography";
+import { GlyphSculpture, loadSculptureFile, type GlyphForm, type GlyphTone, type GlyphSet, type SculptureGeometryInput } from "@/registry/cojeev/ui/glyph-sculpture";
+import { DitherSculpture, type DitherPattern } from "@/registry/cojeev/ui/dither-sculpture";
+import { InkSculpture, type InkTreatment } from "@/registry/cojeev/ui/ink-sculpture";
+import { SculptureOrbit } from "@/registry/cojeev/ui/sculpture-orbit";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Card } from "@/registry/cojeev/ui/card";
+import { Input } from "@/registry/cojeev/ui/input";
+import { Label } from "@/registry/cojeev/ui/label";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import { Slider, SliderOutput } from "@/registry/cojeev/ui/slider";
+import { Switch } from "@/registry/cojeev/ui/switch";
+import { Meta, SectionTitle, BodySecondary } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 
 type SculptureStudioProps = { kind: "glyph" | "dither" | "ink"; initial?: string };

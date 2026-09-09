@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
-import { ShapeScene, type SculptureMaterial } from "@/registry/sahajiv/ui/shape-scene";
-import { ScrollOrganism } from "@/registry/sahajiv/ui/scroll-organism";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Body } from "@/registry/sahajiv/ui/typography";
+import { ShapeScene, type SculptureMaterial } from "@/registry/cojeev/ui/shape-scene";
+import { ScrollOrganism } from "@/registry/cojeev/ui/scroll-organism";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Body } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 export function ShapeSceneExample({ variant = "mixed" }: ExampleProps) {
   const [alternate, setAlternate] = React.useState(false);

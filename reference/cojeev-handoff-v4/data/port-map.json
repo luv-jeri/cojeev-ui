@@ -1,0 +1,3502 @@
+{
+ "$description": "Class contract per catalog entry. Generated from catalog/spec.js (tools/gen-spec.js) — the same structured registry that renders the catalog api line and the isolation pages.",
+ "entries": {
+  "accordion": {
+   "name": "Accordion",
+   "tier": "base",
+   "root": ".v-acc",
+   "modifiers": {},
+   "states": {
+    "[open]": "state: open — details[open] · data-state=open|closed on details",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-acc": "root",
+    ".v-acc>details": "item",
+    ".v-acc>details>summary": "trigger",
+    ".v-acc__body": "content",
+    ".v-acc .v-chev": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-acc": "root",
+    ".v-acc__body": "element body of .v-acc · part: content",
+    ".v-chev": "block .v-chev",
+    ".v-icon": "block .v-icon"
+   }
+  },
+  "alert": {
+   "name": "Alert",
+   "tier": "base",
+   "root": ".v-alert",
+   "modifiers": {
+    ".-info": "variant: info — informational",
+    ".-ok": "variant: ok — success",
+    ".-warn": "variant: warn — warning",
+    ".-danger": "variant: danger — destructive, danger fill",
+    ".-pink": "variant: pink — category pink"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-alert": "root",
+    ".v-alert__blob": "icon",
+    ".v-alert__title": "title",
+    ".v-alert__text": "description",
+    ".v-alert__close": "close",
+    ".v-alert__actions": "footer"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-danger": "variant: danger — destructive, danger fill",
+    ".-ghost": "modifier: ghost",
+    ".-info": "variant: info — informational",
+    ".-ok": "variant: ok — success",
+    ".-sm": "modifier: sm",
+    ".-warn": "variant: warn — warning",
+    ".v-alert": "root",
+    ".v-alert__actions": "element actions of .v-alert · part: footer",
+    ".v-alert__blob": "element blob of .v-alert · part: icon",
+    ".v-alert__body": "element body of .v-alert",
+    ".v-alert__close": "element close of .v-alert · part: close",
+    ".v-alert__kicker": "element kicker of .v-alert",
+    ".v-alert__text": "element text of .v-alert · part: description",
+    ".v-alert__title": "element title of .v-alert · part: title",
+    ".v-btn": "block .v-btn",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon"
+   }
+  },
+  "alert-dialog": {
+   "name": "Alert Dialog",
+   "tier": "base",
+   "root": ".v-dialog",
+   "modifiers": {},
+   "states": {
+    ":not": "state: open — .v-dialog:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-dialog[role=alertdialog]": "content",
+    "[data-dialog-open]": "trigger",
+    ".v-dialog__actions": "footer"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-danger": "modifier: danger",
+    ".-dashed": "modifier: dashed",
+    ".-secondary": "modifier: secondary",
+    ".v-body-2": "block .v-body-2",
+    ".v-btn": "block .v-btn",
+    ".v-dialog": "root",
+    ".v-dialog__actions": "element actions of .v-dialog · part: footer",
+    ".v-dialog__head": "element head of .v-dialog",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-section": "block .v-section"
+   }
+  },
+  "aspect-ratio": {
+   "name": "Aspect Ratio",
+   "tier": "base",
+   "root": ".v-ratio",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-ratio": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blob-4": "modifier: blob-4",
+    ".-blue": "modifier: blue",
+    ".-heart": "modifier: heart",
+    ".-pink": "modifier: pink",
+    ".-star-8": "modifier: star-8",
+    ".-yellow": "modifier: yellow",
+    ".v-ratio": "root",
+    ".v-shape": "block .v-shape",
+    ".v-wm": "block .v-wm"
+   }
+  },
+  "attachment": {
+   "name": "Attachment",
+   "tier": "base",
+   "root": ".v-attach",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-attach": "root",
+    ".v-attach__name": "title",
+    ".v-attach__meta": "description",
+    ".v-actions": "footer"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-actions": "block .v-actions · part: footer",
+    ".v-attach": "root",
+    ".v-attach__meta": "element meta of .v-attach · part: description",
+    ".v-attach__name": "element name of .v-attach · part: title",
+    ".v-disk": "block .v-disk",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon"
+   }
+  },
+  "avatar": {
+   "name": "Avatar",
+   "tier": "base",
+   "root": ".v-avatar",
+   "modifiers": {
+    ".-square": "variant: square — square avatar",
+    ".-lg": "size: lg"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-avatar": "root",
+    ".v-avatar>span": "fallback",
+    ".v-avatar-stack": "group"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-ink": "modifier: ink",
+    ".-lg": "size: lg",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-square": "variant: square — square avatar",
+    ".-star-4": "modifier: star-4",
+    ".-yellow": "modifier: yellow",
+    ".v-avatar": "root",
+    ".v-avatar-stack": "block .v-avatar-stack · part: group",
+    ".v-avatar-wrap": "block .v-avatar-wrap",
+    ".v-edit": "block .v-edit",
+    ".v-hex": "block .v-hex",
+    ".v-hexgroup": "block .v-hexgroup",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-more": "block .v-more",
+    ".v-shape": "block .v-shape"
+   }
+  },
+  "badge": {
+   "name": "Badge",
+   "tier": "base",
+   "root": ".v-badge",
+   "modifiers": {
+    ".-pink": "variant: pink — category pink",
+    ".-yellow": "variant: yellow — category yellow",
+    ".-olive": "variant: olive — category olive",
+    ".-blue": "variant: blue — category blue",
+    ".-ink": "variant: ink — ink fill, cream text",
+    ".-cream": "variant: cream — cream fill",
+    ".-pink-soft": "variant: pink soft tint",
+    ".-yellow-soft": "variant: yellow soft tint",
+    ".-olive-soft": "variant: olive soft tint",
+    ".-blue-soft": "variant: blue soft tint",
+    ".-danger": "variant: danger — destructive, danger fill",
+    ".-pending": "variant: pending — pending, never success",
+    ".-count": "variant: count — numeric count",
+    ".-dashed": "variant: dashed — dashed edge",
+    ".-caps": "variant: caps — tracked caps label",
+    ".-test": "variant: test — TEST ONLY marker",
+    ".-live": "variant: live — observed live marker",
+    ".-sm": "size: sm",
+    ".-lg": "size: lg"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-badge": "root",
+    ".v-badge .v-dot": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "variant: blue — category blue",
+    ".-blue-soft": "variant: blue soft tint",
+    ".-caps": "variant: caps — tracked caps label",
+    ".-count": "variant: count — numeric count",
+    ".-danger": "variant: danger — destructive, danger fill",
+    ".-dashed": "variant: dashed — dashed edge",
+    ".-ink": "variant: ink — ink fill, cream text",
+    ".-lg": "size: lg",
+    ".-live": "variant: live — observed live marker",
+    ".-olive": "variant: olive — category olive",
+    ".-olive-soft": "variant: olive soft tint",
+    ".-pending": "variant: pending — pending, never success",
+    ".-pink": "variant: pink — category pink",
+    ".-pink-soft": "variant: pink soft tint",
+    ".-sm": "size: sm",
+    ".-test": "variant: test — TEST ONLY marker",
+    ".-yellow": "variant: yellow — category yellow",
+    ".-yellow-soft": "variant: yellow soft tint",
+    ".v-badge": "root",
+    ".v-dot": "block .v-dot"
+   }
+  },
+  "breadcrumb": {
+   "name": "Breadcrumb",
+   "tier": "base",
+   "root": ".v-crumbs",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-crumbs": "root",
+    ".v-crumbs a": "item",
+    "[aria-current=page]": "page"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-quiet": "modifier: quiet",
+    ".v-crumbs": "root",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon"
+   }
+  },
+  "bubble": {
+   "name": "Bubble",
+   "tier": "base",
+   "root": ".v-chat",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-chat": "root",
+    ".v-chat__row": "item",
+    ".v-bubble": "content"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-me": "modifier: me",
+    ".-tail": "modifier: tail",
+    ".v-avatar": "block .v-avatar",
+    ".v-bubble": "block .v-bubble · part: content",
+    ".v-chat": "root",
+    ".v-chat__gap": "element gap of .v-chat",
+    ".v-chat__row": "element row of .v-chat · part: item",
+    ".v-chat__time": "element time of .v-chat"
+   }
+  },
+  "button": {
+   "name": "Button",
+   "tier": "base",
+   "root": ".v-btn",
+   "modifiers": {
+    ".-accent": "variant: accent — pink interaction fill",
+    ".-secondary": "variant: secondary — beige fill",
+    ".-ghost": "variant: ghost — text only",
+    ".-outline": "variant: outline — hairline edge, no fill",
+    ".-danger": "variant: danger — destructive, danger fill",
+    ".-block": "variant: block — full width",
+    ".-sm": "size: sm",
+    ".-lg": "size: lg"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[disabled]": "state: disabled — [disabled] / :disabled — flat face var(--v-disabled-face), edge var(--v-disabled-edge), ink var(--v-disabled-ink)",
+    "[aria-busy=true]": "state: busy — [aria-busy=true] — label swapped for .v-pulse, width locked"
+   },
+   "parts": {
+    ".v-btn": "root",
+    ".v-btn .v-pulse": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-accent": "variant: accent — pink interaction fill",
+    ".-danger": "variant: danger — destructive, danger fill",
+    ".-ghost": "variant: ghost — text only",
+    ".-lg": "size: lg",
+    ".-outline": "variant: outline — hairline edge, no fill",
+    ".-secondary": "variant: secondary — beige fill",
+    ".-sm": "size: sm",
+    ".v-btn": "root",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-pulse": "block .v-pulse"
+   }
+  },
+  "button-group": {
+   "name": "Button Group",
+   "tier": "base",
+   "root": ".v-seg",
+   "modifiers": {},
+   "states": {
+    "[aria-pressed=true]": "state: on — .v-btn[aria-pressed=true] · data-state=on|off",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-seg": "root",
+    ".v-seg>.v-btn": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ink": "modifier: ink",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-seg": "root",
+    ".v-utility": "block .v-utility"
+   }
+  },
+  "calendar": {
+   "name": "Calendar",
+   "tier": "base",
+   "root": ".v-cal",
+   "modifiers": {},
+   "states": {
+    "[aria-selected=true]": "state: selected — .v-cal__d[aria-selected=true] · data-state=active|inactive",
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-cal": "root",
+    ".v-cal__grid": "viewport",
+    ".v-cal__d": "item",
+    ".v-cal__head .v-ibtn": "trigger"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-cal": "root"
+   }
+  },
+  "card": {
+   "name": "Card",
+   "tier": "base",
+   "root": ".v-card",
+   "modifiers": {
+    ".-pink": "variant: pink — category pink",
+    ".-yellow": "variant: yellow — category yellow",
+    ".-olive": "variant: olive — category olive",
+    ".-blue": "variant: blue — category blue",
+    ".-ink": "variant: ink — ink fill, cream text",
+    ".-cream": "variant: cream — cream fill",
+    ".-featured": "variant: featured — 1.5 px pink outline on cream",
+    ".-panel": "variant: panel — panel radius 24",
+    ".-lift": "variant: lift — lifts on hover",
+    ".-sm": "size: sm"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-card": "root",
+    ".v-card__head": "header",
+    ".v-card__title": "title",
+    ".v-wm": "watermark"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cross": "modifier: cross",
+    ".-dashed": "modifier: dashed",
+    ".-featured": "variant: featured — 1.5 px pink outline on cream",
+    ".-heart": "modifier: heart",
+    ".-lift": "variant: lift — lifts on hover",
+    ".-pink": "variant: pink — category pink",
+    ".-ul": "modifier: ul",
+    ".-yellow": "variant: yellow — category yellow",
+    ".v-body-2": "block .v-body-2",
+    ".v-card": "root",
+    ".v-card__title": "element title of .v-card · part: title",
+    ".v-shape": "block .v-shape",
+    ".v-stat": "block .v-stat",
+    ".v-stats": "block .v-stats",
+    ".v-wm": "block .v-wm · part: watermark"
+   }
+  },
+  "carousel": {
+   "name": "Carousel",
+   "tier": "base",
+   "root": ".v-carousel",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-carousel": "root",
+    ".v-carousel__track": "viewport",
+    ".v-carousel__track>*": "item",
+    ".v-carousel__nav button": "trigger",
+    ".v-carousel__dots button": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cream": "modifier: cream",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-yellow": "modifier: yellow",
+    ".v-badge": "block .v-badge",
+    ".v-body-2": "block .v-body-2",
+    ".v-card": "block .v-card",
+    ".v-card__title": "element title of .v-card",
+    ".v-carousel": "root",
+    ".v-carousel__nav": "element nav of .v-carousel",
+    ".v-carousel__track": "element track of .v-carousel · part: viewport",
+    ".v-deck": "block .v-deck",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon"
+   }
+  },
+  "chart": {
+   "name": "Chart",
+   "tier": "base",
+   "root": ".v-bars",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-bars": "root",
+    ".v-bars>i": "item",
+    ".v-axis": "label",
+    ".v-line": "root",
+    ".v-ring": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cross": "modifier: cross",
+    ".-dash": "modifier: dash",
+    ".-draw": "modifier: draw",
+    ".-hist": "modifier: hist",
+    ".-ink": "modifier: ink",
+    ".-next": "modifier: next",
+    ".-num": "modifier: num",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".-unavail": "modifier: unavail",
+    ".-yellow": "modifier: yellow",
+    ".u": "block .u",
+    ".v-axis": "block .v-axis · part: label",
+    ".v-bars": "root",
+    ".v-caption": "block .v-caption",
+    ".v-card": "block .v-card",
+    ".v-card__title": "element title of .v-card",
+    ".v-chev": "block .v-chev",
+    ".v-collapsible": "block .v-collapsible",
+    ".v-collapsible__body": "element body of .v-collapsible",
+    ".v-disk": "block .v-disk",
+    ".v-hero": "block .v-hero",
+    ".v-icon": "block .v-icon",
+    ".v-line": "block .v-line · part: root",
+    ".v-prow": "block .v-prow",
+    ".v-prow__lab": "element lab of .v-prow",
+    ".v-prow__val": "element val of .v-prow",
+    ".v-ring": "block .v-ring · part: root",
+    ".v-ring__c": "element c of .v-ring",
+    ".v-sr": "block .v-sr",
+    ".v-table": "block .v-table",
+    ".v-track": "block .v-track"
+   }
+  },
+  "checkbox": {
+   "name": "Checkbox",
+   "tier": "base",
+   "root": ".v-check",
+   "modifiers": {},
+   "states": {
+    ":checked": "state: checked — input:checked",
+    "indeterminate": "state: indeterminate — input.indeterminate (JS) · data-state=indeterminate",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[disabled]": "state: disabled — [disabled] / :disabled — flat face var(--v-disabled-face), edge var(--v-disabled-edge), ink var(--v-disabled-ink)"
+   },
+   "parts": {
+    ".v-check": "root",
+    ".v-check input": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-block": "modifier: block",
+    ".-pink": "modifier: pink",
+    ".-yellow": "modifier: yellow",
+    ".v-badge": "block .v-badge",
+    ".v-check": "root",
+    ".v-check__body": "element body of .v-check",
+    ".v-checks": "block .v-checks"
+   }
+  },
+  "collapsible": {
+   "name": "Collapsible",
+   "tier": "base",
+   "root": ".v-collapsible",
+   "modifiers": {},
+   "states": {
+    "[open]": "state: open — details[open] · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-collapsible": "root",
+    ".v-collapsible>summary": "trigger",
+    ".v-collapsible__body": "content",
+    ".v-collapsible .v-chev": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-sm": "modifier: sm",
+    ".v-chev": "block .v-chev",
+    ".v-collapsible": "root",
+    ".v-collapsible__body": "element body of .v-collapsible · part: content",
+    ".v-icon": "block .v-icon",
+    ".v-id": "block .v-id"
+   }
+  },
+  "combobox": {
+   "name": "Combobox",
+   "tier": "base",
+   "root": ".v-combo",
+   "modifiers": {},
+   "states": {
+    ":not": "state: open — .v-menu:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-combo": "root",
+    ".v-combo .v-input input": "trigger",
+    ".v-combo .v-menu": "content",
+    ".v-combo .v-menu__item": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-sm": "modifier: sm",
+    ".v-combo": "root",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-input": "block .v-input",
+    ".v-menu": "block .v-menu",
+    ".v-menu__item": "element item of .v-menu"
+   }
+  },
+  "command": {
+   "name": "Command",
+   "tier": "base",
+   "root": ".v-cmd",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-cmd": "root",
+    ".v-cmd__input input": "trigger",
+    ".v-cmd__list": "content",
+    ".v-cmd__list .v-menu__item": "item",
+    ".v-menu__group": "group",
+    ".v-cmd__empty": "empty"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-ink": "modifier: ink",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-cmd": "root",
+    ".v-cmd__empty": "element empty of .v-cmd · part: empty",
+    ".v-cmd__input": "element input of .v-cmd",
+    ".v-cmd__list": "element list of .v-cmd · part: content",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-kbd": "block .v-kbd",
+    ".v-menu__group": "element group of .v-menu · part: group",
+    ".v-menu__item": "element item of .v-menu"
+   }
+  },
+  "context-menu": {
+   "name": "Context Menu",
+   "tier": "base",
+   "root": "[data-context]",
+   "modifiers": {},
+   "states": {
+    ":not": "state: open — .v-menu:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    "[data-context]": "trigger",
+    ".v-menu": "content",
+    ".v-menu__item": "item",
+    ".v-menu__sep": "separator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cream": "modifier: cream",
+    ".-danger": "modifier: danger",
+    ".-pink": "modifier: pink",
+    ".v-card": "block .v-card",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-menu": "block .v-menu · part: content",
+    ".v-menu__group": "element group of .v-menu",
+    ".v-menu__item": "element item of .v-menu · part: item",
+    ".v-menu__sep": "element sep of .v-menu · part: separator",
+    ".v-meta": "block .v-meta"
+   }
+  },
+  "data-table": {
+   "name": "Data Table",
+   "tier": "base",
+   "root": ".v-table-wrap",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-pressed=true]": "state: on — [aria-pressed=true] · data-state=on|off"
+   },
+   "parts": {
+    ".v-table-wrap": "viewport",
+    ".v-table": "root",
+    ".v-tabs[data-filters]": "filters",
+    ".v-pager": "pagination",
+    ".v-state.-filtered": "empty"
+   },
+   "dataStates": [
+    "full",
+    "filtered-empty"
+   ],
+   "classes": {
+    ".-filtered": "modifier: filtered",
+    ".-num": "modifier: num",
+    ".-pills": "modifier: pills",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-meta": "block .v-meta",
+    ".v-pager": "block .v-pager · part: pagination",
+    ".v-sr": "block .v-sr",
+    ".v-state": "block .v-state",
+    ".v-state__why": "element why of .v-state",
+    ".v-state__word": "element word of .v-state",
+    ".v-tab": "block .v-tab",
+    ".v-table": "block .v-table · part: root",
+    ".v-table-wrap": "root",
+    ".v-tabs": "block .v-tabs"
+   }
+  },
+  "date-picker": {
+   "name": "Date Picker",
+   "tier": "base",
+   "root": ".v-menuhost[data-datepicker]",
+   "modifiers": {},
+   "states": {
+    "[aria-expanded=true]": "state: open — .v-select[aria-expanded=true] · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-menuhost[data-datepicker]": "root",
+    ".v-menuhost[data-datepicker]>.v-select": "trigger",
+    ".v-popover": "content",
+    ".v-cal": "viewport"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ink": "modifier: ink",
+    ".v-cal": "block .v-cal · part: viewport",
+    ".v-icon": "block .v-icon",
+    ".v-menuhost": "root",
+    ".v-popover": "block .v-popover · part: content",
+    ".v-select": "block .v-select"
+   }
+  },
+  "dialog": {
+   "name": "Dialog",
+   "tier": "base",
+   "root": ".v-dialog",
+   "modifiers": {},
+   "states": {
+    ":not": "state: open — .v-dialog:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-dialog": "content",
+    "[data-dialog-open]": "trigger",
+    ".v-dialog__head": "header",
+    ".v-dialog__actions": "footer",
+    "[data-close]": "close"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-dashed": "modifier: dashed",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-dialog": "root",
+    ".v-dialog__actions": "element actions of .v-dialog · part: footer",
+    ".v-dialog__head": "element head of .v-dialog · part: header",
+    ".v-field": "block .v-field",
+    ".v-help": "block .v-help",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-input": "block .v-input",
+    ".v-label": "block .v-label",
+    ".v-section": "block .v-section"
+   }
+  },
+  "direction": {
+   "name": "Direction",
+   "tier": "base",
+   "root": "[dir=rtl]",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive · .-selected"
+   },
+   "parts": {},
+   "dataStates": [],
+   "classes": {
+    ".-heart": "modifier: heart",
+    ".-selected": "modifier: selected",
+    ".v-card": "block .v-card",
+    ".v-crumbs": "block .v-crumbs",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__title": "element title of .v-item",
+    ".v-shape": "block .v-shape",
+    ".v-time": "block .v-time"
+   }
+  },
+  "drawer": {
+   "name": "Drawer",
+   "tier": "base",
+   "root": ".v-drawer",
+   "modifiers": {},
+   "states": {
+    ":not": "state: open — .v-drawer:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-drawer": "content",
+    "[data-drawer-open]": "trigger",
+    "[data-close]": "close"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-lg": "modifier: lg",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-xl": "modifier: xl",
+    ".-yellow": "modifier: yellow",
+    ".v-btn": "block .v-btn",
+    ".v-disk": "block .v-disk",
+    ".v-dockpanel__title": "element title of .v-dockpanel",
+    ".v-drawer": "root",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__title": "element title of .v-item"
+   }
+  },
+  "dropdown-menu": {
+   "name": "Dropdown Menu",
+   "tier": "base",
+   "root": "[data-menu]",
+   "modifiers": {},
+   "states": {
+    "[data-menu]": "state: open — [data-menu][aria-expanded=true] · .v-menu:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    "[data-menu]": "trigger",
+    ".v-menu": "content",
+    ".v-menu__item": "item",
+    ".v-menu__sep": "separator",
+    ".v-menu__group": "group"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-danger": "modifier: danger",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-menu": "block .v-menu · part: content",
+    ".v-menu__group": "element group of .v-menu · part: group",
+    ".v-menu__item": "element item of .v-menu · part: item",
+    ".v-menu__sep": "element sep of .v-menu · part: separator",
+    ".v-menuhost": "block .v-menuhost"
+   }
+  },
+  "empty": {
+   "name": "Empty",
+   "tier": "base",
+   "root": ".v-empty",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-empty": "root",
+    ".v-empty__title": "title",
+    ".v-empty__text": "description",
+    ".v-empty .v-btn": "action"
+   },
+   "dataStates": [
+    "first-run",
+    "cleared",
+    "error",
+    "filtered-empty"
+   ],
+   "classes": {
+    ".-crescent": "modifier: crescent",
+    ".-filtered": "modifier: filtered",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-star-4": "modifier: star-4",
+    ".v-btn": "block .v-btn",
+    ".v-card": "block .v-card",
+    ".v-empty": "root",
+    ".v-empty__text": "element text of .v-empty · part: description",
+    ".v-empty__title": "element title of .v-empty · part: title",
+    ".v-icon": "block .v-icon",
+    ".v-shape": "block .v-shape",
+    ".v-state": "block .v-state",
+    ".v-state__why": "element why of .v-state",
+    ".v-state__word": "element word of .v-state"
+   }
+  },
+  "field": {
+   "name": "Field",
+   "tier": "base",
+   "root": ".v-field",
+   "modifiers": {
+    ".-invalid": "variant: invalid — error state"
+   },
+   "states": {
+    ".-invalid": "state: error — .v-field.-invalid + [aria-invalid=true] on the control",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-field": "root",
+    ".v-field .v-label": "label",
+    ".v-field .v-input,.v-field .v-textarea": "input",
+    ".v-field .v-help": "message"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-invalid": "variant: invalid — error state",
+    ".-sm": "modifier: sm",
+    ".v-field": "root",
+    ".v-help": "block .v-help",
+    ".v-input": "block .v-input",
+    ".v-label": "block .v-label"
+   }
+  },
+  "hover-card": {
+   "name": "Hover Card",
+   "tier": "base",
+   "root": "[data-hovercard]",
+   "modifiers": {},
+   "states": {
+    ".-show": "state: open — .v-hovercard .v-popover.-show",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    "[data-hovercard]": "trigger",
+    ".v-hovercard>.v-popover": "content"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ok": "modifier: ok",
+    ".-pink": "modifier: pink",
+    ".v-age": "block .v-age",
+    ".v-body": "block .v-body",
+    ".v-disk": "block .v-disk",
+    ".v-health": "block .v-health",
+    ".v-hovercard": "block .v-hovercard",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-popover": "block .v-popover",
+    ".v-word": "block .v-word"
+   }
+  },
+  "input": {
+   "name": "Input",
+   "tier": "base",
+   "root": ".v-input",
+   "modifiers": {
+    ".-cream": "variant: cream — cream fill",
+    ".-sm": "size: sm"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[disabled]": "state: disabled — [disabled] / :disabled — flat face var(--v-disabled-face), edge var(--v-disabled-edge), ink var(--v-disabled-ink)",
+    ".-invalid": "state: error — .-invalid + [aria-invalid=true]"
+   },
+   "parts": {
+    ".v-input": "root",
+    ".v-input input": "input",
+    ".v-input .v-disk": "addon",
+    ".v-clear": "clear"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cream": "variant: cream — cream fill",
+    ".-ink": "modifier: ink",
+    ".-invalid": "modifier: invalid",
+    ".-lg": "modifier: lg",
+    ".-ok": "modifier: ok",
+    ".-olive": "modifier: olive",
+    ".-pill": "modifier: pill",
+    ".-pink": "modifier: pink",
+    ".-sm": "size: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-affix": "block .v-affix",
+    ".v-caps": "block .v-caps",
+    ".v-clear": "block .v-clear · part: clear",
+    ".v-disk": "block .v-disk",
+    ".v-field": "block .v-field",
+    ".v-help": "block .v-help",
+    ".v-icon": "block .v-icon",
+    ".v-input": "root",
+    ".v-label": "block .v-label"
+   }
+  },
+  "input-group": {
+   "name": "Input Group",
+   "tier": "base",
+   "root": ".v-igroup",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-igroup": "root",
+    ".v-addon": "addon",
+    ".v-igroup input": "input"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-accent": "modifier: accent",
+    ".-dashed": "modifier: dashed",
+    ".-ink": "modifier: ink",
+    ".-sm": "modifier: sm",
+    ".-v": "modifier: v",
+    ".v-addon": "block .v-addon · part: addon",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-igroup": "root",
+    ".v-input": "block .v-input",
+    ".v-scope": "block .v-scope",
+    ".v-search": "block .v-search",
+    ".v-search__disk": "element disk of .v-search",
+    ".v-sep": "block .v-sep"
+   }
+  },
+  "input-otp": {
+   "name": "Input OTP",
+   "tier": "base",
+   "root": ".v-otp",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-otp": "root",
+    ".v-otp input": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-otp": "root"
+   }
+  },
+  "item": {
+   "name": "Item",
+   "tier": "base",
+   "root": ".v-item",
+   "modifiers": {
+    ".-selected": "variant: selected — selected row",
+    ".-flat": "variant: flat — no fill"
+   },
+   "states": {
+    ".-selected": "state: selected — .v-item.-selected · .-selected",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-list": "root",
+    ".v-item": "item",
+    ".v-item__body": "content",
+    ".v-item__title": "title",
+    ".v-item__sub": "description",
+    ".v-time": "trailing"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-count": "modifier: count",
+    ".-grouped": "modifier: grouped",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-selected": "variant: selected — selected row",
+    ".-yellow": "modifier: yellow",
+    ".v-badge": "block .v-badge",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-item": "root",
+    ".v-item__body": "element body of .v-item · part: content",
+    ".v-item__sub": "element sub of .v-item · part: description",
+    ".v-item__title": "element title of .v-item · part: title",
+    ".v-list": "block .v-list · part: root",
+    ".v-time": "block .v-time · part: trailing"
+   }
+  },
+  "kbd": {
+   "name": "Kbd",
+   "tier": "base",
+   "root": ".v-kbd",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    "[open]": "state: open — details[open] · data-state=open|closed"
+   },
+   "parts": {
+    ".v-kbd": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-body": "block .v-body",
+    ".v-kbd": "root"
+   }
+  },
+  "label": {
+   "name": "Label",
+   "tier": "base",
+   "root": ".v-label",
+   "modifiers": {
+    ".-sm": "size: sm"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-label": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-sm": "size: sm",
+    ".u": "block .u",
+    ".v-label": "root",
+    ".v-stat": "block .v-stat",
+    ".v-stats": "block .v-stats"
+   }
+  },
+  "marker": {
+   "name": "Marker",
+   "tier": "base",
+   "root": ".v-marker",
+   "modifiers": {
+    ".-ok": "variant: ok — success",
+    ".-danger": "variant: danger — destructive, danger fill"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-marker": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ok": "variant: ok — success",
+    ".v-bubble": "block .v-bubble",
+    ".v-marker": "root"
+   }
+  },
+  "menubar": {
+   "name": "Menubar",
+   "tier": "base",
+   "root": ".v-menubar",
+   "modifiers": {},
+   "states": {
+    "[aria-expanded=true]": "state: open — .v-menubar__trigger[aria-expanded=true] · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-menubar": "root",
+    ".v-menubar__trigger": "trigger",
+    ".v-menu": "content",
+    ".v-menu__item": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-menu": "block .v-menu · part: content",
+    ".v-menu__item": "element item of .v-menu · part: item",
+    ".v-menubar": "root",
+    ".v-menubar__trigger": "element trigger of .v-menubar · part: trigger",
+    ".v-menuhost": "block .v-menuhost"
+   }
+  },
+  "message": {
+   "name": "Message",
+   "tier": "base",
+   "root": ".v-msg",
+   "modifiers": {
+    ".-me": "variant: me — the person (right-aligned)"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-msg": "root",
+    ".v-msg__stack": "content",
+    ".v-prov": "description"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cream": "modifier: cream",
+    ".-me": "variant: me — the person (right-aligned)",
+    ".-pink": "modifier: pink",
+    ".-star-4": "modifier: star-4",
+    ".v-bubble": "block .v-bubble",
+    ".v-disk": "block .v-disk",
+    ".v-msg": "root",
+    ".v-msg__stack": "element stack of .v-msg · part: content",
+    ".v-prov": "block .v-prov · part: description",
+    ".v-shape": "block .v-shape"
+   }
+  },
+  "message-scroller": {
+   "name": "Message Scroller",
+   "tier": "base",
+   "root": ".v-scroller",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-scroller": "viewport",
+    ".v-scroller__jump": "trigger"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-bubble": "block .v-bubble",
+    ".v-scroller": "root",
+    ".v-scroller__jump": "element jump of .v-scroller · part: trigger"
+   }
+  },
+  "native-select": {
+   "name": "Native Select",
+   "tier": "base",
+   "root": ".v-native",
+   "modifiers": {
+    ".-ink": "variant: ink — ink fill, cream text"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-native": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ink": "variant: ink — ink fill, cream text",
+    ".v-native": "root"
+   }
+  },
+  "navigation-menu": {
+   "name": "Navigation Menu",
+   "tier": "base",
+   "root": ".v-nav",
+   "modifiers": {},
+   "states": {
+    "[aria-current=page]": "state: selected — .v-nav__item[aria-current=page] · data-state=active|inactive",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-nav": "root",
+    ".v-nav__group": "group",
+    ".v-nav__item": "item",
+    ".v-nav__count": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-icon": "block .v-icon",
+    ".v-nav": "root",
+    ".v-nav__group": "element group of .v-nav · part: group",
+    ".v-nav__item": "element item of .v-nav · part: item",
+    ".v-nav__label": "element label of .v-nav"
+   }
+  },
+  "pagination": {
+   "name": "Pagination",
+   "tier": "base",
+   "root": ".v-pager",
+   "modifiers": {},
+   "states": {
+    "[aria-current=page]": "state: selected — [aria-current=page]",
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-pager": "root",
+    ".v-pager button": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-pager": "root"
+   }
+  },
+  "popover": {
+   "name": "Popover",
+   "tier": "base",
+   "root": ".v-popover",
+   "modifiers": {},
+   "states": {
+    ":not": "state: open — .v-popover:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-popover": "content",
+    "[data-menu]": "trigger"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-icon": "block .v-icon",
+    ".v-menu": "block .v-menu",
+    ".v-menuhost": "block .v-menuhost",
+    ".v-meta": "block .v-meta",
+    ".v-popover": "root"
+   }
+  },
+  "progress": {
+   "name": "Progress",
+   "tier": "base",
+   "root": ".v-track",
+   "modifiers": {
+    ".-cream": "variant: cream — cream fill",
+    ".-unavail": "variant: unavail — unavailable, never 0",
+    ".-lg": "size: lg",
+    ".-sm": "size: sm"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-track": "root",
+    ".v-track>i": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cream": "variant: cream — cream fill",
+    ".-lg": "size: lg",
+    ".-sm": "size: sm",
+    ".-unavail": "variant: unavail — unavailable, never 0",
+    ".v-meta": "block .v-meta",
+    ".v-track": "root"
+   }
+  },
+  "questionnaire": {
+   "name": "Questionnaire",
+   "tier": "base",
+   "root": ".v-quest",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked"
+   },
+   "parts": {
+    ".v-quest": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-pink": "modifier: pink",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-btn": "block .v-btn",
+    ".v-check": "block .v-check",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-iradio": "block .v-iradio",
+    ".v-iradios": "block .v-iradios",
+    ".v-label": "block .v-label",
+    ".v-quest": "root",
+    ".v-quest__opt": "element opt of .v-quest",
+    ".v-quest__opt-body": "element opt-body of .v-quest",
+    ".v-quest__opts": "element opts of .v-quest",
+    ".v-quest__progress": "element progress of .v-quest",
+    ".v-quest__q": "element q of .v-quest",
+    ".v-track": "block .v-track",
+    ".v-weekdays": "block .v-weekdays"
+   }
+  },
+  "radio-group": {
+   "name": "Radio Group",
+   "tier": "base",
+   "root": ".v-radios",
+   "modifiers": {},
+   "states": {
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[disabled]": "state: disabled — [disabled] / :disabled — flat face var(--v-disabled-face), edge var(--v-disabled-edge), ink var(--v-disabled-ink)"
+   },
+   "parts": {
+    ".v-radios,.v-iradios": "root",
+    ".v-radio,.v-iradio": "item",
+    ".v-radio input,.v-iradio input": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-block": "modifier: block",
+    ".-test": "modifier: test",
+    ".v-badge": "block .v-badge",
+    ".v-icon": "block .v-icon",
+    ".v-iradio": "block .v-iradio",
+    ".v-iradios": "block .v-iradios",
+    ".v-radio": "block .v-radio",
+    ".v-radio__body": "element body of .v-radio",
+    ".v-radios": "root"
+   }
+  },
+  "resizable": {
+   "name": "Resizable",
+   "tier": "base",
+   "root": ".v-resizable",
+   "modifiers": {
+    ".-v": "variant: v — vertical"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-resizable": "root",
+    ".v-resizable__pane": "content",
+    ".v-resizable__handle": "thumb"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-meta": "block .v-meta",
+    ".v-resizable": "root",
+    ".v-resizable__handle": "element handle of .v-resizable · part: thumb",
+    ".v-resizable__pane": "element pane of .v-resizable · part: content"
+   }
+  },
+  "scroll-area": {
+   "name": "Scroll Area",
+   "tier": "base",
+   "root": ".v-scroll",
+   "modifiers": {
+    ".-ink": "variant: ink — ink fill, cream text"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-scroll": "root",
+    ".v-scroll>*": "viewport"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ink": "variant: ink — ink fill, cream text",
+    ".v-body": "block .v-body",
+    ".v-card": "block .v-card",
+    ".v-scroll": "root"
+   }
+  },
+  "select": {
+   "name": "Select",
+   "tier": "base",
+   "root": ".v-menuhost[data-select]",
+   "modifiers": {},
+   "states": {
+    "[aria-expanded=true]": "state: open — .v-select[aria-expanded=true] + .v-listbox:not([hidden]) · data-state=open|closed",
+    "[aria-selected=true]": "state: selected — .v-menu__item[aria-selected=true]",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-menuhost[data-select]": "root",
+    ".v-menuhost[data-select]>.v-select": "trigger",
+    ".v-listbox": "content",
+    ".v-listbox .v-menu__item": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-block": "modifier: block",
+    ".-blue": "modifier: blue",
+    ".-ink": "modifier: ink",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-listbox": "block .v-listbox · part: content",
+    ".v-menu": "block .v-menu",
+    ".v-menu__item": "element item of .v-menu",
+    ".v-menuhost": "root",
+    ".v-select": "block .v-select"
+   }
+  },
+  "separator": {
+   "name": "Separator",
+   "tier": "base",
+   "root": ".v-sep",
+   "modifiers": {
+    ".-v": "variant: v — vertical"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-sep": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-v": "variant: v — vertical",
+    ".v-body": "block .v-body",
+    ".v-sep": "root"
+   }
+  },
+  "sheet": {
+   "name": "Sheet",
+   "tier": "base",
+   "root": ".v-sheet",
+   "modifiers": {},
+   "states": {
+    ":not": "state: open — .v-sheet:not([hidden]) · data-state=open|closed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-sheet": "content",
+    "[data-sheet-open]": "trigger",
+    "[data-close]": "close"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-dashed": "modifier: dashed",
+    ".-you": "modifier: you",
+    ".v-age": "block .v-age",
+    ".v-body-2": "block .v-body-2",
+    ".v-btn": "block .v-btn",
+    ".v-dialog__head": "element head of .v-dialog",
+    ".v-health": "block .v-health",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-section": "block .v-section",
+    ".v-sheet": "root",
+    ".v-word": "block .v-word"
+   }
+  },
+  "sidebar": {
+   "name": "Sidebar",
+   "tier": "base",
+   "root": ".v-sidebar",
+   "modifiers": {},
+   "states": {
+    ".-mini": "state: collapsed — .v-sidebar.-mini",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-sidebar": "root",
+    ".v-brand": "header",
+    ".v-collapse": "trigger",
+    ".v-nav": "viewport",
+    ".v-sidebar__foot": "footer"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-dashed": "modifier: dashed",
+    ".-mini": "modifier: mini",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-badge": "block .v-badge",
+    ".v-brand": "block .v-brand · part: header",
+    ".v-btn": "block .v-btn",
+    ".v-collapse": "block .v-collapse · part: trigger",
+    ".v-frame": "block .v-frame",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-nav": "block .v-nav · part: viewport",
+    ".v-nav__group": "element group of .v-nav",
+    ".v-nav__item": "element item of .v-nav",
+    ".v-nav__label": "element label of .v-nav",
+    ".v-rail-demo": "block .v-rail-demo",
+    ".v-sidebar": "root",
+    ".v-sidebar__foot": "element foot of .v-sidebar · part: footer"
+   }
+  },
+  "skeleton": {
+   "name": "Skeleton",
+   "tier": "base",
+   "root": ".v-skel",
+   "modifiers": {
+    ".-line": "variant: line",
+    ".-disk": "variant: disk",
+    ".-card": "variant: card",
+    ".-skel-group": "variant: skel-group"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-skel-group": "root",
+    ".v-skel": "item"
+   },
+   "dataStates": [
+    "loading"
+   ],
+   "classes": {
+    ".-disk": "variant: disk",
+    ".-line": "variant: line",
+    ".v-async": "block .v-async",
+    ".v-async__row": "element row of .v-async",
+    ".v-card": "block .v-card",
+    ".v-pulse": "block .v-pulse",
+    ".v-quiet": "block .v-quiet",
+    ".v-skel": "root",
+    ".v-skel-group": "block .v-skel-group · part: root"
+   }
+  },
+  "slider": {
+   "name": "Slider",
+   "tier": "base",
+   "root": ".v-slider",
+   "modifiers": {
+    ".-pink": "variant: pink — category pink"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-sliderwrap": "root",
+    ".v-slider": "track",
+    ".v-slider::-webkit-slider-thumb": "thumb",
+    ".v-sliderwrap output": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-pink": "variant: pink — category pink",
+    ".v-slider": "root",
+    ".v-sliderwrap": "block .v-sliderwrap · part: root",
+    ".v-sliderwrap__row": "element row of .v-sliderwrap"
+   }
+  },
+  "spinner": {
+   "name": "Loading",
+   "tier": "base",
+   "root": ".v-pulse",
+   "modifiers": {
+    ".-point": "variant: point"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-busy=true]": "state: busy — [aria-busy=true] — label swapped for .v-pulse, width locked"
+   },
+   "parts": {
+    ".v-pulse": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-line": "modifier: line",
+    ".-secondary": "modifier: secondary",
+    ".v-async": "block .v-async",
+    ".v-async__row": "element row of .v-async",
+    ".v-btn": "block .v-btn",
+    ".v-pulse": "root",
+    ".v-quiet": "block .v-quiet",
+    ".v-skel": "block .v-skel",
+    ".v-skel-group": "block .v-skel-group"
+   }
+  },
+  "switch": {
+   "name": "Switch",
+   "tier": "base",
+   "root": ".v-switch",
+   "modifiers": {},
+   "states": {
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked on the input",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[disabled]": "state: disabled — [disabled] / :disabled — flat face var(--v-disabled-face), edge var(--v-disabled-edge), ink var(--v-disabled-ink)"
+   },
+   "parts": {
+    ".v-switch": "root",
+    ".v-switch input": "thumb"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-card": "modifier: card",
+    ".-ink": "modifier: ink",
+    ".-olive": "modifier: olive",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-meta": "block .v-meta",
+    ".v-switch": "root",
+    ".v-switchrow": "block .v-switchrow"
+   }
+  },
+  "table": {
+   "name": "Table",
+   "tier": "base",
+   "root": ".v-table",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-table-wrap": "viewport",
+    ".v-table": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-num": "modifier: num",
+    ".v-meta": "block .v-meta",
+    ".v-table": "root",
+    ".v-table-wrap": "block .v-table-wrap · part: viewport"
+   }
+  },
+  "tabs": {
+   "name": "Tabs",
+   "tier": "base",
+   "root": ".v-tabs",
+   "modifiers": {
+    ".-underline": "variant: underline — underline tabs",
+    ".-lenses": "variant: lenses — lens tabs"
+   },
+   "states": {
+    "[aria-selected=true]": "state: selected — .v-tab[aria-selected=true] · data-state=active|inactive",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-pressed=true]": "state: on — [aria-pressed=true] · data-state=on|off"
+   },
+   "parts": {
+    ".v-tabs": "root",
+    ".v-tab": "trigger",
+    "[role=tabpanel]": "content"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-count": "modifier: count",
+    ".-danger": "modifier: danger",
+    ".-dashed": "modifier: dashed",
+    ".-flat": "modifier: flat",
+    ".-lenses": "variant: lenses — lens tabs",
+    ".-olive": "modifier: olive",
+    ".-olive-soft": "modifier: olive-soft",
+    ".-pills": "modifier: pills",
+    ".-pink": "modifier: pink",
+    ".-pink-soft": "modifier: pink-soft",
+    ".-sm": "modifier: sm",
+    ".-underline": "variant: underline — underline tabs",
+    ".v-attach": "block .v-attach",
+    ".v-attach__meta": "element meta of .v-attach",
+    ".v-attach__name": "element name of .v-attach",
+    ".v-badge": "block .v-badge",
+    ".v-bubble": "block .v-bubble",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__sub": "element sub of .v-item",
+    ".v-item__title": "element title of .v-item",
+    ".v-marker": "block .v-marker",
+    ".v-meta": "block .v-meta",
+    ".v-needs": "block .v-needs",
+    ".v-needs__meta": "element meta of .v-needs",
+    ".v-needs__reason": "element reason of .v-needs",
+    ".v-prow": "block .v-prow",
+    ".v-prow__lab": "element lab of .v-prow",
+    ".v-scroller": "block .v-scroller",
+    ".v-tab": "block .v-tab · part: trigger",
+    ".v-tabs": "root",
+    ".v-track": "block .v-track"
+   }
+  },
+  "textarea": {
+   "name": "Textarea",
+   "tier": "base",
+   "root": ".v-textarea",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-textarea": "root",
+    ".v-composer": "root",
+    ".v-composer__bar": "footer"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".v-composer": "block .v-composer · part: root",
+    ".v-composer__bar": "element bar of .v-composer · part: footer",
+    ".v-field": "block .v-field",
+    ".v-help": "block .v-help",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-label": "block .v-label",
+    ".v-meta": "block .v-meta",
+    ".v-textarea": "root"
+   }
+  },
+  "toast": {
+   "name": "Toast",
+   "tier": "base",
+   "root": "[data-toast]",
+   "modifiers": {},
+   "states": {
+    "open": "state: open — toast present in .v-toaster · durable stays until dismissed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-toaster": "viewport",
+    ".v-toast": "root",
+    ".v-toast button": "action"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-secondary": "modifier: secondary",
+    ".v-btn": "block .v-btn"
+   }
+  },
+  "toggle": {
+   "name": "Toggle",
+   "tier": "base",
+   "root": ".v-toggle",
+   "modifiers": {
+    ".-pressed": "variant: pressed",
+    ".-pink": "variant: pink — category pink",
+    ".-circle": "variant: circle — circular"
+   },
+   "states": {
+    "[aria-pressed=true]": "state: on — .v-toggle[aria-pressed=true] · data-state=on|off",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[disabled]": "state: disabled — [disabled] / :disabled — flat face var(--v-disabled-face), edge var(--v-disabled-edge), ink var(--v-disabled-ink)"
+   },
+   "parts": {
+    ".v-toggle": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-circle": "variant: circle — circular",
+    ".-olive": "modifier: olive",
+    ".-pink": "variant: pink — category pink",
+    ".v-icon": "block .v-icon",
+    ".v-toggle": "root",
+    ".v-togglewell": "block .v-togglewell"
+   }
+  },
+  "toggle-group": {
+   "name": "Toggle Group",
+   "tier": "base",
+   "root": "[data-togglegroup]",
+   "modifiers": {},
+   "states": {
+    "[aria-pressed=true]": "state: on — [aria-pressed=true] · data-state=on|off",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    "[data-togglegroup]": "root",
+    "[data-togglegroup]>*": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-circle": "modifier: circle",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-seg": "block .v-seg",
+    ".v-toggle": "block .v-toggle"
+   }
+  },
+  "tooltip": {
+   "name": "Tooltip",
+   "tier": "base",
+   "root": "[data-tooltip]",
+   "modifiers": {},
+   "states": {
+    ".-show": "state: open — .v-tip.-show (after --t-tooltip) · delayed-open while the timer runs",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    "[data-tooltip]": "trigger",
+    ".v-tip": "content"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-secondary": "modifier: secondary",
+    ".v-btn": "block .v-btn",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon"
+   }
+  },
+  "typography": {
+   "name": "Typography",
+   "tier": "base",
+   "root": ".v-prose",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-prose": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".u": "block .u",
+    ".v-body-2": "block .v-body-2",
+    ".v-caps": "block .v-caps",
+    ".v-hero": "block .v-hero",
+    ".v-id": "block .v-id",
+    ".v-meta": "block .v-meta",
+    ".v-prose": "root",
+    ".v-value": "block .v-value"
+   }
+  },
+  "dropzone": {
+   "name": "Dropzone",
+   "tier": "base",
+   "root": ".v-drop",
+   "modifiers": {},
+   "states": {
+    ".-over": "state: over — .v-drop.-over (dragover)",
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-drop": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-drop": "root",
+    ".v-pulse": "block .v-pulse",
+    ".v-quiet": "block .v-quiet"
+   }
+  },
+  "stepper": {
+   "name": "Stepper",
+   "tier": "base",
+   "root": ".v-stepper-flow",
+   "modifiers": {},
+   "states": {
+    "[aria-current=step]": "state: selected — .v-step[aria-current=step] · .-done for completed",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-stepper-flow": "root",
+    ".v-step": "item",
+    ".v-step__n": "indicator",
+    ".v-step__t": "label"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-done": "modifier: done",
+    ".-on": "modifier: on",
+    ".-secondary": "modifier: secondary",
+    ".v-btn": "block .v-btn",
+    ".v-quiet": "block .v-quiet",
+    ".v-step": "block .v-step · part: item",
+    ".v-step__n": "element n of .v-step · part: indicator",
+    ".v-step__t": "element t of .v-step · part: label",
+    ".v-stepper-flow": "root"
+   }
+  },
+  "floating-sidebar": {
+   "name": "Floating Sidebar",
+   "tier": "composite",
+   "root": ".v-sidebar",
+   "modifiers": {
+    ".-shell": "variant: shell"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-sidebar": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-dashed": "modifier: dashed",
+    ".-mini": "modifier: mini",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-badge": "block .v-badge",
+    ".v-brand": "block .v-brand",
+    ".v-btn": "block .v-btn",
+    ".v-collapse": "block .v-collapse",
+    ".v-frame": "block .v-frame",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-nav": "block .v-nav",
+    ".v-nav__group": "element group of .v-nav",
+    ".v-nav__item": "element item of .v-nav",
+    ".v-nav__label": "element label of .v-nav",
+    ".v-rail-demo": "block .v-rail-demo",
+    ".v-sidebar": "root",
+    ".v-sidebar__foot": "element foot of .v-sidebar"
+   }
+  },
+  "joined-utilities": {
+   "name": "Joined Utility Circles",
+   "tier": "composite",
+   "root": ".v-utility",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-utility": "root",
+    ".v-utility>.v-ibtn": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-utility": "root"
+   }
+  },
+  "mobile-dock": {
+   "name": "Mobile Dock + Attached Panel",
+   "tier": "composite",
+   "root": ".v-dock",
+   "modifiers": {},
+   "states": {
+    ".-open": "state: open — .v-dock.-open + .v-dockpanel:not([hidden])",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-dock": "root",
+    ".v-dock__item": "item",
+    ".v-dock__action": "trigger",
+    ".v-dockpanel": "content"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-beige": "modifier: beige",
+    ".-blue": "modifier: blue",
+    ".-count": "modifier: count",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-badge": "block .v-badge",
+    ".v-caps": "block .v-caps",
+    ".v-disk": "block .v-disk",
+    ".v-dock": "root",
+    ".v-dock__action": "element action of .v-dock · part: trigger",
+    ".v-dock__item": "element item of .v-dock · part: item",
+    ".v-dockpanel": "block .v-dockpanel · part: content",
+    ".v-dockpanel__title": "element title of .v-dockpanel",
+    ".v-icon": "block .v-icon",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__sub": "element sub of .v-item",
+    ".v-item__title": "element title of .v-item",
+    ".v-lead": "block .v-lead",
+    ".v-marker": "block .v-marker",
+    ".v-mobile-scrim": "block .v-mobile-scrim"
+   }
+  },
+  "assistant-panel": {
+   "name": "Assistant Panel",
+   "tier": "composite",
+   "root": ".v-assist",
+   "modifiers": {
+    ".-mini": "variant: mini — collapsed 76 px",
+    ".-anchored": "variant: anchored — anchored dock"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-assist": "root",
+    ".v-assist__close": "close",
+    ".v-assist__title": "title"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-accent": "modifier: accent",
+    ".-count": "modifier: count",
+    ".-mini": "variant: mini — collapsed 76 px",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".v-assist": "root",
+    ".v-assist__close": "element close of .v-assist · part: close",
+    ".v-assist__title": "element title of .v-assist · part: title",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-bubble": "block .v-bubble",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon"
+   }
+  },
+  "notched-card": {
+   "name": "Notched Action Card",
+   "tier": "composite",
+   "root": ".v-notchwrap",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-notchwrap": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-pink-soft": "modifier: pink-soft",
+    ".v-attached": "block .v-attached",
+    ".v-badge": "block .v-badge",
+    ".v-body": "block .v-body",
+    ".v-body-2": "block .v-body-2",
+    ".v-card": "block .v-card",
+    ".v-card__title": "element title of .v-card",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-notch": "block .v-notch",
+    ".v-notchwrap": "root"
+   }
+  },
+  "master-detail": {
+   "name": "Connected Master / Detail",
+   "tier": "composite",
+   "root": ".v-md",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ".-selected": "state: selected — .-selected"
+   },
+   "parts": {
+    ".v-md": "root",
+    ".v-md__list": "viewport",
+    ".v-md__list .v-item": "item",
+    ".v-md__detail": "content"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cream": "modifier: cream",
+    ".-ghost": "modifier: ghost",
+    ".-lg": "modifier: lg",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-selected": "modifier: selected",
+    ".-yellow": "modifier: yellow",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-id": "block .v-id",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__sub": "element sub of .v-item",
+    ".v-item__title": "element title of .v-item",
+    ".v-md": "root",
+    ".v-md__actions": "element actions of .v-md",
+    ".v-md__chips": "element chips of .v-md",
+    ".v-md__detail": "element detail of .v-md · part: content",
+    ".v-md__facts": "element facts of .v-md",
+    ".v-md__head": "element head of .v-md",
+    ".v-md__host": "element host of .v-md",
+    ".v-md__list": "element list of .v-md · part: viewport",
+    ".v-md__title": "element title of .v-md",
+    ".v-md__titles": "element titles of .v-md",
+    ".v-meta": "block .v-meta",
+    ".v-time": "block .v-time"
+   }
+  },
+  "category-tile": {
+   "name": "Category Tile",
+   "tier": "composite",
+   "root": ".v-ctile",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-ctile": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blob-4": "modifier: blob-4",
+    ".-cross": "modifier: cross",
+    ".-droplet": "modifier: droplet",
+    ".-heart": "modifier: heart",
+    ".-star-8": "modifier: star-8",
+    ".v-alive": "block .v-alive",
+    ".v-ctile": "root",
+    ".v-shape": "block .v-shape"
+   }
+  },
+  "metric-cards": {
+   "name": "Metric Hero / Card / Compact",
+   "tier": "composite",
+   "root": ".v-mhero",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-mhero": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cream": "modifier: cream",
+    ".-dashed": "modifier: dashed",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".-unavail": "modifier: unavail",
+    ".u": "block .u",
+    ".v-badge": "block .v-badge",
+    ".v-caption": "block .v-caption",
+    ".v-card": "block .v-card",
+    ".v-compact": "block .v-compact",
+    ".v-compact__range": "element range of .v-compact",
+    ".v-compact__rows": "element rows of .v-compact",
+    ".v-compact__t": "element t of .v-compact",
+    ".v-compact__v": "element v of .v-compact",
+    ".v-delta": "block .v-delta",
+    ".v-disk": "block .v-disk",
+    ".v-hero": "block .v-hero",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-lead": "block .v-lead",
+    ".v-mcard": "block .v-mcard",
+    ".v-mcard__head": "element head of .v-mcard",
+    ".v-mcard__row": "element row of .v-mcard",
+    ".v-mcard__title": "element title of .v-mcard",
+    ".v-mcard__value": "element value of .v-mcard",
+    ".v-meta": "block .v-meta",
+    ".v-mhero": "root"
+   }
+  },
+  "segmented-ring": {
+   "name": "Segmented Ring",
+   "tier": "composite",
+   "root": ".v-ring",
+   "modifiers": {
+    ".-draw": "variant: draw — draws once on mount"
+   },
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-ring": "root",
+    ".v-ring__c": "indicator"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-draw": "variant: draw — draws once on mount",
+    ".v-caption": "block .v-caption",
+    ".v-hero": "block .v-hero",
+    ".v-meta": "block .v-meta",
+    ".v-ring": "root",
+    ".v-ring__c": "element c of .v-ring · part: indicator",
+    ".v-tnum": "block .v-tnum"
+   }
+  },
+  "date-strip": {
+   "name": "Date Strip + Weekday Picker",
+   "tier": "composite",
+   "root": ".v-datestrip",
+   "modifiers": {},
+   "states": {
+    "[aria-pressed=true]": "state: on — button[aria-pressed=true] · data-state=on|off",
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[disabled]": "state: disabled — [disabled] / :disabled — flat face var(--v-disabled-face), edge var(--v-disabled-edge), ink var(--v-disabled-ink)",
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked"
+   },
+   "parts": {
+    ".v-datestrip": "root",
+    ".v-datestrip button": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-datestrip": "root",
+    ".v-weekdays": "block .v-weekdays"
+   }
+  },
+  "calendars": {
+   "name": "Mini Calendar / Agenda / Weekly Grid",
+   "tier": "composite",
+   "root": ".v-week",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-week": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cream": "modifier: cream",
+    ".-lane1": "modifier: lane1",
+    ".-lane2": "modifier: lane2",
+    ".-now": "modifier: now",
+    ".-on": "modifier: on",
+    ".-pink": "modifier: pink",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-weekend": "modifier: weekend",
+    ".-yellow": "modifier: yellow",
+    ".v-agenda__now": "element now of .v-agenda",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-event": "block .v-event",
+    ".v-event__sub": "element sub of .v-event",
+    ".v-event__title": "element title of .v-event",
+    ".v-hex": "block .v-hex",
+    ".v-hexgroup": "block .v-hexgroup",
+    ".v-icon": "block .v-icon",
+    ".v-more": "block .v-more",
+    ".v-time": "block .v-time",
+    ".v-week": "root",
+    ".v-week__col": "element col of .v-week",
+    ".v-week__day": "element day of .v-week",
+    ".v-week__gutter": "element gutter of .v-week",
+    ".v-week__t": "element t of .v-week",
+    ".v-weekwrap": "block .v-weekwrap"
+   }
+  },
+  "hex-group": {
+   "name": "Hex Participant Group",
+   "tier": "composite",
+   "root": ".v-hexgroup",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-hexgroup": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".v-hex": "block .v-hex",
+    ".v-hexgroup": "root",
+    ".v-meta": "block .v-meta",
+    ".v-more": "block .v-more"
+   }
+  },
+  "profile-record": {
+   "name": "Profile Header / Identity Band / Record Card",
+   "tier": "composite",
+   "root": ".v-profile",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-profile": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cream": "modifier: cream",
+    ".-lg": "modifier: lg",
+    ".-panel": "modifier: panel",
+    ".-square": "modifier: square",
+    ".-star-4": "modifier: star-4",
+    ".-star-8": "modifier: star-8",
+    ".v-avatar": "block .v-avatar",
+    ".v-avatar-wrap": "block .v-avatar-wrap",
+    ".v-badge": "block .v-badge",
+    ".v-band": "block .v-band",
+    ".v-disk": "block .v-disk",
+    ".v-edit": "block .v-edit",
+    ".v-icon": "block .v-icon",
+    ".v-id": "block .v-id",
+    ".v-kv": "block .v-kv",
+    ".v-profile": "root",
+    ".v-profile__meta": "element meta of .v-profile",
+    ".v-profile__name": "element name of .v-profile",
+    ".v-record": "block .v-record",
+    ".v-record__body": "element body of .v-record",
+    ".v-record__foot": "element foot of .v-record",
+    ".v-record__head": "element head of .v-record",
+    ".v-record__title": "element title of .v-record",
+    ".v-shape": "block .v-shape",
+    ".v-stat": "block .v-stat",
+    ".v-wm": "block .v-wm"
+   }
+  },
+  "file-resource": {
+   "name": "File / Resource / Featured Media Cards",
+   "tier": "composite",
+   "root": ".v-file",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-file": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-cream": "modifier: cream",
+    ".-editorial": "modifier: editorial",
+    ".-pending": "modifier: pending",
+    ".-pink": "modifier: pink",
+    ".-pink-soft": "modifier: pink-soft",
+    ".-sm": "modifier: sm",
+    ".-tile": "modifier: tile",
+    ".v-badge": "block .v-badge",
+    ".v-body-2": "block .v-body-2",
+    ".v-disk": "block .v-disk",
+    ".v-dot": "block .v-dot",
+    ".v-feature": "block .v-feature",
+    ".v-feature__body": "element body of .v-feature",
+    ".v-feature__media": "element media of .v-feature",
+    ".v-file": "root",
+    ".v-file__thumb": "element thumb of .v-file",
+    ".v-file__title": "element title of .v-file",
+    ".v-file__top": "element top of .v-file",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-kv": "block .v-kv",
+    ".v-meta": "block .v-meta",
+    ".v-play": "block .v-play",
+    ".v-resource": "block .v-resource",
+    ".v-resource__body": "element body of .v-resource",
+    ".v-resource__head": "element head of .v-resource",
+    ".v-resource__link": "element link of .v-resource",
+    ".v-title": "block .v-title"
+   }
+  },
+  "widgets": {
+   "name": "Compact Summary / Live Activity Widget",
+   "tier": "composite",
+   "root": ".v-widget",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-widget": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cream": "modifier: cream",
+    ".-ink": "modifier: ink",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".u": "block .u",
+    ".v-avatar": "block .v-avatar",
+    ".v-caps": "block .v-caps",
+    ".v-capsule": "block .v-capsule",
+    ".v-capsule__line": "element line of .v-capsule",
+    ".v-capsule__name": "element name of .v-capsule",
+    ".v-compose": "block .v-compose",
+    ".v-hero": "block .v-hero",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-prow": "block .v-prow",
+    ".v-prow__lab": "element lab of .v-prow",
+    ".v-prow__val": "element val of .v-prow",
+    ".v-track": "block .v-track",
+    ".v-widget": "root",
+    ".v-widget__top": "element top of .v-widget"
+   }
+  },
+  "masks-collage": {
+   "name": "Shape Masks / Collage",
+   "tier": "composite",
+   "root": ".v-collage",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest"
+   },
+   "parts": {
+    ".v-collage": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-arc": "modifier: arc",
+    ".-blob": "modifier: blob",
+    ".-circle": "modifier: circle",
+    ".-cross": "modifier: cross",
+    ".-heart": "modifier: heart",
+    ".-star-8": "modifier: star-8",
+    ".v-caption-pill": "block .v-caption-pill",
+    ".v-collage": "root",
+    ".v-mask": "block .v-mask",
+    ".v-shape": "block .v-shape"
+   }
+  },
+  "empty-error": {
+   "name": "Empty / Error Compositions",
+   "tier": "composite",
+   "root": ".v-empty",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-empty": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-arc": "modifier: arc",
+    ".-blob-4": "modifier: blob-4",
+    ".-crescent": "modifier: crescent",
+    ".-cross": "modifier: cross",
+    ".-heart": "modifier: heart",
+    ".-star-8": "modifier: star-8",
+    ".v-btn": "block .v-btn",
+    ".v-card": "block .v-card",
+    ".v-empty": "root",
+    ".v-empty__text": "element text of .v-empty",
+    ".v-empty__title": "element title of .v-empty",
+    ".v-heap": "block .v-heap",
+    ".v-icon": "block .v-icon",
+    ".v-shape": "block .v-shape"
+   }
+  },
+  "app-shell": {
+   "name": "App Shell + Page Header",
+   "tier": "cojeev",
+   "root": ".v-shell",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-shell": "root",
+    ".v-sidebar": "nav",
+    ".v-page": "viewport",
+    ".v-topbar": "header",
+    ".v-content": "content",
+    ".v-rail": "aside"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-block": "modifier: block",
+    ".-cross": "modifier: cross",
+    ".-heart": "modifier: heart",
+    ".-navbar": "modifier: navbar",
+    ".-pills": "modifier: pills",
+    ".-pink": "modifier: pink",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-agenda": "block .v-agenda",
+    ".v-agenda__t": "element t of .v-agenda",
+    ".v-body-2": "block .v-body-2",
+    ".v-brand": "block .v-brand",
+    ".v-btn": "block .v-btn",
+    ".v-cal__month": "element month of .v-cal",
+    ".v-card": "block .v-card",
+    ".v-content": "block .v-content · part: content",
+    ".v-disk": "block .v-disk",
+    ".v-display": "block .v-display",
+    ".v-event": "block .v-event",
+    ".v-event__sub": "element sub of .v-event",
+    ".v-event__title": "element title of .v-event",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-input": "block .v-input",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__sub": "element sub of .v-item",
+    ".v-item__title": "element title of .v-item",
+    ".v-main": "block .v-main",
+    ".v-mcard__value": "element value of .v-mcard",
+    ".v-meta": "block .v-meta",
+    ".v-nav": "block .v-nav",
+    ".v-nav__item": "element item of .v-nav",
+    ".v-nav__label": "element label of .v-nav",
+    ".v-page": "block .v-page · part: viewport",
+    ".v-pagehead": "block .v-pagehead",
+    ".v-rail": "block .v-rail · part: aside",
+    ".v-search": "block .v-search",
+    ".v-search__disk": "element disk of .v-search",
+    ".v-shape": "block .v-shape",
+    ".v-shell": "root",
+    ".v-sidebar": "block .v-sidebar · part: nav",
+    ".v-stat": "block .v-stat",
+    ".v-stats": "block .v-stats",
+    ".v-tab": "block .v-tab",
+    ".v-tabs": "block .v-tabs",
+    ".v-time": "block .v-time",
+    ".v-topbar": "block .v-topbar · part: header",
+    ".v-utility": "block .v-utility",
+    ".v-wm": "block .v-wm"
+   }
+  },
+  "scope-picker": {
+   "name": "Project Scope Picker + Default Project Action",
+   "tier": "cojeev",
+   "root": ".v-scopecard",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive",
+    ":not": "state: open — layer :not([hidden]) · data-state=open|closed"
+   },
+   "parts": {
+    ".v-scopecard": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-block": "modifier: block",
+    ".-blue": "modifier: blue",
+    ".-info": "modifier: info",
+    ".-olive": "modifier: olive",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-alert": "block .v-alert",
+    ".v-alert__blob": "element blob of .v-alert",
+    ".v-alert__body": "element body of .v-alert",
+    ".v-alert__text": "element text of .v-alert",
+    ".v-alert__title": "element title of .v-alert",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-caps": "block .v-caps",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-listbox": "block .v-listbox",
+    ".v-menu": "block .v-menu",
+    ".v-menu__item": "element item of .v-menu",
+    ".v-menuhost": "block .v-menuhost",
+    ".v-scopecard": "root",
+    ".v-select": "block .v-select"
+   }
+  },
+  "observation": {
+   "name": "Observation Badge / Stamp / Capability / Evidence",
+   "tier": "cojeev",
+   "root": ".v-stamp",
+   "modifiers": {
+    ".-stale": "variant: stale — stale observation"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-stamp": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-live": "modifier: live",
+    ".-no": "modifier: no",
+    ".-pending": "modifier: pending",
+    ".-sm": "modifier: sm",
+    ".-stale": "variant: stale — stale observation",
+    ".-unknown": "modifier: unknown",
+    ".-yes": "modifier: yes",
+    ".v-badge": "block .v-badge",
+    ".v-cap": "block .v-cap",
+    ".v-chev": "block .v-chev",
+    ".v-collapsible": "block .v-collapsible",
+    ".v-collapsible__body": "element body of .v-collapsible",
+    ".v-dot": "block .v-dot",
+    ".v-icon": "block .v-icon",
+    ".v-stamp": "root"
+   }
+  },
+  "data-state": {
+   "name": "Data State Panel",
+   "tier": "cojeev",
+   "root": ".v-state",
+   "modifiers": {
+    ".-loading": "variant: loading — loading",
+    ".-empty": "variant: empty — empty",
+    ".-filtered": "variant: filtered — filtered-empty",
+    ".-partial": "variant: partial — partial data",
+    ".-stale": "variant: stale — stale observation",
+    ".-unavail": "variant: unavail — unavailable, never 0",
+    ".-error": "variant: error — error"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ".-error": "state: error — .-error modifier"
+   },
+   "parts": {
+    ".v-state": "root",
+    ".v-state__word": "title",
+    ".v-state__why": "description"
+   },
+   "dataStates": [
+    "loading",
+    "empty",
+    "filtered",
+    "partial",
+    "stale",
+    "unavail",
+    "error"
+   ],
+   "classes": {
+    ".-error": "variant: error — error",
+    ".-partial": "variant: partial — partial data",
+    ".-pill": "modifier: pill",
+    ".-sm": "modifier: sm",
+    ".-stale": "variant: stale — stale observation",
+    ".-unavail": "variant: unavail — unavailable, never 0",
+    ".v-btn": "block .v-btn",
+    ".v-icon": "block .v-icon",
+    ".v-skel": "block .v-skel",
+    ".v-stamp": "block .v-stamp",
+    ".v-state": "root",
+    ".v-state__why": "element why of .v-state · part: description",
+    ".v-state__word": "element word of .v-state · part: title"
+   }
+  },
+  "receipt": {
+   "name": "Action Receipt / Receipt Timeline",
+   "tier": "cojeev",
+   "root": ".v-receipt",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-receipt": "root",
+    ".v-receipt__dot": "indicator",
+    ".v-receipt__row": "item"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cream": "modifier: cream",
+    ".-dashed": "modifier: dashed",
+    ".-ok": "modifier: ok",
+    ".-pending": "modifier: pending",
+    ".-sm": "modifier: sm",
+    ".-you": "modifier: you",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-icon": "block .v-icon",
+    ".v-id": "block .v-id",
+    ".v-pulse": "block .v-pulse",
+    ".v-receipt": "root",
+    ".v-receipt__dot": "element dot of .v-receipt · part: indicator",
+    ".v-receipt__meta": "element meta of .v-receipt",
+    ".v-receipt__row": "element row of .v-receipt · part: item",
+    ".v-receipt__title": "element title of .v-receipt"
+   }
+  },
+  "chat-dock": {
+   "name": "Contextual Chat Dock + Context Header + Typed Action Card",
+   "tier": "cojeev",
+   "root": ".v-assist",
+   "modifiers": {
+    ".-mini": "variant: mini — collapsed 76 px",
+    ".-anchored": "variant: anchored — anchored dock"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-assist": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cream": "modifier: cream",
+    ".-me": "modifier: me",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".v-assist": "root",
+    ".v-assist__close": "element close of .v-assist",
+    ".v-assist__title": "element title of .v-assist",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-bubble": "block .v-bubble",
+    ".v-card": "block .v-card",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-igroup": "block .v-igroup",
+    ".v-meta": "block .v-meta",
+    ".v-scroller": "block .v-scroller"
+   }
+  },
+  "quick-note": {
+   "name": "Quick Note + Destination Chip",
+   "tier": "cojeev",
+   "root": ".v-card.-memory",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-card.-memory": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ghost": "modifier: ghost",
+    ".-lg": "modifier: lg",
+    ".-memory": "modifier: memory",
+    ".-olive-soft": "modifier: olive-soft",
+    ".-sm": "modifier: sm",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-card": "root",
+    ".v-field": "block .v-field",
+    ".v-help": "block .v-help",
+    ".v-label": "block .v-label",
+    ".v-listbox": "block .v-listbox",
+    ".v-menu": "block .v-menu",
+    ".v-menu__item": "element item of .v-menu",
+    ".v-menuhost": "block .v-menuhost",
+    ".v-meta": "block .v-meta",
+    ".v-textarea": "block .v-textarea"
+   }
+  },
+  "notifications": {
+   "name": "Notification Drawer + Needs You Access",
+   "tier": "cojeev",
+   "root": ".v-utility",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ":not": "state: open — layer :not([hidden]) · data-state=open|closed"
+   },
+   "parts": {
+    ".v-utility": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-dashed": "modifier: dashed",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-dialog__head": "element head of .v-dialog",
+    ".v-disk": "block .v-disk",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-needs": "block .v-needs",
+    ".v-needs__meta": "element meta of .v-needs",
+    ".v-needs__reason": "element reason of .v-needs",
+    ".v-section": "block .v-section",
+    ".v-sheet": "block .v-sheet",
+    ".v-utility": "root"
+   }
+  },
+  "work-views": {
+   "name": "Work · Tabs with real panels",
+   "tier": "cojeev",
+   "root": ".v-tabs.-lenses",
+   "modifiers": {
+    ".-lenses": "variant: lenses — lens tabs"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-tabs.-lenses": "root"
+   },
+   "dataStates": [
+    "full",
+    "empty"
+   ],
+   "classes": {
+    ".-blue": "modifier: blue",
+    ".-count": "modifier: count",
+    ".-cream": "modifier: cream",
+    ".-danger": "modifier: danger",
+    ".-dashed": "modifier: dashed",
+    ".-flat": "modifier: flat",
+    ".-lenses": "variant: lenses — lens tabs",
+    ".-ok": "modifier: ok",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-pink-soft": "modifier: pink-soft",
+    ".-sm": "modifier: sm",
+    ".-stale": "modifier: stale",
+    ".-work": "modifier: work",
+    ".-yellow": "modifier: yellow",
+    ".-you": "modifier: you",
+    ".v-age": "block .v-age",
+    ".v-badge": "block .v-badge",
+    ".v-body-2": "block .v-body-2",
+    ".v-btn": "block .v-btn",
+    ".v-card": "block .v-card",
+    ".v-disk": "block .v-disk",
+    ".v-health": "block .v-health",
+    ".v-icon": "block .v-icon",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__sub": "element sub of .v-item",
+    ".v-item__title": "element title of .v-item",
+    ".v-list": "block .v-list",
+    ".v-meta": "block .v-meta",
+    ".v-needs": "block .v-needs",
+    ".v-needs__meta": "element meta of .v-needs",
+    ".v-needs__reason": "element reason of .v-needs",
+    ".v-receipt": "block .v-receipt",
+    ".v-receipt__dot": "element dot of .v-receipt",
+    ".v-receipt__meta": "element meta of .v-receipt",
+    ".v-receipt__row": "element row of .v-receipt",
+    ".v-receipt__title": "element title of .v-receipt",
+    ".v-stamp": "block .v-stamp",
+    ".v-tab": "block .v-tab",
+    ".v-tabs": "root",
+    ".v-word": "block .v-word"
+   }
+  },
+  "needs-you": {
+   "name": "Needs You Item (read-only)",
+   "tier": "cojeev",
+   "root": ".v-needs",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-needs": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-btn": "block .v-btn",
+    ".v-disk": "block .v-disk",
+    ".v-icon": "block .v-icon",
+    ".v-needs": "root",
+    ".v-needs__meta": "element meta of .v-needs",
+    ".v-needs__reason": "element reason of .v-needs"
+   }
+  },
+  "health-line": {
+   "name": "Agent Card + Health Line",
+   "tier": "cojeev",
+   "root": ".v-health",
+   "modifiers": {
+    ".-ok": "variant: ok — success",
+    ".-check": "variant: check — needs a check",
+    ".-you": "variant: you — needs you",
+    ".-none": "variant: none — not checked yet"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked"
+   },
+   "parts": {
+    ".v-health": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-automation": "modifier: automation",
+    ".-blue": "modifier: blue",
+    ".-check": "variant: check — needs a check",
+    ".-none": "variant: none — not checked yet",
+    ".-ok": "variant: ok — success",
+    ".-olive": "modifier: olive",
+    ".-pink": "modifier: pink",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".-you": "variant: you — needs you",
+    ".v-age": "block .v-age",
+    ".v-btn": "block .v-btn",
+    ".v-card": "block .v-card",
+    ".v-disk": "block .v-disk",
+    ".v-health": "root",
+    ".v-icon": "block .v-icon",
+    ".v-next": "block .v-next",
+    ".v-word": "block .v-word"
+   }
+  },
+  "automation-cards": {
+   "name": "Automation Idea / Definition / Schedule / Upgrade",
+   "tier": "cojeev",
+   "root": ".v-card.-automation",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked"
+   },
+   "parts": {
+    ".v-card.-automation": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-automation": "modifier: automation",
+    ".-cream": "modifier: cream",
+    ".-cross": "modifier: cross",
+    ".-lg": "modifier: lg",
+    ".-ok": "modifier: ok",
+    ".-olive": "modifier: olive",
+    ".-sm": "modifier: sm",
+    ".-yellow": "modifier: yellow",
+    ".v-age": "block .v-age",
+    ".v-badge": "block .v-badge",
+    ".v-body": "block .v-body",
+    ".v-btn": "block .v-btn",
+    ".v-card": "root",
+    ".v-disk": "block .v-disk",
+    ".v-health": "block .v-health",
+    ".v-ibtn": "block .v-ibtn",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-native": "block .v-native",
+    ".v-shape": "block .v-shape",
+    ".v-switch": "block .v-switch",
+    ".v-title": "block .v-title",
+    ".v-upgrade": "block .v-upgrade",
+    ".v-weekdays": "block .v-weekdays",
+    ".v-wm": "block .v-wm",
+    ".v-word": "block .v-word"
+   }
+  },
+  "run-detail": {
+   "name": "Run Row / Run Detail / Fork Preview / Test badge",
+   "tier": "cojeev",
+   "root": ".v-receipt",
+   "modifiers": {
+    ".-collapsible": "variant: collapsible"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-receipt": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-automation": "modifier: automation",
+    ".-danger": "modifier: danger",
+    ".-sm": "modifier: sm",
+    ".-test": "modifier: test",
+    ".v-alert": "block .v-alert",
+    ".v-alert__body": "element body of .v-alert",
+    ".v-alert__text": "element text of .v-alert",
+    ".v-alert__title": "element title of .v-alert",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-card": "block .v-card",
+    ".v-chev": "block .v-chev",
+    ".v-collapsible": "block .v-collapsible",
+    ".v-collapsible__body": "element body of .v-collapsible",
+    ".v-icon": "block .v-icon",
+    ".v-id": "block .v-id",
+    ".v-meta": "block .v-meta",
+    ".v-stamp": "block .v-stamp"
+   }
+  },
+  "builder": {
+   "name": "Agent Builder · Node / Wire / Palette / Inspector / Validation",
+   "tier": "cojeev",
+   "root": ".v-node",
+   "modifiers": {
+    ".-ai": "variant: ai — AI node",
+    ".-selected": "variant: selected — selected row",
+    ".-invalid": "variant: invalid — error state",
+    ".-node": "variant: node"
+   },
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ".-invalid": "state: error — .-invalid + [aria-invalid=true]"
+   },
+   "parts": {
+    ".v-node": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-ai": "variant: ai — AI node",
+    ".-blue": "modifier: blue",
+    ".-in": "modifier: in",
+    ".-invalid": "variant: invalid — error state",
+    ".-olive": "modifier: olive",
+    ".-out": "modifier: out",
+    ".-pink": "modifier: pink",
+    ".-sm": "modifier: sm",
+    ".v-caps": "block .v-caps",
+    ".v-disk": "block .v-disk",
+    ".v-field": "block .v-field",
+    ".v-help": "block .v-help",
+    ".v-icon": "block .v-icon",
+    ".v-inspector": "block .v-inspector",
+    ".v-inspector__title": "element title of .v-inspector",
+    ".v-label": "block .v-label",
+    ".v-meta": "block .v-meta",
+    ".v-native": "block .v-native",
+    ".v-node": "root",
+    ".v-node__head": "element head of .v-node",
+    ".v-node__port": "element port of .v-node",
+    ".v-node__sub": "element sub of .v-node",
+    ".v-palette": "block .v-palette",
+    ".v-palette__item": "element item of .v-palette",
+    ".v-textarea": "block .v-textarea",
+    ".v-validation": "block .v-validation",
+    ".v-wire": "block .v-wire"
+   }
+  },
+  "memory": {
+   "name": "Memory · Entry Card / Search / Recall / Import review",
+   "tier": "cojeev",
+   "root": ".v-card.-memory",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)"
+   },
+   "parts": {
+    ".v-card.-memory": "root"
+   },
+   "dataStates": [
+    "full",
+    "filtered-empty"
+   ],
+   "classes": {
+    ".-filtered": "modifier: filtered",
+    ".-memory": "modifier: memory",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-warn": "modifier: warn",
+    ".v-alert": "block .v-alert",
+    ".v-alert__body": "element body of .v-alert",
+    ".v-alert__text": "element text of .v-alert",
+    ".v-body-2": "block .v-body-2",
+    ".v-btn": "block .v-btn",
+    ".v-card": "root",
+    ".v-chev": "block .v-chev",
+    ".v-collapsible": "block .v-collapsible",
+    ".v-collapsible__body": "element body of .v-collapsible",
+    ".v-icon": "block .v-icon",
+    ".v-input": "block .v-input",
+    ".v-meta": "block .v-meta",
+    ".v-reclist": "block .v-reclist",
+    ".v-search": "block .v-search",
+    ".v-search__disk": "element disk of .v-search",
+    ".v-state": "block .v-state",
+    ".v-state__why": "element why of .v-state",
+    ".v-state__word": "element word of .v-state"
+   }
+  },
+  "library": {
+   "name": "Library · Skill Card / Hook Intent / Quarantine / Diff",
+   "tier": "cojeev",
+   "root": ".v-card.-library",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked"
+   },
+   "parts": {
+    ".v-card.-library": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-add": "modifier: add",
+    ".-cream": "modifier: cream",
+    ".-del": "modifier: del",
+    ".-library": "modifier: library",
+    ".-no": "modifier: no",
+    ".-pink": "modifier: pink",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-warn": "modifier: warn",
+    ".-yes": "modifier: yes",
+    ".v-alert": "block .v-alert",
+    ".v-alert__body": "element body of .v-alert",
+    ".v-alert__text": "element text of .v-alert",
+    ".v-alert__title": "element title of .v-alert",
+    ".v-badge": "block .v-badge",
+    ".v-body-2": "block .v-body-2",
+    ".v-btn": "block .v-btn",
+    ".v-cap": "block .v-cap",
+    ".v-caps": "block .v-caps",
+    ".v-card": "root",
+    ".v-diff": "block .v-diff",
+    ".v-diff__col": "element col of .v-diff",
+    ".v-diff__line": "element line of .v-diff",
+    ".v-disk": "block .v-disk",
+    ".v-dot": "block .v-dot",
+    ".v-icon": "block .v-icon",
+    ".v-id": "block .v-id",
+    ".v-meta": "block .v-meta",
+    ".v-switch": "block .v-switch"
+   }
+  },
+  "ai-apps": {
+   "name": "AI Apps · App card, Capability matrix, Usage limit, Model row",
+   "tier": "cojeev",
+   "root": ".v-card.-ai",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive"
+   },
+   "parts": {
+    ".v-card.-ai": "root"
+   },
+   "dataStates": [
+    "full",
+    "unavail"
+   ],
+   "classes": {
+    ".-ai": "modifier: ai",
+    ".-blue": "modifier: blue",
+    ".-cream": "modifier: cream",
+    ".-dashed": "modifier: dashed",
+    ".-ink": "modifier: ink",
+    ".-no": "modifier: no",
+    ".-num": "modifier: num",
+    ".-olive": "modifier: olive",
+    ".-pills": "modifier: pills",
+    ".-unavail": "modifier: unavail",
+    ".-unknown": "modifier: unknown",
+    ".-yes": "modifier: yes",
+    ".v-badge": "block .v-badge",
+    ".v-cap": "block .v-cap",
+    ".v-card": "root",
+    ".v-disk": "block .v-disk",
+    ".v-dot": "block .v-dot",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-sr": "block .v-sr",
+    ".v-tab": "block .v-tab",
+    ".v-table": "block .v-table",
+    ".v-table-wrap": "block .v-table-wrap",
+    ".v-tabs": "block .v-tabs",
+    ".v-track": "block .v-track",
+    ".v-usage": "block .v-usage",
+    ".v-usage__row": "element row of .v-usage"
+   }
+  },
+  "settings": {
+   "name": "Settings · System checks, Appearance, Motion",
+   "tier": "cojeev",
+   "root": ".v-settings-grid",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-pressed=true]": "state: on — [aria-pressed=true] · data-state=on|off",
+    ":checked": "state: checked — input:checked · data-state=checked|unchecked"
+   },
+   "parts": {
+    ".v-settings-grid": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-danger": "modifier: danger",
+    ".-flat": "modifier: flat",
+    ".-olive": "modifier: olive",
+    ".-outline": "modifier: outline",
+    ".-quiet": "modifier: quiet",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-card": "block .v-card",
+    ".v-icon": "block .v-icon",
+    ".v-item": "block .v-item",
+    ".v-item__body": "element body of .v-item",
+    ".v-item__title": "element title of .v-item",
+    ".v-meta": "block .v-meta",
+    ".v-native": "block .v-native",
+    ".v-sechead": "block .v-sechead",
+    ".v-seg": "block .v-seg",
+    ".v-settings-grid": "root",
+    ".v-switch": "block .v-switch"
+   }
+  },
+  "explainers": {
+   "name": "Explainer Card / Viewer / Version History",
+   "tier": "cojeev",
+   "root": ".v-card.-work",
+   "modifiers": {},
+   "states": {
+    "rest": "state: rest",
+    ":hover": "state: hover — :hover (pointer only; the morph body leans toward the pointer where the motion category is on)",
+    ":focus-visible": "state: focus — :focus-visible — 2 px ring var(--ring)",
+    ":active": "state: active — :active (press; the body squashes on the pointer axis)",
+    "[aria-selected=true]": "state: selected — [aria-selected=true] / [aria-current] · data-state=active|inactive",
+    ".-error": "state: error — .-error modifier"
+   },
+   "parts": {
+    ".v-card.-work": "root"
+   },
+   "dataStates": [],
+   "classes": {
+    ".-cream": "modifier: cream",
+    ".-danger": "modifier: danger",
+    ".-error": "modifier: error",
+    ".-pills": "modifier: pills",
+    ".-pink-soft": "modifier: pink-soft",
+    ".-secondary": "modifier: secondary",
+    ".-sm": "modifier: sm",
+    ".-work": "modifier: work",
+    ".m": "block .m",
+    ".t": "block .t",
+    ".v-badge": "block .v-badge",
+    ".v-btn": "block .v-btn",
+    ".v-card": "root",
+    ".v-chev": "block .v-chev",
+    ".v-collapsible": "block .v-collapsible",
+    ".v-collapsible__body": "element body of .v-collapsible",
+    ".v-icon": "block .v-icon",
+    ".v-meta": "block .v-meta",
+    ".v-state": "block .v-state",
+    ".v-state__why": "element why of .v-state",
+    ".v-state__word": "element word of .v-state",
+    ".v-steps": "block .v-steps",
+    ".v-tab": "block .v-tab",
+    ".v-tabs": "block .v-tabs"
+   }
+  }
+ }
+}

@@ -1,5 +1,5 @@
 ---
-name: "SahaJiv UI"
+name: "Cojeev UI"
 description: "Warm paper, precise ink, and living contours for agent interfaces."
 colors:
   pink: "#F5B8DB"
@@ -150,13 +150,13 @@ components:
     padding: "24px"
 ---
 
-# Design System: SahaJiv UI
+# Design System: Cojeev UI
 
 ## Overview
 
 **Creative North Star: "Warm paper, precise ink, living contours"**
 
-SahaJiv pairs warm paper surfaces and precise ink typography with soft pink, olive, blue and yellow accents. Organic contours give controls and agent states a recognizable character while clear text, deliberate spacing and explicit state feedback keep monitoring and decisions legible. This continues the established Intelly and SahaJiv handoff direction while allowing the component system to evolve.
+Cojeev pairs warm paper surfaces and precise ink typography with soft pink, olive, blue and yellow accents. Organic contours give controls and agent states a recognizable character while clear text, deliberate spacing and explicit state feedback keep monitoring and decisions legible. This continues the established Intelly and Cojeev handoff direction while allowing the component system to evolve.
 
 The interface has two complementary modes: calm reading surfaces for documentation and tactile operating surfaces for actions. Motion for React provides shared springs, selection travel and reusable presence; bespoke SVG geometry supplies fluid edges and expressive fields. Chromatic gradients, masks and restrained spatial depth are part of this vocabulary where the component implements them.
 
@@ -172,7 +172,7 @@ This is a record of the implemented reusable system. The frontmatter records lig
 
 ## Colors
 
-Soft identity hues sit against warm neutrals, with deliberate dark equivalents rather than a uniform inversion. The normative values above come from [color and semantic tokens](registry/sahajiv/styles/tokens.css); [theme aliases](registry/sahajiv/styles/theme.css) expose them to the component styles.
+Soft identity hues sit against warm neutrals, with deliberate dark equivalents rather than a uniform inversion. The normative values above come from [color and semantic tokens](registry/cojeev/styles/tokens.css); [theme aliases](registry/cojeev/styles/theme.css) expose them to the component styles.
 
 ### Primary
 
@@ -210,7 +210,7 @@ Dark soft badges use deep component tints with pale foregrounds; their visual tr
 
 **Code Font:** the existing platform monospace stack for code, identifiers and terminal-like text.
 
-The display face gives headings a human, sculptural edge; the body face keeps controls and dense information direct. The ramp is role-based rather than a fixed mathematical ratio. [Typography primitives](registry/sahajiv/ui/typography.tsx), [responsive type rules](registry/sahajiv/styles/typography.css) and [base typography](registry/sahajiv/styles/base.css) define the applied roles.
+The display face gives headings a human, sculptural edge; the body face keeps controls and dense information direct. The ramp is role-based rather than a fixed mathematical ratio. [Typography primitives](registry/cojeev/ui/typography.tsx), [responsive type rules](registry/cojeev/styles/typography.css) and [base typography](registry/cojeev/styles/base.css) define the applied roles.
 
 ### Hierarchy
 
@@ -228,7 +228,7 @@ The shared spacing tokens follow a 4px grid. Reused gaps and padding are recorde
 
 Reading surfaces use a quiet index, a clear heading and description, a generous specimen, then installation and usage guidance. In the [documentation layout](app/docs/docs.css), the main region is bounded at 1280px and the article at 920px; prose uses roughly 70–72ch. A 232px index rail becomes mobile navigation at 900px, and a local contents column appears from 1280px. Specimen controls remain adjacent to their example and wrap on small screens.
 
-The [agent layout](registry/sahajiv/styles/agent-chat.css) has a flexible main workspace and a 320–420px chat column, stacking at 900px. A standalone chat specimen is bounded at 520px; that cap is removed inside the side-chat layout. These are established compositions, not universal page templates.
+The [agent layout](registry/cojeev/styles/agent-chat.css) has a flexible main workspace and a 320–420px chat column, stacking at 900px. A standalone chat specimen is bounded at 520px; that cap is removed inside the side-chat layout. These are established compositions, not universal page templates.
 
 **Boundaries:** use `min-width: 0`, intrinsic widths, deliberate maximums and flexible text wrapping in nested rows. Tables and message threads retain their own scrollable regions. Overlay content uses viewport-aware limits and portals where implemented so its geometry is not constrained by the trigger's card.
 
@@ -242,7 +242,7 @@ The base surface vocabulary is tonal: containers read through changes in warm fi
 - **Lift:** the shallow edge shadow used by lift surfaces.
 - **None:** the base elevation value for ordinary surfaces.
 
-Exact values and the ordered sticky/dock/sheet/dialog/popover/toast/tooltip levels are recorded in the sidecar and originate in [tokens.css](registry/sahajiv/styles/tokens.css). Component overlays may add nested portal levels; they must be assessed in their real host rather than by a single number.
+Exact values and the ordered sticky/dock/sheet/dialog/popover/toast/tooltip levels are recorded in the sidecar and originate in [tokens.css](registry/cojeev/styles/tokens.css). Component overlays may add nested portal levels; they must be assessed in their real host rather than by a single number.
 
 **The Owned Depth Rule.** Depth belongs to the component that implements it. Keep its foreground, watermark and pointer light on distinct planes; avoid two motion owners writing the same transform.
 
@@ -250,13 +250,13 @@ Exact values and the ordered sticky/dock/sheet/dialog/popover/toast/tooltip leve
 
 Pill controls, small rounded affordances and broader card/panel/sheet corners establish the reusable form language. The recorded radius scale maps to the existing CSS tokens. Explicit variant geometry remains meaningful: square Avatar uses a rounded square, while default Avatar is circular.
 
-[Shared mathematical silhouettes](registry/sahajiv/lib/signature-shapes.ts) include daisy, petal, aster, sunburst, clover, cloud, pebble, ribbon, scalloped square, cushion and seed-wing families. [Shape](registry/sahajiv/ui/shape.tsx) and the existing masks make these reusable across components. Card watermarks stay behind content; agent fields combine several paths and chromatic layers. These implemented motifs provide vocabulary without proving that every catalog entry already has a unique signature.
+[Shared mathematical silhouettes](registry/cojeev/lib/signature-shapes.ts) include daisy, petal, aster, sunburst, clover, cloud, pebble, ribbon, scalloped square, cushion and seed-wing families. [Shape](registry/cojeev/ui/shape.tsx) and the existing masks make these reusable across components. Card watermarks stay behind content; agent fields combine several paths and chromatic layers. These implemented motifs provide vocabulary without proving that every catalog entry already has a unique signature.
 
 The fluid scrollbar preserves a real scroll viewport and keyboard/touch interaction while shaping the visible thumb edge. The decorative contour does not replace the scroll semantics.
 
 ## Components
 
-The [registry source](registry/sahajiv/ui) owns the reusable contracts. Frontmatter component tokens are compact light-theme samples; the sidecar resolves the actual CSS roles for interactive previews. Its snippets show geometry, color and CSS states without reproducing the React motion runtime.
+The [registry source](registry/cojeev/ui) owns the reusable contracts. Frontmatter component tokens are compact light-theme samples; the sidecar resolves the actual CSS roles for interactive previews. Its snippets show geometry, color and CSS states without reproducing the React motion runtime.
 
 ### Buttons
 
@@ -278,17 +278,17 @@ Fields use rounded containers, deliberate control edges and tinted focus states.
 
 The product sidebar is an ink structural region with warm foregrounds and pink active accents; the docs composition deliberately applies a quieter paper rail. Active selection travel, press response and focus states use shared motion where integrated. Mobile navigation changes composition rather than shrinking every row.
 
-Menus, dialogs, sheets and popovers pair their own surfaces and foregrounds, preserve dismissal and focus semantics, and bound long content. [Presence](registry/sahajiv/ui/presence.tsx) offers fade, rise, slide, scale and mask presets. A persistent MotionPresence boundary must own keyed conditional children for their exits to be retained; MotionSurface alone cannot retain its own removal. Its retained exits are inert and hidden from assistive navigation. Existing integrations are evidence of those patterns, not a claim of universal adoption across every nested element.
+Menus, dialogs, sheets and popovers pair their own surfaces and foregrounds, preserve dismissal and focus semantics, and bound long content. [Presence](registry/cojeev/ui/presence.tsx) offers fade, rise, slide, scale and mask presets. A persistent MotionPresence boundary must own keyed conditional children for their exits to be retained; MotionSurface alone cannot retain its own removal. Its retained exits are inert and hidden from assistive navigation. Existing integrations are evidence of those patterns, not a claim of universal adoption across every nested element.
 
 ### Agent patterns and data
 
-[AgentChat](registry/sahajiv/ui/agent-chat.tsx) composes Bubble, Avatar, Message, MessageScroller, Input/InputGroup, Button, Attachment and Questionnaire. It exposes controlled send, stop, attachment, permission, choice and retry contracts. The example workflow labels itself as an interactive demo and implements allow, deny, cancellation and error/retry as local state transitions. [AgentState](registry/sahajiv/ui/agent-state.tsx) pairs named statuses with an expressive SVG field; the visual does not imply a connected backend.
+[AgentChat](registry/cojeev/ui/agent-chat.tsx) composes Bubble, Avatar, Message, MessageScroller, Input/InputGroup, Button, Attachment and Questionnaire. It exposes controlled send, stop, attachment, permission, choice and retry contracts. The example workflow labels itself as an interactive demo and implements allow, deny, cancellation and error/retry as local state transitions. [AgentState](registry/cojeev/ui/agent-state.tsx) pairs named statuses with an expressive SVG field; the visual does not imply a connected backend.
 
 The chart suite shares frame, legend, table and tooltip composition across Area, Bar, Line, Pie, Radar and Radial implementations. Series reuse the brand palette, while labels, active points and data readouts keep meaning available beyond color. Chart variants remain type-specific; data geometry is not a decorative shape token.
 
 ### Motion, icons and theme
 
-[Choreography](registry/sahajiv/motion/choreography.ts) supplies responsive, expressive and gentle springs, entrance/exit easing, short durations and sibling stagger. [AnimatedIcon](registry/sahajiv/ui/animated-icon.tsx) exposes draw, tremor, spin, bounce and validation intent; [ThemeToggle](registry/sahajiv/ui/theme-toggle.tsx) composes Button with sun/moon motion and the theme transition helper. Bespoke contour geometry coexists with Motion through separate property ownership.
+[Choreography](registry/cojeev/motion/choreography.ts) supplies responsive, expressive and gentle springs, entrance/exit easing, short durations and sibling stagger. [AnimatedIcon](registry/cojeev/ui/animated-icon.tsx) exposes draw, tremor, spin, bounce and validation intent; [ThemeToggle](registry/cojeev/ui/theme-toggle.tsx) composes Button with sun/moon motion and the theme transition helper. Bespoke contour geometry coexists with Motion through separate property ownership.
 
 The shared quiet contract resolves system reduced motion, Motion Off and Flow Off to immediate, meaningful states. Visibility hooks suspend participating offscreen or hidden effects. Apply these contracts to each real interaction boundary and verify it; the existence of the shared helper does not certify every component's complete lifecycle.
 

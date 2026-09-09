@@ -1,13 +1,13 @@
 "use client";
 import * as React from "react";
-import { TextRibbon } from "@/registry/sahajiv/ui/text-ribbon";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Input } from "@/registry/sahajiv/ui/input";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { Switch } from "@/registry/sahajiv/ui/switch";
-import { Slider } from "@/registry/sahajiv/ui/slider";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import { Meta, BodySecondary } from "@/registry/sahajiv/ui/typography";
+import { TextRibbon } from "@/registry/cojeev/ui/text-ribbon";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Input } from "@/registry/cojeev/ui/input";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Switch } from "@/registry/cojeev/ui/switch";
+import { Slider } from "@/registry/cojeev/ui/slider";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import { Meta, BodySecondary } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 
 export function TextRibbonExample({ variant = "default" }: ExampleProps) {

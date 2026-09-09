@@ -14,7 +14,7 @@ Progress now has four actual-value appearances: `organic`, `line`, `segmented` a
 
 Slider now supports `organic`, `line` and `segmented` rails, with an authored eight-curve thumb. Hover, focus, press and value changes deform the paint. Radix continues to own the real thumb positions, hit testing, values, hidden form inputs, pointer capture, range constraints, RTL, inversion, vertical orientation and keyboard operations. The thumb's 28px box has an 8px hit extension, giving a 44px target. Motion never delays the native value or independently moves the hit target.
 
-Global Motion Off, Flow Off, reduced motion and offscreen visibility settle the new optional contours. Colors remain live CSS role references, so `sahajiv:appearancechange` needs no extra repaint listener or motion restart in these files. The preset engine still uses specialized phase geometry; this is a bounded correction of the existing Motion pipeline, not a claim of a fresh universal engine migration.
+Global Motion Off, Flow Off, reduced motion and offscreen visibility settle the new optional contours. Colors remain live CSS role references, so `cojeev:appearancechange` needs no extra repaint listener or motion restart in these files. The preset engine still uses specialized phase geometry; this is a bounded correction of the existing Motion pipeline, not a claim of a fresh universal engine migration.
 
 ## Public APIs
 
@@ -73,7 +73,7 @@ Receipts and inspected screenshots:
 Reproduce against a running development server:
 
 ```sh
-rtk proxy node scripts/check-review-motion-progress.mjs --url=http://127.0.0.1:4320/sahajiv-ui --output=output/playwright/review-motion-progress/local
+rtk proxy node scripts/check-review-motion-progress.mjs --url=http://127.0.0.1:4320/cojeev-ui --output=output/playwright/review-motion-progress/local
 rtk proxy node --import tsx --test tests/progress-geometry.test.ts
 ```
 
@@ -85,15 +85,15 @@ Four focused geometry/timing tests pass. Scoped ESLint passes. The Impeccable de
 
 Changed in this review:
 
-- `registry/sahajiv/motion/flow.ts`
-- `registry/sahajiv/motion/flow-motion.ts`
-- `registry/sahajiv/motion/flow-press.ts`
-- `registry/sahajiv/motion/progress-geometry.ts` (new)
-- `registry/sahajiv/motion/use-organic-value.ts` (new)
-- `registry/sahajiv/ui/progress.tsx`
-- `registry/sahajiv/styles/progress.css`
-- `registry/sahajiv/ui/slider.tsx`
-- `registry/sahajiv/styles/slider.css`
+- `registry/cojeev/motion/flow.ts`
+- `registry/cojeev/motion/flow-motion.ts`
+- `registry/cojeev/motion/flow-press.ts`
+- `registry/cojeev/motion/progress-geometry.ts` (new)
+- `registry/cojeev/motion/use-organic-value.ts` (new)
+- `registry/cojeev/ui/progress.tsx`
+- `registry/cojeev/styles/progress.css`
+- `registry/cojeev/ui/slider.tsx`
+- `registry/cojeev/styles/slider.css`
 - `components/examples/motion-progress.tsx` (new)
 - `tests/progress-geometry.test.ts` (new)
 - `scripts/check-review-motion-progress.mjs` (new)

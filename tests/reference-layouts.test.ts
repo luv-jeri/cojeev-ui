@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { reconcileSwapOrder, swapLayoutItems, shouldDismissDrawer, supportDestination } from "../registry/sahajiv/lib/reference-layouts";
+import { reconcileSwapOrder, swapLayoutItems, shouldDismissDrawer, supportDestination } from "../registry/cojeev/lib/reference-layouts";
 
 test("swap preserves every identity and does not mutate caller order",()=>{
  const source=["a","b","c"];assert.deepEqual(swapLayoutItems(source,"a","c"),["c","b","a"]);assert.deepEqual(source,["a","b","c"]);
@@ -23,11 +23,11 @@ test("support destination accepts navigable caller URLs and rejects executable s
 
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ImageMasking } from "../registry/sahajiv/ui/image-masking";
-import { BuyMeCoffee } from "../registry/sahajiv/ui/buy-me-coffee";
-import { Swapy } from "../registry/sahajiv/ui/swapy";
-import { MotionDrawer } from "../registry/sahajiv/ui/motion-drawer";
-import { LinearModal } from "../registry/sahajiv/ui/linear-modal";
+import { ImageMasking } from "../registry/cojeev/ui/image-masking";
+import { BuyMeCoffee } from "../registry/cojeev/ui/buy-me-coffee";
+import { Swapy } from "../registry/cojeev/ui/swapy";
+import { MotionDrawer } from "../registry/cojeev/ui/motion-drawer";
+import { LinearModal } from "../registry/cojeev/ui/linear-modal";
 
 test("both image methods preserve a semantic caller image and optional caption",()=>{
  for(const method of ["mask","clip"] as const){

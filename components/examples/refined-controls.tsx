@@ -2,21 +2,21 @@
 
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { Button, type ButtonProps } from "@/registry/sahajiv/ui/button";
-import { Calendar } from "@/registry/sahajiv/ui/calendar";
-import { DatePicker } from "@/registry/sahajiv/ui/date-picker";
-import { Dropzone } from "@/registry/sahajiv/ui/dropzone";
+import { Button, type ButtonProps } from "@/registry/cojeev/ui/button";
+import { Calendar } from "@/registry/cojeev/ui/calendar";
+import { DatePicker } from "@/registry/cojeev/ui/date-picker";
+import { Dropzone } from "@/registry/cojeev/ui/dropzone";
 import {
   Checkbox,
   CheckboxBody,
   CheckboxGroup,
   type SelectorShape,
-} from "@/registry/sahajiv/ui/checkbox";
+} from "@/registry/cojeev/ui/checkbox";
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupBody,
-} from "@/registry/sahajiv/ui/radio-group";
+} from "@/registry/cojeev/ui/radio-group";
 import {
   Questionnaire,
   QuestionnaireQuestion,
@@ -25,9 +25,9 @@ import {
   QuestionnaireOption,
   QuestionnaireOptionBody,
   QuestionnaireProgress,
-} from "@/registry/sahajiv/ui/questionnaire";
-import { Disk, Icon } from "@/registry/sahajiv/ui/icon";
-import { Meta } from "@/registry/sahajiv/ui/typography";
+} from "@/registry/cojeev/ui/questionnaire";
+import { Disk, Icon } from "@/registry/cojeev/ui/icon";
+import { Meta } from "@/registry/cojeev/ui/typography";
 
 function selectorShape(variant?: string): SelectorShape {
   return variant === "pebble" ||

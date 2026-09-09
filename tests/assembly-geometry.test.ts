@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
-import {assemblyContour,floatingContour,organismChoices,organismGeometry,type OrganismKind} from "../registry/sahajiv/lib/assembly-geometry";
+import {assemblyContour,floatingContour,organismChoices,organismGeometry,type OrganismKind} from "../registry/cojeev/lib/assembly-geometry";
 
 test("all native targets and floating silhouettes remain bounded at narrow and wide sizes",()=>{
  for(const width of [240,280,328,360,390,500,700])for(const kind of [...organismChoices.map(choice=>choice.value),"dashboard"] as OrganismKind[])for(const scattered of [true,false])for(const itemCount of [0,3,4])for(const profileComposer of [false,true]){

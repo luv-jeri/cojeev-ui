@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { normalizeShaderMotion, shaderResolution } from "../registry/sahajiv/lib/living-shader";
-import { PigmentField } from "../registry/sahajiv/ui/pigment-field";
-import { ContourField } from "../registry/sahajiv/ui/contour-field";
+import { normalizeShaderMotion, shaderResolution } from "../registry/cojeev/lib/living-shader";
+import { PigmentField } from "../registry/cojeev/ui/pigment-field";
+import { ContourField } from "../registry/cojeev/ui/contour-field";
 
 test("shader motion preserves deliberate stillness and prevents nonfinite or excessive uniforms", () => {
   assert.deepEqual(normalizeShaderMotion(0, 0), { speed: 0, intensity: 0 });

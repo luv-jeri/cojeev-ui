@@ -26,11 +26,11 @@ fs.mkdirSync(out, { recursive: true });
 const server = await preview({
   configFile: false,
   root: repoRoot,
-  base: "/sahajiv-ui/",
+  base: "/cojeev-ui/",
   build: { outDir: path.join(repoRoot, "out") },
   preview: { host: "127.0.0.1", port: 0 },
 });
-const base = `http://127.0.0.1:${server.httpServer.address().port}/sahajiv-ui`;
+const base = `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`;
 const built = await build({
   tsconfig: path.join(repoRoot, "tsconfig.json"),
   stdin: {
@@ -39,7 +39,7 @@ const built = await build({
     resolveDir: repoRoot,
     contents: `
 import React from 'react';import{createRoot}from'react-dom/client';
-import{MultiSelect}from'./registry/sahajiv/ui/multi-select';import{ThemeToggle}from'./registry/sahajiv/ui/theme-toggle';import{Button}from'./registry/sahajiv/ui/button';
+import{MultiSelect}from'./registry/cojeev/ui/multi-select';import{ThemeToggle}from'./registry/cojeev/ui/theme-toggle';import{Button}from'./registry/cojeev/ui/button';
 const host=document.createElement('div');host.id='webkit-current-fixture';host.style.cssText='position:fixed;inset:20px 16px auto;padding:16px;background:var(--v-canvas);z-index:10';document.body.append(host);
 function Test(){const[value,setValue]=React.useState(['Design','Engineering']);const[shown,setShown]=React.useState(false);return <><MultiSelect label='Topics' options={['Design','Engineering','Research','Writing','Data'].map(label=>({value:label,label}))} value={value} onValueChange={setValue}/><p>Following: {value.join(', ')}.</p><Button onClick={()=>setShown(v=>!v)}>Reveal hidden control</Button><div style={{display:shown?'flex':'none',justifyContent:'flex-end'}}><ThemeToggle mode='light'/></div></>};createRoot(host).render(<Test/>);
 `,

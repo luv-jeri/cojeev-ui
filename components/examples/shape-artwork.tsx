@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { ShapeArtwork, shapeArtworkCode, type ShapeArtworkOptions } from "@/registry/sahajiv/ui/shape-artwork";
-import { type SignatureShapeName } from "@/registry/sahajiv/ui/shape";
-import { ToggleGroup, ToggleGroupItem } from "@/registry/sahajiv/ui/toggle-group";
-import { Slider } from "@/registry/sahajiv/ui/slider";
-import { Switch } from "@/registry/sahajiv/ui/switch";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { CodeBlock } from "@/registry/sahajiv/ui/code-block";
-import { Meta } from "@/registry/sahajiv/ui/typography";
+import { ShapeArtwork, shapeArtworkCode, type ShapeArtworkOptions } from "@/registry/cojeev/ui/shape-artwork";
+import { type SignatureShapeName } from "@/registry/cojeev/ui/shape";
+import { ToggleGroup, ToggleGroupItem } from "@/registry/cojeev/ui/toggle-group";
+import { Slider } from "@/registry/cojeev/ui/slider";
+import { Switch } from "@/registry/cojeev/ui/switch";
+import { Label } from "@/registry/cojeev/ui/label";
+import { CodeBlock } from "@/registry/cojeev/ui/code-block";
+import { Meta } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 
 function ArtworkDemo({ variant }: ExampleProps) {

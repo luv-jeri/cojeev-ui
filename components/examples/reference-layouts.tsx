@@ -1,13 +1,13 @@
 "use client";
 import * as React from "react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { MotionDrawer } from "@/registry/sahajiv/ui/motion-drawer";
-import { LinearModal } from "@/registry/sahajiv/ui/linear-modal";
-import { ImageMasking } from "@/registry/sahajiv/ui/image-masking";
-import { BuyMeCoffee } from "@/registry/sahajiv/ui/buy-me-coffee";
-import { Swapy } from "@/registry/sahajiv/ui/swapy";
-import { ShapeArtwork } from "@/registry/sahajiv/ui/shape-artwork";
-import type { SignatureShapeName } from "@/registry/sahajiv/lib/signature-shapes";
+import { Button } from "@/registry/cojeev/ui/button";
+import { MotionDrawer } from "@/registry/cojeev/ui/motion-drawer";
+import { LinearModal } from "@/registry/cojeev/ui/linear-modal";
+import { ImageMasking } from "@/registry/cojeev/ui/image-masking";
+import { BuyMeCoffee } from "@/registry/cojeev/ui/buy-me-coffee";
+import { Swapy } from "@/registry/cojeev/ui/swapy";
+import { ShapeArtwork } from "@/registry/cojeev/ui/shape-artwork";
+import type { SignatureShapeName } from "@/registry/cojeev/lib/signature-shapes";
 import type { ExampleProps } from "./types";
 
 const layoutStudyImage=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500"><rect width="600" height="500" fill="#B6CAEB"/><circle cx="100" cy="80" r="120" fill="#F5D867"/><path d="M0 420Q140 210 290 360T600 230V500H0Z" fill="#9AAB63"/><circle cx="395" cy="230" r="115" fill="#F5B8DB"/><path d="M30 410Q220 95 550 440" fill="none" stroke="#111" stroke-width="3"/><path d="M10 445Q240 140 580 475" fill="none" stroke="#111" stroke-width="1.5"/></svg>`)}`;

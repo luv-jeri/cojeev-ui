@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import {chromium} from 'playwright';
 import {preview} from 'vite';
-import {factoryCfg,factoryTiers,FLOW_CHARACTERS} from '../registry/sahajiv/motion/settings.ts';
-const server=process.argv.includes('--serve')?await preview({configFile:false,base:'/sahajiv-ui/',build:{outDir:'out'},preview:{host:'127.0.0.1',port:0,strictPort:true}}):null;
-const out='artifacts/production-motion',base=process.env.POLISH_URL??`http://127.0.0.1:${server?server.httpServer.address().port:4320}/sahajiv-ui`;fs.mkdirSync(out,{recursive:true});
+import {factoryCfg,factoryTiers,FLOW_CHARACTERS} from '../registry/cojeev/motion/settings.ts';
+const server=process.argv.includes('--serve')?await preview({configFile:false,base:'/cojeev-ui/',build:{outDir:'out'},preview:{host:'127.0.0.1',port:0,strictPort:true}}):null;
+const out='artifacts/production-motion',base=process.env.POLISH_URL??`http://127.0.0.1:${server?server.httpServer.address().port:4320}/cojeev-ui`;fs.mkdirSync(out,{recursive:true});
 const browser=await chromium.launch();const rows=[],checks=[];
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(base+'/docs/tabs/');await page.evaluate(()=>document.fonts.ready);await page.getByRole('button',{name:'Motion settings',exact:true}).first().click();

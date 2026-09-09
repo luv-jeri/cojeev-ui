@@ -2,15 +2,15 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "work-side-panel",
   "title": "Work side panel",
-  "description": "A reusable work side panel composed from SahaJiv base components.",
+  "description": "A reusable work side panel composed from Cojeev base components.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/work-side-panel.tsx",
+      "path": "registry/cojeev/ui/work-side-panel.tsx",
       "content": "\"use client\";\nexport { WorkSidePanel, type OrganismProps as WorkSidePanelProps } from \"@/components/ui/organism-composition\";\n",
       "type": "registry:ui"
     }

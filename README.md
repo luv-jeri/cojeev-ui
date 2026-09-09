@@ -1,17 +1,17 @@
-# SahaJiv UI
+# Cojeev UI
 
 **124 React components. Warm surfaces, expressive shapes and considered motion.**
 
-An MIT-licensed component library for building thoughtful products. Install only the pieces you need through the shadcn registry; the source lives in your project and is yours to change. No dependency on the private SahaJiv application.
+An MIT-licensed component library for building thoughtful products. Install only the pieces you need through the shadcn registry; the source lives in your project and is yours to change. No dependency on the private Cojeev application.
 
-[Documentation](https://luv-jeri.github.io/sahajiv-ui/) · [Browse components](https://luv-jeri.github.io/sahajiv-ui/docs/) · [Registry](https://luv-jeri.github.io/sahajiv-ui/r/registry.json) · [Work with Sanjay](https://luv-jeri.github.io/sahajiv-ui/work-with-me/)
+[Documentation](https://luv-jeri.github.io/cojeev-ui/) · [Browse components](https://luv-jeri.github.io/cojeev-ui/docs/) · [Registry](https://luv-jeri.github.io/cojeev-ui/r/registry.json) · [Work with Sanjay](https://luv-jeri.github.io/cojeev-ui/work-with-me/)
 
 ## Get started
 
 Use React 19, TypeScript, Tailwind CSS v4 and an initialized shadcn project with an `@/` alias.
 
 ```sh
-npx shadcn@latest add https://luv-jeri.github.io/sahajiv-ui/r/button.json
+npx shadcn@latest add https://luv-jeri.github.io/cojeev-ui/r/button.json
 ```
 
 ```tsx
@@ -45,7 +45,7 @@ Motion respects reduced-motion preferences, shared quiet settings and visibility
 
 After reviewing Skiper, Remocn, Canvas UI and React Bits, this expansion added **18 new entries** and improved existing components. Further cloning has stopped at the owner's request. The full 613-entry reference inventory remains a research record, not a claim that all of those components are implemented.
 
-Original SahaJiv implementations draw on useful interaction ideas and retain the library's own visual language. Restricted source was not redistributed. [The expansion ledger](reference/expansion/coverage.json) records each reviewed concept and its differences; [the release report](RELEASE-0.2.0.md) records verification and publication status.
+Original Cojeev implementations draw on useful interaction ideas and retain the library's own visual language. Restricted source was not redistributed. [The expansion ledger](reference/expansion/coverage.json) records each reviewed concept and its differences; [the release report](RELEASE-0.2.0.md) records verification and publication status.
 
 ## Develop
 
@@ -56,7 +56,7 @@ npm ci
 npm run dev -- --hostname 0.0.0.0 --port 4320
 ```
 
-Open [localhost:4320/sahajiv-ui](http://localhost:4320/sahajiv-ui/). On a phone on the same Wi-Fi, replace `localhost` with the Mac's Wi-Fi IP. Set `SAHAJIV_DEV_ORIGINS` to that IP for development updates.
+Open [localhost:4320/cojeev-ui](http://localhost:4320/cojeev-ui/). On a phone on the same Wi-Fi, replace `localhost` with the Mac's Wi-Fi IP. Set `COJEEV_DEV_ORIGINS` to that IP for development updates.
 
 ```sh
 npm run lint
@@ -70,6 +70,6 @@ The build generates the installable registry and static documentation in `out/`.
 
 ## Design and licences
 
-The supplied design system is preserved under `reference/sahajiv-handoff-v4`. Production components do not import its CSS or JavaScript. Shared type, spacing, accessible colour roles, organic shapes and motion guide new work.
+The supplied design system is preserved under `reference/cojeev-handoff-v4`. Production components do not import its CSS or JavaScript. Shared type, spacing, accessible colour roles, organic shapes and motion guide new work.
 
-Documentation uses [Fumadocs](https://github.com/fuma-nama/fumadocs) with SahaJiv's visible components. Registry tooling uses [shadcn](https://github.com/shadcn-ui/ui). Library code uses [MIT](LICENCE); fonts retain their [SIL Open Font Licences](FONT-NOTICES.md), and attributed icon geometry retains its bundled notices.
+Documentation uses [Fumadocs](https://github.com/fuma-nama/fumadocs) with Cojeev's visible components. Registry tooling uses [shadcn](https://github.com/shadcn-ui/ui). Library code uses [MIT](LICENCE); fonts retain their [SIL Open Font Licences](FONT-NOTICES.md), and attributed icon geometry retains its bundled notices.

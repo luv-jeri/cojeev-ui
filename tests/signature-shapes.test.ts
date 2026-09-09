@@ -4,8 +4,8 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { load } from "cheerio";
 import { mix } from "motion";
-import { signatureShapePaths } from "../registry/sahajiv/lib/signature-shapes";
-import { ShapeMorph } from "../registry/sahajiv/ui/shape";
+import { signatureShapePaths } from "../registry/cojeev/lib/signature-shapes";
+import { ShapeMorph } from "../registry/cojeev/ui/shape";
 
 test("every signature path and pairwise interpolation stays inside its normalized SVG box", () => {
   const paths = Object.values(signatureShapePaths);

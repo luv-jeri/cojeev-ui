@@ -12,19 +12,19 @@ function restoreCatalogSizing(source:string,id:string){
   // Catalog evidence: index.html:114,160,172. The untouched isolation is retained.
   return source
     .replace("</style>","body{grid-template-columns:minmax(0,1fr)}[data-gate-catalog-frame]{container:stage/inline-size;width:100%;min-width:0;max-width:1080px}[data-gate-catalog-frame]>*{max-width:100%}</style>")
-    .replace("</head>",'<meta name="sahajiv-oracle-adapter" content="otp-catalog-sizing"></head>')
+    .replace("</head>",'<meta name="cojeev-oracle-adapter" content="otp-catalog-sizing"></head>')
     .replace(/<body([^>]*)>/,'<body$1><div data-gate-catalog-frame>')
     .replace(/<script\b/,"</div><script");
 }
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), {
-    name: "sahajiv-fidelity-fixtures",
+    name: "cojeev-fidelity-fixtures",
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url ?? "/", "http://localhost");
-        if (url.pathname.startsWith("/reference/sahajiv-handoff-v4/")) {
-          const root=path.resolve("reference/sahajiv-handoff-v4");
+        if (url.pathname.startsWith("/reference/cojeev-handoff-v4/")) {
+          const root=path.resolve("reference/cojeev-handoff-v4");
           const file=path.resolve(".",`.${decodeURIComponent(url.pathname)}`);
           if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.statusCode=404;res.end("Not found");return;}
           const types:Record<string,string>={".html":"text/html",".css":"text/css",".js":"text/javascript",".json":"application/json",".svg":"image/svg+xml",".ttf":"font/ttf",".woff2":"font/woff2"};
@@ -45,7 +45,7 @@ export default defineConfig({
               // Complete that bootstrap without editing any reference file.
               const completed=html.replace('<script src="../../js/flow.js">','<script src="../../js/alive.js"></script><script src="../../js/flow.js">');
               if(completed===html)throw new Error(`Missing loader bootstrap insertion point: ${file}`);
-              content=Buffer.from(completed.replace('</head>','<meta name="sahajiv-oracle-adapter" content="original-alive-runtime"></head>'));
+              content=Buffer.from(completed.replace('</head>','<meta name="cojeev-oracle-adapter" content="original-alive-runtime"></head>'));
             }
           }
           res.end(content);return;
@@ -54,7 +54,7 @@ export default defineConfig({
         const id = url.searchParams.get("id") ?? "button";
         const file = url.searchParams.get("file") ?? "default-default-rest.html";
         if (!/^[a-z-]+$/.test(id) || !/^[a-z0-9.-]+\.html$/.test(file)) { res.statusCode=400;res.end("Invalid fixture");return; }
-        const sourcePath=file==='demo.html'||file==='demo-dark.html'?path.resolve("reference/sahajiv-handoff-v4/entries",id,"demo.html"):path.resolve("reference/sahajiv-handoff-v4/isolation",id,file);
+        const sourcePath=file==='demo.html'||file==='demo-dark.html'?path.resolve("reference/cojeev-handoff-v4/entries",id,"demo.html"):path.resolve("reference/cojeev-handoff-v4/isolation",id,file);
         const source = restoreCatalogSizing(fs.readFileSync(sourcePath, "utf8"),id);
         const canvas = source.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? "";
         const mode = file.includes("-dark") ? "dark" : "light";

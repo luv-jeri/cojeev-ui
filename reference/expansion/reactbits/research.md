@@ -4,7 +4,7 @@ Pinned source: `4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3` from the official Davi
 
 ## Reuse boundary
 
-The pinned LICENSE.md is MIT + Commons Clause and explicitly excludes redistribution of components themselves, including bundles and ports. The requested MIT library cannot simply pull these sources and recolor them. This pass uses original SahaJiv implementations based on high-level behavior; source receipts retain upstream provenance and are outside shipped registry payloads. No React Bits source has been imported into registry code.
+The pinned LICENSE.md is MIT + Commons Clause and explicitly excludes redistribution of components themselves, including bundles and ports. The requested MIT library cannot simply pull these sources and recolor them. This pass uses original Cojeev implementations based on high-level behavior; source receipts retain upstream provenance and are outside shipped registry payloads. No React Bits source has been imported into registry code.
 
 ## Individually inspected this pass
 
@@ -17,7 +17,7 @@ Four official desktop preview screenshots and page/control snapshots are under o
 
 ## Documentation findings
 
-Observed useful features: grouped catalogue filter, preview/code tabs, prop controls beside a demo, copy for AI, favourites, related examples, JS/TS and CSS/Tailwind selection, and export-oriented background/shape/texture tools. SahaJiv already has live controls, source code, usage/accessibility and related links plus shape export. Potential additions: deliberate use/avoid guidance, local saved examples, self-contained copy-for-AI packets and cross-category search. Keep these as real actions and avoid adding inert controls. The separate tools and paid product are not evidence of completed component work.
+Observed useful features: grouped catalogue filter, preview/code tabs, prop controls beside a demo, copy for AI, favourites, related examples, JS/TS and CSS/Tailwind selection, and export-oriented background/shape/texture tools. Cojeev already has live controls, source code, usage/accessibility and related links plus shape export. Potential additions: deliberate use/avoid guidance, local saved examples, self-contained copy-for-AI packets and cross-category search. Keep these as real actions and avoid adding inert controls. The separate tools and paid product are not evidence of completed component work.
 
 ## Text Ribbon follow-through
 

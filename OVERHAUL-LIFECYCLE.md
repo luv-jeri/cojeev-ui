@@ -41,7 +41,7 @@ Chart owner reported 6/6 lifecycle cases at `output/playwright/overhaul-chart-li
 Reproduce the native and AgentChat membership checks from the repository root with:
 
 ```sh
-rtk proxy node scripts/check-overhaul-lifecycle.mjs --url=http://127.0.0.1:4320/sahajiv-ui
+rtk proxy node scripts/check-overhaul-lifecycle.mjs --url=http://127.0.0.1:4320/cojeev-ui
 ```
 
 Optional `--widths=390,1440`, `--modes=active,off,reduced`, `--only=navigation-inline` and `--output=...` narrow the same checks. No generated registry or Next build is required.

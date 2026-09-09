@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { PigmentField } from "@/registry/sahajiv/ui/pigment-field";
-import { ContourField } from "@/registry/sahajiv/ui/contour-field";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Card } from "@/registry/sahajiv/ui/card";
-import { ToggleGroup, ToggleGroupItem } from "@/registry/sahajiv/ui/toggle-group";
-import { Slider, SliderOutput } from "@/registry/sahajiv/ui/slider";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { Meta, SectionTitle, BodySecondary } from "@/registry/sahajiv/ui/typography";
+import { PigmentField } from "@/registry/cojeev/ui/pigment-field";
+import { ContourField } from "@/registry/cojeev/ui/contour-field";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Card } from "@/registry/cojeev/ui/card";
+import { ToggleGroup, ToggleGroupItem } from "@/registry/cojeev/ui/toggle-group";
+import { Slider, SliderOutput } from "@/registry/cojeev/ui/slider";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Meta, SectionTitle, BodySecondary } from "@/registry/cojeev/ui/typography";
 import type { ExampleProps } from "./types";
 
 function FieldExample({ kind, variant = "default" }: ExampleProps & { kind: "pigment" | "contour" }) {

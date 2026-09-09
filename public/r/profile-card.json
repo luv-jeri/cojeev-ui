@@ -2,15 +2,15 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "profile-card",
   "title": "Profile card",
-  "description": "A reusable profile card composed from SahaJiv base components.",
+  "description": "A reusable profile card composed from Cojeev base components.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/profile-card.tsx",
+      "path": "registry/cojeev/ui/profile-card.tsx",
       "content": "\"use client\";\nexport { ProfileCard, type OrganismProps as ProfileCardProps } from \"@/components/ui/organism-composition\";\n",
       "type": "registry:ui"
     }

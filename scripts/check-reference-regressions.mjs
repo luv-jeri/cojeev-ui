@@ -6,9 +6,9 @@ import { chromium } from "playwright";
 const ids = ["typography-vortex", "particle-text", "warp-text", "variable-proximity", "falling-text", "scroll-reveal", "word-stream", "caret-swap", "zoom-words"];
 const name = id => id.split("-").map(word => word[0].toUpperCase()+word.slice(1)).join("");
 const fixture = `import React from "react"; import {createRoot} from "react-dom/client";
-${ids.map(id => `import {${name(id)}} from "./registry/sahajiv/ui/${id}";`).join("\n")}
-import {PixelSwap} from "./registry/sahajiv/ui/pixel-swap";
-import {createFieldPainter} from "./registry/sahajiv/lib/reference-field-paint";
+${ids.map(id => `import {${name(id)}} from "./registry/cojeev/ui/${id}";`).join("\n")}
+import {PixelSwap} from "./registry/cojeev/ui/pixel-swap";
+import {createFieldPainter} from "./registry/cojeev/lib/reference-field-paint";
 window.fieldPainter=createFieldPainter; window.attachedRefs={}; window.cleanedRefs={};
 function App(){const[active,setActive]=React.useState(false);return <>
 ${ids.map(id => `<${name(id)} ref={node=>{window.attachedRefs["${id}"]=node;return()=>{window.cleanedRefs["${id}"]=true;};}} text="Made of ideas" fromText="Old phrase" toText="New phrase" style={{width:558.875}}/>`).join("\n")}
@@ -21,7 +21,7 @@ const checks = [];
 try {
   await page.route("http://reference.test/**", route=>route.fulfill({contentType:"text/html",body:'<div id="root"></div>'}));
   await page.goto("http://reference.test/");
-  await page.addStyleTag({ content: ':root{--v-text:#111;--v-beige:#f5f1e8;--v-pink:#f5b8db;--v-olive:#9aab63;--v-blue:#b6caeb;--v-yellow:#f5d867}*{box-sizing:border-box}' + (await Promise.all([...ids,"pixel-swap"].map(id => fs.readFile(`registry/sahajiv/styles/${id}.css`, "utf8")))).join("\n") });
+  await page.addStyleTag({ content: ':root{--v-text:#111;--v-beige:#f5f1e8;--v-pink:#f5b8db;--v-olive:#9aab63;--v-blue:#b6caeb;--v-yellow:#f5d867}*{box-sizing:border-box}' + (await Promise.all([...ids,"pixel-swap"].map(id => fs.readFile(`registry/cojeev/styles/${id}.css`, "utf8")))).join("\n") });
   await page.addScriptTag({ content: output.outputFiles[0].text });
   await page.waitForFunction(() => Object.keys(window.attachedRefs).length === 9);
   assert(await page.evaluate(() => Object.entries(window.attachedRefs).every(([id,node]) => node?.dataset.slot === id)));

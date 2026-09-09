@@ -3,8 +3,8 @@
 import { useState, useSyncExternalStore } from "react";
 const subscribeHydration = () => () => {};
 import Link from "next/link";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Input } from "@/registry/sahajiv/ui/input";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Input } from "@/registry/cojeev/ui/input";
 import { REPORTING_API, reportingFetch } from "@/lib/reporting/client";
 import { isUUID, type ReportStatus } from "@/lib/reporting/contracts";
 
@@ -45,7 +45,7 @@ export function ReportingAdmin() {
       const url = URL.createObjectURL(await result.blob()), anchor = document.createElement("a"); anchor.href = url; anchor.download = file.name; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Download failed."); } finally { setBusy(""); }
   }
-  return <main className="feedback-admin" data-private=""><nav><Link href="/">SahaJiv UI</Link>{token && <Button variant="outline" size="sm" disabled={!!busy} onClick={() => { setToken(""); setRows([]); setDetail(null); setNotice(""); setError(""); }}>Lock reports</Button>}</nav><header><p>Maintainer workspace</p><h1>Private reports</h1><p>Read the context, follow delivery, and close the loop.</p></header>
+  return <main className="feedback-admin" data-private=""><nav><Link href="/">Cojeev UI</Link>{token && <Button variant="outline" size="sm" disabled={!!busy} onClick={() => { setToken(""); setRows([]); setDetail(null); setNotice(""); setError(""); }}>Lock reports</Button>}</nav><header><p>Maintainer workspace</p><h1>Private reports</h1><p>Read the context, follow delivery, and close the loop.</p></header>
     {!REPORTING_API && <p className="admin-error">Reporting is not connected. Set the public reporting API URL before using this screen.</p>}
     {error && <p className="admin-error" role="alert">{error}</p>}{notice && <p className="admin-notice" role="status">{notice}</p>}<p className="admin-progress" role="status">{busy}</p>
     {!token ? <form className="admin-login" onSubmit={event => { event.preventDefault(); void list(0, entry.trim()); }}><label>Maintainer token<Input type="password" autoComplete="off" required disabled={!hydrated} value={entry} onChange={event => setEntry(event.target.value)} /></label><p>The token stays in memory for this tab. Reload or lock to clear it.</p><Button type="submit" loading={!!busy} disabled={!REPORTING_API || !hydrated}>Unlock reports</Button></form> : <>

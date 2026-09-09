@@ -2,14 +2,14 @@
 
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { AnimatedIcon, type IconMotion } from "@/registry/sahajiv/ui/animated-icon";
-import { Icon, IconButton, iconNames, type IconButtonProps } from "@/registry/sahajiv/ui/icon";
-import { ItemAdornment, type ItemAdornmentValue } from "@/registry/sahajiv/ui/item-adornment";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Input } from "@/registry/sahajiv/ui/input";
-import { Meta } from "@/registry/sahajiv/ui/typography";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/sahajiv/ui/select";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/registry/sahajiv/ui/dropdown-menu";
+import { AnimatedIcon, type IconMotion } from "@/registry/cojeev/ui/animated-icon";
+import { Icon, IconButton, iconNames, type IconButtonProps } from "@/registry/cojeev/ui/icon";
+import { ItemAdornment, type ItemAdornmentValue } from "@/registry/cojeev/ui/item-adornment";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Input } from "@/registry/cojeev/ui/input";
+import { Meta } from "@/registry/cojeev/ui/typography";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/cojeev/ui/select";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/registry/cojeev/ui/dropdown-menu";
 
 const effects: IconMotion[] = ["auto", "tremor", "draw", "spin", "bounce", "validation", "pulse", "none"];
 

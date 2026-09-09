@@ -2,15 +2,15 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "invite-card",
   "title": "Invite card",
-  "description": "An event invitation with participant avatars and a reversible local RSVP, composed from SahaJiv primitives.",
+  "description": "An event invitation with participant avatars and a reversible local RSVP, composed from Cojeev primitives.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json",
-    "https://luv-jeri.github.io/sahajiv-ui/r/organism-composition.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/invite-card.tsx",
+      "path": "registry/cojeev/ui/invite-card.tsx",
       "content": "\"use client\";\nexport { InviteCard, type OrganismProps as InviteCardProps } from \"@/components/ui/organism-composition\";\n",
       "type": "registry:ui"
     }

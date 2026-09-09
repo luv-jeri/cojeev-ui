@@ -1,6 +1,6 @@
 # Local review handoff — 8 September 2026
 
-The requested palette, selector, motion, list and landing-page changes are ready for owner review on the development server at `http://127.0.0.1:4320/sahajiv-ui/`. Open **Colour and contrast** in the header to change the palette or contrast. The same preferences apply to the landing page, documentation and workspace and survive reloads.
+The requested palette, selector, motion, list and landing-page changes are ready for owner review on the development server at `http://127.0.0.1:4320/cojeev-ui/`. Open **Colour and contrast** in the header to change the palette or contrast. The same preferences apply to the landing page, documentation and workspace and survive reloads.
 
 No production build, registry payload generation, install audit or deployment was performed in this review pass. The GitHub README alone was updated in commit `63cfb3e`. The earlier deployment run `34219556763` remains cancelled. The live public site and installable registry do not contain these local review changes.
 

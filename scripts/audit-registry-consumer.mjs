@@ -12,9 +12,9 @@ import { PNG } from "pngjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.resolve(
-  process.argv[2] ?? path.join(os.tmpdir(), `sahajiv-registry-consumer-${Date.now()}`),
+  process.argv[2] ?? path.join(os.tmpdir(), `cojeev-registry-consumer-${Date.now()}`),
 );
-if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/sahajiv-consumer-audit.");
+if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/cojeev-consumer-audit.");
 const resume = process.argv.includes("--resume");
 const refresh = process.argv.includes("--refresh");
 if (refresh && !resume) throw new Error("--refresh requires --resume of a successfully installed consumer");
@@ -119,14 +119,14 @@ try {
   receipt.registryURL = baseURL;
   if (!resume || refresh) {
   for (const file of [
-    "registry/sahajiv",
+    "registry/cojeev",
     "scripts/build-registry.mjs",
     "scripts/component-api.mjs",
     "data/component-guides.json",
     "data/component-additions.json",
-    "reference/sahajiv-handoff-v4/data/registry.json",
-    "reference/sahajiv-handoff-v4/fonts/DMSans-OFL.txt",
-    "reference/sahajiv-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
+    "reference/cojeev-handoff-v4/data/registry.json",
+    "reference/cojeev-handoff-v4/fonts/DMSans-OFL.txt",
+    "reference/cojeev-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
     "package.json",
     "components.json",
   ]) {
@@ -161,7 +161,7 @@ try {
     process.execPath,
     ["scripts/build-registry.mjs"],
     registry,
-    { SAHAJIV_REGISTRY_URL: baseURL },
+    { COJEEV_REGISTRY_URL: baseURL },
   );
   }
   const items = (await json(path.join(registry, "registry.json"))).items;
@@ -174,7 +174,7 @@ try {
   receipt.entryCount = ids.length;
   if (!resume) {
   const packageFile = {
-    name: "sahajiv-fresh-consumer-audit",
+    name: "cojeev-fresh-consumer-audit",
     version: "0.0.0",
     private: true,
     type: "module",
@@ -358,7 +358,7 @@ try {
   }
   if (errors.length) throw new Error(errors.join("\n"));
   receipt.checks.dependencyClosure = "PASS";
-  const basePackages = new Set([...closure("sahajiv")].flatMap(name => [...(generated.get(name)?.dependencies ?? []), ...(generated.get(name)?.devDependencies ?? [])]).map(packageName));
+  const basePackages = new Set([...closure("cojeev")].flatMap(name => [...(generated.get(name)?.dependencies ?? []), ...(generated.get(name)?.devDependencies ?? [])]).map(packageName));
   if (basePackages.has("three") || basePackages.has("@types/three")) throw new Error("The foundation must not install optional Three.js packages");
   receipt.checks.optionalSceneExcludedFromBase = "PASS";
   if (ids.includes("shape-scene")) {
@@ -374,16 +374,16 @@ try {
   receipt.styles = [];
   for (const item of generated.values())
     for (const file of item.files ?? []) {
-      if (!file.path.startsWith("registry/sahajiv/styles/")) continue;
+      if (!file.path.startsWith("registry/cojeev/styles/")) continue;
       const name = path.basename(file.path, ".css");
       const source = await fs.readFile(path.join(registry, file.path), "utf8");
       const layer = ["fonts", "tokens", "theme", "base"].includes(name)
         ? null
         : name === "morph"
-          ? "sahajiv-morph"
+          ? "cojeev-morph"
           : name === "flow-press"
-            ? "sahajiv-flow"
-            : "sahajiv-states";
+            ? "cojeev-flow"
+            : "cojeev-states";
       const expected = layer ? `@layer ${layer} {\n${source}\n}\n` : source;
       const installed = await fs.readFile(
         path.join(consumer, "src", file.target),
@@ -399,13 +399,13 @@ try {
       });
     }
   const fontCSS = await fs.readFile(
-    path.join(consumer, "src/styles/sahajiv-fonts.css"),
+    path.join(consumer, "src/styles/cojeev-fonts.css"),
     "utf8",
   );
   receipt.layerOrder = fontCSS.match(/@layer[^;]+;/)?.[0];
   if (
     receipt.layerOrder !==
-    "@layer theme, base, components, utilities, sahajiv-states, sahajiv-flow, sahajiv-morph, sahajiv-accessibility;"
+    "@layer theme, base, components, utilities, cojeev-states, cojeev-flow, cojeev-morph, cojeev-accessibility;"
   )
     throw new Error("Unexpected layer order");
   receipt.checks.verbatimStylesAndLayers = "PASS";
@@ -485,7 +485,7 @@ try {
     );
   const sourcePage = await browser.newPage();
   await sourcePage.setContent(
-    `<style>${await fs.readFile(path.join(registry, "registry/sahajiv/styles/tokens.css"), "utf8")}\n${await fs.readFile(path.join(registry, "registry/sahajiv/styles/table.css"), "utf8")}</style><div data-slot="table-container" style="width:100px;height:100px;overflow:scroll"><div style="width:200px;height:200px">Probe</div></div>`,
+    `<style>${await fs.readFile(path.join(registry, "registry/cojeev/styles/tokens.css"), "utf8")}\n${await fs.readFile(path.join(registry, "registry/cojeev/styles/table.css"), "utf8")}</style><div data-slot="table-container" style="width:100px;height:100px;overflow:scroll"><div style="width:200px;height:200px">Probe</div></div>`,
   );
   receipt.tableSourceBackgroundClip = await sourcePage
     .locator('[data-slot="table-container"]')

@@ -1,11 +1,11 @@
 "use client";
 import * as React from "react";
 import type {ExampleProps} from "./types";
-import {Progress,type ProgressAppearance} from "@/registry/sahajiv/ui/progress";
-import {Slider,SliderWrapper,SliderRow,SliderOutput,type SliderAppearance} from "@/registry/sahajiv/ui/slider";
-import {Button} from "@/registry/sahajiv/ui/button";
-import {Label} from "@/registry/sahajiv/ui/label";
-import {Meta} from "@/registry/sahajiv/ui/typography";
+import {Progress,type ProgressAppearance} from "@/registry/cojeev/ui/progress";
+import {Slider,SliderWrapper,SliderRow,SliderOutput,type SliderAppearance} from "@/registry/cojeev/ui/slider";
+import {Button} from "@/registry/cojeev/ui/button";
+import {Label} from "@/registry/cojeev/ui/label";
+import {Meta} from "@/registry/cojeev/ui/typography";
 const appearances:ProgressAppearance[]=["organic","line","segmented","orbit"];
 export function ProgressExample({variant="default",size="default"}:ExampleProps){
  const [value,setValue]=React.useState(45),unavailable=variant==="unavail",appearance=appearances.includes(variant as ProgressAppearance)?variant as ProgressAppearance:"organic";

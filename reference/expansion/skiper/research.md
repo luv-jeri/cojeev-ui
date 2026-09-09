@@ -6,7 +6,7 @@ Captured 2026-09-08 UTC from the deployed first-party website. This bounded rese
 
 The authoritative catalogue contains **106 entries: 37 free and 69 Pro**, across **14 canonical collections**. IDs span `skiper1` through `skiper107`, with `skiper93` absent. The client catalogue, rendered component directory, individual-page sidebar, and the `/v1/` sitemap set agree exactly. The visual New Releases section regroups IDs 105–107; it is not a fifteenth canonical collection. Each inventory row preserves the source name, canonical `collection_name`, page URL, registry URL, access status, and inspection status. Sources: [component directory](https://skiper-ui.com/components), [entry page/sidebar](https://skiper-ui.com/v1/skiper1), [sitemap](https://skiper-ui.com/sitemap.xml).
 
-The catalogue metadata came from the publicly delivered component-directory bundle `2746-b3b99351038ccb04.js`, deployment `dpl_EupiPug8CbNSBYxUDsBT4kcTsCfx`. Its exact URL and SHA-256 are in `inventory.json`. No canonical public source repository or upstream commit was verified: the official footer links to [the founder profile](https://github.com/Gurvinder-Singh02), whose public repository listing did not contain a named Skiper repository. The local SahaJiv overlap snapshot is commit `a50d2d4a538d13c1e808cc94344f48a6fb58686b` plus its existing dirty worktree.
+The catalogue metadata came from the publicly delivered component-directory bundle `2746-b3b99351038ccb04.js`, deployment `dpl_EupiPug8CbNSBYxUDsBT4kcTsCfx`. Its exact URL and SHA-256 are in `inventory.json`. No canonical public source repository or upstream commit was verified: the official footer links to [the founder profile](https://github.com/Gurvinder-Singh02), whose public repository listing did not contain a named Skiper repository. The local Cojeev overlap snapshot is commit `a50d2d4a538d13c1e808cc94344f48a6fb58686b` plus its existing dirty worktree.
 
 Two source discrepancies matter. The homepage calls Dynamic island free, while its specific catalogue row and [component page](https://skiper-ui.com/v1/skiper2) say Pro; the inventory uses the specific sources. Sitemap `/preview/skiper*` URLs returned the site's 404 view in all three samples; `/v1/skiper*` is the working public demo route. The stale-route captures are explicitly named `stale-preview-404`.
 
@@ -14,7 +14,7 @@ Two source discrepancies matter. The homepage calls Dynamic island free, while i
 
 [Quick Start](https://skiper-ui.com/docs/quick-start) advertises personal/commercial component use and modification, requires attribution for free use, and removes that requirement for Pro. It documents `https://skiper-ui.com/r/{name}.json`; Pro installs require a purchased license passed in an Authorization header. A normal unauthenticated request for [skiper1](https://skiper-ui.com/r/skiper1.json) returned HTTP 401. [skiper37](https://skiper-ui.com/r/skiper37.json) and [skiper40](https://skiper-ui.com/r/skiper40.json) returned public source with the same custom usage terms in comments.
 
-[Terms of Service](https://skiper-ui.com/docs/terms-of-service), marked updated September 7, 2025, reserve website content and restrict republication, sublicensing, copying, and redistribution unless stated otherwise. None of the inspected official evidence grants an MIT license or clearly grants redistribution of component source as a competing MIT library. Therefore the implementation boundary is original SahaJiv code, names, visuals, and assets informed by public behavior. Free availability is not an MIT grant. Pro source was not retrieved, authenticated, reverse-engineered from bundles, or bypassed. Saved website/source receipts are research evidence, not material to package into the SahaJiv registry.
+[Terms of Service](https://skiper-ui.com/docs/terms-of-service), marked updated September 7, 2025, reserve website content and restrict republication, sublicensing, copying, and redistribution unless stated otherwise. None of the inspected official evidence grants an MIT license or clearly grants redistribution of component source as a competing MIT library. Therefore the implementation boundary is original Cojeev code, names, visuals, and assets informed by public behavior. Free availability is not an MIT grant. Pro source was not retrieved, authenticated, reverse-engineered from bundles, or bypassed. Saved website/source receipts are research evidence, not material to package into the Cojeev registry.
 
 ## Representative inspection
 
@@ -22,7 +22,7 @@ Two source discrepancies matter. The homepage calls Dynamic island free, while i
 
 [Public page](https://skiper-ui.com/v1/skiper1). A small fixed horizontal rail summarizes long-page reading position. Scrolling 1,600 px moved its indicator about 21 px, while a hovered rail revealed a contextual section card. On mobile the rail centers near the bottom. The documented usage separates page content from the rail and passes active section and card visibility state. Implementation source remained license-restricted.
 
-The sampled drag gesture did **not** change document position; this is unverified drag behavior, not a working-drag claim. The rendered rail/handle are divs with no role or tabindex in this sample. Original SahaJiv direction: **Reading trail**, exposing current section, proportional progress, and real section links; use a semantic range control if scrubbing is included, with keyboard support and non-animated reduced-motion feedback. Overlaps: `scroll-area`, `progress`, `scroll-organism`.
+The sampled drag gesture did **not** change document position; this is unverified drag behavior, not a working-drag claim. The rendered rail/handle are divs with no role or tabindex in this sample. Original Cojeev direction: **Reading trail**, exposing current section, proportional progress, and real section links; use a semantic range control if scrubbing is included, with keyboard support and non-animated reduced-motion feedback. Overlaps: `scroll-area`, `progress`, `scroll-organism`.
 
 ### skiper37 — Animated number (free source)
 
@@ -34,7 +34,7 @@ Source inspection found demo-hardcoded values, a pause accessible label that sta
 
 [Public page](https://skiper-ui.com/v1/skiper40). Five displayed links explore underline direction, a small entering arrow, and filled highlight treatments; source includes six link exports including a baseline. The first link's arrow opacity changed from 0 to 1 on hover and returned to 0 under keyboard focus. Reduced-motion emulation left a 0.3-second pseudo-element transition, so focus and motion parity need original design work. No mailto link was activated.
 
-Original SahaJiv direction: **Living link**, a semantic anchor with an original underline/arrow composition, focus-visible parity, inherited typography, disabled handling when appropriate, and complete reduced-motion behavior. Keep navigation explicit; decorative arrows should not become separate focus stops. Overlaps: `button` link treatment, `typography`, `navigation-menu`.
+Original Cojeev direction: **Living link**, a semantic anchor with an original underline/arrow composition, focus-visible parity, inherited typography, disabled handling when appropriate, and complete reduced-motion behavior. Keep navigation explicit; decorative arrows should not become separate focus stops. Overlaps: `button` link treatment, `typography`, `navigation-menu`.
 
 ## Existing overlap candidates and next inspection order
 
@@ -60,11 +60,11 @@ The initial inventory task wrote only this reference directory. The separately a
 
 ## Original implementation handoff — 2026-09-08
 
-Two original MIT SahaJiv primitives were added after the reference research. They use SahaJiv tokens and the shared `createMotionLane` / `useChoreography` / `useMotionVisibility` infrastructure; no Skiper implementation or assets were copied.
+Two original MIT Cojeev primitives were added after the reference research. They use Cojeev tokens and the shared `createMotionLane` / `useChoreography` / `useMotionVisibility` infrastructure; no Skiper implementation or assets were copied.
 
 ### ReadingTrail
 
-Source: `registry/sahajiv/ui/reading-trail.tsx`; stylesheet: `registry/sahajiv/styles/reading-trail.css`. Example export: `ReadingTrailExample` from `components/examples/reading-details.tsx`.
+Source: `registry/cojeev/ui/reading-trail.tsx`; stylesheet: `registry/cojeev/styles/reading-trail.css`. Example export: `ReadingTrailExample` from `components/examples/reading-details.tsx`.
 
 `ReadingTrailProps` extends native `nav` props except children. Required `items: readonly { id: string; label: React.ReactNode }[]`. Defaults: `label="On this page"`, `offset=24`; `scrollRoot?: HTMLElement | null` defaults to the document. `offset` is the activation line, not a forced scroll offset; use native `scroll-padding` on the scroll root or `scroll-margin` on targets for sticky headers. Labels, real encoded fragment URLs, and the first current item render on the server. Missing targets keep their native links but do not contribute measured state. Duplicate and empty IDs are omitted.
 
@@ -81,7 +81,7 @@ For an overflow panel, obtain its mounted element with a React callback ref and 
 
 ### LivingLink
 
-Source: `registry/sahajiv/ui/living-link.tsx`; stylesheet: `registry/sahajiv/styles/living-link.css`. Example export: `LivingLinkExample` from the same example module.
+Source: `registry/cojeev/ui/living-link.tsx`; stylesheet: `registry/cojeev/styles/living-link.css`. Example export: `LivingLinkExample` from the same example module.
 
 `LivingLinkProps` extends native anchor props with required `href: string`, `disabled=false`, and `direction="up-right" | "forward"` (default up-right). The root remains an anchor; standard target, rel, download, and click props are forwarded. Disabled state removes href, sets aria-disabled and removes sequential tab focus; capture guards suppress disabled pointer/keyboard/auxiliary activation. Normal navigation is never prevented. The underline is an original SVG contour revealed with clipping, avoiding normalized-dash/non-scaling-stroke artifacts on long labels. Both hover and focus drive the same shared motion lane. Reduced-motion mode retains readable ink and settles directional travel immediately.
 
@@ -114,7 +114,7 @@ The focused regression `.work/skiper-originals/scoped-scroll.mjs` places the con
 
 Skiper [Animated icons 001](https://skiper-ui.com/v1/skiper42) renders 17 tile previews; [Animated icons 002](https://skiper-ui.com/v1/skiper99) renders three. Both were viewed at 1440px and 390px. Skiper42 sampled menu, trash, send and bell clicks changed the public rendered state. Skiper99 arrow hover visibly extends the shaft; menu and volume clicks change their symbols. The arrow effect is CSS, so unchanged HTML alone is not an absence-of-motion result. These sampled tiles are divs with no focusable native control. The source42 registry returned 401 and remains uninspected; source99 returned public code and was read. Its menu and volume rely on div onClick and hover styling. No restricted implementation was retrieved or copied.
 
-At this initial checkpoint, the cross-source [Remocn gallery](https://remocn.dev/docs/icons/gallery) has exactly 100 canonical icons at the inventory's pinned commit `3e03565f5c0001e143c2ed941eea7c3181f13260`. `icon-mapping.json` maps all 100 honestly: 20 had their source structure and public desktop hover/focus sampled; the remaining 80 are catalogue mappings only. The first 20 captures show genuine native buttons and public Remotion players on hover/focus, with Lucide-based paths drawing before the action. Download, bell and send source received deeper implementation inspection; the other 17 were inspected for motion structure. Only native SahaJiv code and existing local geometry were used. The Remocn inventory was read without edits. Its MIT license does not remove separate Remotion runtime or Lucide artwork terms.
+At this initial checkpoint, the cross-source [Remocn gallery](https://remocn.dev/docs/icons/gallery) has exactly 100 canonical icons at the inventory's pinned commit `3e03565f5c0001e143c2ed941eea7c3181f13260`. `icon-mapping.json` maps all 100 honestly: 20 had their source structure and public desktop hover/focus sampled; the remaining 80 are catalogue mappings only. The first 20 captures show genuine native buttons and public Remotion players on hover/focus, with Lucide-based paths drawing before the action. Download, bell and send source received deeper implementation inspection; the other 17 were inspected for motion structure. Only native Cojeev code and existing local geometry were used. The Remocn inventory was read without edits. Its MIT license does not remove separate Remotion runtime or Lucide artwork terms.
 
 The local baseline already had geometry for all first 20 actions. Six convenience aliases now resolve to it: `check-circle → circle-check`, `close → x`, `alert → triangle-alert`, `loader → loader-circle`, `refresh → refresh-cw`, `trash → trash-2`. No new geometry was copied. Of the full 100-source mapping, 72 currently have a corresponding native shape name; 28 still need a future geometry decision. Availability is not an individual review or implementation claim.
 
@@ -162,7 +162,7 @@ The full native family now has authored motion for every action. It shares five 
 
 These are original interpretations, not replicas of Remocn timelines. Upstream looping clock, globe, sparkles, activity and flame behaviors are finite native interaction feedback; **only loader** loops while permitted and active. The first 20 actions retain their existing behavior. No motion indicates actual application success; native controls and application state own the action result.
 
-The 28 formerly missing shapes came from the already installed `lucide-react@0.577.0` package. A distinct four-corner `maximize` shape was also added, preserving the existing diagonal `maximize-2` API. This makes **29 added shapes**, with the full installed ISC / Feather MIT notices retained in `registry/sahajiv/lib/icon-data.ts`. Existing compound strokes for menu, globe, link, save, rocket, help and bar chart were separated into parts without changing their coordinates or silhouettes. No Remocn geometry or runtime dependency was imported.
+The 28 formerly missing shapes came from the already installed `lucide-react@0.577.0` package. A distinct four-corner `maximize` shape was also added, preserving the existing diagonal `maximize-2` API. This makes **29 added shapes**, with the full installed ISC / Feather MIT notices retained in `registry/cojeev/lib/icon-data.ts`. Existing compound strokes for menu, globe, link, save, rocket, help and bar chart were separated into parts without changing their coordinates or silhouettes. No Remocn geometry or runtime dependency was imported.
 
 ### Final parent integration deltas
 

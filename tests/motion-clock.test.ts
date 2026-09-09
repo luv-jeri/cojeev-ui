@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {motionClock,scheduleMotion,cancelMotion,registerMotionClock} from '../registry/sahajiv/motion/clock'
+import {motionClock,scheduleMotion,cancelMotion,registerMotionClock} from '../registry/cojeev/motion/clock'
 
 test('phase queue cancels superseded targets, orders morph before due beats, and preserves cancellation across release',async()=>{
  const calls:string[]=[],off=registerMotionClock(t=>{if(t!==null)calls.push('morph:'+t)})

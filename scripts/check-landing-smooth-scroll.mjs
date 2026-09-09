@@ -10,12 +10,12 @@ const args = Object.fromEntries(process.argv.slice(2).map(argument => {
 }));
 const staticServer = args.serve && !args.url ? await (await import("vite")).preview({
   configFile: false,
-  base: "/sahajiv-ui/",
+  base: "/cojeev-ui/",
   build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
 const address = staticServer?.httpServer.address();
-const base = (args.url ?? `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/sahajiv-ui`).replace(/\/$/, "");
+const base = (args.url ?? `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/cojeev-ui`).replace(/\/$/, "");
 const output = path.resolve(args.output ?? "artifacts/landing-smooth-scroll");
 const report = { startedAt: new Date().toISOString(), base, checks: [] };
 await fs.mkdir(output, { recursive: true });
@@ -56,7 +56,7 @@ try {
     assert(positions[0] < 350, `Balanced smoothing must begin well before the wheel target: ${positions.join(", ")}`);
     assert(positions.some((value, index) => index > 0 && value > positions[index - 1]), `Scroll must advance over time: ${positions.join(", ")}`);
     await page.getByRole("link", { name: "Explore the library", exact: true }).click();
-    await page.waitForURL(url => url.pathname.endsWith("/sahajiv-ui/docs/"));
+    await page.waitForURL(url => url.pathname.endsWith("/cojeev-ui/docs/"));
     assert.equal(await page.locator("html.lenis").count(), 0, "Documentation must return to native scrolling");
     assert.deepEqual(errors, [], "No landing or navigation runtime errors");
     await context.close();

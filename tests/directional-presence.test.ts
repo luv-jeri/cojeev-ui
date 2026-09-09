@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { flowSlideTravel } from "../registry/sahajiv/motion/flow";
+import { flowSlideTravel } from "../registry/cojeev/motion/flow";
 const rect = { left: 680, right: 980, top: 24, bottom: 776 };
 const viewport = { left: 0, top: 0, right: 1000, bottom: 800 };
 test("inline travel clears the selected viewport edge including its resting inset", () => {

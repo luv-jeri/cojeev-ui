@@ -7,7 +7,7 @@ export type ReportingDraft = {
   frozen: FrozenSubmission | null; attempted: boolean; receipt: Receipt | null;
 };
 export function emptyDraft(): ReportingDraft { return { kind: "request", title: "", description: "", email: "", pins: [], files: [], diagnostics: null, frozen: null, attempted: false, receipt: null }; }
-const databaseName = "sahajiv-reporting-v1";
+const databaseName = "cojeev-reporting-v1";
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === "undefined") { reject(new Error("Local draft storage is unavailable.")); return; }

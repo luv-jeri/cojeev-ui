@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { getReadingTrailState } from "../registry/sahajiv/ui/reading-trail";
+import { getReadingTrailState } from "../registry/cojeev/ui/reading-trail";
 
 // These fixtures catch wrong active-section boundaries, unbounded percentages,
 // and a final section that cannot reach the viewport's activation line.
@@ -24,7 +24,7 @@ test("geometry uses document order, offsets, and safe values for missing targets
 test("disabled living links remove destinations while normal links preserve browser navigation attributes", async () => {
   const React = await import("react");
   const { renderToStaticMarkup } = await import("react-dom/server");
-  const { LivingLink } = await import("../registry/sahajiv/ui/living-link");
+  const { LivingLink } = await import("../registry/cojeev/ui/living-link");
   const normal = renderToStaticMarkup(React.createElement(LivingLink, { href: "/notes", target: "_blank", rel: "noopener" }, "Read notes"));
   assert.match(normal, /href="\/notes"/);
   assert.match(normal, /target="_blank"/);

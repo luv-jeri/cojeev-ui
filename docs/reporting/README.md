@@ -12,10 +12,10 @@ npm run reporting:dev
 In a second terminal:
 
 ```sh
-NEXT_PUBLIC_REPORTING_API_URL=http://localhost:8787 SAHAJIV_NEXT_DIST_DIR=.next-reporting npx next dev --port 3100
+NEXT_PUBLIC_REPORTING_API_URL=http://localhost:8787 COJEEV_NEXT_DIST_DIR=.next-reporting npx next dev --port 3100
 ```
 
-Open `http://localhost:3100/sahajiv-ui/`. The local maintainer token is in `.work/reporting/local-admin-token`; enter it in `/sahajiv-ui/feedback-admin/`. Keep tokens out of chat, Git and URLs. Local reports persist in Wrangler's local D1/R2 storage; outbound email and GitHub are disabled. Local mode refuses remote request hosts.
+Open `http://localhost:3100/cojeev-ui/`. The local maintainer token is in `.work/reporting/local-admin-token`; enter it in `/cojeev-ui/feedback-admin/`. Keep tokens out of chat, Git and URLs. Local reports persist in Wrangler's local D1/R2 storage; outbound email and GitHub are disabled. Local mode refuses remote request hosts.
 
 ## Cloudflare setup
 
@@ -31,7 +31,7 @@ Set `NEXT_PUBLIC_REPORTING_API_URL` to the deployed Worker origin at site build 
 
 ## GitHub
 
-The target is `luv-jeri/sahajiv-ui`. Use a dedicated fine-grained token with **Issues: read and write** and repository metadata read permission on that repository. Supply it through a private terminal environment variable named `REPORTING_GITHUB_TOKEN`, then run:
+The target is `luv-jeri/cojeev-ui`. Use a dedicated fine-grained token with **Issues: read and write** and repository metadata read permission on that repository. Supply it through a private terminal environment variable named `REPORTING_GITHUB_TOKEN`, then run:
 
 ```sh
 node scripts/reporting.mjs github-connect
@@ -44,7 +44,7 @@ Public issues contain a reference and authenticated report link. Descriptions, r
 Configure the repository **Issues** webhook using the local GitHub CLI login:
 
 ```sh
-REPORTING_API_URL=https://sahajiv-ui-reporting.unread-fyi.workers.dev node scripts/reporting.mjs github-webhook
+REPORTING_API_URL=https://cojeev-ui-reporting.unread-fyi.workers.dev node scripts/reporting.mjs github-webhook
 ```
 
 This idempotently creates or updates the matching callback, keeping its signing secret out of terminal output. The callback is `WORKER_ORIGIN/v1/github/webhook`; HMAC signatures and delivery IDs are validated. Repository webhook write permission is required. This command does not copy the local GitHub token into the Worker. To notify completion from GitHub, close an issue as completed with the `feedback:released` label. Component requests also need this exact line in the issue body:
@@ -65,7 +65,7 @@ After acquiring the domain:
 2. Add `"send_email": [{ "name": "EMAIL" }]` to the production Worker config. Set `EMAIL_FROM` to your verified sender and `EMAIL_ENABLED` to `true`.
 3. Redeploy. In the maintainer view, run pending deliveries. Verify a real received and completion email in your inbox before promising mail delivery to visitors.
 
-The templates have a plain-text and HTML version in SahaJiv's colors. A Cloudflare acceptance ID means accepted by the email provider, not guaranteed inbox delivery. Unknown outcomes are held for review; rate-limit failures back off automatically.
+The templates have a plain-text and HTML version in Cojeev's colors. A Cloudflare acceptance ID means accepted by the email provider, not guaranteed inbox delivery. Unknown outcomes are held for review; rate-limit failures back off automatically.
 
 ## Reliability and privacy
 

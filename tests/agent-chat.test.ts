@@ -6,8 +6,8 @@ import {
   AgentChatComposer,
   AgentChatOptions,
   AgentChatPermission,
-} from "../registry/sahajiv/ui/agent-chat";
-import { AgentState } from "../registry/sahajiv/ui/agent-state";
+} from "../registry/cojeev/ui/agent-chat";
+import { AgentState } from "../registry/cojeev/ui/agent-state";
 
 const noop = () => {};
 

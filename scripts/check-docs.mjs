@@ -18,11 +18,11 @@ const args = Object.fromEntries(
 );
 const staticServer = args.serve ? await startPreview({
   configFile: false,
-  base: "/sahajiv-ui/",
+  base: "/cojeev-ui/",
   build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
-const base = args.url || `http://127.0.0.1:${staticServer ? staticServer.httpServer.address().port : 4320}/sahajiv-ui`;
+const base = args.url || `http://127.0.0.1:${staticServer ? staticServer.httpServer.address().port : 4320}/cojeev-ui`;
 const main = args.checkout ? path.resolve(args.checkout) : process.cwd();
 const output = path.resolve(args.output || "output/playwright/docs");
 fs.mkdirSync(output, { recursive: true });
@@ -58,7 +58,7 @@ function revision() {
       "--",
       "app",
       "components",
-      "registry/sahajiv",
+      "registry/cojeev",
       "next.config.ts",
     ],
     { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 },
@@ -181,7 +181,7 @@ const tests = {
   },
   "agent-chat": async ({root,page}) => {
     const reset=()=>root.getByRole("button",{name:"Reset demo",exact:true}).click();
-    const draft=root.getByRole("textbox",{name:"Message SahaJiv"});
+    const draft=root.getByRole("textbox",{name:"Message Cojeev"});
     const allow=async()=>{await root.getByRole("button",{name:"Allow once",exact:true}).click();await root.getByRole("button",{name:"Continue",exact:true}).click()};
     await draft.fill("A useful next step");
     await draft.press("ControlOrMeta+Enter");
@@ -1213,7 +1213,7 @@ try {
       await context.addInitScript(
         ({ theme }) => {
           if (!/^https?:$/.test(location.protocol)) return;
-          localStorage.setItem("sahajiv-docs-theme", theme);
+          localStorage.setItem("cojeev-docs-theme", theme);
         },
         { theme },
       );

@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Checkbox } from "@/registry/sahajiv/ui/checkbox";
-import { MultiSelect } from "@/registry/sahajiv/ui/multi-select";
-import { BodySecondary } from "@/registry/sahajiv/ui/typography";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Checkbox } from "@/registry/cojeev/ui/checkbox";
+import { MultiSelect } from "@/registry/cojeev/ui/multi-select";
+import { BodySecondary } from "@/registry/cojeev/ui/typography";
 
 export function MultiSelectExample() {
   const [selected, setSelected] = React.useState<string[]>(["design", "engineering"]);

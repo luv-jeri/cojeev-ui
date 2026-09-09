@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { chromium } from "playwright";
 
-const base=process.env.BASE_URL??"http://127.0.0.1:4320/sahajiv-ui";
+const base=process.env.BASE_URL??"http://127.0.0.1:4320/cojeev-ui";
 const browser=await chromium.launch({headless:true});
 const results=[];
 try {
@@ -30,5 +30,5 @@ try {
   }finally{await context.close();}
  }
 }finally{await browser.close();}
-const output=process.env.OUTPUT_FILE??"/tmp/sahajiv-swapy-regression.json";
+const output=process.env.OUTPUT_FILE??"/tmp/cojeev-swapy-regression.json";
 await fs.writeFile(output,JSON.stringify(results,null,2)+"\n");console.log(JSON.stringify(results,null,2));

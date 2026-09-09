@@ -8,4 +8,4 @@ export type CatalogEntry = {name:string;title:string;description:string;meta:{ca
 export function catalog():CatalogEntry[]{
   return registry.items.filter((item:{type:string})=>item.type==="registry:ui") as CatalogEntry[];
 }
-export const publicURL=process.env.SAHAJIV_REGISTRY_URL??"https://luv-jeri.github.io/sahajiv-ui";
+export const publicURL=process.env.COJEEV_REGISTRY_URL??"https://luv-jeri.github.io/cojeev-ui";

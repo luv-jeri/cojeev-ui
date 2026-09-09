@@ -22,13 +22,13 @@ async function saveSecrets(value){await mkdir(privateDir,{recursive:true,mode:0o
 async function provision(){
   await run(['npx','wrangler','whoami']);
   let cfg=JSON.parse(await readFile(resolve(root,config),'utf8'));
-  if(!cfg.d1_databases?.some(v=>v.binding==='DB')) await run(['npx','wrangler','d1','create','sahajiv-ui-reports','--binding','DB','--update-config','--config',config]);
+  if(!cfg.d1_databases?.some(v=>v.binding==='DB')) await run(['npx','wrangler','d1','create','cojeev-ui-reports','--binding','DB','--update-config','--config',config]);
   cfg=JSON.parse(await readFile(resolve(root,config),'utf8'));
-  if(!cfg.r2_buckets?.some(v=>v.binding==='MEDIA')) await run(['npx','wrangler','r2','bucket','create','sahajiv-ui-report-media','--binding','MEDIA','--update-config','--config',config]);
+  if(!cfg.r2_buckets?.some(v=>v.binding==='MEDIA')) await run(['npx','wrangler','r2','bucket','create','cojeev-ui-report-media','--binding','MEDIA','--update-config','--config',config]);
   const secrets=await loadSecrets();
   cfg=JSON.parse(await readFile(resolve(root,config),'utf8'));
   if(!cfg.vars.TURNSTILE_SITE_KEY){
-    const widget=JSON.parse(await run(['npx','wrangler','turnstile','widget','create','SahaJiv UI reporting','--domain','luv-jeri.github.io','--mode','managed','--json'],{capture:true}));
+    const widget=JSON.parse(await run(['npx','wrangler','turnstile','widget','create','Cojeev UI reporting','--domain','luv-jeri.github.io','--mode','managed','--json'],{capture:true}));
     const result=widget.result??widget;
     if(!result.sitekey||!result.secret) throw new Error('Turnstile created without expected credentials. Inspect its dashboard before retrying provisioning.');
     cfg.vars.TURNSTILE_SITE_KEY=result.sitekey;secrets.TURNSTILE_SECRET=result.secret;
@@ -58,14 +58,14 @@ async function dev(){
 async function githubConnect(){
   const secrets=await loadSecrets();
   // Explicit operation: use a provided repository-scoped token; never read gh's broad login token.
-  if(!process.env.REPORTING_GITHUB_TOKEN) throw new Error('Set REPORTING_GITHUB_TOKEN to a fine-grained GitHub token with Issues read/write on luv-jeri/sahajiv-ui.');
+  if(!process.env.REPORTING_GITHUB_TOKEN) throw new Error('Set REPORTING_GITHUB_TOKEN to a fine-grained GitHub token with Issues read/write on luv-jeri/cojeev-ui.');
   secrets.GITHUB_TOKEN=process.env.REPORTING_GITHUB_TOKEN;await saveSecrets(secrets);
   await run(['npx','wrangler','secret','put','GITHUB_TOKEN','--config',config],{input:secrets.GITHUB_TOKEN});
   console.log('GitHub issue delivery is configured. Run the maintainer delivery retry to process saved reports.');
 }
 async function githubWebhook(){
   const cfg=JSON.parse(await readFile(resolve(root,config),'utf8'));const secrets=await loadSecrets();
-  const origin=new URL(process.env.REPORTING_API_URL??'https://sahajiv-ui-reporting.unread-fyi.workers.dev');
+  const origin=new URL(process.env.REPORTING_API_URL??'https://cojeev-ui-reporting.unread-fyi.workers.dev');
   if(origin.protocol!=='https:'||!secrets.GITHUB_WEBHOOK_SECRET) throw new Error('Set the HTTPS REPORTING_API_URL and provision the webhook secret first.');
   const endpoint=`repos/${cfg.vars.GITHUB_REPOSITORY}/hooks`;
   const pages=JSON.parse(await run(['gh','api',endpoint,'--paginate','--slurp'],{capture:true}));

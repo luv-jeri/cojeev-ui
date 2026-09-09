@@ -14,13 +14,13 @@ export function emailMessage(row: ReportRow, kind: string, site: string) {
   const url=(completed||alreadyAvailable) && row.component_url?row.component_url:`${site.replace(/\/$/,"")}/requests/`;
   const label=(completed||alreadyAvailable)&&row.component_url?"Open your component":"View component requests";
   const reference=`Reference: ${row.id}`;
-  const text=`${heading}\n\n${message}\n\n${reference}\n${label}: ${url}\n\nSahaJiv UI`;
-  const html=`<!doctype html><html><body style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:36px auto;padding:32px"><p style="font-size:13px;letter-spacing:2px">SAHAJIV UI</p><h1 style="font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p>${escapeHTML(message)}</p><p><a href="${escapeHTML(url)}" style="display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none">${label}</a></p><p style="font-size:12px;color:#5f5b55">${reference}</p></main></body></html>`;
-  return {subject:`${heading} · SahaJiv UI`,text,html};
+  const text=`${heading}\n\n${message}\n\n${reference}\n${label}: ${url}\n\nCojeev UI`;
+  const html=`<!doctype html><html><body style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:36px auto;padding:32px"><p style="font-size:13px;letter-spacing:2px">COJEEV UI</p><h1 style="font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p>${escapeHTML(message)}</p><p><a href="${escapeHTML(url)}" style="display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none">${label}</a></p><p style="font-size:12px;color:#5f5b55">${reference}</p></main></body></html>`;
+  return {subject:`${heading} · Cojeev UI`,text,html};
 }
 async function github(env:Env,path:string,init:RequestInit={}, send=fetch) {
   let response:Response;
-  try { response=await send(`https://api.github.com${path}`,{...init,headers:{Authorization:`Bearer ${env.GITHUB_TOKEN}`,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"SahaJiv-Reporting","Content-Type":"application/json",...init.headers},signal:AbortSignal.timeout(15000)}); }
+  try { response=await send(`https://api.github.com${path}`,{...init,headers:{Authorization:`Bearer ${env.GITHUB_TOKEN}`,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"Cojeev-Reporting","Content-Type":"application/json",...init.headers},signal:AbortSignal.timeout(15000)}); }
   catch { throw new DeliveryFailure("GitHub response unavailable; reconcile before retrying.",init.method==="POST"); }
   if(!response.ok) throw new DeliveryFailure(`GitHub returned HTTP ${response.status}.`,init.method==="POST"&&response.status>=500,[400,401,404,422].includes(response.status));
   try { return await response.json() as Record<string,unknown>; } catch { throw new DeliveryFailure("GitHub returned an unreadable response.",init.method==="POST"); }
@@ -32,7 +32,7 @@ export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
   const actor=await github(env,"/user",{},send);
   if(typeof actor.id!=="number"||!Number.isSafeInteger(actor.id)||actor.id<=0) throw new DeliveryFailure("GitHub token owner could not be verified.",false,true);
   // A signed marker prevents a different contributor from spoofing a receipt.
-  const marker=`<!-- sahajiv-report:${row.id}:${await keyedDigest(env.IP_HASH_SECRET??env.GITHUB_TOKEN!,`github-report:${row.id}`)} -->`;
+  const marker=`<!-- cojeev-report:${row.id}:${await keyedDigest(env.IP_HASH_SECRET??env.GITHUB_TOKEN!,`github-report:${row.id}`)} -->`;
   const repo=`/repos/${env.GITHUB_REPOSITORY}`;
   const since=new Date(row.created_at-60000).toISOString();
   let original:GitHubIssue|undefined;
@@ -68,7 +68,7 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
   if(!emailEnabled(env)) throw new DeliveryFailure("Email domain setup required.",false,true);
   if(job.kind==="email_resolved" && row.status!=="resolved") throw new DeliveryFailure("Report was reopened before its release email sent. Review before retrying.",false,true);
   try {
-    const result=await env.EMAIL!.send({to:row.email,from:{email:env.EMAIL_FROM!,name:"SahaJiv UI"},...emailMessage(row,job.kind,env.SITE_URL)});
+    const result=await env.EMAIL!.send({to:row.email,from:{email:env.EMAIL_FROM!,name:"Cojeev UI"},...emailMessage(row,job.kind,env.SITE_URL)});
     if(!result.messageId) throw new DeliveryFailure("Email acceptance could not be confirmed.",true);
     return result.messageId;
   } catch(error) {

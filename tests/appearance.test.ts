@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { appearanceTokens, contrastRatio, normalizeAppearance, palettes } from "../registry/sahajiv/lib/appearance-tokens";
+import { appearanceTokens, contrastRatio, normalizeAppearance, palettes } from "../registry/cojeev/lib/appearance-tokens";
 
 test("all palettes retain readable role pairs at every contrast level in both modes", () => {
   for (const palette of palettes) for (const mode of ["light", "dark"] as const) for (const contrast of [0, 25, 50, 75, 100]) {

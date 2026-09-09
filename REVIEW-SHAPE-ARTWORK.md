@@ -4,7 +4,7 @@ Implemented September 8, 2026. Local source only; no build, installation, genera
 
 ## API
 
-`ShapeArtwork` is exported from `registry/sahajiv/ui/shape-artwork.tsx`. It accepts native SVG props/ref and:
+`ShapeArtwork` is exported from `registry/cojeev/ui/shape-artwork.tsx`. It accepts native SVG props/ref and:
 
 | Prop | Default | Meaning |
 | --- | --- | --- |
@@ -26,9 +26,9 @@ The face, shadow and rear outline use one shared Motion value for their fixed-to
 
 ## Workbench and integration
 
-`ShapePlayground` is a named export from `components/landing/shape-playground.tsx`. Root has replaced the old inline workbench and imported `components/landing/shape-playground.css` plus `registry/sahajiv/styles/shape-artwork.css`.
+`ShapePlayground` is a named export from `components/landing/shape-playground.tsx`. Root has replaced the old inline workbench and imported `components/landing/shape-playground.css` plus `registry/cojeev/styles/shape-artwork.css`.
 
-It uses native SahaJiv ToggleGroup/ToggleGroupItem single selection for 12 shapes and four tones; `v-seg` opts into the user's current shared Flow selection movement. Sliders control foreground rotation, shadow direction and rear-outline rotation. Switches control filled mode and layer visibility; hidden layers disable their corresponding angle slider. Typography, Button, CodeBlock and the entrance use existing library components. All foreground remains stationary after the heading entrance; only the low-intensity DepthBackground particles drift.
+It uses native Cojeev ToggleGroup/ToggleGroupItem single selection for 12 shapes and four tones; `v-seg` opts into the user's current shared Flow selection movement. Sliders control foreground rotation, shadow direction and rear-outline rotation. Switches control filled mode and layer visibility; hidden layers disable their corresponding angle slider. Typography, Button, CodeBlock and the entrance use existing library components. All foreground remains stationary after the heading entrance; only the low-intensity DepthBackground particles drift.
 
 Download SVG creates a Blob URL, clicks a temporary download link and removes it. URLs are revoked after one second and any remaining URLs/timers are cleared on unmount. Visible status explains success or failure. CodeBlock's existing CopyButton handles the React snippet, including clipboard rejection and its visible manual-copy fallback.
 
@@ -44,8 +44,8 @@ Only the new `shape-artwork` key was added to example index/manifest and compone
 
 ## Changed paths
 
-- `registry/sahajiv/ui/shape-artwork.tsx`
-- `registry/sahajiv/styles/shape-artwork.css`
+- `registry/cojeev/ui/shape-artwork.tsx`
+- `registry/cojeev/styles/shape-artwork.css`
 - `components/landing/shape-playground.tsx`
 - `components/landing/shape-playground.css`
 - `components/examples/shape-artwork.tsx`

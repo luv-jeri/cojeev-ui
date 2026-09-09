@@ -15,7 +15,7 @@ This pass implements the owner's screenshot feedback. It is a local development 
 
 ## Research and design reasoning
 
-[Codrops' particle/depth experiments](https://tympanus.net/codrops/tag/generative-art/) informed separate focal planes, blur and drift. [Motion's scroll guide](https://motion.dev/docs/react-scroll-animations) informed the separation of viewport entrances from native-scroll parallax. Geometry and textures here are authored with SahaJiv's existing shapes, tokens and component APIs. There is no scroll hijacking or downloaded artwork in the implementation.
+[Codrops' particle/depth experiments](https://tympanus.net/codrops/tag/generative-art/) informed separate focal planes, blur and drift. [Motion's scroll guide](https://motion.dev/docs/react-scroll-animations) informed the separation of viewport entrances from native-scroll parallax. Geometry and textures here are authored with Cojeev's existing shapes, tokens and component APIs. There is no scroll hijacking or downloaded artwork in the implementation.
 
 ## Verification
 

@@ -16,10 +16,10 @@ for (const source of ["skiper", "remocn", "canvas", "reactbits"]) {
     entries.push({
       id, source, sourceId: item.id, sourceName: item.sourceName, sourceCategory: item.category,
       sourcePage: item.pageUrl, inspection: item.inspectionStatus,
-      candidateOverlap: item.sahajivCandidate ?? item.existingOverlapCandidates ?? item.overlapCandidates ?? [],
+      candidateOverlap: item.cojeevCandidate ?? item.existingOverlapCandidates ?? item.overlapCandidates ?? [],
       adaptation: saved.get(id)?.adaptation ?? {
         status: "pending", targets: [], coreBehavior: "", originalDesign: "",
-        missing: ["Individual behavior review", "SahaJiv implementation or overlap improvement", "Source comparison", "Runtime and visual checks"],
+        missing: ["Individual behavior review", "Cojeev implementation or overlap improvement", "Source comparison", "Runtime and visual checks"],
         evidence: [],
       },
     });

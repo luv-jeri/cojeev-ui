@@ -5,7 +5,7 @@ import { chromium, webkit } from "playwright";
 const rows = JSON.parse(await fs.readFile("data/reference-effects.json", "utf8"));
 const selected = process.env.ONLY?.split(",");
 const entries = rows.filter(row => !selected || selected.includes(row.id));
-const base = process.env.BASE_URL ?? "http://127.0.0.1:4320/sahajiv-ui";
+const base = process.env.BASE_URL ?? "http://127.0.0.1:4320/cojeev-ui";
 const output = process.env.OUTPUT_DIR ?? "output/playwright/reference-effects";
 await fs.mkdir(output, { recursive: true });
 const browser = await (process.env.WEBKIT ? webkit : chromium).launch({ headless: true });

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { ribbonCopies, ribbonPeriod, advanceRibbonPhase, moveRibbonPhase, textRibbonPath } from "../registry/sahajiv/lib/text-ribbon-path";
+import { ribbonCopies, ribbonPeriod, advanceRibbonPhase, moveRibbonPhase, textRibbonPath } from "../registry/cojeev/lib/text-ribbon-path";
 
 test("a repeated ribbon has enough text across the complete negative-offset cycle", () => {
   for (const path of [608,940,1300]) for(const phrase of [12,250,2000]) {

@@ -7,23 +7,23 @@
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/marker.tsx",
+      "path": "registry/cojeev/ui/marker.tsx",
       "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst MarkerVariants=cva(\"v-marker [display:flex] [align-items:center] [gap:var(--s-3)] [font-size:var(--fs-meta)] [color:var(--muted-foreground)] [margin:var(--s-2)_0]\",{variants:{variant:{\"default\":\"\",\"ok\":\"-ok [color:var(--v-olive-ink)]\",\"danger\":\"-danger [color:var(--v-danger-ink)]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type MarkerProps=React.ComponentProps<\"div\"> & VariantProps<typeof MarkerVariants> & { as?:React.ElementType }\nexport function Marker({as:Tag=\"div\",className,variant,size,...props}:MarkerProps){return <Tag data-slot=\"marker\" data-part=\"root\" className={cn(MarkerVariants({variant,size}),className)} {...props}/>}\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/marker.css",
-      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-marker[data-slot].-ok{color:var(--status-ok-ink)}\n.v-marker[data-slot].-danger{color:var(--v-danger-ink)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-marker[data-slot]::before{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]::after{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]{box-shadow:none;border:0}\n\n}\n",
+      "path": "registry/cojeev/styles/marker.css",
+      "content": "@layer cojeev-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-marker[data-slot].-ok{color:var(--status-ok-ink)}\n.v-marker[data-slot].-danger{color:var(--v-danger-ink)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-marker[data-slot]::before{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]::after{content:\"\";flex:1;border-top:1px dashed var(--v-border)}\n.v-marker[data-slot]{box-shadow:none;border:0}\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/marker.css"
+      "target": "styles/cojeev/marker.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/marker.css\"": {}
+    "@import \"@/styles/cojeev/marker.css\"": {}
   },
   "meta": {
     "source": {

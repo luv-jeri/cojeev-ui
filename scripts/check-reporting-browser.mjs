@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 
-const base = process.env.REPORTING_BROWSER_URL ?? "http://localhost:3100/sahajiv-ui";
+const base = process.env.REPORTING_BROWSER_URL ?? "http://localhost:3100/cojeev-ui";
 const api = process.env.REPORTING_BROWSER_API ?? "http://localhost:8787";
 const output = process.env.REPORTING_BROWSER_OUTPUT ?? ".work/reporting/browser";
 const config = await fetch(`${api}/v1/config`).then(response => response.json());
@@ -81,7 +81,7 @@ try {
   await page.getByRole("button", { name: "Pin elements", exact: true }).click();
   const pinDialog = page.getByRole("dialog", { name: "Pin elements", exact: true }); await pinDialog.waitFor();
   const beforePin = page.url();
-  await page.getByRole("link", { name: "SahaJiv UI", exact: true }).click(); assert.equal(page.url(), beforePin, "Picker intercepts link navigation");
+  await page.getByRole("link", { name: "Cojeev UI", exact: true }).click(); assert.equal(page.url(), beforePin, "Picker intercepts link navigation");
   await pinDialog.focus(); await page.keyboard.press("ArrowRight"); await page.keyboard.press("Enter");
   await page.keyboard.press("Escape"); await panel(page).waitFor();
   assert.ok(await page.locator(".report-pins li").count() >= 1);

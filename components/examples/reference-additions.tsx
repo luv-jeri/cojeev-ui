@@ -1,8 +1,8 @@
 "use client";
 import * as React from "react";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { PortalField } from "@/registry/sahajiv/ui/portal-field";
-import { ArticleHeadings } from "@/registry/sahajiv/ui/article-headings";
+import { Button } from "@/registry/cojeev/ui/button";
+import { PortalField } from "@/registry/cojeev/ui/portal-field";
+import { ArticleHeadings } from "@/registry/cojeev/ui/article-headings";
 type Options={variant?:string;size?:string};
 const safeSize=(size?:string)=>size==="sm"||size==="lg"?size:"default";
 export function PortalFieldExample({variant,size}:Options){

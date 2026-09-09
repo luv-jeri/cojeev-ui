@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { PageScrollBar } from "@/registry/sahajiv/ui/scroll-area";
-import { AppearanceProvider } from "@/registry/sahajiv/ui/appearance";
+import { PageScrollBar } from "@/registry/cojeev/ui/scroll-area";
+import { AppearanceProvider } from "@/registry/cojeev/ui/appearance";
 import { ReportingWidget } from "@/components/reporting/reporting-widget";
 import { catalog } from "@/lib/catalog";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "SahaJiv UI",
-  description: "SahaJiv React components and shadcn registry.",
+  title: "Cojeev UI",
+  description: "Cojeev React components and shadcn registry.",
 };
 export default function RootLayout({
   children,

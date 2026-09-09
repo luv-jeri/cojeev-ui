@@ -4,8 +4,8 @@ General `Icon` instances now respond to their nearest native button, link, summa
 
 ## Frozen files and API
 
-- [icon.tsx](registry/sahajiv/ui/icon.tsx): `IconProps.feedback?: boolean`, default `true`. Existing SVG props, native SVG refs, consumer event handlers, `name`, `size`, and `draw` remain supported. `feedback={false}` installs no shared feedback listeners or observer.
-- [animated-icon.tsx](registry/sahajiv/ui/animated-icon.tsx): `AnimatedIcon` and `StateChevron` explicitly disable inner `Icon` feedback, keeping a single animation owner. `AnimatedIcon` observes disabled/inert/hidden owner and ancestor changes; explicit `active` cannot override an unavailable control.
+- [icon.tsx](registry/cojeev/ui/icon.tsx): `IconProps.feedback?: boolean`, default `true`. Existing SVG props, native SVG refs, consumer event handlers, `name`, `size`, and `draw` remain supported. `feedback={false}` installs no shared feedback listeners or observer.
+- [animated-icon.tsx](registry/cojeev/ui/animated-icon.tsx): `AnimatedIcon` and `StateChevron` explicitly disable inner `Icon` feedback, keeping a single animation owner. `AnimatedIcon` observes disabled/inert/hidden owner and ancestor changes; explicit `active` cannot override an unavailable control.
 - [check-icon-feedback.mjs](scripts/check-icon-feedback.mjs): runnable source-consumer browser fixture and assertions.
 - [item-adornment.test.ts](tests/item-adornment.test.ts): all-name SVG server-rendering proof, including the final AgentChat glyphs.
 
@@ -52,9 +52,9 @@ rtk proxy node scripts/check-icon-feedback.mjs
 rtk proxy env ENGINE=webkit OUTPUT_DIR=output/playwright/icon-feedback-webkit node scripts/check-icon-feedback.mjs
 rtk proxy node --import tsx --test tests/item-adornment.test.ts
 rtk proxy npx tsc --noEmit
-rtk proxy npx eslint registry/sahajiv/ui/icon.tsx registry/sahajiv/ui/animated-icon.tsx
+rtk proxy npx eslint registry/cojeev/ui/icon.tsx registry/cojeev/ui/animated-icon.tsx
 ```
 
-`BASE_URL` can override the default `http://127.0.0.1:4320/sahajiv-ui`; `OUTPUT_DIR` changes the browser artifact folder. The fixture performs local interactions only.
+`BASE_URL` can override the default `http://127.0.0.1:4320/cojeev-ui`; `OUTPUT_DIR` changes the browser artifact folder. The fixture performs local interactions only.
 
 Root integration also migrated AgentChat’s remaining general glyphs to the shared Icon component, preserving their sizes and filled stop mark. The pack includes `arrow-up`, `paperclip`, `square`, `shield-check` and `corner-down-left` for that composition; its final count is 136.
