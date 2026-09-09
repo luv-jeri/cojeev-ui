@@ -1,0 +1,47 @@
+{
+  "recordedAt": "2026-09-08T12:22:19.530994+00:00",
+  "status": "READY_FOR_LOCAL_OWNER_REVIEW",
+  "catalog": {
+    "base": 66,
+    "additions": 34,
+    "uiEntries": 100,
+    "registryItems": 101
+  },
+  "preview": "http://127.0.0.1:4320/cojeev-ui/",
+  "checks": {
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "focusedUnitTests": {
+      "pass": 24,
+      "fail": 0
+    },
+    "copiedExamples": {
+      "defaults": 18,
+      "snippets": 130,
+      "diagnostics": 0
+    },
+    "appearanceWebkitFinal": "PASS"
+  },
+  "evidence": [
+    "REVIEW-PASS-REPORT.md",
+    "REVIEW-ASSEMBLY.md",
+    "REVIEW-MOTION-PROGRESS.md",
+    "REVIEW-SELECTORS-LISTS.md",
+    "output/playwright/review-appearance-final/results.json",
+    "output/playwright/review-copied-examples-final.json"
+  ],
+  "release": {
+    "status": "HELD_FOR_OWNER_GREEN_FLAG",
+    "productionBuildThisPass": false,
+    "registryPayloadBuildThisPass": false,
+    "publishedNewComponents": false,
+    "readmeOnlyCommit": "63cfb3e",
+    "cancelledRun": 34219556763
+  },
+  "limits": [
+    "Focused changed-feature checks, not a new 100-entry visual audit.",
+    "Chromium and WebKit emulation; no physical iPhone test.",
+    "No fresh production or install validation.",
+    "No frame-rate benchmark."
+  ]
+}

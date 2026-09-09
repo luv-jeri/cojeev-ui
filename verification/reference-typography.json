@@ -1,0 +1,468 @@
+[
+  {
+    "id": "typography-vortex",
+    "name": "Typography Vortex",
+    "category": "Typography",
+    "variants": [
+      "orbit",
+      "focused"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Nested rotating glyph rings with a local dissolution lens and a finite suction pulse.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://threeui.com/text-animation/typography-vortex",
+    "landing": "Optional playground backdrop; skip the main reading flow.",
+    "notes": "SVG glyph rings retain the vortex and pointer lens; dust is bounded and suction recenters the rings rather than reproducing the upstream bitmap renderer.",
+    "observation": "Concentric bitmap rings, pointer dissolution and click suction in ThreeUI TypographyVortexRenderer.",
+    "status": "new"
+  },
+  {
+    "id": "text-loop",
+    "name": "Text Loop",
+    "category": "Typography",
+    "variants": [
+      "loop",
+      "wave",
+      "figure-eight"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Measured text travels around a ribbon path.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/text-loop",
+    "landing": "Use as a restrained brand band below the hero; the main headline can stay static.",
+    "notes": "Already implemented by TextRibbon shapes and measurement; no new alias component.",
+    "observation": "React Bits TextLoop measures an SVG path and repeats text over it.",
+    "status": "reused",
+    "existingId": "text-ribbon"
+  },
+  {
+    "id": "particle-text",
+    "name": "Particle Text",
+    "category": "Typography",
+    "variants": [
+      "gather",
+      "fine"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/particle-text",
+    "landing": "Optional playground or short brand introduction; skip simultaneous hero loops.",
+    "notes": "Canvas sampling is capped by stage size and sample step. DOM text stays in the accessibility tree; fallback is visible during stillness.",
+    "observation": "React Bits ParticleText samples canvas alpha, gathers points and adds local pointer repulsion.",
+    "status": "new"
+  },
+  {
+    "id": "warp-text",
+    "name": "Warp Text",
+    "category": "Typography",
+    "variants": [
+      "liquid",
+      "gentle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Rendered text deforms through a slowly changing noise displacement.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/warp-text",
+    "landing": "Small expressive interlude; avoid navigation, instructions and primary value proposition.",
+    "notes": "Uses SVG fractal-noise displacement over actual wrapping DOM text rather than WebGL FBM; no exact shader-fidelity claim.",
+    "observation": "React Bits WarpText warps a raster text texture using fragment-shader FBM.",
+    "status": "new"
+  },
+  {
+    "id": "split-text",
+    "name": "Split Text",
+    "category": "Typography",
+    "variants": [
+      "grapheme",
+      "words",
+      "line"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Grapheme-safe, staggered text entrances with readable still content.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/split-text",
+    "landing": "Recommended hero headline effect, once per visit.",
+    "notes": "Existing TextReveal already supplies grapheme, word and measured line splits and multiple reveal treatments.",
+    "observation": "React Bits SplitText uses GSAP split units and scroll-triggered entrance.",
+    "status": "reused",
+    "existingId": "text-reveal"
+  },
+  {
+    "id": "circular-text",
+    "name": "Circular Text",
+    "category": "Typography",
+    "variants": [
+      "circle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Circular text with hover pause or speed response.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/circular-text",
+    "landing": "Small secondary brand seal; skip if a Text Loop band is already used.",
+    "notes": "TextRibbon circle provides the same readable circular travel and hover controls. It travels text on a measured circle rather than manually placing equal-width glyphs.",
+    "observation": "React Bits CircularText positions glyphs in a circle and animates rotation with hover speed changes.",
+    "status": "reused",
+    "existingId": "text-ribbon"
+  },
+  {
+    "id": "text-pressure",
+    "name": "Text Pressure",
+    "category": "Typography",
+    "variants": [
+      "pressure"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Local pointer proximity expands width and weight through Bricolage variable-font axes.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/text-pressure",
+    "landing": "Optional playground specimen; keep essential headings independently readable.",
+    "notes": "Consolidated into VariableProximity pressure variant. Uses only shipped Bricolage axes wght 200\u2013800 and wdth 75\u2013100; no Roboto import or simulated italic.",
+    "observation": "React Bits TextPressure interpolates per-letter wght, wdth and optional ital axes from pointer distance.",
+    "status": "variant",
+    "existingId": "variable-proximity"
+  },
+  {
+    "id": "curved-loop",
+    "name": "Curved Loop",
+    "category": "Typography",
+    "variants": [
+      "arch"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Draggable curved typography with direction reversal and keyboard movement.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/curved-loop",
+    "landing": "Optional component-discovery separator, at most one text marquee on a page.",
+    "notes": "Existing TextRibbon arch, curvature, drag inertia, arrows and Home already cover the mechanism.",
+    "observation": "React Bits CurvedLoop uses measured textPath offsets and drag velocity.",
+    "status": "reused",
+    "existingId": "text-ribbon"
+  },
+  {
+    "id": "falling-text",
+    "name": "Falling Text",
+    "category": "Typography",
+    "variants": [
+      "scatter",
+      "gentle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Measured word rectangles fall, collide and settle inside a bounded stage.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/falling-text",
+    "landing": "Playground only; skip product narrative because motion disrupts reading.",
+    "notes": "Original bounded rectangle physics, at most 80 words, finite 4.2-second settling. No word dragging or full rigid-body rotational solver.",
+    "observation": "React Bits FallingText creates Matter.js word bodies, walls, gravity and pointer constraints.",
+    "status": "new"
+  },
+  {
+    "id": "scroll-reveal",
+    "name": "Scroll Reveal",
+    "category": "Typography",
+    "variants": [
+      "scroll",
+      "controlled"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Native scroll progress resolves word opacity and blur while leveling the phrase.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/scroll-reveal",
+    "landing": "Recommended narrative reveal below the hero, with conservative blur.",
+    "notes": "Native scroll listener scoped to the selected target, or controlled 0\u20131 progress. Existing TextReveal is a one-shot entrance and does not cover this mechanism.",
+    "observation": "React Bits ScrollReveal scrubs rotation, opacity and blur using GSAP ScrollTrigger.",
+    "status": "new"
+  },
+  {
+    "id": "variable-proximity",
+    "name": "Variable Proximity",
+    "category": "Typography",
+    "variants": [
+      "weight",
+      "pressure"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Pointer distance changes the real variable-font weight of individual graphemes.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/variable-proximity",
+    "landing": "Use on an optional large specimen; not a required interaction in the landing narrative.",
+    "notes": "Local event-driven interpolation of supported Bricolage wght and wdth axes; does not accept arbitrary fonts or axis strings.",
+    "observation": "React Bits VariableProximity parses variable axes and interpolates them by per-letter distance.",
+    "status": "new"
+  },
+  {
+    "id": "word-stream",
+    "name": "Word Stream",
+    "category": "Typography",
+    "variants": [
+      "flow",
+      "calm"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Phrases build word by word, drift left and run out before the final phrase holds.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://remocn.dev/docs/typography/word-stream",
+    "landing": "Short optional story scene with a Replay button; not the primary long-form message.",
+    "notes": "Native finite clock with wrapping phrases. The original is a Remotion frame sequence and assumes one unwrapped video line. WordRelay alone lacks this horizontal stream mechanism.",
+    "observation": "Remocn WordStream schedules pipe-separated phrases, per-word reveals, entry drift and accelerated exit.",
+    "status": "new"
+  },
+  {
+    "id": "caret-swap",
+    "name": "Caret Swap",
+    "category": "Typography",
+    "variants": [
+      "thought",
+      "memory"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "A colored caret block consumes a phrase before typing its replacement in whole graphemes.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://remocn.dev/docs/typography/caret-swap",
+    "landing": "A single secondary before/after statement; avoid making the primary promise disappear.",
+    "notes": "Native finite clock, full measured footprint and stable accessible target. Existing WritingCaret only blinks and does not implement the phrase exchange.",
+    "observation": "Remocn CaretSwap expands right-to-left, collapses, then accelerates typing into replacement text.",
+    "status": "new"
+  },
+  {
+    "id": "zoom-words",
+    "name": "Zoom Words",
+    "category": "Typography",
+    "variants": [
+      "close",
+      "wide"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "An enlarged camera follows measured centers along a growing word line.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://remocn.dev/docs/typography/zoom-words",
+    "landing": "Optional film-like interlude or playground; skip the main headline for readability.",
+    "notes": "Measures real DOM word widths rather than estimated character widths; still mode restores the complete wrapping sentence.",
+    "observation": "Remocn ZoomWords reveals an enlarged line while the camera follows its write head.",
+    "status": "new"
+  }
+]

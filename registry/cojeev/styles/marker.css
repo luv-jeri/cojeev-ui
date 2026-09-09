@@ -1,0 +1,8 @@
+/* Orthogonal authored class modifiers remain composable with CVA axes. */
+.v-marker[data-slot].-ok{color:var(--status-ok-ink)}
+.v-marker[data-slot].-danger{color:var(--v-danger-ink)}
+
+/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */
+.v-marker[data-slot]::before{content:"";flex:1;border-top:1px dashed var(--v-border)}
+.v-marker[data-slot]::after{content:"";flex:1;border-top:1px dashed var(--v-border)}
+.v-marker[data-slot]{box-shadow:none;border:0}

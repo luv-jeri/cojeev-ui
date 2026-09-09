@@ -1,0 +1,91 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "living-link",
+  "title": "Living link",
+  "description": "A native link with a drawn ink contour, directional underline reveals, or an organic pigment wash.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/living-link.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { createMotionLane, useChoreography } from \"@/lib/cojeev-motion/choreography\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\n\nexport type LivingLinkProps = Omit<React.ComponentProps<\"a\">, \"href\"> & {\n  href: string;\n  /** Anchors have no native disabled attribute: remove href and leave an announced label. */\n  disabled?: boolean;\n  direction?: \"forward\" | \"up-right\";\n  /** Directional ink reveals or a soft pigment wash; contour preserves the original resting mark. */\n  treatment?: \"contour\" | \"underline-start\" | \"underline-end\" | \"underline-center\" | \"wash-up\" | \"wash-across\";\n  tone?: \"pink\" | \"olive\" | \"blue\" | \"yellow\";\n};\n\n/** A native link with an original ink contour. Motion never owns navigation. */\nexport function LivingLink({\n  href, disabled = false, direction = \"up-right\", treatment = \"contour\", tone = \"blue\", children, className, ref,\n  onPointerEnter, onPointerLeave, onFocus, onBlur, onClickCapture, onAuxClickCapture,\n  \"aria-disabled\": ariaDisabled, tabIndex, ...props\n}: LivingLinkProps) {\n  const host = React.useRef<HTMLAnchorElement>(null);\n  const lane = React.useRef<ReturnType<typeof createMotionLane> | null>(null);\n  const [hovered, setHovered] = React.useState(false);\n  const [focused, setFocused] = React.useState(false);\n  const [localQuiet, setLocalQuiet] = React.useState(false);\n  const { quiet, transition } = useChoreography();\n  const { enabled, inView } = useMotionVisibility(host);\n  const blocked = disabled || ariaDisabled === true || ariaDisabled === \"true\";\n  const active = !blocked && (hovered || focused);\n  const still = quiet || localQuiet || !enabled || !inView;\n  const bindRef = React.useCallback((element: HTMLAnchorElement | null) => {\n    host.current = element;\n    if (typeof ref === \"function\") return ref(element);\n    if (ref) ref.current = element;\n  }, [ref]);\n\n  React.useEffect(() => {\n    const element = host.current;\n    if (!element) return;\n    const painter = createMotionLane(0, value => element.style.setProperty(\"--link-motion\", String(Math.max(0, Math.min(1, value)))));\n    lane.current = painter;\n    return () => { painter.dispose(); lane.current = null; };\n  }, []);\n  React.useEffect(() => {\n    const element = host.current;\n    if (!element) return;\n    const update = () => setLocalQuiet(Boolean(element.closest('[data-flow=\"off\"],[data-no-glide]')));\n    const observer = new MutationObserver(update);\n    for (let ancestor: HTMLElement | null = element; ancestor; ancestor = ancestor.parentElement) {\n      observer.observe(ancestor, { attributes: true, attributeFilter: [\"data-flow\", \"data-no-glide\"] });\n    }\n    update();\n    return () => observer.disconnect();\n  }, []);\n  React.useEffect(() => {\n    if (still) lane.current?.jump(active ? 1 : 0);\n    else lane.current?.to(active ? 1 : 0, transition);\n  }, [active, still, transition]);\n\n  return <a {...props} ref={bindRef} href={blocked ? undefined : href} role={blocked ? \"link\" : props.role}\n    data-slot=\"living-link\" data-direction={direction} data-treatment={treatment} data-tone={tone} data-active={active} data-quiet={still}\n    aria-disabled={blocked || undefined} tabIndex={blocked ? -1 : tabIndex} className={cn(\"v-living-link\", className)}\n    onClickCapture={event => { if (blocked) { event.preventDefault(); event.stopPropagation(); return; } onClickCapture?.(event); }}\n    onAuxClickCapture={event => { if (blocked) { event.preventDefault(); event.stopPropagation(); return; } onAuxClickCapture?.(event); }}\n    onPointerEnter={event => { onPointerEnter?.(event); if (!event.defaultPrevented && event.pointerType !== \"touch\") setHovered(true); }}\n    onPointerLeave={event => { onPointerLeave?.(event); setHovered(false); }}\n    onFocus={event => { onFocus?.(event); if (!event.defaultPrevented) setFocused(true); }}\n    onBlur={event => { onBlur?.(event); setFocused(false); }}>\n    <span className=\"v-living-link__words\">{children}<svg className=\"v-living-link__ink\" viewBox=\"0 0 120 12\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path d=\"M2 8C22 3 37 11 58 7S94 9 118 4\" /></svg></span>\n    <span className=\"v-living-link__arrow\" aria-hidden=\"true\"><span className=\"v-living-link__arrow-window\">{[\"outgoing\", \"incoming\"].map(part => <svg key={part} data-arrow={part} viewBox=\"0 0 20 20\"><path d={direction === \"forward\" ? \"M3 10H16M11 5L16 10L11 15\" : \"M5 15L15 5M6 5H15V14\"} /></svg>)}</span></span>\n  </a>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/living-link.css",
+      "content": "@layer cojeev-states {\n.v-living-link{--link-open:var(--link-motion,0);display:inline-flex;align-items:baseline;gap:.3em;max-inline-size:100%;min-inline-size:0;position:relative;color:var(--v-text);font:inherit;font-weight:var(--fw-control);text-decoration:none;vertical-align:baseline;cursor:pointer;}\n.v-living-link:any-link{text-decoration:none;}\n.v-living-link:hover,.v-living-link:focus-visible{color:var(--v-text);}\n.v-living-link:focus-visible{outline:2px solid var(--ring);outline-offset:5px;border-radius:var(--r-sm);}\n.v-living-link__words{position:relative;min-inline-size:0;padding-block-end:.17em;overflow-wrap:anywhere;}\n.v-living-link__ink{position:absolute;pointer-events:none;inset-inline:0;inset-block-end:-.12em;inline-size:100%;block-size:.42em;overflow:visible;clip-path:inset(-.1em calc(22% * (1 - var(--link-open,0))) -.1em 0);}\n.v-living-link__ink path{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;vector-effect:non-scaling-stroke;opacity:calc(.55 + .45 * var(--link-open,0));}\n.v-living-link__arrow{display:inline-flex;flex:none;inline-size:.95em;block-size:.95em;align-self:baseline;translate:calc(var(--link-open,0) * .14em) calc(var(--link-open,0) * -.14em);}\n.v-living-link__arrow svg{inline-size:100%;block-size:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}\n.v-living-link:where([data-direction=\"forward\"]) .v-living-link__arrow{translate:calc(var(--link-open,0) * .2em) 0;}\n.v-living-link:where(:dir(rtl)[data-direction=\"forward\"]) .v-living-link__arrow{scale:-1 1;translate:calc(var(--link-open,0) * -.2em) 0;}\n.v-living-link__arrow-window{display:grid;inline-size:100%;block-size:100%;}\n.v-living-link__arrow-window svg{grid-area:1/1;}\n.v-living-link__arrow-window [data-arrow=\"incoming\"]{visibility:hidden;}\n.v-living-link:where(:not([data-treatment=\"contour\"])) .v-living-link__arrow{translate:0 0;}\n.v-living-link:where(:not([data-treatment=\"contour\"])) .v-living-link__arrow-window{overflow:hidden;}\n.v-living-link:where(:not([data-treatment=\"contour\"])) .v-living-link__arrow-window [data-arrow=\"outgoing\"]{translate:calc(var(--link-open,0) * 125%) 0;opacity:calc(1 - var(--link-open,0));}\n.v-living-link:where(:not([data-treatment=\"contour\"])) .v-living-link__arrow-window [data-arrow=\"incoming\"]{visibility:visible;translate:calc((var(--link-open,0) - 1) * 125%) 0;opacity:var(--link-open,0);}\n.v-living-link:where(:not([data-treatment=\"contour\"])[data-direction=\"up-right\"]) .v-living-link__arrow-window [data-arrow=\"outgoing\"]{translate:calc(var(--link-open,0) * 125%) calc(var(--link-open,0) * -125%);}\n.v-living-link:where(:not([data-treatment=\"contour\"])[data-direction=\"up-right\"]) .v-living-link__arrow-window [data-arrow=\"incoming\"]{translate:calc((var(--link-open,0) - 1) * 125%) calc((1 - var(--link-open,0)) * 125%);}\n.v-living-link[data-treatment^=\"underline\"] .v-living-link__ink path{opacity:1;}\n.v-living-link[data-treatment=\"underline-start\"] .v-living-link__ink,\n.v-living-link:dir(rtl)[data-treatment=\"underline-end\"] .v-living-link__ink{clip-path:inset(-.1em calc(100% * (1 - var(--link-open,0))) -.1em 0);}\n.v-living-link[data-treatment=\"underline-end\"] .v-living-link__ink,\n.v-living-link:dir(rtl)[data-treatment=\"underline-start\"] .v-living-link__ink{clip-path:inset(-.1em 0 -.1em calc(100% * (1 - var(--link-open,0))));}\n.v-living-link[data-treatment=\"underline-center\"] .v-living-link__ink{clip-path:inset(-.1em calc(50% * (1 - var(--link-open,0))) -.1em);}\n.v-living-link[data-treatment^=\"wash\"]{--link-pigment:var(--v-blue);}\n.v-living-link[data-tone=\"pink\"]{--link-pigment:var(--v-pink);}\n.v-living-link[data-tone=\"olive\"]{--link-pigment:var(--v-olive);}\n.v-living-link[data-tone=\"yellow\"]{--link-pigment:var(--v-yellow);}\n.v-living-link[data-treatment^=\"wash\"] .v-living-link__words{isolation:isolate;}\n.v-living-link[data-treatment^=\"wash\"] .v-living-link__words::before{content:\"\";position:absolute;z-index:-1;pointer-events:none;inset:.04em -.2em .02em;border-radius:38% 62% 43% 57%/20% 22% 28% 23%;background:color-mix(in oklab,var(--link-pigment) 25%,transparent);}\n.v-living-link[data-treatment=\"wash-up\"] .v-living-link__words::before{transform-origin:50% 100%;scale:1 var(--link-open,0);}\n.v-living-link[data-treatment=\"wash-across\"] .v-living-link__words::before{transform-origin:0 50%;scale:var(--link-open,0) 1;}\n.v-living-link:dir(rtl)[data-treatment=\"wash-across\"] .v-living-link__words::before{transform-origin:100% 50%;}\n.v-living-link[data-treatment^=\"wash\"] .v-living-link__ink{opacity:.45;}\n.v-living-link[aria-disabled=\"true\"]{color:var(--v-text-3);cursor:not-allowed;}\n.v-living-link[aria-disabled=\"true\"] .v-living-link__ink{opacity:.45;}\n.v-living-link[aria-disabled=\"true\"] .v-living-link__words::before{display:none;}\n.v-living-link[data-quiet=\"true\"] .v-living-link__arrow{translate:0 0;}\n.v-living-link[data-quiet=\"true\"] .v-living-link__arrow-window [data-arrow=\"outgoing\"]{translate:0 0;opacity:1;}\n.v-living-link[data-quiet=\"true\"] .v-living-link__arrow-window [data-arrow=\"incoming\"]{visibility:hidden;}\n/* Immediate paint wins even before React receives a changed preference. */\n:where([data-flow=\"off\"],[data-no-glide]) .v-living-link,.v-living-link:where([data-flow=\"off\"],[data-no-glide]){--link-open:0;}\n:where([data-flow=\"off\"],[data-no-glide]) .v-living-link[data-active=\"true\"],.v-living-link[data-active=\"true\"]:where([data-flow=\"off\"],[data-no-glide]){--link-open:1;}\n:where([data-flow=\"off\"],[data-no-glide]) .v-living-link__arrow,.v-living-link:where([data-flow=\"off\"],[data-no-glide]) .v-living-link__arrow{--link-open:0;translate:0 0;}\n[data-flow=\"off\"] .v-living-link .v-living-link__arrow{translate:0 0;}\n[data-flow=\"off\"] .v-living-link__arrow-window [data-arrow=\"outgoing\"]{translate:0 0;opacity:1;}\n[data-flow=\"off\"] .v-living-link__arrow-window [data-arrow=\"incoming\"]{visibility:hidden;}\n@media(prefers-reduced-motion:reduce){.v-living-link__arrow{translate:0 0;}.v-living-link__ink{clip-path:none;}.v-living-link__ink path{opacity:1;}}\n@media(prefers-reduced-motion:reduce){.v-living-link__arrow-window [data-arrow=\"outgoing\"]{translate:0 0;opacity:1;}.v-living-link__arrow-window [data-arrow=\"incoming\"]{visibility:hidden;}}\n@media(forced-colors:active){.v-living-link{color:LinkText;}.v-living-link[aria-disabled=\"true\"]{color:GrayText;}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/living-link.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/living-link.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Living link",
+      "variants": [
+        "forward",
+        "up-right",
+        "underline-start",
+        "underline-end",
+        "underline-center",
+        "wash-up",
+        "wash-across"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "hover",
+        "focus",
+        "disabled",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "LivingLinkProps",
+        "props": [
+          {
+            "name": "href",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": "Anchors have no native disabled attribute: remove href and leave an announced label."
+          },
+          {
+            "name": "direction",
+            "type": "\"forward\" | \"up-right\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "treatment",
+            "type": "\"contour\" | \"underline-start\" | \"underline-end\" | \"underline-center\" | \"wash-up\" | \"wash-across\"",
+            "required": false,
+            "description": "Directional ink reveals or a soft pigment wash; contour preserves the original resting mark."
+          },
+          {
+            "name": "tone",
+            "type": "\"pink\" | \"olive\" | \"blue\" | \"yellow\"",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Navigation",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

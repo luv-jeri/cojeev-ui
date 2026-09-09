@@ -1,14 +1,14 @@
 # Installation
 
-SahaJiv UI is distributed through a public shadcn registry. See [RELEASE-REPORT.md](RELEASE-REPORT.md) for the verified release and its limits.
+Cojeev UI is distributed through a public shadcn registry. See [RELEASE-0.2.0.md](RELEASE-0.2.0.md) for current verification and publication status.
 
-SahaJiv UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme, fonts and shared motion code; it does not require the private SahaJiv application.
+Cojeev UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme, fonts and shared motion code; it does not require the private Cojeev application.
 
 For a Vite project with Tailwind and the alias configured, initialize shadcn and add a component:
 
 ```sh
 npx shadcn@latest init
-npx shadcn@latest add https://luv-jeri.github.io/sahajiv-ui/r/button.json
+npx shadcn@latest add https://luv-jeri.github.io/cojeev-ui/r/button.json
 ```
 
 ```tsx
@@ -25,19 +25,19 @@ The added stylesheet includes both light and dark token values. Set the mode on 
 document.documentElement.dataset.mode = "dark"; // or "light"
 ```
 
-The foundation also merges its semantic colors after an initialized shadcn starter theme, so direct component installs use the same canvas and text colors as these docs. Body and display typography use the bundled fonts. For explicit Tailwind font utilities, use `font-sahajiv-text` and `font-sahajiv-display`; an existing app's `font-sans` remains its own choice.
+The foundation also merges its semantic colors after an initialized shadcn starter theme, so direct component installs use the same canvas and text colors as these docs. Body and display typography use the bundled fonts. For explicit Tailwind font utilities, use `font-cojeev-text` and `font-cojeev-display`; an existing app's `font-sans` remains its own choice.
 
 For namespace commands, add this entry to your application's `components.json`:
 
 ```json
 {
   "registries": {
-    "@sahajiv": "https://luv-jeri.github.io/sahajiv-ui/r/{name}.json"
+    "@cojeev": "https://luv-jeri.github.io/cojeev-ui/r/{name}.json"
   }
 }
 ```
 
-You can then use `npx shadcn@latest add @sahajiv/button`. The namespace entry is an explicit consumer configuration step; installing a component URL does not automatically add it.
+You can then use `npx shadcn@latest add @cojeev/button`. The namespace entry is an explicit consumer configuration step; installing a component URL does not automatically add it.
 
 ## Reproduce the stranger installation
 
@@ -50,7 +50,7 @@ node scripts/verify-install.mjs
 To test selected components against a locally served registry:
 
 ```sh
-SAHAJIV_REGISTRY_URL=http://127.0.0.1:4318 npm run registry:build
+COJEEV_REGISTRY_URL=http://127.0.0.1:4318 npm run registry:build
 python3 -m http.server 4318 --bind 127.0.0.1 --directory public
 # In another terminal:
 node scripts/verify-install.mjs --url=http://127.0.0.1:4318 --components=button,badge,card
@@ -61,7 +61,7 @@ The verification app is separate from this repository. It receives component fil
 To verify the foundation alone in another fresh app, run:
 
 ```sh
-node scripts/verify-install.mjs --components=sahajiv
+node scripts/verify-install.mjs --components=cojeev
 ```
 
 This renders only the base typography and canvas. Its separate timestamped receipt is written under `artifacts/stranger/`.
@@ -72,4 +72,25 @@ This renders only the base typography and canvas. Its separate timestamped recei
 node scripts/audit-registry-consumer.mjs
 ```
 
-This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 77 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See the release report for the exact tested scope.
+This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 124 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See [the refinement report](REFINEMENT-REPORT.md) for the current tested scope.
+
+To retest a successfully installed consumer after changing library source, use `node scripts/audit-registry-consumer.mjs <existing-audit-directory> --resume --refresh`. This preserves the original receipt, regenerates the registry snapshot and updates the consumer through the real shadcn CLI. `--resume` alone reruns build/runtime checks against the original installed snapshot.
+
+## Conditional content and motion
+
+Install `presence` when your application adds or removes components conditionally. Keep `MotionPresence` mounted outside the conditional; `asChild` preserves the native component and its semantics:
+
+```tsx
+import { MotionPresence, MotionSurface } from "@/components/ui/presence";
+import { Card, CardTitle } from "@/components/ui/card";
+
+<MotionPresence>
+  {visible && (
+    <MotionSurface key="result" asChild preset="rise">
+      <Card><CardTitle>Your result is ready</CardTitle></Card>
+    </MotionSurface>
+  )}
+</MotionPresence>
+```
+
+The library retains its own dynamic panels and rows. Caller-owned conditionals need the boundary above. Exiting interactive content becomes inert and hidden from accessibility APIs. Global Off and system reduced motion settle immediately. Command and Combobox preserve cmdk's immediate semantic filtering and animate their results surface; filtered options are not kept as live keyboard targets during an exit.

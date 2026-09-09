@@ -1,0 +1,13 @@
+.v-sculpture-orbit{display:grid;gap:16px;min-width:0;width:100%;color:var(--v-text)}
+.v-sculpture-orbit-view{position:relative;min-width:0;overflow:hidden;touch-action:pan-y;cursor:grab;border-radius:var(--r-card,20px);outline-offset:4px}
+.v-sculpture-orbit-view:focus-visible{outline:2px solid var(--ring)}
+.v-sculpture-orbit-view[data-dragging]{cursor:grabbing}
+.v-sculpture-orbit[data-disabled] .v-sculpture-orbit-view{cursor:default}
+.v-sculpture-orbit-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 20px;min-width:0}
+.v-sculpture-orbit-step{display:flex;gap:4px;align-items:center}
+.v-sculpture-orbit-step>[data-slot="button"]{width:40px;min-width:40px;height:40px;padding:0}
+.v-sculpture-orbit-zoom{display:flex;align-items:center;gap:12px;min-width:0}
+.v-sculpture-orbit-zoom>[data-slot="slider"]{width:100px;min-width:70px}
+.v-sculpture-orbit-zoom>[data-slot="slider-output"]{min-width:4ch}
+.v-sculpture-orbit-help{max-width:58ch;margin:0 auto;text-align:center;line-height:1.5;color:var(--v-text-2)}
+@media(max-width:440px){.v-sculpture-orbit-tools{gap:12px}.v-sculpture-orbit-help{max-width:32ch}.v-sculpture-orbit-zoom{gap:8px}}

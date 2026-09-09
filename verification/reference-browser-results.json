@@ -1,0 +1,1293 @@
+[
+  {
+    "reference": "typography-vortex",
+    "component": "typography-vortex",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-vortex/results.json"
+  },
+  {
+    "reference": "typography-vortex",
+    "component": "typography-vortex",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "text-loop",
+    "component": "text-ribbon",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "text-loop",
+    "component": "text-ribbon",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "particle-text",
+    "component": "particle-text",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-reviewed/results.json"
+  },
+  {
+    "reference": "particle-text",
+    "component": "particle-text",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-reviewed/results.json"
+  },
+  {
+    "reference": "warp-text",
+    "component": "warp-text",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "warp-text",
+    "component": "warp-text",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "split-text",
+    "component": "text-reveal",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "split-text",
+    "component": "text-reveal",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "circular-text",
+    "component": "text-ribbon",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "circular-text",
+    "component": "text-ribbon",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "text-pressure",
+    "component": "variable-proximity",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "text-pressure",
+    "component": "variable-proximity",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "curved-loop",
+    "component": "text-ribbon",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "curved-loop",
+    "component": "text-ribbon",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "falling-text",
+    "component": "falling-text",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "falling-text",
+    "component": "falling-text",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "scroll-reveal",
+    "component": "scroll-reveal",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "scroll-reveal",
+    "component": "scroll-reveal",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "variable-proximity",
+    "component": "variable-proximity",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "variable-proximity",
+    "component": "variable-proximity",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "word-stream",
+    "component": "word-stream",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "word-stream",
+    "component": "word-stream",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "caret-swap",
+    "component": "caret-swap",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "caret-swap",
+    "component": "caret-swap",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "zoom-words",
+    "component": "zoom-words",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-typography/results.json"
+  },
+  {
+    "reference": "zoom-words",
+    "component": "zoom-words",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "scroll-expand",
+    "component": "scroll-expand",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "controlled expansion",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "scroll-expand",
+    "component": "scroll-expand",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "controlled expansion",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "ripple-distortion",
+    "component": "ripple-distortion",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-reviewed/results.json"
+  },
+  {
+    "reference": "ripple-distortion",
+    "component": "ripple-distortion",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-reviewed/results.json"
+  },
+  {
+    "reference": "elastic-mesh",
+    "component": "elastic-mesh",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "mesh deformation",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "elastic-mesh",
+    "component": "elastic-mesh",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "swarm-cursor",
+    "component": "swarm-cursor",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "swarm-cursor",
+    "component": "swarm-cursor",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "pixel-swap",
+    "component": "pixel-swap",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "tiled transition",
+      "outgoing content inert",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-reviewed/results.json"
+  },
+  {
+    "reference": "pixel-swap",
+    "component": "pixel-swap",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "tiled transition",
+      "outgoing content inert",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-reviewed/results.json"
+  },
+  {
+    "reference": "orbit-images",
+    "component": "orbit-images",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "orbit-images",
+    "component": "orbit-images",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "target-cursor",
+    "component": "target-cursor",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard target tracking",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "target-cursor",
+    "component": "target-cursor",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard target tracking",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "magic-rings",
+    "component": "magic-rings",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "magic-rings",
+    "component": "magic-rings",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "ghost-cursor",
+    "component": "ghost-cursor",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "ghost-cursor",
+    "component": "ghost-cursor",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "click-spark",
+    "component": "click-spark",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard activation",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "click-spark",
+    "component": "click-spark",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard activation",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-click/results.json"
+  },
+  {
+    "reference": "strands",
+    "component": "strands",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "strands",
+    "component": "strands",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "image-trail",
+    "component": "image-trail",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "image-trail",
+    "component": "image-trail",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects/results.json"
+  },
+  {
+    "reference": "meta-balls",
+    "component": "meta-balls",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "meta-balls",
+    "component": "meta-balls",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "visible paint changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "infinite-spiral",
+    "component": "infinite-spiral",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "pointer image selection",
+      "keyboard next image",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "infinite-spiral",
+    "component": "infinite-spiral",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "pointer image selection",
+      "keyboard next image",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "accordion-gallery",
+    "component": "accordion-gallery",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "pointer panel selection",
+      "keyboard selection and visible story",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "accordion-gallery",
+    "component": "accordion-gallery",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "pointer panel selection",
+      "keyboard selection and visible story",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "option-wheel",
+    "component": "option-wheel",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "listbox keyboard selection",
+      "pointer wraparound selection",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-wheel/results.json"
+  },
+  {
+    "reference": "option-wheel",
+    "component": "option-wheel",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "listbox keyboard selection",
+      "pointer wraparound selection",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-wheel/results.json"
+  },
+  {
+    "reference": "grain-dissolve",
+    "component": "grain-dissolve",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard scene transition",
+      "interrupted reversal",
+      "inactive content inert",
+      "still mode settles target",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "grain-dissolve",
+    "component": "grain-dissolve",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard scene transition",
+      "interrupted reversal",
+      "inactive content inert",
+      "still mode settles target",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "wave-wipe",
+    "component": "wave-wipe",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard scene transition",
+      "interrupted reversal",
+      "inactive content inert",
+      "still mode settles target",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "wave-wipe",
+    "component": "wave-wipe",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard scene transition",
+      "interrupted reversal",
+      "inactive content inert",
+      "still mode settles target",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "dither-dissolve",
+    "component": "dither-dissolve",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard scene transition",
+      "interrupted reversal",
+      "inactive content inert",
+      "still mode settles target",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "dither-dissolve",
+    "component": "dither-dissolve",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard scene transition",
+      "interrupted reversal",
+      "inactive content inert",
+      "still mode settles target",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-galleries/results.json"
+  },
+  {
+    "reference": "portal-field",
+    "component": "portal-field",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "organic WebGL halo changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-last/results.json"
+  },
+  {
+    "reference": "portal-field",
+    "component": "portal-field",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "organic WebGL halo changes",
+      "keyboard pause stops paint",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-last/results.json"
+  },
+  {
+    "reference": "article-headings",
+    "component": "article-headings",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "finite heading decode",
+      "canonical accessible heading",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-additions/results.json"
+  },
+  {
+    "reference": "article-headings",
+    "component": "article-headings",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "finite heading decode",
+      "canonical accessible heading",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-additions/results.json"
+  },
+  {
+    "reference": "motion-drawer",
+    "component": "motion-drawer",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard open",
+      "modal focus containment",
+      "Escape dismissal and focus return",
+      "pointer drag dismissal",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "motion-drawer",
+    "component": "motion-drawer",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard open",
+      "modal focus containment",
+      "Escape dismissal and focus return",
+      "touch drag dismissal",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "linear-modal",
+    "component": "linear-modal",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard open",
+      "modal focus containment",
+      "Escape dismissal and focus return",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-last/results.json"
+  },
+  {
+    "reference": "linear-modal",
+    "component": "linear-modal",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard open",
+      "modal focus containment",
+      "Escape dismissal and focus return",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-last/results.json"
+  },
+  {
+    "reference": "image-masking",
+    "component": "image-masking",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "shape choice changes actual image mask",
+      "semantic image alternative",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "image-masking",
+    "component": "image-masking",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "shape choice changes actual image mask",
+      "semantic image alternative",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "clip-path",
+    "component": "image-masking",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "shape choice changes actual image mask",
+      "semantic image alternative",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "clip-path",
+    "component": "image-masking",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "shape choice changes actual image mask",
+      "semantic image alternative",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "buy-me-coffee",
+    "component": "buy-me-coffee",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard support link reaches real local information",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "buy-me-coffee",
+    "component": "buy-me-coffee",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard support link reaches real local information",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-layouts/results.json"
+  },
+  {
+    "reference": "swapy",
+    "component": "swapy",
+    "width": 1440,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "light/desktop",
+      "keyboard reorder persists",
+      "pointer handle swaps real cards",
+      "order change announced",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-swapy-final/results.json"
+  },
+  {
+    "reference": "swapy",
+    "component": "swapy",
+    "width": 390,
+    "checks": [
+      "rendered",
+      "viewport bounds",
+      "dark/touch",
+      "keyboard reorder persists",
+      "touch handle swaps real cards",
+      "order change announced",
+      "dynamic reduced motion"
+    ],
+    "errors": [],
+    "passed": true,
+    "evidence": "output/playwright/reference-effects-swapy-final/results.json"
+  }
+]

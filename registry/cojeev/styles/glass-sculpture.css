@@ -1,0 +1,11 @@
+.v-material-sculpture{--material-accent:var(--v-blue);position:relative;width:100%;min-width:0;height:clamp(260px,44vw,420px);overflow:hidden;contain:layout paint;background:var(--card,var(--v-bg));border-radius:var(--radius-card,24px);color:var(--v-text);pointer-events:none;user-select:none}
+.v-material-sculpture[data-tone="rose"]{--material-accent:var(--v-pink)}
+.v-material-sculpture[data-tone="moss"]{--material-accent:var(--v-olive)}
+.v-material-sculpture[data-tone="ink"]{--material-accent:var(--v-text)}
+.v-material-sculpture>[data-slot="material-canvas"],.v-material-sculpture>[data-slot="material-still"]{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.v-material-sculpture>[data-slot="material-canvas"]{visibility:hidden}
+.v-material-sculpture[data-renderer="webgl"]>[data-slot="material-canvas"]{visibility:visible}
+.v-material-sculpture[data-renderer="webgl"]>[data-slot="material-still"]{visibility:hidden}
+.v-material-sculpture>[data-slot="material-status"]{position:absolute;inset:auto 16px 12px;text-align:center;font:12px/1.5 var(--font-body,system-ui);color:var(--v-text);background:var(--card,var(--v-bg));border-radius:12px;padding:4px 8px}
+.v-material-sculpture[data-renderer="error"]>[data-slot="material-status"]{inset:24px;display:grid;place-items:center;font-size:14px}
+@media(forced-colors:active){.v-material-sculpture[data-renderer]>[data-slot="material-canvas"]{visibility:hidden}.v-material-sculpture[data-renderer]>[data-slot="material-still"]{visibility:visible;color:CanvasText}}

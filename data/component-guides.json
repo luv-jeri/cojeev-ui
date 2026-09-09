@@ -150,7 +150,9 @@
     "category": "Conversation",
     "usage": [
       "Compose BubbleRow, BubbleContent, and BubbleTime to present a message and its timing.",
-      "Use the available bubble variants to distinguish message presentation while keeping sender information in the content."
+      "Use the available bubble variants to distinguish message presentation while keeping sender information in the content.",
+      "BubbleReaction composes Button for an explicitly labelled, controlled reaction; pass aria-label and aria-pressed with your count. BubbleTyping supplies a labelled, controlled typing indicator that becomes still under quiet preferences.",
+      "The conversation surface, timestamps and speech-tail cutout use theme-aware surface/text roles in both modes. Set --bubble-surface when providing a custom surrounding surface."
     ],
     "accessibility": [
       "Keep messages in a meaningful reading order and include sender and time text when needed; bubble styling does not create a live region."
@@ -265,8 +267,11 @@
     "description": "Captures an independent checked, unchecked, or indeterminate choice.",
     "category": "Forms",
     "usage": [
+      "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
+      "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Use checked and onCheckedChange for controlled state or defaultChecked for a local default.",
-      "Group related options when users may choose more than one, and use indeterminate for a partially selected collection."
+      "Group related options when users may choose more than one, and use indeterminate for a partially selected collection.",
+      "Use size=\"sm\" | \"default\" | \"lg\" or a numeric16–64px size. indicator chooses auto/dot/check/diamond/flower; showIndicator={false} leaves the selected outer blob only."
     ],
     "accessibility": [
       "Associate each checkbox with a visible label and give a group a shared description when the choices need context."
@@ -315,8 +320,10 @@
     "description": "Filters a list of options through text input and stores one selected value.",
     "category": "Forms",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Provide options with distinct values and readable labels for the built-in input, results, and empty state.",
-      "Use value and onValueChange to store the selection, or compose the input and item parts for custom option content."
+      "Use value and onValueChange to store the selection, or compose the input and item parts for custom option content.",
+      "ComboboxItem shows a persistent selected check separately from hover or keyboard emphasis. Set showIndicator=false to suppress that mark."
     ],
     "accessibility": [
       "Supply a specific aria-label for the input and preserve the input, list, and item parts that coordinate focus and selection.",
@@ -332,6 +339,7 @@
     "description": "Builds a searchable command list that users can navigate and activate from the keyboard.",
     "category": "Tools",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Compose CommandInput, CommandList, groups, and items, then run each command from its onSelect handler.",
       "Use CommandDialog for a command palette and add CommandShortcut text to communicate shortcuts you implement."
     ],
@@ -349,6 +357,7 @@
     "description": "Reveals contextual actions for a target through a context-menu interaction.",
     "category": "Actions",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Wrap the relevant target with ContextMenuTrigger and compose actions in ContextMenuContent.",
       "Use checkbox, radio, or submenu items when the actions include stateful choices or another level."
     ],
@@ -434,7 +443,8 @@
     "category": "Layout",
     "usage": [
       "Compose DrawerTrigger, DrawerContent, title, description, and close controls for a secondary task.",
-      "Use the root open state to coordinate opening and dismissal with the surrounding interface."
+      "Use the root open state to coordinate opening and dismissal with the surrounding interface.",
+      "Bottom travel is measured from the content and viewport, so taller content and dock gaps keep a continuous entrance and exit."
     ],
     "accessibility": [
       "Provide DrawerTitle and an accessible close action, and retain the dialog primitives for focus management."
@@ -449,6 +459,7 @@
     "description": "Opens a compact menu of actions or stateful choices from a visible trigger.",
     "category": "Actions",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use DropdownMenuTrigger with a named button and place related commands in the content.",
       "Compose checkbox items, radio groups, separators, or submenus to match the action structure."
     ],
@@ -532,8 +543,12 @@
     "description": "Renders named SVG icons and provides supporting icon-button and decorative disk primitives.",
     "category": "Data display",
     "usage": [
+      "Browse and search the icon pack in the live example. AnimatedIcon adds configurable motion; StateChevron follows open and closed trigger state.",
       "Choose a supported icon name and size, then pair it with text to reinforce an action or status.",
-      "Use IconButton for an icon-only action and Disk when the icon needs a containing surface."
+      "Use IconButton for an icon-only action and Disk when the icon needs a containing surface.",
+      "Friendly action aliases include check-circle, close, alert, loader, refresh and trash.",
+      "Default feedback responds once to the nearest enabled control with action-specific SVG-part motion. Set feedback={false} to opt out; draw mode owns its own animation.",
+      "The iconActionNames and iconActionDescriptions exports describe all 100 semantic actions. The searchable example pages through the complete family; new geometry retains Lucide and Feather license notices."
     ],
     "accessibility": [
       "Icons are hidden from assistive technology by default; give an IconButton its own accessible action name."
@@ -663,6 +678,7 @@
     "description": "Groups application commands into a horizontal row of keyboard-navigable menus.",
     "category": "Actions",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Create one MenubarMenu per command family and connect each item to its action.",
       "Use checkbox or radio items for persistent command settings and submenus for another level."
     ],
@@ -729,6 +745,7 @@
     "description": "Organizes destination links and optional expandable navigation panels.",
     "category": "Navigation",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use NavigationMenuLink for destinations and set active for the current page.",
       "Compose triggers, content, and a viewport when a destination group needs an expandable panel."
     ],
@@ -810,8 +827,11 @@
     "description": "Composes labeled questions, single-choice answers, and visible completion progress.",
     "category": "Forms",
     "usage": [
+      "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
+      "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Group each question in QuestionnaireQuestion and place value-based QuestionnaireOption parts inside QuestionnaireOptions.",
-      "Store answers through onValueChange and update QuestionnaireProgress from your own completion logic."
+      "Store answers through onValueChange and update QuestionnaireProgress from your own completion logic.",
+      "selectorSize, selectorIndicator and showSelectorIndicator configure the selection mark; labels retain a minimum44px row target."
     ],
     "accessibility": [
       "Use a legend for each fieldset and label its radio group with aria-labelledby or aria-label.",
@@ -827,11 +847,15 @@
     "description": "Lets users select one option from a labeled set of mutually exclusive choices.",
     "category": "Forms",
     "usage": [
+      "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
+      "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Give each RadioGroupItem a distinct value and use value or defaultValue on the root.",
-      "Handle onValueChange to update the setting or form answer represented by the group."
+      "Handle onValueChange to update the setting or form answer represented by the group.",
+      "Use size=\"sm\" | \"default\" | \"lg\" or a numeric16–64px size. indicator chooses auto/dot/check/diamond/flower; showIndicator={false} leaves the selected outer blob only."
     ],
     "accessibility": [
-      "Name the group and associate each item with a visible label; preserve the supplied radio parts for keyboard navigation and checked state."
+      "Name the group and associate each item with a visible label; preserve the supplied radio parts for keyboard navigation and checked state.",
+      "Arrow and Home/End navigation preserve Radix focus management and activate the focused radio even for immediate keydown/keyup pairs. Tab navigation does not change selection; disabled options are skipped."
     ],
     "related": [
       "checkbox",
@@ -875,8 +899,10 @@
     "description": "Opens a list of options from a trigger and stores one selected value.",
     "category": "Forms",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Compose SelectTrigger, SelectValue, SelectContent, and value-based SelectItem parts.",
-      "Use value and onValueChange for controlled state, and groups or labels to organize a longer list."
+      "Use value and onValueChange for controlled state, and groups or labels to organize a longer list.",
+      "SelectItem shows a persistent selected check separately from hover or keyboard emphasis. Set showIndicator=false to suppress that mark."
     ],
     "accessibility": [
       "Associate a visible label with the trigger and retain the supplied item parts for keyboard navigation and selection announcements."
@@ -904,14 +930,15 @@
     ]
   },
   "shape": {
-    "description": "Renders a named decorative silhouette that inherits or accepts a fill color.",
+    "description": "A shared catalogue of 36 SVG silhouettes, with 12 original contours that morph smoothly between shapes.",
     "category": "Data display",
     "usage": [
-      "Choose a supported name from shapeNames and size the shape through its surrounding text or className.",
-      "Use shapes to support a composition or visual marker without replacing meaningful text."
+      "Use Shape with a name from shapeNames for a static mask. Size it through className or style and set its fill with the --c custom property.",
+      "Use ShapeMorph with a name from signatureShapeNames for an animated contour. Change name to morph from the visible shape; choose fill or outline and set color through ordinary SVG styles.",
+      "Use the shared silhouettes for card accents, empty states and dividers. Motion Off, reduced motion and offscreen rendering settle to a static shape."
     ],
     "accessibility": [
-      "Shapes are hidden from assistive technology by default; communicate any essential meaning in nearby text."
+      "Shapes are decorative by default. Give ShapeMorph a label only when the graphic conveys meaning; keep descriptive text beside decorative accents."
     ],
     "related": [
       "icon",
@@ -924,7 +951,8 @@
     "category": "Layout",
     "usage": [
       "Compose SheetTrigger, SheetContent, title, description, and close parts for a secondary workflow.",
-      "Use open and onOpenChange to coordinate the sheet with application state."
+      "Use open and onOpenChange to coordinate the sheet with application state.",
+      "SheetContent side=\"start\" or side=\"end\" (default) follows reading direction. Explicit dir overrides a surrounding Radix DirectionProvider. The panel travels its full measured distance to the viewport edge."
     ],
     "accessibility": [
       "Include SheetTitle and a clear close action and retain the dialog primitives for focus management and dismissal."
@@ -957,7 +985,8 @@
     "category": "Feedback",
     "usage": [
       "Choose skeleton shapes and groups that approximate the content that will replace them.",
-      "Replace placeholders with the completed content or a useful error state when loading finishes."
+      "Replace placeholders with the completed content or a useful error state when loading finishes.",
+      "AsyncContent accepts optional loading and fallback props. The real content stays mounted across loading changes so input edits survive; omitted loading preserves the original static wrapper."
     ],
     "accessibility": [
       "Hide decorative placeholders from assistive technology and expose the loading state once on the surrounding content region."
@@ -1006,7 +1035,8 @@
     "category": "Navigation",
     "usage": [
       "Set count and optional labels, then use one-based values for StepperItem parts.",
-      "Use onValueChange to switch your content and gate progression with your own validation before advancing."
+      "Use onValueChange to switch your content and gate progression with your own validation before advancing.",
+      "StepperList orientation=\"horizontal\" lays out connected milestones with native Previous/Next controls. The default remains vertical. Completed milestones use a native validation icon."
     ],
     "accessibility": [
       "The current item exposes aria-current=\"step\"; use meaningful titles and include StepperStatus when a spoken progress update is useful."
@@ -1054,7 +1084,8 @@
     "category": "Navigation",
     "usage": [
       "Match each TabsTrigger value to a TabsContent value inside a shared Tabs root.",
-      "Use value and onValueChange when another control needs to select a view, and choose a variant for its visual hierarchy."
+      "Use value and onValueChange when another control needs to select a view, and choose a variant for its visual hierarchy.",
+      "Panel changes use the shared presence transition. Exiting panels become inert and leave after their exit; forceMount opts into consumer-managed visibility."
     ],
     "accessibility": [
       "Give TabsList a descriptive accessible name and preserve the supplied trigger and panel relationships for keyboard navigation."
@@ -1149,7 +1180,7 @@
   },
   "typography": {
     "description": "Provides text roles for headings, body copy, metadata, values, and identifiers.",
-    "category": "Data display",
+    "category": "Typography",
     "usage": [
       "Choose a role such as Hero, SectionTitle, Body, Meta, or Identifier to establish a readable hierarchy.",
       "Use as to select the semantic element while retaining the intended text treatment."
@@ -1165,7 +1196,7 @@
   },
   "animated-number": {
     "description": "A smooth, interruptible number transition for totals, metrics and small moments of progress.",
-    "category": "Effects",
+    "category": "Typography",
     "usage": [
       "Pass a numeric value; updates animate from the current displayed value. The initial render shows the actual total. Non-finite values show the fallback (an em dash by default), never a fabricated zero.",
       "Use locale and format for currency, percentages or compact notation. Reserve enough width for the largest expected value.",
@@ -1182,15 +1213,19 @@
     ]
   },
   "text-reveal": {
-    "description": "A quiet word-by-word entrance for headings and short editorial text, with rise and fade treatments.",
-    "category": "Effects",
+    "description": "Readable word, grapheme, phrase or measured-line arrivals with soft focus, fold and organic scale choices.",
+    "category": "Typography",
     "usage": [
-      "Use short phrases at meaningful entry points, and choose the correct heading level with as.",
-      "Change replayKey to replay deliberately. The text is fully available during server rendering and without animation."
+      "Choose rise, fade, soften, fold, bloom, scale or settle. Bloom includes a small overshoot; scale gently grows; settle moves a slightly enlarged phrase into place.",
+      "Choose split=\"word\", \"grapheme\", \"text\" or \"line\". Line mode measures real browser wrapping, including hard breaks, and remeasures after resizing or font loading. It renders a block; use it for headings and short passages.",
+      "Change replayKey to replay deliberately. Duration is bounded to 0–1500ms and the total stagger delay is distributed evenly within 600ms, including long text.",
+      "Text Reveal is an entrance effect and stays readable after playback or interruption. Use the Presence components when content also needs an exit lifecycle.",
+      "Line mode measures up to 4000 graphemes. Longer prose stays fully readable in its normal layout without line animation. Resizing settles the text rather than replaying it; replayKey starts a new arrival."
     ],
     "accessibility": [
-      "The complete text is exposed once; animated word fragments are hidden from assistive technology.",
-      "Reduced motion and global Off leave text still. Leaving the viewport ends the reveal without hiding content."
+      "The complete text is exposed once; animated visual fragments are hidden from assistive technology.",
+      "Reduced motion, Motion Off and Flow Off show the still state. Leaving the viewport during playback settles text; returning does not replay the same content.",
+      "Use word, whole-phrase or measured-line grouping for scripts whose letters join across grapheme boundaries."
     ],
     "related": [
       "typography",
@@ -1199,12 +1234,13 @@
     ]
   },
   "shape-scene": {
-    "description": "A tactile 3D composition made from SahaJiv shapes, with a static fallback and motion preferences built in.",
+    "description": "A tactile 3D composition made from Cojeev shapes, with a static fallback and motion preferences built in.",
     "category": "3D",
     "usage": [
       "Place the sculpture beside generous typography. Its reserved aspect ratio keeps the surrounding layout stable while it loads.",
-      "Choose a palette, density or order of the four authored shapes. Set animate and interactive to false for a completely still sculpture.",
-      "This optional entry installs Three.js; the rest of the library does not require it. Initialization waits until the scene enters the viewport."
+      "Choose from sixteen authored shapes and clay, glazed, grain or ripple shader materials. The default palette follows AppearanceProvider; explicit warm/cool palettes are also available.",
+      "This optional entry installs Three.js; the rest of the library does not require it. Initialization waits until the scene enters the viewport.",
+      "Procedural object-space grain and flowing contour shaders use the existing lighting pass. Offscreen and hidden scenes pause; palette changes recolour meshes without rebuilding the context."
     ],
     "accessibility": [
       "Provide a useful aria-label when the artwork conveys meaning, or aria-hidden for a decorative composition.",
@@ -1221,6 +1257,7 @@
     "description": "Searchable multiple choices with removable selections, form values and clear validation.",
     "category": "Forms",
     "usage": [
+      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use value and onValueChange for controlled selection, or defaultValue for internal state. A name submits repeated values with a native form.",
       "Disabled options stay locked. Values no longer present in options stay visible and removable, so filtering does not silently discard a selection.",
       "Use description for guidance and error for validation. This component handles a bounded local set of choices; it does not fetch or virtualize options."
@@ -1255,20 +1292,1507 @@
     ]
   },
   "marquee": {
-    "description": "Moves a repeating content list with an explicit pause control and a static reading layout when motion is reduced.",
-    "category": "Creative",
+    "description": "A measured moving list with optional perspective and a rhythm that follows scrolling.",
+    "category": "Effects",
     "usage": [
-      "Pass a short collection of responsive content items, then choose left or right direction and slow, normal, or fast speed.",
-      "Use the built-in pause control or paused and onPausedChange to coordinate playback with application state."
+      "Use decorative text, shapes or non-interactive cards as children. The list is measured after fonts, content and viewport changes; its visual copy has no duplicate IDs or mounted React effects.",
+      "Choose a named speed or set pixelsPerSecond (0–160). direction is left or right. Changes of pace and scroll direction preserve the current position.",
+      "presentation=depth adds bounded perspective and distance-based focus. Adjust tiltX, tiltY, perspective and depth. Quiet settings restore flat, fully legible content.",
+      "respondToScroll follows the document by default. Pass scrollTarget to follow a mounted native scroll viewport instead. Pair two rows with opposite direction values for a counter-moving composition.",
+      "Pause keeps the current position. Hover and focus pause automatic motion. Children with real links, buttons or fields are displayed as a static original list so all actions remain usable."
     ],
     "accessibility": [
-      "Only the original list is accessible; the visual copy is inert, hidden, and removed from keyboard navigation.",
-      "Hover and focus pause motion, focused content becomes a static list, and Off or reduced motion wraps all original items for reading."
+      "One semantic list is exposed to assistive technology. Its decorative copy is inert and hidden.",
+      "Reduced motion, local and shared quiet preferences disable movement. Hidden and offscreen rows stop work. Automatic motion has an explicit pause control.",
+      "Use normal typography for important reading. Depth and outlined text are expressive options for short, non-essential phrases."
+    ],
+    "related": [
+      "text-ribbon",
+      "scroll-area",
+      "text-reveal"
+    ]
+  },
+  "agent-state": {
+    "description": "A sculpted, living status field that changes contour and color as an agent thinks, works, asks for input, or finishes.",
+    "category": "Conversation",
+    "usage": [
+      "Use status to convey actual activity: idle, thinking, working, needs-input, complete or error.",
+      "Use sm beside a task, md in a conversation, and lg for a focused empty or waiting state.",
+      "The field pauses outside the viewport, when the document is hidden, and when motion is disabled."
+    ],
+    "accessibility": [
+      "Visible labels accompany color and shape; provide a precise label for your workflow.",
+      "Status is announced politely. Use one live state indicator per active task to avoid duplicate announcements.",
+      "Reduced motion preserves the status contour without continuous animation."
+    ],
+    "related": [
+      "agent-chat",
+      "progress",
+      "spinner"
+    ]
+  },
+  "agent-chat": {
+    "description": "A composable agent conversation with a bounded thread, draft composer, attachments, progress, explicit permissions and choice prompts.",
+    "category": "Conversation",
+    "usage": [
+      "Compose AgentChatHeader, AgentChatThread and AgentChatComposer inside AgentChat.",
+      "Keep messages, draft, selected files and request status in your application. Clear a draft only after onSend accepts it.",
+      "Use AgentChatPermission for deliberate allow/deny decisions. Render its receipt after a decision.",
+      "Use AgentChatOptions to collect one valid choice; Continue remains disabled until a valid enabled option is selected.",
+      "The documentation runs a local simulation. Connect callbacks to your own application to perform real work."
+    ],
+    "accessibility": [
+      "The thread is a keyboard-reachable live log and follows only while the reader stays near its end.",
+      "Enter inserts a new line. Command/Ctrl+Enter sends. Stop preserves the conversation.",
+      "Label attachments and permission scope clearly. Do not treat a preset option as submitted consent.",
+      "Return focus to the next useful control after a request resolves or is cancelled."
+    ],
+    "related": [
+      "agent-state",
+      "message-scroller",
+      "attachment",
+      "questionnaire"
+    ]
+  },
+  "theme-toggle": {
+    "description": "A controlled light/dark switch with a morphing sun and moon and a smooth organic page reveal.",
+    "category": "Actions",
+    "usage": [
+      "The destination theme opens through a slower organic reveal with a varied viewport origin. Explicit origin options remain available; reduced motion and Motion Off settle immediately.",
+      "Pass mode and onModeChange. Keep persistence in the application.",
+      "Call applyTheme(nextMode, quiet) to animate the document theme, or update your own theme scope.",
+      "Use the shared motion preference so reduced motion and Motion Off switch immediately."
+    ],
+    "accessibility": [
+      "The button exposes a named switch and aria-checked.",
+      "Both keyboard Space and Enter change the controlled mode."
+    ],
+    "related": [
+      "button",
+      "animated-icon",
+      "shape"
+    ]
+  },
+  "animated-icon": {
+    "description": "Contextual motion for the shared icon catalog: draw, tremor, spinning settings, bouncing navigation and morphing validation.",
+    "category": "Effects",
+    "usage": [
+      "Use inside a named Button or link. Hover and focus are inherited from that control.",
+      "Set active for a processing state; omit it for pointer and focus interaction.",
+      "Choose a preset to override the name-based default.",
+      "The auto preset chooses action-specific SVG-part feedback. Explicit presets keep their own visual treatment, and bounce follows the icon direction.",
+      "Use active to control feedback directly. amplitude={0} suppresses movement. Loader auto feedback repeats only while active; other action reactions are finite.",
+      "Auto maps all 100 semantic action names to original part-level feedback. Only loader loops while active; finite feedback settles for other actions. Search by name or action in the example."
+    ],
+    "accessibility": [
+      "Icons remain decorative beside a text label.",
+      "Motion pauses offscreen, while the document is hidden, and when reduced motion or Motion Off is enabled."
+    ],
+    "related": [
+      "icon",
+      "button",
+      "theme-toggle"
+    ]
+  },
+  "presence": {
+    "description": "MotionPresence keeps keyed children mounted for their exits. MotionSurface adds coordinated lifecycle states to an existing primitive.",
+    "category": "Effects",
+    "usage": [
+      "Keep the MotionPresence boundary mounted and give changing children stable keys.",
+      "Use MotionSurface asChild around exactly one ref-capable primitive.",
+      "Use quiet motion to settle immediately; the shared preference is inherited.",
+      "Use settle for a small scale-down exit, soften for upward blurred words, or focus for whole-phrase focus changes. These use a gentle 420ms default exit; existing presets keep their earlier timings.",
+      "Set exitDelay on sibling words for a departure sequence; it is capped at 600ms. exitDuration is seconds, bounded to 0–2. The caller controls removal, rather than a video timeline disappearing live content.",
+      "For staggered words, a keyed conditional heading inside MotionPresence may contain MotionSurface asChild spans. Keep a single accessible heading label and hide the animated fragments. Soft-focus presets own CSS filter; use a separate wrapper if the child already has an authored filter.",
+      "Directional blur can be composed with MotionSurface preset=\"soften\": provide signed x or y and a blur in initial/exit, then zero x/y and blur in animate. Keep it inside MotionPresence for real removal; no separate wrapper primitive is needed."
+    ],
+    "accessibility": [
+      "Preserve native semantics with asChild.",
+      "Put presence outside the actual conditional removal; an inner boundary cannot retain its own parent.",
+      "Exiting surfaces are inert and hidden from assistive technology until removed; quiet preferences remove the delay and motion."
+    ],
+    "related": [
+      "card",
+      "agent-chat",
+      "preview"
+    ]
+  },
+  "area-chart": {
+    "description": "Layered area charts with shared series colors, responsive bounds and a keyboard data inspector.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "bar-chart": {
+    "description": "Compare series with grouped, stacked or horizontal bars and a shared interactive tooltip.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "line-chart": {
+    "description": "Track changes using linear, smooth or step lines with accessible point inspection.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "pie-chart": {
+    "description": "Show proportions using themed pie and donut layouts, with readable totals and segment inspection.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "radar-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "radar-chart": {
+    "description": "Compare several dimensions with a shared radar scale and contextual series highlighting.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radial-chart",
+      "chart-tooltip"
+    ]
+  },
+  "radial-chart": {
+    "description": "Show progress against a shared maximum using full rings or semicircles.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "chart-tooltip"
+    ]
+  },
+  "chart-tooltip": {
+    "description": "A shared bounded data pill with kinetic tracking and pointer/keyboard access.",
+    "category": "Data display",
+    "usage": [
+      "Pass a stable data array and meaningful series labels.",
+      "Use the documented variant to change layout without changing the data contract.",
+      "Keep the data table available for exact values and assistive technology."
+    ],
+    "accessibility": [
+      "Provide a caption and description that explain the data.",
+      "The keyboard inspector and optional data table expose values without relying on color or hover."
+    ],
+    "related": [
+      "chart",
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart"
+    ]
+  },
+  "item-adornment": {
+    "description": "Coloured organic shapes for list items, with deterministic automatic selection and custom icon or no-icon options.",
+    "category": "Tools",
+    "usage": [
+      "Menu and select items use adornment=\"auto\" by default. Stable item identity keeps the same shape and colour across renders.",
+      "Pass adornment={false} or \"none\" to hide it, {shape,color} to choose a shape and tone, or a React element for your own icon.",
+      "Use ItemAdornment directly in your own lists. Meaningful state must also have a text or semantic label.",
+      "Within an adornment object, set showIcon or showBackground independently. Both false hides both; custom React icons and adornment={false} still work."
+    ],
+    "accessibility": [
+      "Decorative adornments are hidden from assistive technology.",
+      "Text labels remain the accessible item names; selection does not depend on colour alone."
+    ],
+    "related": [
+      "shape",
+      "animated-icon",
+      "select",
+      "dropdown-menu"
+    ]
+  },
+  "appearance": {
+    "description": "Choose from six coordinated palettes and adjust reading contrast across the application.",
+    "category": "Tools",
+    "usage": [
+      "Mount AppearanceProvider once around your application. AppearanceMenu or AppearanceControls changes the shared appearance.",
+      "Palettes and contrast persist in local storage. Controlled value/onValueChange is available for your own settings surface.",
+      "Contrast adjusts semantic text and edges; it does not filter artwork or alter accent fills."
+    ],
+    "accessibility": [
+      "Text role pairs retain at least 4.5:1 on primary surfaces at every setting. Control edges retain 3:1.",
+      "The contrast slider supports keyboard arrows, Home and End. Palette changes apply to portalled controls too."
+    ],
+    "related": [
+      "theme-toggle",
+      "select",
+      "slider"
+    ]
+  },
+  "scroll-organism": {
+    "description": "A softly stretching companion driven by native document scrolling.",
+    "category": "Effects",
+    "usage": [
+      "Position the decorative organism at the edge of a scrolling story. Tune shape, size and travel.",
+      "It uses Motion values without per-frame React renders or scroll interception."
+    ],
+    "accessibility": [
+      "The decorative organism is hidden from assistive technology and ignores pointer events.",
+      "Motion Off and reduced motion keep it still."
+    ],
+    "related": [
+      "shape",
+      "shape-scene",
+      "presence"
+    ]
+  },
+  "assembly-part": {
+    "description": "A persistent native component moving between a floating organism and its measured layout.",
+    "category": "Composition",
+    "usage": [
+      "Use this primitive inside a measured composition. Preserve stable part identity while target geometry changes.",
+      "asChild retains the native interactive element. Assembly controls manage its interactivity during travel."
+    ],
+    "accessibility": [
+      "Settled parts retain native keyboard behaviour. Moving parts are inert until placed."
+    ],
+    "related": [
+      "organism-composition",
+      "shape",
+      "presence"
+    ]
+  },
+  "organism-composition": {
+    "description": "Six useful compositions made from persistent Cojeev base components, with organic assembly and native controls.",
+    "category": "Composition",
+    "usage": [
+      "Choose profile, side-panel, dock, chat, focus or invite. Each layout uses the actual library primitives.",
+      "Use assembled={false} for the floating state. Keep the component mounted to retain local state while changing kinds.",
+      "Focus uses a real local elapsed-time countdown. Invite records local RSVP state; provide callbacks for your application."
+    ],
+    "accessibility": [
+      "Moving controls remain inert until arrival, then regain normal keyboard, hover and form behavior.",
+      "Motion Off and reduced motion produce usable, unclipped components immediately."
+    ],
+    "related": [
+      "organism-assembly",
+      "assembly-part",
+      "focus-session",
+      "invite-card"
+    ]
+  },
+  "organism-assembly": {
+    "description": "An interactive studio that gathers floating shapes into six reusable compositions.",
+    "category": "Composition",
+    "usage": [
+      "Choose Profile, Panel, Dock, Chat, Focus or Invite. Replay scatters and reassembles their native parts.",
+      "Use value/onValueChange for a controlled chooser and compositionProps to configure the underlying composition."
+    ],
+    "accessibility": [
+      "Arrow keys, Home and End navigate the chooser; the mobile grid keeps all six choices visible.",
+      "Motion Off and reduced motion keep controls immediately usable and disable replay."
+    ],
+    "related": [
+      "organism-composition",
+      "assembly-part",
+      "focus-session",
+      "invite-card"
+    ]
+  },
+  "focus-session": {
+    "description": "A local focus timer composed from Cojeev cards, progress, badges and native controls.",
+    "category": "Composition",
+    "usage": [
+      "Import FocusSession from the focus-session entry. Set durationSeconds (default 1500, bounded to 1–86400) and optional name or description.",
+      "Start, pause and reset the real local countdown. Changing duration resets the session; the example's 5, 15 and 25 minute choices each begin a fresh session.",
+      "Use onAction for start, pause, reset and complete events. OrganismProps also supports controlled state/onStateChange and assembly presentation.",
+      "The documentation timer is a local demo. It does not create a reminder, notification or saved task, and reloading clears its state."
+    ],
+    "accessibility": [
+      "Native buttons support keyboard activation. Remaining time and progress stay available as readable values.",
+      "Reduced motion and global Off preserve the usable timer; decorative motion is independent of elapsed time."
+    ],
+    "related": [
+      "organism-composition",
+      "assembly-part",
+      "progress",
+      "button"
+    ]
+  },
+  "invite-card": {
+    "description": "An event invitation with participant avatars and a reversible local RSVP, composed from Cojeev primitives.",
+    "category": "Composition",
+    "usage": [
+      "Import InviteCard from the invite-card entry. Set name, description, inviteDate, inviteTime and inviteLocation to describe the event.",
+      "Pass up to four participants as {name, initials}. The yes/no controls update the local rsvp state and emit onAction with action='rsvp' and value='yes' or 'no'.",
+      "Use controlled state/onStateChange when the response belongs to your application. Persistence and delivery remain the consumer's responsibility.",
+      "The documentation example is a fictional invitation. Its responses stay in the preview and send no invitation, email or calendar update."
+    ],
+    "accessibility": [
+      "Event details are text; native RSVP buttons remain keyboard accessible and expose their current selection.",
+      "The quiet-motion settings preserve assembled, usable controls and readable invitation details."
+    ],
+    "related": [
+      "organism-composition",
+      "assembly-part",
+      "avatar",
+      "button"
+    ]
+  },
+  "profile-card": {
+    "description": "A reusable profile card composed from Cojeev base components.",
+    "category": "Composition",
+    "usage": [
+      "Use the standalone wrapper for an immediately usable composition.",
+      "Configure content and callbacks through its typed props; the same parts can be used in OrganismAssembly."
+    ],
+    "accessibility": [
+      "Native buttons and inputs retain keyboard and form behaviour.",
+      "Local example feedback describes the performed demo action."
+    ],
+    "related": [
+      "organism-assembly",
+      "organism-composition"
+    ]
+  },
+  "work-side-panel": {
+    "description": "A reusable work side panel composed from Cojeev base components.",
+    "category": "Composition",
+    "usage": [
+      "Use the standalone wrapper for an immediately usable composition.",
+      "Configure content and callbacks through its typed props; the same parts can be used in OrganismAssembly."
+    ],
+    "accessibility": [
+      "Native buttons and inputs retain keyboard and form behaviour.",
+      "Local example feedback describes the performed demo action."
+    ],
+    "related": [
+      "organism-assembly",
+      "organism-composition"
+    ]
+  },
+  "action-dock": {
+    "description": "A reusable action dock composed from Cojeev base components.",
+    "category": "Composition",
+    "usage": [
+      "Use the standalone wrapper for an immediately usable composition.",
+      "Configure content and callbacks through its typed props; the same parts can be used in OrganismAssembly."
+    ],
+    "accessibility": [
+      "Native buttons and inputs retain keyboard and form behaviour.",
+      "Local example feedback describes the performed demo action."
+    ],
+    "related": [
+      "organism-assembly",
+      "organism-composition"
+    ]
+  },
+  "conversation-panel": {
+    "description": "A reusable conversation panel composed from Cojeev base components.",
+    "category": "Composition",
+    "usage": [
+      "Use the standalone wrapper for an immediately usable composition.",
+      "Configure content and callbacks through its typed props; the same parts can be used in OrganismAssembly."
+    ],
+    "accessibility": [
+      "Native buttons and inputs retain keyboard and form behaviour.",
+      "Local example feedback describes the performed demo action."
+    ],
+    "related": [
+      "organism-assembly",
+      "organism-composition"
+    ]
+  },
+  "compact-dashboard": {
+    "description": "Historical compatibility alias for WorkSidePanel; use the dedicated panel composition in new work.",
+    "category": "Composition",
+    "usage": [
+      "Use the standalone wrapper for an immediately usable composition.",
+      "Configure content and callbacks through its typed props; the same parts can be used in OrganismAssembly."
+    ],
+    "accessibility": [
+      "Native buttons and inputs retain keyboard and form behaviour.",
+      "Local example feedback describes the performed demo action."
+    ],
+    "related": [
+      "organism-assembly",
+      "organism-composition"
+    ]
+  },
+  "hero-button": {
+    "description": "An organic call to action with a drawing arrow and the shared button morph response.",
+    "category": "Actions",
+    "usage": [
+      "Use shape=\"organic\" or \"capsule\"; showArrow={false} removes the arrow.",
+      "Use asChild with one anchor for native link navigation. The button keeps loading, disabled and form semantics."
+    ],
+    "accessibility": [
+      "Keyboard focus gives the same arrow feedback as hover.",
+      "Motion Off, Flow Off and reduced motion keep a static arrow and usable control."
+    ],
+    "related": [
+      "button",
+      "animated-icon",
+      "float-layer"
+    ]
+  },
+  "depth-background": {
+    "description": "Layered pollen, contours and orbital shapes with perspective, native-scroll depth and pointer response.",
+    "category": "Visual effects",
+    "usage": [
+      "Place inside a positioned section; the background fills its parent without intercepting clicks.",
+      "Choose a variant and stable seed. Tune density from 0.35 to 2 and intensity from 0 to 2; zero intensity keeps it still."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and never focusable.",
+      "Offscreen, hidden-page and reduced-motion states stop its movement. Keep text on a readable foreground."
+    ],
+    "related": [
+      "float-layer",
+      "shape-scene",
+      "ambient-background"
+    ]
+  },
+  "float-layer": {
+    "description": "An entrance, scroll depth and gentle idle movement for a real component or a group of elements.",
+    "category": "Motion",
+    "usage": [
+      "Set depth and drift in pixels. Use depth={0} drift={0} for a stationary foreground after its entrance; reserve idle drift and parallax for background layers.",
+      "Tune revealDuration (0.2–2 seconds), revealDistance (0–80 pixels) and delay. Set replay to reveal again whenever the layer re-enters the viewport.",
+      "The default wrapper keeps transforms separate. asChild preserves the child element; use the wrapper when that child owns an inline CSS translate."
+    ],
+    "accessibility": [
+      "Server-rendered content stays readable before hydration.",
+      "Reduced motion and Motion Off leave content visible and still; offscreen and hidden-page work pauses."
+    ],
+    "related": [
+      "depth-background",
+      "presence",
+      "card"
+    ]
+  },
+  "shape-artwork": {
+    "description": "An original SVG silhouette with a cast shadow and a rotated rear outline. The same vector layers power its live preview and standalone SVG export.",
+    "category": "Visual effects",
+    "usage": [
+      "Set name to one of the 12 signature shapes; choose pink, olive, blue or yellow with tone. Set rotation in degrees and filled={false} for an outlined foreground.",
+      "Use shadow and echo to toggle the cast shadow and rear outline. shadowAngle sets the cast direction clockwise from the right; echoAngle rotates the rear outline relative to the foreground.",
+      "shapeArtworkSvg(options, colors?) returns an original standalone SVG string; supply resolved fill, shadow and echo colors to preserve a customized palette. Its fixed viewBox contains every supported shape at all layer angles.",
+      "shapeArtworkCode(options) returns a React usage snippet containing every selected prop. The landing workbench downloads a transparent SVG and provides accessible copying with visible success or failure feedback.",
+      "Live name changes morph through the shared choreography policy. Rotation and layer changes follow the supplied props; no idle foreground motion is added."
+    ],
+    "accessibility": [
+      "The SVG is decorative by default. Supply label when the graphic conveys meaning; native SVG props and refs are forwarded.",
+      "Motion Off, Flow Off, reduced motion and hidden or offscreen rendering settle the contour immediately.",
+      "The example changes local artwork settings only. Export is vector artwork, with the selected target contour rather than a transient animation frame."
+    ],
+    "related": [
+      "shape",
+      "code-block",
+      "slider",
+      "toggle-group"
+    ]
+  },
+  "word-relay": {
+    "description": "Exchanges phrases, words or letters inside a stable wrapping footprint, with interruptible motion and explicit navigation.",
+    "category": "Typography",
+    "usage": [
+      "Pass words and optionally control index/onIndexChange. All candidates share one wrapping layout footprint, so the surrounding content stays in place.",
+      "Choose split=\"phrase\" (default), \"word\" or \"grapheme\". staggerFrom=\"first\", \"last\", \"center\" or \"edges\" sets the logical arrival order; direction=\"up\" or \"down\" sets travel. Stagger is milliseconds, evenly bounded to a 500ms window.",
+      "Automatic changes are opt-in through auto; pair with a pause control. interval is 1200–60000ms and always allows the transition plus at least 500ms at rest. duration is 0–1600ms. loop=false stops at the last phrase.",
+      "Use controlsRef for next(), previous(), jumpTo(index) and reset(). The normal ref still returns the span. Controlled navigation requests onIndexChange; the parent must apply the new index. reset returns to defaultIndex.",
+      "Use tone=\"inherit\" inside a heading, or a native accent tone for an organic highlight."
+    ],
+    "accessibility": [
+      "Only the current phrase is exposed to assistive technology; animated layers are hidden. Add aria-live only if the content warrants announcements.",
+      "Hover and focus pause automatic playback. Reduced motion, shared Motion Off, Flow Off, hidden tabs and offscreen content suspend the timer.",
+      "Empty words produce an empty span, and out-of-range indexes clamp to the available phrases.",
+      "Grapheme grouping preserves emoji and combining marks; use word or phrase grouping to preserve joining in scripts such as Arabic."
+    ],
+    "related": [
+      "text-reveal",
+      "animated-number",
+      "typography"
+    ]
+  },
+  "reading-trail": {
+    "description": "Tracks actual reading progress and links to named sections with a quiet organic marker.",
+    "category": "Navigation",
+    "usage": [
+      "Pass items with existing document IDs and readable labels. Native anchors remain available before JavaScript.",
+      "Use scrollRoot for a contained scrolling panel. The default tracks the document; offset sets the current-section activation line.",
+      "Duplicate IDs are consolidated. Missing sections do not claim measured progress."
+    ],
+    "accessibility": [
+      "Links preserve modifier clicks and normal URLs. A selected destination receives focus.",
+      "Current section is exposed through aria-current. Optional smooth scrolling respects shared quiet settings."
+    ],
+    "related": [
+      "button",
+      "typography"
+    ]
+  },
+  "living-link": {
+    "description": "A native link with a drawn ink contour, directional underline reveals, or an organic pigment wash.",
+    "category": "Navigation",
+    "usage": [
+      "Pass href and normal anchor attributes. direction can be forward or up-right.",
+      "Use disabled to keep an announced, unavailable label without a navigable URL.",
+      "treatment selects contour (the original resting mark), underline-start, underline-end, underline-center, wash-up or wash-across. Start/end follow the reading direction.",
+      "tone selects pink, olive, blue or yellow for a restrained wash; text keeps its theme ink throughout the transition. Arrows exchange through a small window in the five new treatments."
+    ],
+    "accessibility": [
+      "Native link navigation, modifier clicks and keyboard activation remain intact.",
+      "Hover and focus share the same emphasis. Disabled anchors leave the tab order. Reduced motion keeps a still, readable underline."
+    ],
+    "related": [
+      "button",
+      "typography"
+    ]
+  },
+  "pigment-field": {
+    "description": "An original GPU pigment wash using the current Cojeev palette.",
+    "category": "Backgrounds",
+    "usage": [
+      "Place inside a positioned parent with a height. Keep meaningful content in a sibling above the decorative field.",
+      "Control tone, speed (0–3), intensity (0–2) and paused. The canvas caps pixel density and responds to resizing.",
+      "This background is an original shader foundation; it does not yet implement pointer-fluid refraction over HTML.",
+      "Place text on an opaque native Card or other readable surface over the changing artwork; do not assume contrast against every shader pixel."
+    ],
+    "accessibility": [
+      "Decorative canvas is inert, hidden from assistive technology and never captures pointer events.",
+      "Reduced motion, offscreen content, document visibility and shared Motion/Flow Off suspend continuous rendering. A static fallback covers unavailable or lost contexts."
+    ],
+    "related": [
+      "depth-background",
+      "shape-scene"
+    ]
+  },
+  "contour-field": {
+    "description": "Original topographic lines on the inherited paper surface, with a bounded GPU renderer.",
+    "category": "Backgrounds",
+    "usage": [
+      "Place inside a positioned parent with a height. Keep content outside the decorative field.",
+      "Control tone, speed (0–3), intensity (0–2) and paused. A still fallback is available when GPU rendering cannot run.",
+      "Use an opaque native surface for meaningful text placed above the changing artwork."
+    ],
+    "accessibility": [
+      "The field is decorative, inert and ignores pointer hit testing.",
+      "Animation suspends with reduced motion, shared quiet settings, hidden tabs and offscreen content."
+    ],
+    "related": [
+      "depth-background",
+      "shape-scene"
+    ]
+  },
+  "milestone-path": {
+    "description": "A readable sequence of milestones with supplied status, details and optional actions.",
+    "category": "Data display",
+    "usage": [
+      "Pass stable IDs and explicit complete, current or upcoming states. Supply title, description and metadata for context.",
+      "Provide onMilestoneSelect only when a milestone has a real action. Noninteractive milestones remain ordinary content.",
+      "MilestonePath composes the existing Stepper parts. The caller owns explicit states; it does not invent a separate selected-row model."
+    ],
+    "accessibility": [
+      "Progress state is named in text as well as color. Buttons retain native keyboard and disabled behavior.",
+      "The ordered sequence remains meaningful with motion disabled or without an interactive action."
+    ],
+    "related": [
+      "stepper",
+      "activity-feed",
+      "badge"
+    ]
+  },
+  "activity-feed": {
+    "description": "Chronological activity composed from native avatars, badges, content rows and motion surfaces.",
+    "category": "Data display",
+    "usage": [
+      "Pass entries in the order they should appear, with stable IDs and optional actor, timestamp, badge and details.",
+      "Omit initialVisible to show all supplied entries. Set initialVisible and pageSize to reveal supplied history in pages.",
+      "The feed displays your data; it does not fetch, manufacture events or reorder timestamps."
+    ],
+    "accessibility": [
+      "A semantic ordered list preserves chronology. Show more announces the new count and moves focus to the first newly shown entry.",
+      "Images are decorative alongside named actors. New content respects the shared reduced-motion contract."
+    ],
+    "related": [
+      "presence",
+      "button"
+    ]
+  },
+  "text-ribbon": {
+    "description": "A measured phrase follows six original SVG paths, with direct manipulation and gentle changes of pace.",
+    "category": "Typography",
+    "usage": [
+      "Choose circle, loop, wave, arch, line or figure-eight. Circle has a compact square artwork; the other paths scale from a 640 × 280 viewBox.",
+      "Automatic motion is opt-in with auto. Supply a visible pause control via paused. Speed is bounded to 0–120 SVG units per second; fontSize is bounded to 24–56.",
+      "Use a short decorative phrase. The visual path repeats it, while assistive technology reads the text once. Use guide and tone to show a simple path or a native accent stroke.",
+      "Set curvature from 0 to 1 for the arch and wave. Choose hoverBehavior=pause, slow, quicken or none; pace changes ease continuously.",
+      "draggable adds direct horizontal manipulation, ArrowLeft/ArrowRight and Home. Vertical touch gestures preserve scrolling. Automatic movement is still opt-in.",
+      "Omit direction for local direction after a drag, or supply direction/onDirectionChange to own it. Paused and quiet settings stop automatic travel while explicit positioning remains available."
+    ],
+    "accessibility": [
+      "Keep critical prose in ordinary readable text. A curved ribbon works best as an optional expressive detail.",
+      "Focus pauses movement. Hover pauses by default; slow and quicken are optional. Reduced motion, local data-flow=off, data-no-glide, shared Motion Off, Flow Off, hidden documents and offscreen views suspend automatic travel.",
+      "The SVG is hidden from assistive technology. The complete supplied phrase remains in the accessible DOM, including when motion is disabled."
+    ],
+    "related": [
+      "marquee",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "glyph-sculpture": {
+    "description": "A real 3D surface drawn with glyphs, optional contour marks and your own local geometry.",
+    "category": "3D",
+    "usage": [
+      "Choose glyphSet=\"density\", \"digits\" or \"letters\". edgeMatching adds contour-direction marks to density glyphs; cellSize is bounded to 7–20px.",
+      "Pass form=\"bloom\", \"seed\" or \"pebble\", or supply immutable geometry with positions, optional triangles and normals. Invalid geometry reports onGeometryError and keeps a built-in form.",
+      "Use turn, pitch and zoom for explicit orientation; wrap with SculptureOrbit for native drag, keyboard, zoom and reset controls. Pausing optional motion does not disable direct orientation changes.",
+      "loadSculptureFile accepts local self-contained GLB, filled SVG, PNG or JPEG up to 8 MiB. Image limits are 4 million pixels. Images become luminance reliefs; imported materials are replaced by the selected native ink tone. Imports never upload the file.",
+      "Use paused or speed=0 for a still sculpture. Decorative rendering stops while offscreen, hidden, reduced-motion, Flow Off or Motion Off."
+    ],
+    "accessibility": [
+      "The rendered sculpture is decorative. Put any essential information in adjacent readable text and native controls.",
+      "SculptureOrbit supplies labelled keyboard controls; optional hover tracking has no essential action.",
+      "A static fallback remains when Canvas2D is unavailable. Failed local imports report an actionable message and retain the previous sculpture."
+    ],
+    "related": [
+      "dither-sculpture",
+      "ink-sculpture",
+      "sculpture-orbit",
+      "shape-scene"
+    ]
+  },
+  "dither-sculpture": {
+    "description": "Depth-tested sculptural forms printed as ordered dots, halftone, error diffusion or stipple.",
+    "category": "3D",
+    "usage": [
+      "Choose pattern=\"ordered\", \"halftone\", \"diffusion\" or \"stipple\". grainSize is 1.5–9px and density is 0.5–1.6. Patterns respond to actual surface lighting and depth.",
+      "Pass form=\"bloom\", \"seed\" or \"pebble\", or supply immutable geometry with positions, optional triangles and normals. Invalid geometry reports onGeometryError and keeps a built-in form.",
+      "Use turn, pitch and zoom for explicit orientation; wrap with SculptureOrbit for native drag, keyboard, zoom and reset controls. Pausing optional motion does not disable direct orientation changes.",
+      "loadSculptureFile accepts local self-contained GLB, filled SVG, PNG or JPEG up to 8 MiB. Image limits are 4 million pixels. Images become luminance reliefs; imported materials are replaced by the selected native ink tone. Imports never upload the file.",
+      "Use paused or speed=0 for a still sculpture. Decorative rendering stops while offscreen, hidden, reduced-motion, Flow Off or Motion Off."
+    ],
+    "accessibility": [
+      "The rendered sculpture is decorative. Put any essential information in adjacent readable text and native controls.",
+      "SculptureOrbit supplies labelled keyboard controls; optional hover tracking has no essential action.",
+      "A static fallback remains when Canvas2D is unavailable. Failed local imports report an actionable message and retain the previous sculpture."
+    ],
+    "related": [
+      "glyph-sculpture",
+      "ink-sculpture",
+      "sculpture-orbit"
+    ]
+  },
+  "ink-sculpture": {
+    "description": "Hatched and engraved marks follow the light and relief of a 3D form.",
+    "category": "3D",
+    "usage": [
+      "Choose treatment=\"hatch\", \"crosshatch\" or \"contour\". markSize is 4–16px, density is 0.5–1.6, angle is ±180°, and relief is 0–1.",
+      "Pass form=\"bloom\", \"seed\" or \"pebble\", or supply immutable geometry with positions, optional triangles and normals. Invalid geometry reports onGeometryError and keeps a built-in form.",
+      "Use turn, pitch and zoom for explicit orientation; wrap with SculptureOrbit for native drag, keyboard, zoom and reset controls. Pausing optional motion does not disable direct orientation changes.",
+      "loadSculptureFile accepts local self-contained GLB, filled SVG, PNG or JPEG up to 8 MiB. Image limits are 4 million pixels. Images become luminance reliefs; imported materials are replaced by the selected native ink tone. Imports never upload the file.",
+      "Use paused or speed=0 for a still sculpture. Decorative rendering stops while offscreen, hidden, reduced-motion, Flow Off or Motion Off."
+    ],
+    "accessibility": [
+      "The rendered sculpture is decorative. Put any essential information in adjacent readable text and native controls.",
+      "SculptureOrbit supplies labelled keyboard controls; optional hover tracking has no essential action.",
+      "A static fallback remains when Canvas2D is unavailable. Failed local imports report an actionable message and retain the previous sculpture."
+    ],
+    "related": [
+      "glyph-sculpture",
+      "dither-sculpture",
+      "sculpture-orbit"
+    ]
+  },
+  "sculpture-orbit": {
+    "description": "A shared sculpture viewer with pointer rotation, touch-friendly navigation and complete keyboard controls.",
+    "category": "3D",
+    "usage": [
+      "Render a sculpture through children({turn,pitch,zoom,interacting}). Pass paused={interacting} to hold its optional rotation while manipulating it.",
+      "Omit value for internal state, or pass value/onValueChange for controlled orientation. defaultValue initializes internal state. Reset returns to turn=0, pitch=0, zoom=1.",
+      "Drag with a mouse to turn and tilt. Touch swipes rotate horizontally while vertical movement keeps page scrolling. Zoom uses a native slider, with turn/tilt and reset buttons.",
+      "disabled prevents pointer and keyboard input. Turn wraps around; pitch is bounded to ±80°, and zoom to 0.6–1.15."
+    ],
+    "accessibility": [
+      "The viewport is labelled and keyboard focusable. Arrow keys rotate, Shift uses larger steps, +/− zoom and Home resets.",
+      "Explicit view controls work with reduced motion and shared motion disabled. Place essential content outside the decorative sculpture."
+    ],
+    "related": [
+      "glyph-sculpture",
+      "dither-sculpture",
+      "ink-sculpture",
+      "slider"
+    ]
+  },
+  "writing-caret": {
+    "description": "A quiet writing mark with a short, deliberate blink sequence.",
+    "category": "Typography",
+    "usage": [
+      "Place WritingCaret inline after display text. It is decorative; editable inputs retain their native browser caret.",
+      "Set active to begin a finite sequence. blinkCount defaults to three and is bounded to six; duration is milliseconds per cycle and total animation is capped at six seconds.",
+      "Change replayKey to replay. opacity (or style.opacity) takes precedence over blinking; style controls size, colour and corner radius."
+    ],
+    "accessibility": [
+      "The mark is hidden from assistive technology and ignores pointer input.",
+      "Reduced motion, shared quiet settings and hidden documents stop blinking. Offscreen marks do not run."
+    ],
+    "related": [
+      "text-reveal",
+      "guided-pointer",
+      "input"
+    ]
+  },
+  "guided-pointer": {
+    "description": "An illustrated pointer moves between story waypoints, with a small arrival or hold cue.",
+    "category": "Effects",
+    "usage": [
+      "Place GuidedPointer inside a positioned container. Supply points with unique id and normalized x/y coordinates; activeId selects the current waypoint.",
+      "Use real buttons outside the illustration to move through the story. The overlay does not click, replace the system cursor or intercept input.",
+      "Choose arrow or hand, set duration in milliseconds (up to two seconds), and change replayKey for another arrival cue. Point click adds a finite ring; pressed adds a held pose.",
+      "Coordinates are clamped to the available area after accounting for size. An omitted activeId selects the first valid point; a missing ID or empty points hides the pointer."
+    ],
+    "accessibility": [
+      "The overlay is inert, hidden from assistive technology and cannot receive focus.",
+      "Provide accessible descriptions and controls for the story itself. Quiet and offscreen states settle to the destination without a pulse."
+    ],
+    "related": [
+      "writing-caret",
+      "presence",
+      "stepper"
+    ]
+  },
+  "glass-sculpture": {
+    "description": "Translucent geometry bends an original patterned studio through a softly lit glass surface.",
+    "category": "3D",
+    "usage": [
+      "Adjust refraction, frost, thickness and dispersion. Choose ribbons, petals or tiles for the original procedural studio.",
+      "The material refracts its own studio backdrop, not arbitrary page content. pointerTracking is opt-in for this material.",
+      "Use the built-in bloom, seed or pebble, or pass validated SculptureGeometry. The shared local-file example accepts bounded GLB, SVG, PNG and JPEG geometry.",
+      "Compose with SculptureOrbit for mouse, touch and keyboard view controls. turn, pitch and zoom also accept explicit values.",
+      "Use paused to hold movement; speed is bounded to 0–3. onRendererChange reports pending, webgl, fallback or error. A static shape remains if the GPU is unavailable."
+    ],
+    "accessibility": [
+      "The canvas is decorative and ignores pointer focus. Keep essential information and actions outside the artwork.",
+      "Reduced motion, Motion Off and Flow Off stop automatic and pointer motion. Offscreen or hidden scenes suspend rendering; explicit view controls remain available."
+    ],
+    "related": [
+      "sculpture-orbit",
+      "glyph-sculpture",
+      "flow-sculpture",
+      "particle-sculpture"
+    ]
+  },
+  "flow-sculpture": {
+    "description": "A rendered form responds to pointer strokes through a fluid distortion field.",
+    "category": "3D",
+    "usage": [
+      "Adjust distortion, chromatic separation, spread, settle and swirl. Increase pulse to create a finite keyboard-triggered stir while motion is enabled.",
+      "Pointer motion changes an original screen-space velocity field over the sculpture. A quiet or paused setting prevents new impulses.",
+      "Use the built-in bloom, seed or pebble, or pass validated SculptureGeometry. The shared local-file example accepts bounded GLB, SVG, PNG and JPEG geometry.",
+      "Compose with SculptureOrbit for mouse, touch and keyboard view controls. turn, pitch and zoom also accept explicit values.",
+      "Use paused to hold movement; speed is bounded to 0–3. onRendererChange reports pending, webgl, fallback or error. A static shape remains if the GPU is unavailable."
+    ],
+    "accessibility": [
+      "The canvas is decorative and ignores pointer focus. Keep essential information and actions outside the artwork.",
+      "Reduced motion, Motion Off and Flow Off stop automatic and pointer motion. Offscreen or hidden scenes suspend rendering; explicit view controls remain available."
+    ],
+    "related": [
+      "sculpture-orbit",
+      "glyph-sculpture",
+      "glass-sculpture",
+      "particle-sculpture"
+    ]
+  },
+  "particle-sculpture": {
+    "description": "A cloud sampled from a real surface yields to the pointer and springs back into form.",
+    "category": "3D",
+    "usage": [
+      "Adjust count (300–8000), size, strength, radius, spring, damping and swirl. Increase pulse to make the points briefly expand while motion is enabled.",
+      "Samples follow the actual triangle surface. Density and renderer resolution are bounded to keep the scene manageable.",
+      "Use the built-in bloom, seed or pebble, or pass validated SculptureGeometry. The shared local-file example accepts bounded GLB, SVG, PNG and JPEG geometry.",
+      "Compose with SculptureOrbit for mouse, touch and keyboard view controls. turn, pitch and zoom also accept explicit values.",
+      "Use paused to hold movement; speed is bounded to 0–3. onRendererChange reports pending, webgl, fallback or error. A static shape remains if the GPU is unavailable."
+    ],
+    "accessibility": [
+      "The canvas is decorative and ignores pointer focus. Keep essential information and actions outside the artwork.",
+      "Reduced motion, Motion Off and Flow Off stop automatic and pointer motion. Offscreen or hidden scenes suspend rendering; explicit view controls remain available."
+    ],
+    "related": [
+      "sculpture-orbit",
+      "glyph-sculpture",
+      "glass-sculpture",
+      "flow-sculpture"
+    ]
+  },
+  "number-input": {
+    "description": "A number field with readable formatting, a native editing caret and expressive stepping.",
+    "category": "Forms",
+    "usage": [
+      "Use defaultValue for internal state or value/onValueChange for controlled values. null represents an empty field.",
+      "Set min, max and step for adjustments. Editing uses a native text input with decimal input mode; blur and Enter normalize valid values, while Escape restores the current value.",
+      "Choose locale and Intl.NumberFormatOptions for display. The animated formatted layer gives way to the real input while editing.",
+      "Choose count, roll or steps for value transitions. The input ref targets the actual input; className and style apply to the outer field."
+    ],
+    "accessibility": [
+      "Associate a Label with id, or supply aria-label. The native input exposes spinbutton values and supports ArrowUp/ArrowDown.",
+      "Both step buttons have accessible labels and respect disabled/readOnly and bounds. Quiet settings show final values without motion."
+    ],
+    "related": [
+      "animated-number",
+      "input",
+      "slider"
+    ]
+  },
+  "semantic-bloom": {
+    "description": "A living wordmark whose particles wander, connect and gather into a liquid organism. Adapted from ThreeUI with Cojeev colors and motion controls.",
+    "category": "Typography",
+    "usage": [
+      "Use text for a readable DOM wordmark. Choose tone=\"signature\", \"memory\", \"together\" or \"ink\"; colors follow the surrounding design tokens. The host has a default minimum height and accepts className/style.",
+      "Tune physics: particleCount (8–100), radius (6–28), speed (0–2), wander (0–1), damping (0.8–0.98), pointerAttraction (0–3), pointerRadius (0–600), textAttraction (0–3), textRadius (0–400), connectionDistance (0–240). Distances are CSS pixels. Invalid numeric values fall back to safe defaults.",
+      "Tune size (0.55–1.6), opacity (0–1, artwork only), softness (0–20), edgeTexture (0–40), and connectionWidth (0–8). Zero connection width removes links. Very small particles with a large blur can dissolve; reduce softness to expose individual particles.",
+      "Pass controlsRef for gather(), scatter() and reset(); connect these to native buttons or real application events. seed provides a repeatable initial arrangement. onWordActive reports decorative proximity only, not semantic analysis.",
+      "Source-based adaptation of ThreeUI Semantic Bloom (MIT, copyright 2026 Meng To). Original force defaults and liquid filter retained; native container coordinates, fixed 60Hz simulation, palette and lifecycle replace the iframe. See docs/semantic-bloom.md and reference/semantic-bloom for attribution and a runnable baseline."
+    ],
+    "accessibility": [
+      "The complete wordmark is selectable, wrapping DOM text. The canvas/filter/fallback are decorative and hidden from assistive technology. Essential meaning must not depend on particles or onWordActive.",
+      "Provide a Pause button for an ongoing animation. paused, speed=0, system reduced motion, Motion Off, Flow Off, hidden tabs and offscreen hosts suspend continuous rendering. Direct gather/scatter/reset controls remain available; no essential action requires hovering.",
+      "Pointer tracking stays local, leaves the cursor visible and releases on leave/cancel/touch end. Touch retains vertical scrolling. Context failure keeps a static organic fallback and readable text.",
+      "Particle count, DPR, canvas area and catch-up steps are bounded. Resize observers, theme/font listeners and animation frames are disposed on unmount. This example is an interactive visual demo, not connected agent activity."
+    ],
+    "related": [
+      "word-relay",
+      "agent-state",
+      "organism-assembly",
+      "pigment-field"
+    ]
+  },
+  "typography-vortex": {
+    "description": "Nested rotating glyph rings with a local dissolution lens and a finite suction pulse.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "particle-text": {
+    "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "warp-text": {
+    "description": "Rendered text deforms through a slowly changing noise displacement.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "falling-text": {
+    "description": "Measured word rectangles fall, collide and settle inside a bounded stage.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "scroll-reveal": {
+    "description": "Native scroll progress resolves word opacity and blur while leveling the phrase.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "variable-proximity": {
+    "description": "Pointer distance changes the real variable-font weight of individual graphemes.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "word-stream": {
+    "description": "Phrases build word by word, drift left and run out before the final phrase holds.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "caret-swap": {
+    "description": "A colored caret block consumes a phrase before typing its replacement in whole graphemes.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "zoom-words": {
+    "description": "An enlarged camera follows measured centers along a growing word line.",
+    "category": "Typography",
+    "usage": [
+      "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example."
+    ],
+    "accessibility": [
+      "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor."
+    ],
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ]
+  },
+  "scroll-expand": {
+    "description": "A framed composition opens as native scroll or controlled progress advances.",
+    "category": "Effects",
+    "usage": [
+      "Use a single product demonstration after the hero.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "ripple-distortion": {
+    "description": "Pointer impulses send expanding waves through a textured print.",
+    "category": "Effects",
+    "usage": [
+      "Optional material playground; keep important text outside.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "elastic-mesh": {
+    "description": "A triangulated printed sheet stretches toward the pointer and springs home.",
+    "category": "Effects",
+    "usage": [
+      "Optional playground specimen.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "swarm-cursor": {
+    "description": "A local flock of colored seeds follows the pointer and scatters on activation.",
+    "category": "Effects",
+    "usage": [
+      "Optional playground only; avoid global landing cursors.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "pixel-swap": {
+    "description": "A staggered tile mask exchanges two compositions without duplicating their interactive content.",
+    "category": "Effects",
+    "usage": [
+      "Use in one before/after demonstration.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "orbit-images": {
+    "description": "An orbit of supplied images frames stationary content.",
+    "category": "Creative",
+    "usage": [
+      "Optional library family vignette with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "target-cursor": {
+    "description": "Local corner brackets follow real controls on hover and keyboard focus.",
+    "category": "Effects",
+    "usage": [
+      "Use within an interactive specimen only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "magic-rings": {
+    "description": "Open concentric rings expand in Cojeev colors and respond to pointer position.",
+    "category": "Backgrounds",
+    "usage": [
+      "Optional small closing accent, with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "ghost-cursor": {
+    "description": "A translucent ink impression follows a local pointer with soft inertia.",
+    "category": "Effects",
+    "usage": [
+      "Playground only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "click-spark": {
+    "description": "A finite spray of accent marks responds to a real activation.",
+    "category": "Effects",
+    "usage": [
+      "Optional single CTA feedback; retain ordinary pressed and focus states.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "strands": {
+    "description": "A bundle of colored ribbons moves through a bounded sine field.",
+    "category": "Backgrounds",
+    "usage": [
+      "Optional quiet section accent; one instance at a time.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "image-trail": {
+    "description": "Distance-triggered image impressions follow the pointer and fade away.",
+    "category": "Effects",
+    "usage": [
+      "An optional gallery playground.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "meta-balls": {
+    "description": "Moving scalar-field bodies merge and separate through liquid contours.",
+    "category": "Backgrounds",
+    "usage": [
+      "Optional material specimen with a still frame.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ]
+  },
+  "infinite-spiral": {
+    "description": "Helical image cards recycle through depth with explicit previous, next and pause controls.",
+    "category": "Creative",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
     ],
     "related": [
       "carousel",
-      "scroll-area",
-      "adjuster"
+      "accordion"
+    ]
+  },
+  "accordion-gallery": {
+    "description": "A selected image panel opens to reveal its label, story and action.",
+    "category": "Creative",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "carousel",
+      "accordion"
+    ]
+  },
+  "option-wheel": {
+    "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+    "category": "Forms",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "carousel",
+      "accordion"
+    ]
+  },
+  "grain-dissolve": {
+    "description": "Caller scenes dissolve through a grainy pigment field with a soft focus exchange.",
+    "category": "Effects",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "presence",
+      "pixel-swap"
+    ]
+  },
+  "wave-wipe": {
+    "description": "An organic wave rises across caller content to reveal the next scene.",
+    "category": "Effects",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "presence",
+      "pixel-swap"
+    ]
+  },
+  "dither-dissolve": {
+    "description": "Caller scenes exchange beneath a deterministic ordered dither cover.",
+    "category": "Effects",
+    "usage": [
+      "Supply caller content and keep the example controls for accessible interaction."
+    ],
+    "accessibility": [
+      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+    ],
+    "related": [
+      "presence",
+      "pixel-swap"
+    ]
+  },
+  "portal-field": {
+    "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
+    "category": "Backgrounds",
+    "usage": [
+      "Compose real content as children; keep essential controls above the decorative field.",
+      "Choose balanced, warm or cool Cojeev accents and keep a visible pause control for continuous movement."
+    ],
+    "accessibility": [
+      "The canvas and static SVG are decorative and hidden from assistive technology; children retain native semantics.",
+      "Reduced motion, shared motion/flow off, hidden tabs and offscreen stages stop animation. Local pointer response never captures the native cursor or touch scroll.",
+      "A deterministic static organic halo remains when WebGL is unavailable or lost."
+    ],
+    "related": [
+      "magic-rings",
+      "contour-field",
+      "pigment-field"
+    ]
+  },
+  "article-headings": {
+    "description": "Semantic article headings resolve through a brief, grapheme-safe noise frontier.",
+    "category": "Typography",
+    "usage": [
+      "Supply stable unique item ids, full titles and optional metadata or hrefs; choose the correct heading level for the surrounding page.",
+      "Change replayKey to deliberately decode again. Pausing or leaving view restores complete text and cancels the current sequence.",
+      "Use on a compact editorial list; duration and total stagger are bounded, and large titles/lists retain readable static text."
+    ],
+    "accessibility": [
+      "Actual complete heading text remains in the accessibility tree throughout; decorative changing glyphs are aria-hidden and never announced.",
+      "Each glyph reserves its true footprint so noise does not move the heading, metadata or neighboring content.",
+      "Reduced motion, shared motion/flow off and hidden/offscreen stages keep exact still headings. Optional links remain keyboard accessible with visible focus."
+    ],
+    "related": [
+      "text-reveal",
+      "word-relay",
+      "writing-caret"
+    ]
+  },
+  "motion-drawer": {
+    "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
+    "category": "Layout",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "sheet",
+      "drawer"
+    ]
+  },
+  "linear-modal": {
+    "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+    "category": "Layout",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "dialog",
+      "card"
+    ]
+  },
+  "image-masking": {
+    "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
+    "category": "Creative",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "shape",
+      "presence"
+    ]
+  },
+  "buy-me-coffee": {
+    "description": "A support poster reveals an inviting cup illustration and a real caller destination.",
+    "category": "Actions",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "hero-button",
+      "card"
+    ]
+  },
+  "swapy": {
+    "description": "Cards swap positions through a drag handle or keyboard controls and retain their order in React state.",
+    "category": "Layout",
+    "usage": [
+      "Supply caller content and preserve the native labels and example controls."
+    ],
+    "accessibility": [
+      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+    ],
+    "related": [
+      "card",
+      "grid"
     ]
   }
 }

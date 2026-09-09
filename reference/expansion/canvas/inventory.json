@@ -1,0 +1,4634 @@
+{
+  "schemaVersion": 1,
+  "source": "Canvas UI",
+  "catalogUrl": "https://canvasui.dev/components",
+  "capturedAt": "2026-09-08T15:41:41.918266+00:00",
+  "sourceRepository": "https://github.com/DavidHDev/canvas-ui",
+  "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+  "sourceCommitDate": "2026-09-04T13:58:04Z",
+  "scope": "Complete canonical catalog inventory; three detailed engine inspections and seven public rendered/pointer samples. Original Cojeev object treatments have separate native runtime and visual evidence.",
+  "counts": {
+    "canonicalEntries": 35,
+    "shaderEffects": 35,
+    "objectEffects": 6,
+    "htmlInCanvasEffects": 29,
+    "webglEngines": 35,
+    "webgpuEngines": 35,
+    "frameworkVariantsPerRenderer": 6,
+    "generatedRegistryVariants": 420,
+    "reactWebglRegistryEndpointsFetched": 35,
+    "sourceInspected": 3,
+    "rendered": 7,
+    "pointerInspected": 7,
+    "existingCojeevEntries": 106
+  },
+  "categoryCounts": {
+    "shader/object": 6,
+    "shader/reveal": 6,
+    "shader/lens": 6,
+    "shader/overlay": 12,
+    "shader/surface": 5
+  },
+  "verificationBoundaries": [
+    "Discovery is complete against site catalog, src/data/components.ts, src/lib/registry.ts, and 35 route pages in pinned tree.",
+    "Source-inspected means one of the three detailed samples; downloading or mechanically extracting imports is not full source review.",
+    "Rendered means inspected real-browser output. Liquid, ASCII Object, Dithered Object, Ink Object, Glass Object, Liquid Object and Particle Object were individually rendered and pointer-operated. Selected source controls were also exercised. Public source inspection is distinct from native implementation verification.",
+    "Upstream WebGPU, reduced-motion, context-loss, mobile and broad keyboard/accessibility behavior were not audited. Specific public form controls were keyboard-operated for the material-object observations; original Cojeev implementations have separate runtime receipts.",
+    "Receipt source copies remain restricted upstream material; they are internal research evidence, not MIT implementation or distributable package content."
+  ],
+  "existingCojeevSnapshot": {
+    "head": "a50d2d4a538d13c1e808cc94344f48a6fb58686b",
+    "registryPath": "registry.json",
+    "registrySha256": "67e3ae082e0a909c206f0b6ab2cf822acba8f6e334bd2f93cfa5f32f084dc9a4",
+    "countExcludingBaseStyleItem": 106,
+    "ids": [
+      "accordion",
+      "action-dock",
+      "adjuster",
+      "agent-chat",
+      "agent-state",
+      "alert",
+      "alert-dialog",
+      "ambient-background",
+      "animated-icon",
+      "animated-number",
+      "appearance",
+      "area-chart",
+      "aspect-ratio",
+      "assembly-part",
+      "attachment",
+      "avatar",
+      "badge",
+      "bar-chart",
+      "breadcrumb",
+      "bubble",
+      "button",
+      "button-group",
+      "calendar",
+      "card",
+      "carousel",
+      "chart",
+      "chart-tooltip",
+      "checkbox",
+      "code-block",
+      "collapsible",
+      "combobox",
+      "command",
+      "compact-dashboard",
+      "context-menu",
+      "conversation-panel",
+      "data-table",
+      "date-picker",
+      "depth-background",
+      "dialog",
+      "direction",
+      "drawer",
+      "dropdown-menu",
+      "dropzone",
+      "empty",
+      "field",
+      "float-layer",
+      "focus-session",
+      "hero-button",
+      "hover-card",
+      "icon",
+      "input",
+      "input-group",
+      "input-otp",
+      "invite-card",
+      "item",
+      "item-adornment",
+      "kbd",
+      "label",
+      "line-chart",
+      "marker",
+      "marquee",
+      "menubar",
+      "message",
+      "message-scroller",
+      "multi-select",
+      "native-select",
+      "navigation-menu",
+      "organism-assembly",
+      "organism-composition",
+      "pagination",
+      "pie-chart",
+      "popover",
+      "presence",
+      "preview",
+      "profile-card",
+      "progress",
+      "questionnaire",
+      "radar-chart",
+      "radial-chart",
+      "radio-group",
+      "resizable",
+      "scroll-area",
+      "scroll-organism",
+      "select",
+      "separator",
+      "shape",
+      "shape-artwork",
+      "shape-scene",
+      "sheet",
+      "sidebar",
+      "skeleton",
+      "slider",
+      "spinner",
+      "stepper",
+      "switch",
+      "table",
+      "tabs",
+      "text-reveal",
+      "textarea",
+      "theme-toggle",
+      "toast",
+      "toggle",
+      "toggle-group",
+      "tooltip",
+      "typography",
+      "work-side-panel"
+    ],
+    "note": "Dirty checkout; active root registry has 106 component entries, while generated public/r/registry.json currently contains 90 excluding base item."
+  },
+  "entries": [
+    {
+      "id": "canvas/ascii-object",
+      "sourceName": "ASCII Object",
+      "sourceSlug": "ascii-object",
+      "category": "shader/object",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/ascii-object",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiObject/AsciiObjectVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiObject/AsciiObject.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiObject/AsciiObjectVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiObject/AsciiObjectWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/ascii-object-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/ascii-object-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "rendered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": true,
+        "interactionInspected": true,
+        "sourceMetadataInspected": true,
+        "depth": "Public documentation, available controls and individual live demo rendering inspected. Live duck rendered with characters; native drag changed the face and Full to Digits changed the repertoire. No detailed restricted renderer audit or code reuse in this slice.",
+        "publicDocsInspected": true
+      },
+      "dependencies": {
+        "webgl": [
+          "three"
+        ],
+        "webglDev": [
+          "@types/three"
+        ],
+        "webgpu": [
+          "vgpu",
+          "three"
+        ],
+        "webgpuDev": [
+          "@webgpu/types",
+          "@types/three"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": false,
+        "withoutHtmlInCanvas": "Object effect does not depend on HTML-in-canvas.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "shape-artwork",
+          "shape"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Object silhouettes and shading translated to a glyph field.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "Official demo rendered an asset silhouette from actual characters; native orbit drag and Digits selection visibly changed the output.",
+        "Original native implementation now uses validated custom triangle geometry, self-contained GLB / filled SVG / PNG / JPEG intake, a real depth buffer, themed print and reusable accessible orbit/zoom. Exact renderer/API/material parity is not claimed."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#ascii-object",
+        "sourcePaths": [
+          {
+            "path": "src/lib/AsciiObject/AsciiObjectVanilla.ts",
+            "gitBlobSha": "11b84c265f38c74c98467e91647da00aad754c9a"
+          },
+          {
+            "path": "src/lib/AsciiObject/AsciiObjectWebGPU.ts",
+            "gitBlobSha": "711eac1f49721e673980dc4c2d17bb6a8fd77b8c"
+          },
+          {
+            "path": "src/lib/AsciiObject/AsciiObject.tsx",
+            "gitBlobSha": "c44187cc19c5c6d2f1f34b517956a91a95aa8476"
+          },
+          {
+            "path": "src/lib/AsciiObject/AsciiObject.solid.tsx",
+            "gitBlobSha": "08b2977c9a8ecbc13cd31fc0f6c582cbba36682b"
+          },
+          {
+            "path": "src/lib/AsciiObject/AsciiObject.preact.tsx",
+            "gitBlobSha": "6d8078db554287f13122198a32f60b4b91128062"
+          },
+          {
+            "path": "src/lib/AsciiObject/AsciiObject.vue",
+            "gitBlobSha": "2664a60a7cc57cbc4516597732271392df747207"
+          },
+          {
+            "path": "src/lib/AsciiObject/AsciiObject.svelte",
+            "gitBlobSha": "543425f4687c6889593ff0002fb57106f0c96684"
+          }
+        ],
+        "asciiObjectInspection": [
+          "receipts/ascii-object-reference.png",
+          "receipts/ascii-object-orbit.png",
+          "receipts/ascii-object-digits.png",
+          "receipts/upstream/src/app/(shell)/docs/components/ascii-object/page.tsx.txt",
+          "receipts/upstream/src/demos/ascii-object-demo.tsx.txt"
+        ],
+        "objectTreatments": "receipts/object-treatments-handoff.json"
+      },
+      "cojeevImplementation": {
+        "componentId": "glyph-sculpture",
+        "companionComponentId": "sculpture-orbit",
+        "status": "partial-original-core",
+        "verifiedUsefulCore": false,
+        "verifiedEquivalent": false,
+        "implementedCore": "Original depth-tested 3D triangle geometry to shaded glyphs, three character sets, density contour marks, bounded local asset intake, orbit/zoom and native fallback.",
+        "remaining": [
+          "Measured glyph-template matching: native contour gradients and density ramp are a simpler method",
+          "Full source studio/material, camera and format options; renderer and exact visual parity"
+        ],
+        "evidence": "object-treatments-result.md"
+      }
+    },
+    {
+      "id": "canvas/ascii-sweep",
+      "sourceName": "ASCII Sweep",
+      "sourceSlug": "ascii-sweep",
+      "category": "shader/reveal",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/ascii-sweep",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiSweep/AsciiSweepVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiSweep/AsciiSweep.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiSweep/AsciiSweepVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/AsciiSweep/AsciiSweepWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/ascii-sweep-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/ascii-sweep-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "text-reveal"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Directional character band mediates a two-panel content transition.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#ascii-sweep",
+        "sourcePaths": [
+          {
+            "path": "src/lib/AsciiSweep/AsciiSweepVanilla.ts",
+            "gitBlobSha": "eada4559cabf435b193cd20a7bda4148af14f1fa"
+          },
+          {
+            "path": "src/lib/AsciiSweep/AsciiSweepWebGPU.ts",
+            "gitBlobSha": "3625ed0b22af4aab90e19a98fad0a6364820a9b0"
+          },
+          {
+            "path": "src/lib/AsciiSweep/AsciiSweep.tsx",
+            "gitBlobSha": "3bb941d9d76f9b76acb524fbf42ae41729855ec6"
+          },
+          {
+            "path": "src/lib/AsciiSweep/AsciiSweep.solid.tsx",
+            "gitBlobSha": "79a1a0b6285905af3f5f80f4d9135accb0e607e0"
+          },
+          {
+            "path": "src/lib/AsciiSweep/AsciiSweep.preact.tsx",
+            "gitBlobSha": "4a5e8b3e734556bcd97046bd7e6b2c8fbcfd247a"
+          },
+          {
+            "path": "src/lib/AsciiSweep/AsciiSweep.vue",
+            "gitBlobSha": "05566364f89181f5e3982cfa0193f4d6598a1ea1"
+          },
+          {
+            "path": "src/lib/AsciiSweep/AsciiSweep.svelte",
+            "gitBlobSha": "65c3e50654caeec985e2639e72bb91a2711ee804"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/asciify",
+      "sourceName": "Asciify",
+      "sourceSlug": "asciify",
+      "category": "shader/lens",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/asciify",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Asciify/AsciifyVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Asciify/Asciify.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Asciify/AsciifyVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Asciify/AsciifyWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/asciify-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/asciify-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Cursor-local character treatment over ordinary content.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#asciify",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Asciify/AsciifyVanilla.ts",
+            "gitBlobSha": "c60883418a81092fa401d9e0aa89cda42bfcac12"
+          },
+          {
+            "path": "src/lib/Asciify/AsciifyWebGPU.ts",
+            "gitBlobSha": "9a6159d9ef72d6b85b9c28f6e6c3fb5e6f73e493"
+          },
+          {
+            "path": "src/lib/Asciify/Asciify.tsx",
+            "gitBlobSha": "5be243904614c88673842827ae039a56641cbdd1"
+          },
+          {
+            "path": "src/lib/Asciify/Asciify.solid.tsx",
+            "gitBlobSha": "b58d4e2933351d72d597cf4ab7b87078b9ac260d"
+          },
+          {
+            "path": "src/lib/Asciify/Asciify.preact.tsx",
+            "gitBlobSha": "7f9240354f3c9a6f72a06bae30d6a91bea286904"
+          },
+          {
+            "path": "src/lib/Asciify/Asciify.vue",
+            "gitBlobSha": "eced6ed99a1ab21eb873f64e04c5c57c6af01b78"
+          },
+          {
+            "path": "src/lib/Asciify/Asciify.svelte",
+            "gitBlobSha": "3e663eacffda7ceb9a88b2b88654934ead4da49a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/bend",
+      "sourceName": "Bend",
+      "sourceSlug": "bend",
+      "category": "shader/reveal",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/bend",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bend/BendVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bend/Bend.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bend/BendVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bend/BendWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/bend-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/bend-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "scroll-organism"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Scroll position bends content around two horizontal edges.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#bend",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Bend/BendVanilla.ts",
+            "gitBlobSha": "e9d26ad146fb16db23ab3ab6a0a86b11dd15a505"
+          },
+          {
+            "path": "src/lib/Bend/BendWebGPU.ts",
+            "gitBlobSha": "d8e9f10a0436bad9f949186257b35e367abc8719"
+          },
+          {
+            "path": "src/lib/Bend/Bend.tsx",
+            "gitBlobSha": "1c07f078041a60bfa55f1ab1b370cede58a789ef"
+          },
+          {
+            "path": "src/lib/Bend/Bend.solid.tsx",
+            "gitBlobSha": "1e2b9b87b0b2f710f2e060cff7124d21811b23a8"
+          },
+          {
+            "path": "src/lib/Bend/Bend.preact.tsx",
+            "gitBlobSha": "7d1517431c5f08ef50ba760fbba4fce5dad1ca92"
+          },
+          {
+            "path": "src/lib/Bend/Bend.vue",
+            "gitBlobSha": "05d434e71d011eda93280d13a49d2c4eaa09b40d"
+          },
+          {
+            "path": "src/lib/Bend/Bend.svelte",
+            "gitBlobSha": "4e0577816da9b7851f866e5d5d933a31119ee33e"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/blaze",
+      "sourceName": "Blaze",
+      "sourceSlug": "blaze",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/blaze",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Blaze/BlazeVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Blaze/Blaze.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Blaze/BlazeVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Blaze/BlazeWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/blaze-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/blaze-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Warm spark and smoke overlay with refractive heat cues.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#blaze",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Blaze/BlazeVanilla.ts",
+            "gitBlobSha": "2cd5c522a390a0cb20e59e6304dd94e787493438"
+          },
+          {
+            "path": "src/lib/Blaze/BlazeWebGPU.ts",
+            "gitBlobSha": "ed03536870a949e74aeb43c6333a1a7e5a065bb5"
+          },
+          {
+            "path": "src/lib/Blaze/Blaze.tsx",
+            "gitBlobSha": "24d12dc2f07c38acf75f06764ad37b099fdb8fb2"
+          },
+          {
+            "path": "src/lib/Blaze/Blaze.solid.tsx",
+            "gitBlobSha": "ed28f31bdb2a4cd2ec4ec6b217fc296482caeec5"
+          },
+          {
+            "path": "src/lib/Blaze/Blaze.preact.tsx",
+            "gitBlobSha": "35b06f2368de7c519c84da53e39823948e6c40b2"
+          },
+          {
+            "path": "src/lib/Blaze/Blaze.vue",
+            "gitBlobSha": "bc93806ee0fb1f8aed6f33d4ccd23eea2ac1f3f2"
+          },
+          {
+            "path": "src/lib/Blaze/Blaze.svelte",
+            "gitBlobSha": "230ef8f63d0fdea097eabd26f17c674159ad425a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/bubble",
+      "sourceName": "Bubble",
+      "sourceSlug": "bubble",
+      "category": "shader/lens",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/bubble",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bubble/BubbleVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bubble/Bubble.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bubble/BubbleVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Bubble/BubbleWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/bubble-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/bubble-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background",
+          "bubble"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Same-name collision: existing Cojeev bubble is a chat component, not this optical effect."
+      },
+      "notes": [
+        "A trailing cluster of refractive droplets responds to pointer motion.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#bubble",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Bubble/BubbleVanilla.ts",
+            "gitBlobSha": "144884cf51ff1aa9a944a0eecc079ec1507740c4"
+          },
+          {
+            "path": "src/lib/Bubble/BubbleWebGPU.ts",
+            "gitBlobSha": "7f6260dbd8f235b1be4cd386d42234a0bb8517f3"
+          },
+          {
+            "path": "src/lib/Bubble/Bubble.tsx",
+            "gitBlobSha": "065b7b15da75726ed6f065c1817369dfc3ec553f"
+          },
+          {
+            "path": "src/lib/Bubble/Bubble.solid.tsx",
+            "gitBlobSha": "c16f28c9e7be49971d16992f46382920804e66b3"
+          },
+          {
+            "path": "src/lib/Bubble/Bubble.preact.tsx",
+            "gitBlobSha": "ed4350379000634652b1efdff9220ca67b1ee9ab"
+          },
+          {
+            "path": "src/lib/Bubble/Bubble.vue",
+            "gitBlobSha": "05cf63fcbc40be666334dc87fddcd2b555ecaeee"
+          },
+          {
+            "path": "src/lib/Bubble/Bubble.svelte",
+            "gitBlobSha": "6362fe9e370fbdb01de73573b17684c950802b0f"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/canvas",
+      "sourceName": "Canvas",
+      "sourceSlug": "canvas",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/canvas",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Canvas/CanvasVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Canvas/Canvas.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Canvas/CanvasVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Canvas/CanvasWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/canvas-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/canvas-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Material texture and pigment ridges suggest a painted surface.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#canvas",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Canvas/CanvasVanilla.ts",
+            "gitBlobSha": "7a59954e7ec27d636f3066616686a6257a0484fd"
+          },
+          {
+            "path": "src/lib/Canvas/CanvasWebGPU.ts",
+            "gitBlobSha": "8d1f65638a2fc3d4c6572ecfde8fa437f0033bec"
+          },
+          {
+            "path": "src/lib/Canvas/Canvas.tsx",
+            "gitBlobSha": "1ba8229a2a6602903c683c389c049ba8bfbc7147"
+          },
+          {
+            "path": "src/lib/Canvas/Canvas.solid.tsx",
+            "gitBlobSha": "b0b7d4fd00867e4a390e56af1095e7154195f67a"
+          },
+          {
+            "path": "src/lib/Canvas/Canvas.preact.tsx",
+            "gitBlobSha": "14dca7c5ae78f975422b21be54de0b681f51dae1"
+          },
+          {
+            "path": "src/lib/Canvas/Canvas.vue",
+            "gitBlobSha": "615ae07a77cf6e26d01e4edb30706e6192174865"
+          },
+          {
+            "path": "src/lib/Canvas/Canvas.svelte",
+            "gitBlobSha": "399b945bf5a8d1902717f440a3c7d8c93987d9fd"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/cloth",
+      "sourceName": "Cloth",
+      "sourceSlug": "cloth",
+      "category": "shader/surface",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/cloth",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Cloth/ClothVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Cloth/Cloth.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Cloth/ClothVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Cloth/ClothWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/cloth-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/cloth-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "float-layer",
+          "organism-assembly"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Wind and pointer impulses deform a fabric-like content plane.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#cloth",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Cloth/ClothVanilla.ts",
+            "gitBlobSha": "623c8bc2076c6f51bfc1a9723c977f52379a281e"
+          },
+          {
+            "path": "src/lib/Cloth/ClothWebGPU.ts",
+            "gitBlobSha": "bdffb75e48e0a1ba098512662c6e3219ca29a7ec"
+          },
+          {
+            "path": "src/lib/Cloth/Cloth.tsx",
+            "gitBlobSha": "46cbb19628e3c05a71feb57657e12b263b457750"
+          },
+          {
+            "path": "src/lib/Cloth/Cloth.solid.tsx",
+            "gitBlobSha": "6a2017874a056bc8df406a5d7c42114758b5b694"
+          },
+          {
+            "path": "src/lib/Cloth/Cloth.preact.tsx",
+            "gitBlobSha": "c0514fc8a3863c4df842329ee97daeace04b7792"
+          },
+          {
+            "path": "src/lib/Cloth/Cloth.vue",
+            "gitBlobSha": "6b920f0261d4b4e7d1252e2cf938a09341b80a52"
+          },
+          {
+            "path": "src/lib/Cloth/Cloth.svelte",
+            "gitBlobSha": "3c205a5aa4fd63600ef280297e627dfe6b0bb4b7"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/clouds",
+      "sourceName": "Clouds",
+      "sourceSlug": "clouds",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/clouds",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Clouds/CloudsVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Clouds/Clouds.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Clouds/CloudsVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Clouds/CloudsWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/clouds-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/clouds-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Soft moving mist clears around pointer movement.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#clouds",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Clouds/CloudsVanilla.ts",
+            "gitBlobSha": "dfe4684ca6589b6f920971e55c2fd9380f34113c"
+          },
+          {
+            "path": "src/lib/Clouds/CloudsWebGPU.ts",
+            "gitBlobSha": "b6b78065f74530de06ccfbb5d6b0d4ff6b698438"
+          },
+          {
+            "path": "src/lib/Clouds/Clouds.tsx",
+            "gitBlobSha": "c50c4cc50df34256168923550548d710a351e8dc"
+          },
+          {
+            "path": "src/lib/Clouds/Clouds.solid.tsx",
+            "gitBlobSha": "19a8c2e2fdef01801f0d2e6f4aab03d5f32432a6"
+          },
+          {
+            "path": "src/lib/Clouds/Clouds.preact.tsx",
+            "gitBlobSha": "9c23b4c118440d69e53e75f5e81585406ba0d12a"
+          },
+          {
+            "path": "src/lib/Clouds/Clouds.vue",
+            "gitBlobSha": "23f36825c2015fcab3a85d671c28cbba8b79e089"
+          },
+          {
+            "path": "src/lib/Clouds/Clouds.svelte",
+            "gitBlobSha": "4e65bcea13cded0bf749ceaf19f006e349478b9c"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/decrypt-reveal",
+      "sourceName": "Decrypt Reveal",
+      "sourceSlug": "decrypt-reveal",
+      "category": "shader/reveal",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/decrypt-reveal",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DecryptReveal/DecryptRevealVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DecryptReveal/DecryptReveal.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DecryptReveal/DecryptRevealVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DecryptReveal/DecryptRevealWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/decrypt-reveal-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/decrypt-reveal-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "text-reveal"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer proximity restores legibility from a character cipher.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#decrypt-reveal",
+        "sourcePaths": [
+          {
+            "path": "src/lib/DecryptReveal/DecryptRevealVanilla.ts",
+            "gitBlobSha": "fc90e7692fec92f4365a155002a6a820c5763cef"
+          },
+          {
+            "path": "src/lib/DecryptReveal/DecryptRevealWebGPU.ts",
+            "gitBlobSha": "0bee499db38848efe733ae54e39ac726c261f85e"
+          },
+          {
+            "path": "src/lib/DecryptReveal/DecryptReveal.tsx",
+            "gitBlobSha": "ace4398db08954007d5930b60e1931fda0ba3d2f"
+          },
+          {
+            "path": "src/lib/DecryptReveal/DecryptReveal.solid.tsx",
+            "gitBlobSha": "0a7e91bbf55476f76adbc29d9a3008470a06d0d0"
+          },
+          {
+            "path": "src/lib/DecryptReveal/DecryptReveal.preact.tsx",
+            "gitBlobSha": "a3767c159afed90536a44113a897f0ca168a0fb9"
+          },
+          {
+            "path": "src/lib/DecryptReveal/DecryptReveal.vue",
+            "gitBlobSha": "af0074560815cf36dfbc4ddb21d227e400538582"
+          },
+          {
+            "path": "src/lib/DecryptReveal/DecryptReveal.svelte",
+            "gitBlobSha": "d95e5eb2ca3f98535ad604d513928c6f10404db2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/dithered-object",
+      "sourceName": "Dithered Object",
+      "sourceSlug": "dithered-object",
+      "category": "shader/object",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/dithered-object",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DitheredObject/DitheredObjectVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DitheredObject/DitheredObject.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DitheredObject/DitheredObjectVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/DitheredObject/DitheredObjectWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/dithered-object-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/dithered-object-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "rendered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": true,
+        "interactionInspected": true,
+        "sourceMetadataInspected": true,
+        "depth": "Public documentation, available controls and individual live demo rendering inspected. Live duck rendered with a dithered material; Bayer to Halftone changed the dot pattern and pointer drag changed orientation. No detailed restricted renderer audit or code reuse in this slice.",
+        "publicDocsInspected": true
+      },
+      "dependencies": {
+        "webgl": [
+          "three"
+        ],
+        "webglDev": [
+          "@types/three"
+        ],
+        "webgpu": [
+          "vgpu",
+          "three"
+        ],
+        "webgpuDev": [
+          "@webgpu/types",
+          "@types/three"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": false,
+        "withoutHtmlInCanvas": "Object effect does not depend on HTML-in-canvas.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "shape-artwork",
+          "shape"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A loaded object is restyled through monochrome dot/threshold patterns.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "Original native implementation now uses validated custom triangle geometry, self-contained GLB / filled SVG / PNG / JPEG intake, a real depth buffer, themed print and reusable accessible orbit/zoom. Exact renderer/API/material parity is not claimed."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#dithered-object",
+        "sourcePaths": [
+          {
+            "path": "src/lib/DitheredObject/DitheredObjectVanilla.ts",
+            "gitBlobSha": "c56128dc71ebdca66dc944dca6919a77a3da2483"
+          },
+          {
+            "path": "src/lib/DitheredObject/DitheredObjectWebGPU.ts",
+            "gitBlobSha": "b7d6a433d6a49710c48fe10f03ccce11698b05a5"
+          },
+          {
+            "path": "src/lib/DitheredObject/DitheredObject.tsx",
+            "gitBlobSha": "309ff7d623e5c0a34ca238db68d7f8933b2b3683"
+          },
+          {
+            "path": "src/lib/DitheredObject/DitheredObject.solid.tsx",
+            "gitBlobSha": "bc7812b656981f2c1d0703aa5f030b5d47ed0c0a"
+          },
+          {
+            "path": "src/lib/DitheredObject/DitheredObject.preact.tsx",
+            "gitBlobSha": "47d21b782cfdb09cf10a0ff56b3b1766842da281"
+          },
+          {
+            "path": "src/lib/DitheredObject/DitheredObject.vue",
+            "gitBlobSha": "ccc2c979af73b62d9251e71948da5b5cdf1b3ba8"
+          },
+          {
+            "path": "src/lib/DitheredObject/DitheredObject.svelte",
+            "gitBlobSha": "54e91b3945cb61398a98fa2d3e13d9abbdd62925"
+          }
+        ],
+        "objectTreatments": "receipts/object-treatments-handoff.json"
+      },
+      "cojeevImplementation": {
+        "componentId": "dither-sculpture",
+        "companionComponentId": "sculpture-orbit",
+        "status": "verified-original-useful-core",
+        "verifiedUsefulCore": true,
+        "verifiedEquivalent": false,
+        "implementedCore": "Original lit 3D triangle geometry to ordered / halftone / diffusion / stipple print, bounded local asset intake, orbit/zoom and native fallback.",
+        "remaining": [
+          "Full source studio/material, camera and format options; renderer and exact visual parity"
+        ],
+        "evidence": "object-treatments-result.md"
+      }
+    },
+    {
+      "id": "canvas/displacement",
+      "sourceName": "Displacement",
+      "sourceSlug": "displacement",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/displacement",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Displacement/DisplacementVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Displacement/Displacement.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Displacement/DisplacementVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Displacement/DisplacementWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/displacement-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/displacement-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer movement displaces a grid and separates color channels.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#displacement",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Displacement/DisplacementVanilla.ts",
+            "gitBlobSha": "5e8cf0d5ee787c431b6bfd79b55b87a1646a5eed"
+          },
+          {
+            "path": "src/lib/Displacement/DisplacementWebGPU.ts",
+            "gitBlobSha": "e6fd76e89dfe91add1d2d68a694d39a8f4147d99"
+          },
+          {
+            "path": "src/lib/Displacement/Displacement.tsx",
+            "gitBlobSha": "564a40ca1ae7736ce0c527073ab77f7271f3659c"
+          },
+          {
+            "path": "src/lib/Displacement/Displacement.solid.tsx",
+            "gitBlobSha": "a7a69dbf463be3a756a07e29af03cb92e5720ebf"
+          },
+          {
+            "path": "src/lib/Displacement/Displacement.preact.tsx",
+            "gitBlobSha": "0f662692548505f593e3b045b95284c02d857cef"
+          },
+          {
+            "path": "src/lib/Displacement/Displacement.vue",
+            "gitBlobSha": "ec4b7465b6808029ee6c327e95e1386f0151347b"
+          },
+          {
+            "path": "src/lib/Displacement/Displacement.svelte",
+            "gitBlobSha": "76f5d4e9c9bf6a1e3b2479a3e6aba68162e6dee9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/droplets",
+      "sourceName": "Droplets",
+      "sourceSlug": "droplets",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/droplets",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Droplets/DropletsVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Droplets/Droplets.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Droplets/DropletsVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Droplets/DropletsWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/droplets-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/droplets-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Falling water paths create localized lens distortions.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#droplets",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Droplets/DropletsVanilla.ts",
+            "gitBlobSha": "af087391e67dd6ea84afe9955a4929c705bfe217"
+          },
+          {
+            "path": "src/lib/Droplets/DropletsWebGPU.ts",
+            "gitBlobSha": "f3219fb7224f4fc41f03c14cf03792e3fbe708bf"
+          },
+          {
+            "path": "src/lib/Droplets/Droplets.tsx",
+            "gitBlobSha": "1512caceba6124348ebd3fd2ad2b8918a0c9be7d"
+          },
+          {
+            "path": "src/lib/Droplets/Droplets.solid.tsx",
+            "gitBlobSha": "3b67e72d8a165eb0bf504f3a1364005edbf8b8e2"
+          },
+          {
+            "path": "src/lib/Droplets/Droplets.preact.tsx",
+            "gitBlobSha": "bbb3df43286180d39fa9d36536ecfc894859c582"
+          },
+          {
+            "path": "src/lib/Droplets/Droplets.vue",
+            "gitBlobSha": "1d27273147a5277717139c8252ad13be3793d0c4"
+          },
+          {
+            "path": "src/lib/Droplets/Droplets.svelte",
+            "gitBlobSha": "20fd34e057bedfe928cd4286461e7d24876f616b"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/flame-wrap",
+      "sourceName": "Flame Wrap",
+      "sourceSlug": "flame-wrap",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/flame-wrap",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/FlameWrap/FlameWrapVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/FlameWrap/FlameWrap.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/FlameWrap/FlameWrapVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/FlameWrap/FlameWrapWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/flame-wrap-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/flame-wrap-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Element-edge fire gives a bounded accent treatment.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#flame-wrap",
+        "sourcePaths": [
+          {
+            "path": "src/lib/FlameWrap/FlameWrapVanilla.ts",
+            "gitBlobSha": "a40a8faef8adc628bf5d161741821a19a67c8858"
+          },
+          {
+            "path": "src/lib/FlameWrap/FlameWrapWebGPU.ts",
+            "gitBlobSha": "75e701061283f28feb67b25a73dc53daeaf7a5b9"
+          },
+          {
+            "path": "src/lib/FlameWrap/FlameWrap.tsx",
+            "gitBlobSha": "55b8817e93f09462df8b02d4528a2bda4c4d89b3"
+          },
+          {
+            "path": "src/lib/FlameWrap/FlameWrap.solid.tsx",
+            "gitBlobSha": "a2c33f15c4f25f20785dcd119a148e633224b99d"
+          },
+          {
+            "path": "src/lib/FlameWrap/FlameWrap.preact.tsx",
+            "gitBlobSha": "e40335a481748dc87f7b5cc9ab74f734feba26b3"
+          },
+          {
+            "path": "src/lib/FlameWrap/FlameWrap.vue",
+            "gitBlobSha": "9a6b0e1a94264828718178692e827913be9603fc"
+          },
+          {
+            "path": "src/lib/FlameWrap/FlameWrap.svelte",
+            "gitBlobSha": "530ea2cdcf1ea5c706ed4d4e9cc2325f9de2f890"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/force-field",
+      "sourceName": "Force Field",
+      "sourceSlug": "force-field",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/force-field",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ForceField/ForceFieldVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ForceField/ForceField.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ForceField/ForceFieldVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ForceField/ForceFieldWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/force-field-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/force-field-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer charge and click pulses animate an energy lattice.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#force-field",
+        "sourcePaths": [
+          {
+            "path": "src/lib/ForceField/ForceFieldVanilla.ts",
+            "gitBlobSha": "b9a8966da6746abc109708e3a903c4003c7b8d3e"
+          },
+          {
+            "path": "src/lib/ForceField/ForceFieldWebGPU.ts",
+            "gitBlobSha": "91bb5dd39b3d905c67367058b6a96a181e50ff57"
+          },
+          {
+            "path": "src/lib/ForceField/ForceField.tsx",
+            "gitBlobSha": "1b2f77aa89df12d6041a4e83e791907a3a3400a7"
+          },
+          {
+            "path": "src/lib/ForceField/ForceField.solid.tsx",
+            "gitBlobSha": "ce4d8dba94c5aadd4d47a097c0ae09bc3ee83972"
+          },
+          {
+            "path": "src/lib/ForceField/ForceField.preact.tsx",
+            "gitBlobSha": "3a604f0097afdf3d0fc666ded0451e60d6fe094d"
+          },
+          {
+            "path": "src/lib/ForceField/ForceField.vue",
+            "gitBlobSha": "8c3e71cb05fd921dd32c92aec5bd945f125f4d7e"
+          },
+          {
+            "path": "src/lib/ForceField/ForceField.svelte",
+            "gitBlobSha": "fd4b7636bff209e6948c4d290058f967262e959d"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/frost",
+      "sourceName": "Frost",
+      "sourceSlug": "frost",
+      "category": "shader/lens",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/frost",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Frost/FrostVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Frost/Frost.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Frost/FrostVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Frost/FrostWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/frost-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/frost-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer warmth exposes content through an icy material.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#frost",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Frost/FrostVanilla.ts",
+            "gitBlobSha": "6896cbad660eec5f565bf1a42434f9e3fc04ca2c"
+          },
+          {
+            "path": "src/lib/Frost/FrostWebGPU.ts",
+            "gitBlobSha": "2bb101a5c99ec1ef1d5ba4a0a93957edc0a7e627"
+          },
+          {
+            "path": "src/lib/Frost/Frost.tsx",
+            "gitBlobSha": "bc3dd3719e3e65bba66ceb4443548ab9c424e80f"
+          },
+          {
+            "path": "src/lib/Frost/Frost.solid.tsx",
+            "gitBlobSha": "f3f639e314d5281bdff641c106973812b244b388"
+          },
+          {
+            "path": "src/lib/Frost/Frost.preact.tsx",
+            "gitBlobSha": "0295869ddd4cc16469019692ddf89c2029a9530a"
+          },
+          {
+            "path": "src/lib/Frost/Frost.vue",
+            "gitBlobSha": "f204243c4e0612def4e895fc50b4e227ed3a029d"
+          },
+          {
+            "path": "src/lib/Frost/Frost.svelte",
+            "gitBlobSha": "f9f061a5ac2247a5add380c77ae99844754780ac"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/glass",
+      "sourceName": "Glass",
+      "sourceSlug": "glass",
+      "category": "shader/lens",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/glass",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glass/GlassVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glass/Glass.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glass/GlassVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glass/GlassWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/glass-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/glass-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A moving lens enlarges and refracts selected content.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#glass",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Glass/GlassVanilla.ts",
+            "gitBlobSha": "adacc0ab12c119368dfac9aa49997cfd8095f7f2"
+          },
+          {
+            "path": "src/lib/Glass/GlassWebGPU.ts",
+            "gitBlobSha": "7809702bcde42b6d773a392a734870748da9b137"
+          },
+          {
+            "path": "src/lib/Glass/Glass.tsx",
+            "gitBlobSha": "56532d19e2e641308259a397cc8d18d6e2d3357e"
+          },
+          {
+            "path": "src/lib/Glass/Glass.solid.tsx",
+            "gitBlobSha": "29599580f5f2a45f32cc91ba714f44b8cdc1a6de"
+          },
+          {
+            "path": "src/lib/Glass/Glass.preact.tsx",
+            "gitBlobSha": "0bd9e745ee693096e1cc458c8f8d9b49e4f5b70d"
+          },
+          {
+            "path": "src/lib/Glass/Glass.vue",
+            "gitBlobSha": "f8588da26cb31e8e4a322af074c34f77c2eba10e"
+          },
+          {
+            "path": "src/lib/Glass/Glass.svelte",
+            "gitBlobSha": "e296c1d41c4aa331111e60c0f4e9f737ecac8a66"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/glass-object",
+      "sourceName": "Glass Object",
+      "sourceSlug": "glass-object",
+      "category": "shader/object",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/glass-object",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlassObject/GlassObjectVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlassObject/GlassObject.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlassObject/GlassObjectVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlassObject/GlassObjectWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/glass-object-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/glass-object-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "rendered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": true,
+        "interactionInspected": true,
+        "sourceMetadataInspected": true,
+        "depth": "Public documentation/control contract and individual rendered behavior inspected. Extruded logo-like glass object visibly bends a moving photo backdrop, with edge highlights and blurred volume. Pointer drag changed orientation. Frost keyboard step and click changed public value 0.25 to 0.51 and visibly blurred transmitted image. No restricted engine code was read or reused for this original material implementation.",
+        "publicDocsInspected": true
+      },
+      "dependencies": {
+        "webgl": [
+          "three"
+        ],
+        "webglDev": [
+          "@types/three"
+        ],
+        "webgpu": [
+          "vgpu",
+          "three"
+        ],
+        "webgpuDev": [
+          "@webgpu/types",
+          "@types/three"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": false,
+        "withoutHtmlInCanvas": "Object effect does not depend on HTML-in-canvas.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "shape-artwork",
+          "shape"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A loaded object is presented as a translucent refractive material.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "Original native useful core is independently implemented and verified with real geometry, bounded local imports, responsive UI, orbit/zoom and static fallback. Source renderer, asset and API parity is explicitly false."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#glass-object",
+        "sourcePaths": [
+          {
+            "path": "src/lib/GlassObject/GlassObjectVanilla.ts",
+            "gitBlobSha": "4a5d7a42a92a5286614d1764ba5a02a3c64766de"
+          },
+          {
+            "path": "src/lib/GlassObject/GlassObjectWebGPU.ts",
+            "gitBlobSha": "dd99a51fdde387adfd04de28d9751609c34a319d"
+          },
+          {
+            "path": "src/lib/GlassObject/GlassObject.tsx",
+            "gitBlobSha": "e0ca6dcf6a63af3be7577a65443ee411e7eec3bc"
+          },
+          {
+            "path": "src/lib/GlassObject/GlassObject.solid.tsx",
+            "gitBlobSha": "494f7769409a61aeaf4718d06a780d2c0d3d012d"
+          },
+          {
+            "path": "src/lib/GlassObject/GlassObject.preact.tsx",
+            "gitBlobSha": "f4f909258ede9d5b8abe331576f177b2c5d7710d"
+          },
+          {
+            "path": "src/lib/GlassObject/GlassObject.vue",
+            "gitBlobSha": "418401b51bbef3fa9b6a0607dd09181063c61e9c"
+          },
+          {
+            "path": "src/lib/GlassObject/GlassObject.svelte",
+            "gitBlobSha": "88f5ae1c156eb7a432fcaf82d2d0864c332011a2"
+          }
+        ],
+        "publicBehavior": "receipts/material-source-observations.json#glass-object",
+        "nativeImplementation": "receipts/material-sculptures-handoff.json#glass-object"
+      },
+      "cojeevImplementation": {
+        "componentId": "glass-sculpture",
+        "companionComponentId": "sculpture-orbit",
+        "status": "verified-original-useful-core",
+        "verifiedUsefulCore": true,
+        "verifiedEquivalent": false,
+        "implementedCore": "Original translucent triangle geometry using native Three physical transmission over three original procedural studio patterns, with IOR, frost, thickness, dispersion and bounded local geometry intake.",
+        "remaining": [
+          "Arbitrary DOM or video/photo backdrop refraction is not supported; the scene uses its own procedural studio.",
+          "Full source material/studio/lighting controls, asset formats, WebGPU backend and exact visual/API parity are not implemented."
+        ],
+        "evidence": "material-sculptures-result.md"
+      }
+    },
+    {
+      "id": "canvas/glitch",
+      "sourceName": "Glitch",
+      "sourceSlug": "glitch",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/glitch",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glitch/GlitchVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glitch/Glitch.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glitch/GlitchVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Glitch/GlitchWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/glitch-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/glitch-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Short bursts shift slices and color channels before returning to rest.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#glitch",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Glitch/GlitchVanilla.ts",
+            "gitBlobSha": "06eea69a3f76200c23ced513205f692c2d4e957f"
+          },
+          {
+            "path": "src/lib/Glitch/GlitchWebGPU.ts",
+            "gitBlobSha": "273ff80df54f4dc2dd028be8cbddd1396effa9f5"
+          },
+          {
+            "path": "src/lib/Glitch/Glitch.tsx",
+            "gitBlobSha": "ae9e9430a52012a871ff453bc6873d6d28fe4a81"
+          },
+          {
+            "path": "src/lib/Glitch/Glitch.solid.tsx",
+            "gitBlobSha": "6e8d15922c73d9924d6796e3aa59eafb62ec1c0a"
+          },
+          {
+            "path": "src/lib/Glitch/Glitch.preact.tsx",
+            "gitBlobSha": "fb9d710f46b178b886e9e90f173197adf01ad860"
+          },
+          {
+            "path": "src/lib/Glitch/Glitch.vue",
+            "gitBlobSha": "ec0817d829ef479aec34b6ecbf97ef5ba644759f"
+          },
+          {
+            "path": "src/lib/Glitch/Glitch.svelte",
+            "gitBlobSha": "9a3f050583e1db414a1d80e89add0b1271a98f3f"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/glyph-rain",
+      "sourceName": "Glyph Rain",
+      "sourceSlug": "glyph-rain",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/glyph-rain",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlyphRain/GlyphRainVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlyphRain/GlyphRain.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlyphRain/GlyphRainVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/GlyphRain/GlyphRainWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/glyph-rain-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/glyph-rain-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Vertical character streams respond with local highlights.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#glyph-rain",
+        "sourcePaths": [
+          {
+            "path": "src/lib/GlyphRain/GlyphRainVanilla.ts",
+            "gitBlobSha": "390d3c6f6e9cfdf227aeb7a28146d33d88c9b875"
+          },
+          {
+            "path": "src/lib/GlyphRain/GlyphRainWebGPU.ts",
+            "gitBlobSha": "55cabbf4740ae461760bfb412b5fd0706f335ab2"
+          },
+          {
+            "path": "src/lib/GlyphRain/GlyphRain.tsx",
+            "gitBlobSha": "b9fd5ef91f7ac7a6b5dbd27c722a991c044a767d"
+          },
+          {
+            "path": "src/lib/GlyphRain/GlyphRain.solid.tsx",
+            "gitBlobSha": "1a0bee36610d5cc5f2970cbec80b337d607c0a6a"
+          },
+          {
+            "path": "src/lib/GlyphRain/GlyphRain.preact.tsx",
+            "gitBlobSha": "402c1f866eff2db814987d7b4f15b376a44fcb61"
+          },
+          {
+            "path": "src/lib/GlyphRain/GlyphRain.vue",
+            "gitBlobSha": "07c59b978f6f94aa7345cd5c2cb1c3a93e1a045b"
+          },
+          {
+            "path": "src/lib/GlyphRain/GlyphRain.svelte",
+            "gitBlobSha": "32f56b08fdd8b186f5023a471a70691ae7154657"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/grid",
+      "sourceName": "Grid",
+      "sourceSlug": "grid",
+      "category": "shader/surface",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/grid",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Grid/GridVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Grid/Grid.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Grid/GridVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Grid/GridWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/grid-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/grid-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "float-layer",
+          "organism-assembly"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A tiled content plane uses staggered height responses.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#grid",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Grid/GridVanilla.ts",
+            "gitBlobSha": "f2dab6bdd945eba9a671dfd9968a61e4d22a0175"
+          },
+          {
+            "path": "src/lib/Grid/GridWebGPU.ts",
+            "gitBlobSha": "0a04c75fe8b92d8316c9acc6b26befddd9ea893d"
+          },
+          {
+            "path": "src/lib/Grid/Grid.tsx",
+            "gitBlobSha": "07b6372a972328b522d820d3e4ad5cb89d3f957e"
+          },
+          {
+            "path": "src/lib/Grid/Grid.solid.tsx",
+            "gitBlobSha": "51aaa223b2ebc461b69ac453c3c7d6751a6cc363"
+          },
+          {
+            "path": "src/lib/Grid/Grid.preact.tsx",
+            "gitBlobSha": "5129b43184c29c35db2c7d72822d30e9492e474f"
+          },
+          {
+            "path": "src/lib/Grid/Grid.vue",
+            "gitBlobSha": "e42adbd6ffdce5e9cdc3551b46e8d70cc2c8908c"
+          },
+          {
+            "path": "src/lib/Grid/Grid.svelte",
+            "gitBlobSha": "720f2257a51db584cba3368bdad081bffd75bb57"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/hex-float",
+      "sourceName": "Hex Float",
+      "sourceSlug": "hex-float",
+      "category": "shader/surface",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/hex-float",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/HexFloat/HexFloatVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/HexFloat/HexFloat.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/HexFloat/HexFloatVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/HexFloat/HexFloatWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/hex-float-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/hex-float-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "float-layer",
+          "organism-assembly"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A hexagonal tile field combines pointer lift and perspective.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#hex-float",
+        "sourcePaths": [
+          {
+            "path": "src/lib/HexFloat/HexFloatVanilla.ts",
+            "gitBlobSha": "5ca43d998dfbf31b7912715b17e9b228253820cb"
+          },
+          {
+            "path": "src/lib/HexFloat/HexFloatWebGPU.ts",
+            "gitBlobSha": "a1d58bb7f67961e7845a9c3280ed108b436c4405"
+          },
+          {
+            "path": "src/lib/HexFloat/HexFloat.tsx",
+            "gitBlobSha": "c24cc5ddaf291cc2980e30aefe6ee66889e17a4b"
+          },
+          {
+            "path": "src/lib/HexFloat/HexFloat.solid.tsx",
+            "gitBlobSha": "ed65f2070c55c8ab3daa3fd46e478793cbc0bda0"
+          },
+          {
+            "path": "src/lib/HexFloat/HexFloat.preact.tsx",
+            "gitBlobSha": "827d7b02eb30524a61257e05d8fd7b330f225231"
+          },
+          {
+            "path": "src/lib/HexFloat/HexFloat.vue",
+            "gitBlobSha": "f63db32340eee39fe8dfe749290faa445ab1b6f5"
+          },
+          {
+            "path": "src/lib/HexFloat/HexFloat.svelte",
+            "gitBlobSha": "3b2098a693da8c114cf55370c59e3898b8c33bde"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/ink-object",
+      "sourceName": "Ink Object",
+      "sourceSlug": "ink-object",
+      "category": "shader/object",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/ink-object",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/InkObject/InkObjectVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/InkObject/InkObject.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/InkObject/InkObjectVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/InkObject/InkObjectWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/ink-object-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/ink-object-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "rendered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": true,
+        "interactionInspected": true,
+        "sourceMetadataInspected": true,
+        "depth": "Public documentation, available controls and individual live demo rendering inspected. Live duck rendered with shaded ink strokes; line spacing 8 to 9 and angle 0 to 1 changed the linework, and drag changed orientation. No detailed restricted renderer audit or code reuse in this slice.",
+        "publicDocsInspected": true
+      },
+      "dependencies": {
+        "webgl": [
+          "three"
+        ],
+        "webglDev": [
+          "@types/three"
+        ],
+        "webgpu": [
+          "vgpu",
+          "three"
+        ],
+        "webgpuDev": [
+          "@webgpu/types",
+          "@types/three"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": false,
+        "withoutHtmlInCanvas": "Object effect does not depend on HTML-in-canvas.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "shape-artwork",
+          "shape"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A loaded object becomes tonal ink marks.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "Original native implementation now uses validated custom triangle geometry, self-contained GLB / filled SVG / PNG / JPEG intake, a real depth buffer, themed print and reusable accessible orbit/zoom. Exact renderer/API/material parity is not claimed."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#ink-object",
+        "sourcePaths": [
+          {
+            "path": "src/lib/InkObject/InkObjectVanilla.ts",
+            "gitBlobSha": "8d4bc1f428ab51c11894548d3272b55bfd310810"
+          },
+          {
+            "path": "src/lib/InkObject/InkObjectWebGPU.ts",
+            "gitBlobSha": "07bcfd5160970ece70f03715e3d7048f2cf62bd8"
+          },
+          {
+            "path": "src/lib/InkObject/InkObject.tsx",
+            "gitBlobSha": "ec5fc91f1cf410f4e91403ac8169839a8eb5ecf6"
+          },
+          {
+            "path": "src/lib/InkObject/InkObject.solid.tsx",
+            "gitBlobSha": "984a8041843dc4c670bf203c387cdcff112a0c94"
+          },
+          {
+            "path": "src/lib/InkObject/InkObject.preact.tsx",
+            "gitBlobSha": "75f531fef95b5a5012841a628ddd67649263cc48"
+          },
+          {
+            "path": "src/lib/InkObject/InkObject.vue",
+            "gitBlobSha": "cdfadc356f0ba370413f59bee70081e20aac6e13"
+          },
+          {
+            "path": "src/lib/InkObject/InkObject.svelte",
+            "gitBlobSha": "80b0898afff20ec80c6399f81d0bb271446b6dce"
+          }
+        ],
+        "objectTreatments": "receipts/object-treatments-handoff.json"
+      },
+      "cojeevImplementation": {
+        "componentId": "ink-sculpture",
+        "companionComponentId": "sculpture-orbit",
+        "status": "verified-original-useful-core",
+        "verifiedUsefulCore": true,
+        "verifiedEquivalent": false,
+        "implementedCore": "Original lit 3D triangle geometry to hatch / crosshatch / depth contours with line spacing, angle, density and relief, bounded local asset intake, orbit/zoom and native fallback.",
+        "remaining": [
+          "Full source studio/material, camera and format options; renderer and exact visual parity"
+        ],
+        "evidence": "object-treatments-result.md"
+      }
+    },
+    {
+      "id": "canvas/laser",
+      "sourceName": "Laser",
+      "sourceSlug": "laser",
+      "category": "shader/reveal",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/laser",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Laser/LaserVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Laser/Laser.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Laser/LaserVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Laser/LaserWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/laser-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/laser-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "scroll-organism"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A scroll-controlled line reveals content progressively.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#laser",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Laser/LaserVanilla.ts",
+            "gitBlobSha": "78f4b67bcc304bd5bc41b2f564feab6689201dc6"
+          },
+          {
+            "path": "src/lib/Laser/LaserWebGPU.ts",
+            "gitBlobSha": "fd39562a743ebfc3d65759ec516f505b5f2f1dc2"
+          },
+          {
+            "path": "src/lib/Laser/Laser.tsx",
+            "gitBlobSha": "3004f0319912c496b08ebe515b3b3a96c32c8f5c"
+          },
+          {
+            "path": "src/lib/Laser/Laser.solid.tsx",
+            "gitBlobSha": "960607354582533d56b6783c1eb5c9bedf106b60"
+          },
+          {
+            "path": "src/lib/Laser/Laser.preact.tsx",
+            "gitBlobSha": "3dd85b458655d267fd76daf1bbf7d634c97e69ba"
+          },
+          {
+            "path": "src/lib/Laser/Laser.vue",
+            "gitBlobSha": "e165c5370db1879bc64cd8a3a92428dc3e419e02"
+          },
+          {
+            "path": "src/lib/Laser/Laser.svelte",
+            "gitBlobSha": "89d2d4b9ee584775b90357f95ac6c4230ccf7f43"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/liquid",
+      "sourceName": "Liquid",
+      "sourceSlug": "liquid",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/liquid",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Liquid/LiquidVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Liquid/Liquid.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Liquid/LiquidVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Liquid/LiquidWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/liquid-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/liquid-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "source-inspected",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": true,
+        "rendered": true,
+        "interactionInspected": true,
+        "sourceMetadataInspected": true,
+        "depth": "WebGL engine lifecycle, React wrapper, selected WebGPU differences, demo controls"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer input deposits velocity and dye into a fluid simulation.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#liquid",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Liquid/LiquidVanilla.ts",
+            "gitBlobSha": "5dd0290a6b41408ea58d3b0bf9d94256b092d38c"
+          },
+          {
+            "path": "src/lib/Liquid/LiquidWebGPU.ts",
+            "gitBlobSha": "b34b2ce9eceb395b1bcbbe46f2a4ac989b6574a5"
+          },
+          {
+            "path": "src/lib/Liquid/Liquid.tsx",
+            "gitBlobSha": "562556b096797654b9a8b6e73c746bac3946e51b"
+          },
+          {
+            "path": "src/lib/Liquid/Liquid.solid.tsx",
+            "gitBlobSha": "bb0c4660d1b0fac97163ca13c2b17e011c05cdd0"
+          },
+          {
+            "path": "src/lib/Liquid/Liquid.preact.tsx",
+            "gitBlobSha": "d95eabf1164a42e35b59b660496df5a92afd4df2"
+          },
+          {
+            "path": "src/lib/Liquid/Liquid.vue",
+            "gitBlobSha": "938015cc986af1fbb982d85f1ad9bd9187921ac5"
+          },
+          {
+            "path": "src/lib/Liquid/Liquid.svelte",
+            "gitBlobSha": "24f11aa2d4496b6c3a792da1d82ba2d99e80f4ef"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/magnify",
+      "sourceName": "Magnify",
+      "sourceSlug": "magnify",
+      "category": "shader/lens",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/magnify",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Magnify/MagnifyVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Magnify/Magnify.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Magnify/MagnifyVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Magnify/MagnifyWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/magnify-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/magnify-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A framed scanner lens combines magnification with pulse feedback.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#magnify",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Magnify/MagnifyVanilla.ts",
+            "gitBlobSha": "48d52918652eff06558eab5b0ee2a111349ea069"
+          },
+          {
+            "path": "src/lib/Magnify/MagnifyWebGPU.ts",
+            "gitBlobSha": "cebc577be750d4fa3d4164a33b032c5f8d8b66e1"
+          },
+          {
+            "path": "src/lib/Magnify/Magnify.tsx",
+            "gitBlobSha": "592c3bddaa974ba014923b7b532ea4d2531c13d8"
+          },
+          {
+            "path": "src/lib/Magnify/Magnify.solid.tsx",
+            "gitBlobSha": "75b2b5c88e4152b3badcb0b931ca82263771067c"
+          },
+          {
+            "path": "src/lib/Magnify/Magnify.preact.tsx",
+            "gitBlobSha": "0bfa56daba8551d37c3fea873eeae9011a5f3e31"
+          },
+          {
+            "path": "src/lib/Magnify/Magnify.vue",
+            "gitBlobSha": "245b12d8f39362dd89c3af696aa43d978fdf6b04"
+          },
+          {
+            "path": "src/lib/Magnify/Magnify.svelte",
+            "gitBlobSha": "0284b31c4b83a79b69c47d3047094f75cc25c692"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/particle-object",
+      "sourceName": "Particle Object",
+      "sourceSlug": "particle-object",
+      "category": "shader/object",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/particle-object",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleObject/ParticleObjectVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleObject/ParticleObject.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleObject/ParticleObjectVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleObject/ParticleObjectWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/particle-object-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/particle-object-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "rendered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": true,
+        "rendered": true,
+        "interactionInspected": true,
+        "sourceMetadataInspected": true,
+        "depth": "Prior detailed engine inspection remains on record. Public documentation/control contract and individual rendered behavior inspected. A Duck is formed from many small surface points retaining its shape. Pointer sweep displaced and swirled a patch of particles; after moving away the silhouette recovered. Spring keyboard step changed 1 to 1.05. No restricted engine code was read or reused for this original material implementation.",
+        "publicDocsInspected": true
+      },
+      "dependencies": {
+        "webgl": [
+          "three"
+        ],
+        "webglDev": [
+          "@types/three"
+        ],
+        "webgpu": [
+          "vgpu",
+          "three"
+        ],
+        "webgpuDev": [
+          "@webgpu/types",
+          "@types/three"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": false,
+        "withoutHtmlInCanvas": "Object effect does not depend on HTML-in-canvas.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "shape-artwork",
+          "shape"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Asset samples become particles with pointer forces and spring return.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item.",
+        "Original native useful core is independently implemented and verified with real geometry, bounded local imports, responsive UI, orbit/zoom and static fallback. Source renderer, asset and API parity is explicitly false."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#particle-object",
+        "sourcePaths": [
+          {
+            "path": "src/lib/ParticleObject/ParticleObjectVanilla.ts",
+            "gitBlobSha": "1bbe60bd8976e6eb77d98baa7aa1a85cc71b8352"
+          },
+          {
+            "path": "src/lib/ParticleObject/ParticleObjectWebGPU.ts",
+            "gitBlobSha": "57a91f3863b363cc91faea069f930466c41637a5"
+          },
+          {
+            "path": "src/lib/ParticleObject/ParticleObject.tsx",
+            "gitBlobSha": "44ec5fc97c3d8128ff888b52438a2c8bc32c9e24"
+          },
+          {
+            "path": "src/lib/ParticleObject/ParticleObject.solid.tsx",
+            "gitBlobSha": "fe2865b3232e67e69d01459714709c14667dd328"
+          },
+          {
+            "path": "src/lib/ParticleObject/ParticleObject.preact.tsx",
+            "gitBlobSha": "34a2f149ea68cbe2608ab114491413b56186f53d"
+          },
+          {
+            "path": "src/lib/ParticleObject/ParticleObject.vue",
+            "gitBlobSha": "d946f9828b5c2bb3eb2ca393383c4937f752ef6d"
+          },
+          {
+            "path": "src/lib/ParticleObject/ParticleObject.svelte",
+            "gitBlobSha": "b7da2ddfcb8a81c3bc3497935d9500a9b249bfed"
+          }
+        ],
+        "publicBehavior": "receipts/material-source-observations.json#particle-object",
+        "nativeImplementation": "receipts/material-sculptures-handoff.json#particle-object"
+      },
+      "cojeevImplementation": {
+        "componentId": "particle-sculpture",
+        "companionComponentId": "sculpture-orbit",
+        "status": "verified-original-useful-core",
+        "verifiedUsefulCore": true,
+        "verifiedEquivalent": false,
+        "implementedCore": "Original area-weighted geometry sampler and bounded damped springs; points visibly leave their surface under local pointer repulsion or a semantic pulse, then return.",
+        "remaining": [
+          "Native point count is bounded to 300\u20138,000; source variable-size/drift/material/studio breadth and WebGPU backend are not replicated.",
+          "Full source asset formats, textures/material preservation and exact visual/API parity remain outside the implementation."
+        ],
+        "evidence": "material-sculptures-result.md"
+      }
+    },
+    {
+      "id": "canvas/particle-reveal",
+      "sourceName": "Particle Reveal",
+      "sourceSlug": "particle-reveal",
+      "category": "shader/reveal",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/particle-reveal",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleReveal/ParticleRevealVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleReveal/ParticleReveal.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleReveal/ParticleRevealVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleReveal/ParticleRevealWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/particle-reveal-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/particle-reveal-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "text-reveal"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer proximity assembles particle-like content into a readable surface.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#particle-reveal",
+        "sourcePaths": [
+          {
+            "path": "src/lib/ParticleReveal/ParticleRevealVanilla.ts",
+            "gitBlobSha": "e01fe52b8073f579559f53b39598522c9505d812"
+          },
+          {
+            "path": "src/lib/ParticleReveal/ParticleRevealWebGPU.ts",
+            "gitBlobSha": "706e9d12c3a8f894ccbf7d4fa5096a7fa598968c"
+          },
+          {
+            "path": "src/lib/ParticleReveal/ParticleReveal.tsx",
+            "gitBlobSha": "1cbcdf92737c06294d31fdd82e74b4e064e0feef"
+          },
+          {
+            "path": "src/lib/ParticleReveal/ParticleReveal.solid.tsx",
+            "gitBlobSha": "873b612038ed2be5af6a08f128e93d761db1e8f1"
+          },
+          {
+            "path": "src/lib/ParticleReveal/ParticleReveal.preact.tsx",
+            "gitBlobSha": "677b65b0d34a1e39e3e67f5f75a7420743db49a1"
+          },
+          {
+            "path": "src/lib/ParticleReveal/ParticleReveal.vue",
+            "gitBlobSha": "c5d83a9a478cd72ac2bf4dbc711ccb0c0f4103c7"
+          },
+          {
+            "path": "src/lib/ParticleReveal/ParticleReveal.svelte",
+            "gitBlobSha": "c2fad3324a340fdde9f5b7acf30fccf3a98261a5"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/particle-scroll",
+      "sourceName": "Particle Scroll",
+      "sourceSlug": "particle-scroll",
+      "category": "shader/reveal",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/particle-scroll",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleScroll/ParticleScrollVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleScroll/ParticleScroll.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleScroll/ParticleScrollVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/ParticleScroll/ParticleScrollWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/particle-scroll-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/particle-scroll-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "scroll-organism"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Scroll controls disassembly into grains and later reconstruction.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#particle-scroll",
+        "sourcePaths": [
+          {
+            "path": "src/lib/ParticleScroll/ParticleScrollVanilla.ts",
+            "gitBlobSha": "cbf8060ec64138f80840decf47870861ec05a395"
+          },
+          {
+            "path": "src/lib/ParticleScroll/ParticleScrollWebGPU.ts",
+            "gitBlobSha": "5609330888c638cb5f47ebc804f4b5d5fadd8730"
+          },
+          {
+            "path": "src/lib/ParticleScroll/ParticleScroll.tsx",
+            "gitBlobSha": "ca5589594a3bb504b6e5895f775eb6364ec92ee9"
+          },
+          {
+            "path": "src/lib/ParticleScroll/ParticleScroll.solid.tsx",
+            "gitBlobSha": "a09f5390c45fb03f1f023c715751eaa69b6d385e"
+          },
+          {
+            "path": "src/lib/ParticleScroll/ParticleScroll.preact.tsx",
+            "gitBlobSha": "8c7bb625423d095860c9e9d14d97edad356447d6"
+          },
+          {
+            "path": "src/lib/ParticleScroll/ParticleScroll.vue",
+            "gitBlobSha": "ae5d223c9f5f1dc30c54d3a06189ff5cc89bc90e"
+          },
+          {
+            "path": "src/lib/ParticleScroll/ParticleScroll.svelte",
+            "gitBlobSha": "08bae9ebb9e1eb22be606a7123a74f3c1b075491"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/peel",
+      "sourceName": "Peel",
+      "sourceSlug": "peel",
+      "category": "shader/surface",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/peel",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Peel/PeelVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Peel/Peel.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Peel/PeelVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Peel/PeelWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/peel-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/peel-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "float-layer",
+          "organism-assembly"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Edge proximity curls a foreground layer to expose another.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#peel",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Peel/PeelVanilla.ts",
+            "gitBlobSha": "c33e8faadf6684c1d5a984540770268fbfe4b839"
+          },
+          {
+            "path": "src/lib/Peel/PeelWebGPU.ts",
+            "gitBlobSha": "3ddd34aa5fa3f1f5e6e52a67262ab1540fa8405e"
+          },
+          {
+            "path": "src/lib/Peel/Peel.tsx",
+            "gitBlobSha": "14d59a4bccbc31ca053cea2e840fa68e3c2a02de"
+          },
+          {
+            "path": "src/lib/Peel/Peel.solid.tsx",
+            "gitBlobSha": "6732c470fef79a9a29bc2e405509858ff81b57a1"
+          },
+          {
+            "path": "src/lib/Peel/Peel.preact.tsx",
+            "gitBlobSha": "d12e6fc485bae46b7433a35a9068a6ff32674c83"
+          },
+          {
+            "path": "src/lib/Peel/Peel.vue",
+            "gitBlobSha": "d25e40e8cd84d877f565d1e7347e1031d60cf168"
+          },
+          {
+            "path": "src/lib/Peel/Peel.svelte",
+            "gitBlobSha": "a0076759f8853aabb6ee4061d2c7c2b0680ad2e5"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/retro-dither",
+      "sourceName": "Retro Dither",
+      "sourceSlug": "retro-dither",
+      "category": "shader/lens",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/retro-dither",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/RetroDither/RetroDitherVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/RetroDither/RetroDither.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/RetroDither/RetroDitherVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/RetroDither/RetroDitherWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/retro-dither-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/retro-dither-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A moving lens applies pixel quantization and limited tones.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#retro-dither",
+        "sourcePaths": [
+          {
+            "path": "src/lib/RetroDither/RetroDitherVanilla.ts",
+            "gitBlobSha": "c78516fdb1e496543af87f4bd0f960ced28fce67"
+          },
+          {
+            "path": "src/lib/RetroDither/RetroDitherWebGPU.ts",
+            "gitBlobSha": "36c884b85fd7f4e1c9bdcf332280ae59bed623e8"
+          },
+          {
+            "path": "src/lib/RetroDither/RetroDither.tsx",
+            "gitBlobSha": "6d4c37bc915e24aa85e89075e0eb314425c32083"
+          },
+          {
+            "path": "src/lib/RetroDither/RetroDither.solid.tsx",
+            "gitBlobSha": "6f11fbeae3b07ca61ebdc3020d1af8df03f970ef"
+          },
+          {
+            "path": "src/lib/RetroDither/RetroDither.preact.tsx",
+            "gitBlobSha": "5bc722904054a4c1acca76bc1ba69f17148172d2"
+          },
+          {
+            "path": "src/lib/RetroDither/RetroDither.vue",
+            "gitBlobSha": "055e49927dd61b7c650962ddf72c5d840f99f330"
+          },
+          {
+            "path": "src/lib/RetroDither/RetroDither.svelte",
+            "gitBlobSha": "4e6759222fc2c965805d3e3d5f563839eabd54cc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/ripple",
+      "sourceName": "Ripple",
+      "sourceSlug": "ripple",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/ripple",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Ripple/RippleVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Ripple/Ripple.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Ripple/RippleVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Ripple/RippleWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/ripple-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/ripple-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "source-inspected",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": true,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "WebGL engine lifecycle, React wrapper, selected WebGPU differences, demo controls"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer presses generate bounded concentric distortion waves.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#ripple",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Ripple/RippleVanilla.ts",
+            "gitBlobSha": "319a40c097046ba2c44b55c2e93e1423c0c3ccd5"
+          },
+          {
+            "path": "src/lib/Ripple/RippleWebGPU.ts",
+            "gitBlobSha": "70b64f036df2c472ea7d89adb3c0f2b618141cea"
+          },
+          {
+            "path": "src/lib/Ripple/Ripple.tsx",
+            "gitBlobSha": "94d7bead653076ea757ffc2f577fef11fc0a1dec"
+          },
+          {
+            "path": "src/lib/Ripple/Ripple.solid.tsx",
+            "gitBlobSha": "5cc82baef3785322a2876029520b45e9200b8ed7"
+          },
+          {
+            "path": "src/lib/Ripple/Ripple.preact.tsx",
+            "gitBlobSha": "d5de75eb9c93043ebcdcc9e6bb4f772fd68ad734"
+          },
+          {
+            "path": "src/lib/Ripple/Ripple.vue",
+            "gitBlobSha": "0bf781dcf20d96d5720988786b99f91bdebdd330"
+          },
+          {
+            "path": "src/lib/Ripple/Ripple.svelte",
+            "gitBlobSha": "e1edb9d3cfb8b777fc5d53b64d791d80fff2d1d2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/shatter",
+      "sourceName": "Shatter",
+      "sourceSlug": "shatter",
+      "category": "shader/surface",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/shatter",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Shatter/ShatterVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Shatter/Shatter.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Shatter/ShatterVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/Shatter/ShatterWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/shatter-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/shatter-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "float-layer",
+          "organism-assembly"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Pointer proximity separates polygon pieces with depth and refraction.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#shatter",
+        "sourcePaths": [
+          {
+            "path": "src/lib/Shatter/ShatterVanilla.ts",
+            "gitBlobSha": "ec331b1efe959b47870b58566b8ef516a962e565"
+          },
+          {
+            "path": "src/lib/Shatter/ShatterWebGPU.ts",
+            "gitBlobSha": "67e711c415c20a82ccbd0e35479ee562b9072e54"
+          },
+          {
+            "path": "src/lib/Shatter/Shatter.tsx",
+            "gitBlobSha": "f2153cfeada3c9cb6c1cb4d5872cb6d6320ec6c0"
+          },
+          {
+            "path": "src/lib/Shatter/Shatter.solid.tsx",
+            "gitBlobSha": "bf5b02ff8a9bca16fc3cf5893e81a3cba04d2a77"
+          },
+          {
+            "path": "src/lib/Shatter/Shatter.preact.tsx",
+            "gitBlobSha": "596293774554f9e54d6424761aed01fb61c1f0e6"
+          },
+          {
+            "path": "src/lib/Shatter/Shatter.vue",
+            "gitBlobSha": "6740e48541bb590a4574b959b1b14d75bb9608b8"
+          },
+          {
+            "path": "src/lib/Shatter/Shatter.svelte",
+            "gitBlobSha": "20026b074fd9f1dd9f06c2effef37c87d84e93a9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canvas/liquid-object",
+      "sourceName": "Liquid Object",
+      "sourceSlug": "liquid-object",
+      "category": "shader/object",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/liquid-object",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/LiquidObject/LiquidObjectVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/LiquidObject/LiquidObject.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/LiquidObject/LiquidObjectVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/LiquidObject/LiquidObjectWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/liquid-object-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/liquid-object-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "rendered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": true,
+        "interactionInspected": true,
+        "sourceMetadataInspected": true,
+        "depth": "Public documentation/control contract and individual rendered behavior inspected. A normal shaded Duck geometry is visibly pulled and color-separated by pointer traces through a screen-space fluid field. It is not primarily mesh wobble. Pointer sweep generated visible holes and stretched color-split image. Distortion keyboard step changed 2 to 2.02. No restricted engine code was read or reused for this original material implementation.",
+        "publicDocsInspected": true
+      },
+      "dependencies": {
+        "webgl": [
+          "three"
+        ],
+        "webglDev": [
+          "@types/three"
+        ],
+        "webgpu": [
+          "vgpu",
+          "three"
+        ],
+        "webgpuDev": [
+          "@webgpu/types",
+          "@types/three"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": [
+          "../rect-cache"
+        ]
+      },
+      "browserRequirement": {
+        "htmlInCanvas": false,
+        "withoutHtmlInCanvas": "Object effect does not depend on HTML-in-canvas.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "shape-scene",
+          "shape-artwork",
+          "shape"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "A fluid field distorts the presentation of a loaded object.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index.",
+        "React WebGL registry returns one file with ../rect-cache import but does not include that local utility; distribution dependency is incomplete in fetched item.",
+        "Original native useful core is independently implemented and verified with real geometry, bounded local imports, responsive UI, orbit/zoom and static fallback. Source renderer, asset and API parity is explicitly false."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#liquid-object",
+        "sourcePaths": [
+          {
+            "path": "src/lib/LiquidObject/LiquidObjectVanilla.ts",
+            "gitBlobSha": "1e8cb499d81dc9ed4bd97ed43a6ec8bba7cd942d"
+          },
+          {
+            "path": "src/lib/LiquidObject/LiquidObjectWebGPU.ts",
+            "gitBlobSha": "12b1122bb4f1f9f04e6d012d812ef0a0cdd7897a"
+          },
+          {
+            "path": "src/lib/LiquidObject/LiquidObject.tsx",
+            "gitBlobSha": "3557d9505707878ed66b3472df2b151989a8f7af"
+          },
+          {
+            "path": "src/lib/LiquidObject/LiquidObject.solid.tsx",
+            "gitBlobSha": "5378500b5a52ceaa740a1e7c7f468408c62258a5"
+          },
+          {
+            "path": "src/lib/LiquidObject/LiquidObject.preact.tsx",
+            "gitBlobSha": "77b004e17d70c6f708358f6a8b013a50ee1021a7"
+          },
+          {
+            "path": "src/lib/LiquidObject/LiquidObject.vue",
+            "gitBlobSha": "7fc323cd0383f822b60cf41764d80d570cf37c88"
+          },
+          {
+            "path": "src/lib/LiquidObject/LiquidObject.svelte",
+            "gitBlobSha": "7a8ae7cf3cc8475ca0145649c0b1545c7ddf89ce"
+          }
+        ],
+        "publicBehavior": "receipts/material-source-observations.json#liquid-object",
+        "nativeImplementation": "receipts/material-sculptures-handoff.json#liquid-object"
+      },
+      "cojeevImplementation": {
+        "componentId": "flow-sculpture",
+        "companionComponentId": "sculpture-orbit",
+        "status": "verified-original-useful-core",
+        "verifiedUsefulCore": true,
+        "verifiedEquivalent": false,
+        "implementedCore": "Original bounded, advected screen-space velocity field displaces and color-separates a real rendered triangle surface, then dissipates; pointer stirring and an explicit accessible pulse.",
+        "remaining": [
+          "The original dissipative field is not a full Navier-Stokes solver; no source ripples, splashes, grain, lighting/studio breadth or geometric wobble parity.",
+          "No arbitrary HTML capture, source renderer/WebGPU parity or unrestricted model formats."
+        ],
+        "evidence": "material-sculptures-result.md"
+      }
+    },
+    {
+      "id": "canvas/vhs",
+      "sourceName": "VHS",
+      "sourceSlug": "vhs",
+      "category": "shader/overlay",
+      "categoryProvenance": "Research grouping; upstream uses one Components catalog.",
+      "pageUrl": "https://canvasui.dev/docs/components/vhs",
+      "codeUrl": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/VHS/VHSVanilla.ts",
+      "codeUrls": {
+        "reactWrapper": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/VHS/VHS.tsx",
+        "webglEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/VHS/VHSVanilla.ts",
+        "webgpuEngine": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/src/lib/VHS/VHSWebGPU.ts"
+      },
+      "registryUrl": "https://canvasui.dev/r/vhs-react.json",
+      "registryVariants": {
+        "frameworks": [
+          "react",
+          "vue",
+          "svelte",
+          "solid",
+          "preact",
+          "vanilla"
+        ],
+        "renderers": [
+          "webgl",
+          "webgpu"
+        ],
+        "urlTemplate": "https://canvasui.dev/r/vhs-{framework}{rendererSuffix}.json",
+        "webglSuffix": "",
+        "webgpuSuffix": "-webgpu",
+        "count": 12,
+        "verification": "All seven underlying source files exist in pinned Git tree; React WebGL registry fetched successfully. Other HTTP variants not individually fetched."
+      },
+      "licenseEvidence": {
+        "name": "MIT + Commons Clause License Condition v1.0",
+        "url": "https://github.com/DavidHDev/canvas-ui/blob/8aec65707b298a227472c117b892b5695955216c/LICENSE.md",
+        "receipt": "receipts/upstream/LICENSE.md",
+        "copyright": "Copyright (c) 2026 David Haz",
+        "restriction": "Component redistribution, sublicensing, sale, bundles, and ports are prohibited; retain notices for permitted application/website/product use.",
+        "mitLibraryReuse": "independent-implementation-only"
+      },
+      "inspectionStatus": "discovered",
+      "inspection": {
+        "discovered": true,
+        "sourceAvailable": true,
+        "sourceInspected": false,
+        "rendered": false,
+        "interactionInspected": false,
+        "sourceMetadataInspected": true,
+        "depth": "Catalog, pinned source-file existence, registry source availability, dependencies, and relative-import metadata only"
+      },
+      "dependencies": {
+        "webgl": [],
+        "webglDev": [],
+        "webgpu": [
+          "vgpu"
+        ],
+        "webgpuDev": [
+          "@webgpu/types"
+        ],
+        "frameworkHosts": [
+          "React 19",
+          "Vue 3.5",
+          "Svelte 5",
+          "Solid 1.9",
+          "Preact 10"
+        ],
+        "implicitLocalImports": []
+      },
+      "browserRequirement": {
+        "htmlInCanvas": true,
+        "withoutHtmlInCanvas": "Partial overlay or regular HTML fallback varies by effect; individual fallback not rendered in this audit.",
+        "webgl": "WebGL2",
+        "webgpu": "WebGPU + vgpu; needs capability-specific fallback"
+      },
+      "sourceCommit": "8aec65707b298a227472c117b892b5695955216c",
+      "existingCojeevOverlaps": {
+        "ids": [
+          "ambient-background",
+          "depth-background"
+        ],
+        "kind": "conceptual-neighbor",
+        "notes": "Related visual or motion role only; no equivalent shader implementation found in inspected neighbor files."
+      },
+      "notes": [
+        "Analog tape-style image instability, color bleed, and grain.",
+        "Do not copy or port upstream source into the MIT library. Use this record as an idea/reference index."
+      ],
+      "evidence": {
+        "registryProbe": "receipts/registry-probes.json#vhs",
+        "sourcePaths": [
+          {
+            "path": "src/lib/VHS/VHSVanilla.ts",
+            "gitBlobSha": "bd92c4921942a145edd6470d1964d7f1ef934968"
+          },
+          {
+            "path": "src/lib/VHS/VHSWebGPU.ts",
+            "gitBlobSha": "98ed3596a41db6cb9adf5491ace0dece6f60b651"
+          },
+          {
+            "path": "src/lib/VHS/VHS.tsx",
+            "gitBlobSha": "2a5083a4dc8e5d1f0e7464f9fb5db8ce2c3c775c"
+          },
+          {
+            "path": "src/lib/VHS/VHS.solid.tsx",
+            "gitBlobSha": "42189b9a40026099ed2cebb8b640001db57f6bfc"
+          },
+          {
+            "path": "src/lib/VHS/VHS.preact.tsx",
+            "gitBlobSha": "fad84a3e959e4161ae3704c9c725a46f5401a8b2"
+          },
+          {
+            "path": "src/lib/VHS/VHS.vue",
+            "gitBlobSha": "53b224027c6a6c6ce8d31cd20e794733d19725fc"
+          },
+          {
+            "path": "src/lib/VHS/VHS.svelte",
+            "gitBlobSha": "71a710d8fb33590c837770c46869813ce3f5d55e"
+          }
+        ]
+      }
+    }
+  ],
+  "lastUpdatedAt": "2026-09-08T17:34:25.195315+00:00"
+}

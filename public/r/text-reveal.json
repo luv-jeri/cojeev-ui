@@ -2,33 +2,40 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "text-reveal",
   "title": "Text reveal",
-  "description": "A quiet word-by-word entrance for headings and short editorial text, with rise and fade treatments.",
-  "dependencies": [],
+  "description": "Readable word, grapheme, phrase or measured-line arrivals with soft focus, fold and organic scale choices.",
+  "dependencies": [
+    "motion"
+  ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/text-reveal.tsx",
-      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useMotionVisibility } from \"@/lib/sahajiv-motion/use-motion-visibility\";\n\nexport type TextRevealProps = Omit<React.HTMLAttributes<HTMLElement>, \"children\"> & {\n  text: string;\n  as?: \"span\" | \"p\" | \"h1\" | \"h2\" | \"h3\";\n  /** Change this value to deliberately replay the reveal. */\n  replayKey?: string | number;\n  variant?: \"rise\" | \"fade\";\n  duration?: number;\n};\n\n/** A single, bounded word reveal. The complete text remains readable without motion or JavaScript. */\nexport function TextReveal({ text, as: Tag = \"span\", replayKey = 0, variant = \"rise\", duration = 480, className, ...props }: TextRevealProps) {\n  const host = React.useRef<HTMLElement>(null);\n  const { enabled, inView } = useMotionVisibility(host);\n  const played = React.useRef<string | null>(null);\n  const token = JSON.stringify([text, replayKey]);\n  React.useEffect(() => {\n    if (!inView || !host.current) return;\n    if (played.current === token) return;\n    played.current = token;\n    if (!enabled) return;\n    const words = Array.from(host.current.querySelectorAll<HTMLElement>(\"[data-reveal-word]\"));\n    const milliseconds = Number.isFinite(duration) ? Math.min(1500, Math.max(0, duration)) : 480;\n    if (milliseconds === 0) return;\n    const animations = words.map((word, index) => word.animate([\n      { opacity: 0, transform: variant === \"rise\" ? \"translateY(.32em)\" : \"none\" },\n      { opacity: 1, transform: \"none\" },\n    ], { duration: milliseconds, delay: Math.min(index * 28, 420), easing: \"cubic-bezier(.2,.65,.25,1)\", fill: \"backwards\" }));\n    return () => animations.forEach((animation) => animation.cancel());\n  }, [token, enabled, inView, duration, variant]);\n  return <Tag {...props} ref={host as React.Ref<HTMLHeadingElement>} data-slot=\"text-reveal\" className={cn(\"v-text-reveal\", className)}>\n    <span className=\"v-text-reveal__accessible\">{text}</span>\n    <span aria-hidden=\"true\">{text.split(/(\\s+)/).map((word, index) => /^\\s+$/.test(word) ? word : <span key={index} data-reveal-word=\"\">{word}</span>)}</span>\n  </Tag>;\n}\n",
+      "path": "registry/cojeev/ui/text-reveal.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { animate } from \"motion\";\nimport { cn } from \"@/lib/utils\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\nimport { motionTokens, trackMotion } from \"@/lib/cojeev-motion/choreography\";\nimport { measureTextLines, type TextLine } from \"@/lib/cojeev/text-lines\";\n\nexport type TextRevealProps = Omit<React.HTMLAttributes<HTMLElement>, \"children\"> & {\n  text: string;\n  as?: \"span\" | \"p\" | \"h1\" | \"h2\" | \"h3\";\n  /** Change this value to deliberately replay the reveal. */\n  replayKey?: string | number;\n  variant?: \"rise\" | \"fade\" | \"soften\" | \"fold\" | \"bloom\" | \"scale\" | \"settle\";\n  /** Lines use the browser's actual wrapping; graphemes keep emoji and marks intact. */\n  split?: \"word\" | \"grapheme\" | \"text\" | \"line\";\n  /** Milliseconds between units. The total delay is capped for long text. */\n  stagger?: number;\n  direction?: \"up\" | \"down\";\n  duration?: number;\n};\n\nfunction useTextLines(element: HTMLElement | null, text: string, active: boolean) {\n  const [result, setResult] = React.useState<{ element: HTMLElement; text: string; lines: TextLine[] | null } | null>(null);\n  React.useLayoutEffect(() => {\n    const measure = element?.querySelector<HTMLElement>(\"[data-reveal-measure]\");\n    if (!active || !element || !measure) return;\n    let disposed = false;\n    let frame = 0;\n    let measuredStyle = \"\";\n    const schedule = () => {\n      cancelAnimationFrame(frame);\n      frame = requestAnimationFrame(() => {\n        if (disposed || !element.getBoundingClientRect().width) return;\n        const style = getComputedStyle(measure);\n        const signature = [measure.clientWidth, style.font, style.fontFamily, style.fontWeight, style.fontSize, style.fontStretch, style.fontVariationSettings, style.fontFeatureSettings, style.letterSpacing, style.wordSpacing, style.lineHeight, style.textTransform, style.textIndent, style.direction].join(\"|\");\n        if (signature === measuredStyle) return;\n        measuredStyle = signature;\n        const lines = measureTextLines(measure, text);\n        setResult(previous => previous?.element === element && previous.text === text && JSON.stringify(previous.lines) === JSON.stringify(lines) ? previous : { element, text, lines });\n      });\n    };\n    const observer = new ResizeObserver(schedule);\n    observer.observe(measure);\n    // Typography can change its break points without changing the row count or\n    // measured box size. Observe authored ancestor styles as well as geometry.\n    const styles = new MutationObserver(schedule);\n    for (let parent: HTMLElement | null = element; parent; parent = parent.parentElement) styles.observe(parent, { attributes: true });\n    const fontsChanged = () => { measuredStyle = \"\"; schedule(); };\n    document.fonts?.addEventListener(\"loadingdone\", fontsChanged);\n    void document.fonts?.ready.then(() => { if (!disposed) fontsChanged(); });\n    window.addEventListener(\"resize\", schedule, { passive: true });\n    schedule();\n    return () => {\n      disposed = true;\n      cancelAnimationFrame(frame);\n      observer.disconnect();\n      styles.disconnect();\n      document.fonts?.removeEventListener(\"loadingdone\", fontsChanged);\n      window.removeEventListener(\"resize\", schedule);\n    };\n  }, [active, text, element]);\n  return result?.text === text && result.element === element ? result : null;\n}\n\n/** A bounded entrance. Text stays readable after playback, interruption, and without motion or JavaScript. */\nexport function TextReveal({ text, as: Tag = \"span\", replayKey = 0, variant = \"rise\", split = \"word\", stagger = 35, direction = \"up\", duration = 480, className, ...props }: TextRevealProps) {\n  const host = React.useRef<HTMLElement>(null);\n  const [mountedElement, setMountedElement] = React.useState<HTMLElement | null>(null);\n  const setHost = React.useCallback((element: HTMLElement | null) => { host.current = element; setMountedElement(element); }, []);\n  const { enabled, inView } = useMotionVisibility(host, mountedElement);\n  const played = React.useRef<string | null>(null);\n  const token = JSON.stringify([text, replayKey, variant, split, direction]);\n  const lineResult = useTextLines(mountedElement, text, split === \"line\");\n  const segmenter = React.useMemo(() => new Intl.Segmenter(undefined, { granularity: \"grapheme\" }), []);\n  React.useEffect(() => {\n    if (!inView || !host.current) return;\n    if (split === \"line\" && !lineResult) return;\n    if (played.current === token) return;\n    played.current = token;\n    if (!enabled) return;\n    const words = Array.from(host.current.querySelectorAll<HTMLElement>(\"[data-reveal-unit]\"));\n    if (!words.length) return;\n    const milliseconds = Number.isFinite(duration) ? Math.min(1500, Math.max(0, duration)) : 480;\n    if (milliseconds === 0) return;\n    const requestedStep = Number.isFinite(stagger) ? Math.min(120, Math.max(0, stagger)) / 1000 : motionTokens.stagger;\n    // Compress the entire sequence evenly, so long headings don't finish in a\n    // single pile-up once the delay ceiling has been reached.\n    const step = Math.min(requestedStep, .6 / Math.max(1, words.length - 1));\n    const sign = direction === \"up\" ? 1 : -1;\n    const scaled = variant === \"bloom\" || variant === \"scale\" || variant === \"settle\";\n    const distance = variant === \"settle\" ? .12 : .28;\n    const scale = variant === \"bloom\" ? [.86, 1.025, 1] : variant === \"scale\" ? [.96, 1] : variant === \"settle\" ? [1.04, 1] : [1, 1];\n    const controls = animate(words, {\n      \"--reveal-opacity\": [0, 1],\n      \"--reveal-y\": variant !== \"fade\" && (!scaled || variant === \"settle\") ? [`${distance * sign}em`, \"0em\"] : [\"0em\", \"0em\"],\n      \"--reveal-blur\": variant === \"soften\" ? [\"5px\", \"0px\"] : [\"0px\", \"0px\"],\n      \"--reveal-fold\": variant === \"fold\" ? [`${-45 * sign}deg`, \"0deg\"] : [\"0deg\", \"0deg\"],\n      \"--reveal-scale\": scale,\n    }, {\n      duration: milliseconds / 1000,\n      delay: index => index * step,\n      ease: [...motionTokens.ease.settle],\n      \"--reveal-scale\": { inherit: true, times: variant === \"bloom\" ? [0, .7, 1] : [0, 1] },\n    });\n    const stop = trackMotion(controls);\n    return () => {\n      stop();\n      // Settle through the same Motion values so its queued render cannot\n      // overwrite an inline cleanup with a half-revealed word on the next frame.\n      const mounted = words.filter(word => word.isConnected);\n      if (mounted.length) animate(mounted, { \"--reveal-opacity\": 1, \"--reveal-y\": \"0em\", \"--reveal-blur\": \"0px\", \"--reveal-fold\": \"0deg\", \"--reveal-scale\": 1 }, { duration: 0 });\n    };\n  }, [token, enabled, inView, duration, variant, stagger, direction, split, lineResult]);\n  return <Tag {...props} ref={setHost} data-slot=\"text-reveal\" data-reveal-variant={variant} data-reveal-split={split} data-line-state={split === \"line\" ? !lineResult ? \"measuring\" : lineResult.lines ? \"ready\" : \"prose\" : undefined} data-motion-quiet={!enabled || !inView} className={cn(\"v-text-reveal\", className)}>\n    <span className=\"v-text-reveal__accessible\">{text}</span>\n    {split === \"line\" && <span aria-hidden=\"true\" data-reveal-measure=\"\">{text}</span>}\n    <span aria-hidden=\"true\" data-reveal-visual=\"\">{split === \"line\" ? lineResult?.lines ? lineResult.lines.map(line => <span key={`${line.start}:${line.end}`} data-reveal-unit=\"\" data-reveal-line=\"\">{line.text || \"\\u200b\"}</span>) : text : split === \"text\" ? text && <span data-reveal-unit=\"\">{text}</span> : text.split(/(\\s+)/).map((word, index) => !word || /^\\s+$/.test(word) ? word : <span key={index} data-reveal-word=\"\" {...(split === \"word\" ? { \"data-reveal-unit\": \"\" } : {})}>{split === \"word\" ? word : Array.from(segmenter.segment(word), ({ segment }, i) => <span key={i} data-reveal-unit=\"\">{segment}</span>)}</span>)}</span>\n  </Tag>;\n}\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/text-reveal.css",
-      "content": "@layer sahajiv-states {\n.v-text-reveal { overflow-wrap: anywhere; }\n.v-text-reveal [data-reveal-word] { display: inline-block; }\n.v-text-reveal__accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }\n\n}\n",
+      "path": "registry/cojeev/styles/text-reveal.css",
+      "content": "@layer cojeev-states {\n.v-text-reveal { overflow-wrap: anywhere; }\n.v-text-reveal [data-reveal-word] { display: inline-block; max-inline-size:100%; overflow-wrap:anywhere; }\n.v-text-reveal [data-reveal-unit] { display:inline-block; max-inline-size:100%; opacity:var(--reveal-opacity,1); transform:perspective(12em) translateY(var(--reveal-y,0em)) rotateX(var(--reveal-fold,0deg)) scale(var(--reveal-scale,1)); transform-origin:50% 85%; filter:blur(var(--reveal-blur,0px)); }\n.v-text-reveal:is([data-reveal-variant=\"bloom\"],[data-reveal-variant=\"scale\"],[data-reveal-variant=\"settle\"]) [data-reveal-unit] { transform-origin:50% 50%; }\n.v-text-reveal__accessible { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }\n.v-text-reveal[data-reveal-split=\"line\"] { display:grid; position:relative; }\n.v-text-reveal [data-reveal-measure] { grid-area:1/1; min-inline-size:0; visibility:hidden; pointer-events:none; white-space:pre-wrap; overflow-wrap:anywhere; }\n.v-text-reveal[data-reveal-split=\"line\"] [data-reveal-visual] { display:block; grid-area:1/1; min-inline-size:0; white-space:pre-wrap; }\n.v-text-reveal [data-reveal-line] { display:block; min-block-size:1lh; white-space:pre-wrap; }\n/* Preference changes reveal content immediately, including a pending Motion frame. */\n:root[data-flow=\"off\"] .v-text-reveal [data-reveal-unit],\n[data-flow=\"off\"] .v-text-reveal [data-reveal-unit],\n.v-text-reveal[data-flow=\"off\"] [data-reveal-unit],\n.v-text-reveal[data-motion-quiet=\"true\"] [data-reveal-unit] { opacity: 1; transform: none; filter:none; }\n@media (prefers-reduced-motion: reduce) {\n  .v-text-reveal [data-reveal-unit] { opacity: 1; transform: none; filter:none; }\n}\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/text-reveal.css"
+      "target": "styles/cojeev/text-reveal.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/text-reveal.css\"": {}
+    "@import \"@/styles/cojeev/text-reveal.css\"": {}
   },
   "meta": {
     "source": {
       "name": "Text reveal",
       "variants": [
         "rise",
-        "fade"
+        "fade",
+        "soften",
+        "fold",
+        "bloom",
+        "scale",
+        "settle"
       ],
       "sizes": [
         "default"
@@ -63,7 +70,25 @@
           },
           {
             "name": "variant",
-            "type": "\"rise\" | \"fade\"",
+            "type": "\"rise\" | \"fade\" | \"soften\" | \"fold\" | \"bloom\" | \"scale\" | \"settle\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "split",
+            "type": "\"word\" | \"grapheme\" | \"text\" | \"line\"",
+            "required": false,
+            "description": "Lines use the browser's actual wrapping; graphemes keep emoji and marks intact."
+          },
+          {
+            "name": "stagger",
+            "type": "number",
+            "required": false,
+            "description": "Milliseconds between units. The total delay is capped for long text."
+          },
+          {
+            "name": "direction",
+            "type": "\"up\" | \"down\"",
             "required": false,
             "description": ""
           },
@@ -76,7 +101,7 @@
         ]
       }
     ],
-    "category": "Effects",
+    "category": "Typography",
     "fidelity": "refined-design-family",
     "baseComponent": false
   },

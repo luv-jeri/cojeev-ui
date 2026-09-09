@@ -8,7 +8,7 @@ import {
   AttachmentMeta,
   AttachmentActions,
   AttachmentAction,
-} from "@/registry/sahajiv/ui/attachment";
+} from "@/registry/cojeev/ui/attachment";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -16,11 +16,11 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbPage,
-} from "@/registry/sahajiv/ui/breadcrumb";
+} from "@/registry/cojeev/ui/breadcrumb";
 import {
   ButtonGroup,
   ButtonGroupItem,
-} from "@/registry/sahajiv/ui/button-group";
+} from "@/registry/cojeev/ui/button-group";
 import {
   Carousel,
   CarouselContent,
@@ -29,7 +29,7 @@ import {
   CarouselPrevious,
   CarouselNext,
   CarouselDots,
-} from "@/registry/sahajiv/ui/carousel";
+} from "@/registry/cojeev/ui/carousel";
 import {
   Chart,
   ChartLine,
@@ -38,40 +38,41 @@ import {
   ChartRankedRow,
   ChartRankedLabel,
   ChartRankedValue,
-} from "@/registry/sahajiv/ui/chart";
-import { DataTable } from "@/registry/sahajiv/ui/data-table";
-import { Dropzone } from "@/registry/sahajiv/ui/dropzone";
+} from "@/registry/cojeev/ui/chart";
+import { DataTable } from "@/registry/cojeev/ui/data-table";
+import { Dropzone } from "@/registry/cojeev/ui/dropzone";
 import {
   Field,
   FieldLabel,
   FieldControl,
   FieldDescription,
   FieldError,
-} from "@/registry/sahajiv/ui/field";
+} from "@/registry/cojeev/ui/field";
 import {
   Input,
   InputWrapper,
   InputControl,
   InputAddon,
   InputClear,
-} from "@/registry/sahajiv/ui/input";
+} from "@/registry/cojeev/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
   InputGroupButton,
   InputGroupText,
-} from "@/registry/sahajiv/ui/input-group";
+  InputGroupTextarea,
+} from "@/registry/cojeev/ui/input-group";
 import {
   MessageScroller,
   MessageScrollerJump,
-} from "@/registry/sahajiv/ui/message-scroller";
+} from "@/registry/cojeev/ui/message-scroller";
 import {
   NativeSelect,
   NativeSelectOption,
   NativeSelectOptGroup,
-} from "@/registry/sahajiv/ui/native-select";
-import { Pagination } from "@/registry/sahajiv/ui/pagination";
+} from "@/registry/cojeev/ui/native-select";
+import { Pagination } from "@/registry/cojeev/ui/pagination";
 import {
   Questionnaire,
   QuestionnaireProgress,
@@ -80,7 +81,7 @@ import {
   QuestionnaireOptions,
   QuestionnaireOption,
   QuestionnaireOptionBody,
-} from "@/registry/sahajiv/ui/questionnaire";
+} from "@/registry/cojeev/ui/questionnaire";
 import {
   Sidebar,
   SidebarHeader,
@@ -90,7 +91,7 @@ import {
   SidebarMenuButton,
   SidebarMenuLabel,
   SidebarFooter,
-} from "@/registry/sahajiv/ui/sidebar";
+} from "@/registry/cojeev/ui/sidebar";
 import {
   Stepper,
   StepperList,
@@ -100,7 +101,7 @@ import {
   StepperPrevious,
   StepperNext,
   StepperStatus,
-} from "@/registry/sahajiv/ui/stepper";
+} from "@/registry/cojeev/ui/stepper";
 import {
   TableContainer,
   Table,
@@ -110,24 +111,25 @@ import {
   TableHead,
   TableCell,
   TableCaption,
-} from "@/registry/sahajiv/ui/table";
+} from "@/registry/cojeev/ui/table";
 import {
   Textarea,
   TextareaComposer,
   TextareaComposerBar,
   TextareaCount,
-} from "@/registry/sahajiv/ui/textarea";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Badge } from "@/registry/sahajiv/ui/badge";
-import { Card, CardTitle, CardDescription } from "@/registry/sahajiv/ui/card";
-import { Icon, Disk } from "@/registry/sahajiv/ui/icon";
-import { Label } from "@/registry/sahajiv/ui/label";
+} from "@/registry/cojeev/ui/textarea";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Badge } from "@/registry/cojeev/ui/badge";
+import { Card, CardTitle, CardDescription } from "@/registry/cojeev/ui/card";
+import { Icon, Disk } from "@/registry/cojeev/ui/icon";
+import { Label } from "@/registry/cojeev/ui/label";
 import {
   Message,
   MessageContent,
   MessageDescription,
-} from "@/registry/sahajiv/ui/message";
-import { Body, Meta, Title } from "@/registry/sahajiv/ui/typography";
+} from "@/registry/cojeev/ui/message";
+import { Body, Meta, Title } from "@/registry/cojeev/ui/typography";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 
 export function AttachmentExample() {
   const [present, setPresent] = React.useState(true);
@@ -146,8 +148,8 @@ export function AttachmentExample() {
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
-  return present ? (
-    <Attachment>
+  return <MotionPresence mode="wait">{present ? (
+    <MotionSurface key="attachment" asChild preset="slide"><Attachment>
       <AttachmentType>TXT</AttachmentType>
       <AttachmentName>
         weekly-notes.txt
@@ -164,10 +166,10 @@ export function AttachmentExample() {
           <Icon name="x" />
         </AttachmentAction>
       </AttachmentActions>
-    </Attachment>
+    </Attachment></MotionSurface>
   ) : (
-    <Button onClick={() => setPresent(true)}>Restore attachment</Button>
-  );
+    <MotionSurface key="restore" asChild preset="fade"><Button onClick={() => setPresent(true)}>Restore attachment</Button></MotionSurface>
+  )}</MotionPresence>;
 }
 export function BreadcrumbExample() {
   return (
@@ -403,11 +405,8 @@ export function FieldExample({ variant = "default" }: ExampleProps) {
           required
         />
       </FieldControl>
-      {invalid ? (
-        <FieldError>Use at least three characters.</FieldError>
-      ) : (
-        <FieldDescription>A name that feels like yours.</FieldDescription>
-      )}
+      <FieldDescription>A name that feels like yours.</FieldDescription>
+      {invalid && <FieldError>Use at least three characters.</FieldError>}
     </Field>
   );
 }
@@ -453,6 +452,9 @@ export function InputExample({
 export function InputGroupExample() {
   const [name, setName] = React.useState("personal-space");
   const [saved, setSaved] = React.useState("");
+  const [note, setNote] = React.useState("");
+  const [sent, setSent] = React.useState(false);
+  const id = React.useId();
   return (
     <div
       style={{
@@ -461,13 +463,13 @@ export function InputGroupExample() {
         gap: 12,
       }}
     >
-      <Label htmlFor="example-workspace-slug">Workspace address</Label>
+      <Label htmlFor={`${id}-slug`}>Workspace address</Label>
       <InputGroup>
         <InputGroupAddon>
           <InputGroupText>notes /</InputGroupText>
         </InputGroupAddon>
         <InputGroupInput
-          id="example-workspace-slug"
+          id={`${id}-slug`}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -485,6 +487,20 @@ export function InputGroupExample() {
           ? `Saved example address: notes / ${saved}`
           : "Choose a short, memorable address."}
       </Meta>
+      <Label htmlFor={`${id}-note`}>An instruction with room to grow</Label>
+      <InputGroup>
+        <InputGroupTextarea
+          id={`${id}-note`}
+          value={note}
+          onChange={event => { setNote(event.target.value); setSent(false); }}
+          placeholder="Describe what the agent should watch for…"
+          rows={3}
+        />
+        <InputGroupButton disabled={!note.trim()} onClick={() => setSent(true)}>
+          Add instruction
+        </InputGroupButton>
+      </InputGroup>
+      <Meta role="status">{sent ? "Instruction added to this demo." : "The group expands to fit a multiline input."}</Meta>
     </div>
   );
 }
@@ -503,7 +519,7 @@ export function MessageScrollerExample() {
             <MessageContent>
               <Body>{message}</Body>
               <MessageDescription>
-                {i % 2 ? "You" : "SahaJiv"} · note {i + 1}
+                {i % 2 ? "You" : "Cojeev"} · note {i + 1}
               </MessageDescription>
             </MessageContent>
           </Message>
@@ -756,12 +772,12 @@ export function TextareaExample() {
           </Button>
         </TextareaComposerBar>
       </TextareaComposer>
-      {saved && (
-        <Card>
+      <MotionPresence>{saved && (
+        <MotionSurface key={saved} asChild preset="rise"><Card>
           <CardTitle>Saved in this example</CardTitle>
           <CardDescription>{saved}</CardDescription>
-        </Card>
-      )}
+        </Card></MotionSurface>
+      )}</MotionPresence>
     </div>
   );
 }

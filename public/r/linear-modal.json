@@ -1,0 +1,108 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "linear-modal",
+  "title": "Linear Modal",
+  "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+  "dependencies": [
+    "@radix-ui/react-dialog",
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/dialog.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/linear-modal.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport * as Primitive from \"@radix-ui/react-dialog\";\nimport { AnimatePresence,motion } from \"motion/react\";\nimport { Button } from \"@/components/ui/button\";\nimport { Dialog,DialogTrigger,DialogTitle,DialogDescription,DialogClose } from \"@/components/ui/dialog\";\nimport { cn } from \"@/lib/utils\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\nimport { assignMotionRef } from \"@/lib/cojeev-motion/refs\";\nexport type LinearModalProps=Omit<React.ComponentProps<\"div\">,\"title\"> & {title:string;description:string;src:string;alt:string;open?:boolean;defaultOpen?:boolean;onOpenChange?:(open:boolean)=>void;variant?:\"card\"|\"compact\"};\n/** A card-to-dialog composition; Radix owns modal semantics and focus management. */\nexport function LinearModal({title,description,src,alt,open,defaultOpen=false,onOpenChange,variant=\"card\",children,className,ref,...props}:LinearModalProps){\n const [localOpen,setLocalOpen]=React.useState(defaultOpen),host=React.useRef<HTMLDivElement>(null),id=React.useId();const {enabled,inView}=useMotionVisibility(host);\n const isOpen=open??localOpen,animated=enabled&&inView;\n const change=(value:boolean)=>{if(open===undefined)setLocalOpen(value);onOpenChange?.(value);};\n const hostRef=React.useCallback((node:HTMLDivElement|null)=>{host.current=node;return assignMotionRef(ref,node);},[ref]);\n const timing={duration:animated?.4:0,ease:[.22,1,.36,1] as [number,number,number,number]};\n return <div {...props} ref={hostRef} className={cn(\"v-linear-modal\",className)} data-slot=\"linear-modal\" data-variant={variant}>\n <Dialog open={isOpen} onOpenChange={change}>\n <DialogTrigger asChild><motion.button type=\"button\" layoutId={animated?`${id}-surface`:undefined} className=\"v-linear-modal__card\" transition={timing} style={{opacity:isOpen?0:1}} aria-label={`Read ${title}`}>\n <motion.img layoutId={animated?`${id}-image`:undefined} transition={timing} className=\"v-linear-modal__image\" src={src} alt={alt}/>\n <span className=\"v-linear-modal__summary\"><motion.strong layoutId={animated?`${id}-title`:undefined} transition={timing}>{title}</motion.strong><span>{description}</span><span className=\"v-linear-modal__read\" aria-hidden=\"true\">Take a closer look ↗</span></span>\n </motion.button></DialogTrigger>\n <AnimatePresence>{isOpen&&<Primitive.Portal forceMount><Primitive.Overlay asChild forceMount><motion.div className=\"v-linear-modal__overlay\" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={timing}/></Primitive.Overlay><Primitive.Content asChild forceMount><motion.section className=\"v-linear-modal__detail\" layoutId={animated?`${id}-surface`:undefined} transition={timing} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>\n <motion.img layoutId={animated?`${id}-image`:undefined} transition={timing} className=\"v-linear-modal__hero\" src={src} alt={alt}/>\n <div className=\"v-linear-modal__content\"><DialogTitle asChild><motion.h2 layoutId={animated?`${id}-title`:undefined} transition={timing}>{title}</motion.h2></DialogTitle><DialogDescription>{description}</DialogDescription><div className=\"v-linear-modal__story\">{children}</div></div>\n <DialogClose asChild><Button className=\"v-linear-modal__close\" variant=\"secondary\" size=\"sm\" aria-label=\"Close detail\">×</Button></DialogClose>\n </motion.section></Primitive.Content></Primitive.Portal>}</AnimatePresence>\n </Dialog>\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/linear-modal.css",
+      "content": "@layer cojeev-states {\n.v-linear-modal{width:min(100%,420px);min-width:0}.v-linear-modal__card{display:grid;width:100%;padding:0;border:1px solid var(--v-edge);border-radius:24px;overflow:hidden;text-align:left;background:var(--v-paper);color:var(--v-text);cursor:pointer}.v-linear-modal__image{display:block;width:100%;height:260px;object-fit:cover}.v-linear-modal__summary{display:grid;gap:12px;padding:24px}.v-linear-modal__summary strong{font:28px/1.1 var(--font-display)}.v-linear-modal__summary>span{font:14px/1.5 var(--font-body);color:var(--v-text-2)}.v-linear-modal__summary .v-linear-modal__read{color:var(--v-ink);font-weight:600;padding-top:8px}.v-linear-modal__card:focus-visible{outline:3px solid var(--v-brand);outline-offset:4px}.v-linear-modal__overlay{position:fixed;inset:0;background:var(--v-scrim);z-index:var(--z-dialog)}.v-linear-modal__detail{position:fixed;inset:0;margin:auto;width:min(720px,calc(100% - 32px));height:fit-content;max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain;border:1px solid var(--v-edge);border-radius:28px;background:var(--v-paper);color:var(--v-text);z-index:calc(var(--z-dialog) + 1);box-shadow:var(--shadow-float)}.v-linear-modal__hero{display:block;width:100%;max-height:360px;object-fit:cover;aspect-ratio:2/1}.v-linear-modal__content{display:grid;gap:18px;padding:30px}.v-linear-modal__content h2{font:36px/1.05 var(--font-display);margin:0}.v-linear-modal__content p{margin:0}.v-linear-modal__story{font:16px/1.65 var(--font-body)}.v-linear-modal__detail .v-linear-modal__close{min-width:44px;min-height:44px;position:absolute;top:16px;right:16px}.v-linear-modal[data-variant=compact] .v-linear-modal__card{grid-template-columns:110px 1fr}.v-linear-modal[data-variant=compact] .v-linear-modal__image{height:100%;min-height:190px}.v-linear-modal[data-variant=compact] .v-linear-modal__summary{padding:20px}.v-linear-modal[data-variant=compact] .v-linear-modal__summary strong{font-size:23px}@media(max-width:480px){.v-linear-modal__image{height:220px}.v-linear-modal__content{padding:24px}.v-linear-modal__content h2{font-size:29px}.v-linear-modal[data-variant=compact] .v-linear-modal__card{grid-template-columns:80px 1fr}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/linear-modal.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/linear-modal.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Linear Modal",
+      "variants": [
+        "card",
+        "compact"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "active",
+        "still"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "LinearModalProps",
+        "props": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "src",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "alt",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onOpenChange",
+            "type": "(open:boolean)=>void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "variant",
+            "type": "\"card\"|\"compact\"",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Layout",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

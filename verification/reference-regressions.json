@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "all nine typography caller refs receive their actual roots",
+    "fractional width produces nonempty particle text",
+    "v-flow-v1 stops optional paint and preserves readable text",
+    "v-motion stops optional paint and preserves readable text",
+    "offscreen typography stops its optional runtime",
+    "transparent Pixel Swap content fully replaces and restores previous scene",
+    "resting and deformed ripple surfaces have no transparent triangle seams",
+    "React 19 callback-ref cleanup reaches all nine callers"
+  ]
+}

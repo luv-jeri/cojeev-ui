@@ -1,0 +1,177 @@
+[
+  {
+    "id": "motion-drawer",
+    "name": "Motion Drawer",
+    "category": "Layout",
+    "variants": [
+      "start",
+      "end"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "sheet",
+      "drawer"
+    ],
+    "reference": "https://www.ui-layouts.com/components/motion-drawer",
+    "landing": "Useful for mobile library navigation.",
+    "notes": "Compose existing Sheet modal mechanics; adds handle-only drag dismissal and trigger travel.",
+    "observation": "A navigation drawer slides from its edge, tracks drag and moves its trigger.",
+    "status": "new"
+  },
+  {
+    "id": "linear-modal",
+    "name": "Linear Modal",
+    "category": "Layout",
+    "variants": [
+      "card",
+      "compact"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "dialog",
+      "card"
+    ],
+    "reference": "https://www.ui-layouts.com/components/linear-modal",
+    "landing": "Useful for component detail stories; keep primary navigation separate.",
+    "notes": "Composes Radix dialog focus mechanics with Motion shared-layout surfaces; existing Dialog alone has no card-to-dialog continuity.",
+    "observation": "The trigger, title and image share layout IDs with an expanding portal detail card.",
+    "status": "new"
+  },
+  {
+    "id": "image-masking",
+    "name": "Image Masking",
+    "category": "Creative",
+    "variants": [
+      "mask",
+      "clip"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "shape",
+      "presence"
+    ],
+    "reference": "https://www.ui-layouts.com/components/image-masking",
+    "landing": "Use one restrained masked brand image beside the narrative.",
+    "notes": "One semantic image API covers both masking references; existing Shape is decorative and Presence is a lifecycle reveal.",
+    "observation": "CSS mask-image and SVG objectBoundingBox clip paths frame images with hover scale.",
+    "status": "new"
+  },
+  {
+    "id": "clip-path",
+    "name": "Clip Path",
+    "category": "Creative",
+    "variants": [
+      "clip"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "Caller images take the outline of a Cojeev signature silhouette.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "image-masking"
+    ],
+    "reference": "https://www.ui-layouts.com/components/clip-path",
+    "landing": "Use the same Image Masking family; do not stack competing image frames.",
+    "notes": "Consolidated into ImageMasking method=\"clip\"; no duplicate alias component.",
+    "observation": "SVG clip paths use normalized coordinates for responsive media framing.",
+    "status": "reused",
+    "existingId": "image-masking"
+  },
+  {
+    "id": "buy-me-coffee",
+    "name": "Buy Me Coffee",
+    "category": "Actions",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "A support poster reveals an inviting cup illustration and a real caller destination.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "hero-button",
+      "card"
+    ],
+    "reference": "https://www.ui-layouts.com/components/buy-me-coffee",
+    "landing": "Optional footer support link only when a real destination exists.",
+    "notes": "Original support interaction with explicit native href; no payment processing or simulated transaction.",
+    "observation": "An anchor transforms a typography poster into a larger cup on hover.",
+    "status": "new"
+  },
+  {
+    "id": "swapy",
+    "name": "Swapy",
+    "category": "Layout",
+    "variants": [
+      "grid",
+      "list"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "Cards swap positions through a drag handle or keyboard controls and retain their order in React state.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "card",
+      "grid"
+    ],
+    "reference": "https://www.ui-layouts.com/components/swapy",
+    "landing": "Optional arrange-your-workspace playground; avoid reorderable essential landing content.",
+    "notes": "Original state-driven swap behavior without the external Swapy package; caller receives every order change.",
+    "observation": "Swapy binds slots/items and updates a slot-item mapping on a drag swap.",
+    "status": "new"
+  }
+]

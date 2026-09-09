@@ -8,25 +8,25 @@ import {
   AlertDescription,
   AlertIcon,
   AlertActions,
-} from "@/registry/sahajiv/ui/alert";
-import { AspectRatio } from "@/registry/sahajiv/ui/aspect-ratio";
+} from "@/registry/cojeev/ui/alert";
+import { AspectRatio } from "@/registry/cojeev/ui/aspect-ratio";
 import {
   Avatar,
   AvatarFallback,
   AvatarGroup,
-} from "@/registry/sahajiv/ui/avatar";
-import { Badge } from "@/registry/sahajiv/ui/badge";
+} from "@/registry/cojeev/ui/avatar";
+import { Badge } from "@/registry/cojeev/ui/badge";
 import {
   Bubble,
   BubbleRow,
   BubbleContent,
   BubbleTime,
-} from "@/registry/sahajiv/ui/bubble";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { CodeBlock } from "@/registry/sahajiv/ui/code-block";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import { Card, CardTitle, CardDescription } from "@/registry/sahajiv/ui/card";
-import { Direction } from "@/registry/sahajiv/ui/direction";
+} from "@/registry/cojeev/ui/bubble";
+import { Button } from "@/registry/cojeev/ui/button";
+import { CodeBlock } from "@/registry/cojeev/ui/code-block";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import { Card, CardTitle, CardDescription, CardContent, CardFooter } from "@/registry/cojeev/ui/card";
+import { Direction } from "@/registry/cojeev/ui/direction";
 import {
   Empty,
   EmptyTitle,
@@ -34,9 +34,9 @@ import {
   EmptyState,
   EmptyStateTitle,
   EmptyStateDescription,
-} from "@/registry/sahajiv/ui/empty";
-import { Icon, IconButton, Disk, iconNames } from "@/registry/sahajiv/ui/icon";
-import { Input } from "@/registry/sahajiv/ui/input";
+} from "@/registry/cojeev/ui/empty";
+import { Icon, IconButton, Disk, iconNames } from "@/registry/cojeev/ui/icon";
+import { Input } from "@/registry/cojeev/ui/input";
 import {
   Item,
   ItemGroup,
@@ -44,20 +44,20 @@ import {
   ItemTitle,
   ItemDescription,
   ItemTrailing,
-} from "@/registry/sahajiv/ui/item";
-import { Kbd } from "@/registry/sahajiv/ui/kbd";
-import { Label, Stats, Stat } from "@/registry/sahajiv/ui/label";
-import { Marker } from "@/registry/sahajiv/ui/marker";
+} from "@/registry/cojeev/ui/item";
+import { Kbd } from "@/registry/cojeev/ui/kbd";
+import { Label, Stats, Stat } from "@/registry/cojeev/ui/label";
+import { Marker } from "@/registry/cojeev/ui/marker";
 import {
   Message,
   MessageContent,
   MessageDescription,
-} from "@/registry/sahajiv/ui/message";
-import { Progress } from "@/registry/sahajiv/ui/progress";
-import { Separator } from "@/registry/sahajiv/ui/separator";
-import { Shape, shapeNames } from "@/registry/sahajiv/ui/shape";
-import { Skeleton, SkeletonGroup } from "@/registry/sahajiv/ui/skeleton";
-import { Spinner } from "@/registry/sahajiv/ui/spinner";
+} from "@/registry/cojeev/ui/message";
+import { Progress } from "@/registry/cojeev/ui/progress";
+import { Separator } from "@/registry/cojeev/ui/separator";
+import { Shape, ShapeMorph, shapeNames, signatureShapeNames, type SignatureShapeName } from "@/registry/cojeev/ui/shape";
+import { Skeleton, SkeletonGroup } from "@/registry/cojeev/ui/skeleton";
+import { Spinner } from "@/registry/cojeev/ui/spinner";
 import {
   Typography,
   Hero,
@@ -72,13 +72,15 @@ import {
   Caps,
   Value,
   Identifier,
-} from "@/registry/sahajiv/ui/typography";
-import { Adjuster } from "@/registry/sahajiv/ui/adjuster";
-import { Preview } from "@/registry/sahajiv/ui/preview";
+} from "@/registry/cojeev/ui/typography";
+import { Adjuster } from "@/registry/cojeev/ui/adjuster";
+import { Preview } from "@/registry/cojeev/ui/preview";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 
 export function AlertExample({ variant = "default" }: ExampleProps) {
   const [visible, setVisible] = React.useState(true);
-  return visible ? (
+  return <MotionPresence mode="wait">{visible ? (
+    <MotionSurface key="alert" asChild preset="rise">
     <Alert variant={variant as React.ComponentProps<typeof Alert>["variant"]}>
       <AlertIcon>
         <Icon name="check" />
@@ -94,10 +96,10 @@ export function AlertExample({ variant = "default" }: ExampleProps) {
           </Button>
         </AlertActions>
       </AlertBody>
-    </Alert>
+    </Alert></MotionSurface>
   ) : (
-    <Button onClick={() => setVisible(true)}>Show alert again</Button>
-  );
+    <MotionSurface key="restore" asChild preset="fade"><Button onClick={() => setVisible(true)}>Show alert again</Button></MotionSurface>
+  )}</MotionPresence>;
 }
 export function AspectRatioExample() {
   return (
@@ -229,15 +231,18 @@ export function CardExample({
       size={size as React.ComponentProps<typeof Card>["size"]}
       style={{ maxWidth: 400 }}
     >
+      <Shape name="clover-soft" className="v-wm" style={{opacity:.22}}/>
       <Badge variant="ink">Personal space</Badge>
+      <CardContent style={{marginTop:16}}>
       <CardTitle>A place for the details</CardTitle>
       <CardDescription>
         Keep your notes, ideas and next steps together.
       </CardDescription>
-      <Stats>
+      </CardContent>
+      <CardFooter>
         <Stat>12 notes</Stat>
         <Stat>Updated today</Stat>
-      </Stats>
+      </CardFooter>
     </Card>
   );
 }
@@ -269,24 +274,24 @@ export function EmptyExample() {
   const [added, setAdded] = React.useState(false);
   return (
     <div style={{ display: "grid", gap: 24 }}>
-      {added ? (
-        <Card>
+      <MotionPresence mode="wait">{added ? (
+        <MotionSurface key="note" asChild preset="rise"><Card>
           <CardTitle>Your first note</CardTitle>
           <CardDescription>A small beginning.</CardDescription>
           <Button size="sm" onClick={() => setAdded(false)}>
             Reset example
           </Button>
-        </Card>
+        </Card></MotionSurface>
       ) : (
-        <Empty>
+        <MotionSurface key="empty" asChild preset="scale"><Empty>
           <Shape name="star-4" style={{ width: 48, height: 48 }} />
           <EmptyTitle>Room for your first idea</EmptyTitle>
           <EmptyDescription>
             Add a note to start collecting what matters.
           </EmptyDescription>
           <Button onClick={() => setAdded(true)}>Create a note</Button>
-        </Empty>
-      )}
+        </Empty></MotionSurface>
+      )}</MotionPresence>
       {(["partial", "error", "filtered"] as const).map((variant) => (
         <EmptyState key={variant} variant={variant}>
           <EmptyStateTitle>
@@ -393,7 +398,7 @@ export function MessageExample({ variant = "default" }: ExampleProps) {
             : "I have grouped your notes into three themes."}
         </Body>
         <MessageDescription>
-          {variant === "me" ? "You" : "SahaJiv"} · 09:41
+          {variant === "me" ? "You" : "Cojeev"} · 09:41
         </MessageDescription>
       </MessageContent>
     </Message>
@@ -561,32 +566,33 @@ export function IconExample({ variant = "default", size = "default" }: ExamplePr
   );
 }
 export function ShapeExample() {
+  const [name, setName] = React.useState<SignatureShapeName>("daisy-12");
+  const [palette, setPalette] = React.useState("var(--v-pink-deep)");
+  const [outline, setOutline] = React.useState(false);
+  const colors = [{ name: "Mulberry", color: "var(--v-pink-deep)" }, { name: "Olive", color: "var(--v-olive)" }, { name: "Ink", color: "var(--v-ink)" }, { name: "Pink", color: "var(--v-pink)" }];
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill,minmax(120px,1fr))",
-        gap: 24,
-      }}
-    >
-      {shapeNames.map((name) => (
-        <div
-          key={name}
-          style={{ display: "grid", justifyItems: "center", gap: 12 }}
-        >
-          <Shape
-            name={name}
-            style={
-              {
-                width: 56,
-                height: 56,
-                "--c": "var(--v-pink-deep)",
-              } as React.CSSProperties
-            }
-          />
-          <Meta>{name}</Meta>
+    <div className="v-shape-explorer" style={{ "--shape-color": palette } as React.CSSProperties}>
+      <div className="v-shape-explorer__stage">
+        <div className="v-shape-explorer__art">
+          <ShapeMorph name={name} variant={outline ? "outline" : "fill"} label={`Selected shape: ${name}`} />
         </div>
-      ))}
+        <div className="v-shape-explorer__caption">
+          <Caps>Living geometry</Caps>
+          <Title>{name.replaceAll("-", " ")}</Title>
+          <BodySecondary>Pick a silhouette and watch its contour take a new form.</BodySecondary>
+          <div className="v-shape-explorer__palette" role="group" aria-label="Shape color">
+            {colors.map(color => <Button key={color.name} size="sm" variant="ghost" aria-label={color.name} aria-pressed={palette === color.color} onClick={() => setPalette(color.color)}><span aria-hidden="true" style={{ width: 16, height: 16, borderRadius: "50%", background: color.color, boxShadow: "inset 0 0 0 1px var(--v-border)" }} />{color.name}</Button>)}
+          </div>
+          <Button variant="secondary" size="sm" aria-pressed={outline} onClick={() => setOutline(value => !value)}>{outline ? "Use solid fill" : "Use outline"}</Button>
+        </div>
+      </div>
+      <div className="v-shape-explorer__choices" role="group" aria-label="Signature shapes">
+        {signatureShapeNames.map(shape => <Button key={shape} variant="ghost" className="v-shape-explorer__choice" aria-label={`Morph to ${shape}`} aria-pressed={name === shape} onClick={() => setName(shape)}><Shape name={shape} style={{ width: 30, height: 30, "--c": "var(--shape-color)" } as React.CSSProperties} /><Meta>{shape}</Meta></Button>)}
+      </div>
+      <div className="v-shape-explorer__catalog-head"><Title>Every silhouette</Title><Meta>{shapeNames.length} reusable shapes · SVG masks and matching morph surfaces</Meta></div>
+      <div className="v-shape-gallery">
+        {shapeNames.map(shape => <div key={shape} className="v-shape-gallery__item"><Shape name={shape} style={{ width: 52, height: 52, "--c": "var(--shape-color)" } as React.CSSProperties} /><Meta>{shape}</Meta></div>)}
+      </div>
     </div>
   );
 }

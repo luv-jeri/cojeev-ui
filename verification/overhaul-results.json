@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "version": "0.2.0",
+  "status": "verified-locally-publication-in-progress",
+  "scope": {
+    "baseComponents": 66,
+    "uiEntries": 89,
+    "foundationEntries": 1,
+    "namedAuditEntries": 68,
+    "shapes": 36,
+    "newOriginalShapes": 12,
+    "chartTypes": 6,
+    "chartVariants": 16
+  },
+  "checks": {
+    "logicTests": {
+      "passed": 25,
+      "total": 25
+    },
+    "copiedExamples": {
+      "defaults": 89,
+      "snippets": 316,
+      "status": "PASS"
+    },
+    "nonChartVariants": {
+      "passed": 388,
+      "total": 388,
+      "contexts": [
+        "390/dark",
+        "1440/light"
+      ],
+      "visualContactSheetsInspected": 26
+    },
+    "chartVariants": {
+      "passed": 32,
+      "total": 32,
+      "contexts": [
+        "390/dark",
+        "1440/light"
+      ],
+      "consoleErrorsChecked": true
+    },
+    "chartLifecycle": {
+      "passed": 6,
+      "total": 6,
+      "modes": [
+        "active",
+        "off",
+        "reduced"
+      ],
+      "widths": [
+        390,
+        1440
+      ]
+    },
+    "longContent": {
+      "passed": 28,
+      "total": 28,
+      "width": 320,
+      "themes": [
+        "light",
+        "dark"
+      ]
+    },
+    "primitiveMotion": {
+      "passed": 10,
+      "total": 10
+    },
+    "freshRegistryConsumer": {
+      "status": "PASS",
+      "entries": 89,
+      "renderedSpecimens": 19,
+      "exactCSSFiles": 88,
+      "finalSourceRefreshedViaCLI": true
+    },
+    "productionDocumentation": {
+      "status": "PASS-with-targeted-confirmation",
+      "entries": 89,
+      "layouts": 534,
+      "previewAndBehavior": "Preview PASS; initial behavior 87/89, both subsequent corrections targeted separately",
+      "initialErrors": [
+        "area-chart SVG starting values",
+        "line-chart SVG starting values",
+        "pie-chart SVG starting values",
+        "radial-chart SVG starting values"
+      ],
+      "finalAffectedEntries": 21,
+      "finalAffectedLayouts": 126,
+      "documentationShellCases": 6,
+      "tableExitTimingAssertion": "Updated to await actual removal; targeted production rerun PASS",
+      "initialBehaviorFailures": [
+        "Menubar closing layer dismissed newly opened sibling",
+        "Text Reveal check observed only browser-native animations"
+      ],
+      "menuRevealFinal": {
+        "entries": 2,
+        "layouts": 8,
+        "shellChecks": 4,
+        "status": "PASS"
+      }
+    },
+    "mobileWebKit": {
+      "status": "PASS",
+      "initialPassed": 5,
+      "total": 7,
+      "initialFailures": [
+        "hidden navigation morph SVG intrinsic width",
+        "MultiSelect transformed popup anchor"
+      ],
+      "passed": 7,
+      "consoleErrors": 0,
+      "originalGateReconfirmed": true
+    },
+    "sourceGates": {
+      "lint": "PASS",
+      "typecheck": "PASS",
+      "build": "PASS",
+      "staticPages": 95,
+      "registryItems": 90
+    },
+    "nativeAgentLifecycle": {
+      "passed": 48,
+      "total": 48,
+      "widths": [
+        390,
+        1440
+      ],
+      "modes": [
+        "active",
+        "off",
+        "reduced"
+      ]
+    },
+    "dataLifecycle": {
+      "passed": 2,
+      "total": 2,
+      "cmdkFilteringBoundary": "immediate semantic filtering with results-surface transition"
+    },
+    "calendarButtonLifecycle": {
+      "passed": 2,
+      "total": 2,
+      "contexts": [
+        "Chromium1440/light",
+        "WebKit390/dark"
+      ]
+    },
+    "darkButtonPaint": {
+      "passed": 2,
+      "total": 2
+    }
+  },
+  "boundaries": [
+    "Finite component/variant/state coverage, not every prop or device combination.",
+    "No physical iPhone verification.",
+    "Agent workflows are explicit local simulations.",
+    "Caller-owned conditional removals require external MotionPresence.",
+    "cmdk semantic filtering remains immediate; its results surface is choreographed."
+  ],
+  "publication": {
+    "repository": "https://github.com/luv-jeri/cojeev-ui",
+    "documentation": "https://luv-jeri.github.io/cojeev-ui/",
+    "status": "CI-running",
+    "sourceCommit": "faf8f62779dcccfd32301b0de5bb80140a516c39",
+    "supersededCI": "https://github.com/luv-jeri/cojeev-ui/actions/runs/34211647898",
+    "ci": "https://github.com/luv-jeri/cojeev-ui/actions/runs/34212967217"
+  }
+}

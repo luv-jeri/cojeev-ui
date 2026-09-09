@@ -2,18 +2,29 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "shape",
   "title": "Shape",
-  "description": "Renders a named decorative silhouette that inherits or accepts a fill color.",
-  "dependencies": [],
+  "description": "A shared catalogue of 36 SVG silhouettes, with 12 original contours that morph smoothly between shapes.",
+  "dependencies": [
+    "motion"
+  ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/shape.tsx",
-      "content": "import * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\nimport { shapeData } from \"@/lib/sahajiv/shape-data\"\nexport type ShapeProps = React.ComponentProps<\"span\"> & { name?: string; as?: React.ElementType }\nexport function Shape({as:Tag=\"i\",name=\"star-4\",className,style,...props}:ShapeProps){\n const mask=shapeData[name];\n if(!mask) throw new Error(`Unknown SahaJiv shape: ${name}`)\n return <Tag data-slot=\"shape\" aria-hidden=\"true\" className={cn(\"v-shape inline-block h-[1em] w-[1em] shrink-0 bg-[var(--c,currentColor)]\",`-${name}`,className)} style={{...style,\"--m\":mask,mask:\"var(--m) center / contain no-repeat\",WebkitMask:\"var(--m) center / contain no-repeat\"} as React.CSSProperties} {...props}/>\n}\nexport const shapeNames=Object.keys(shapeData)\n",
+      "path": "registry/cojeev/ui/shape.tsx",
+      "content": "\"use client\"\nimport * as React from \"react\"\nimport { animate, motion, useMotionValue } from \"motion/react\"\nimport { cn } from \"@/lib/utils\"\nimport { shapeData } from \"@/lib/cojeev/shape-data\"\nimport { signatureShapePaths, type SignatureShapeName } from \"@/lib/cojeev/signature-shapes\"\nimport { useChoreography } from \"@/lib/cojeev-motion/choreography\"\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\"\nimport { assignMotionRef } from \"@/lib/cojeev-motion/refs\"\nexport type ShapeProps = React.ComponentProps<\"span\"> & { name?: string; as?: React.ElementType }\nexport function Shape({as:Tag=\"i\",name=\"star-4\",className,style,...props}:ShapeProps){\n const mask=shapeData[name];\n if(!mask) throw new Error(`Unknown Cojeev shape: ${name}`)\n return <Tag data-slot=\"shape\" aria-hidden=\"true\" className={cn(\"v-shape inline-block h-[1em] w-[1em] shrink-0 bg-[var(--c,currentColor)]\",`-${name}`,className)} style={{...style,\"--m\":mask,mask:\"var(--m) center / contain no-repeat\",WebkitMask:\"var(--m) center / contain no-repeat\"} as React.CSSProperties} {...props}/>\n}\nexport const shapeNames=Object.keys(shapeData)\nexport const signatureShapeNames=Object.keys(signatureShapePaths) as SignatureShapeName[]\nexport type { SignatureShapeName }\nexport type ShapeMorphProps = Omit<React.ComponentProps<\"svg\">, \"name\"> & {\n name?: SignatureShapeName\n variant?: \"fill\" | \"outline\"\n /** Omit for a decorative shape; supply when the graphic carries meaning. */\n label?: string\n}\n/** Original fixed-topology silhouettes; changing name retargets the visible path. */\nexport function ShapeMorph({name=\"daisy-12\",variant=\"fill\",label,className,ref,...props}:ShapeMorphProps){\n const host=React.useRef<SVGSVGElement>(null)\n const hostRef=React.useCallback((element:SVGSVGElement|null)=>{host.current=element;return assignMotionRef(ref,element)},[ref])\n const {quiet,transition}=useChoreography()\n const {enabled,inView}=useMotionVisibility(host)\n const target=signatureShapePaths[name]\n if(!target)throw new Error(`Unknown Cojeev signature shape: ${name}`)\n const path=useMotionValue(target)\n React.useEffect(()=>{\n  if(quiet||!enabled||!inView){path.jump(target);return}\n  const animation=animate(path,target,transition)\n  return ()=>animation.stop()\n },[target,quiet,enabled,inView,path,transition])\n return <svg {...props} ref={hostRef} data-slot=\"shape-morph\" data-shape={name} data-variant={variant} className={cn(\"v-shape-morph\",className)} viewBox=\"0 0 100 100\" role={label?\"img\":undefined} aria-label={label} aria-hidden={label?undefined:true} focusable=\"false\">\n  <motion.path d={path} fill={variant===\"fill\"?\"currentColor\":\"none\"} stroke={variant===\"outline\"?\"currentColor\":\"none\"} strokeWidth={variant===\"outline\"?2:0} vectorEffect=\"non-scaling-stroke\" />\n </svg>\n}\n",
       "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/shape.css",
+      "content": "@layer cojeev-states {\n.v-shape-morph { display: block; width: 100%; height: 100%; overflow: visible; }\n.v-shape-explorer { display: grid; gap: 24px; min-width: 0; width: 100%; }\n.v-shape-explorer__stage { display: grid; grid-template-columns: minmax(180px,.85fr) minmax(0,1fr); gap: 32px; align-items: center; padding: 28px; border: 1px solid var(--v-border); border-radius: var(--r-card); background: linear-gradient(135deg,color-mix(in oklab,var(--v-pink) 20%,var(--v-canvas)),var(--v-canvas)); }\n.v-shape-explorer__art { width: min(100%,240px); aspect-ratio: 1; margin-inline: auto; color: var(--shape-color); filter: drop-shadow(0 8px 12px color-mix(in oklab,var(--shape-color) 12%,transparent)); }\n.v-shape-explorer__caption { display: grid; gap: 12px; justify-items: start; min-width: 0; }\n.v-shape-explorer__caption :is(h3,p) { margin: 0; }\n.v-shape-explorer__palette { display: flex; gap: 4px; flex-wrap: wrap; }\n.v-shape-explorer__palette button[aria-pressed=\"true\"] { background: var(--v-pink-soft); box-shadow: inset 0 0 0 1px var(--v-brand); }\n.v-shape-explorer__choices { display: grid; grid-template-columns: repeat(auto-fit,minmax(110px,1fr)); gap: 8px; }\n.v-shape-explorer__choice { min-width: 0; height: auto; display: grid; justify-items: center; gap: 10px; padding: 14px 8px; color: var(--shape-color); border-radius: var(--r-card-sm); }\n.v-shape-explorer__choice [data-slot=\"typography\"] { color: var(--v-text); font-size: 11px; overflow-wrap: anywhere; }\n.v-shape-explorer__choice[aria-pressed=\"true\"] { background: var(--v-pink-soft); box-shadow: inset 0 0 0 1px var(--v-brand); }\n.v-shape-explorer__catalog-head { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--v-border); }\n.v-shape-gallery { display: grid; grid-template-columns: repeat(auto-fill,minmax(100px,1fr)); gap: 12px; }\n.v-shape-gallery__item { display: grid; justify-items: center; align-content: center; min-width: 0; gap: 12px; padding: 20px 8px; min-height: 112px; color: var(--shape-color); border: 1px solid var(--v-border); border-radius: var(--r-card-sm); }\n.v-shape-gallery__item [data-slot=\"typography\"] { font-size: 11px; color: var(--v-text); overflow-wrap: anywhere; }\n@media (max-width:600px) {\n .v-shape-explorer__stage { grid-template-columns: 1fr; gap: 20px; padding: 20px; }\n .v-shape-explorer__art { width: 180px; }\n .v-shape-explorer__choices { grid-template-columns: repeat(3,minmax(0,1fr)); }\n .v-shape-explorer__choice { padding: 12px 4px; }\n .v-shape-gallery { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/shape.css"
     }
   ],
+  "css": {
+    "@import \"@/styles/cojeev/shape.css\"": {}
+  },
   "meta": {
     "source": {
       "name": "Shape",
@@ -42,6 +53,29 @@
             "type": "React.ElementType",
             "required": false,
             "description": ""
+          }
+        ]
+      },
+      {
+        "name": "ShapeMorphProps",
+        "props": [
+          {
+            "name": "name",
+            "type": "SignatureShapeName",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "variant",
+            "type": "\"fill\" | \"outline\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": "Omit for a decorative shape; supply when the graphic carries meaning."
           }
         ]
       }

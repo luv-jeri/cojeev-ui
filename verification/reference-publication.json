@@ -1,0 +1,28 @@
+{
+  "status": "published and verified",
+  "commit": "5e911c1849c0352b2a0c28cdcf27952d06bc50fd",
+  "run": "https://github.com/luv-jeri/cojeev-ui/actions/runs/34289214427",
+  "publicGuide": "https://luv-jeri.github.io/cojeev-ui/docs/reference-guide/",
+  "releaseCheckout": "/tmp/cojeev-publish-reference-20260909",
+  "newComponents": 35,
+  "referenceMappings": 41,
+  "publicCatalogComponents": 159,
+  "unrelatedLocalWorkPreserved": true,
+  "supersededRun": "https://github.com/luv-jeri/cojeev-ui/actions/runs/34287814260",
+  "deploymentCommit": "ef79ad5897bb50ae6547527ca7904522c0078a73",
+  "releasePreservedInDeploymentCommit": true,
+  "verification": "success",
+  "publication": "success",
+  "liveBrowserCases": {
+    "passed": 5,
+    "total": 5,
+    "width": 390,
+    "components": [
+      "particle-text",
+      "swarm-cursor",
+      "portal-field",
+      "linear-modal",
+      "image-masking"
+    ]
+  }
+}

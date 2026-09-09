@@ -1,0 +1,31 @@
+.v-word-relay {
+  display:inline-grid; position:relative; vertical-align:baseline; max-inline-size:100%;
+  padding:.08em .22em .12em; border-radius:.34em .27em .32em .24em;
+  background:var(--relay-face,transparent); color:var(--relay-ink,inherit);
+  line-height:1.25; isolation:isolate;
+}
+.v-word-relay[data-tone="pink"] { --relay-face:var(--v-pink); --relay-ink:var(--v-on-accent); }
+.v-word-relay[data-tone="olive"] { --relay-face:var(--v-olive); --relay-ink:var(--v-on-accent); }
+.v-word-relay[data-tone="blue"] { --relay-face:var(--v-blue); --relay-ink:var(--v-on-accent); }
+.v-word-relay[data-tone="yellow"] { --relay-face:var(--v-yellow); --relay-ink:var(--v-on-accent); }
+.v-word-relay [data-relay-phrase] {
+  grid-area:1/1; min-inline-size:0; overflow-wrap:anywhere; pointer-events:none;
+}
+.v-word-relay [data-relay-unit] {
+  display:inline-block; max-inline-size:100%;
+  opacity:var(--relay-opacity,0); transform:translateY(var(--relay-y,.38em));
+  filter:blur(var(--relay-blur,3px));
+}
+.v-word-relay [data-relay-word] { display:inline-block; max-inline-size:100%; overflow-wrap:anywhere; }
+.v-word-relay [data-relay-phrase][data-selected="true"] { --relay-opacity:1; --relay-y:0em; --relay-blur:0px; }
+.v-word-relay__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+:root[data-flow="off"] .v-word-relay [data-relay-unit],
+[data-flow="off"] .v-word-relay [data-relay-unit],
+.v-word-relay[data-motion-quiet="true"] [data-relay-unit] { opacity:0; transform:none; filter:none; }
+:root[data-flow="off"] .v-word-relay [data-selected="true"] [data-relay-unit],
+[data-flow="off"] .v-word-relay [data-selected="true"] [data-relay-unit],
+.v-word-relay[data-motion-quiet="true"] [data-selected="true"] [data-relay-unit] { opacity:1; }
+@media(prefers-reduced-motion:reduce) {
+  .v-word-relay [data-relay-unit] { opacity:0; transform:none; filter:none; }
+  .v-word-relay [data-selected="true"] [data-relay-unit] { opacity:1; }
+}

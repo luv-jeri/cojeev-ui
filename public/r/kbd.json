@@ -7,23 +7,23 @@
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/kbd.tsx",
-      "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\nimport { useMorph } from \"@/lib/sahajiv-motion/use-morph\"\n\nconst KbdVariants=cva(\"v-kbd [display:inline-block] [padding:2px_6px] [border-radius:var(--r-xs)] [background:var(--v-beige)] [border-bottom:2px_solid_var(--v-border)] [font-size:11px] [font-weight:600]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type KbdProps=React.ComponentProps<\"kbd\"> & VariantProps<typeof KbdVariants> & { as?:React.ElementType }\nexport function Kbd({as:Tag=\"kbd\",className,variant,size,ref,...props}:KbdProps){const ownedRef=useMorph<HTMLElement>(\"pills\",ref);return <Tag ref={ownedRef} data-slot=\"kbd\" data-part=\"root\" className={cn(KbdVariants({variant,size}),className)} {...props}/>}\n",
+      "path": "registry/cojeev/ui/kbd.tsx",
+      "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\nimport { useMorph } from \"@/lib/cojeev-motion/use-morph\"\n\nconst KbdVariants=cva(\"v-kbd [display:inline-block] [padding:2px_6px] [border-radius:var(--r-xs)] [background:var(--v-beige)] [border-bottom:2px_solid_var(--v-border)] [font-size:11px] [font-weight:600]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type KbdProps=React.ComponentProps<\"kbd\"> & VariantProps<typeof KbdVariants> & { as?:React.ElementType }\nexport function Kbd({as:Tag=\"kbd\",className,variant,size,ref,...props}:KbdProps){const ownedRef=useMorph<HTMLElement>(\"pills\",ref);return <Tag ref={ownedRef} data-slot=\"kbd\" data-part=\"root\" className={cn(KbdVariants({variant,size}),className)} {...props}/>}\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/kbd.css",
-      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n:root[data-mode=\"dark\"] .v-kbd[data-slot]{color:var(--v-text)}\n\n\n}\n",
+      "path": "registry/cojeev/styles/kbd.css",
+      "content": "@layer cojeev-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n:root[data-mode=\"dark\"] .v-kbd[data-slot]{color:var(--v-text)}\n\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/kbd.css"
+      "target": "styles/cojeev/kbd.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/kbd.css\"": {}
+    "@import \"@/styles/cojeev/kbd.css\"": {}
   },
   "meta": {
     "source": {

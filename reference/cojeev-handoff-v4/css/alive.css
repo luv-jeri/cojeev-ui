@@ -1,0 +1,636 @@
+/* ============================================================
+   Vriksha · alive.css — the living layer
+   Three signatures, one language: a selection shape that glides between homes, a small creature that loads,
+   and paper that breathes. Everything here degrades to a static, legible state under reduced motion.
+   Loaded after components/patterns so it can own these behaviours without !important.
+   ============================================================ */
+
+/* ---------- 1 · The gliding selection ----------
+   Moved to css/flow.css (single owner: layers, paint, every character’s timing) with js/flow.js as the engine. */
+
+/* ---------- 2 · The creature that loads ----------
+   A soft ball that breathes, gives one affectionate jiggle when you come near, and opens into a heart.
+   It is still a loading indicator: it says "working", it does not perform. */
+.v-pulse{display:inline-grid;place-items:center;width:var(--pulse,34px);height:var(--pulse,34px);position:relative}
+.v-pulse svg{width:100%;height:100%;overflow:visible}
+/* the seed's shape, turn and centre are declared in components-2.css (Loading mark); the label sits under it */
+.v-pulse__label{position:absolute;inset:auto auto -20px 50%;transform:translateX(-50%);font-size:11px;color:var(--v-text-2);white-space:nowrap}
+
+/* ---------- 3 · Paper that breathes ----------
+   The placeholder stays a familiar shimmer, but warm and slow: cream travelling through beige, with a
+   barely-there rise so the page feels alive rather than frozen. */
+/* The face must read against the surface it sits on: --v-beige on a --v-beige panel was invisible by
+   construction, and this shorthand (loaded last) was overriding any later background-color fix. */
+.v-skel{position:relative;overflow:hidden;background:var(--v-skel-face);box-shadow:none;border-radius:999px}
+.v-skel::after{content:"";position:absolute;inset:0;
+ background:linear-gradient(100deg,transparent 12%,var(--v-skel-sheen) 46%,transparent 78%);
+ transform:translateX(-100%);animation:v-sweep 2.4s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes v-sweep{to{transform:translateX(100%)}}
+.v-skel.-line{height:12px;border-radius:999px}
+.v-skel.-line:nth-of-type(2n){width:82%}
+.v-skel.-line:nth-of-type(3n){width:64%}
+.v-skel.-disk{border-radius:50%}
+.v-skel-group{display:grid;gap:8px}
+.v-skel-group>*{animation-delay:calc(var(--i,0)*.16s)}
+.v-scroll,.v-scroller,.v-table-wrap,.v-cmd__list,.v-menu,.v-sheet,.ap-body,.cnav{scrollbar-gutter:stable}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--v-edge) 34%,transparent);
+ border-radius:999px;border:3px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:color-mix(in oklab,var(--v-edge) 58%,transparent);background-clip:content-box}
+::-webkit-scrollbar-corner{background:transparent}
+
+/* ---------- 5 · Async content, dropzone, stepper — the same language ---------- */
+.v-async{display:grid;gap:10px;padding:18px;border-radius:16px;background:var(--v-beige);justify-items:start}
+.v-async__row{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--v-text-2)}
+/* The stepper lives in components-2.css. An earlier copy here drew its own counter(vs) ::before circle,
+   which is the stray "1" — two implementations of one component, so the newer CSS could not correct it. */
+/* ---------- 6 · Editorial hand ----------
+   Purposeful rhythm rather than uniform gaps: headings sit close to what they introduce, sections breathe. */
+.v-lede{font-size:17px;line-height:1.55;color:var(--v-text-2);max-width:66ch;text-wrap:pretty}
+.v-figure{display:grid;gap:10px}
+.v-figure__cap{font-size:12.5px;color:var(--v-text-2);max-width:56ch}
+.v-rule{height:1px;background:linear-gradient(90deg,var(--v-border),transparent);border:0;margin:4px 0}
+.v-quiet{color:var(--v-text-2)}
+
+@media (prefers-reduced-motion:reduce){
+ .v-pulse .seed,.v-pulse .core{animation:none}
+ .v-skel::after{animation:none;opacity:.5}
+ }
+
+/* ============================================================
+   COMPOSITION PASS — Memory, Files & resources, Settings, both panels
+   Each family gets its own container queries so it composes on its own width, not the shell's. Colour is
+   given a job: olive marks what Cojeev observed, pink what you said, blue what a host reported, yellow what
+   is scheduled, ink what is structural. Cream carries reading.
+   ============================================================ */
+
+/* ---------- Memory — an inviting collection of notes ---------- */
+.v-reclist{container:reclist/inline-size;padding-inline:0}
+.v-reclist .v-card{position:relative;padding:16px 18px 16px 20px;border-radius:14px;background:transparent;
+ border-bottom:1px solid color-mix(in oklab,var(--v-border) 45%,transparent);transition:background .22s ease}
+.v-reclist .v-card::before{content:"";position:absolute;left:6px;top:18px;bottom:18px;width:3px;border-radius:2px;
+ background:var(--v-olive);opacity:.55}
+.v-reclist .v-card:hover{background:color-mix(in oklab,var(--v-canvas) 62%,var(--v-beige))}
+.v-reclist .v-card:hover::before{opacity:1}
+.v-reclist .v-card:last-child{border-bottom:0}
+.v-reclist .v-body{font-size:16.5px;line-height:1.62;max-width:58ch;text-wrap:pretty;color:var(--v-text)}
+.v-reclist .v-meta{font-size:12.5px;letter-spacing:.01em}
+.v-reclist .v-badge{height:21px;font-size:11px;padding:0 9px;letter-spacing:.02em}
+/* The tag says where the memory came from and the accent agrees with it. The colour is set on the rule that
+   paints, not as a custom property under a component selector, so nothing looks like an unregistered token. */
+.v-reclist .v-card:has(.v-badge:where([class*="-olive"]))::before{background:var(--v-olive)}
+.v-reclist .v-card:has(.v-badge:where([class*="-pink"]))::before{background:var(--v-pink)}
+.v-reclist .v-card:has(.v-badge:where([class*="-blue"]))::before{background:var(--v-blue)}
+.v-recgroup{display:flex;align-items:baseline;gap:10px;margin:26px 0 4px;
+ padding-bottom:6px;border-bottom:1px solid color-mix(in oklab,var(--v-border) 60%,transparent)}
+.v-recgroup b{font-family:var(--font-display);font-size:17px;font-weight:500;letter-spacing:-.01em}
+.v-recgroup>*:last-child{margin-left:auto}
+@container reclist (max-width:520px){
+ .v-reclist .v-card{padding:15px 4px 15px 18px}
+ .v-reclist .v-body{font-size:16px;max-width:none}
+}
+
+/* ---------- Files & resources — a visual story that holds at any width ---------- */
+.v-feature{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));border-radius:22px;overflow:hidden}
+.v-feature__media{position:relative;aspect-ratio:16/10;min-height:0}
+/* a storyboard of five frames: the run's shape, not a blank plate */
+.v-feature__media::before{content:"";position:absolute;inset:14px 14px 44px;border-radius:12px;
+ background:
+  linear-gradient(var(--v-ink) 0 0) 0 100%/14% 34% no-repeat,
+  linear-gradient(var(--v-olive) 0 0) 21.5% 100%/14% 58% no-repeat,
+  linear-gradient(var(--v-yellow) 0 0) 43% 100%/14% 80% no-repeat,
+  linear-gradient(var(--v-pink) 0 0) 64.5% 100%/14% 46% no-repeat,
+  linear-gradient(var(--v-blue) 0 0) 86% 100%/14% 66% no-repeat;
+ opacity:.92}
+.v-feature__media .v-play{z-index:2}
+.v-feature__body{padding:22px 24px 24px;display:grid;gap:10px;align-content:start}
+.v-feature__body .v-title{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.015em;line-height:1.25}
+.v-feature__body .v-kv{margin-top:4px}
+/* auto-fit does the collapsing: no container query can target its own container */
+@media (max-width:620px){.v-feature__media{aspect-ratio:16/9}.v-feature__body{padding:18px}}
+.v-resource{container:res/inline-size;border-radius:18px;overflow:hidden}
+.v-resource__head{padding:14px 18px;font-family:var(--font-display);font-weight:500;letter-spacing:-.01em}
+.v-resource__body{padding:16px 18px 18px;gap:8px}
+.v-resource__link{margin-top:4px}
+.v-file{border-radius:18px;padding:16px 18px;gap:10px}
+.v-file__title{font-family:var(--font-display);font-size:17px;font-weight:500;letter-spacing:-.01em}
+.v-file__thumb{border-radius:12px}
+
+/* ---------- Settings — calm, clear, effortless ---------- */
+.v-settings-grid{gap:18px}
+.v-settings-grid>.v-card{padding:20px 22px 22px;border-radius:18px;gap:0}
+.v-settings-grid>.v-card>b:first-child,.v-settings-grid>.v-card>.v-sechead:first-child{
+ font-family:var(--font-display);font-size:18px;font-weight:500;letter-spacing:-.012em}
+.v-settings-grid>.v-card>.v-body-2,.v-settings-grid>.v-card>.v-meta{margin-top:8px;max-width:46ch;line-height:1.55}
+.v-setrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 16px;align-items:center;
+ padding:13px 0;border-top:1px solid color-mix(in oklab,var(--v-border) 45%,transparent)}
+.v-setrow:first-of-type{margin-top:16px}
+.v-setrow__label{font-size:14.5px}
+.v-setrow__hint{font-size:12.5px;color:var(--v-text-2);grid-column:1/-1;margin-top:-6px}
+@container shell (max-width:560px){.v-setrow{grid-template-columns:minmax(0,1fr);justify-items:start}}
+
+/* ---------- Both panels — beautifully made tools ---------- */
+.cnav{padding:26px 14px 22px;gap:3px}
+.cnav .brand{font-size:31px;letter-spacing:-.025em;padding-bottom:20px}
+.cnav .grp{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--nav-group-ink);padding:20px 12px 7px}
+.cnav a{min-height:37px;padding:8px 12px 8px 20px;border-radius:11px;gap:10px;line-height:1.3}
+.cnav a .t{font-size:13.5px;letter-spacing:.004em}
+.cnav a:hover{background:rgba(251,244,230,.09)}
+.cnav a.on::before{width:2.5px;border-radius:0 2px 2px 0}
+.cnav a small{font-size:10px;letter-spacing:.03em;opacity:.8}
+/* the motion trigger must never sit on top of what you are reading */
+@media (max-width:760px){
+ .ap-tab{position:fixed;left:12px;right:12px;bottom:0;top:auto;width:auto;height:46px;
+  border-radius:16px 16px 0 0;writing-mode:horizontal-tb;transform:none;
+  display:grid;place-items:center;box-shadow:0 -6px 24px -12px rgba(17,17,17,.35);z-index:58}
+ body{padding-bottom:58px}
+}
+
+/* ---------- the segmented ring's own overrun at narrow widths ---------- */
+/* The ring sizes from its own box, not a shell container query that never matched in the catalog:
+   width tracks the container and only caps at the authored diameter. */
+#segmented-ring .demo>div{flex-wrap:wrap}
+.v-ring{width:min(100%,var(--sz,240px));max-width:100%;height:auto;aspect-ratio:1}
+.v-ring svg{width:100%;height:100%}
+
+/* Dropzone lives in components-2.css (one owner). An earlier copy here used a different anatomy
+   (.v-drop__hint, selection tokens) than the shipped markup, so consumers could get either. */
+
+/* nothing animates where nobody can see it */
+/* Generated content is not a descendant, so `.-paused *` never reached it: the skeleton's sweep overlay and
+   the rail's breathing dot are both ::after, which is why half of every "paused" animation kept running
+   off-screen. Pseudo-elements are named explicitly. */
+.v-pulse.-paused,.v-pulse.-paused *,.v-pulse.-paused .seed,.v-pulse.-paused .core,.v-skel.-paused,.-paused .v-skel,
+.v-pulse.-paused::before,.v-pulse.-paused::after,.v-skel.-paused::before,.v-skel.-paused::after,
+.-paused .v-skel::before,.-paused .v-skel::after,
+.v-nav__item.-paused::after,.-paused .v-nav__item[aria-current="page"]::after{animation-play-state:paused!important}
+:root.-doc-hidden .v-pulse .seed,:root.-doc-hidden .v-pulse .core,:root.-doc-hidden .v-skel,:root.-doc-hidden .v-skel::before,:root.-doc-hidden .v-skel::after,
+:root.-doc-hidden .v-nav__item[aria-current="page"]::after{animation-play-state:paused}
+
+/* ---- Structure surfaces own their ink, in both modes ----
+   A rail is an ink surface whether the theme is light or dark, so its text and ICON colour cannot be left to
+   inheritance: in dark mode .v-nav__item computed rgb(17,17,17) on a rgb(12,11,10) rail (1.04:1), so every
+   destination icon — which paints with currentColor — was invisible even where the label had been given pink.
+   Stated here because this file loads last in the chain, and scoped to the rail so nothing else is affected. */
+:root[data-mode="dark"] .v-sidebar,
+:root[data-mode="dark"] .v-sidebar .v-nav,
+:root[data-mode="dark"] .v-sidebar .v-nav__item,
+:root[data-mode="dark"] .v-sidebar .v-nav__item .v-nav__label,
+:root[data-mode="dark"] .v-sidebar .v-nav__item .v-icon,
+:root[data-mode="dark"] .v-sidebar .v-sidebar__foot,
+:root[data-mode="dark"] .v-sidebar .v-brand{color:var(--structure-text)}
+:root[data-mode="dark"] .v-sidebar .v-nav__item[aria-current="page"],
+:root[data-mode="dark"] .v-sidebar .v-nav__item[aria-current="page"] .v-nav__label,
+:root[data-mode="dark"] .v-sidebar .v-nav__item[aria-current="page"] .v-icon{color:var(--sidebar-primary)}
+:root[data-mode="dark"] .v-sidebar .v-nav__item:hover:not([aria-current="page"]),
+:root[data-mode="dark"] .v-sidebar .v-nav__item:hover:not([aria-current="page"]) .v-nav__label,
+:root[data-mode="dark"] .v-sidebar .v-nav__item:hover:not([aria-current="page"]) .v-icon{color:var(--on-structure)}
+
+/* ---- ONE OWNER PER HALF ----
+   The painted body (the fill) belongs to the motion engine: morph.js sets --mfill from the host's own
+   background, or from surfaceFill() when the host is transparent. The readable FOREGROUND belongs here:
+   VLive.inkGuard() stamps data-ink and these four pairs are the only place a nav's colour is written.
+   Nothing else writes either, and neither does any work per animation frame.
+
+   A nav's ink cannot be decided by CSS alone, because it depends on the surface BEHIND the nav, and a .v-nav is
+   consumed on a rail, on an ink card and on a cream card. Guessing either way breaks the other. Nor can it be
+   expressed as a theme TOKEN: --v-text and --on-structure both flip with data-mode, so on a surface that does
+   not flip (an ink demo card in dark mode) every token-based choice inverts too. The guard therefore chooses
+   CONCRETE values, measured against the painted ancestor by VLive.inkGuard() in vriksha/js/alive.js.
+   Cream var(--cream-fixed) and ink var(--v-on-accent) both clear 4.5:1 on the surface each is chosen for; the accent pair is the
+   readable-on-ink pink and its readable-on-cream mulberry. */
+.v-nav__item[data-ink="light"]{color:var(--cream-fixed)}
+.v-nav__item[data-ink="light"][aria-current="page"]{color:var(--v-pink)}
+.v-nav__item[data-ink="dark"]{color:var(--v-on-accent)}
+.v-nav__item[data-ink="dark"][aria-current="page"]{color:var(--v-brand)}
+
+/* ---- Soft tinted badges: full ink, not alpha-muted ink ----
+   The four -*-soft fills are light (oklab L .85–.92), so their label can and should be the real ink. It was
+   rgba(17,17,17,.68) — a muted ink on an accent ground is the one thing the finish bar rules out, and at 12px
+   it reads as a smudge rather than a word. Full ink on the same fills measures ~12:1 and keeps the tint's
+   warmth intact, because only the text changed. */
+.v-badge.-pink-soft,.v-badge.-olive-soft,.v-badge.-blue-soft,.v-badge.-yellow-soft{color:var(--v-text)}
+:root[data-mode="dark"] .v-badge.-pink-soft,:root[data-mode="dark"] .v-badge.-olive-soft,
+:root[data-mode="dark"] .v-badge.-blue-soft,:root[data-mode="dark"] .v-badge.-yellow-soft{color:var(--v-on-accent)}
+
+/* ---- Tabs join the ink guard ----
+   .v-tabs.-pills is drawn for an ink surface, so its unselected tab is cream — which put cream text on the
+   cream canvas (1.03:1) everywhere the pill set is used on a page. Same shape of problem as the nav, so the
+   same owner settles it: VLive.inkGuard() stamps data-ink from the painted ancestor, and these pairs are the
+   only place a tab's resting colour is written. The selected tab keeps its own treatment. */
+/* The resting colour is keyed only on the surface, because a tab's SELECTED state carries its own fill and
+   its own colour with it — excluding [aria-pressed] here left the pressed-false tabs of a filter row on the
+   old cream, which is how cream-on-cream survived the first pass. */
+.v-tabs .v-tab[data-ink="light"],.v-tab[data-ink="light"]{color:var(--cream-fixed)}
+.v-tabs .v-tab[data-ink="dark"],.v-tab[data-ink="dark"]{color:var(--v-text-2)}
+.v-tabs .v-tab[data-ink="dark"]:hover,.v-tab[data-ink="dark"]:hover{color:var(--v-text)}
+/* The selected state DOES need its own pair, and removing it was my mistake: the selected rule sets both the
+   fill and the colour together, so it out-specifies a bare [data-ink] attribute selector. Keyed on the guard's
+   stamp — which now reads the tab's own fill — the direction is simply "cream on a dark pill, ink on a light
+   one", and it wins where it needs to. */
+.v-tabs .v-tab[data-ink="light"][aria-selected="true"],.v-tabs .v-tab[data-ink="light"][aria-pressed="true"],
+.v-tabs.-pills .v-tab[data-ink="light"][aria-selected="true"],.v-tabs.-pills .v-tab[data-ink="light"][aria-pressed="true"],
+.v-tabs.-lenses .v-tab[data-ink="light"][aria-selected="true"]{color:var(--cream-fixed)}
+.v-tabs .v-tab[data-ink="dark"][aria-selected="true"],.v-tabs .v-tab[data-ink="dark"][aria-pressed="true"],
+.v-tabs.-pills .v-tab[data-ink="dark"][aria-selected="true"],.v-tabs.-pills .v-tab[data-ink="dark"][aria-pressed="true"],
+.v-tabs.-lenses .v-tab[data-ink="dark"][aria-selected="true"]{color:var(--v-on-accent)}
+
+/* A metric's value is a single number with a unit — "14 h 20 m" broken over two lines, or "+13 / %", stops
+   being a number and becomes two fragments. The hero of a metric card never wraps; if the card is too narrow
+   the CARD wraps to the next row instead, which is what its track template is for. */
+.v-mcard__value,.v-compact__v,.v-hero,.v-delta{text-wrap:nowrap;white-space:nowrap}
+/* `nowrap` alone turns a wrap into a CLIP wherever the element is not free to size to its content — the
+   delta pill sat in a 65 px box holding 76 px of text at every width, which is my own regression from the
+   line above. A run that must not wrap must also be allowed its width. */
+.v-delta{width:max-content;max-width:100%;flex:none}
+.v-mcard__title{text-wrap:balance}
+
+/* The dock's selected destination paints its icon with currentColor on a dim selected surface, so it needs
+   the same surface-derived pair the rail and the tabs use — its parent reporting pink says nothing about what
+   the icon actually paints. */
+.v-dock__item[data-ink="light"],.v-dock__item[data-ink="light"] .v-icon,.v-dock__action[data-ink="light"],.v-dock__action[data-ink="light"] .v-icon{color:var(--cream-fixed)}
+.v-dock__item[data-ink="dark"],.v-dock__item[data-ink="dark"] .v-icon,.v-dock__action[data-ink="dark"],.v-dock__action[data-ink="dark"] .v-icon{color:var(--v-on-accent)}
+.v-dock__item[data-ink="light"][aria-current="page"],.v-dock__item[data-ink="light"][aria-current="page"] .v-icon{color:var(--v-pink)}
+.v-dock__item[data-ink="dark"][aria-current="page"],.v-dock__item[data-ink="dark"][aria-current="page"] .v-icon{color:var(--v-brand)}
+
+/* ---- Judged review: Observation ----
+   Two things the eye caught that no census would.
+
+   1. The stale stamp carried `text-decoration: underline dotted` across "observed 07:40". At 12px on a muted
+      grey that reads as struck out — as though the observation had been retracted — when the meaning is only
+      that it is old. The word "stale ·" already says it, so the line goes and the stamp takes the dashed
+      edge this system already uses for "uncertain". Same warmth, unambiguous meaning. */
+.v-stamp.-stale{text-decoration:none;border:1px dashed color-mix(in oklab,var(--v-border) 80%,transparent)}
+
+/* 2. A capability said yes or no by the COLOUR of an 8px dot and nothing else — olive filled for yes, grey
+      filled for no — while only "unknown" carried a word. Meaning is never by colour alone here. Each state
+      now says its word and carries a distinguishable shape: a filled circle for yes, a filled square for no,
+      an open ring for unknown. No markup changes anywhere; the words come from the state itself. */
+.v-cap.-yes::after{content:" \00b7 yes";color:var(--v-text-2)}
+.v-cap.-no::after{content:" \00b7 no";color:var(--v-text-2)}
+.v-cap.-yes .v-dot{border-radius:50%}
+.v-cap.-no .v-dot{border-radius:2px}
+.v-cap.-unknown .v-dot{border-radius:50%;background:transparent;box-shadow:inset 0 0 0 2px var(--v-text-2)}
+
+/* A metric card is never narrower than the number it exists to show — and the TRACK is where that belongs.
+   My first attempt also put a ch-based `min-width` on .v-mcard itself; combined with auto-fit and the motion
+   engine's ResizeObserver that oscillated and wedged the page, so it is out. The grid floor is declarative,
+   stable, and sufficient: the row wraps to fewer columns before any value is cut. */
+
+/* ---- Judged review: AI Apps ----
+   The capability matrix is 642 px of table in a 558 px pane. It DOES scroll (`.v-table-wrap` is
+   `overflow-x:auto`, the pattern this system already chose over clipping), but nothing said so: the last
+   column read "Evide" against a hard edge, which looks like a bug rather than an invitation. Every scrolling
+   pane in the library now says it scrolls, in the same quiet way — a soft fade at the edge that is running
+   out and a thin themed scrollbar, with a stable gutter so gaining overflow never shifts a row. Same family
+   as the dock sheet and the rail. */
+.v-table-wrap,.v-scroller,.v-cmd__list{scrollbar-gutter:stable}
+.v-table-wrap::-webkit-scrollbar,.v-scroller::-webkit-scrollbar{height:7px;width:7px}
+.v-table-wrap::-webkit-scrollbar-thumb,.v-scroller::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--v-border) 90%,transparent);border-radius:4px}
+.v-table-wrap::-webkit-scrollbar-track,.v-scroller::-webkit-scrollbar-track{background:transparent}
+/* The fade appears only on a pane that actually has somewhere to go — a table that fits keeps a clean edge.
+   CSS cannot ask "do I overflow?", so the same pass that stamps data-ink stamps data-scrollable, and this
+   rule keys on it. One owner, no per-frame work. */
+.v-table-wrap[data-scrollable],.v-scroller[data-scrollable]{-webkit-mask-image:linear-gradient(to right,var(--mask-ink) 0,var(--mask-ink) calc(100% - 26px),color-mix(in oklab,var(--mask-ink) 25%,transparent) 100%);mask-image:linear-gradient(to right,var(--mask-ink) 0,var(--mask-ink) calc(100% - 26px),color-mix(in oklab,var(--mask-ink) 25%,transparent) 100%)}
+.v-table-wrap[data-scrollable="end"],.v-scroller[data-scrollable="end"]{-webkit-mask-image:none;mask-image:none}
+
+/* The travelling pill’s paint is a constant — owned by css/flow.css. */
+
+
+/* ---- Decoration never hit-tests ----
+   The §3.73 lesson, generalised. A morph body is an absolutely-positioned SVG prepended INTO its host and
+   drawn larger than it (`left:-11px;top:-11px`), so it overlaps whatever sits next to it. On the storyboard
+   control the centre of a 56x56 button hit-tested to SECTION.entry — the pointer never reached the button,
+   while Enter (which needs no hit test) worked. A body is decoration: it paints, it never receives a
+   pointer. Applied to the shared stylesheet so consumers get it too. */
+svg.v-morph,svg.v-morph *{pointer-events:none}
+.v-morph-host{isolation:isolate}
+
+
+/* ==== Judged composites: these classes are declared in patterns.css / composites.css, which import AFTER
+   components-2.css, so their redesign lives here where it wins by order, not by !important. ==== */
+/* ---- Connected master / detail, from scratch ----
+   The idea, stated plainly: the list is a set of cards; the chosen card slides out of the list and BECOMES the
+   left edge of the detail. So the selected row is the same surface as the detail (pink), sits flush against it,
+   and its right corners are square while the detail's left corners are square where they meet — one silhouette.
+   Unselected rows are quiet cream cards with a hairline; the detail is a calm pink sheet with a paper head.
+   No beige wells, no bridges, no borders drawn across the join. Below 720 px of stage the detail drops under
+   the list as a normal card. */
+.v-md{display:grid;grid-template-columns:minmax(240px,2fr) minmax(0,3fr);gap:0;align-items:start;position:relative;isolation:isolate}
+.v-md__list{display:grid;gap:8px;padding:0;background:none;border-radius:0;align-content:start;overflow:visible;padding-right:0}
+.v-md__list .v-item{position:relative;min-height:66px;padding:12px 16px;border-radius:18px;background:var(--v-canvas);box-shadow:inset 0 0 0 1px var(--v-border);color:var(--v-text);transition:background var(--t-element) var(--enter),box-shadow var(--t-element),transform var(--t-element) var(--enter)}
+.v-md__list .v-item:not(.-selected):hover{background:color-mix(in oklab,var(--v-pink) 12%,var(--v-canvas));box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--v-pink) 60%,var(--v-border))}
+.v-md__list .v-item:not(.-selected) .v-time{background:var(--v-beige);color:var(--v-text)}
+.v-md__list .v-item:not(.-selected) .v-time.-blue{background:var(--v-blue);color:var(--v-on-accent)}.v-md__list .v-item:not(.-selected) .v-time.-olive{background:var(--v-olive);color:var(--v-on-accent)}.v-md__list .v-item:not(.-selected) .v-time.-yellow{background:var(--v-yellow);color:var(--v-on-accent)}
+.v-md__list .v-item.-selected{background:var(--v-pink);color:var(--v-on-accent);box-shadow:none;border-radius:18px 0 0 18px;margin-right:-1px;padding-right:20px;z-index:2}
+.v-md__list .v-item.-selected::after{content:none}
+.v-md__list .v-item.-selected .v-disk{background:var(--v-paper);color:var(--v-on-accent)}
+.v-md__list .v-item.-selected .v-time{background:var(--v-paper);color:var(--v-on-accent)}
+.v-md__list .v-item.-selected .v-item__title{color:var(--v-on-accent)}
+.v-md__list .v-item.-selected .v-item__sub{color:rgba(17,17,17,.7)}
+.v-md__list .v-item:focus-visible{outline:2px solid var(--ring);outline-offset:-2px}
+.v-md__detail{background:var(--v-pink)!important;color:var(--v-on-accent);box-shadow:none!important;border-radius:0 24px 24px 24px;position:relative;z-index:1;padding:22px 24px 22px 28px;display:grid;gap:16px;align-content:start;min-height:100%}
+/* the detail's top-left corner rounds only when the selected row is not the first row (so the silhouette
+   reads as one shape whichever row is chosen) */
+.v-md:has(.v-md__list .v-item:first-child.-selected) .v-md__detail{border-top-left-radius:0}
+.v-md:not(:has(.v-md__list .v-item:first-child.-selected)) .v-md__detail{border-top-left-radius:24px}
+.v-md__head{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center}
+.v-md__head .v-disk.-lg{width:48px;height:48px;color:var(--v-on-accent);background:var(--v-paper)!important;border-radius:46% 54% 50% 50%/50% 46% 54% 50%}
+.v-md__titles{display:grid;gap:3px;min-width:0}
+.v-md__title{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.012em;line-height:1.15;color:var(--v-on-accent)}
+.v-md__host{display:flex;align-items:center;gap:6px;font-size:13.5px;color:rgba(17,17,17,.72)}
+.v-md__host .v-icon{width:15px;height:15px}
+.v-md__chips{display:flex;gap:6px;flex-wrap:wrap}
+.v-md__detail .v-badge.-cream{background:var(--v-paper);color:var(--v-on-accent)}
+.v-md__facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 18px;margin:0;padding:14px 16px;border-radius:16px;background:rgba(251,244,230,.6);font-size:14.5px;line-height:1.45}
+.v-md__facts dt{color:rgba(17,17,17,.66);font-weight:500;white-space:nowrap}
+.v-md__facts dd{margin:0;color:var(--v-on-accent)}
+.v-md__actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.v-md__actions .v-btn:not(.-ghost){background:var(--ink-fixed);color:var(--v-paper)}
+.v-md__actions .v-btn.-ghost{color:var(--v-on-accent)}
+.v-md__actions .v-btn.-ghost:hover{background:rgba(251,244,230,.6)}
+.v-md__actions .v-meta{margin-left:auto;color:rgba(17,17,17,.6)}
+@container stage (max-width:720px){.v-md{grid-template-columns:minmax(0,1fr);gap:var(--s-3)}.v-md__list .v-item.-selected{border-radius:18px;margin-right:0}.v-md__detail{border-radius:24px!important;padding:20px}}
+@media (max-width:900px){.v-md{grid-template-columns:minmax(0,1fr);gap:var(--s-3)}.v-md__list .v-item.-selected{border-radius:18px;margin-right:0}.v-md__detail{border-radius:24px!important;padding:20px}}
+@media (max-width:560px){.v-md__head{grid-template-columns:40px minmax(0,1fr)}.v-md__head .v-badge{grid-column:2}.v-md__facts{grid-template-columns:minmax(0,1fr)}.v-md__facts dt{margin-top:4px}}
+:root[data-mode="dark"] .v-md__list .v-item:not(.-selected){background:var(--v-beige);box-shadow:inset 0 0 0 1px var(--v-border);color:var(--v-text)}
+:root[data-mode="dark"] .v-md__list .v-item:not(.-selected):hover{background:var(--v-beige-2)}
+:root[data-mode="dark"] .v-md__list .v-item:not(.-selected) .v-time{background:var(--v-beige-2);color:var(--v-text)}
+
+/* ---- Receipt timeline, judged ----
+   Grey dots joined by a grey line. Each step is a shaped marker in its own hue on a 36 px pebble (olive done,
+   pink needs-you, ink-soft pending with the goo creature, danger red), the connector is drawn from marker to
+   marker and takes the colour of the step it leaves, the row is a cream card with title / meta / a receipt
+   pill, and pending is visibly not success — a dashed connector and a beige card. */
+.v-receipt{grid-template-columns:36px minmax(0,1fr);gap:0 14px;align-items:start}
+.v-receipt>div:not(.v-receipt__row){position:relative;display:grid;justify-items:center;padding-top:8px;height:100%}
+.v-receipt__dot{width:36px;height:36px;border-radius:46% 54% 50% 50%/50% 46% 54% 50%;background:var(--card);color:var(--v-on-accent);z-index:1}
+.v-receipt__dot .v-icon{width:17px;height:17px;stroke-width:2}
+.v-receipt__dot::after{content:none}
+.v-receipt>div:not(.v-receipt__row)::after{content:"";position:absolute;top:50px;bottom:4px;left:17px;width:2px;background:var(--dot,var(--v-border));border-radius:1px}
+.v-receipt>div:nth-last-of-type(2)::after{display:none}
+.v-receipt>div:has(.v-receipt__dot.-ok)::after{background:var(--v-olive)}.v-receipt>div:has(.v-receipt__dot.-you)::after{background:var(--v-pink)}.v-receipt>div:has(.v-receipt__dot.-danger)::after{background:var(--v-danger-fill)}.v-receipt>div:has(.v-receipt__dot.-pending)::after{background:var(--v-edge)}
+.v-receipt__dot.-ok{background:var(--v-olive)}
+.v-receipt__dot.-you{background:var(--v-pink)}
+.v-receipt__dot.-danger{background:var(--v-danger-fill);color:var(--destructive-foreground)}
+.v-receipt__dot.-pending{background:var(--v-ink);color:var(--v-on-ink)}
+.v-receipt>div:has(.v-receipt__dot.-pending)::after{background:repeating-linear-gradient(to bottom,var(--v-edge) 0 4px,transparent 4px 8px)}
+.v-receipt__dot.-pending .v-pulse{width:20px;height:20px}.v-receipt__dot.-pending .v-pulse .seed{fill:var(--v-pink)}
+.v-receipt__dot.-pending .v-pulse .eye{fill:var(--v-canvas)}
+.v-receipt__row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 12px;align-items:start;padding:12px 16px 13px;margin-bottom:10px;border-radius:16px 16px 16px 6px;background:var(--v-canvas);box-shadow:inset 0 0 0 1px var(--v-border)}
+.v-receipt__row:last-child{margin-bottom:0}
+.v-receipt__title{font-size:15px;font-weight:600;line-height:1.3}
+.v-receipt__meta{grid-column:1;font-size:12.5px;color:var(--v-text-2);font-variant-numeric:tabular-nums;line-height:1.4}
+.v-receipt__meta .v-id{color:var(--v-text)}
+.v-receipt__row .v-badge{grid-column:2;grid-row:1/span 2;align-self:center}
+.v-receipt>div:has(.v-receipt__dot.-you)+.v-receipt__row{background:var(--v-pink-soft);box-shadow:inset 0 0 0 1px var(--v-pink)}
+.v-receipt>div:has(.v-receipt__dot.-pending)+.v-receipt__row{background:var(--card);box-shadow:none;border:1.5px dashed var(--v-edge)}
+.v-receipt>div:has(.v-receipt__dot.-danger)+.v-receipt__row{background:var(--status-danger-bg);box-shadow:inset 0 0 0 1px var(--v-danger)}
+.v-receipt>div:has(.v-receipt__dot.-danger)+.v-receipt__row .v-receipt__title{color:var(--status-danger-ink)}
+
+/* the scope select paints its own cream; a body would only double it */
+
+
+/* ---- Calendar header + selected day (patterns.css owns .v-cal, so the corrections live here) ----
+   The month pill is pink with INK text (cream on pink measured 1.6:1); the arrows are cream circles with a
+   hairline; the selected day is the same quiet pill body every button has, not a blob. */
+.v-cal__month{background:var(--v-pink)!important;color:var(--v-on-accent)!important;font-weight:600;height:38px;padding:0 18px;font-size:14.5px}
+.v-cal__head .v-ibtn{background:var(--v-canvas);box-shadow:inset 0 0 0 1px var(--v-edge);color:var(--v-text)}
+.v-cal__head .v-ibtn:hover{background:var(--v-pink);box-shadow:none;color:var(--v-on-accent)}
+.v-cal__wd{font-size:10.5px;letter-spacing:.08em;font-weight:600;color:var(--v-text-2)}
+.v-cal__d{font-size:14.5px;font-weight:500;border-radius:50%}
+.v-cal__d.-off{color:var(--v-text-2)}
+.v-cal__d[aria-selected="true"]{background:var(--v-pink);color:var(--v-on-accent);font-weight:600}
+.v-cal__d[aria-selected="true"]:has(>svg.v-morph){background:transparent}
+.v-cal__d:not([aria-selected="true"]):hover{background:var(--v-beige)}
+.v-cal__wk{font-size:10.5px;color:var(--v-text-2);letter-spacing:.04em;padding:0 6px;height:22px;border-radius:999px;display:inline-grid;place-items:center}
+.v-cal__wk.-on{background:var(--v-pink-soft);color:var(--v-on-accent);font-weight:600}
+
+/* ---- Button group, polish ----
+   The utility well and the segmented well are the same object: a beige track with 3 px of air, 36 px controls
+   inside, no hairlines fighting the fills. Joined circles keep ink icons at full strength on every hue. */
+.v-utility{padding:3px;gap:2px;background:var(--card);box-shadow:none}
+.v-utility .v-ibtn{width:38px;height:38px;box-shadow:none;color:var(--v-on-accent);margin:0}
+.v-utility .v-ibtn+.v-ibtn{margin-left:0}
+.v-utility .v-ibtn .v-icon{width:18px;height:18px;stroke-width:1.9}
+.v-utility .v-ibtn.-ink{color:var(--v-on-ink)}
+/* the well follows the silhouettes: a square corner cannot sit inside a 999px pill */
+.v-utility[data-shapes]{border-radius:17px;padding:4px;gap:4px}
+.v-utility[data-shapes] .v-ibtn:nth-child(3n+1){border-radius:14px 14px 14px 5px}
+.v-utility[data-shapes] .v-ibtn:nth-child(3n+2){border-radius:46% 54% 50% 50%/50% 46% 54% 50%}
+.v-utility[data-shapes] .v-ibtn:nth-child(3n){border-radius:14px 5px 14px 14px}
+
+.v-seg{padding:3px;gap:2px;background:var(--card);box-shadow:none}
+.v-seg .v-btn{height:36px;padding:0 14px;font-size:13.5px;font-weight:500;box-shadow:none!important;border:0}
+.v-seg .v-btn:hover:not([aria-pressed="true"]){background:color-mix(in oklab,var(--card) 84%,var(--v-ink));color:var(--v-text)}
+.v-seg .v-btn[aria-pressed="true"]{background:var(--v-ink);color:var(--v-on-ink)}
+.v-seg.-pink .v-btn[aria-pressed="true"]{background:var(--v-pink);color:var(--v-on-accent)}
+.v-seg .v-btn .v-icon{width:15px;height:15px}
+.v-seg .v-btn:focus-visible{outline:2px solid var(--ring);outline-offset:1px;border-radius:999px}
+
+
+/* ==== One scrollbar for the whole system ====
+   Chromium ignores every ::-webkit-scrollbar rule the moment scrollbar-width or scrollbar-color is set, which
+   is why every pane still showed the browser's grey bar. Those two properties are now written ONLY for
+   engines that lack the pseudo-elements (Firefox), and the drawn scrollbar is one design everywhere: a 12 px
+   lane, a rounded ink thumb at 28 % that wakes to 60 % when the pane is hovered and goes pink-deep under the
+   pointer, no track, no arrows, and a minimum thumb length so a long list still has something to grab. On ink
+   surfaces the thumb is cream. Panes reserve the gutter so nothing jumps when overflow appears. */
+@supports not selector(::-webkit-scrollbar){
+ *{scrollbar-width:thin;scrollbar-color:color-mix(in oklab,var(--v-ink) 34%,transparent) transparent}
+ .v-scroll.-ink,.v-sidebar,.cnav,.v-drawer,.v-dockpanel,.v-scroller.-ink{scrollbar-color:rgba(251,244,230,.5) transparent}
+}
+::-webkit-scrollbar{width:12px;height:12px;background:transparent}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-button{display:none;width:0;height:0}
+::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--v-ink) 28%,transparent);border-radius:999px;border:4px solid transparent;background-clip:content-box;min-height:40px;min-width:40px}
+:hover::-webkit-scrollbar-thumb{background-color:color-mix(in oklab,var(--v-ink) 60%,transparent)}
+::-webkit-scrollbar-thumb:hover{background-color:var(--v-pink-deep)}
+::-webkit-scrollbar-thumb:active{background-color:var(--v-brand)}
+.v-scroll.-ink::-webkit-scrollbar-thumb,.v-sidebar::-webkit-scrollbar-thumb,.cnav::-webkit-scrollbar-thumb,.cnav *::-webkit-scrollbar-thumb,.v-drawer::-webkit-scrollbar-thumb,.v-dockpanel::-webkit-scrollbar-thumb,.v-scroller.-ink::-webkit-scrollbar-thumb{background-color:rgba(251,244,230,.42)}
+.v-scroll.-ink:hover::-webkit-scrollbar-thumb,.cnav *:hover::-webkit-scrollbar-thumb{background-color:rgba(251,244,230,.7)}
+.v-scroll.-ink::-webkit-scrollbar-thumb:hover,.cnav *::-webkit-scrollbar-thumb:hover{background-color:var(--v-pink)}
+:root[data-mode="dark"] ::-webkit-scrollbar-thumb{background-color:rgba(246,239,226,.3)}
+:root[data-mode="dark"] :hover::-webkit-scrollbar-thumb{background-color:rgba(246,239,226,.55)}
+.v-scroll,.v-scroller,.v-table-wrap,.v-cmd__list,.v-menu,.v-sheet,.v-dialog,.cnav__list,.ap-body{scrollbar-gutter:stable}
+/* the scroll-area pane gives the lane its own room so text never sits under the thumb */
+.v-scroll{padding-right:4px}
+.v-scroll>p,.v-scroll>.v-body{margin-right:6px}
+
+
+/* ==== Dark mode, judged ====
+   Two rules decide every case. (1) A fixed-hue surface — pink, yellow, olive, blue, and the alert tints that
+   carry them — is the same colour in both modes, so everything ON it is fixed too: ink text, paper pills.
+   (2) A theme surface (canvas, beige, card) flips, so everything on it follows the theme tokens. The
+   breakages were rules that mixed the two: paper pills written as var(--v-canvas) turned black on pink, and
+   ink text written as var(--v-on-accent) sat on surfaces that had gone dark. */
+:root[data-mode="dark"] .v-md__list .v-item.-selected,:root[data-mode="dark"] .v-md__list .v-item.-selected .v-item__title,
+:root[data-mode="dark"] .v-md__detail,:root[data-mode="dark"] .v-md__title,:root[data-mode="dark"] .v-md__facts dd{color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-md__list .v-item.-selected .v-item__sub,:root[data-mode="dark"] .v-md__host,:root[data-mode="dark"] .v-md__facts dt{color:rgba(17,17,17,.7)}
+:root[data-mode="dark"] .v-md__list .v-item:not(.-selected) .v-time{background:var(--v-beige-2);color:var(--v-text)}
+:root[data-mode="dark"] .v-md__list .v-item:not(.-selected) .v-disk:not([class*=" -"]){background:var(--v-beige-2);color:var(--v-text)}
+/* alerts: the tint darkens with the canvas (it is a mix), so their text follows the theme; only the hue blob stays fixed */
+:root[data-mode="dark"] .v-alert.-info,:root[data-mode="dark"] .v-alert.-ok,:root[data-mode="dark"] .v-alert.-warn,:root[data-mode="dark"] .v-alert.-danger,
+:root[data-mode="dark"] .v-alert.-info .v-alert__title,:root[data-mode="dark"] .v-alert.-ok .v-alert__title,:root[data-mode="dark"] .v-alert.-warn .v-alert__title,:root[data-mode="dark"] .v-alert.-danger .v-alert__title{color:var(--v-text)}
+:root[data-mode="dark"] .v-alert .v-alert__text{color:var(--v-text-2)}
+:root[data-mode="dark"] .v-alert.-info{background:color-mix(in oklab,var(--v-blue) 18%,var(--v-canvas))}
+:root[data-mode="dark"] .v-alert.-ok{background:color-mix(in oklab,var(--v-olive) 18%,var(--v-canvas))}
+:root[data-mode="dark"] .v-alert.-warn{background:color-mix(in oklab,var(--v-yellow) 16%,var(--v-canvas))}
+:root[data-mode="dark"] .v-alert.-danger{background:color-mix(in oklab,var(--v-danger) 16%,var(--v-canvas))}
+:root[data-mode="dark"] .v-alert::after{opacity:.25}
+:root[data-mode="dark"] .v-alert>.v-alert__close{background:rgba(246,239,226,.1);color:var(--v-text)}
+/* accordion: the open row is a fixed-hue card; the closed row is a theme surface */
+:root[data-mode="dark"] .v-acc>details[open],:root[data-mode="dark"] .v-acc>details[open] summary,:root[data-mode="dark"] .v-acc>details[open]>.v-acc__body{color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-acc>details:not([open]) summary{color:var(--v-text)}
+:root[data-mode="dark"] .v-acc>details:not([open]) summary>.v-icon:first-child{background:var(--v-beige-2);color:var(--v-text)}
+:root[data-mode="dark"] .v-acc>details:not([open]) summary .v-chev{background:var(--v-beige-2);color:var(--v-text);box-shadow:inset 0 0 0 1px var(--v-border)}
+/* soft-tint hovers and highlights are theme surfaces in dark */
+:root[data-mode="dark"] .v-cal__wk.-on,:root[data-mode="dark"] .v-receipt>div:has(.v-receipt__dot.-you)+.v-receipt__row{color:var(--v-text)}
+:root[data-mode="dark"] .v-cal__wk.-on{background:color-mix(in oklab,var(--v-pink) 30%,var(--v-canvas))}
+:root[data-mode="dark"] .v-receipt>div:has(.v-receipt__dot.-you)+.v-receipt__row{background:color-mix(in oklab,var(--v-pink) 22%,var(--v-canvas))}
+:root[data-mode="dark"] .v-receipt__row{background:var(--v-beige)}
+:root[data-mode="dark"] .v-receipt>div:has(.v-receipt__dot.-pending)+.v-receipt__row{background:var(--v-canvas)}
+:root[data-mode="dark"] .v-seg [data-glide-active],:root[data-mode="dark"] .v-pager [data-glide-active],:root[data-mode="dark"] .v-tabs.-pills [data-glide-active]{color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-toggle[aria-pressed="true"]:not(.-pink):not(.-yellow):not(.-olive):not(.-blue){background:var(--v-pink);color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-toggle{background:var(--v-beige-2);color:var(--v-text-2)}
+:root[data-mode="dark"] .v-toggle:hover{background:var(--v-beige);color:var(--v-text)}
+/* switches: the off knob must be visible on a dark track; the on knob is ink on a fixed pink */
+:root[data-mode="dark"] .v-switch{background:var(--v-beige-2)}
+:root[data-mode="dark"] .v-switch::after{background:var(--v-text-2);box-shadow:none}
+:root[data-mode="dark"] .v-switch:has(input:checked)::after{background:var(--ink-fixed)}
+:root[data-mode="dark"] .v-switch.-ink:has(input:checked){background:var(--v-pink)}
+/* checks and radios: open marks are cream-edged on dark, filled marks stay pink with ink glyphs */
+:root[data-mode="dark"] .v-check input,:root[data-mode="dark"] .v-radio input,:root[data-mode="dark"] .v-quest__opt input{border-color:var(--v-text-2)!important;background:var(--v-beige-2)!important}
+:root[data-mode="dark"] .v-check input:checked,:root[data-mode="dark"] .v-check input:indeterminate,:root[data-mode="dark"] .v-radio input:checked,:root[data-mode="dark"] .v-quest__opt input:checked{background:var(--v-pink)!important;border-color:var(--v-pink)!important}
+:root[data-mode="dark"] .v-check.-block:has(input:checked),:root[data-mode="dark"] .v-radio.-block:has(input:checked),:root[data-mode="dark"] .v-switchrow.-card:has(input:checked){background:var(--v-beige-2)!important}
+:root[data-mode="dark"] .v-quest__opt:not(:has(input:checked)){background:var(--v-beige);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-quest__opt:has(input:checked){background:color-mix(in oklab,var(--v-pink) 28%,var(--v-beige-2))}
+/* fields: the dark well needs a lighter edge and a visible focus tint */
+:root[data-mode="dark"] .v-input,:root[data-mode="dark"] .v-igroup,:root[data-mode="dark"] .v-textarea{background:var(--v-beige);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-input:focus-within,:root[data-mode="dark"] .v-input:focus,:root[data-mode="dark"] .v-igroup:focus-within,:root[data-mode="dark"] .v-textarea:focus{background:color-mix(in oklab,var(--v-pink) 14%,var(--v-canvas));box-shadow:inset 0 0 0 2px var(--v-pink)}
+:root[data-mode="dark"] .v-input.-cream{background:var(--v-canvas)}
+:root[data-mode="dark"] .v-input.-ink{background:var(--v-beige-2);color:var(--v-text);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-input>.v-disk:not([class*=" -"]){background:var(--v-beige-2);color:var(--v-text)}
+:root[data-mode="dark"] .v-input:focus-within>.v-disk{background:var(--v-pink);color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-input>.v-affix.-pill{background:var(--v-beige-2);color:var(--v-text);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-igroup .v-badge{background:var(--v-beige-2);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-field.-invalid .v-input{background:color-mix(in oklab,var(--v-danger) 14%,var(--v-canvas))}
+/* menus, palettes and the command header are paper in light and beige-2 in dark */
+:root[data-mode="dark"] .v-cmd__input,:root[data-mode="dark"] .v-cmd,:root[data-mode="dark"] .v-combo .v-menu{background:var(--v-beige)}
+:root[data-mode="dark"] .v-cmd .v-menu__item[aria-selected="true"]::after{background:var(--v-beige-2);color:var(--v-text)}
+/* tables, scroll panes, resizable, attachments, receipts: theme surfaces */
+:root[data-mode="dark"] .v-table tbody tr:hover,:root[data-mode="dark"] .v-table tbody tr:focus-visible{background:var(--v-beige-2)}
+:root[data-mode="dark"] .v-scroll{background:var(--v-beige);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-scroll.-ink{background:var(--v-canvas)!important;color:var(--v-text);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-resizable__pane{background:var(--v-beige)}
+:root[data-mode="dark"] .v-attach .v-actions .v-ibtn{background:var(--v-beige-2)}
+:root[data-mode="dark"] .v-crumbs>.v-ibtn:first-child,:root[data-mode="dark"] .v-cal__head .v-ibtn{background:var(--v-beige-2);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-utility,:root[data-mode="dark"] .v-seg,:root[data-mode="dark"] .v-togglewell,:root[data-mode="dark"] .v-iradio,:root[data-mode="dark"] .v-weekdays label,:root[data-mode="dark"] .v-radio.-block,:root[data-mode="dark"] .v-check.-block,:root[data-mode="dark"] .v-quest__opt,:root[data-mode="dark"] .v-switchrow.-card{background:var(--v-beige)!important}
+:root[data-mode="dark"] .v-iradio:has(input:checked),:root[data-mode="dark"] .v-weekdays label:has(input:checked){background:var(--v-pink);color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-hexgroup .v-more,:root[data-mode="dark"] .v-avatar{box-shadow:0 0 0 2px var(--v-canvas)}
+:root[data-mode="dark"] .v-ratio:not([class*=" -"]){background:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in oklab,var(--v-text-2) 45%,transparent) 6px 7px),var(--v-beige)}
+:root[data-mode="dark"] .v-drop{background:var(--v-beige)}
+:root[data-mode="dark"] .v-bubble{background:var(--v-beige-2);color:var(--v-text)}
+:root[data-mode="dark"] .v-bubble.-me{background:var(--v-pink);color:var(--v-on-accent)}
+/* the demo stage's badge and the DEMO DATA tag follow the theme */
+:root[data-mode="dark"] .demo .fx{background:var(--v-canvas)}
+
+/* ---- Select, judged ----
+   The block select is a field: 52 px, a 32 px hue disk flush to the leading edge, the value on the centre
+   line, the chevron in a 28 px cream disc at the trailing edge. The ink pill keeps its compact form. */
+.v-select{height:40px;padding:0 12px 0 16px;gap:10px;box-shadow:inset 0 0 0 1px var(--v-edge);background:var(--v-canvas);color:var(--v-text);font-weight:500;transition:background var(--t-micro),box-shadow var(--t-micro)}
+.v-select:hover{background:var(--v-beige)}
+.v-select[aria-expanded="true"]{box-shadow:inset 0 0 0 2px var(--v-brand);background:var(--v-pink-soft)}
+.v-select>.v-icon:last-child{width:14px;height:14px;stroke-width:2.4;color:var(--v-text-2);transition:transform var(--t-element) var(--enter)}
+.v-select[aria-expanded="true"]>.v-icon:last-child{transform:rotate(180deg);color:var(--v-text)}
+.v-select.-ink{background:var(--v-ink);color:var(--v-on-ink);box-shadow:none}
+.v-select.-ink:hover{background:var(--v-ink-soft)}
+.v-select.-ink>.v-icon:last-child{color:rgba(251,244,230,.7)}
+.v-select.-ink[aria-expanded="true"]{background:var(--v-ink);box-shadow:inset 0 0 0 2px var(--v-pink)}
+.v-select.-ink[aria-expanded="true"]>.v-icon:last-child{color:var(--v-pink)}
+.v-select.-block{width:100%;height:52px;padding:0 8px 0 8px;font-size:var(--fs-body);font-weight:500;background:var(--input);box-shadow:inset 0 0 0 1px var(--v-edge)}
+.v-select.-block>span:first-child{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.v-select.-block>span:first-child>[data-value],.v-select.-block>span:first-child>span:not(.v-disk){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.v-select.-block .v-disk{width:36px;height:36px;flex:none}
+.v-select.-block .v-disk .v-icon{width:17px;height:17px}
+.v-select.-block>.v-icon:last-child{width:28px;height:28px;padding:7px;border-radius:50%;background:var(--v-canvas);box-shadow:inset 0 0 0 1px var(--v-border);color:var(--v-text);stroke-width:2.2;flex:none}
+.v-select.-block[aria-expanded="true"]>.v-icon:last-child{background:var(--v-ink);color:var(--v-on-ink);box-shadow:none}
+.v-select.-block:hover{background:color-mix(in oklab,var(--input) 90%,var(--v-canvas))}
+.v-select.-block[aria-expanded="true"]{background:var(--v-pink-soft)}
+.v-select.-sm{height:32px;padding:0 10px 0 14px;font-size:13px}
+.v-select:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.v-listbox{margin-top:0;padding:6px;border-radius:18px;box-shadow:var(--shadow-float),inset 0 0 0 1px var(--v-border);border:0;display:grid;gap:2px;min-width:max(100%,220px)}
+.v-listbox .v-menu__item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;min-height:42px;padding:0 10px 0 8px;border-radius:12px;font-size:14.5px}
+.v-listbox .v-menu__item:not(:has(.v-disk)){grid-template-columns:minmax(0,1fr) auto;padding-left:12px}
+.v-listbox .v-menu__item .v-disk{width:28px;height:28px}
+.v-listbox .v-menu__item .v-disk .v-icon{width:15px;height:15px}
+.v-listbox .v-menu__item:hover{background:var(--v-beige)}
+.v-listbox .v-menu__item[aria-selected="true"]{background:var(--v-pink-soft);color:var(--v-text)}
+.v-listbox .v-menu__item[aria-selected="true"]::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--v-pink-deep);margin:0;justify-self:end}
+.v-listbox .v-menu__item:focus-visible{outline:2px solid var(--ring);outline-offset:-2px}
+.v-scopecard .v-select.-block{background:var(--v-canvas)}
+.v-scopecard .v-select.-block>span:first-child>span:not(.v-disk){display:grid;gap:1px;overflow:visible;white-space:normal}
+:root[data-mode="dark"] .v-select:not(.-ink){background:var(--v-beige);box-shadow:inset 0 0 0 1px var(--v-border)}
+:root[data-mode="dark"] .v-select.-block>.v-icon:last-child{background:var(--v-beige-2);box-shadow:none;color:var(--v-text)}
+:root[data-mode="dark"] .v-listbox{background:var(--v-beige)}
+:root[data-mode="dark"] .v-listbox .v-menu__item:hover{background:var(--v-beige-2)}
+:root[data-mode="dark"] .v-listbox .v-menu__item[aria-selected="true"]{background:color-mix(in oklab,var(--v-pink) 22%,var(--v-canvas))}
+
+
+/* ---- Calendar, final ----
+   The month is set in the display face with the year quiet beside it; the arrows are a joined cream pair on the
+   right. The week column sits FIRST in a soft mono, the current week pink. Days are 40 px discs: a hover disc
+   grows from the centre, today wears a thin ink ring, a marked day carries a hue dot under its number, and the
+   selected day is the pink pill body. Changing month slides the grid the way you went. */
+.v-cal{gap:14px}
+.v-cal__head{gap:12px}
+.v-cal__month{background:transparent!important;color:var(--v-text)!important;height:auto;padding:0 2px;font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.015em;display:inline-flex;align-items:baseline;gap:8px;box-shadow:none}
+.v-cal__month>span{font-family:var(--font-text);font-size:14px;font-weight:500;color:var(--v-text-2);letter-spacing:0}
+.v-cal__nav{display:inline-flex;gap:2px;background:var(--card);box-shadow:none;border-radius:999px;padding:3px}
+.v-cal__nav .v-ibtn,.v-cal__nav .v-ibtn.-sm,.v-cal__head .v-cal__nav .v-ibtn{width:32px;height:32px;background:transparent;box-shadow:none!important;color:var(--v-text);cursor:pointer;transition:background var(--t-micro),transform var(--t-micro) var(--enter)}
+.v-cal__nav .v-ibtn:hover{background:var(--v-pink);color:var(--v-on-accent)}
+.v-cal__nav .v-ibtn:active{transform:scale(.92)}
+.v-cal__nav .v-ibtn .v-icon{width:16px;height:16px;stroke-width:2.2}
+.v-cal__grid{grid-template-columns:30px repeat(7,minmax(0,1fr));gap:4px 2px;align-items:center;justify-items:center}
+.v-cal__grid.-fwd{animation:v-cal-fwd var(--t-max) var(--enter) both}.v-cal__grid.-back{animation:v-cal-back var(--t-max) var(--enter) both}
+@keyframes v-cal-fwd{from{opacity:0;transform:translateX(14px)}}@keyframes v-cal-back{from{opacity:0;transform:translateX(-14px)}}
+.v-cal__wd{height:26px;font-size:10.5px;letter-spacing:.1em;font-weight:600;color:var(--v-text-2)}
+.v-cal__wd.-wk{font-size:9.5px;color:var(--v-text-3);justify-self:start;padding-left:4px}
+.v-cal__wk{justify-self:start;min-width:26px;height:22px;padding:0 6px;font-size:10.5px;font-variant-numeric:tabular-nums;color:var(--v-text-3);letter-spacing:.02em;border-radius:999px;display:inline-grid;place-items:center;transition:background var(--t-micro),color var(--t-micro)}
+.v-cal__wk.-on{background:var(--v-pink-soft);color:var(--v-on-accent);font-weight:600}
+.v-cal__d{position:relative;width:40px;height:40px;max-width:none;aspect-ratio:auto;display:grid;place-items:center;border-radius:50%;font-size:14.5px;font-weight:500;color:var(--v-text);background:transparent;isolation:isolate}
+.v-cal__d>span{position:relative;z-index:1;line-height:1}
+.v-cal__d::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--v-beige);transform:scale(.55);opacity:0;transition:transform var(--t-element) var(--enter),opacity var(--t-element) var(--enter);z-index:0}
+.v-cal__d:not([aria-selected="true"]):hover{background:transparent}
+.v-cal__d:not([aria-selected="true"]):hover::before{transform:scale(1);opacity:1}
+.v-cal__d:active::before{transform:scale(.9)}
+.v-cal__d.-today:not([aria-selected="true"]){box-shadow:inset 0 0 0 1.5px var(--v-ink);font-weight:600}
+.v-cal__d.-off{color:var(--v-text-2);font-weight:400}
+.v-cal__d[aria-selected="true"]{color:var(--v-on-accent);font-weight:600}
+.v-cal__d[aria-selected="true"]>span{animation:v-cal-pick var(--t-max) var(--enter) both}
+@keyframes v-cal-pick{40%{transform:scale(1.18)}}
+.v-cal__mark{position:absolute;left:50%;bottom:6px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--v-pink-deep);z-index:1}
+.v-cal__mark.-pink{background:var(--v-pink-deep)}.v-cal__mark.-blue{background:var(--v-blue-deep)}.v-cal__mark.-olive{background:var(--v-olive)}.v-cal__mark.-yellow{background:var(--v-yellow-deep)}.v-cal__mark.-ink{background:var(--v-ink)}
+.v-cal__d[aria-selected="true"] .v-cal__mark{background:var(--ink-fixed)}
+.v-cal__d:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+:root[data-mode="dark"] .v-cal__nav{background:var(--v-beige-2);box-shadow:none}
+:root[data-mode="dark"] .v-cal__d.-today:not([aria-selected="true"]){box-shadow:inset 0 0 0 1.5px var(--v-text)}
+:root[data-mode="dark"] .v-cal__d::before{background:var(--v-beige-2)}
+@media (max-width:420px){.v-cal__d{width:36px;height:36px;font-size:13.5px}}
+
+/* ---- Card watermark: a quiet silhouette in the corner, not a second subject ---- */
+.v-card>.v-wm{width:38%;max-width:150px;right:-6%;top:-14%;opacity:.55}
+
+/* ---- Rail, final: the current destination is a fill, never a bar ----
+   The travelling pill (cream at 10 %) is the fill; the label and glyph go pink; the breathing dot stays as the
+   quiet "something is happening here" signal. Hovered rows lift their glyph a touch. */
+.v-nav__item[aria-current="page"]::before{display:none}
+.v-nav__item[aria-current="page"],.v-nav__item[aria-current="page"] .v-icon{color:var(--v-pink)!important}
+.v-nav__item{transition:background var(--t-micro),color var(--t-micro)}
+.v-nav__item .v-icon{transition:transform var(--t-element) var(--enter)}
+.v-nav__item:hover .v-icon{transform:translateY(-1px) rotate(-6deg)}
+.v-nav__item:active .v-icon{transform:scale(.92)}
+/* Message scroller: a soft rail, the thumb only */
+.v-scroller::-webkit-scrollbar{width:8px}.v-scroller::-webkit-scrollbar-track{background:transparent}.v-scroller::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--v-edge) 55%,transparent);border-radius:999px;border:2px solid transparent;background-clip:content-box}
+.v-scroller .v-bubble,.v-scroller>div>*{transition:transform var(--t-element) var(--enter)}

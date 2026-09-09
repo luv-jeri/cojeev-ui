@@ -1,0 +1,88 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "falling-text",
+  "title": "Falling Text",
+  "description": "Measured word rectangles fall, collide and settle inside a bounded stage.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/falling-text.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { useReferenceRef } from \"@/lib/cojeev/reference-ref\";\nimport { cn } from \"@/lib/utils\";\nimport { bounded,fallStep,type FallingBody } from \"@/lib/cojeev/reference-text-math\";\nimport { useReferenceText,type ReferenceTextSize } from \"@/lib/cojeev/reference-text-motion\";\nexport type FallingTextProps=Omit<React.ComponentProps<\"div\">,\"children\">&{text:string;gravity?:number;paused?:boolean;replayKey?:string|number;size?:ReferenceTextSize};\n/** Measured word rectangles fall, collide and settle inside their own stage. */\nexport function FallingText({text,gravity=900,paused=false,replayKey=0,size=\"default\",className,ref,...props}:FallingTextProps){\n const {host:hostRef,running}=useReferenceText(paused);\n const words=text.trim().split(/\\s+/).filter(Boolean),animate=running&&words.length<=80;\n React.useEffect(()=>{\n  const el=hostRef.current;if(!el||!animate)return;const letters=Array.from(el.querySelectorAll<HTMLElement>(\"[data-falling-word]\"));\n  let frame=0,last=0,elapsed=0,bodies:FallingBody[]=[],width=0,height=0;\n  const measure=()=>{\n   letters.forEach(word=>{word.style.transform=\"\";word.style.position=\"\";word.style.left=\"\";word.style.top=\"\";word.style.width=\"\";});\n   const box=el.getBoundingClientRect();width=box.width-16;height=box.height-16;\n   bodies=letters.map((word,i)=>{const r=word.getBoundingClientRect();return{x:r.x-box.x-8,y:r.y-box.y-8,w:r.width,h:r.height,vx:Math.sin(i*3.2)*65,vy:0,angle:0};});\n   letters.forEach((word,i)=>{word.style.position=\"absolute\";word.style.left=\"8px\";word.style.top=\"8px\";word.style.width=`${bodies[i].w}px`;});elapsed=0;last=0;\n  };\n  const tick=(now:number)=>{\n   const dt=last?Math.min(32,now-last):0;last=now;elapsed+=dt;\n   bodies=bodies.map(body=>fallStep(body,width,height,dt,bounded(gravity,100,2400,900)));\n   for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++){\n    const a=bodies[i],b=bodies[j],ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x),oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);\n    if(ox>0&&oy>0){if(oy<ox){const top=a.y<b.y?a:b,bottom=top===a?b:a;top.y=Math.max(0,top.y-oy*.65);bottom.y=Math.min(height-bottom.h,bottom.y+oy*.35);top.vy=-Math.abs(top.vy)*.22;top.vx*=.94;}else{const left=a.x<b.x?a:b,right=left===a?b:a;left.x=Math.max(0,left.x-ox*.5);right.x=Math.min(width-right.w,right.x+ox*.5);left.vx=-Math.abs(left.vx)*.3;right.vx=Math.abs(right.vx)*.3;}}\n   }\n   letters.forEach((word,i)=>{const b=bodies[i];word.style.transform=`translate(${b.x}px,${b.y}px)`;});\n   el.dataset.state=elapsed<4200?\"falling\":\"settled\";\n   if(elapsed<4200)frame=requestAnimationFrame(tick);\n  };\n  measure();frame=requestAnimationFrame(tick);\n  const resize=new ResizeObserver(()=>{cancelAnimationFrame(frame);measure();frame=requestAnimationFrame(tick);});resize.observe(el);\n  return()=>{cancelAnimationFrame(frame);resize.disconnect();letters.forEach(word=>{word.removeAttribute(\"style\");});el.dataset.state=\"still\";};\n },[hostRef,animate,text,gravity,replayKey]);\n return <div {...props} ref={useReferenceRef(hostRef,ref)} data-slot=\"falling-text\" data-size={size} data-running={animate} data-state={animate?\"falling\":\"still\"} className={cn(\"v-falling-text\",className)}><span className=\"v-falling-text__accessible\">{text}</span><div aria-hidden=\"true\" className=\"v-falling-text__sentence\">{words.map((word,i)=><React.Fragment key={i}><span data-falling-word=\"\">{word}</span>{\" \"}</React.Fragment>)}</div></div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/falling-text.css",
+      "content": "@layer cojeev-states {\n.v-falling-text { display:grid; position:relative; place-items:center; min-inline-size:0; inline-size:100%; min-block-size:260px; padding:24px; overflow:hidden; border-radius:var(--radius-panel,24px); color:var(--v-text); background:var(--v-beige); font-family:var(--font-display,\"Bricolage Grotesque\",sans-serif); font-size:clamp(2rem,5vw,3.5rem); line-height:1.15; isolation:isolate; }\n.v-falling-text[data-size=\"sm\"] { min-block-size:200px; font-size:clamp(1.5rem,4vw,2.5rem); padding:16px; }\n.v-falling-text[data-size=\"lg\"] { min-block-size:340px; font-size:clamp(2.25rem,6vw,4.5rem); }\n.v-falling-text__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }\n.v-falling-text {align-items:start;min-block-size:320px;font-size:clamp(1.25rem,3vw,2rem);}\n.v-falling-text__sentence {max-inline-size:100%;text-align:center;line-height:1.7;}\n.v-falling-text [data-falling-word] {display:inline-block;max-inline-size:100%;overflow-wrap:anywhere;padding:.08em .28em;border-radius:.25em;background:var(--v-blue);color:var(--v-on-accent);line-height:1.3;}\n.v-falling-text [data-falling-word]:nth-child(3n) {background:var(--v-pink);}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/falling-text.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/falling-text.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Falling Text",
+      "variants": [
+        "scatter",
+        "gentle"
+      ],
+      "sizes": [
+        "sm",
+        "default",
+        "lg"
+      ],
+      "states": [
+        "playing",
+        "paused",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "FallingTextProps",
+        "props": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "gravity",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "replayKey",
+            "type": "string|number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "ReferenceTextSize",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

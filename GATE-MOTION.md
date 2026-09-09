@@ -1,6 +1,6 @@
 # Shared motion gate
 
-Full manifest: **48 scenarios × 6 viewports × 2 themes = 576 rows**. This run selected **15 rows** and completed **15: 14 PASS, 1 unresolved**. A bounded run does not close the full matrix or any of the 542 base-component isolation rows.
+Full manifest: **48 scenarios × 6 viewports × 2 themes = 576 rows**. This run selected **4 rows** and completed **2: 1 PASS, 1 unresolved**. A bounded run does not close the full matrix or any of the 542 base-component isolation rows.
 
 Run with `node scripts/gate-motion.mjs` after `npm ci`. It starts its own Vite server on port4325, uses production hooks and styles in the candidate, and loads unchanged reference scripts independently. `MOTION_CASES`, `MOTION_WIDTHS`, `MOTION_MODES`, and `MOTION_GATE_PORT` select a diagnostic subset; `MOTION_FAIL_FAST=1` stops at the first unresolved row. Any unresolved row makes the command exit nonzero. Coordinate browser ownership with the main gate.
 
@@ -18,24 +18,11 @@ Behavior rows run twice in fresh candidate contexts. They exercise StrictMode, h
 
 Remaining: the full six-width/light-dark matrix; stable combined shared-role parity for all nine characters; a native touch-media trajectory; source nested-group marker cleanup (the source parent removes a nested group’s active marker while candidate preserves nearest-group ownership); complete cross-surface keyboard activation-origin coverage; and integrated all66 component/registry-install validation owned by the main task. Fixture availability is not verification.
 
-Selected cases: travel-glide, travel-stretch, travel-jelly, travel-comet, travel-drop, travel-rubber, travel-pebble, travel-ripple, travel-halo, blob-effects, full-export-effects, adjuster, lifecycle, live-settings, media-change. Widths: 390. Themes: light.
+Selected cases: blob-effects, full-export-effects, categories, morph-off. Widths: 390. Themes: light.
 
 | Scenario | Width | Theme | Verdict | Source self | Candidate self | Cross fields | Nonzero pixel samples |
 | --- | ---: | --- | --- | --- | --- | ---: | ---: |
-| travel-glide | 390 | light | PASS | true | true | 0 | 0 |
-| travel-stretch | 390 | light | PASS | true | true | 0 | 0 |
-| travel-jelly | 390 | light | PASS | true | true | 0 | 0 |
-| travel-comet | 390 | light | PASS | true | true | 0 | 0 |
-| travel-drop | 390 | light | PASS | true | true | 0 | 0 |
-| travel-rubber | 390 | light | PASS | true | true | 0 | 0 |
-| travel-pebble | 390 | light | PASS | true | true | 0 | 0 |
-| travel-ripple | 390 | light | PASS | true | true | 0 | 0 |
-| travel-halo | 390 | light | PASS | true | true | 0 | 0 |
 | blob-effects | 390 | light | PASS | true | true | 0 | 0 |
 | full-export-effects | 390 | light | FAIL | true | true | 147 | 7 |
-| adjuster | 390 | light | PASS | — | true | 0 | 0 |
-| lifecycle | 390 | light | PASS | — | true | 0 | 0 |
-| live-settings | 390 | light | PASS | — | true | 0 | 0 |
-| media-change | 390 | light | PASS | — | true | 0 | 0 |
 
 The raw results and PNGs are in artifacts/gate-motion in the worktree where the command ran. All public production hook signatures remain unchanged.

@@ -9,11 +9,11 @@ import ts from "typescript";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // Preload tsx in a child so both ESM and CJS aliases in the real extractor work.
-if (process.env.SAHAJIV_EXAMPLE_SOURCE_CHILD !== "1") {
+if (process.env.COJEEV_EXAMPLE_SOURCE_CHILD !== "1") {
   const child = spawnSync(process.execPath, ["--import", "tsx", fileURLToPath(import.meta.url), ...process.argv.slice(2)], {
     cwd: root,
     stdio: "inherit",
-    env: { ...process.env, SAHAJIV_EXAMPLE_SOURCE_CHILD: "1" },
+    env: { ...process.env, COJEEV_EXAMPLE_SOURCE_CHILD: "1" },
   });
   if (child.error) console.error(child.error.message);
   process.exit(child.status ?? 1);
@@ -23,7 +23,11 @@ const { exampleSource } = await import("../components/example-source.ts");
 const { exampleManifest } = await import("../components/examples/manifest.ts");
 const registry = JSON.parse(fs.readFileSync(path.join(root, "registry.json"), "utf8"));
 const catalog = registry.items.filter(item => item.type === "registry:ui");
-const sourceIds = fs.readdirSync(path.join(root, "registry/sahajiv/ui")).filter(file => file.endsWith(".tsx")).map(file => file.slice(0, -4)).sort();
+const installedModules = new Set(registry.items.flatMap(item => item.files ?? []).map(file => {
+  if (file.type === "registry:ui") return `@/components/ui/${path.basename(file.path, ".tsx")}`;
+  return file.target ? `@/${file.target.replace(/\.tsx?$/, "")}` : null;
+}).filter(Boolean));
+const sourceIds = fs.readdirSync(path.join(root, "registry/cojeev/ui")).filter(file => file.endsWith(".tsx")).map(file => file.slice(0, -4)).sort();
 const manifestIds = Object.keys(exampleManifest).sort();
 const catalogIds = catalog.map(item => item.name).sort();
 const coverageErrors = [];
@@ -38,9 +42,11 @@ const extractionErrors = [];
 const outputIndex = process.argv.indexOf("--output");
 const output = path.resolve(root, outputIndex >= 0 ? process.argv[outputIndex + 1] : "artifacts/example-source/results.json");
 const keep = process.argv.includes("--keep");
+const only = process.argv.find(value => value.startsWith("--components="))?.split("=")[1].split(",");
+const selectedCatalog = only ? catalog.filter(entry => only.includes(entry.name)) : catalog;
 let diagnostics = [];
 try {
-  for (const entry of catalog) {
+  for (const entry of selectedCatalog) {
     if (!exampleManifest[entry.name]) continue;
     const variants = [...new Set(["default", ...(entry.meta.source.variants ?? [])])];
     const sizes = [...new Set(["default", ...(entry.meta.source.sizes ?? [])])];
@@ -59,7 +65,7 @@ try {
         for (const statement of tree.statements) {
           if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
           const moduleName = statement.moduleSpecifier.text;
-          if ((moduleName.startsWith("@/") && !moduleName.startsWith("@/components/ui/")) || moduleName.startsWith(".") || path.isAbsolute(moduleName)) {
+          if ((moduleName.startsWith("@/") && !installedModules.has(moduleName)) || moduleName.startsWith(".") || path.isAbsolute(moduleName)) {
             throw new Error(`Copied source depends on a repository-local module: ${moduleName}`);
           }
         }
@@ -85,7 +91,10 @@ try {
     resolveJsonModule: true,
     isolatedModules: true,
     paths: {
-      "@/components/ui/*": [path.join(root, "registry/sahajiv/ui/*")],
+      "@/components/ui/*": [path.join(root, "registry/cojeev/ui/*")],
+      "@/lib/utils": [path.join(root, "registry/cojeev/lib/utils.ts")],
+      "@/lib/cojeev/*": [path.join(root, "registry/cojeev/lib/*")],
+      "@/lib/cojeev-motion/*": [path.join(root, "registry/cojeev/motion/*")],
       "@/*": [path.join(root, "*")],
     },
   };

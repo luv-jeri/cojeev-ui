@@ -1,10 +1,10 @@
 # Documentation component ownership and coverage
 
-The documentation keeps Fumadocs `RootProvider` and `DocsPage` for framework integration. Visible navigation, filtering, appearance, examples, copy actions, typography, badges and prop tables compose SahaJiv components. Documentation layout CSS is scoped to the docs/home pages. No reference HTML or reference runtime is imported.
+The documentation keeps Fumadocs `RootProvider` and `DocsPage` for framework integration. Visible navigation, filtering, appearance, examples, copy actions, typography, badges and prop tables compose Cojeev components. Documentation layout CSS is scoped to the docs/home pages. No reference HTML or reference runtime is imported.
 
 ## Public documentation helper
 
-`preview` is a shared helper, separate from the **66 base components**. Source: `registry/sahajiv/ui/preview.tsx` and `registry/sahajiv/styles/preview.css`. It composes Card, Tabs, CodeBlock, CopyButton and Typography. Its standard section props include `children`, required `code`, optional `title` and `description`. Preview/code tabs use Radix keyboard behavior via Tabs; copy reports success or a usable manual-copy failure message, with native selection fallback on HTTP. The component can be used outside documentation.
+`preview` is a shared helper, separate from the **66 base components**. Source: `registry/cojeev/ui/preview.tsx` and `registry/cojeev/styles/preview.css`. It composes Card, Tabs, CodeBlock, CopyButton and Typography. Its standard section props include `children`, required `code`, optional `title` and `description`. Preview/code tabs use Radix keyboard behavior via Tabs; copy reports success or a usable manual-copy failure message, with native selection fallback on HTTP. The component can be used outside documentation.
 
 The other shared helpers are Icon, Shape and Motion Adjuster. All four have their own live documentation examples.
 

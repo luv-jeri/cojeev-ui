@@ -1,0 +1,126 @@
+# Fidelity gate
+
+Candidate source SHA-256: ba9eb5eb0f579af8dde2ca6af370205c9077cd38f856859ab223c9b97db43c33. Unchanged during run: NO.
+
+Scope: alert, aspect-ratio, avatar, badge, bubble, button, card, direction, empty, item, kbd, label, marker, message, progress, separator, skeleton, spinner, typography. 114 measured comparisons. Full six-width isolation coverage: NO.
+
+Oracle: handoff v4. Fonts ready + 1800ms settle; sequential independent reloads; rewind then step; no re-seeding. Static frames use reduced motion. Self agreement requires exact visible computed state and zero decoded-pixel differences using pixelmatch threshold 0.1 with anti-alias pixels included; raw PNG hash agreement is retained separately. Demonstrably hidden source content may correspond to unmounted Radix content; visible absence always fails. Motion and keyboard coverage are separate reports.
+
+| Component | Isolation variant / size / state / mode | Width | Verdict | Style differences | Pixel difference |
+| --- | --- | ---: | --- | ---: | ---: |
+| alert | default-default-rest-720x240.html | 360 | PASS | 0 | 0.0000% |
+| alert | default-default-rest-720x240.html | 390 | PASS | 0 | 0.0000% |
+| alert | default-default-rest-720x240.html | 768 | PASS | 0 | 0.0000% |
+| alert | default-default-rest-720x240.html | 1024 | PASS | 0 | 0.0000% |
+| alert | default-default-rest-720x240.html | 1440 | PASS | 0 | 0.0000% |
+| alert | default-default-rest-720x240.html | 1920 | PASS | 0 | 0.0000% |
+| aspect-ratio | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| aspect-ratio | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| aspect-ratio | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| aspect-ratio | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| aspect-ratio | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| aspect-ratio | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| avatar | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| avatar | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| avatar | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| avatar | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| avatar | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| avatar | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| badge | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| badge | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| badge | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| badge | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| badge | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| badge | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| bubble | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| bubble | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| bubble | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| bubble | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| bubble | default-default-rest.html | 1440 | PASS | 0 | 0.0009% |
+| bubble | default-default-rest.html | 1920 | PASS | 0 | 0.0007% |
+| button | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| button | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| button | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| button | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| button | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| button | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| card | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| card | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| card | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| card | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| card | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| card | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| direction | default-default-rest.html | 360 | FAIL | 0 | 0.1701% |
+| direction | default-default-rest.html | 390 | FAIL | 0 | 0.1843% |
+| direction | default-default-rest.html | 768 | PASS | 0 | 0.0936% |
+| direction | default-default-rest.html | 1024 | PASS | 0 | 0.0702% |
+| direction | default-default-rest.html | 1440 | PASS | 0 | 0.0499% |
+| direction | default-default-rest.html | 1920 | PASS | 0 | 0.0374% |
+| empty | default-default-rest-960x360.html | 360 | FAIL | 7 | 0.6753% |
+| empty | default-default-rest-960x360.html | 390 | FAIL | 7 | 1.0715% |
+| empty | default-default-rest-960x360.html | 768 | FAIL | 7 | 2.9958% |
+| empty | default-default-rest-960x360.html | 1024 | FAIL | 7 | 2.2469% |
+| empty | default-default-rest-960x360.html | 1440 | FAIL | 7 | 1.5978% |
+| empty | default-default-rest-960x360.html | 1920 | FAIL | 7 | 1.1983% |
+| item | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| item | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| item | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| item | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| item | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| item | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| kbd | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| kbd | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| kbd | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| kbd | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| kbd | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| kbd | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| label | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| label | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| label | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| label | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| label | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| label | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| marker | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| marker | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| marker | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| marker | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| marker | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| marker | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| message | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| message | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| message | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| message | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| message | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| message | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| progress | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| progress | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| progress | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| progress | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| progress | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| progress | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| separator | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| separator | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| separator | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| separator | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| separator | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| separator | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| skeleton | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| skeleton | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| skeleton | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| skeleton | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| skeleton | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| skeleton | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| spinner | default-default-rest.html | 360 | PASS | 0 | 0.0000% |
+| spinner | default-default-rest.html | 390 | PASS | 0 | 0.0000% |
+| spinner | default-default-rest.html | 768 | PASS | 0 | 0.0000% |
+| spinner | default-default-rest.html | 1024 | PASS | 0 | 0.0000% |
+| spinner | default-default-rest.html | 1440 | PASS | 0 | 0.0000% |
+| spinner | default-default-rest.html | 1920 | PASS | 0 | 0.0000% |
+| typography | default-default-rest-720x480.html | 360 | PASS | 0 | 0.0000% |
+| typography | default-default-rest-720x480.html | 390 | PASS | 0 | 0.0000% |
+| typography | default-default-rest-720x480.html | 768 | PASS | 0 | 0.0000% |
+| typography | default-default-rest-720x480.html | 1024 | PASS | 0 | 0.0000% |
+| typography | default-default-rest-720x480.html | 1440 | PASS | 0 | 0.0000% |
+| typography | default-default-rest-720x480.html | 1920 | PASS | 0 | 0.0000% |
+
+Oracle bootstrap adapters: original-alive-runtime. The original catalog's loader runtime is restored only where the isolation generator omitted it; reference files remain unchanged.

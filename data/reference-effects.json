@@ -1,0 +1,1549 @@
+[
+  {
+    "id": "typography-vortex",
+    "name": "Typography Vortex",
+    "category": "Typography",
+    "variants": [
+      "orbit",
+      "focused"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Nested rotating glyph rings with a local dissolution lens and a finite suction pulse.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://threeui.com/text-animation/typography-vortex",
+    "landing": "Optional playground backdrop; skip the main reading flow.",
+    "notes": "SVG glyph rings retain the vortex and pointer lens; dust is bounded and suction recenters the rings rather than reproducing the upstream bitmap renderer.",
+    "observation": "Concentric bitmap rings, pointer dissolution and click suction in ThreeUI TypographyVortexRenderer.",
+    "status": "new"
+  },
+  {
+    "id": "text-loop",
+    "name": "Text Loop",
+    "category": "Typography",
+    "variants": [
+      "loop",
+      "wave",
+      "figure-eight"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Measured text travels around a ribbon path.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/text-loop",
+    "landing": "Use as a restrained brand band below the hero; the main headline can stay static.",
+    "notes": "Already implemented by TextRibbon shapes and measurement; no new alias component.",
+    "observation": "React Bits TextLoop measures an SVG path and repeats text over it.",
+    "status": "reused",
+    "existingId": "text-ribbon"
+  },
+  {
+    "id": "particle-text",
+    "name": "Particle Text",
+    "category": "Typography",
+    "variants": [
+      "gather",
+      "fine"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/particle-text",
+    "landing": "Optional playground or short brand introduction; skip simultaneous hero loops.",
+    "notes": "Canvas sampling is capped by stage size and sample step. DOM text stays in the accessibility tree; fallback is visible during stillness.",
+    "observation": "React Bits ParticleText samples canvas alpha, gathers points and adds local pointer repulsion.",
+    "status": "new"
+  },
+  {
+    "id": "warp-text",
+    "name": "Warp Text",
+    "category": "Typography",
+    "variants": [
+      "liquid",
+      "gentle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Rendered text deforms through a slowly changing noise displacement.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/warp-text",
+    "landing": "Small expressive interlude; avoid navigation, instructions and primary value proposition.",
+    "notes": "Uses SVG fractal-noise displacement over actual wrapping DOM text rather than WebGL FBM; no exact shader-fidelity claim.",
+    "observation": "React Bits WarpText warps a raster text texture using fragment-shader FBM.",
+    "status": "new"
+  },
+  {
+    "id": "split-text",
+    "name": "Split Text",
+    "category": "Typography",
+    "variants": [
+      "grapheme",
+      "words",
+      "line"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Grapheme-safe, staggered text entrances with readable still content.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/split-text",
+    "landing": "Recommended hero headline effect, once per visit.",
+    "notes": "Existing TextReveal already supplies grapheme, word and measured line splits and multiple reveal treatments.",
+    "observation": "React Bits SplitText uses GSAP split units and scroll-triggered entrance.",
+    "status": "reused",
+    "existingId": "text-reveal"
+  },
+  {
+    "id": "circular-text",
+    "name": "Circular Text",
+    "category": "Typography",
+    "variants": [
+      "circle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Circular text with hover pause or speed response.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/circular-text",
+    "landing": "Small secondary brand seal; skip if a Text Loop band is already used.",
+    "notes": "TextRibbon circle provides the same readable circular travel and hover controls. It travels text on a measured circle rather than manually placing equal-width glyphs.",
+    "observation": "React Bits CircularText positions glyphs in a circle and animates rotation with hover speed changes.",
+    "status": "reused",
+    "existingId": "text-ribbon"
+  },
+  {
+    "id": "text-pressure",
+    "name": "Text Pressure",
+    "category": "Typography",
+    "variants": [
+      "pressure"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Local pointer proximity expands width and weight through Bricolage variable-font axes.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/text-pressure",
+    "landing": "Optional playground specimen; keep essential headings independently readable.",
+    "notes": "Consolidated into VariableProximity pressure variant. Uses only shipped Bricolage axes wght 200–800 and wdth 75–100; no Roboto import or simulated italic.",
+    "observation": "React Bits TextPressure interpolates per-letter wght, wdth and optional ital axes from pointer distance.",
+    "status": "variant",
+    "existingId": "variable-proximity"
+  },
+  {
+    "id": "curved-loop",
+    "name": "Curved Loop",
+    "category": "Typography",
+    "variants": [
+      "arch"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Draggable curved typography with direction reversal and keyboard movement.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/curved-loop",
+    "landing": "Optional component-discovery separator, at most one text marquee on a page.",
+    "notes": "Existing TextRibbon arch, curvature, drag inertia, arrows and Home already cover the mechanism.",
+    "observation": "React Bits CurvedLoop uses measured textPath offsets and drag velocity.",
+    "status": "reused",
+    "existingId": "text-ribbon"
+  },
+  {
+    "id": "falling-text",
+    "name": "Falling Text",
+    "category": "Typography",
+    "variants": [
+      "scatter",
+      "gentle"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Measured word rectangles fall, collide and settle inside a bounded stage.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/falling-text",
+    "landing": "Playground only; skip product narrative because motion disrupts reading.",
+    "notes": "Original bounded rectangle physics, at most 80 words, finite 4.2-second settling. No word dragging or full rigid-body rotational solver.",
+    "observation": "React Bits FallingText creates Matter.js word bodies, walls, gravity and pointer constraints.",
+    "status": "new"
+  },
+  {
+    "id": "scroll-reveal",
+    "name": "Scroll Reveal",
+    "category": "Typography",
+    "variants": [
+      "scroll",
+      "controlled"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Native scroll progress resolves word opacity and blur while leveling the phrase.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/scroll-reveal",
+    "landing": "Recommended narrative reveal below the hero, with conservative blur.",
+    "notes": "Native scroll listener scoped to the selected target, or controlled 0–1 progress. Existing TextReveal is a one-shot entrance and does not cover this mechanism.",
+    "observation": "React Bits ScrollReveal scrubs rotation, opacity and blur using GSAP ScrollTrigger.",
+    "status": "new"
+  },
+  {
+    "id": "variable-proximity",
+    "name": "Variable Proximity",
+    "category": "Typography",
+    "variants": [
+      "weight",
+      "pressure"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Pointer distance changes the real variable-font weight of individual graphemes.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://www.reactbits.dev/text-animations/variable-proximity",
+    "landing": "Use on an optional large specimen; not a required interaction in the landing narrative.",
+    "notes": "Local event-driven interpolation of supported Bricolage wght and wdth axes; does not accept arbitrary fonts or axis strings.",
+    "observation": "React Bits VariableProximity parses variable axes and interpolates them by per-letter distance.",
+    "status": "new"
+  },
+  {
+    "id": "word-stream",
+    "name": "Word Stream",
+    "category": "Typography",
+    "variants": [
+      "flow",
+      "calm"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Phrases build word by word, drift left and run out before the final phrase holds.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://remocn.dev/docs/typography/word-stream",
+    "landing": "Short optional story scene with a Replay button; not the primary long-form message.",
+    "notes": "Native finite clock with wrapping phrases. The original is a Remotion frame sequence and assumes one unwrapped video line. WordRelay alone lacks this horizontal stream mechanism.",
+    "observation": "Remocn WordStream schedules pipe-separated phrases, per-word reveals, entry drift and accelerated exit.",
+    "status": "new"
+  },
+  {
+    "id": "caret-swap",
+    "name": "Caret Swap",
+    "category": "Typography",
+    "variants": [
+      "thought",
+      "memory"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "A colored caret block consumes a phrase before typing its replacement in whole graphemes.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://remocn.dev/docs/typography/caret-swap",
+    "landing": "A single secondary before/after statement; avoid making the primary promise disappear.",
+    "notes": "Native finite clock, full measured footprint and stable accessible target. Existing WritingCaret only blinks and does not implement the phrase exchange.",
+    "observation": "Remocn CaretSwap expands right-to-left, collapses, then accelerates typing into replacement text.",
+    "status": "new"
+  },
+  {
+    "id": "zoom-words",
+    "name": "Zoom Words",
+    "category": "Typography",
+    "variants": [
+      "close",
+      "wide"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "An enlarged camera follows measured centers along a growing word line.",
+    "usage": "Use the component with a short text phrase; keep the adjacent Pause/Replay controls from the example.",
+    "accessibility": "Readable DOM content survives stillness, reduced motion, hidden tabs and offscreen suspension. Repeated SVG/canvas glyphs are decorative. Pointer effects retain native scrolling and cursor.",
+    "related": [
+      "text-ribbon",
+      "text-reveal",
+      "word-relay"
+    ],
+    "reference": "https://remocn.dev/docs/typography/zoom-words",
+    "landing": "Optional film-like interlude or playground; skip the main headline for readability.",
+    "notes": "Measures real DOM word widths rather than estimated character widths; still mode restores the complete wrapping sentence.",
+    "observation": "Remocn ZoomWords reveals an enlarged line while the camera follows its write head.",
+    "status": "new"
+  },
+  {
+    "id": "scroll-expand",
+    "name": "Scroll Expand",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A framed composition opens as native scroll or controlled progress advances.",
+    "usage": [
+      "Use a single product demonstration after the hero.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/scroll-expand",
+    "landing": "Use a single product demonstration after the hero.",
+    "notes": "ScrollOrganism only deforms an ornament; FloatLayer reveals/translates. Neither expands caller content.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ScrollExpand"
+  },
+  {
+    "id": "ripple-distortion",
+    "name": "Ripple Distortion",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Pointer impulses send expanding waves through a textured print.",
+    "usage": [
+      "Optional material playground; keep important text outside.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/ripple-distortion",
+    "landing": "Optional material playground; keep important text outside.",
+    "notes": "FlowSculpture distorts a rendered 3D object, not a supplied flat image.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/RippleDistortion"
+  },
+  {
+    "id": "elastic-mesh",
+    "name": "Elastic Mesh",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A triangulated printed sheet stretches toward the pointer and springs home.",
+    "usage": [
+      "Optional playground specimen.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/elastic-mesh",
+    "landing": "Optional playground specimen.",
+    "notes": "No existing elastic 2D textured grid.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ElasticMesh"
+  },
+  {
+    "id": "swarm-cursor",
+    "name": "Swarm Cursor",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A local flock of colored seeds follows the pointer and scatters on activation.",
+    "usage": [
+      "Optional playground only; avoid global landing cursors.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/swarm-cursor",
+    "landing": "Optional playground only; avoid global landing cursors.",
+    "notes": "SemanticBloom attracts particles to words and liquid joins; GuidedPointer travels through prescribed waypoints. Neither is a scoped pointer-following flock.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/SwarmCursor"
+  },
+  {
+    "id": "pixel-swap",
+    "name": "Pixel Swap",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A staggered tile mask exchanges two compositions without duplicating their interactive content.",
+    "usage": [
+      "Use in one before/after demonstration.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/pixel-swap",
+    "landing": "Use in one before/after demonstration.",
+    "notes": "Presence mask is a single shape reveal, not a tiled content exchange.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/PixelSwap"
+  },
+  {
+    "id": "orbit-images",
+    "name": "Orbit Images",
+    "category": "Creative",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "An orbit of supplied images frames stationary content.",
+    "usage": [
+      "Optional library family vignette with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/orbit-images",
+    "landing": "Optional library family vignette with pause.",
+    "notes": "SculptureOrbit is a 3D viewer camera; AmbientBackground orbit uses decorative shapes, not caller image cards.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/OrbitImages"
+  },
+  {
+    "id": "target-cursor",
+    "name": "Target Cursor",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Local corner brackets follow real controls on hover and keyboard focus.",
+    "usage": [
+      "Use within an interactive specimen only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/target-cursor",
+    "landing": "Use within an interactive specimen only.",
+    "notes": "GuidedPointer uses author-defined coordinates rather than tracking real controls.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/TargetCursor"
+  },
+  {
+    "id": "magic-rings",
+    "name": "Magic Rings",
+    "category": "Backgrounds",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Open concentric rings expand in Cojeev colors and respond to pointer position.",
+    "usage": [
+      "Optional small closing accent, with pause.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/magic-rings",
+    "landing": "Optional small closing accent, with pause.",
+    "notes": "No existing expanding ring field.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/MagicRings"
+  },
+  {
+    "id": "ghost-cursor",
+    "name": "Ghost Cursor",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A translucent ink impression follows a local pointer with soft inertia.",
+    "usage": [
+      "Playground only.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/ghost-cursor",
+    "landing": "Playground only.",
+    "notes": "No existing local free-pointer translucent trail.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/GhostCursor"
+  },
+  {
+    "id": "click-spark",
+    "name": "Click Spark",
+    "category": "Effects",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A finite spray of accent marks responds to a real activation.",
+    "usage": [
+      "Optional single CTA feedback; retain ordinary pressed and focus states.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/click-spark",
+    "landing": "Optional single CTA feedback; retain ordinary pressed and focus states.",
+    "notes": "Flow press deforms the control edge but does not paint radial sparks.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ClickSpark"
+  },
+  {
+    "id": "strands",
+    "name": "Strands",
+    "category": "Backgrounds",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "A bundle of colored ribbons moves through a bounded sine field.",
+    "usage": [
+      "Optional quiet section accent; one instance at a time.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/strands",
+    "landing": "Optional quiet section accent; one instance at a time.",
+    "notes": "ContourField draws topographic lines, not bundled crossing strands.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/Strands"
+  },
+  {
+    "id": "image-trail",
+    "name": "Image Trail",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Distance-triggered image impressions follow the pointer and fade away.",
+    "usage": [
+      "An optional gallery playground.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/image-trail",
+    "landing": "An optional gallery playground.",
+    "notes": "No existing pointer image-trail buffer.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/ImageTrail"
+  },
+  {
+    "id": "meta-balls",
+    "name": "Meta Balls",
+    "category": "Backgrounds",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest",
+      "active",
+      "paused",
+      "reduced-motion"
+    ],
+    "description": "Moving scalar-field bodies merge and separate through liquid contours.",
+    "usage": [
+      "Optional material specimen with a still frame.",
+      "The example runs locally. Supply your own content; keep essential reading outside decorative paint."
+    ],
+    "accessibility": [
+      "Respects reduced motion, Motion Off and Flow Off. Optional motion stops while hidden or outside the viewport.",
+      "Native cursor, keyboard focus and vertical touch scrolling remain available."
+    ],
+    "related": [
+      "shape-artwork",
+      "presence",
+      "adjuster"
+    ],
+    "reference": "https://www.reactbits.dev/animations/meta-balls",
+    "landing": "Optional material specimen with a still frame.",
+    "notes": "SemanticBloom combines a wordmark and particles; this is a standalone continuous scalar-field contour surface.",
+    "status": "new",
+    "source": "https://github.com/DavidHDev/react-bits/tree/main/src/ts-default/Animations/MetaBalls"
+  },
+  {
+    "id": "infinite-spiral",
+    "name": "Infinite Spiral",
+    "category": "Creative",
+    "variants": [
+      "up",
+      "down"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Helical image cards recycle through depth with explicit previous, next and pause controls.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "carousel",
+      "accordion"
+    ],
+    "reference": "https://www.reactbits.dev/components/infinite-spiral",
+    "landing": "Optional playground; keep the main landing page narrative still.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Helix depth, vertical spacing, wrapping offsets and edge fading in React Bits source.",
+    "status": "new"
+  },
+  {
+    "id": "accordion-gallery",
+    "name": "Accordion Gallery",
+    "category": "Creative",
+    "variants": [
+      "horizontal",
+      "vertical"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "still",
+      "offscreen"
+    ],
+    "description": "A selected image panel opens to reveal its label, story and action.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "carousel",
+      "accordion"
+    ],
+    "reference": "https://www.reactbits.dev/components/accordion-gallery",
+    "landing": "Recommended component discovery section after the feature demonstration.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "React Bits flex expansion, media parallax, inactive grayscale and explicit selection.",
+    "status": "new"
+  },
+  {
+    "id": "option-wheel",
+    "name": "Option Wheel",
+    "category": "Forms",
+    "variants": [
+      "left",
+      "right"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "still",
+      "offscreen"
+    ],
+    "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "carousel",
+      "accordion"
+    ],
+    "reference": "https://www.reactbits.dev/components/option-wheel",
+    "landing": "Optional compact theme or discipline picker beside a specimen.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "React Bits circular geometry, distance fading and settling selected option.",
+    "status": "new"
+  },
+  {
+    "id": "grain-dissolve",
+    "name": "Grain Dissolve",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Caller scenes dissolve through a grainy pigment field with a soft focus exchange.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "presence",
+      "pixel-swap"
+    ],
+    "reference": "https://remocn.dev/docs/transitions/grain-dissolve",
+    "landing": "Optional scene bridge in the playground; avoid repeated text transitions.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Remocn outgoing blur, grain field cover and delayed incoming focus.",
+    "status": "new"
+  },
+  {
+    "id": "wave-wipe",
+    "name": "Wave Wipe",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "An organic wave rises across caller content to reveal the next scene.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "presence",
+      "pixel-swap"
+    ],
+    "reference": "https://remocn.dev/docs/transitions/wave-wipe",
+    "landing": "Recommended once between narrative and feature demonstration.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Remocn upward departing scene, rising incoming scene and grain wave field.",
+    "status": "new"
+  },
+  {
+    "id": "dither-dissolve",
+    "name": "Dither Dissolve",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Caller scenes exchange beneath a deterministic ordered dither cover.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "presence",
+      "pixel-swap"
+    ],
+    "reference": "https://remocn.dev/docs/transitions/dither-dissolve",
+    "landing": "Optional process comparison in the playground; skip the main reading flow.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Remocn cover envelope, hidden scene exchange and increasing dither texture size.",
+    "status": "new"
+  },
+  {
+    "id": "portal-field",
+    "name": "Portal Field",
+    "category": "Backgrounds",
+    "variants": [
+      "balanced",
+      "warm",
+      "cool"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen",
+      "fallback",
+      "lost"
+    ],
+    "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
+    "usage": [
+      "Compose real content as children; keep essential controls above the decorative field.",
+      "Choose balanced, warm or cool Cojeev accents and keep a visible pause control for continuous movement."
+    ],
+    "accessibility": [
+      "The canvas and static SVG are decorative and hidden from assistive technology; children retain native semantics.",
+      "Reduced motion, shared motion/flow off, hidden tabs and offscreen stages stop animation. Local pointer response never captures the native cursor or touch scroll.",
+      "A deterministic static organic halo remains when WebGL is unavailable or lost."
+    ],
+    "related": [
+      "magic-rings",
+      "contour-field",
+      "pigment-field"
+    ],
+    "reference": "https://threeui.com/backgrounds/portal-field",
+    "landing": "Optional single hero or final invitation backdrop at low intensity; skip if another ambient field already occupies that scene.",
+    "notes": "Original annular distance shader with analytic domain warp, narrow luminous core, broad fringe and a quiet inner wash. No upstream authentication UI, external font or dependency copied.",
+    "observation": "The supplied portal-field.html uses warped arc signed distance, exponential core/fringe falloff, pointer offset and a low-alpha wash. Existing MagicRings draws crisp expanding circular arcs; ContourField renders topographic bands.",
+    "status": "new",
+    "api": [
+      {
+        "name": "PortalFieldProps",
+        "props": [
+          {
+            "name": "children",
+            "type": "React.ReactNode",
+            "default": "undefined",
+            "description": "Real caller content placed above the decorative artwork."
+          },
+          {
+            "name": "tone",
+            "type": "\"balanced\" | \"warm\" | \"cool\"",
+            "default": "\"balanced\"",
+            "description": "Pairs existing theme-aware Cojeev accent colors."
+          },
+          {
+            "name": "speed",
+            "type": "number",
+            "default": "0.7",
+            "description": "Relative animation pace, bounded to 0–3. Zero is still."
+          },
+          {
+            "name": "intensity",
+            "type": "number",
+            "default": "1",
+            "description": "Halo color strength, bounded to 0–2."
+          },
+          {
+            "name": "distortion",
+            "type": "number",
+            "default": "0.7",
+            "description": "Organic contour/domain warp, bounded to 0–1.5."
+          },
+          {
+            "name": "interactive",
+            "type": "boolean",
+            "default": "true",
+            "description": "Enable small local pointer parallax while moving; touch keeps scrolling."
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "default": "false",
+            "description": "Stop optional movement; readable content and a still artwork remain."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"default\" | \"lg\"",
+            "default": "\"default\"",
+            "description": "Stage or heading scale; all sizes remain responsive."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "default": "undefined",
+            "description": "Additional root class names. Native div attributes are also accepted."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "article-headings",
+    "name": "Article Headings",
+    "category": "Typography",
+    "variants": [
+      "decode",
+      "deliberate"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "decoding",
+      "complete",
+      "still",
+      "offscreen"
+    ],
+    "description": "Semantic article headings resolve through a brief, grapheme-safe noise frontier.",
+    "usage": [
+      "Supply stable unique item ids, full titles and optional metadata or hrefs; choose the correct heading level for the surrounding page.",
+      "Change replayKey to deliberately decode again. Pausing or leaving view restores complete text and cancels the current sequence.",
+      "Use on a compact editorial list; duration and total stagger are bounded, and large titles/lists retain readable static text."
+    ],
+    "accessibility": [
+      "Actual complete heading text remains in the accessibility tree throughout; decorative changing glyphs are aria-hidden and never announced.",
+      "Each glyph reserves its true footprint so noise does not move the heading, metadata or neighboring content.",
+      "Reduced motion, shared motion/flow off and hidden/offscreen stages keep exact still headings. Optional links remain keyboard accessible with visible focus."
+    ],
+    "related": [
+      "text-reveal",
+      "word-relay",
+      "writing-caret"
+    ],
+    "reference": "https://threeui.com/text-animation/article-headings",
+    "landing": "Optional editorial or field-notes section near the bottom of the landing page; use once on entry, keep the main hero to the chosen headline effect.",
+    "notes": "Original deterministic noise/frontier implementation over grapheme slots. It does not mutate semantic heading text like the upstream text-node walker. Replays are explicit and cancellations settle readable content.",
+    "observation": "ArticleHeadings.tsx composes numbered semantic h2 rows. articleHeadingDecode.ts reveals a left-to-right eased prefix, then a bounded scramble band and probabilistic noisy tail; it restores original nodes on cleanup. TextReveal has entrance motion but no decode noise/frontier.",
+    "status": "new",
+    "api": [
+      {
+        "name": "ArticleHeadingsProps",
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly ArticleHeadingItem[]",
+            "default": "required",
+            "description": "Each item: { id: string; title: string; meta?: string; href?: string }. Ids must be unique and stable."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "default": "\"Field notes\"",
+            "description": "Section eyebrow shown with the entry count."
+          },
+          {
+            "name": "headingLevel",
+            "type": "2 | 3 | 4",
+            "default": "2",
+            "description": "Semantic heading level for each article title."
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "default": "700",
+            "description": "Decode duration in milliseconds, bounded to 100–3000."
+          },
+          {
+            "name": "stagger",
+            "type": "number",
+            "default": "140",
+            "description": "Row delay in milliseconds; total stagger is compressed to at most 1200ms."
+          },
+          {
+            "name": "scrambleLength",
+            "type": "number",
+            "default": "10",
+            "description": "Maximum noisy frontier width in graphemes, bounded to 0–30."
+          },
+          {
+            "name": "preserveChance",
+            "type": "number",
+            "default": "0.25",
+            "description": "Fraction of original graphemes retained inside the noise band, bounded to 0–1."
+          },
+          {
+            "name": "tailChance",
+            "type": "number",
+            "default": "0.12",
+            "description": "Fraction of tail graphemes replaced with decorative symbols, bounded to 0–1."
+          },
+          {
+            "name": "replayKey",
+            "type": "string | number",
+            "default": "0",
+            "description": "Changing this value explicitly restarts the sequence when motion is allowed."
+          },
+          {
+            "name": "onDecodeComplete",
+            "type": "() => void",
+            "default": "undefined",
+            "description": "Called after the visible active sequence finishes, not after cancellation or a quiet-state fallback."
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "default": "false",
+            "description": "Stop optional movement; readable content and a still artwork remain."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"default\" | \"lg\"",
+            "default": "\"default\"",
+            "description": "Stage or heading scale; all sizes remain responsive."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "default": "undefined",
+            "description": "Additional root class names. Native div attributes are also accepted."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "motion-drawer",
+    "name": "Motion Drawer",
+    "category": "Layout",
+    "variants": [
+      "start",
+      "end"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "sheet",
+      "drawer"
+    ],
+    "reference": "https://www.ui-layouts.com/components/motion-drawer",
+    "landing": "Useful for mobile library navigation.",
+    "notes": "Compose existing Sheet modal mechanics; adds handle-only drag dismissal and trigger travel.",
+    "observation": "A navigation drawer slides from its edge, tracks drag and moves its trigger.",
+    "status": "new"
+  },
+  {
+    "id": "linear-modal",
+    "name": "Linear Modal",
+    "category": "Layout",
+    "variants": [
+      "card",
+      "compact"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "dialog",
+      "card"
+    ],
+    "reference": "https://www.ui-layouts.com/components/linear-modal",
+    "landing": "Useful for component detail stories; keep primary navigation separate.",
+    "notes": "Composes Radix dialog focus mechanics with Motion shared-layout surfaces; existing Dialog alone has no card-to-dialog continuity.",
+    "observation": "The trigger, title and image share layout IDs with an expanding portal detail card.",
+    "status": "new"
+  },
+  {
+    "id": "image-masking",
+    "name": "Image Masking",
+    "category": "Creative",
+    "variants": [
+      "mask",
+      "clip"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "shape",
+      "presence"
+    ],
+    "reference": "https://www.ui-layouts.com/components/image-masking",
+    "landing": "Use one restrained masked brand image beside the narrative.",
+    "notes": "One semantic image API covers both masking references; existing Shape is decorative and Presence is a lifecycle reveal.",
+    "observation": "CSS mask-image and SVG objectBoundingBox clip paths frame images with hover scale.",
+    "status": "new"
+  },
+  {
+    "id": "clip-path",
+    "name": "Clip Path",
+    "category": "Creative",
+    "variants": [
+      "clip"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "Caller images take the outline of a Cojeev signature silhouette.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "image-masking"
+    ],
+    "reference": "https://www.ui-layouts.com/components/clip-path",
+    "landing": "Use the same Image Masking family; do not stack competing image frames.",
+    "notes": "Consolidated into ImageMasking method=\"clip\"; no duplicate alias component.",
+    "observation": "SVG clip paths use normalized coordinates for responsive media framing.",
+    "status": "reused",
+    "existingId": "image-masking"
+  },
+  {
+    "id": "buy-me-coffee",
+    "name": "Buy Me Coffee",
+    "category": "Actions",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "A support poster reveals an inviting cup illustration and a real caller destination.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "hero-button",
+      "card"
+    ],
+    "reference": "https://www.ui-layouts.com/components/buy-me-coffee",
+    "landing": "Optional footer support link only when a real destination exists.",
+    "notes": "Original support interaction with explicit native href; no payment processing or simulated transaction.",
+    "observation": "An anchor transforms a typography poster into a larger cup on hover.",
+    "status": "new"
+  },
+  {
+    "id": "swapy",
+    "name": "Swapy",
+    "category": "Layout",
+    "variants": [
+      "grid",
+      "list"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "active",
+      "still"
+    ],
+    "description": "Cards swap positions through a drag handle or keyboard controls and retain their order in React state.",
+    "usage": "Supply caller content and preserve the native labels and example controls.",
+    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "related": [
+      "card",
+      "grid"
+    ],
+    "reference": "https://www.ui-layouts.com/components/swapy",
+    "landing": "Optional arrange-your-workspace playground; avoid reorderable essential landing content.",
+    "notes": "Original state-driven swap behavior without the external Swapy package; caller receives every order change.",
+    "observation": "Swapy binds slots/items and updates a slot-item mapping on a drag swap.",
+    "status": "new"
+  }
+]

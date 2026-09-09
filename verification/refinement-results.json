@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-09-08T11:10:33.680231+00:00",
+  "catalog": {
+    "base": 66,
+    "additions": 24,
+    "uiEntries": 90,
+    "registryItems": 91,
+    "icons": 136,
+    "shapes": 36
+  },
+  "sourceTreeSHA256": "b4041a8c93995e60743e260cdcaefd937ee7fe024691e967b05ddc8193f4a0ca",
+  "localChecks": {
+    "lint": "PASS",
+    "tests": {
+      "pass": 33,
+      "fail": 0
+    },
+    "build": {
+      "status": "PASS",
+      "exitCode": 0,
+      "pages": 97,
+      "compiler": "Turbopack",
+      "buildFilesystemCache": false
+    },
+    "examples": {
+      "status": "PASS",
+      "defaults": 90,
+      "copiedSnippets": 353,
+      "typeScriptDiagnostics": 0
+    },
+    "docs": {
+      "status": "PASS",
+      "initialEntries": 21,
+      "initialLayouts": 84,
+      "finalIconEntries": 3,
+      "finalIconLayouts": 12,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "widths": [
+        360,
+        1440
+      ]
+    },
+    "marketing": {
+      "status": "PASS",
+      "chromiumInitialContexts": 6,
+      "chromiumFinalContexts": 2,
+      "webkitDevelopmentContexts": 4,
+      "physicalDevices": false
+    },
+    "mobileWebkit": {
+      "status": "PASS",
+      "cases": 7,
+      "homeConfirmationReason": "Whitespace-tolerant heading assertion; no application change"
+    },
+    "themeAndScroll": {
+      "status": "PASS",
+      "contexts": 8,
+      "engines": [
+        "Chromium",
+        "WebKit"
+      ]
+    },
+    "controls": {
+      "status": "PASS",
+      "functionalContexts": 4,
+      "motionContexts": 4
+    },
+    "menus": {
+      "status": "PASS",
+      "contexts": 2
+    },
+    "iconFeedback": {
+      "status": "PASS",
+      "contexts": 4,
+      "engines": [
+        "Chromium",
+        "WebKit"
+      ]
+    }
+  },
+  "localConsumer": {
+    "status": "PASS",
+    "entryCount": 90,
+    "loadedModuleCount": 90,
+    "renderedComponentCount": 19,
+    "renderedComponents": [
+      "area-chart",
+      "bar-chart",
+      "line-chart",
+      "pie-chart",
+      "radar-chart",
+      "radial-chart",
+      "agent-state",
+      "shape-scene",
+      "button",
+      "badge",
+      "card",
+      "accordion",
+      "dialog",
+      "code-block",
+      "text-reveal",
+      "animated-number",
+      "ambient-background",
+      "marquee",
+      "multi-select"
+    ],
+    "checks": {
+      "registry-build": "PASS",
+      "consumer-npm-install": "PASS",
+      "shadcn-install-all": "PASS",
+      "shadcn-refresh-all": "PASS",
+      "consumer-build": "PASS",
+      "dependencyClosure": "PASS",
+      "optionalSceneExcludedFromBase": "PASS",
+      "optionalSceneDependencies": "PASS",
+      "verbatimStylesAndLayers": "PASS",
+      "optionalSceneRuntimeChunk": "PASS",
+      "selectedSpecimenInteractions": "PASS",
+      "consumerRuntimeAndTableCascade": "PASS"
+    },
+    "runtimeErrors": [],
+    "resumedExistingFreshConsumer": true,
+    "refreshedThroughRegistryCLI": true
+  },
+  "publication": {
+    "status": "HELD_FOR_OWNER_REVIEW",
+    "site": "https://luv-jeri.github.io/cojeev-ui/",
+    "repository": "https://github.com/luv-jeri/cojeev-ui",
+    "cancelledRun": 34219556763,
+    "deployedByCancelledRun": false,
+    "sourceSnapshot": "6c16a3bfd0bbe32bd874650ab22c2640936999ab",
+    "publicConsumer": "STOPPED_NOT_VERIFIED"
+  },
+  "limits": [
+    "Browser engines and mobile emulation, not physical iPhone testing.",
+    "Consumer imports all entries and renders 19 selected specimens.",
+    "Native select popups remain platform-owned."
+  ]
+}

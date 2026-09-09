@@ -11,7 +11,7 @@ import { preview as startPreview } from "vite";
 const args = Object.fromEntries(process.argv.slice(2).map(argument => { const [name, ...value] = argument.replace(/^--/, "").split("="); return [name, value.join("=") || "true"]; }));
 const staticServer = args.serve && !args.url ? await startPreview({
   configFile: false,
-  base: "/sahajiv-ui/",
+  base: "/cojeev-ui/",
   build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
@@ -19,14 +19,14 @@ async function closeStaticServer() {
   if (staticServer?.httpServer.listening) await new Promise((resolve, reject) => staticServer.httpServer.close(error => error ? reject(error) : resolve()));
 }
 const address = staticServer?.httpServer.address();
-const base = (args.url || `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/sahajiv-ui`).replace(/\/$/, "");
+const base = (args.url || `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/cojeev-ui`).replace(/\/$/, "");
 const output = path.resolve(args.output || `output/playwright/mobile-webkit-${Date.now()}`);
 fs.mkdirSync(output, { recursive: true });
 function revision() {
   if (!args.checkout) return null;
   const checkout = path.resolve(args.checkout);
   const head = execFileSync("git", ["-C", checkout, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-  const diff = execFileSync("git", ["-C", checkout, "diff", "--", "app", "components", "registry/sahajiv"], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+  const diff = execFileSync("git", ["-C", checkout, "diff", "--", "app", "components", "registry/cojeev"], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
   return { head, dirty: !!diff, dirtyDiffSHA256: createHash("sha256").update(diff).digest("hex") };
 }
 const report = { startedAt: new Date().toISOString(), url: base, revisionStart: revision(), scope: { engine: "WebKit", viewport: { width: 390, height: 844 }, mobile: true, touch: true, physicalDevice: false }, cases: [] };
@@ -109,10 +109,12 @@ async function layout(page) {
 const cases = {
   "home-and-getting-started": async page => {
     await go(page, "/");
-    await page.getByRole("heading", { name: "Room for the things that matter." }).waitFor();
+    await page.getByRole("heading", { level: 1, name: /Make it\s*feel\s*alive\s*\./ }).waitFor();
     const homeLayout = await layout(page);
     await page.screenshot({ path: path.join(output, "home-390.png"), fullPage: true });
-    await page.locator(".home-nav").getByRole("link", { name: "Explore components" }).tap();
+    await page.locator(".studio-hero").getByRole("link", { name: "Explore the library", exact: true }).tap();
+    await page.waitForURL(/\/docs\/?$/);
+    await page.getByRole("navigation", { name: "Start exploring" }).getByRole("link", { name: "Explore components" }).tap();
     await page.waitForURL(/\/docs\/button\/?$/);
     await page.locator('[data-slot="tabs-list"][data-flow-owned]').first().waitFor({ state: "attached" });
     await page.getByRole("button", { name: "Browse", exact: true }).tap();
@@ -121,7 +123,7 @@ const cases = {
     await page.waitForURL(/\/docs\/?$/);
     await page.getByRole("heading", { name: "Make it yours.", exact: true }).waitFor();
     assert((await page.locator('[data-slot="code-block"] code').first().textContent()).includes("shadcn"));
-    assert.equal(await page.getByRole("link", { name: "Source on GitHub" }).getAttribute("href"), "https://github.com/luv-jeri/sahajiv-ui");
+    assert.equal(await page.getByRole("link", { name: "Source on GitHub" }).getAttribute("href"), "https://github.com/luv-jeri/cojeev-ui");
     const navigationLayout = await endLayoutObservation(page);
     const startedLayout = await layout(page);
     await page.screenshot({ path: path.join(output, "getting-started-390.png"), fullPage: true });
@@ -153,7 +155,7 @@ const cases = {
   },
   "motion-settings": async page => {
     await example(page, "button");
-    await page.locator(".docs-mobile").getByRole("button", { name: "Motion settings", exact: true }).tap();
+    await page.locator('[data-slot="preview"]').first().getByRole("button", { name: "Motion settings", exact: true }).tap();
     const dialog = page.getByRole("dialog", { name: "Make it feel right" });
     await dialog.waitFor();
     const controls = dialog.locator('[data-slot="motion-controls"]');
@@ -180,17 +182,18 @@ const cases = {
   },
   "multi-select": async page => {
     const root = await example(page, "multi-select");
-    const trigger = root.getByRole("button", { name: "Topics", exact: true });
+    const trigger = root.getByRole("button", { name: "Shared workspaces", exact: true });
     await trigger.tap();
-    const search = page.getByRole("searchbox", { name: "Search Topics", exact: true });
-    await search.fill("research");
-    const option = page.getByRole("checkbox", { name: "Research", exact: true });
+    const search = page.getByRole("searchbox", { name: "Search Shared workspaces", exact: true });
+    await search.fill("Workspace 24");
+    const option = page.getByRole("checkbox", { name: "Workspace 24", exact: true });
     await option.tap(); await attribute(option, "aria-checked", "true");
     await page.screenshot({ path: path.join(output, "multi-select-open-390.png") });
     await page.keyboard.press("Escape", { delay: 60 });
     await search.waitFor({ state: "hidden" });
     assert(await trigger.evaluate(element => element === document.activeElement));
-    await checkText(root, "Following: Design, Engineering, Research.");
+    await checkText(trigger, "2 selected");
+    await root.getByRole("list", { name: "Selected Shared workspaces", exact: true }).getByText("Workspace 24", { exact: true }).waitFor();
     return { detail: "Touch open/search/select; Escape dismisses and restores trigger focus", layout: await layout(page) };
   },
   "shape-scene": async page => {
@@ -205,11 +208,14 @@ const cases = {
       const unique = new Set(); for (let offset = 0; offset < pixels.data.length; offset += 64) unique.add(pixels.data.subarray(offset, offset + 4).toString("hex"));
       colors = unique.size; assert(colors > 40, "WebGL sculpture must have real shaded pixels");
     } else {
-      assert.equal(await scene.locator('[data-slot="shape-scene-fallback"] [data-slot="shape"]').count(), 4);
-      await checkText(scene, "3D is unavailable. Showing the static composition.");
+      assert.equal(await scene.locator('[data-slot="shape-scene-fallback"] [data-slot="shape"]').count(), 6);
+      assert.equal(await scene.getAttribute("aria-description"), "3D is unavailable. Showing the static composition.");
     }
-    await root.getByRole("button", { name: "Pause sculpture", exact: true }).tap();
-    await root.getByRole("button", { name: "Animate sculpture", exact: true }).waitFor();
+    const initialShapes = await scene.locator('[data-slot="shape-scene-fallback"]').innerHTML();
+    await root.getByRole("button", { name: "Change the shapes", exact: true }).tap();
+    assert.notEqual(await scene.locator('[data-slot="shape-scene-fallback"]').innerHTML(), initialShapes);
+    await scene.scrollIntoViewIfNeeded();
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.waitForTimeout(250);
     const draws = await page.evaluate(() => window.__webkitSceneDraws);
     const canHover = await page.evaluate(() => matchMedia("(any-hover: hover) and (any-pointer: fine)").matches);
@@ -220,9 +226,9 @@ const cases = {
       await scene.dispatchEvent("pointermove", { pointerType: "mouse", clientX: box.x + box.width - 1, clientY: box.y + 1 });
     }
     await page.waitForTimeout(300);
-    assert.equal(await page.evaluate(() => window.__webkitSceneDraws), draws, "Paused sculpture must stop WebGL draws");
+    assert.equal(await page.evaluate(() => window.__webkitSceneDraws), draws, "Quiet sculpture must stop WebGL draws");
     await scene.screenshot({ path: path.join(output, "shape-scene-390.png") });
-    return { detail: "Supported 3D output, touch pause and compatibility mouse rejection checked", renderer, shadedColors: colors, canHover, pausedDrawCount: draws, layout: await layout(page) };
+    return { detail: "Supported 3D output, touch composition change, quiet rendering and compatibility mouse rejection checked", renderer, shadedColors: colors, canHover, pausedDrawCount: draws, layout: await layout(page) };
   },
   marquee: async page => {
     const root = await example(page, "marquee");
@@ -245,7 +251,7 @@ try {
     if (args.ids && !args.ids.split(",").includes(id)) continue;
     const context = await browser.newContext({ ...devices["iPhone 13"], viewport: { width: 390, height: 844 }, colorScheme: "light", reducedMotion: "no-preference" });
     await context.addInitScript(() => {
-      localStorage.setItem("sahajiv-docs-theme", "light");
+      localStorage.setItem("cojeev-docs-theme", "light");
       window.__webkitSceneDraws = 0;
       window.__webkitInput = { pointerTypes: [], touchStarts: 0 };
       addEventListener("pointerdown", event => { if (!window.__webkitInput.pointerTypes.includes(event.pointerType)) window.__webkitInput.pointerTypes.push(event.pointerType); }, true);

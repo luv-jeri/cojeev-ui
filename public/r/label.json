@@ -7,23 +7,23 @@
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/sahajiv-ui/r/sahajiv.json"
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
   ],
   "files": [
     {
-      "path": "registry/sahajiv/ui/label.tsx",
+      "path": "registry/cojeev/ui/label.tsx",
       "content": "\"use client\"\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst LabelVariants=cva(\"v-label [font-size:var(--fs-lead)] [font-weight:600] [line-height:1.2] [box-shadow:none] [border:0] [background:none]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\",\"sm\":\"-sm [font-size:var(--fs-control)]\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type LabelProps=React.ComponentProps<\"label\"> & VariantProps<typeof LabelVariants> & { as?:React.ElementType }\nexport function Label({as:Tag=\"label\",className,variant,size,...props}:LabelProps){return <Tag data-slot=\"label\" data-part=\"root\" className={cn(LabelVariants({variant,size}),className)} {...props}/>}\n\nconst StatsVariants=cva(\"v-stats [display:flex] [gap:var(--s-5)_var(--s-5)] [flex-wrap:wrap] [margin-top:var(--s-4)] [max-width:100%]\",{variants:{variant:{\"default\":\"\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type StatsProps=React.ComponentProps<\"div\"> & VariantProps<typeof StatsVariants> & { as?:React.ElementType }\nexport function Stats({as:Tag=\"div\",className,variant,size,...props}:StatsProps){return <Tag data-slot=\"label-stats\" data-part=\"stats\" className={cn(StatsVariants({variant,size}),className)} {...props}/>}\n\nconst StatVariants=cva(\"v-stat [display:grid] [gap:4px] [min-width:0]\",{variants:{variant:{\"default\":\"\",\"ul\":\"-ul [padding-bottom:8px] [border-bottom:2px_solid_var(--wm,var(--v-text))]\"},size:{\"default\":\"\"}},defaultVariants:{variant:\"default\",size:\"default\"}})\nexport type StatProps=React.ComponentProps<\"div\"> & VariantProps<typeof StatVariants> & { as?:React.ElementType }\nexport function Stat({as:Tag=\"div\",className,variant,size,...props}:StatProps){return <Tag data-slot=\"label-stat\" data-part=\"stat\" className={cn(StatVariants({variant,size}),className)} {...props}/>}\n",
       "type": "registry:ui"
     },
     {
-      "path": "registry/sahajiv/styles/label.css",
-      "content": "@layer sahajiv-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-stat[data-slot].-ul{padding-bottom:8px;border-bottom:2px solid var(--wm,var(--v-text))}\n.v-label[data-slot].-sm{font-size:var(--fs-control)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-stats[data-slot]+.v-bars{margin-top:22px}\n.v-stats[data-slot]+.v-line{margin-top:22px}\n.v-stat[data-slot] span{white-space:normal}\n.v-stat[data-slot] b{font-size:var(--fs-body);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}\n.v-stat[data-slot] b .u{font-weight:400;margin-left:3px}\n.v-stat[data-slot] span{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground)}\n.v-stat[data-slot] b{font-size:16px}\n.v-stat[data-slot].-ul.-dashed{border-bottom-style:dashed}\n@media (max-width:640px){.v-stats[data-slot]{gap:var(--s-4)}}\n.v-label[data-slot]{box-shadow:none;border:0}\n.v-stat[data-slot]{box-shadow:none;border:0}\n.v-stats[data-slot]{box-shadow:none;border:0}\n\n\n}\n",
+      "path": "registry/cojeev/styles/label.css",
+      "content": "@layer cojeev-states {\n/* Orthogonal authored class modifiers remain composable with CVA axes. */\n.v-stat[data-slot].-ul{padding-bottom:8px;border-bottom:2px solid var(--wm,var(--v-text))}\n.v-label[data-slot].-sm{font-size:var(--fs-control)}\n\n/* Authored contextual and pseudo-element rules, scoped to component-owned roots. */\n.v-stats[data-slot]+.v-bars{margin-top:22px}\n.v-stats[data-slot]+.v-line{margin-top:22px}\n.v-stat[data-slot] span{white-space:normal}\n.v-stat[data-slot] b{font-size:var(--fs-body);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}\n.v-stat[data-slot] b .u{font-weight:400;margin-left:3px}\n.v-stat[data-slot] span{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground)}\n.v-stat[data-slot] b{font-size:16px}\n.v-stat[data-slot].-ul.-dashed{border-bottom-style:dashed}\n@media (max-width:640px){.v-stats[data-slot]{gap:var(--s-4)}}\n.v-label[data-slot]{box-shadow:none;border:0}\n.v-stat[data-slot]{box-shadow:none;border:0}\n.v-stats[data-slot]{box-shadow:none;border:0}\n\n\n}\n",
       "type": "registry:file",
-      "target": "styles/sahajiv/label.css"
+      "target": "styles/cojeev/label.css"
     }
   ],
   "css": {
-    "@import \"@/styles/sahajiv/label.css\"": {}
+    "@import \"@/styles/cojeev/label.css\"": {}
   },
   "meta": {
     "source": {

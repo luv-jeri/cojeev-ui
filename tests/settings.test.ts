@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import * as settings from '../registry/sahajiv/motion/settings'
+import * as settings from '../registry/cojeev/motion/settings'
 
 test('shared Adjuster settings migrate, persist three exact payloads, synchronize without hosts, and reset independently',()=>{
  class MemoryStorage{values=new Map<string,string>();getItem(key:string){return this.values.get(key)??null}setItem(key:string,value:string){this.values.set(key,value)}removeItem(key:string){this.values.delete(key)}clear(){this.values.clear()}}

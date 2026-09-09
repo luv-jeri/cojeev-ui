@@ -2,13 +2,15 @@
 
 import * as React from "react";
 import type { ExampleProps } from "./types";
-import { AmbientBackground, type AmbientBackgroundProps } from "@/registry/sahajiv/ui/ambient-background";
-import { Marquee, type MarqueeDirection, type MarqueeSpeed } from "@/registry/sahajiv/ui/marquee";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select";
-import { Shape } from "@/registry/sahajiv/ui/shape";
-import { Title, BodySecondary, Meta } from "@/registry/sahajiv/ui/typography";
+import { AmbientBackground, type AmbientBackgroundProps } from "@/registry/cojeev/ui/ambient-background";
+import { Marquee, type MarqueeDirection, type MarqueeSpeed } from "@/registry/cojeev/ui/marquee";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Label } from "@/registry/cojeev/ui/label";
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select";
+import { Shape } from "@/registry/cojeev/ui/shape";
+import { ScrollArea } from "@/registry/cojeev/ui/scroll-area";
+import { Slider } from "@/registry/cojeev/ui/slider";
+import { Title, BodySecondary, Meta } from "@/registry/cojeev/ui/typography";
 
 export function AmbientBackgroundExample({ variant: initialVariant = "default" }: ExampleProps) {
   const [variant, setVariant] = React.useState<NonNullable<AmbientBackgroundProps["variant"]>>(initialVariant === "default" ? "drift" : initialVariant as NonNullable<AmbientBackgroundProps["variant"]>);
@@ -40,7 +42,7 @@ export function AmbientBackgroundExample({ variant: initialVariant = "default" }
 
 
 
-export function MarqueeExample() {
+function CardMarqueeExample() {
   const topics = [
     { title: "Make something useful", note: "Ideas into everyday tools", shape: "star-8", color: "var(--v-blue)" },
     { title: "Leave room to explore", note: "Small experiments welcome", shape: "blob-4", color: "var(--v-olive)" },
@@ -79,4 +81,34 @@ export function MarqueeExample() {
       </Marquee>
     </div>
   );
+}
+
+function WordMarqueeExample({ variant }: { variant: string }) {
+  const scroll = React.useRef<HTMLDivElement>(null);
+  const [direction, setDirection] = React.useState<MarqueeDirection>("left");
+  const [depth, setDepth] = React.useState(.65);
+  const words = ["A little wonder", "Room to grow", "Ideas in motion"];
+  const isDepth = variant === "depth", followsScroll = variant === "scroll";
+  return <div className="grid min-w-0 gap-6 w-full">
+    <div className="flex flex-wrap gap-5 items-center">
+      <Button variant="secondary" onClick={() => setDirection(value => value === "left" ? "right" : "left")}>Reverse direction</Button>
+      {isDepth && <div className="grid gap-3 flex-1 min-w-40"><Label>Depth · {Math.round(depth * 100)}%</Label><Slider aria-label="Marquee depth" value={[depth]} onValueChange={([value]) => setDepth(value)} min={0} max={1} step={.05} /></div>}
+    </div>
+    <Marquee label={isDepth ? "Words with a little perspective" : followsScroll ? "A pace that follows you" : "Drawn in ink"} direction={direction} pixelsPerSecond={32} presentation={isDepth ? "depth" : "flat"} depth={depth} respondToScroll={followsScroll} scrollTarget={scroll}>
+      {words.map((word, index) => <div key={word} className="flex items-center gap-6 py-3"><Title as="span" style={{ fontSize:"clamp(32px,5vw,60px)", whiteSpace:"nowrap", ...(variant === "outline" ? { WebkitTextStroke:"1.2px var(--v-text)", color:"transparent" } : {}) }}>{word}</Title><Shape name={index === 1 ? "clover-soft" : "petal-7"} className="size-10 shrink-0" style={{ "--c":`var(--v-${index === 0 ? "pink" : index === 1 ? "olive" : "blue"})` } as React.CSSProperties} /></div>)}
+    </Marquee>
+    {followsScroll && <>
+      <Marquee label="A second point of view" direction={direction === "left" ? "right" : "left"} pixelsPerSecond={24} respondToScroll scrollTarget={scroll}>
+        {["Make space", "Take your time", "Keep exploring"].map(word => <Title key={word} as="span" style={{ fontSize:32 }}>{word}</Title>)}
+      </Marquee>
+      <ScrollArea style={{ height:220, borderRadius:24, background:"var(--v-beige)" }} viewportProps={{ ref:scroll, "aria-label":"Scroll to change the rhythm", tabIndex:0 }}>
+        <div className="grid gap-12 p-6"><Meta>Scroll here to change the rhythm</Meta>{["Make a little space.","Find a direction.","Let the idea breathe.","Return with something new."].map(text => <div key={text} className="grid gap-3 py-4"><Title as="h4">{text}</Title><BodySecondary>Small steps can take a thought somewhere unexpected.</BodySecondary></div>)}</div>
+      </ScrollArea>
+    </>}
+    <BodySecondary>{followsScroll ? "Scroll the reading area in either direction. Both rows ease into the new rhythm without moving the page for you." : "Hover to hold the words. Pause keeps their place; quiet motion turns the ribbon into a readable list."}</BodySecondary>
+  </div>;
+}
+
+export function MarqueeExample({ variant = "default" }: ExampleProps) {
+  return ["depth", "scroll", "outline"].includes(variant) ? <WordMarqueeExample key={variant} variant={variant} /> : <CardMarqueeExample />;
 }

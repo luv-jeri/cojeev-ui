@@ -1,0 +1,31 @@
+/* Cojeev authored subparts, state precedence, and irreducible shapes; scoped to this registry item. */
+.v-tip:where([data-slot="tooltip"], [data-slot^="tooltip-"]) {
+  z-index: var(--z-tooltip);
+  background: var(--v-ink);
+  color: var(--v-on-ink);
+  font-size: 12px;
+  line-height: 1.3;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity var(--t-micro);
+  max-width: min(260px, calc(100vw - 24px));
+  overflow-wrap: anywhere;
+}
+.v-tip:where([data-slot="tooltip"], [data-slot^="tooltip-"]).-show {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="tooltip"],
+  [data-slot^="tooltip-"],
+  [data-slot="tooltip"]::before,
+  [data-slot="tooltip"]::after,
+  [data-slot^="tooltip-"]::before,
+  [data-slot^="tooltip-"]::after {
+    animation-duration: 0s;
+    animation-iteration-count: 1;
+    transition-duration: 0s;
+    scroll-behavior: auto;
+  }
+}

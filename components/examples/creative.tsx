@@ -1,15 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { ShapeScene } from "@/registry/sahajiv/ui/shape-scene"
-import { Button } from "@/registry/sahajiv/ui/button"
-import { Label } from "@/registry/sahajiv/ui/label"
-import { NativeSelect, NativeSelectOption } from "@/registry/sahajiv/ui/native-select"
-import { Meta } from "@/registry/sahajiv/ui/typography"
+import { ShapeScene } from "@/registry/cojeev/ui/shape-scene"
+import { Button } from "@/registry/cojeev/ui/button"
+import { Label } from "@/registry/cojeev/ui/label"
+import { NativeSelect, NativeSelectOption } from "@/registry/cojeev/ui/native-select"
+import { Meta } from "@/registry/cojeev/ui/typography"
 
 export function ShapeSceneExample() {
   const [animate, setAnimate] = React.useState(true)
-  const [palette, setPalette] = React.useState<"sahajiv" | "warm" | "cool">("sahajiv")
+  const [palette, setPalette] = React.useState<"cojeev" | "warm" | "cool">("cojeev")
   const id = React.useId()
   return (
     <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
@@ -18,7 +18,7 @@ export function ShapeSceneExample() {
         <Button size="sm" variant="secondary" aria-pressed={!animate} onClick={() => setAnimate(value => !value)}>{animate ? "Pause sculpture" : "Animate sculpture"}</Button>
         <Label htmlFor={id}>Palette</Label>
         <NativeSelect id={id} value={palette} onChange={event => setPalette(event.target.value as typeof palette)}>
-          <NativeSelectOption value="sahajiv">SahaJiv</NativeSelectOption>
+          <NativeSelectOption value="cojeev">Cojeev</NativeSelectOption>
           <NativeSelectOption value="warm">Warm</NativeSelectOption>
           <NativeSelectOption value="cool">Cool</NativeSelectOption>
         </NativeSelect>

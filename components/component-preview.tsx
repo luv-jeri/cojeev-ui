@@ -1,22 +1,26 @@
 "use client";
 import * as React from "react";
-import { Preview } from "@/registry/sahajiv/ui/preview";
-import { Label } from "@/registry/sahajiv/ui/label";
-import { NativeSelect } from "@/registry/sahajiv/ui/native-select";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { Meta } from "@/registry/sahajiv/ui/typography";
+import { Preview } from "@/registry/cojeev/ui/preview";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/registry/cojeev/ui/select";
+import { Button } from "@/registry/cojeev/ui/button";
+import { Meta } from "@/registry/cojeev/ui/typography";
+import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 import { DocsMotion } from "@/components/docs-motion";
 import { examples } from "@/components/examples";
+import { ComponentHandoff } from "@/components/component-handoff";
 export function ComponentPreview({
   id,
   variants,
   sizes,
   code,
+  handoffNotes,
 }: {
   id: string;
   variants: string[];
   sizes: string[];
   code: { source: string; name: string };
+  handoffNotes?: string;
 }) {
   const [variant, setVariant] = React.useState(variants[0] ?? "default");
   const [size, setSize] = React.useState(sizes[0] ?? "default");
@@ -26,37 +30,73 @@ export function ComponentPreview({
   const selectedCode = `${code.source}\n\nexport default function Demo() {\n  return (\n    <${code.name}${variant !== "default" ? ` variant="${variant}"` : ""}${size !== "default" ? ` size="${size}"` : ""} />\n  );\n}\n`;
   if (!Example)
     throw new Error(`No live documentation example registered for ${id}`);
-  return (
-    <div className="docs-playground">
-      <div className="docs-playground-controls">
+  const hasVariantControls = variants.length > 1 || sizes.length > 1;
+  const actions = (
+    <div className="docs-playground-actions">
+      <DocsMotion />
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => setRevision((value) => value + 1)}
+      >
+        Reset example
+      </Button>
+    </div>
+  );
+  const controls = hasVariantControls ? (
+    <div className="docs-playground-controls">
+      <div className="docs-variant-controls">
         {variants.length > 1 && (
           <div className="docs-control">
             <Label htmlFor={`${controlId}-variant`} size="sm">Variant</Label>
-            <NativeSelect id={`${controlId}-variant`} value={variant} onChange={(event) => setVariant(event.target.value)}>
-              {variants.map((value) => <option key={value} value={value}>{value.replaceAll("-", " ")}</option>)}
-            </NativeSelect>
+            <Select value={variant} onValueChange={setVariant}>
+              <SelectTrigger id={`${controlId}-variant`} className="docs-preview-select"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {variants.map(value => <SelectItem key={value} value={value} adornmentId={`variant:${value}`}>{value.replaceAll("-", " ")}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
         )}
         {sizes.length > 1 && (
           <div className="docs-control">
             <Label htmlFor={`${controlId}-size`} size="sm">Size</Label>
-            <NativeSelect id={`${controlId}-size`} value={size} onChange={(event) => setSize(event.target.value)}>
-              {sizes.map((value) => <option key={value} value={value}>{({ default: "Default", xs: "Extra small", sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" } as Record<string, string>)[value] ?? value}</option>)}
-            </NativeSelect>
+            <Select value={size} onValueChange={setSize}>
+              <SelectTrigger id={`${controlId}-size`} className="docs-preview-select"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {sizes.map(value => <SelectItem key={value} value={value} adornmentId={`size:${value}`}>
+                  {({ default: "Default", xs: "Extra small", sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" } as Record<string,string>)[value] ?? value}
+                </SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
         )}
-        <div className="docs-playground-actions">
-          <DocsMotion />
-          <Button size="sm" variant="ghost" onClick={() => setRevision((value) => value + 1)}>Reset example</Button>
-        </div>
       </div>
-      <Preview code={selectedCode}>
-        <div key={`${id}:${variant}:${size}:${revision}`} className="docs-specimen" data-example={id} data-variant={variant} data-size={size}>
+      {actions}
+    </div>
+  ) : undefined;
+  return (
+    <div className="docs-playground">
+      <Preview
+        code={selectedCode}
+        controls={controls}
+        actions={hasVariantControls ? undefined : actions}
+      >
+        <MotionPresence initial mode="wait">
+        <MotionSurface
+          preset="rise"
+          key={`${id}:${variant}:${size}:${revision}`}
+          className="docs-specimen"
+          data-example={id}
+          data-variant={variant}
+          data-size={size}
+        >
           <React.Suspense fallback={<Meta role="status">Loading preview…</Meta>}>
             <Example variant={variant} size={size} />
           </React.Suspense>
-        </div>
+        </MotionSurface>
+        </MotionPresence>
       </Preview>
+      {handoffNotes && <ComponentHandoff notes={handoffNotes} code={selectedCode} variant={variant} size={size} />}
     </div>
   );
 }

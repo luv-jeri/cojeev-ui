@@ -1,0 +1,15 @@
+.v-text-ribbon { position:relative; width:100%; min-width:0; color:var(--v-text); }
+.v-text-ribbon[data-shape="circle"] { max-inline-size:20rem; justify-self:center; }
+.v-text-ribbon[data-draggable="true"] { touch-action:pan-y; cursor:grab; user-select:none; border-radius:var(--r-md,16px); }
+.v-text-ribbon[data-dragging="true"] { cursor:grabbing; }
+.v-text-ribbon:focus-visible { outline:2px solid var(--v-text); outline-offset:6px; }
+.v-text-ribbon > svg { display:block; width:100%; height:auto; overflow:hidden; }
+.v-text-ribbon text { font:500 var(--ribbon-size,40px) var(--font-display); letter-spacing:-.015em; fill:currentColor; }
+.v-text-ribbon__sample { visibility:hidden; }
+.v-text-ribbon__guide { fill:none; stroke:var(--v-border); stroke-width:1; vector-effect:non-scaling-stroke; }
+.v-text-ribbon[data-tone="pink"] { color:var(--v-text); --ribbon-accent:var(--v-pink); }
+.v-text-ribbon[data-tone="olive"] { color:var(--v-text); --ribbon-accent:var(--v-olive); }
+.v-text-ribbon[data-tone="blue"] { color:var(--v-text); --ribbon-accent:var(--v-blue); }
+.v-text-ribbon[data-tone="yellow"] { color:var(--v-text); --ribbon-accent:var(--v-yellow); }
+.v-text-ribbon:not([data-tone="ink"]) .v-text-ribbon__guide { stroke:var(--ribbon-accent); stroke-width:18; stroke-linecap:round; opacity:.7; }
+.v-text-ribbon__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }

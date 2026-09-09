@@ -1,0 +1,81 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "contour-field",
+  "title": "Contour field",
+  "description": "Original topographic lines on the inherited paper surface, with a bounded GPU renderer.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/contour-field.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useLivingShader, type FieldMotionProps } from \"@/lib/cojeev/living-shader\";\n\nexport type ContourFieldProps = Omit<React.ComponentProps<\"div\">, \"children\" | \"ref\"> & FieldMotionProps;\n\n/** Quiet topographic lines on the inherited paper. Decorative, with a still fallback. */\nexport function ContourField({ speed = 1, intensity = 1, tone = \"cool\", paused = false, className, style, ...props }: ContourFieldProps) {\n  const { host: hostRef, canvas: canvasRef, status, tone: safeTone, intensity: safeIntensity, moving } = useLivingShader(\"contour\", { speed, intensity, tone, paused });\n  return (\n    <div {...props} ref={hostRef} data-slot=\"contour-field\" data-tone={safeTone} data-renderer={status} data-moving={moving ? \"true\" : \"false\"} className={cn(\"v-contour-field\", className)} style={{ ...style, \"--field-intensity\": safeIntensity } as React.CSSProperties} aria-hidden=\"true\" inert>\n      <span data-slot=\"field-fallback\" />\n      <canvas ref={canvasRef} data-slot=\"field-canvas\" aria-hidden=\"true\" />\n    </div>\n  );\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/contour-field.css",
+      "content": "@layer cojeev-states {\n.v-contour-field {\n  --field-a: var(--v-pink, #f5b8db);\n  --field-b: var(--v-blue, #b6caeb);\n  position: absolute;\n  inset: 0;\n  overflow: hidden;\n  border-radius: inherit;\n  pointer-events: none;\n  user-select: none;\n  isolation: isolate;\n  background: var(--v-paper, #fbf4e6);\n  contain: paint;\n}\n.v-contour-field[data-tone=\"warm\"] { --field-b: var(--v-yellow, #f5d867); }\n.v-contour-field[data-tone=\"cool\"] { --field-a: var(--v-blue, #b6caeb); --field-b: var(--v-olive, #9aab63); }\n.v-contour-field > [data-slot=\"field-fallback\"] {\n  position: absolute;\n  inset: -12%;\n  opacity: clamp(0, var(--field-intensity, 1), 1);\n  transform: rotate(-12deg);\n  background: repeating-radial-gradient(ellipse at 26% 38%, transparent 0 12px, color-mix(in srgb, var(--field-a) 34%, transparent) 13px 14px, transparent 15px 26px), radial-gradient(ellipse at 75% 68%, color-mix(in srgb, var(--field-b) 22%, transparent), transparent 64%);\n}\n.v-contour-field > [data-slot=\"field-canvas\"] { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; pointer-events: none; }\n.v-contour-field[data-renderer=\"webgl\"] > [data-slot=\"field-canvas\"] { opacity: 1; }\n@media (forced-colors: active) { .v-contour-field { visibility: hidden; } }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/contour-field.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/contour-field.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Contour field",
+      "variants": [
+        "balanced",
+        "warm",
+        "cool"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "animated",
+        "paused",
+        "fallback",
+        "context-lost",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "ContourFieldProps",
+        "props": [
+          {
+            "name": "speed",
+            "type": "number",
+            "required": false,
+            "description": "Relative pace, from 0 (still) to 3."
+          },
+          {
+            "name": "intensity",
+            "type": "number",
+            "required": false,
+            "description": "Color and relief strength, from 0 to 2."
+          },
+          {
+            "name": "tone",
+            "type": "FieldTone",
+            "required": false,
+            "description": "Accent selection from the inherited Cojeev theme."
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": "Freeze the current artwork without removing it."
+          }
+        ]
+      }
+    ],
+    "category": "Backgrounds",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

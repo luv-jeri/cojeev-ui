@@ -1,0 +1,88 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "warp-text",
+  "title": "Warp Text",
+  "description": "Rendered text deforms through a slowly changing noise displacement.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/warp-text.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { useReferenceRef } from \"@/lib/cojeev/reference-ref\";\nimport { cn } from \"@/lib/utils\";\nimport { bounded } from \"@/lib/cojeev/reference-text-math\";\nimport { useReferenceText,useReferenceClock,type ReferenceTextSize } from \"@/lib/cojeev/reference-text-motion\";\nexport type WarpTextProps=Omit<React.ComponentProps<\"div\">,\"children\">&{text:string;strength?:number;speed?:number;paused?:boolean;size?:ReferenceTextSize};\n/** A real noise displacement of rendered glyphs; no WebGL context or foreign font needed. */\nexport function WarpText({text,strength=12,speed=1,paused=false,size=\"default\",className,ref,...props}:WarpTextProps){\n const {host:hostRef,running}=useReferenceText(paused),noise=React.useRef<SVGFETurbulenceElement>(null);\n const id=`warp-${React.useId().replace(/:/g,\"\")}`,pace=bounded(speed,0,3,1);\n useReferenceClock(running&&pace>0,time=>{noise.current?.setAttribute(\"baseFrequency\",`${.012+Math.sin(time*.0003*pace)*.003} ${.035+Math.cos(time*.0002*pace)*.008}`);});\n return <div {...props} ref={useReferenceRef(hostRef,ref)} className={cn(\"v-warp-text\",className)} data-slot=\"warp-text\" data-size={size} data-running={running&&pace>0}>\n  <svg width=\"0\" height=\"0\" aria-hidden=\"true\"><defs><filter id={id} x=\"-15%\" y=\"-25%\" width=\"130%\" height=\"150%\" colorInterpolationFilters=\"sRGB\"><feTurbulence ref={noise} type=\"fractalNoise\" baseFrequency=\".012 .04\" numOctaves=\"2\" seed=\"8\" result=\"noise\"/><feDisplacementMap in=\"SourceGraphic\" in2=\"noise\" scale={running?bounded(strength,0,24,12):0} xChannelSelector=\"R\" yChannelSelector=\"G\"/></filter></defs></svg>\n  <span className=\"v-warp-text__words\" style={{filter:running?`url(#${id})`:undefined}}>{text}</span>\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/warp-text.css",
+      "content": "@layer cojeev-states {\n.v-warp-text { display:grid; position:relative; place-items:center; min-inline-size:0; inline-size:100%; min-block-size:260px; padding:24px; overflow:hidden; border-radius:var(--radius-panel,24px); color:var(--v-text); background:var(--v-beige); font-family:var(--font-display,\"Bricolage Grotesque\",sans-serif); font-size:clamp(2rem,5vw,3.5rem); line-height:1.15; isolation:isolate; }\n.v-warp-text[data-size=\"sm\"] { min-block-size:200px; font-size:clamp(1.5rem,4vw,2.5rem); padding:16px; }\n.v-warp-text[data-size=\"lg\"] { min-block-size:340px; font-size:clamp(2.25rem,6vw,4.5rem); }\n.v-warp-text__accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }\n.v-warp-text > svg {position:absolute;pointer-events:none;}\n.v-warp-text__words {max-inline-size:100%;text-align:center;overflow-wrap:anywhere;font-weight:650;}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/warp-text.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/warp-text.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Warp Text",
+      "variants": [
+        "liquid",
+        "gentle"
+      ],
+      "sizes": [
+        "sm",
+        "default",
+        "lg"
+      ],
+      "states": [
+        "playing",
+        "paused",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "WarpTextProps",
+        "props": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "strength",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "speed",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "ReferenceTextSize",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -1,23 +1,23 @@
 import * as React from "react";
 import type { FixtureContext, FixtureProps } from "./fixture-shared";
-import * as attachment from "@/registry/sahajiv/ui/attachment";
-import * as breadcrumb from "@/registry/sahajiv/ui/breadcrumb";
-import * as button_group from "@/registry/sahajiv/ui/button-group";
-import * as carousel from "@/registry/sahajiv/ui/carousel";
-import * as chart from "@/registry/sahajiv/ui/chart";
-import * as data_table from "@/registry/sahajiv/ui/data-table";
-import * as dropzone from "@/registry/sahajiv/ui/dropzone";
-import * as field from "@/registry/sahajiv/ui/field";
-import * as input from "@/registry/sahajiv/ui/input";
-import * as input_group from "@/registry/sahajiv/ui/input-group";
-import * as message_scroller from "@/registry/sahajiv/ui/message-scroller";
-import * as native_select from "@/registry/sahajiv/ui/native-select";
-import * as pagination from "@/registry/sahajiv/ui/pagination";
-import * as questionnaire from "@/registry/sahajiv/ui/questionnaire";
-import * as sidebar from "@/registry/sahajiv/ui/sidebar";
-import * as stepper from "@/registry/sahajiv/ui/stepper";
-import * as table from "@/registry/sahajiv/ui/table";
-import * as textarea from "@/registry/sahajiv/ui/textarea";
+import * as attachment from "@/registry/cojeev/ui/attachment";
+import * as breadcrumb from "@/registry/cojeev/ui/breadcrumb";
+import * as button_group from "@/registry/cojeev/ui/button-group";
+import * as carousel from "@/registry/cojeev/ui/carousel";
+import * as chart from "@/registry/cojeev/ui/chart";
+import * as data_table from "@/registry/cojeev/ui/data-table";
+import * as dropzone from "@/registry/cojeev/ui/dropzone";
+import * as field from "@/registry/cojeev/ui/field";
+import * as input from "@/registry/cojeev/ui/input";
+import * as input_group from "@/registry/cojeev/ui/input-group";
+import * as message_scroller from "@/registry/cojeev/ui/message-scroller";
+import * as native_select from "@/registry/cojeev/ui/native-select";
+import * as pagination from "@/registry/cojeev/ui/pagination";
+import * as questionnaire from "@/registry/cojeev/ui/questionnaire";
+import * as sidebar from "@/registry/cojeev/ui/sidebar";
+import * as stepper from "@/registry/cojeev/ui/stepper";
+import * as table from "@/registry/cojeev/ui/table";
+import * as textarea from "@/registry/cojeev/ui/textarea";
 
 const simple:Record<string,React.ElementType>={
   ".v-attach":attachment.Attachment,".v-attach__name":attachment.AttachmentName,".v-attach__meta":attachment.AttachmentMeta,

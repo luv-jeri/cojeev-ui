@@ -1,0 +1,107 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "animated-icon",
+  "title": "Animated icon",
+  "description": "Contextual motion for the shared icon catalog: draw, tremor, spinning settings, bouncing navigation and morphing validation.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/animated-icon.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { motion } from \"motion/react\";\nimport { Icon, iconClassName, createIconMotionPainter, getIconDirection, type IconProps } from \"@/components/ui/icon\";\nimport { createMotionLane, useChoreography } from \"@/lib/cojeev-motion/choreography\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\n\nexport type IconMotion = \"auto\" | \"tremor\" | \"draw\" | \"spin\" | \"bounce\" | \"validation\" | \"pulse\" | \"none\";\nexport type AnimatedIconProps = Omit<IconProps,\"draw\"|\"feedback\"> & { preset?:IconMotion; active?:boolean; amplitude?:number; duration?:number };\nexport function AnimatedIcon({name,preset=\"auto\",active,amplitude=1,duration,className,size=\"default\",children,...props}:AnimatedIconProps) {\n  const host=React.useRef<HTMLSpanElement>(null);\n  const {quiet,transition}=useChoreography();\n  const {enabled,inView}=useMotionVisibility(host);\n  const [hovered,setHovered]=React.useState(false);\n  const [focused,setFocused]=React.useState(false);\n  const [allowed,setAllowed]=React.useState(false);\n  React.useEffect(()=>{\n    const node=host.current?.closest<HTMLElement>('button,a[href],summary,[role=button],[role=menuitem],[role=menuitemcheckbox],[role=menuitemradio],[role=option],[role=tab],[role=checkbox],[role=radio],[role=switch],label')??host.current;\n    if(!node)return;\n    const associated=node instanceof HTMLLabelElement?node.control:node;\n    const eligible=()=>!node.closest('[inert],[hidden],[data-motion=\"off\"],[data-flow=\"off\"]')&&!node.matches(':disabled,[disabled],[aria-disabled=\"true\"],[data-disabled]:not([data-disabled=\"false\"])')&&!associated?.matches(':disabled,[disabled],[aria-disabled=\"true\"],[data-disabled]:not([data-disabled=\"false\"])');\n    const sync=()=>{const next=eligible();setAllowed(next);if(!next){setHovered(false);setFocused(false)}};\n    sync();\n    const enter=(event:PointerEvent)=>{if(event.pointerType!==\"touch\")setHovered(eligible())},leave=()=>setHovered(false);\n    const focus=()=>setFocused(eligible()),blur=(event:FocusEvent)=>{if(!node.contains(event.relatedTarget as Node|null))setFocused(false)};\n    node.addEventListener(\"pointerenter\",enter);node.addEventListener(\"pointerleave\",leave);node.addEventListener(\"focusin\",focus);node.addEventListener(\"focusout\",blur);\n    const attributes=new MutationObserver(sync);\n    const observe=(element:Element)=>attributes.observe(element,{attributes:true,attributeFilter:[\"disabled\",\"aria-disabled\",\"data-disabled\",\"inert\",\"hidden\",\"data-motion\",\"data-flow\"]});\n    for(let ancestor:Element|null=node;ancestor;ancestor=ancestor.parentElement)observe(ancestor);\n    if(associated&&associated!==node)observe(associated);\n    return ()=>{node.removeEventListener(\"pointerenter\",enter);node.removeEventListener(\"pointerleave\",leave);node.removeEventListener(\"focusin\",focus);node.removeEventListener(\"focusout\",blur);attributes.disconnect()};\n  },[]);\n  const amount=Number.isFinite(amplitude)?Math.max(0,Math.min(amplitude,3)):1;\n  const permitted=allowed&&!quiet&&enabled&&inView&&amount>0;\n  const running=permitted&&(active??(hovered||focused));\n  const settle=permitted?transition:{duration:0};\n  const intent=preset!==\"auto\"?preset:\"semantic\";\n  const seconds=duration!==undefined&&Number.isFinite(duration)?Math.max(.08,Math.min(duration,10)):undefined;\n  React.useEffect(()=>{\n    if(intent!==\"semantic\"||!running)return;\n    const svg=host.current?.querySelector<SVGSVGElement>(\"[data-slot=icon]\");if(!svg)return;\n    const painter=createIconMotionPainter(svg,name,amount);\n    const lane=createMotionLane(0,painter.paint);\n    const looping=name===\"loader\"||name===\"loader-circle\";\n    lane.jump(0);\n    lane.to(1,{duration:seconds??(looping?1.35:.55),ease:\"linear\",repeat:looping?Infinity:0},painter.restore);\n    return ()=>{lane.dispose();painter.restore()};\n  },[intent,running,name,amount,seconds,active]);\n  const rotate=running&&intent===\"spin\"?[0,360]:running&&intent===\"tremor\"?[0,-9*amount,7*amount,-3*amount,0]:0;\n  const direction=getIconDirection(name);\n  const [dx,dy]=direction[0]||direction[1]?direction:[1,0];\n  const x=running&&intent===\"bounce\"?[0,3*amount*dx,0]:0;\n  const y=running&&intent===\"bounce\"?[0,3*amount*dy,0]:0;\n  const scale=running&&intent===\"validation\"?[1,1-.15*amount,1+.08*amount,1]:running&&intent===\"pulse\"?[1,1+.12*amount,1]:1;\n  return <span ref={host} data-slot=\"animated-icon\" data-preset={intent} data-animated={(running&&intent!==\"none\")||undefined} className=\"v-animated-icon\">\n    <motion.span initial={false} animate={{rotate,x,y,scale}} transition={running?{duration:seconds??(intent===\"spin\"?1.6:.48),repeat:intent===\"spin\"?Infinity:0,ease:intent===\"spin\"?\"linear\":[.2,.8,.2,1]}:settle}>\n      {intent===\"validation\"&&/^(check|x)$/.test(name)?<svg data-slot=\"icon\" data-icon-name={name} viewBox=\"0 0 24 24\" aria-hidden=\"true\" className={iconClassName(size,className)} {...props}><motion.path initial={false} animate={{d:name===\"check\"?\"M5 12L10 17L20 6M10 17L10 17\":\"M6 6L12 12L18 18M6 18L18 6\"}} transition={settle}/>{children}</svg>:<Icon name={name} size={size} className={className} draw={intent===\"draw\"?running:undefined} {...props} feedback={false}>{children}</Icon>}\n    </motion.span>\n  </span>;\n}\n\n\nexport type StateChevronProps = Omit<React.ComponentProps<\"span\">,\"children\"> & {\n  /** Omit to follow the closest native trigger's data-state/aria-expanded. */\n  open?: boolean;\n  direction?: \"down\" | \"right\";\n};\n/** One real state cue; quiet motion still updates the direction immediately. */\nexport function StateChevron({ open, direction=\"down\", className, ref, ...props }: StateChevronProps) {\n  const host = React.useRef<HTMLSpanElement | null>(null);\n  const [nativeOpen, setNativeOpen] = React.useState(false);\n  const { quiet, transition } = useChoreography();\n  const attach = React.useCallback((node: HTMLSpanElement | null) => {\n    host.current = node;\n    if (typeof ref === \"function\") return ref(node);\n    if (ref) ref.current = node;\n  }, [ref]);\n  React.useEffect(() => {\n    if (open !== undefined) return;\n    const trigger = host.current?.parentElement?.closest(\"[aria-expanded],[data-state]\");\n    if (!trigger) return;\n    const sync = () => setNativeOpen(trigger.getAttribute(\"aria-expanded\") === \"true\" || trigger.getAttribute(\"data-state\") === \"open\");\n    sync();\n    const observer = new MutationObserver(sync);\n    observer.observe(trigger, { attributes:true, attributeFilter:[\"data-state\",\"aria-expanded\"] });\n    return () => observer.disconnect();\n  }, [open]);\n  const expanded = open ?? nativeOpen;\n  return <span {...props} ref={attach} data-slot=\"state-chevron\" data-open={expanded} aria-hidden=\"true\" className={[\"v-state-chevron\",className].filter(Boolean).join(\" \")}>\n    <motion.span initial={false} animate={{rotate:expanded?(direction===\"right\"?90:180):0}} transition={quiet?{duration:0}:transition}><Icon name={direction===\"right\"?\"chevron-right\":\"chevron-down\"} size=\"sm\" feedback={false} /></motion.span>\n  </span>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/animated-icon.css",
+      "content": "@layer cojeev-states {\n[data-slot=\"animated-icon\"], [data-slot=\"animated-icon\"] > span { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; vertical-align:middle; }\n[data-slot=\"animated-icon\"] svg { overflow:visible; }\n\n.v-state-chevron, .v-state-chevron > span { display:inline-flex; align-items:center; justify-content:center; flex:none; vertical-align:middle; }\n.v-state-chevron { margin-inline-start:auto; width:16px; height:16px; }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/animated-icon.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/animated-icon.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Animated icon",
+      "variants": [
+        "auto",
+        "tremor",
+        "draw",
+        "spin",
+        "bounce",
+        "validation",
+        "none",
+        "pulse"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "idle",
+        "hovered",
+        "focused",
+        "active",
+        "offscreen",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "AnimatedIconProps",
+        "props": [
+          {
+            "name": "amplitude",
+            "type": "number | string | undefined",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "preset",
+            "type": "IconMotion",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "StateChevronProps",
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": "Omit to follow the closest native trigger's data-state/aria-expanded."
+          },
+          {
+            "name": "direction",
+            "type": "\"down\" | \"right\"",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Effects",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

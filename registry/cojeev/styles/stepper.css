@@ -1,0 +1,93 @@
+[data-slot="stepper"] > li::marker {
+  content: none;
+}
+[data-slot="stepper-item"] + [data-slot="stepper-item"]::before {
+  content: "";
+  position: absolute;
+  left: 18.25px;
+  top: -9px;
+  height: 18px;
+  width: 1.5px;
+  background: var(--v-edge);
+}
+[data-slot="stepper-indicator"] {
+  transition:
+    background var(--t-element) var(--enter),
+    box-shadow var(--t-element) var(--enter),
+    color var(--t-element);
+}
+[data-slot="stepper-indicator"] .v-icon {
+  width: 17px;
+  height: 17px;
+}
+[data-slot="stepper-title"] {
+  transition: color var(--t-element);
+}
+[data-slot="stepper-item"].-done .v-step__n {
+  background: var(--v-olive);
+  box-shadow: none;
+  color: var(--v-on-accent);
+}
+[data-slot="stepper-item"].-done .v-step__t {
+  color: var(--v-text);
+}
+[data-slot="stepper-item"].-done + [data-slot="stepper-item"]::before {
+  background: var(--v-olive);
+}
+[data-slot="stepper"]:not(.v-glide) [data-slot="stepper-item"].-on .v-step__n {
+  background: var(--v-pink);
+  box-shadow: none;
+  color: var(--v-on-accent);
+}
+[data-slot="stepper-item"].-on .v-step__t {
+  color: var(--v-text);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* The ordered steps keep their reading order in either presentation. */
+[data-slot="stepper"][data-orientation="horizontal"] {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+}
+[data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 38px auto;
+  align-content: start;
+  justify-items: center;
+  gap: 10px;
+  padding: 8px 6px;
+  min-width: 0;
+}
+[data-slot="stepper"][data-orientation="horizontal"] [data-slot="stepper-title"] {
+  grid-column: 1;
+  text-align: center;
+  font-size: var(--fs-control);
+  overflow-wrap: anywhere;
+}
+[data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"]::before,
+[data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"]::after {
+  content: "";
+  position: absolute;
+  left: auto;
+  inset-inline-start: calc(50% + 24px);
+  top: 26px;
+  width: calc(100% - 48px);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--v-edge);
+}
+[data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"]::after {
+  background: var(--v-olive);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-element) var(--enter);
+}
+[data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"].-done::after { transform: scaleX(1); }
+[data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"]:last-child::before,
+[data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"]:last-child::after { content: none; }
+[data-slot="stepper"][data-orientation="horizontal"]:dir(rtl) > [data-slot="stepper-item"]::after { transform-origin: right; }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="stepper"][data-orientation="horizontal"] > [data-slot="stepper-item"]::after { transition-duration: 0s; }
+}

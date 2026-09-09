@@ -1,0 +1,94 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "grain-dissolve",
+  "title": "Grain Dissolve",
+  "description": "Caller scenes dissolve through a grainy pigment field with a soft focus exchange.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/grain-dissolve.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { transitionLayers } from \"@/lib/cojeev/reference-gallery-geometry\";\nimport { useGalleryRef, useGalleryTransition, type GalleryTransitionProps } from \"@/lib/cojeev/reference-gallery-motion\";\nexport type GrainDissolveProps=GalleryTransitionProps & {tone?:\"pink\"|\"olive\"|\"blue\"|\"yellow\"};\nexport function GrainDissolve({first,second,active,duration=1300,paused=false,tone=\"pink\",className,ref,...props}:GrainDissolveProps){\n const {host,progress}=useGalleryTransition(active,duration,paused),layers=transitionLayers(progress,\"grain\"),id=`grain-${React.useId().replace(/[^a-zA-Z0-9_-]/g,\"\")}`;\n return <div {...props} ref={useGalleryRef(host,ref)} data-slot=\"grain-dissolve\" data-active={active} className={cn(\"v-grain-dissolve\",className)} style={{...props.style,\"--gallery-pigment\":`var(--v-${tone})`} as React.CSSProperties}>\n <div className=\"v-grain-dissolve__layer\" aria-hidden={active} inert={active} style={{opacity:layers.first,filter:`blur(${(1-layers.first)*9}px)`}}>{first}</div>\n <div className=\"v-grain-dissolve__layer\" aria-hidden={!active} inert={!active} style={{opacity:layers.second,filter:`blur(${(1-layers.second)*9}px)`,transform:`scale(${1+(1-layers.second)*.025})`}}>{second}</div>\n {layers.cover>0&&<svg className=\"v-grain-dissolve__field\" aria-hidden=\"true\" viewBox=\"0 0 600 400\" preserveAspectRatio=\"none\" style={{opacity:layers.cover}}><defs><filter id={id}><feTurbulence type=\"fractalNoise\" baseFrequency=\".65\" numOctaves=\"3\" seed=\"17\"/><feColorMatrix type=\"saturate\" values=\"0\"/><feBlend in=\"SourceGraphic\" mode=\"soft-light\"/></filter><radialGradient id={`${id}-wash`}><stop stopColor=\"var(--gallery-pigment)\"/><stop offset=\"1\" stopColor=\"var(--v-paper)\"/></radialGradient></defs><rect width=\"600\" height=\"400\" fill=\"var(--v-paper)\"/><ellipse cx={180+progress*230} cy={230-progress*60} rx={220+progress*140} ry=\"290\" fill={`url(#${id}-wash)`}/><rect width=\"600\" height=\"400\" fill=\"var(--gallery-pigment)\" opacity=\".3\" filter={`url(#${id})`}/></svg>}\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/grain-dissolve.css",
+      "content": "@layer cojeev-states {\n.v-grain-dissolve{display:grid;position:relative;isolation:isolate;overflow:hidden;width:100%;min-width:0;border-radius:24px;background:var(--v-paper)}.v-grain-dissolve__layer{grid-area:1/1;min-width:0;align-self:stretch}.v-grain-dissolve__layer[inert]{pointer-events:none;user-select:none}.v-grain-dissolve__field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/grain-dissolve.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/grain-dissolve.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Grain Dissolve",
+      "variants": [
+        "pink",
+        "olive",
+        "blue",
+        "yellow"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "playing",
+        "paused",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "GrainDissolveProps",
+        "props": [
+          {
+            "name": "first",
+            "type": "React.ReactNode",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "second",
+            "type": "React.ReactNode",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "tone",
+            "type": "\"pink\"|\"olive\"|\"blue\"|\"yellow\"",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Effects",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

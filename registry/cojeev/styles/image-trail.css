@@ -1,0 +1,2 @@
+.v-image-trail { --effect-accent:var(--v-pink); }
+.v-image-trail canvas { display:block; }

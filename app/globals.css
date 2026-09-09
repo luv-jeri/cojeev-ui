@@ -1,205 +1,156 @@
-@layer theme, base, components, utilities, sahajiv-states, sahajiv-flow, sahajiv-morph, sahajiv-accessibility;
+/* Keep library state, flow and morph layers in this order in every consumer. */
+@layer theme, base, components, utilities, cojeev-states, cojeev-flow, cojeev-morph, cojeev-accessibility;
 @import "tailwindcss";
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
-@import "../registry/sahajiv/styles/fonts.css";
-@import "../registry/sahajiv/styles/tokens.css";
-@import "../registry/sahajiv/styles/theme.css";
-@import "../registry/sahajiv/styles/base.css";
-@import "../registry/sahajiv/styles/accordion.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/adjuster.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/alert-dialog.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/alert.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/aspect-ratio.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/attachment.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/avatar.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/badge.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/breadcrumb.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/bubble.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/button-group.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/button.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/calendar.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/card.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/carousel.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/chart.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/checkbox.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/code-block.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/collapsible.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/combobox.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/command.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/context-menu.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/data-table.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/date-picker.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/dialog.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/direction.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/drawer.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/dropdown-menu.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/dropzone.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/empty.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/field.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/flow-press.css" layer(sahajiv-flow);
-@import "../registry/sahajiv/styles/hover-card.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/icon.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/input-group.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/input-otp.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/input.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/item.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/kbd.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/label.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/marker.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/menubar.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/message-scroller.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/message.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/morph.css" layer(sahajiv-morph);
-@import "../registry/sahajiv/styles/native-select.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/navigation-menu.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/pagination.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/popover.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/preview.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/progress.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/questionnaire.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/radio-group.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/resizable.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/scroll-area.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/select.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/separator.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/sheet.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/sidebar.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/skeleton.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/slider.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/spinner.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/stepper.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/switch.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/table.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/tabs.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/textarea.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/toast.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/toggle-group.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/toggle.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/tooltip.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/typography.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/animated-number.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/text-reveal.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/shape-scene.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/multi-select.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/ambient-background.css" layer(sahajiv-states);
-@import "../registry/sahajiv/styles/marquee.css" layer(sahajiv-states);
-@source "../registry/sahajiv";
+@import "lenis/dist/lenis.css";
+@import "../registry/cojeev/styles/fonts.css";
+@import "../registry/cojeev/styles/semantic-bloom.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/tokens.css";
+@import "../registry/cojeev/styles/theme.css";
+@import "../registry/cojeev/styles/base.css";
+@import "../registry/cojeev/styles/swapy.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/buy-me-coffee.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/image-masking.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/linear-modal.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/motion-drawer.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/article-headings.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/portal-field.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/dither-dissolve.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/wave-wipe.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/grain-dissolve.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/option-wheel.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/accordion-gallery.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/infinite-spiral.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/meta-balls.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/image-trail.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/strands.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/click-spark.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/ghost-cursor.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/magic-rings.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/target-cursor.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/orbit-images.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/pixel-swap.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/swarm-cursor.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/elastic-mesh.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/ripple-distortion.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/scroll-expand.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/zoom-words.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/caret-swap.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/word-stream.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/variable-proximity.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/scroll-reveal.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/falling-text.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/warp-text.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/particle-text.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/typography-vortex.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/accordion.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/adjuster.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/alert-dialog.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/alert.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/aspect-ratio.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/attachment.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/avatar.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/badge.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/breadcrumb.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/bubble.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/button-group.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/button.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/calendar.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/card.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/carousel.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/chart.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/checkbox.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/code-block.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/collapsible.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/combobox.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/command.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/context-menu.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/data-table.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/date-picker.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/dialog.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/direction.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/drawer.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/dropdown-menu.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/dropzone.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/empty.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/field.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/flow-press.css" layer(cojeev-flow);
+@import "../registry/cojeev/styles/hover-card.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/icon.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/input-group.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/input-otp.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/input.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/item.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/kbd.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/label.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/marker.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/menubar.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/message-scroller.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/message.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/morph.css" layer(cojeev-morph);
+@import "../registry/cojeev/styles/native-select.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/navigation-menu.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/pagination.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/popover.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/preview.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/progress.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/questionnaire.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/radio-group.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/resizable.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/scroll-area.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/select.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/separator.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/sheet.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/sidebar.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/skeleton.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/slider.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/spinner.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/stepper.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/switch.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/table.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/tabs.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/textarea.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/toast.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/toggle-group.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/toggle.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/tooltip.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/typography.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/animated-number.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/word-relay.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/reading-trail.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/living-link.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/pigment-field.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/contour-field.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/milestone-path.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/activity-feed.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/text-reveal.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/text-ribbon.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/glyph-sculpture.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/sculpture-orbit.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/shape-scene.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/multi-select.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/ambient-background.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/marquee.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/agent-state.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/agent-chat.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/theme-toggle.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/animated-icon.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/shape-artwork.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/shape.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/presence.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/item-adornment.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/appearance.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/assembly-part.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/organism-composition.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/organism-assembly.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/scroll-organism.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/hero-button.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/depth-background.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/float-layer.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/writing-caret.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/guided-pointer.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/glass-sculpture.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/number-input.css" layer(cojeev-states);
+@source "../registry/cojeev";
 @source "../components";
-
-.home-page {
-  max-width: 1440px;
-  margin-inline: auto;
-  padding: 32px clamp(20px, 5vw, 80px);
-  color: var(--v-text);
-}
-.home-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding-bottom: 48px;
-}
-.home-nav a {
-  text-decoration: none;
-  color: inherit;
-}
-.home-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font: 500 28px var(--font-display);
-}
-.home-hero {
-  display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  gap: 48px;
-  align-items: center;
-  padding: 32px 0 96px;
-}
-.home-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-.home-actions [data-slot="sidebar-menu-button"] {
-  background: var(--v-ink);
-  color: var(--v-on-ink);
-  width: fit-content;
-}
-.home-composition {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  transform: rotate(-3deg);
-}
-.home-composition [data-slot="card"] {
-  display: grid;
-  gap: 16px;
-  min-height: 160px;
-}
-.home-composition [data-slot="card"]:first-child {
-  grid-column: span 2;
-  min-height: 250px;
-}
-.home-components {
-  display: grid;
-  gap: 24px;
-  padding-block: 32px 72px;
-}
-.home-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-}
-.home-grid a {
-  text-decoration: none;
-  color: inherit;
-}
-.home-grid [data-slot="card"] {
-  display: grid;
-  gap: 20px;
-  height: 100%;
-}
-.home-footer {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding-top: 24px;
-  border-top: 1px solid var(--v-border);
-}
-@media (max-width: 1050px) {
-  .home-hero {
-    grid-template-columns: 1fr;
-  }
-  .home-composition {
-    max-width: 600px;
-    width: 100%;
-    margin: auto;
-  }
-  .home-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 560px) {
-  .home-nav {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .home-hero {
-    padding-bottom: 40px;
-  }
-  .home-grid {
-    grid-template-columns: 1fr;
-  }
-  .home-composition {
-    transform: none;
-  }
-}
-
-.home-sculpture { min-width: 0; display: grid; gap: 16px; text-align: center; }
-.home-sculpture [data-slot="shape-scene"] { aspect-ratio: 1; border-radius: 50% 50% 42% 42%; }

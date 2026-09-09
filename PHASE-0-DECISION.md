@@ -19,8 +19,8 @@ The harness follows the supplied protocol: one sequential page at a time, fonts 
 
 ## Conflicting source contracts
 
-- [MOTION.md section 7](reference/sahajiv-handoff-v4/docs/MOTION.md#7--what-never-moves) says: “Under `prefers-reduced-motion`: static bodies, no travel, loops still, durations 0.”
-- [morph.js](reference/sahajiv-handoff-v4/js/morph.js), lines 122–125, sets press targets without checking reduced motion. Lines 203–204 retain press/focus targets, and line 233 applies the host scale without a reduced-motion guard.
+- [MOTION.md section 7](reference/cojeev-handoff-v4/docs/MOTION.md#7--what-never-moves) says: “Under `prefers-reduced-motion`: static bodies, no travel, loops still, durations 0.”
+- [morph.js](reference/cojeev-handoff-v4/js/morph.js), lines 122–125, sets press targets without checking reduced motion. Lines 203–204 retain press/focus targets, and line 233 applies the host scale without a reduced-motion guard.
 - The port suppresses press/hold deformation under reduced motion, following the written contract.
 
 The owner's build brief explicitly required stopping for an owner decision when the gate cannot match and the design system appears wrong. The owner has now resolved that decision: follow the documented reduced-motion rule and continue the build. This approval applies to the reduced-motion body deformation only; other fidelity differences must still be resolved.

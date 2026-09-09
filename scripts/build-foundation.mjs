@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import ttf2woff2 from "ttf2woff2";
 
-const reference = "reference/sahajiv-handoff-v4";
-const output = "registry/sahajiv/styles";
+const reference = "reference/cojeev-handoff-v4";
+const output = "registry/cojeev/styles";
 fs.mkdirSync(output, { recursive: true });
 // The authored token blocks are the authority, including the data-mode switch.
 fs.copyFileSync(`${reference}/tokens/tokens.css`, `${output}/tokens.css`);
@@ -17,8 +17,8 @@ for (const [name, token] of Object.entries(tokens)) {
   }
   if (name.startsWith("fs-")) mapping[`--text-v-${name.slice(3)}`] = `var(--${name})`;
 }
-mapping["--font-sahajiv-text"] = "var(--font-text)";
-mapping["--font-sahajiv-display"] = "var(--font-display)";
+mapping["--font-cojeev-text"] = "var(--font-text)";
+mapping["--font-cojeev-display"] = "var(--font-display)";
 // These authored aliases are colors even where the original token metadata
 // omitted or misclassified their type.
 for (const name of ["primary-foreground", "sidebar", "sidebar-foreground"]) {
@@ -36,5 +36,5 @@ const css = faces.map(([file, family, weights, stretch]) => {
   const bytes = ttf2woff2(fs.readFileSync(path.join(reference, "fonts", `${file}.ttf`)));
   return `@font-face{font-family:"${family}";src:url("data:font/woff2;base64,${bytes.toString("base64")}") format("woff2");font-weight:${weights};font-style:normal;${stretch}font-display:swap}`;
 }).join("\n");
-fs.writeFileSync(`${output}/fonts.css`, `/* Fonts converted losslessly from the reference TTFs. OFL licences ship with the base item. */\n@layer theme, base, components, utilities, sahajiv-states, sahajiv-morph, sahajiv-flow, sahajiv-accessibility;\n${css}\n`);
+fs.writeFileSync(`${output}/fonts.css`, `/* Fonts converted losslessly from the reference TTFs. OFL licences ship with the base item. */\n@layer theme, base, components, utilities, cojeev-states, cojeev-morph, cojeev-flow, cojeev-accessibility;\n${css}\n`);
 console.log(`Foundation: authored tokens, ${Object.keys(mapping).length} theme mappings, 2 embedded WOFF2 fonts`);

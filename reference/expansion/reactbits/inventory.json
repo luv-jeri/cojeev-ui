@@ -1,0 +1,2778 @@
+{
+  "source": "reactbits",
+  "observedAt": "2026-09-08T15:39:11.746Z",
+  "revision": "4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3",
+  "canonicalBasis": "src/constants/Categories.js, excluding Get Started; four language/style variants count once",
+  "count": 171,
+  "items": [
+    {
+      "id": "reactbits:text-loop",
+      "sourceName": "Text Loop",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/text-loop",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/TextLoop",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/TextLoop/TextLoop.css",
+        "src/ts-default/TextAnimations/TextLoop/TextLoop.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "source-inspected-and-rendered-sample",
+      "cojeevCandidate": null,
+      "notes": "Source inspected: SVG text follows configurable wave/circle/infinity/arch/line path, measured repeated units with GSAP offsets. Rendered desktop screenshot captured. Original Cojeev curved ribbon remains pending; existing Marquee only covers straight repeated movement.",
+      "renderedEvidence": "output/playwright/expansion/reactbits/text-loop.png"
+    },
+    {
+      "id": "reactbits:masked-heading",
+      "sourceName": "Masked Heading",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/masked-heading",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/MaskedHeading",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/MaskedHeading/MaskedHeading.css",
+        "src/ts-default/TextAnimations/MaskedHeading/MaskedHeading.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:particle-text",
+      "sourceName": "Particle Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/particle-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/ParticleText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/ParticleText/ParticleText.css",
+        "src/ts-default/TextAnimations/ParticleText/ParticleText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:split-flap-text",
+      "sourceName": "Split Flap Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/split-flap-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/SplitFlapText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/SplitFlapText/SplitFlapText.css",
+        "src/ts-default/TextAnimations/SplitFlapText/SplitFlapText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:warp-text",
+      "sourceName": "Warp Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/warp-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/WarpText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/WarpText/WarpText.css",
+        "src/ts-default/TextAnimations/WarpText/WarpText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:stroke-text",
+      "sourceName": "Stroke Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/stroke-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/StrokeText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/StrokeText/StrokeText.css",
+        "src/ts-default/TextAnimations/StrokeText/StrokeText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:depth-text",
+      "sourceName": "Depth Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/depth-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/DepthText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/DepthText/DepthText.css",
+        "src/ts-default/TextAnimations/DepthText/DepthText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:fold-text",
+      "sourceName": "Fold Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/fold-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/FoldText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/FoldText/FoldText.css",
+        "src/ts-default/TextAnimations/FoldText/FoldText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:echo-text",
+      "sourceName": "Echo Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/echo-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/EchoText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/EchoText/EchoText.css",
+        "src/ts-default/TextAnimations/EchoText/EchoText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:split-text",
+      "sourceName": "Split Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/split-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/SplitText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/SplitText/SplitText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "source-inspected-and-rendered-sample",
+      "cojeevCandidate": "text-reveal",
+      "notes": "Grapheme-safe words and phrases plus browser-measured wrapping lines, font and resize invalidation, explicit replay, quiet readable fallback. Core behavior verified; exact source API, assets and timing parity is not claimed.",
+      "renderedEvidence": "output/playwright/expansion/reactbits/split-text.png",
+      "nativeEvidence": [
+        "output/playwright/expansion/text-sequences/results.json",
+        "output/playwright/expansion/text-sequences/line-final.json"
+      ]
+    },
+    {
+      "id": "reactbits:blur-text",
+      "sourceName": "Blur Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/blur-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/BlurText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/BlurText/BlurText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "source-inspected-and-rendered-sample",
+      "cojeevCandidate": "text-reveal",
+      "notes": "Source inspected: directional staggered blur/opacity entrance. Rendered desktop screenshot captured. Extend native TextReveal with soften plus direction/grapheme controls. Do not import source.",
+      "renderedEvidence": "output/playwright/expansion/reactbits/blur-text.png"
+    },
+    {
+      "id": "reactbits:circular-text",
+      "sourceName": "Circular Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/circular-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/CircularText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/CircularText/CircularText.css",
+        "src/ts-default/TextAnimations/CircularText/CircularText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:text-type",
+      "sourceName": "Text Type",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/text-type",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/TextType",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/TextType/TextType.css",
+        "src/ts-default/TextAnimations/TextType/TextType.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:shuffle",
+      "sourceName": "Shuffle",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/shuffle",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/Shuffle",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/Shuffle/Shuffle.css",
+        "src/ts-default/TextAnimations/Shuffle/Shuffle.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:shiny-text",
+      "sourceName": "Shiny Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/shiny-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/ShinyText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/ShinyText/ShinyText.css",
+        "src/ts-default/TextAnimations/ShinyText/ShinyText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:text-pressure",
+      "sourceName": "Text Pressure",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/text-pressure",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/TextPressure",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/TextPressure/TextPressure.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:curved-loop",
+      "sourceName": "Curved Loop",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/curved-loop",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/CurvedLoop",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/CurvedLoop/CurvedLoop.css",
+        "src/ts-default/TextAnimations/CurvedLoop/CurvedLoop.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "marquee",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:fuzzy-text",
+      "sourceName": "Fuzzy Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/fuzzy-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/FuzzyText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/FuzzyText/FuzzyText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:gradient-text",
+      "sourceName": "Gradient Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/gradient-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/GradientText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/GradientText/GradientText.css",
+        "src/ts-default/TextAnimations/GradientText/GradientText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:falling-text",
+      "sourceName": "Falling Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/falling-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/FallingText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/FallingText/FallingText.css",
+        "src/ts-default/TextAnimations/FallingText/FallingText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:text-cursor",
+      "sourceName": "Text Cursor",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/text-cursor",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/TextCursor",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/TextCursor/TextCursor.css",
+        "src/ts-default/TextAnimations/TextCursor/TextCursor.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:decrypted-text",
+      "sourceName": "Decrypted Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/decrypted-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/DecryptedText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/DecryptedText/DecryptedText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:true-focus",
+      "sourceName": "True Focus",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/true-focus",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/TrueFocus",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/TrueFocus/TrueFocus.css",
+        "src/ts-default/TextAnimations/TrueFocus/TrueFocus.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:scroll-float",
+      "sourceName": "Scroll Float",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/scroll-float",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/ScrollFloat",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/ScrollFloat/ScrollFloat.css",
+        "src/ts-default/TextAnimations/ScrollFloat/ScrollFloat.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "float-layer",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:scroll-reveal",
+      "sourceName": "Scroll Reveal",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/scroll-reveal",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/ScrollReveal",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/ScrollReveal/ScrollReveal.css",
+        "src/ts-default/TextAnimations/ScrollReveal/ScrollReveal.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "text-reveal",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:ascii-text",
+      "sourceName": "ASCII Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/ascii-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/ASCIIText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/ASCIIText/ASCIIText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:scrambled-text",
+      "sourceName": "Scrambled Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/scrambled-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/ScrambledText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/ScrambledText/ScrambledText.css",
+        "src/ts-default/TextAnimations/ScrambledText/ScrambledText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:rotating-text",
+      "sourceName": "Rotating Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/rotating-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/RotatingText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/RotatingText/RotatingText.css",
+        "src/ts-default/TextAnimations/RotatingText/RotatingText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "source-inspected-and-rendered-sample",
+      "cojeevCandidate": null,
+      "notes": "Interruptible per-phrase/word/grapheme exchanges, first/last/center/edges stagger, opposite incoming/outgoing travel, stable reserved footprint, controlled or internal index, optional imperative controls and looping. Core behavior verified; exact source API, assets and timing parity is not claimed.",
+      "renderedEvidence": "output/playwright/expansion/reactbits/rotating-text.png",
+      "nativeEvidence": [
+        "output/playwright/expansion/text-sequences/results.json",
+        "output/playwright/expansion/text-sequences/line-final.json"
+      ]
+    },
+    {
+      "id": "reactbits:glitch-text",
+      "sourceName": "Glitch Text",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/glitch-text",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/GlitchText",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/GlitchText/GlitchText.css",
+        "src/ts-default/TextAnimations/GlitchText/GlitchText.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:scroll-velocity",
+      "sourceName": "Scroll Velocity",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/scroll-velocity",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/ScrollVelocity",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/ScrollVelocity/ScrollVelocity.css",
+        "src/ts-default/TextAnimations/ScrollVelocity/ScrollVelocity.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:variable-proximity",
+      "sourceName": "Variable Proximity",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/variable-proximity",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/VariableProximity",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/VariableProximity/VariableProximity.css",
+        "src/ts-default/TextAnimations/VariableProximity/VariableProximity.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:count-up",
+      "sourceName": "Count Up",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/count-up",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/CountUp",
+      "sourceFiles": [
+        "src/ts-default/TextAnimations/CountUp/CountUp.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "source-and-public-rendered-interaction-reviewed",
+      "cojeevCandidate": "animated-number",
+      "notes": "Pinned source sets a Motion spring after in-view plus optional delay/startWhen, formats decimal precision and separator, and calls timed start/end callbacks. The live restart showed an intermediate 25 and later target 100; the 1.8s sample was still 97, not a settled endpoint. SSR exposes the final value, optional from supplies first visible entrance, updates reverse from current numeric value and duration is bounded rather than approximated by spring/timed callbacks. Native lifecycle cancels under offscreen/hidden/reduced/quiet states.",
+      "numericInspection": {
+        "capturedAt": "2026-09-08T18:28:22.783Z",
+        "source": {
+          "status": "public-source-read",
+          "receipt": "reference/expansion/skiper/receipts/numeric-family/count-up.tsx.txt"
+        },
+        "public": {
+          "status": "desktop-mobile-individually-reviewed",
+          "widths": [
+            1440,
+            390
+          ],
+          "receipts": [
+            "reference/expansion/skiper/receipts/numeric-family/count-up-1440-actions.json",
+            "reference/expansion/skiper/receipts/numeric-family/count-up-390-actions.json"
+          ],
+          "screenshots": [
+            "reference/expansion/skiper/receipts/numeric-family/count-up-1440-final.png",
+            "reference/expansion/skiper/receipts/numeric-family/count-up-390-final.png"
+          ]
+        }
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "animated-number"
+        ],
+        "treatment": "count with from",
+        "sourceContract": "Pinned source sets a Motion spring after in-view plus optional delay/startWhen, formats decimal precision and separator, and calls timed start/end callbacks. The live restart showed an intermediate 25 and later target 100; the 1.8s sample was still 97, not a settled endpoint.",
+        "usefulDifferences": "SSR exposes the final value, optional from supplies first visible entrance, updates reverse from current numeric value and duration is bounded rather than approximated by spring/timed callbacks. Native lifecycle cancels under offscreen/hidden/reduced/quiet states.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "reactbits:glow-cursor",
+      "sourceName": "Glow Cursor",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/glow-cursor",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/GlowCursor",
+      "sourceFiles": [
+        "src/ts-default/Animations/GlowCursor/GlowCursor.css",
+        "src/ts-default/Animations/GlowCursor/GlowCursor.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:scroll-expand",
+      "sourceName": "Scroll Expand",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/scroll-expand",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/ScrollExpand",
+      "sourceFiles": [
+        "src/ts-default/Animations/ScrollExpand/ScrollExpand.css",
+        "src/ts-default/Animations/ScrollExpand/ScrollExpand.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:ripple-distortion",
+      "sourceName": "Ripple Distortion",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/ripple-distortion",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/RippleDistortion",
+      "sourceFiles": [
+        "src/ts-default/Animations/RippleDistortion/RippleDistortion.css",
+        "src/ts-default/Animations/RippleDistortion/RippleDistortion.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:elastic-mesh",
+      "sourceName": "Elastic Mesh",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/elastic-mesh",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/ElasticMesh",
+      "sourceFiles": [
+        "src/ts-default/Animations/ElasticMesh/ElasticMesh.css",
+        "src/ts-default/Animations/ElasticMesh/ElasticMesh.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:swarm-cursor",
+      "sourceName": "Swarm Cursor",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/swarm-cursor",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/SwarmCursor",
+      "sourceFiles": [
+        "src/ts-default/Animations/SwarmCursor/SwarmCursor.css",
+        "src/ts-default/Animations/SwarmCursor/SwarmCursor.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:halftone-reveal",
+      "sourceName": "Halftone Reveal",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/halftone-reveal",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/HalftoneReveal",
+      "sourceFiles": [
+        "src/ts-default/Animations/HalftoneReveal/HalftoneReveal.css",
+        "src/ts-default/Animations/HalftoneReveal/HalftoneReveal.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:pixel-swap",
+      "sourceName": "Pixel Swap",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/pixel-swap",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/PixelSwap",
+      "sourceFiles": [
+        "src/ts-default/Animations/PixelSwap/PixelSwap.css",
+        "src/ts-default/Animations/PixelSwap/PixelSwap.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:cursor-grid",
+      "sourceName": "Cursor Grid",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/cursor-grid",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/CursorGrid",
+      "sourceFiles": [
+        "src/ts-default/Animations/CursorGrid/CursorGrid.css",
+        "src/ts-default/Animations/CursorGrid/CursorGrid.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:animated-content",
+      "sourceName": "Animated Content",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/animated-content",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/AnimatedContent",
+      "sourceFiles": [
+        "src/ts-default/Animations/AnimatedContent/AnimatedContent.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "presence",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:fade-content",
+      "sourceName": "Fade Content",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/fade-content",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/FadeContent",
+      "sourceFiles": [
+        "src/ts-default/Animations/FadeContent/FadeContent.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "presence",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:electric-border",
+      "sourceName": "Electric Border",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/electric-border",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/ElectricBorder",
+      "sourceFiles": [
+        "src/ts-default/Animations/ElectricBorder/ElectricBorder.css",
+        "src/ts-default/Animations/ElectricBorder/ElectricBorder.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:orbit-images",
+      "sourceName": "Orbit Images",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/orbit-images",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/OrbitImages",
+      "sourceFiles": [
+        "src/ts-default/Animations/OrbitImages/OrbitImages.css",
+        "src/ts-default/Animations/OrbitImages/OrbitImages.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:pixel-transition",
+      "sourceName": "Pixel Transition",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/pixel-transition",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/PixelTransition",
+      "sourceFiles": [
+        "src/ts-default/Animations/PixelTransition/PixelTransition.css",
+        "src/ts-default/Animations/PixelTransition/PixelTransition.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:glare-hover",
+      "sourceName": "Glare Hover",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/glare-hover",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/GlareHover",
+      "sourceFiles": [
+        "src/ts-default/Animations/GlareHover/GlareHover.css",
+        "src/ts-default/Animations/GlareHover/GlareHover.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:antigravity",
+      "sourceName": "Antigravity",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/antigravity",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/Antigravity",
+      "sourceFiles": [
+        "src/ts-default/Animations/Antigravity/Antigravity.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:logo-loop",
+      "sourceName": "Logo Loop",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/logo-loop",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/LogoLoop",
+      "sourceFiles": [
+        "src/ts-default/Animations/LogoLoop/LogoLoop.css",
+        "src/ts-default/Animations/LogoLoop/LogoLoop.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "marquee",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:target-cursor",
+      "sourceName": "Target Cursor",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/target-cursor",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/TargetCursor",
+      "sourceFiles": [
+        "src/ts-default/Animations/TargetCursor/TargetCursor.css",
+        "src/ts-default/Animations/TargetCursor/TargetCursor.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:magic-rings",
+      "sourceName": "Magic Rings",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/magic-rings",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/MagicRings",
+      "sourceFiles": [
+        "src/ts-default/Animations/MagicRings/MagicRings.css",
+        "src/ts-default/Animations/MagicRings/MagicRings.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:laser-flow",
+      "sourceName": "Laser Flow",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/laser-flow",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/LaserFlow",
+      "sourceFiles": [
+        "src/ts-default/Animations/LaserFlow/LaserFlow.css",
+        "src/ts-default/Animations/LaserFlow/LaserFlow.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:magnet-lines",
+      "sourceName": "Magnet Lines",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/magnet-lines",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/MagnetLines",
+      "sourceFiles": [
+        "src/ts-default/Animations/MagnetLines/MagnetLines.css",
+        "src/ts-default/Animations/MagnetLines/MagnetLines.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:ghost-cursor",
+      "sourceName": "Ghost Cursor",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/ghost-cursor",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/GhostCursor",
+      "sourceFiles": [
+        "src/ts-default/Animations/GhostCursor/GhostCursor.css",
+        "src/ts-default/Animations/GhostCursor/GhostCursor.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:gradual-blur",
+      "sourceName": "Gradual Blur",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/gradual-blur",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/GradualBlur",
+      "sourceFiles": [
+        "src/ts-default/Animations/GradualBlur/GradualBlur.css",
+        "src/ts-default/Animations/GradualBlur/GradualBlur.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:click-spark",
+      "sourceName": "Click Spark",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/click-spark",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/ClickSpark",
+      "sourceFiles": [
+        "src/ts-default/Animations/ClickSpark/ClickSpark.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:magnet",
+      "sourceName": "Magnet",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/magnet",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/Magnet",
+      "sourceFiles": [
+        "src/ts-default/Animations/Magnet/Magnet.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "button",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:strands",
+      "sourceName": "Strands",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/strands",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/Strands",
+      "sourceFiles": [
+        "src/ts-default/Animations/Strands/Strands.css",
+        "src/ts-default/Animations/Strands/Strands.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:sticker-peel",
+      "sourceName": "Sticker Peel",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/sticker-peel",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/StickerPeel",
+      "sourceFiles": [
+        "src/ts-default/Animations/StickerPeel/StickerPeel.css",
+        "src/ts-default/Animations/StickerPeel/StickerPeel.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:pixel-trail",
+      "sourceName": "Pixel Trail",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/pixel-trail",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/PixelTrail",
+      "sourceFiles": [
+        "src/ts-default/Animations/PixelTrail/PixelTrail.css",
+        "src/ts-default/Animations/PixelTrail/PixelTrail.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:cubes",
+      "sourceName": "Cubes",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/cubes",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/Cubes",
+      "sourceFiles": [
+        "src/ts-default/Animations/Cubes/Cubes.css",
+        "src/ts-default/Animations/Cubes/Cubes.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:metallic-paint",
+      "sourceName": "Metallic Paint",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/metallic-paint",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/MetallicPaint",
+      "sourceFiles": [
+        "src/ts-default/Animations/MetallicPaint/MetallicPaint.css",
+        "src/ts-default/Animations/MetallicPaint/MetallicPaint.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "shape-scene",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:noise",
+      "sourceName": "Noise",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/noise",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/Noise",
+      "sourceFiles": [
+        "src/ts-default/Animations/Noise/Noise.css",
+        "src/ts-default/Animations/Noise/Noise.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:shape-blur",
+      "sourceName": "Shape Blur",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/shape-blur",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/ShapeBlur",
+      "sourceFiles": [
+        "src/ts-default/Animations/ShapeBlur/ShapeBlur.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:crosshair",
+      "sourceName": "Crosshair",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/crosshair",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/Crosshair",
+      "sourceFiles": [
+        "src/ts-default/Animations/Crosshair/Crosshair.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:image-trail",
+      "sourceName": "Image Trail",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/image-trail",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/ImageTrail",
+      "sourceFiles": [
+        "src/ts-default/Animations/ImageTrail/ImageTrail.css",
+        "src/ts-default/Animations/ImageTrail/ImageTrail.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:ribbons",
+      "sourceName": "Ribbons",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/ribbons",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/Ribbons",
+      "sourceFiles": [
+        "src/ts-default/Animations/Ribbons/Ribbons.css",
+        "src/ts-default/Animations/Ribbons/Ribbons.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:splash-cursor",
+      "sourceName": "Splash Cursor",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/splash-cursor",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/SplashCursor",
+      "sourceFiles": [
+        "src/ts-default/Animations/SplashCursor/SplashCursor.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:meta-balls",
+      "sourceName": "Meta Balls",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/meta-balls",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/MetaBalls",
+      "sourceFiles": [
+        "src/ts-default/Animations/MetaBalls/MetaBalls.css",
+        "src/ts-default/Animations/MetaBalls/MetaBalls.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:blob-cursor",
+      "sourceName": "Blob Cursor",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/blob-cursor",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/BlobCursor",
+      "sourceFiles": [
+        "src/ts-default/Animations/BlobCursor/BlobCursor.css",
+        "src/ts-default/Animations/BlobCursor/BlobCursor.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "scroll-organism",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:star-border",
+      "sourceName": "Star Border",
+      "category": "Animations",
+      "pageUrl": "https://reactbits.dev/animations/star-border",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Animations/StarBorder",
+      "sourceFiles": [
+        "src/ts-default/Animations/StarBorder/StarBorder.css",
+        "src/ts-default/Animations/StarBorder/StarBorder.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:infinite-spiral",
+      "sourceName": "Infinite Spiral",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/infinite-spiral",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/InfiniteSpiral",
+      "sourceFiles": [
+        "src/ts-default/Components/InfiniteSpiral/InfiniteSpiral.css",
+        "src/ts-default/Components/InfiniteSpiral/InfiniteSpiral.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:depth-carousel",
+      "sourceName": "Depth Carousel",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/depth-carousel",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/DepthCarousel",
+      "sourceFiles": [
+        "src/ts-default/Components/DepthCarousel/DepthCarousel.css",
+        "src/ts-default/Components/DepthCarousel/DepthCarousel.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:morph-slider",
+      "sourceName": "Morph Slider",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/morph-slider",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/MorphSlider",
+      "sourceFiles": [
+        "src/ts-default/Components/MorphSlider/MorphSlider.css",
+        "src/ts-default/Components/MorphSlider/MorphSlider.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:drift-wall",
+      "sourceName": "Drift Wall",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/drift-wall",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/DriftWall",
+      "sourceFiles": [
+        "src/ts-default/Components/DriftWall/DriftWall.css",
+        "src/ts-default/Components/DriftWall/DriftWall.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:accordion-gallery",
+      "sourceName": "Accordion Gallery",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/accordion-gallery",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/AccordionGallery",
+      "sourceFiles": [
+        "src/ts-default/Components/AccordionGallery/AccordionGallery.css",
+        "src/ts-default/Components/AccordionGallery/AccordionGallery.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:specular-button",
+      "sourceName": "Specular Button",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/specular-button",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/SpecularButton",
+      "sourceFiles": [
+        "src/ts-default/Components/SpecularButton/SpecularButton.css",
+        "src/ts-default/Components/SpecularButton/SpecularButton.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:option-wheel",
+      "sourceName": "Option Wheel",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/option-wheel",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/OptionWheel",
+      "sourceFiles": [
+        "src/ts-default/Components/OptionWheel/OptionWheel.css",
+        "src/ts-default/Components/OptionWheel/OptionWheel.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:curved-input",
+      "sourceName": "Curved Input",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/curved-input",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/CurvedInput",
+      "sourceFiles": [
+        "src/ts-default/Components/CurvedInput/CurvedInput.css",
+        "src/ts-default/Components/CurvedInput/CurvedInput.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:line-sidebar",
+      "sourceName": "Line Sidebar",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/line-sidebar",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/LineSidebar",
+      "sourceFiles": [
+        "src/ts-default/Components/LineSidebar/LineSidebar.css",
+        "src/ts-default/Components/LineSidebar/LineSidebar.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "sidebar",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:animated-list",
+      "sourceName": "Animated List",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/animated-list",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/AnimatedList",
+      "sourceFiles": [
+        "src/ts-default/Components/AnimatedList/AnimatedList.css",
+        "src/ts-default/Components/AnimatedList/AnimatedList.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:scroll-stack",
+      "sourceName": "Scroll Stack",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/scroll-stack",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/ScrollStack",
+      "sourceFiles": [
+        "src/ts-default/Components/ScrollStack/ScrollStack.css",
+        "src/ts-default/Components/ScrollStack/ScrollStack.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:bubble-menu",
+      "sourceName": "Bubble Menu",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/bubble-menu",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/BubbleMenu",
+      "sourceFiles": [
+        "src/ts-default/Components/BubbleMenu/BubbleMenu.css",
+        "src/ts-default/Components/BubbleMenu/BubbleMenu.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "navigation-menu",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:magic-bento",
+      "sourceName": "Magic Bento",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/magic-bento",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/MagicBento",
+      "sourceFiles": [
+        "src/ts-default/Components/MagicBento/MagicBento.css",
+        "src/ts-default/Components/MagicBento/MagicBento.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:circular-gallery",
+      "sourceName": "Circular Gallery",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/circular-gallery",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/CircularGallery",
+      "sourceFiles": [
+        "src/ts-default/Components/CircularGallery/CircularGallery.css",
+        "src/ts-default/Components/CircularGallery/CircularGallery.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:reflective-card",
+      "sourceName": "Reflective Card",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/reflective-card",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/ReflectiveCard",
+      "sourceFiles": [
+        "src/ts-default/Components/ReflectiveCard/ReflectiveCard.css",
+        "src/ts-default/Components/ReflectiveCard/ReflectiveCard.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:card-nav",
+      "sourceName": "Card Nav",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/card-nav",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/CardNav",
+      "sourceFiles": [
+        "src/ts-default/Components/CardNav/CardNav.css",
+        "src/ts-default/Components/CardNav/CardNav.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "navigation-menu",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:stack",
+      "sourceName": "Stack",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/stack",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Stack",
+      "sourceFiles": [
+        "src/ts-default/Components/Stack/Stack.css",
+        "src/ts-default/Components/Stack/Stack.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "card",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:fluid-glass",
+      "sourceName": "Fluid Glass",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/fluid-glass",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/FluidGlass",
+      "sourceFiles": [
+        "src/ts-default/Components/FluidGlass/FluidGlass.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:pill-nav",
+      "sourceName": "Pill Nav",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/pill-nav",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/PillNav",
+      "sourceFiles": [
+        "src/ts-default/Components/PillNav/PillNav.css",
+        "src/ts-default/Components/PillNav/PillNav.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "navigation-menu",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:tilted-card",
+      "sourceName": "Tilted Card",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/tilted-card",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/TiltedCard",
+      "sourceFiles": [
+        "src/ts-default/Components/TiltedCard/TiltedCard.css",
+        "src/ts-default/Components/TiltedCard/TiltedCard.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:masonry",
+      "sourceName": "Masonry",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/masonry",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Masonry",
+      "sourceFiles": [
+        "src/ts-default/Components/Masonry/Masonry.css",
+        "src/ts-default/Components/Masonry/Masonry.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:glass-surface",
+      "sourceName": "Glass Surface",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/glass-surface",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/GlassSurface",
+      "sourceFiles": [
+        "src/ts-default/Components/GlassSurface/GlassSurface.css",
+        "src/ts-default/Components/GlassSurface/GlassSurface.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:dome-gallery",
+      "sourceName": "Dome Gallery",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/dome-gallery",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/DomeGallery",
+      "sourceFiles": [
+        "src/ts-default/Components/DomeGallery/DomeGallery.css",
+        "src/ts-default/Components/DomeGallery/DomeGallery.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:chroma-grid",
+      "sourceName": "Chroma Grid",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/chroma-grid",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/ChromaGrid",
+      "sourceFiles": [
+        "src/ts-default/Components/ChromaGrid/ChromaGrid.css",
+        "src/ts-default/Components/ChromaGrid/ChromaGrid.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:folder",
+      "sourceName": "Folder",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/folder",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Folder",
+      "sourceFiles": [
+        "src/ts-default/Components/Folder/Folder.css",
+        "src/ts-default/Components/Folder/Folder.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:staggered-menu",
+      "sourceName": "Staggered Menu",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/staggered-menu",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/StaggeredMenu",
+      "sourceFiles": [
+        "src/ts-default/Components/StaggeredMenu/StaggeredMenu.css",
+        "src/ts-default/Components/StaggeredMenu/StaggeredMenu.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:model-viewer",
+      "sourceName": "Model Viewer",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/model-viewer",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/ModelViewer",
+      "sourceFiles": [
+        "src/ts-default/Components/ModelViewer/ModelViewer.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:lanyard",
+      "sourceName": "Lanyard",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/lanyard",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Lanyard",
+      "sourceFiles": [
+        "src/ts-default/Components/Lanyard/Lanyard.css",
+        "src/ts-default/Components/Lanyard/Lanyard.tsx",
+        "src/ts-default/Components/Lanyard/card.glb",
+        "src/ts-default/Components/Lanyard/lanyard.png"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:profile-card",
+      "sourceName": "Profile Card",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/profile-card",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/ProfileCard",
+      "sourceFiles": [
+        "src/ts-default/Components/ProfileCard/ProfileCard.css",
+        "src/ts-default/Components/ProfileCard/ProfileCard.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "profile-card",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:dock",
+      "sourceName": "Dock",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/dock",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Dock",
+      "sourceFiles": [
+        "src/ts-default/Components/Dock/Dock.css",
+        "src/ts-default/Components/Dock/Dock.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "action-dock",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:gooey-nav",
+      "sourceName": "Gooey Nav",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/gooey-nav",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/GooeyNav",
+      "sourceFiles": [
+        "src/ts-default/Components/GooeyNav/GooeyNav.css",
+        "src/ts-default/Components/GooeyNav/GooeyNav.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "navigation-menu",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:pixel-card",
+      "sourceName": "Pixel Card",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/pixel-card",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/PixelCard",
+      "sourceFiles": [
+        "src/ts-default/Components/PixelCard/PixelCard.css",
+        "src/ts-default/Components/PixelCard/PixelCard.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:carousel",
+      "sourceName": "Carousel",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/carousel",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Carousel",
+      "sourceFiles": [
+        "src/ts-default/Components/Carousel/Carousel.css",
+        "src/ts-default/Components/Carousel/Carousel.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "carousel",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:spotlight-card",
+      "sourceName": "Spotlight Card",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/spotlight-card",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/SpotlightCard",
+      "sourceFiles": [
+        "src/ts-default/Components/SpotlightCard/SpotlightCard.css",
+        "src/ts-default/Components/SpotlightCard/SpotlightCard.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "card",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:border-glow",
+      "sourceName": "Border Glow",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/border-glow",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/BorderGlow",
+      "sourceFiles": [
+        "src/ts-default/Components/BorderGlow/BorderGlow.css",
+        "src/ts-default/Components/BorderGlow/BorderGlow.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "card",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:flying-posters",
+      "sourceName": "Flying Posters",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/flying-posters",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/FlyingPosters",
+      "sourceFiles": [
+        "src/ts-default/Components/FlyingPosters/FlyingPosters.css",
+        "src/ts-default/Components/FlyingPosters/FlyingPosters.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:card-swap",
+      "sourceName": "Card Swap",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/card-swap",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/CardSwap",
+      "sourceFiles": [
+        "src/ts-default/Components/CardSwap/CardSwap.css",
+        "src/ts-default/Components/CardSwap/CardSwap.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:glass-icons",
+      "sourceName": "Glass Icons",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/glass-icons",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/GlassIcons",
+      "sourceFiles": [
+        "src/ts-default/Components/GlassIcons/GlassIcons.css",
+        "src/ts-default/Components/GlassIcons/GlassIcons.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:decay-card",
+      "sourceName": "Decay Card",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/decay-card",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/DecayCard",
+      "sourceFiles": [
+        "src/ts-default/Components/DecayCard/DecayCard.css",
+        "src/ts-default/Components/DecayCard/DecayCard.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:flowing-menu",
+      "sourceName": "Flowing Menu",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/flowing-menu",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/FlowingMenu",
+      "sourceFiles": [
+        "src/ts-default/Components/FlowingMenu/FlowingMenu.css",
+        "src/ts-default/Components/FlowingMenu/FlowingMenu.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:elastic-slider",
+      "sourceName": "Elastic Slider",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/elastic-slider",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/ElasticSlider",
+      "sourceFiles": [
+        "src/ts-default/Components/ElasticSlider/ElasticSlider.css",
+        "src/ts-default/Components/ElasticSlider/ElasticSlider.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "slider",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:counter",
+      "sourceName": "Counter",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/counter",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Counter",
+      "sourceFiles": [
+        "src/ts-default/Components/Counter/Counter.css",
+        "src/ts-default/Components/Counter/Counter.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "animated-number",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:infinite-menu",
+      "sourceName": "Infinite Menu",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/infinite-menu",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/InfiniteMenu",
+      "sourceFiles": [
+        "src/ts-default/Components/InfiniteMenu/InfiniteMenu.css",
+        "src/ts-default/Components/InfiniteMenu/InfiniteMenu.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:stepper",
+      "sourceName": "Stepper",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/stepper",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/Stepper",
+      "sourceFiles": [
+        "src/ts-default/Components/Stepper/Stepper.css",
+        "src/ts-default/Components/Stepper/Stepper.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "stepper",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:bounce-cards",
+      "sourceName": "Bounce Cards",
+      "category": "Components",
+      "pageUrl": "https://reactbits.dev/components/bounce-cards",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Components/BounceCards",
+      "sourceFiles": [
+        "src/ts-default/Components/BounceCards/BounceCards.css",
+        "src/ts-default/Components/BounceCards/BounceCards.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:aero-shards",
+      "sourceName": "Aero Shards",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/aero-shards",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/AeroShards",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/AeroShards/AeroShards.css",
+        "src/ts-default/Backgrounds/AeroShards/AeroShards.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:ghost-fibers",
+      "sourceName": "Ghost Fibers",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/ghost-fibers",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/GhostFibers",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/GhostFibers/GhostFibers.css",
+        "src/ts-default/Backgrounds/GhostFibers/GhostFibers.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:crt-warp",
+      "sourceName": "CRT Warp",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/crt-warp",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/CRTWarp",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/CRTWarp/CRTWarp.css",
+        "src/ts-default/Backgrounds/CRTWarp/CRTWarp.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:molten-metal",
+      "sourceName": "Molten Metal",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/molten-metal",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/MoltenMetal",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/MoltenMetal/MoltenMetal.css",
+        "src/ts-default/Backgrounds/MoltenMetal/MoltenMetal.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:gradient-waves",
+      "sourceName": "Gradient Waves",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/gradient-waves",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/GradientWaves",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/GradientWaves/GradientWaves.css",
+        "src/ts-default/Backgrounds/GradientWaves/GradientWaves.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:web-threads",
+      "sourceName": "Web Threads",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/web-threads",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/WebThreads",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/WebThreads/WebThreads.css",
+        "src/ts-default/Backgrounds/WebThreads/WebThreads.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:topography",
+      "sourceName": "Topography",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/topography",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Topography",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Topography/Topography.css",
+        "src/ts-default/Backgrounds/Topography/Topography.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:light-tunnel",
+      "sourceName": "Light Tunnel",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/light-tunnel",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/LightTunnel",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/LightTunnel/LightTunnel.css",
+        "src/ts-default/Backgrounds/LightTunnel/LightTunnel.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:sliced-waves",
+      "sourceName": "Sliced Waves",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/sliced-waves",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/SlicedWaves",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/SlicedWaves/SlicedWaves.css",
+        "src/ts-default/Backgrounds/SlicedWaves/SlicedWaves.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:acid-squares",
+      "sourceName": "Acid Squares",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/acid-squares",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/AcidSquares",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/AcidSquares/AcidSquares.css",
+        "src/ts-default/Backgrounds/AcidSquares/AcidSquares.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:scanner",
+      "sourceName": "Scanner",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/scanner",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Scanner",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Scanner/Scanner.css",
+        "src/ts-default/Backgrounds/Scanner/Scanner.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:ferrofluid",
+      "sourceName": "Ferrofluid",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/ferrofluid",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Ferrofluid",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Ferrofluid/Ferrofluid.css",
+        "src/ts-default/Backgrounds/Ferrofluid/Ferrofluid.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:lightfall",
+      "sourceName": "Lightfall",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/lightfall",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Lightfall",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Lightfall/Lightfall.css",
+        "src/ts-default/Backgrounds/Lightfall/Lightfall.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:liquid-ether",
+      "sourceName": "Liquid Ether",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/liquid-ether",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/LiquidEther",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/LiquidEther/LiquidEther.css",
+        "src/ts-default/Backgrounds/LiquidEther/LiquidEther.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:prism",
+      "sourceName": "Prism",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/prism",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Prism",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Prism/Prism.css",
+        "src/ts-default/Backgrounds/Prism/Prism.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:dark-veil",
+      "sourceName": "Dark Veil",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/dark-veil",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/DarkVeil",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/DarkVeil/DarkVeil.css",
+        "src/ts-default/Backgrounds/DarkVeil/DarkVeil.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:light-pillar",
+      "sourceName": "Light Pillar",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/light-pillar",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/LightPillar",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/LightPillar/LightPillar.css",
+        "src/ts-default/Backgrounds/LightPillar/LightPillar.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:silk",
+      "sourceName": "Silk",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/silk",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Silk",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Silk/Silk.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:floating-lines",
+      "sourceName": "Floating Lines",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/floating-lines",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/FloatingLines",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/FloatingLines/FloatingLines.css",
+        "src/ts-default/Backgrounds/FloatingLines/FloatingLines.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:side-rays",
+      "sourceName": "Side Rays",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/side-rays",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/SideRays",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/SideRays/SideRays.css",
+        "src/ts-default/Backgrounds/SideRays/SideRays.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:light-rays",
+      "sourceName": "Light Rays",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/light-rays",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/LightRays",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/LightRays/LightRays.css",
+        "src/ts-default/Backgrounds/LightRays/LightRays.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:pixel-blast",
+      "sourceName": "Pixel Blast",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/pixel-blast",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/PixelBlast",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/PixelBlast/PixelBlast.css",
+        "src/ts-default/Backgrounds/PixelBlast/PixelBlast.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:color-bends",
+      "sourceName": "Color Bends",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/color-bends",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/ColorBends",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/ColorBends/ColorBends.css",
+        "src/ts-default/Backgrounds/ColorBends/ColorBends.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:evil-eye",
+      "sourceName": "Evil Eye",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/evil-eye",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/EvilEye",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/EvilEye/EvilEye.css",
+        "src/ts-default/Backgrounds/EvilEye/EvilEye.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:line-waves",
+      "sourceName": "Line Waves",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/line-waves",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/LineWaves",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/LineWaves/LineWaves.css",
+        "src/ts-default/Backgrounds/LineWaves/LineWaves.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:radar",
+      "sourceName": "Radar",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/radar",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Radar",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Radar/Radar.css",
+        "src/ts-default/Backgrounds/Radar/Radar.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:soft-aurora",
+      "sourceName": "Soft Aurora",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/soft-aurora",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/SoftAurora",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/SoftAurora/SoftAurora.css",
+        "src/ts-default/Backgrounds/SoftAurora/SoftAurora.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:aurora",
+      "sourceName": "Aurora",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/aurora",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Aurora",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Aurora/Aurora.css",
+        "src/ts-default/Backgrounds/Aurora/Aurora.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:plasma",
+      "sourceName": "Plasma",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/plasma",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Plasma",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Plasma/Plasma.css",
+        "src/ts-default/Backgrounds/Plasma/Plasma.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:plasma-wave",
+      "sourceName": "Plasma Wave",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/plasma-wave",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/PlasmaWave",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/PlasmaWave/PlasmaWave.css",
+        "src/ts-default/Backgrounds/PlasmaWave/PlasmaWave.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:particles",
+      "sourceName": "Particles",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/particles",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Particles",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Particles/Particles.css",
+        "src/ts-default/Backgrounds/Particles/Particles.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": "depth-background",
+      "notes": "Possible overlap; behavior comparison pending."
+    },
+    {
+      "id": "reactbits:gradient-blinds",
+      "sourceName": "Gradient Blinds",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/gradient-blinds",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/GradientBlinds",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/GradientBlinds/GradientBlinds.css",
+        "src/ts-default/Backgrounds/GradientBlinds/GradientBlinds.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:grainient",
+      "sourceName": "Grainient",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/grainient",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Grainient",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Grainient/Grainient.css",
+        "src/ts-default/Backgrounds/Grainient/Grainient.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:grid-scan",
+      "sourceName": "Grid Scan",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/grid-scan",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/GridScan",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/GridScan/GridScan.css",
+        "src/ts-default/Backgrounds/GridScan/GridScan.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:beams",
+      "sourceName": "Beams",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/beams",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Beams",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Beams/Beams.css",
+        "src/ts-default/Backgrounds/Beams/Beams.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:pixel-snow",
+      "sourceName": "Pixel Snow",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/pixel-snow",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/PixelSnow",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/PixelSnow/PixelSnow.css",
+        "src/ts-default/Backgrounds/PixelSnow/PixelSnow.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:lightning",
+      "sourceName": "Lightning",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/lightning",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Lightning",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Lightning/Lightning.css",
+        "src/ts-default/Backgrounds/Lightning/Lightning.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:prismatic-burst",
+      "sourceName": "Prismatic Burst",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/prismatic-burst",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/PrismaticBurst",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/PrismaticBurst/PrismaticBurst.css",
+        "src/ts-default/Backgrounds/PrismaticBurst/PrismaticBurst.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:galaxy",
+      "sourceName": "Galaxy",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/galaxy",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Galaxy",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Galaxy/Galaxy.css",
+        "src/ts-default/Backgrounds/Galaxy/Galaxy.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:dither",
+      "sourceName": "Dither",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/dither",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Dither",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Dither/Dither.css",
+        "src/ts-default/Backgrounds/Dither/Dither.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:faulty-terminal",
+      "sourceName": "Faulty Terminal",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/faulty-terminal",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/FaultyTerminal",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/FaultyTerminal/FaultyTerminal.css",
+        "src/ts-default/Backgrounds/FaultyTerminal/FaultyTerminal.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:ripple-grid",
+      "sourceName": "Ripple Grid",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/ripple-grid",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/RippleGrid",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/RippleGrid/RippleGrid.css",
+        "src/ts-default/Backgrounds/RippleGrid/RippleGrid.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:dot-field",
+      "sourceName": "Dot Field",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/dot-field",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/DotField",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/DotField/DotField.css",
+        "src/ts-default/Backgrounds/DotField/DotField.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:dot-grid",
+      "sourceName": "Dot Grid",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/dot-grid",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/DotGrid",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/DotGrid/DotGrid.css",
+        "src/ts-default/Backgrounds/DotGrid/DotGrid.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:threads",
+      "sourceName": "Threads",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/threads",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Threads",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Threads/Threads.css",
+        "src/ts-default/Backgrounds/Threads/Threads.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:hyperspeed",
+      "sourceName": "Hyperspeed",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/hyperspeed",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Hyperspeed",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Hyperspeed/HyperSpeedPresets.ts",
+        "src/ts-default/Backgrounds/Hyperspeed/Hyperspeed.css",
+        "src/ts-default/Backgrounds/Hyperspeed/Hyperspeed.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:iridescence",
+      "sourceName": "Iridescence",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/iridescence",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Iridescence",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Iridescence/Iridescence.css",
+        "src/ts-default/Backgrounds/Iridescence/Iridescence.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:waves",
+      "sourceName": "Waves",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/waves",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Waves",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Waves/Waves.css",
+        "src/ts-default/Backgrounds/Waves/Waves.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:grid-distortion",
+      "sourceName": "Grid Distortion",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/grid-distortion",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/GridDistortion",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/GridDistortion/GridDistortion.css",
+        "src/ts-default/Backgrounds/GridDistortion/GridDistortion.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:ballpit",
+      "sourceName": "Ballpit",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/ballpit",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Ballpit",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Ballpit/Ballpit.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:orb",
+      "sourceName": "Orb",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/orb",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Orb",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Orb/Orb.css",
+        "src/ts-default/Backgrounds/Orb/Orb.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:letter-glitch",
+      "sourceName": "Letter Glitch",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/letter-glitch",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/LetterGlitch",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/LetterGlitch/LetterGlitch.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:grid-motion",
+      "sourceName": "Grid Motion",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/grid-motion",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/GridMotion",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/GridMotion/GridMotion.css",
+        "src/ts-default/Backgrounds/GridMotion/GridMotion.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:shape-grid",
+      "sourceName": "Shape Grid",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/shape-grid",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/ShapeGrid",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/ShapeGrid/ShapeGrid.css",
+        "src/ts-default/Backgrounds/ShapeGrid/ShapeGrid.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:liquid-chrome",
+      "sourceName": "Liquid Chrome",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/liquid-chrome",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/LiquidChrome",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/LiquidChrome/LiquidChrome.css",
+        "src/ts-default/Backgrounds/LiquidChrome/LiquidChrome.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    },
+    {
+      "id": "reactbits:balatro",
+      "sourceName": "Balatro",
+      "category": "Backgrounds",
+      "pageUrl": "https://reactbits.dev/backgrounds/balatro",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/Backgrounds/Balatro",
+      "sourceFiles": [
+        "src/ts-default/Backgrounds/Balatro/Balatro.css",
+        "src/ts-default/Backgrounds/Balatro/Balatro.tsx"
+      ],
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "reuse": "original-implementation-only",
+      "inspectionStatus": "catalogue-discovered",
+      "cojeevCandidate": null,
+      "notes": "Needs behavior inspection and an original Cojeev name."
+    }
+  ]
+}

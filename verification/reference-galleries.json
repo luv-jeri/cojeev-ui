@@ -1,0 +1,186 @@
+[
+  {
+    "id": "infinite-spiral",
+    "name": "Infinite Spiral",
+    "category": "Creative",
+    "variants": [
+      "up",
+      "down"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Helical image cards recycle through depth with explicit previous, next and pause controls.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "carousel",
+      "accordion"
+    ],
+    "reference": "https://www.reactbits.dev/components/infinite-spiral",
+    "landing": "Optional playground; keep the main landing page narrative still.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Helix depth, vertical spacing, wrapping offsets and edge fading in React Bits source.",
+    "status": "new"
+  },
+  {
+    "id": "accordion-gallery",
+    "name": "Accordion Gallery",
+    "category": "Creative",
+    "variants": [
+      "horizontal",
+      "vertical"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "still",
+      "offscreen"
+    ],
+    "description": "A selected image panel opens to reveal its label, story and action.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "carousel",
+      "accordion"
+    ],
+    "reference": "https://www.reactbits.dev/components/accordion-gallery",
+    "landing": "Recommended component discovery section after the feature demonstration.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "React Bits flex expansion, media parallax, inactive grayscale and explicit selection.",
+    "status": "new"
+  },
+  {
+    "id": "option-wheel",
+    "name": "Option Wheel",
+    "category": "Forms",
+    "variants": [
+      "left",
+      "right"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "still",
+      "offscreen"
+    ],
+    "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "carousel",
+      "accordion"
+    ],
+    "reference": "https://www.reactbits.dev/components/option-wheel",
+    "landing": "Optional compact theme or discipline picker beside a specimen.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "React Bits circular geometry, distance fading and settling selected option.",
+    "status": "new"
+  },
+  {
+    "id": "grain-dissolve",
+    "name": "Grain Dissolve",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Caller scenes dissolve through a grainy pigment field with a soft focus exchange.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "presence",
+      "pixel-swap"
+    ],
+    "reference": "https://remocn.dev/docs/transitions/grain-dissolve",
+    "landing": "Optional scene bridge in the playground; avoid repeated text transitions.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Remocn outgoing blur, grain field cover and delayed incoming focus.",
+    "status": "new"
+  },
+  {
+    "id": "wave-wipe",
+    "name": "Wave Wipe",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "An organic wave rises across caller content to reveal the next scene.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "presence",
+      "pixel-swap"
+    ],
+    "reference": "https://remocn.dev/docs/transitions/wave-wipe",
+    "landing": "Recommended once between narrative and feature demonstration.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Remocn upward departing scene, rising incoming scene and grain wave field.",
+    "status": "new"
+  },
+  {
+    "id": "dither-dissolve",
+    "name": "Dither Dissolve",
+    "category": "Effects",
+    "variants": [
+      "pink",
+      "olive",
+      "blue",
+      "yellow"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen"
+    ],
+    "description": "Caller scenes exchange beneath a deterministic ordered dither cover.",
+    "usage": "Supply caller content and keep the example controls for accessible interaction.",
+    "accessibility": "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately.",
+    "related": [
+      "presence",
+      "pixel-swap"
+    ],
+    "reference": "https://remocn.dev/docs/transitions/dither-dissolve",
+    "landing": "Optional process comparison in the playground; skip the main reading flow.",
+    "notes": "Original React and SVG adaptation; no upstream dependency or exact shader-fidelity claim.",
+    "observation": "Remocn cover envelope, hidden scene exchange and increasing dither texture size.",
+    "status": "new"
+  }
+]

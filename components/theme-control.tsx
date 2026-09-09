@@ -1,17 +1,18 @@
 "use client";
 import * as React from "react";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/registry/sahajiv/ui/native-select";
-import { Label } from "@/registry/sahajiv/ui/label";
+import { ThemeToggle } from "@/registry/cojeev/ui/theme-toggle";
+import { applyTheme } from "@/registry/cojeev/motion/theme-transition";
+import { useChoreography } from "@/registry/cojeev/motion/choreography";
+import { Label } from "@/registry/cojeev/ui/label";
+import { AppearanceMenu } from "@/registry/cojeev/ui/appearance";
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/registry/cojeev/ui/tooltip";
 type Theme = "light" | "dark";
-const themeEvent = "sahajiv-docs-theme-change";
+const themeEvent = "cojeev-docs-theme-change";
 let volatileTheme: Theme | null = null;
 function readTheme(): Theme {
   if (volatileTheme) return volatileTheme;
   try {
-    const stored = localStorage.getItem("sahajiv-docs-theme");
+    const stored = localStorage.getItem("cojeev-docs-theme");
     if (stored === "dark" || stored === "light") return stored;
   } catch {}
   return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -19,7 +20,7 @@ function readTheme(): Theme {
 function subscribeTheme(listener: () => void) {
   const media = matchMedia("(prefers-color-scheme: dark)");
   function onStorage(event: StorageEvent) {
-    if (event.key === "sahajiv-docs-theme" || event.key === null) {
+    if (event.key === "cojeev-docs-theme" || event.key === null) {
       volatileTheme = null;
       listener();
     }
@@ -33,36 +34,39 @@ function subscribeTheme(listener: () => void) {
     media.removeEventListener("change", listener);
   };
 }
-export function ThemeControl() {
+export function ThemeControl({ compact = false }: { compact?: boolean }) {
   const mode = React.useSyncExternalStore(
     subscribeTheme,
     readTheme,
     () => "light" as const,
   );
   const id = React.useId();
+  const {quiet}=useChoreography();
+  const initialized=React.useRef(false);
   React.useEffect(() => {
-    document.documentElement.dataset.mode = mode;
-  }, [mode]);
+    applyTheme(initialized.current ? mode : readTheme(), !initialized.current || quiet);
+    initialized.current=true;
+  }, [mode,quiet]);
   return (
-    <div className="docs-theme">
-      <Label htmlFor={id} size="sm">
+    <TooltipProvider><div className={`docs-theme${compact ? " docs-theme-compact" : ""}`}>
+      <Label htmlFor={id} size="sm" className={compact ? "sr-only" : undefined}>
         Appearance
       </Label>
-      <NativeSelect
+      <Tooltip><TooltipTrigger asChild><ThemeToggle
         id={id}
-        value={mode}
-        onChange={(event) => {
-          const next = event.target.value as Theme;
+        mode={mode}
+        showLabel
+        label={compact ? "Theme" : undefined}
+        responsive={compact}
+        onModeChange={(next) => {
           volatileTheme = next;
           try {
-            localStorage.setItem("sahajiv-docs-theme", next);
+            localStorage.setItem("cojeev-docs-theme", next);
           } catch {}
           window.dispatchEvent(new Event(themeEvent));
         }}
-      >
-        <NativeSelectOption value="light">Light</NativeSelectOption>
-        <NativeSelectOption value="dark">Dark</NativeSelectOption>
-      </NativeSelect>
-    </div>
+      /></TooltipTrigger><TooltipContent>Switch to {mode === "dark" ? "light" : "dark"} theme</TooltipContent></Tooltip>
+      <AppearanceMenu responsive={compact} />
+    </div></TooltipProvider>
   );
 }

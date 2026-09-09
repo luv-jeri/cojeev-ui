@@ -1,0 +1,512 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-08T18:28:22.783Z",
+  "scope": "Eight numeric motion/editing overlaps, individually reviewed",
+  "counts": {
+    "sourceEntries": 8,
+    "publicSourceRead": 6,
+    "publicPreviewOnlyRestricted": 2,
+    "nativeComponentsImproved": 1,
+    "nativeComponentsAdded": 1,
+    "existingNativeMappedWithoutEdit": 1
+  },
+  "licenseBoundary": "Original implementation only. Skiper Pro source was not requested; Skiper free and React Bits code were not copied. No Remotion dependency or source code was imported.",
+  "rows": [
+    {
+      "id": "skiper37",
+      "sourceName": "Animated number",
+      "category": "Minimal interactions",
+      "pageUrl": "https://skiper-ui.com/v1/skiper37",
+      "codeUrl": "https://skiper-ui.com/r/skiper37.json",
+      "licenseEvidence": [
+        {
+          "url": "https://skiper-ui.com/docs/quick-start",
+          "location": "License & Usage",
+          "finding": "Personal/commercial use and modification advertised. Free use requires Skiper UI attribution; Pro removes attribution requirement. No MIT license grant stated.",
+          "receipt": "receipts/quick-start.html"
+        },
+        {
+          "url": "https://skiper-ui.com/docs/terms-of-service",
+          "location": "Website Content License",
+          "finding": "Website content is reserved; republication, sublicensing, copying and redistribution restricted unless otherwise stated. MIT redistribution permission for source is not established.",
+          "receipt": "receipts/terms.html"
+        },
+        {
+          "url": "https://skiper-ui.com/r/skiper37.json",
+          "location": "Component source License & Usage comment",
+          "finding": "Custom attribution-based use terms repeated in source, with no MIT grant.",
+          "receipt": "receipts/skiper37.registry.json"
+        }
+      ],
+      "sourceRevision": null,
+      "inspectionStatus": "source-and-public-rendered-interaction-reviewed",
+      "sourceInspection": {
+        "status": "public-source-read",
+        "receipt": "reference/expansion/skiper/receipts/skiper37.registry.json"
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/skiper37-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/skiper37-390-actions.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/skiper37-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/skiper37-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "animated-number"
+        ],
+        "treatment": "count / roll / steps; from entrance",
+        "sourceContract": "Four demonstration scenes: Number Flow countdown with pause/reset; spring-based in-view 500; twelve random poses ending at 2146000; in-view Number Flow with prefix/suffix.",
+        "usefulDifferences": "A reusable value-driven span instead of timers or random data. Callers own countdown state; from supplies a one-time visible entrance. Twelve deterministic poses convey a drawn count without inventing random financial values.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "skiper68",
+      "sourceName": "Animated number input",
+      "category": "Minimal interactions",
+      "pageUrl": "https://skiper-ui.com/v1/skiper68",
+      "codeUrl": "https://skiper-ui.com/r/skiper68.json",
+      "licenseEvidence": [
+        {
+          "url": "https://skiper-ui.com/docs/quick-start",
+          "location": "License & Usage",
+          "finding": "Personal/commercial use and modification advertised. Free use requires Skiper UI attribution; Pro removes attribution requirement. No MIT license grant stated.",
+          "receipt": "receipts/quick-start.html"
+        },
+        {
+          "url": "https://skiper-ui.com/docs/terms-of-service",
+          "location": "Website Content License",
+          "finding": "Website content is reserved; republication, sublicensing, copying and redistribution restricted unless otherwise stated. MIT redistribution permission for source is not established.",
+          "receipt": "receipts/terms.html"
+        }
+      ],
+      "sourceRevision": null,
+      "inspectionStatus": "public-rendered-interaction-reviewed-source-restricted",
+      "sourceInspection": {
+        "status": "restricted-source-not-requested",
+        "receipt": null
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/skiper68-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/skiper68-390-actions.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/skiper68-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/skiper68-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "number-input"
+        ],
+        "treatment": "native editing with idle rolling display",
+        "sourceContract": "Public Pro preview uses a transparent type=text input under separately animated glyphs. Decimal/negative text and first-character replacement were exercised; a 20-digit string overflows the 390px preview.",
+        "usefulDifferences": "A real composed numeric spinbutton role was missing from Input: localized draft editing, stepping, min/max, native form submission/reset and formatted idle display. During focus the genuine input text/caret/selection remain visible. Only idle changes roll; the source transparent editing layer is deliberately not reproduced.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "skiper69",
+      "sourceName": "Skiper Number flow",
+      "category": "Minimal interactions",
+      "pageUrl": "https://skiper-ui.com/v1/skiper69",
+      "codeUrl": "https://skiper-ui.com/r/skiper69.json",
+      "licenseEvidence": [
+        {
+          "url": "https://skiper-ui.com/docs/quick-start",
+          "location": "License & Usage",
+          "finding": "Personal/commercial use and modification advertised. Free use requires Skiper UI attribution; Pro removes attribution requirement. No MIT license grant stated.",
+          "receipt": "receipts/quick-start.html"
+        },
+        {
+          "url": "https://skiper-ui.com/docs/terms-of-service",
+          "location": "Website Content License",
+          "finding": "Website content is reserved; republication, sublicensing, copying and redistribution restricted unless otherwise stated. MIT redistribution permission for source is not established.",
+          "receipt": "receipts/terms.html"
+        }
+      ],
+      "sourceRevision": null,
+      "inspectionStatus": "public-rendered-interaction-reviewed-source-restricted",
+      "sourceInspection": {
+        "status": "restricted-source-not-requested",
+        "receipt": null
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/skiper69-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/skiper69-390-actions.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/skiper69-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/skiper69-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "animated-number"
+        ],
+        "treatment": "roll",
+        "sourceContract": "Pro preview Shuffle changes independently moving digits and formatted signs, grouping, fractions, percent and suffixes. Pointer and Enter activation observed at desktop/mobile.",
+        "usefulDifferences": "Intl.NumberFormat options retain native currency/percent/grouping/scientific formatting. Only numeric runs roll; locale punctuation remains literal. Numeric runs keep LTR digit order inside actual RTL ancestors.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "remocn:number-wheel",
+      "sourceName": "Number Wheel",
+      "category": "Typography",
+      "pageUrl": "https://remocn.dev/docs/typography/number-wheel",
+      "codeUrl": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/registry/remocn/number-wheel/index.tsx",
+      "licenseEvidence": [
+        {
+          "license": "MIT",
+          "scope": "Remocn repository code and docs",
+          "url": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/LICENSE",
+          "receipt": "receipts/source/LICENSE",
+          "condition": "Retain Remocn copyright and permission notice for copied or substantial adapted code."
+        },
+        {
+          "license": "Remotion License",
+          "scope": "Runtime dependency; not covered by Remocn MIT",
+          "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
+          "receipt": "receipts/remotion-LICENSE",
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
+        }
+      ],
+      "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
+      "inspectionStatus": "source-and-public-rendered-interaction-reviewed",
+      "sourceInspection": {
+        "status": "public-source-read",
+        "receipt": "reference/expansion/skiper/receipts/numeric-family/number-wheel.tsx.txt"
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/number-wheel-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/number-wheel-390-actions.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/number-wheel-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/number-wheel-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "animated-number"
+        ],
+        "treatment": "roll",
+        "sourceContract": "Pinned source uses a nonnegative integer count, late carry wheel movement, 11-glyph strips and 80% of a Remotion timeline; en-US separators and fixed JetBrains Mono styling.",
+        "usefulDifferences": "Two visible glyphs per wheel, bounded directional travel from the current fractional position, signed/fractional/localized values, inherited typography and shared browser motion lifecycle.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "remocn:rolling-number",
+      "sourceName": "Rolling Number",
+      "category": "Typography",
+      "pageUrl": "https://remocn.dev/docs/typography/rolling-number",
+      "codeUrl": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/registry/remocn/rolling-number/index.tsx",
+      "licenseEvidence": [
+        {
+          "license": "MIT",
+          "scope": "Remocn repository code and docs",
+          "url": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/LICENSE",
+          "receipt": "receipts/source/LICENSE",
+          "condition": "Retain Remocn copyright and permission notice for copied or substantial adapted code."
+        },
+        {
+          "license": "Remotion License",
+          "scope": "Runtime dependency; not covered by Remocn MIT",
+          "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
+          "receipt": "receipts/remotion-LICENSE",
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
+        }
+      ],
+      "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
+      "inspectionStatus": "source-and-public-rendered-interaction-reviewed",
+      "sourceInspection": {
+        "status": "public-source-read",
+        "receipt": "reference/expansion/skiper/receipts/numeric-family/rolling-number.tsx.txt"
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/rolling-number-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/rolling-number-390-actions.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/rolling-number-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/rolling-number-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "animated-number"
+        ],
+        "treatment": "roll",
+        "sourceContract": "Pinned source calculates turns independently for each decimal place, faster lower places, leading-place rise/reveal and exact landing. Its registry scene is nonnegative integers on a Remotion timeline.",
+        "usefulDifferences": "A bounded wheel per changed place and a small leading-place reveal preserve readable digit motion on live UI updates, including downward and interrupted changes. The native treatment does not reproduce giant full-turn counts or fixed video timing.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "remocn:hand-count",
+      "sourceName": "Hand Count",
+      "category": "Typography",
+      "pageUrl": "https://remocn.dev/docs/typography/hand-count",
+      "codeUrl": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/registry/remocn/hand-count/index.tsx",
+      "licenseEvidence": [
+        {
+          "license": "MIT",
+          "scope": "Remocn repository code and docs",
+          "url": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/LICENSE",
+          "receipt": "receipts/source/LICENSE",
+          "condition": "Retain Remocn copyright and permission notice for copied or substantial adapted code."
+        },
+        {
+          "license": "Remotion License",
+          "scope": "Runtime dependency; not covered by Remocn MIT",
+          "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
+          "receipt": "receipts/remotion-LICENSE",
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
+        }
+      ],
+      "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
+      "inspectionStatus": "source-and-public-rendered-interaction-reviewed",
+      "sourceInspection": {
+        "status": "public-source-read",
+        "receipt": "reference/expansion/skiper/receipts/numeric-family/hand-count.tsx.txt"
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/hand-count-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/hand-count-390-actions.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/hand-count-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/hand-count-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "animated-number"
+        ],
+        "treatment": "steps",
+        "sourceContract": "Pinned source quantizes count timing, redraws each glyph with seeded rotation/vertical pose, supports toFixed decimal prefix/suffix, and freezes on its exact target in a Caveat scene.",
+        "usefulDifferences": "Twelve authored poses use inherited Cojeev typography, Intl formatting, monotonic actual values and a stable final target. Each update is finite and honors shared quiet/visibility.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "remocn:value-swap",
+      "sourceName": "Value Swap",
+      "category": "Typography",
+      "pageUrl": "https://remocn.dev/docs/typography/value-swap",
+      "codeUrl": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/registry/remocn/value-swap/index.tsx",
+      "licenseEvidence": [
+        {
+          "license": "MIT",
+          "scope": "Remocn repository code and docs",
+          "url": "https://github.com/Remocn/remocn/blob/3e03565f5c0001e143c2ed941eea7c3181f13260/LICENSE",
+          "receipt": "receipts/source/LICENSE",
+          "condition": "Retain Remocn copyright and permission notice for copied or substantial adapted code."
+        },
+        {
+          "license": "Remotion License",
+          "scope": "Runtime dependency; not covered by Remocn MIT",
+          "url": "https://github.com/remotion-dev/remotion/blob/main/LICENSE.md",
+          "receipt": "receipts/remotion-LICENSE",
+          "condition": "Prefer native Cojeev implementation; installing or redistributing Remotion requires checking its own terms."
+        }
+      ],
+      "sourceRevision": "3e03565f5c0001e143c2ed941eea7c3181f13260",
+      "inspectionStatus": "source-and-public-rendered-interaction-reviewed",
+      "sourceInspection": {
+        "status": "public-source-read",
+        "receipt": "reference/expansion/skiper/receipts/numeric-family/value-swap.tsx.txt"
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/value-swap-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/value-swap-390-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/value-swap-late.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/value-swap-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/value-swap-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "word-relay"
+        ],
+        "treatment": "controlled index, split=phrase, direction=up/down",
+        "sourceContract": "Pinned source holds the widest string in an invisible sizer while outgoing and incoming strings slide vertically and fade at explicit frames. Public Draft → In review → Shipped stages and overlapping transition paint observed.",
+        "usefulDifferences": "Existing WordRelay already supplies controlled string exchange, real-time interruption, shared wrapping footprint, accessible current text and quiet handling. No duplicate numeric component or source change is needed.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    },
+    {
+      "id": "reactbits:count-up",
+      "sourceName": "Count Up",
+      "category": "Text Animations",
+      "pageUrl": "https://reactbits.dev/text-animations/count-up",
+      "codeUrl": "https://github.com/DavidHDev/react-bits/tree/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/src/ts-default/TextAnimations/CountUp",
+      "licenseEvidence": "https://github.com/DavidHDev/react-bits/blob/4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3/LICENSE.md",
+      "sourceRevision": "4bb4491b3879b115eb6758fae7f5b6c3ec7eb0a3",
+      "inspectionStatus": "source-and-public-rendered-interaction-reviewed",
+      "sourceInspection": {
+        "status": "public-source-read",
+        "receipt": "reference/expansion/skiper/receipts/numeric-family/count-up.tsx.txt"
+      },
+      "publicInspection": {
+        "status": "desktop-mobile-individually-reviewed",
+        "widths": [
+          1440,
+          390
+        ],
+        "receipts": [
+          "reference/expansion/skiper/receipts/numeric-family/count-up-1440-actions.json",
+          "reference/expansion/skiper/receipts/numeric-family/count-up-390-actions.json"
+        ],
+        "screenshots": [
+          "reference/expansion/skiper/receipts/numeric-family/count-up-1440-final.png",
+          "reference/expansion/skiper/receipts/numeric-family/count-up-390-final.png"
+        ]
+      },
+      "adaptation": {
+        "status": "original-native-adaptation-verified",
+        "nativeComponents": [
+          "animated-number"
+        ],
+        "treatment": "count with from",
+        "sourceContract": "Pinned source sets a Motion spring after in-view plus optional delay/startWhen, formats decimal precision and separator, and calls timed start/end callbacks. The live restart showed an intermediate 25 and later target 100; the 1.8s sample was still 97, not a settled endpoint.",
+        "usefulDifferences": "SSR exposes the final value, optional from supplies first visible entrance, updates reverse from current numeric value and duration is bounded rather than approximated by spring/timed callbacks. Native lifecycle cancels under offscreen/hidden/reduced/quiet states.",
+        "sourceCodeCopied": false,
+        "evidence": [
+          "output/playwright/expansion/numeric-family/results.json",
+          "output/playwright/expansion/numeric-family/supplement.json",
+          "tests/number-motion.test.ts"
+        ],
+        "scope": "Native reusable UI interpretation; no claim of upstream API/timeline/visual parity."
+      }
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "registry/cojeev/ui/animated-number.tsx",
+      "sha256": "09784c958402ebdc9d5242b5e31baa3135b3b2a20cde8b31136e1f101c80ef44"
+    },
+    {
+      "path": "registry/cojeev/styles/animated-number.css",
+      "sha256": "f5ec2e0a4e7c11fe2256889bac909fb580684681863679427677edb06c8d5348"
+    },
+    {
+      "path": "registry/cojeev/ui/number-input.tsx",
+      "sha256": "5580cab8735952e0824639bdef36833b96e22d5db51ec6dbf95bb90f90c33a04"
+    },
+    {
+      "path": "registry/cojeev/styles/number-input.css",
+      "sha256": "eea2655e494ecb29727464ca1c332e6511b0c41c8f9144142a736adebbd6d58b"
+    },
+    {
+      "path": "registry/cojeev/lib/number-motion.ts",
+      "sha256": "8f28d1b41fe2e2b0d85d52b65c010345234023e2b4257ff6685eecd5e2a6e060"
+    },
+    {
+      "path": "components/examples/numeric-values.tsx",
+      "sha256": "4847347a438fe815925fa686d41b136357cebad770119e00a0471739888882be"
+    },
+    {
+      "path": "tests/number-motion.test.ts",
+      "sha256": "23b80cf706b4b8b85013896bd6fa023fccbfa1d9f0785374261e48d04a5fc3a1"
+    }
+  ]
+}

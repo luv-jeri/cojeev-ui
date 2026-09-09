@@ -1,0 +1,81 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "orbit-images",
+  "title": "Orbit Images",
+  "description": "An orbit of supplied images frames stationary content.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/orbit-images.tsx",
+      "content": "\"use client\";\n/* eslint-disable @next/next/no-img-element -- This installable React source must work outside Next.js. */\nimport * as React from \"react\";\nimport { frame, cancelFrame } from \"motion\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\nimport { boundedNumber, orbitPoint } from \"@/lib/cojeev/reference-effect-geometry\";\nimport { cn } from \"@/lib/utils\";\nexport type OrbitImage = { src: string; alt: string };\nexport type OrbitImagesProps = React.ComponentProps<\"div\"> & { images: readonly OrbitImage[]; paused?: boolean; duration?: number; reverse?: boolean };\nexport function OrbitImages({ images, children, paused = false, duration = 24, reverse = false, className, ref, ...props }: OrbitImagesProps) {\n  const host = React.useRef<HTMLDivElement>(null), phase = React.useRef(0);\n  const { enabled, inView } = useMotionVisibility(host);\n  const running = enabled && inView && !paused && images.length > 1;\n  const cycle = boundedNumber(duration, 24, 6, 120);\n  React.useEffect(() => {\n    const element = host.current;\n    if (!element) return;\n    const items = Array.from(element.querySelectorAll<HTMLElement>(\"[data-orbit-item]\"));\n    const paint = () => items.forEach((item, i) => { const p = orbitPoint(phase.current + i / items.length, element.clientWidth, element.clientHeight); item.style.transform = `translate(${p.x}px,${p.y}px) translate(-50%,-50%)`; });\n    const observer = new ResizeObserver(paint); observer.observe(element); paint();\n    const tick = ({ delta }: { delta: number }) => { phase.current = (phase.current + Math.min(delta, 33) / (cycle * 1000) * (reverse ? -1 : 1)) % 1; paint(); };\n    if (running) frame.update(tick, true);\n    return () => { cancelFrame(tick); observer.disconnect(); };\n  }, [running, cycle, reverse, images.length]);\n  return <div {...props} ref={React.useCallback((node: HTMLDivElement | null) => { host.current = node; if (typeof ref === \"function\") return ref(node); if (ref) ref.current = node; }, [ref])} data-slot=\"orbit-images\" data-running={running ? \"true\" : \"false\"} className={cn(\"v-orbit-images\", className)}><div className=\"v-orbit-images__center\">{children}</div>{images.slice(0, 12).map((image, i) => <img data-orbit-item=\"\" key={`${i}:${image.src}`} src={image.src} alt={image.alt} className=\"v-orbit-images__image\" />)}</div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/orbit-images.css",
+      "content": "@layer cojeev-states {\n.v-orbit-images { position:relative; width:100%; min-width:0; height:340px; overflow:hidden; border-radius:24px; background:var(--v-beige); }\n.v-orbit-images__center { position:absolute; inset:25% 22%; display:grid; place-items:center; text-align:center; }\n.v-orbit-images__image { position:absolute; top:0; left:0; width:72px; height:88px; object-fit:cover; border-radius:12px; }\n@media(max-width:480px) { .v-orbit-images { height:280px; } .v-orbit-images__image { width:58px; height:72px; } }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/orbit-images.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/orbit-images.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Orbit Images",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "active",
+        "paused",
+        "reduced-motion"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "OrbitImagesProps",
+        "props": [
+          {
+            "name": "images",
+            "type": "readonly OrbitImage[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "reverse",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Creative",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,2 @@
+.v-ripple-distortion { --effect-accent:var(--v-pink); }
+.v-ripple-distortion canvas { display:block; }

@@ -1,0 +1,577 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-08T09:06:59.606875+00:00",
+  "title": "Design System: Cojeev UI",
+  "extensions": {
+    "colorMeta": {
+      "pink": {
+        "role": "primary",
+        "displayName": "Pink",
+        "tonalRamp": [
+          "oklch(0.15000 0.08319 343.655)",
+          "oklch(0.26429 0.08319 343.655)",
+          "oklch(0.37857 0.08319 343.655)",
+          "oklch(0.49286 0.08319 343.655)",
+          "oklch(0.60714 0.08319 343.655)",
+          "oklch(0.72143 0.08319 343.655)",
+          "oklch(0.83571 0.08319 343.655)",
+          "oklch(0.95000 0.08319 343.655)"
+        ]
+      },
+      "olive": {
+        "role": "secondary",
+        "displayName": "Olive",
+        "tonalRamp": [
+          "oklch(0.15000 0.09822 119.825)",
+          "oklch(0.26429 0.09822 119.825)",
+          "oklch(0.37857 0.09822 119.825)",
+          "oklch(0.49286 0.09822 119.825)",
+          "oklch(0.60714 0.09822 119.825)",
+          "oklch(0.72143 0.09822 119.825)",
+          "oklch(0.83571 0.09822 119.825)",
+          "oklch(0.95000 0.09822 119.825)"
+        ]
+      },
+      "blue": {
+        "role": "secondary",
+        "displayName": "Blue",
+        "tonalRamp": [
+          "oklch(0.15000 0.05129 260.434)",
+          "oklch(0.26429 0.05129 260.434)",
+          "oklch(0.37857 0.05129 260.434)",
+          "oklch(0.49286 0.05129 260.434)",
+          "oklch(0.60714 0.05129 260.434)",
+          "oklch(0.72143 0.05129 260.434)",
+          "oklch(0.83571 0.05129 260.434)",
+          "oklch(0.95000 0.05129 260.434)"
+        ]
+      },
+      "yellow": {
+        "role": "secondary",
+        "displayName": "Yellow",
+        "tonalRamp": [
+          "oklch(0.15000 0.13588 95.073)",
+          "oklch(0.26429 0.13588 95.073)",
+          "oklch(0.37857 0.13588 95.073)",
+          "oklch(0.49286 0.13588 95.073)",
+          "oklch(0.60714 0.13588 95.073)",
+          "oklch(0.72143 0.13588 95.073)",
+          "oklch(0.83571 0.13588 95.073)",
+          "oklch(0.95000 0.13588 95.073)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "oklch(0.15000 0.01995 84.590)",
+          "oklch(0.26429 0.01995 84.590)",
+          "oklch(0.37857 0.01995 84.590)",
+          "oklch(0.49286 0.01995 84.590)",
+          "oklch(0.60714 0.01995 84.590)",
+          "oklch(0.72143 0.01995 84.590)",
+          "oklch(0.83571 0.01995 84.590)",
+          "oklch(0.95000 0.01995 84.590)"
+        ]
+      },
+      "beige": {
+        "role": "neutral",
+        "displayName": "Beige",
+        "tonalRamp": [
+          "oklch(0.15000 0.01894 83.064)",
+          "oklch(0.26429 0.01894 83.064)",
+          "oklch(0.37857 0.01894 83.064)",
+          "oklch(0.49286 0.01894 83.064)",
+          "oklch(0.60714 0.01894 83.064)",
+          "oklch(0.72143 0.01894 83.064)",
+          "oklch(0.83571 0.01894 83.064)",
+          "oklch(0.95000 0.01894 83.064)"
+        ]
+      },
+      "beige-raised": {
+        "role": "neutral",
+        "displayName": "Beige Raised",
+        "tonalRamp": [
+          "oklch(0.15000 0.01886 83.064)",
+          "oklch(0.26429 0.01886 83.064)",
+          "oklch(0.37857 0.01886 83.064)",
+          "oklch(0.49286 0.01886 83.064)",
+          "oklch(0.60714 0.01886 83.064)",
+          "oklch(0.72143 0.01886 83.064)",
+          "oklch(0.83571 0.01886 83.064)",
+          "oklch(0.95000 0.01886 83.064)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "oklch(0.15000 0.00000 89.876)",
+          "oklch(0.26429 0.00000 89.876)",
+          "oklch(0.37857 0.00000 89.876)",
+          "oklch(0.49286 0.00000 89.876)",
+          "oklch(0.60714 0.00000 89.876)",
+          "oklch(0.72143 0.00000 89.876)",
+          "oklch(0.83571 0.00000 89.876)",
+          "oklch(0.95000 0.00000 89.876)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Text",
+        "tonalRamp": [
+          "oklch(0.15000 0.00520 17.733)",
+          "oklch(0.26429 0.00520 17.733)",
+          "oklch(0.37857 0.00520 17.733)",
+          "oklch(0.49286 0.00520 17.733)",
+          "oklch(0.60714 0.00520 17.733)",
+          "oklch(0.72143 0.00520 17.733)",
+          "oklch(0.83571 0.00520 17.733)",
+          "oklch(0.95000 0.00520 17.733)"
+        ]
+      },
+      "text-secondary": {
+        "role": "neutral",
+        "displayName": "Text Secondary",
+        "tonalRamp": [
+          "oklch(0.15000 0.01079 78.223)",
+          "oklch(0.26429 0.01079 78.223)",
+          "oklch(0.37857 0.01079 78.223)",
+          "oklch(0.49286 0.01079 78.223)",
+          "oklch(0.60714 0.01079 78.223)",
+          "oklch(0.72143 0.01079 78.223)",
+          "oklch(0.83571 0.01079 78.223)",
+          "oklch(0.95000 0.01079 78.223)"
+        ]
+      },
+      "dark-canvas": {
+        "role": "neutral",
+        "displayName": "Dark Canvas",
+        "tonalRamp": [
+          "oklch(0.15000 0.00669 78.159)",
+          "oklch(0.26429 0.00669 78.159)",
+          "oklch(0.37857 0.00669 78.159)",
+          "oklch(0.49286 0.00669 78.159)",
+          "oklch(0.60714 0.00669 78.159)",
+          "oklch(0.72143 0.00669 78.159)",
+          "oklch(0.83571 0.00669 78.159)",
+          "oklch(0.95000 0.00669 78.159)"
+        ]
+      },
+      "dark-beige": {
+        "role": "neutral",
+        "displayName": "Dark Beige",
+        "tonalRamp": [
+          "oklch(0.15000 0.00874 75.189)",
+          "oklch(0.26429 0.00874 75.189)",
+          "oklch(0.37857 0.00874 75.189)",
+          "oklch(0.49286 0.00874 75.189)",
+          "oklch(0.60714 0.00874 75.189)",
+          "oklch(0.72143 0.00874 75.189)",
+          "oklch(0.83571 0.00874 75.189)",
+          "oklch(0.95000 0.00874 75.189)"
+        ]
+      },
+      "dark-raised": {
+        "role": "neutral",
+        "displayName": "Dark Raised",
+        "tonalRamp": [
+          "oklch(0.15000 0.01081 73.466)",
+          "oklch(0.26429 0.01081 73.466)",
+          "oklch(0.37857 0.01081 73.466)",
+          "oklch(0.49286 0.01081 73.466)",
+          "oklch(0.60714 0.01081 73.466)",
+          "oklch(0.72143 0.01081 73.466)",
+          "oklch(0.83571 0.01081 73.466)",
+          "oklch(0.95000 0.01081 73.466)"
+        ]
+      },
+      "dark-text": {
+        "role": "neutral",
+        "displayName": "Dark Text",
+        "tonalRamp": [
+          "oklch(0.15000 0.01882 83.064)",
+          "oklch(0.26429 0.01882 83.064)",
+          "oklch(0.37857 0.01882 83.064)",
+          "oklch(0.49286 0.01882 83.064)",
+          "oklch(0.60714 0.01882 83.064)",
+          "oklch(0.72143 0.01882 83.064)",
+          "oklch(0.83571 0.01882 83.064)",
+          "oklch(0.95000 0.01882 83.064)"
+        ]
+      },
+      "dark-text-secondary": {
+        "role": "neutral",
+        "displayName": "Dark Text Secondary",
+        "tonalRamp": [
+          "oklch(0.15000 0.02221 79.058)",
+          "oklch(0.26429 0.02221 79.058)",
+          "oklch(0.37857 0.02221 79.058)",
+          "oklch(0.49286 0.02221 79.058)",
+          "oklch(0.60714 0.02221 79.058)",
+          "oklch(0.72143 0.02221 79.058)",
+          "oklch(0.83571 0.02221 79.058)",
+          "oklch(0.95000 0.02221 79.058)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Border",
+        "tonalRamp": [
+          "oklch(0.15000 0.02050 84.592)",
+          "oklch(0.26429 0.02050 84.592)",
+          "oklch(0.37857 0.02050 84.592)",
+          "oklch(0.49286 0.02050 84.592)",
+          "oklch(0.60714 0.02050 84.592)",
+          "oklch(0.72143 0.02050 84.592)",
+          "oklch(0.83571 0.02050 84.592)",
+          "oklch(0.95000 0.02050 84.592)"
+        ]
+      },
+      "control-edge": {
+        "role": "neutral",
+        "displayName": "Control Edge",
+        "tonalRamp": [
+          "oklch(0.15000 0.02636 88.287)",
+          "oklch(0.26429 0.02636 88.287)",
+          "oklch(0.37857 0.02636 88.287)",
+          "oklch(0.49286 0.02636 88.287)",
+          "oklch(0.60714 0.02636 88.287)",
+          "oklch(0.72143 0.02636 88.287)",
+          "oklch(0.83571 0.02636 88.287)",
+          "oklch(0.95000 0.02636 88.287)"
+        ]
+      },
+      "dark-border": {
+        "role": "neutral",
+        "displayName": "Dark Border",
+        "tonalRamp": [
+          "oklch(0.15000 0.01391 76.385)",
+          "oklch(0.26429 0.01391 76.385)",
+          "oklch(0.37857 0.01391 76.385)",
+          "oklch(0.49286 0.01391 76.385)",
+          "oklch(0.60714 0.01391 76.385)",
+          "oklch(0.72143 0.01391 76.385)",
+          "oklch(0.83571 0.01391 76.385)",
+          "oklch(0.95000 0.01391 76.385)"
+        ]
+      },
+      "focus-mulberry": {
+        "role": "primary",
+        "displayName": "Focus Mulberry",
+        "tonalRamp": [
+          "oklch(0.15000 0.13603 351.288)",
+          "oklch(0.26429 0.13603 351.288)",
+          "oklch(0.37857 0.13603 351.288)",
+          "oklch(0.49286 0.13603 351.288)",
+          "oklch(0.60714 0.13603 351.288)",
+          "oklch(0.72143 0.13603 351.288)",
+          "oklch(0.83571 0.13603 351.288)",
+          "oklch(0.95000 0.13603 351.288)"
+        ]
+      },
+      "danger-fill": {
+        "role": "tertiary",
+        "displayName": "Danger Fill",
+        "tonalRamp": [
+          "oklch(0.15000 0.18779 27.580)",
+          "oklch(0.26429 0.18779 27.580)",
+          "oklch(0.37857 0.18779 27.580)",
+          "oklch(0.49286 0.18779 27.580)",
+          "oklch(0.60714 0.18779 27.580)",
+          "oklch(0.72143 0.18779 27.580)",
+          "oklch(0.83571 0.18779 27.580)",
+          "oklch(0.95000 0.18779 27.580)"
+        ]
+      },
+      "danger-ink": {
+        "role": "tertiary",
+        "displayName": "Danger Ink",
+        "tonalRamp": [
+          "oklch(0.15000 0.15720 27.026)",
+          "oklch(0.26429 0.15720 27.026)",
+          "oklch(0.37857 0.15720 27.026)",
+          "oklch(0.49286 0.15720 27.026)",
+          "oklch(0.60714 0.15720 27.026)",
+          "oklch(0.72143 0.15720 27.026)",
+          "oklch(0.83571 0.15720 27.026)",
+          "oklch(0.95000 0.15720 27.026)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "hero": {
+        "displayName": "Hero",
+        "purpose": "Large product statements and expressive artifacts."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Major headings and numeric artifacts."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section starts."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base application reading."
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "The Body primitive."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Control text."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Secondary supporting information."
+      }
+    },
+    "shadows": [
+      {
+        "name": "float",
+        "value": "0 12px 32px -12px rgba(17,17,17,.18)",
+        "purpose": "Floating layers in light mode."
+      },
+      {
+        "name": "float-dark",
+        "value": "0 12px 32px -12px rgba(0,0,0,.6)",
+        "purpose": "Floating layers in dark mode."
+      },
+      {
+        "name": "lift",
+        "value": "0 1px 0 rgba(17,17,17,.06)",
+        "purpose": "Shallow lift edge."
+      },
+      {
+        "name": "none",
+        "value": "none",
+        "purpose": "Base surface elevation."
+      }
+    ],
+    "motion": [
+      {
+        "name": "spring-responsive",
+        "value": "type:spring; stiffness:360; damping:32; mass:0.85",
+        "purpose": "Shared responsive selection and interaction rhythm."
+      },
+      {
+        "name": "spring-expressive",
+        "value": "type:spring; stiffness:260; damping:22; mass:1",
+        "purpose": "Shared jelly, rubber, drop and pebble rhythm."
+      },
+      {
+        "name": "spring-gentle",
+        "value": "type:spring; stiffness:180; damping:28; mass:1",
+        "purpose": "Gentle authored movement."
+      },
+      {
+        "name": "ease-enter",
+        "value": "cubic-bezier(.2,.8,.2,1)",
+        "purpose": "Entrance easing."
+      },
+      {
+        "name": "ease-exit",
+        "value": "cubic-bezier(.4,0,1,1)",
+        "purpose": "Exit easing."
+      },
+      {
+        "name": "ease-settle",
+        "value": "cubic-bezier(.2,.65,.25,1)",
+        "purpose": "Shared settling easing."
+      },
+      {
+        "name": "duration-quick",
+        "value": "160ms",
+        "purpose": "Quick Motion transitions."
+      },
+      {
+        "name": "duration-enter",
+        "value": "320ms",
+        "purpose": "Shared Motion entrance duration."
+      },
+      {
+        "name": "duration-exit",
+        "value": "180ms",
+        "purpose": "Shared Motion exit duration."
+      },
+      {
+        "name": "stagger",
+        "value": "35ms",
+        "purpose": "Sibling choreography."
+      },
+      {
+        "name": "quiet",
+        "value": "duration:0; delay:0",
+        "purpose": "Shared reduced motion, Motion Off and Flow Off resolution."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-chat",
+        "value": "420px"
+      },
+      {
+        "name": "compact-docs",
+        "value": "600px"
+      },
+      {
+        "name": "component-small",
+        "value": "640px"
+      },
+      {
+        "name": "stacked-workspace-and-docs-navigation",
+        "value": "900px"
+      },
+      {
+        "name": "docs-compact-controls",
+        "value": "1100px"
+      },
+      {
+        "name": "docs-contents-rail",
+        "value": "1280px"
+      }
+    ],
+    "elevation": {
+      "base": 0,
+      "sticky": 10,
+      "dock": 20,
+      "sheet": 30,
+      "assist": 35,
+      "dialog": 40,
+      "popover": 45,
+      "toast": 50,
+      "tooltip": 60
+    }
+  },
+  "components": [
+    {
+      "name": "Button / Default",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "Extracted Button color and CSS interaction states; React contour and press choreography require the registry component.",
+      "html": "<button class=\"ds-button ds-default\" type=\"button\">Continue</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2,8px);height:var(--ctl-md,40px);padding:0 var(--s-5,20px);border:0;border-radius:var(--r-pill,999px);font-family:var(--font-text,DM Sans,sans-serif);font-size:var(--fs-control,14px);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background var(--t-micro,120ms) var(--enter,ease),transform var(--t-micro,120ms) var(--enter,ease)}.ds-button:focus-visible{outline:2px solid var(--ring,#9C3E6E);outline-offset:2px}.ds-button:active:not(:disabled){transform:translateY(1px)}.ds-button:disabled{background:var(--v-disabled-face,#EDE6D7);color:var(--v-disabled-ink,#6A635B);box-shadow:inset 0 0 0 1px var(--v-disabled-edge,#877F6F);cursor:not-allowed;transform:none}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:active:not(:disabled){transform:none}}.ds-default{background:var(--primary,#111111);color:var(--primary-foreground,#FBF4E6)}.ds-default:hover:not(:disabled){background:color-mix(in oklab,var(--primary,#111111) 88%,var(--v-canvas,#FBF4E6))}:host-context([data-mode=\"dark\"]) .ds-default:not(:disabled){background:var(--v-pink,#F5B8DB);color:var(--v-on-accent,#111111)}"
+    },
+    {
+      "name": "Button / Accent",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "Extracted Button color and CSS interaction states; React contour and press choreography require the registry component.",
+      "html": "<button class=\"ds-button ds-accent\" type=\"button\">Continue</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2,8px);height:var(--ctl-md,40px);padding:0 var(--s-5,20px);border:0;border-radius:var(--r-pill,999px);font-family:var(--font-text,DM Sans,sans-serif);font-size:var(--fs-control,14px);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background var(--t-micro,120ms) var(--enter,ease),transform var(--t-micro,120ms) var(--enter,ease)}.ds-button:focus-visible{outline:2px solid var(--ring,#9C3E6E);outline-offset:2px}.ds-button:active:not(:disabled){transform:translateY(1px)}.ds-button:disabled{background:var(--v-disabled-face,#EDE6D7);color:var(--v-disabled-ink,#6A635B);box-shadow:inset 0 0 0 1px var(--v-disabled-edge,#877F6F);cursor:not-allowed;transform:none}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:active:not(:disabled){transform:none}}.ds-accent{background:var(--v-pink,#F5B8DB);color:var(--v-on-accent,#111111)}.ds-accent:hover:not(:disabled){background:var(--v-pink-deep,#E09CC1)}"
+    },
+    {
+      "name": "Button / Secondary",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Extracted Button color and CSS interaction states; React contour and press choreography require the registry component.",
+      "html": "<button class=\"ds-button ds-secondary\" type=\"button\">Continue</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2,8px);height:var(--ctl-md,40px);padding:0 var(--s-5,20px);border:0;border-radius:var(--r-pill,999px);font-family:var(--font-text,DM Sans,sans-serif);font-size:var(--fs-control,14px);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background var(--t-micro,120ms) var(--enter,ease),transform var(--t-micro,120ms) var(--enter,ease)}.ds-button:focus-visible{outline:2px solid var(--ring,#9C3E6E);outline-offset:2px}.ds-button:active:not(:disabled){transform:translateY(1px)}.ds-button:disabled{background:var(--v-disabled-face,#EDE6D7);color:var(--v-disabled-ink,#6A635B);box-shadow:inset 0 0 0 1px var(--v-disabled-edge,#877F6F);cursor:not-allowed;transform:none}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:active:not(:disabled){transform:none}}.ds-secondary{background:var(--v-beige,#EEE7DA);color:var(--v-text,#0E0B0B);box-shadow:inset 0 0 0 1px var(--v-text-2,#5F5B55)}.ds-secondary:hover:not(:disabled){background:color-mix(in oklab,var(--v-beige,#EEE7DA) 92%,var(--v-ink,#111111));box-shadow:inset 0 0 0 1px var(--v-text,#0E0B0B)}"
+    },
+    {
+      "name": "Button / Ghost",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Extracted Button color and CSS interaction states; React contour and press choreography require the registry component.",
+      "html": "<button class=\"ds-button ds-ghost\" type=\"button\">Continue</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2,8px);height:var(--ctl-md,40px);padding:0 var(--s-5,20px);border:0;border-radius:var(--r-pill,999px);font-family:var(--font-text,DM Sans,sans-serif);font-size:var(--fs-control,14px);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background var(--t-micro,120ms) var(--enter,ease),transform var(--t-micro,120ms) var(--enter,ease)}.ds-button:focus-visible{outline:2px solid var(--ring,#9C3E6E);outline-offset:2px}.ds-button:active:not(:disabled){transform:translateY(1px)}.ds-button:disabled{background:var(--v-disabled-face,#EDE6D7);color:var(--v-disabled-ink,#6A635B);box-shadow:inset 0 0 0 1px var(--v-disabled-edge,#877F6F);cursor:not-allowed;transform:none}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:active:not(:disabled){transform:none}}.ds-ghost{background:transparent;color:var(--v-text,#0E0B0B)}.ds-ghost:hover:not(:disabled){background:var(--v-beige,#EEE7DA)}"
+    },
+    {
+      "name": "Button / Outline",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Extracted Button color and CSS interaction states; React contour and press choreography require the registry component.",
+      "html": "<button class=\"ds-button ds-outline\" type=\"button\">Continue</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2,8px);height:var(--ctl-md,40px);padding:0 var(--s-5,20px);border:0;border-radius:var(--r-pill,999px);font-family:var(--font-text,DM Sans,sans-serif);font-size:var(--fs-control,14px);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background var(--t-micro,120ms) var(--enter,ease),transform var(--t-micro,120ms) var(--enter,ease)}.ds-button:focus-visible{outline:2px solid var(--ring,#9C3E6E);outline-offset:2px}.ds-button:active:not(:disabled){transform:translateY(1px)}.ds-button:disabled{background:var(--v-disabled-face,#EDE6D7);color:var(--v-disabled-ink,#6A635B);box-shadow:inset 0 0 0 1px var(--v-disabled-edge,#877F6F);cursor:not-allowed;transform:none}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:active:not(:disabled){transform:none}}.ds-outline{background:transparent;color:var(--v-text,#0E0B0B);box-shadow:inset 0 0 0 1px var(--v-border,#D9D2C4)}.ds-outline:hover:not(:disabled){background:var(--v-beige-2,#F3ECDF)}"
+    },
+    {
+      "name": "Button / Danger",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Extracted Button color and CSS interaction states; React contour and press choreography require the registry component.",
+      "html": "<button class=\"ds-button ds-danger\" type=\"button\">Delete draft</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2,8px);height:var(--ctl-md,40px);padding:0 var(--s-5,20px);border:0;border-radius:var(--r-pill,999px);font-family:var(--font-text,DM Sans,sans-serif);font-size:var(--fs-control,14px);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background var(--t-micro,120ms) var(--enter,ease),transform var(--t-micro,120ms) var(--enter,ease)}.ds-button:focus-visible{outline:2px solid var(--ring,#9C3E6E);outline-offset:2px}.ds-button:active:not(:disabled){transform:translateY(1px)}.ds-button:disabled{background:var(--v-disabled-face,#EDE6D7);color:var(--v-disabled-ink,#6A635B);box-shadow:inset 0 0 0 1px var(--v-disabled-edge,#877F6F);cursor:not-allowed;transform:none}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}.ds-button:active:not(:disabled){transform:none}}.ds-danger{background:var(--v-danger-fill,#C9332D);color:var(--destructive-foreground,#fff)}.ds-danger:hover:not(:disabled){background:color-mix(in oklab,var(--v-danger-fill,#C9332D) 88%,black)}"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Native labelled field with focus tint, explicit edge and disabled styling.",
+      "html": "<input class=\"ds-input\" aria-label=\"Workspace name\" placeholder=\"Workspace name\" />",
+      "css": ".ds-input{box-sizing:border-box;width:100%;min-width:0;height:48px;padding:0 18px;border:0;border-radius:var(--r-pill,999px);background:var(--input,#EEE7DA);color:var(--v-text,#0E0B0B);font-family:var(--font-text,DM Sans,sans-serif);font-size:var(--fs-body,15px);box-shadow:inset 0 0 0 1px var(--v-edge,#87806F);transition:background var(--t-micro,120ms),box-shadow var(--t-micro,120ms)}.ds-input::placeholder{color:var(--v-text-2,#5F5B55)}.ds-input:hover:not(:focus){background:color-mix(in oklab,var(--input,#EEE7DA) 92%,var(--v-canvas,#FBF4E6))}.ds-input:focus-visible,.ds-input:focus{outline:0;background:var(--v-pink-soft,color-mix(in oklab,var(--v-pink,#F5B8DB) 55%,var(--v-canvas,#FBF4E6)));box-shadow:inset 0 0 0 2px var(--v-brand,#9C3E6E)}:host-context([data-mode=\"dark\"]) .ds-input{background:var(--v-beige,#221F1B);box-shadow:inset 0 0 0 1px var(--v-border,#3A352E)}:host-context([data-mode=\"dark\"]) .ds-input:focus{background:color-mix(in oklab,var(--v-pink,#F5B8DB) 14%,var(--v-canvas,#171512));box-shadow:inset 0 0 0 2px var(--v-pink,#F5B8DB)}.ds-input:disabled{background:var(--v-disabled-face,#EDE6D7);color:var(--v-disabled-ink,#6A635B);box-shadow:inset 0 0 0 1px var(--v-disabled-edge,#877F6F);cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-input{transition:none}}"
+    },
+    {
+      "name": "Sidebar navigation",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Ink product rail and active destination; docs applies its own paper-rail composition.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Workspace\"><a class=\"ds-nav-link\" href=\"#work\" aria-current=\"page\">Work</a><a class=\"ds-nav-link\" href=\"#memory\">Memory</a></nav>",
+      "css": ".ds-nav{display:grid;gap:var(--s-2,8px);padding:var(--s-4,16px);background:var(--v-structure,#111111);border-radius:var(--r-panel,24px);font-family:var(--font-text,DM Sans,sans-serif)}.ds-nav-link{display:flex;align-items:center;gap:var(--s-4,16px);height:var(--nav-row,40px);padding:0 var(--s-3,12px) 0 var(--s-5,20px);border-radius:var(--r-md,12px);color:var(--on-structure,#FBF4E6);font-size:var(--fs-body,15px);text-decoration:none;transition:background var(--t-micro,120ms)}.ds-nav-link[aria-current=\"page\"]{color:var(--v-pink,#F5B8DB);background:var(--rail-sel,rgba(251,244,230,.1))}.ds-nav-link:hover{background:var(--rail-hover,rgba(251,244,230,.055))}.ds-nav-link:focus-visible{outline:2px solid var(--ring,#9C3E6E);outline-offset:2px}@media(prefers-reduced-motion:reduce){.ds-nav-link{transition:none}}"
+    },
+    {
+      "name": "Pink badge",
+      "kind": "chip",
+      "refersTo": "badge-pink",
+      "description": "A static category label with fixed dark ink on the identity accent.",
+      "html": "<span class=\"ds-badge\">In progress</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:26px;padding:0 11px;border-radius:var(--r-pill,999px);background:var(--v-pink,#F5B8DB);color:var(--v-on-accent,#111111);font-family:var(--font-text,DM Sans,sans-serif);font-size:12.5px;font-weight:500;line-height:1;letter-spacing:.005em;white-space:nowrap}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A tonal container with a local title and secondary foreground; static by default.",
+      "html": "<article class=\"ds-card\"><h3 class=\"ds-card-title\">Weekly overview</h3><p class=\"ds-card-description\">A bounded surface for related activity and decisions.</p></article>",
+      "css": ".ds-card{position:relative;min-width:0;overflow:hidden;padding:var(--card-pad,24px);border-radius:var(--r-card,20px);background:var(--card,#EEE7DA);color:var(--card-foreground,#0E0B0B);font-family:var(--font-text,DM Sans,sans-serif)}.ds-card-title{margin:0 0 var(--s-4,16px);font-size:16px;font-weight:600;line-height:1.2;letter-spacing:-.012em;overflow-wrap:anywhere}.ds-card-description{margin:0;font-size:var(--fs-body,15px);line-height:1.5;color:var(--v-text-2,#5F5B55);overflow-wrap:anywhere}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Warm paper, precise ink, living contours",
+    "overview": "Cojeev pairs warm paper surfaces and precise ink typography with soft pink, olive, blue and yellow accents. Organic contours give controls and agent states a recognizable character while clear text, deliberate spacing and explicit state feedback keep monitoring and decisions legible. This continues the established Intelly and Cojeev handoff direction while allowing the component system to evolve.\n\nThe interface has two complementary modes: calm reading surfaces for documentation and tactile operating surfaces for actions. Motion for React provides shared springs, selection travel and reusable presence; bespoke SVG geometry supplies fluid edges and expressive fields. Chromatic gradients, masks and restrained spatial depth are part of this vocabulary where the component implements them.",
+    "keyCharacteristics": [
+      "Warm neutral surfaces with paired, theme-aware foregrounds.",
+      "Bricolage Grotesque headings with DM Sans reading and controls.",
+      "A shared 4px spacing rhythm with bounded, content-driven compositions.",
+      "Pills, rounded containers and authored organic silhouettes.",
+      "Native interaction semantics beneath expressive motion."
+    ],
+    "rules": [
+      {
+        "name": "The Paired Surface Rule",
+        "body": "Choose foreground and surface together. Accent fills retain fixed dark ink; theme-aware neutral surfaces use their matching text roles.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Paint Rule",
+        "body": "Decorative paint above content stays translucent or clear of the text. Selection, hover and disabled state must remain distinguishable without obscuring labels.",
+        "section": "colors"
+      },
+      {
+        "name": "The Reading First Rule",
+        "body": "Headings establish hierarchy; animation never becomes the only way to expose essential reading content.",
+        "section": "typography"
+      },
+      {
+        "name": "The Owned Depth Rule",
+        "body": "Depth belongs to the component that implements it. Keep its foreground, watermark and pointer light on distinct planes; avoid two motion owners writing the same transform.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do pair each colored or dark surface with its explicit foreground role, including nested descriptions and icons.",
+      "Do use the shared spacing, corner and focus vocabulary, with flexible text and content-driven heights for long content.",
+      "Do compose agent and other compound patterns from the registry primitives and keep demo activity visibly labelled.",
+      "Do place stable keys at real removal boundaries when using MotionPresence, and retain native pointer, keyboard and touch behavior.",
+      "Do check the actual rendered light, dark, small-screen and quiet-motion states when adding or changing a component."
+    ],
+    "donts": [
+      "Don't turn the documentation rail or a single workspace composition into a mandatory layout for every product surface.",
+      "Don't use decorative paint, clipped containers or motion to conceal text, focus, scroll affordances or disabled state.",
+      "Don't replace an explicit documented shape variant with a generic morph silhouette.",
+      "Don't assume a lifecycle wrapper proves every nested interaction, or describe a local simulation as a connected agent backend."
+    ]
+  }
+}

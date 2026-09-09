@@ -1,0 +1,139 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "semantic-bloom",
+  "title": "Semantic bloom",
+  "description": "A living wordmark whose particles wander, connect and gather into a liquid organism. Adapted from ThreeUI with Cojeev colors and motion controls.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/semantic-bloom.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { BloomSimulation, bloomNumber, type BloomOptions, type BloomPoint } from \"@/lib/cojeev/bloom-engine\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\n\nexport type SemanticBloomControls = { gather: () => void; scatter: () => void; reset: () => void };\nexport type SemanticBloomProps = Omit<React.ComponentProps<\"div\">, \"children\" | \"ref\"> & {\n  /** Readable DOM wordmark. Whitespace and long text wrap naturally. */\n  text?: string;\n  /** Cojeev color presets. Inherits the surrounding light/dark theme. */\n  tone?: \"signature\" | \"memory\" | \"together\" | \"ink\";\n  /** Wordmark scale, 0.55–1.6. */\n  size?: number;\n  /** Canvas opacity, 0–1; text always remains readable. */\n  opacity?: number;\n  /** Freeze decorative movement and pointer response. */\n  paused?: boolean;\n  /** Enable local pointer attraction without capturing scroll or clicks. */\n  interactive?: boolean;\n  /** Editable simulation forces, distances and density. */\n  physics?: BloomOptions;\n  /** Liquid edge blur, 0–20 CSS pixels. Default 12 (upstream). */\n  softness?: number;\n  /** Organic edge displacement, 0–40. Default 20 (upstream). */\n  edgeTexture?: number;\n  /** Connection stroke width, 0–8 CSS pixels. Default 4. */\n  connectionWidth?: number;\n  /** Repeatable initial particle arrangement. */\n  seed?: number;\n  /** Imperative commands for native buttons or application events. */\n  controlsRef?: React.Ref<SemanticBloomControls>;\n  /** Optional decorative word proximity event; does not represent semantic understanding. */\n  onWordActive?: (word: string, index: number) => void;\n};\n\ntype Runtime = SemanticBloomControls & {\n  configure: (options: BloomOptions, connectionWidth: number) => void;\n  play: (moving: boolean) => void;\n  measure: () => void;\n  pointer: (point: BloomPoint | null) => void;\n  destroy: () => void;\n};\n\nfunction mountBloom(host: HTMLDivElement, canvas: HTMLCanvasElement, wordmark: HTMLDivElement, seed: number,\n  onWord: (word: string, index: number) => void): Runtime | null {\n  const context = canvas.getContext(\"2d\");\n  if (!context) return null;\n  let simulation = new BloomSimulation(Math.max(1, host.clientWidth), Math.max(1, host.clientHeight), {}, seed);\n  let words: (BloomPoint & { element: HTMLElement; active: boolean })[] = [];\n  let pointer: BloomPoint | null = null;\n  let colors = [\"#F5B8DB\"];\n  let connection = \"#9AAB63\";\n  let connectionWidth = 4;\n  let frame = 0;\n  let previous = 0;\n  let moving = false;\n  let disposed = false;\n\n  function palette() {\n    const style = getComputedStyle(host);\n    colors = [0, 1, 2, 3].map(i => style.getPropertyValue(`--bloom-color-${i}`).trim() || \"#F5B8DB\");\n    connection = style.getPropertyValue(\"--bloom-connection\").trim() || colors[0];\n  }\n\n  function draw() {\n    if (!context || disposed) return;\n    context.clearRect(0, 0, simulation.width, simulation.height);\n    const particles = simulation.particles;\n    context.lineWidth = connectionWidth;\n    // Preserve the source's particle/connection pass ordering and alpha values.\n    for (let i = 0; i < particles.length; i++) {\n      const p = particles[i];\n      context.globalAlpha = 0.8;\n      context.fillStyle = colors[p.color];\n      context.beginPath(); context.arc(p.x, p.y, p.radius, 0, Math.PI * 2); context.fill();\n      context.globalAlpha = 0.15;\n      context.strokeStyle = connection;\n      if (connectionWidth > 0) for (let j = i + 1; j < particles.length; j++) {\n        const other = particles[j];\n        if (Math.hypot(p.x - other.x, p.y - other.y) < simulation.options.connectionDistance) {\n          context.beginPath(); context.moveTo(p.x, p.y); context.lineTo(other.x, other.y); context.stroke();\n        }\n      }\n    }\n    context.globalAlpha = 1;\n    words.forEach((word, index) => {\n      const distance = Math.min(...particles.map(p => Math.hypot(p.x - word.x, p.y - word.y)));\n      const active = distance < (word.active ? 60 : 30);\n      if (word.active !== active) {\n        word.active = active; word.element.dataset.active = String(active);\n        if (active) onWord(word.element.textContent ?? \"\", index);\n      }\n    });\n  }\n\n  function measure() {\n    if (disposed || !context) return;\n    const rect = host.getBoundingClientRect();\n    const width = Math.max(1, host.clientWidth), height = Math.max(1, host.clientHeight);\n    // Cap backing-store area for large host surfaces as well as high DPR.\n    const dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(2_000_000 / (width * height)));\n    simulation.resize(width, height);\n    canvas.width = Math.max(1, Math.round(width * dpr)); canvas.height = Math.max(1, Math.round(height * dpr));\n    context.setTransform(canvas.width / width, 0, 0, canvas.height / height, 0, 0);\n    words = Array.from(wordmark.querySelectorAll<HTMLElement>(\"[data-bloom-word]\")).map(element => {\n      const word = element.getBoundingClientRect();\n      return { x: word.left - rect.left - host.clientLeft + word.width / 2, y: word.top - rect.top - host.clientTop + word.height / 2, element, active: false };\n    });\n    draw();\n  }\n\n  function tick(now: number) {\n    frame = 0;\n    if (!moving || disposed) return;\n    if (previous) simulation.advance((now - previous) / 1000, words, pointer);\n    previous = now; draw();\n    frame = requestAnimationFrame(tick);\n  }\n\n  const resize = new ResizeObserver(measure);\n  resize.observe(host); resize.observe(wordmark);\n  const theme = new MutationObserver(() => { palette(); draw(); });\n  // A nested theme boundary is as valid as the document theme.\n  for (let element: HTMLElement | null = host; element; element = element.parentElement) {\n    const attributeFilter = [\"data-mode\", \"data-palette\", \"data-contrast\", \"class\"];\n    if (element === host || element === document.documentElement) attributeFilter.push(\"style\");\n    theme.observe(element, { attributes: true, attributeFilter });\n  }\n  const fontsChanged = () => measure();\n  document.fonts?.addEventListener(\"loadingdone\", fontsChanged);\n  void document.fonts?.ready.then(() => { if (!disposed) measure(); });\n  palette(); measure();\n  return {\n    configure(options, width) { simulation.configure(options); connectionWidth = width; palette(); measure(); },\n    play(value) {\n      moving = value;\n      if (!value) { cancelAnimationFrame(frame); frame = 0; previous = 0; pointer = null; }\n      else if (!frame) frame = requestAnimationFrame(tick);\n    },\n    measure,\n    pointer(point) { pointer = moving ? point : null; },\n    gather() { simulation.gather(); if (!moving) { simulation.settle(words); draw(); } },\n    scatter() { simulation.scatter(); draw(); },\n    reset() { simulation = new BloomSimulation(simulation.width, simulation.height, simulation.options, seed); previous = 0; pointer = null; draw(); },\n    destroy() {\n      disposed = true; cancelAnimationFrame(frame); resize.disconnect(); theme.disconnect();\n      document.fonts?.removeEventListener(\"loadingdone\", fontsChanged);\n      canvas.width = 1; canvas.height = 1;\n    },\n  };\n}\n\nconst DEFAULT_PHYSICS: BloomOptions = {};\n\nexport function SemanticBloom({ text = \"Cojeev\", tone = \"signature\", size = 1, opacity = 0.9,\n  paused = false, interactive = true, physics = DEFAULT_PHYSICS, softness = 12, edgeTexture = 20,\n  connectionWidth = 4, seed = 42, controlsRef, onWordActive, className, style,\n  onPointerMove, onPointerLeave, onPointerCancel, onPointerUp, ...props }: SemanticBloomProps) {\n  const host = React.useRef<HTMLDivElement>(null);\n  const canvas = React.useRef<HTMLCanvasElement>(null);\n  const wordmark = React.useRef<HTMLDivElement>(null);\n  const runtime = React.useRef<Runtime | null>(null);\n  const callback = React.useRef(onWordActive);\n  const [renderer, setRenderer] = React.useState<\"still\" | \"canvas\" | \"fallback\">(\"still\");\n  const { enabled, inView } = useMotionVisibility(host);\n  const moving = enabled && inView && !paused && bloomNumber(physics.speed, 1, 0, 2) > 0;\n  const id = `bloom-${React.useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n  const safeSeed = bloomNumber(seed, 42, 0, 4294967295);\n\n  React.useEffect(() => { callback.current = onWordActive; }, [onWordActive]);\n  React.useEffect(() => {\n    if (!host.current || !canvas.current || !wordmark.current) return;\n    runtime.current = mountBloom(host.current, canvas.current, wordmark.current, safeSeed,\n      (word, index) => callback.current?.(word, index));\n    setRenderer(runtime.current ? \"canvas\" : \"fallback\");\n    return () => { runtime.current?.destroy(); runtime.current = null; };\n  }, [safeSeed]);\n  React.useEffect(() => {\n    runtime.current?.configure(physics, bloomNumber(connectionWidth, 4, 0, 8));\n    runtime.current?.play(moving);\n    if (!interactive) runtime.current?.pointer(null);\n  }, [physics, connectionWidth, moving, interactive, tone, text, size, safeSeed]);\n  React.useImperativeHandle(controlsRef, () => ({\n    gather: () => runtime.current?.gather(), scatter: () => runtime.current?.scatter(), reset: () => runtime.current?.reset(),\n  }), []);\n\n  return <div {...props} ref={host} data-slot=\"semantic-bloom\" data-tone={tone} data-renderer={renderer}\n    data-moving={moving && renderer === \"canvas\" ? \"true\" : \"false\"} className={cn(\"v-semantic-bloom\", className)}\n    style={{ \"--bloom-size\": bloomNumber(size, 1, 0.55, 1.6), \"--bloom-opacity\": bloomNumber(opacity, 0.9, 0, 1), ...style } as React.CSSProperties}\n    onPointerMove={event => {\n      onPointerMove?.(event);\n      if (event.defaultPrevented || !interactive) return;\n      const rect = event.currentTarget.getBoundingClientRect();\n      runtime.current?.pointer({ x: event.clientX - rect.left - event.currentTarget.clientLeft, y: event.clientY - rect.top - event.currentTarget.clientTop });\n    }}\n    onPointerLeave={event => { onPointerLeave?.(event); runtime.current?.pointer(null); }}\n    onPointerCancel={event => { onPointerCancel?.(event); runtime.current?.pointer(null); }}\n    onPointerUp={event => { onPointerUp?.(event); if (event.pointerType !== \"mouse\") runtime.current?.pointer(null); }}>\n    <svg className=\"v-semantic-bloom__defs\" aria-hidden=\"true\" focusable=\"false\"><defs>\n      <filter id={id} x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\" colorInterpolationFilters=\"sRGB\">\n        <feGaussianBlur in=\"SourceGraphic\" stdDeviation={bloomNumber(softness, 12, 0, 20)} result=\"blur\" />\n        <feColorMatrix in=\"blur\" type=\"matrix\" values=\"1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9\" result=\"goo\" />\n        <feTurbulence type=\"fractalNoise\" baseFrequency=\"0.01\" numOctaves=\"3\" result=\"noise\" />\n        <feDisplacementMap in=\"goo\" in2=\"noise\" scale={bloomNumber(edgeTexture, 20, 0, 40)} xChannelSelector=\"R\" yChannelSelector=\"G\" />\n        <feComposite in=\"SourceGraphic\" operator=\"atop\" />\n      </filter>\n    </defs></svg>\n    <span data-slot=\"bloom-fallback\" aria-hidden=\"true\" />\n    <canvas ref={canvas} aria-hidden=\"true\" data-slot=\"bloom-canvas\" style={{ filter: `url(#${id}) contrast(150%) brightness(100%)` }} />\n    <div ref={wordmark} data-slot=\"bloom-wordmark\">{text.split(/(\\s+)/).map((word, index) => word.trim()\n      ? <span key={index} data-bloom-word>{word}</span> : word)}</div>\n  </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/semantic-bloom.css",
+      "content": "@layer cojeev-states {\n.v-semantic-bloom {\n  --bloom-color-0:var(--v-pink); --bloom-color-1:var(--v-pink);\n  --bloom-color-2:var(--v-pink); --bloom-color-3:var(--v-pink);\n  --bloom-connection:var(--v-pink);\n  position:relative; isolation:isolate; container-type:inline-size;\n  width:100%; min-width:0; min-height:360px; overflow:hidden;\n  display:grid; place-items:center; border-radius:var(--r-panel,24px);\n  background:var(--v-canvas); color:var(--v-text); touch-action:pan-y;\n}\n.v-semantic-bloom[data-tone=\"memory\"] {\n  --bloom-color-0:var(--v-olive); --bloom-color-1:var(--v-olive);\n  --bloom-color-2:var(--v-olive); --bloom-color-3:var(--v-olive);\n  --bloom-connection:var(--v-olive);\n}\n.v-semantic-bloom[data-tone=\"together\"] {\n  --bloom-color-0:var(--v-pink); --bloom-color-1:var(--v-olive);\n  --bloom-color-2:var(--v-blue); --bloom-color-3:var(--v-yellow);\n  --bloom-connection:var(--v-blue);\n}\n.v-semantic-bloom[data-tone=\"ink\"] {\n  --bloom-color-0:var(--v-text-2); --bloom-color-1:var(--v-text-2);\n  --bloom-color-2:var(--v-text-2); --bloom-color-3:var(--v-text-2);\n  --bloom-connection:var(--v-text-2);\n}\n.v-semantic-bloom__defs { position:absolute; width:0; height:0; pointer-events:none; }\n.v-semantic-bloom [data-slot=\"bloom-canvas\"] {\n  position:absolute; inset:0; width:100%; height:100%; pointer-events:none;\n  opacity:var(--bloom-opacity,.9);\n}\n.v-semantic-bloom [data-slot=\"bloom-wordmark\"] {\n  position:relative; z-index:1; min-width:0; max-width:100%;\n  padding:48px 24px; text-align:center; white-space:pre-wrap; overflow-wrap:anywhere;\n  font-family:var(--font-display,\"Bricolage Grotesque\",sans-serif);\n  font-size:clamp(2rem,calc(12cqi * var(--bloom-size,1)),8rem);\n  font-weight:500; line-height:1.1; letter-spacing:-.035em;\n  color:var(--v-text);\n  text-shadow:0 1px 0 var(--v-canvas),0 -1px 0 var(--v-canvas),1px 0 0 var(--v-canvas),-1px 0 0 var(--v-canvas);\n}\n.v-semantic-bloom [data-bloom-word] { transition:text-shadow .5s ease; }\n.v-semantic-bloom [data-bloom-word][data-active=\"true\"] {\n  text-shadow:0 1px 0 var(--v-canvas),0 -1px 0 var(--v-canvas),1px 0 0 var(--v-canvas),-1px 0 0 var(--v-canvas),0 0 18px var(--v-canvas);\n}\n.v-semantic-bloom [data-slot=\"bloom-fallback\"] {\n  position:absolute; width:100px; height:90px; pointer-events:none;\n  border-radius:44% 56% 60% 40% / 58% 41% 59% 42%;\n  background:var(--bloom-color-0); opacity:var(--bloom-opacity,.9);\n}\n.v-semantic-bloom[data-renderer=\"canvas\"] [data-slot=\"bloom-fallback\"] { display:none; }\n.v-semantic-bloom[data-moving=\"false\"] [data-bloom-word] { transition:none; }\n@media (max-width:600px) { .v-semantic-bloom { min-height:280px; } }\n@media (prefers-reduced-motion:reduce) { .v-semantic-bloom [data-bloom-word] { transition:none; } }\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/semantic-bloom.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/semantic-bloom.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Semantic bloom",
+      "variants": [
+        "signature",
+        "memory",
+        "together",
+        "ink"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "moving",
+        "paused",
+        "pointer-attraction",
+        "gathering",
+        "scattered",
+        "reduced-motion",
+        "fallback"
+      ],
+      "reviewOnly": true
+    },
+    "api": [
+      {
+        "name": "SemanticBloomProps",
+        "props": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": false,
+            "description": "Readable DOM wordmark. Whitespace and long text wrap naturally."
+          },
+          {
+            "name": "tone",
+            "type": "\"signature\" | \"memory\" | \"together\" | \"ink\"",
+            "required": false,
+            "description": "Cojeev color presets. Inherits the surrounding light/dark theme."
+          },
+          {
+            "name": "size",
+            "type": "number",
+            "required": false,
+            "description": "Wordmark scale, 0.55–1.6."
+          },
+          {
+            "name": "opacity",
+            "type": "number",
+            "required": false,
+            "description": "Canvas opacity, 0–1; text always remains readable."
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": "Freeze decorative movement and pointer response."
+          },
+          {
+            "name": "interactive",
+            "type": "boolean",
+            "required": false,
+            "description": "Enable local pointer attraction without capturing scroll or clicks."
+          },
+          {
+            "name": "physics",
+            "type": "BloomOptions",
+            "required": false,
+            "description": "Editable simulation forces, distances and density."
+          },
+          {
+            "name": "softness",
+            "type": "number",
+            "required": false,
+            "description": "Liquid edge blur, 0–20 CSS pixels. Default 12 (upstream)."
+          },
+          {
+            "name": "edgeTexture",
+            "type": "number",
+            "required": false,
+            "description": "Organic edge displacement, 0–40. Default 20 (upstream)."
+          },
+          {
+            "name": "connectionWidth",
+            "type": "number",
+            "required": false,
+            "description": "Connection stroke width, 0–8 CSS pixels. Default 4."
+          },
+          {
+            "name": "seed",
+            "type": "number",
+            "required": false,
+            "description": "Repeatable initial particle arrangement."
+          },
+          {
+            "name": "controlsRef",
+            "type": "React.Ref<SemanticBloomControls>",
+            "required": false,
+            "description": "Imperative commands for native buttons or application events."
+          },
+          {
+            "name": "onWordActive",
+            "type": "(word: string, index: number) => void",
+            "required": false,
+            "description": "Optional decorative word proximity event; does not represent semantic understanding."
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

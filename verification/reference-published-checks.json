@@ -1,0 +1,183 @@
+{
+  "passed": true,
+  "url": "https://luv-jeri.github.io/cojeev-ui",
+  "references": 41,
+  "newComponents": 35,
+  "checks": [
+    {
+      "component": "typography-vortex",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "particle-text",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "warp-text",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "falling-text",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "scroll-reveal",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "variable-proximity",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "word-stream",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "caret-swap",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "zoom-words",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "scroll-expand",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "ripple-distortion",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "elastic-mesh",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "swarm-cursor",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "pixel-swap",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "orbit-images",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "target-cursor",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "magic-rings",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "ghost-cursor",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "click-spark",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "strands",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "image-trail",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "meta-balls",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "infinite-spiral",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "accordion-gallery",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "option-wheel",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "grain-dissolve",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "wave-wipe",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "dither-dissolve",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "portal-field",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "article-headings",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "motion-drawer",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "linear-modal",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "image-masking",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "buy-me-coffee",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    },
+    {
+      "component": "swapy",
+      "registry": "exact match",
+      "docs": "200 + public install command"
+    }
+  ]
+}

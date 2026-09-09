@@ -1,0 +1,129 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dither-sculpture",
+  "title": "Dither sculpture",
+  "description": "Depth-tested sculptural forms printed as ordered dots, halftone, error diffusion or stipple.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/glyph-sculpture.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/dither-sculpture.tsx",
+      "content": "\"use client\";\nimport { SculptureSurface, type SculptureCommonProps } from \"@/components/ui/glyph-sculpture\";\nimport type { DitherPattern } from \"@/lib/cojeev/sculpture-raster\";\nexport type { DitherPattern };\nexport type DitherSculptureProps = SculptureCommonProps & { pattern?: DitherPattern; grainSize?: number; density?: number };\n/** A depth-tested object printed as ordered dots, halftone, error diffusion or seeded stipple. */\nexport function DitherSculpture({ pattern = \"ordered\", grainSize = 3, density = 1, ...props }: DitherSculptureProps) {\n  const safePattern = [\"ordered\", \"halftone\", \"diffusion\", \"stipple\"].includes(pattern) ? pattern : \"ordered\";\n  return <SculptureSurface {...props} surfaceOptions={{ kind: \"dither\", pattern: safePattern, grainSize, density }} />;\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "source": {
+      "name": "Dither sculpture",
+      "variants": [
+        "default",
+        "halftone",
+        "diffusion",
+        "stipple"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "moving",
+        "paused",
+        "custom-geometry",
+        "orbit",
+        "fallback",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "DitherSculptureProps",
+        "props": [
+          {
+            "name": "form",
+            "type": "GlyphForm",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "tone",
+            "type": "GlyphTone",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "geometry",
+            "type": "SculptureGeometryInput",
+            "required": false,
+            "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+          },
+          {
+            "name": "speed",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "turn",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pitch",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "zoom",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pointerTracking",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onGeometryError",
+            "type": "(error: Error) => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pattern",
+            "type": "DitherPattern",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "grainSize",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "density",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "3D",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

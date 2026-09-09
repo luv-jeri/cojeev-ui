@@ -1,0 +1,176 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "assembly-part",
+  "title": "Assembly part",
+  "description": "A persistent native component moving between a floating organism and its measured layout.",
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "motion"
+  ],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/assembly-part.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { Slot } from \"@radix-ui/react-slot\";\nimport { animate, motion, useMotionValue, useTransform, type MotionStyle } from \"motion/react\";\nimport { assemblyContour, type AssemblyContour, type AssemblyRect } from \"@/lib/cojeev/assembly-geometry\";\nimport { trackMotion, useChoreography } from \"@/lib/cojeev-motion/choreography\";\nimport { cn } from \"@/lib/utils\";\n\nconst NativePart=motion.create(Slot);\ntype PartPaint={background:string;ink:string};\n/** Read the authored endpoint on the actual native root, before the browser paints.\n * Generated morph layers suppress their host fill, so exclude only that owned\n * layer while sampling. The root, its state and its children keep their identity. */\nfunction nativePaint(node:HTMLElement):PartPaint {\n  const body=node.querySelector<SVGSVGElement>(\":scope > svg.v-morph\"),next=body?.nextSibling;\n  const live=node.classList.contains(\"v-morph-live\"),fill=node.style.getPropertyValue(\"--mfill\"),priority=node.style.getPropertyPriority(\"--mfill\");\n  node.setAttribute(\"data-assembly-paint-probe\",\"\");\n  body?.remove();if(live)node.classList.remove(\"v-morph-live\");\n  if(node.hasAttribute(\"data-auto-morph\"))node.style.removeProperty(\"--mfill\");\n  const style=getComputedStyle(node),paint={background:style.backgroundColor,ink:style.color};\n  if(body)node.insertBefore(body,next??null);if(live)node.classList.add(\"v-morph-live\");\n  if(fill)node.style.setProperty(\"--mfill\",fill,priority);\n  node.removeAttribute(\"data-assembly-paint-probe\");\n  return paint;\n}\nconst colourMix=(start:string,end:string,amount:number)=>amount>=1?end:amount<=0?start:`color-mix(in oklab, ${start} ${(1-amount)*100}%, ${end} ${amount*100}%)`;\nexport type AssemblyPartProps={\n  children:React.ReactElement;\n  identity:string;\n  /** Marks a new composition even when a reused part has identical target geometry. */\n  transitionKey?:string;\n  rect:AssemblyRect;\n  /** Initial geometry for a newly introduced native part; existing roots keep current motion values. */\n  from?:AssemblyRect;\n  fromContour?:AssemblyContour;\n  contour?:AssemblyContour;\n  radius?:number;\n  reveal?:boolean;\n  interactive?:boolean;\n  immediate?:boolean;\n  duration?:number;\n  delay?:number;\n  /** Curved travel strength from 0 (straight) to 1. */\n  curve?:number;\n  onProgress?:(progress:number)=>void;\n  /** Give native paint, clipping, focus and hover motion back after arrival. */\n  release?:boolean;\n  floating?:boolean;\n  tone?:\"pink\"|\"blue\"|\"olive\"|\"yellow\";\n  onRest?:()=>void;\n  className?:string;\n};\n/** One persistent atomic root. Its real surface changes contour, dimensions and location. */\nexport function AssemblyPart({children,identity,transitionKey,rect,from,fromContour,contour=\"rounded\",radius=16,reveal=true,interactive=true,immediate=false,duration=1.35,delay=0,curve=.65,onProgress,release=false,floating=false,tone=\"pink\",onRest,className}:AssemblyPartProps){\n  const {quiet}=useChoreography();\n  const origin=from??rect;\n  const x=useMotionValue(origin.x),y=useMotionValue(origin.y),width=useMotionValue(origin.width),height=useMotionValue(origin.height),rotate=useMotionValue(origin.rotate??0);\n  const rotation=useTransform(rotate,value=>`${value}deg`);\n  const path=React.useMemo(()=>assemblyContour(contour,rect.width,rect.height,radius),[contour,rect.width,rect.height,radius]);\n  const initialPath=from?assemblyContour(fromContour??contour,from.width,from.height,radius):path;\n  const clipPath=useMotionValue(release?\"\":initialPath),contentOpacity=useMotionValue(reveal?1:0);\n  const background=useMotionValue(`var(--v-${tone})`),ink=useMotionValue(\"var(--v-on-accent)\"),paintProgress=useMotionValue(0);\n  const lastContour=React.useRef(initialPath),callbacks=React.useRef({onRest,onProgress});\n  const native=React.useRef<HTMLElement>(null);\n  React.useLayoutEffect(()=>{callbacks.current={onRest,onProgress}},[onRest,onProgress]);\n  React.useLayoutEffect(()=>{\n    let current=true,labelsOpen=reveal;\n    const node=native.current;\n    node?.setAttribute(\"data-assembly-revealing\",String(reveal));\n    const arriving=contour===\"rounded\"||contour===\"circle\";\n    const sampleTarget=():PartPaint=>node?arriving?nativePaint(node):{background:getComputedStyle(node).getPropertyValue(\"--assembly-tone\").trim(),ink:\"var(--v-on-accent)\"}:{background:`var(--v-${tone})`,ink:\"var(--v-on-accent)\"};\n    let paintStart:PartPaint=node?{background:getComputedStyle(node).backgroundColor,ink:getComputedStyle(node).color}:{background:background.get(),ink:ink.get()};\n    let paintEnd=sampleTarget(),colourFrom=arriving?.3:0,colourTo=arriving?.94:.76,progressNow=0;\n    const pairs=[[x,rect.x],[y,rect.y],[width,rect.width],[height,rect.height],[rotate,rect.rotate??0]] as const;\n    if(release||quiet||immediate){\n      // Stop writers before clearing. Retained renders read this same cleared value.\n      for(const [value,target]of pairs){value.stop();value.jump(target)}\n      clipPath.stop();clipPath.jump(release?\"\":path);lastContour.current=path;\n      background.stop();ink.stop();background.jump(paintEnd.background);ink.jump(paintEnd.ink);paintProgress.jump(1);\n      contentOpacity.stop();contentOpacity.jump(reveal?1:0);callbacks.current.onProgress?.(1);callbacks.current.onRest?.();return;\n    }\n    const start={x:x.get(),y:y.get(),width:width.get(),height:height.get(),rotate:rotate.get()};\n    const beginning=clipPath.get()||lastContour.current;\n    const oldPoints=beginning.match(/-?\\d+(?:\\.\\d+)?/g)!.map(Number),newPoints=path.match(/-?\\d+(?:\\.\\d+)?/g)!.map(Number);\n    const distance=Math.hypot(rect.x-start.x,rect.y-start.y),strength=Math.max(0,Math.min(1,curve));\n    const direction=Array.from(identity).reduce((sum,char)=>sum+char.charCodeAt(0),0)%2?1:-1;\n    const bowX=direction*Math.min(16,distance*.1)*strength,bowY=-Math.min(30,distance*.14)*strength;\n    const right=Math.max(start.x+start.width,rect.x+rect.width),bottom=Math.max(start.y+start.height,rect.y+rect.height);\n    const smooth=(value:number)=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t)};\n    const mix=(a:number,b:number,t:number)=>a+(b-a)*t;\n    const draw=(progress:number)=>{\n      if(!current)return;\n      progressNow=progress;\n      const colour=smooth((progress-colourFrom)/Math.max(.001,colourTo-colourFrom));\n      background.set(colourMix(paintStart.background,paintEnd.background,colour));ink.set(colourMix(paintStart.ink,paintEnd.ink,colour));paintProgress.set(colour);\n      const shape=smooth(progress/(arriving?.94:.76)),anticipation=1-Math.sin(Math.PI*Math.min(1,progress/.22))*.025;\n      const w=mix(start.width,rect.width,shape)*anticipation,h=mix(start.height,rect.height,shape)*anticipation;\n      width.set(w);height.set(h);\n      x.set(Math.max(0,Math.min(right-w,mix(start.x,rect.x,progress)+Math.sin(Math.PI*progress)*bowX)));\n      y.set(Math.max(0,Math.min(bottom-h,mix(start.y,rect.y,progress)+Math.sin(Math.PI*progress)*bowY)));\n      rotate.set(mix(start.rotate,rect.rotate??0,shape)+Math.sin(Math.PI*progress)*direction*3*strength);\n      const points=newPoints.map((value,index)=>mix(oldPoints[index]??value,value,shape));\n      const next=`polygon(${Array.from({length:96},(_,index)=>`${points[index*2].toFixed(3)}% ${points[index*2+1].toFixed(3)}%`).join(\",\")})`;\n      clipPath.set(next);lastContour.current=next;\n      contentOpacity.set(reveal?1:arriving?smooth((progress-.64)/.3):0);\n      if(!labelsOpen&&arriving&&progress>=.64){labelsOpen=true;native.current?.setAttribute(\"data-assembly-revealing\",\"true\")}\n      callbacks.current.onProgress?.(progress);\n    };\n    // Palette or theme updates rebase only paint. Travel keeps its current clock\n    // and path, and interrupted selections start from the visible mixed colour.\n    const theme=new MutationObserver(()=>{\n      if(!node||!current||progressNow>=1)return;\n      const style=getComputedStyle(node);paintStart={background:style.backgroundColor,ink:style.color};\n      paintEnd=sampleTarget();colourFrom=progressNow;colourTo=Math.max(.94,progressNow+(1-progressNow)*.7);\n    });\n    theme.observe(document.documentElement,{attributes:true,attributeFilter:[\"data-mode\",\"data-skin\",\"style\"]});\n    draw(0);\n    const travel=animate(0,1,{duration:Math.max(.15,Math.min(duration,4)),delay:Math.max(0,Math.min(delay,.7)),ease:[.32,.08,.22,1],onUpdate:draw});\n    const releases=[trackMotion(travel)];\n    void travel.finished.then(()=>{\n      if(!current)return;\n      draw(1);callbacks.current.onRest?.();\n      if(floating){const drift=animate(y,[rect.y,rect.y-5,rect.y],{duration:3.2,repeat:Infinity,ease:\"easeInOut\"});releases.push(trackMotion(drift))}\n    });\n    return()=>{current=false;theme.disconnect();releases.forEach(stop=>stop())};\n  },[rect.x,rect.y,rect.width,rect.height,rect.rotate,path,contour,identity,transitionKey,duration,delay,curve,floating,release,reveal,quiet,immediate,tone,x,y,width,height,rotate,clipPath,contentOpacity,background,ink,paintProgress]);\n  React.useLayoutEffect(()=>{\n    const node=native.current;if(!release||!node)return;\n    // A selection or palette can change a resting native surface. Remember its\n    // current endpoint for a later replay without taking paint ownership back.\n    const remember=()=>{const paint=nativePaint(node);background.jump(paint.background);ink.jump(paint.ink)};\n    remember();\n    const theme=new MutationObserver(remember);theme.observe(document.documentElement,{attributes:true,attributeFilter:[\"data-mode\",\"data-skin\",\"style\"]});\n    return()=>theme.disconnect();\n  });\n  // One writer owns each value through travel and quiet interruptions. At rest,\n  // empty clipping and left/top positioning leave native hover/press paint free.\n  const position={left:x,top:y,width,height,clipPath,\"--assembly-rotation\":rotation,\"--assembly-content-opacity\":contentOpacity,\"--assembly-paint-bg\":background,\"--assembly-paint-ink\":ink,\"--assembly-paint-progress\":paintProgress} as MotionStyle;\n  return <NativePart ref={native} className={cn(\"v-assembly-part\",className)} data-assembly-part={identity} data-assembly-reveal={reveal} data-assembly-revealing={reveal} data-assembly-released={release} data-assembly-tone={tone} data-motion={release?undefined:\"off\"} data-flow={release?undefined:\"off\"} inert={!interactive||undefined} aria-hidden={!reveal||undefined} style={position}>{children}</NativePart>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/assembly-part.css",
+      "content": "@layer cojeev-states {\n/* Travel owns only geometry. Native component paint and interaction resume at rest. */\n.v-assembly-part[data-assembly-part] {position:absolute;margin:0;min-width:0;min-height:0;box-sizing:border-box;transform-origin:center;isolation:isolate;}\n.v-assembly-part[data-assembly-released=\"false\"] {border-radius:0;transition:none;rotate:var(--assembly-rotation,0deg);--assembly-tone:var(--v-pink);}\n.v-assembly-part[data-assembly-tone=\"blue\"] {--assembly-tone:var(--v-blue);}\n.v-assembly-part[data-assembly-tone=\"olive\"] {--assembly-tone:var(--v-olive);}\n.v-assembly-part[data-assembly-tone=\"yellow\"] {--assembly-tone:var(--v-yellow);}\n:root .v-assembly-part[data-assembly-part][data-assembly-released=\"false\"]:not([data-assembly-paint-probe]) {--c:var(--assembly-paint-bg,var(--assembly-tone));background:var(--assembly-paint-bg,var(--assembly-tone));color:var(--assembly-paint-ink,var(--v-on-accent));box-shadow:none;border:0;}\n.v-assembly-part > .v-assembly-content {opacity:var(--assembly-content-opacity,1);transition:none;}\n.v-assembly-part[data-assembly-revealing=\"false\"] > .v-assembly-content {opacity:0;}\n.v-assembly-part[data-assembly-released=\"true\"] > .v-assembly-content {opacity:1;}\n@media(prefers-reduced-motion:reduce){.v-assembly-part > .v-assembly-content{transition:none;}}\n[data-flow=\"off\"] .v-assembly-part > .v-assembly-content {transition:none;}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/assembly-part.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/assembly-part.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Assembly part",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "interactive",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "AssemblyPartProps",
+        "props": [
+          {
+            "name": "children",
+            "type": "React.ReactElement",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "identity",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "transitionKey",
+            "type": "string",
+            "required": false,
+            "description": "Marks a new composition even when a reused part has identical target geometry."
+          },
+          {
+            "name": "rect",
+            "type": "AssemblyRect",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "from",
+            "type": "AssemblyRect",
+            "required": false,
+            "description": "Initial geometry for a newly introduced native part; existing roots keep current motion values."
+          },
+          {
+            "name": "fromContour",
+            "type": "AssemblyContour",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "contour",
+            "type": "AssemblyContour",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "radius",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "reveal",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "interactive",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "immediate",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "delay",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "curve",
+            "type": "number",
+            "required": false,
+            "description": "Curved travel strength from 0 (straight) to 1."
+          },
+          {
+            "name": "onProgress",
+            "type": "(progress:number)=>void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "release",
+            "type": "boolean",
+            "required": false,
+            "description": "Give native paint, clipping, focus and hover motion back after arrival."
+          },
+          {
+            "name": "floating",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "tone",
+            "type": "\"pink\"|\"blue\"|\"olive\"|\"yellow\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onRest",
+            "type": "()=>void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Composition",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

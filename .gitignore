@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.dev.vars*
+**/.dev.vars*
+**/.wrangler/
+.next-reporting/
+.next-reporting-build/
 
 # vercel
 .vercel
@@ -43,6 +48,7 @@ next-env.d.ts
 .work/
 .superpowers/
 artifacts/
+output/
 out/
 node_modules/
 .next/
@@ -52,3 +58,6 @@ node_modules/
 .worktrees/
 
 .next-dev/
+
+# Upstream research captures retain their source licenses; never publish them as our code.
+/reference/expansion/*/receipts/

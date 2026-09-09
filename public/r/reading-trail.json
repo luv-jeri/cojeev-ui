@@ -1,0 +1,78 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "reading-trail",
+  "title": "Reading trail",
+  "description": "Tracks actual reading progress and links to named sections with a quiet organic marker.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/reading-trail.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { createMotionLane, useChoreography } from \"@/lib/cojeev-motion/choreography\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\n\nexport type ReadingTrailItem = { id: string; label: React.ReactNode };\nexport type ReadingTrailState = { activeId: string | null; progress: number };\nexport type ReadingTrailProps = Omit<React.ComponentProps<\"nav\">, \"children\"> & {\n  /** IDs of sections in this document. Labels and links render on the server. */\n  items: readonly ReadingTrailItem[];\n  label?: string;\n  /** Omit to track the document; pass a mounted scroll container for a panel. */\n  scrollRoot?: HTMLElement | null;\n  /** Activation line below the scroll viewport's top, in pixels. */\n  offset?: number;\n};\n\n/** Reading progress runs from the first section to the scroll viewport's end. */\nexport function getReadingTrailState(\n  sections: readonly { id: string; top: number }[],\n  scrollTop: number,\n  viewportHeight: number,\n  scrollHeight: number,\n  offset = 24,\n): ReadingTrailState {\n  const ordered = sections.filter(section => Number.isFinite(section.top)).toSorted((a, b) => a.top - b.top);\n  if (!ordered.length) return { activeId: null, progress: 0 };\n  const safe = (value: number) => Number.isFinite(value) ? Math.max(0, value) : 0;\n  const end = Math.max(0, safe(scrollHeight) - safe(viewportHeight));\n  const position = Math.min(end, safe(scrollTop));\n  const start = Math.min(end, Math.max(0, ordered[0].top - safe(offset)));\n  let activeId = ordered[0].id;\n  for (const section of ordered) if (section.top <= position + safe(offset) + 1) activeId = section.id;\n  if (end > 0 && position >= end - 1) activeId = ordered[ordered.length - 1].id;\n  const progress = end <= start ? 1 : Math.max(0, Math.min(1, (position - start) / (end - start)));\n  return { activeId, progress };\n}\n\nexport function ReadingTrail({\n  items, label = \"On this page\", scrollRoot, offset = 24, className, ref, ...props\n}: ReadingTrailProps) {\n  const host = React.useRef<HTMLElement>(null);\n  const list = React.useRef<HTMLOListElement>(null);\n  const marker = React.useRef<HTMLSpanElement>(null);\n  const restoreFocusTarget = React.useRef<() => void>(() => {});\n  const lane = React.useRef<ReturnType<typeof createMotionLane> | null>(null);\n  const { quiet, transition } = useChoreography();\n  const { enabled, inView } = useMotionVisibility(host);\n  // Duplicate/empty IDs cannot represent distinct fragment destinations.\n  const idsKey = JSON.stringify(items.map(item => item.id).filter((id, index, all) => id && all.indexOf(id) === index));\n  const ids = React.useMemo<string[]>(() => JSON.parse(idsKey), [idsKey]);\n  const [state, setState] = React.useState<ReadingTrailState>({ activeId: null, progress: 0 });\n  const [markerY, setMarkerY] = React.useState(16);\n  const [measured, setMeasured] = React.useState(false);\n  const activeId = measured ? state.activeId : ids[0] ?? null;\n  const labelId = React.useId();\n  const bindRef = React.useCallback((element: HTMLElement | null) => {\n    host.current = element;\n    if (typeof ref === \"function\") return ref(element);\n    if (ref) ref.current = element;\n  }, [ref]);\n\n  React.useEffect(() => {\n    let frame = 0;\n    let disposed = false;\n    const targets = () => ids.map(id => document.getElementById(id)).filter((element): element is HTMLElement => !!element && (!scrollRoot || scrollRoot.contains(element)));\n    const measure = () => {\n      frame = 0;\n      if (disposed || document.hidden) return;\n      const viewportTop = scrollRoot ? scrollRoot.getBoundingClientRect().top + scrollRoot.clientTop : 0;\n      const position = scrollRoot ? scrollRoot.scrollTop : window.scrollY;\n      const viewportHeight = scrollRoot ? scrollRoot.clientHeight : window.innerHeight;\n      const scrollHeight = scrollRoot ? scrollRoot.scrollHeight : document.documentElement.scrollHeight;\n      const next = getReadingTrailState(targets().map(element => ({ id: element.id, top: element.getBoundingClientRect().top - viewportTop + position })), position, viewportHeight, scrollHeight, offset);\n      // Limit semantic updates while retaining a smooth native progress value.\n      next.progress = Math.round(next.progress * 1000) / 1000;\n      setState(previous => previous.activeId === next.activeId && previous.progress === next.progress ? previous : next);\n      setMeasured(true);\n      const link = list.current?.querySelector<HTMLElement>(`[data-trail-index=\"${ids.indexOf(next.activeId ?? \"\")}\"]`);\n      if (link && list.current) setMarkerY(link.getBoundingClientRect().top - list.current.getBoundingClientRect().top + link.getBoundingClientRect().height / 2 - 6);\n    };\n    const schedule = () => { if (!frame && !disposed) frame = window.requestAnimationFrame(measure); };\n    const resize = new ResizeObserver(schedule);\n    const observeTargets = () => {\n      resize.disconnect();\n      resize.observe(scrollRoot ?? document.documentElement);\n      if (!scrollRoot) resize.observe(document.body);\n      if (host.current) resize.observe(host.current);\n      for (const element of targets()) resize.observe(element);\n    };\n    observeTargets();\n    const mutations = new MutationObserver(records => {\n      // Our progress text and marker paint must not recursively invalidate geometry.\n      if (records.every(record => host.current?.contains(record.target))) return;\n      observeTargets();\n      schedule();\n    });\n    mutations.observe(scrollRoot ?? document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: [\"id\", \"hidden\"] });\n    const scroller = scrollRoot ?? window;\n    scroller.addEventListener(\"scroll\", schedule, { passive: true });\n    window.addEventListener(\"resize\", schedule);\n    window.addEventListener(\"hashchange\", schedule);\n    document.addEventListener(\"visibilitychange\", schedule);\n    void document.fonts?.ready.then(schedule);\n    measure();\n    return () => {\n      disposed = true;\n      cancelAnimationFrame(frame);\n      resize.disconnect();\n      mutations.disconnect();\n      scroller.removeEventListener(\"scroll\", schedule);\n      window.removeEventListener(\"resize\", schedule);\n      window.removeEventListener(\"hashchange\", schedule);\n      document.removeEventListener(\"visibilitychange\", schedule);\n    };\n  }, [ids, offset, scrollRoot]);\n\n  React.useEffect(() => {\n    const element = marker.current;\n    if (!element) return;\n    const painter = createMotionLane(markerY, value => element.style.setProperty(\"--trail-marker-y\", `${value}px`));\n    lane.current = painter;\n    painter.jump(markerY);\n    return () => { painter.dispose(); lane.current = null; };\n    // The painter owns one mounted marker; subsequent geometry retargets it below.\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, []);\n  React.useEffect(() => {\n    if (quiet || !enabled || !inView) lane.current?.jump(markerY);\n    else lane.current?.to(markerY, transition);\n  }, [markerY, quiet, enabled, inView, transition]);\n\n  React.useEffect(() => () => restoreFocusTarget.current(), []);\n\n  const follow = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {\n    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;\n    const target = document.getElementById(id);\n    if (!target || (scrollRoot && !scrollRoot.contains(target))) return;\n    event.preventDefault();\n    // Keep a genuine same-document URL and back/forward entry without a second jump.\n    const fragment = `#${encodeURIComponent(id)}`;\n    if (window.location.hash !== fragment) window.history.pushState(window.history.state, \"\", fragment);\n    const behavior = quiet ? \"instant\" : \"smooth\";\n    if (scrollRoot) {\n      // scrollIntoView would also move every scrollable ancestor, including the page.\n      const padding = getComputedStyle(scrollRoot).scrollPaddingTop;\n      const paddingTop = (Number.parseFloat(padding) || 0) * (padding.endsWith(\"%\") ? scrollRoot.clientHeight / 100 : 1);\n      const marginTop = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;\n      const top = target.getBoundingClientRect().top - scrollRoot.getBoundingClientRect().top\n        - scrollRoot.clientTop + scrollRoot.scrollTop - paddingTop - marginTop;\n      scrollRoot.scrollTo({ top, behavior });\n    } else {\n      target.scrollIntoView({ behavior, block: \"start\", inline: \"nearest\" });\n    }\n    restoreFocusTarget.current();\n    if (!target.hasAttribute(\"tabindex\")) {\n      target.setAttribute(\"tabindex\", \"-1\");\n      const restore = () => {\n        target.removeEventListener(\"blur\", restore);\n        if (target.getAttribute(\"tabindex\") === \"-1\") target.removeAttribute(\"tabindex\");\n        restoreFocusTarget.current = () => {};\n      };\n      restoreFocusTarget.current = restore;\n      target.addEventListener(\"blur\", restore, { once: true });\n    }\n    target.focus({ preventScroll: true });\n  };\n\n  return <nav {...props} ref={bindRef} data-slot=\"reading-trail\" data-quiet={quiet || !enabled || !inView} className={cn(\"v-reading-trail\", className)} aria-label={props[\"aria-label\"] ?? label}>\n    <div className=\"v-reading-trail__heading\"><span id={labelId}>{label}</span><span aria-hidden=\"true\">{Math.round(state.progress * 100)}%</span></div>\n    <progress className=\"v-reading-trail__progress\" max={100} value={state.progress * 100} aria-label={`${label}: reading progress`} />\n    <div className=\"v-reading-trail__track\">\n      <span ref={marker} className=\"v-reading-trail__marker\" aria-hidden=\"true\" hidden={!activeId}><svg viewBox=\"0 0 24 20\"><path d=\"M2 8C2 3 8 1 13 2C18 2 23 5 22 10C21 15 15 18 9 17C4 17 1 13 2 8Z\" /></svg></span>\n      <ol ref={list} className=\"v-reading-trail__list\">{ids.map((id, index) => <li key={id}><a href={`#${encodeURIComponent(id)}`} data-trail-index={index} aria-current={activeId === id ? \"location\" : undefined} onClick={event => follow(event, id)}><span className=\"v-reading-trail__number\" aria-hidden=\"true\">{String(index + 1).padStart(2, \"0\")}</span><span>{items.find(item => item.id === id)?.label}</span></a></li>)}\n      </ol>\n    </div>\n    {!ids.length && <p className=\"v-reading-trail__empty\">No sections to follow.</p>}\n  </nav>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/reading-trail.css",
+      "content": "@layer cojeev-states {\n.v-reading-trail__track{position:relative;}\n.v-reading-trail{min-inline-size:0;inline-size:100%;color:var(--v-text);font-family:var(--font-text);font-size:var(--fs-control);}\n.v-reading-trail__heading{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s-3);margin-block-end:var(--s-3);font-weight:var(--fw-title);}\n.v-reading-trail__heading>span:last-child{flex:none;color:var(--v-text-2);font-size:var(--fs-meta);font-variant-numeric:tabular-nums;}\n.v-reading-trail__progress{display:block;appearance:none;border:0;inline-size:100%;block-size:4px;overflow:hidden;border-radius:var(--r-pill);background:var(--v-beige-2);color:var(--v-pink);margin-block-end:var(--s-4);}\n.v-reading-trail__progress::-webkit-progress-bar{background:var(--v-beige-2);border-radius:inherit;}\n.v-reading-trail__progress::-webkit-progress-value{background:var(--v-pink);border-radius:inherit;}\n.v-reading-trail__progress::-moz-progress-bar{background:var(--v-pink);border-radius:inherit;}\n.v-reading-trail__list{position:relative;display:grid;gap:var(--s-1);padding:0;list-style:none;margin:0;}\n.v-reading-trail__list::before{position:absolute;content:\"\";inset-block:20px;inset-inline-start:7px;inline-size:1px;background:var(--v-border);pointer-events:none;}\n.v-reading-trail__list>li{position:relative;min-inline-size:0;}\n.v-reading-trail__list a{display:flex;align-items:baseline;gap:var(--s-2);min-block-size:44px;padding:var(--s-3) var(--s-2) var(--s-3) var(--s-8);border-radius:var(--r-md);color:var(--v-text-2);text-decoration:none;line-height:1.4;overflow-wrap:anywhere;}\n.v-reading-trail__list a:hover,.v-reading-trail__list a:focus-visible{background:var(--v-beige-2);color:var(--v-text);}\n.v-reading-trail__list a[aria-current=\"location\"]{color:var(--v-text);font-weight:var(--fw-title);}\n.v-reading-trail__list a:focus-visible{outline:2px solid var(--ring);outline-offset:2px;}\n.v-reading-trail__number{flex:none;white-space:nowrap;min-inline-size:2ch;font-size:var(--fs-meta);color:var(--v-text-3);font-variant-numeric:tabular-nums;font-weight:var(--fw-body);}\n.v-reading-trail__marker{position:absolute;z-index:1;pointer-events:none;inset-inline-start:0;inset-block-start:0;inline-size:15px;block-size:12px;transform:translateY(var(--trail-marker-y,16px));color:var(--v-ink);}\n.v-reading-trail__marker svg{inline-size:100%;block-size:100%;fill:currentColor;}\n.v-reading-trail__empty{margin:0;color:var(--v-text-2);font-size:var(--fs-meta);}\n@media(forced-colors:active){.v-reading-trail__list::before{background:CanvasText;}.v-reading-trail__marker{color:CanvasText;}.v-reading-trail__list a[aria-current=\"location\"]{outline:1px solid Highlight;}.v-reading-trail__progress{forced-color-adjust:auto;}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/reading-trail.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/reading-trail.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Reading trail",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "rest",
+        "scrolling",
+        "focused",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "ReadingTrailProps",
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly ReadingTrailItem[]",
+            "required": true,
+            "description": "IDs of sections in this document. Labels and links render on the server."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "scrollRoot",
+            "type": "HTMLElement | null",
+            "required": false,
+            "description": "Omit to track the document; pass a mounted scroll container for a panel."
+          },
+          {
+            "name": "offset",
+            "type": "number",
+            "required": false,
+            "description": "Activation line below the scroll viewport's top, in pixels."
+          }
+        ]
+      }
+    ],
+    "category": "Navigation",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/registry/sahajiv/ui/button";
-import { MotionControls } from "@/registry/sahajiv/ui/adjuster";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/registry/sahajiv/ui/sheet";
+import { Button } from "@/registry/cojeev/ui/button";
+import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
+import { MotionControls } from "@/registry/cojeev/ui/adjuster";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/registry/cojeev/ui/sheet";
 
 export function DocsMotion({ className }: { className?: string }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size="sm" variant="secondary" className={className}>Motion settings</Button>
+        <Button size="sm" variant="secondary" className={className}><AnimatedIcon name="settings"/>Motion settings</Button>
       </SheetTrigger>
       <SheetContent className="docs-motion-panel">
         <SheetHeader>

@@ -1,0 +1,140 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ink-sculpture",
+  "title": "Ink sculpture",
+  "description": "Hatched and engraved marks follow the light and relief of a 3D form.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/glyph-sculpture.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/ink-sculpture.tsx",
+      "content": "\"use client\";\nimport { SculptureSurface, type SculptureCommonProps } from \"@/components/ui/glyph-sculpture\";\nimport type { InkTreatment } from \"@/lib/cojeev/sculpture-raster\";\nexport type { InkTreatment };\nexport type InkSculptureProps = SculptureCommonProps & { treatment?: InkTreatment; markSize?: number; density?: number; angle?: number; relief?: number };\n/** Engraved lines bend with real surface depth, opening into dashes toward the light. */\nexport function InkSculpture({ treatment = \"hatch\", markSize = 8, density = 1, angle = -25, relief = .55, ...props }: InkSculptureProps) {\n  const safeTreatment = treatment === \"crosshatch\" || treatment === \"contour\" ? treatment : \"hatch\";\n  return <SculptureSurface {...props} surfaceOptions={{ kind: \"ink\", treatment: safeTreatment, markSize, density, angle, relief }} />;\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "source": {
+      "name": "Ink sculpture",
+      "variants": [
+        "default",
+        "crosshatch",
+        "contour"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "moving",
+        "paused",
+        "custom-geometry",
+        "orbit",
+        "fallback",
+        "reduced-motion"
+      ]
+    },
+    "api": [
+      {
+        "name": "InkSculptureProps",
+        "props": [
+          {
+            "name": "form",
+            "type": "GlyphForm",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "tone",
+            "type": "GlyphTone",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "geometry",
+            "type": "SculptureGeometryInput",
+            "required": false,
+            "description": "Immutable triangle geometry. Centered and fitted to a unit sphere; invalid geometry exposes an error."
+          },
+          {
+            "name": "speed",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "turn",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pitch",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "zoom",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "pointerTracking",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onGeometryError",
+            "type": "(error: Error) => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "treatment",
+            "type": "InkTreatment",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "markSize",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "density",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "angle",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "relief",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "3D",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

@@ -10,7 +10,7 @@ const arg = name => process.argv.find(value=>value.startsWith(`--${name}=`))?.sp
 const requestedIds=arg("components");
 const widths=(arg("widths")??"360,390,768,1024,1440,1920").split(",").map(Number);
 const limit=Number(arg("limit")??Infinity);
-const reference="reference/sahajiv-handoff-v4";
+const reference="reference/cojeev-handoff-v4";
 const registry=JSON.parse(fs.readFileSync(`${reference}/data/registry.json`,"utf8")).entries;
 const portMap=JSON.parse(fs.readFileSync(`${reference}/data/port-map.json`,"utf8")).entries;
 const semantics=JSON.parse(fs.readFileSync("apps/gate/fixture-semantic-map.json","utf8")).entries;
@@ -61,7 +61,7 @@ function previouslyExact(id,file,scenario){
   ));
 }
 function hash(bytes){return crypto.createHash("sha256").update(bytes).digest("hex");}
-function candidateHash(){const files=[];function walk(dir){for(const name of fs.readdirSync(dir).sort()){const file=path.join(dir,name);if(fs.statSync(file).isDirectory())walk(file);else files.push(file);}}walk("registry/sahajiv");walk("apps/gate");return hash(files.map(file=>`${file}\n${fs.readFileSync(file,"utf8")}`).join("\n"));}
+function candidateHash(){const files=[];function walk(dir){for(const name of fs.readdirSync(dir).sort()){const file=path.join(dir,name);if(fs.statSync(file).isDirectory())walk(file);else files.push(file);}}walk("registry/cojeev");walk("apps/gate");return hash(files.map(file=>`${file}\n${fs.readFileSync(file,"utf8")}`).join("\n"));}
 const candidateRevision=candidateHash();
 async function sample(url,id,action){
   errors.length=0;
@@ -91,7 +91,7 @@ async function sample(url,id,action){
   // Let layout and ResizeObserver delivery complete; the engine clock below then
   // produces the exact frame. A fixed wall-clock pause adds no evidence here.
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-  await page.evaluate(()=>{window.VMorph?.rewind?.();window.__sahajivGate?.rewind();window.V?.clock?.(100000);window.__sahajivGate?.clock(100000);window.V?.clock?.(100400);window.__sahajivGate?.clock(100400);});
+  await page.evaluate(()=>{window.VMorph?.rewind?.();window.__cojeevGate?.rewind();window.V?.clock?.(100000);window.__cojeevGate?.clock(100000);window.V?.clock?.(100400);window.__cojeevGate?.clock(100400);});
   if(errors.length)throw new Error(errors.join("\n"));
   const styles=await page.evaluate(({properties,parts,translations,candidate})=>{
     const visible=el=>{
@@ -125,7 +125,7 @@ async function sample(url,id,action){
       return[key,{__visible:String(visible(el)),...(unavailable?{__computedStyleUnavailable:unavailable}:Object.fromEntries(properties.map(p=>[p,cs.getPropertyValue(p)])))}];
     }));
   },{properties,parts:{...portMap[id].parts,...semantics[id]?.additionalParts},translations:semantics[id]?.parts,candidate:url.includes("/candidate?")});
-  const oracleAdapters=await page.locator('meta[name="sahajiv-oracle-adapter"]').evaluateAll(nodes=>nodes.map(node=>node.content));
+  const oracleAdapters=await page.locator('meta[name="cojeev-oracle-adapter"]').evaluateAll(nodes=>nodes.map(node=>node.content));
   frames[width]={styles,pixels:await page.screenshot(),errors:[...errors],oracleAdapters};
   }
   return frames;

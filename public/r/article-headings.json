@@ -1,0 +1,130 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "article-headings",
+  "title": "Article Headings",
+  "description": "Semantic article headings resolve through a brief, grapheme-safe noise frontier.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/article-headings.tsx",
+      "content": "\"use client\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { useReferenceRef } from \"@/lib/cojeev/reference-ref\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\nimport { decodeHeading,headingTiming } from \"@/lib/cojeev/reference-additions-math\";\nexport type ArticleHeadingItem={id:string;title:string;meta?:string;href?:string};\nexport type ArticleHeadingsProps=Omit<React.ComponentProps<\"div\">,\"children\">&{\n items:readonly ArticleHeadingItem[];label?:string;headingLevel?:2|3|4;duration?:number;stagger?:number;\n scrambleLength?:number;preserveChance?:number;tailChance?:number;paused?:boolean;replayKey?:string|number;\n size?:\"sm\"|\"default\"|\"lg\";onDecodeComplete?:()=>void;\n};\n/** Semantic article headings stay intact while a decorative noise frontier resolves over them. */\nexport function ArticleHeadings({items,label=\"Field notes\",headingLevel=2,duration=700,stagger=140,scrambleLength=10,preserveChance=.25,tailChance=.12,paused=false,replayKey=0,size=\"default\",onDecodeComplete,className,ref,...props}:ArticleHeadingsProps){\n const host=React.useRef<HTMLDivElement>(null),consumed=React.useRef(\"\"),callback=React.useRef(onDecodeComplete);\n const attach=useReferenceRef(host,ref);\n const {enabled,inView}=useMotionVisibility(host),running=enabled&&inView&&!paused;\n const Heading=headingLevel===3?\"h3\":headingLevel===4?\"h4\":\"h2\";\n const segmenter=React.useMemo(()=>new Intl.Segmenter(undefined,{granularity:\"grapheme\"}),[]);\n const timing=headingTiming(duration,stagger,items.length),content=JSON.stringify(items.map(item=>item.title));\n const token=JSON.stringify([content,replayKey,timing.duration,timing.delay,scrambleLength,preserveChance,tailChance]);\n React.useEffect(()=>{callback.current=onDecodeComplete;},[onDecodeComplete]);\n React.useEffect(()=>{\n  const root=host.current;if(!root)return;\n  const rows=Array.from(root.querySelectorAll<HTMLElement>(\"[data-heading-visual]\"));\n  const originals=rows.map(row=>Array.from(row.querySelectorAll<HTMLElement>(\"[data-decode-value]\"),node=>({node,text:node.textContent??\"\"})));\n  const restore=()=>{originals.forEach(row=>row.forEach(({node,text})=>{node.textContent=text;}));root.dataset.running=\"false\";};\n  if(!running){restore();root.dataset.state=\"still\";return;}\n  if(consumed.current===token){root.dataset.state=\"complete\";return;}\n  consumed.current=token;\n  const titles=JSON.parse(content) as string[];\n  let frame=0,start=0,lastPaint=-100;\n  const draw=(now:number)=>{\n   if(!start)start=now;\n   const elapsed=now-start,done=elapsed>=timing.duration+timing.delay*Math.max(0,rows.length-1);\n   if(elapsed-lastPaint>=40||done){\n    lastPaint=elapsed;\n    originals.forEach((glyphs,index)=>{\n     const p=Math.max(0,Math.min(1,(elapsed-index*timing.delay)/timing.duration));\n     if(elapsed<index*timing.delay||glyphs.length>1000||index>=80)return;\n     const output=decodeHeading(titles[index],p,Math.floor(elapsed/40)+index,{scrambleLength,preserveChance,tailChance});\n     glyphs.forEach(({node},i)=>{node.textContent=output[i]??\"\";});\n    });\n   }\n   root.dataset.state=done?\"complete\":\"decoding\";root.dataset.running=String(!done);\n   if(done){restore();callback.current?.();}else frame=requestAnimationFrame(draw);\n  };\n  frame=requestAnimationFrame(draw);\n  return()=>{cancelAnimationFrame(frame);restore();root.dataset.state=\"still\";};\n },[running,token,content,timing.duration,timing.delay,scrambleLength,preserveChance,tailChance]);\n const title=(text:string)=><><span className=\"v-article-headings__accessible\">{text}</span><span aria-hidden=\"true\" data-heading-visual=\"\">{text.split(/(\\s+)/).map((word,i)=>/^\\s+$/.test(word)?Array.from(segmenter.segment(word),({segment},j)=><span className=\"v-article-headings__glyph\" key={`${i}:${j}`}><span className=\"v-article-headings__measure\">{segment}</span><span data-decode-value=\"\">{segment}</span></span>):<span className=\"v-article-headings__word\" key={i}>{Array.from(segmenter.segment(word),({segment},j)=><span className=\"v-article-headings__glyph\" key={j}><span className=\"v-article-headings__measure\">{segment}</span><span data-decode-value=\"\">{segment}</span></span>)}</span>)}</span></>;\n return <div {...props} ref={attach} data-slot=\"article-headings\" data-size={size} data-running=\"false\" data-state=\"still\" className={cn(\"v-article-headings\",className)}>\n <div className=\"v-article-headings__header\"><span>{label}</span><span>{items.length} {items.length===1?\"entry\":\"entries\"}</span></div>\n {items.map((item,index)=><article key={item.id} className=\"v-article-headings__entry\"><span aria-hidden=\"true\" className=\"v-article-headings__index\">{String(index+1).padStart(2,\"0\")}</span><Heading>{item.href?<a href={item.href}>{title(item.title)}</a>:title(item.title)}</Heading>{item.meta&&<p className=\"v-article-headings__meta\">{item.meta}</p>}</article>)}\n </div>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/article-headings.css",
+      "content": "@layer cojeev-states {\n.v-article-headings {inline-size:100%;min-inline-size:0;color:var(--v-text);background:var(--v-paper);border-radius:var(--r-panel,24px);padding:24px;}\n.v-article-headings__header {display:flex;justify-content:space-between;gap:16px;font-size:12px;color:var(--v-text-2);padding-block-end:16px;border-block-end:1px solid var(--v-border);}\n.v-article-headings__entry {display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:16px;padding-block:24px;border-block-end:1px solid var(--v-border);}\n.v-article-headings__entry:last-child {border:0;padding-block-end:8px;}\n.v-article-headings__index {font-size:12px;color:var(--v-text-2);padding-block-start:8px;font-variant-numeric:tabular-nums;}\n.v-article-headings h2,.v-article-headings h3,.v-article-headings h4 {font-family:var(--font-display);font-weight:500;font-size:clamp(1.5rem,3.4vw,2.4rem);line-height:1.18;letter-spacing:-.02em;margin:0;min-inline-size:0;overflow-wrap:anywhere;}\n.v-article-headings a {color:inherit;text-decoration:none;border-radius:4px;}\n.v-article-headings a:hover {text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.15em;}\n.v-article-headings a:focus-visible {outline:2px solid var(--v-accent-ink);outline-offset:5px;}\n.v-article-headings__meta {grid-column:2;font-size:12px;color:var(--v-text-2);margin:12px 0 0;}\n.v-article-headings__word {display:inline-block;max-inline-size:100%;}\n.v-article-headings__glyph {display:inline-grid;vertical-align:baseline;white-space:pre;position:relative;}\n.v-article-headings__measure {grid-area:1/1;visibility:hidden;}\n.v-article-headings [data-decode-value] {grid-area:1/1;position:absolute;inset-inline-start:0;}\n.v-article-headings__accessible {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;}\n.v-article-headings[data-size=\"sm\"] {padding:16px;}\n.v-article-headings[data-size=\"sm\"] h2,.v-article-headings[data-size=\"sm\"] h3,.v-article-headings[data-size=\"sm\"] h4 {font-size:1.5rem;}\n.v-article-headings[data-size=\"lg\"] h2,.v-article-headings[data-size=\"lg\"] h3,.v-article-headings[data-size=\"lg\"] h4 {font-size:clamp(1.75rem,4vw,3rem);}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/article-headings.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/article-headings.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Article Headings",
+      "variants": [
+        "decode",
+        "deliberate"
+      ],
+      "sizes": [
+        "sm",
+        "default",
+        "lg"
+      ],
+      "states": [
+        "decoding",
+        "complete",
+        "still",
+        "offscreen"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "ArticleHeadingsProps",
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly ArticleHeadingItem[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "headingLevel",
+            "type": "2|3|4",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "stagger",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "scrambleLength",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "preserveChance",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "tailChance",
+            "type": "number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "replayKey",
+            "type": "string|number",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "size",
+            "type": "\"sm\"|\"default\"|\"lg\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onDecodeComplete",
+            "type": "()=>void",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Typography",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

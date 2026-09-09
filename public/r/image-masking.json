@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "image-masking",
+  "title": "Image Masking",
+  "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/image-masking.tsx",
+      "content": "\"use client\";\n/* eslint-disable @next/next/no-img-element -- Installable React image component. */\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { signatureShapePaths,type SignatureShapeName } from \"@/lib/cojeev/signature-shapes\";\nimport { useMotionVisibility } from \"@/lib/cojeev-motion/use-motion-visibility\";\nimport { assignMotionRef } from \"@/lib/cojeev-motion/refs\";\nexport type ImageMaskingProps=Omit<React.ComponentProps<\"figure\">,\"children\"> & {src:string;alt:string;shape?:SignatureShapeName;method?:\"mask\"|\"clip\";caption?:React.ReactNode;fit?:\"cover\"|\"contain\";imagePosition?:string};\nexport function ImageMasking({src,alt,shape=\"clover-soft\",method=\"mask\",caption,fit=\"cover\",imagePosition=\"center\",className,ref,...props}:ImageMaskingProps){\n const host=React.useRef<HTMLElement>(null),id=`image-mask-${React.useId().replace(/[^a-zA-Z0-9_-]/g,\"\")}`;const {enabled,inView}=useMotionVisibility(host);\n const path=signatureShapePaths[shape];if(!path)throw new Error(`Unknown Cojeev image shape: ${shape}`);\n const mask=`url(\"data:image/svg+xml,${encodeURIComponent(`<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"${path}\" fill=\"black\"/></svg>`)}\")`;\n const shapeStyle:React.CSSProperties=method===\"mask\"?{maskImage:mask,WebkitMaskImage:mask}:{clipPath:`url(#${id})`};\n const hostRef=React.useCallback((node:HTMLElement|null)=>{host.current=node;return assignMotionRef(ref,node);},[ref]);\n return <figure {...props} ref={hostRef} className={cn(\"v-image-masking\",className)} data-slot=\"image-masking\" data-method={method} data-motion={enabled&&inView?\"on\":\"off\"}>\n {method===\"clip\"&&<svg width=\"0\" height=\"0\" aria-hidden=\"true\" className=\"v-image-masking__defs\"><defs><clipPath id={id} clipPathUnits=\"objectBoundingBox\"><path transform=\"scale(.01)\" d={path}/></clipPath></defs></svg>}\n <div className=\"v-image-masking__frame\" style={shapeStyle}><img src={src} alt={alt} className=\"v-image-masking__image\" style={{objectFit:fit,objectPosition:imagePosition}}/></div>\n {caption&&<figcaption>{caption}</figcaption>}\n </figure>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/image-masking.css",
+      "content": "@layer cojeev-states {\n.v-image-masking{display:grid;gap:20px;justify-items:center;width:100%;min-width:0;margin:0}.v-image-masking__defs{position:absolute}.v-image-masking__frame{width:min(100%,420px);aspect-ratio:1;overflow:hidden;background:var(--v-beige);mask-size:100% 100%;mask-position:center;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat}.v-image-masking__image{display:block;width:100%;height:100%;transition:transform .55s cubic-bezier(.22,1,.36,1)}.v-image-masking figcaption{text-align:center;color:var(--v-text-2);font-size:14px;line-height:1.5;max-width:40ch}@media(hover:hover){.v-image-masking[data-motion=on]:hover .v-image-masking__image{transform:scale(1.045)}}.v-image-masking[data-motion=off] .v-image-masking__image{transition:none}@media(prefers-reduced-motion:reduce){.v-image-masking[data-motion=on]:hover .v-image-masking__image,.v-image-masking .v-image-masking__image{transition:none;transform:none}}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/image-masking.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/image-masking.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Image Masking",
+      "variants": [
+        "mask",
+        "clip"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "active",
+        "still"
+      ],
+      "reviewOnly": false
+    },
+    "api": [
+      {
+        "name": "ImageMaskingProps",
+        "props": [
+          {
+            "name": "src",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "alt",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "shape",
+            "type": "SignatureShapeName",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "method",
+            "type": "\"mask\"|\"clip\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "caption",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "fit",
+            "type": "\"cover\"|\"contain\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "imagePosition",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Creative",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}

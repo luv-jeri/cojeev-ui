@@ -1,0 +1,11 @@
+.v-sculpture-surface{position:relative;width:100%;min-width:0;height:clamp(240px,45vw,420px);overflow:hidden;container-type:inline-size;pointer-events:none;user-select:none;color:var(--v-text);contain:layout paint}
+.v-sculpture-surface[data-tone="rose"]{color:color-mix(in srgb,var(--v-text) 68%,var(--v-pink) 32%)}
+.v-sculpture-surface[data-tone="moss"]{color:color-mix(in srgb,var(--v-text) 68%,var(--v-olive) 32%)}
+.v-sculpture-surface[data-tone="sky"]{color:color-mix(in srgb,var(--v-text) 68%,var(--v-blue) 32%)}
+.v-sculpture-surface>[data-slot="glyph-sculpture-canvas"]{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;pointer-events:none}
+.v-sculpture-surface>[data-slot="glyph-sculpture-still"]{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:0;border:0;background:none;color:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:min(2.25cqw,12px);line-height:1.075;font-weight:600;letter-spacing:0;white-space:pre;pointer-events:none}
+.v-sculpture-surface>[data-slot="sculpture-print-still"]{position:absolute;inset:0;width:100%;height:100%}
+.v-sculpture-surface[data-renderer="canvas2d"]>[data-slot="glyph-sculpture-canvas"]{opacity:1}
+.v-sculpture-surface[data-renderer="canvas2d"]>:is([data-slot="glyph-sculpture-still"],[data-slot="sculpture-print-still"]){visibility:hidden}
+.v-sculpture-surface>[data-slot="sculpture-error"]{position:absolute;inset:24px;display:grid;place-content:center;color:var(--v-text);font:var(--fs-body,15px)/1.5 var(--font-body,system-ui);text-align:center}
+@media (forced-colors:active){.v-sculpture-surface{color:CanvasText}}

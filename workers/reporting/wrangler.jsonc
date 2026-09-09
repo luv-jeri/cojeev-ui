@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "cojeev-ui-reporting",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "ALLOWED_ORIGINS": "https://luv-jeri.github.io",
+    "SITE_URL": "https://luv-jeri.github.io/cojeev-ui",
+    "LOCAL_MODE": "false",
+    "EMAIL_ENABLED": "false",
+    "EMAIL_FROM": "hello@your-domain.invalid",
+    "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAEt12whn6p_17NLe"
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "cojeev-ui-reports",
+      "database_id": "056bebac-a74e-403f-8d83-9734870d1ec1"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "cojeev-ui-report-media",
+      "binding": "MEDIA"
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+[
+  {
+    "id": "portal-field",
+    "name": "Portal Field",
+    "category": "Backgrounds",
+    "variants": [
+      "balanced",
+      "warm",
+      "cool"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "playing",
+      "paused",
+      "still",
+      "offscreen",
+      "fallback",
+      "lost"
+    ],
+    "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
+    "usage": [
+      "Compose real content as children; keep essential controls above the decorative field.",
+      "Choose balanced, warm or cool Cojeev accents and keep a visible pause control for continuous movement."
+    ],
+    "accessibility": [
+      "The canvas and static SVG are decorative and hidden from assistive technology; children retain native semantics.",
+      "Reduced motion, shared motion/flow off, hidden tabs and offscreen stages stop animation. Local pointer response never captures the native cursor or touch scroll.",
+      "A deterministic static organic halo remains when WebGL is unavailable or lost."
+    ],
+    "related": [
+      "magic-rings",
+      "contour-field",
+      "pigment-field"
+    ],
+    "reference": "https://threeui.com/backgrounds/portal-field",
+    "landing": "Optional single hero or final invitation backdrop at low intensity; skip if another ambient field already occupies that scene.",
+    "notes": "Original annular distance shader with analytic domain warp, narrow luminous core, broad fringe and a quiet inner wash. No upstream authentication UI, external font or dependency copied.",
+    "observation": "The supplied portal-field.html uses warped arc signed distance, exponential core/fringe falloff, pointer offset and a low-alpha wash. Existing MagicRings draws crisp expanding circular arcs; ContourField renders topographic bands.",
+    "status": "new",
+    "api": [
+      {
+        "name": "PortalFieldProps",
+        "props": [
+          {
+            "name": "children",
+            "type": "React.ReactNode",
+            "default": "undefined",
+            "description": "Real caller content placed above the decorative artwork."
+          },
+          {
+            "name": "tone",
+            "type": "\"balanced\" | \"warm\" | \"cool\"",
+            "default": "\"balanced\"",
+            "description": "Pairs existing theme-aware Cojeev accent colors."
+          },
+          {
+            "name": "speed",
+            "type": "number",
+            "default": "0.7",
+            "description": "Relative animation pace, bounded to 0\u20133. Zero is still."
+          },
+          {
+            "name": "intensity",
+            "type": "number",
+            "default": "1",
+            "description": "Halo color strength, bounded to 0\u20132."
+          },
+          {
+            "name": "distortion",
+            "type": "number",
+            "default": "0.7",
+            "description": "Organic contour/domain warp, bounded to 0\u20131.5."
+          },
+          {
+            "name": "interactive",
+            "type": "boolean",
+            "default": "true",
+            "description": "Enable small local pointer parallax while moving; touch keeps scrolling."
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "default": "false",
+            "description": "Stop optional movement; readable content and a still artwork remain."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"default\" | \"lg\"",
+            "default": "\"default\"",
+            "description": "Stage or heading scale; all sizes remain responsive."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "default": "undefined",
+            "description": "Additional root class names. Native div attributes are also accepted."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "article-headings",
+    "name": "Article Headings",
+    "category": "Typography",
+    "variants": [
+      "decode",
+      "deliberate"
+    ],
+    "sizes": [
+      "sm",
+      "default",
+      "lg"
+    ],
+    "states": [
+      "decoding",
+      "complete",
+      "still",
+      "offscreen"
+    ],
+    "description": "Semantic article headings resolve through a brief, grapheme-safe noise frontier.",
+    "usage": [
+      "Supply stable unique item ids, full titles and optional metadata or hrefs; choose the correct heading level for the surrounding page.",
+      "Change replayKey to deliberately decode again. Pausing or leaving view restores complete text and cancels the current sequence.",
+      "Use on a compact editorial list; duration and total stagger are bounded, and large titles/lists retain readable static text."
+    ],
+    "accessibility": [
+      "Actual complete heading text remains in the accessibility tree throughout; decorative changing glyphs are aria-hidden and never announced.",
+      "Each glyph reserves its true footprint so noise does not move the heading, metadata or neighboring content.",
+      "Reduced motion, shared motion/flow off and hidden/offscreen stages keep exact still headings. Optional links remain keyboard accessible with visible focus."
+    ],
+    "related": [
+      "text-reveal",
+      "word-relay",
+      "writing-caret"
+    ],
+    "reference": "https://threeui.com/text-animation/article-headings",
+    "landing": "Optional editorial or field-notes section near the bottom of the landing page; use once on entry, keep the main hero to the chosen headline effect.",
+    "notes": "Original deterministic noise/frontier implementation over grapheme slots. It does not mutate semantic heading text like the upstream text-node walker. Replays are explicit and cancellations settle readable content.",
+    "observation": "ArticleHeadings.tsx composes numbered semantic h2 rows. articleHeadingDecode.ts reveals a left-to-right eased prefix, then a bounded scramble band and probabilistic noisy tail; it restores original nodes on cleanup. TextReveal has entrance motion but no decode noise/frontier.",
+    "status": "new",
+    "api": [
+      {
+        "name": "ArticleHeadingsProps",
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly ArticleHeadingItem[]",
+            "default": "required",
+            "description": "Each item: { id: string; title: string; meta?: string; href?: string }. Ids must be unique and stable."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "default": "\"Field notes\"",
+            "description": "Section eyebrow shown with the entry count."
+          },
+          {
+            "name": "headingLevel",
+            "type": "2 | 3 | 4",
+            "default": "2",
+            "description": "Semantic heading level for each article title."
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "default": "700",
+            "description": "Decode duration in milliseconds, bounded to 100\u20133000."
+          },
+          {
+            "name": "stagger",
+            "type": "number",
+            "default": "140",
+            "description": "Row delay in milliseconds; total stagger is compressed to at most 1200ms."
+          },
+          {
+            "name": "scrambleLength",
+            "type": "number",
+            "default": "10",
+            "description": "Maximum noisy frontier width in graphemes, bounded to 0\u201330."
+          },
+          {
+            "name": "preserveChance",
+            "type": "number",
+            "default": "0.25",
+            "description": "Fraction of original graphemes retained inside the noise band, bounded to 0\u20131."
+          },
+          {
+            "name": "tailChance",
+            "type": "number",
+            "default": "0.12",
+            "description": "Fraction of tail graphemes replaced with decorative symbols, bounded to 0\u20131."
+          },
+          {
+            "name": "replayKey",
+            "type": "string | number",
+            "default": "0",
+            "description": "Changing this value explicitly restarts the sequence when motion is allowed."
+          },
+          {
+            "name": "onDecodeComplete",
+            "type": "() => void",
+            "default": "undefined",
+            "description": "Called after the visible active sequence finishes, not after cancellation or a quiet-state fallback."
+          },
+          {
+            "name": "paused",
+            "type": "boolean",
+            "default": "false",
+            "description": "Stop optional movement; readable content and a still artwork remain."
+          },
+          {
+            "name": "size",
+            "type": "\"sm\" | \"default\" | \"lg\"",
+            "default": "\"default\"",
+            "description": "Stage or heading scale; all sizes remain responsive."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "default": "undefined",
+            "description": "Additional root class names. Native div attributes are also accepted."
+          }
+        ]
+      }
+    ]
+  }
+]

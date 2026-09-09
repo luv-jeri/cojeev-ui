@@ -12,10 +12,12 @@ import { PNG } from "pngjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.resolve(
-  process.argv[2] ?? path.join(os.tmpdir(), `sahajiv-registry-consumer-${Date.now()}`),
+  process.argv[2] ?? path.join(os.tmpdir(), `cojeev-registry-consumer-${Date.now()}`),
 );
-if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/sahajiv-consumer-audit.");
+if (output === root || output.startsWith(`${root}${path.sep}`)) throw new Error("Use a fresh output directory outside the repository, for example /tmp/cojeev-consumer-audit.");
 const resume = process.argv.includes("--resume");
+const refresh = process.argv.includes("--refresh");
+if (refresh && !resume) throw new Error("--refresh requires --resume of a successfully installed consumer");
 const registry = path.join(output, "registry-source");
 const consumer = path.join(output, "consumer");
 const env = {
@@ -30,6 +32,7 @@ if (resume) {
   receipt.resumedAt = new Date().toISOString();
   receipt.auditRunnerCommit = runnerCommit;
   receipt.resumedExistingFreshConsumer = true;
+  if (refresh) receipt.refreshedThroughRegistryCLI = true;
   delete receipt.error;
 }
 receipt.logs ??= {};
@@ -114,16 +117,16 @@ try {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const baseURL = `http://127.0.0.1:${server.address().port}`;
   receipt.registryURL = baseURL;
-  if (!resume) {
+  if (!resume || refresh) {
   for (const file of [
-    "registry/sahajiv",
+    "registry/cojeev",
     "scripts/build-registry.mjs",
     "scripts/component-api.mjs",
     "data/component-guides.json",
     "data/component-additions.json",
-    "reference/sahajiv-handoff-v4/data/registry.json",
-    "reference/sahajiv-handoff-v4/fonts/DMSans-OFL.txt",
-    "reference/sahajiv-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
+    "reference/cojeev-handoff-v4/data/registry.json",
+    "reference/cojeev-handoff-v4/fonts/DMSans-OFL.txt",
+    "reference/cojeev-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
     "package.json",
     "components.json",
   ]) {
@@ -134,7 +137,7 @@ try {
       recursive: true,
     });
   }
-  await fs.symlink(
+  if (!resume) await fs.symlink(
     path.join(root, "node_modules"),
     path.join(registry, "node_modules"),
     "dir",
@@ -158,7 +161,7 @@ try {
     process.execPath,
     ["scripts/build-registry.mjs"],
     registry,
-    { SAHAJIV_REGISTRY_URL: baseURL },
+    { COJEEV_REGISTRY_URL: baseURL },
   );
   }
   const items = (await json(path.join(registry, "registry.json"))).items;
@@ -171,7 +174,7 @@ try {
   receipt.entryCount = ids.length;
   if (!resume) {
   const packageFile = {
-    name: "sahajiv-fresh-consumer-audit",
+    name: "cojeev-fresh-consumer-audit",
     version: "0.0.0",
     private: true,
     type: "module",
@@ -259,7 +262,20 @@ try {
     consumer,
   );
   }
+  if (refresh) await run(
+    "shadcn-refresh-all",
+    process.execPath,
+    [path.join(root, "node_modules/shadcn/dist/index.js"), "add", "--yes", "--overwrite", ...ids.map(id => `${baseURL}/r/${id}.json`)],
+    consumer,
+  );
   const renderedExamples = {
+    "area-chart": index => `<Item${index}.AreaChart data={[{label:"Mon",value:12},{label:"Tue",value:24},{label:"Wed",value:18}]} series={[{key:"value",label:"Notes",color:"pink"}]} caption="Installed area chart"/>`,
+    "bar-chart": index => `<Item${index}.BarChart data={[{label:"Mon",value:12},{label:"Tue",value:24}]} series={[{key:"value",label:"Notes",color:"blue"}]} caption="Installed bar chart"/>`,
+    "line-chart": index => `<Item${index}.LineChart data={[{label:"Mon",value:12},{label:"Tue",value:24},{label:"Wed",value:18}]} series={[{key:"value",label:"Notes",color:"pink"}]} caption="Installed line chart"/>`,
+    "pie-chart": index => `<Item${index}.PieChart data={[{label:"Work",value:60,color:"pink"},{label:"Rest",value:40,color:"blue"}]} caption="Installed pie chart"/>`,
+    "radar-chart": index => `<Item${index}.RadarChart data={[{label:"Work",value:60},{label:"Rest",value:40},{label:"Learn",value:80}]} series={[{key:"value",label:"Balance",color:"olive"}]} caption="Installed radar chart"/>`,
+    "radial-chart": index => `<Item${index}.RadialChart data={[{label:"Reading",value:65,color:"pink"},{label:"Making",value:80,color:"blue"}]} caption="Installed radial chart"/>`,
+    "agent-state": index => `<Item${index}.AgentState status="idle" description="Ready in the installed library."/>`,
     "shape-scene": index => `<Item${index}.ShapeScene animate={false} interactive={false}/>` ,
     button: index => `<Item${index}.Button onClick={() => setCount(value => value + 1)}>Add schedule</Item${index}.Button><p data-audit-count>Schedules added: {count}</p>`,
     badge: index => `<Item${index}.Badge variant="olive">Ready</Item${index}.Badge>`,
@@ -342,7 +358,7 @@ try {
   }
   if (errors.length) throw new Error(errors.join("\n"));
   receipt.checks.dependencyClosure = "PASS";
-  const basePackages = new Set([...closure("sahajiv")].flatMap(name => [...(generated.get(name)?.dependencies ?? []), ...(generated.get(name)?.devDependencies ?? [])]).map(packageName));
+  const basePackages = new Set([...closure("cojeev")].flatMap(name => [...(generated.get(name)?.dependencies ?? []), ...(generated.get(name)?.devDependencies ?? [])]).map(packageName));
   if (basePackages.has("three") || basePackages.has("@types/three")) throw new Error("The foundation must not install optional Three.js packages");
   receipt.checks.optionalSceneExcludedFromBase = "PASS";
   if (ids.includes("shape-scene")) {
@@ -358,16 +374,16 @@ try {
   receipt.styles = [];
   for (const item of generated.values())
     for (const file of item.files ?? []) {
-      if (!file.path.startsWith("registry/sahajiv/styles/")) continue;
+      if (!file.path.startsWith("registry/cojeev/styles/")) continue;
       const name = path.basename(file.path, ".css");
       const source = await fs.readFile(path.join(registry, file.path), "utf8");
       const layer = ["fonts", "tokens", "theme", "base"].includes(name)
         ? null
         : name === "morph"
-          ? "sahajiv-morph"
+          ? "cojeev-morph"
           : name === "flow-press"
-            ? "sahajiv-flow"
-            : "sahajiv-states";
+            ? "cojeev-flow"
+            : "cojeev-states";
       const expected = layer ? `@layer ${layer} {\n${source}\n}\n` : source;
       const installed = await fs.readFile(
         path.join(consumer, "src", file.target),
@@ -383,13 +399,13 @@ try {
       });
     }
   const fontCSS = await fs.readFile(
-    path.join(consumer, "src/styles/sahajiv-fonts.css"),
+    path.join(consumer, "src/styles/cojeev-fonts.css"),
     "utf8",
   );
   receipt.layerOrder = fontCSS.match(/@layer[^;]+;/)?.[0];
   if (
     receipt.layerOrder !==
-    "@layer theme, base, components, utilities, sahajiv-states, sahajiv-flow, sahajiv-morph, sahajiv-accessibility;"
+    "@layer theme, base, components, utilities, cojeev-states, cojeev-flow, cojeev-morph, cojeev-accessibility;"
   )
     throw new Error("Unexpected layer order");
   receipt.checks.verbatimStylesAndLayers = "PASS";
@@ -400,6 +416,7 @@ try {
   await page.goto(`${baseURL}/consumer/`);
   await page.locator("[data-audit-entry]").last().waitFor();
   if (ids.includes("shape-scene")) {
+    await page.locator('[data-audit-specimen="shape-scene"]').scrollIntoViewIfNeeded();
     await page.waitForFunction(() => document.querySelector('[data-slot="shape-scene"]')?.getAttribute("data-renderer") === "webgl", undefined, { timeout: 30000 });
     const canvas = page.locator('[data-slot="shape-scene-canvas"]');
     if (!(await canvas.evaluate(element => element.width > 0 && element.height > 0))) throw new Error("Installed ShapeScene has an empty drawing buffer");
@@ -444,6 +461,19 @@ try {
     await page.getByRole("button", { name: "Pause motion", exact: true }).click();
     await page.getByRole("button", { name: "Resume motion", exact: true }).waitFor();
   }
+  for (const id of ["area-chart", "bar-chart", "line-chart", "pie-chart", "radar-chart", "radial-chart"]) {
+    if (!ids.includes(id)) continue;
+    const chart = page.locator(`[data-audit-specimen="${id}"]`);
+    const plot = chart.locator('[data-slot="chart-svg"]');
+    await plot.waitFor();
+    await plot.focus();
+    await plot.press("End");
+    await chart.getByRole("tooltip").waitFor();
+    await plot.press("Escape");
+    await chart.getByRole("tooltip").waitFor({ state: "hidden" });
+    await chart.getByRole("button", { name: "Show data", exact: true }).click();
+    await chart.locator('[data-slot="chart-data-table"]').waitFor({ state: "visible" });
+  }
   receipt.checks.selectedSpecimenInteractions = "PASS";
   await page.mouse.move(500, 500);
   receipt.loadedModuleCount = await page.locator("[data-audit-entry]").count();
@@ -455,7 +485,7 @@ try {
     );
   const sourcePage = await browser.newPage();
   await sourcePage.setContent(
-    `<style>${await fs.readFile(path.join(registry, "registry/sahajiv/styles/tokens.css"), "utf8")}\n${await fs.readFile(path.join(registry, "registry/sahajiv/styles/table.css"), "utf8")}</style><div data-slot="table-container" style="width:100px;height:100px;overflow:scroll"><div style="width:200px;height:200px">Probe</div></div>`,
+    `<style>${await fs.readFile(path.join(registry, "registry/cojeev/styles/tokens.css"), "utf8")}\n${await fs.readFile(path.join(registry, "registry/cojeev/styles/table.css"), "utf8")}</style><div data-slot="table-container" style="width:100px;height:100px;overflow:scroll"><div style="width:200px;height:200px">Probe</div></div>`,
   );
   receipt.tableSourceBackgroundClip = await sourcePage
     .locator('[data-slot="table-container"]')

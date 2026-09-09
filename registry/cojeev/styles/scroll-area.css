@@ -1,0 +1,117 @@
+/* The Radix viewport owns scroll. The thumb's SVG is decorative geometry only. */
+[data-slot="scroll-area"].v-scroll {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  max-height: var(--h, 240px);
+  padding: 6px 6px 6px 18px;
+  border-radius: var(--r-card-sm, 20px);
+  background: var(--v-canvas);
+  color: var(--v-text);
+  box-shadow: inset 0 0 0 1px var(--v-border);
+}
+[data-slot="scroll-area"].-ink { background: var(--v-ink); color: var(--v-on-ink); }
+[data-slot="scroll-area"].-plain { min-width:0; max-width:100%; padding:0; background:transparent; color:inherit; box-shadow:none; border-radius:inherit; }
+/* Leave room for control paint so decorative SVG overhang cannot invent a
+   tiny scroll range (and an almost full-height thumb) when content fits. */
+[data-slot="scroll-area"].-plain > [data-slot="scroll-area-viewport"] { height:auto; max-height:var(--h,320px); padding:8px 24px 12px 8px; }
+[data-slot="scroll-area"].-plain > [data-slot="scroll-area-viewport"] > div { table-layout:fixed; width:100%; }
+.v-list-scroll { --h:min(320px,60dvh); }
+[data-slot="scroll-area-viewport"] {
+  width: 100%;
+  height: 100%;
+  max-height: calc(var(--h, 240px) - 12px);
+  border-radius: inherit;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  padding-right: 24px;
+}
+[data-slot="scroll-area-viewport"]:focus-visible {
+  outline: 2px solid var(--v-brand);
+  outline-offset: -3px;
+}
+[data-slot="scroll-area-viewport"] > div > :is(p,.v-body) {
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid color-mix(in oklab,var(--v-border) 70%,transparent);
+  font-size: var(--fs-body, 14px);
+  line-height: 1.6;
+}
+[data-slot="scroll-area-viewport"] > div > :is(p,.v-body):last-child { border-bottom: 0; }
+[data-slot="scroll-area"].-ink [data-slot="scroll-area-viewport"] > div > :is(p,.v-body) {
+  border-bottom-color: color-mix(in oklab,var(--v-on-ink) 14%,transparent);
+}
+[data-slot="scroll-area-scrollbar"] {
+  display: flex;
+  padding: 4px;
+  touch-action: none;
+  user-select: none;
+  border-radius: 999px;
+  background: transparent;
+  transition: background-color 160ms ease;
+  z-index: 2;
+}
+[data-slot="scroll-area-scrollbar"][data-orientation="vertical"] { width: 24px; }
+[data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] { height: 24px; flex-direction: column; }
+[data-slot="scroll-area-scrollbar"]:hover,
+[data-slot="scroll-area-scrollbar"][data-dragging="true"] {
+  background: color-mix(in oklab,var(--v-pink) 24%,transparent);
+}
+[data-slot="scroll-area-thumb"] {
+  position: relative;
+  flex: 1;
+  min-height: 36px;
+  background: transparent;
+  color: var(--v-text-2);
+}
+[data-slot="scroll-area-thumb"]::before { content: ""; position: absolute; inset: -4px; }
+[data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] [data-slot="scroll-area-thumb"] { min-width: 36px; min-height: 0; }
+.v-scroll__contour { display: block; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; fill: currentColor; }
+[data-slot="scroll-area-scrollbar"]:hover [data-slot="scroll-area-thumb"],
+[data-slot="scroll-area-scrollbar"][data-scrolling="true"] [data-slot="scroll-area-thumb"] { color: var(--v-pink-deep); }
+[data-slot="scroll-area-scrollbar"][data-dragging="true"] [data-slot="scroll-area-thumb"] { color: var(--v-pink); }
+[data-slot="scroll-area"].-ink [data-slot="scroll-area-thumb"] { color: color-mix(in oklab,var(--v-on-ink) 65%,transparent); }
+[data-slot="scroll-area"].-ink [data-slot="scroll-area-scrollbar"]:hover [data-slot="scroll-area-thumb"] { color: var(--v-pink); }
+:root[data-mode="dark"] [data-slot="scroll-area"].-ink { background: var(--v-canvas); color: var(--v-text); }
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="scroll-area-scrollbar"] { transition: none; }
+  [data-slot="scroll-area-viewport"] { scroll-behavior: auto; }
+}
+[data-slot="scroll-area-scrollbar"][data-motion="off"] { transition: none; }
+
+/* Document scrolling stays native; this attribute exists only while mounted. */
+html[data-page-scrollbar="mounted"] { scrollbar-width: none; }
+html[data-page-scrollbar="mounted"]::-webkit-scrollbar,
+html[data-page-scrollbar="mounted"] body::-webkit-scrollbar { width: 0; height: 0; }
+[data-slot="page-scrollbar"] {
+  position: fixed;
+  right: 2px;
+  top: var(--page-scrollbar-top,80px);
+  bottom: 16px;
+  width: 24px;
+  border-radius: 999px;
+  z-index: 50;
+  touch-action: none;
+  user-select: none;
+  color: var(--v-text-2);
+  background: transparent;
+  transition: background-color 160ms ease;
+}
+[data-slot="page-scrollbar"][data-overflow="false"] { visibility: hidden; pointer-events: none; }
+[data-slot="page-scrollbar"]:hover,
+[data-slot="page-scrollbar"][data-scrolling="true"] { color: var(--v-pink-deep); background: color-mix(in oklab,var(--v-pink) 16%,transparent); }
+[data-slot="page-scrollbar"][data-dragging="true"] { color: var(--v-pink); background: color-mix(in oklab,var(--v-pink) 25%,transparent); }
+[data-slot="page-scrollbar"]:focus-visible { outline: 2px solid var(--v-brand); outline-offset: -1px; }
+[data-slot="page-scrollbar-thumb"] { position: absolute; inset: 0 3px auto; min-height: 0; }
+[data-slot="page-scrollbar-thumb"] svg { display: block; width: 100%; height: 100%; fill: currentColor; pointer-events: none; }
+[data-slot="page-scrollbar"][data-motion="off"] { transition: none; }
+@media (pointer: coarse) { [data-slot="page-scrollbar"] { right: 0; width: 24px; } }
+@media (prefers-reduced-motion: reduce) { [data-slot="page-scrollbar"] { transition: none; } }
+
+/* A fixed-size grip stays readable even when the proportional thumb is long. */
+.v-scroll__grip { position:absolute; left:50%; top:50%; translate:-50% -50%; display:flex; flex-direction:column; gap:3px; color:var(--v-canvas); pointer-events:none; }
+.v-scroll__grip i { display:block; width:3px; height:3px; border-radius:50%; background:currentColor; }
+[data-orientation="horizontal"] .v-scroll__grip { flex-direction:row; }
+[data-dragging="true"] .v-scroll__grip { color:var(--ink-fixed); }
+[data-slot="page-scrollbar"]::before { content:""; position:absolute; top:4px; bottom:4px; left:50%; width:1px; background:var(--v-border); pointer-events:none; }
+[data-slot="page-scrollbar-thumb"]::before { content:""; position:absolute; inset:0 -3px; }

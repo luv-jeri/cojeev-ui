@@ -1,0 +1,15 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "cojeev-ui-reporting-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "vars": {
+    "ALLOWED_ORIGINS": "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3100,http://127.0.0.1:3100",
+    "SITE_URL": "http://localhost:3100/cojeev-ui",
+    "LOCAL_MODE": "true",
+    "EMAIL_ENABLED": "false",
+    "EMAIL_FROM": "hello@your-domain.invalid"
+  },
+  "d1_databases": [{ "binding": "DB", "database_name": "cojeev-ui-reporting-local", "database_id": "00000000-0000-0000-0000-000000000001", "migrations_dir": "migrations" }],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "cojeev-ui-reporting-local" }]
+}

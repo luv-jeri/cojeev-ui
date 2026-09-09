@@ -29,10 +29,14 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test
+      - run: npm run reporting:test
       - run: npm run build
+        env:
+          NEXT_PUBLIC_REPORTING_API_URL: ${{ vars.REPORTING_API_URL }}
       - run: npm run check:examples
       - run: npm run gate
       - run: npm run gate:mobile
+      - run: npm run gate:marketing
       - name: Preserve production evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -43,6 +47,7 @@ jobs:
             artifacts/production-motion/
             artifacts/mobile-webkit/
             artifacts/example-source/
+            output/playwright/refinement-marketing/
             GATE.md
           retention-days: 14
       - name: Package documentation

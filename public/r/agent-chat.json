@@ -1,0 +1,378 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "agent-chat",
+  "title": "Agent chat",
+  "description": "A composable agent conversation with a bounded thread, draft composer, attachments, progress, explicit permissions and choice prompts.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/agent-state.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/message.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/message-scroller.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/attachment.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/questionnaire.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/avatar.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/bubble.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/input.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/input-group.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/ui/agent-chat.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Icon } from \"@/components/ui/icon\";\nimport { cn } from \"@/lib/utils\";\nimport { AgentState, type AgentStatus } from \"@/components/ui/agent-state\";\nimport { Button } from \"@/components/ui/button\";\nimport { Message, MessageContent, MessageDescription } from \"@/components/ui/message\";\nimport { MessageScroller, MessageScrollerJump, type MessageScrollerProps } from \"@/components/ui/message-scroller\";\nimport { Attachment, AttachmentType, AttachmentName, AttachmentMeta, AttachmentActions, AttachmentAction } from \"@/components/ui/attachment\";\nimport { Questionnaire, QuestionnaireQuestion, QuestionnaireOptions, QuestionnaireOption, QuestionnaireOptionBody } from \"@/components/ui/questionnaire\";\nimport { Avatar, AvatarFallback } from \"@/components/ui/avatar\";\nimport { Bubble, BubbleContent } from \"@/components/ui/bubble\";\nimport { Input } from \"@/components/ui/input\";\nimport { MotionPresence, MotionSurface } from \"@/components/ui/presence\";\nimport { InputGroup, InputGroupAddon, InputGroupTextarea, InputGroupButton } from \"@/components/ui/input-group\";\n\nexport type AgentChatLayoutProps = React.ComponentProps<\"div\">;\n/** Main work stays unconstrained; a dedicated conversation column sits beside it. */\nexport function AgentChatLayout({ className, ...props }: AgentChatLayoutProps) {\n  return <div data-slot=\"agent-chat-layout\" className={cn(\"v-agent-layout\", className)} {...props} />;\n}\nexport type AgentChatMainProps = React.ComponentProps<\"div\">;\nexport function AgentChatMain({ className, ...props }: AgentChatMainProps) {\n  return <div data-slot=\"agent-chat-main\" className={cn(\"v-agent-layout__main\", className)} {...props} />;\n}\nexport type AgentChatAsideProps = React.ComponentProps<\"aside\">;\nexport function AgentChatAside({ className, ...props }: AgentChatAsideProps) {\n  return <aside data-slot=\"agent-chat-aside\" className={cn(\"v-agent-layout__aside\", className)} aria-label=\"Agent side chat\" {...props} />;\n}\n\nexport type AgentChatProps = React.ComponentProps<\"section\">;\n/** A bounded conversation surface. Compose header, thread and composer as children. */\nexport function AgentChat({ className, ...props }: AgentChatProps) {\n  return <section data-slot=\"agent-chat\" className={cn(\"v-agent-chat\", className)} aria-label=\"Agent conversation\" {...props} />;\n}\n\nexport type AgentChatHeaderProps = Omit<React.ComponentProps<\"header\">, \"title\"> & {\n  title?: React.ReactNode;\n  description?: React.ReactNode;\n  status?: AgentStatus;\n  statusLabel?: string;\n  actions?: React.ReactNode;\n};\nexport function AgentChatHeader({ title = \"Cojeev\", description, status = \"idle\", statusLabel, actions, className, children, ...props }: AgentChatHeaderProps) {\n  return <header data-slot=\"agent-chat-header\" className={cn(\"v-agent-chat__header\", className)} {...props}>\n    <div className=\"v-agent-chat__heading\"><h2>{title}</h2>{description && <p>{description}</p>}</div>\n    {actions && <div className=\"v-agent-chat__header-actions\">{actions}</div>}\n    <AgentState status={status} size=\"sm\" label={statusLabel} />\n    {children}\n  </header>;\n}\n\nexport type AgentChatThreadProps = MessageScrollerProps & { jumpLabel?: string };\n/** Retains the reader's position while detached; exposes an explicit jump back. */\nexport function AgentChatThread({ className, children, jumpLabel = \"Latest message\", ...props }: AgentChatThreadProps) {\n  return <Bubble as={MessageScroller} data-slot=\"agent-chat-thread\" className={cn(\"v-agent-chat__thread\", className)} role=\"log\" aria-label=\"Conversation messages\" aria-live=\"polite\" aria-relevant=\"additions text\" tabIndex={0} {...props}>\n    {children}\n    <MessageScrollerJump className=\"v-agent-chat__jump\">{jumpLabel}</MessageScrollerJump>\n  </Bubble>;\n}\n\nexport type AgentChatMessageProps = React.ComponentProps<\"div\"> & {\n  author?: string;\n  avatar?: React.ReactNode;\n  from?: \"agent\" | \"user\";\n  meta?: React.ReactNode;\n  actions?: React.ReactNode;\n};\nexport function AgentChatMessage({ author = \"Cojeev\", from = \"agent\", avatar, meta, actions, className, children, ...props }: AgentChatMessageProps) {\n  return <MotionSurface asChild preset=\"rise\"><Message variant={from === \"user\" ? \"me\" : \"default\"} data-slot=\"agent-chat-message\" data-from={from} className={cn(\"v-agent-chat__message\", className)} {...props}>\n    {avatar ?? <Avatar variant={from === \"user\" ? \"blue\" : \"pink\"} className=\"v-agent-chat__avatar\" aria-hidden=\"true\"><AvatarFallback>{author.split(/\\s+/).map((part) => part[0]).slice(0, 2).join(\"\")}</AvatarFallback></Avatar>}\n    <MessageContent className=\"v-agent-chat__message-content\">\n      <MessageDescription className=\"v-agent-chat__author\">{author}{meta && <span>{meta}</span>}</MessageDescription>\n      <BubbleContent variant={from === \"user\" ? \"me\" : \"default\"} className=\"v-agent-chat__message-body\">{children}</BubbleContent>\n      {actions && <div className=\"v-agent-chat__message-actions\">{actions}</div>}\n    </MessageContent>\n  </Message></MotionSurface>;\n}\n\nexport type AgentChatAttachment = { id: string; name: string; type?: string; detail?: string };\nexport type AgentChatComposerProps = Omit<React.ComponentProps<\"form\">, \"onSubmit\" | \"onChange\"> & {\n  value: string;\n  onValueChange: (value: string) => void;\n  onSend: () => void;\n  status?: AgentStatus;\n  onStop?: () => void;\n  attachments?: readonly AgentChatAttachment[];\n  onAttach?: (files: File[]) => void;\n  onRemoveAttachment?: (id: string) => void;\n  accept?: string;\n  disabled?: boolean;\n  placeholder?: string;\n  label?: string;\n  hint?: React.ReactNode;\n  error?: React.ReactNode;\n  onRetry?: () => void;\n  maxLength?: number;\n};\n/** Controlled draft and attachments; the host clears them only after accepting send. */\nexport function AgentChatComposer({ value, onValueChange, onSend, status = \"idle\", onStop, attachments = [], onAttach, onRemoveAttachment, accept, disabled = false, placeholder = \"Ask, explore, or make something…\", label = \"Message Cojeev\", hint, error, onRetry, maxLength = 12000, className, children, ...props }: AgentChatComposerProps) {\n  const id = React.useId();\n  const input = React.useRef<HTMLInputElement>(null);\n  const textarea = React.useRef<HTMLTextAreaElement>(null);\n  const running = status === \"thinking\" || status === \"working\";\n  const canSend = !disabled && !running && (value.trim().length > 0 || attachments.length > 0) && value.length <= maxLength;\n  const wasRunning = React.useRef(running);\n  React.useEffect(() => {\n    if (wasRunning.current && !running && document.activeElement?.getAttribute(\"data-agent-stop\") === \"true\") textarea.current?.focus();\n    wasRunning.current = running;\n  }, [running]);\n  return <form data-slot=\"agent-chat-composer\" className={cn(\"v-agent-chat__composer\", className)} onSubmit={(event) => { event.preventDefault(); if (canSend) onSend(); }} {...props}>\n    <label className=\"v-agent-chat__sr-only\" htmlFor={`${id}-draft`}>{label}</label>\n    <MotionPresence>\n      {attachments.length > 0 && <MotionSurface key=\"attachments\" preset=\"rise\" data-slot=\"agent-chat-attachments\" className=\"v-agent-chat__attachments\">\n        <MotionPresence>\n        {attachments.map((file) => <MotionSurface key={file.id} preset=\"scale\" asChild><Attachment className=\"v-agent-chat__attachment\">\n          <AttachmentType>{file.type ?? <Icon name=\"file-text\" style={{width:16,height:16}} />}</AttachmentType>\n          <AttachmentName title={file.name}>{file.name}{file.detail && <AttachmentMeta>{file.detail}</AttachmentMeta>}</AttachmentName>\n          {onRemoveAttachment && <AttachmentActions><AttachmentAction disabled={disabled || running} onClick={() => onRemoveAttachment(file.id)} aria-label={`Remove ${file.name}`}><Icon name=\"x\" style={{width:16,height:16}} aria-hidden=\"true\" /></AttachmentAction></AttachmentActions>}\n        </Attachment></MotionSurface>)}\n        </MotionPresence>\n      </MotionSurface>}\n    </MotionPresence>\n    <MotionPresence>{error && <MotionSurface key=\"error\" preset=\"rise\" className=\"v-agent-chat__error\" id={`${id}-error`} role=\"alert\"><span>{error}</span>{onRetry && <Button variant=\"secondary\" size=\"sm\" onClick={onRetry} disabled={disabled || running}>Retry</Button>}</MotionSurface>}</MotionPresence>\n    <InputGroup className=\"v-agent-chat__draft\">\n      <InputGroupTextarea ref={textarea} id={`${id}-draft`} className=\"v-agent-chat__input\" rows={3} value={value} maxLength={maxLength} disabled={disabled} placeholder={placeholder} aria-invalid={error ? true : undefined} aria-describedby={`${id}-hint${error ? ` ${id}-error` : \"\"}`} onChange={(event) => onValueChange(event.target.value)} onKeyDown={(event) => {\n        if (event.key === \"Enter\" && (event.metaKey || event.ctrlKey) && !event.nativeEvent.isComposing && canSend) {\n          event.preventDefault(); onSend();\n        }\n      }} />\n      <InputGroupAddon className=\"v-agent-chat__composer-bar\">\n        {onAttach && <><Input ref={input} className=\"v-agent-chat__sr-only\" type=\"file\" tabIndex={-1} aria-hidden=\"true\" accept={accept} multiple disabled={disabled || running} onChange={(event) => {\n          const files = Array.from(event.target.files ?? []); if (files.length) onAttach(files); event.target.value = \"\";\n        }} /><InputGroupButton variant=\"ghost\" className=\"v-agent-chat__attach-button\" disabled={disabled || running} onClick={() => input.current?.click()} aria-label=\"Attach files\"><Icon name=\"paperclip\" style={{width:18,height:18}} aria-hidden=\"true\" /></InputGroupButton></>}\n        <span className=\"v-agent-chat__composer-note\">{running ? \"You can prepare your next message\" : \"A little context goes a long way\"}</span>\n        {running ? <InputGroupButton className=\"v-agent-chat__send\" data-agent-stop=\"true\" variant=\"secondary\" disabled={disabled || !onStop} aria-label=\"Stop generation\" onClick={() => { onStop?.(); textarea.current?.focus(); }}><Icon name=\"square\" style={{width:14,height:14,fill:\"currentColor\"}} aria-hidden=\"true\" /><span>Stop</span></InputGroupButton> : <InputGroupButton className=\"v-agent-chat__send\" type=\"submit\" disabled={!canSend} aria-label=\"Send message\"><Icon name=\"arrow-up\" style={{width:18,height:18}} aria-hidden=\"true\" /><span>Send</span></InputGroupButton>}\n      </InputGroupAddon>\n    </InputGroup>\n    <p className=\"v-agent-chat__hint\" id={`${id}-hint`}>{hint ?? <><Icon name=\"corner-down-left\" style={{width:12,height:12}} /> Enter for a new line · ⌘ / Ctrl + Enter to send</>}</p>\n    {children}\n  </form>;\n}\n\nexport type AgentChatPermissionProps = Omit<React.ComponentProps<\"div\">, \"title\"> & {\n  title: React.ReactNode;\n  description: React.ReactNode;\n  scope?: React.ReactNode;\n  decision?: \"pending\" | \"allowed\" | \"denied\";\n  onDecision: (decision: \"allowed\" | \"denied\") => void;\n  disabled?: boolean;\n  allowLabel?: string;\n  denyLabel?: string;\n};\n/** No implied consent: pending permissions require a deliberate allow or deny. */\nexport function AgentChatPermission({ title, description, scope, decision = \"pending\", onDecision, disabled, allowLabel = \"Allow once\", denyLabel = \"Deny\", className, ...props }: AgentChatPermissionProps) {\n  const id = React.useId();\n  return <div data-slot=\"agent-chat-permission\" data-decision={decision} className={cn(\"v-agent-chat__permission\", className)} role=\"group\" aria-labelledby={`${id}-title`} aria-describedby={`${id}-description`} {...props}>\n    <div className=\"v-agent-chat__decision-title\"><Icon name=\"shield-check\" style={{width:19,height:19}} aria-hidden=\"true\" /><h3 id={`${id}-title`}>{title}</h3></div>\n    <p id={`${id}-description`}>{description}</p>\n    {scope && <div className=\"v-agent-chat__scope\">{scope}</div>}\n    <MotionPresence mode=\"wait\">{decision === \"pending\" ? <MotionSurface key=\"pending\" preset=\"fade\" className=\"v-agent-chat__decision-actions\"><Button variant=\"secondary\" onClick={() => onDecision(\"denied\")} disabled={disabled}>{denyLabel}</Button><Button onClick={() => onDecision(\"allowed\")} disabled={disabled}>{allowLabel}</Button></MotionSurface> : <MotionSurface key={decision} preset=\"fade\" asChild><p className=\"v-agent-chat__receipt\" role=\"status\">{decision === \"allowed\" ? <Icon name=\"check\" style={{width:16,height:16}} aria-hidden=\"true\" /> : <Icon name=\"x\" style={{width:16,height:16}} aria-hidden=\"true\" />}{decision === \"allowed\" ? \"Permission allowed once\" : \"Permission denied\"}</p></MotionSurface>}</MotionPresence>\n  </div>;\n}\n\nexport type AgentChatOption = { value: string; label: string; description?: string; disabled?: boolean };\nexport type AgentChatOptionsProps = Omit<React.ComponentProps<\"div\">, \"title\"> & {\n  title: string;\n  options: readonly AgentChatOption[];\n  value?: string;\n  onValueChange: (value: string) => void;\n  onConfirm: (value: string) => void;\n  disabled?: boolean;\n  confirmLabel?: string;\n};\nexport function AgentChatOptions({ title, options, value, onValueChange, onConfirm, disabled, confirmLabel = \"Continue\", className, ...props }: AgentChatOptionsProps) {\n  const id = React.useId();\n  const valid = options.some((option) => option.value === value && !option.disabled);\n  return <Questionnaire data-slot=\"agent-chat-options\" className={cn(\"v-agent-chat__options\", className)} {...props}>\n    <QuestionnaireQuestion disabled={disabled}>\n      <legend id={`${id}-title`}>{title}</legend>\n      <QuestionnaireOptions name={id} value={value ?? \"\"} onValueChange={onValueChange} aria-labelledby={`${id}-title`}>\n        <MotionPresence>{options.map((option) => <MotionSurface key={option.value} asChild preset=\"rise\"><QuestionnaireOption value={option.value} disabled={disabled || option.disabled}>\n          <QuestionnaireOptionBody><b>{option.label}</b>{option.description && <small>{option.description}</small>}</QuestionnaireOptionBody>\n        </QuestionnaireOption></MotionSurface>)}</MotionPresence>\n      </QuestionnaireOptions>\n    </QuestionnaireQuestion>\n    <Button disabled={disabled || !valid} onClick={() => { if (valid && value !== undefined) onConfirm(value); }}>{confirmLabel}</Button>\n  </Questionnaire>;\n}\n\nexport type AgentChatStep = { id: string; label: string; detail?: string; status: \"pending\" | \"current\" | \"complete\" | \"error\" };\nexport type AgentChatProgressProps = React.ComponentProps<\"ol\"> & { steps: readonly AgentChatStep[] };\nexport function AgentChatProgress({ steps, className, ...props }: AgentChatProgressProps) {\n  return <ol data-slot=\"agent-chat-progress\" className={cn(\"v-agent-chat__progress\", className)} aria-label=\"Work progress\" {...props}>\n    <MotionPresence>{steps.map((step, index) => <MotionSurface key={step.id} asChild preset=\"rise\"><li data-state={step.status} aria-current={step.status === \"current\" ? \"step\" : undefined}>\n      <span className=\"v-agent-chat__step-mark\" aria-hidden=\"true\">{step.status === \"complete\" ? <Icon name=\"check\" style={{width:13,height:13}} /> : step.status === \"error\" ? <Icon name=\"x\" style={{width:13,height:13}} /> : index + 1}</span>\n      <span><span className=\"v-agent-chat__sr-only\">{step.status}: </span><b>{step.label}</b>{step.detail && <small>{step.detail}</small>}</span>\n    </li></MotionSurface>)}</MotionPresence>\n  </ol>;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/styles/agent-chat.css",
+      "content": "@layer cojeev-states {\n[data-slot=\"agent-chat-layout\"] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); align-items: start; gap: clamp(24px, 3vw, 48px); width: 100%; min-width: 0; }\n[data-slot=\"agent-chat-main\"] { min-width: 0; width: 100%; }\n[data-slot=\"agent-chat-aside\"] { min-width: 0; width: 100%; position: sticky; top: 24px; }\n[data-slot=\"agent-chat-aside\"] [data-slot=\"agent-chat\"] { max-width: none; }\n[data-slot=\"agent-chat\"] {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  max-width: 520px;\n  height: min(760px, 85dvh);\n  min-height: 480px;\n  min-width: 0;\n  overflow: hidden;\n  isolation: isolate;\n  border: 1px solid var(--v-border);\n  border-radius: var(--r-card);\n  background: var(--v-canvas);\n  color: var(--v-text);\n  font: 400 14px/1.5 var(--font-text);\n}\n.v-agent-chat__header { display: grid; grid-template-columns: minmax(0, 1fr) auto; flex-shrink: 0; column-gap: 12px; padding: 20px 20px 12px; border-bottom: 1px solid var(--v-border); }\n.v-agent-chat__heading { min-width: 0; }\n.v-agent-chat__heading h2 { margin: 0; font: 600 23px/1.2 var(--font-display); letter-spacing: -.025em; overflow-wrap: anywhere; }\n.v-agent-chat__heading p { margin: 4px 0 0; color: var(--v-text-2); font-size: 12px; }\n.v-agent-chat__header-actions { align-self: start; display: flex; gap: 8px; }\n.v-agent-chat__header [data-slot=\"agent-state\"] { grid-column: 1 / -1; margin: 4px 0 -4px -8px; }\n.v-agent-chat > .v-message-scroll-root[data-slot] { flex: 1 1 0; min-height: 0; max-height: none; padding: 0; background: transparent; border-radius: 0; box-shadow: none; }\n.v-agent-chat__thread[data-slot] { flex: 1 1 auto; min-height: 0; max-height: none; gap: 24px; padding: 24px 20px; border-radius: 0; background: transparent; box-shadow: none; overflow-x: hidden; overflow-y: auto; scroll-behavior: auto; scrollbar-gutter: stable; overscroll-behavior: contain; }\n.v-agent-chat__thread:focus-visible { outline: 2px solid var(--ring); outline-offset: -3px; }\n.v-agent-chat__jump { z-index: 2; box-shadow: var(--shadow-float); }\n.v-agent-chat__message { width: 100%; gap: var(--s-2); align-items: flex-start; }\n.v-agent-chat__avatar[data-slot] { width: 28px; height: 28px; font-size: 10px; margin-top: 2px; }\n.v-agent-chat__message-content { min-width: 0; flex: 1; max-width: 100%; width: 100%; gap: var(--s-2); }\n.v-agent-chat__author[data-slot] { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin: 0; font-size: 12px; color: var(--v-text); font-weight: 600; }\n.v-agent-chat__author span { color: var(--v-text-2); font-size: 11px; font-weight: 400; }\n.v-agent-chat__message-body[data-slot] { width: 100%; min-width: 0; max-width: 65ch; overflow-wrap: anywhere; }\n.v-agent-chat__message[data-from=\"agent\"] .v-agent-chat__message-body { background: var(--v-beige); }\n.v-agent-chat__message-body > :first-child { margin-top: 0; }\n.v-agent-chat__message-body > :last-child { margin-bottom: 0; }\n.v-agent-chat__message-body p { margin: 0 0 12px; white-space: pre-wrap; }\n.v-agent-chat__message-body pre { max-width: 100%; overflow: auto; padding: 12px; border-radius: 8px; background: var(--v-beige); font: 12px/1.5 var(--font-mono); }\n.v-agent-chat__message-body img, .v-agent-chat__message-body video { max-width: 100%; height: auto; }\n.v-agent-chat__message[data-from=\"user\"] .v-agent-chat__message-content { flex: 0 1 auto; width: fit-content; max-width: calc(100% - 36px); }\n\n.v-agent-chat__message-actions { display: flex; flex-wrap: wrap; gap: 8px; }\n.v-agent-chat__composer { flex: 0 0 auto; min-width: 0; padding: 12px; border-top: 1px solid var(--v-border); background: var(--v-canvas); }\n.v-agent-chat__draft[data-slot] { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: var(--s-2); }\n.v-agent-chat__draft:focus-within { outline: 2px solid var(--ring); outline-offset: 2px; }\n.v-agent-chat__input[data-slot] { min-height: 84px; max-height: 200px; resize: vertical; width: 100%; flex-basis: auto; padding: var(--s-2); background: transparent; box-shadow: none; font: 400 14px/1.5 var(--font-text); }\n.v-agent-chat__input[data-slot]:focus-visible { outline: none; box-shadow: none; }\n.v-agent-chat__draft .v-agent-chat__composer-bar[data-slot] { display: flex; align-items: center; width: 100%; max-width: 100%; min-width: 0; gap: var(--s-2); padding-top: var(--s-1); }\n.v-agent-chat__attach-button[data-slot] { width: 40px; padding: 0; flex-shrink: 0; }\n.v-agent-chat__composer-note { flex: 1 1 auto; min-width: 0; color: var(--v-text-2); font-size: 11px; line-height: 1.35; }\n.v-agent-chat__send[data-slot] { flex-shrink: 0; padding-inline: 14px; margin-left: auto; }\n.v-agent-chat__hint { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 8px 4px 0; font-size: 10px; line-height: 1.4; color: var(--v-text-2); text-align: center; overflow-wrap: anywhere; }\n.v-agent-chat__hint svg { flex-shrink: 0; }\n.v-agent-chat__attachments { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; max-height: 156px; overflow: auto; margin-bottom: 8px; }\n.v-agent-chat__attachment[data-slot] { min-width: 0; border-radius: 12px; min-height: 48px; gap: 8px; padding: 6px 8px; }\n.v-agent-chat__attachment [data-slot=\"attachment-type\"] { width: 32px; height: 32px; }\n.v-agent-chat__attachment [data-slot=\"attachment-name\"] { font-size: 12px; }\n.v-agent-chat__attachment [data-slot=\"attachment-meta\"] { font-size: 10px; }\n.v-agent-chat__error { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px; margin-bottom: 8px; border-radius: 12px; background: var(--status-danger-bg); color: var(--status-danger-ink); font-size: 12px; }\n.v-agent-chat__error > span { flex: 1; min-width: 16ch; overflow-wrap: anywhere; }\n.v-agent-chat__permission { display: grid; gap: 12px; padding: 16px; border-radius: 12px; background: var(--surface-automation); }\n.v-agent-chat__decision-title { display: flex; align-items: flex-start; gap: 8px; }\n.v-agent-chat__decision-title svg { flex-shrink: 0; margin-top: 1px; }\n.v-agent-chat__decision-title h3 { margin: 0; font: 600 15px/1.4 var(--font-text); }\n.v-agent-chat__permission > p { margin: 0; color: var(--v-text-2); font-size: 13px; }\n.v-agent-chat__scope { overflow-wrap: anywhere; padding-block: 10px; border-block: 1px solid var(--v-border); font-size: 12px; }\n.v-agent-chat__decision-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }\n.v-agent-chat__decision-actions > button { flex: 1 1 90px; }\n.v-agent-chat__permission .v-agent-chat__receipt { display: flex; align-items: center; gap: 8px; color: var(--v-text); font-weight: 600; }\n.v-agent-chat__permission[data-decision=\"denied\"] { background: var(--surface-quiet); }\n.v-agent-chat__permission[data-decision=\"allowed\"] { background: var(--surface-memory); }\n.v-agent-chat__options[data-slot] { gap: 12px; }\n.v-agent-chat__options legend { margin-bottom: 12px; font-weight: 600; font-size: 14px; }\n.v-agent-chat__options [data-slot=\"questionnaire-option\"] { grid-template-columns: minmax(0, 1fr) 22px; gap: 12px; padding: 12px; min-height: 56px; border-radius: 12px; background: var(--v-beige-2); }\n.v-agent-chat__options [data-slot=\"questionnaire-option-body\"] { order: 1; }\n.v-agent-chat__options [data-slot=\"questionnaire-option-body\"] b { font-size: 13px; }\n.v-agent-chat__options [data-slot=\"questionnaire-option-body\"] small { font-size: 12px; }\n.v-agent-chat__options > button { justify-self: start; }\n.v-agent-chat__progress { display: grid; gap: 0; list-style: none; padding: 0; margin: 16px 0; }\n.v-agent-chat__progress li { position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; padding-bottom: 18px; color: var(--v-text-2); }\n.v-agent-chat__progress li:last-child { padding-bottom: 0; }\n.v-agent-chat__progress li:not(:last-child)::after { content: \"\"; position: absolute; left: 11px; top: 26px; bottom: 3px; width: 1px; background: var(--v-border); }\n.v-agent-chat__step-mark { display: grid; place-items: center; width: 24px; height: 24px; font-size: 10px; border-radius: 50%; background: var(--v-beige); border: 1px solid var(--v-border); }\n.v-agent-chat__progress b { display: block; font-size: 13px; font-weight: 500; line-height: 24px; }\n.v-agent-chat__progress small { display: block; font-size: 12px; line-height: 1.45; }\n.v-agent-chat__progress [data-state=\"current\"] { color: var(--v-text); }\n.v-agent-chat__progress [data-state=\"current\"] .v-agent-chat__step-mark { border-color: var(--v-edge); background: var(--v-pink); color: var(--ink-fixed); }\n.v-agent-chat__progress [data-state=\"complete\"] .v-agent-chat__step-mark { background: var(--status-ok-bg); color: var(--status-ok-ink); border-color: transparent; }\n.v-agent-chat__progress [data-state=\"error\"] .v-agent-chat__step-mark { background: var(--status-danger-bg); color: var(--status-danger-ink); border-color: transparent; }\n.v-agent-chat__sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }\n.v-agent-chat-demo { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 12px; min-width: 0; }\n.v-agent-chat-demo__tools { display: flex; width: 100%; max-width: 520px; flex-wrap: wrap; align-items: center; gap: 8px; }\n.v-agent-chat-demo__tools p { margin: 0; flex: 1; font-size: 12px; color: var(--v-text-2); }\n.v-agent-chat-demo__welcome { display: grid; gap: 20px; padding-block: 8px; }\n.v-agent-chat-demo__welcome > p { margin: 0; max-width: 36ch; justify-self: center; text-align: center; color: var(--v-text-2); font-size: 13px; }\n.v-agent-chat-demo__suggestions { display: grid; gap: 8px; }\n.v-agent-chat-demo__suggestions > button { width: 100%; height: auto; min-height: 44px; padding: 12px 16px; white-space: normal; text-align: left; justify-content: space-between; font-size: 13px; }\n.v-agent-state-demo { width: 100%; display: grid; gap: 24px; justify-items: center; padding-block: 16px; }\n.v-agent-state-demo__controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }\n.v-agent-workspace__intro { margin-bottom: 28px; }\n.v-agent-workspace__intro h1 { font: 500 clamp(32px, 3vw, 48px)/1.08 var(--font-display); letter-spacing: -.03em; margin: 12px 0; max-width: 16ch; }\n.v-agent-workspace__intro p { max-width: 52ch; color: var(--v-text-2); font-size: 15px; line-height: 1.55; margin: 0; }\n.v-agent-workspace__section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 28px 0 12px; }\n.v-agent-workspace__section-heading h2 { font: 600 18px/1.3 var(--font-display); margin: 0; }\n.v-agent-workspace__section-heading span { font-size: 12px; color: var(--v-text-2); }\n.v-agent-workspace__tasks { display: grid; gap: 8px; }\n.v-agent-workspace__task[data-slot] { display: flex; justify-content: space-between; gap: 16px; min-height: 68px; height: auto; padding: 16px; text-align: left; white-space: normal; border-radius: 12px; }\n.v-agent-workspace__task-copy { display: grid; gap: var(--s-1); min-width: 0; }\n.v-agent-workspace__task b { display: block; font-size: 14px; font-weight: 500; }\n.v-agent-workspace__task small { display: block; font-size: 12px; line-height: 1.4; font-weight: 400; }\n.v-agent-workspace__task-status { flex-shrink: 0; font-size: 11px; }\n.v-agent-workspace__artifact[data-slot] { padding: clamp(20px, 3vw, 32px); background: var(--surface-memory); border-radius: 16px; }\n.v-agent-workspace__artifact h3 { font: 600 22px/1.2 var(--font-display); letter-spacing: -.02em; margin: 12px 0; }\n.v-agent-workspace__artifact p { font-size: 14px; color: var(--v-text-2); }\n.v-agent-workspace__artifact ul { padding-left: 20px; margin: 20px 0 24px; }\n.v-agent-workspace__artifact li { margin: 12px 0; font-size: 14px; line-height: 1.55; }\n.v-agent-workspace__artifact-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }\n.v-agent-workspace__artifact-actions p { margin: 0; font-size: 12px; }\n@media (max-width: 900px) {\n  [data-slot=\"agent-chat-layout\"] { grid-template-columns: minmax(0, 1fr); }\n  [data-slot=\"agent-chat-aside\"] { position: static; }\n  [data-slot=\"agent-chat-aside\"] .v-agent-chat-demo__tools { max-width: none; }\n}\n@media (max-width: 420px) {\n  [data-slot=\"agent-chat\"] { min-height: 440px; height: min(700px, 88dvh); border-radius: 12px; }\n  .v-agent-chat__header { padding: 16px 16px 8px; }\n  .v-agent-chat__thread[data-slot] { padding: 20px 12px; gap: 20px; }\n  .v-agent-chat__composer { padding: 10px; }\n  .v-agent-chat__composer-note { display: none; }\n  .v-agent-chat__input[data-slot] { font-size: 16px; }\n  .v-agent-chat__hint { font-size: 10px; }\n  .v-agent-chat__permission { padding: 12px; }\n}\n@media (max-height: 560px) {\n  [data-slot=\"agent-chat\"] { min-height: 360px; }\n}\n@media (prefers-reduced-motion: reduce) {\n  .v-agent-chat__thread[data-slot] { scroll-behavior: auto; }\n}\n\n}\n",
+      "type": "registry:file",
+      "target": "styles/cojeev/agent-chat.css"
+    }
+  ],
+  "css": {
+    "@import \"@/styles/cojeev/agent-chat.css\"": {}
+  },
+  "meta": {
+    "source": {
+      "name": "Agent chat",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default"
+      ],
+      "states": [
+        "idle",
+        "thinking",
+        "permission",
+        "options",
+        "working",
+        "complete",
+        "denied",
+        "stopped",
+        "error",
+        "retry",
+        "attached",
+        "detached"
+      ]
+    },
+    "api": [
+      {
+        "name": "AgentChatLayoutProps",
+        "props": []
+      },
+      {
+        "name": "AgentChatMainProps",
+        "props": []
+      },
+      {
+        "name": "AgentChatAsideProps",
+        "props": []
+      },
+      {
+        "name": "AgentChatProps",
+        "props": []
+      },
+      {
+        "name": "AgentChatHeaderProps",
+        "props": [
+          {
+            "name": "title",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "description",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "status",
+            "type": "AgentStatus",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "statusLabel",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "actions",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AgentChatThreadProps",
+        "props": [
+          {
+            "name": "jumpLabel",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AgentChatMessageProps",
+        "props": [
+          {
+            "name": "author",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "avatar",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "from",
+            "type": "\"agent\" | \"user\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "meta",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "actions",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AgentChatComposerProps",
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: string) => void",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "onSend",
+            "type": "() => void",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "status",
+            "type": "AgentStatus",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onStop",
+            "type": "() => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "attachments",
+            "type": "readonly AgentChatAttachment[]",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onAttach",
+            "type": "(files: File[]) => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onRemoveAttachment",
+            "type": "(id: string) => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "accept",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "hint",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "error",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onRetry",
+            "type": "() => void",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "maxLength",
+            "type": "number",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AgentChatPermissionProps",
+        "props": [
+          {
+            "name": "title",
+            "type": "React.ReactNode",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "description",
+            "type": "React.ReactNode",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "scope",
+            "type": "React.ReactNode",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "decision",
+            "type": "\"pending\" | \"allowed\" | \"denied\"",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onDecision",
+            "type": "(decision: \"allowed\" | \"denied\") => void",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "allowLabel",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "denyLabel",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AgentChatOptionsProps",
+        "props": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "options",
+            "type": "readonly AgentChatOption[]",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "onValueChange",
+            "type": "(value: string) => void",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "onConfirm",
+            "type": "(value: string) => void",
+            "required": true,
+            "description": ""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": ""
+          },
+          {
+            "name": "confirmLabel",
+            "type": "string",
+            "required": false,
+            "description": ""
+          }
+        ]
+      },
+      {
+        "name": "AgentChatProgressProps",
+        "props": [
+          {
+            "name": "steps",
+            "type": "readonly AgentChatStep[]",
+            "required": true,
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "category": "Conversation",
+    "fidelity": "refined-design-family",
+    "baseComponent": false
+  },
+  "type": "registry:ui"
+}
