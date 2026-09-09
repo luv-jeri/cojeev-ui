@@ -50,6 +50,7 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       return "Palette updates actual theme tokens, keyboard contrast persists, and reset restores Paper at 60%";
     },
     "guided-pointer": async ({ page, root }) => {
+      await root.scrollIntoViewIfNeeded();
       const pointer = root.locator('[data-slot="guided-pointer"]');
       const position = pointer.locator('[data-slot="guided-pointer-position"]');
       const ring = pointer.locator('[data-slot="guided-pointer-ring"]');
@@ -73,6 +74,44 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
         assert.equal(await ring.evaluate(el => getComputedStyle(el).opacity), "0");
       });
       return "Waypoint controls move the decorative pointer, finite ring settles, hand geometry renders, and quiet navigation retains endpoint bounds";
+    },
+    "semantic-bloom": async ({ page, root }) => {
+      const bloom = root.locator('[data-slot="semantic-bloom"]');
+      const canvas = bloom.locator('[data-slot="bloom-canvas"]');
+      const frame = () => canvas.evaluate(element => element.toDataURL());
+      await attribute(bloom, "data-renderer", "canvas");
+
+      await root.getByRole("button", { name: "Pause", exact: true }).click();
+      await attribute(bloom, "data-moving", "false");
+      const paused = await frame();
+      await page.waitForTimeout(120);
+      assert.equal(await frame(), paused);
+
+      await root.getByRole("button", { name: "Scatter", exact: true }).click();
+      await text(root.getByRole("status"), "Particles scattered. Use Gather to bring them back.");
+      await eventually(async () => (await frame()) !== paused, "Scatter changes the paused organism");
+      const scattered = await frame();
+
+      await key(root.getByRole("button", { name: "Gather", exact: true }), "Enter");
+      await text(root.getByRole("status"), "Gathering around the wordmark.");
+      await eventually(async () => (await frame()) !== scattered, "Gather joins the paused organism around the wordmark");
+      const gathered = await frame();
+      await page.waitForTimeout(120);
+      assert.equal(await frame(), gathered);
+
+      await root.getByRole("combobox", { name: "Palette", exact: true }).selectOption("memory");
+      await attribute(bloom, "data-tone", "memory");
+      await root.getByRole("textbox", { name: "Wordmark", exact: true }).fill("Ideas find each other");
+      await eventually(async () => (await bloom.locator('[data-slot="bloom-wordmark"]').textContent()) === "Ideas find each other", "Editable wordmark reaches the readable DOM text");
+
+      const follow = root.getByRole("switch", { name: "Follow cursor", exact: true });
+      await key(follow, "Space");
+      await attribute(follow, "aria-checked", "false");
+      await reduced(page, async () => {
+        await root.getByRole("button", { name: "Resume", exact: true }).click();
+        await attribute(bloom, "data-moving", "false");
+      });
+      return "Pause holds the canvas; pointer scatter and keyboard gather change it; palette, wordmark and cursor controls update real component state; reduced motion stays still";
     },
     "hero-button": async ({ page, root }) => {
       const button = root.getByRole("button", { name: "Make something yours", exact: true });
