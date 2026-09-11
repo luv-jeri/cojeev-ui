@@ -6,7 +6,7 @@ import { build } from 'esbuild';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 
 let mf, db, backend, media;
-const admin = 'a'.repeat(64), token='b'.repeat(64), origin='http://localhost:3000';
+const admin = 'a'.repeat(64), token='b'.repeat(64), healthToken='h'.repeat(64), origin='http://localhost:3000';
 const ipSecret='local-test-contact-salt-'.repeat(3);
 const githubActor={id:101,login:'reporting-maintainer'};
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -15,7 +15,7 @@ const request = (path, method='GET', body, auth, headers={}) => mf.dispatchFetch
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
-  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
+  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,HEALTH_TOKEN:healthToken,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
@@ -269,6 +269,12 @@ test('health discloses only release identity publicly and requires admin for que
   assert.equal((await request('/v1/admin/health')).status,401);
   const health=await request('/v1/admin/health','GET',undefined,admin);assert.equal(health.status,200);
   assert.ok((await health.json()).queue);
+});
+test('health-only credential can read diagnostics but cannot read reports, attachments or mutate admin state',async()=>{
+  assert.equal((await request('/v1/admin/health','GET',undefined,healthToken)).status,200);
+  for(const [url,method,body] of [['/v1/admin/reports','GET'],['/v1/admin/reports/example','GET'],['/v1/admin/reports/example/attachments/example','GET'],['/v1/admin/reports/example','PATCH',{status:'resolved'}],['/v1/admin/deliveries/example/retry','POST',{}],['/v1/admin/health','POST',{}],['/v1/admin/health','HEAD']]) {
+    assert.equal((await request(url,method,body,healthToken)).status,401);
+  }
 });
 test('free text request titles remain private until a maintainer publishes a safe title',async()=>{
   const p=payload({kind:'request',title:'Secret acquisition of Acme'});await submit(p);

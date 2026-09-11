@@ -10,8 +10,8 @@ This runbook describes the runtime contract; it does not claim deployment, sende
 | `SITE_URL` | `https://000h.cojeev.com` | `https://beta.000h.cojeev.com` |
 | Worker origin | `https://feedback.cojeev.com` | `https://feedback-beta.cojeev.com` |
 | `ALLOWED_ORIGINS` | `https://000h.cojeev.com,https://feedback.cojeev.com` | `https://beta.000h.cojeev.com,https://feedback-beta.cojeev.com` |
-| `EMAIL_DAILY_LIMIT` | at most `100` | at most `5` |
-| `EMAIL_MONTHLY_LIMIT` | at most `3000` | at most `3000`; reduce to allocate shared allowance |
+| `EMAIL_DAILY_LIMIT` | allocated `95` (hard ceiling `100`) | allocated `5` |
+| `EMAIL_MONTHLY_LIMIT` | allocated `2850` (hard ceiling `3000`) | allocated `150` |
 | `BETA_TESTER_EMAILS` | unused | defaults to `unread.fyi@gmail.com` |
 
 `RELEASE` is a non-secret release identifier shown in public health. Use separate D1/R2 resources, Turnstile configuration, Worker secrets, and provider webhooks for each environment. `LOCAL_MODE=true` is for loopback development only. Keep the existing server-enforced `ADMIN_TOKEN`, `IP_HASH_SECRET`, `TURNSTILE_SECRET`, `TURNSTILE_SITE_KEY`, GitHub repository/token/webhook configuration, and origin restrictions.
@@ -48,7 +48,7 @@ After 180 days, cleanup replaces both the original topic title and its normalize
 
 ## Health and launch checks
 
-`GET /health` returns only `status`, `environment`, and `release`. It does not disclose credentials, counts or report data and is not a provider-readiness proof. `GET /v1/admin/health` requires the existing bearer maintainer authorization and returns queue counts by job/delivery state, oldest ages, configured provider booleans, current UTC usage, hard-bounded limits, and activation cutoff. It never includes addresses, payloads, tokens or original report text.
+`GET /health` returns only `status`, `environment`, and `release`. It does not disclose credentials, counts or report data and is not a provider-readiness proof. `GET /v1/admin/health` accepts bearer `ADMIN_TOKEN` or a separate environment-specific `HEALTH_TOKEN` of at least 32 characters. The health token authorizes only GET on this exact health route; it cannot read reports or attachments, retry delivery, or perform any administrative mutation. Health returns queue counts by job/delivery state, oldest ages, configured provider booleans, current UTC usage, hard-bounded limits, and activation cutoff. It never includes addresses, payloads, tokens or original report text. Use only health-scoped tokens in the main-only GitHub `operations` environment (`BETA_HEALTH_TOKEN` and `PRODUCTION_HEALTH_TOKEN`); deploy environments also hold their own `HEALTH_TOKEN` for post-deploy checks. Rotate the server and matching CI value together.
 
 Before public activation, verify new receipt persistence, private attachment authorization, origin/Turnstile protection, a safe GitHub issue, a received email, and an explicitly released completion email. Inspect the signed delivered events and the actual inbox separately. Keep old jobs held during these checks. Failed/uncertain jobs need provider review; quota jobs need budget/reset; disabled provider booleans need configuration. Technical media expires after 30 days; contact/private titles/text and persisted email payloads expire after 180 days. Approved public titles, distinct-demand identities and delivery/event metadata remain for audit and duplicate protection.
 

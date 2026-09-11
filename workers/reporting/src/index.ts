@@ -1,5 +1,5 @@
 import { accept, authorizeReceipt, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
-import { assertBrowserOrigin, HttpError, origins, readJSON, requireAdmin } from "./security";
+import { assertBrowserOrigin, equalSecret, HttpError, origins, readJSON, requireAdmin } from "./security";
 import { activationCutoff, emailEnabled, githubEnabled, now, type Env, type Delivery } from "./types";
 import { emailLimits, resendWebhook } from './resend';
 import { drain } from "./delivery";
@@ -24,7 +24,8 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
   const reportMatch=path.match(/^\/v1\/reports\/([^/]+)$/);
   if(reportMatch&&request.method==="GET") { const {row,token}=await authorizeReceipt(request,env,reportMatch[1]);return json(await receipt(env,row,token)); }
   if(path.startsWith("/v1/admin/")) {
-    await requireAdmin(request,env);
+    const healthOnly=path==='/v1/admin/health'&&request.method==='GET'&&!!env.HEALTH_TOKEN&&env.HEALTH_TOKEN.length>=32&&await equalSecret(request.headers.get('Authorization')??'',`Bearer ${env.HEALTH_TOKEN}`);
+    if(!healthOnly) await requireAdmin(request,env);
     if(path==='/v1/admin/health'&&request.method==='GET') {
       const queue=await env.DB.prepare("SELECT state,delivery_status,COUNT(*) AS count,MIN(created_at) AS oldestCreatedAt FROM outbox GROUP BY state,delivery_status").all();
       const time=now(),date=new Date(time);

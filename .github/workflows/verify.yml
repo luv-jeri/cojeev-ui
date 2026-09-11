@@ -1,80 +1,162 @@
-name: Build, verify, and publish
-
+name: Verify and release
 on:
   push:
-    paths-ignore: ["*.md", "verification/**"]
   pull_request:
-    paths-ignore: ["*.md", "verification/**"]
   workflow_dispatch:
-
 permissions:
   contents: read
 
-concurrency:
-  group: verify-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   verify:
+    name: Verify release
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 90
+    concurrency:
+      group: verify-${{ github.ref }}
+      cancel-in-progress: true
+    outputs:
+      beta_digest: ${{ steps.release.outputs.beta_digest }}
+      production_digest: ${{ steps.release.outputs.production_digest }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          node-version: 22
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run test
+      - run: npx next typegen && npm run typecheck
+      - run: npm test
       - run: npm run reporting:test
       - run: npm run registry-host:test
-      - run: npm run build
+      - run: node --test tests/release.test.mjs tests/operations.test.mjs
+      - name: Prepare both environments from this clean commit
+        id: release
+        run: node scripts/release.mjs build-pair "$GITHUB_SHA" artifacts/release
         env:
-          NEXT_PUBLIC_REPORTING_API_URL: ${{ vars.REPORTING_API_URL }}
-          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ vars.POSTHOG_PROJECT_TOKEN }}
-          NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
-          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
-          NEXT_PUBLIC_REGISTRY_URL: ${{ vars.REGISTRY_URL }}
-          COJEEV_REGISTRY_URL: ${{ vars.REGISTRY_URL || 'https://luv-jeri.github.io/cojeev-ui' }}
+          BETA_POSTHOG_PROJECT_TOKEN: ${{ vars.BETA_POSTHOG_PROJECT_TOKEN }}
+          PRODUCTION_POSTHOG_PROJECT_TOKEN: ${{ vars.PRODUCTION_POSTHOG_PROJECT_TOKEN }}
+          BETA_ANALYTICS_ENABLED: ${{ vars.BETA_ANALYTICS_ENABLED || 'false' }}
+          PRODUCTION_ANALYTICS_ENABLED: ${{ vars.PRODUCTION_ANALYTICS_ENABLED || 'false' }}
+          PUBLIC_CONTACT_ENABLED: ${{ vars.PUBLIC_CONTACT_ENABLED || 'false' }}
+      - name: Build manual Pages compatibility fixture for existing browser gates
+        run: npm run build
       - run: npm run check:examples
       - run: npm run gate
       - run: npm run gate:mobile
       - run: npm run gate:marketing
       - run: npm run gate:smooth-scroll
-      - name: Preserve production evidence
-        if: always()
-        uses: actions/upload-artifact@v7
+      - run: npm run reporting:browser
+      - run: npm run analytics:browser
+      - name: Verify fresh consumer installation from this build
+        run: node scripts/release-install.mjs
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: production-evidence
-          path: |
-            artifacts/production-docs/
-            artifacts/production-motion/
-            artifacts/mobile-webkit/
-            artifacts/landing-smooth-scroll/
-            artifacts/example-source/
-            output/playwright/refinement-marketing/
-            GATE.md
+          name: release-${{ github.sha }}
+          path: artifacts/release/
+          if-no-files-found: error
           retention-days: 14
-      - name: Package documentation
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: out
+          include-hidden-files: false
 
-  publish:
+  beta:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: verify
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
+    timeout-minutes: 20
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: beta
+      url: https://beta.000h.cojeev.com
+    concurrency:
+      group: deploy-beta
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      issues: write
     steps:
-      - name: Publish documentation and registry
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
+      - run: npm ci --ignore-scripts
+      - name: Prepare pinned external deployment runtime
+        run: |
+          mkdir -p "$RUNNER_TEMP/cojeev-wrangler"
+          cp .github/wrangler-runtime/package*.json "$RUNNER_TEMP/cojeev-wrangler/"
+          npm ci --ignore-scripts --prefix "$RUNNER_TEMP/cojeev-wrangler"
+          echo "WRANGLER_BIN=$RUNNER_TEMP/cojeev-wrangler/node_modules/wrangler/bin/wrangler.js" >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-${{ github.sha }}
+          path: artifacts/release
+      - name: Verify, privately back up, migrate, and deploy beta
+        run: node scripts/release.mjs deploy beta "$GITHUB_SHA" artifacts/release/beta "$DIGEST"
+        env:
+          DIGEST: ${{ needs.verify.outputs.beta_digest }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
+      - run: node scripts/release.mjs live beta "$GITHUB_SHA"
+        env:
+          HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
+      - name: Independent failure notification
+        if: failure()
+        run: node scripts/operations-health.mjs beta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_ALERT: 'true'
+          OPERATIONS_FAILURE: deployment-failed
+
+  production:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [verify, beta]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: https://000h.cojeev.com
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
+      - run: npm ci --ignore-scripts
+      - name: Prepare pinned external deployment runtime
+        run: |
+          mkdir -p "$RUNNER_TEMP/cojeev-wrangler"
+          cp .github/wrangler-runtime/package*.json "$RUNNER_TEMP/cojeev-wrangler/"
+          npm ci --ignore-scripts --prefix "$RUNNER_TEMP/cojeev-wrangler"
+          echo "WRANGLER_BIN=$RUNNER_TEMP/cojeev-wrangler/node_modules/wrangler/bin/wrangler.js" >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-${{ github.sha }}
+          path: artifacts/release
+      - name: Promote the prepared production artifact after environment approval
+        run: node scripts/release.mjs deploy production "$GITHUB_SHA" artifacts/release/production "$DIGEST"
+        env:
+          DIGEST: ${{ needs.verify.outputs.production_digest }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
+      - run: node scripts/release.mjs live production "$GITHUB_SHA"
+        env:
+          HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
+      - name: Independent failure notification
+        if: failure()
+        run: node scripts/operations-health.mjs production
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_ALERT: 'true'
+          OPERATIONS_FAILURE: deployment-failed

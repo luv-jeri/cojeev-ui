@@ -1,0 +1,82 @@
+name: Code rollback
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options: [beta, production]
+        required: true
+      run_id:
+        description: Successful Verify and release run with retained artifact
+        required: true
+      commit:
+        description: Full 40-character source SHA from that run
+        required: true
+      digest:
+        description: Recorded environment manifest SHA-256
+        required: true
+      schema_ack:
+        description: Confirm code-only rollback compatible with 0002_safe_delivery.sql; data is not restored
+        type: boolean
+        required: true
+permissions:
+  contents: read
+  actions: read
+  issues: write
+jobs:
+  rollback:
+    if: github.ref == 'refs/heads/main' && inputs.schema_ack
+    environment: ${{ inputs.environment }}
+    concurrency:
+      group: deploy-${{ inputs.environment }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
+      - run: npm ci --ignore-scripts
+      - name: Validate source run provenance
+        run: node scripts/release-rollback-run.mjs "$RUN_ID" "$COMMIT"
+        env:
+          RUN_ID: ${{ inputs.run_id }}
+          COMMIT: ${{ inputs.commit }}
+          GH_TOKEN: ${{ github.token }}
+      - name: Prepare pinned external runtime
+        run: |
+          mkdir -p "$RUNNER_TEMP/cojeev-wrangler"
+          cp .github/wrangler-runtime/package*.json "$RUNNER_TEMP/cojeev-wrangler/"
+          npm ci --ignore-scripts --prefix "$RUNNER_TEMP/cojeev-wrangler"
+          echo "WRANGLER_BIN=$RUNNER_TEMP/cojeev-wrangler/node_modules/wrangler/bin/wrangler.js" >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: release-${{ inputs.commit }}
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: artifacts/release
+      - name: Verify and redeploy prior website and API code; never migrate or restore data
+        run: node scripts/release.mjs rollback "$TARGET" "$COMMIT" "artifacts/release/$TARGET" "$DIGEST"
+        env:
+          TARGET: ${{ inputs.environment }}
+          COMMIT: ${{ inputs.commit }}
+          DIGEST: ${{ inputs.digest }}
+          ROLLBACK_SCHEMA_ACK: 0002_safe_delivery.sql
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
+      - run: node scripts/release.mjs live "$TARGET" "$COMMIT"
+        env:
+          TARGET: ${{ inputs.environment }}
+          COMMIT: ${{ inputs.commit }}
+          HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
+      - name: Independent failure notification
+        if: failure()
+        run: node scripts/operations-health.mjs "$TARGET"
+        env:
+          TARGET: ${{ inputs.environment }}
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_ALERT: 'true'
+          OPERATIONS_FAILURE: deployment-failed
