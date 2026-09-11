@@ -32,36 +32,42 @@ export function assertCleanSource(root, commit) {
   if(git('status','--porcelain','--untracked-files=all')) throw new Error('Source must be clean; dirty snapshot refused');
   return commit;
 }
+const LOCAL_HOSTS=['localhost','127.0.0.1','[::1]'];
 export function validateContent(file, content, environment) {
   const target=environmentConfig(environment);
   const opposite=environmentConfig(environment==='beta'?'production':'beta');
+  const forbidden=[new URL(opposite.site).hostname,new URL(opposite.api).hostname,'luv-jeri.github.io'];
+  // A dependency position: a malformed value here is reported by name instead of
+  // surfacing as a bare TypeError from the URL parser.
   const reject=url=>{
-    const parsed=new URL(url.replaceAll('\\/','/'));
-    if(['localhost','127.0.0.1','[::1]'].includes(parsed.hostname) || [new URL(opposite.site).hostname,new URL(opposite.api).hostname,'luv-jeri.github.io'].includes(parsed.hostname)) throw new Error(`Cross-environment URL in ${file}`);
+    const value=url.replaceAll('\\/','/');
+    if(!URL.canParse(value)) throw new Error(`Malformed URL dependency in ${file}`);
+    const {hostname}=new URL(value);
+    if(LOCAL_HOSTS.includes(hostname)||forbidden.includes(hostname)) throw new Error(`Cross-environment URL in ${file}`);
   };
-  // Documentation strings legitimately teach localhost development. Actual HTML
-  // attributes and executable bundles must never use those as dependencies.
+  // Bundled and quoted source legitimately teaches localhost development, so only
+  // its executable uses count as dependencies there. An opposite-environment
+  // origin is never legitimate and is rejected wherever it appears.
+  const scanSource=text=>{
+    for(const match of text.matchAll(/https?:\/\/[^\s"'<>`\\)]+/g)) {
+      const executable=/(?:fetch|import|WebSocket|EventSource|url)\s*\(\s*["']?$/.test(text.slice(Math.max(0,match.index-40),match.index));
+      if(!executable && (LOCAL_HOSTS.some(host=>match[0].includes(host)) || !URL.canParse(match[0]))) continue;
+      reject(match[0]);
+    }
+  };
   if(file.endsWith('.html')) {
     for(const match of content.matchAll(/(?:src|href|action)=["'](https?:\/\/[^"']+)["']/g)) reject(match[1]);
     for(const match of content.matchAll(/(?:fetch|import|WebSocket|EventSource)\s*\(\s*["'](https?:\/\/[^"']+)["']/g)) reject(match[1]);
   } else if(file.startsWith('site/') && file.endsWith('.json')) {
     const data=JSON.parse(content);
-    const walk=value=>{
-      if(typeof value==='string' && /^https?:\/\//.test(value)) reject(value);
-      else if(Array.isArray(value)) value.forEach(walk);
-      else if(value && typeof value==='object') for(const [key,child] of Object.entries(value)) if(key!=='content' && key!=='description') walk(child);
+    // `content` and `description` carry registry component source and prose, so
+    // they are walked as source rather than skipped.
+    const walk=(value,source=false)=>{
+      if(typeof value==='string') {if(source) scanSource(value);else if(/^https?:\/\//.test(value)) reject(value);}
+      else if(Array.isArray(value)) value.forEach(child=>walk(child,source));
+      else if(value && typeof value==='object') for(const [key,child] of Object.entries(value)) walk(child,source||key==='content'||key==='description');
     };walk(data);
-  } else if(file.startsWith('site/') && /\.(js|css|json)$/.test(file)) {
-    for(const match of content.matchAll(/https?:\/\/[^\s"'<>`\\)]+/g)) {
-      const executable=/(?:fetch|import|WebSocket|EventSource|url)\s*\(\s*["']?$/.test(content.slice(Math.max(0,match.index-40),match.index));
-      if(!URL.canParse(match[0]) && !executable) continue;
-      // localhost literals in bundled documentation are inert strings. Catch
-      // their executable uses, while opposite live origins are always forbidden.
-      if(match[0].includes('localhost')||match[0].includes('127.0.0.1')) {
-        if(executable) reject(match[0]);
-      } else reject(match[0]);
-    }
-  }
+  } else if(file.startsWith('site/') && /\.(js|css|json)$/.test(file)) scanSource(content);
   return target;
 }
 async function inventory(root, directory='') {
@@ -83,6 +89,16 @@ export async function createManifest(root, environment, commit) {
     if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
     if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
     const bytes=await fs.readFile(path.join(root,file));
+    // Scanned: every public `site/**` .html/.js/.css/.json byte served to browsers.
+    // Not scanned, deliberately: `website/index.js` compiles BOTH API hostnames into
+    // the CSP it chooses at runtime from env.ENVIRONMENT, and `api/index.js` compiles
+    // localhost/127.0.0.1 into its LOCAL_MODE guard, so a URL scan of either bundle
+    // can only produce false positives. `api/wrangler.jsonc` and
+    // `website/wrangler.jsonc` (.jsonc misses this test) and the remaining `site/**`
+    // file types (sitemap.xml, robots.txt, the __next RSC .txt payloads) are also
+    // unscanned. What each deployed Worker actually targets is controlled by
+    // validateDeploymentConfig, which checks name, account, route hostname, D1, R2 and
+    // allowed origins against this environment; live cross-origin behaviour is Task 4.
     if(/\.(html|js|css|json)$/.test(file)) validateContent(file,bytes.toString('utf8'),environment);
     files[file]=hash(bytes);
   }

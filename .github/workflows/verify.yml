@@ -42,6 +42,10 @@ jobs:
           BETA_ANALYTICS_ENABLED: ${{ vars.BETA_ANALYTICS_ENABLED || 'false' }}
           PRODUCTION_ANALYTICS_ENABLED: ${{ vars.PRODUCTION_ANALYTICS_ENABLED || 'false' }}
           PUBLIC_CONTACT_ENABLED: ${{ vars.PUBLIC_CONTACT_ENABLED || 'false' }}
+      - name: Check the hosting CSP against each packaged artifact
+        run: |
+          node scripts/release-csp.mjs beta artifacts/release/beta
+          node scripts/release-csp.mjs production artifacts/release/production
       - name: Build manual Pages compatibility fixture for existing browser gates
         run: npm run build
       - run: npm run check:examples

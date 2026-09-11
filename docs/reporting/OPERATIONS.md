@@ -9,7 +9,7 @@ This runbook describes the runtime contract; it does not claim deployment, sende
 | `ENVIRONMENT` | `production` | `beta` |
 | `SITE_URL` | `https://000h.cojeev.com` | `https://beta.000h.cojeev.com` |
 | Worker origin | `https://feedback.cojeev.com` | `https://feedback-beta.cojeev.com` |
-| `ALLOWED_ORIGINS` | `https://000h.cojeev.com,https://feedback.cojeev.com` | `https://beta.000h.cojeev.com,https://feedback-beta.cojeev.com` |
+| `ALLOWED_ORIGINS` | `https://000h.cojeev.com,https://feedback.cojeev.com,https://luv-jeri.github.io` | `https://beta.000h.cojeev.com,https://feedback-beta.cojeev.com` |
 | `EMAIL_DAILY_LIMIT` | allocated `95` (hard ceiling `100`) | allocated `5` |
 | `EMAIL_MONTHLY_LIMIT` | allocated `2850` (hard ceiling `3000`) | allocated `150` |
 | `BETA_TESTER_EMAILS` | unused | defaults to `unread.fyi@gmail.com` |

@@ -41,25 +41,28 @@ export async function github(endpoint,options={}) {
   if(!response.ok) throw new Error('GitHub alert request failed');
   return response.json();
 }
+export const ALERT_LABEL='operations-alert';
 export async function updateAlert(environment,problems,client=github) {
   environmentConfig(environment);
   const marker=`<!-- cojeev-health:${environment} -->`;
   const safe=[...new Set(problems.filter(code=>codes.has(code)))].sort();
   if(problems.length && !safe.length) safe.push('http-health');
-  let existing;
-  for(let page=1;page<=20;page++) {
-    const entries=await client(`issues?state=open&per_page=100&page=${page}`);
-    existing=entries.find(issue=>!issue.pull_request&&issue.body?.includes(marker));
-    if(existing||entries.length<100) break;
-    if(page===20) throw new Error('Alert inventory incomplete');
-  }
+  // One bounded labelled query, not a scan of every open issue: this repository
+  // also receives mirrored public reports, so an unlabelled scan would grow with
+  // adoption until it could no longer find the alert issue or close it.
+  const open=await client(`issues?state=open&labels=${ALERT_LABEL}&per_page=100`);
+  const existing=open.find(issue=>!issue.pull_request&&issue.body?.includes(marker));
   if(!safe.length) {
     if(existing) await client(`issues/${existing.number}`,{method:'PATCH',body:{state:'closed',state_reason:'completed',body:`${marker}\nRecovered: ${environment} checks pass. @luv-jeri`}});
     return;
   }
   const body={title:`Operations alert: ${environment}`,body:`${marker}\n@luv-jeri: ${environment} needs attention.\n\nChecks: ${safe.join(', ')}.\n\nInspect the protected operations run and authenticated inbox. No report contents are included.`,state:'open'};
   if(existing?.body===body.body) return;
-  await client(existing?`issues/${existing.number}`:'issues',{method:existing?'PATCH':'POST',body});
+  // An already-present label answers 422; the alert itself must still be filed.
+  if(!existing) await client('labels',{method:'POST',body:{name:ALERT_LABEL,color:'b60205',description:'Automated release operations health alert'}}).catch(()=>{});
+  // A PATCH carrying `labels` would replace whatever the owner added by hand, so
+  // only the newly created issue asserts the label.
+  await client(existing?`issues/${existing.number}`:'issues',{method:existing?'PATCH':'POST',body:existing?body:{...body,labels:[ALERT_LABEL]}});
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {

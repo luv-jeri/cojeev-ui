@@ -106,8 +106,12 @@ commit; they never expose report counts or provider readiness.
 PR checks use Node 22.22.0, root lockfile `npm ci`, lint, Next type generation,
 types, unit/reporting/hosting/release checks, two isolated environment builds,
 example compilation, browser/motion/mobile/marketing/scroll gates, reporting and
-analytics browser checks, and a fresh consumer install from each beta/production
-artifact. Each artifact and its environment URLs are verified before a temporary
+analytics browser checks, a hosting CSP check that serves each packaged artifact
+through the real website Worker
+(`node scripts/release-csp.mjs ENV artifacts/release/ENV`, which fails if the policy
+stops permitting the environment's API, EU PostHog or Turnstile, if it permits the
+other environment's origins, or if the packaged page loads an unpermitted origin),
+and a fresh consumer install from each beta/production artifact. Each artifact and its environment URLs are verified before a temporary
 registry copy rewrites dependency URLs to the local test server. This tests the
 actual packaged source; real domain routing and absence of cross-origin requests
 still require Task 4. Fork PR jobs have no deployment environment or deploy credentials.
@@ -199,7 +203,10 @@ are refused. Cloudflare version rollbacks also do not restore D1/R2 state.
 delayed). It checks both public identities and each API's authenticated health.
 Pending/processing work older than 30 minutes, failed/review-required jobs, quota,
 provider misconfiguration after activation, and HTTP/schema failures open or update
-a sanitized GitHub issue; recovery closes it. Intentionally held historical jobs
+a sanitized GitHub issue; recovery closes it. That issue is found by a single query
+for open issues labelled `operations-alert` plus a per-environment marker comment,
+so the label must not be renamed or removed from an open alert; the alert path
+creates the label if it is absent. Intentionally held historical jobs
 do not alone trigger an incident. Responses, report titles, addresses, tokens and
 payloads are not included. Deployment and recovery failures alert through the
 same GitHub path, independent of Resend.
@@ -217,6 +224,14 @@ privacy stops, keyboard/motion interactions, failed promotion, private backup an
 isolated restore, code rollback, and independent alert recovery. Owner approval
 then promotes the prepared production SHA and permits one labelled production
 smoke report. Local tests and dry runs do not replace those checks.
+
+The CSP gate above checks the emitted header against the packaged bytes; it runs no
+browser. Live acceptance therefore still requires, on beta and before any promotion:
+load `https://beta.000h.cojeev.com/` in a browser with devtools open, submit one
+report, and confirm an empty console of CSP violations, a rendered Turnstile widget
+that returns a token, a successful `POST` to `https://feedback-beta.cojeev.com`, and
+PostHog requests reaching `https://eu.i.posthog.com` only while analytics is on.
+Any `Refused to ...` console entry blocks promotion. Task 4 owns that check.
 
 Workers run before static assets to guarantee headers and private-path refusal;
 this uses Worker request quota. Monitor free allowances; do not automatically

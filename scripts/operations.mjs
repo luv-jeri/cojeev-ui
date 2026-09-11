@@ -41,11 +41,33 @@ export async function cloudflare(endpoint) {
 }
 export function validateDeploymentConfig(environment,config,kind) {
   const target=environmentConfig(environment),api=kind==='api';
-  if(!['api','website'].includes(kind)||config.name!==(api?target.worker:target.website)||config.account_id!==ACCOUNT||config.vars?.ENVIRONMENT!==environment||config.workers_dev!==false||config.preview_urls!==false||config.routes?.length!==1||config.routes[0].pattern!==new URL(api?target.api:target.site).hostname||config.routes[0].custom_domain!==true) throw new Error('Deployment target mismatch');
-  if(api && (config.d1_databases?.length!==1||config.d1_databases[0].database_id!==target.databaseId||config.r2_buckets?.length!==1||config.r2_buckets[0].bucket_name!==target.media||config.vars.LOCAL_MODE!=='false'||config.vars.SITE_URL!==target.site)) throw new Error('Deployment target resource mismatch');
   const allowed=api?[target.site,target.api,...(environment==='production'?['https://luv-jeri.github.io']:[])]:[];
-  if(api && JSON.stringify(config.vars.ALLOWED_ORIGINS?.split(',').sort())!==JSON.stringify(allowed.sort())) throw new Error('Deployment target origins mismatch');
-  if(!api && (config.d1_databases?.length||config.r2_buckets?.length||config.assets?.directory!=='../site'||config.assets?.run_worker_first!==true||config.assets?.not_found_handling!=='404-page')) throw new Error('Website private binding or routing refused');
+  // This guardrail exists to catch an environment mixup minutes before a deploy,
+  // so it names the field that failed instead of one undifferentiated refusal.
+  const checks=[
+    ['kind',['api','website'].includes(kind)],
+    ['name',config.name===(api?target.worker:target.website)],
+    ['account_id',config.account_id===ACCOUNT],
+    ['vars.ENVIRONMENT',config.vars?.ENVIRONMENT===environment],
+    ['workers_dev',config.workers_dev===false],
+    ['preview_urls',config.preview_urls===false],
+    ['routes',config.routes?.length===1&&config.routes[0].pattern===new URL(api?target.api:target.site).hostname&&config.routes[0].custom_domain===true],
+    ...(api?[
+      ['d1_databases',config.d1_databases?.length===1&&config.d1_databases[0].database_id===target.databaseId],
+      ['r2_buckets',config.r2_buckets?.length===1&&config.r2_buckets[0].bucket_name===target.media],
+      ['vars.LOCAL_MODE',config.vars?.LOCAL_MODE==='false'],
+      ['vars.SITE_URL',config.vars?.SITE_URL===target.site],
+      ['vars.ALLOWED_ORIGINS',JSON.stringify(config.vars?.ALLOWED_ORIGINS?.split(',').sort())===JSON.stringify(allowed.sort())],
+    ]:[
+      ['website d1_databases',!config.d1_databases?.length],
+      ['website r2_buckets',!config.r2_buckets?.length],
+      ['assets.directory',config.assets?.directory==='../site'],
+      ['assets.run_worker_first',config.assets?.run_worker_first===true],
+      ['assets.not_found_handling',config.assets?.not_found_handling==='404-page'],
+    ]),
+  ];
+  const failed=checks.find(([,passed])=>!passed);
+  if(failed) throw new Error(`Deployment target mismatch: ${failed[0]}`);
 }
 export function backupKey(environment,date=new Date()) {environmentConfig(environment);return `${environment}/day-${date.getUTCDay()}.sql`;}
 export function assertRecoveryPolicy({managed,custom,lifecycle}) {

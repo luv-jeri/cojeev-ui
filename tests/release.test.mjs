@@ -6,6 +6,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import * as release from '../scripts/release-manifest.mjs';
 import { environmentConfig, buildEnvironment } from '../scripts/release-config.mjs';
+import { checkArtifactCsp } from '../scripts/release-csp.mjs';
 
 test('unknown and opposite environment settings fail closed',()=>{
   assert.throws(()=>environmentConfig('preview'),/environment/i);
@@ -38,6 +39,17 @@ test('artifact URL validation distinguishes documentation examples from deployab
   assert.doesNotThrow(()=>release.validateContent('site/_next/static/chunks/docs.js','const example="https://…/docs/component/";','beta'));
   assert.throws(()=>release.validateContent('site/_next/static/chunks/app.js','fetch("https://…/docs/component/")','beta'),/URL/);
 });
+test('registry component source is scanned: opposite origins throw, inert localhost examples pass, malformed URLs never surface as TypeError',()=>{
+  const item=value=>JSON.stringify({name:'button',description:'demo',files:[{path:'button.tsx',content:value}]});
+  assert.throws(()=>release.validateContent('site/r/button.json',item('fetch("https://feedback.cojeev.com/v1/reports")'),'beta'),/Cross-environment/);
+  assert.throws(()=>release.validateContent('site/r/button.json',item('const site="https://luv-jeri.github.io/cojeev-ui";'),'beta'),/Cross-environment/);
+  assert.throws(()=>release.validateContent('site/r/button.json',JSON.stringify({description:'Mirrors https://beta.000h.cojeev.com/r/button.json'}),'production'),/Cross-environment/);
+  assert.doesNotThrow(()=>release.validateContent('site/r/button.json',item('// during development point at http://localhost:8787'),'beta'));
+  assert.throws(()=>release.validateContent('site/r/button.json',item('fetch("http://localhost:8787/v1/reports")'),'beta'),/Cross-environment/);
+  assert.doesNotThrow(()=>release.validateContent('site/r/button.json',item('see https://…/docs/component/ for details'),'beta'));
+  assert.throws(()=>release.validateContent('site/index.html','<script src="https://…/app.js"></script>','beta'),{message:/Malformed URL dependency/});
+  assert.throws(()=>release.validateContent('site/registry.json',JSON.stringify({homepage:'https://…/'}),'beta'),{message:/Malformed URL dependency/});
+});
 test('source snapshots reject dirty and mismatched commits including untracked files',async()=>{
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-git-'));
   const git=(...args)=>execFileSync('git',args,{cwd:dir,encoding:'utf8'}).trim();
@@ -66,4 +78,23 @@ test('tracked snapshot preserves executable mode and verifies bytes against the 
       await assert.rejects(release.copyCommittedSource(dir,git('rev-parse','HEAD'),destination),/regular|symlink/);
     } finally {await fs.rm(destination,{recursive:true,force:true});}
   } finally {await fs.rm(dir,{recursive:true,force:true});}
+});
+test('the packaged site served through the hosting Worker keeps a CSP that permits every runtime origin',async()=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-csp-'));
+  const page=body=>fs.writeFile(path.join(dir,'site/index.html'),`<html><body>${body}</body></html>`);
+  try {
+    await fs.mkdir(path.join(dir,'site'));
+    await page('<a href="https://github.com/luv-jeri">source</a>');
+    for(const environment of ['beta','production']) {
+      const opposite=environmentConfig(environment==='beta'?'production':'beta');
+      const {policy}=await checkArtifactCsp(dir,environment);
+      assert.ok(policy.includes(environmentConfig(environment).api),policy);
+      assert.ok(!policy.includes(opposite.api)&&!policy.includes(opposite.site),policy);
+      for(const origin of ['https://challenges.cloudflare.com','https://eu.i.posthog.com','https://eu-assets.i.posthog.com']) assert.ok(policy.includes(origin),origin);
+    }
+    await page('<script src="https://cdn.example.com/x.js"></script>');
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/cdn\.example\.com/);
+    await fs.rm(path.join(dir,'site/index.html'));
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/did not serve/);
+  } finally { await fs.rm(dir,{recursive:true,force:true}); }
 });

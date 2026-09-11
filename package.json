@@ -11,7 +11,7 @@
     "gate": "node scripts/run-production-gate.mjs",
     "gate:spike": "node apps/gate/run.mjs --components=button,badge,card",
     "gate:dev": "vite --config apps/gate/vite.config.ts --host 127.0.0.1",
-    "test": "node --import tsx --test tests/*.test.ts",
+    "test": "node --import tsx --test tests/*.test.ts tests/*.test.mjs",
     "lint": "node scripts/lint.mjs",
     "gate:static": "node apps/gate/run.mjs",
     "gate:interactions": "node scripts/gate-interactions.mjs",
