@@ -14,7 +14,7 @@ const host = {
     secured.headers.set('permissions-policy','camera=(), microphone=(), geolocation=()');
     const api=env.ENVIRONMENT === 'beta' ? 'https://feedback-beta.cojeev.com' : 'https://feedback.cojeev.com';
     secured.headers.set('content-security-policy',`default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://eu-assets.i.posthog.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ${api} https://eu.i.posthog.com https://eu-assets.i.posthog.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'`);
-    if(env.ENVIRONMENT === 'beta' || /^\/admin(?:\/|$)/.test(pathname)) secured.headers.set('x-robots-tag','noindex, nofollow, noarchive');
+    if(env.ENVIRONMENT === 'beta' || /^\/(?:admin|feedback-admin)(?:\/|$)/.test(pathname)) secured.headers.set('x-robots-tag','noindex, nofollow, noarchive');
     if(pathname === '/health' || pathname === '/release.json') secured.headers.set('cache-control','no-store');
     else if(response.ok && pathname.startsWith('/_next/static/')) secured.headers.set('cache-control','public, max-age=31536000, immutable');
     else if((response.headers.get('content-type') ?? '').includes('text/html')) secured.headers.set('cache-control','public, max-age=0, must-revalidate');

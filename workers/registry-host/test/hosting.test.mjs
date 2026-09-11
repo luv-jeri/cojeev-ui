@@ -7,7 +7,7 @@ function env(environment, status = 200, type = 'text/html') {
   return { ENVIRONMENT: environment, RELEASE: sha, ASSETS: { fetch: async () => new Response('asset', {status, headers:{'content-type':type}}) } };
 }
 test('beta and admin responses reject indexing; HTML revalidates and security headers allow the selected API only', async () => {
-  for (const [environment,path,noindex] of [['beta','/',true],['production','/admin/',true],['production','/',false]]) {
+  for (const [environment,path,noindex] of [['beta','/',true],['production','/admin/',true],['production','/feedback-admin/',true],['production','/',false]]) {
     const response = await host.fetch(new Request(`https://example.com${path}`),env(environment));
     assert.equal(response.headers.has('x-robots-tag'),noindex);
     assert.equal(response.headers.get('x-content-type-options'),'nosniff');
