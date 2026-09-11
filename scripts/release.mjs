@@ -21,7 +21,9 @@ export async function buildRelease(root,environment,commit,destination,settings=
   const scratch=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-release-source-'));
   try {
     await copyCommittedSource(root,commit,scratch);
-    await fs.symlink(await fs.realpath(path.join(root,'node_modules')),path.join(scratch,'node_modules'),'dir');
+    // Turbopack refuses node_modules symlinks outside its filesystem root.
+    // Copy the already lock-installed dependencies, not project/private state.
+    await fs.cp(await fs.realpath(path.join(root,'node_modules')),path.join(scratch,'node_modules'),{recursive:true});
     const buildEnv={PATH:process.env.PATH,HOME:process.env.HOME,TMPDIR:process.env.TMPDIR,CI:'true',NEXT_TELEMETRY_DISABLED:'1',...publicEnv};
     execFileSync('npm',['run','build'],{cwd:scratch,env:buildEnv,stdio:'inherit'});
     // Refuse to merge into an older release directory.
