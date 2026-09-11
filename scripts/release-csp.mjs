@@ -42,16 +42,18 @@ export async function checkArtifactCsp(directory,environment,worker=host) {
   // it, so an origin permitted only by connect-src cannot authorise a script or an
   // image. An ordinary outbound anchor is navigation, not a subresource, and is
   // deliberately not checked here; form-action and frame-ancestors stay with the
-  // header contract above.
+  // header contract above. media-src and object-src have no explicit directive in
+  // this policy, so they correctly fall back to default-src 'self'.
   const preloaded={script:'script-src',style:'style-src',image:'img-src',font:'font-src',fetch:'connect-src'};
   const body=await response.text();
-  for(const [,name,attributes] of body.matchAll(/<(script|img|iframe|frame|link)\s([^>]*)>/gi)) {
+  const tags={script:'script-src',img:'img-src',iframe:'frame-src',frame:'frame-src',video:'media-src',audio:'media-src',source:'media-src',track:'media-src',embed:'object-src',object:'object-src'};
+  for(const [,name,attributes] of body.matchAll(/<(script|img|iframe|frame|link|video|audio|source|track|embed|object)\s([^>]*)>/gi)) {
     const attribute=key=>attributes.match(new RegExp(`(?:^|\\s)${key}=["']([^"']*)["']`,'i'))?.[1];
     const tag=name.toLowerCase(),rel=(attribute('rel')??'').toLowerCase().split(/\s+/);
-    const directive=tag==='script'?'script-src':tag==='img'?'img-src':tag==='iframe'||tag==='frame'?'frame-src'
+    const directive=tag!=='link'?tags[tag]
       :rel.includes('stylesheet')?'style-src':rel.includes('modulepreload')?'script-src'
       :rel.includes('preload')||rel.includes('prefetch')?preloaded[(attribute('as')??'').toLowerCase()]:undefined;
-    const value=attribute(tag==='link'?'href':'src');
+    const value=attribute(tag==='link'?'href':tag==='object'?'data':'src');
     if(!directive||!value||!/^https?:\/\//.test(value)) continue;
     if(!URL.canParse(value)) {problems.push(`served page has a malformed resource URL (${value})`);continue;}
     const {origin}=new URL(value);

@@ -84,6 +84,24 @@ test('production may preserve existing secrets but beta bootstrap still requires
   assert.deepEqual(validateSecrets('{}','production'),{});
   assert.throws(()=>validateSecrets('{"HEALTH_TOKEN":"short"}','production'),/secret/);
 });
+test('a JSON scalar is never mistaken for an empty bundle, with or without a supplemental',()=>{
+  // Object.entries(42) and Object.entries(true) are both empty, so without an
+  // explicit object check these passed the production additive path.
+  for(const environment of ['beta','production']) for(const scalar of ['42','true','false','0','"re_leaky_value"','[]','null']) {
+    assert.throws(()=>validateSecrets(scalar,environment),error=>{
+      assert.match(error.message,/Unknown or invalid reporting secret/);
+      assert.ok(!error.message.includes('re_leaky'),error.message);
+      return true;
+    });
+    // The missing-supplemental path hands the base through untouched, so it must
+    // fail at the validator exactly as the single-bundle path always should have.
+    assert.throws(()=>validateSecrets(composeSecretBundles(scalar,undefined),environment),/Unknown or invalid reporting secret/);
+    assert.throws(()=>validateSecrets(composeSecretBundles(scalar,''),environment),/Unknown or invalid reporting secret/);
+  }
+  // Valid single-object callers are unaffected in both modes.
+  assert.deepEqual(validateSecrets('{}','production'),{});
+  assert.deepEqual(validateSecrets(JSON.stringify({RESEND_API_KEY:'re_dummy_'+'d'.repeat(24)}),'production'),{RESEND_API_KEY:'re_dummy_'+'d'.repeat(24)});
+});
 const dummyBootstrap={ADMIN_TOKEN:'a'.repeat(40),HEALTH_TOKEN:'h'.repeat(40),IP_HASH_SECRET:'b'.repeat(40),TURNSTILE_SECRET:'s'.repeat(40),TURNSTILE_SITE_KEY:'0x'+'a'.repeat(24)};
 const dummyResend='re_dummy_'+'d'.repeat(24);
 test('a supplemental bundle completes the protected base without overwriting it, and never echoes a value',()=>{
@@ -99,9 +117,17 @@ test('a supplemental bundle completes the protected base without overwriting it,
   // An overlapping key is refused rather than silently resolved in either direction.
   assert.throws(()=>composeSecretBundles(base,JSON.stringify({RESEND_API_KEY:'re_leaky_'+'x'.repeat(24)})),silent(/Duplicate reporting secret across bundles: RESEND_API_KEY/));
   assert.throws(()=>composeSecretBundles(JSON.stringify(dummyBootstrap),JSON.stringify({HEALTH_TOKEN:'h'.repeat(40)})),silent(/Duplicate reporting secret across bundles: HEALTH_TOKEN/));
+  // A key is checked against the allowlist BEFORE any duplicate is named, so pasted
+  // text that lands in key position can never be echoed back by the duplicate error.
+  const pasted='re_leaky_pasted_value_in_key_position';
+  for(const bundle of [{[pasted]:'x'},{[pasted]:'x',...dummyBootstrap}]) assert.throws(()=>composeSecretBundles(JSON.stringify({[pasted]:'x'}),JSON.stringify(bundle)),error=>{
+    assert.match(error.message,/Unknown or invalid reporting secret/);
+    assert.ok(!error.message.includes('re_leaky'),error.message);
+    return true;
+  });
   // Malformed, array, null and scalar bundles fail closed without quoting the input.
-  for(const malformed of ['re_leaky_value','[]','null','"re_leaky_value"','12',JSON.stringify([dummyBootstrap])]) assert.throws(()=>composeSecretBundles(base,malformed),silent(/Invalid reporting secrets JSON/));
-  // Unknown keys stay the existing validator's refusal, on either side of the merge.
+  for(const malformed of ['re_leaky_value','[]','null','"re_leaky_value"','12','true',JSON.stringify([dummyBootstrap])]) assert.throws(()=>composeSecretBundles(base,malformed),silent(/Invalid reporting secrets JSON/));
+  // Unknown keys stay a fixed refusal, on either side of the merge.
   assert.throws(()=>validateSecrets(composeSecretBundles(base,JSON.stringify({...dummyBootstrap,UNKNOWN:'oops'})),'beta'),/Unknown or invalid reporting secret/);
   // Production keeps preserving existing bindings when neither bundle adds anything.
   assert.deepEqual(validateSecrets(composeSecretBundles('{}','{}'),'production'),{});

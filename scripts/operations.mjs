@@ -8,17 +8,21 @@ import {pathToFileURL} from 'node:url';
 import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './release-config.mjs';
 
 const maxBytes=25*1024*1024;
+const ALLOWED_SECRETS=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
 // Two protected bundles compose into the one validated set. REPORTING_SECRETS_JSON
 // stays the base and is never rewritten or read back, so an already-provisioned
 // binding survives; a separately provisioned supplemental bundle adds only the
 // bindings the base is missing. An overlapping key is refused instead of silently
 // resolved, and no bundle value ever reaches an error message: JSON.parse's own
-// SyntaxError quotes the input, so it is caught and replaced with fixed text.
+// SyntaxError quotes the input, so it is caught and replaced with fixed text, and
+// every key is checked against the allowlist BEFORE a duplicate is named, so the
+// name in that error is provably one of the nine fixed names and never pasted text.
 export function composeSecretBundles(base,supplemental) {
   if(supplemental===undefined||supplemental===null||supplemental==='') return base;
   const parse=input=>{
     let value;try {value=JSON.parse(input);} catch {throw new Error('Invalid reporting secrets JSON');}
     if(!value||typeof value!=='object'||Array.isArray(value)) throw new Error('Invalid reporting secrets JSON');
+    if(Object.keys(value).some(key=>!ALLOWED_SECRETS.includes(key))) throw new Error('Unknown or invalid reporting secret');
     return value;
   };
   const provisioned=parse(base),additional=parse(supplemental);
@@ -29,8 +33,10 @@ export function composeSecretBundles(base,supplemental) {
 export function validateSecrets(input,environment) {
   environmentConfig(environment);
   let secrets;try {secrets=JSON.parse(input);} catch {throw new Error('Invalid reporting secrets JSON');}
-  const allowed=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
-  if(!secrets||Array.isArray(secrets)||Object.entries(secrets).some(([key,value])=>!allowed.includes(key)||typeof value!=='string'||!value.trim())) throw new Error('Unknown or invalid reporting secret');
+  // typeof is load-bearing: Object.entries(42) and Object.entries(true) are both
+  // empty, so without it a JSON scalar passes the production additive path as if it
+  // were an empty bundle. The bootstrap contract is an object of name to value.
+  if(!secrets||typeof secrets!=='object'||Array.isArray(secrets)||Object.entries(secrets).some(([key,value])=>!ALLOWED_SECRETS.includes(key)||typeof value!=='string'||!value.trim())) throw new Error('Unknown or invalid reporting secret');
   for(const key of ['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY']) if((environment==='beta'&&!secrets[key])||(secrets[key]&&secrets[key].length<(['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET'].includes(key)?32:20))) throw new Error('Missing or short reporting secret');
   if(secrets.TURNSTILE_SITE_KEY&&!/^0x[A-Za-z0-9_-]{20,}$/.test(secrets.TURNSTILE_SITE_KEY)||secrets.TURNSTILE_SECRET&&/^[123]x0+/.test(secrets.TURNSTILE_SECRET)) throw new Error('Real environment-specific Turnstile configuration required');
   return secrets;

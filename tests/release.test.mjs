@@ -115,6 +115,10 @@ test('the packaged site served through the hosting Worker keeps a CSP that permi
     await assert.rejects(checkArtifactCsp(dir,'beta'),/style-src/);
     await page('<link rel="preload" as="font" href="https://fonts.gstatic.com/x.woff2">');
     await assert.rejects(checkArtifactCsp(dir,'beta'),/font-src/);
+    await page('<video src="https://cdn.example.com/clip.mp4"></video>');
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/media-src/);
+    await page('<embed src="https://cdn.example.com/x.swf">');
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/object-src/);
     await page('<iframe src="https://challenges.cloudflare.com/widget"></iframe><script src="https://eu-assets.i.posthog.com/a.js"></script>');
     assert.ok((await checkArtifactCsp(dir,'beta')).policy);
     await fs.rm(path.join(dir,'site/index.html'));
