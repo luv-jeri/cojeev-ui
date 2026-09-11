@@ -10,13 +10,13 @@ try {
  for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width:390,height:1050},colorScheme:theme});
   await page.addInitScript(theme=>{localStorage.setItem('cojeev-docs-theme',theme);localStorage.setItem('v-motion',JSON.stringify({v:3,mode:'subtle'}));localStorage.setItem('v-flow-v1',JSON.stringify({variant:'glide'}))},theme);
-  await page.goto(base+'/');const studio=page.locator('#assembly [data-slot=organism-assembly]');await studio.waitFor();await studio.scrollIntoViewIfNeeded();await page.waitForTimeout(180);
+  await page.goto(base+'/docs/organism-assembly/');const studio=page.locator('[data-example-role="interactive"] [data-slot=organism-assembly]');await studio.waitFor();await studio.scrollIntoViewIfNeeded();await page.waitForTimeout(180);
   const captures=[],pointers=[],quiet=[];results.push({theme,captures,pointers,quiet});
   const startCapture=()=>page.evaluate(()=>{
     window.__paintFrames=[];window.__paintStop=false;
     const canvas=document.createElement('canvas');canvas.width=canvas.height=1;const context=canvas.getContext('2d');
     const rgba=color=>{context.clearRect(0,0,1,1);context.fillStyle=color;context.fillRect(0,0,1,1);return Array.from(context.getImageData(0,0,1,1).data)};
-    const frame=()=>{window.__paintFrames.push(Array.from(document.querySelectorAll('#assembly [data-assembly-part]'),node=>{
+    const frame=()=>{window.__paintFrames.push(Array.from(document.querySelectorAll('[data-example-role="interactive"] [data-assembly-part]'),node=>{
       const style=getComputedStyle(node),body=node.querySelector(':scope > svg.v-morph [data-morph-body]');
       const root=rgba(style.backgroundColor),nativeFill=body?rgba(getComputedStyle(body).fill):root;
       const pill=node.hasAttribute('data-glide-active')?node.parentElement.querySelector(':scope > .v-glide__pill'):null;
@@ -30,7 +30,7 @@ try {
       return {id:node.dataset.assemblyPart,released:node.dataset.assemblyReleased,background:root,fill,ink:rgba(style.color),progress:style.getPropertyValue('--assembly-paint-progress')};
     }));if(!window.__paintStop)requestAnimationFrame(frame)};requestAnimationFrame(frame);
   });
-  const ready=kind=>page.waitForFunction(kind=>{const node=document.querySelector('#assembly [data-slot=organism-composition]');return node?.dataset.kind===kind&&node.dataset.settled==='true'&&node.dataset.assembled==='true'},kind);
+  const ready=kind=>page.waitForFunction(kind=>{const node=document.querySelector('[data-example-role="interactive"] [data-slot=organism-composition]');return node?.dataset.kind===kind&&node.dataset.settled==='true'&&node.dataset.assembled==='true'},kind);
   const finishCapture=async(label,kind)=>{
    await ready(kind);await page.waitForTimeout(180);
    const frames=await page.evaluate(()=>{window.__paintStop=true;return window.__paintFrames});

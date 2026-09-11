@@ -34,30 +34,37 @@ function subscribeTheme(listener: () => void) {
     media.removeEventListener("change", listener);
   };
 }
-export function ThemeControl({ compact = false }: { compact?: boolean }) {
-  const mode = React.useSyncExternalStore(
+function useDocsTheme() {
+  return React.useSyncExternalStore(
     subscribeTheme,
     readTheme,
     () => "light" as const,
   );
-  const id = React.useId();
+}
+/** Theme lifetime follows the docs shell, not a conditionally mounted drawer. */
+export function DocsThemeSync() {
+  const mode = useDocsTheme();
   const {quiet}=useChoreography();
   const initialized=React.useRef(false);
   React.useEffect(() => {
     applyTheme(initialized.current ? mode : readTheme(), !initialized.current || quiet);
     initialized.current=true;
   }, [mode,quiet]);
+  return null;
+}
+export function ThemeControl({ compact = false, iconOnly = false, navigation = false }: { compact?: boolean; iconOnly?: boolean; navigation?: boolean }) {
+  const mode = useDocsTheme();
+  const id = React.useId();
   return (
-    <TooltipProvider><div className={`docs-theme${compact ? " docs-theme-compact" : ""}`}>
-      <Label htmlFor={id} size="sm" className={compact ? "sr-only" : undefined}>
+    <TooltipProvider><div className={`docs-theme${compact ? " docs-theme-compact" : ""}${iconOnly ? " docs-theme-icons" : ""}${navigation ? " docs-theme-navigation" : ""}`}>
+      <Label htmlFor={id} size="sm" className={compact || iconOnly ? "sr-only" : undefined}>
         Appearance
       </Label>
       <Tooltip><TooltipTrigger asChild><ThemeToggle
         id={id}
         mode={mode}
-        showLabel
-        label={compact ? "Theme" : undefined}
-        responsive={compact}
+        showLabel={navigation || (!compact && !iconOnly)}
+        label={navigation ? "Theme" : undefined}
         onModeChange={(next) => {
           volatileTheme = next;
           try {
@@ -66,7 +73,7 @@ export function ThemeControl({ compact = false }: { compact?: boolean }) {
           window.dispatchEvent(new Event(themeEvent));
         }}
       /></TooltipTrigger><TooltipContent>Switch to {mode === "dark" ? "light" : "dark"} theme</TooltipContent></Tooltip>
-      <AppearanceMenu responsive={compact} />
+      <AppearanceMenu compact={iconOnly && !navigation} />
     </div></TooltipProvider>
   );
 }

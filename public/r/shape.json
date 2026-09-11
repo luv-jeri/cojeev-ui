@@ -1,8 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "shape",
-  "title": "Shape",
-  "description": "A shared catalogue of 36 SVG silhouettes, with 12 original contours that morph smoothly between shapes.",
+  "title": "Shape studio",
+  "description": "One shape studio: twelve compatible living contours, layered artwork and the complete original mask inventory. Compose it here, then take the SVG or React code.",
   "dependencies": [
     "motion"
   ],
@@ -27,7 +27,7 @@
   },
   "meta": {
     "source": {
-      "name": "Shape",
+      "name": "Shape studio",
       "variants": [
         "default"
       ],

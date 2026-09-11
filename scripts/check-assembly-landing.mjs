@@ -12,11 +12,11 @@ try{
   const context=await browser.newContext({viewport:{width,height:1050},colorScheme:theme});
   await context.addInitScript(theme=>{localStorage.setItem('cojeev-docs-theme',theme);localStorage.removeItem('v-motion');localStorage.removeItem('v-flow-v1')},theme);
   const page=await context.newPage();page.on('pageerror',error=>results.errors.push(error.message));
-  await page.goto(base+'/');
-  const assembly=page.locator('#assembly [data-slot="organism-assembly"]'),organism=assembly.locator('[data-slot="organism-composition"]');
+  await page.goto(base+'/docs/organism-assembly/');
+  const assembly=page.locator('[data-example-role="interactive"] [data-slot="organism-assembly"]'),organism=assembly.locator('[data-slot="organism-composition"]');
   await assembly.waitFor();await assembly.scrollIntoViewIfNeeded();
-  const ready=async kind=>{await page.waitForFunction(kind=>{const node=document.querySelector('#assembly [data-slot="organism-composition"]');return node?.getAttribute('data-kind')===kind&&node.getAttribute('data-settled')==='true'&&node.getAttribute('data-assembled')==='true'},kind);await page.waitForTimeout(120)};
-  const shot=label=>page.locator('#assembly').screenshot({path:path.join(output,`${width}-${theme}-${label}.png`)});
+  const ready=async kind=>{await page.waitForFunction(kind=>{const node=document.querySelector('[data-example-role="interactive"] [data-slot="organism-composition"]');return node?.getAttribute('data-kind')===kind&&node.getAttribute('data-settled')==='true'&&node.getAttribute('data-assembled')==='true'},kind);await page.waitForTimeout(120)};
+  const shot=label=>page.locator('[data-example-role="interactive"]').screenshot({path:path.join(output,`${width}-${theme}-${label}.png`)});
   const part=id=>organism.locator(`[data-assembly-part="${id}"]`);
   const release=async()=>{
    const evidence=await organism.locator('[data-assembly-part]').evaluateAll(nodes=>nodes.map(node=>({id:node.dataset.assemblyPart,slot:node.dataset.slot,clip:node.style.clipPath,motion:node.getAttribute('data-motion'),flow:node.getAttribute('data-flow'),left:node.style.left,inert:node.inert})));
@@ -32,10 +32,10 @@ try{
   await part('primary').focus();await part('primary').press('Enter');assert.equal(await part('primary').getAttribute('aria-pressed'),'true');
   await part('secondary').click();await ready('profile');
   const input=organism.getByRole('textbox',{name:'Write a note'});await input.fill('A little hello.');await input.press('Enter');assert.equal(await input.inputValue(),'');
-  await page.evaluate(()=>{window.__assemblyProfileRoots=[...document.querySelectorAll('#assembly [data-assembly-part]')]});
+  await page.evaluate(()=>{window.__assemblyProfileRoots=[...document.querySelectorAll('[data-example-role="interactive"] [data-assembly-part]')]});
   await assembly.getByRole('button',{name:'Replay assembly'}).click();await page.waitForTimeout(150);assert(await part('primary').evaluate(node=>node.inert));
   await ready('profile');
-  assert(await page.evaluate(()=>window.__assemblyProfileRoots.every((node,index)=>node===document.querySelectorAll('#assembly [data-assembly-part]')[index])),'Replay retains native roots');
+  assert(await page.evaluate(()=>window.__assemblyProfileRoots.every((node,index)=>node===document.querySelectorAll('[data-example-role="interactive"] [data-assembly-part]')[index])),'Replay retains native roots');
   assert.equal(await part('primary').getAttribute('aria-pressed'),'true');
   async function choose(label,kind){await assembly.getByRole('button',{name:label,exact:true}).click();await ready(kind)}
   await choose('Panel','side-panel');await part('task-1').click();await part('task-2').focus();await part('task-2').press('Enter');assert.equal(await organism.getByRole('progressbar').getAttribute('aria-valuenow'),'100');native.panel=await release();await shot('panel');

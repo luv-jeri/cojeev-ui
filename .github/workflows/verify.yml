@@ -30,9 +30,15 @@ jobs:
       - run: npm run typecheck
       - run: npm run test
       - run: npm run reporting:test
+      - run: npm run registry-host:test
       - run: npm run build
         env:
           NEXT_PUBLIC_REPORTING_API_URL: ${{ vars.REPORTING_API_URL }}
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ vars.POSTHOG_PROJECT_TOKEN }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+          NEXT_PUBLIC_REGISTRY_URL: ${{ vars.REGISTRY_URL }}
+          COJEEV_REGISTRY_URL: ${{ vars.REGISTRY_URL || 'https://luv-jeri.github.io/cojeev-ui' }}
       - run: npm run check:examples
       - run: npm run gate
       - run: npm run gate:mobile

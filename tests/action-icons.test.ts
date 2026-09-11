@@ -3,6 +3,7 @@ import {test} from "node:test";
 import {createElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {Icon, iconActionNames, getIconDirection, getIconMotionFrame} from "../registry/cojeev/ui/icon";
+import {IconExample} from "../components/examples/action-icons";
 
 const names = ["check", "check-circle", "close", "activity", "alert", "info", "loader", "refresh", "search", "bell", "download", "upload", "copy", "settings", "trash", "plus", "send", "heart", "star", "thumbs-up"];
 test("action names render recognizable geometry with visible SSR state", () => {
@@ -66,4 +67,12 @@ test("every action recipe targets real rendered geometry and preserves visible S
       assert.doesNotMatch(JSON.stringify(frame),/NaN|Infinity/,name);
     }
   }
+});
+
+test("icon explorer composes one native search input with an inline clear affordance and card tiles",()=>{
+  const html=renderToStaticMarkup(createElement(IconExample,{}));
+  assert.match(html,/data-slot="input-group"/);
+  assert.match(html,/data-slot="input-group-input"/);
+  assert.doesNotMatch(html,/>Clear search</);
+  assert.match(html,/data-r="12"/);
 });

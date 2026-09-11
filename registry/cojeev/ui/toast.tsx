@@ -5,6 +5,7 @@ import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Button } from "@/registry/cojeev/ui/button";
+import { Icon } from "@/registry/cojeev/ui/icon";
 import * as Primitive from "@radix-ui/react-toast";
 import { useFlowAppearance } from "@/registry/cojeev/motion/use-flow";
 export const toastVariants = cva(
@@ -37,10 +38,14 @@ export function ToastViewport({ className, ...props }: ToastViewportProps) {
   );
 }
 export type ToastProps = React.ComponentProps<typeof Primitive.Root> &
-  VariantProps<typeof toastVariants> & { durable?: boolean };
+  VariantProps<typeof toastVariants> & {
+    durable?: boolean;
+    appearance?: "compact" | "actionable" | "receipt";
+  };
 export function Toast({
   className,
   variant,
+  appearance,
   durable,
   duration,
   ref,
@@ -57,6 +62,7 @@ export function Toast({
       ref={flowRef}
       data-slot="toast"
       data-part="root"
+      data-appearance={appearance}
       duration={durable ? Infinity : duration}
       className={cn(toastVariants({ variant }), className)}
       {...props}
@@ -105,7 +111,13 @@ export function ToastAction({
       asChild
       {...props}
     >
-      {asChild ? children : <Button>{children}</Button>}
+      {asChild ? (
+        children
+      ) : (
+        <Button size="sm" variant="outline">
+          {children}
+        </Button>
+      )}
     </Primitive.Action>
   );
 }
@@ -129,8 +141,29 @@ export function ToastClose({
       {asChild ? (
         children
       ) : (
-        <Button style={{ minWidth: 30, padding: 0 }}>{children ?? "×"}</Button>
+        <Button
+          variant="ghost"
+          style={{ minWidth: 44, minHeight: 44, padding: 0 }}
+        >
+          {children ?? <Icon name="x" size="sm" aria-hidden="true" />}
+        </Button>
       )}
     </Primitive.Close>
+  );
+}
+
+export function ToastIndicator({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
+  return (
+    <span
+      data-slot="toast-indicator"
+      aria-hidden="true"
+      className={cn("v-toast__indicator", className)}
+      {...props}
+    >
+      <Icon name="check" size="sm" />
+    </span>
   );
 }

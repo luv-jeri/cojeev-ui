@@ -1,13 +1,202 @@
 {
+  "bento-grid": {
+    "description": "A complete canvas of rounded cards or organically interlocking pieces. Compose a layout, then install just the lightweight renderer.",
+    "category": "Layout",
+    "usage": [
+      "Install bento-grid using the command below. Pass a serializable layout with columns, rows, seed and tiles; each tile has id, label, x, y, width and height. The layout must completely cover a 2–8 by 2–8 integer grid without overlaps.",
+      "Choose variant=\"classic\" for separated rounded cards or variant=\"interlock\" for a continuous puzzle with shared seeded edges. Reshape edges changes only the shared seed, retaining every tile position and label. renderTile(tile) supplies your own content; keep it concise for small cells.",
+      "Use the builder above to try Editorial, Dashboard, Gallery and Showcase compositions. Randomize and dimension changes recompose all existing tiles without dropping their identities or labels. Impossible dimensions are rejected. Copy layout produces the actual edited layout with a BentoGrid import and chosen variant.",
+      "Install bento-builder separately if you want editing controls in your own application. It accepts initialLayout, initialVariant and onChange({ layout, variant, template }). Templates maintain the existing tile count; this editor does not add or delete tiles."
+    ],
+    "accessibility": [
+      "Ordinary renderer cards stack below 600px to keep content readable. The editor retains a labelled horizontally scrollable workspace with stable rectangular tile targets.",
+      "Select a tile, edit its label, then Save label. Drag onto another tile to exchange content positions, or use Swap with and Swap tiles. Escape cancels an unfinished drag. Undo and Redo restore dimensions, labels, seed and treatment.",
+      "Drag a seam handle to snap to cells, use its arrow keys, or open Resize shared seams for explicit buttons. Connected neighbors resize together, and every tile keeps at least one cell. Outside edges remain fixed. Interlock edges animate only when shared motion settings and visibility permit."
+    ],
+    "related": ["bento-builder", "aspect-ratio", "resizable", "card"]
+  },
+  "bento-builder": {
+    "description": "An editable Bento canvas with complete partitions, content swapping, snapped neighbor resizing, history and usable layout export.",
+    "category": "Layout",
+    "usage": [
+      "Install bento-builder with the command below; its dependency includes BentoGrid. Pass initialLayout and initialVariant when needed; onChange receives { layout, variant, template } after each completed edit or history change.",
+      "Templates and Randomize preserve every tile identity and label. Rows and columns are bounded to 2–8, and dimensions that cannot retain the current tile count are rejected. Tile count is fixed; custom arrangements come from moving shared seams.",
+      "Copy layout exports actual serializable content and a BentoGrid component, without editor controls. Keep the exported renderer for production and the builder for authoring."
+    ],
+    "accessibility": [
+      "Drag tiles to swap their content positions or use the labelled Swap with control. Edit a label and Save label; Undo/Redo restore all edited values. Escape cancels pointer operations before they commit.",
+      "Seam handles snap to integer cells and support arrows; Resize shared seams also offers explicit buttons. The entire connected boundary moves together, preserving neighbors and complete coverage. Rejected edits announce why they cannot proceed.",
+      "The editor workspace scrolls horizontally on small screens; the ordinary renderer stacks cards. Copy feedback is announced without replacing the button label. Reduced motion, Motion Off and Flow Off stop decorative path animation."
+    ],
+    "related": ["bento-grid", "resizable", "aspect-ratio"]
+  },
+  "dock": {
+    "description": "A compact workspace launcher with a magnifying glass bar, raised shelf and labelled vertical rail.",
+    "category": "Navigation",
+    "usage": [
+      "Supply items with stable values, readable labels and your own icons. onValueChange changes your application view; item onSelect can run an action. This component does not launch native apps.",
+      "Glass is a floating horizontal bar with a proximity response. Shelf lifts icons above a perspective support plane. Rail is vertical with persistent labels; each is a different layout, not a color preset.",
+      "Use value with onValueChange for a controlled dock, or defaultValue for local selection. itemSize is bounded to 32–72 pixels and magnification to 1–2. Rail deliberately softens that response to at most 1.12× so neighboring rows stay clear.",
+      "Inspired by the Mac Dock's magnification and older shelf treatment, with Cojeev silhouettes and tokens. The examples switch real local content, and all three variants can be tried on this page."
+    ],
+    "accessibility": [
+      "Give the dock an aria-label. Every item retains its readable label; disabled items cannot be activated.",
+      "Use arrows to move between enabled items, Home/End to reach the ends, and Enter/Space to activate. Horizontal navigation follows text direction.",
+      "Reduced motion and shared motion settings remove magnification without removing labels, selection or touch interaction. Keep surrounding content clear of the icon lift area."
+    ],
+    "related": ["action-dock", "motion-drawer", "icon"]
+  },
+  "dots-background": {
+    "description": "An evenly spaced field of fine points for quiet, familiar structure.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place DotsBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "grid-background": {
+    "description": "Hairline rules that give canvases and working surfaces a gentle rhythm.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place GridBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "contours-background": {
+    "description": "Nested organic contour lines with generous space between islands.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place ContoursBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "weave-background": {
+    "description": "Interlaced thread-like strokes with visible over-and-under crossings.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place WeaveBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "pebbles-background": {
+    "description": "Sparse, softly irregular pebble outlines distributed across the surface.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place PebblesBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "sunwash-background": {
+    "description": "Broad, soft pools of color that leave the content in focus.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place SunwashBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "folds-background": {
+    "description": "Quiet faceted planes inspired by folded paper, without busy linework.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place FoldsBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "sprouts-background": {
+    "description": "Small paired leaves and seed-like marks with plenty of open space.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place SproutsBackground inside a positioned, isolated parent with its own height and surface color. It paints behind children without affecting their layout.",
+      "Set spacing (8–80), opacity (0–1) and color using CSS values or your theme tokens. Keep opacity low behind working content.",
+      "Choose this background from any Try it preview's Background picker, or select Plain to hide decorative paint."
+    ],
+    "accessibility": [
+      "Decorative, hidden from assistive technology and pointer-transparent. No animation, network requests or required information. Suppressed in forced-colors mode."
+    ],
+    "related": [
+      "pattern-background",
+      "preview"
+    ]
+  },
+  "pattern-background": {
+    "description": "Eight distinct, lightweight backgrounds behind content, with a plain option and adjustable spacing, color and strength.",
+    "category": "Subtle backgrounds",
+    "usage": [
+      "Place PatternBackground inside a parent with position: relative and isolation: isolate; give the parent its own size and surface color.",
+      "Choose dots, grid, contours, weave, pebbles, sunwash, folds, sprouts or none. Set spacing in pixels (8–80), opacity from 0–1, and color to any CSS color or design token.",
+      "Keep strength low behind text. The Try it Background picker lets readers change or hide the live canvas decoration without resetting their example. Code and terminal surfaces keep their own treatment."
+    ],
+    "accessibility": ["The pattern is decorative and hidden from assistive technology, ignores pointer input, and is disabled in forced-colors mode. It never conveys required information."],
+    "related": ["preview", "code-block"]
+  },
   "accordion": {
     "description": "Organizes related sections into expandable panels so readers can open the details they need.",
     "category": "Layout",
     "usage": [
       "Pair each AccordionTrigger with its AccordionContent inside an AccordionItem.",
-      "Choose single or multiple expansion through the root type; use controlled values when another control must open a section."
+      "Choose single or multiple expansion through the root type; use controlled values when another control must open a section.",
+      "Use appearance=\"faq\" for quick answers, \"chapters\" for a numbered guide or \"editorial\" for preview-led detail. These are different compositions, not palette swaps; omitting appearance preserves the original painted cards.",
+      "The live Approach control preserves the open section. Copy code includes the selected approach and the complete content composition."
     ],
     "accessibility": [
-      "Use meaningful trigger text and preserve the supplied trigger and content parts for keyboard navigation and expanded-state relationships."
+      "Use meaningful trigger text and preserve the supplied trigger and content parts for keyboard navigation and expanded-state relationships.",
+      "Arrow keys move between summaries; Enter or Space toggles a section. Closing detail becomes inert immediately. Height animation reverses from its current position, and reduced motion, Motion Off and Flow Off reveal the same content without travel."
     ],
     "related": [
       "collapsible",
@@ -18,7 +207,8 @@
     "description": "Provides live controls for the shared motion settings and editable body profiles used across the library.",
     "category": "Tools",
     "usage": [
-      "Use MotionControls for a compact character, speed, and intensity panel with an optional preview.",
+      "Use MotionControls for character, speed, intensity and pointer-preview strength with an optional replayable preview. Enable motion reflects both Motion Off and Selection Off; enabling restores Glide if no selection character is active.",
+      "A saved pointer-preview strength of zero is intentionally invisible. Increase its labelled slider to see the hint. Device reduced motion still takes precedence over saved choices.",
       "Use Adjuster to tune body tiers, change motion categories, and import or export the shared profile as JSON."
     ],
     "accessibility": [
@@ -32,11 +222,14 @@
     ]
   },
   "alert": {
-    "description": "Displays a prominent message with context and optional actions where an issue or outcome occurs.",
+    "description": "An authored note, attached-action banner or folded dispatch that makes the message and its next step clear.",
     "category": "Feedback",
     "usage": [
       "Combine AlertTitle and AlertDescription to explain what happened and what the reader can do next.",
-      "Choose a status variant and wire AlertClose to your own dismissal state when the message can be dismissed."
+      "Choose a status variant and wire AlertClose to your own dismissal state when the message can be dismissed.",
+      "Optional presentation selects note, banner or dispatch. Omission preserves the original Alert composition. The six status variants remain an independent semantic choice, not six layout variants.",
+      "A single shared morphing stamp carries the accent. Dismiss and footer actions retain stationary44px targets; restore focus to an appropriate surviving control after dismissal.",
+      "The example previews local messages and exposes a real local note list. It does not send notifications or claim a network operation succeeded."
     ],
     "accessibility": [
       "The root defaults to role=\"alert\"; reserve that announcement priority for messages that need attention.",
@@ -97,11 +290,13 @@
     ]
   },
   "avatar": {
-    "description": "Identifies a person or entity with an image, fallback content, or a grouped set of avatars.",
+    "description": "Portraits, identity rows and participant groups that keep the person recognizable—with artwork, initials and independent shape choices.",
     "category": "Data display",
     "usage": [
       "Place AvatarImage and AvatarFallback inside Avatar to handle image loading with initials or other fallback content.",
-      "Use AvatarGroup for a small collection and AvatarMore for a visible remaining count."
+      "Use AvatarGroup for a small collection and AvatarMore for a visible remaining count. A native button can reveal a complete, named participant list.",
+      "Choose circle, rounded or pebble with shape; set accent and size independently. Existing square, small, hexagon and grouped primitives remain available.",
+      "AvatarEdit is a stationary 44px Cojeev button. Supply an action and a specific label; the example changes locally authored artwork, not an uploaded profile."
     ],
     "accessibility": [
       "Give meaningful images descriptive alt text; use empty alt text when adjacent text already identifies the person.",
@@ -114,11 +309,13 @@
     ]
   },
   "badge": {
-    "description": "Adds a compact status, count, or category label alongside other content.",
+    "description": "Stamp a review state, attach a filing tag or count a collection. Three compact treatments with one clear meaning in text.",
     "category": "Data display",
     "usage": [
       "Use short text to distinguish a state or category without competing with the main content.",
-      "Add BadgeIndicator when a small visual marker helps reinforce the written status."
+      "Add BadgeIndicator when a small visual marker helps reinforce the written status.",
+      "Set appearance to stamp, tag or counter; variant remains the original colour/status treatment. Omitting appearance preserves the original badge.",
+      "Use radius to tune the badge edge independently. The live example retains the same local count and review state when you change its approach."
     ],
     "accessibility": [
       "Include the status meaning in text; a Badge is a span and does not supply button behavior."
@@ -130,14 +327,18 @@
     ]
   },
   "breadcrumb": {
-    "description": "Shows the current location within a hierarchy and links back to its ancestors.",
+    "description": "Find your place with a complete trail, a pocket-sized ancestor menu or a connected directory path.",
     "category": "Navigation",
     "usage": [
       "Compose BreadcrumbList with linked ancestors and a final BreadcrumbPage.",
-      "Use asChild on BreadcrumbLink to integrate a router link, and wire BreadcrumbBack when a separate back action is useful."
+      "Use asChild on BreadcrumbLink to integrate a router link, and wire BreadcrumbBack when a separate back action is useful.",
+      "Set presentation to trail, pocket or directory for the authored arrangements; omission preserves the original inline breadcrumb. Presentation does not infer your route or history.",
+      "For a long pocket path, compose the existing DropdownMenu and Button around BreadcrumbEllipsis. Keep the current page and nearest parent visible; menu items are real ancestor links, not decorative dots.",
+      "The gallery is a local folder preview: links change its active folder, the parent action moves up one level, and Reset path returns to the leaf. Replace these handlers with your application's routes."
     ],
     "accessibility": [
-      "BreadcrumbPage marks the current page and decorative separators are hidden from assistive technology; keep ancestor link names descriptive."
+      "BreadcrumbPage marks the current page and decorative separators are hidden from assistive technology; keep ancestor link names descriptive.",
+      "Name an overflow trigger explicitly, retain native menu keyboard and Escape behavior, and label the parent action by its actual destination. Back has a stable44px target."
     ],
     "related": [
       "sidebar",
@@ -168,7 +369,8 @@
     "category": "Actions",
     "usage": [
       "Use onClick for an action or set type=\"submit\" when the button submits a form.",
-      "Set loading for busy feedback and disabled separately when repeat activation must be prevented."
+      "Use shape=\"card\" for compact multiline choices: modest corners, auto height and wrapping. The default pill remains unchanged. Set aria-pressed yourself when the choice is toggleable.",
+      "Set loading while an action is pending; it prevents repeat activation while preserving the button treatment. Use disabled for an unavailable action."
     ],
     "accessibility": [
       "Give the button a clear action name, including aria-label for icon-only content.",
@@ -197,11 +399,12 @@
     ]
   },
   "calendar": {
-    "description": "Displays a month grid for choosing a single date, with optional disabled dates and visual marks.",
+    "description": "Choose one appointment day, a continuous date range, or separate days in an accessible month grid.",
     "category": "Forms",
     "usage": [
-      "Use selected and onSelect for a controlled date, or defaultSelected for local selection.",
-      "Pass disabled date matchers for unavailable days and required when the chosen date must remain selected."
+      "Use single (the default), range, or multiple mode. Values are Date, DateRange, and Date[] respectively.",
+      "Use selected/onSelect for controlled selection or defaultSelected for local state. Disabled, required, min/max and range excludeDisabled follow DayPicker semantics.",
+      "Single selection moves one local paint layer; multiple days and range endpoints each retain their own paint. Keep a visible range/count summary."
     ],
     "accessibility": [
       "Preserve the calendar day and navigation parts for their keyboard and date-label behavior.",
@@ -218,7 +421,9 @@
     "category": "Layout",
     "usage": [
       "Compose CardHeader, CardTitle, CardDescription, CardContent, and CardFooter around one topic.",
-      "Choose a surface variant to establish hierarchy and put explicit links or buttons inside for actions."
+      "Choose a surface variant to establish hierarchy and put explicit links or buttons inside for actions.",
+      "appearance=\"editorial\" pairs CardCover with readable detail, \"project\" groups progress and the next action, and \"collection\" gives a browsable stack its own cover. Omitting appearance preserves the original Card layout.",
+      "Surface, Size and Corners remain independent controls. Corners use the shared --v-control-radius and cap multi-line cards at32px. CardAction is a normal Cojeev Button with stable hit geometry. The examples save, advance or browse local state only; changing the approach preserves that state."
     ],
     "accessibility": [
       "CardTitle renders an h3; fit it into the surrounding heading structure or supply the needed heading inside CardHeader. Keep interactive controls individually named."
@@ -230,11 +435,15 @@
     ]
   },
   "carousel": {
-    "description": "Lets readers move through a horizontal collection of slides using scrolling and navigation controls.",
+    "description": "Browse a peeking shelf, a full reading spread or a miniature index of ideas, with native scrolling and a shared organic scrollbar.",
     "category": "Navigation",
     "usage": [
       "Place CarouselItem elements inside CarouselContent and add Previous, Next, or Dot controls as needed.",
-      "Use onIndexChange to synchronize a slide count or related content with the current position."
+      "Use onIndexChange to synchronize a slide count or related content with the current position.",
+      "Set presentation=shelf, story or index for the authored arrangements. Keep saved records outside individual slides so presentation changes retain them. The gallery saves only inside the local example.",
+      "CarouselContent scrollbar opts into ScrollArea and its horizontal organic ScrollBar while keeping the forwarded ref on the native scroll viewport. Omit scrollbar to retain the original unwrapped viewport; CarouselDeck and CarouselItem asChild remain available.",
+      "The viewport handles Home/End and direction-aware arrow keys without taking those keys from nested inputs. Programmatic scroll follows shared reduced-motion, Motion Off and Flow Off settings. No automatic rotation is enabled.",
+      "Compose CarouselDot children as useful miniatures when direct visual selection helps. The44px hit target stays fixed while its small selected mark changes."
     ],
     "accessibility": [
       "Give the carousel region an accessible name and provide descriptive slide content.",
@@ -247,11 +456,13 @@
     ]
   },
   "chart": {
-    "description": "Presents numeric comparisons as bars, lines, rings, or ranked rows with companion data-table primitives.",
-    "category": "Data display",
+    "description": "Compose an understandable chart from a frame, labelled series, inspectable plot and accessible values.",
+    "category": "Charts",
     "usage": [
-      "Pass labeled data to Chart or ChartLine, or labeled segments to ChartRing.",
-      "Represent missing observations with null values and set a useful caption that describes the comparison."
+      "Start with ChartFrame: supply data, series, caption and description, then render marks using its measured plot coordinates. Its legend, keyboard inspector and values table stay connected.",
+      "Use AreaChart, BarChart, LineChart, PieChart, RadarChart or RadialChart when you want a complete plotting engine. Low-level Chart, ChartLine, ChartRing and ranked-row exports remain available for custom compositions.",
+      "Choose appearance=analysis for exploration, brief for an explicitly labelled summary, or ledger to compare the graphic and exact values. A source summary is intentionally not recomputed when a legend series is hidden.",
+      "ChartDatasetSelect supplies the same accessible custom-scroll selector used in the examples. Keep null for a missing observation; zero remains a real value."
     ],
     "accessibility": [
       "Keep the default companion data table or supply an equivalent accessible explanation if showTable is false.",
@@ -267,11 +478,13 @@
     "description": "Captures an independent checked, unchecked, or indeterminate choice.",
     "category": "Forms",
     "usage": [
+      "Choose appearance=row for a checklist, card for labelled choices with descriptions, or chip for compact choices. Shape, tone and indicator remain independent customization props.",
       "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
       "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Use checked and onCheckedChange for controlled state or defaultChecked for a local default.",
       "Group related options when users may choose more than one, and use indeterminate for a partially selected collection.",
-      "Use size=\"sm\" | \"default\" | \"lg\" or a numeric16–64px size. indicator chooses auto/dot/check/diamond/flower; showIndicator={false} leaves the selected outer blob only."
+      "Use size=\"sm\" | \"default\" | \"lg\" or a numeric16–64px size. indicator chooses auto/dot/check/diamond/flower; showIndicator={false} leaves the selected outer blob only.",
+      "Use radius=square, soft, round or pill, or omit it to inherit the nearest control radius. Native form, ref, disabled and keyboard behavior are preserved."
     ],
     "accessibility": [
       "Associate each checkbox with a visible label and give a group a shared description when the choices need context."
@@ -286,8 +499,11 @@
     "description": "Displays a code snippet with an optional caption, language label, wrapping, and copy feedback.",
     "category": "Tools",
     "usage": [
-      "Pass code as a string and use title or language to explain the snippet; language labels do not add syntax highlighting.",
-      "Enable wrap for long lines or use the default scrolling view, and use CopyButton when only the copy action is needed.",
+      "Pass code as a string and set language for syntax highlighting: ts/tsx, js/jsx, css, html, json and bash are supported. Unrecognised languages remain readable plain text. Copy preserves the exact source string.",
+      "Documentation examples are formatted before rendering. CodeBlock preserves caller whitespace and uses a plain surface by default so text stays readable; patterns remain opt-in.",
+      "Use variant=\"terminal\" for shell commands: it adds an ink surface, terminal title bar and decorative prompt without changing the copied command. Copy actions show an icon and text, with a check only after copying succeeds.",
+      "Enable wrap for long lines or use the default view with shared custom scrollbars in both axes; use CopyButton when only the copy action is needed.",
+      "Use embedded inside a host such as Preview that already supplies a toolbar and copy action. The named, keyboard-accessible code viewport remains available.",
       "The copy control tries the Clipboard API and then a selection-based fallback when that API is unavailable, including on HTTP pages."
     ],
     "accessibility": [
@@ -305,10 +521,13 @@
     "category": "Layout",
     "usage": [
       "Pair CollapsibleTrigger and CollapsibleContent inside a shared Collapsible root.",
-      "Use open and onOpenChange when expansion must stay in sync with application state."
+      "Use open and onOpenChange when expansion must stay in sync with application state.",
+      "Choose appearance=\"inline\" for a quiet detail, \"checklist\" for a short preparation list or \"inspector\" for labelled file metadata. Omit it to keep the original container treatment.",
+      "The standard trigger includes one indicator. When using asChild, supply your own single button element and its contents; no extra sibling is inserted. The demo link targets its page's usage-heading; replace that destination for your own content."
     ],
     "accessibility": [
-      "Keep the trigger keyboard-operable and use text that describes the section it expands."
+      "Keep the trigger keyboard-operable and use text that describes the section it expands.",
+      "The trigger is at least44px tall. Closing makes descendants inert immediately, even during the reversible height animation. Reduced motion, Motion Off and Flow Off settle the same detail immediately."
     ],
     "related": [
       "accordion",
@@ -320,10 +539,10 @@
     "description": "Filters a list of options through text input and stores one selected value.",
     "category": "Forms",
     "usage": [
-      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
+      "Menu items use one stable icon by default. Set adornment={false} to hide it, pass a custom icon, or use {showBackground:true,showIcon:false,shape,color} for a blob instead.",
       "Provide options with distinct values and readable labels for the built-in input, results, and empty state.",
       "Use value and onValueChange to store the selection, or compose the input and item parts for custom option content.",
-      "ComboboxItem shows a persistent selected check separately from hover or keyboard emphasis. Set showIndicator=false to suppress that mark."
+      "The selected option keeps its background independently of the keyboard-highlighted option. Set showIndicator=true only when an additional selected check is needed."
     ],
     "accessibility": [
       "Supply a specific aria-label for the input and preserve the input, list, and item parts that coordinate focus and selection.",
@@ -357,7 +576,7 @@
     "description": "Reveals contextual actions for a target through a context-menu interaction.",
     "category": "Actions",
     "usage": [
-      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
+      "Menu items use one stable icon by default. Set adornment={false} to hide it, pass a custom icon, or use {showBackground:true,showIcon:false,shape,color} for a blob instead.",
       "Wrap the relevant target with ContextMenuTrigger and compose actions in ContextMenuContent.",
       "Use checkbox, radio, or submenu items when the actions include stateful choices or another level."
     ],
@@ -389,11 +608,12 @@
     ]
   },
   "date-picker": {
-    "description": "Opens a calendar from a compact trigger to choose and display one date.",
+    "description": "Choose one day, a range, or multiple dates from a labelled field and calendar popover.",
     "category": "Forms",
     "usage": [
-      "Use date and onDateChange for controlled selection or defaultDate for a local initial date.",
-      "Pass disabled-date rules through calendarProps and formatDate to customize the displayed date."
+      "Use date/onDateChange for controlled values or defaultDate for local state; mode determines Date, DateRange, or Date[].",
+      "Pass required, disabled-date matchers, min/max and range rules through calendarProps. Range defaults to at least one night; min=0 permits a one-day range.",
+      "Single closes on selection, range closes when complete, and multiple stays open until Done. Clear is disabled when required or a multiple-selection minimum applies."
     ],
     "accessibility": [
       "Use triggerProps to give the trigger a field-specific accessible name and associate any instructions with it.",
@@ -406,11 +626,12 @@
     ]
   },
   "dialog": {
-    "description": "Opens a focused overlay for a task or information that needs dedicated attention.",
+    "description": "A decision slip, focused editor or illustrated exhibit. Give one task your attention without losing your place.",
     "category": "Layout",
     "usage": [
-      "Compose a trigger, content, title, description, and close action inside Dialog.",
-      "Control open and onOpenChange when another part of the interface launches or completes the task."
+      "Choose Confirmation, Editor or Exhibit as an approach. The live example retains the note name and collection state; Cancel never saves a draft.",
+      "Compose DialogHeader, DialogBody and DialogFooter inside DialogContent. Body owns the organic scrollport, leaving heading and actions outside it; set viewportProps.tabIndex=0 for a long keyboard-scrollable reading body.",
+      "Control open/onOpenChange for application state. Omit appearance to retain the original public layout. showCloseButton uses the shared44px Button/Icon."
     ],
     "accessibility": [
       "Include DialogTitle and a useful DialogDescription so the overlay has an accessible name and context.",
@@ -459,7 +680,7 @@
     "description": "Opens a compact menu of actions or stateful choices from a visible trigger.",
     "category": "Actions",
     "usage": [
-      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
+      "Menu items use one stable icon by default. Set adornment={false} to hide it, pass a custom icon, or use {showBackground:true,showIcon:false,shape,color} for a blob instead.",
       "Use DropdownMenuTrigger with a named button and place related commands in the content.",
       "Compose checkbox items, radio groups, separators, or submenus to match the action structure."
     ],
@@ -511,11 +732,13 @@
     "category": "Forms",
     "usage": [
       "Wrap one control in FieldControl and pair it with FieldLabel and a description or error message.",
-      "Set invalid from your validation result and use FieldSet with FieldLegend for related controls."
+      "Set invalid from your validation result and use FieldSet with FieldLegend for related controls.",
+      "Input is the native entry; Field connects its label, help and validation. Choose layout=stacked, inline or integrated independently from the shared Contour/Editorial/Inset surface. Inline stacks on small screens. Omitting layout preserves the existing vertical layout.",
+      "Change Field surface without replacing the field value. Corners are inherited through --v-control-radius or overridden with radius; Editorial has no enclosing corners."
     ],
     "accessibility": [
       "FieldControl supplies the control ID, described-by connection, and invalid state when used with the field parts.",
-      "Use either FieldDescription or FieldError for the shared message slot, or assign distinct IDs and an explicit aria-describedby when both are present."
+      "FieldDescription and FieldError register distinct IDs, so help and errors can coexist. Supply controlId for a caller-owned input ID; preserve the registered described-by IDs when adding custom instructions."
     ],
     "related": [
       "input",
@@ -524,11 +747,13 @@
     ]
   },
   "hover-card": {
-    "description": "Shows supplementary preview content when a user hovers over or focuses its trigger.",
+    "description": "A person, an excerpt or a small visual study—three considered previews, close to the thing you are exploring.",
     "category": "Data display",
     "usage": [
       "Use HoverCardTrigger for a link or focusable target and HoverCardContent for a brief preview.",
-      "Keep the destination and essential information available in the main interface."
+      "Keep the destination and essential information available in the main interface.",
+      "Set appearance to identity, preview or media for the new treatments. These opt into the owned organic scrollport for bounded content; omission retains the original Radix structure.",
+      "Hover-card previews are supplementary. The example's Read preview disclosure gives the same content an inline keyboard/screen-reader alternative. Use Popover when the floating content itself must be interactive."
     ],
     "accessibility": [
       "Treat hover-card content as supplementary; use a Popover or Dialog when users must interact with or reliably access the content."
@@ -540,7 +765,7 @@
     ]
   },
   "icon": {
-    "description": "Renders named SVG icons and provides supporting icon-button and decorative disk primitives.",
+    "description": "1,722 icon names with Cojeev micro-interactions, outline, duotone and organic treatments, built on Lucide geometry.",
     "category": "Data display",
     "usage": [
       "Browse and search the icon pack in the live example. AnimatedIcon adds configurable motion; StateChevron follows open and closed trigger state.",
@@ -548,7 +773,10 @@
       "Use IconButton for an icon-only action and Disk when the icon needs a containing surface.",
       "Friendly action aliases include check-circle, close, alert, loader, refresh and trash.",
       "Default feedback responds once to the nearest enabled control with action-specific SVG-part motion. Set feedback={false} to opt out; draw mode owns its own animation.",
-      "The iconActionNames and iconActionDescriptions exports describe all 100 semantic actions. The searchable example pages through the complete family; new geometry retains Lucide and Feather license notices."
+      "iconNames lists all 1,722 supported names, including 1,703 canonical Lucide 0.577.0 icons and legacy names. iconActionNames retains the 100 tailored actions; getIconMotionDescription explains every name's tailored or shared-family motion.",
+      "Set treatment to outline (default), duotone or organic. tone accepts current, pink, blue, olive or yellow and colours the accent layer. The studio also copies a legible SVG style.color for Outline; every visible colour choice changes the selected ink. Organic reshapes the actual glyph strokes, not a blob behind an ordinary icon.",
+      "Icon uses feedbackDuration/feedbackEase; AnimatedIcon uses duration/ease and optional preset. Motion timing is a reversible disclosure in the shared typecase. Copy JSX includes the selected treatment, colour and actual timing props.",
+      "Use SVG style width/height for a custom scale and strokeWidth for line weight. Lucide and Feather license notices are retained in the geometry files; preserve them when copying. The explorer mounts at most 24 result tiles, not the entire collection."
     ],
     "accessibility": [
       "Icons are hidden from assistive technology by default; give an IconButton its own accessible action name."
@@ -564,7 +792,8 @@
     "category": "Forms",
     "usage": [
       "Pass native type, name, value, and onChange props to match the data you need.",
-      "Use InputWrapper and InputControl for addons, and connect InputClear onClear to the input value."
+      "Use InputWrapper and InputControl for addons, and connect InputClear onClear to the input value.",
+      "Contour gives a quiet boundary, Editorial an open focus line, and Inset groups the label and value in one Field. Keep palette and corners separate from the native value. InputClear is a shared touch-sized Button; keep a ref if you want clear to return focus."
     ],
     "accessibility": [
       "Associate a visible label with the input and connect instructions or errors using aria-describedby.",
@@ -581,7 +810,9 @@
     "category": "Forms",
     "usage": [
       "Place InputGroupInput or InputGroupTextarea with addons and text to show units or contextual information.",
-      "Use InputGroupButton for a related action and connect it to the same value through your state."
+      "Use InputGroupButton for a related action and connect it to the same value through your state.",
+      "Address joins an uneditable prefix and Save; Quantity connects a native bounded number to its unit and Add; Composer groups a multiline draft, count and Send. These are compositions of the same public parts, not new palette variants. All demo actions stay local.",
+      "Field surface and Corners remain independent. Use TextareaScrollArea around a native textarea or a ref-forwarding FieldControl to supply the actual organic scroll thumb without replacing the editor."
     ],
     "accessibility": [
       "Label the actual input or textarea and give each addon button an accessible name.",
@@ -610,11 +841,13 @@
     ]
   },
   "item": {
-    "description": "Presents a compact content row with a title, supporting description, and optional trailing metadata.",
+    "description": "A notebook ledger, an illustrated collection or an actionable detail. Three readable arrangements for the things you want to keep together.",
     "category": "Data display",
     "usage": [
       "Compose ItemContent, ItemTitle, ItemDescription, and ItemTrailing for a readable list row.",
-      "Use the default button element for an action or choose an appropriate element through as for other content."
+      "Use the default button element for one action with phrasing children (set the content parts to as=span). Use as=article when the item contains separate buttons.",
+      "appearance selects ledger, cover or detail; radius shares the field/button corner scale. Existing selected, flat and grouped variants remain usable independently.",
+      "Keep selection and saved state in your caller. The documentation examples retain them when the layout changes."
     ],
     "accessibility": [
       "Keep each actionable row clearly named and avoid nesting interactive controls inside the default button.",
@@ -647,7 +880,8 @@
     "category": "Forms",
     "usage": [
       "Set htmlFor to the ID of a form control so the label identifies and activates it.",
-      "Use Stats and Stat to lay out concise named values when no form control is involved."
+      "Use Stats and Stat to lay out concise named values when no form control is involved.",
+      "The Required, Optional and Help examples teach real semantics, not decorative Label variants: required belongs on the input, optional is visible text, and help is linked by aria-describedby. Clicking the label focuses the actual input."
     ],
     "accessibility": [
       "Keep the label visible and specific; if using as to change the element, preserve the control association through appropriate semantics."
@@ -678,7 +912,7 @@
     "description": "Groups application commands into a horizontal row of keyboard-navigable menus.",
     "category": "Actions",
     "usage": [
-      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
+      "Menu items use one stable icon by default. Set adornment={false} to hide it, pass a custom icon, or use {showBackground:true,showIcon:false,shape,color} for a blob instead.",
       "Create one MenubarMenu per command family and connect each item to its action.",
       "Use checkbox or radio items for persistent command settings and submenus for another level."
     ],
@@ -729,11 +963,14 @@
     "description": "Uses the browser’s native select control to choose from a compact list of options.",
     "category": "Forms",
     "usage": [
+      "Compare a labelled Field, a compact Toolbar with an explicit Apply action, and a native Listbox using size. These are form compositions, not replacement popup engines.",
+      "Appearance controls Contour/Editorial/Inset independently of composition; radius inherits from the shared control setting. A borderless Editorial field has no configurable corners.",
       "Pass native name, value, and onChange props and compose NativeSelectOption children.",
       "Use NativeSelectOptGroup to label related choices and disabled options for unavailable selections."
     ],
     "accessibility": [
-      "Associate the select with a visible label and retain clear option text for the browser’s keyboard and assistive-technology behavior."
+      "Associate the select with a visible label and retain clear option text for the browser’s keyboard and assistive-technology behavior.",
+      "Popups and native listbox scrollbars remain browser-owned platform surfaces. Use Select if you need the custom popup and organic scrollbar."
     ],
     "related": [
       "select",
@@ -745,6 +982,8 @@
     "description": "Organizes destination links and optional expandable navigation panels.",
     "category": "Navigation",
     "usage": [
+      "Choose Directory for a visible grouped index, Shelf for a featured destination beside related links, or Compact for a short disclosure menu. Omit appearance to keep the legacy navigation layout.",
+      "The example uses a real viewport and local destination receipt. Give repeated links distinct adornmentId values when they share a demonstration anchor.",
       "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use NavigationMenuLink for destinations and set active for the current page.",
       "Compose triggers, content, and a viewport when a destination group needs an expandable panel."
@@ -763,6 +1002,8 @@
     "description": "Lets users move between numbered pages and see their current position.",
     "category": "Navigation",
     "usage": [
+      "Choose Pages for a stable direct index, Chapter for previous/current/next reading position, or Jump for exact page entry. The selected page and record state are independent of presentation.",
+      "Built-in buttons use44px targets. Their press/release motion is painted without shrinking the hit rectangle; the page window does not move Next. Invalid Jump values receive a visible instruction instead of a silent clamp.",
       "Provide totalPages and handle onPageChange to update the displayed records.",
       "Use page for controlled navigation or compose the pagination parts when you need a custom arrangement."
     ],
@@ -796,7 +1037,11 @@
     "category": "Tools",
     "usage": [
       "Pass the rendered example as children and its source as code.",
-      "Add a title and description that explain the example and the behavior to try."
+      "Add a title and description that explain the example and the behavior to try.",
+      "Use Background to choose a pigment wash, layered pollen/contours/orbits, ambient shapes or a subtle pattern. Plain removes decoration without resetting the live example.",
+      "Set defaultPattern for an initial choice. Use pattern with onPatternChange for controlled selection; pattern alone keeps the canvas fixed. Set showBackgroundPicker to false to hide the chooser.",
+      "Background selection applies to Preview. Code keeps its own readable surface and disables the chooser.",
+      "The existing pattern values remain supported. Atmosphere choices are pigment, pollen, depth-contour, orbital, ambient-drift, ambient-orbit and ambient-contour. Only the chosen field mounts; swatches stay still. Background component documentation starts on Plain to avoid layering two backgrounds."
     ],
     "accessibility": [
       "The view switch uses tabs and the copy result is announced; keep those controls and status available when extending the preview."
@@ -804,15 +1049,18 @@
     "related": [
       "code-block",
       "tabs",
-      "card"
+      "pattern-background"
     ]
   },
   "progress": {
-    "description": "Displays a measured amount of completion or an explicitly unavailable value.",
+    "description": "One measured amount, explained as an inline task, a small report or connected milestones—with independent organic track geometry.",
     "category": "Feedback",
     "usage": [
       "Set value and max for known progress, including zero as a valid measurement.",
-      "Use an unavailable value when completion cannot be measured and provide nearby context explaining why."
+      "Use an unavailable value when completion cannot be measured and provide nearby context explaining why.",
+      "The examples offer Inline, Report and Milestones compositions around the same retained sample value. Track shape independently selects organic, line, segmented or orbit; Auto chooses the natural shape for each arrangement.",
+      "Cream remains a separate track-surface setting and sizes remain independent. Make unavailable demonstrates missing measurement without inventing zero; Restore measurement returns the previous amount.",
+      "ProgressIndicator retains its custom-child --p and --c composition API. Native ref, finite value/max clamping and shared quiet geometry are unchanged."
     ],
     "accessibility": [
       "Give the progressbar an accessible name through aria-label or aria-labelledby; the component exposes the numeric range or unavailable state."
@@ -824,18 +1072,22 @@
     ]
   },
   "questionnaire": {
-    "description": "Composes labeled questions, single-choice answers, and visible completion progress.",
+    "description": "A little guided brief: open questions, a focused journey or a two-column worksheet with living choice marks and honest completion progress.",
     "category": "Forms",
     "usage": [
       "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
       "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Group each question in QuestionnaireQuestion and place value-based QuestionnaireOption parts inside QuestionnaireOptions.",
       "Store answers through onValueChange and update QuestionnaireProgress from your own completion logic.",
-      "selectorSize, selectorIndicator and showSelectorIndicator configure the selection mark; labels retain a minimum44px row target."
+      "selectorSize, selectorIndicator and showSelectorIndicator configure the selection mark; labels retain a minimum44px row target.",
+      "Choose presentation stacked, journey or worksheet independently from the six glyph shapes, mark and size. Omit presentation to retain the legacy layout. Radius sets the question/option container, not the selection glyph.",
+      "The live example retains both answers across approaches. Journey uses native hidden/inert fieldsets, explicit Next/Back and heading focus. Its Save action only keeps a local summary; no answer is sent anywhere.",
+      "Use names on QuestionnaireOptions for native form values. Uncontrolled defaults restore on accepted form reset; cancelled reset and caller-controlled answers remain authoritative."
     ],
     "accessibility": [
       "Use a legend for each fieldset and label its radio group with aria-labelledby or aria-label.",
-      "Keep option labels descriptive and pass required or descriptive attributes through inputProps when needed."
+      "Keep option labels descriptive and pass required or descriptive attributes through inputProps when needed.",
+      "QuestionnaireProgress labels its real progressbar Questions answered by default; supply label to localize or describe a different measure. Visible answers, native radio navigation, disabled fieldsets and focus remain available with motion off."
     ],
     "related": [
       "radio-group",
@@ -847,11 +1099,13 @@
     "description": "Lets users select one option from a labeled set of mutually exclusive choices.",
     "category": "Forms",
     "usage": [
+      "Choose appearance=row for a checklist, card for illustrated descriptions, or chip for compact choices. Shape, tone and indicator remain independent customization props.",
       "The default organic selector stays close to a circle, with subtle asymmetry and cursor-responsive contour motion.",
       "Choose organic, circle, rounded, pebble, leaf or flower; pink, blue, olive and yellow tones are available.",
       "Give each RadioGroupItem a distinct value and use value or defaultValue on the root.",
       "Handle onValueChange to update the setting or form answer represented by the group.",
-      "Use size=\"sm\" | \"default\" | \"lg\" or a numeric16–64px size. indicator chooses auto/dot/check/diamond/flower; showIndicator={false} leaves the selected outer blob only."
+      "Use size=\"sm\" | \"default\" | \"lg\" or a numeric16–64px size. indicator chooses auto/dot/check/diamond/flower; showIndicator={false} leaves the selected outer blob only.",
+      "Use radius=square, soft, round or pill, or omit it to inherit the nearest control radius. Native form, ref, disabled and keyboard behavior are preserved."
     ],
     "accessibility": [
       "Name the group and associate each item with a visible label; preserve the supplied radio parts for keyboard navigation and checked state.",
@@ -883,8 +1137,12 @@
     "description": "Contains overflowing content in a bounded viewport with styled scrollbars.",
     "category": "Layout",
     "usage": [
+      "Mount ScrollbarProvider once around your application to share scrollbarSize, scrollbarColor and scrollbarVariant with every ScrollArea, ScrollBar and PageScrollBar. Explicit local props still override the defaults. Cojeev documentation uses a slim 4px policy; standalone components default to 6px.",
       "Set a height or width constraint so the viewport can scroll within its surrounding layout.",
-      "Add a horizontal ScrollBar when wide content needs horizontal scrolling."
+      "Add a horizontal ScrollBar when wide content needs horizontal scrolling.",
+      "Set scrollbarSize to a visual thumb thickness in pixels (2–16, default 6); the grab area stays at least 24px wide.",
+      "Set scrollbarColor to a CSS color or design token, and scrollbarVariant to organic, rounded or minimal. These appearance props also work on ScrollBar and PageScrollBar.",
+      "The provider also enables a slim, theme-aware native fallback for unmanaged overflow such as textareas. That fallback retains browser geometry; only the managed scroll components paint the organic custom thumb."
     ],
     "accessibility": [
       "Keep scrolling content keyboard-reachable and give an independently scrollable region a useful name when it needs one."
@@ -899,10 +1157,12 @@
     "description": "Opens a list of options from a trigger and stores one selected value.",
     "category": "Forms",
     "usage": [
-      "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
+      "Use a full Field, a compact Action selector, or Rich choices with explanatory text. These examples preserve the selected value across layout changes.",
+      "SelectItem description is supporting text outside ItemText, so only its actual label appears in SelectValue. Appearance and inherited radius belong to SelectTrigger; Editorial stays borderless.",
+      "Menu items use one stable icon by default. Set adornment={false} to hide it, pass a custom icon, or use {showBackground:true,showIcon:false,shape,color} for a blob instead.",
       "Compose SelectTrigger, SelectValue, SelectContent, and value-based SelectItem parts.",
       "Use value and onValueChange for controlled state, and groups or labels to organize a longer list.",
-      "SelectItem shows a persistent selected check separately from hover or keyboard emphasis. Set showIndicator=false to suppress that mark."
+      "Selection is shown by the moving background and accessible selected state. Set showIndicator=true only when an additional selected check is needed."
     ],
     "accessibility": [
       "Associate a visible label with the trigger and retain the supplied item parts for keyboard navigation and selection announcements."
@@ -930,18 +1190,20 @@
     ]
   },
   "shape": {
-    "description": "A shared catalogue of 36 SVG silhouettes, with 12 original contours that morph smoothly between shapes.",
+    "description": "One shape studio: twelve compatible living contours, layered artwork and the complete original mask inventory. Compose it here, then take the SVG or React code.",
     "category": "Data display",
     "usage": [
       "Use Shape with a name from shapeNames for a static mask. Size it through className or style and set its fill with the --c custom property.",
       "Use ShapeMorph with a name from signatureShapeNames for an animated contour. Change name to morph from the visible shape; choose fill or outline and set color through ordinary SVG styles.",
-      "Use the shared silhouettes for card accents, empty states and dividers. Motion Off, reduced motion and offscreen rendering settle to a static shape."
+      "The landing page and both Shape and ShapeArtwork pages use one shared editor. Choose colour, fill, shadow, rear outline and Still/Breathe; Layer & motion details expose rotation, angles, target contour and cycle timing. Randomize changes only the silhouette and retains your other settings.",
+      "Every silhouette preserves the original static masks and copies their native Shape snippet. Download SVG exports a still transparent vector with resolved theme colours; Copy React snippet includes the selected layers and breathing props. Use these graphics for card accents, empty states and dividers."
     ],
     "accessibility": [
       "Shapes are decorative by default. Give ShapeMorph a label only when the graphic conveys meaning; keep descriptive text beside decorative accents."
     ],
     "related": [
       "icon",
+      "shape-artwork",
       "badge",
       "avatar"
     ]
@@ -964,11 +1226,14 @@
     ]
   },
   "sidebar": {
-    "description": "Provides a collapsible navigation rail with grouped destinations, active states, and a footer area.",
+    "description": "A paper folio, a readable compact index and a motion drawer. Three calm ways to keep the same workspace within reach.",
     "category": "Navigation",
     "usage": [
       "Compose SidebarHeader, SidebarContent, menu buttons, and SidebarFooter around your destination links.",
-      "Use SidebarProvider for shared open state and choose container or viewport layout for its placement."
+      "Use SidebarProvider for shared open state and choose container or viewport layout for its placement.",
+      "appearance is opt-in: folio, index or drawer. Collapsed new appearances retain readable destination names; omitted appearance preserves the legacy icon rail.",
+      "For long embedded lists, compose ScrollArea around SidebarContent. Inside MotionDrawer, let its body own scrolling rather than nesting another scrollport.",
+      "Use native anchors for real destinations. Use SidebarMenuButton asChild around a native button for an explicitly local view change. Retain working state outside the chosen presentation."
     ],
     "accessibility": [
       "Provide a label for icon-only destinations and set isActive on the current link.",
@@ -981,10 +1246,11 @@
     ]
   },
   "skeleton": {
-    "description": "Reserves the visual shape of content while its real data is still loading.",
+    "description": "Give unavailable content a useful outline: a reading page, a person or a board of ideas, with three quiet-safe paint effects.",
     "category": "Feedback",
     "usage": [
-      "Choose skeleton shapes and groups that approximate the content that will replace them.",
+      "Compose Article, Profile or Board placeholders to approximate the content that will replace them. Default, Pill, Card, Disk, Line and Group building blocks all remain available; the templates do not replace their public APIs.",
+      "Skeleton effect is independent of shape: shimmer sweeps the fill, pulse breathes gently, and ink draws a lightly hatched outline. Set paused to stop optional motion; reduced motion, global Motion/Flow Off, document hiding and offscreen visibility also make the effect still.",
       "Replace placeholders with the completed content or a useful error state when loading finishes.",
       "AsyncContent accepts optional loading and fallback props. The real content stays mounted across loading changes so input edits survive; omitted loading preserves the original static wrapper."
     ],
@@ -1002,7 +1268,9 @@
     "category": "Forms",
     "usage": [
       "Set min, max, and step for the value domain and use value or defaultValue arrays for the thumbs.",
-      "Use SliderOutput or nearby text to show the current value and its unit."
+      "Use SliderOutput or nearby text to show the current value and its unit.",
+      "Choose organic, rubber, line or segmented appearance. Rubber is value-shaped: a short filled strand is thick and its middle becomes very thin as the selected span stretches. The docs also demonstrate a marked step scale, two-thumb interval and vertical mixer: these are compositions of the same native Slider, not separate implementations.",
+      "The thumb rests near circular and responds along its movement axis. Range feedback belongs to the active thumb; disabled, hidden and quiet states retain a still, usable value control."
     ],
     "accessibility": [
       "Provide thumbLabel for every thumb, using the index callback when their meanings differ.",
@@ -1015,10 +1283,12 @@
     ]
   },
   "spinner": {
-    "description": "Shows that work is in progress when an exact completion amount is unavailable.",
+    "description": "Three indeterminate signals: a morphing Bloom, gathering Orbit or handing-off Relay. The original small seed stays the default.",
     "category": "Feedback",
     "usage": [
       "Set label to describe the work, such as loading a preview or saving changes.",
+      "Set appearance to bloom, orbit or relay. The optional point variant changes Bloom's seed shape; other appearances have their own geometry. Omit appearance to retain the original 34px indicator used by loading buttons.",
+      "Set paused for an explicit still state. Offscreen, hidden, reduced-motion and global Motion/Flow Off states suspend optional animation. The documentation's pause, finish and restart buttons only control a local demonstration, not a network request.",
       "Use Progress instead when a meaningful completion value is available."
     ],
     "accessibility": [
@@ -1031,12 +1301,16 @@
     ]
   },
   "stepper": {
-    "description": "Tracks the current stage of a multi-step sequence and provides previous and next controls.",
+    "description": "Move a real draft through connected stages, a descriptive checkpoint ledger or a focused current-step workspace.",
     "category": "Navigation",
     "usage": [
       "Set count and optional labels, then use one-based values for StepperItem parts.",
       "Use onValueChange to switch your content and gate progression with your own validation before advancing.",
-      "StepperList orientation=\"horizontal\" lays out connected milestones with native Previous/Next controls. The default remains vertical. Completed milestones use a native validation icon."
+      "StepperList orientation=\"horizontal\" lays out connected milestones with native Previous/Next controls. The default remains vertical. Completed milestones use a native validation icon.",
+      "Set presentation=rail, ledger or compact to opt into the authored compositions. Stage values, labels and content remain owned by your application; changing presentation must not recreate the draft.",
+      "StepperTrigger is a shared Button for returning to the current or an earlier checkpoint. Future stages are disabled unless allowFuture is explicit; supply your own validation before enabling progression.",
+      "Previous and Next combine caller disabled state with their boundaries. Cancel onClick with preventDefault to refuse a move; non-finite changes are ignored and finite values are clamped to whole one-based stages.",
+      "The example preserves mounted fields while hiding inactive panels, focuses the new heading after deliberate navigation and saves only a local draft. No network submission is implied."
     ],
     "accessibility": [
       "The current item exposes aria-current=\"step\"; use meaningful titles and include StepperStatus when a spoken progress update is useful."
@@ -1051,8 +1325,10 @@
     "description": "Turns a named binary setting on or off.",
     "category": "Forms",
     "usage": [
+      "Choose appearance=capsule for a sliding thumb, rocker for a fixed two-sided face, or latch for an explicit ON/OFF stamp.",
       "Use checked and onCheckedChange when the setting is stored in application state.",
-      "Pair the control with a label, or use SwitchRow to arrange it with explanatory text."
+      "Pair the control with a label, or use SwitchRow to arrange it with explanatory text.",
+      "Use radius=square, soft, round or pill, or omit it to inherit the nearest control radius. Native form, ref, disabled and keyboard behavior are preserved."
     ],
     "accessibility": [
       "Keep the setting name stable as the state changes and associate it with the switch; the checked state communicates whether it is on."
@@ -1064,17 +1340,21 @@
     ]
   },
   "table": {
-    "description": "Presents structured data in native rows and columns with headers and an optional caption.",
+    "description": "Scan a compact ledger, explore detailed records or compare them side by side. One Tables guide for native parts and the composed DataTable.",
     "category": "Data display",
     "usage": [
-      "Compose TableHeader, TableBody, TableRow, TableHead, and TableCell for the data structure.",
-      "Use TableContainer for overflow and numeric cells for aligned values; add TableCaption to explain the table."
+      "Use DataTable for client-side sorting, predicate filters and pagination. Ledger is a compact register; Rich rows add context and explicit record actions. Supply getRowId when source records can be inserted or reordered.",
+      "Use TableHeader, TableBody, TableRow, TableHead and TableCell when you own the structure. Comparison uses row headers to compare records across columns rather than repeating another row-list skin.",
+      "TableContainer supplies the real organic scrollbar. Keep columns readable rather than squeezing every cell into a mobile viewport; provide a labelled scroll region and a meaningful caption.",
+      "Page and filter values can be controlled by the application. Page updates replace rows immediately; no outgoing rows remain in table flow. Pin and open actions in the example are local, with visible feedback."
     ],
     "accessibility": [
-      "Use real header cells and appropriate scope attributes so row and column relationships are clear."
+      "Use real header cells and appropriate scope attributes so row and column relationships are clear. Comparison row labels use scope=row.",
+      "DataTable exposes aria-sort and labelled native sorting buttons. Focused rows activate with Enter or Space; a nested button or link does not also activate its row.",
+      "Keep explicit action names and visible focus. The scroll viewport supports keyboard and its custom thumb; reduced motion never delays records or their labels."
     ],
     "related": [
-      "data-table",
+      "pagination",
       "chart",
       "scroll-area"
     ]
@@ -1083,9 +1363,10 @@
     "description": "Switches between related content panels while keeping the available views visible.",
     "category": "Navigation",
     "usage": [
+      "Notebook attaches the section tabs to one reading surface; Rail places the section index alongside the workspace. Pills, Underline and Lenses remain available. Use vertical orientation with Rail for native up/down keyboard navigation.",
       "Match each TabsTrigger value to a TabsContent value inside a shared Tabs root.",
       "Use value and onValueChange when another control needs to select a view, and choose a variant for its visual hierarchy.",
-      "Panel changes use the shared presence transition. Exiting panels become inert and leave after their exit; forceMount opts into consumer-managed visibility."
+      "Managed panels cross-fade in one grid position, so entering and exiting content cannot stack into two rows. Exiting panels are inert; forceMount retains consumer-managed visibility. Keep persistent editable state above any unmounted panel."
     ],
     "accessibility": [
       "Give TabsList a descriptive accessible name and preserve the supplied trigger and panel relationships for keyboard navigation."
@@ -1101,7 +1382,9 @@
     "category": "Forms",
     "usage": [
       "Pass native rows, value, and onChange props for notes, descriptions, or message drafts.",
-      "Use TextareaCount with the same value for a count display and set maxLength on the textarea when a limit must be enforced."
+      "Use TextareaCount with the same value for a count display and set maxLength on the textarea when a limit must be enforced.",
+      "Writing keeps the action outside the entry; Composer uses TextareaComposer and TextareaComposerBar for one frame; Response displays the remaining allowance. All three preserve the same draft and support independent field surfaces/corners.",
+      "TextareaScrollArea adds ElementScrollBar to the existing textarea. Native ref, name, selection, input events and vertical resize remain intact. The scrollbar follows input, controlled value and size changes, and restores native paint on teardown or forced-colours mode. Unwrapped text with horizontal overflow keeps both native axes; the vertical adapter never hides horizontal access."
     ],
     "accessibility": [
       "Associate a visible label and instructions with the textarea and connect validation errors through aria-describedby."
@@ -1117,7 +1400,9 @@
     "category": "Feedback",
     "usage": [
       "Place ToastProvider and ToastViewport around controlled Toast instances with a title or description.",
-      "Use durable for a message that should not time out and provide a close action; use ToastAction for a relevant optional follow-up."
+      "Use durable for a message that should not time out and provide a close action; use ToastAction for a relevant optional follow-up.",
+      "Use appearance=\"compact\" for a brief acknowledgement, \"actionable\" for explanation and Undo, or \"receipt\" for a saved artifact with labelled details. The original variant prop remains available for default, cream and danger surfaces.",
+      "This demo embeds its viewport so it cannot cover another example. It is durable while you inspect it, and Save and Undo only update local example state. The exported ToastViewport remains fixed by default; use one provider/viewport for your app's notification area."
     ],
     "accessibility": [
       "Provide ToastAction altText that explains the action’s purpose and keep a reachable dismissal control.",
@@ -1130,11 +1415,13 @@
     ]
   },
   "toggle": {
-    "description": "Represents an action or option that stays pressed until it is toggled again.",
+    "description": "A small action with a lasting state: a toolbar tool, a paper bookmark or a descriptive preference. Native targets stay put while the painted surface responds.",
     "category": "Actions",
     "usage": [
       "Use pressed and onPressedChange for controlled state or defaultPressed for a local default.",
-      "Use a stable action label for formatting or view options that can be enabled independently."
+      "Use a stable action label for formatting or view options that can be enabled independently.",
+      "Choose appearance=tool, bookmark or preference for structure; radius is independent. Legacy default, pressed, pink and circle treatments remain available. The pressed variant name is not a substitute for pressed/defaultPressed state.",
+      "A toggle is a reversible pressed action. Use Switch for an on/off setting or a checkbox when collecting a form answer."
     ],
     "accessibility": [
       "Keep the accessible name stable so aria-pressed communicates the changing state; name icon-only toggles explicitly."
@@ -1162,11 +1449,13 @@
     ]
   },
   "tooltip": {
-    "description": "Adds a short supplementary explanation to a trigger on hover or keyboard focus.",
+    "description": "Precise ink callouts, useful keyboard hints and small paper annotations. Short explanations that appear where attention already is.",
     "category": "Data display",
     "usage": [
       "Compose TooltipTrigger and TooltipContent inside Tooltip and use TooltipProvider to share timing settings.",
-      "Use the tooltip for concise clarification, such as explaining a labeled icon action."
+      "Use the tooltip for concise clarification, such as explaining a labeled icon action.",
+      "Choose callout, shortcut or annotation with TooltipContent appearance. Omitting appearance keeps the original tooltip.",
+      "The shortcut example implements Command/Control S only while focus is inside that example. Save note also works as a native button; it changes local demo state only."
     ],
     "accessibility": [
       "Give the trigger its own accessible name and keep essential instructions available without the tooltip.",
@@ -1257,15 +1546,17 @@
     "description": "Searchable multiple choices with removable selections, form values and clear validation.",
     "category": "Forms",
     "usage": [
+      "Choose presentation=tokens for direct token removal, summary for compact chosen names, or checklist for an always-visible searchable list. Omission preserves tokens. Presentation never resets selection.",
+      "Item art is an independent control: None, Icon only, Blob only or Both. Existing adornment props and legacy example aliases remain supported.",
       "Items show stable, varied blob adornments by default. Set adornment={false} to hide, supply {shape,color,icon,effect}, or pass a custom icon element.",
       "Use value and onValueChange for controlled selection, or defaultValue for internal state. A name submits repeated values with a native form.",
-      "Disabled options stay locked. Values no longer present in options stay visible and removable, so filtering does not silently discard a selection.",
+      "Disabled options stay locked. Values no longer present in options stay visible and removable in tokens or the Unavailable selections group, so filtering does not silently discard a selection.",
       "Use description for guidance and error for validation. This component handles a bounded local set of choices; it does not fetch or virtualize options."
     ],
     "accessibility": [
-      "The trigger has a visible label. Search, independently checked options and removable tokens expose their own accessible names.",
+      "The trigger or inline search has a visible label. Search, independently checked options and44px removal actions expose their own accessible names.",
       "Arrow keys, Home and End move through enabled choices; Space toggles. Escape closes the popup and returns focus.",
-      "A disabled field closes and locks its controls. Error text is announced and linked to the invalid trigger."
+      "A disabled field closes and locks its controls. Error text is announced and linked to the invalid trigger or inline search. Native form reset restores uncontrolled defaults; prevented resets and controlled values remain caller-owned."
     ],
     "related": [
       "select",
@@ -1374,7 +1665,7 @@
     ]
   },
   "animated-icon": {
-    "description": "Contextual motion for the shared icon catalog: draw, tremor, spinning settings, bouncing navigation and morphing validation.",
+    "description": "Replayable micro-interactions for the full Cojeev icon library, with semantic motion families and optional visual treatments.",
     "category": "Effects",
     "usage": [
       "Use inside a named Button or link. Hover and focus are inherited from that control.",
@@ -1382,7 +1673,8 @@
       "Choose a preset to override the name-based default.",
       "The auto preset chooses action-specific SVG-part feedback. Explicit presets keep their own visual treatment, and bounce follows the icon direction.",
       "Use active to control feedback directly. amplitude={0} suppresses movement. Loader auto feedback repeats only while active; other action reactions are finite.",
-      "Auto maps all 100 semantic action names to original part-level feedback. Only loader loops while active; finite feedback settles for other actions. Search by name or action in the example."
+      "Auto preserves 100 tailored action recipes and extends the full catalogue with directional travel, organic sway, communication expansion, signal pulses and staggered stroke drawing. Not every icon has a bespoke animation.",
+      "Click, touch or keyboard activation replays feedback. Draw includes paths, circles, rectangles, ellipses, lines and polygons. The shared Icon treatment and tone props also work here."
     ],
     "accessibility": [
       "Icons remain decorative beside a text label.",
@@ -1419,10 +1711,11 @@
   },
   "area-chart": {
     "description": "Layered area charts with shared series colors, responsive bounds and a keyboard data inspector.",
-    "category": "Data display",
+    "category": "Charts",
     "usage": [
       "Pass a stable data array and meaningful series labels.",
-      "Use the documented variant to change layout without changing the data contract.",
+      "Keep variant=linear, step or stacked for the plot geometry; the Chart mode control exposes all three independently from the reading approach.",
+      "Use appearance=analysis, brief or ledger for a full plot, a source-summary composition or a plot-and-values comparison. Supply an explicitly labelled summary for Brief; missing observations are excluded from observed totals, not treated as zero.",
       "Keep the data table available for exact values and assistive technology."
     ],
     "accessibility": [
@@ -1441,10 +1734,11 @@
   },
   "bar-chart": {
     "description": "Compare series with grouped, stacked or horizontal bars and a shared interactive tooltip.",
-    "category": "Data display",
+    "category": "Charts",
     "usage": [
       "Pass a stable data array and meaningful series labels.",
-      "Use the documented variant to change layout without changing the data contract.",
+      "Keep variant=grouped, stacked or horizontal for the plot geometry; all three remain in the Chart mode control.",
+      "Use appearance=analysis to compare series, brief to lead with a labelled source measure, or ledger for adjacent exact values. Never add geometry-changing decoration to the marks.",
       "Keep the data table available for exact values and assistive technology."
     ],
     "accessibility": [
@@ -1463,10 +1757,11 @@
   },
   "line-chart": {
     "description": "Track changes using linear, smooth or step lines with accessible point inspection.",
-    "category": "Data display",
+    "category": "Charts",
     "usage": [
       "Pass a stable data array and meaningful series labels.",
-      "Use the documented variant to change layout without changing the data contract.",
+      "Keep variant=linear, smooth or step in the independent Chart mode control. Missing observations remain disconnected even when interpolation is enabled.",
+      "Use appearance=analysis for trend comparison, brief to foreground the explicitly labelled latest observation, or ledger to read the curve beside its values. A missing final observation must not silently become an earlier value.",
       "Keep the data table available for exact values and assistive technology."
     ],
     "accessibility": [
@@ -1485,10 +1780,11 @@
   },
   "pie-chart": {
     "description": "Show proportions using themed pie and donut layouts, with readable totals and segment inspection.",
-    "category": "Data display",
+    "category": "Charts",
     "usage": [
       "Pass a stable data array and meaningful series labels.",
-      "Use the documented variant to change layout without changing the data contract.",
+      "Keep variant=pie or donut in the independent Chart mode control. Shares are derived from finite positive values; an all-zero dataset is not a fabricated full slice.",
+      "Use appearance=analysis for a share disc, brief to lead with an explicitly labelled source total, or ledger to keep contribution values alongside the graphic. Legend filters do not change an explicitly supplied source-summary total.",
       "Keep the data table available for exact values and assistive technology."
     ],
     "accessibility": [
@@ -1507,10 +1803,11 @@
   },
   "radar-chart": {
     "description": "Compare several dimensions with a shared radar scale and contextual series highlighting.",
-    "category": "Data display",
+    "category": "Charts",
     "usage": [
       "Pass a stable data array and meaningful series labels.",
-      "Use the documented variant to change layout without changing the data contract.",
+      "Keep variant=polygon, rounded or grid in the independent Chart mode control. Keep a shared maximum across profiles; missing axes break the path and remove its fill rather than becoming zero-valued vertices.",
+      "Use appearance=analysis for profile comparison, brief for an explicitly labelled source measure, or ledger for legible companion values. The sample mean names how many observations it includes.",
       "Keep the data table available for exact values and assistive technology."
     ],
     "accessibility": [
@@ -1529,10 +1826,11 @@
   },
   "radial-chart": {
     "description": "Show progress against a shared maximum using full rings or semicircles.",
-    "category": "Data display",
+    "category": "Charts",
     "usage": [
       "Pass a stable data array and meaningful series labels.",
-      "Use the documented variant to change layout without changing the data contract.",
+      "Keep variant=full or semicircle in the independent Chart mode control. Each goal is measured against max; independent goal percentages must not be added into a shared total.",
+      "Use appearance=analysis for independent goals, brief to foreground one named goal, or ledger to compare exact values. The sample Brief explicitly labels Weekly review and its target of100.",
       "Keep the data table available for exact values and assistive technology."
     ],
     "accessibility": [
@@ -1550,12 +1848,13 @@
     ]
   },
   "chart-tooltip": {
-    "description": "A shared bounded data pill with kinetic tracking and pointer/keyboard access.",
-    "category": "Data display",
+    "description": "Compare a point, read its known subtotal or rank its series. Values update in place and keep their series colours.",
+    "category": "Charts",
     "usage": [
-      "Pass a stable data array and meaningful series labels.",
-      "Use the documented variant to change layout without changing the data contract.",
-      "Keep the data table available for exact values and assistive technology."
+      "Pass an active point with meaningful labels and optional null observations. Position and bounds are local to the chart plot.",
+      "Use presentation compare, summary or ranked. Summary labels incomplete data as a known subtotal; missing observations are never counted as zero.",
+      "Keep the data table available for exact values and assistive technology. The noninteractive tooltip bounds its visible rows rather than adding an unusable scrollbar; remaining values stay in assistive text.",
+      "Point changes preserve matching row nodes and colours. The example supports focus, arrows, Home/End and Escape without relying on hover."
     ],
     "accessibility": [
       "Provide a caption and description that explain the data.",
@@ -1575,7 +1874,7 @@
     "description": "Coloured organic shapes for list items, with deterministic automatic selection and custom icon or no-icon options.",
     "category": "Tools",
     "usage": [
-      "Menu and select items use adornment=\"auto\" by default. Stable item identity keeps the same shape and colour across renders.",
+      "Menu and select items default to a single stable icon. Direct ItemAdornment use can combine an icon and background when that composition is appropriate.",
       "Pass adornment={false} or \"none\" to hide it, {shape,color} to choose a shape and tone, or a React element for your own icon.",
       "Use ItemAdornment directly in your own lists. Meaningful state must also have a text or semantic label.",
       "Within an adornment object, set showIcon or showBackground independently. Both false hides both; custom React icons and adornment={false} still work."
@@ -1800,15 +2099,18 @@
     ]
   },
   "hero-button": {
-    "description": "An organic call to action with a drawing arrow and the shared button morph response.",
+    "description": "Twelve tactile calls to action: living ink, paper, keys, tickets and small moments of motion around one native button.",
     "category": "Actions",
     "usage": [
       "Use shape=\"organic\" or \"capsule\"; showArrow={false} removes the arrow.",
-      "Use asChild with one anchor for native link navigation. The button keeps loading, disabled and form semantics."
+      "Use asChild with one anchor for native link navigation. The button keeps loading, disabled and form semantics.",
+      "appearance selects liquid, split-arrow, paper-fold, pressed-key, ribbon, ticket, seal, ink-sweep, orbit, sliding-window, stacked-paper or spotlight. These change the silhouette, material detail or response; variant still selects the semantic surface and size remains independent.",
+      "Organic is the original liquid treatment; Capsule keeps its regular rim. Both remain in the gallery alongside the new concepts. Every example is live and reports local activations only. Copy code includes your current concept and size."
     ],
     "accessibility": [
       "Keyboard focus gives the same arrow feedback as hover.",
-      "Motion Off, Flow Off and reduced motion keep a static arrow and usable control."
+      "Motion Off, Flow Off and reduced motion keep a static arrow and usable control.",
+      "Decoration is pointer-transparent and hidden from assistive technology. The sliding label is announced once. Hover moves paint, not the native hit target, and no concept runs an idle animation."
     ],
     "related": [
       "button",
@@ -1859,7 +2161,7 @@
       "Use shadow and echo to toggle the cast shadow and rear outline. shadowAngle sets the cast direction clockwise from the right; echoAngle rotates the rear outline relative to the foreground.",
       "shapeArtworkSvg(options, colors?) returns an original standalone SVG string; supply resolved fill, shadow and echo colors to preserve a customized palette. Its fixed viewBox contains every supported shape at all layer angles.",
       "shapeArtworkCode(options) returns a React usage snippet containing every selected prop. The landing workbench downloads a transparent SVG and provides accessible copying with visible success or failure feedback.",
-      "Live name changes morph through the shared choreography policy. Rotation and layer changes follow the supplied props; no idle foreground motion is added."
+      "Optional ambient={true} breathes between name and a compatible morphTo contour; morphDuration is a full4–20 second cycle and motionDelay is clamped to0–3 seconds. Omit ambient for a still shape. The shared studio exposes these settings and shapeArtworkCode includes them. Rotation/layer changes are immediate; Motion Off and reduced motion settle to the rest contour."
     ],
     "accessibility": [
       "The SVG is decorative by default. Supply label when the graphic conveys meaning; native SVG props and refs are forwarded.",
@@ -1896,12 +2198,15 @@
     ]
   },
   "reading-trail": {
-    "description": "Tracks actual reading progress and links to named sections with a quiet organic marker.",
+    "description": "Keep your place with a connected spine, an expandable bookmark or a descriptive chapter overview—all following actual reading progress.",
     "category": "Navigation",
     "usage": [
       "Pass items with existing document IDs and readable labels. Native anchors remain available before JavaScript.",
       "Use scrollRoot for a contained scrolling panel. The default tracks the document; offset sets the current-section activation line.",
-      "Duplicate IDs are consolidated. Missing sections do not claim measured progress."
+      "Duplicate IDs are consolidated. Missing sections do not claim measured progress.",
+      "Optional presentation chooses spine, bookmark or overview. Omission preserves the original document TOC. Item descriptions support a useful chapter preview, not a second navigation label.",
+      "Bookmark keeps the current chapter, previous/next and an expandable contents list. Escape closes the contents and restores its trigger. Presentation changes retain the article and scroll position.",
+      "The example article uses the shared organic ScrollArea. Native links stay stationary; only the marker and underline paint respond."
     ],
     "accessibility": [
       "Links preserve modifier clicks and normal URLs. A selected destination receives focus.",
@@ -1966,10 +2271,12 @@
     ]
   },
   "milestone-path": {
-    "description": "A readable sequence of milestones with supplied status, details and optional actions.",
+    "description": "Follow caller-owned progress as a connected Journey, a scrollable Sequence or a compact checkpoint Review.",
     "category": "Data display",
     "usage": [
       "Pass stable IDs and explicit complete, current or upcoming states. Supply title, description and metadata for context.",
+      "Set presentation to journey, sequence or review; omit it to keep the original vertical composition. Sequence uses the shared organic horizontal scrollbar and native keyboard/pointer scrolling. Every presentation keeps descriptions and explicit status text.",
+      "The example retains progress and selected detail across layout changes. Selecting a title opens local detail; only the separate completion action advances the sample. Current-marker contour motion stays off the native44px title target.",
       "Provide onMilestoneSelect only when a milestone has a real action. Noninteractive milestones remain ordinary content.",
       "MilestonePath composes the existing Stepper parts. The caller owns explicit states; it does not invent a separate selected-row model."
     ],
@@ -1984,10 +2291,12 @@
     ]
   },
   "activity-feed": {
-    "description": "Chronological activity composed from native avatars, badges, content rows and motion surfaces.",
+    "description": "An ordered, date-grouped history with a quiet connecting margin, readable actors and timestamps, and updates that keep your place.",
     "category": "Data display",
     "usage": [
       "Pass entries in the order they should appear, with stable IDs and optional actor, timestamp, badge and details.",
+      "Provide group labels for visible consecutive date sections and dateTime for machine-readable timestamps. Labels and chronology remain caller-owned; the feed never interprets text such as Today.",
+      "New entries inserted before the existing first entry extend a limited view so already-visible updates and their mounted state remain. Appended older history still waits for Show more. Stable IDs are required.",
       "Omit initialVisible to show all supplied entries. Set initialVisible and pageSize to reveal supplied history in pages.",
       "The feed displays your data; it does not fetch, manufacture events or reorder timestamps."
     ],
@@ -2213,7 +2522,9 @@
       "Use defaultValue for internal state or value/onValueChange for controlled values. null represents an empty field.",
       "Set min, max and step for adjustments. Editing uses a native text input with decimal input mode; blur and Enter normalize valid values, while Escape restores the current value.",
       "Choose locale and Intl.NumberFormatOptions for display. The animated formatted layer gives way to the real input while editing.",
-      "Choose count, roll or steps for value transitions. The input ref targets the actual input; className and style apply to the outer field."
+      "Choose count, roll or steps for value transitions. The input ref targets the actual input; className and style apply to the outer field.",
+      "presentation separates the standard Stepper, a larger Quantity ticket with stacked buttons, and a Scrub measuring strip. Values stay intact when the layout changes. Surface and radius are independent; multiline treatments cap their corners.",
+      "In Scrub, drag the dedicated grip horizontally; eight pixels propose one bounded step. The input itself remains native and selectable. Click the grip to focus editing, or use Left/Right on the grip and Up/Down on the input."
     ],
     "accessibility": [
       "Associate a Label with id, or supply aria-label. The native input exposes spinbutton values and supports ArrowUp/ArrowDown.",
@@ -2633,13 +2944,16 @@
     ]
   },
   "option-wheel": {
-    "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+    "description": "A paper dial, aligned reel or compact readout for choosing one direction with pointer, wheel or keyboard.",
     "category": "Forms",
     "usage": [
-      "Supply caller content and keep the example controls for accessible interaction."
+      "Supply stable item IDs, labels and optional descriptions. Use defaultIndex for local state or selectedIndex/onSelectionChange for a controlled selection.",
+      "Choose presentation arc, reel or compact independently from left/right side. The same selection and useful detail remain when changing presentation.",
+      "Wheel input advances a bounded index, ignores pinch and mostly horizontal gestures, and releases page scrolling at either end. Explicit Previous/Next and arrow keys retain circular navigation."
     ],
     "accessibility": [
-      "Keyboard and touch controls; outgoing transition content is inert; reduced motion and shared stillness settle immediately."
+      "The named listbox uses aria-activedescendant, positional metadata and Arrow/Home/End keys. Five stable slots show nearby labels without moving the clickable rows; Compact shows the current option. Both navigation buttons have 44px native targets.",
+      "Reduced motion, Motion Off and offscreen state remove decorative label arrival; the selected item and visible description remain. No scrollbars are hidden: the wheel is a bounded selector, not a concealed scrolling list."
     ],
     "related": [
       "carousel",
@@ -2726,13 +3040,21 @@
     ]
   },
   "motion-drawer": {
-    "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
+    "description": "A reference-faithful edge drawer, floating quick panel, layered workspace and bottom action tray.",
     "category": "Layout",
     "usage": [
-      "Supply caller content and preserve the native labels and example controls."
+      "Start with the default 300px edge drawer, adapted from UI Layouts. Floating is content-sized, stack is a wider workspace, and bottom is an action tray; these are structural variants, not color themes.",
+      "Use side and dir for either logical edge; width, dragThreshold and animationConfig tune the drawer independently of its variant.",
+      "Drag a non-interactive area toward the edge to close. For the bottom tray, drag its header downward so the content can still scroll. Buttons and links never start a drag.",
+      "Use open with onOpenChange to control the drawer, or defaultOpen for local state. Each example shows a real local result after a choice.",
+      "For a real stack, pass panels with stable value, label, optional icon and children. Attached file handles stay labelled while cards enter one by one; the active heading and close action belong inside its card. value/onValueChange controls the front card; defaultValue starts a local stack.",
+      "stackStagger sets the delay between card entrances in seconds (0–0.25). Inactive panel contents remain mounted but hidden and inert, preserving local fields without adding hidden controls to keyboard navigation.",
+      "Use trigger for a custom launcher and closeLabel for a task-specific close action. Disable dragging on long forms if pointer interaction belongs entirely to the fields."
     ],
     "accessibility": [
-      "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."
+      "Radix Dialog provides the title and description, focus trap, Escape dismissal, background scroll lock and focus return. A visible close control remains available without dragging.",
+      "Attached stack selectors support arrows and Home/End, skip disabled choices and expose the selected card. Their labels stay outside the shared ScrollArea content so other cards remain discoverable without hover. The overall dialog title remains available to assistive technology without adding a separate visible heading box.",
+      "Reduced motion and the shared motion-off setting remove travel while keeping every action usable. Dragging still follows the pointer."
     ],
     "related": [
       "sheet",
@@ -2740,10 +3062,12 @@
     ]
   },
   "linear-modal": {
-    "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+    "description": "Follow a card, image and title into a full detail, then back. Card, Centered and browsable Gallery preserve the reference's shared-layout journey.",
     "category": "Layout",
     "usage": [
-      "Supply caller content and preserve the native labels and example controls."
+      "Card opens an edge-to-edge visual detail; Centered frames the visual above centred reading; Gallery composes three independent cards in the shared owned-scroll Carousel.",
+      "Supply title, description, src, alt and optional eyebrow. Keep saves or edits in caller state when the dialog unmounts. Compact remains a supported legacy trigger layout.",
+      "The UI Layout Linear Modal reference uses shared surface, image and title geometry. This adaptation retains that journey and adds native Radix focus/locking plus Cojeev quiet settings, buttons and organic scrolling."
     ],
     "accessibility": [
       "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable."

@@ -1,0 +1,1048 @@
+{
+  "date": "2026-09-10",
+  "owner": "data",
+  "status": "base-pass-complete",
+  "components": [
+    {
+      "id": "action-dock",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/action-dock.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/action-dock/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "activity-feed",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/activity-feed.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/activity-feed/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "adjuster",
+      "category": "Tools",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/adjuster.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/adjuster/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "agent-chat",
+      "category": "Conversation",
+      "owner": "data",
+      "status": "verified-fix",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/agent-chat.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser",
+          "result": "failed-before-fix",
+          "scope": "Send sample prompt, Allow once, Continue, focus Stop with keyboard; after natural completion document.activeElement becomes BODY. Complete local permission/choice/result flow otherwise worked."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/agent-chat/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Pre-fix focused Stop/BUTTON ended at BODY. Final fix: natural success completion restores input-group-textarea/TEXTAREA; separate error completion preserves Reset demo focus; keyboard Retry restarts; direct Send retains textarea focus; explicit Stop yields Stopped receipt and usable composer."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "After final edit: tests/agent-chat.test.ts 4/4 passed. scripts/check-docs.mjs syntax check passed. Added persistent assertions in existing agent-chat branch for Send focus, natural completion, and preserving outside focus; full docs browser runner not run by this agent."
+        }
+      ],
+      "issues": [
+        "RF-D-001"
+      ]
+    },
+    {
+      "id": "agent-state",
+      "category": "Conversation",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/agent-state.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/agent-state/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "appearance",
+      "category": "Tools",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/appearance.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/appearance/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "area-chart",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/area-chart.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/area-chart/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Default variant: keyboard focus/End opens an observation tooltip; Escape dismisses after exit; first legend false then Space true; Show data action; Empty dataset removes plot; Next week restores plot. Default dataset values inspected."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "assembly-part",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/assembly-part.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/assembly-part/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "attachment",
+      "category": "Conversation",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/attachment.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/attachment/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "avatar",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/avatar.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/avatar/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "badge",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/badge.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/badge/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "bar-chart",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/bar-chart.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/bar-chart/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Default variant: keyboard focus/End opens an observation tooltip; Escape dismisses after exit; first legend false then Space true; Show data action; Empty dataset removes plot; Next week restores plot. Default dataset values inspected."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "bubble",
+      "category": "Conversation",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/bubble.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/bubble/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "chart",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/chart.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/chart/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "chart-tooltip",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/chart-tooltip.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/chart-tooltip/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "code-block",
+      "category": "Tools",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/code-block.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/code-block/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "command",
+      "category": "Tools",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/command.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/command/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "compact-dashboard",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/compact-dashboard.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/compact-dashboard/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Click Make the first sketch: completion changes from 1/3 and 33% to 2/3 and 67%."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "conversation-panel",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/conversation-panel.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/conversation-panel/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "data-table",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/data-table.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "scope": "Hidden CUA tab: numeric ascending sort, next page, Ready filter resets to page 1, keyboard row selection reports Weekend plan."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/data-table/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "focus-session",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/focus-session.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/focus-session/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "hover-card",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/hover-card.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/hover-card/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "icon",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/icon.tsx; aliases, geometry, motion painter ownership, callbacks and native controls reviewed."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "tests/action-icons.test.ts: 6 passed covering icon geometry, directions, recipes, finite motion and SSR. tests/item-adornment.test.ts also validates every advertised icon renders."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/icon/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "invite-card",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/invite-card.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/invite-card/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "item",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/item.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/item/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "item-adornment",
+      "category": "Tools",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/item-adornment.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/item-adornment/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "kbd",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/kbd.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/kbd/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "line-chart",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/line-chart.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/line-chart/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Default variant: keyboard focus/End opens an observation tooltip; Escape dismisses after exit; first legend false then Space true; Show data action; Empty dataset removes plot; Next week restores plot. Default dataset values inspected."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "marker",
+      "category": "Conversation",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/marker.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/marker/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "message",
+      "category": "Conversation",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/message.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/message/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "message-scroller",
+      "category": "Conversation",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/message-scroller.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/message-scroller/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "milestone-path",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/milestone-path.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/milestone-path/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "organism-assembly",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/organism-assembly.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/organism-assembly/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "organism-composition",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/organism-composition.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/organism-composition/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "pie-chart",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/pie-chart.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/pie-chart/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Default variant: keyboard focus/End opens an observation tooltip; Escape dismisses after exit; first legend false then Space true; Show data action; Empty dataset removes plot; Next week restores plot. Default dataset values inspected."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "preview",
+      "category": "Tools",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/preview.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/preview/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "profile-card",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/profile-card.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/profile-card/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "radar-chart",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/radar-chart.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/radar-chart/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Default variant: keyboard focus/End opens an observation tooltip; Escape dismisses after exit; first legend false then Space true; Show data action; Empty dataset removes plot; Next week restores plot. Default dataset values inspected."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "radial-chart",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/radial-chart.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/radial-chart/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "browser-interaction",
+          "result": "passed",
+          "scope": "Default variant: keyboard focus/End opens an observation tooltip; Escape dismisses after exit; first legend false then Space true; Show data action; Empty dataset removes plot; Next week restores plot. Default dataset values inspected."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "shape",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/shape.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/shape/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        },
+        {
+          "kind": "visual",
+          "result": "inspected",
+          "scope": "Screenshot of default desktop specimen at 1280x720: shape, text, color controls visible; lower catalogue outside initial viewport. No responsive claim."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "table",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/table.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/table/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "tooltip",
+      "category": "Data display",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/tooltip.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/tooltip/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "work-side-panel",
+      "category": "Composition",
+      "owner": "data",
+      "status": "source-and-default-preview-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "registry/cojeev/ui/work-side-panel.tsx; component props, semantics, state and lifecycle ownership reviewed. No full variant or responsive claim."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Focused existing suite: agent-chat, chart-suite, appearance, assembly-composition, item-adornment, shape-artwork and assembly-geometry: 31 passed, 0 failed. Specific behavior/geometry/SSR scope; not all component variants."
+        },
+        {
+          "kind": "browser-default",
+          "result": "rendered-and-inspected",
+          "scope": "Hidden CUA tab at http://127.0.0.1:4320/cojeev-ui/docs/work-side-panel/; actual default specimen content inspected after loading placeholder disappeared. This records default rendering only, not all hydration, interactions, variants or widths."
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "RF-D-001",
+      "source": "proactive",
+      "components": [
+        "agent-chat"
+      ],
+      "status": "verified",
+      "route": "http://127.0.0.1:4320/cojeev-ui/docs/agent-chat/",
+      "reproduction": "Send a prompt; Allow once; Continue; focus Stop without clicking; let sample work complete.",
+      "symptom": "Focus falls to BODY when the focused Stop control becomes disabled Send.",
+      "expected": "Return focus to the draft field if Stop held focus at completion; preserve focus elsewhere.",
+      "rootCause": "Passive effect reads data-agent-stop after React has already updated the control, losing the previous focus target.",
+      "paths": [
+        "registry/cojeev/ui/agent-chat.tsx",
+        "scripts/check-docs.mjs"
+      ],
+      "owner": "data",
+      "fix": "Give Stop and Send distinct keys, capture focused Stop in ref cleanup before removal, restore draft focus in layout effect, and focus the draft before onSend during native form submission. Persistent regression assertions added to the existing agent-chat docs behavior branch.",
+      "verification": [
+        "CUA before-fix: active label Stop generation and tag BUTTON; after completion active label null and tag BODY.",
+        "CUA assertion failed with RF-D-001: completion did not restore focus from Stop to the composer.",
+        "CUA post-fix natural completion: activeElement slot input-group-textarea, tag TEXTAREA; assertion passes.",
+        "CUA post-fix error completion: activeElement aria-label remains Reset demo; no-focus-steal assertion passes; keyboard Retry restarts.",
+        "CUA post-fix direct Send: activeElement remains input-group-textarea; Stop click yields Stopped receipt.",
+      "Fresh agent-chat tests 4/4 pass; check-docs script syntax and git diff --check pass.",
+      "Final tsc --noEmit --incremental false exited 0. Focused ESLint on agent-chat.tsx and scripts/check-docs.mjs exited 0."
+      ],
+      "related": [],
+      "limits": [
+        "Full browser docs runner not executed; its new focus assertions were exercised via equivalent CUA actions.",
+        "All 43 assigned sources/default previews reviewed. Exhaustive variants, responsive dimensions, controlled-prop changes and custom consumer contexts remain additional coverage."
+      ]
+    }
+  ],
+  "notes": [
+    "Base pass complete: 43/43 own source files reviewed and all 43 default docs specimens rendered/inspected through a separate hidden CUA tab. Default rendering is not claimed as complete interaction verification.",
+    "Confirmed defect RF-D-001 fixed and live verified. Existing selected suites supplied 37 distinct tests across chat, charts, appearance, assembly, shape, item adornment and action icons; no full-library completion claim.",
+    "Root owns RF-S-001 for omitted Composition navigation category and registry generated output. No shared helpers or CSS edited by this agent.",
+    "Broader audit remains: exhaustive variants and responsive widths were not covered, and interactive browser evidence is limited to DataTable, AgentChat, six chart kinds, and compact dashboard toggle.",
+    "Source/styling reference read-only; untracked AGENTS.md, CLAUDE.md and Semantic Bloom paths ending in 2 preserved. No build, dependency install, server launch, commit, push or publish performed."
+  ]
+}

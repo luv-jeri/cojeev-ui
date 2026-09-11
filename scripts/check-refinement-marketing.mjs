@@ -31,15 +31,14 @@ async function ready(composition, kind) {
 }
 
 async function currentAssembly(page, reduced = false) {
-  const assembly = page.locator('#assembly [data-slot="organism-assembly"]');
+  const assembly = page.locator('.launch-hero [data-slot="organism-assembly"]');
   const composition = assembly.locator('[data-slot="organism-composition"]');
   await assembly.scrollIntoViewIfNeeded();
-  if (!reduced) await assembly.getByRole("button", { name: "Assemble", exact: true }).click();
-  await ready(composition, "profile");
-  const follow = composition.locator('[data-assembly-part="primary"]');
-  await follow.focus();
-  await follow.press("Enter");
-  assert.equal(await follow.getAttribute("aria-pressed"), "true", "Profile follow works by keyboard");
+  await ready(composition, "focus");
+  const start = composition.getByRole("button", { name: "Start focusing", exact: true });
+  await start.focus(); await start.press("Enter");
+  await composition.getByRole("button", { name: "Pause", exact: true }).click();
+  await composition.getByRole("button", { name: /^(Resume|Start focusing)$/ }).waitFor();
   await assembly.getByRole("button", { name: "Chat", exact: true }).click();
   await ready(composition, "chat");
   assert(await composition.locator('[data-slot="bubble-content"]').count() >= 3, "Chat uses native message bubbles");
@@ -60,51 +59,6 @@ async function currentAssembly(page, reduced = false) {
   }
 }
 
-async function shapeExport(page, name) {
-  const workbench = page.locator(".shape-workbench-section");
-  await workbench.getByRole("radio", { name: "Clover", exact: true }).click();
-  await workbench.getByRole("radio", { name: "Blue", exact: true }).click();
-  const artwork = workbench.locator('[data-slot="shape-artwork"]');
-  assert.equal(await artwork.getAttribute("data-shape"), "clover-soft");
-  assert.equal(await artwork.getAttribute("data-tone"), "blue");
-  for (const label of ["Rotation", "Shadow direction", "Outline angle"]) {
-    const slider = workbench.getByRole("slider", { name: label, exact: true });
-    const before = Number(await slider.getAttribute("aria-valuenow"));
-    await slider.focus(); await slider.press("ArrowRight");
-    assert.equal(Number(await slider.getAttribute("aria-valuenow")), before + 1, `${label} has keyboard control`);
-  }
-  await workbench.getByRole("switch", { name: "Solid fill", exact: true }).click();
-  assert.equal(await artwork.locator('[data-artwork-layer="fill"] path').getAttribute("fill"), "none");
-  await workbench.getByRole("switch", { name: "Cast shadow", exact: true }).click();
-  assert.equal(await artwork.locator('[data-artwork-layer="shadow"]').count(), 0);
-  assert(await workbench.getByRole("slider", { name: "Shadow direction", exact: true }).evaluate(node => node.closest('[data-slot="slider"]').hasAttribute("data-disabled") && node.tabIndex < 0), "Removed shadow disables its angle control");
-  const outline = workbench.getByRole("switch", { name: "Rear outline", exact: true });
-  await outline.click();
-  assert.equal(await artwork.locator('[data-artwork-layer="echo"]').count(), 0);
-  await outline.click();
-  const code = await workbench.locator('[data-slot="code-block"] code').innerText();
-  for (const setting of ['name={"clover-soft"}', 'tone={"blue"}', "rotation={1}", "filled={false}", "shadow={false}", "echoAngle={-17}"]) {
-    assert(code.includes(setting), `React export retains ${setting}`);
-  }
-  const downloadEvent = page.waitForEvent("download");
-  await workbench.getByRole("button", { name: "Download SVG", exact: true }).click();
-  const download = await downloadEvent;
-  assert.equal(download.suggestedFilename(), "cojeev-clover-soft.svg");
-  const file = path.join(output, `${name}-clover.svg`);
-  await download.saveAs(file);
-  const svg = await fs.readFile(file, "utf8");
-  const parity = await artwork.evaluate((node, source) => {
-    const exported = new DOMParser().parseFromString(source, "image/svg+xml");
-    const layers = svg => [...svg.querySelectorAll("[data-artwork-layer]")].map(layer => ({
-      name: layer.getAttribute("data-artwork-layer"), transform: layer.getAttribute("transform"),
-      outlined: layer.querySelector("path").getAttribute("fill") === "none",
-    }));
-    return { live: layers(node), exported: layers(exported), valid: exported.documentElement.localName === "svg" && !exported.querySelector("parsererror"), portable: !source.includes("var(--") };
-  }, svg);
-  assert(parity.valid && parity.portable, "Downloaded SVG is standalone and uses resolved palette colors");
-  assert.deepEqual(parity.exported, parity.live, "Export retains the displayed layers and angles");
-  await workbench.getByText("SVG download started. All selected layers and palette colors are included.", { exact: true }).waitFor();
-}
 
 let browser;
 try {
@@ -115,32 +69,41 @@ try {
       localStorage.setItem("cojeev-docs-theme", value);
       localStorage.removeItem("v-motion"); localStorage.removeItem("v-flow-v1");
     }, theme);
+    await context.route(/https:\/\/(?:us|eu)\.i\.posthog\.com\//, route => route.fulfill({ status: 200, body: "1" }));
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     const row = { engine: engine.name(), width, theme, errors, checks: [] };
     const filename = `${engine.name()}-${width}-${theme}`;
     try {
-      await page.goto(`${base}/`, { waitUntil: "networkidle" });
+      await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
       await page.evaluate(() => document.fonts.ready);
-      const hero = page.locator(".studio-hero");
-      await hero.getByRole("button", { name: "Give me a nudge", exact: true }).click();
-      await hero.getByRole("button", { name: "Again? 1", exact: true }).waitFor();
-      const motion = hero.getByRole("switch", { name: "Background motion", exact: true });
-      await motion.click(); assert.equal(await hero.getAttribute("data-playing"), "false");
-      await motion.click(); assert.equal(await hero.getAttribute("data-playing"), "true");
-      const explore = hero.getByRole("link", { name: "Explore the library", exact: true });
-      await explore.click();
+      await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
+      const hero = page.locator(".launch-hero");
+      const featured = page.locator(".launch-featured");
+      assert.equal(await featured.locator("[data-featured-component]").count(), 6);
+      await featured.getByRole("button", { name: "Scatter", exact: true }).click();
+      await featured.getByRole("button", { name: "Gather", exact: true }).click();
+      await featured.getByRole("button", { name: "Replay the details", exact: true }).click();
+      await hero.getByRole("link", { name: /^Explore \d+ components$/ }).click();
       await page.waitForURL(url => url.pathname === new URL(`${base}/docs/`).pathname);
-      await page.goto(`${base}/`, { waitUntil: "networkidle" });
-      row.checks.push("native hero press, background motion and real docs navigation");
+      await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
+      row.checks.push("six named previews, live demo controls and real docs navigation");
       await currentAssembly(page);
-      row.checks.push("native profile keyboard action and composite chat send/clear");
-      await shapeExport(page, filename);
-      row.checks.push("shape and palette selection, keyboard angles, removable layers and real SVG/React export");
-      await page.getByRole("radio", { name: "Done", exact: true }).click();
-      assert.equal(await page.locator('.studio-motion [data-slot="agent-state"]').getAttribute("data-status"), "complete");
-      row.checks.push("agent motion control");
+      row.checks.push("native focus timer keyboard action and composite chat send/clear");
+      const studio = page.locator("[data-shape-studio]");
+      assert.equal(await studio.count(), 1, "Homepage uses one shared shape studio");
+      assert.equal(await studio.locator("[data-studio-shape]").count(), 12);
+      await studio.getByRole("button", { name: "Cushion", exact: true }).click();
+      assert.equal(await studio.locator("[data-studio-art]").getAttribute("data-shape"), "cushion");
+      await featured.getByRole("button", { name: "Open drawer", exact: true }).click();
+      await page.getByRole("dialog", { name: "A little room for ideas" }).waitFor();
+      await page.keyboard.press("Escape");
+      await page.getByRole("dialog", { name: "A little room for ideas" }).waitFor({ state: "hidden" });
+      await featured.getByRole("button", { name: "Done", exact: true }).click();
+      assert.equal(await featured.locator('[data-slot="agent-state"]').getAttribute("data-status"), "complete");
+      row.checks.push("live drawer and agent controls; one shared shape studio changes its actual contour");
       if (width < 801) {
         const trigger = page.getByRole("button", { name: "Open navigation", exact: true });
         await trigger.focus(); await trigger.press("Enter");
@@ -156,13 +119,13 @@ try {
       row.overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
       assert(!row.overflow, "Homepage fits viewport");
       await page.screenshot({ path: path.join(output, `home-${filename}.png`), fullPage: true });
-      await page.goto(`${base}/work-with-me/`, { waitUntil: "networkidle" });
+      await page.goto(`${base}/work-with-me/`, { waitUntil: "domcontentloaded" });
       assert.equal(await page.getByRole("link", { name: /Find me on GitHub/ }).getAttribute("href"), "https://github.com/luv-jeri");
       assert(!await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), "Creator page fits viewport");
       await page.screenshot({ path: path.join(output, `creator-${filename}.png`), fullPage: true });
       row.checks.push("creator route and GitHub contact");
       await page.emulateMedia({ reducedMotion: "reduce" });
-      await page.goto(`${base}/`, { waitUntil: "networkidle" });
+      await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
       await currentAssembly(page, true);
       row.checks.push("reduced motion keeps settled native controls and manual composition choices usable");
       assert.equal(errors.length, 0, errors.join("; "));

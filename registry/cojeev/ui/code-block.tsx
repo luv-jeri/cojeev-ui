@@ -1,8 +1,21 @@
 "use client";
 
 import * as React from "react";
+import Prism from "prismjs";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-bash";
 import { Button, type ButtonProps } from "@/registry/cojeev/ui/button";
 import { Meta } from "@/registry/cojeev/ui/typography";
+import { ScrollArea, ScrollBar } from "@/registry/cojeev/ui/scroll-area";
+import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
+import { Icon } from "@/registry/cojeev/ui/icon";
+import {
+  PatternBackground,
+  type PatternBackgroundProps,
+} from "@/registry/cojeev/ui/pattern-background";
 import { cn } from "@/registry/cojeev/lib/utils";
 
 /** The fallback stays inside the control's tree, including a modal focus scope. */
@@ -19,9 +32,14 @@ function copyWithSelection(code: string, trigger: HTMLButtonElement): boolean {
     active?.tagName === "INPUT" || active?.tagName === "TEXTAREA"
       ? (active as HTMLInputElement | HTMLTextAreaElement)
       : null;
-  const fieldSelection = field && field.selectionStart !== null
-    ? [field.selectionStart, field.selectionEnd, field.selectionDirection ?? undefined] as const
-    : null;
+  const fieldSelection =
+    field && field.selectionStart !== null
+      ? ([
+          field.selectionStart,
+          field.selectionEnd,
+          field.selectionDirection ?? undefined,
+        ] as const)
+      : null;
   const view = document.defaultView;
   const scroll = view ? { x: view.scrollX, y: view.scrollY } : null;
   const textarea = document.createElement("textarea");
@@ -30,13 +48,16 @@ function copyWithSelection(code: string, trigger: HTMLButtonElement): boolean {
   textarea.tabIndex = -1;
   textarea.setAttribute("aria-hidden", "true");
   textarea.setAttribute("data-copy-fallback", "");
-  textarea.style.cssText = "position:fixed;inset-block-start:0;inset-inline-start:-9999px;width:1px;height:1px;padding:0;border:0;font-size:16px;opacity:0;";
+  textarea.style.cssText =
+    "position:fixed;inset-block-start:0;inset-inline-start:-9999px;width:1px;height:1px;padding:0;border:0;font-size:16px;opacity:0;";
   (trigger.parentElement ?? document.body).append(textarea);
   try {
     textarea.focus({ preventScroll: true });
     textarea.select();
     textarea.setSelectionRange(0, code.length);
-    return typeof document.execCommand === "function" && document.execCommand("copy");
+    return (
+      typeof document.execCommand === "function" && document.execCommand("copy")
+    );
   } catch {
     return false;
   } finally {
@@ -54,7 +75,10 @@ function copyWithSelection(code: string, trigger: HTMLButtonElement): boolean {
   }
 }
 
-async function copyText(code: string, trigger: HTMLButtonElement): Promise<boolean> {
+async function copyText(
+  code: string,
+  trigger: HTMLButtonElement,
+): Promise<boolean> {
   try {
     const clipboard = trigger.ownerDocument.defaultView?.navigator.clipboard;
     if (clipboard?.writeText) {
@@ -67,7 +91,11 @@ async function copyText(code: string, trigger: HTMLButtonElement): Promise<boole
   return copyWithSelection(code, trigger);
 }
 
-export type CopyButtonProps = ButtonProps & { code: string };
+export type CopyButtonProps = ButtonProps & {
+  code: string;
+  /** Reports the real copy outcome without exposing copied content. */
+  onCopyResult?: (result: "success" | "failure") => void;
+};
 
 /** Copies exactly `code`; success is reported only after a copy mechanism succeeds. */
 export function CopyButton({
@@ -76,8 +104,10 @@ export function CopyButton({
   className,
   size = "sm",
   variant = "ghost",
+  asChild = false,
   disabled,
   onClick,
+  onCopyResult,
   ...props
 }: CopyButtonProps) {
   const [result, setResult] = React.useState<{
@@ -87,6 +117,31 @@ export function CopyButton({
   const pending = React.useRef(false);
   const statusId = React.useId();
   const state = result?.code === code ? result.state : "idle";
+  const icon = (
+    <AnimatedIcon
+      name={
+        state === "copied"
+          ? "check"
+          : state === "error"
+            ? "triangle-alert"
+            : state === "copying"
+              ? "loader-circle"
+              : "copy"
+      }
+      size="sm"
+      aria-hidden="true"
+    />
+  );
+  const content =
+    asChild &&
+    React.isValidElement<{ children?: React.ReactNode }>(children) ? (
+      React.cloneElement(children, {}, icon, children.props.children)
+    ) : (
+      <>
+        {icon}
+        {children ?? "Copy"}
+      </>
+    );
   return (
     <span data-slot="copy-control" className="v-copy-control">
       <Button
@@ -96,9 +151,14 @@ export function CopyButton({
         className={className}
         size={size}
         variant={variant}
+        asChild={asChild}
         disabled={disabled}
-        aria-disabled={disabled || state === "copying" || props["aria-disabled"]}
-        aria-describedby={[props["aria-describedby"], statusId].filter(Boolean).join(" ")}
+        aria-disabled={
+          disabled || state === "copying" || props["aria-disabled"]
+        }
+        aria-describedby={[props["aria-describedby"], statusId]
+          .filter(Boolean)
+          .join(" ")}
         aria-busy={state === "copying" || undefined}
         onClick={async (event) => {
           onClick?.(event);
@@ -114,57 +174,177 @@ export function CopyButton({
           } finally {
             pending.current = false;
             setResult({ code, state: copied ? "copied" : "error" });
+            try {
+              onCopyResult?.(copied ? "success" : "failure");
+            } catch {
+              // Consumer instrumentation must not change truthful copy feedback.
+            }
           }
         }}
       >
-        {children ?? (state === "copied" ? "Copied" : state === "copying" ? "Copying…" : "Copy")}
+        {content}
       </Button>
-      <Meta as="span" id={statusId} role="status" aria-live="polite" data-copy-state={state}>
+      <Meta
+        as="span"
+        id={statusId}
+        role="status"
+        aria-live="polite"
+        data-copy-state={state}
+      >
         {state === "copied"
           ? "Copied to clipboard."
           : state === "error"
             ? "Copy unavailable. Select the text and copy it manually."
-            : ""}
+            : state === "copying"
+              ? "Copying to clipboard."
+              : ""}
       </Meta>
     </span>
   );
 }
 
-export type CodeBlockProps = Omit<React.ComponentProps<"figure">, "children" | "title"> & {
+export type CodeBlockProps = Omit<
+  React.ComponentProps<"figure">,
+  "children" | "title"
+> & {
   code: string;
   language?: string;
   title?: string;
   wrap?: boolean;
   copyLabel?: string;
+  /** Reports the real copy outcome without exposing copied content. */
+  onCopyResult?: CopyButtonProps["onCopyResult"];
+  /** Terminal adds window chrome and a decorative prompt; copied text stays exact. */
+  variant?: "code" | "terminal";
+  /** Use a containing viewer's header and copy action instead of nesting chrome. */
+  embedded?: boolean;
+  /** Plain by default to keep source text clear. Decorative patterns are opt-in. */
+  pattern?: PatternBackgroundProps["variant"];
 };
 
-/** A plain-text code surface. `language` labels the source; it does not fake highlighting. */
+// Render tokens as React text nodes: source stays selectable and is never HTML.
+function renderTokens(tokens: Array<string | Prism.Token>): React.ReactNode[] {
+  return tokens.map((token, index) =>
+    typeof token === "string" ? (
+      token
+    ) : (
+      <span key={index} className={`token ${token.type}`}>
+        {typeof token.content === "string"
+          ? token.content
+          : renderTokens(
+              Array.isArray(token.content) ? token.content : [token.content],
+            )}
+      </span>
+    ),
+  );
+}
+
+/** Language-aware source, with exact copy text and a quiet Cojeev syntax palette. */
 export function CodeBlock({
   code,
   language,
   title,
   wrap = false,
   copyLabel,
+  onCopyResult,
+  variant = "code",
+  embedded = false,
+  pattern,
   className,
   ...props
 }: CodeBlockProps) {
+  const highlighted = React.useMemo(() => {
+    const aliases: Record<string, string> = {
+      ts: "typescript",
+      js: "javascript",
+      html: "markup",
+      sh: "bash",
+      shell: "bash",
+    };
+    const name = (language ?? "").toLowerCase();
+    const grammar = Prism.languages[aliases[name] ?? name];
+    return grammar && code.length <= 100_000
+      ? renderTokens(Prism.tokenize(code, grammar))
+      : code;
+  }, [code, language]);
   return (
     <figure
       {...props}
       data-slot="code-block"
+      data-variant={variant}
       data-wrap={wrap || undefined}
+      data-embedded={embedded || undefined}
       className={cn("v-code-block", className)}
     >
-      <figcaption data-slot="code-block-header">
-        <span data-slot="code-block-label">
-          {title && <span data-slot="code-block-title">{title}</span>}
-          {language && <Meta as="span">{language}</Meta>}
-        </span>
-        <CopyButton code={code}>{copyLabel}</CopyButton>
-      </figcaption>
-      <pre tabIndex={0} aria-label={title ? `${title} source code` : "Source code"}>
-        <code>{code}</code>
-      </pre>
+      {pattern && pattern !== "none" && (
+        <PatternBackground variant={pattern} opacity={0.04} spacing={24} />
+      )}
+      {embedded && (
+        <div data-slot="code-block-caption">
+          <span>
+            <Icon name="code" size="sm" aria-hidden="true" />
+            {title ?? "Source"}
+            <span>{language?.toUpperCase()}</span>
+          </span>
+          <span>{code.trimEnd().split("\n").length} lines</span>
+        </div>
+      )}
+      {!embedded && (
+        <figcaption data-slot="code-block-header">
+          <span data-slot="code-block-label">
+            {variant === "terminal" && (
+              <>
+                <span data-slot="terminal-window-marks" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <Icon
+                  name="terminal"
+                  size="sm"
+                  aria-hidden="true"
+                  feedback={false}
+                />
+              </>
+            )}
+            {(title || variant === "terminal") && (
+              <span data-slot="code-block-title">{title ?? "Terminal"}</span>
+            )}
+            {language && (
+              <Meta as="span" data-slot="code-block-language">
+                {language}
+              </Meta>
+            )}
+          </span>
+          <CopyButton code={code} onCopyResult={onCopyResult}>{copyLabel}</CopyButton>
+        </figcaption>
+      )}
+      <ScrollArea
+        variant="plain"
+        className="v-code-block__scroll"
+        aria-label={
+          variant === "terminal"
+            ? `${title ?? "Terminal"} command`
+            : title
+              ? `${title} source code`
+              : "Source code"
+        }
+        viewportWrapper={(viewport) => (
+          <>
+            {viewport}
+            <ScrollBar orientation="horizontal" />
+          </>
+        )}
+      >
+        <pre>
+          {variant === "terminal" && (
+            <span data-slot="terminal-prompt" aria-hidden="true">
+              $
+            </span>
+          )}
+          <code>{highlighted}</code>
+        </pre>
+      </ScrollArea>
     </figure>
   );
 }

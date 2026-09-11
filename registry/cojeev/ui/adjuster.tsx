@@ -7,6 +7,7 @@ import { useMorph } from "../motion/use-morph"
 import { useFlowPress } from "../motion/flow-press"
 import { cn } from "../lib/utils"
 import { Button } from "./button"
+import { Icon } from "./icon"
 import { CopyButton } from "./code-block"
 import { Label } from "./label"
 import { Slider } from "./slider"
@@ -48,11 +49,14 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
  const {motion,flow}=React.useSyncExternalStore(subscribeSettings,getSettingsSnapshot,getServerSettingsSnapshot)
  const reduced=React.useSyncExternalStore(subscribeReducedMotion,readReducedMotion,()=>false)
  const id=React.useId()
+ const [preview,setPreview]=React.useState('overview')
+ const enabled=motion.mode!=='off'&&flow.variant!=='off'
+ const enable=(next:boolean)=>{setMotionMode(next?'subtle':'off');if(next&&flow.variant==='off')setFlowSettings({variant:'glide'})}
  const reset=()=>{setMotionMode('subtle');resetFlow()}
  return <section data-slot="motion-controls" className={cn('v-motion-controls',className)} {...props}>
   <div className="v-motion-controls__row">
    <div><Label htmlFor={id+'-enabled'}>Enable motion</Label><Meta>Changes apply across this site.</Meta></div>
-   <Switch id={id+'-enabled'} checked={motion.mode!=='off'} onCheckedChange={enabled=>setMotionMode(enabled?'subtle':'off')}/>
+   <Switch id={id+'-enabled'} checked={enabled} onCheckedChange={enable}/>
   </div>
   {reduced&&<BodySecondary role="status">Your device prefers reduced motion. Selections stay still; your chosen settings are saved.</BodySecondary>}
   <div className="v-motion-controls__section">
@@ -63,8 +67,9 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
    <BodySecondary className="v-motion-controls__description">{flow.variant==='off'?'Selection motion is paused. Choose a character to resume.':CHARACTER_DESCRIPTIONS[flow.variant]}</BodySecondary>
   </div>
   {showPreview&&<div className="v-motion-controls__preview">
-   <Meta>Try the movement</Meta>
-   <Tabs defaultValue="overview" variant="pills">
+   <div className="v-motion-controls__row"><Meta>Try the movement</Meta><Button size="sm" variant="ghost" onClick={()=>setPreview(current=>current==='overview'?'activity':current==='activity'?'settings':'overview')}><Icon name="refresh" size="sm"/>Replay selection motion</Button></div>
+   {!enabled&&<Meta>Motion is off. Enable it above to see the movement; tab selection still works.</Meta>}
+   <Tabs value={preview} onValueChange={setPreview} variant="pills">
     <TabsList aria-label="Motion preview"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
     <TabsContent value="overview"><BodySecondary>Choose another tab to see {flow.variant==='off'?'the selection':FLOW_CHARACTERS[flow.variant].label.toLowerCase()} in action.</BodySecondary></TabsContent>
     <TabsContent value="activity"><BodySecondary>Try switching back quickly. The indicator follows your latest choice.</BodySecondary></TabsContent>
@@ -81,6 +86,11 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
    <Meta id={id+'-intensity-note'}>{flow.variant==='glide'?'Glide stays calm. Choose an expressive character to tune intensity.':'Shapes the stretch, ripple or glow of expressive characters.'}</Meta>
   </div>
   <div className="v-motion-controls__row"><div><Label htmlFor={id+'-hover'}>Pointer preview</Label><Meta>A hint before you select. Pointer devices only.</Meta></div><Switch id={id+'-hover'} checked={flow.hover} onCheckedChange={hover=>setFlowSettings({hover})}/></div>
+  <div className="v-motion-controls__section">
+   <div className="v-motion-controls__row"><Label id={id+'-ghost-strength'}>Pointer preview strength</Label><Meta>{flow.hoverStrength.toFixed(2)}×</Meta></div>
+   <Slider aria-labelledby={id+'-ghost-strength'} thumbLabel="Pointer preview strength" disabled={!flow.hover} min={0} max={Math.max(2,flow.hoverStrength)} step={.05} value={[flow.hoverStrength]} onValueChange={([hoverStrength])=>setFlowSettings({hoverStrength})}/>
+   <Meta>{!flow.hover?'Pointer preview is off.':flow.hoverStrength===0?'Strength is zero, so the pointer preview is invisible. Increase it to see the hint.':'Hover an unselected tab in the preview to see its surface.'}</Meta>
+  </div>
   <div className="v-motion-controls__row">
    <Button variant="ghost" size="sm" onClick={reset}>Reset motion settings</Button>
    <CopyButton code={`import { setMotionMode, setFlowSettings } from "@/lib/cojeev-motion/settings";\n\nsetMotionMode(${JSON.stringify(motion.mode)});\nsetFlowSettings(${JSON.stringify(flow,null,2)});`}>Copy selection settings</CopyButton>

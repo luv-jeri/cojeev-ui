@@ -1,61 +1,85 @@
 "use client";
 import * as React from "react";
 import { motion } from "motion/react";
-import { Icon, iconClassName, createIconMotionPainter, getIconDirection, type IconProps } from "@/registry/cojeev/ui/icon";
+import { Icon, createIconMotionPainter, getIconDirection, type IconProps } from "@/registry/cojeev/ui/icon";
 import { createMotionLane, useChoreography } from "@/registry/cojeev/motion/choreography";
 import { useMotionVisibility } from "@/registry/cojeev/motion/use-motion-visibility";
 
 export type IconMotion = "auto" | "tremor" | "draw" | "spin" | "bounce" | "validation" | "pulse" | "none";
-export type AnimatedIconProps = Omit<IconProps,"draw"|"feedback"> & { preset?:IconMotion; active?:boolean; amplitude?:number; duration?:number };
-export function AnimatedIcon({name,preset="auto",active,amplitude=1,duration,className,size="default",children,...props}:AnimatedIconProps) {
+export type IconMotionEase="gentle"|"settle"|"linear"|readonly [number,number,number,number];
+export type AnimatedIconProps = Omit<IconProps,"draw"|"feedback"> & { preset?:IconMotion; active?:boolean; amplitude?:number; duration?:number; ease?:IconMotionEase };
+export function AnimatedIcon({name,preset="auto",active,amplitude=1,duration,ease="gentle",className,size="default",children,...props}:AnimatedIconProps) {
   const host=React.useRef<HTMLSpanElement>(null);
-  const {quiet,transition}=useChoreography();
+  const {quiet}=useChoreography();
   const {enabled,inView}=useMotionVisibility(host);
   const [hovered,setHovered]=React.useState(false);
   const [focused,setFocused]=React.useState(false);
   const [allowed,setAllowed]=React.useState(false);
+  const [replay,setReplay]=React.useState(0);
+  const [replayActive,setReplayActive]=React.useState(false);
+  const seconds=duration!==undefined&&Number.isFinite(duration)?Math.max(.08,Math.min(duration,10)):undefined;
+  React.useEffect(()=>{
+    if(!replayActive)return;
+    const timer=setTimeout(()=>setReplayActive(false),(seconds??.55)*1000);
+    return()=>clearTimeout(timer);
+  },[replay,replayActive,seconds]);
   React.useEffect(()=>{
     const node=host.current?.closest<HTMLElement>('button,a[href],summary,[role=button],[role=menuitem],[role=menuitemcheckbox],[role=menuitemradio],[role=option],[role=tab],[role=checkbox],[role=radio],[role=switch],label')??host.current;
     if(!node)return;
     const associated=node instanceof HTMLLabelElement?node.control:node;
     const eligible=()=>!node.closest('[inert],[hidden],[data-motion="off"],[data-flow="off"]')&&!node.matches(':disabled,[disabled],[aria-disabled="true"],[data-disabled]:not([data-disabled="false"])')&&!associated?.matches(':disabled,[disabled],[aria-disabled="true"],[data-disabled]:not([data-disabled="false"])');
-    const sync=()=>{const next=eligible();setAllowed(next);if(!next){setHovered(false);setFocused(false)}};
+    const sync=()=>{const next=eligible();setAllowed(next);if(!next){setHovered(false);setFocused(false);setReplayActive(false)}};
     sync();
+    const startReplay=()=>{
+      if(!eligible())return;
+      setReplay(value=>value+1);setReplayActive(true);
+    };
     const enter=(event:PointerEvent)=>{if(event.pointerType!=="touch")setHovered(eligible())},leave=()=>setHovered(false);
     const focus=()=>setFocused(eligible()),blur=(event:FocusEvent)=>{if(!node.contains(event.relatedTarget as Node|null))setFocused(false)};
-    node.addEventListener("pointerenter",enter);node.addEventListener("pointerleave",leave);node.addEventListener("focusin",focus);node.addEventListener("focusout",blur);
+    let pendingClick:"pointer"|"keyboard"|null=null;
+    let releaseTimer:ReturnType<typeof setTimeout>|null=null;
+    const queueRelease=()=>{if(releaseTimer!==null)clearTimeout(releaseTimer);releaseTimer=setTimeout(()=>{pendingClick=null;releaseTimer=null},0)};
+    const pointerdown=(event:PointerEvent)=>{if(event.button!==0)return;if(releaseTimer!==null)clearTimeout(releaseTimer);pendingClick="pointer";startReplay()};
+    const pointerup=()=>{if(pendingClick==="pointer")queueRelease()};
+    const pointercancel=()=>{if(pendingClick==="pointer")pendingClick=null};
+    const keydown=(event:KeyboardEvent)=>{if(event.repeat||!(event.key==="Enter"||event.key===" "))return;if(releaseTimer!==null)clearTimeout(releaseTimer);pendingClick="keyboard";startReplay()};
+    const keyup=(event:KeyboardEvent)=>{if((event.key==="Enter"||event.key===" ")&&pendingClick==="keyboard")queueRelease()};
+    const click=()=>{if(pendingClick){pendingClick=null;if(releaseTimer!==null){clearTimeout(releaseTimer);releaseTimer=null}return}startReplay()};
+    node.addEventListener("pointerenter",enter);node.addEventListener("pointerleave",leave);node.addEventListener("focusin",focus);node.addEventListener("focusout",blur);node.addEventListener("pointerdown",pointerdown);node.addEventListener("keydown",keydown);node.addEventListener("keyup",keyup);node.addEventListener("click",click);
+    window.addEventListener("pointerup",pointerup);window.addEventListener("pointercancel",pointercancel);window.addEventListener("blur",queueRelease);
     const attributes=new MutationObserver(sync);
     const observe=(element:Element)=>attributes.observe(element,{attributes:true,attributeFilter:["disabled","aria-disabled","data-disabled","inert","hidden","data-motion","data-flow"]});
     for(let ancestor:Element|null=node;ancestor;ancestor=ancestor.parentElement)observe(ancestor);
     if(associated&&associated!==node)observe(associated);
-    return ()=>{node.removeEventListener("pointerenter",enter);node.removeEventListener("pointerleave",leave);node.removeEventListener("focusin",focus);node.removeEventListener("focusout",blur);attributes.disconnect()};
+    return ()=>{node.removeEventListener("pointerenter",enter);node.removeEventListener("pointerleave",leave);node.removeEventListener("focusin",focus);node.removeEventListener("focusout",blur);node.removeEventListener("pointerdown",pointerdown);node.removeEventListener("keydown",keydown);node.removeEventListener("keyup",keyup);node.removeEventListener("click",click);window.removeEventListener("pointerup",pointerup);window.removeEventListener("pointercancel",pointercancel);window.removeEventListener("blur",queueRelease);if(releaseTimer!==null)clearTimeout(releaseTimer);attributes.disconnect()};
   },[]);
   const amount=Number.isFinite(amplitude)?Math.max(0,Math.min(amplitude,3)):1;
   const permitted=allowed&&!quiet&&enabled&&inView&&amount>0;
-  const running=permitted&&(active??(hovered||focused));
-  const settle=permitted?transition:{duration:0};
+  const running=permitted&&(active??(hovered||focused||replayActive));
   const intent=preset!=="auto"?preset:"semantic";
-  const seconds=duration!==undefined&&Number.isFinite(duration)?Math.max(.08,Math.min(duration,10)):undefined;
   React.useEffect(()=>{
-    if(intent!=="semantic"||!running)return;
+    if(intent==="none"||!running)return;
     const svg=host.current?.querySelector<SVGSVGElement>("[data-slot=icon]");if(!svg)return;
-    const painter=createIconMotionPainter(svg,name,amount);
+    const direction=getIconDirection(name);
+    const [dx,dy]=direction[0]||direction[1]?direction:[1,0];
+    const painter=createIconMotionPainter(svg,name,amount,intent==="semantic"?undefined:p=>{
+      const pulse=Math.sin(Math.PI*p)*amount;
+      if(intent==="draw")return {glyph:{draw:p}};
+      if(intent==="spin")return {glyph:{transform:`rotate(${360*p} 12 12)`}};
+      if(intent==="tremor")return {glyph:{transform:`rotate(${Math.sin(p*Math.PI*5)*(1-p)*9*amount} 12 12)`}};
+      if(intent==="bounce")return {glyph:{transform:`translate(${3*pulse*dx} ${3*pulse*dy})`}};
+      const scale=intent==="validation"?1-.15*Math.sin(p*Math.PI*2)*(1-p)*amount:1+.12*pulse;
+      return {glyph:{transform:`translate(12 12) scale(${scale}) translate(-12 -12)`}};
+    });
     const lane=createMotionLane(0,painter.paint);
-    const looping=name==="loader"||name==="loader-circle";
+    const looping=intent==="spin"||(intent==="semantic"&&(name==="loader"||name==="loader-circle"));
     lane.jump(0);
-    lane.to(1,{duration:seconds??(looping?1.35:.55),ease:"linear",repeat:looping?Infinity:0},painter.restore);
+    const timing=looping?"linear":ease==="gentle"?([.22,.72,.22,1] as const):ease==="settle"?([.2,.8,.2,1] as const):ease;
+    lane.to(1,{duration:seconds??(looping?1.35:.55),ease:timing,repeat:looping?Infinity:0},painter.restore);
     return ()=>{lane.dispose();painter.restore()};
-  },[intent,running,name,amount,seconds,active]);
-  const rotate=running&&intent==="spin"?[0,360]:running&&intent==="tremor"?[0,-9*amount,7*amount,-3*amount,0]:0;
-  const direction=getIconDirection(name);
-  const [dx,dy]=direction[0]||direction[1]?direction:[1,0];
-  const x=running&&intent==="bounce"?[0,3*amount*dx,0]:0;
-  const y=running&&intent==="bounce"?[0,3*amount*dy,0]:0;
-  const scale=running&&intent==="validation"?[1,1-.15*amount,1+.08*amount,1]:running&&intent==="pulse"?[1,1+.12*amount,1]:1;
-  return <span ref={host} data-slot="animated-icon" data-preset={intent} data-animated={(running&&intent!=="none")||undefined} className="v-animated-icon">
-    <motion.span initial={false} animate={{rotate,x,y,scale}} transition={running?{duration:seconds??(intent==="spin"?1.6:.48),repeat:intent==="spin"?Infinity:0,ease:intent==="spin"?"linear":[.2,.8,.2,1]}:settle}>
-      {intent==="validation"&&/^(check|x)$/.test(name)?<svg data-slot="icon" data-icon-name={name} viewBox="0 0 24 24" aria-hidden="true" className={iconClassName(size,className)} {...props}><motion.path initial={false} animate={{d:name==="check"?"M5 12L10 17L20 6M10 17L10 17":"M6 6L12 12L18 18M6 18L18 6"}} transition={settle}/>{children}</svg>:<Icon name={name} size={size} className={className} draw={intent==="draw"?running:undefined} {...props} feedback={false}>{children}</Icon>}
-    </motion.span>
+  },[intent,running,name,amount,seconds,ease,active,replay]);
+  return <span ref={host} data-slot="animated-icon" data-preset={intent} data-icon-replay={replay||undefined} data-animated={(running&&intent!=="none")||undefined} className="v-animated-icon">
+    <span><Icon name={name} size={size} className={className} {...props} feedbackDuration={duration} feedbackEase={ease} feedback={false}>{children}</Icon></span>
   </span>;
 }
 

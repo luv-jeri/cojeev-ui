@@ -24,6 +24,7 @@ export function resolveMorphHost(el:HTMLElement,category:Category,settings:Motio
  const bare=/^(DIV|SPAN)$/.test(el.tagName)&&!el.dataset.shape&&!el.dataset.tier&&[...el.classList].every(name=>ownClasses.test(name))
  if(el.matches(NEVER_SEL)||el.matches('.v-tip,.v-tooltip')||bare)return null
  const explicit=el.dataset.morph
+ if(explicit==='none')return null
  if(explicit==='fill'||explicit==='stroke'||explicit==='both'){
   const tierName=(el.dataset.tier||(el.dataset.shape?'blob':el.matches('.v-card,[role="tablist"]')?'card':el.matches('.v-nav__item,.v-tab')?'nav':el.matches('.v-ibtn')?'tile':'pill')) as TierName
   return {mode:explicit,tierName,explicit:true}

@@ -15,7 +15,7 @@ import {
   useFlowAppearance,
   useFlowGroup,
 } from "@/registry/cojeev/motion/use-flow";
-import { ItemAdornment, itemText, type ItemAdornmentItemProps, type ItemAdornmentValue } from "@/registry/cojeev/ui/item-adornment";
+import { ItemAdornment, itemText, menuAdornment, type ItemAdornmentItemProps, type ItemAdornmentValue } from "@/registry/cojeev/ui/item-adornment";
 export type ComboboxOption = {
   value: string;
   label: string;
@@ -278,7 +278,7 @@ export type ComboboxItemProps = React.ComponentProps<typeof Primitive.Item> & {
   showIndicator?: boolean;
 } & ItemAdornmentItemProps;
 export function ComboboxItem({
-  showIndicator = true,
+  showIndicator = false,
   className,
   adornment,
   adornmentId,
@@ -309,7 +309,7 @@ export function ComboboxItem({
       }}
       {...props}
     >
-      <ItemAdornment identity={adornmentId ?? value ?? label ?? itemText(children)} value={adornment} />
+      <ItemAdornment identity={adornmentId ?? value ?? label ?? itemText(children)} value={menuAdornment(adornment)} />
       <span className="v-combo__label">{children}</span>
       {showIndicator && state.selected === value && <span className="v-combo__selected" aria-hidden="true"><AnimatedIcon name="check" preset="validation" /></span>}
     </Primitive.Item>

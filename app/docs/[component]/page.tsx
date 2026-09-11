@@ -1,13 +1,17 @@
+import { pageMetadata } from "@/lib/site-config";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { DocsPage } from "fumadocs-ui/page";
-import { catalog, componentGuide, publicURL } from "@/lib/catalog";
+import { catalog, documentationCatalog, componentGuide, publicURL } from "@/lib/catalog";
 import { ComponentPreview } from "@/components/component-preview";
 import { InstallCommand } from "@/components/install-command";
+import { DocsIntroArtwork } from "@/components/docs-atmosphere";
 import { exampleManifest, type ExampleId } from "@/components/examples/manifest";
 import { exampleSource } from "@/components/example-source";
 import { componentHandoffNotes } from "@/lib/component-handoff";
 import { Badge } from "@/registry/cojeev/ui/badge";
+import { Button } from "@/registry/cojeev/ui/button";
+import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
 import { ReadingTrail } from "@/registry/cojeev/ui/reading-trail";
 import {
   TableContainer,
@@ -37,10 +41,8 @@ export async function generateMetadata({
   params: Promise<{ component: string }>;
 }) {
   const { component } = await params;
-  const entry = catalog().find((item) => item.name === component);
-  return {
-    title: entry ? `${entry.title} · Cojeev UI` : "Component not found",
-  };
+  const entry = documentationCatalog().find((item) => item.name === (component === "data-table" ? "table" : component === "aspect-ratio" ? "bento-grid" : component));
+  return entry ? pageMetadata(entry.title, entry.description, `/docs/${entry.name}/`) : { title: "Component not found", robots: { index: false } };
 }
 export default async function Page({
   params,
@@ -48,12 +50,12 @@ export default async function Page({
   params: Promise<{ component: string }>;
 }) {
   const { component } = await params;
-  const entry = catalog().find((item) => item.name === component);
+  const entry = documentationCatalog().find((item) => item.name === (component === "data-table" ? "table" : component === "aspect-ratio" ? "bento-grid" : component));
   if (!entry) notFound();
   const guide = componentGuide(entry.name);
-  const variants = [...new Set(["default", ...entry.meta.source.variants])];
+  const variants = [...new Set(entry.meta.source.variants.length ? entry.meta.source.variants : ["default"])];
   const sizes = [...new Set(["default", ...entry.meta.source.sizes])];
-  const completeCode = exampleSource(entry.name);
+  const completeCode = await exampleSource(entry.name);
   const code = { source: completeCode.slice(0, completeCode.lastIndexOf("\nexport default function Demo()")), name: exampleManifest[entry.name as ExampleId].name };
   const exampleDependencies = [
     ...new Set(
@@ -86,6 +88,7 @@ export default async function Page({
             </div>
             <BodySecondary>{entry.description}</BodySecondary>
             <Meta className="docs-intro-meta">React · copy into your project · light and dark themes</Meta>
+            <DocsIntroArtwork seed={entry.name} tone={entry.meta.baseComponent ? "olive" : "pink"} />
           </header>
           <section className="docs-section docs-example-section" aria-labelledby="example-heading">
             <div className="docs-section-lead">
@@ -101,10 +104,20 @@ export default async function Page({
             />
           </section>
           {entry.name === "agent-chat" && <Body><Link href="/workspace/">Open the full agent workspace example →</Link></Body>}
+          {entry.name === "bento-grid" && <section className="docs-section" aria-labelledby="bento-ratio-heading"><SectionTitle id="bento-ratio-heading">A composition, or one frame?</SectionTitle><Body>BentoGrid arranges a complete composition. For one image or video, the original AspectRatio primitive is still available: pass <code>{"ratio={16 / 9}"}</code> and your content. Its API remains below; it has not been removed from installable components.</Body>{component === "aspect-ratio" && <BodySecondary>This page now opens the Bento studio. <Link href="/docs/bento-grid/">Use the canonical Bento Grid link</Link>.</BodySecondary>}</section>}
+          {entry.name === "table" && <section className="docs-section" aria-labelledby="table-apis-heading">
+            <SectionTitle id="table-apis-heading">One family, two levels of control</SectionTitle>
+            <Title as="h3">Data-driven records</Title>
+            <Body>Use DataTable for Ledger or Rich rows. Supply data, column definitions and stable row IDs; sorting, filtering, page controls and empty feedback are composed for you. The complete-example command below includes it.</Body>
+            <Title as="h3">Native table primitives</Title>
+            <Body>Use Table, TableHead and TableCell when you own the structure, as in Comparison. Give row headers {`scope="row"`}, keep a meaningful caption and wrap it in TableContainer for the custom scrollbar. Both APIs are documented below.</Body>
+            {component === "data-table" && <BodySecondary>Data Table now shares this Tables guide. <Link href="/docs/table/">Use the canonical Tables link</Link>; the existing DataTable module remains available.</BodySecondary>}
+          </section>}
           <section className="docs-section" aria-labelledby="install-heading">
             <SectionTitle id="install-heading">{entry.meta.source.reviewOnly ? "Local review" : "Add to your project"}</SectionTitle>
             {entry.meta.source.reviewOnly ? <BodySecondary>This addition is available in the local preview. You can copy its example above; the installable registry entry will follow after owner review.</BodySecondary> : <>
             <InstallCommand
+              componentId={entry.name}
               command={`npx shadcn@latest add ${publicURL}/r/${entry.name}.json`}
             />
             <BodySecondary>
@@ -122,6 +135,7 @@ export default async function Page({
                   . Install its parts together:
                 </BodySecondary>
                 <InstallCommand
+                  componentId={entry.name}
                   command={`npx shadcn@latest add ${exampleDependencies.map((id) => `${publicURL}/r/${id}.json`).join(" ")}`}
                 />
               </>
@@ -215,7 +229,7 @@ export default async function Page({
             <div className="docs-related">
               {guide.related.map((id) => {
                 const related = catalog().find((item) => item.name === id);
-                return related && <Link key={id} href={`/docs/${id}/`} className="docs-related-link">{related.title}<span aria-hidden="true">↗</span></Link>;
+                return related && <Button key={id} asChild variant="secondary" size="lg" className="docs-related-link"><Link href={`/docs/${id}/`}>{related.title}<AnimatedIcon name="arrow-up-right" /></Link></Button>;
               })}
             </div>
           </nav>

@@ -57,6 +57,14 @@ export function itemText(children: React.ReactNode): string {
   ).join(" ").trim();
 }
 
+/** Menus use one identity layer: a glyph by default, or an explicit silhouette. */
+export function menuAdornment(value?: ItemAdornmentValue): ItemAdornmentValue {
+  if (value === false || value === "none" || React.isValidElement(value)) return value;
+  const options = typeof value === "object" ? value : {};
+  const silhouette = options.showBackground === true || options.showIcon === false || options.icon === false || options.icon === null;
+  return silhouette ? { ...options, showIcon: false } : { ...options, showBackground: false };
+}
+
 export type ItemAdornmentProps = Omit<React.ComponentProps<"span">, "children"> & {
   identity: string;
   value?: ItemAdornmentValue;
@@ -91,4 +99,12 @@ export function adornItem(children: React.ReactNode, adornment: ItemAdornmentVal
   // Existing explicitly composed icons remain the consumer's custom adornment.
   const hasVisual = hasItemVisual(children);
   return <>{(!hasVisual || adornment !== undefined) && <ItemAdornment identity={identity || itemText(children)} value={adornment} />}{children}{trailing}</>;
+}
+
+/** Keep native-child and precomposed-icon handling while simplifying menu rows. */
+export function adornMenuItem(children: React.ReactNode, adornment: ItemAdornmentValue | undefined, identity: string, asChild?: boolean, trailing?: React.ReactNode): React.ReactNode {
+  if (asChild && React.isValidElement<{ children?: React.ReactNode }>(children)) {
+    return React.cloneElement(children, { children: adornMenuItem(children.props.children, adornment, identity, false, trailing) });
+  }
+  return adornItem(children, adornment === undefined && hasItemVisual(children) ? false : menuAdornment(adornment), identity, false, trailing);
 }

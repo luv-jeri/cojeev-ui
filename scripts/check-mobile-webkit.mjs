@@ -46,6 +46,7 @@ async function go(page, pathname) {
   const response = await page.goto(`${base}${pathname}`, { waitUntil: "domcontentloaded", timeout: 60000 });
   assert.equal(response.status(), 200);
   await page.evaluate(() => document.fonts.ready);
+  await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false);
 }
 async function example(page, id) {
   await go(page, `/docs/${id}/`);
@@ -109,13 +110,14 @@ async function layout(page) {
 const cases = {
   "home-and-getting-started": async page => {
     await go(page, "/");
-    await page.getByRole("heading", { level: 1, name: /Make it\s*feel\s*alive\s*\./ }).waitFor();
+    await page.getByRole("heading", { level: 1, name: /Good things\s*come together\./ }).waitFor();
     const homeLayout = await layout(page);
     await page.screenshot({ path: path.join(output, "home-390.png"), fullPage: true });
-    await page.locator(".studio-hero").getByRole("link", { name: "Explore the library", exact: true }).tap();
-    await page.waitForURL(/\/docs\/?$/);
+    await page.locator(".launch-hero").getByRole("link", { name: /^Explore \d+ components$/ }).tap();
+    await page.waitForURL(/\/docs\/?$/, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false);
     await page.getByRole("navigation", { name: "Start exploring" }).getByRole("link", { name: "Explore components" }).tap();
-    await page.waitForURL(/\/docs\/button\/?$/);
+    await page.waitForURL(/\/docs\/button\/?$/, { waitUntil: "domcontentloaded", timeout: 30000 });
     await page.locator('[data-slot="tabs-list"][data-flow-owned]').first().waitFor({ state: "attached" });
     await page.getByRole("button", { name: "Browse", exact: true }).tap();
     await startLayoutObservation(page);
@@ -137,10 +139,10 @@ const cases = {
     await checkText(root, "Running the local example…");
     assert(await root.getByRole("button", { name: "Adding…", exact: true }).isDisabled());
     await checkText(root, "1 note added in this example.");
-    await root.getByLabel("Example outcome", { exact: true }).selectOption("error");
+    await root.getByRole("radiogroup", { name: "Example outcome", exact: true }).getByRole("radio", { name: "Error and retry", exact: true }).tap();
     await root.getByRole("button", { name: "Add a note", exact: true }).tap();
     await checkText(root, "The example action failed.");
-    await root.getByLabel("Example outcome", { exact: true }).selectOption("success");
+    await root.getByRole("radiogroup", { name: "Example outcome", exact: true }).getByRole("radio", { name: "Success", exact: true }).tap();
     await root.getByRole("button", { name: "Retry example", exact: true }).tap();
     await checkText(root, "2 notes added in this example.");
     return { detail: "Touch success, pending disabled state, visible local error, and retry", layout: await layout(page) };
@@ -182,18 +184,18 @@ const cases = {
   },
   "multi-select": async page => {
     const root = await example(page, "multi-select");
-    const trigger = root.getByRole("button", { name: "Shared workspaces", exact: true });
+    const trigger = root.getByRole("button", { name: "Workspaces", exact: true });
     await trigger.tap();
-    const search = page.getByRole("searchbox", { name: "Search Shared workspaces", exact: true });
-    await search.fill("Workspace 24");
-    const option = page.getByRole("checkbox", { name: "Workspace 24", exact: true });
+    const search = page.getByRole("dialog", { name: "Workspaces", exact: true }).getByRole("searchbox", { name: "Search Workspaces", exact: true });
+    await search.fill("Project 20");
+    const option = page.getByRole("dialog", { name: "Workspaces", exact: true }).getByRole("checkbox", { name: "Project 20", exact: true });
     await option.tap(); await attribute(option, "aria-checked", "true");
     await page.screenshot({ path: path.join(output, "multi-select-open-390.png") });
     await page.keyboard.press("Escape", { delay: 60 });
     await search.waitFor({ state: "hidden" });
     assert(await trigger.evaluate(element => element === document.activeElement));
-    await checkText(trigger, "2 selected");
-    await root.getByRole("list", { name: "Selected Shared workspaces", exact: true }).getByText("Workspace 24", { exact: true }).waitFor();
+    await root.getByRole("list", { name: "Selected Workspaces", exact: true }).getByText("Project 20", { exact: true }).waitFor();
+    await root.getByRole("list", { name: "Selected Workspaces", exact: true }).getByText("Writing", { exact: true }).waitFor();
     return { detail: "Touch open/search/select; Escape dismisses and restores trigger focus", layout: await layout(page) };
   },
   "shape-scene": async page => {

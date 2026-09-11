@@ -18,7 +18,15 @@ const specimens = {
   dialog: { imports: "Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription", content: '<Dialog><DialogTrigger>Open details</DialogTrigger><DialogContent><DialogTitle>Installation details</DialogTitle><DialogDescription>This dialog came from the Cojeev registry.</DialogDescription></DialogContent></Dialog>' },
   "code-block": { imports: "CodeBlock", content: '<CodeBlock code={"const installed = true;\\n"} title="installed.ts" language="ts" copyLabel="Copy code" />' },
   "text-reveal": { imports: "TextReveal", content: '<TextReveal as="h2" text="Good things take shape." />' },
+  "semantic-bloom": { imports: "SemanticBloom", content: '<SemanticBloom text="000h" seed={17} size={1.3} />' },
+  "animated-icon": { imports: "AnimatedIcon", content: '<AnimatedIcon name="heart" preset="draw" active size="lg" />' },
+  "motion-drawer": { imports: "MotionDrawer", content: '<MotionDrawer title="Installed drawer" description="A fresh-project component." triggerLabel="Open installed drawer"><p>Editable source from the registry.</p></MotionDrawer>' },
+  "organism-assembly": { imports: "OrganismAssembly", content: '<OrganismAssembly autoAssemble defaultValue="focus" />' },
   "shape-scene": { imports: "ShapeScene", content: '<ShapeScene animate={false} interactive={false} aria-label="Installed Cojeev sculpture" />' },
+  "bento-builder": { imports: "BentoBuilder", content: '<BentoBuilder />' },
+  "checkbox": { imports: "Checkbox", content: '<Checkbox aria-label="Keep installation note" shape="flower" />' },
+  "slider": { imports: "Slider", content: '<Slider aria-label="Installed rubber slider" appearance="rubber" defaultValue={[35]} />' },
+  "switch": { imports: "Switch", content: '<Switch aria-label="Installed rocker switch" appearance="rocker" />' },
 };
 if (!ids.length || ids.some(id => id !== "cojeev" && !specimens[id])) throw new Error(`Supported specimen entries: cojeev, ${Object.keys(specimens).join(", ")}.`);
 const temporaryRoot = path.resolve(getArg("tmp") || os.tmpdir());

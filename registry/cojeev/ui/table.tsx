@@ -1,14 +1,16 @@
 "use client";
-import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
+import { ScrollArea, ScrollBar } from "@/registry/cojeev/ui/scroll-area";
+import { assignMotionRef } from "@/registry/cojeev/motion/refs";
 export const tableVariants = cva("v-table w-full border-collapse text-[13px]");
 export type TableContainerProps = React.ComponentProps<"div">;
 export function TableContainer({
   ref,
   className,
   onScroll,
+  children,
   ...props
 }: TableContainerProps) {
   const element = React.useRef<HTMLDivElement>(null);
@@ -41,35 +43,53 @@ export function TableContainer({
       mutation.disconnect();
     };
   }, [mark]);
-  const mergeRef = React.useCallback((node: HTMLDivElement | null) => {
-        element.current = node;
-        if (typeof ref === "function") return ref(node);
-        if (ref) ref.current = node;
-      }, [ref]);
-  const ownedMorphRef = useMorph<HTMLDivElement>("cards", mergeRef);
+  const mergeRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      element.current = node;
+      const release = assignMotionRef(ref, node);
+      return () => {
+        element.current = null;
+        release();
+      };
+    },
+    [ref],
+  );
   return (
-    <div
-      ref={ownedMorphRef}
-      data-slot="table-container"
-      data-part="viewport"
-      tabIndex={0}
-      className={cn(
-        "v-table-wrap overflow-x-auto overflow-y-hidden rounded-[20px] bg-[var(--card)] pt-[6px] px-[10px] pb-[12px]",
-        className,
-      )}
-      onScroll={(event) => {
-        mark();
-        onScroll?.(event);
+    <ScrollArea
+      dir={
+        props.dir === "rtl" ? "rtl" : props.dir === "ltr" ? "ltr" : undefined
+      }
+      variant="plain"
+      className="v-table-scroll v-table-wrap"
+      viewportProps={{
+        ...props,
+        ...{ "data-slot": "table-container", "data-part": "viewport" },
+        ref: mergeRef,
+        className: cn("v-table-viewport", className),
+        onScroll: (event) => {
+          mark();
+          onScroll?.(event);
+        },
       }}
-      {...props}
-    />
+      viewportWrapper={(viewport) => (
+        <>
+          {viewport}
+          <ScrollBar orientation="horizontal" />
+        </>
+      )}
+    >
+      {children}
+    </ScrollArea>
   );
 }
-export type TableProps = React.ComponentProps<"table">;
-export function Table({ className, ...props }: TableProps) {
+export type TableProps = React.ComponentProps<"table"> & {
+  appearance?: "ledger" | "rich" | "comparison";
+};
+export function Table({ className, appearance, ...props }: TableProps) {
   return (
     <table
       data-slot="table"
+      data-appearance={appearance}
       data-part="root"
       className={cn(tableVariants(), className)}
       {...props}

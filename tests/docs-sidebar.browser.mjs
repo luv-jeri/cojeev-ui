@@ -1,0 +1,61 @@
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+import { chromium } from 'playwright';
+const browser=await chromium.launch(), output='output/playwright/sidebar-calm';
+const base=process.env.DOCS_BASE_URL??'http://127.0.0.1:4321/cojeev-ui';
+await mkdir(output,{recursive:true});
+try { for(const mode of ['light','dark']) {
+ const page=await browser.newPage({viewport:{width:1440,height:960},reducedMotion:'reduce'}), errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(mode=>localStorage.setItem('cojeev-docs-theme',mode),mode);
+ await page.goto(`${base}/docs/`,{waitUntil:'domcontentloaded'});
+ await page.locator('.report-launcher:not(:disabled)').waitFor();
+ const sidebar=page.locator('#docs-navigation');
+ assert.equal(await sidebar.getAttribute('data-state'),'expanded','Fresh visits start expanded');
+ assert.equal(await sidebar.locator('.docs-navigation-contours').count(),0);
+ assert.match(await sidebar.getByRole('button',{name:'Search components',exact:true}).innerText(),/^Search library/);
+ const invitationInk=await sidebar.getByRole('link',{name:'Work with me',exact:true}).evaluate(e=>({label:getComputedStyle(e).color,icon:getComputedStyle(e.querySelector('[data-slot="icon"]')).color}));
+ assert.equal(invitationInk.icon,invitationInk.label,'Invitation arrow uses the same contrasting ink as its label');
+ const names=await sidebar.locator('[data-component-link]').evaluateAll(es=>es.map(e=>e.dataset.componentLink));
+ assert(names.length>160&&new Set(names).size===names.length,'Every component has one entry');
+ assert.equal(await sidebar.locator('.docs-library-group').first().locator('summary > span').first().innerText(),'Foundations');
+ const forms=sidebar.locator('.docs-library-group').filter({has:page.locator('summary span',{hasText:/^Forms$/})});
+ await forms.locator('summary').click(); assert.equal(await forms.getByRole('link',{name:'Input',exact:true}).isVisible(),false);
+ await forms.locator('summary').press('Enter'); assert.equal(await forms.getByRole('link',{name:'Input',exact:true}).isVisible(),true);
+ await sidebar.locator('.docs-navigation-viewport').evaluate(e=>{e.scrollTop=0});
+ await sidebar.screenshot({path:`${output}/${mode}-expanded.png`});
+ const button=sidebar.getByRole('link',{name:'Button',exact:true}), peek=page.locator('.docs-component-peek');
+ await button.hover(); await page.waitForTimeout(160); assert.equal(await peek.count(),0,'Brief passing hover must not flash a preview');
+ await peek.waitFor(); await peek.locator('[data-peek-example="button"] button').first().waitFor();
+ assert.equal(await peek.locator('.docs-peek-stage').getAttribute('inert'),'');
+ await peek.screenshot({path:`${output}/${mode}-peek.png`});
+ await page.mouse.move(800,100); await peek.waitFor({state:'hidden'});
+ await button.focus(); await peek.waitFor(); await button.press('Escape'); await peek.waitFor({state:'hidden'});
+ assert(await button.evaluate(e=>e===document.activeElement));
+ await sidebar.getByRole('button',{name:'Collapse navigation',exact:true}).click();
+ for(const name of ['Theme','Colours','Motion'])assert(await sidebar.locator('.docs-navigation-settings').getByText(name,{exact:true}).isVisible(),`Compact ${name} is labelled`);
+ const rail=await sidebar.boundingBox();
+ for(const name of ['Work with me','GitHub']){const r=await sidebar.getByRole('link',{name,exact:true}).boundingBox();assert(r.y>=rail.y&&r.y+r.height<=rail.y+rail.height+1,'Persistent links are not clipped')}
+ await sidebar.screenshot({path:`${output}/${mode}-compact.png`});
+ await page.reload({waitUntil:'domcontentloaded'}); await sidebar.getByRole('button',{name:'Expand navigation',exact:true}).waitFor();
+ await sidebar.getByRole('button',{name:'Show compact component index'}).click(); await page.setViewportSize({width:1440,height:560});
+ const last=sidebar.locator('[data-component-link]').last(); await last.scrollIntoViewIfNeeded(); const lastBox=await last.boundingBox();
+ assert(lastBox.y>=0&&lastBox.y+lastBox.height<560); await sidebar.screenshot({path:`${output}/${mode}-short.png`});
+ await page.setViewportSize({width:1024,height:900}); await sidebar.getByRole('button',{name:'Expand navigation',exact:true}).click();
+ await sidebar.screenshot({path:`${output}/${mode}-1024.png`});
+ for(const width of [390,320]){
+  await page.setViewportSize({width,height:844}); const browse=page.getByRole('button',{name:'Browse',exact:true}); await browse.click();
+  const drawer=page.getByRole('dialog',{name:'Browse components',exact:true}); await drawer.waitFor();
+  assert.equal(await page.getByRole('navigation',{name:'Component documentation',exact:true}).count(),1);
+  const input=drawer.getByRole('link',{name:'Input',exact:true}); await input.scrollIntoViewIfNeeded(); await input.focus(); await page.waitForTimeout(650);
+  assert.equal(await peek.count(),0,'Mobile drawer does not depend on hover');
+  await page.keyboard.press('Tab'); assert(await drawer.evaluate(e=>e.contains(document.activeElement)));
+  await page.keyboard.press('Escape'); await drawer.waitFor({state:'hidden'}); assert(await browse.evaluate(e=>e===document.activeElement));
+  await browse.click(); await drawer.waitFor(); await drawer.screenshot({path:`${output}/${mode}-mobile-${width}.png`});
+  const r=await drawer.boundingBox(); assert(r.x>=0&&r.x+r.width<=width+1&&r.y>=0&&r.y+r.height<=845);
+  await drawer.getByRole('link',{name:'Slider',exact:true}).click(); await page.waitForURL('**/docs/slider/'); await drawer.waitFor({state:'hidden'});
+  await page.waitForFunction(()=>document.activeElement?.id==='docs-main'); assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ }
+ assert.deepEqual(errors,[]); await page.close();
+} console.log('PASS: categorized index, hover/focus quick looks, expanded default, compact labels, persistent links, short/mobile navigation and focus.');
+}finally{await browser.close()}

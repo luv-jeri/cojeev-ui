@@ -8,6 +8,7 @@ import { useFlowPress } from "@/registry/cojeev/motion/flow-press";
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
+import { controlRadiusStyle, type ControlRadius } from "../lib/control-appearance";
 
 const buttonVariants = cva(
   "v-btn [display:inline-flex] items-center justify-center gap-[var(--s-2)] h-[var(--ctl-md)] px-[var(--s-5)] py-0 rounded-[var(--r-pill)] text-[length:var(--fs-control)] font-[number:var(--fw-control)] leading-none whitespace-nowrap bg-[var(--primary)] text-[color:var(--primary-foreground)] motion-safe:active:[transform:translateY(1px)]",
@@ -32,9 +33,10 @@ const buttonVariants = cva(
         sm: "-sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px]",
         lg: "-lg h-[var(--ctl-lg)] px-[var(--s-6)] text-[length:var(--fs-body)]",
       },
+      shape: { pill: "", card: "-card" },
       fullWidth: { true: "-block w-full", false: "" },
     },
-    defaultVariants: { variant: "default", size: "default", fullWidth: false },
+    defaultVariants: { variant: "default", size: "default", shape: "pill", fullWidth: false },
   },
 );
 
@@ -45,6 +47,7 @@ type ButtonProps = Omit<React.ComponentProps<"button">, "ref"> &
     ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;
     loading?: boolean;
     loadingIndicator?: React.ReactNode;
+    radius?: ControlRadius;
   };
 
 function Button({
@@ -52,6 +55,8 @@ function Button({
   className,
   variant,
   size,
+  shape,
+  radius, style,
   fullWidth,
   loading,
   loadingIndicator,
@@ -76,6 +81,9 @@ function Button({
       ref={pressRef}
       data-slot="button"
       data-part="root"
+      data-r={shape === "card" ? 12 : undefined}
+      data-control-shape={shape ?? undefined}
+      style={{ ...style, ...controlRadiusStyle(radius) }}
       data-state={disabled ? "disabled" : busy ? "busy" : "rest"}
       type={asChild ? undefined : type}
       disabled={asChild ? undefined : disabled}
@@ -98,7 +106,7 @@ function Button({
         onClick?.(event);
       }}
       className={cn(
-        buttonVariants({ variant, size, fullWidth }),
+        buttonVariants({ variant, size, shape, fullWidth }),
         "leading-none",
         className,
       )}

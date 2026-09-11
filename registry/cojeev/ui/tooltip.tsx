@@ -37,26 +37,40 @@ export const tooltipContentVariants = cva(
 );
 export type TooltipContentProps = React.ComponentProps<
   typeof Primitive.Content
-> & { portal?: boolean };
+> & { portal?: boolean; appearance?: "callout" | "shortcut" | "annotation" };
+function TooltipPaint() {
+  const ref = useMorph<HTMLSpanElement>("surfaces");
+  return (
+    <span
+      ref={ref}
+      className="v-tooltip-paint"
+      data-morph="both"
+      data-r="css"
+      aria-hidden="true"
+    />
+  );
+}
 export function TooltipContent({
   className,
   ref,
   children,
   sideOffset = 8,
   portal = true,
+  appearance,
   ...props
 }: TooltipContentProps) {
-  const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "grow");
+  const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "grow");
   const content = (
     <Primitive.Content
       ref={flowRef}
       data-slot="tooltip-content"
       data-part="content"
+      data-appearance={appearance}
       sideOffset={sideOffset}
       className={cn(tooltipContentVariants(), className)}
       {...props}
     >
+      {appearance && !props.asChild && <TooltipPaint />}
       {children}
     </Primitive.Content>
   );

@@ -3,9 +3,9 @@ import * as React from "react"
 import {cva,type VariantProps} from "class-variance-authority"
 import {cn} from "@/registry/cojeev/lib/utils"
 import {iconData,type IconNode} from "@/registry/cojeev/lib/icon-data"
+import {getLucideIcon,lucideIconNames} from "@/registry/cojeev/lib/lucide-icon-data"
 import {useMorph} from "@/registry/cojeev/motion/use-morph"
 import {useFlowPress} from "@/registry/cojeev/motion/flow-press"
-import {motion} from "motion/react"
 import {assignMotionRef} from "@/registry/cojeev/motion/refs"
 import {createMotionLane, motionTokens, useChoreography} from "@/registry/cojeev/motion/choreography"
 
@@ -39,6 +39,17 @@ for(const name of ["menu","globe","link","save","rocket","circle-help"]) {
 }
 extraPaths.code=["m8 5-7 7 7 7","m16 5 7 7-7 7","m13 3-2 18"];
 const additionalIcons = Object.fromEntries(Object.entries(extraPaths).map(([name, paths]) => [name, paths.map(d => ({ tag: "path", attrs: { d }, children: [] }))])) as Record<string, IconNode[]>;
+// A small authored set for the gallery's most-recognized marks. These are line silhouettes,
+// not a decorative plate; the broad Lucide pack keeps its original geometry where a safe contour
+// conversion cannot be inferred.
+const organicIconGeometry:Record<string,IconNode[]>={
+  camera:[{tag:"path",attrs:{d:"M4 7.6 Q5 7 7 7.4 L8.3 5.2 Q9.1 4 10.3 4.2 L13.8 4.1 Q15.1 4 15.8 5.3 L16.7 7.2 Q18 7 20 7.8 Q21.3 8.6 21 10.1 L21 17.8 Q20.8 20 18.8 20 L5.1 20 Q3 19.8 3 17.8 L3 10 Q3 8.3 4 7.6"},children:[]},{tag:"path",attrs:{d:"M9 13 Q9 9.8 12.1 9.8 Q15.2 10 15.1 13 Q15 16.1 12 16.2 Q9 16 9 13"},children:[]}],
+  heart:[{tag:"path",attrs:{d:"M20.4 8.4 Q20.2 4.4 16.7 4.2 Q13.8 4.1 12 6.8 Q10.1 4 7.3 4.3 Q3.7 4.7 3.6 8.5 Q3.7 12.2 12 20 Q20.3 12.4 20.4 8.4"},children:[]}],
+  leaf:[{tag:"path",attrs:{d:"M20 4 Q11.8 3.7 7.4 8 Q3.8 11.6 4.1 17.6 Q10.2 18 14 14.2 Q18.2 10.2 20 4"},children:[]},{tag:"path",attrs:{d:"M4.5 19.5 Q9.5 14.2 15.8 8.7"},children:[]}],
+  search:[{tag:"path",attrs:{d:"M18.5 10.8 Q18.5 3.8 11.2 3.6 Q4 3.8 3.7 10.8 Q3.8 17.8 10.8 18 Q14.2 18 16.4 15.8"},children:[]},{tag:"path",attrs:{d:"M16.1 16.1 Q18.7 18.6 21 21"},children:[]}],
+  check:[{tag:"path",attrs:{d:"M4.8 12.2 Q7.2 14.8 9.8 17 Q14.8 11 19.8 6"},children:[]}],
+  "arrow-right":[{tag:"path",attrs:{d:"M4 12 Q11.8 11.5 20 12"},children:[]},{tag:"path",attrs:{d:"M14 6 Q17.1 8.9 20 12 Q17.1 15.1 14 18"},children:[]}],
+};
 
 // Friendly action names reuse existing geometry; legacy Lucide names remain valid.
 const iconAliases: Record<string, string> = {
@@ -47,6 +58,16 @@ const iconAliases: Record<string, string> = {
   home:"house", "help-circle":"circle-help", "plus-circle":"circle-plus", "more-horizontal":"ellipsis",
 };
 const canonicalIcon = (name:string) => iconAliases[name] ?? name;
+// Preserve authored part ordering: existing motion recipes depend on these silhouettes.
+const geometryCache=new Map<string,IconNode[]>();
+function iconGeometry(name:string):IconNode[]|undefined {
+  name=canonicalIcon(name);
+  const known=iconData[name]??additionalIcons[name]??geometryCache.get(name);
+  if(known)return known;
+  const nodes=getLucideIcon(name);
+  if(nodes)geometryCache.set(name,nodes);
+  return nodes;
+}
 
 /** Direction is geometric, independent of document reading direction. */
 export function getIconDirection(name:string): readonly [number, number] {
@@ -167,8 +188,27 @@ function recipeFrame(recipe:IconRecipe,p:number,amount:number):IconMotionFrame {
   return frame;
 }
 
-const semanticIcons=new Set(["check","circle-check","circle-check-big","x","activity","triangle-alert","alert-triangle","circle-alert","alert-circle","info","loader-circle","refresh-cw","search","bell","download","upload","copy","settings","trash-2","plus","send","heart","star","thumbs-up"]);
-function hasIconMotion(name:string) { return (semanticIcons.has(canonicalIcon(name))||canonicalIcon(name) in iconRecipes)||/^(arrow|chevron)-/.test(name); }
+function hasIconMotion(name:string) { return !!iconGeometry(name); }
+type MotionFamily="direction"|"organic"|"communication"|"pulse"|"trace";
+function motionFamily(name:string):MotionFamily {
+  if(/^(arrow|chevron|move|corner|undo|redo|send|navigation)/.test(name)&&!/(up-down|left-right)/.test(name))return "direction";
+  if(/^(leaf|flower|sprout|tree|feather|wind|cloud|bird|fish|flame|wheat|rainbow)/.test(name))return "organic";
+  if(/^(message|mail|speech|contact|inbox)/.test(name))return "communication";
+  if(/^(heart|audio|volume|radio|wifi|signal|radar|sun|sparkle)/.test(name))return "pulse";
+  return "trace";
+}
+/** Families extend coverage without guessing which upstream path is a hinge or moving part. */
+function familyRecipe(name:string):IconRecipe {
+  const family=motionFamily(name);
+  if(family==="direction"){
+    const [x,y]=getIconDirection(name);
+    if(x||y)return {description:"Travels in its drawn direction, then settles back.",motions:[{parts:"glyph",move:[2*x,2*y]}]};
+  }
+  if(family==="organic")return {description:"Sways gently from its base and settles, like a living stem.",motions:[{parts:"glyph",rotate:5,pivot:[12,21],scale:[-.025,.04]}]};
+  if(family==="communication")return {description:"Opens gently from the lower edge, then settles into place.",motions:[{parts:"glyph",scale:[.07,.1],pivot:[6,20]}]};
+  if(family==="pulse")return {description:"Gives a short, damped signal pulse and returns to rest.",motions:[{parts:"glyph",scale:[.11,.11],waves:3}]};
+  return {description:"Strokes draw in a short sequence, then hold their complete silhouette.",motions:(iconGeometry(name)??[]).map((_,index)=>({parts:[index],trace:true,delay:Math.min(index*.035,.24)}))};
+}
 export type IconMotionFrame = Record<string,{transform?:string;draw?:number;opacity?:number}>;
 /** Original motion in the pack's 24-unit coordinate space. Keys identify owned SVG groups. */
 export function getIconMotionFrame(name:string,progress:number,amplitude=1):IconMotionFrame {
@@ -186,7 +226,8 @@ export function getIconMotionFrame(name:string,progress:number,amplitude=1):Icon
     case "circle-check-big": return {1:{draw:Math.min(1,p*1.8)}};
     case "activity": return {0:{draw:Math.min(1,p*1.5)}};
     case "x": return {glyph:{transform:scale(1-.12*pulse)}};
-    case "triangle-alert": case "alert-triangle": case "circle-alert": case "alert-circle":
+    case "alert-triangle": case "alert-circle": return {1:move(0,-1.2*pulse)};
+    case "triangle-alert": case "circle-alert":
       return {1:move(0,-1.2*pulse),2:move(0,-.5*pulse)};
     case "info": return {2:move(0,-1.5*pulse)};
     case "loader-circle": case "refresh-cw": return {glyph:{transform:`rotate(${360*p} 12 12)`}};
@@ -210,16 +251,14 @@ export function getIconMotionFrame(name:string,progress:number,amplitude=1):Icon
     }
     case "star": return {glyph:{transform:scale(1+.12*pulse)}};
     case "thumbs-up": return {0:move(0,-1.4*pulse)};
-    default: {
-      const [x,y]=getIconDirection(name);
-      return x||y?{glyph:move(2.5*pulse*x,2.5*pulse*y)}:{glyph:{transform:scale(1+.04*pulse)}};
-    }
+    default:return recipeFrame(familyRecipe(name),p,amount);
   }
 }
 
 /** The painter owns only generated groups, never the consumer's SVG transforms or styles. */
-export function createIconMotionPainter(svg:SVGSVGElement,name:string,amplitude=1) {
+export function createIconMotionPainter(svg:SVGSVGElement,name:string,amplitude=1,frames?:(progress:number)=>IconMotionFrame) {
   const groups=new Map(Array.from(svg.querySelectorAll<SVGGElement>("[data-icon-part]")).map(group=>[group.dataset.iconPart!,group]));
+  const backdrop=svg.querySelector("[data-icon-backdrop]");
   const written=new Map<Element,Map<string,{before:string|null;value:string}>>();
   const lengths=new Map<SVGGeometryElement,number>();
   const set=(node:Element,attribute:string,value:string)=>{
@@ -233,7 +272,16 @@ export function createIconMotionPainter(svg:SVGSVGElement,name:string,amplitude=
   };
   return {
     paint(progress:number) {
-      for(const [part,frame] of Object.entries(getIconMotionFrame(name,progress,amplitude))) {
+      for(const path of svg.querySelectorAll<SVGPathElement>("path[data-icon-organic-line]")){
+        const source=path.dataset.iconOrganicSource;
+        if(source){const pulse=Math.sin(Math.PI*Math.max(0,Math.min(1,progress)))*Math.max(0,Math.min(3,amplitude));set(path,"d",organicMotionPath(source,pulse*.18));}
+      }
+      if(backdrop){
+        const p=Number.isFinite(progress)?Math.max(0,Math.min(1,progress)):1;
+        const pulse=Math.sin(Math.PI*p)*(Number.isFinite(amplitude)?Math.max(0,Math.min(3,amplitude)):1);
+        set(backdrop,"transform",`translate(12 12) rotate(${4*pulse}) scale(${1+.035*pulse} ${1-.025*pulse}) translate(-12 -12)`);
+      }
+      for(const [part,frame] of Object.entries(frames?frames(progress):getIconMotionFrame(name,progress,amplitude))) {
         const group=groups.get(part);if(!group)continue;
         if(frame.transform)set(group,"transform",frame.transform);
         if(frame.opacity!==undefined)set(group,"opacity",String(frame.opacity));
@@ -254,9 +302,21 @@ export function createIconMotionPainter(svg:SVGSVGElement,name:string,amplitude=
   };
 }
 
-function renderNode(node:IconNode,key:number,draw?:boolean):React.ReactNode{
-  if(node.tag==="path"&&draw!==undefined)return <motion.path key={key} {...node.attrs} initial={false} animate={{pathLength:draw?[0,1]:1}} transition={{duration:draw?.5:0,ease:[.2,.8,.2,1]}}/>;
-  return React.createElement(node.tag,{...node.attrs,key},...node.children.map((child,index)=>renderNode(child,index,draw)))
+function organicPath(d:string,bend:number){
+  const horizontal=/^M\s*([\d.-]+)\s+([\d.-]+)h\s*([\d.-]+)$/.exec(d);
+  if(horizontal){const [,x,y,width]=horizontal;const end=Number(x)+Number(width);return `M${x} ${y} Q${(Number(x)+end)/2} ${(Number(y)-bend).toFixed(3)} ${end} ${y}`}
+  const vertical=/^M\s*([\d.-]+)\s+([\d.-]+)v\s*([\d.-]+)$/.exec(d);
+  if(vertical){const [,x,y,height]=vertical;const end=Number(y)+Number(height);return `M${x} ${y} Q${(Number(x)+bend).toFixed(3)} ${(Number(y)+end)/2} ${x} ${end}`}
+  return d;
+}
+function organicMotionPath(d:string,amount:number){
+  if(!amount)return d;let index=0;
+  return d.replace(/-?\d*\.?\d+/g,value=>{index++;const delta=index%5===0?amount:index%7===0?-amount*.6:0;return delta?(Number(value)+delta).toFixed(3).replace(/\.?(?:0+)$/," ").trim():value});
+}
+function renderNode(node:IconNode,key:number,organic=false):React.ReactNode{
+  const attrs={...node.attrs,key};
+  if(organic&&node.tag==="path"&&typeof node.attrs.d==="string")return React.createElement("path",{...attrs,d:organicPath(node.attrs.d,.32),"data-icon-organic-line":"","data-icon-organic-rest":organicPath(node.attrs.d,.32),"data-icon-organic-source":node.attrs.d},...node.children.map((child,index)=>renderNode(child,index,organic)));
+  return React.createElement(node.tag,attrs,...node.children.map((child,index)=>renderNode(child,index,organic)))
 }
 export type IconProps=React.ComponentProps<"svg"> & {
   name:string;
@@ -264,11 +324,18 @@ export type IconProps=React.ComponentProps<"svg"> & {
   draw?:boolean;
   /** One-shot feedback from the nearest control. Disable when another owner animates this icon. */
   feedback?:boolean;
+  /** Optional Cojeev treatments; outline preserves the original glyph footprint. */
+  treatment?:"outline"|"duotone"|"organic";
+  /** Accent layer color. Outline remains currentColor for readable action icons. */
+  tone?:"current"|"pink"|"blue"|"olive"|"yellow";
+  /** Bounded timing for native control feedback; AnimatedIcon adds explicit preset motion. */
+  feedbackDuration?:number;
+  feedbackEase?:"gentle"|"settle"|"linear"|readonly [number,number,number,number];
 }
 
 const iconControlSelector = 'button,a[href],summary,[role="button"],[role="menuitem"],[role="menuitemcheckbox"],[role="menuitemradio"],[role="option"],[role="tab"],[role="checkbox"],[role="radio"],[role="switch"],label';
 
-function useIconFeedback(host:React.RefObject<SVGSVGElement|null>, enabled:boolean, name:string) {
+function useIconFeedback(host:React.RefObject<SVGSVGElement|null>, enabled:boolean, name:string,duration?:number,ease:IconProps["feedbackEase"]="gentle") {
   React.useEffect(() => {
     const svg=host.current;
     const control=svg?.closest<HTMLElement>(iconControlSelector);
@@ -278,7 +345,8 @@ function useIconFeedback(host:React.RefObject<SVGSVGElement|null>, enabled:boole
     let active=false;
     let kind:"hover"|"focus"|"press"="hover";
     let baseScale="none",baseRotate="none";
-    let lastActivation=-Infinity;
+    let pendingKeyClick=false;
+    let keyRelease:ReturnType<typeof setTimeout>|undefined;
     const original=new Map<string,{value:string;priority:string}>();
     const written=new Map<string,{value:string;priority:string}>();
     const owns=(property:string,value:{value:string;priority:string})=>svg.style.getPropertyValue(property)===value.value&&svg.style.getPropertyPriority(property)===value.priority;
@@ -322,18 +390,21 @@ function useIconFeedback(host:React.RefObject<SVGSVGElement|null>, enabled:boole
       stop();kind=next;
       const computed=getComputedStyle(svg);baseScale=computed.scale;baseRotate=computed.rotate;
       active=true;svg.dataset.iconFeedback=kind;
-      lane.jump(0);lane.to(1,{duration:next==="press"?motionTokens.duration.quick:motionTokens.duration.enter,ease:[...motionTokens.ease.settle]},restore);
+      const seconds=duration!==undefined&&Number.isFinite(duration)?Math.max(.08,Math.min(duration,10)):next==="press"?.48:.62;
+      const timing=ease==="gentle"?[.22,.72,.22,1] as const:ease==="settle"?[...motionTokens.ease.settle] as const:ease??"linear";
+      lane.jump(0);lane.to(1,{duration:seconds,ease:timing},restore);
     };
     const enter=(event:PointerEvent)=>{if(event.pointerType!=="touch")start("hover")};
     const leave=()=>stop();
     const focus=()=>start("focus");
     const blur=(event:FocusEvent)=>{if(!control.contains(event.relatedTarget as Node|null))stop()};
-    const key=(event:KeyboardEvent)=>{if(!event.repeat&&(event.key==="Enter"||event.key===" ")){lastActivation=performance.now();start("press")}};
-    const click=()=>{if(performance.now()-lastActivation>100){lastActivation=performance.now();start("press")}};
+    const key=(event:KeyboardEvent)=>{if(!event.repeat&&(event.key==="Enter"||event.key===" ")){clearTimeout(keyRelease);pendingKeyClick=true;start("press")}};
+    const keyup=(event:KeyboardEvent)=>{if(event.key==="Enter"||event.key===" ")keyRelease=setTimeout(()=>{pendingKeyClick=false},0)};
+    const click=()=>{if(pendingKeyClick){pendingKeyClick=false;clearTimeout(keyRelease);return}start("press")};
     const visibility=()=>{if(document.hidden)stop()};
     control.addEventListener("pointerenter",enter);control.addEventListener("pointerleave",leave);
     control.addEventListener("focusin",focus);control.addEventListener("focusout",blur);
-    control.addEventListener("keydown",key);control.addEventListener("click",click);
+    control.addEventListener("keydown",key);control.addEventListener("keyup",keyup);control.addEventListener("click",click);
     document.addEventListener("visibilitychange",visibility);
     const intersection=new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;if(!inView)stop()},{threshold:.1});
     intersection.observe(svg);
@@ -343,27 +414,46 @@ function useIconFeedback(host:React.RefObject<SVGSVGElement|null>, enabled:boole
     return ()=>{
       control.removeEventListener("pointerenter",enter);control.removeEventListener("pointerleave",leave);
       control.removeEventListener("focusin",focus);control.removeEventListener("focusout",blur);
-      control.removeEventListener("keydown",key);control.removeEventListener("click",click);
+      control.removeEventListener("keydown",key);control.removeEventListener("keyup",keyup);control.removeEventListener("click",click);clearTimeout(keyRelease);
       document.removeEventListener("visibilitychange",visibility);intersection.disconnect();attributes.disconnect();lane.dispose();restore();
     };
-  },[host,enabled,name]);
+  },[host,enabled,name,duration,ease]);
 }
 
 export function iconClassName(size:IconProps["size"]="default",className?:string){return cn("v-icon [width:var(--icon-md)] [height:var(--icon-md)] [stroke:currentColor] [stroke-width:var(--icon-stroke)] [stroke-linecap:round] [stroke-linejoin:round] [fill:none] [flex:none]",size!=="default"&&`-${size}`,className)}
-export function Icon({name,size="default",className,draw,feedback=true,ref,...props}:IconProps){
+export function Icon({name,size="default",className,draw,feedback=true,treatment="outline",tone="current",feedbackDuration,feedbackEase,style,strokeWidth,ref,...props}:IconProps){
   const {quiet}=useChoreography();
   const host=React.useRef<SVGSVGElement|null>(null);
   const attach=React.useCallback((node:SVGSVGElement|null)=>{host.current=node;const release=assignMotionRef(ref,node);return()=>{host.current=null;release()}},[ref]);
-  useIconFeedback(host,feedback&&!quiet&&draw===undefined,name);
+  useIconFeedback(host,feedback&&!quiet&&draw===undefined,name,feedbackDuration,feedbackEase);
+  React.useEffect(()=>{
+    if(!draw||quiet||!host.current)return;
+    const painter=createIconMotionPainter(host.current,name,1,p=>({glyph:{draw:p}}));
+    const lane=createMotionLane(0,painter.paint);
+    lane.jump(0);lane.to(1,{duration:.5,ease:[.2,.8,.2,1]},painter.restore);
+    return()=>{lane.dispose();painter.restore()};
+  },[draw,quiet,name]);
   const resolved=canonicalIcon(name);
-  const nodes=iconData[resolved]??additionalIcons[resolved];
+  const nodes=iconGeometry(name);
   if(!nodes)throw new Error(`Unknown Cojeev icon: ${name}`);
-  return <svg ref={attach} data-slot="icon" data-icon-name={name} viewBox="0 0 24 24" aria-hidden="true" className={iconClassName(size,className)} {...props}><g data-icon-part="glyph">{nodes.map((node,index)=><g key={index} data-icon-part={index}>{renderNode(node,index,draw===undefined?undefined:draw&&!quiet)}</g>)}</g></svg>
+  const accent=tone==="current"?"currentColor":`var(--v-${tone})`;
+  return <svg ref={attach} data-slot="icon" data-icon-name={name} data-icon-treatment={treatment} viewBox="0 0 24 24" aria-hidden="true" className={iconClassName(size,className)} style={{...(strokeWidth!==undefined?{strokeWidth}:{}),...style}} {...props}>
+    <g data-icon-ink="" style={treatment==="organic"&&tone!=="current"?{color:accent}:undefined}>
+      <g data-icon-part="glyph">{(treatment==="organic"?(organicIconGeometry[resolved]??nodes):nodes).map((node,index)=><g key={index} data-icon-part={index}>
+        {treatment==="duotone"&&React.createElement(node.tag,{...node.attrs,"data-icon-accent":"",style:{stroke:accent,strokeWidth:4.5,fill:node.tag==="circle"||node.tag==="rect"||node.tag==="ellipse"||node.tag==="polygon"||/[zZ]\s*$/.test(node.attrs.d??"")?accent:"none",opacity:.22}})}
+        {renderNode(node,index,treatment==="organic")}
+      </g>)}</g>
+    </g>
+  </svg>
 }
 /** Semantic action inventory for accessible pickers and documentation. */
 export const iconActionDescriptions:Record<string,string>={"check":"The check stroke traces into its complete mark.","check-circle":"The check traces inside a stationary ring.","close":"The cross presses inward and returns.","activity":"The activity line traces across its pulse.","alert":"The warning mark lifts inside its fixed outline.","info":"The information dot lifts inside its fixed circle.","loader":"The loading arc revolves while active.","refresh":"The refresh arrows complete one turn.","search":"The search lens expands inside its handle.","bell":"The bell dome swings against its clapper.","download":"The download arrow moves down into its fixed tray.","upload":"The upload arrow rises out of its fixed tray.","copy":"The front sheet lifts away from the back.","settings":"The gear turns around its fixed hub.","trash":"The lid lifts above its stationary bin.","plus":"The plus makes a quarter turn.","send":"The paper plane travels upward-right.","heart":"The heart gives two restrained beats.","star":"The star expands and returns.","thumbs-up":"The hand lifts above its fixed cuff.",...Object.fromEntries(Object.entries(iconRecipes).map(([name,recipe])=>[name,recipe.description]))};
 export const iconActionNames=Object.keys(iconActionDescriptions);
-export const iconNames=Object.keys({...iconData,...additionalIcons,...iconAliases})
+export const iconNames=Array.from(new Set([...Object.keys(iconData),...Object.keys(additionalIcons),...Object.keys(iconAliases),...lucideIconNames])).sort();
+export function getIconMotionDescription(name:string):string {
+  const canonical=canonicalIcon(name);
+  return iconActionDescriptions[name]??iconActionDescriptions[canonical]??familyRecipe(canonical).description;
+}
 const DiskVariants=cva("v-disk [display:inline-grid] [place-items:center] [width:var(--disk-md)] [height:var(--disk-md)] [border-radius:50%] [background:var(--disk-bg,var(--v-beige))] [color:var(--v-text)] [flex:none]",{variants:{variant:{"default":"","pink":"-pink [--disk-bg:var(--v-pink)] [color:var(--v-on-accent)]","yellow":"-yellow [--disk-bg:var(--v-yellow)] [color:var(--v-on-accent)]","olive":"-olive [--disk-bg:var(--v-olive)] [color:var(--v-on-accent)]","blue":"-blue [--disk-bg:var(--v-blue)] [color:var(--v-on-accent)]","ink":"-ink [--disk-bg:var(--v-ink)] [color:var(--v-on-ink)]","cream":"-cream [--disk-bg:var(--v-canvas)]","beige":"-beige [--disk-bg:var(--v-beige)]"},size:{"default":"","sm":"-sm [width:var(--disk-sm)] [height:var(--disk-sm)]","lg":"-lg [width:var(--disk-lg)] [height:var(--disk-lg)]"}},defaultVariants:{variant:"default",size:"default"}})
 export type DiskProps=React.ComponentProps<"span"> & VariantProps<typeof DiskVariants>
 export function Disk({className,variant,size,ref,...props}:DiskProps){const morphRef=useMorph<HTMLSpanElement>("icons",ref);return <span ref={morphRef} data-slot="disk"  className={cn(DiskVariants({variant,size}),className)} {...props}/>}

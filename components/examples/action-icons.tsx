@@ -1,51 +1,420 @@
 "use client";
 import * as React from "react";
-import {Icon,iconActionNames,iconActionDescriptions} from "@/registry/cojeev/ui/icon";
-import {AnimatedIcon,type IconMotion} from "@/registry/cojeev/ui/animated-icon";
-import {Button} from "@/registry/cojeev/ui/button";
-import {Input} from "@/registry/cojeev/ui/input";
-import {Label} from "@/registry/cojeev/ui/label";
-import type {ExampleProps} from "./types";
+import {
+  Icon,
+  iconNames,
+  iconActionNames,
+  getIconMotionDescription,
+  type IconProps,
+} from "@/registry/cojeev/ui/icon";
+import {
+  AnimatedIcon,
+  type IconMotion,
+} from "@/registry/cojeev/ui/animated-icon";
+import { Button } from "@/registry/cojeev/ui/button";
+import { CopyButton } from "@/registry/cojeev/ui/code-block";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupButton,
+} from "@/registry/cojeev/ui/input-group";
+import { Label } from "@/registry/cojeev/ui/label";
+import { Slider } from "@/registry/cojeev/ui/slider";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/registry/cojeev/ui/collapsible";
+import type { ExampleProps } from "./types";
 
-const label=(name:string)=>name.split("-").map(word=>word[0].toUpperCase()+word.slice(1)).join(" ");
-const pageSize=12;
-const presets:IconMotion[]=["auto","tremor","draw","spin","bounce","validation","pulse","none"];
-function IconExplorer({animated=false,variant="auto",size="default"}:ExampleProps&{animated?:boolean}) {
-  const [query,setQuery]=React.useState("");
-  const [page,setPage]=React.useState(0);
-  const [selected,setSelected]=React.useState<string|null>(null);
-  const [disabled,setDisabled]=React.useState(false);
-  const id=React.useId();
-  const terms=query.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
-  const matches=iconActionNames.filter(name=>terms.every(term=>(name+" "+label(name)+" "+iconActionDescriptions[name]).toLocaleLowerCase().includes(term)));
-  const pages=Math.max(1,Math.ceil(matches.length/pageSize));
-  const currentPage=Math.min(page,pages-1);
-  const visible=matches.slice(currentPage*pageSize,(currentPage+1)*pageSize);
-  const preset=presets.includes(variant as IconMotion)?variant as IconMotion:"auto";
-  const iconSize=size==="sm"||size==="lg"?size:"default";
-  return <div data-icon-explorer={animated?"animated":"native"} style={{display:"grid",gap:20,minWidth:0}}>
-    <p>{animated?"Hover or focus an action. Select it to replay; the loader runs until released.":"Find a symbol by its name or action. Choose one to inspect its motion."}</p>
-    <div style={{display:"flex",alignItems:"end",gap:12,flexWrap:"wrap"}}>
-      <div style={{display:"grid",gap:8,flex:"1 1 220px",minWidth:0}}><Label size="sm" htmlFor={id}>Find an icon</Label>
-        <Input id={id} type="search" value={query} onChange={event=>{setQuery(event.target.value);setPage(0)}} placeholder="Try camera, folder, or sound"/>
+const label = (name: string) =>
+  name
+    .split("-")
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+const pageSize = 24;
+const catalogue = [...new Set([...iconActionNames, ...iconNames])];
+const presets: IconMotion[] = [
+  "auto",
+  "tremor",
+  "draw",
+  "spin",
+  "bounce",
+  "validation",
+  "pulse",
+  "none",
+];
+const treatments = ["outline", "duotone", "organic"] as const;
+const tones = ["current", "pink", "blue", "olive", "yellow"] as const;
+const inks = {
+  current: "currentColor",
+  pink: "var(--v-accent-ink)",
+  blue: "var(--status-info-ink)",
+  olive: "var(--v-olive-ink)",
+  yellow: "var(--status-warn-ink)",
+};
+function IconExplorer({
+  animated = false,
+  variant = "default",
+  size = "default",
+  compact = false,
+}: ExampleProps & { animated?: boolean }) {
+  const [query, setQuery] = React.useState(""),
+    [page, setPage] = React.useState(0),
+    [selected, setSelected] = React.useState("camera");
+  const [disabled, setDisabled] = React.useState(false);
+  const [treatment, setTreatment] = React.useState<
+    NonNullable<IconProps["treatment"]>
+  >(
+    treatments.includes(variant as (typeof treatments)[number])
+      ? (variant as (typeof treatments)[number])
+      : "outline",
+  );
+  const [tone, setTone] =
+    React.useState<NonNullable<IconProps["tone"]>>("pink");
+  const [replay, setReplay] = React.useState(0),
+    [duration, setDuration] = React.useState(0.7),
+    [ease, setEase] = React.useState<"gentle" | "settle">("gentle");
+  const searchRef = React.useRef<HTMLInputElement>(null),
+    id = React.useId();
+  const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  const matches = catalogue.filter((name) =>
+    terms.every((term) =>
+      (name + " " + getIconMotionDescription(name))
+        .toLowerCase()
+        .includes(term),
+    ),
+  );
+  const pages = Math.max(1, Math.ceil(matches.length / pageSize)),
+    currentPage = Math.min(page, pages - 1),
+    visible = matches.slice(
+      currentPage * pageSize,
+      (currentPage + 1) * pageSize,
+    );
+  const preset =
+    animated && presets.includes(variant as IconMotion)
+      ? (variant as IconMotion)
+      : "auto";
+  const iconSize = size === "sm" || size === "lg" ? size : "default";
+  const ink = inks[tone];
+  const iconStyle = {
+    width: iconSize === "sm" ? 20 : iconSize === "lg" ? 40 : 30,
+    height: iconSize === "sm" ? 20 : iconSize === "lg" ? 40 : 30,
+    color: ink,
+  };
+  const timing = animated
+    ? ` duration={${duration}} ease="${ease}"`
+    : ` feedbackDuration={${duration}} feedbackEase="${ease}"`;
+  const snippet = `<${animated ? "AnimatedIcon" : "Icon"} name="${selected}"${treatment !== "outline" ? ` treatment="${treatment}" tone="${tone}"` : ""}${tone !== "current" ? ` style={{ color: "${ink}" }}` : ""}${animated && preset !== "auto" ? ` preset="${preset}"` : ""}${timing} />`;
+  if (compact)
+    return (
+      <div className="v-icon-studio__compact">
+        {["heart", "camera", "leaf"].map((name) => (
+          <Button key={name} variant="ghost" aria-label={`Try ${name}`}>
+            <AnimatedIcon
+              name={name}
+              size={iconSize}
+              style={iconStyle}
+              preset={preset}
+              treatment={treatment}
+              tone={tone}
+            />
+          </Button>
+        ))}
       </div>
-      <Button variant="ghost" disabled={!query} onClick={()=>{setQuery("");setPage(0)}}>Clear search</Button>
+    );
+  return (
+    <div
+      data-icon-explorer={animated ? "animated" : "native"}
+      className="v-icon-studio"
+    >
+      <header className="v-icon-studio__heading">
+        <span className="v-icon-studio__eyebrow">THE ICON TYPECASE</span>
+        <h3>
+          A small sign.
+          <br />A clear idea.
+        </h3>
+        <p>
+          {iconNames.length.toLocaleString("en-US")} names, three ways to draw
+          them.
+          <br />
+          Choose a mark. See what moves. Make it yours.
+        </p>
+      </header>
+      <section
+        data-icon-inspector=""
+        className="v-icon-studio__inspector"
+        aria-label="Selected icon inspector"
+      >
+        <div className="v-icon-studio__proof">
+          <span className="v-icon-studio__eyebrow">LIVE SPECIMEN</span>
+          <Button
+            data-icon-replay-control=""
+            className="v-icon-studio__replay"
+            shape="card"
+            variant="ghost"
+            aria-label={`Replay ${selected} animation`}
+            disabled={disabled}
+            onClick={() => setReplay((value) => value + 1)}
+          >
+            <AnimatedIcon
+              key={`${selected}:${treatment}:${tone}:${replay}`}
+              name={selected}
+              treatment={treatment}
+              tone={tone}
+              style={{ width: 84, height: 84, color: ink }}
+              preset={preset}
+              duration={duration}
+              ease={ease}
+              active={replay > 0 ? true : undefined}
+            />
+          </Button>
+          <span className="v-icon-studio__proof-label">
+            <Icon name="refresh" size="sm" />
+            Click to replay
+          </span>
+        </div>
+        <div className="v-icon-studio__details">
+          <div className="v-icon-studio__name">
+            <code data-icon-selected="" title={selected}>
+              {selected}
+            </code>
+            <CopyButton code={snippet} size="sm" variant="ghost">
+              Copy JSX
+            </CopyButton>
+          </div>
+          <p data-icon-description="">{getIconMotionDescription(selected)}</p>
+          <div className="v-icon-studio__control">
+            <span className="v-icon-studio__control-label">Drawing</span>
+            <div
+              role="group"
+              aria-label="Icon treatment"
+              className="v-icon-studio__choices"
+            >
+              {treatments.map((value) => (
+                <Button
+                  key={value}
+                  size="sm"
+                  variant={treatment === value ? "secondary" : "ghost"}
+                  aria-pressed={treatment === value}
+                  onClick={() => setTreatment(value)}
+                >
+                  {label(value)}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="v-icon-studio__control">
+            <span className="v-icon-studio__control-label">Colour</span>
+            <div
+              role="group"
+              aria-label="Accent color"
+              className="v-icon-studio__tones"
+            >
+              {tones.map((value) => (
+                <Button
+                  key={value}
+                  size="sm"
+                  variant="ghost"
+                  aria-label={`${label(value)} accent`}
+                  aria-pressed={tone === value}
+                  onClick={() => setTone(value)}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      background:
+                        value === "current"
+                          ? "var(--v-text)"
+                          : `var(--v-${value})`,
+                    }}
+                  />
+                  {label(value)}
+                </Button>
+              ))}
+            </div>
+            <small>
+              Legible ink for Outline; a coloured wash or contour for Duotone
+              and Organic.
+            </small>
+          </div>
+        </div>
+      </section>
+      <Collapsible className="v-icon-studio__timing">
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost">
+            <Icon name="settings" />
+            Motion timing
+            <Icon name="chevron-down" size="sm" />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div
+            role="group"
+            aria-label="Motion timing"
+            className="v-icon-studio__timing-controls"
+          >
+            <Label size="sm" id={`${id}-duration`}>
+              Duration
+            </Label>
+            <Slider
+              aria-labelledby={`${id}-duration`}
+              aria-label="Icon motion duration"
+              min={0.3}
+              max={2}
+              step={0.1}
+              value={[duration]}
+              onValueChange={(value) => setDuration(value[0] ?? 0.7)}
+              appearance="line"
+            />
+            <output>{duration.toFixed(1)}s</output>
+            <div className="v-icon-studio__choices">
+              {(["gentle", "settle"] as const).map((value) => (
+                <Button
+                  key={value}
+                  size="sm"
+                  variant={ease === value ? "secondary" : "ghost"}
+                  aria-pressed={ease === value}
+                  onClick={() => setEase(value)}
+                >
+                  {label(value)}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+      <div className="v-icon-studio__search">
+        <Label size="sm" htmlFor={id}>
+          Find an icon
+        </Label>
+        <InputGroup aria-label="Find an icon">
+          <InputGroupAddon aria-hidden="true">
+            <Icon name="search" size="sm" feedback={false} />
+          </InputGroupAddon>
+          <InputGroupInput
+            ref={searchRef}
+            id={id}
+            type="search"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setPage(0);
+            }}
+            placeholder="Try camera, folder, or arrow"
+          />
+          {query && (
+            <InputGroupButton
+              shape="card"
+              size="sm"
+              variant="ghost"
+              aria-label="Clear icon search"
+              onClick={() => {
+                setQuery("");
+                setPage(0);
+                requestAnimationFrame(() => searchRef.current?.focus());
+              }}
+            >
+              <Icon name="x" size="sm" />
+            </InputGroupButton>
+          )}
+        </InputGroup>
+        {animated && (
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-pressed={disabled}
+            onClick={() => setDisabled((value) => !value)}
+          >
+            {disabled ? "Enable actions" : "Disable actions"}
+          </Button>
+        )}
+      </div>
+      <p role="status" aria-atomic="true" className="v-icon-studio__status">
+        {matches.length
+          ? `${currentPage * pageSize + 1}–${Math.min((currentPage + 1) * pageSize, matches.length)} of ${matches.length.toLocaleString("en-US")} icons · hover, focus or select to animate`
+          : "No matching icons. Try a different name or action."}
+      </p>
+      <div data-icon-grid="" className="v-icon-studio__grid">
+        {visible.map((name) => (
+          <Button
+            key={name}
+            data-icon-option={name}
+            shape="card"
+            variant={selected === name ? "secondary" : "ghost"}
+            disabled={disabled}
+            aria-label={label(name)}
+            aria-pressed={selected === name}
+            onClick={() => {
+              setSelected(name);
+              setReplay((value) => value + 1);
+            }}
+          >
+            {animated ? (
+              <AnimatedIcon
+                name={name}
+                size={iconSize}
+                style={iconStyle}
+                preset={preset}
+                treatment={treatment}
+                tone={tone}
+                duration={duration}
+                ease={ease}
+              />
+            ) : (
+              <Icon
+                name={name}
+                size={iconSize}
+                style={iconStyle}
+                treatment={treatment}
+                tone={tone}
+                feedbackDuration={duration}
+                feedbackEase={ease}
+              />
+            )}
+            <span>{label(name)}</span>
+          </Button>
+        ))}
+      </div>
+      <nav aria-label="Icon result pages" className="v-icon-studio__pages">
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={currentPage === 0}
+          onClick={() => setPage((value) => Math.max(0, value - 1))}
+        >
+          <Icon name="arrow-left" size="sm" />
+          Previous icons
+        </Button>
+        <span>
+          Page {currentPage + 1} of {pages}
+        </span>
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={currentPage === pages - 1}
+          onClick={() => setPage((value) => Math.min(pages - 1, value + 1))}
+        >
+          Next icons
+          <Icon name="arrow-right" size="sm" />
+        </Button>
+      </nav>
+      <p className="v-icon-studio__credit">
+        Based on{" "}
+        <a href="https://lucide.dev/" target="_blank" rel="noreferrer">
+          Lucide
+        </a>
+        , with Cojeev ink and motion. Action icons have tailored moving parts;
+        the wider collection uses shared motion families. Every gesture respects
+        reduced motion.
+      </p>
     </div>
-    {animated&&<div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-      <Button variant="secondary" onClick={()=>setSelected(null)} disabled={!selected}>Release selection</Button>
-      <Button variant="ghost" aria-pressed={disabled} onClick={()=>setDisabled(value=>!value)}>{disabled?"Enable actions":"Disable actions"}</Button>
-    </div>}
-    <p role="status" aria-atomic="true" style={{margin:0,fontSize:13}}>{matches.length?`${currentPage*pageSize+1}–${Math.min((currentPage+1)*pageSize,matches.length)} of ${matches.length} icons`:"No matching icons. Try a different name or action."}</p>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(104px,1fr))",gap:12}}>{visible.map(name=><Button key={name} data-icon-option={name} variant={selected===name?"secondary":"ghost"} disabled={disabled} style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10,minHeight:84,height:"auto",padding:12,fontSize:12,whiteSpace:"normal"}} aria-pressed={selected===name} onClick={()=>setSelected(current=>current===name?null:name)}>
-      {animated?<AnimatedIcon name={name} size={iconSize} preset={preset} active={selected===name?true:undefined}/>:<Icon name={name} size={iconSize}/>}{label(name)}
-    </Button>)}</div>
-    {pages>1&&<nav aria-label="Icon result pages" style={{display:"flex",gap:12,alignItems:"center",justifyContent:"space-between",flexWrap:"wrap"}}>
-      <Button variant="ghost" disabled={currentPage===0} onClick={()=>setPage(value=>Math.max(0,value-1))}>Previous icons</Button>
-      <span style={{fontSize:13}}>Page {currentPage+1} of {pages}</span>
-      <Button variant="ghost" disabled={currentPage===pages-1} onClick={()=>setPage(value=>Math.min(pages-1,value+1))}>Next icons</Button>
-    </nav>}
-    <output aria-live="polite" style={{minHeight:44,overflowWrap:"anywhere"}}>{disabled?"Actions disabled.":selected?<><code>{selected}</code> — {iconActionDescriptions[selected]}</>:"Select an icon for its name and motion."}</output>
-  </div>;
+  );
 }
-export function IconExample(props:ExampleProps){return <IconExplorer {...props}/>}
-export function AnimatedIconExample(props:ExampleProps){return <IconExplorer {...props} animated/>}
+export function IconExample(props: ExampleProps) {
+  return <IconExplorer {...props} />;
+}
+export function AnimatedIconExample(props: ExampleProps) {
+  return <IconExplorer {...props} animated />;
+}

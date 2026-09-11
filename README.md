@@ -1,4 +1,6 @@
-# Cojeev UI
+# 000h by Cojeev
+
+Expressive React components with organic shapes and purposeful motion. The existing `@cojeev` registry configuration and component import paths remain compatible. See [launch setup](docs/launch/README.md) for analytics and domain configuration.
 
 **124 React components. Warm surfaces, expressive shapes and considered motion.**
 

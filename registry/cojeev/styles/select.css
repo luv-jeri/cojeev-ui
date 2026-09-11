@@ -73,15 +73,6 @@
   min-width: max(100%, 200px);
   z-index: var(--z-dialog);
 }
-.v-listbox:where([data-slot="select"], [data-slot^="select-"])
-  .v-menu__item[data-state="checked"]::after {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--v-pink);
-  margin-left: auto;
-}
 .v-select:where([data-slot="select"], [data-slot^="select-"]):not(.-ink) {
   box-shadow: inset 0 0 0 1px var(--v-edge);
 }
@@ -315,17 +306,7 @@
   background: var(--v-pink-soft);
   color: var(--v-text);
 }
-.v-listbox:where([data-slot="select"], [data-slot^="select-"])
-  .v-menu__item[data-state="checked"]::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--v-pink-deep);
-  margin: 0;
-  justify-self: end;
-}
-.v-listbox:where([data-slot="select"], [data-slot^="select-"])
+.v-listbox:where([data-slot="select"], [data-slot^="select-"]):not([data-pointer-interaction])
   .v-menu__item:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: -2px;
@@ -383,7 +364,7 @@
   color: var(--v-disabled-ink);
   cursor: not-allowed;
 }
-[data-slot="select-item"][data-highlighted] {
+[data-slot="select-content"]:not([data-pointer-interaction]) [data-slot="select-item"][data-highlighted] {
   outline: 2px solid var(--ring);
   outline-offset: -2px;
 }
@@ -391,8 +372,8 @@
 /* The source focuses a native option button on pointer open. Radix focuses a
    div, which Chromium marks focus-visible; retain the source pointer appearance
    and reveal its authored focus ring as soon as keyboard navigation begins. */
-.v-listbox:where([data-slot="select-content"])[data-pointer-interaction] .v-menu__item:focus-visible {
-  outline: 3px none currentColor;
+.v-listbox:where([data-slot="select-content"])[data-pointer-interaction] .v-menu__item {
+  outline: none;
   outline-offset: 0;
 }
 
@@ -414,3 +395,14 @@
 
 [data-slot="select-item"] > .v-select__indicator { margin-inline-start: auto; display: inline-flex; flex: none; padding-inline-start: 8px; }
 [data-slot="select-item"] > .v-select__indicator .v-icon { width: 16px; height: 16px; }
+.v-select__rich { display:grid; gap:3px; min-width:0; white-space:normal; }
+.v-select__description { color:var(--v-text-2); font-size:12px; line-height:1.45; font-weight:400; }
+[data-slot="select-item"]:has(.v-select__rich) { min-height:64px; align-items:center; }
+.v-form-example [data-slot="select"] { display:block; width:100%; min-width:0; }
+.v-form-example [data-slot="select-trigger"] { width:100%; min-height:48px; }
+.v-form-example__selection-action { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:end; }
+.v-form-example__selection-action > .v-btn { min-height:48px; }
+.v-form-example__selection-caption { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--v-text-2); }
+/* Hand paint to the mounted contour, not a second opaque field on top of it.
+   Without the SVG (SSR, disabled motion, native fallback), ordinary CSS stays. */
+:root [data-slot="select-trigger"].v-select:has(> svg.v-morph) { background:transparent; box-shadow:none; }

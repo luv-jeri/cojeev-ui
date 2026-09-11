@@ -16,10 +16,10 @@ let activePage;
 const run = Date.now().toString(36);
 const imageBytes = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf3sAAAAASUVORK5CYII=", "base64");
 const screenshot = async (page, name) => { if (await page.locator(".report-launcher").count()) await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false); await page.screenshot({ path: `${output}/${name}.png`, fullPage: false, caret: "initial" }); };
-const panel = page => page.getByRole("dialog", { name: "Make it better", exact: true });
-const open = async page => { await page.getByRole("button", { name: "Request a component or report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor(); };
+const panel = page => page.getByRole("dialog", { name: "Request a feature or report a bug", exact: true });
+const open = async page => { await page.getByRole("button", { name: "Request a feature or report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor(); };
 const fill = async (page, kind, title) => {
-  await page.getByRole("button", { name: kind === "bug" ? "Report a bug" : "Request a component", exact: true }).last().click();
+  await page.getByRole("button", { name: kind === "bug" ? "Report a bug" : "Request a feature", exact: true }).last().click();
   await page.getByRole("textbox", { name: kind === "bug" ? "What went wrong?" : "Component title", exact: true }).fill(title);
   await page.getByRole("textbox", { name: kind === "bug" ? "What happened, and what did you expect?" : "Details, inspiration & links", exact: true }).fill("Local browser verification. Reference: https://example.com/reference");
   await page.getByRole("textbox", { name: "Your email", exact: true }).fill(`browser-${run}@example.com`);

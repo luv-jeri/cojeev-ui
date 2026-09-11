@@ -21,8 +21,8 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
         await text(added, "This entry was added by the button in this preview.");
         await eventually(() => added.evaluate(el => getComputedStyle(el).opacity === "1"), "Quiet appended activity remains visible");
         assert(await root.getByRole("button", { name: "Example added", exact: true }).isDisabled());
-        await feed.getByRole("button", { name: "Show 1 more", exact: true }).click();
-        await eventually(async () => await entries.count() === 5, "Final activity remains reachable after prepend");
+        await eventually(async () => await entries.count() === 5, "Prepending retains all four previously revealed activities");
+        assert.equal(await feed.getByRole("button", { name: /Show .* more/ }).count(), 0, "An already revealed entry must not be hidden again by prepend");
       });
       const ids = await entries.evaluateAll(nodes => nodes.map(node => node.dataset.activityEntry));
       assert.equal(new Set(ids).size, 5);
@@ -114,9 +114,9 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
     },
     "hero-button": async ({ page, root }) => {
       const button = root.getByRole("button", { name: "Make something yours", exact: true });
-      await button.click(); await text(root, "1 little beginnings.");
-      await key(button, "Enter"); await text(root, "2 little beginnings.");
-      await reduced(page, async () => { await key(button, "Space"); await text(root, "3 little beginnings."); });
+      await button.click(); await text(root, "1 local action.");
+      await key(button, "Enter"); await text(root, "2 local actions.");
+      await reduced(page, async () => { await key(button, "Space"); await text(root, "3 local actions."); });
       assert.equal(await button.locator('[data-slot="hero-button-arrow"]').count(), 1);
       return "Native pointer, Enter and Space activation each produce one visible result, including reduced motion";
     },
@@ -161,7 +161,7 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       return "Caller-owned progress completes and restarts without a false current step; keyboard title selection preserves progress";
     },
     "reading-trail": async ({ page, root }) => {
-      const trail = root.getByRole("navigation", { name: "A note worth keeping", exact: true });
+      const trail = root.getByRole("navigation", { name: "In this note", exact: true });
       const article = root.getByRole("region", { name: "Example article", exact: true });
       const last = trail.getByRole("link", { name: /Leave a way back/ });
       const destination = decodeURIComponent((await last.getAttribute("href")).slice(1));
@@ -181,29 +181,29 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       return "Trail links scroll the actual article, transfer focus and update progress/current location; quiet keyboard return works";
     },
     "shape-artwork": async ({ page, root }) => {
-      const artwork = root.getByRole("img", { name: "An original organic shape", exact: true });
+      const artwork = root.locator('[data-studio-art]');
       const firstPath = await artwork.locator('[data-artwork-layer="fill"] path').getAttribute("d");
-      await root.getByRole("radio", { name: "Clover", exact: true }).click();
-      await attribute(artwork, "data-shape", "clover-soft");
+      await root.getByRole("button", { name: "Cushion", exact: true }).click();
+      await attribute(artwork, "data-shape", "cushion");
       await eventually(async () => (await artwork.locator('[data-artwork-layer="fill"] path').getAttribute("d")) !== firstPath, "Shape selection changes the contour");
-      const slider = root.getByRole("slider", { name: "Artwork rotation", exact: true });
-      await key(slider, "ArrowRight");
-      await attribute(slider, "aria-valuenow", "1");
-      assert.equal(await artwork.locator('[data-artwork-layer="fill"]').getAttribute("transform"), "rotate(1 50 50)");
+      await root.getByRole("button", { name: "Blue", exact: true }).click();
+      await attribute(artwork, "data-tone", "blue");
       await root.getByRole("switch", { name: "Cast shadow", exact: true }).click();
       assert.equal(await artwork.locator('[data-artwork-layer="shadow"]').count(), 0);
-      await key(root.getByRole("switch", { name: "Rear outline", exact: true }), "Space");
-      assert.equal(await artwork.locator('[data-artwork-layer="echo"]').count(), 0);
-      await text(root.locator('pre'), "rotation={1}");
-      await text(root.locator('pre'), "shadow={false}");
-      await text(root.locator('pre'), "echo={false}");
       await reduced(page, async () => {
-        await root.getByRole("radio", { name: "Seed", exact: true }).click();
-        await attribute(artwork, "data-shape", "seed-wing");
+        await key(root.getByRole("button", { name: "Breathe", exact: true }), "Enter");
+        await attribute(artwork, "data-ambient", "true");
         await attribute(artwork, "data-quiet", "true");
-        assert((await artwork.locator('path').getAttribute("d")).length > 20);
+        const quietPath = await artwork.locator('[data-artwork-layer="fill"] path').getAttribute("d");
+        await page.waitForTimeout(180);
+        assert.equal(await artwork.locator('[data-artwork-layer="fill"] path').getAttribute("d"), quietPath);
       });
-      return "Shape, keyboard rotation and layer controls alter actual SVG artwork and its copyable usage code, including quiet selection";
+      await root.getByRole("button", { name: "Copy React snippet", exact: true }).click();
+      const copied = await page.evaluate(() => navigator.clipboard.readText());
+      assert.match(copied, /ambient=\{true\}/);
+      assert.match(copied, /tone=\{"blue"\}/);
+      assert.match(copied, /shadow=\{false\}/);
+      return "Unified shape studio changes actual contour, palette, shadow and copied JSX; keyboard Breathe remains still under reduced motion";
     },
     "text-ribbon": async ({ page, root }) => {
       const ribbon = root.locator('[data-slot="text-ribbon"]');

@@ -8,8 +8,8 @@
     "enabled": true
   },
   "vars": {
-    "ALLOWED_ORIGINS": "https://luv-jeri.github.io",
-    "SITE_URL": "https://luv-jeri.github.io/cojeev-ui",
+    "ALLOWED_ORIGINS": "https://000h.cojeev.com,https://luv-jeri.github.io",
+    "SITE_URL": "https://000h.cojeev.com",
     "LOCAL_MODE": "false",
     "EMAIL_ENABLED": "false",
     "EMAIL_FROM": "hello@your-domain.invalid",
@@ -32,6 +32,13 @@
     {
       "bucket_name": "cojeev-ui-report-media",
       "binding": "MEDIA"
+    }
+  ],
+  "account_id": "25369d7051a3d996a1bca81f462a1fbc",
+  "routes": [
+    {
+      "pattern": "feedback.cojeev.com",
+      "custom_domain": true
     }
   ]
 }
