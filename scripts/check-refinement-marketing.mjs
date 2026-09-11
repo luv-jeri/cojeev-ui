@@ -19,7 +19,7 @@ await fs.mkdir(output, { recursive: true });
 
 async function ready(composition, kind) {
   await composition.waitFor({ state: "visible" });
-  await composition.evaluate((node, expected) => new Promise((resolve, reject) => {
+  await composition.first().evaluate((node, expected) => new Promise((resolve, reject) => {
     const started = performance.now();
     const check = () => {
       if (node.dataset.kind === expected && node.dataset.settled === "true" && node.dataset.assembled === "true") resolve(true);
@@ -30,10 +30,20 @@ async function ready(composition, kind) {
   }), kind);
 }
 
-async function currentAssembly(page, reduced = false) {
-  const assembly = page.locator('.launch-hero [data-slot="organism-assembly"]');
+async function currentAssembly(page, base, reduced = false) {
+  await page.goto(`${base}/docs/organism-assembly/`, { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
+  const assembly = page.locator('[data-example-role="interactive"] [data-slot="organism-assembly"]');
   const composition = assembly.locator('[data-slot="organism-composition"]');
-  await assembly.scrollIntoViewIfNeeded();
+  // The documentation example opens as loose parts and animates its own height on arrival;
+  // let it come to rest before driving its transport, then take the same journey.
+  await assembly.evaluate(node => node.scrollIntoView({ block: "center" }));
+  await composition.first().waitFor({ state: "visible" });
+  await page.waitForFunction(() => document.querySelector('[data-example-role="interactive"] [data-slot="organism-composition"]')?.dataset.settled === "true");
+  const assemble = assembly.getByRole("button", { name: "Assemble", exact: true });
+  // Quiet mode keeps the parts assembled and disables the transport, so only drive it when it can run.
+  if (await assemble.count() && await assemble.isEnabled()) await assemble.click();
+  await assembly.getByRole("button", { name: "Focus", exact: true }).click();
   await ready(composition, "focus");
   const start = composition.getByRole("button", { name: "Start focusing", exact: true });
   await start.focus(); await start.press("Enter");
@@ -80,30 +90,45 @@ try {
       await page.evaluate(() => document.fonts.ready);
       await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
       const hero = page.locator(".launch-hero");
-      const featured = page.locator(".launch-featured");
-      assert.equal(await featured.locator("[data-featured-component]").count(), 6);
-      await featured.getByRole("button", { name: "Scatter", exact: true }).click();
-      await featured.getByRole("button", { name: "Gather", exact: true }).click();
+      const stage = page.locator("[data-profile-stage]");
+      const featured = page.locator("#featured-components");
+      const shown = async () => featured.locator("[data-featured-component]:not([hidden])").count();
+      assert.equal(await shown(), 4, "The gallery shows one filtered shelf of four");
+      await stage.getByRole("button", { name: "Fold", exact: true }).click();
+      await page.waitForFunction(() => document.querySelector("[data-profile-stage]")?.dataset.treatment === "fold");
+      assert.equal(await stage.getByRole("button", { name: "Fold", exact: true }).getAttribute("aria-pressed"), "true");
+      await featured.getByRole("button", { name: "Motion", exact: true }).click();
+      await page.waitForFunction(() => document.querySelector("#featured-components")?.dataset.filter === "motion");
+      assert.equal(await shown(), 4, "A filter swaps the shelf rather than emptying it");
       await featured.getByRole("button", { name: "Replay the details", exact: true }).click();
-      await hero.getByRole("link", { name: /^Explore \d+ components$/ }).click();
-      await page.waitForURL(url => url.pathname === new URL(`${base}/docs/`).pathname);
-      await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
-      await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
-      row.checks.push("six named previews, live demo controls and real docs navigation");
-      await currentAssembly(page);
-      row.checks.push("native focus timer keyboard action and composite chat send/clear");
-      const studio = page.locator("[data-shape-studio]");
-      assert.equal(await studio.count(), 1, "Homepage uses one shared shape studio");
-      assert.equal(await studio.locator("[data-studio-shape]").count(), 12);
-      await studio.getByRole("button", { name: "Cushion", exact: true }).click();
-      assert.equal(await studio.locator("[data-studio-art]").getAttribute("data-shape"), "cushion");
+      await featured.getByRole("button", { name: "Done", exact: true }).click();
+      assert.equal(await featured.locator('[data-slot="agent-state"]').getAttribute("data-status"), "complete");
       await featured.getByRole("button", { name: "Open drawer", exact: true }).click();
       await page.getByRole("dialog", { name: "A little room for ideas" }).waitFor();
       await page.keyboard.press("Escape");
       await page.getByRole("dialog", { name: "A little room for ideas" }).waitFor({ state: "hidden" });
-      await featured.getByRole("button", { name: "Done", exact: true }).click();
-      assert.equal(await featured.locator('[data-slot="agent-state"]').getAttribute("data-status"), "complete");
-      row.checks.push("live drawer and agent controls; one shared shape studio changes its actual contour");
+      await featured.getByRole("button", { name: "Featured", exact: true }).click();
+      await page.waitForFunction(() => document.querySelector("#featured-components")?.dataset.filter === "featured");
+      assert.equal(await stage.getAttribute("data-treatment"), "fold", "Filtering the gallery must not reset the stage");
+      row.checks.push("one live profile stage, four filtered previews and live demo controls");
+      await hero.getByRole("link", { name: /^Explore \d+ components$/ }).click();
+      await page.waitForURL(url => url.pathname === new URL(`${base}/docs/`).pathname);
+      row.checks.push("real docs navigation from the homepage");
+      // The assembly opening and the shape studio now live on their own documentation pages.
+      await currentAssembly(page, base);
+      row.checks.push("native focus timer keyboard action and composite chat send/clear");
+      await page.goto(`${base}/docs/shape/`, { waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
+      const studio = page.locator("[data-shape-studio]");
+      assert.equal(await studio.count(), 1, "Documentation keeps one shared shape studio");
+      assert.equal(await studio.locator("[data-studio-shape]").count(), 12);
+      await studio.getByRole("button", { name: "Cushion", exact: true }).click();
+      // The studio renders the chosen contour on its own commit; read the state it settles on.
+      await page.waitForFunction(() => document.querySelector("[data-shape-studio] [data-studio-art]")?.dataset.shape === "cushion", null, { timeout: 5000 }).catch(() => {});
+      assert.equal(await studio.locator("[data-studio-art]").getAttribute("data-shape"), "cushion");
+      row.checks.push("one shared shape studio changes its actual contour");
+      await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
       if (width < 801) {
         const trigger = page.getByRole("button", { name: "Open navigation", exact: true });
         await trigger.focus(); await trigger.press("Enter");
@@ -125,8 +150,11 @@ try {
       await page.screenshot({ path: path.join(output, `creator-${filename}.png`), fullPage: true });
       row.checks.push("creator route and GitHub contact");
       await page.emulateMedia({ reducedMotion: "reduce" });
+      await currentAssembly(page, base, true);
       await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
-      await currentAssembly(page, true);
+      await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
+      assert.equal(await page.locator("[data-profile-stage]").getAttribute("data-phase"), "settled", "Quiet mode renders the settled stage immediately");
+      assert(await page.getByRole("button", { name: "Replay assembly", exact: true }).isDisabled(), "Quiet mode disables a replay that cannot run");
       row.checks.push("reduced motion keeps settled native controls and manual composition choices usable");
       assert.equal(errors.length, 0, errors.join("; "));
       row.pass = true;

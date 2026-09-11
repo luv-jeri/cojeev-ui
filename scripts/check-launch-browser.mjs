@@ -12,11 +12,27 @@ const context = await browser.newContext({ viewport: { width: 1440, height: 1000
 // Verification never sends synthetic events to an analytics project.
 await context.route(/https:\/\/(?:us|eu)\.i\.posthog\.com\//, route => route.fulfill({ status: 200, body: "1" }));
 const page = await context.newPage();
+// A dev server compiles routes on demand; give it headroom without relaxing any assertion.
+page.setDefaultTimeout(Number(process.env.LAUNCH_TIMEOUT ?? 30000));
+page.setDefaultNavigationTimeout(Number(process.env.LAUNCH_NAV_TIMEOUT ?? 60000));
 page.on("pageerror", error => errors.push(error.message));
 const mark = label => { checks.push(label); console.log(`Verified: ${label}`); };
 async function ready() {
   await page.locator('.story-header [data-slot="button"], .story-header [data-slot="theme-toggle"]').first().waitFor();
   await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
+}
+// The stored appearance is re-applied in a client effect, so a freshly loaded document can still
+// show the served default. Wait for the document to agree with the preference before reading it.
+async function themeSettled() {
+  await page.waitForFunction(() => {
+    const stored = localStorage.getItem("cojeev-docs-theme");
+    return !stored || document.documentElement.dataset.mode === stored;
+  });
+}
+async function chooseTheme(theme) {
+  await themeSettled();
+  if (await page.locator("html").getAttribute("data-mode") !== theme) await page.getByRole("switch", { name: /appearance/i }).click();
+  await page.waitForFunction(expected => document.documentElement.dataset.mode === expected && !document.querySelector("[data-theme-reveal]"), theme);
 }
 async function noOverflow() {
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), "page must fit viewport width");
@@ -25,26 +41,26 @@ try {
   await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
   await ready();
   await page.getByRole("link", { name: /^Explore \d+ components$/ }).waitFor();
-  assert.equal(await page.locator("[data-featured-component]").count(), 6);
-  await page.locator('[data-slot="semantic-bloom"] canvas').waitFor();
-  await page.locator('.launch-hero [data-slot="organism-assembly"][data-phase="usable"]').waitFor();
+  const gallery = page.locator("#featured-components");
+  const shelf = gallery.locator("[data-featured-component]:not([hidden])");
+  assert.equal(await shelf.count(), 4, "One filter shows one shelf of four live previews");
+  await page.locator('[data-profile-stage][data-phase="settled"]').waitFor();
   await page.waitForTimeout(900);
   for (const theme of ["light", "dark"]) {
-    const current = await page.locator("html").getAttribute("data-mode");
-    if (current !== theme) await page.getByRole("switch", { name: /appearance/i }).click();
-    await page.waitForFunction(expected => document.documentElement.dataset.mode === expected && !document.querySelector("[data-theme-reveal]"), theme);
+    await chooseTheme(theme);
     await noOverflow();
-    for (const article of await page.locator("[data-featured-component]").all()) {
+    for (const article of await shelf.all()) {
       const box = await article.boundingBox();
-      const install = await article.getByRole("button", { name: "Get component", exact: true }).boundingBox();
-      assert.ok(box && install && install.y + install.height <= box.y + box.height + 1, "install control must fit its card");
+      const docs = await article.locator(".launch-specimen__docs").boundingBox();
+      assert.ok(box && docs && docs.y + docs.height <= box.y + box.height + 1, "documentation link must fit its card");
     }
     await page.screenshot({ path: `${output}/desktop-${theme}.png`, fullPage: true });
   }
-  mark("desktop previews fit in both themes with reachable installation controls");
-  await page.locator('[data-featured-component="semantic-bloom"]').getByRole("button", { name: "Scatter", exact: true }).click();
-  await page.getByRole("button", { name: "Gather", exact: true }).click();
-  await page.getByRole("button", { name: "Replay the details" }).click();
+  mark("desktop previews fit in both themes with reachable documentation links");
+  const stage = page.locator("[data-profile-stage]");
+  await stage.getByRole("button", { name: "Stack", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector("[data-profile-stage]")?.dataset.treatment === "stack");
+  assert.equal(await page.locator("[data-profile-live]").getAttribute("data-treatment"), "stack");
   const drawerTrigger = page.getByRole("button", { name: "Open drawer" });
   await drawerTrigger.click();
   const stack = page.getByRole("dialog", { name: "A little room for ideas" });
@@ -54,33 +70,58 @@ try {
   await page.keyboard.press("Escape");
   await stack.waitFor({ state: "hidden" });
   assert.equal(await drawerTrigger.evaluate(element => element === document.activeElement), true);
+  // An overlay keeps the page out of the accessibility tree until it has finished leaving.
+  const released = () => page.waitForFunction(() => {
+    for (let node = document.querySelector("#featured-components"); node; node = node.parentElement) {
+      if (node.inert || node.getAttribute?.("aria-hidden") === "true") return false;
+    }
+    return true;
+  });
+  await released();
+  await gallery.getByRole("button", { name: "Layout", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector("#featured-components")?.dataset.filter === "layout");
+  assert.equal(await shelf.count(), 4, "A filter swaps the shelf rather than emptying it");
   const dock = page.locator('[data-featured-component="dock"]');
   await dock.getByRole("button", { name: "Ideas", exact: true }).click();
   assert.equal(await dock.getByRole("status").innerText(), "Ideas");
-  const agent = page.locator('[data-featured-component="agent-state"]');
-  await agent.getByRole("button", { name: "Done", exact: true }).click();
-  assert.equal(await agent.locator('[data-slot="agent-state"]').getAttribute("data-status"), "complete");
   const background = page.locator('[data-featured-component="pattern-background"]');
   await background.getByRole("button", { name: "Pebbles", exact: true }).click();
   assert.equal(await background.locator('[data-slot="pattern-background"]').getAttribute("data-pattern"), "pebbles");
+  await gallery.getByRole("button", { name: "Motion", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector("#featured-components")?.dataset.filter === "motion");
+  const agent = page.locator('[data-featured-component="agent-state"]');
+  await agent.getByRole("button", { name: "Done", exact: true }).click();
+  assert.equal(await agent.locator('[data-slot="agent-state"]').getAttribute("data-status"), "complete");
+  await page.getByRole("button", { name: "Replay the details" }).click();
+  await gallery.getByRole("button", { name: "Featured", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector("#featured-components")?.dataset.filter === "featured");
+  await gallery.getByRole("button", { name: "Layout", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector("#featured-components")?.dataset.filter === "layout");
+  assert.equal(await dock.getByRole("status").innerText(), "Ideas", "Filtering away and back must not erase a choice already made");
+  await gallery.getByRole("button", { name: "Featured", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector("#featured-components")?.dataset.filter === "featured");
   assert.equal(await page.locator(".shape-workbench-section, .studio-assembly, .studio-materials").count(), 0, "the homepage is a compact collection");
   const height = await page.evaluate(() => document.documentElement.scrollHeight);
   assert.ok(height < 2150, `desktop landing stays short, received ${height}px`);
-  mark("six live previews respond, the drawer restores focus, and the homepage stays short");
-  await page.locator('[data-featured-component="semantic-bloom"]').getByRole("button", { name: "Get component", exact: true }).click();
-  const installDialog = page.getByRole("dialog", { name: "Add Semantic Bloom" });
-  await installDialog.waitFor();
-  await installDialog.getByRole("button", { name: "Copy command" }).click();
-  await page.waitForFunction(() => [...document.querySelectorAll('[role="dialog"] [role="status"]')].some(element => element.textContent?.includes("Copied")));
+  mark("live previews respond across filters, the drawer restores focus, and the homepage stays short");
+  // Installation lives on the documentation pages now, so the copy path is verified there.
+  await page.goto(`${base}/docs/semantic-bloom/`, { waitUntil: "domcontentloaded" });
+  // InstallCommand renders an inline terminal CodeBlock, so scope the feedback to that block.
+  const install = page.locator(".docs-command").first();
+  await install.waitFor();
+  // The copy control only answers once the page is interactive.
+  await page.waitForFunction(() => Boolean(document.querySelector(".v-morph-live")));
+  await install.scrollIntoViewIfNeeded();
+  await install.getByRole("button", { name: "Copy command" }).click();
+  await page.waitForFunction(() => [...document.querySelectorAll('.docs-command [role="status"]')].some(element => element.textContent?.includes("Copied")));
   assert.match(await page.evaluate(() => navigator.clipboard.readText()), /\/r\/semantic-bloom\.json$/);
-  await page.keyboard.press("Escape");
-  await installDialog.waitFor({ state: "hidden" });
-  mark("featured installation copies the actual registry command");
+  mark("documented installation copies the actual registry command");
 
+  await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
+  await ready();
   await page.setViewportSize({ width: 390, height: 844 });
   for (const theme of ["light", "dark"]) {
-    if (await page.locator("html").getAttribute("data-mode") !== theme) await page.getByRole("switch", { name: /appearance/i }).click();
-    await page.waitForFunction(expected => document.documentElement.dataset.mode === expected && !document.querySelector("[data-theme-reveal]"), theme);
+    await chooseTheme(theme);
     await page.evaluate(() => window.scrollTo(0, 0));
     await noOverflow();
     await page.screenshot({ path: `${output}/mobile-${theme}.png`, fullPage: true });
