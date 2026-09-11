@@ -47,7 +47,7 @@ export async function cleanup(env:Env) {
   await env.DB.batch([
     env.DB.prepare("UPDATE outbox SET state='needs_review',last_error='Private contact details expired.' WHERE state='pending' AND report_id IN (SELECT id FROM reports WHERE created_at<?)").bind(now()-180*86400000),
     env.DB.prepare("UPDATE outbox SET payload_json=NULL WHERE report_id IN (SELECT id FROM reports WHERE created_at<?)").bind(now()-180*86400000),
-    env.DB.prepare("UPDATE topics SET title='[Expired request]' WHERE created_at<?").bind(now()-180*86400000),
+    env.DB.prepare("UPDATE topics SET title='[Expired request]',title_key='retired:'||id WHERE created_at<?").bind(now()-180*86400000),
     env.DB.prepare("UPDATE reports SET email='',title='[Expired report]',description='[Expired after 180 days]',references_json='[]',private_purged=1 WHERE private_purged=0 AND created_at<?").bind(now()-180*86400000),
     env.DB.prepare("DELETE FROM rate_limits WHERE expires_at<?").bind(now()),
     env.DB.prepare("DELETE FROM webhook_events WHERE created_at<?").bind(now()-30*86400000)

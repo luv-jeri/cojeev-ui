@@ -44,6 +44,8 @@ New GitHub issues use generic kind/reference titles. Public request topics use a
 
 Previously published GitHub titles are external historical data: this migration does not edit or erase them. Review and sanitize any sensitive legacy titles separately with explicit GitHub authority. The runtime continues signed-marker/token-actor reconciliation to prevent duplicate issue creation. Issue closure alone cannot send a release email: the existing signed webhook requires `completed` plus `feedback:released`, and requests require a live URL under the configured site's `/docs/` path. Maintainer status `resolved` is an explicit release action. Keep that existing lifecycle; do not infer a release from provider email status.
 
+After 180 days, cleanup replaces both the original topic title and its normalized plaintext deduplication key. Each retired key contains only `retired:` and the topic UUID, preserving the unique index without retaining private prose. Subsequent requests using the same free-text title create a new topic; explicit subscriptions by existing topic ID still work. Approved public titles, topic identity, status and demand remain intact.
+
 ## Health and launch checks
 
 `GET /health` returns only `status`, `environment`, and `release`. It does not disclose credentials, counts or report data and is not a provider-readiness proof. `GET /v1/admin/health` requires the existing bearer maintainer authorization and returns queue counts by job/delivery state, oldest ages, configured provider booleans, current UTC usage, hard-bounded limits, and activation cutoff. It never includes addresses, payloads, tokens or original report text.

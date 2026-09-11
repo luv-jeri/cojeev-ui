@@ -145,6 +145,25 @@ test('cleanup removes expired private bug titles along with other private prose'
   const privateData=await (await request(`/v1/admin/reports/${p.id}`,'GET',undefined,admin)).text();
   assert.ok(!privateData.includes(p.title)&&!privateData.includes(p.description)&&!privateData.includes(p.email));
 });
+test('cleanup retires normalized private request titles without collisions and preserves explicit subscriptions',async()=>{
+  const a=payload({kind:'request',title:'Confidential Meridian acquisition'});
+  const b=payload({kind:'request',title:'Confidential Juniper acquisition'});
+  await submit(a);await submit(b);
+  await db.prepare('UPDATE topics SET created_at=? WHERE id IN (?,?)').bind(Date.now()-181*86400000,a.id,b.id).run();
+  await db.prepare('UPDATE reports SET created_at=? WHERE id IN (?,?)').bind(Date.now()-181*86400000,a.id,b.id).run();
+  await db.prepare('UPDATE topics SET public_title=? WHERE id=?').bind('Comparison timeline',a.id).run();
+  await backend.cleanup(backendEnv());
+  const expired=await db.prepare('SELECT title,title_key,public_title FROM topics WHERE id IN (?,?)').bind(a.id,b.id).all();
+  assert.ok(!JSON.stringify(expired.results).toLowerCase().includes('confidential'),'both original and normalized private title must expire');
+  assert.equal(new Set(expired.results.map(topic=>topic.title_key)).size,2,'retired keys must respect the unique index');
+  assert.ok(expired.results.some(topic=>topic.public_title==='Comparison timeline'),'approved public title remains');
+  const fresh=payload({kind:'request',title:a.title});const response=await submit(fresh);
+  assert.equal(response.status,201);assert.equal((await response.json()).topicId,fresh.id,'expired automatic title deduplication ends');
+  const joined=await submit(payload({kind:'request',title:a.title,topicId:a.id,email:'subscriber@example.com'}));
+  assert.equal(joined.status,201);assert.equal((await joined.json()).topicId,a.id,'explicit subscriptions retain the old topic identity');
+  await backend.cleanup(backendEnv());
+  assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM topics WHERE id IN (?,?)').bind(a.id,b.id).first()).n,2,'repeated cleanup is safe');
+});
 test('GitHub reconciliation binds markers to the report actor and creation window and keeps prose private',async()=>{
   const p=payload({title:'Private bug title',description:'Private description',email:'private-address@example.com',references:['https://private.example.com/secret']});
   await submit(p);const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
