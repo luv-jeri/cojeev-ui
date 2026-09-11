@@ -5,6 +5,26 @@ import {execFileSync} from 'node:child_process';
 import {environmentConfig} from './release-config.mjs';
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+export async function copyCommittedSource(root,commit,destination) {
+  assertCleanSource(root,commit);
+  const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:16*1024*1024}).trim();
+  if(git('write-tree')!==git('rev-parse',`${commit}^{tree}`)) throw new Error('Index tree does not match requested commit');
+  const entries=git('ls-files','--stage','-z').split('\0').filter(Boolean);
+  for(const entry of entries) {
+    const match=entry.match(/^(100644|100755) ([a-f0-9]{40}) 0\t(.+)$/s);
+    if(!match) throw new Error('Snapshot permits only regular tracked files; symlinks/submodules refused');
+    const [,mode,oid,file]=match;
+    if(path.isAbsolute(file)||file.split('/').includes('..')) throw new Error('Invalid snapshot path');
+    const source=path.join(root,file),target=path.join(destination,file);
+    if(!(await fs.lstat(source)).isFile()) throw new Error('Snapshot entry is not a regular file');
+    const bytes=await fs.readFile(source);
+    const actual=createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
+    if(actual!==oid) throw new Error(`Snapshot blob mismatch: ${file}`);
+    await fs.mkdir(path.dirname(target),{recursive:true});
+    await fs.writeFile(target,bytes,{mode:mode==='100755'?0o755:0o644});
+  }
+  assertCleanSource(root,commit);
+}
 export const manifestDigest = manifest => hash(JSON.stringify(manifest));
 export function assertCleanSource(root, commit) {
   const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8'}).trim();

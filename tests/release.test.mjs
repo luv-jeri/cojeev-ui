@@ -49,3 +49,19 @@ test('source snapshots reject dirty and mismatched commits including untracked f
     assert.throws(()=>release.assertCleanSource(dir,commit),/clean|dirty/);
   } finally { await fs.rm(dir,{recursive:true,force:true}); }
 });
+test('tracked snapshot preserves executable mode and verifies bytes against the committed index',async()=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-copy-'));
+  const git=(...args)=>execFileSync('git',args,{cwd:dir,encoding:'utf8'}).trim();
+  try {
+    git('init','--quiet');git('config','user.email','test@example.invalid');git('config','user.name','Test');
+    await fs.writeFile(path.join(dir,'run'),'#!/bin/sh\nexit 0\n',{mode:0o755});git('add','run');git('commit','--quiet','-m','fixture');
+    const destination=await fs.mkdtemp(path.join(os.tmpdir(),'release-copy-target-'));
+    try {
+      await release.copyCommittedSource(dir,git('rev-parse','HEAD'),destination);
+      assert.equal(await fs.readFile(path.join(destination,'run'),'utf8'),'#!/bin/sh\nexit 0\n');
+      assert.equal((await fs.stat(path.join(destination,'run'))).mode&0o111,0o111);
+      await fs.symlink('run',path.join(dir,'link'));git('add','link');git('commit','--quiet','-m','symlink');
+      await assert.rejects(release.copyCommittedSource(dir,git('rev-parse','HEAD'),destination),/regular|symlink/);
+    } finally {await fs.rm(destination,{recursive:true,force:true});}
+  } finally {await fs.rm(dir,{recursive:true,force:true});}
+});

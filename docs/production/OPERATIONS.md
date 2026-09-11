@@ -106,13 +106,18 @@ commit; they never expose report counts or provider readiness.
 PR checks use Node 22.22.0, root lockfile `npm ci`, lint, Next type generation,
 types, unit/reporting/hosting/release checks, two isolated environment builds,
 example compilation, browser/motion/mobile/marketing/scroll gates, reporting and
-analytics browser checks, and a fresh consumer install from copied local registry
-artifacts. Fork PR jobs have no deployment environment or deploy credentials.
+analytics browser checks, and a fresh consumer install from each beta/production
+artifact. Each artifact and its environment URLs are verified before a temporary
+registry copy rewrites dependency URLs to the local test server. This tests the
+actual packaged source; real domain routing and absence of cross-origin requests
+still require Task 4. Fork PR jobs have no deployment environment or deploy credentials.
 All Actions are pinned to upstream commit SHAs.
 
 `build-pair` requires a clean full commit, including no untracked source. It uses
-`git archive` into temporary directories and only public build variables; private
-local files and CI deploy secrets are never copied into the builder. Both bundles
+tracked-index snapshots into temporary directories and only public build variables.
+Each copied file's Git blob hash must match the index; the index tree must match
+the requested commit tree. Symlinks/submodules are refused and executable modes
+preserved. Private local files and CI deploy secrets are never copied into the builder. Both bundles
 come from that same commit. Each contains only `site/`, `api/`, `website/`, and
 `manifest.json`. File inventories and SHA-256 digests are deterministic for the
 actual bytes. Builds are identified by source SHA plus their recorded manifest

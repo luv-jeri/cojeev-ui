@@ -51,8 +51,13 @@ jobs:
       - run: npm run gate:smooth-scroll
       - run: npm run reporting:browser
       - run: npm run analytics:browser
-      - name: Verify fresh consumer installation from this build
-        run: node scripts/release-install.mjs
+      - name: Verify fresh consumer installation from each verified environment artifact
+        run: |
+          node scripts/release-install.mjs beta "$GITHUB_SHA" artifacts/release/beta "$BETA_DIGEST"
+          node scripts/release-install.mjs production "$GITHUB_SHA" artifacts/release/production "$PRODUCTION_DIGEST"
+        env:
+          BETA_DIGEST: ${{ steps.release.outputs.beta_digest }}
+          PRODUCTION_DIGEST: ${{ steps.release.outputs.production_digest }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: release-${{ github.sha }}

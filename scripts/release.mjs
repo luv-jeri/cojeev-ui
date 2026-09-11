@@ -6,7 +6,7 @@ import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 import {buildEnvironment,environmentConfig} from './release-config.mjs';
-import {assertCleanSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
+import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
 import {backup,cloudflare,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
 
@@ -16,10 +16,11 @@ export async function buildRelease(root,environment,commit,destination,settings=
   assertCleanSource(root,commit);
   const publicEnv=buildEnvironment(environment,commit,settings);
   if(JSON.parse(await fs.readFile(path.join(root,'node_modules/wrangler/package.json'),'utf8')).version!=='4.130.0') throw new Error('Locked Wrangler 4.130.0 required');
-  // git archive copies only this verified commit, excluding ignored local state.
+  // Verify each tracked file's Git blob identity without hydrating archived Git
+  // objects from a potentially cloud-backed .git directory.
   const scratch=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-release-source-'));
   try {
-    execFileSync('tar',['-x','-C',scratch],{input:execFileSync('git',['archive',commit],{cwd:root,maxBuffer:256*1024*1024})});
+    await copyCommittedSource(root,commit,scratch);
     await fs.symlink(await fs.realpath(path.join(root,'node_modules')),path.join(scratch,'node_modules'),'dir');
     const buildEnv={PATH:process.env.PATH,HOME:process.env.HOME,TMPDIR:process.env.TMPDIR,CI:'true',NEXT_TELEMETRY_DISABLED:'1',...publicEnv};
     execFileSync('npm',['run','build'],{cwd:scratch,env:buildEnv,stdio:'inherit'});
