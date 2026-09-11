@@ -21,6 +21,7 @@ import { DocsSearch } from "@/components/docs-search";
 import { MotionDrawer } from "@/registry/cojeev/ui/motion-drawer";
 import { useChoreography } from "@/registry/cojeev/motion/choreography";
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
+import { BetaStamp } from "@/components/brand/beta-stamp";
 
 /** Animate the paper, never the navigation's layout or pointer targets. */
 function NavigationSurface() {
@@ -155,6 +156,7 @@ export function DocsShell({
             </span>
             {expanded && <span className="docs-brand-name">000h <small>by Cojeev</small></span>}
           </Link>
+          {expanded && <BetaStamp />}
           <Button
             size="sm"
             variant="ghost"
@@ -271,6 +273,7 @@ export function DocsShell({
           <BrandMark className="docs-brand-mark" />
           000h by Cojeev
         </Link>
+        <BetaStamp />
         <div className="docs-mobile-actions">
           <Link
             href="https://github.com/luv-jeri/cojeev-ui"

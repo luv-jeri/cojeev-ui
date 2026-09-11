@@ -3,7 +3,7 @@ import { PageScrollBar, ScrollbarProvider } from "@/registry/cojeev/ui/scroll-ar
 import { AppearanceProvider } from "@/registry/cojeev/ui/appearance";
 import { ReportingWidget } from "@/components/reporting/reporting-widget";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
-import { absoluteSiteUrl, site } from "@/lib/site-config";
+import { absoluteSiteUrl, site, siteFlags } from "@/lib/site-config";
 import { catalog } from "@/lib/catalog";
 import "./globals.css";
 export const metadata: Metadata = {
@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   authors: [{ name: site.author, url: site.creatorUrl }],
   openGraph: { title: site.title, description: site.description, siteName: site.title, type: "website", url: absoluteSiteUrl("/") },
   twitter: { card: "summary_large_image", title: site.title, description: site.description },
+  // Beta is a staging origin: keep the whole build out of search results in every crawler that fetches a page.
+  ...(siteFlags.environment === "beta" ? { robots: { index: false, follow: false } } : {}),
 };
 export default function RootLayout({
   children,

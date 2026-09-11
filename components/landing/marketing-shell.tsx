@@ -13,6 +13,7 @@ import { DocsMotion } from "@/components/docs-motion";
 import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 import { site } from "@/lib/site-config";
 import { BrandMark } from "@/components/brand/brand-mark";
+import { BetaStamp } from "@/components/brand/beta-stamp";
 
 export const sourceUrl = site.sourceUrl;
 export const creatorUrl = site.creatorUrl;
@@ -46,6 +47,7 @@ export function MarketingHeader() {
     <a className="story-skip" href="#story-main">Skip to content</a>
     <header className="story-header">
       <Link className="story-brand" href="/" aria-label="000h by Cojeev home"><span className="launch-wordmark" aria-hidden="true"><BrandMark className="launch-wordmark__seed" /><span>00h</span></span><span className="story-brand-ui" aria-hidden="true">by Cojeev</span></Link>
+      <BetaStamp />
       <nav className="story-nav" aria-label="Main navigation">
         <MarketingLink href="/docs/">Components</MarketingLink>
         <MarketingLink href="/getting-started/">Get started</MarketingLink>

@@ -33,14 +33,52 @@ const enabled = {
   enabled: true,
   host: "https://us.i.posthog.com" as const,
   projectToken: "phc_public_test_token",
+  environment: null,
+  release: null,
 };
+const RELEASE = "a4a04600000000000000000000000000000000ab";
 
-test("configuration requires a token, an approved PostHog host, and explicit non-production enabling", () => {
-  assert.equal(readAnalyticsConfig({ NODE_ENV: "development", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_x", NEXT_PUBLIC_POSTHOG_HOST: "https://us.i.posthog.com" }).enabled, false);
-  assert.equal(readAnalyticsConfig({ NODE_ENV: "development", NEXT_PUBLIC_ANALYTICS_ENABLED: "true", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_x", NEXT_PUBLIC_POSTHOG_HOST: "https://us.i.posthog.com" }).enabled, true);
-  assert.equal(readAnalyticsConfig({ NODE_ENV: "production", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_x", NEXT_PUBLIC_POSTHOG_HOST: "https://eu.i.posthog.com" }).enabled, true);
-  assert.equal(readAnalyticsConfig({ NODE_ENV: "production", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "", NEXT_PUBLIC_POSTHOG_HOST: "https://us.i.posthog.com" }).enabled, false);
-  assert.equal(readAnalyticsConfig({ NODE_ENV: "production", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_x", NEXT_PUBLIC_POSTHOG_HOST: "https://posthog.example.com" }).enabled, false);
+test("capture needs a token, an approved host, and the explicit enable flag in every build", () => {
+  const configured = { NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_x", NEXT_PUBLIC_POSTHOG_HOST: "https://eu.i.posthog.com" };
+  // `next build` always sets NODE_ENV=production, so a released build must still obey the flag.
+  assert.equal(readAnalyticsConfig(configured).enabled, false, "unset disables capture in a production build");
+  assert.equal(readAnalyticsConfig({ ...configured, NEXT_PUBLIC_ANALYTICS_ENABLED: "false" }).enabled, false, "false disables capture in a production build");
+  assert.equal(readAnalyticsConfig({ ...configured, NEXT_PUBLIC_ANALYTICS_ENABLED: "TRUE" }).enabled, false, "only the exact string enables capture");
+  assert.equal(readAnalyticsConfig({ ...configured, NEXT_PUBLIC_ANALYTICS_ENABLED: "true" }).enabled, true);
+  assert.equal(readAnalyticsConfig({ ...configured, NEXT_PUBLIC_ANALYTICS_ENABLED: "true", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "" }).enabled, false);
+  assert.equal(readAnalyticsConfig({ ...configured, NEXT_PUBLIC_ANALYTICS_ENABLED: "true", NEXT_PUBLIC_POSTHOG_HOST: "https://posthog.example.com" }).enabled, false);
+});
+
+test("release identifiers are read from the build, shape-checked, and ride the payload beside the privacy flags", () => {
+  const configured = { NEXT_PUBLIC_ANALYTICS_ENABLED: "true", NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_x", NEXT_PUBLIC_POSTHOG_HOST: "https://eu.i.posthog.com" };
+  const production = readAnalyticsConfig({ ...configured, NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: "production", NEXT_PUBLIC_RELEASE_SHA: RELEASE });
+  assert.equal(production.environment, "production");
+  assert.equal(production.release, RELEASE);
+  const junk = readAnalyticsConfig({ ...configured, NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: "staging", NEXT_PUBLIC_RELEASE_SHA: "not-a-commit" });
+  assert.equal(junk.environment, null, "an unknown environment name is not forwarded");
+  assert.equal(junk.release, null, "a malformed release identifier is not forwarded");
+
+  const stamped = runtime();
+  createAnalyticsClient({ ...enabled, environment: "production", release: RELEASE }, stamped.runtime)
+    .track("page_viewed", { route: "/docs/" });
+  assert.deepEqual(JSON.parse(String(stamped.requests[0].init?.body)).properties, {
+    route: "/docs/",
+    environment: "production",
+    release_sha: RELEASE,
+    $process_person_profile: false,
+    $geoip_disable: true,
+  });
+
+  // A caller still cannot smuggle them in: normalizeProperties rejects any extra key.
+  const forged = runtime();
+  const client = createAnalyticsClient(enabled, forged.runtime);
+  assert.equal(client.track("page_viewed", { route: "/docs/", environment: "production" } as never), false);
+  assert.equal(client.track("page_viewed", { route: "/docs/" }), true);
+  assert.deepEqual(JSON.parse(String(forged.requests[0].init?.body)).properties, {
+    route: "/docs/",
+    $process_person_profile: false,
+    $geoip_disable: true,
+  }, "an unstamped build sends no environment or release key at all");
 });
 
 test("routes lose query and hash data while private surfaces are rejected", () => {

@@ -11,6 +11,30 @@ export const site = {
   author: "Sanjay Kumar",
 } as const;
 
+export const contactEmail = "hello@cojeev.com";
+
+export type DeploymentEnvironment = "beta" | "production";
+export type SiteFlags = { environment: DeploymentEnvironment | null; releaseSha: string | null; contactEnabled: boolean };
+export type FlagEnvironment = Partial<Record<"NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT" | "NEXT_PUBLIC_RELEASE_SHA" | "NEXT_PUBLIC_CONTACT_ENABLED", string>>;
+
+/** Pure so every gate can be exercised per flag; the release SHA is shape-checked to keep junk out of payloads. */
+export function readSiteFlags(env: FlagEnvironment): SiteFlags {
+  const environment = env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT;
+  const releaseSha = env.NEXT_PUBLIC_RELEASE_SHA ?? "";
+  return {
+    environment: environment === "beta" || environment === "production" ? environment : null,
+    releaseSha: /^[a-f0-9]{40}$/.test(releaseSha) ? releaseSha : null,
+    contactEnabled: env.NEXT_PUBLIC_CONTACT_ENABLED === "true",
+  };
+}
+
+// Next only inlines a literal `process.env.NEXT_PUBLIC_*` read, so each key is spelled out here.
+export const siteFlags = readSiteFlags({
+  NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: process.env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT,
+  NEXT_PUBLIC_RELEASE_SHA: process.env.NEXT_PUBLIC_RELEASE_SHA,
+  NEXT_PUBLIC_CONTACT_ENABLED: process.env.NEXT_PUBLIC_CONTACT_ENABLED,
+});
+
 export function absoluteSiteUrl(route: string, origin: string = site.url): string {
   return new URL(route.replace(/^\/+/, ""), `${origin.replace(/\/+$/, "")}/`).href;
 }

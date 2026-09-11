@@ -46,6 +46,8 @@ import {
   type ReportingConfig,
 } from "@/lib/reporting/client";
 import { capturePage } from "@/lib/reporting/capture";
+import { emailReceiptLabel } from "@/lib/reporting/receipt-labels";
+import { siteFlags } from "@/lib/site-config";
 import {
   snapshotDiagnostics,
   startDiagnostics,
@@ -601,8 +603,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               </label>
               {draft.kind === "request" && (
                 <p id="public-title" className="report-help">
-                  This title will be public on the request board. Keep personal
-                  information out of it. Everything else stays private.
+                  Your title stays private until a maintainer approves it for the
+                  public board; until then the board shows a generic reference.
+                  Keep personal information out of it either way.
                 </p>
               )}
               {draft.topicId ? (
@@ -720,6 +723,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               <p id="email-help" className="report-help">
                 For a receipt and progress updates. Never shown on the public
                 board.
+                {siteFlags.environment === "beta" && " Beta reports are stored separately. Email updates are limited to invited testers during this beta."}
               </p>
               <section
                 className="report-evidence"
@@ -944,8 +948,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               </h2>
               <p>
                 {draft.kind === "request"
-                  ? "The title below is public. Your contact details, description and attachments are private."
-                  : "Your report and attachments are private. A public issue will point maintainers to the private report."}
+                  ? "Everything below is private. Your title only reaches the public board if a maintainer approves it."
+                  : "Your report and attachments are private. A public issue with a generic title will point maintainers to it."}
               </p>
               <div className="report-review-summary">
                 <strong>{draft.frozen.report.title}</strong>
@@ -1090,14 +1094,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 <div>
                   <dt>Email receipt</dt>
                   <dd>
-                    {
-                      {
-                        pending: "Queued",
-                        sent: "Sent",
-                        setup_required: "Email is not connected yet",
-                        needs_review: "Delivery needs maintainer review",
-                      }[receipt.email]
-                    }
+                    {emailReceiptLabel(receipt)}
                   </dd>
                 </div>
                 <div>

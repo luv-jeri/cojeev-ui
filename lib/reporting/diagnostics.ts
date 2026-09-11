@@ -72,7 +72,7 @@ export function snapshotDiagnostics(): Diagnostics {
   if (excluded()) return {};
   return {
     environment: {
-      appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? "0.2.0", userAgent: redact(navigator.userAgent), platform: navigator.platform,
+      appVersion: process.env.NEXT_PUBLIC_RELEASE_SHA || "development", userAgent: redact(navigator.userAgent), platform: navigator.platform,
       language: navigator.language, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, viewport: `${innerWidth}×${innerHeight}`,
       screen: `${screen.width}×${screen.height}`, pixelRatio: devicePixelRatio, online: navigator.onLine,
       theme: document.documentElement.dataset.mode === "dark" ? "dark" : "light", reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,

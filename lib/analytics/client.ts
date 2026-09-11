@@ -1,3 +1,5 @@
+import { readSiteFlags, type DeploymentEnvironment } from "../site-config";
+
 export const ANALYTICS_OPT_OUT_KEY = "000h.analytics-opt-out";
 
 export const analyticsPlacements = [
@@ -56,10 +58,11 @@ export type AnalyticsStatus =
   | "opted_out";
 
 type PublicEnvironment = Partial<Record<
-  | "NODE_ENV"
   | "NEXT_PUBLIC_ANALYTICS_ENABLED"
   | "NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN"
-  | "NEXT_PUBLIC_POSTHOG_HOST",
+  | "NEXT_PUBLIC_POSTHOG_HOST"
+  | "NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT"
+  | "NEXT_PUBLIC_RELEASE_SHA",
   string
 >>;
 
@@ -67,6 +70,9 @@ export type AnalyticsConfig = {
   enabled: boolean;
   host: "https://us.i.posthog.com" | "https://eu.i.posthog.com" | null;
   projectToken: string | null;
+  /** Beta and production share one PostHog project; this is what lets a dashboard filter production. */
+  environment: DeploymentEnvironment | null;
+  release: string | null;
 };
 
 export type AnalyticsRuntime = {
@@ -108,12 +114,16 @@ export function readAnalyticsConfig(env: PublicEnvironment): AnalyticsConfig {
     ? candidate as NonNullable<AnalyticsConfig["host"]>
     : null;
   const projectToken = env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN?.trim() || null;
-  const environmentAllowsCapture =
-    env.NODE_ENV === "production" || env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true";
+  // `next build` always runs with NODE_ENV=production, so only the explicit flag may enable capture.
+  // Anything but "true" — including unset — means disabled, in a production build too.
+  const environmentAllowsCapture = env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true";
+  const flags = readSiteFlags(env);
   return {
     enabled: Boolean(host && projectToken && environmentAllowsCapture),
     host,
     projectToken,
+    environment: flags.environment,
+    release: flags.releaseSha,
   };
 }
 
@@ -290,6 +300,8 @@ export function createAnalyticsClient(config: AnalyticsConfig, runtime: Analytic
         event,
         properties: {
           ...normalized,
+          ...(config.environment ? { environment: config.environment } : {}),
+          ...(config.release ? { release_sha: config.release } : {}),
           $process_person_profile: false,
           $geoip_disable: true,
         },
@@ -333,10 +345,11 @@ export function getAnalyticsClient() {
   if (typeof window === "undefined") return null;
   if (!singleton) {
     const config = readAnalyticsConfig({
-      NODE_ENV: process.env.NODE_ENV,
       NEXT_PUBLIC_ANALYTICS_ENABLED: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED,
       NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN,
       NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+      NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: process.env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT,
+      NEXT_PUBLIC_RELEASE_SHA: process.env.NEXT_PUBLIC_RELEASE_SHA,
     });
     if (isLoopbackHost(window.location.hostname) && process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== "true") config.enabled = false;
     singleton = createAnalyticsClient(config, browserRuntime());

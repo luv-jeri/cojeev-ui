@@ -8,6 +8,7 @@ import { Button } from "@/registry/cojeev/ui/button";
 import { InputWrapper, InputControl } from "@/registry/cojeev/ui/input";
 import { REPORTING_API, reportingFetch } from "@/lib/reporting/client";
 import type { RequestTopic } from "@/lib/reporting/contracts";
+import { BetaStamp } from "@/components/brand/beta-stamp";
 import { openRequest, STATUS_LABELS } from "./reporting-widget";
 
 export function relativeAge(timestamp: number, now = Date.now()): string {
@@ -109,6 +110,7 @@ export function RequestBoard() {
           <span className="requests-kicker">
             The open workshop / Your ideas, our next chapter
           </span>
+          <BetaStamp />
           <h1>
             What should we
             <br />

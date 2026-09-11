@@ -1,9 +1,21 @@
 import assert from "node:assert/strict";
 import { setTimeout as delay } from "node:timers/promises";
 import { chromium } from "playwright";
+import { preview as previewServer } from "vite";
 
-const base = (process.env.ANALYTICS_URL ?? "http://127.0.0.1:4338/cojeev-ui").replace(/\/$/, "");
+// Self-contained by default: serve the exported build the same way `npm run start` does,
+// on an ephemeral port. ANALYTICS_URL still points the gate at an already-running server.
+const expectSilent = process.argv.includes("--expect-silent");
+const server = process.env.ANALYTICS_URL
+  ? null
+  : await previewServer({ configFile: false, base: "/cojeev-ui/", build: { outDir: "out" }, preview: { host: "127.0.0.1", port: 0, strictPort: true } });
+const base = (process.env.ANALYTICS_URL ?? `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`).replace(/\/$/, "");
 const testToken = process.env.ANALYTICS_TEST_TOKEN ?? "phc_public_test_token";
+// A stamped fixture build inlines these; the gate is told the same values so every
+// payload assertion below stays an exact key set either way.
+const stamped = process.env.ANALYTICS_TEST_ENVIRONMENT
+  ? { environment: process.env.ANALYTICS_TEST_ENVIRONMENT, release_sha: process.env.ANALYTICS_TEST_RELEASE }
+  : {};
 const captureHosts = [
   "https://us.i.posthog.com/**",
   "https://eu.i.posthog.com/**",
@@ -19,7 +31,7 @@ const allowedProperties = {
   copy_failed: ["component_id", "route", "copy_kind"],
   outbound_clicked: ["destination_category"],
 };
-const privacyProperties = ["$process_person_profile", "$geoip_disable"];
+const privacyProperties = ["$process_person_profile", "$geoip_disable", "environment", "release_sha"];
 
 async function analyticsContext(browser, init) {
   const context = await browser.newContext({
@@ -98,6 +110,34 @@ function assertSafeCaptures(captures) {
   }
 }
 
+if (expectSilent) {
+  const browser = await chromium.launch();
+  try {
+    const { context, captures } = await analyticsContext(browser);
+    const page = await context.newPage();
+    await page.goto(`${base}/privacy/?utm_source=shadcn`, { waitUntil: "domcontentloaded" });
+    await page.getByText("Analytics is not connected on this site.", { exact: false }).waitFor();
+    for (const route of ["/", "/docs/", "/docs/button/", "/getting-started/"]) {
+      await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
+      await page.mouse.wheel(0, 2_000);
+      await delay(400);
+    }
+    // The strongest capture path in the product: a real successful copy.
+    await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+    const install = page.locator('.docs-command [data-slot="copy-control"]').first();
+    await install.getByRole("button", { name: "Copy command", exact: true }).click();
+    await install.locator('[data-copy-state="copied"]').waitFor();
+    await delay(1_200);
+    assert.equal(captures.length, 0, `a build without NEXT_PUBLIC_ANALYTICS_ENABLED=true sent ${captures.length} event(s)`);
+    await context.close();
+  } finally {
+    await browser.close();
+    await server?.close();
+  }
+  console.log("PASS: a build with analytics unset or explicitly disabled captures nothing.");
+  process.exit(0);
+}
+
 const browser = await chromium.launch();
 try {
   {
@@ -115,6 +155,7 @@ try {
       utm_medium: "registry",
       utm_campaign: "000h-launch",
       utm_content: "button-card",
+      ...stamped,
       $process_person_profile: false,
       $geoip_disable: true,
     });
@@ -137,6 +178,7 @@ try {
       placement: "docs",
       route: "/docs/button/",
       interaction_kind: "activate",
+      ...stamped,
       $process_person_profile: false,
       $geoip_disable: true,
     });
@@ -209,12 +251,12 @@ try {
     const { context, captures } = await analyticsContext(browser);
     const page = await context.newPage();
     await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
-    const specimen = page.locator('[data-analytics-preview="semantic-bloom"]');
+    const specimen = page.locator('[data-analytics-preview="slider"]');
     await specimen.waitFor();
     await specimen.scrollIntoViewIfNeeded();
     await waitFor(
       captures,
-      (payload) => payload.event === "component_impression" && payload.properties.component_id === "semantic-bloom",
+      (payload) => payload.event === "component_impression" && payload.properties.component_id === "slider",
       "50 percent visible for one second",
     );
     await page.locator("header").first().scrollIntoViewIfNeeded();
@@ -222,7 +264,7 @@ try {
     await specimen.scrollIntoViewIfNeeded();
     await delay(1_200);
     assert.equal(
-      events(captures, "component_impression").filter((payload) => payload.properties.component_id === "semantic-bloom").length,
+      events(captures, "component_impression").filter((payload) => payload.properties.component_id === "slider").length,
       1,
       "one component and placement emits once in a route visit",
     );
@@ -279,4 +321,5 @@ try {
   console.log("PASS: bounded analytics capture, copy truth, privacy signals, route deduplication, impressions and demo intent.");
 } finally {
   await browser.close();
+  await server?.close();
 }
