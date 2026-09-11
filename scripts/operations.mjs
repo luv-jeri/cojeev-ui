@@ -8,6 +8,24 @@ import {pathToFileURL} from 'node:url';
 import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './release-config.mjs';
 
 const maxBytes=25*1024*1024;
+// Two protected bundles compose into the one validated set. REPORTING_SECRETS_JSON
+// stays the base and is never rewritten or read back, so an already-provisioned
+// binding survives; a separately provisioned supplemental bundle adds only the
+// bindings the base is missing. An overlapping key is refused instead of silently
+// resolved, and no bundle value ever reaches an error message: JSON.parse's own
+// SyntaxError quotes the input, so it is caught and replaced with fixed text.
+export function composeSecretBundles(base,supplemental) {
+  if(supplemental===undefined||supplemental===null||supplemental==='') return base;
+  const parse=input=>{
+    let value;try {value=JSON.parse(input);} catch {throw new Error('Invalid reporting secrets JSON');}
+    if(!value||typeof value!=='object'||Array.isArray(value)) throw new Error('Invalid reporting secrets JSON');
+    return value;
+  };
+  const provisioned=parse(base),additional=parse(supplemental);
+  const duplicate=Object.keys(additional).find(key=>Object.hasOwn(provisioned,key));
+  if(duplicate) throw new Error(`Duplicate reporting secret across bundles: ${duplicate}`);
+  return JSON.stringify({...provisioned,...additional});
+}
 export function validateSecrets(input,environment) {
   environmentConfig(environment);
   let secrets;try {secrets=JSON.parse(input);} catch {throw new Error('Invalid reporting secrets JSON');}

@@ -5,7 +5,7 @@ import {writeFileSync,existsSync,readFileSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { assessHealth, checkHealth, updateAlert } from '../scripts/operations-health.mjs';
-import { backupKey, assertRecoveryPolicy, validateDeploymentConfig, validateRestore, validateSecrets,backup,restore } from '../scripts/operations.mjs';
+import { backupKey, assertRecoveryPolicy, composeSecretBundles, validateDeploymentConfig, validateRestore, validateSecrets,backup,restore } from '../scripts/operations.mjs';
 import {createManifest,manifestDigest} from '../scripts/release-manifest.mjs';
 import {deployRelease} from '../scripts/release.mjs';
 import {verifyRollbackRun} from '../scripts/release-rollback-run.mjs';
@@ -84,6 +84,29 @@ test('production may preserve existing secrets but beta bootstrap still requires
   assert.deepEqual(validateSecrets('{}','production'),{});
   assert.throws(()=>validateSecrets('{"HEALTH_TOKEN":"short"}','production'),/secret/);
 });
+const dummyBootstrap={ADMIN_TOKEN:'a'.repeat(40),HEALTH_TOKEN:'h'.repeat(40),IP_HASH_SECRET:'b'.repeat(40),TURNSTILE_SECRET:'s'.repeat(40),TURNSTILE_SITE_KEY:'0x'+'a'.repeat(24)};
+const dummyResend='re_dummy_'+'d'.repeat(24);
+test('a supplemental bundle completes the protected base without overwriting it, and never echoes a value',()=>{
+  const base=JSON.stringify({RESEND_API_KEY:dummyResend});
+  // The already-provisioned Resend binding survives and the missing bindings arrive.
+  assert.deepEqual(validateSecrets(composeSecretBundles(base,JSON.stringify(dummyBootstrap)),'beta'),{RESEND_API_KEY:dummyResend,...dummyBootstrap});
+  // No supplemental value behaves exactly like the existing single-bundle path.
+  assert.equal(composeSecretBundles(base,undefined),base);
+  assert.equal(composeSecretBundles(base,''),base);
+  assert.equal(composeSecretBundles(base,null),base);
+  assert.throws(()=>validateSecrets(composeSecretBundles('not json',undefined),'beta'),/Invalid reporting secrets JSON/);
+  const silent=pattern=>error=>{assert.match(error.message,pattern);assert.ok(!/dummy|leaky/.test(error.message),error.message);return true;};
+  // An overlapping key is refused rather than silently resolved in either direction.
+  assert.throws(()=>composeSecretBundles(base,JSON.stringify({RESEND_API_KEY:'re_leaky_'+'x'.repeat(24)})),silent(/Duplicate reporting secret across bundles: RESEND_API_KEY/));
+  assert.throws(()=>composeSecretBundles(JSON.stringify(dummyBootstrap),JSON.stringify({HEALTH_TOKEN:'h'.repeat(40)})),silent(/Duplicate reporting secret across bundles: HEALTH_TOKEN/));
+  // Malformed, array, null and scalar bundles fail closed without quoting the input.
+  for(const malformed of ['re_leaky_value','[]','null','"re_leaky_value"','12',JSON.stringify([dummyBootstrap])]) assert.throws(()=>composeSecretBundles(base,malformed),silent(/Invalid reporting secrets JSON/));
+  // Unknown keys stay the existing validator's refusal, on either side of the merge.
+  assert.throws(()=>validateSecrets(composeSecretBundles(base,JSON.stringify({...dummyBootstrap,UNKNOWN:'oops'})),'beta'),/Unknown or invalid reporting secret/);
+  // Production keeps preserving existing bindings when neither bundle adds anything.
+  assert.deepEqual(validateSecrets(composeSecretBundles('{}','{}'),'production'),{});
+  assert.deepEqual(validateSecrets(composeSecretBundles(base,'{}'),'production'),{RESEND_API_KEY:dummyResend});
+});
 const sourceRoot=new URL('../',import.meta.url);
 async function fixture(environment='beta') {
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-deploy-test-'));
@@ -152,6 +175,29 @@ test('production promotion preflights existing secret names and preserves the co
     await fs.writeFile(path.join(dir,'manifest.json'),JSON.stringify(updated));
     await assert.rejects(deployRelease(dir,'production',commit,manifestDigest(updated),options(provisioned)),/Turnstile/);
   } finally {if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(dir,{recursive:true,force:true});}
+});
+test('deployment ships the composed bundle and refuses an overlapping key before any command runs',async()=>{
+  const {dir,manifest}=await fixture(),base=process.env.REPORTING_SECRETS_JSON,extra=process.env.REPORTING_ADDITIONAL_SECRETS_JSON,calls=[];
+  process.env.REPORTING_SECRETS_JSON=JSON.stringify({RESEND_API_KEY:dummyResend});
+  process.env.REPORTING_ADDITIONAL_SECRETS_JSON=JSON.stringify(dummyBootstrap);
+  try {
+    const options={run:(args,input)=>calls.push({args,input}),backupDatabase:async()=>({})};
+    await deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),options);
+    const deployed=JSON.parse(calls.find(call=>call.args[0]==='deploy').input);
+    assert.deepEqual(Object.keys(deployed).sort(),['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','RESEND_API_KEY','TURNSTILE_SECRET','TURNSTILE_SITE_KEY']);
+    assert.equal(deployed.RESEND_API_KEY,dummyResend);
+    calls.length=0;
+    process.env.REPORTING_ADDITIONAL_SECRETS_JSON=JSON.stringify({...dummyBootstrap,RESEND_API_KEY:'re_leaky_'+'x'.repeat(24)});
+    await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),options),error=>{
+      assert.match(error.message,/Duplicate reporting secret/);
+      assert.ok(!/dummy|leaky/.test(error.message),error.message);
+      return true;
+    });
+    assert.deepEqual(calls,[]);
+  } finally {
+    for(const [name,value] of [['REPORTING_SECRETS_JSON',base],['REPORTING_ADDITIONAL_SECRETS_JSON',extra]]) if(value===undefined) delete process.env[name]; else process.env[name]=value;
+    await fs.rm(dir,{recursive:true,force:true});
+  }
 });
 test('rollback rejects any artifact beyond reviewed migration boundary',async()=>{
   const {dir}=await fixture(),original=process.env.REPORTING_SECRETS_JSON;

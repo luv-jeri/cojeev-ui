@@ -32,7 +32,6 @@ jobs:
       - run: npm test
       - run: npm run reporting:test
       - run: npm run registry-host:test
-      - run: node --test tests/release.test.mjs tests/operations.test.mjs
       - name: Prepare both environments from this clean commit
         id: release
         run: node scripts/release.mjs build-pair "$GITHUB_SHA" artifacts/release
@@ -109,6 +108,7 @@ jobs:
           DIGEST: ${{ needs.verify.outputs.beta_digest }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
+          REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
       - run: node scripts/release.mjs live beta "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
@@ -159,6 +159,7 @@ jobs:
           DIGEST: ${{ needs.verify.outputs.production_digest }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
+          REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
       - run: node scripts/release.mjs live production "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}

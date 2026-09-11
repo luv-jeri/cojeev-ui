@@ -38,11 +38,24 @@ export async function checkArtifactCsp(directory,environment,worker=host) {
   const required=[[target.api,['connect-src']],['https://eu.i.posthog.com',['connect-src']],['https://eu-assets.i.posthog.com',['script-src','connect-src']],['https://challenges.cloudflare.com',['script-src','frame-src']]];
   const problems=required.flatMap(([origin,directives])=>directives.filter(directive=>!permits(directive,origin)).map(directive=>`${directive} no longer permits ${origin}`));
   for(const forbidden of [opposite.api,opposite.site]) if(Object.values(policy).some(values=>values.includes(forbidden))) problems.push(`policy permits the ${opposite.site===forbidden?'website':'API'} origin of the other environment (${forbidden})`);
+  // Each served resource tag is checked against the directive that actually governs
+  // it, so an origin permitted only by connect-src cannot authorise a script or an
+  // image. An ordinary outbound anchor is navigation, not a subresource, and is
+  // deliberately not checked here; form-action and frame-ancestors stay with the
+  // header contract above.
+  const preloaded={script:'script-src',style:'style-src',image:'img-src',font:'font-src',fetch:'connect-src'};
   const body=await response.text();
-  for(const match of body.matchAll(/\ssrc=["'](https?:\/\/[^"']+)["']/g)) {
-    if(!URL.canParse(match[1])) {problems.push(`served page has a malformed resource URL (${match[1]})`);continue;}
-    const {origin}=new URL(match[1]);
-    if(!Object.values(policy).some(values=>values.includes(origin))) problems.push(`served page loads ${origin}, which no directive permits`);
+  for(const [,name,attributes] of body.matchAll(/<(script|img|iframe|frame|link)\s([^>]*)>/gi)) {
+    const attribute=key=>attributes.match(new RegExp(`(?:^|\\s)${key}=["']([^"']*)["']`,'i'))?.[1];
+    const tag=name.toLowerCase(),rel=(attribute('rel')??'').toLowerCase().split(/\s+/);
+    const directive=tag==='script'?'script-src':tag==='img'?'img-src':tag==='iframe'||tag==='frame'?'frame-src'
+      :rel.includes('stylesheet')?'style-src':rel.includes('modulepreload')?'script-src'
+      :rel.includes('preload')||rel.includes('prefetch')?preloaded[(attribute('as')??'').toLowerCase()]:undefined;
+    const value=attribute(tag==='link'?'href':'src');
+    if(!directive||!value||!/^https?:\/\//.test(value)) continue;
+    if(!URL.canParse(value)) {problems.push(`served page has a malformed resource URL (${value})`);continue;}
+    const {origin}=new URL(value);
+    if(!permits(directive,origin)) problems.push(`served page loads ${origin} as ${directive}, which the policy does not permit`);
   }
   if(problems.length) throw new Error(`Artifact CSP check failed for ${environment}: ${[...new Set(problems)].join('; ')}`);
   return {environment,policy:header};

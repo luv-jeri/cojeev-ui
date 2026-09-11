@@ -7,7 +7,7 @@ import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 import {buildEnvironment,environmentConfig} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
-import {backup,cloudflare,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
+import {backup,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
@@ -65,7 +65,7 @@ export async function readArtifact(directory,environment,commit,digest) {
 export async function deployRelease(directory,environment,commit,digest,{rollback=false,run=wrangler,backupDatabase=backup,cf=cloudflare}={}) {
   const manifest=await readArtifact(directory,environment,commit,digest);
   const target=environmentConfig(environment);
-  const secrets=validateSecrets(process.env.REPORTING_SECRETS_JSON,environment);
+  const secrets=validateSecrets(composeSecretBundles(process.env.REPORTING_SECRETS_JSON,process.env.REPORTING_ADDITIONAL_SECRETS_JSON),environment);
   const config=path.join(directory,'api/wrangler.jsonc');
   if(environment==='production') {
     const existing=await cf(`workers/scripts/${target.worker}/secrets`);

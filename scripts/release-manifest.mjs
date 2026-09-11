@@ -68,6 +68,14 @@ export function validateContent(file, content, environment) {
       else if(value && typeof value==='object') for(const [key,child] of Object.entries(value)) walk(child,source||key==='content'||key==='description');
     };walk(data);
   } else if(file.startsWith('site/') && /\.(js|css|json)$/.test(file)) scanSource(content);
+  // Sitemap XML and the RSC .txt payloads declare no executable dependency, so only
+  // an opposite-environment origin is rejected here: inert localhost documentation
+  // and prose that merely looks like a URL stay legitimate in served prose. Escaped
+  // slashes are normalised first because RSC payloads carry JSON-escaped strings.
+  else if(file.startsWith('site/') && /\.(xml|txt)$/.test(file)) {
+    for(const match of content.replaceAll('\\/','/').matchAll(/https?:\/\/[^\s"'<>`\\)]+/g))
+      if(URL.canParse(match[0]) && forbidden.includes(new URL(match[0]).hostname)) throw new Error(`Cross-environment URL in ${file}`);
+  }
   return target;
 }
 async function inventory(root, directory='') {
@@ -89,17 +97,18 @@ export async function createManifest(root, environment, commit) {
     if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
     if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
     const bytes=await fs.readFile(path.join(root,file));
-    // Scanned: every public `site/**` .html/.js/.css/.json byte served to browsers.
+    // Scanned: every public `site/**` .html/.js/.css/.json byte served to browsers,
+    // plus sitemap.xml, robots.txt and the __next RSC .txt payloads for an
+    // opposite-environment origin only (they carry no executable dependency).
     // Not scanned, deliberately: `website/index.js` compiles BOTH API hostnames into
     // the CSP it chooses at runtime from env.ENVIRONMENT, and `api/index.js` compiles
     // localhost/127.0.0.1 into its LOCAL_MODE guard, so a URL scan of either bundle
     // can only produce false positives. `api/wrangler.jsonc` and
-    // `website/wrangler.jsonc` (.jsonc misses this test) and the remaining `site/**`
-    // file types (sitemap.xml, robots.txt, the __next RSC .txt payloads) are also
-    // unscanned. What each deployed Worker actually targets is controlled by
+    // `website/wrangler.jsonc` (.jsonc misses this test) also stay unscanned. What
+    // each deployed Worker actually targets is controlled by
     // validateDeploymentConfig, which checks name, account, route hostname, D1, R2 and
     // allowed origins against this environment; live cross-origin behaviour is Task 4.
-    if(/\.(html|js|css|json)$/.test(file)) validateContent(file,bytes.toString('utf8'),environment);
+    if(/\.(html|js|css|json|xml|txt)$/.test(file)) validateContent(file,bytes.toString('utf8'),environment);
     files[file]=hash(bytes);
   }
   if(!files['site/index.html']) throw new Error('Missing website artifact');

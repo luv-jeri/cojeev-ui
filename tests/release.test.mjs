@@ -50,6 +50,16 @@ test('registry component source is scanned: opposite origins throw, inert localh
   assert.throws(()=>release.validateContent('site/index.html','<script src="https://…/app.js"></script>','beta'),{message:/Malformed URL dependency/});
   assert.throws(()=>release.validateContent('site/registry.json',JSON.stringify({homepage:'https://…/'}),'beta'),{message:/Malformed URL dependency/});
 });
+test('public sitemap XML and RSC text payloads reject the other environment but keep inert localhost documentation',()=>{
+  assert.throws(()=>release.validateContent('site/sitemap.xml','<urlset><url><loc>https://000h.cojeev.com/</loc></url></urlset>','beta'),/Cross-environment/);
+  assert.throws(()=>release.validateContent('site/index.txt','2:{"api":"https:\\/\\/feedback.cojeev.com\\/v1\\/reports"}','beta'),/Cross-environment/);
+  assert.throws(()=>release.validateContent('site/docs/index.txt','mirrored at https://beta.000h.cojeev.com/r/button.json','production'),/Cross-environment/);
+  assert.throws(()=>release.validateContent('site/index.txt','the old home was https://luv-jeri.github.io/cojeev-ui','beta'),/Cross-environment/);
+  assert.doesNotThrow(()=>release.validateContent('site/sitemap.xml','<urlset><url><loc>https://beta.000h.cojeev.com/</loc></url></urlset>','beta'));
+  assert.doesNotThrow(()=>release.validateContent('site/robots.txt','Sitemap: https://beta.000h.cojeev.com/sitemap.xml','beta'));
+  assert.doesNotThrow(()=>release.validateContent('site/docs/index.txt','run the API at http://localhost:8787 while developing','beta'));
+  assert.doesNotThrow(()=>release.validateContent('site/docs/index.txt','see https://…/docs/component/ for details','beta'));
+});
 test('source snapshots reject dirty and mismatched commits including untracked files',async()=>{
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-git-'));
   const git=(...args)=>execFileSync('git',args,{cwd:dir,encoding:'utf8'}).trim();
@@ -84,7 +94,9 @@ test('the packaged site served through the hosting Worker keeps a CSP that permi
   const page=body=>fs.writeFile(path.join(dir,'site/index.html'),`<html><body>${body}</body></html>`);
   try {
     await fs.mkdir(path.join(dir,'site'));
-    await page('<a href="https://github.com/luv-jeri">source</a>');
+    // An outbound anchor and a canonical link are navigation and metadata, not
+    // subresources: neither may be reported against a subresource directive.
+    await page('<a href="https://github.com/luv-jeri">source</a><link rel="canonical" href="https://github.com/luv-jeri/cojeev-ui">');
     for(const environment of ['beta','production']) {
       const opposite=environmentConfig(environment==='beta'?'production':'beta');
       const {policy}=await checkArtifactCsp(dir,environment);
@@ -94,6 +106,17 @@ test('the packaged site served through the hosting Worker keeps a CSP that permi
     }
     await page('<script src="https://cdn.example.com/x.js"></script>');
     await assert.rejects(checkArtifactCsp(dir,'beta'),/cdn\.example\.com/);
+    // A host the policy permits only for one directive cannot authorise another.
+    await page('<script src="https://eu.i.posthog.com/array.js"></script>');
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/script-src/);
+    await page('<img src="https://eu-assets.i.posthog.com/logo.png">');
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/img-src/);
+    await page('<link rel="stylesheet" href="https://fonts.googleapis.com/css2">');
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/style-src/);
+    await page('<link rel="preload" as="font" href="https://fonts.gstatic.com/x.woff2">');
+    await assert.rejects(checkArtifactCsp(dir,'beta'),/font-src/);
+    await page('<iframe src="https://challenges.cloudflare.com/widget"></iframe><script src="https://eu-assets.i.posthog.com/a.js"></script>');
+    assert.ok((await checkArtifactCsp(dir,'beta')).policy);
     await fs.rm(path.join(dir,'site/index.html'));
     await assert.rejects(checkArtifactCsp(dir,'beta'),/did not serve/);
   } finally { await fs.rm(dir,{recursive:true,force:true}); }

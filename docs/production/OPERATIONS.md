@@ -39,16 +39,41 @@ production or report production acceptance.
    required Worker scripts, D1, R2, and custom-domain operations. GitHub stores it
    as `CLOUDFLARE_API_TOKEN` separately in beta/production environments. Do not put
    credentials in repository variables or build artifacts.
-5. Configure environment secret `REPORTING_SECRETS_JSON`. Beta bootstrap needs
-   `ADMIN_TOKEN`, `HEALTH_TOKEN`, `IP_HASH_SECRET`, `TURNSTILE_SECRET`, and a real
-   beta-only `TURNSTILE_SITE_KEY`. The first three require at least 32 characters.
+5. Configure the reporting credentials as **two protected secrets in the same
+   environment**, `REPORTING_SECRETS_JSON` and `REPORTING_ADDITIONAL_SECRETS_JSON`.
+   Each is a flat JSON object of secret name to value; deployment composes them
+   into one set and validates the result.
+   - `REPORTING_SECRETS_JSON` is the **base and is never rewritten**. Beta and
+     production each already hold their own domain-scoped `RESEND_API_KEY` here.
+     GitHub cannot return a secret value, so overwriting this bundle to add a
+     binding would destroy that key. Do not replace it, read it back, or rotate a
+     key merely to reconstruct it.
+   - `REPORTING_ADDITIONAL_SECRETS_JSON` carries the **missing or new** bindings.
+     Leave it unset to keep the previous single-bundle behaviour exactly.
+   - **The two bundles must not share a key.** A key present in both fails the
+     deployment by name before any Cloudflare command runs, rather than one bundle
+     silently winning. A malformed, array, `null` or scalar bundle fails the same
+     way. No error, log or temporary file ever contains a secret value.
+
+   Across both bundles, beta bootstrap needs `ADMIN_TOKEN`, `HEALTH_TOKEN`,
+   `IP_HASH_SECRET`, `TURNSTILE_SECRET`, and a real beta-only
+   `TURNSTILE_SITE_KEY`. The first three require at least 32 characters.
    Optional keys: `GITHUB_TOKEN`, `GITHUB_WEBHOOK_SECRET`, `RESEND_API_KEY`, and
    `RESEND_WEBHOOK_SECRET`. Unknown keys and test Turnstile keys are rejected.
    Keep each token in the owner's approved secret store. Production may supply
-   only new/rotated values (or `{}`); deployment checks existing secret *names*
-   without retrieving values and preserves omitted secrets. The existing public
-   production Turnstile site key is preserved in configuration. A new production
-   `HEALTH_TOKEN` must be supplied on its first deployment.
+   only new/rotated values (or `{}` in both bundles); deployment checks existing
+   secret *names* without retrieving values and preserves omitted secrets. The
+   existing public production Turnstile site key is preserved in configuration. A
+   new production `HEALTH_TOKEN` must be supplied on its first deployment.
+
+   **Rotating a key that lives in one bundle:** write the new value into the
+   bundle that already holds that key, keeping every other key in that bundle
+   intact. Never add it to the other bundle first — during the overlap the
+   deployment would refuse as a duplicate. To move a key between bundles, remove
+   it from the source bundle and add it to the target in that order, and confirm
+   both bundles still parse as flat JSON objects. Only the `beta` and `production`
+   environments hold either bundle; the health-only `operations` environment must
+   never receive them.
 6. Put the matching `HEALTH_TOKEN` in each deployment environment for live checks.
    Put only `BETA_HEALTH_TOKEN` and `PRODUCTION_HEALTH_TOKEN` in `operations`.
    `GET /v1/admin/health` accepts that environment's health token or ADMIN_TOKEN.
