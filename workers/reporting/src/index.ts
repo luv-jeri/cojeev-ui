@@ -1,6 +1,7 @@
 import { accept, authorizeReceipt, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
 import { assertBrowserOrigin, HttpError, origins, readJSON, requireAdmin } from "./security";
-import { emailEnabled, now, type Env } from "./types";
+import { activationCutoff, emailEnabled, githubEnabled, now, type Env, type Delivery } from "./types";
+import { emailLimits, resendWebhook } from './resend';
 import { drain } from "./delivery";
 import { cleanup, updateFromAdmin, webhook } from "./lifecycle";
 type Context = {waitUntil(promise:Promise<unknown>):void};
@@ -9,6 +10,8 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
   const url=new URL(request.url),path=url.pathname.replace(/\/$/,"");
   if(env.LOCAL_MODE==="true" && !["localhost","127.0.0.1","[::1]"].includes(url.hostname)) throw new HttpError(503,"Local reporting mode cannot accept remote traffic.");
   if(request.method==="OPTIONS") { assertBrowserOrigin(request,env);return new Response(null,{status:204}); }
+  if(path==='/health'&&request.method==='GET') return json({status:'ok',environment:env.ENVIRONMENT??'unconfigured',release:env.RELEASE??'unconfigured'});
+  if(path==='/v1/resend/webhook'&&request.method==='POST') return json(await resendWebhook(request,env),202);
   if(path==="/v1/github/webhook"&&request.method==="POST") { const result=await webhook(request,env);ctx.waitUntil(drain(env));return json(result,202); }
   if(path==="/v1/config"&&request.method==="GET") return json({emailEnabled:emailEnabled(env),turnstileSiteKey:env.TURNSTILE_SITE_KEY??"",local:env.LOCAL_MODE==="true"});
   if(path==="/v1/requests"&&request.method==="GET") return json(await listRequests(env,url));
@@ -22,6 +25,12 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
   if(reportMatch&&request.method==="GET") { const {row,token}=await authorizeReceipt(request,env,reportMatch[1]);return json(await receipt(env,row,token)); }
   if(path.startsWith("/v1/admin/")) {
     await requireAdmin(request,env);
+    if(path==='/v1/admin/health'&&request.method==='GET') {
+      const queue=await env.DB.prepare("SELECT state,delivery_status,COUNT(*) AS count,MIN(created_at) AS oldestCreatedAt FROM outbox GROUP BY state,delivery_status").all();
+      const time=now(),date=new Date(time);
+      const usage=await env.DB.prepare('SELECT SUM(CASE WHEN attempted_at>=? THEN 1 ELSE 0 END) AS daily,COUNT(*) AS monthly FROM email_attempts WHERE attempted_at>=?').bind(Math.floor(time/86400000)*86400000,Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),1)).first();
+      return json({queue:queue.results.map(row=>({...row,oldestAgeMs:time-Number(row.oldestCreatedAt)})),usage,limits:emailLimits(env),providers:{email:emailEnabled(env),github:githubEnabled(env),resendWebhook:!!env.RESEND_WEBHOOK_SECRET},activationCutoff:activationCutoff(env)});
+    }
     if(!["GET","HEAD"].includes(request.method)) assertBrowserOrigin(request,env);
     if(path==="/v1/admin/reports"&&request.method==="GET") {
       const offset=Math.max(0,Math.min(100000,parseInt(url.searchParams.get("offset")??"0")||0));
@@ -36,7 +45,9 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
     const retry=path.match(/^\/v1\/admin\/deliveries\/([^/]+)\/retry$/);
     if(retry&&request.method==="POST") {
       const id=decodeURIComponent(retry[1]);
-      const result=await env.DB.prepare("UPDATE outbox SET state='pending',due_at=?,attempts=0,last_error=NULL WHERE id=? AND state IN ('pending','needs_review') RETURNING report_id").bind(now(),id).first<{report_id:string}>();
+      const job=await env.DB.prepare('SELECT * FROM outbox WHERE id=?').bind(id).first<Delivery>();
+      if(job?.kind.startsWith('email')&&job.first_attempt_at!==null&&now()-job.first_attempt_at>=86400000) throw new HttpError(409,'Provider reconciliation required; the email retry window expired.');
+      const result=await env.DB.prepare("UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state IN ('pending','needs_review','held') RETURNING report_id").bind(now(),now(),id).first<{report_id:string}>();
       if(!result) throw new HttpError(409,"This delivery is finished or is already running.");
       await getReport(env,result.report_id);ctx.waitUntil(drain(env,result.report_id));return json({ok:true});
     }

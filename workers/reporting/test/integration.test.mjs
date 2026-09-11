@@ -1,6 +1,6 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { createHash, randomUUID, createHmac } from 'node:crypto';
 import { build } from 'esbuild';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
@@ -15,10 +15,11 @@ const request = (path, method='GET', body, auth, headers={}) => mf.dispatchFetch
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
-  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret'}}));
-  db=await mf.getD1Database('DB'); await db.exec((await readFile('workers/reporting/migrations/0001_reporting.sql','utf8')).replace(/\n/g,' '));
+  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
+  db=await mf.getD1Database('DB');
+  for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { componentURL } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 after(async()=>{await mf?.dispose();});
@@ -75,7 +76,7 @@ test('production protection fails closed and GitHub signatures are mandatory',as
   assert.equal((await request('/v1/github/webhook','POST',body,null,{'X-Hub-Signature-256':sig,'X-GitHub-Event':'issues','X-GitHub-Delivery':randomUUID()})).status,202);
 });
 
-const backendEnv=more=>({DB:db,MEDIA:media,LOCAL_MODE:'true',SITE_URL:'https://library.example.com/cojeev-ui',IP_HASH_SECRET:ipSecret,...more});
+const backendEnv=more=>({DB:db,MEDIA:media,LOCAL_MODE:'true',SITE_URL:'https://library.example.com/cojeev-ui',IP_HASH_SECRET:ipSecret,DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',...more});
 test('joining a resolved request returns its live URL and sends an already-available acknowledgment',async()=>{
   const first=payload({kind:'request',title:'Already available component'});await submit(first);
   const componentUrl='https://library.example.com/cojeev-ui/docs/timeline/';
@@ -83,7 +84,7 @@ test('joining a resolved request returns its live URL and sends an already-avail
   const joined=payload({kind:'request',title:first.title,topicId:first.id,email:'late-requester@example.com'});
   const response=await submit(joined);assert.equal(response.status,201);const receipt=await response.json();
   const emails=[];
-  await backend.drain(backendEnv({EMAIL_ENABLED:'true',EMAIL_FROM:'updates@example.com',EMAIL:{async send(message){emails.push(message);return {messageId:'already-available-ack'};}}}),joined.id);
+  await backend.drain(resendEnv(),joined.id,async(_url,init)=>{emails.push(JSON.parse(init.body));return Response.json({id:'already-available-ack'});});
   assert.equal(emails.length,1);
   const refreshed=await (await request(`/v1/reports/${joined.id}`,'GET',undefined,token)).json();
   assert.deepEqual({status:receipt.status,componentUrl:receipt.componentUrl,refreshedUrl:refreshed.componentUrl,ackHasURL:emails[0].text.includes(componentUrl),ackHasLink:emails[0].html.includes(`href="${componentUrl}"`),ackSaysAvailable:/already available/i.test(emails[0].subject),promisesFuture:/notify you when the component is live/i.test(emails[0].text)},
@@ -189,27 +190,27 @@ test('ambiguous GitHub POST is reconciled before another issue can be created',a
 });
 test('ambiguous email outcome is held for review without automatic duplicate sends',async()=>{
   const p=payload();await submit(p);let sends=0;
-  const env=backendEnv({EMAIL_ENABLED:'true',EMAIL_FROM:'updates@example.com',EMAIL:{async send(){sends++;throw new Error('Response lost after provider acceptance');}}});
-  await backend.drain(env,p.id);await backend.drain(env,p.id);
+  const env=resendEnv(),provider=async()=>{sends++;throw new Error('Response lost after provider acceptance');};
+  await backend.drain(env,p.id,provider);await backend.drain(env,p.id,provider);
   const job=await db.prepare("SELECT * FROM outbox WHERE report_id=? AND kind='email_received'").bind(p.id).first();
   assert.equal(job.state,'needs_review');assert.equal(job.attempts,1);assert.equal(sends,1);
   assert.ok(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first());
 });
 test('email rate limits retry safely and concurrent drains claim each email once',async()=>{
   const p=payload();await submit(p);let sends=0;
-  const env=backendEnv({EMAIL_ENABLED:'true',EMAIL_FROM:'updates@example.com',EMAIL:{async send(){sends++;if(sends===1) throw Object.assign(new Error('Rate limited'),{code:'E_RATE_LIMIT_EXCEEDED'});return {messageId:'email-accepted'};}}});
-  await backend.drain(env,p.id);
+  const env=resendEnv(),provider=async()=>{sends++;return sends===1?Response.json({name:'rate_limit_exceeded'},{status:429}):Response.json({id:'email-accepted'});};
+  await backend.drain(env,p.id,provider);
   let job=await db.prepare("SELECT * FROM outbox WHERE report_id=? AND kind='email_received'").bind(p.id).first();
   assert.equal(job.state,'pending');assert.ok(job.due_at>Date.now());
   await db.prepare('UPDATE outbox SET due_at=0 WHERE id=?').bind(job.id).run();
-  await Promise.all([backend.drain(env,p.id),backend.drain(env,p.id)]);
+  await Promise.all([backend.drain(env,p.id,provider),backend.drain(env,p.id,provider)]);
   job=await db.prepare('SELECT * FROM outbox WHERE id=?').bind(job.id).first();
   assert.equal(job.state,'done');assert.equal(job.provider_id,'email-accepted');assert.equal(sends,2);
 });
 test('expired processing leases require explicit review instead of resending',async()=>{
   const p=payload();await submit(p);let sends=0;
   await db.prepare("UPDATE outbox SET state='processing',lease_until=0 WHERE report_id=? AND kind='email_received'").bind(p.id).run();
-  await backend.drain(backendEnv({EMAIL_ENABLED:'true',EMAIL_FROM:'updates@example.com',EMAIL:{async send(){sends++;return {messageId:'unexpected'};}}}),p.id);
+  await backend.drain(resendEnv(),p.id,async()=>{sends++;return Response.json({id:'unexpected'});});
   assert.equal((await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='email_received'").bind(p.id).first()).state,'needs_review');
   assert.equal(sends,0);
 });
@@ -240,4 +241,154 @@ test('GitHub release automation requires release label and component URL and ded
   const replay=await send(released,eventId);assert.equal((await replay.json()).duplicate,true);
   assert.equal((await db.prepare('SELECT status FROM reports WHERE id=?').bind(p.id).first()).status,'resolved');
   assert.equal((await db.prepare("SELECT count(*) AS n FROM outbox WHERE report_id=? AND kind='email_resolved'").bind(p.id).first()).n,1);
+});
+
+const resendEnv=more=>backendEnv({ENVIRONMENT:'production',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',EMAIL_ENABLED:'true',EMAIL_FROM:'updates@cojeev.com',RESEND_API_KEY:'test-only-resend-key',...more});
+test('health discloses only release identity publicly and requires admin for queue diagnostics',async()=>{
+  const response=await request('/health');assert.equal(response.status,200);
+  assert.deepEqual(Object.keys(await response.json()).sort(),['environment','release','status']);
+  assert.equal((await request('/v1/admin/health')).status,401);
+  const health=await request('/v1/admin/health','GET',undefined,admin);assert.equal(health.status,200);
+  assert.ok((await health.json()).queue);
+});
+test('free text request titles remain private until a maintainer publishes a safe title',async()=>{
+  const p=payload({kind:'request',title:'Secret acquisition of Acme'});await submit(p);
+  assert.ok(!(await (await request('/v1/requests')).text()).includes(p.title));
+  const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+  await backend.mirrorIssue(backendEnv({GITHUB_TOKEN:'test',GITHUB_REPOSITORY:'owner/library'}),row,async(url,init)=>{
+    if(url.endsWith('/user')) return Response.json(githubActor);
+    if(init.method!=='POST') return Response.json([]);
+    assert.ok(!init.body.includes(p.title));return Response.json({number:201,node_id:'I_safe',html_url:'https://github.com/owner/library/issues/201'});
+  });
+  assert.equal((await request(`/v1/admin/reports/${p.id}`,'PATCH',{publicTitle:'Comparison timeline'},admin)).status,200);
+  assert.ok((await (await request('/v1/requests')).text()).includes('Comparison timeline'));
+});
+test('provider activation alone cannot drain historical jobs',async()=>{
+  const p=payload();await submit(p);let sends=0;
+  const provider=async()=>{sends++;return Response.json({id:'unexpected'});};
+  await backend.drain(resendEnv({DELIVERY_ACTIVATED_AT:undefined}),p.id,provider);
+  await backend.drain(resendEnv({DELIVERY_ACTIVATED_AT:new Date(Date.now()+1000).toISOString()}),p.id,provider);
+  assert.equal(sends,0);
+  assert.equal((await db.prepare("SELECT state FROM outbox WHERE id=?").bind(`${p.id}:email_received`).first()).state,'held');
+});
+test('Resend persists one payload and key, records acceptance, and rejects payload drift',async()=>{
+  const p=payload();await submit(p);const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+  const job=await db.prepare('SELECT * FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first();
+  const calls=[];const provider=async(url,init)=>{calls.push(init);assert.equal(url,'https://api.resend.com/emails');return Response.json({id:'resend-accepted'});};
+  assert.equal(await backend.deliver(resendEnv(),job,row,provider),'resend-accepted');
+  const sent=JSON.parse(calls[0].body);assert.equal(sent.from,'000h by Cojeev <updates@cojeev.com>');assert.equal(sent.reply_to,'hello@cojeev.com');
+  assert.equal(calls[0].headers['Idempotency-Key'],`cojeev/${job.id}`);
+  await assert.rejects(backend.deliver(resendEnv({EMAIL_FROM:'different@cojeev.com'}),job,row,provider),/payload/i);
+  assert.equal(calls.length,1);
+});
+test('uncertain sends cannot be replayed after the 24 hour provider window',async()=>{
+  const p=payload();await submit(p);let sends=0;
+  const provider=async()=>{sends++;throw new Error('lost response');};
+  await backend.drain(resendEnv(),p.id,provider);
+  let job=await db.prepare('SELECT * FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first();
+  assert.equal(job.state,'needs_review');assert.equal(sends,1);
+  await db.prepare("UPDATE outbox SET first_attempt_at=?,state='pending',due_at=0 WHERE id=?").bind(Date.now()-86400001,job.id).run();
+  await backend.drain(resendEnv(),p.id,provider);assert.equal(sends,1);
+  job=await db.prepare('SELECT * FROM outbox WHERE id=?').bind(job.id).first();assert.equal(job.state,'needs_review');
+  assert.equal((await request(`/v1/admin/deliveries/${encodeURIComponent(job.id)}/retry`,'POST',{},admin)).status,409);
+});
+test('beta blocks non-testers and concurrent drains respect a reduced UTC quota',async()=>{
+  await db.prepare('DELETE FROM email_attempts').run();
+  const outsider=payload();await submit(outsider);let sends=0;
+  const provider=async()=>{sends++;return Response.json({id:`beta-${sends}`});};
+  const env=resendEnv({ENVIRONMENT:'beta',EMAIL_DAILY_LIMIT:'1'});
+  await backend.drain(env,outsider.id,provider);assert.equal(sends,0);
+  const a=payload({email:'unread.fyi@gmail.com'}),b=payload({email:'unread.fyi@gmail.com'});await submit(a);await submit(b);
+  await Promise.all([backend.drain(env,a.id,provider),backend.drain(env,b.id,provider)]);
+  assert.equal(sends,1);
+  const jobs=await db.prepare("SELECT state,delivery_status FROM outbox WHERE report_id IN (?,?) AND kind='email_received'").bind(a.id,b.id).all();
+  assert.deepEqual(jobs.results.map(j=>j.state).sort(),['done','pending']);assert.ok(jobs.results.some(j=>j.delivery_status==='quota'));
+});
+
+const resendHook=(body,more={})=>{
+  const raw=typeof body==='string'?body:JSON.stringify(body),id=more.id??'msg_'+randomUUID(),timestamp=String(more.timestamp??Math.floor(Date.now()/1000));
+  const signature=createHmac('sha256','test-webhook-secret').update(`${id}.${timestamp}.${raw}`).digest('base64');
+  return request('/v1/resend/webhook','POST',raw,null,{'svix-id':id,'svix-timestamp':timestamp,'svix-signature':more.signature??`v1,${signature}`});
+};
+test('signed Resend events tolerate replay and ordering without treating acceptance as delivery',async()=>{
+  const p=payload();await submit(p);const providerId='webhook-'+p.id;
+  // Provider events can win the race with the send response.
+  const event={type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:providerId}};
+  const id='msg_'+randomUUID();
+  assert.equal((await resendHook(event,{id})).status,202);
+  assert.equal((await resendHook(event,{id})).status,202);
+  await backend.drain(resendEnv(),p.id,async()=>Response.json({id:providerId}));
+  assert.equal((await db.prepare('SELECT delivery_status FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first()).delivery_status,'delivered');
+  await resendHook({...event,type:'email.sent'});
+  let receipt=await (await request(`/v1/reports/${p.id}`,'GET',undefined,token)).json();assert.equal(receipt.emailDelivery,'delivered');assert.equal(receipt.email,'sent');
+  await Promise.all([resendHook({...event,type:'email.bounced'}),resendHook(event),resendHook({...event,type:'email.sent'})]);
+  receipt=await (await request(`/v1/reports/${p.id}`,'GET',undefined,token)).json();assert.equal(receipt.emailDelivery,'bounced');assert.equal(receipt.email,'needs_review');
+  assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM email_events WHERE id=?').bind(id).first()).n,1);
+});
+test('Resend webhook rejects bad signatures, stale/future timestamps and invalid signed bodies generically',async()=>{
+  const event={type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:'private@example.com'}};
+  for(const options of [{signature:'v1,garbage'},{timestamp:Math.floor(Date.now()/1000)-301},{timestamp:Math.floor(Date.now()/1000)+301}]) {
+    const response=await resendHook(event,options);assert.equal(response.status,401);assert.equal((await response.json()).error,'Webhook not accepted.');
+  }
+  assert.equal((await resendHook('null')).status,400);
+});
+test('monthly ceiling retains jobs when the daily budget remains available',async()=>{
+  await db.prepare('DELETE FROM email_attempts').run();
+  const date=new Date(),month=Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),1);
+  await db.prepare('INSERT INTO email_attempts VALUES(?,?,?)').bind(randomUUID(),'another-job',month).run();
+  const p=payload();await submit(p);let sends=0;
+  await backend.drain(resendEnv({EMAIL_MONTHLY_LIMIT:'1'}),p.id,async()=>{sends++;return Response.json({id:'unexpected'});});
+  assert.equal(sends,0);assert.equal((await db.prepare('SELECT state FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first()).state,'pending');
+});
+test('beta intake rejects non-testers without storing their report',async()=>{
+  const p=payload();
+  const incoming=new Request('http://localhost/v1/reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':p.id},body:JSON.stringify({report:p,token})});
+  await assert.rejects(backend.accept(incoming,resendEnv({ENVIRONMENT:'beta'})),error=>error.status===403);
+  assert.equal(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),null);
+});
+test('identical reviewed retries keep the payload/key and conflicts never auto-retry',async()=>{
+  await db.prepare('DELETE FROM email_attempts').run();
+  const p=payload();await submit(p);const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+  const job=await db.prepare('SELECT * FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first();
+  const requests=[];
+  await assert.rejects(backend.deliver(resendEnv(),job,row,async(_url,init)=>{requests.push(init);throw new Error('lost');}),error=>error.ambiguous);
+  assert.equal(await backend.deliver(resendEnv(),job,row,async(_url,init)=>{requests.push(init);return Response.json({id:'safe-retry'});}),'safe-retry');
+  assert.equal(requests[0].body,requests[1].body);assert.equal(requests[0].headers['Idempotency-Key'],requests[1].headers['Idempotency-Key']);
+  const other=payload();await submit(other);let sends=0;
+  await backend.drain(resendEnv(),other.id,async()=>{sends++;return Response.json({name:'invalid_idempotent_request'},{status:409});});
+  await backend.drain(resendEnv(),other.id,async()=>{sends++;return Response.json({id:'unexpected'});});
+  assert.equal(sends,1);assert.equal((await db.prepare('SELECT state FROM outbox WHERE id=?').bind(`${other.id}:email_received`).first()).state,'needs_review');
+});
+test('production cannot raise the hard daily ceiling and previous UTC days do not consume today',async()=>{
+  await db.prepare('DELETE FROM email_attempts').run();
+  await db.prepare('WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM n WHERE x<100) INSERT INTO email_attempts SELECT CAST(x AS TEXT),\'seed\',? FROM n').bind(Date.now()).run();
+  const p=payload();await submit(p);let sends=0;
+  const provider=async()=>{sends++;return Response.json({id:'utc-success'});};
+  await backend.drain(resendEnv({EMAIL_DAILY_LIMIT:'9999'}),p.id,provider);assert.equal(sends,0);
+  await db.prepare('UPDATE email_attempts SET attempted_at=?').bind(Math.floor(Date.now()/86400000)*86400000-1).run();
+  await db.prepare('UPDATE outbox SET due_at=0 WHERE id=?').bind(`${p.id}:email_received`).run();
+  await backend.drain(resendEnv(),p.id,provider);assert.equal(sends,1);
+});
+test('provider quota responses retain a job after many attempts',async()=>{
+  await db.prepare('DELETE FROM email_attempts').run();
+  const p=payload();await submit(p);await db.prepare('UPDATE outbox SET attempts=99 WHERE id=?').bind(`${p.id}:email_received`).run();
+  await backend.drain(resendEnv(),p.id,async()=>Response.json({name:'daily_quota_exceeded'},{status:429}));
+  const job=await db.prepare('SELECT state,delivery_status FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first();
+  assert.deepEqual(job,{state:'pending',delivery_status:'quota'});
+});
+test('migration holds legacy pending/processing jobs without erasing receipts or approving legacy titles',async()=>{
+  const legacy=new Miniflare(convertV4MiniflareOptions({modules:true,script:'export default {fetch(){return new Response("ok")}}',compatibilityDate:'2026-09-01',d1Databases:['DB']}));
+  try {
+    const old=await legacy.getD1Database('DB');await old.exec((await readFile('workers/reporting/migrations/0001_reporting.sql','utf8')).replace(/\n/g,' '));
+    const p=payload({kind:'request'});await submit(p);
+    const topic=await db.prepare('SELECT id,title,title_key,status,component_url,created_at,updated_at FROM topics WHERE id=?').bind(p.id).first();
+    await old.prepare('INSERT INTO topics VALUES(?,?,?,?,?,?,?)').bind(...Object.values(topic)).run();
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+    await old.prepare(`INSERT INTO reports VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
+    for(const [kind,state] of [['github','pending'],['email_received','processing'],['email_resolved','done']]) await old.prepare('INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,?,?,0,0)').bind(`${p.id}:${kind}`,p.id,kind,state).run();
+    await old.exec((await readFile('workers/reporting/migrations/0002_safe_delivery.sql','utf8')).replace(/\n/g,' '));
+    assert.deepEqual((await old.prepare('SELECT state FROM outbox ORDER BY kind').all()).results.map(j=>j.state),['needs_review','done','held']);
+    assert.equal((await old.prepare('SELECT public_title FROM topics').first()).public_title,null);
+    assert.equal((await old.prepare('SELECT token_hash FROM reports').first()).token_hash,hash(token));
+  } finally {await legacy.dispose();}
 });

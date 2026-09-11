@@ -1,6 +1,7 @@
 import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus } from "../../../lib/reporting/contracts";
 import { boundedBody, checkAbuse, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
 import { emailEnabled, githubEnabled, now, type Env, type ReportRow, type AttachmentRow, type Delivery } from "./types";
+import { testerAllowed } from './resend';
 
 export async function getReport(env: Env, id: string) {
   if(!isUUID(id)) throw new HttpError(404,"Report not found.");
@@ -12,17 +13,19 @@ export async function authorizeReceipt(request: Request, env: Env, id: string) {
   if(!/^[a-f0-9]{64}$/.test(token) || !await equalSecret(await digest(token),row.token_hash)) throw new HttpError(404,"Report not found.");
   return {row,token};
 }
-export async function receipt(env: Env, row: ReportRow, token: string): Promise<Receipt> {
-  const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,state FROM attachments WHERE report_id=?").bind(row.id).all<{id:string;state:string}>(),env.DB.prepare("SELECT kind,state FROM outbox WHERE report_id=?").bind(row.id).all<Delivery>()]);
+export async function receipt(env: Env, row: ReportRow, token: string): Promise<Receipt & {emailDelivery:string}> {
+  const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,state FROM attachments WHERE report_id=?").bind(row.id).all<{id:string;state:string}>(),env.DB.prepare("SELECT kind,state,delivery_status FROM outbox WHERE report_id=?").bind(row.id).all<Delivery>()]);
   const email=jobs.results.find(j=>j.kind==="email_received"); const github=jobs.results.find(j=>j.kind==="github");
   return {id:row.id,token,status:row.status,topicId:row.topic_id,...(row.kind==="request"&&row.status==="resolved"&&row.component_url?{componentUrl:row.component_url}:{}),
-    email:email?.state==="done"?"sent":email?.state==="needs_review"?"needs_review":!emailEnabled(env)?"setup_required":"pending",
+    emailDelivery:email?.state==='held'?'held':email?.delivery_status??'queued',
+    email:email?.delivery_status==='delivered'?"sent":email?.state==="needs_review"||['failed','bounced'].includes(email?.delivery_status??'')?"needs_review":!emailEnabled(env)?"setup_required":"pending",
     issue:row.issue_number?"created":github?.state==="needs_review"?"needs_review":!githubEnabled(env)?"setup_required":"pending",attachments:files.results};
 }
 export async function accept(request: Request, env: Env): Promise<{receipt:Receipt;fresh:boolean}> {
   const raw=await readJSON(request) as {report?:unknown;token?:unknown;turnstileToken?:unknown};
   if(!raw || typeof raw!=="object" || typeof raw.token!=="string" || !/^[a-f0-9]{64}$/.test(raw.token)) throw new HttpError(422,"A valid private receipt token is required.");
   let report; try { report=validateReport(raw.report); } catch(error) { throw new HttpError(422,error instanceof Error?error.message:"Invalid report."); }
+  if(!testerAllowed(env,report.email)) throw new HttpError(403,'Reporting access is limited to invited beta testers.');
   if(report.kind==="request" && redact(report.title)!==report.title) throw new HttpError(422,"Keep email addresses, links and secrets out of the public request title.");
   const tokenHash=await digest(raw.token); const payloadHash=await digest(JSON.stringify(report));
   const existing=await env.DB.prepare("SELECT * FROM reports WHERE id=?").bind(report.id).first<ReportRow>();
@@ -73,7 +76,7 @@ export async function upload(request: Request, env: Env, reportId: string, fileI
 export async function listRequests(env: Env, url: URL) {
   const offset=Math.max(0,Math.min(100000,Number.parseInt(url.searchParams.get("offset")??"0")||0));
   const q=(url.searchParams.get("q")??"").slice(0,120).replace(/[\\%_]/g,"\\$&");
-  const rows=await env.DB.prepare(`SELECT t.id,t.title,t.status,t.component_url AS componentUrl,t.created_at AS createdAt,t.updated_at AS updatedAt,COUNT(DISTINCT r.contact_hash) AS demand FROM topics t LEFT JOIN reports r ON r.topic_id=t.id WHERE t.title LIKE ? ESCAPE '\\' GROUP BY t.id ORDER BY t.created_at DESC,t.id LIMIT 21 OFFSET ?`).bind(`%${q}%`,offset).all();
+  const rows=await env.DB.prepare(`SELECT t.id,COALESCE(t.public_title,'Component request '||substr(t.id,1,8)) AS title,t.status,t.component_url AS componentUrl,t.created_at AS createdAt,t.updated_at AS updatedAt,COUNT(DISTINCT r.contact_hash) AS demand FROM topics t LEFT JOIN reports r ON r.topic_id=t.id WHERE COALESCE(t.public_title,'Component request '||substr(t.id,1,8)) LIKE ? ESCAPE '\\' GROUP BY t.id ORDER BY t.created_at DESC,t.id LIMIT 21 OFFSET ?`).bind(`%${q}%`,offset).all();
   return {requests:rows.results.slice(0,20),hasMore:rows.results.length>20};
 }
 export function componentURL(value: unknown, env: Env): string {
@@ -101,7 +104,7 @@ export async function setStatus(env: Env, row: ReportRow, status: unknown, link:
 export async function privateDetail(env: Env,id:string) {
   const row=await getReport(env,id);
   const {token_hash: _token, payload_hash:_payload, contact_hash:_contact, ...report}=row; void _token; void _payload; void _contact;
-  const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,name,type,size,state FROM attachments WHERE report_id=?").bind(id).all(),env.DB.prepare("SELECT id,kind,state,attempts,last_error FROM outbox WHERE report_id=? ORDER BY created_at").bind(id).all()]);
+  const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,name,type,size,state FROM attachments WHERE report_id=?").bind(id).all(),env.DB.prepare("SELECT id,kind,state,attempts,last_error,provider_id,delivery_status,first_attempt_at,reviewed_at FROM outbox WHERE report_id=? ORDER BY created_at").bind(id).all()]);
   return {report,attachments:files.results,deliveries:jobs.results};
 }
 export async function privateAttachment(env: Env,id:string,fileId:string) {
