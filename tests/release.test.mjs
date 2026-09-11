@@ -35,6 +35,8 @@ test('artifact URL validation distinguishes documentation examples from deployab
   assert.throws(()=>release.validateContent('site/_next/static/chunks/app.js','fetch("https://feedback.cojeev.com/v1/reports")','beta'),/URL|environment/);
   assert.throws(()=>release.validateContent('site/config.json','{"api":"http://localhost:3000"}','beta'),/URL|environment/);
   assert.throws(()=>release.validateContent('site/index.html','<script>fetch("http://localhost:3000/data")</script>','beta'),/URL|environment/);
+  assert.doesNotThrow(()=>release.validateContent('site/_next/static/chunks/docs.js','const example="https://…/docs/component/";','beta'));
+  assert.throws(()=>release.validateContent('site/_next/static/chunks/app.js','fetch("https://…/docs/component/")','beta'),/URL/);
 });
 test('source snapshots reject dirty and mismatched commits including untracked files',async()=>{
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-git-'));

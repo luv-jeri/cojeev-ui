@@ -53,10 +53,12 @@ export function validateContent(file, content, environment) {
     };walk(data);
   } else if(file.startsWith('site/') && /\.(js|css|json)$/.test(file)) {
     for(const match of content.matchAll(/https?:\/\/[^\s"'<>`\\)]+/g)) {
+      const executable=/(?:fetch|import|WebSocket|EventSource|url)\s*\(\s*["']?$/.test(content.slice(Math.max(0,match.index-40),match.index));
+      if(!URL.canParse(match[0]) && !executable) continue;
       // localhost literals in bundled documentation are inert strings. Catch
       // their executable uses, while opposite live origins are always forbidden.
       if(match[0].includes('localhost')||match[0].includes('127.0.0.1')) {
-        if(/(?:fetch|import|WebSocket|EventSource|url)\s*\(\s*["']?$/.test(content.slice(Math.max(0,match.index-40),match.index))) reject(match[0]);
+        if(executable) reject(match[0]);
       } else reject(match[0]);
     }
   }
