@@ -13,9 +13,12 @@ const base = (process.env.ANALYTICS_URL ?? `http://127.0.0.1:${server.httpServer
 const testToken = process.env.ANALYTICS_TEST_TOKEN ?? "phc_public_test_token";
 // A stamped fixture build inlines these; the gate is told the same values so every
 // payload assertion below stays an exact key set either way.
-const stamped = process.env.ANALYTICS_TEST_ENVIRONMENT
-  ? { environment: process.env.ANALYTICS_TEST_ENVIRONMENT, release_sha: process.env.ANALYTICS_TEST_RELEASE }
-  : {};
+// Each key is added only when its own variable is set: a half-configured fixture then fails on the
+// missing stamp itself, never on an explicit `undefined` key that assert.deepEqual counts as a difference.
+const stamped = {
+  ...(process.env.ANALYTICS_TEST_ENVIRONMENT ? { environment: process.env.ANALYTICS_TEST_ENVIRONMENT } : {}),
+  ...(process.env.ANALYTICS_TEST_RELEASE ? { release_sha: process.env.ANALYTICS_TEST_RELEASE } : {}),
+};
 const captureHosts = [
   "https://us.i.posthog.com/**",
   "https://eu.i.posthog.com/**",

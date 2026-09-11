@@ -46,7 +46,7 @@ import {
   type ReportingConfig,
 } from "@/lib/reporting/client";
 import { capturePage } from "@/lib/reporting/capture";
-import { emailReceiptLabel } from "@/lib/reporting/receipt-labels";
+import { emailReceiptLabel, issueReceiptLabel } from "@/lib/reporting/receipt-labels";
 import { siteFlags } from "@/lib/site-config";
 import {
   snapshotDiagnostics,
@@ -1100,14 +1100,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 <div>
                   <dt>Issue</dt>
                   <dd>
-                    {
-                      {
-                        pending: "Queued",
-                        created: "Created",
-                        setup_required: "Issue tracker is not connected yet",
-                        needs_review: "Needs maintainer review",
-                      }[receipt.issue]
-                    }
+                    {issueReceiptLabel(receipt)}
                   </dd>
                 </div>
                 <div>

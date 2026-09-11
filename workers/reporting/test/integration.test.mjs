@@ -19,7 +19,7 @@ before(async()=>{
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 after(async()=>{await mf?.dispose();});
@@ -295,6 +295,29 @@ test('provider activation alone cannot drain historical jobs',async()=>{
   await backend.drain(resendEnv({DELIVERY_ACTIVATED_AT:new Date(Date.now()+1000).toISOString()}),p.id,provider);
   assert.equal(sends,0);
   assert.equal((await db.prepare("SELECT state FROM outbox WHERE id=?").bind(`${p.id}:email_received`).first()).state,'held');
+});
+test('the receipt separates a held GitHub job from a queued one and from an unconfigured tracker',async()=>{
+  const p=payload();await submit(p);
+  const configured=backendEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
+  const read=async env=>await backend.receipt(env,await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first(),token);
+  let issued=await read(configured);
+  assert.equal(issued.issue,'pending');assert.equal(issued.issueDelivery,'pending');
+  // No activation cutoff holds every pending job, GitHub included: the held update has no kind filter.
+  await backend.drain({...configured,DELIVERY_ACTIVATED_AT:undefined},p.id);
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE id=?').bind(`${p.id}:github`).first()).state,'held');
+  issued=await read(configured);
+  assert.equal(issued.issue,'pending','the legacy enum still reports pending for a configured tracker');
+  assert.equal(issued.issueDelivery,'held','a held job must be distinguishable from a queued one');
+  // The same held row on a build with no GitHub credentials is setup required, not queued.
+  assert.equal((await read(backendEnv())).issue,'setup_required');
+  // The receipt route must carry the new field to the browser, not only the internal helper.
+  const overWire=await (await request(`/v1/reports/${p.id}`,'GET',undefined,token)).json();
+  assert.equal(overWire.issueDelivery,'held');
+  await db.prepare("UPDATE outbox SET state='needs_review' WHERE id=?").bind(`${p.id}:github`).run();
+  assert.equal((await read(configured)).issue,'needs_review');
+  await db.prepare('UPDATE reports SET issue_number=?,issue_url=? WHERE id=?').bind(4321,'https://github.com/owner/library/issues/4321',p.id).run();
+  issued=await read(configured);
+  assert.equal(issued.issue,'created');assert.equal(issued.issueDelivery,'needs_review','a created issue keeps the job state visible for review');
 });
 test('Resend persists one payload and key, records acceptance, and rejects payload drift',async()=>{
   const p=payload();await submit(p);const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();

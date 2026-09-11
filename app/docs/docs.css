@@ -600,6 +600,7 @@
 .docs-shell .docs-sidebar[data-state=collapsed] { align-items:stretch; align-self:start; height:440px; min-height:0; padding:14px 10px; gap:8px; color:var(--v-text); box-shadow:0 8px 24px rgb(0 0 0 / .06); }
 .docs-shell .docs-sidebar[data-compact-index=open] { height:calc(100dvh - 24px); }
 .docs-sidebar[data-state=collapsed] .docs-rail-heading { display:flex; justify-content:space-between; gap:8px; padding:0; }
+.docs-rail-beta { align-self:center; flex:none; }
 .docs-sidebar[data-state=collapsed] .docs-rail-heading :is(.docs-brand,.docs-brand-seal,.docs-navigation-expand) { width:44px; height:44px; }
 .docs-sidebar[data-state=collapsed] .docs-navigation-expand { color:var(--v-text-2); background:transparent; }
 .docs-sidebar[data-state=collapsed] .docs-navigation-expand:is(:hover,:focus-visible) { color:var(--v-text); background:color-mix(in srgb,var(--v-blue) 22%,var(--v-paper)); }

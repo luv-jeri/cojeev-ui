@@ -9,6 +9,11 @@ export function robotsRules(environment: string | null): MetadataRoute.Robots["r
   return environment === "beta" ? { userAgent: "*", disallow: "/" } : { userAgent: "*", allow: "/" };
 }
 
+/** A disallowed origin must not hand crawlers a full URL list; every other build keeps its sitemap. */
+export function robotsFile(environment: string | null): MetadataRoute.Robots {
+  return { rules: robotsRules(environment), ...(environment === "beta" ? {} : { sitemap: absoluteSiteUrl("/sitemap.xml") }) };
+}
+
 export default function robots(): MetadataRoute.Robots {
-  return { rules: robotsRules(siteFlags.environment), sitemap: absoluteSiteUrl("/sitemap.xml") };
+  return robotsFile(siteFlags.environment);
 }

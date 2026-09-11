@@ -174,6 +174,8 @@ export function DocsShell({
           </Button>
         </div>
       )}
+      {/* A collapsed rail hides the heading stamp, which is the state with the least beta context. */}
+      {compact && <BetaStamp className="docs-rail-beta" />}
       <div className="docs-search-row">
         <Button
           size="sm"

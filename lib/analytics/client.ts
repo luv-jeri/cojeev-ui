@@ -351,7 +351,6 @@ export function getAnalyticsClient() {
       NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: process.env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT,
       NEXT_PUBLIC_RELEASE_SHA: process.env.NEXT_PUBLIC_RELEASE_SHA,
     });
-    if (isLoopbackHost(window.location.hostname) && process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== "true") config.enabled = false;
     singleton = createAnalyticsClient(config, browserRuntime());
   }
   return singleton;
