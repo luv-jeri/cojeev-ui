@@ -71,7 +71,7 @@ try {
     const page = await context.newPage();
     page.setDefaultTimeout(6000);
     await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("link", { name: /Find your next detail/i }).click();
+    await page.getByRole("link", { name: /Meet the little parts/i }).click();
     await page.waitForFunction(() => location.hash === "#featured-components");
     await page.waitForFunction(() => Math.abs(document.querySelector("#featured-components").getBoundingClientRect().top) < 40);
     const top = await page.locator("#featured-components").evaluate(node => node.getBoundingClientRect().top);
@@ -85,7 +85,7 @@ try {
     const page = await context.newPage();
     page.setDefaultTimeout(6000);
     await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
-    await page.getByRole("link", { name: /Find your next detail/i }).click();
+    await page.getByRole("link", { name: /Meet the little parts/i }).click();
     await page.waitForFunction(() => location.hash === "#featured-components", undefined, { polling: 10 });
     const evidence = await page.evaluate(() => ({
       reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,

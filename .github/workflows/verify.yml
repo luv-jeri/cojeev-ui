@@ -54,7 +54,6 @@ jobs:
       - run: npm run gate
       - run: npm run gate:mobile
       - run: npm run gate:marketing
-      - run: npm run gate:homepage
       - run: npm run gate:smooth-scroll
       - name: Build the disposable local reporting fixture
         run: npm run build

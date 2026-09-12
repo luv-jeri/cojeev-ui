@@ -13,9 +13,9 @@ const context = await browser.newContext({ viewport: { width: 1440, height: 1000
 await context.route(/https:\/\/(?:us|eu)\.i\.posthog\.com\//, route => route.fulfill({ status: 200, body: "1" }));
 const page = await context.newPage();
 page.on("pageerror", error => errors.push(error.message));
-// The assembly now lives on its own documentation page; that is the real consumer to drive.
+const heroSelector = '.launch-hero [data-slot="organism-assembly"]';
 const docsSelector = '[data-example-role="interactive"] [data-slot="organism-assembly"]';
-const selector = docsSelector;
+let selector = heroSelector;
 const assembly = () => page.locator(selector).first();
 const composition = () => assembly().locator('[data-slot="organism-composition"]');
 async function ready(kind) {
@@ -32,14 +32,10 @@ async function ready(kind) {
 const choose = async (label, kind) => { await assembly().getByRole("button", { name: label, exact: true }).click(); await ready(kind); };
 function mark(check, evidence = {}) { results.push({ check, ...evidence }); console.log(`Verified: ${check}`); }
 try {
-  await page.goto(`${base}/docs/organism-assembly/`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
   await assembly().waitFor();
-  await assembly().evaluate(node => node.scrollIntoView({ block: "center" }));
-  await assembly().locator(".v-morph-live").first().waitFor();
-  assert.equal(await assembly().locator("[data-assembly-choice]").count(), 6);
-  const opening = assembly().getByRole("button", { name: "Assemble", exact: true });
-  if (await opening.count() && await opening.isEnabled()) await opening.click();
-  await choose("Focus", "focus");
+  await ready("focus");
+  assert.equal(await assembly().locator("[data-assembly-choice]").count(), 3);
   await composition().getByRole("button", { name: "Start focusing", exact: true }).click();
   await composition().getByRole("button", { name: "Pause", exact: true }).waitFor();
   const reversal = await assembly().evaluate(async root => {
@@ -114,11 +110,12 @@ try {
   await composition().getByRole("textbox", { name: "Your message" }).fill("Still useful when quiet.");
   await composition().getByRole("textbox", { name: "Your message" }).press("Enter");
   await composition().getByRole("log").getByText("Still useful when quiet.", { exact: false }).waitFor();
-  mark("all documented compositions fit mobile and desktop in both themes; reduced motion clears particles and retains controls", { renderedParticlePixels: pixels });
+  mark("all hero compositions fit mobile and desktop in both themes; reduced motion clears particles and retains controls", { renderedParticlePixels: pixels });
 
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.setViewportSize({ width: 1200, height: 1000 });
   await page.goto(`${base}/docs/organism-assembly/`, { waitUntil: "domcontentloaded" });
+  selector = docsSelector;
   await assembly().scrollIntoViewIfNeeded();
   await assembly().locator(".v-morph-live").first().waitFor();
   assert.equal(await assembly().locator("[data-assembly-choice]").count(), 6);

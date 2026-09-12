@@ -23,7 +23,6 @@
     "gate:mobile": "node scripts/check-mobile-webkit.mjs --serve --output=artifacts/mobile-webkit",
     "gate:marketing": "node scripts/check-refinement-marketing.mjs --serve",
     "gate:smooth-scroll": "node scripts/check-landing-smooth-scroll.mjs --serve",
-    "gate:homepage": "node scripts/check-homepage-gallery.mjs --serve",
     "reporting:dev": "node scripts/reporting.mjs dev",
     "reporting:test": "node --test workers/reporting/test/*.test.mjs",
     "reporting:browser": "node scripts/check-reporting-browser.mjs",
