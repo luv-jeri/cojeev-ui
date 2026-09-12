@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const installer = "shadcn@4.21.0";
 const getArg = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const baseURL = (getArg("url") || "https://luv-jeri.github.io/cojeev-ui").replace(/\/$/, "");
 const ids = [...new Set((getArg("components") || "button,badge,card,accordion,dialog").split(",").map(id => id.trim()).filter(Boolean))];
@@ -34,7 +35,7 @@ if (temporaryRoot === root || temporaryRoot.startsWith(`${root}${path.sep}`)) th
 fs.mkdirSync(temporaryRoot, { recursive: true });
 const directory = fs.mkdtempSync(path.join(temporaryRoot, "cojeev-ui-stranger-"));
 const receiptFile = path.resolve(getArg("receipt") || path.join(root, "artifacts/stranger", `${foundationOnly ? "foundation" : "install"}-${Date.now()}.json`));
-const receipt = { directory, baseURL, components: ids, foundationOnly, node: process.version, startedAt: new Date().toISOString(), build: "PENDING", freshDirectory: true, screenshotVerification: "not-run", checks: {} };
+const receipt = { directory, baseURL, components: ids, foundationOnly, installer, node: process.version, startedAt: new Date().toISOString(), build: "PENDING", freshDirectory: true, screenshotVerification: "not-run", checks: {} };
 const write = (file, contents) => { const target = path.join(directory, file); fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, contents); };
 function run(command, args) { return execFileSync(command, args, { cwd: directory, stdio: "inherit", env: { ...process.env, PATH: `${path.dirname(process.execPath)}:${process.env.PATH}`, CI: "true" } }); }
 write("package.json", JSON.stringify({
@@ -57,8 +58,8 @@ write("src/App.tsx", 'export default function App(){return <main>Installing Coje
 console.log(`Fresh consumer: ${directory}`);
 try {
   run("npm", ["install"]);
-  run("npx", ["--yes", "shadcn@latest", "init", "--template", "vite", "--base", "radix", "--preset", "nova", "--no-monorepo", "--yes"]);
-  run("npx", ["--yes", "shadcn@latest", "add", ...ids.map(id => `${baseURL}/r/${id}.json`), "--yes", "--overwrite"]);
+  run("npx", ["--yes", installer, "init", "--template", "vite", "--base", "radix", "--preset", "nova", "--no-monorepo", "--yes"]);
+  run("npx", ["--yes", installer, "add", ...ids.map(id => `${baseURL}/r/${id}.json`), "--yes", "--overwrite"]);
   receipt.checks.publicCLIInstall = "PASS";
   write("src/App.tsx", foundationOnly ? `export default function App(){return <main style={{padding:24}}><h1 style={{fontFamily:"var(--font-display)",fontSize:36}}>Cojeev foundation</h1><p data-foundation-text>Typography and canvas from the base registry item.</p></main>}\n` : `import * as React from "react";
 ${ids.filter(id => specimens[id]).map(id => `import {${specimens[id].imports}} from "@/components/ui/${id}";`).join("\n")}
