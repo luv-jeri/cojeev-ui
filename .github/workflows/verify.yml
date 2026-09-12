@@ -169,9 +169,10 @@ jobs:
             echo "| Tested merge commit | \`$MERGE_SHA\` |"
             echo "| Scope | $SCOPE |"
             echo "| Reason | $REASON |"
-            echo "| Suites run | $SUITES |"
+            echo "| Suites selected | $SUITES |"
             echo "| Suites omitted | $OMITTED |"
             echo
+            echo "Selection is not a pass: see each step outcome for execution and failures."
             echo "Every gate not listed above was **not run** and is not reported as passing."
             echo "Release acceptance is the \`Verify release\` job, which is forced for pushes to"
             echo "main, manual dispatch and every pull request into main."
