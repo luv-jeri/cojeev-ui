@@ -348,6 +348,9 @@
 .launch-demo--agent .v-agent-state__field {height:86px;max-width:110px;}
 .launch-demo--agent [data-slot="agent-state"] {gap:4px;}
 .launch-demo--background {gap:10px;padding:0;}
+/* Two specimens offer choices inside a 202px demo: the gallery's quiet pill, sized down to fit it. */
+.launch-home .launch-choices {display:flex;justify-content:center;gap:2px;padding:3px;border-radius:var(--r-pill);background:var(--v-beige);}
+.launch-home .launch-choices [data-slot="button"] {font-size:11px;min-height:32px;padding-inline:11px;}
 
 /* The close: a shallow olive wave, an invitation, and the page utilities still on paper. */
 .launch-contact {position:relative;margin:96px calc(-1 * clamp(20px,5vw,80px)) 0;padding:52px clamp(20px,5vw,80px) 40px;background:var(--v-olive);color:var(--v-on-accent);}

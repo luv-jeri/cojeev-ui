@@ -22,7 +22,7 @@ export function LandingPage({ componentCount }: { componentCount: number }) {
   return <LandingSmoothScroll><div className="story-page launch-home">
     <MarketingHeader />
     <main id="story-main">
-      <section className="launch-hero launch-hero-gallery" aria-labelledby="hero-title">
+      <section className="launch-hero" aria-labelledby="hero-title">
         <Hero id="hero-title">React components.<br /><span>With character.</span></Hero>
         <div className="launch-hero-actions">
           <Body>Thoughtful details. Source you can make your own.</Body>

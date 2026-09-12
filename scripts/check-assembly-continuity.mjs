@@ -15,7 +15,7 @@ const page = await context.newPage();
 page.on("pageerror", error => errors.push(error.message));
 // The assembly now lives on its own documentation page; that is the real consumer to drive.
 const docsSelector = '[data-example-role="interactive"] [data-slot="organism-assembly"]';
-let selector = docsSelector;
+const selector = docsSelector;
 const assembly = () => page.locator(selector).first();
 const composition = () => assembly().locator('[data-slot="organism-composition"]');
 async function ready(kind) {

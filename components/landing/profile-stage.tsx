@@ -236,7 +236,7 @@ export function ProfileStage() {
           disabled={quiet}
           onClick={() => setSequence(value => value + 1)}
         ><AnimatedIcon name="refresh-cw" size="sm" /> Replay assembly</Button>
-        <Meta className="profile-stage__aside-note">Real components. Yours to change.</Meta>
+        <Meta className="profile-stage__aside-note">A local demo: Follow, Save and notes stay on this page.</Meta>
       </div>
     </section>
   );

@@ -14,9 +14,12 @@ const base = (process.env.BASE_URL ?? (staticServer
   : "http://127.0.0.1:4336/cojeev-ui")).replace(/\/$/, "");
 const output = path.resolve(process.env.OUTPUT_DIR ?? "output/playwright/homepage-gallery");
 await fs.mkdir(output, { recursive: true });
-const report = { startedAt: new Date().toISOString(), base, checks: [] };
+/** CHECK_ONLY narrows a local red/green run; the report carries it so a partial run cannot read as a full pass. */
+const only = process.env.CHECK_ONLY ?? "";
+const report = { startedAt: new Date().toISOString(), base, checks: [], filtered: only || null };
 
 async function record(name, run) {
+  if (only && !name.includes(only)) return;
   try {
     report.checks.push({ name, status: "PASS", evidence: await run() });
     console.log(`PASS ${name}`);
@@ -46,6 +49,7 @@ async function open(browserContextOptions = {}, prepare) {
   return { context, page, errors };
 }
 
+const fieldSelector = '[data-profile-stage] [data-slot="pigment-field"]';
 const stageOf = page => page.locator("[data-profile-stage]");
 const liveOf = page => page.locator("[data-profile-live]");
 const galleryOf = page => page.locator("#featured-components");
@@ -221,7 +225,13 @@ try {
     await page.waitForFunction(() => document.querySelector("[data-profile-stage]")?.dataset.treatment === "fold");
     const replay = stage.getByRole("button", { name: "Replay assembly", exact: true });
     await replay.focus();
-    const ring = await replay.evaluate(node => getComputedStyle(node, ":focus-visible").outlineStyle);
+    const ring = await replay.evaluate(node => {
+      const style = getComputedStyle(node);
+      return { focusVisible: node.matches(":focus-visible"), outlineStyle: style.outlineStyle, outlineWidth: parseFloat(style.outlineWidth) };
+    });
+    assert.equal(ring.focusVisible, true, `Keyboard focus must reach the focus-visible state: ${JSON.stringify(ring)}`);
+    assert.notEqual(ring.outlineStyle, "none", `Keyboard focus must draw a visible indicator: ${JSON.stringify(ring)}`);
+    assert.ok(ring.outlineWidth > 0, `The focus indicator must have real width: ${JSON.stringify(ring)}`);
     await page.keyboard.press(" ");
     await page.waitForFunction(() => document.querySelector("[data-profile-stage]")?.dataset.phase === "settled");
     assert.deepEqual(errors, []);
@@ -279,6 +289,70 @@ try {
     assert.deepEqual(errors, []);
     await context.close();
     return sets;
+  });
+
+  await record("the two grouped previews keep one compact pill of choices, not a bare button row", async () => {
+    const evidence = {};
+    // Both specimens live outside the default Featured filter, so nothing else in this suite ever renders them.
+    const grouped = [
+      ["Motion", "agent-state", "agent-state", "status", [["Work", "working"], ["Done", "complete"], ["Think", "thinking"]]],
+      ["Layout", "pattern-background", "pattern-background", "pattern", [["Pebbles", "pebbles"], ["Folds", "folds"], ["Weave", "weave"]]],
+    ];
+    for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+      const { context, page, errors } = await open({ viewport });
+      const gallery = galleryOf(page);
+      for (const [filter, id, slot, attribute, choices] of grouped) {
+        await gallery.getByRole("button", { name: filter, exact: true }).click();
+        await page.waitForFunction(value => document.querySelector("#featured-components")?.dataset.filter === value, filter.toLowerCase());
+        const specimen = gallery.locator(`[data-featured-component="${id}"]`);
+        const group = specimen.locator(".launch-choices");
+        await group.waitFor();
+        // Measured paint and geometry, because a bare unstyled row is still operable and no other gate sees it.
+        const layout = await group.evaluate(node => {
+          const style = getComputedStyle(node), box = node.getBoundingClientRect();
+          const demo = node.closest(".launch-specimen-demo").getBoundingClientRect();
+          const channels = style.backgroundColor.match(/[\d.]+/g)?.map(Number) ?? [];
+          const buttons = [...node.querySelectorAll('[data-slot="button"]')].map(button => {
+            const rect = button.getBoundingClientRect(), own = getComputedStyle(button);
+            return { top: Math.round(rect.top), font: parseFloat(own.fontSize), inline: parseFloat(own.paddingInlineStart) };
+          });
+          return {
+            display: style.display,
+            painted: channels.length === 3 || (channels.length === 4 && channels[3] > 0),
+            background: style.backgroundColor,
+            padding: parseFloat(style.paddingTop),
+            radius: parseFloat(style.borderTopLeftRadius),
+            height: Math.round(box.height),
+            rows: new Set(buttons.map(button => button.top)).size,
+            inside: box.left >= demo.left - 1 && box.right <= demo.right + 1,
+            font: Math.max(...buttons.map(button => button.font)),
+            inline: Math.max(...buttons.map(button => button.inline)),
+            buttons: buttons.length,
+          };
+        });
+        const where = `${id} at ${viewport.width}px`;
+        assert.equal(layout.buttons, 3, `${where} must offer its three choices: ${JSON.stringify(layout)}`);
+        assert.equal(layout.display, "flex", `${where} must group its choices in one row: ${JSON.stringify(layout)}`);
+        assert.equal(layout.painted, true, `${where} must paint the group, not leave a bare button row: ${JSON.stringify(layout)}`);
+        assert.ok(layout.padding > 0, `${where} must inset its choices from the group edge: ${JSON.stringify(layout)}`);
+        assert.ok(layout.radius >= layout.height / 2, `${where} must read as a pill: ${JSON.stringify(layout)}`);
+        assert.equal(layout.rows, 1, `${where} must keep every choice on one row: ${JSON.stringify(layout)}`);
+        assert.equal(layout.inside, true, `${where} must stay inside its bounded demo: ${JSON.stringify(layout)}`);
+        // A 202px demo box carries smaller controls than the page's own filter pills.
+        assert.ok(layout.font <= 12 && layout.inline <= 12, `${where} must use the small shared button sizing: ${JSON.stringify(layout)}`);
+        for (const [label, value] of choices) {
+          const choice = group.getByRole("button", { name: label, exact: true });
+          await choice.click();
+          await page.waitForFunction(([selector, key, expected]) => document.querySelector(selector)?.dataset[key] === expected,
+            [`[data-featured-component="${id}"] [data-slot="${slot}"]`, attribute, value]);
+          assert.equal(await choice.getAttribute("aria-pressed"), "true", `${where}: ${label} must report itself as chosen`);
+        }
+        evidence[`${viewport.width}-${id}`] = layout;
+      }
+      assert.deepEqual(errors, []);
+      await context.close();
+    }
+    return evidence;
   });
 
   await record("the contact close keeps the verified contact routes, privacy and motion controls", async () => {
@@ -398,37 +472,73 @@ try {
       await page.waitForFunction(() => document.querySelector("[data-profile-stage]")?.dataset.treatment === "stack");
       assert.equal(await stage.getAttribute("data-phase"), "settled");
       assert.equal(await stage.getByRole("button", { name: "Message", exact: true }).isEnabled(), true, `${name} keeps the composition usable`);
-      const moving = await page.locator("[data-profile-stage] [data-slot=\"pigment-field\"]").getAttribute("data-moving");
+      // "pending" is the state before the field has started; it proves nothing about stillness.
+      await page.waitForFunction(selector => document.querySelector(selector)?.dataset.renderer !== "pending", fieldSelector, { timeout: 20000 });
+      const field = page.locator(fieldSelector);
+      const renderer = await field.getAttribute("data-renderer"), moving = await field.getAttribute("data-moving");
+      assert.equal(renderer, "webgl", `${name} must be judged against a live renderer, not an absent one: ${renderer}`);
       assert.equal(moving, "false", `${name} must hold the background still`);
       assert.deepEqual(errors, []);
       await context.close();
-      return { moving };
+      return { renderer, moving };
     });
   }
 
-  await record("the stage background stops when the tab is hidden or the stage is offscreen", async () => {
+  /* Offscreen suspension is driven natively, by the component's own IntersectionObserver.
+     The hidden-document half is SIMULATED: no automation route available here (tab switch,
+     Page.setWebLifecycleState, or a real window minimise, under either Playwright's Chromium
+     or installed Chrome) actually changes visibilityState, so the check presents both platform
+     properties the source reads — document.visibilityState for useMotionVisibility and
+     document.hidden for the shader's own draw guard — and fires the real event. A genuinely
+     backgrounded tab remains an owner acceptance item; this check does not establish it. */
+  await record("the stage background runs, stops offscreen and resumes, and stops on a simulated hidden document", async () => {
     const { context, page, errors } = await open();
-    const field = page.locator('[data-profile-stage] [data-slot="pigment-field"]');
+    const field = page.locator(fieldSelector);
     await field.waitFor();
-    const offscreen = await (async () => {
-      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
-      await page.waitForFunction(() => document.querySelector('[data-profile-stage] [data-slot="pigment-field"]')?.dataset.moving === "false", undefined, { timeout: 20000 });
-      return field.getAttribute("data-moving");
-    })();
+    const settle = value => page.waitForFunction(([selector, want]) => document.querySelector(selector)?.dataset.moving === want, [fieldSelector, value], { timeout: 20000 });
+    const state = async label => ({
+      label,
+      moving: await field.getAttribute("data-moving"),
+      renderer: await field.getAttribute("data-renderer"),
+      ...await page.evaluate(() => ({ visibilityState: document.visibilityState, hidden: document.hidden })),
+    });
+    const present = value => page.evaluate(want => {
+      if (want === null) { delete document.hidden; delete document.visibilityState; }
+      else {
+        Object.defineProperty(document, "visibilityState", { configurable: true, get: () => want });
+        Object.defineProperty(document, "hidden", { configurable: true, get: () => want === "hidden" });
+      }
+      document.dispatchEvent(new Event("visibilitychange"));
+    }, value);
+
+    // No stop means anything until the field is genuinely running in this viewport.
+    await page.waitForFunction(selector => document.querySelector(selector)?.dataset.renderer === "webgl", fieldSelector, { timeout: 20000 });
+    await settle("true");
+    const running = await state("running");
+    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+    await settle("false");
+    const offscreen = await state("offscreen");
     await page.evaluate(() => scrollTo(0, 0));
-    const hidden = await (async () => {
-      await context.newPage().then(other => other.bringToFront());
-      await page.waitForFunction(() => document.visibilityState === "hidden" || true);
-      await page.evaluate(() => Object.defineProperty(document, "visibilityState", { configurable: true, get: () => "hidden" }));
-      await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
-      await page.waitForFunction(() => document.querySelector('[data-profile-stage] [data-slot="pigment-field"]')?.dataset.moving === "false", undefined, { timeout: 20000 });
-      return field.getAttribute("data-moving");
-    })();
-    assert.equal(offscreen, "false", "An offscreen field must stop working");
-    assert.equal(hidden, "false", "A hidden tab must stop the field");
+    await settle("true");
+    const resumed = await state("back in view");
+    await present("hidden");
+    await settle("false");
+    const hidden = await state("hidden document");
+    await present(null);
+    await settle("true");
+    const restored = await state("visible again");
+
+    assert.equal(running.moving, "true", `The field must actually run before a stop can prove anything: ${JSON.stringify(running)}`);
+    assert.equal(offscreen.moving, "false", `An offscreen field must stop working: ${JSON.stringify(offscreen)}`);
+    assert.equal(resumed.moving, "true", `The field must resume once the stage is back in view: ${JSON.stringify(resumed)}`);
+    // The simulation only counts if the page really reported itself hidden on both properties the source reads.
+    assert.deepEqual({ visibilityState: hidden.visibilityState, hidden: hidden.hidden }, { visibilityState: "hidden", hidden: true }, `The hidden case must present a hidden document: ${JSON.stringify(hidden)}`);
+    assert.equal(hidden.moving, "false", `A hidden document must stop the field: ${JSON.stringify(hidden)}`);
+    assert.deepEqual({ visibilityState: restored.visibilityState, hidden: restored.hidden }, { visibilityState: "visible", hidden: false }, `Restoring must hand back a visible document: ${JSON.stringify(restored)}`);
+    assert.equal(restored.moving, "true", `The field must resume once the document is visible again: ${JSON.stringify(restored)}`);
     assert.deepEqual(errors, []);
     await context.close();
-    return { offscreen, hidden };
+    return { phases: [running, offscreen, resumed, hidden, restored], nativeTabHiding: "not exercised: no automation route changes visibilityState here" };
   });
 
   await record("the replaced opening and the shape playground are gone from the homepage", async () => {
@@ -446,7 +556,7 @@ try {
 }
 
 report.finishedAt = new Date().toISOString();
-report.status = report.checks.every(check => check.status === "PASS") ? "PASS" : "FAIL";
+report.status = report.checks.length && report.checks.every(check => check.status === "PASS") ? "PASS" : "FAIL";
 await fs.writeFile(path.join(output, "results.json"), `${JSON.stringify(report, null, 2)}\n`);
-console.log(`${report.status}: ${report.checks.filter(check => check.status === "PASS").length}/${report.checks.length}`);
+console.log(`${report.status}: ${report.checks.filter(check => check.status === "PASS").length}/${report.checks.length}${only ? ` (filtered by CHECK_ONLY=${only}; not a full run)` : ""}`);
 if (report.status !== "PASS") process.exitCode = 1;
