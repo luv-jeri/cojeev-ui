@@ -7,15 +7,15 @@ import { chromium } from "playwright";
 const negative = process.argv.includes("--negative");
 function requireInterventions(observed, isNegative) {
   const expected = isNegative
-    ? ["retain-cancelled-timer", "hide-ring", "opaque-reveal"]
-    : ["clock-setup", "stop-generation", "next-moment", "replay-reveal"];
+    ? ["retain-cancelled-timer", "enabled-pending", "hide-ring", "opaque-reveal"]
+    : ["clock-setup", "add-note", "stop-generation", "next-moment", "replay-reveal"];
   assert.deepEqual([...new Set(observed)].sort(), expected.sort(), "Every expected intervention must run");
 }
 if (process.argv.includes("--check-intervention-guard")) {
   let rejected = 0;
   for (const [mode, ids] of [
-    [false, ["clock-setup", "stop-generation", "next-moment", "replay-reveal"]],
-    [true, ["retain-cancelled-timer", "hide-ring", "opaque-reveal"]],
+    [false, ["clock-setup", "add-note", "stop-generation", "next-moment", "replay-reveal"]],
+    [true, ["retain-cancelled-timer", "enabled-pending", "hide-ring", "opaque-reveal"]],
   ]) {
     requireInterventions(ids, mode);
     for (const missing of ids) {
@@ -28,7 +28,7 @@ if (process.argv.includes("--check-intervention-guard")) {
 }
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const output = path.resolve(process.argv.find(arg => arg.startsWith("--output="))?.slice(9) ?? (negative ? "output/playwright/transient-negative" : "output/playwright/transient-delayed"));
-process.argv = [process.argv[0], "scripts/check-docs.mjs", "--serve", "--ids=agent-chat,guided-pointer,text-reveal", "--widths=1440", "--themes=light", `--output=${output}`];
+process.argv = [process.argv[0], "scripts/check-docs.mjs", "--serve", "--ids=agent-chat,button,guided-pointer,text-reveal", "--widths=1440", "--themes=light", `--output=${output}`];
 
 // Intercept only test-driver boundaries; all interactions still call Playwright's
 // real native click. Nothing in the shipped app or its timings is modified.
@@ -42,6 +42,9 @@ const realGoto = pagePrototype.goto;
 const realPauseAt = clockPrototype.pauseAt;
 await probeBrowser.close();
 const injected = [];
+// Driver delays applied after the real activation, so each case is observed
+// late enough that a transient state without a held clock would be missed.
+const delayedAfterClick = { "Replay reveal": "replay-reveal", "Next moment": "next-moment", "Add a note": "add-note" };
 clockPrototype.pauseAt = async function (...args) {
   if (!negative) { injected.push("clock-setup"); await delay(2500); }
   return realPauseAt.apply(this, args);
@@ -61,8 +64,9 @@ locatorPrototype.click = async function (options) {
       await delay(2500);
     }
     const result = await realClick.call(this, options);
-    if (!negative && ["Replay reveal", "Next moment"].some(named)) {
-      injected.push(named("Replay reveal") ? "replay-reveal" : "next-moment");
+    const delayed = Object.keys(delayedAfterClick).find(named);
+    if (!negative && delayed) {
+      injected.push(delayedAfterClick[delayed]);
       await delay(2500);
     }
     return result;
@@ -84,6 +88,15 @@ pagePrototype.goto = async function (...args) {
       await this.addStyleTag({ content: '[data-slot="guided-pointer-ring"] { opacity: 0 !important; }' });
       injected.push("hide-ring");
     }
+    if (new URL(this.url()).pathname.endsWith("/docs/button/")) {
+      // Break only the pending semantic: a busy button that never blocks input.
+      await this.evaluate(() => {
+        const strip = () => document.querySelectorAll('[data-slot="button"][aria-busy="true"][aria-disabled]').forEach(el => el.removeAttribute("aria-disabled"));
+        new MutationObserver(strip).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ["aria-busy", "aria-disabled"] });
+        strip();
+      });
+      injected.push("enabled-pending");
+    }
   }
   return response;
 };
@@ -97,7 +110,7 @@ try {
 const results = JSON.parse(fs.readFileSync(path.join(output, "results.json"), "utf8"));
 assert.deepEqual(results.revisionEnd, results.revisionStart, "Source provenance must remain stable, including negative runs");
 assert.equal(results.harnessEndSha256, results.harnessSha256, "The gate must not change during verification");
-assert.equal(results.entries.length, 3);
+assert.equal(results.entries.length, 4);
 requireInterventions(injected, negative);
 for (const entry of results.entries) {
   assert(entry.layouts.every(layout => layout.status === "pass"), `${entry.id} layouts`);
@@ -107,6 +120,7 @@ for (const entry of results.entries) {
   else {
     const expected = {
       "agent-chat": "Cancelled timer must not reopen permission",
+      button: "Pending action must stay busy-disabled while it runs",
       "guided-pointer": "Arrival produces a finite visible ring",
       "text-reveal": "Replay produces a visible intermediate word opacity",
     };
@@ -115,5 +129,5 @@ for (const entry of results.entries) {
   }
 }
 assert(results.chrome.every(check => check.status === "pass"));
-if (negative) process.exitCode = 0; // The exact three substantive rejections above are the expected result.
+if (negative) process.exitCode = 0; // The exact four substantive rejections above are the expected result.
 console.log(JSON.stringify({ mode: negative ? "negative" : "delayed", injected, output, pass: true }));
