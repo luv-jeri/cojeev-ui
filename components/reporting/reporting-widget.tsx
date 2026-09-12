@@ -167,7 +167,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       let next = draftsRef.current[kind] ?? {
         ...emptyDraft(),
         kind,
-        diagnostics: kind === "bug" ? snapshotDiagnostics() : null,
       };
       if (topic && !next.attempted)
         next = { ...next, topicId: topic.id, title: topic.title, frozen: null };

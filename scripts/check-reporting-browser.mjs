@@ -79,8 +79,9 @@ try {
   await page.getByRole("button", { name: "Clear receipt & start another", exact: true }).click();
   await fill(page, "bug", `Browser bug ${run}`);
   await page.evaluate(() => { document.documentElement.dataset.mode = "dark"; console.warn("Browser test warning Bearer secret-test-value person@example.com"); });
+  assert.equal(await page.locator(".report-diagnostic-groups details").count(), 0);
+  await page.getByRole("button", { name: "Include browser details", exact: true }).click();
   assert.equal(await page.locator(".report-diagnostic-groups details").count(), 4);
-  await page.getByRole("button", { name: "Refresh browser details", exact: true }).click();
   const reviewedDiagnostics = await page.locator(".report-diagnostic-groups pre").allTextContents();
   await page.getByRole("button", { name: "Close reporting panel", exact: true }).click();
   await page.reload({ waitUntil: "domcontentloaded" }); await open(page);
@@ -128,7 +129,7 @@ try {
   await page.getByRole("button", { name: "Send report", exact: true }).click(); await accepted(page); await page.getByText("1 of 1 uploaded", { exact: true }).waitFor();
   const bugDetail = await fetch(`${api}/v1/admin/reports/${bugPayload.id}`, { headers: { Authorization: `Bearer ${adminToken}` } }).then(response => response.json());
   assert.equal(bugDetail.report.kind, "bug"); assert.equal(bugDetail.attachments[0].state, "uploaded");
-  results.push("Bug diagnostics default on, captured data-mode and reviewed warnings survive reload unchanged, secrets redact, capture and crop upload to the local Worker");
+  results.push("Bug diagnostics require explicit inclusion; captured data-mode and reviewed warnings survive reload unchanged, secrets redact, capture and crop upload to the local Worker");
   await page.goto(`${base}/feedback-admin/?report=${bugPayload.id}`, { waitUntil: "domcontentloaded" });
   assert.equal(await page.locator(".report-launcher").count(), 0);
   await page.getByLabel("Maintainer token", { exact: true }).fill(adminToken); await page.getByRole("button", { name: "Unlock reports", exact: true }).click();
