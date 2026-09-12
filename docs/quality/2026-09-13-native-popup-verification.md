@@ -13,7 +13,8 @@ browsers/platforms and final deployed-release checks remain open.
   `analytics-fixture/out` static export. The export uses a synthetic public
   analytics test token, not the production project token.
 - The export's checkout is `0ed8d06c47121763189f5f4fac3971fa675dad36`.
-  Comparing `app`, `components`, `registry`, `lib`, `public`, package manifests and
+  Comparing `app`, `components`, `registry`, `registry.json`, `data`, `lib`, `public`,
+  package manifests, `tsconfig.json`, `components.json`, `postcss.config.mjs` and
   `next.config.ts` against candidate `5358d25aded2c7b030d394e289475bc030a82578`
   returned an empty diff. This establishes unchanged product source, not byte
   identity with the future production artifact or its environment configuration.
@@ -22,15 +23,16 @@ browsers/platforms and final deployed-release checks remain open.
 ## Observed interaction
 
 The primary `Review rhythm` control initially displayed `Daily`. Its native popup
-showed group label `Reflection schedule` (disabled), `Daily`, `Weekly`, `Monthly`
+showed group label `Reflection schedule` (reported disabled/non-selectable by the
+native accessibility tree, not disabled in source), `Daily`, `Weekly`, `Monthly`
 (disabled), and `Off`.
 
 | Action | Observed result |
 | --- | --- |
-| Open the primary control, press Down, then Enter | Popup closes; control reads `Weekly`; helper reads `Selected: Weekly.` |
-| Reopen with Space; press Down to highlight Monthly, then Enter | Monthly is not committed; control and helper remain `Weekly` |
-| Reopen with Space; press Down | Native menu reports Monthly as both selected/highlighted and disabled |
-| Press Down again, then Enter | Highlight moves to Off; popup closes; control reads `Off`; helper reads `Selected: Off.` |
+| First opening: open the primary control, press Down, then Enter | Popup closes; control reads `Weekly`; status live region reads `Selected: Weekly.` |
+| Second opening: reopen with Space; press Down to highlight Monthly, then Enter | Monthly is not committed; control and status remain `Weekly` |
+| Third opening: reopen with Space; press Down | Native menu reports Monthly as both selected/highlighted and disabled |
+| Continue in that third popup: press Down again, then Enter | Highlight moves to Off; popup closes; control reads `Off`; status live region reads `Selected: Off.` |
 | Reopen with Space, press Up to highlight Monthly, then Escape | Popup closes without changing Off; focus returns to the Review rhythm control |
 
 The independent Field, Toolbar and Listbox gallery examples retained their own
@@ -48,7 +50,7 @@ that a disabled form option can be selected.
 ## Evidence and limits
 
 The native UI observations in this task showed the actual popup and the resulting
-control/helper text, including returned focus. A screenshot was inspected after
+control/status text, including returned focus. A screenshot was inspected after
 the rejected Monthly selection and showed Weekly still selected. No screenshot
 of the owner's surrounding desktop or unrelated tabs is committed.
 
