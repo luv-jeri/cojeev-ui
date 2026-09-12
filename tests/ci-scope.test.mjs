@@ -6,7 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
-import { changedPaths, classify, resolveScope, SUITE_FLAGS } from '../scripts/ci-scope.mjs';
+import { changedPaths, classify, outputsFor, resolveScope, SUITE_FLAGS } from '../scripts/ci-scope.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 
@@ -15,7 +15,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const rows = [
   ['prose only', ['docs/production/2026-09-12-phase-1-ci.md'], 'docs', 'prose'],
   ['nested prose', ['docs/superpowers/plans/a.md', 'README.md', 'AGENTS.md'], 'docs', 'prose'],
-  ['licence at root', ['LICENCE'], 'docs', 'prose'],
+  ['licence at root verifies generated notice consistency', ['LICENCE'], 'checkpoint', 'quick'],
   ['deleted prose still prose', ['docs/old-report.md'], 'docs', 'prose'],
   ['root unit tests', ['tests/release.test.mjs'], 'checkpoint', 'quick'],
   ['typescript unit test', ['tests/settings.test.ts'], 'checkpoint', 'quick'],
@@ -32,6 +32,25 @@ const rows = [
   ['consumer install script', ['scripts/verify-install.mjs'], 'checkpoint', 'quick,install-consumer'],
   ['consumer install runner', ['scripts/run-install-verification.mjs'], 'checkpoint', 'quick,install-consumer'],
 
+  // I03 licence notices: the generator, the file it writes and the payloads it
+  // regenerates. Generation consistency plus a real fresh-consumer install is
+  // the proportionate check for a notice that only travels as an installed file.
+  ['notice generator helper', ['scripts/registry-notices.mjs'], 'checkpoint', 'quick,registry-generation,install-consumer'],
+  ['registry build script', ['scripts/build-registry.mjs'], 'checkpoint', 'quick,registry-generation,install-consumer'],
+  ['generated notices file', ['registry/cojeev/NOTICES.txt'], 'checkpoint', 'quick,registry-generation,install-consumer'],
+  ['generated base payload', ['public/r/cojeev.json'], 'checkpoint', 'quick,registry-generation,install-consumer'],
+  ['generated catalogue payloads', ['registry.json', 'public/registry.json', 'public/r/registry.json'], 'checkpoint', 'quick,registry-generation,install-consumer'],
+  ['notice generation test', ['tests/registry-notices.test.mjs'], 'checkpoint', 'quick,registry-generation,install-consumer'],
+
+  // E08-1 reporting consent: the real widget and the two checks that exercise it.
+  ['reporting widget', ['components/reporting/reporting-widget.tsx'], 'checkpoint', 'quick,reporting-consent'],
+  ['reporting consent check', ['scripts/check-reporting-consent.mjs'], 'checkpoint', 'quick,reporting-consent'],
+  ['reporting browser journey', ['scripts/check-reporting-browser.mjs'], 'checkpoint', 'quick,reporting-consent'],
+
+  // G01 standalone loading measurement. Nothing imports it and CI never samples
+  // it, so lint, type checking and the unit suites are the whole check.
+  ['loading measurement script', ['scripts/measure-loading-baseline.mjs'], 'checkpoint', 'quick'],
+
   // Union: prose plus code keeps every selected suite and stops being docs-only.
   ['prose and workflow union', ['README.md', '.github/workflows/verify.yml'], 'checkpoint', 'prose,quick,ci-contract'],
   ['three-way union', ['docs/a.md', 'tests/analytics.browser.mjs', 'scripts/verify-install.mjs'], 'checkpoint', 'prose,quick,analytics-browser,install-consumer'],
@@ -45,6 +64,32 @@ const rows = [
     'scripts/run-install-verification.mjs',
     'tests/ci-scope.test.mjs',
   ], 'checkpoint', 'prose,quick,ci-contract,install-consumer'],
+
+
+  // The complete changed-file lists of the three bounded launch changes this
+  // extension exists for, taken from their prepared worktrees.
+  ['the I03 change itself', [
+    'docs/quality/2026-09-13-download-license-notices.md',
+    'public/r/cojeev.json',
+    'public/r/registry.json',
+    'public/registry.json',
+    'registry.json',
+    'registry/cojeev/NOTICES.txt',
+    'scripts/build-registry.mjs',
+    'scripts/registry-notices.mjs',
+    'tests/registry-notices.test.mjs',
+  ], 'checkpoint', 'prose,quick,registry-generation,install-consumer'],
+  ['the E08-1 change itself', [
+    'components/reporting/reporting-widget.tsx',
+    'docs/privacy/2026-09-13-explicit-diagnostics.md',
+    'docs/superpowers/plans/2026-09-12-launch-master-checklist.md',
+    'scripts/check-reporting-browser.mjs',
+    'scripts/check-reporting-consent.mjs',
+  ], 'checkpoint', 'prose,quick,reporting-consent'],
+  ['the G01 change itself', [
+    'docs/quality/2026-09-13-performance-baseline.md',
+    'scripts/measure-loading-baseline.mjs',
+  ], 'checkpoint', 'prose,quick'],
 
   // Fallbacks.
   ['empty diff', [], 'full', ''],
@@ -76,6 +121,16 @@ const rows = [
   ['nested test directory', ['tests/nested/a.test.mjs'], 'full', ''],
   ['unknown harness file', ['scripts/docs-behaviors-effects.mjs'], 'full', ''],
   ['gate runner backup', ['scripts/run-production-gate.mjs.orig'], 'full', ''],
+  ['another generated payload is not the base item', ['public/r/button.json'], 'full', ''],
+  ['registry source feeding the generator', ['registry/cojeev/lib/bloom-engine.ts'], 'full', ''],
+  ['backup of the generated notices', ['registry/cojeev/NOTICES.txt.bak'], 'full', ''],
+  ['a neighbouring reporting component', ['components/reporting/capture-controls.tsx'], 'full', ''],
+  ['the reporting maintainer screen', ['components/reporting/admin.tsx'], 'full', ''],
+  ['reporting styles', ['components/reporting/reporting.css'], 'full', ''],
+  ['the reporting fixture server', ['scripts/reporting-browser-fixture.mjs'], 'full', ''],
+  ['the reporting journey runner', ['scripts/run-reporting-browser.mjs'], 'full', ''],
+  ['a different measurement script', ['scripts/measure-interaction-baseline.mjs'], 'full', ''],
+  ['backup of the measurement script', ['scripts/measure-loading-baseline.mjs.bak'], 'full', ''],
   ['leading slash', ['/README.md'], 'full', ''],
 ];
 
@@ -223,9 +278,115 @@ test('the scoped job runs the suite commands its allowlist promises', () => {
   assert.ok(guarded('run_transient').includes('tests/docs-transient-timing.browser.mjs'), 'the transient suite must run its harness');
   assert.ok(guarded('run_transient').includes('--negative'), 'the transient suite must run its negative control');
   assert.ok(guarded('run_install').includes('run-install-verification.mjs'), 'the install suite must install from a locally served registry');
+  assert.ok(guarded('run_registry').includes('scripts/build-registry.mjs'), 'the registry suite must regenerate the committed output');
+  assert.ok(guarded('run_registry').includes('git diff --exit-code'), 'the registry suite must fail when generated output no longer matches its source');
+  assert.ok(guarded('run_reporting').includes('scripts/check-reporting-consent.mjs'), 'the reporting suite must run the focused real-widget consent check');
+  assert.ok(guarded('run_reporting').includes('scripts/run-reporting-browser.mjs'), 'the reporting suite must also run the complete Worker-backed journey');
+  const reportingBuild = steps.find(step => String(step.if ?? '').includes("needs.scope.outputs.run_reporting == 'true'")
+    && String(step.run ?? '') === 'npm run build');
+  assert.equal(reportingBuild?.env?.NEXT_PUBLIC_REPORTING_API_URL, 'http://127.0.0.1:8787',
+    'the reporting suite must build the fixture against the loopback Worker it starts');
   assert.doesNotMatch(guarded('run_install'), /luv-jeri\.github\.io/, 'the install suite must never verify against the live website');
   assert.ok(guarded('run_npm').includes('npm ci'), 'dependency installation is skipped for a prose-only change');
   assert.ok(!String(steps.find(step => String(step.run ?? '').includes('npm ci'))?.if ?? '').includes('run_prose'));
+});
+
+test('every suite flag the classifier publishes is wired through the scope job', () => {
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const outputs = workflow.jobs.scope.outputs;
+  // A flag the classifier publishes but the job does not forward is blank in the
+  // dependent job: every guarded step silently skips and the run reports success.
+  for (const flag of Object.keys(SUITE_FLAGS)) {
+    assert.equal(outputs[flag], `\${{ steps.select.outputs.${flag} }}`, `${flag} must reach the dependent jobs`);
+  }
+});
+
+test('the reporting widget is never accepted on consent evidence alone', () => {
+  // The widget is product code and this is the one line of it E08-1 changed. A
+  // later change to the same file is larger, so its reduced scope has to carry
+  // the complete Worker-backed journey and a real build, not just the consent check.
+  const outputs = outputsFor(classify(['components/reporting/reporting-widget.tsx']));
+  assert.equal(outputs.run_reporting, 'true');
+  assert.equal(outputs.run_build, 'true', 'the widget must be rebuilt, not only unit tested');
+  assert.equal(outputs.run_quick, 'true');
+  assert.equal(outputs.run_npm, 'true');
+
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const steps = workflow.jobs.checkpoint.steps
+    .filter(step => /check-reporting-consent\.mjs|run-reporting-browser\.mjs/.test(String(step.run ?? '')));
+  assert.equal(steps.length, 2, 'both reporting checks must be present exactly once');
+  // One flag guards both: the journey cannot be dropped while the consent check runs.
+  for (const step of steps) assert.match(String(step.if), /needs\.scope\.outputs\.run_reporting == 'true'/);
+
+  for (const neighbour of [
+    'components/reporting/admin.tsx',
+    'components/reporting/capture-controls.tsx',
+    'components/reporting/reporting.css',
+    'components/reporting/request-board.tsx',
+    'workers/reporting/src/index.ts',
+    'scripts/reporting-browser-fixture.mjs',
+    'scripts/run-reporting-browser.mjs',
+  ]) assert.equal(classify([neighbour]).scope, 'full', neighbour);
+});
+
+test('generated registry output is proved against its generator, not assumed', () => {
+  const outputs = outputsFor(classify(['scripts/registry-notices.mjs']));
+  assert.equal(outputs.run_registry, 'true');
+  // A notice that only reaches a consumer as an installed file is worth nothing
+  // until a real fresh consumer install writes it, so both run together.
+  assert.equal(outputs.run_install, 'true');
+  assert.equal(outputs.run_build, 'true');
+  assert.equal(classify(['registry/cojeev/NOTICES.txt']).suites.join(','), outputs.suites);
+});
+
+test('the loading measurement is checked in CI, never sampled there', () => {
+  const decision = classify(['scripts/measure-loading-baseline.mjs']);
+  assert.deepEqual(decision.suites, ['quick'], 'lint, type checking and the unit suites are the whole check');
+  const outputs = outputsFor(decision);
+  assert.equal(outputs.run_build, 'false');
+  assert.equal(outputs.run_install, 'false');
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  assert.doesNotMatch(JSON.stringify(workflow.jobs), /measure-loading-baseline/,
+    'no job may take performance samples on a shared runner');
+});
+
+test('the analytics unset case stays an analytics-free build, reused as the release job does', () => {
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const analytics = /NEXT_PUBLIC_ANALYTICS_ENABLED|NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN|NEXT_PUBLIC_POSTHOG_HOST/;
+
+  // The unset case is whichever analytics-free build ran last before it. With
+  // reporting selected that is the reporting fixture, exactly as in the release
+  // job; without it, the plain build. Either way it must set no analytics value,
+  // or "silent when unconfigured" would be measuring a configured build.
+  for (const job of ['checkpoint', 'verify']) {
+    const steps = workflow.jobs[job].steps;
+    const at = predicate => steps.findIndex(predicate);
+    const reportingBuild = at(step => String(step.run ?? '') === 'npm run build' && step.env?.NEXT_PUBLIC_REPORTING_API_URL);
+    const journey = at(step => /run-reporting-browser\.mjs/.test(String(step.run ?? '')));
+    const unset = at(step => /analytics\.browser\.mjs --expect-silent/.test(String(step.run ?? '')));
+    const enabled = at(step => analytics.test(JSON.stringify(step.env ?? {})) && step.env?.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true');
+    assert.ok(reportingBuild >= 0 && journey >= 0 && unset >= 0 && enabled >= 0, `${job} must keep all four steps`);
+    assert.ok(reportingBuild < journey, `${job}: the fixture must be built before its journey`);
+    assert.ok(journey < unset, `${job}: the reporting fixture must be the build the unset case reuses`);
+    assert.ok(unset < enabled, `${job}: silence must be proved before analytics is switched on`);
+    assert.doesNotMatch(JSON.stringify(steps[reportingBuild].env), analytics, `${job}: the reporting fixture sets no analytics value`);
+  }
+
+  // The plain build the transient, install and analytics-unset steps share must
+  // stay bare: it is the unset case whenever reporting is not selected.
+  const plain = workflow.jobs.checkpoint.steps.find(step =>
+    String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes("run_build == 'true'"));
+  assert.ok(plain, 'the shared plain build must stay guarded by run_build');
+  assert.equal(plain.env, undefined, 'the plain build must set no environment at all');
+});
+
+test('reporting reuses its fixture build unless another selected journey needs the plain build', () => {
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const steps = workflow.jobs.checkpoint.steps;
+  const plain = steps.find(step => String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes("run_build == 'true'"));
+  assert.equal(plain?.if, "needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true')");
+  const browser = steps.find(step => String(step.run ?? '').includes('playwright install'));
+  assert.equal(browser?.if, "needs.scope.outputs.run_build == 'true'", 'reporting still needs Chromium even when the plain build is omitted');
 });
 
 test('one unit invocation already covers the classifier and partition runner', () => {
