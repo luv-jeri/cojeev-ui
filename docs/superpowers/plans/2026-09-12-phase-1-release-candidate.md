@@ -26,6 +26,8 @@ Branch: `codex/fix/b01-ci-partitions`. Commit: `fix(ci): complete release checks
 
 After the scoped changes are reviewed, run the complete release workflow against the exact candidate: lint, types, unit/reporting/hosting tests, both environment builds, CSP, Pages compatibility, examples, catalogue/motion/mobile/landing tests, reporting and analytics browser fixtures, clean-consumer installs. Check pinned tooling, fork-PR credential isolation, serialized deployments, preserved manual Pages support and production approval. Record source, check URL, counts, failures and sanitized evidence. Use separate `chore(verification)` checkpoint PRs for B02 and B03; do not mark a skipped check passed.
 
+Inspection opened child checkpoint **B03-1**: the fresh-consumer script invokes `shadcn@latest` twice. In its own `codex/fix/b03-1-pin-consumer-installer` branch and PR, use the already reviewed exact root dependency version (currently 4.21.0), verify real installation/build in a fresh consumer, and leave component code/dependencies unchanged. Record the evidence under `docs/production/2026-09-12-phase-1-release-controls.md`. This is part of the approved pinned-tooling requirement, not a dependency upgrade.
+
 ### Task 4: B04 — prove artifact identity and environment separation
 
 Inspect the successful run's release manifest and beta/prod artifact digests, verify both were built from its exact source commit, and inspect consumer installation and cross-environment rejection results. Record this evidence in a scoped `chore(release)` B04 PR. Do not rebuild a newer revision after approval.
