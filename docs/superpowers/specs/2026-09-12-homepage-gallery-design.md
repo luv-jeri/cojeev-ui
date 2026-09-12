@@ -6,7 +6,7 @@ Owner approval: 12 September 2026. Sanjay selected A's olive footer, B's browsin
 
 Help a visitor understand the library, try an expressive working component, discover a few useful details and contact the maker. One short page: introduction and profile stage, curated gallery, contact footer. Canonical seed wordmark, current typefaces and semantic light/dark tokens stay intact. No invented testimonials, popularity claims, sparkle clouds or physical-cabinet metaphors.
 
-Use the combined mockup in `.impeccable/mocks/2026-09-12-homepage/combined-direction.png` as a composition reference, not a bitmap to ship or an exact source of copy/icons. Reduce the main card's extra text. Keep the display heading around the current 72px role, with fluid smaller-screen scaling; generous 24–48px section interiors and 48–80px section separation. No nested configuration panels.
+Use the [approved combined mockup](assets/2026-09-12-homepage-direction.png) as a composition reference, not a bitmap to ship on the website or an exact source of copy/icons. Reduce the main card's extra text. Keep the display heading around the current 72px role, with fluid smaller-screen scaling; generous 24–48px section interiors and 48–80px section separation. No nested configuration panels.
 
 ## Working profile stage
 
