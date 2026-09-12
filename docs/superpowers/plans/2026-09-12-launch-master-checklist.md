@@ -305,7 +305,7 @@ For each item: open its actual docs route, try every meaningful approach, inspec
 ### Layout and disclosure
 
 - [ ] **V50 · B — Accordion:** reopen Sanjay's reported dissatisfaction; review compact, connected and editorial approaches individually, including actual opening/closing and rapid reversal. Do not close on screenshot or count alone.
-  - [ ] **V50-1 · Preservation-first polish:** calmer FAQ separation, aligned Chapters reading column and subordinate responsive Editorial artwork; preserve all three approaches and the existing motion owner. Separate implementation PR after H03-1.
+  - [ ] **V50-1 · Preservation-first polish:** implemented in [PR #26](https://github.com/luv-jeri/cojeev-ui/pull/26), source `5128ce3` (tested tree `e552f19`). Calmer FAQ separation, aligned Chapters reading column, subordinate responsive Editorial artwork and restored keyboard focus; all three approaches and existing motion owner preserved. [Focused checks and before/after evidence](../../quality/evidence/v50-1/README.md). Independent review passed; rendered owner approval and applicable CI remain pending; not deployed.
 - [ ] **V51 · B — Bento, superseding Aspect Ratio redesign:** templates/randomise/custom rows/columns, snapping/gap behavior, Classic/Interlock, immediate resize preview, stable canvas and grips, blocked-action feedback, Undo/Redo and keyboard alternatives. Keep the old aspect-ratio primitive/route compatible.
 - [ ] **V52 · B — Card:** distinct editorial/actionable/layered compositions, clean selection and responsive content; preserve existing variants.
 - [ ] **V53 · B — Collapsible:** useful inline/attached/summary disclosure, reliable motion and safe focus when folding.
