@@ -254,20 +254,28 @@ try {
     const { context, captures } = await analyticsContext(browser);
     const page = await context.newPage();
     await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
-    const specimen = page.locator('[data-analytics-preview="slider"]');
+    const specimen = page.locator('[data-featured-component="motion-drawer"] [data-analytics-preview="motion-drawer"]');
     await specimen.waitFor();
     await specimen.scrollIntoViewIfNeeded();
-    await waitFor(
+    const impression = await waitFor(
       captures,
-      (payload) => payload.event === "component_impression" && payload.properties.component_id === "slider",
+      (payload) => payload.event === "component_impression" && payload.properties.component_id === "motion-drawer",
       "50 percent visible for one second",
     );
+    assert.deepEqual(impression.properties, {
+      component_id: "motion-drawer",
+      placement: "landing",
+      route: "/",
+      ...stamped,
+      $process_person_profile: false,
+      $geoip_disable: true,
+    });
     await page.locator("header").first().scrollIntoViewIfNeeded();
     await delay(150);
     await specimen.scrollIntoViewIfNeeded();
     await delay(1_200);
     assert.equal(
-      events(captures, "component_impression").filter((payload) => payload.properties.component_id === "slider").length,
+      events(captures, "component_impression").filter((payload) => payload.properties.component_id === "motion-drawer").length,
       1,
       "one component and placement emits once in a route visit",
     );
