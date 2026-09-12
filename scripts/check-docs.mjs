@@ -10,6 +10,7 @@ import { createEffectTests } from "./docs-behaviors-effects.mjs";
 import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
 import { armOpacityObservation } from "./docs-transient-paint.mjs";
+import { docsHarnessFiles, docsHarnessFingerprint } from "./docs-harness-fingerprint.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -1345,7 +1346,8 @@ async function chromeCheck(page, width) {
 }
 const run = {
   started: new Date().toISOString(),
-  harnessSha256: createHash("sha256").update(fs.readFileSync(new URL(import.meta.url))).digest("hex"),
+  harnessFiles: docsHarnessFiles,
+  harnessSha256: docsHarnessFingerprint(),
   url: base,
   revisionStart: revision(),
   entries: [],
@@ -1652,7 +1654,7 @@ try {
 } finally {
   run.ended = new Date().toISOString();
   run.revisionEnd = revision(true);
-  run.harnessEndSha256 = createHash("sha256").update(fs.readFileSync(new URL(import.meta.url))).digest("hex");
+  run.harnessEndSha256 = docsHarnessFingerprint();
   fs.writeFileSync(
     path.join(output, "results.json"),
     JSON.stringify(run, null, 2),

@@ -40,3 +40,20 @@ The source/build comparison covered 542 files under `app`, `components`, `lib`, 
 An intermediate clock implementation exposed a setup race when a sampled `Date.now()` target became stale before `pauseAt`; its interrupted probes are not acceptance evidence. The final fixed-wall-time ordering specifically covers this boundary with a 2500ms injected delay and guaranteed cleanup.
 
 This is focused checkpoint evidence. A complete final-revision CI gate, PR review and the separate production approval remain primary-owned acceptance steps. No deployment or complete catalogue pass is claimed here. Rollback consists of reverting this test-only checkpoint.
+
+## Review correction: fingerprint the extracted observation code
+
+Review of the initial synchronization commit (`846617c`) found that the normal Git-backed receipt fingerprint still hashed only `check-docs.mjs`. Its stable value could not detect edits to the newly extracted paint observer or changed details module. The initial receipt hashes above are therefore historical single-file evidence, not the final multi-file provenance claim.
+
+Both start/end `harnessSha256` fields now use one deterministic path-and-content fingerprint over `scripts/check-docs.mjs`, `scripts/docs-behaviors-details.mjs`, `scripts/docs-transient-paint.mjs` and the fingerprint implementation `scripts/docs-harness-fingerprint.mjs`. The receipt records the exact ordered `harnessFiles` list. Each file contributes its relative path, a NUL delimiter, byte length, another NUL delimiter and raw bytes. Missing files fail closed. The existing start/end comparison now detects a mutation to either observation dependency in normal Git-backed runs as well as snapshot runs.
+
+`tests/docs-harness-fingerprint.test.mjs` mutates each named observation file in an isolated temporary fixture. The extracted old single-file algorithm failed both cases with identical before/after hashes; the multi-file algorithm passes both mutation cases and repeated-read stability assertions. The actual delayed and negative catalogue regressions were then rerun, retaining all prior behavior checks and requiring stable amended fingerprints.
+
+```sh
+rtk proxy node --test tests/docs-harness-fingerprint.test.mjs
+rtk proxy node tests/docs-transient-timing.browser.mjs --output=output/playwright/transient-fingerprint-delayed
+rtk proxy node tests/docs-transient-timing.browser.mjs --negative --output=output/playwright/transient-fingerprint-negative
+rtk proxy node node_modules/eslint/bin/eslint.js scripts/check-docs.mjs scripts/docs-harness-fingerprint.mjs tests/docs-harness-fingerprint.test.mjs --max-warnings=0
+```
+
+Results: **2/2 fingerprint tests pass**; delayed mode passes all three full behaviors; negative mode rejects exactly the original cancellation/ring/reveal failures. Both runs preserve passing layouts, shared preview, runtime checks, chrome and start/end provenance. Their amended fingerprint is `3634775e6f186b7f014da230795f44ab5e278444c75783c069dd0cbc119ef3fb`. Focused lint passes. No full catalogue rerun, application change or new build was needed for this provenance-only correction.
