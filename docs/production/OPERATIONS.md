@@ -236,6 +236,24 @@ do not alone trigger an incident. Responses, report titles, addresses, tokens an
 payloads are not included. Deployment and recovery failures alert through the
 same GitHub path, independent of Resend.
 
+**The scheduled health job is disabled until it is deliberately activated.** Its job
+condition requires the repository variable `OPERATIONS_HEALTH_ENABLED` to equal `true`
+in addition to `main`; a missing or `false` value keeps the job skipped, including a
+manual `workflow_dispatch` run. Set that variable only after both beta and production
+are actually live and `BETA_HEALTH_TOKEN` and `PRODUCTION_HEALTH_TOKEN` are present in
+the `operations` environment and accepted by each API. Setting it earlier files public
+alerts for environments that do not exist yet. Activation is a required launch step:
+until the variable is set, no scheduled monitoring runs at all. This gate covers only
+the scheduled sweep — the immediate deployment and recovery failure notifications in
+`verify.yml`, `rollback.yml` and `recovery.yml` are independent of it and must never be
+suppressed.
+
+**Before merging this rollout branch to `main`, provision and verify the Task 4.3
+credentials.** A push to `main` deploys beta automatically, so the beta environment
+secrets and the CI deployment token must already exist and be verified at that point;
+merging first and configuring afterwards means the first automatic beta deployment
+fails. Do not add a bypass, and do not silence the resulting failure alerts.
+
 Alerts mention `@luv-jeri`; actual delivery follows the owner's GitHub notification
 preferences. Delivery to `unread.fyi@gmail.com` is not configured or verified by
 these files. The owner must confirm their GitHub email/routing preference and test

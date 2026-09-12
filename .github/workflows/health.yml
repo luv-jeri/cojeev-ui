@@ -11,7 +11,10 @@ concurrency:
   cancel-in-progress: false
 jobs:
   health:
-    if: github.ref == 'refs/heads/main'
+    # Scheduled and manual runs stay disabled until the owner deliberately sets the
+    # repository variable OPERATIONS_HEALTH_ENABLED to 'true'. A missing or false value
+    # blocks workflow_dispatch as well. See docs/production/OPERATIONS.md.
+    if: github.ref == 'refs/heads/main' && vars.OPERATIONS_HEALTH_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: operations

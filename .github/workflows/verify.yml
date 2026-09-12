@@ -1,6 +1,9 @@
 name: Verify and release
 on:
+  # Only main pushes trigger the full pipeline; a branch with an open pull request
+  # is covered by the pull_request event alone and must not run it twice.
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -51,6 +54,7 @@ jobs:
       - run: npm run gate
       - run: npm run gate:mobile
       - run: npm run gate:marketing
+      - run: npm run gate:homepage
       - run: npm run gate:smooth-scroll
       - run: npm run reporting:browser
       # Analytics gate, three cases. The gate serves out/ itself on an ephemeral port
@@ -98,6 +102,27 @@ jobs:
           name: release-${{ github.sha }}
           path: artifacts/release/
           if-no-files-found: error
+          retention-days: 14
+          include-hidden-files: false
+      # Sanitized browser-gate evidence, kept on failure as well as success so a failed
+      # gate can be read. Explicit whitelist of synthetic gate output only: no release
+      # bundle, no backups, reports, private paths, credentials, workspace or database
+      # snapshots, and hidden files are excluded.
+      - name: Preserve sanitized browser gate evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: production-evidence
+          path: |
+            artifacts/production-docs/
+            artifacts/production-motion/
+            artifacts/mobile-webkit/
+            artifacts/landing-smooth-scroll/
+            artifacts/example-source/
+            output/playwright/refinement-marketing/
+            output/playwright/homepage-gallery/
+            GATE.md
+          if-no-files-found: ignore
           retention-days: 14
           include-hidden-files: false
 
