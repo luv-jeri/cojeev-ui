@@ -3,6 +3,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 
 const base = (process.env.LAUNCH_TEST_URL || "http://127.0.0.1:4335/cojeev-ui").replace(/\/$/, "");
+// The public canonical origin is independent of the local verification server.
+const expectedSite = (process.env.LAUNCH_EXPECTED_SITE_URL || "https://luv-jeri.github.io/cojeev-ui").replace(/\/$/, "");
 const output = "output/playwright/000h-launch";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
@@ -132,7 +134,7 @@ try {
   await page.getByRole("heading", { level: 1, name: /Hi, I’m Sanjay/ }).waitFor();
   await noOverflow();
   await page.screenshot({ path: `${output}/about-mobile.png` });
-  assert.equal(await page.locator('link[rel="canonical"]').getAttribute("href"), "https://luv-jeri.github.io/cojeev-ui/about/");
+  assert.equal(await page.locator('link[rel="canonical"]').getAttribute("href"), `${expectedSite}/about/`);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.screenshot({ path: `${output}/about-desktop.png` });
   mark("mobile navigation reaches the maker page without overflow");
@@ -161,7 +163,7 @@ try {
   await page.getByRole("dialog", { name: "A little room for ideas" }).waitFor({ state: "hidden" });
   mark("reduced motion keeps the featured drawer functional");
   assert.deepEqual(errors, [], "new routes must not throw browser errors");
-  await writeFile(`${output}/report.json`, JSON.stringify({ base, checks, errors, passed: true }, null, 2));
+  await writeFile(`${output}/report.json`, JSON.stringify({ base, expectedSite, checks, errors, passed: true }, null, 2));
 } finally {
   await browser.close();
 }

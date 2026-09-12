@@ -110,7 +110,7 @@ async function layout(page) {
 const cases = {
   "home-and-getting-started": async page => {
     await go(page, "/");
-    await page.getByRole("heading", { level: 1, name: /Good things\s*come together\./ }).waitFor();
+    await page.getByRole("heading", { level: 1, name: /React components\.\s*With character\./ }).waitFor();
     const homeLayout = await layout(page);
     await page.screenshot({ path: path.join(output, "home-390.png"), fullPage: true });
     await page.locator(".launch-hero").getByRole("link", { name: /^Explore \d+ components$/ }).tap();
