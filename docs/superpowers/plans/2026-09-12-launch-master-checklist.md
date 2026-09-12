@@ -108,7 +108,26 @@ These links intentionally point to the release revision, because the original lo
 
 **Implementation locations:** `.github/workflows/verify.yml`, `scripts/run-production-gate.mjs`, release scripts and `docs/production/OPERATIONS.md` in the release checkout.
 
-**Owner correction:** small checkpoint PRs must use affected checks, not repeat all 172 components. Keep full coverage for the combined release candidate, shared/uncertain-impact changes and main promotion. Plain `feat/`, `fix/` and `chore/` branch names are required. PRs #2–#8 were closed automatically by source-branch renaming; their commits and discussions are preserved and linked replacement PRs are pending. None of these closures was a merge.
+**Owner correction:** small checkpoint PRs must use affected checks, not repeat all 172 components. Keep full coverage for the combined release candidate, shared/uncertain-impact changes and main promotion. Plain `feat/`, `fix/` and `chore/` branch names are required. PRs #2–#8 were closed automatically by source-branch renaming; their commits and discussions are preserved. Checkpoint replacements are #9–#14 below; the release PR replacing #2 waits for the combined candidate. No automatic closure was a merge.
+
+### Current checkpoint links — supersede older log statuses
+
+| Checkpoint | Current PR | Verified state |
+| --- | --- | --- |
+| B01 scoped CI | [#9](https://github.com/luv-jeri/cojeev-ui/pull/9), replaces #3 | Scoped checks and fresh candidate installation passed; merged into `chore/production-beta` as `e2474358d499ab9f7854b251180a97d8b0c47d69`. Full combined-release runtime acceptance remains open |
+| B02-1 analytics fixture | [#10](https://github.com/luv-jeri/cojeev-ui/pull/10), replaces #7 | Local focused checks passed; remote affected-analytics checks running |
+| B02-2 timing checks | [#11](https://github.com/luv-jeri/cojeev-ui/pull/11), replaces #8 | Four affected cases and four negative controls pass locally, including the subsequently exposed loading-button case; remote pinned-Node checks running |
+| W01 naming and delivery rules | [#12](https://github.com/luv-jeri/cojeev-ui/pull/12), replaces #4 | Documentation-only check passed; merge waits for preceding checkpoints |
+| B03-1 pinned installer | [#13](https://github.com/luv-jeri/cojeev-ui/pull/13), replaces #5 | Earlier real consumer installation passed; remote affected-installation checks running |
+| B03 release controls | [#14](https://github.com/luv-jeri/cojeev-ui/pull/14), replaces #6 | Documentation-only check passed before this tracking update; merge waits for preceding checkpoints |
+
+Measured GitHub evidence: [B01 scoped run](https://github.com/luv-jeri/cojeev-ui/actions/runs/34696790565)
+took 3m51s from scope selection through completion, including fresh consumer installation. The earlier full
+run took 69m45s, of which 58m48s was the catalogue/motion gate. Documentation runs
+[W01](https://github.com/luv-jeri/cojeev-ui/actions/runs/34696952579) and
+[B03](https://github.com/luv-jeri/cojeev-ui/actions/runs/34696957389) took 16s and 19s respectively.
+These are different verification scopes, not a claim that the full suite now takes four minutes. Component
+source, the restored homepage, main protections, production data and deployments were unchanged.
 
 - [ ] **B01 · C — Repair CI runtime and scope.** Retain bounded catalogue partitions and add conservative affected-check selection for small checkpoints. Preserve exact full-release coverage, source provenance and all later checks. Scoped code acceptance permits the repair PR to merge; this runtime checkpoint closes when the combined full run finishes within its budget without hiding failures.
 - [ ] **B02 · C — Verify the complete final-source gate.** Lint, type checking, unit tests, reporting/hosting tests, code-example checks, catalogue/browser/motion tests, reporting/analytics browser checks and clean-consumer install/build must all finish. Save sanitized evidence from the exact final revision.
