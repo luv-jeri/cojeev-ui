@@ -9,6 +9,8 @@ import { createReferenceTests } from "./docs-behaviors-reference.mjs";
 import { createEffectTests } from "./docs-behaviors-effects.mjs";
 import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
+import { armOpacityObservation } from "./docs-transient-paint.mjs";
+import { docsHarnessFiles, docsHarnessFingerprint } from "./docs-harness-fingerprint.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -45,7 +47,29 @@ const widths = args.widths
   : [360, 768, 1440];
 const themes = args.themes ? args.themes.split(",") : ["light", "dark"];
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-function revision() {
+let snapshotRevision;
+function revision(refresh = false) {
+  // Explicitly identify a copied source tree when Git metadata is unavailable.
+  // Never silently turn a failing Git check into a successful release check.
+  if (args["source-snapshot"]) {
+    if (snapshotRevision && !refresh) return snapshotRevision;
+    const hash = createHash("sha256");
+    let files = 0;
+    function visit(relative) {
+      const absolute = path.join(main, relative);
+      if (!fs.existsSync(absolute)) return;
+      if (fs.statSync(absolute).isDirectory()) {
+        for (const child of fs.readdirSync(absolute).sort()) visit(path.join(relative, child));
+      } else {
+        const bytes = fs.readFileSync(absolute);
+        hash.update(`${relative}\0${bytes.length}\0`).update(bytes);
+        files++;
+      }
+    }
+    for (const root of ["app", "components", "lib", "registry/cojeev", "data", "scripts", "tests", "package.json", "package-lock.json", "next.config.ts", "tsconfig.json"]) visit(root);
+    snapshotRevision = { mode: "source-snapshot", head: null, sourceSha256: hash.digest("hex"), files };
+    return snapshotRevision;
+  }
   const head = execFileSync("git", ["-C", main, "rev-parse", "HEAD"], {
     encoding: "utf8",
   }).trim();
@@ -111,7 +135,6 @@ const passive = new Set([
   "separator",
   "skeleton",
   "spinner",
-  "table",
   "typography",
 ]);
 const tests = {
@@ -148,17 +171,18 @@ const tests = {
     const icon=loader.locator('[data-slot="animated-icon"]');
     await loader.click();await attribute(loader,"aria-pressed","true");
     await attribute(icon,"data-animated","true");
-    await root.getByRole("button",{name:"Release selection",exact:true}).click();
-    await attribute(loader,"aria-pressed","false");
-    await key(loader,"Enter");await attribute(loader,"aria-pressed","true");
+    await text(root.locator('[data-icon-selected]'), "loader");
+    const replay=root.getByRole("button",{name:"Replay loader animation",exact:true});
+    await key(replay,"Enter");
+    await attribute(replay.locator('[data-slot="animated-icon"]'),"data-animated","true");
     await root.getByRole("button",{name:"Disable actions",exact:true}).click();
-    assert(await loader.isDisabled());await text(root,"Actions disabled.");
+    assert(await loader.isDisabled());assert(await replay.isDisabled());
     await eventually(()=>icon.getAttribute("data-animated").then(value=>value!=="true"),"Disabled action cancels icon motion");
     await root.getByRole("button",{name:"Enable actions",exact:true}).click();
     const wasReduced=await page.evaluate(()=>matchMedia("(prefers-reduced-motion: reduce)").matches);
     try{await page.emulateMedia({reducedMotion:"reduce"});await eventually(()=>icon.getAttribute("data-animated").then(value=>value!=="true"),"Reduced motion settles an explicitly selected icon");}
     finally{await page.emulateMedia({reducedMotion:wasReduced?"reduce":"no-preference"});}
-    return "Search, pointer/keyboard selection and release, disabled lifecycle and reduced-motion settling";
+    return "Search, selection, keyboard inspector replay, disabled lifecycle and reduced-motion settling";
   },
   presence: async ({root})=>{
     await root.getByRole("button",{name:"Hide result",exact:true}).click();
@@ -190,12 +214,26 @@ const tests = {
     await text(root,"Permission denied. I did not use the selected context.");
     assert.equal(await root.getByRole("button",{name:"Allow once",exact:true}).count(),0);
     await reset();
-    await draft.fill("Keep this conversation");
-    await root.getByRole("button",{name:"Send message",exact:true}).click();
-    await root.getByRole("button",{name:"Stop generation",exact:true}).click();
-    await text(root,"Stopped. This demo did not read or change any files.");
-    await page.waitForTimeout(1500);
-    assert.equal(await root.getByRole("button",{name:"Allow once",exact:true}).count(),0,"Cancelled timer must not reopen permission");
+    // Hold the demo's phase timer while real pointer actions and focus checks
+    // cross the driver boundary. Advancing time still verifies cancellation.
+    const clockInstant = new Date("2020-01-01T00:00:00Z");
+    await page.clock.install({ time: clockInstant });
+    try {
+      // Fixed wall time cannot make pauseAt's target stale while the driver is
+      // delayed. pauseAt then freezes the timers before this run is started.
+      await page.clock.setFixedTime(clockInstant);
+      await page.clock.pauseAt(clockInstant);
+      await draft.fill("Keep this conversation");
+      await root.getByRole("button",{name:"Send message",exact:true}).click();
+      assert(await draft.evaluate(el=>el===document.activeElement),"Sending returns focus to the draft before Send is replaced");
+      await root.getByRole("button",{name:"Stop generation",exact:true}).click();
+      await text(root,"Stopped. This demo did not read or change any files.");
+      await page.clock.runFor(1500);
+      assert.equal(await root.getByRole("button",{name:"Allow once",exact:true}).count(),0,"Cancelled timer must not reopen permission");
+    } finally {
+      try { await page.clock.setSystemTime(new Date()); }
+      finally { await page.clock.resume(); }
+    }
     await reset();
     const chooser=page.waitForEvent("filechooser");
     await root.getByRole("button",{name:"Attach files",exact:true}).click();
@@ -204,12 +242,17 @@ const tests = {
     await root.getByRole("button",{name:/Remove.*outline/}).click();
     await root.getByRole("button",{name:"Try an error",exact:true}).click();
     await allow();
+    const resetControl=root.getByRole("button",{name:"Reset demo",exact:true});
+    await resetControl.focus();
     await text(root,"Demo interruption. Your request is saved");
+    assert(await resetControl.evaluate(el=>el===document.activeElement),"Completion must preserve focus when it is outside Stop");
     await key(root.getByRole("button",{name:"Retry",exact:true}),"Enter");
     await allow();
+    await root.getByRole("button",{name:"Stop generation",exact:true}).focus();
     await text(root,"Your sample brief is ready.");
     await text(root,"Ready to review");
-    return "Keyboard send; explicit deny; Stop cancels timers; attach/remove; error and retry reach a sample result";
+    await eventually(()=>draft.evaluate(el=>el===document.activeElement),"Completion returns focus from Stop to the draft");
+    return "Keyboard send; explicit deny; Stop cancels timers; attach/remove; error and retry reach a sample result; completion restores focused Stop without stealing outside focus";
   },
   accordion: async ({ root }) => {
     const triggers = root.locator('[data-slot="accordion-trigger"]');
@@ -241,7 +284,7 @@ const tests = {
     return "Pointer export, keyboard invalid import/error, reset runtime";
   },
   alert: async ({ root }) => {
-    await root.getByRole("button", { name: "Dismiss", exact: true }).click();
+    await root.getByRole("button", { name: "Dismiss alert", exact: true }).click();
     const restore = root.getByRole("button", { name: "Show alert again" });
     await restore.waitFor();
     await key(restore, "Enter");
@@ -279,25 +322,51 @@ const tests = {
     return "Real text download by pointer, keyboard removal and restoration";
   },
   breadcrumb: async ({ root, page }) => {
-    const link = root.getByRole("link", { name: "Navigation", exact: true });
+    const link = root.getByRole("link", { name: "Projects", exact: true });
     await key(link, "Enter");
-    await page.waitForURL(/\/docs\/sidebar\/?$/);
-    return "Keyboard activation reaches Sidebar documentation";
+    await text(root, "Opened Projects in this local folder preview.");
+    assert.match(await page.evaluate(() => document.activeElement?.textContent), /Projects/);
+    return "Keyboard ancestor navigation updates the local folder and transfers focus to its heading";
   },
-  button: async ({ root }) => {
+  button: async ({ root, page }) => {
+    const duration = root.getByRole("slider", { name: "Loading duration", exact: true });
+    await attribute(duration, "aria-valuenow", "3");
+    await duration.press("Home");
+    await attribute(duration, "aria-valuenow", "0.5");
     const b = root.getByRole("button", { name: "Add a note", exact: true });
-    await b.click();
-    await text(root, "Running the local example…");
-    assert(await root.getByRole("button", { name: "Adding…", exact: true }).isDisabled());
-    await text(root, "1 note added in this example.");
-    await root.getByLabel("Example outcome").selectOption("error");
+    // Hold the demo's completion timer while the real pending state is read, so
+    // a driver delayed after the press still observes the actual busy semantics.
+    const clockInstant = new Date("2020-01-01T00:00:00Z");
+    await page.clock.install({ time: clockInstant });
+    try {
+      // Fixed wall time cannot make pauseAt's target stale while the driver is
+      // delayed. pauseAt then freezes the timers before this run is started.
+      await page.clock.setFixedTime(clockInstant);
+      await page.clock.pauseAt(clockInstant);
+      await b.click();
+      await text(root, "Running the local example…");
+      const pending = root.getByRole("button", { name: "Adding…", exact: true });
+      assert(await pending.isDisabled(), "Pending action must stay busy-disabled while it runs");
+      assert.equal(await pending.getAttribute("disabled"), null, "Pending action must not paint the native disabled control");
+      await page.clock.runFor(1000);
+      await text(root, "1 note added in this example.");
+    } finally {
+      try { await page.clock.setSystemTime(new Date()); }
+      finally { await page.clock.resume(); }
+    }
+    await root.getByRole("radio", { name: "Error and retry", exact: true }).click();
     await key(b, "Enter");
     await text(root, "The example action failed.");
-    await root.getByLabel("Example outcome").selectOption("success");
+    await root.getByRole("radio", { name: "Success", exact: true }).click();
     await key(root.getByRole("button", { name: "Retry example" }), "Enter");
     await text(root, "2 notes added in this example.");
+    await duration.press("End");
+    await attribute(duration, "aria-valuenow", "10");
+    await b.click();
+    await root.getByRole("button", { name: "Cancel", exact: true }).click();
+    await text(root, "Cancelled. No note was added.");
     assert(await root.getByRole("button", { name: "Disabled", exact: true }).isDisabled());
-    return "Pointer loading, disabled pending state, keyboard failure and retry";
+    return "Pointer loading preserves busy styling, adjustable duration, cancel, keyboard failure and retry";
   },
   "animated-number": async ({ root, page }) => {
     const visual = root.locator('[data-slot="animated-number"] [aria-hidden]');
@@ -353,19 +422,20 @@ const tests = {
     return "Explicit pause, direction/pace controls, four inert copies and static reduced-motion reading";
   },
   "multi-select": async ({root,page}) => {
-    const trigger=root.getByRole("button",{name:"Shared workspaces",exact:true});
+    const trigger=root.getByRole("button",{name:"Workspaces",exact:true});
     await trigger.click();
-    const search=page.getByRole("searchbox",{name:"Search Shared workspaces",exact:true});
-    await search.fill("Workspace 05");
-    assert(await page.getByRole("checkbox",{name:"Workspace 05",exact:true}).isDisabled());
-    await search.fill("Workspace 23");
-    await page.getByRole("checkbox",{name:"Workspace 23",exact:true}).click();
+    const dialog=page.getByRole("dialog",{name:"Workspaces",exact:true});
+    const search=dialog.getByRole("searchbox",{name:"Search Workspaces",exact:true});
+    await search.fill("Archive");
+    assert(await dialog.getByRole("checkbox",{name:"Archive",exact:true}).isDisabled());
+    await search.fill("Project 20");
+    await dialog.getByRole("checkbox",{name:"Project 20",exact:true}).click();
     await page.keyboard.press("Escape");
     await eventually(()=>trigger.evaluate(el=>el===document.activeElement),"Multi-select restores trigger focus");
-    await text(root.getByRole("list",{name:"Selected Shared workspaces",exact:true}),"Workspace 23");
-    await key(root.getByRole("button",{name:"Remove Workspace 23",exact:true}),"Enter");
-    await eventually(()=>root.getByRole("button",{name:"Remove Workspace 23",exact:true}).count().then(n=>n===0),"Keyboard removal removes the selected token");
-    await root.getByRole("button",{name:"Remove Workspace 01",exact:true}).waitFor();
+    await text(root.getByRole("list",{name:"Selected Workspaces",exact:true}),"Project 20");
+    await key(root.getByRole("button",{name:"Remove Project 20",exact:true}),"Enter");
+    await eventually(()=>root.getByRole("button",{name:"Remove Project 20",exact:true}).count().then(n=>n===0),"Keyboard removal removes the selected token");
+    await root.getByRole("button",{name:"Remove Writing",exact:true}).waitFor();
     return "Real workspace search, disabled option, selection token, Escape/focus restoration and keyboard removal";
   },
   "shape-scene": async ({root,page}) => {
@@ -389,12 +459,16 @@ const tests = {
   },
   "text-reveal": async ({ root, page }) => {
     const heading = root.getByRole("heading", { name: "Good things take shape." });
+    await heading.scrollIntoViewIfNeeded();
+    await attribute(heading, "data-motion-quiet", "false");
+    await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).every(word => Number(getComputedStyle(word).opacity) >= .999)), "Initial entrance settles before replay observation");
     const before = await heading.boundingBox();
-    await root.getByRole("button", { name: "Replay reveal" }).click();
-    await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).some(word => {
-      const opacity = Number(getComputedStyle(word).opacity);
-      return opacity > 0 && opacity < .99;
-    })), "Replay produces a visible intermediate word opacity");
+    const replay = root.getByRole("button", { name: "Replay reveal" });
+    const paint = await armOpacityObservation(heading, replay, { units: '[data-reveal-word]', upperBound: .99 });
+    try {
+      await replay.click();
+      await eventually(paint.seen, "Replay produces a visible intermediate word opacity");
+    } finally { await paint.dispose(); }
     await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).every(word => Number(getComputedStyle(word).opacity) >= .999)), "Replay finishes with fully readable words");
     await text(root, "Replayed 1 time.");
     await key(root.getByRole("button", { name: "Replay reveal" }), "Enter");
@@ -441,8 +515,9 @@ const tests = {
     const cells = root.getByRole("gridcell");
     assert((await cells.count()) > 0);
     const button = cells.locator("button").filter({ visible: true }).nth(10);
+    const initial = await root.getByRole("status").innerText();
     await button.click();
-    await text(root, "Selected:");
+    await eventually(async () => await root.getByRole("status").innerText() !== initial, "Pointer updates the appointment summary");
     const before = await root.locator('[role="status"]').innerText();
     await key(button, "ArrowRight");
     await root.page().keyboard.press("Enter");
@@ -461,25 +536,26 @@ const tests = {
     return "Pointer next and keyboard previous update active idea";
   },
   chart: async ({ root }) => {
-    const b = root.getByRole("button", { name: "Show data tables" });
+    const b = root.getByRole("button", { name: "Show data", exact: true });
     await b.click();
-    assert((await root.locator("table:visible").count()) === 3);
-    await key(root.getByRole("button", { name: "Hide data tables" }), "Enter");
-    assert((await root.locator("table:visible").count()) === 0);
-    return "Pointer reveals all three data tables; keyboard hides them; zero datum retained";
+    assert((await root.locator("table:visible").count()) === 1);
+    await text(root, "Wed");
+    await key(root.getByRole("button", { name: "Hide data", exact: true }), "Enter");
+    await attribute(root.getByRole("button", { name: "Show data", exact: true }), "aria-expanded", "false");
+    assert(await root.locator('[data-slot="chart-data-table"]').evaluate(el => el.classList.contains("v-sr")), "Closing the visual table preserves its screen-reader data");
+    return "Pointer reveals the data table; keyboard hides it visually while retaining accessible values and the zero datum";
   },
   checkbox: async ({ root }) => {
-    const b = root.getByRole("checkbox", { name: "Keep this idea in my collection", exact: true });
+    const b = root.getByRole("checkbox", { name: /^Working notes/ });
     await b.click();
     await attribute(b, "aria-checked", "false");
-    await text(root, "Idea excluded.");
+    await text(root, "Nothing packed yet. Choose any tool to begin.");
     await key(b, "Space");
     await attribute(b, "aria-checked", "true");
-    await text(root, "Idea included.");
-    await root.getByRole("checkbox", { name: "Show selected mark", exact: true }).click();
-    await attribute(b.locator('[data-slot="selector-glyph"]'), "data-selector-indicator", "none");
-    await attribute(b, "aria-checked", "true");
-    return "Pointer/Space selection changes the result; mark visibility preserves checked semantics";
+    await text(root, "1 packed · Working notes");
+    await root.getByRole("checkbox", { name: /^Quick sketches/ }).click();
+    await text(root, "2 packed · Working notes, Quick sketches");
+    return "Pointer/Space toggles independent choices and the explicit packed summary";
   },
   collapsible: async ({ root }) => {
     const b = root.getByRole("button").first();
@@ -530,7 +606,7 @@ const tests = {
     await root.getByRole("button", { name: /^Ready / }).click();
     await eventually(async () => (await root.locator("tbody tr").count()) === 3, "Ready filter removes exiting rows after motion completes");
     await key(root.getByRole("button", { name: /^Draft / }), "Enter");
-    await eventually(async () => (await root.locator("tbody tr").count()) === 2, "Draft filter removes exiting rows after motion completes");
+    await eventually(async () => (await root.locator("tbody tr").count()) === 3, "Draft filter shows all three draft records");
     await root.getByRole("button", { name: /^All / }).click();
     await eventually(async () => (await root.locator('tbody tr[data-motion-exiting="true"]').count()) === 0, "All filter finishes retained exits");
     const words = root.getByRole("button", { name: /Words/ });
@@ -542,24 +618,27 @@ const tests = {
     );
     assert(
       (await root.locator("tbody tr").first().innerText()).includes(
-        "Weekend plan",
+        "A blank page",
       ),
     );
+    const firstPage = await root.locator("tbody").innerText();
     await key(root.getByRole("button", { name: "Next", exact: true }), "Enter");
-    await eventually(async () => (await root.locator("tbody tr").count()) === 2, "Next page removes exiting rows after motion completes");
+    await eventually(async () => (await root.locator("tbody").innerText()) !== firstPage, "Next page replaces the actual rows");
+    await eventually(async () => (await root.locator("tbody tr").count()) === 3, "Next page contains the remaining three records");
     await root.locator("tbody tr").first().click();
-    await text(root, "Selected note:");
+    await text(root.getByRole("status", { name: "Table feedback", exact: true }), "Local demonstration · record opened");
     return "Pointer and keyboard filters, numeric ascending sort, next page and row selection";
   },
   "date-picker": async ({ root, page }) => {
     const trigger = root.getByRole("button", {
-      name: "Choose a reminder date",
+      name: "Appointment day",
+      exact: true,
     });
     await trigger.click();
     await page.getByRole("grid").waitFor();
     const buttons = page.getByRole("gridcell").locator("button");
     await buttons.nth(12).click();
-    await text(root, "Reminder set for");
+    await text(root, "Appointment ·");
     await key(trigger, "Enter");
     await page.getByRole("grid").waitFor();
     await page.keyboard.press("Escape");
@@ -570,16 +649,18 @@ const tests = {
     return "Pointer date selection; keyboard opening/Escape/focus return";
   },
   dialog: async ({ root, page }) => {
-    const trigger = root.getByRole("button", { name: "Rename workspace" });
+    await page.getByRole("combobox", { name: "Example approach", exact: true }).click();
+    await page.getByRole("option", { name: "Editor", exact: true }).click();
+    const trigger = root.getByRole("button", { name: "Open note", exact: true });
     await trigger.click();
     const dialog = page.getByRole("dialog");
     await dialog.waitFor();
     assert(await dialog.evaluate((el) => el.contains(document.activeElement)));
     await page
-      .getByRole("textbox", { name: "Workspace name" })
+      .getByRole("textbox", { name: "Note name" })
       .fill("QA notebook");
     await page.getByRole("button", { name: "Save name", exact: true }).click();
-    await text(root, "Workspace: QA notebook");
+    await text(root, "QA notebook");
     await eventually(
       () => trigger.evaluate((el) => el === document.activeElement),
       "Focus returns to trigger",
@@ -657,11 +738,10 @@ const tests = {
     await text(root, "Room for your first idea");
     return "Pointer note creation; keyboard reset; partial/error/filtered states rendered";
   },
-  field: async ({ page }) => {
-    await page.locator(".docs-playground-controls").getByRole("combobox", {name:"Variant",exact:true}).click();
-    await page.getByRole("option", {name:"invalid",exact:true}).click();
-    const root = page.locator('[data-example="field"][data-variant="invalid"]');
+  field: async ({ root }) => {
     const input = root.getByRole("textbox");
+    await input.fill("ab");
+    await root.getByRole("button", { name: "Check name", exact: true }).click();
     await attribute(input, "aria-invalid", "true");
     await input.click();
     await input.fill("Valid name");
@@ -671,6 +751,7 @@ const tests = {
     );
     await input.press("ControlOrMeta+A");
     await input.press("Backspace");
+    await key(root.getByRole("button", { name: "Check name", exact: true }), "Enter");
     await attribute(input, "aria-invalid", "true");
     assert(await input.getAttribute("aria-describedby"));
     assert(await input.evaluate(el=>{const ids=(el.getAttribute('aria-describedby')||'').split(' ').filter(Boolean);return ids.length===2&&new Set(ids).size===2&&ids.every(id=>document.getElementById(id));}),"Help and error have distinct existing targets");
@@ -693,11 +774,11 @@ const tests = {
     const camera = root.locator('[data-icon-option="camera"]');
     await key(camera, "Enter");
     await attribute(camera, "aria-pressed", "true");
-    await text(root.locator("output"), "camera");
+    await text(root.locator("[data-icon-selected]"), "camera");
     await attribute(camera.locator('svg[data-slot="icon"]'), "data-icon-name", "camera");
     await input.fill("unlikely-icon-name");
     await text(root, "No matching icons.");
-    await root.getByRole("button", { name: "Clear search", exact: true }).click();
+    await root.getByRole("button", { name: "Clear icon search", exact: true }).click();
     await root.getByRole("button", { name: "Next icons", exact: true }).click();
     await text(root, "Page 2 of");
     await key(root.getByRole("button", { name: "Previous icons", exact: true }), "Enter");
@@ -722,23 +803,25 @@ const tests = {
     const input = root.getByRole("textbox", { name: "Find a note" });
     await input.click();
     await input.fill("QA note");
-    await text(root, "Searching for “QA note”");
+    assert.equal(await input.inputValue(), "QA note");
     await key(root.getByRole("button", { name: /Clear/ }), "Enter");
     assert.equal(await input.inputValue(), "");
     return "Pointer input change and keyboard clear action";
   },
-  "input-group": async ({ root }) => {
+  "input-group": async ({ root, page }) => {
     const input = root.getByRole("textbox", { name: "Workspace address" });
     await input.fill("qa-space");
-    await root.getByRole("button", { name: "Save", exact: true }).click();
+    await root.getByRole("button", { name: "Save address", exact: true }).click();
     await text(root, "notes / qa-space");
     await input.fill("second-space");
-    await key(root.getByRole("button", { name: "Save", exact: true }), "Enter");
+    await key(root.getByRole("button", { name: "Save address", exact: true }), "Enter");
     await text(root, "notes / second-space");
-    const note=root.getByRole("textbox",{name:"An instruction with room to grow"});
+    await page.getByRole("combobox", { name: "Example approach", exact: true }).click();
+    await page.getByRole("option", { name: "Composer", exact: true }).click();
+    const note=root.getByRole("textbox",{name:"Message",exact:true});
     await note.fill("Keep the result short.\nInclude the next step.");
-    await key(root.getByRole("button",{name:"Add instruction",exact:true}),"Enter");
-    await text(root,"Instruction added to this demo.");
+    await key(root.getByRole("button",{name:"Send message",exact:true}),"Enter");
+    await text(root,"Message kept locally: Keep the result short.");
     return "Pointer and keyboard saving; multiline instruction remains inside the input group";
   },
   "input-otp": async ({ root }) => {
@@ -751,10 +834,9 @@ const tests = {
     return "Pointer focus, digit entry, completion and keyboard deletion";
   },
   item: async ({ root }) => {
-    const items = root.getByRole("button");
-    await items.nth(1).click();
-    await text(root, "Selected: Reading list");
-    await key(items.nth(2), "Enter");
+    await root.getByRole("button", { name: "Select Small discoveries", exact: true }).click();
+    await text(root, "Selected: Small discoveries");
+    await key(root.getByRole("button", { name: "Select Weekend ideas", exact: true }), "Enter");
     await text(root, "Selected: Weekend ideas");
     return "Pointer and keyboard selection callbacks";
   },
@@ -801,11 +883,11 @@ const tests = {
   "native-select": async ({ root, page }) => {
     const select = root.getByRole("combobox");
     await select.selectOption("daily");
-    await text(root, "daily reflection");
+    await text(root, "Selected: Daily.");
     await key(select, "ArrowDown");
     await select.press("Enter", { delay: 60 });
     if ((await select.inputValue()) === "weekly") {
-      await text(root, "weekly reflection");
+      await text(root, "Selected: Weekly.");
       return "Native selection and keyboard selection update receipt";
     }
     const control = await page.context().newPage();
@@ -832,8 +914,12 @@ const tests = {
     };
   },
   "navigation-menu": async ({ root }) => {
+    const collections = root.getByRole("button", { name: "Collections", exact: true });
+    const openCollections = async () => { if (await collections.count()) { await collections.focus(); if (await collections.getAttribute("aria-expanded") !== "true") await collections.press("Enter"); } };
+    await openCollections();
     await root.getByRole("link", { name: /Ideas/ }).click();
     await text(root, "Collection: Ideas");
+    await openCollections();
     await key(root.getByRole("link", { name: /Reading/ }), "Enter");
     await text(root, "Collection: Reading");
     return "Pointer and keyboard collection navigation";
@@ -880,49 +966,53 @@ const tests = {
   questionnaire: async ({ root }) => {
     const experiment = root.getByRole("radio", { name: /Try something small/ });
     await root.getByText("Try something small", { exact: true }).click();
-    await text(root, "A small experiment selected.");
+    await text(root, "1 question left.");
     const plan = root.getByRole("radio", { name: /Make a little room/ });
     await key(plan, "Space");
-    await text(root, "A clear plan selected.");
     assert(await plan.isChecked());
     assert(!(await experiment.isChecked()));
-    return "Pointer and keyboard questionnaire choices update the controlled result";
+    await key(root.getByRole("radio", { name: /Every day/ }), "Space");
+    await root.getByRole("button", { name: "Save my plan", exact: true }).click();
+    await text(root, "A clear plan · Every day. Kept in this example only.");
+    return "Pointer and keyboard answers complete both questions and save a local summary";
   },
   "radio-group": async ({ root }) => {
-    const group = root.getByRole("radiogroup", { name: "Working rhythm", exact: true });
-    const quiet = group.getByRole("radio", { name: "Quiet focus", exact: true });
-    const together = group.getByRole("radio", { name: "Think together", exact: true });
+    const group = root.getByRole("radiogroup", { name: "Project starting point", exact: true });
+    const quiet = group.getByRole("radio", { name: /^Working notes/ });
+    const together = group.getByRole("radio", { name: /^Quick sketches/ });
     await together.click();
-    await text(root, "Thinking together selected.");
+    await text(root, "Your project opens with quick sketches.");
     await key(together, "ArrowUp");
-    await text(root, "Quiet focus selected.");
+    await text(root, "Your project opens with working notes.");
     assert(await quiet.isChecked());
-    assert(await group.getByRole("radio", {name: "Managed by your workspace",exact:true}).isDisabled());
-    return "Pointer selection, arrow-key radio selection and disabled choice";
+    assert(!(await together.isChecked()));
+    return "Pointer and arrow-key selection choose exactly one project starting point";
   },
   resizable: async ({ root, page }) => {
     const panel = root.locator('[data-slot="resizable-panel"]').first();
     const handle = root.getByRole("separator");
-    const before = (await panel.boundingBox()).width;
-    await key(handle, "ArrowRight");
+    const vertical = await root.locator('[data-slot="resizable"]').getAttribute("data-panel-group-direction") === "vertical" || await root.getAttribute("data-variant") === "v";
+    const dimension = vertical ? "height" : "width";
+    const before = (await panel.boundingBox())[dimension];
+    await key(handle, vertical ? "ArrowDown" : "ArrowRight");
     await eventually(
-      async () => Math.abs((await panel.boundingBox()).width - before) > 2,
+      async () => Math.abs((await panel.boundingBox())[dimension] - before) > 2,
       "Keyboard resize changes panel width",
     );
     const box = await handle.boundingBox();
-    const after = (await panel.boundingBox()).width;
+    const after = (await panel.boundingBox())[dimension];
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
-    await page.mouse.move(box.x + 50, box.y + box.height / 2, { steps: 5 });
+    await page.mouse.move(box.x + box.width / 2 + (vertical ? 0 : 40), box.y + box.height / 2 + (vertical ? 40 : 0), { steps: 5 });
     await page.mouse.up();
     await eventually(
-      async () => Math.abs((await panel.boundingBox()).width - after) > 2,
+      async () => Math.abs((await panel.boundingBox())[dimension] - after) > 2,
       "Pointer drag resizes panel",
     );
     return "Keyboard handle resize and pointer drag";
   },
   "scroll-area": async ({ root, page }) => {
-    const viewport = root.locator("[data-radix-scroll-area-viewport]");
+    const viewport = root.locator("[data-radix-scroll-area-viewport]").first();
     await viewport.hover();
     await page.mouse.wheel(0, 450);
     await eventually(
@@ -941,22 +1031,22 @@ const tests = {
   select: async ({ root, page }) => {
     const b = root.getByRole("combobox");
     await b.click();
-    await page.getByRole("option", { name: "Every day", exact: true }).click();
-    await text(root, "Selected: daily");
+    await page.getByRole("option", { name: "Daily", exact: true }).click();
+    await text(root, "Selected: Daily.");
     await key(b, "ArrowDown");
     await page
-      .getByRole("option", { name: "Every day", exact: true })
+      .getByRole("option", { name: "Daily", exact: true })
       .waitFor();
     await page.keyboard.press("ArrowDown");
     await eventually(
       () =>
         page
-          .getByRole("option", { name: "Every week", exact: true })
+          .getByRole("option", { name: "Weekly", exact: true })
           .evaluate((el) => el === document.activeElement),
       "Focus moves to next option",
     );
     await page.keyboard.press("Enter");
-    await text(root, "Selected: weekly");
+    await text(root, "Selected: Weekly.");
     return "Pointer and keyboard option selection";
   },
   sheet: async ({ root, page }) => {
@@ -973,16 +1063,16 @@ const tests = {
   },
   sidebar: async ({ root }) => {
     const rail = root.locator('[data-slot="sidebar"]');
-    await root.getByRole("link", { name: "Ideas", exact: true }).click();
+    await root.getByRole("button", { name: "Ideas", exact: true }).click();
     await text(root, "Ideas");
     await key(root.getByRole("button", { name: "Collapse the rail" }), "Enter");
     await attribute(rail, "data-state", "collapsed");
-    await root.getByRole("link", { name: "Archive", exact: true }).click();
+    await root.getByRole("button", { name: "Archive", exact: true }).click();
     await root.getByRole("button", { name: "Expand the rail" }).click();
     await attribute(rail, "data-state", "expanded");
     return "Pointer navigation, keyboard collapse, collapsed accessible link and expansion";
   },
-  slider: async ({ root }) => {
+  slider: async ({ root, page }) => {
     const slider = root.getByRole("slider", { name: "Focus duration", exact: true });
     await slider.click();
     const before = await slider.getAttribute("aria-valuenow");
@@ -991,32 +1081,58 @@ const tests = {
       async () => (await slider.getAttribute("aria-valuenow")) !== before,
       "Keyboard changes slider",
     );
-    const start=root.getByRole("slider",{name:"Range start",exact:true});
-    const end=root.getByRole("slider",{name:"Range end",exact:true});
+    const approach = page.getByRole("combobox", { name: "Example approach", exact: true });
+    await approach.click();
+    await page.getByRole("option", { name: "Range", exact: true }).click();
+    const start=root.getByRole("slider",{name:"Interval start",exact:true});
+    const end=root.getByRole("slider",{name:"Interval end",exact:true});
     await key(start,"End");
-    assert(Number(await start.getAttribute("aria-valuenow"))<Number(await end.getAttribute("aria-valuenow")),"Range thumbs preserve minimum separation");
-    return "Pointer slider placement, keyboard increment and separately named range thumbs preserve separation";
+    assert(Number(await end.getAttribute("aria-valuenow"))-Number(await start.getAttribute("aria-valuenow"))>=5,"Range thumbs preserve minimum separation");
+    await approach.click();
+    await page.getByRole("option", { name: "Rubber", exact: true }).click();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const rubber = root.getByRole("slider", { name: "Elastic tension", exact: true });
+    const path = root.locator('[data-slot="slider-range"] path');
+    const thickness = () => path.evaluate(async node => {
+      await new Promise(requestAnimationFrame);
+      await new Promise(requestAnimationFrame);
+      const box = node.getBBox(), x = box.x + box.width / 2;
+      const height = node.ownerSVGElement.viewBox.baseVal.height;
+      let filled = 0;
+      for (let i = 0; i < 512; i++) if (node.isPointInFill(new DOMPoint(x, height * (i + 0.5) / 512))) filled++;
+      return height * filled / 512;
+    });
+    await key(rubber, "End");
+    await attribute(rubber, "aria-valuenow", "100");
+    const long = await thickness();
+    await key(rubber, "Home");
+    for (let i = 0; i < 12; i++) await rubber.press("ArrowRight");
+    const short = await thickness();
+    assert(short > long * 3 && long < 4, `Rubber waist becomes thinner with extension: short=${short}, long=${long}`);
+    return "Pointer/keyboard value changes, named range thumbs with minimum separation, and actual rubber waist thinning even with reduced motion";
   },
   stepper: async ({ root }) => {
-    const next = root.getByRole("button", { name: "Next", exact: true });
-    await next.click();
-    await text(root.getByRole("status"), "Stage 2 of 3 · Make it your own");
-    await text(root.locator('[aria-current="step"]'), "Make it your own");
-    await key(next, "Enter");
-    await text(root.getByRole("status"), "Stage 3 of 3 · Ready to begin");
+    const next = root.getByRole("button", { name: "Next step", exact: true });
     assert(await next.isDisabled());
+    await root.getByRole("textbox", { name: "Name your idea", exact: true }).fill("QA notebook");
+    await next.click();
+    await root.getByRole("heading", { name: "Find a rhythm that fits.", exact: true }).waitFor();
+    await root.getByRole("radio", { name: "Daily", exact: true }).click();
+    await key(next, "Enter");
+    await root.getByRole("heading", { name: "A little plan, ready to keep.", exact: true }).waitFor();
+    await root.getByRole("button", { name: "Save draft", exact: true }).click();
+    await text(root, "Saved here: QA notebook · daily.");
     await root.getByRole("button", { name: "Back", exact: true }).click();
-    await text(root.getByRole("status"), "Stage 2 of 3 · Make it your own");
-    return "Pointer/keyboard forward steps, final disabled boundary and back";
+    assert(await root.getByRole("radio", { name: "Daily", exact: true }).isChecked());
+    return "Validation gates advancement; pointer/keyboard steps preserve the draft and save a truthful local receipt";
   },
   switch: async ({ root }) => {
     const b = root.getByRole("switch").first();
     await b.click();
-    await text(root, "Daily reflection is on");
+    await text(root, "Off · All alerts can come through.");
     await key(b, "Space");
-    await text(root, "Daily reflection is off");
-    assert(await root.getByRole("switch").nth(1).isDisabled());
-    return "Pointer/Space changes and disabled state";
+    await text(root, "On · Non-essential alerts are paused.");
+    return "Pointer/Space changes the named quiet-hours setting and visible result";
   },
   tabs: async ({ root }) => {
     await root.getByRole("tab", { name: "Ideas", exact: true }).click();
@@ -1033,17 +1149,20 @@ const tests = {
     await input.click();
     await input.fill("A useful QA thought");
     await key(root.getByRole("button", { name: "Keep note" }), "Enter");
-    await text(root, "Saved in this example");
-    await text(root, "A useful QA thought");
-    assert.equal(await input.inputValue(), "");
-    return "Pointer composition and keyboard save render local note and clear input";
+    await text(root.getByRole("status"), "Kept in this example.");
+    assert.equal(await input.inputValue(), "A useful QA thought");
+    await input.fill("A revised thought");
+    assert.equal(await root.getByRole("status").innerText(), "");
+    return "Pointer composition and keyboard save confirm the local note, preserve the draft and clear stale confirmation on edit";
   },
   toast: async ({ root, page }) => {
+    await page.getByRole("combobox", { name: "Example approach", exact: true }).click();
+    await page.getByRole("option", { name: "Actionable", exact: true }).click();
     const b = root.getByRole("button", { name: "Save example note" });
     await b.click();
-    await page.getByText("Note kept", { exact: true }).waitFor();
+    await page.getByText("Note saved", { exact: true }).waitFor();
     await page.getByRole("button", { name: "Undo", exact: true }).click();
-    await text(root, "No example note saved");
+    await text(root, "Save undone. Your example note is not saved.");
     await key(b, "Enter");
     await page.getByRole("button", { name: "Dismiss notification" }).click();
     return "Pointer save/undo; keyboard save and explicit dismissal";
@@ -1074,7 +1193,7 @@ const tests = {
     return "Pointer and keyboard toggles change actual text formatting";
   },
   tooltip: async ({ root, page }) => {
-    const b = root.getByRole("button", { name: "Keyboard shortcut hint" });
+    const b = root.getByRole("button", { name: "Save note", exact: true });
     await b.hover();
     await page.getByRole("tooltip").waitFor();
     await page.mouse.move(0, 0);
@@ -1099,73 +1218,128 @@ for (const id of ["area-chart", "bar-chart", "line-chart", "pie-chart", "radar-c
     await key(legend,"Space");await attribute(legend,"aria-pressed","true");
     await root.getByRole("button",{name:"Show data",exact:true}).click();
     await root.locator('[data-slot="chart-data-table"]').waitFor({state:"visible"});
-    await root.getByLabel("Sample data",{exact:true}).selectOption("empty");
+    await root.getByRole("combobox",{name:"Sample data",exact:true}).click();
+    await root.page().getByRole("option",{name:"Empty dataset",exact:true}).click();
     await text(root,"No data loaded");
     await plot.waitFor({state:"hidden"});
-    await root.getByLabel("Sample data",{exact:true}).selectOption("updated");
+    await root.getByRole("combobox",{name:"Sample data",exact:true}).click();
+    await root.page().getByRole("option",{name:"Next week",exact:true}).click();
     await text(root,"Next week loaded");await plot.waitFor();
     return "Keyboard inspection and Escape, legend hide/show, data table, empty state and new dataset; all chart layouts covered by chart gate";
   };
 }
 
 Object.assign(tests, createEffectTests({ assert, eventually, text, attribute, key }), createDetailTests({ assert, eventually, text, attribute, key }), createCompositeTests({ assert, eventually, text, attribute, key }));
+tests.shape = tests["shape-artwork"];
+tests.table = tests["data-table"];
+tests.dock = async ({ root }) => {
+  const work = root.getByRole("button", { name: "Work", exact: true });
+  await work.click();
+  await attribute(work, "aria-pressed", "true");
+  await text(root.locator('[role="status"]'), "Work is open.");
+  assert(await root.getByRole("button", { name: "Automations", exact: true }).isDisabled());
+  await key(root.getByRole("button", { name: "Memory", exact: true }), "Enter");
+  await text(root.locator('[role="status"]'), "Memory is open.");
+  await key(root.getByRole("slider", { name: "Item size", exact: true }), "End");
+  await attribute(root.getByRole("slider", { name: "Item size", exact: true }), "aria-valuenow", "72");
+  return "Native pointer/keyboard destinations, unavailable action, selection receipt and actual item-size control";
+};
+for (const id of ["dots", "grid", "contours", "weave", "pebbles", "sunwash", "folds", "sprouts"]) {
+  tests[`${id}-background`] = async ({ root }) => {
+    const paint = root.locator('[data-slot="pattern-background"]');
+    await attribute(paint, "data-pattern", id);
+    await key(root.getByRole("slider", { name: "Pattern spacing", exact: true }), "End");
+    assert.equal(await paint.evaluate(el => el.style.getPropertyValue("--pattern-spacing")), "80px");
+    await key(root.getByRole("slider", { name: "Pattern strength", exact: true }), "Home");
+    assert.equal(await paint.evaluate(el => Number(el.style.opacity)), 0);
+    await root.getByRole("button", { name: "Add a note", exact: true }).click();
+    await text(root.locator('[role="status"]'), "1 note added.");
+    assert.equal(await paint.getAttribute("aria-hidden"), "true");
+    return "Spacing and strength change the actual decorative paint; foreground action remains usable";
+  };
+}
+for (const id of ["bento-grid", "bento-builder"]) {
+  tests[id] = async ({ root, page }) => {
+    const editor = root.locator('[data-slot="bento-builder"]');
+    const tiles = editor.locator('[data-bento-tile]');
+    const before = await tiles.evaluateAll(nodes => nodes.map(node => [node.dataset.bentoTile, node.style.gridColumn, node.style.gridRow]));
+    await editor.getByRole("button", { name: "Randomize", exact: true }).click();
+    assert.notDeepEqual(await tiles.evaluateAll(nodes => nodes.map(node => [node.dataset.bentoTile, node.style.gridColumn, node.style.gridRow])), before);
+    await key(editor.getByRole("button", { name: "Undo", exact: true }), "Enter");
+    assert.deepEqual(await tiles.evaluateAll(nodes => nodes.map(node => [node.dataset.bentoTile, node.style.gridColumn, node.style.gridRow])), before);
+    await editor.getByRole("button", { name: "Interlock", exact: true }).click();
+    await editor.getByRole("button", { name: "Copy layout", exact: true }).click();
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    assert.match(copied, /variant="interlock"/);
+    assert.match(copied, /BentoGrid/);
+    return "Randomization changes the real partition; keyboard Undo restores it; Interlock exports reusable layout code (seam gestures covered by the resize suite)";
+  };
+}
+tests["pattern-background"] = tests["dots-background"];
 
 async function sharedPreview(page, id) {
+  for (const terminal of await page.locator('.docs-command').all()) {
+    assert.equal(await terminal.getAttribute('data-variant'), 'terminal');
+    assert.equal(await terminal.locator('[data-slot="terminal-prompt"]').getAttribute('aria-hidden'), 'true');
+    const command = await terminal.locator('pre > code').innerText();
+    const copy = terminal.getByRole('button', { name: 'Copy command', exact: true });
+    assert.equal(await copy.locator('[data-icon-name="copy"]').count(), 1);
+    await key(copy, 'Enter');
+    await text(terminal, 'Copied to clipboard.');
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), command, 'Copy command must omit the decorative terminal prompt');
+    assert.equal(await copy.locator('[data-icon-name="check"]').count(), 1);
+  }
   const p = page.locator('[data-slot="preview"]').first();
   await p
     .getByRole("button", { name: "Copy code", exact: true })
     .first()
     .click();
   await text(p, "Copied to clipboard.");
-  assert(
-    (await page.evaluate(() => navigator.clipboard.readText())).includes(
-      "export default function Demo",
-    ),
-  );
+  const copiedExample = await page.evaluate(() => navigator.clipboard.readText());
+  assert(copiedExample.includes("export default function Demo"));
   const code = p.getByRole("tab", { name: "Code", exact: true }).first();
   await key(code, "Enter");
-  await p.locator("pre").first().waitFor();
+  await p.locator(':scope > .v-preview__frame > .v-preview__panel > [data-slot="code-block"] pre').waitFor();
+  assert.equal(copiedExample, await p.locator(':scope > .v-preview__frame > .v-preview__panel > [data-slot="code-block"] pre > code').innerText(), 'Copy code must preserve the full displayed example');
+  const embeddedCode = p.locator(':scope > .v-preview__frame > .v-preview__panel > [data-slot="code-block"][data-embedded]');
+  const corners = await embeddedCode.evaluate(element => {
+    const style = getComputedStyle(element);
+    return [parseFloat(style.borderBottomLeftRadius), parseFloat(style.borderBottomRightRadius)];
+  });
+  assert(corners.every(radius => radius > 0), "Embedded Code panel must preserve both rounded bottom corners");
+  assert.equal(await embeddedCode.locator('[data-slot="code-block-header"], [data-slot="copy-control"]').count(), 0, "Embedded Code panel must not duplicate its host toolbar");
   await p.getByRole("tab", { name: "Preview", exact: true }).first().click();
   await p.locator(`[data-example="${id}"]`).first().waitFor();
-  for (const axis of ["Variant", "Size"]) {
-    const select=page.locator(".docs-playground-controls").getByRole("combobox",{name:axis,exact:true});
-    if(await select.count()) {
-      const values=registry.items.find(entry=>entry.name===id).meta.source[axis === "Variant" ? "variants" : "sizes"];
-      const choice=values.at(-1);
-      await select.click();
-      await page.getByRole("option").last().click();
-      await attribute(p.locator(`[data-example="${id}"]`),`data-${axis.toLowerCase()}`,choice);
-      await p.getByRole("button",{name:"Copy code",exact:true}).first().click();
-      await text(p,"Copied to clipboard.");
-      const copied=await page.evaluate(()=>navigator.clipboard.readText());
-      assert(copied.slice(copied.lastIndexOf("export default function Demo")).includes(`${axis.toLowerCase()}="${choice}"`), "Copied code matches the selected axis");
-      await select.click();
-      await page.getByRole("option").first().click();
-    }
+  const source = registry.items.find(entry=>entry.name===id).meta.source;
+  const choices = [...new Set(source.variants)];
+  if (choices.length > 1) {
+    const gallery = p.getByRole("region", {name:"Variants",exact:true});
+    assert.deepEqual(await gallery.locator('[data-example-role="gallery"]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-variant'))), choices, "Each declared approach has a live comparison; no invented default variant");
+    assert.equal(await p.getByRole('combobox',{name:'Example approach'}).count(),1);
   }
-  return "Exact clipboard content, preview/code keyboard controls and matching selected variant/size source";
+  assert.equal(await p.getByRole('region',{name:'Sizes',exact:true}).count(),0,'Sizes are configuration, not duplicate comparisons');
+  if (new Set(source.sizes).size > 1) assert.equal(await p.getByRole('combobox',{name:'Example size'}).count(),1);
+  return "Exact clipboard, preview/code keyboard controls, declared approach comparisons and size configuration";
 }
 async function chromeCheck(page, width) {
   const ready = page.locator('[data-slot="preview"]').first();
   await ready.locator('[data-slot="tabs-list"][data-flow-owned]').first().waitFor({ state: "attached", timeout: 30000 });
   await ready.getByRole("tab", { name: "Code", exact: true }).first().click();
-  await ready.locator("pre").first().waitFor();
+  await ready.locator(':scope > .v-preview__frame > .v-preview__panel > [data-slot="code-block"] pre').waitFor();
   await ready
     .getByRole("tab", { name: "Preview", exact: true })
     .first()
     .click();
-  if (width < 850)
+  if (width <= 900)
     await page.getByRole("button", { name: "Browse", exact: true }).click();
-  const filter = page.getByRole("searchbox", { name: "Find a component" });
+  await page.locator('#docs-navigation').getByRole('button',{name:'Search components',exact:true}).click();
+  const search = page.getByRole('dialog',{name:'Explore Cojeev UI',exact:true});
+  const filter = search.getByRole('combobox',{name:'Search documentation',exact:true});
   await filter.fill("questionnaire");
-  await eventually(
-    async () =>
-      (await page
-        .locator('.docs-navigation [data-slot="sidebar-menu-button"]')
-        .count()) === 1,
-    "Component filter settles to one result",
-  );
-  await filter.fill("");
+  await search.getByRole('option').filter({hasText:'Questionnaire'}).first().waitFor();
+  await filter.press('Escape');
+  await search.waitFor({state:'hidden'});
+  if (width <= 900) await page.getByRole('button',{name:'Browse',exact:true}).click();
   const theme = page.getByRole("switch", { name: "Dark appearance" });
   const current = await page.locator("html").getAttribute("data-mode");
   await theme.click();
@@ -1179,14 +1353,16 @@ async function chromeCheck(page, width) {
   );
   await key(theme,"Space");
   await eventually(()=>page.locator("html").getAttribute("data-mode").then(v=>v===current),"Keyboard restores theme");
-  if (width < 850) {
-    await key(page.getByRole("button", { name: "Close menu", exact: true }), "Enter");
-    assert(!(await filter.isVisible()));
+  if (width <= 900) {
+    await key(page.getByRole("button", { name: "Close navigation", exact: true }), "Enter");
+    await page.getByRole('dialog',{name:'Browse components',exact:true}).waitFor({state:'hidden'});
   }
-  return "Filter, appearance and mobile keyboard close (where applicable)";
+  return "Fumadocs Command search, appearance and mobile keyboard close (where applicable)";
 }
 const run = {
   started: new Date().toISOString(),
+  harnessFiles: docsHarnessFiles,
+  harnessSha256: docsHarnessFingerprint(),
   url: base,
   revisionStart: revision(),
   entries: [],
@@ -1201,6 +1377,16 @@ const run = {
 };
 const browser = await chromium.launch({ headless: true });
 const contexts = [];
+async function measurementPage(context, errors) {
+  const page = await context.newPage();
+  page.setDefaultTimeout(10000);
+  page.setDefaultNavigationTimeout(60000);
+  page.on("pageerror", error => errors.push({ type: "pageerror", message: error.message }));
+  page.on("console", message => {
+    if (message.type() === "error") errors.push({ type: "console", message: message.text() });
+  });
+  return page;
+}
 try {
   for (const width of widths)
     for (const theme of themes) {
@@ -1217,21 +1403,18 @@ try {
         },
         { theme },
       );
-      const page = await context.newPage();
-      page.setDefaultTimeout(6000);
       const errors = [];
-      page.on("pageerror", (error) =>
-        errors.push({ type: "pageerror", message: error.message }),
-      );
-      page.on("console", (message) => {
-        if (message.type() === "error")
-          errors.push({ type: "console", message: message.text() });
-      });
+      const page = await measurementPage(context, errors);
       contexts.push({ context, page, width, theme, errors });
     }
   for (const entry of args["chrome-only"] ? [] : entries) {
+    // These public compatibility routes deliberately mount the canonical studio.
+    // Keep the requested route in evidence, but verify its actual component.
+    const specimenId = ({ "aspect-ratio": "bento-grid", "data-table": "table" })[entry.name] ?? entry.name;
+    const specimenEntry = registry.items.find(item => item.name === specimenId);
     const record = {
       id: entry.name,
+      specimenId,
       baseComponent: entry.meta.baseComponent,
       revision: revision(),
       layouts: [],
@@ -1251,7 +1434,7 @@ try {
         });
         assert.equal(response.status(), 200);
         await page
-          .locator(`[data-example="${entry.name}"]`)
+          .locator(`[data-example="${specimenId}"]`)
           .first()
           .waitFor({ timeout: 30000 });
         await page.evaluate(() => document.fonts.ready);
@@ -1261,7 +1444,7 @@ try {
           .getByRole("tab", { name: "Code", exact: true })
           .first()
           .click();
-        await readiness.locator("pre").first().waitFor();
+        await readiness.locator(':scope > .v-preview__frame > .v-preview__panel > [data-slot="code-block"] pre').waitFor();
         await readiness
           .getByRole("tab", { name: "Preview", exact: true })
           .first()
@@ -1298,7 +1481,7 @@ try {
         });
         layout.metrics = await page.evaluate(() => {
           const d = document.documentElement;
-          const examples = [...document.querySelectorAll("[data-example]")].map(
+          const examples = [...document.querySelectorAll("[data-example-role]")].map(
             (el) => ({
               variant: el.getAttribute("data-variant"),
               size: el.getAttribute("data-size"),
@@ -1338,23 +1521,18 @@ try {
             emptyNames,
           };
         });
-        layout.expectedCombinations =
-          [...new Set(["default", ...entry.meta.source.variants])].length *
-          [...new Set(["default", ...entry.meta.source.sizes])].length;
+        const variantChoices = [...new Set(specimenEntry.meta.source.variants)];
+        layout.expectedExamples = 1 + (variantChoices.length > 1 ? variantChoices.length : 0);
         assert.equal(
           layout.metrics.examples.length,
-          1,
-          "Only the selected variant and size should mount",
+          layout.expectedExamples,
+          "Interactive example and each declared approach should mount",
         );
-        for (const [name, values] of [["Variant", entry.meta.source.variants], ["Size", entry.meta.source.sizes]]) {
-          const choices = [...new Set(["default", ...values])];
+        for (const [name, values] of [["Variant", specimenEntry.meta.source.variants]]) {
+          const choices = [...new Set(values)];
           if (choices.length > 1) {
-            const select = page.locator(".docs-playground-controls").getByRole("combobox", { name, exact: true });
-            await select.click();
-            const labels = choices.map(value => name === "Size" ? ({default:"Default",xs:"Extra small",sm:"Small",md:"Medium",lg:"Large",xl:"Extra large"})[value] ?? value : value.replaceAll("-", " "));
-            assert.deepEqual((await page.getByRole("option").allTextContents()).map(value => value.trim()), labels);
-            await page.getByRole("option").first().click();
-            await attribute(page.locator(`[data-example="${entry.name}"]`).first(), `data-${name.toLowerCase()}`, "default");
+            const gallery = page.getByRole("region", { name: name === "Size" ? "Sizes" : "Variants", exact: true });
+            assert.deepEqual(await gallery.locator('[data-example-role="gallery"]').evaluateAll((nodes, attributeName) => nodes.map(node => node.getAttribute(attributeName)), `data-${name.toLowerCase()}`), choices);
           }
         }
         await page
@@ -1365,12 +1543,14 @@ try {
           );
         layout.screenshot = `${entry.name}-${width}-${theme}.png`;
         await page.screenshot({
+          timeout: 30000,
           caret: "initial",
           path: path.join(output, layout.screenshot),
         });
         if (width === 1440 && theme === "light") {
           layout.fullPageScreenshot = `${entry.name}-full.png`;
           await page.screenshot({
+            timeout: 30000,
             caret: "initial",
             path: path.join(output, layout.fullPageScreenshot),
             fullPage: true,
@@ -1393,9 +1573,10 @@ try {
           })
           .catch(() => {});
       }
-      // Each layout gets a settled page on its own. Release its scene before
-      // measuring the next viewport instead of retaining six active WebGL views.
-      await page.goto("about:blank");
+      // Destroy the old rendering target. An about:blank navigation can itself
+      // stall behind a busy graphics page and retain its GPU resources.
+      await page.close();
+      surface.page = await measurementPage(surface.context, errors);
     }
     const primary =
       contexts.find((c) => c.width === 1440 && c.theme === "light") ||
@@ -1408,24 +1589,24 @@ try {
       await page.locator('[data-slot="preview"] [data-slot="tabs-list"][data-flow-owned]').first().waitFor({state:"attached",timeout:30000});
       record.preview = {
         status: "pass",
-        detail: await sharedPreview(page, entry.name),
+        detail: await sharedPreview(page, specimenId),
       };
     } catch (error) {
       record.preview = { status: "failed", detail: error.message };
     }
     try {
       const root = page.locator(
-        `[data-example="${entry.name}"][data-variant="default"][data-size="default"]`,
+        `[data-example="${specimenId}"][data-example-role="interactive"]`,
       );
       await root.waitFor();
       await root.scrollIntoViewIfNeeded();
-      if (tests[entry.name]) {
-        const outcome = await tests[entry.name]({ page, root, entry });
+      if (tests[specimenId]) {
+        const outcome = await tests[specimenId]({ page, root, entry: specimenEntry });
         record.behavior =
           typeof outcome === "string"
             ? { status: "pass", detail: outcome }
             : outcome;
-      } else if (passive.has(entry.name))
+      } else if (passive.has(specimenId))
         record.behavior = {
           status: "passive",
           detail:
@@ -1455,6 +1636,10 @@ try {
         detail: record.behavior.detail,
       }),
     );
+    // The primary behavior page can keep animated examples and modal state
+    // alive while the next entry's other five layouts run. Retire it too.
+    await page.close();
+    primary.page = await measurementPage(primary.context, primary.errors);
   }
   for (const surface of contexts) {
     try {
@@ -1475,11 +1660,16 @@ try {
         status: "failed",
         detail: error.message,
       });
+    } finally {
+      // A shell check has no later consumer; do not leave six animated docs
+      // pages rendering concurrently in headless Chromium.
+      await surface.page.close();
     }
   }
 } finally {
   run.ended = new Date().toISOString();
-  run.revisionEnd = revision();
+  run.revisionEnd = revision(true);
+  run.harnessEndSha256 = docsHarnessFingerprint();
   fs.writeFileSync(
     path.join(output, "results.json"),
     JSON.stringify(run, null, 2),
@@ -1507,5 +1697,9 @@ console.log(
     2,
   ),
 );
+if (JSON.stringify(run.revisionStart) !== JSON.stringify(run.revisionEnd) || run.harnessSha256 !== run.harnessEndSha256) {
+  console.error("Source changed during the documentation gate; rerun on one stable snapshot.");
+  process.exitCode = 1;
+}
 if (failures.length || run.chrome.some((c) => c.status !== "pass"))
   process.exitCode = 1;

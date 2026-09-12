@@ -60,7 +60,7 @@ try {
       const row = { id: entry.name, variant, size, file: path.basename(filename), status: "PASS", diagnostics: [] };
       rows.push(row);
       try {
-        const code = exampleSource(entry.name, variant, size);
+        const code = await exampleSource(entry.name, variant, size);
         const tree = ts.createSourceFile(filename, code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
         for (const statement of tree.statements) {
           if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;

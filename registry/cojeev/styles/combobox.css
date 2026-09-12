@@ -187,18 +187,12 @@
   mark {
   display: inline;
 }
+/* cmdk's current candidate owns the moving well. data-selected-option records
+   the committed value, not a second persistent selection background. */
 [data-slot="combobox-item"]:hover,
 [data-slot="combobox-item"][aria-selected="true"] {
   background: var(--v-pink-soft);
   color: var(--v-text);
-}
-[data-slot="combobox-item"][aria-selected="true"]::after {
-  content: "";
-  grid-column: 3;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--v-text);
 }
 [data-slot="combobox-item"]
   mark {
@@ -275,5 +269,5 @@
 [data-slot="combobox-item"]:not(:has(.v-item-adornment)) > .v-combo__label { grid-column:1; }
 [data-slot="combobox-item"]:active:not([data-disabled="true"]) { background:var(--v-pink-soft); color:var(--v-text); }
 
-[data-slot="combobox-item"] > .v-combo__selected { margin-inline-start: auto; display: inline-flex; flex: none; padding-inline-start: 8px; }
+[data-slot="combobox-item"] > .v-combo__selected { grid-column:-2; margin-inline-start: auto; display: inline-flex; flex: none; padding-inline-start: 8px; }
 [data-slot="combobox-item"] > .v-combo__selected .v-icon { width: 16px; height: 16px; }

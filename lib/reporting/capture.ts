@@ -14,7 +14,7 @@ export async function capturePage(mode: "viewport" | "page"): Promise<File> {
     width, height, scale: 1, maximumCanvasSize: 20000, timeout: 8000,
     backgroundColor: getComputedStyle(document.body).backgroundColor,
     style: mode === "viewport" ? { transform: `translate(${-offsetX}px, ${-offsetY}px)`, transformOrigin: "top left" } : undefined,
-    filter: node => !(node instanceof Element && (node.closest("[data-reporting-chrome],nextjs-portal,[data-slot=sheet-overlay]") || node.closest(privateSelector))),
+    filter: node => !(node instanceof Element && (node.closest("[data-reporting-chrome],nextjs-portal,[data-slot=sheet-overlay],[data-slot=motion-drawer-content],[data-slot=motion-drawer-overlay]") || node.closest(privateSelector))),
     fetch: { requestInit: { credentials: "omit", referrerPolicy: "no-referrer" } },
     onCloneEachNode: node => {
       if (!(node instanceof HTMLElement)) return;

@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { animate, useMotionValue, useMotionValueEvent } from "motion/react";
+import { animate, AnimatePresence, useMotionValue, useMotionValueEvent } from "motion/react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./card";
 import { Avatar, AvatarFallback } from "./avatar";
 import { Badge } from "./badge";
@@ -22,6 +22,7 @@ import { useMotionVisibility } from "../motion/use-motion-visibility";
 import { useFlowGroup } from "../motion/use-flow";
 import { assignMotionRef } from "../motion/refs";
 import { cn } from "../lib/utils";
+import { AssemblyParticles } from "../lib/assembly-particles";
 
 export type OrganismItem={id:string;label:string;description?:string;icon?:string};
 export type OrganismMessage={id:string;text:string;from?:"agent"|"user"};
@@ -31,6 +32,8 @@ export type OrganismCompositionProps=Omit<React.ComponentProps<"section">,"onCha
   kind?:OrganismKind;
   /** False separates the native roots into floating silhouettes. Quiet mode stays usable. */
   assembled?:boolean;
+  /** Decorative seed count for an assembly scene. Zero leaves a plain usable composition. */
+  particleCount?:number;
   name?:string;
   description?:string;
   initials?:string;
@@ -64,7 +67,7 @@ export function focusSecondsRemaining(deadline:number,now=Date.now()){return Num
 const tones=["blue","yellow","pink","olive"] as const;
 
 /** Six distinct compositions; replay retains each composition's real native roots and state. */
-export function OrganismComposition({kind="profile",assembled=true,name,description,initials="AR",items,durationSeconds=1500,inviteDate="Friday, 18 September",inviteTime="15:00–16:00",inviteLocation="The studio · online",participants=defaultParticipants,state:controlled,defaultState,onStateChange,onAction,onSettledChange,className,style,ref,...props}:OrganismCompositionProps){
+export function OrganismComposition({kind="profile",assembled=true,particleCount=0,name,description,initials="AR",items,durationSeconds=1500,inviteDate="Friday, 18 September",inviteTime="15:00–16:00",inviteLocation="The studio · online",participants=defaultParticipants,state:controlled,defaultState,onStateChange,onAction,onSettledChange,className,style,ref,...props}:OrganismCompositionProps){
   const host=React.useRef<HTMLElement|null>(null),composerInput=React.useRef<HTMLInputElement>(null);
   const attach=React.useCallback((node:HTMLElement|null)=>{host.current=node;return assignMotionRef(ref,node)},[ref]);
   const dockFlowRef=useFlowGroup<HTMLElement>(attach,{kind:"pill",itemSelector:'[data-assembly-part^="tool-"]',activeSelector:'[aria-pressed="true"]'});
@@ -105,8 +108,10 @@ export function OrganismComposition({kind="profile",assembled=true,name,descript
   const geometry=React.useMemo(()=>organismGeometry(kind,width,scattered,{profileComposer:state.profileComposer,itemCount:available.length}),[kind,width,scattered,state.profileComposer,available.length]);
   const origins=React.useMemo(()=>organismGeometry(kind,width,true,{profileComposer:state.profileComposer,itemCount:available.length}),[kind,width,state.profileComposer,available.length]);
   const ids=Object.keys(geometry.parts) as AssemblyPartId[];
-  const targetKey=`${kind}:${width}:${scattered}`;
-  const [rested,setRested]=React.useState<Record<string,string>>({});
+  const geometryKey=JSON.stringify(geometry.parts);
+  // A new visit to the same destination is a new transition, including quick reversals.
+  const targetKey=React.useMemo(()=>({kind,width,scattered,geometryKey}),[kind,width,scattered,geometryKey]);
+  const [rested,setRested]=React.useState<Record<string,object>>({});
   const settled=quiet||ids.every(id=>rested[id]===targetKey);
   const visible=!scattered&&settled;
   const stageHeight=useMotionValue(geometry.height);
@@ -167,7 +172,7 @@ export function OrganismComposition({kind="profile",assembled=true,name,descript
   else if(kind==="chat")elements.push(
     piece("avatar",<Avatar variant="pink" className="v-organism__chat-avatar"><AvatarFallback className="v-assembly-content">SJ</AvatarFallback></Avatar>),
     piece("identity",<CardHeader className="v-organism__identity v-organism__identity--chat"><CardContent className="v-assembly-content"><CardTitle>{title}</CardTitle><Meta><Shape name="pebble-soft" />Here for a good idea</Meta></CardContent></CardHeader>),
-    piece("save",<IconButton variant="cream" size="sm" aria-label="Clear conversation" onClick={()=>{update({messages:[],notice:""});dispatch({action:"clear"})}}><AnimatedIcon className="v-assembly-content" name="trash-2"/></IconButton>),
+    piece("save",<IconButton variant="cream" size="sm" aria-label="Clear conversation" onClick={()=>{update({messages:[],notice:""});dispatch({action:"clear"})}}><span className="v-assembly-content"><AnimatedIcon name="trash-2"/></span></IconButton>),
     piece("badge",<CardContent className="v-organism__chat-date"><Meta className="v-assembly-content">{description??"A conversation, just for this page"}</Meta></CardContent>),
     piece("thread",<CardContent className="v-organism__thread"><CardContent className="v-assembly-content v-organism__thread-content"><MessageScroller scrollbarType="auto" style={{"--h":"100%"} as React.CSSProperties} aria-label="Studio conversation" role="log"><Bubble className="v-organism__conversation"><MotionPresence>{state.messages.map(message=><MotionSurface key={message.id} asChild preset="rise"><BubbleRow variant={message.from==="user"?"me":"default"} className="v-organism__message"><BubbleContent data-morph="fill" className="v-organism__bubble" variant={message.from==="user"?"me":"tail"}><span className="sr-only">{message.from==="user"?"You: ":"Studio: "}</span>{message.text}</BubbleContent></BubbleRow></MotionSurface>)}</MotionPresence>{state.messages.length===0&&<Meta className="v-organism__empty">A fresh page.<br/>What shall we make of it?</Meta>}</Bubble></MessageScroller></CardContent></CardContent>),
     composer(),
@@ -180,7 +185,7 @@ export function OrganismComposition({kind="profile",assembled=true,name,descript
     piece("progress",<CardContent className="v-organism__progress"><Progress className="v-assembly-content" value={(duration-remaining)/duration*100} aria-label="Focus session progress"/></CardContent>),
     piece("badge",<Meta className="v-organism__focus-description"><span className="v-assembly-content">{description??"No rush. Just a little uninterrupted time."}</span></Meta>),
     piece("primary",<Button variant="accent" onClick={()=>focusAction(state.focusRunning?"pause":"start")}><span className="v-assembly-content v-organism__button-label"><AnimatedIcon name={state.focusRunning?"pause":"play"}/>{state.focusRunning?"Pause":remaining===0?"Start again":remaining<duration?"Resume":"Start focusing"}</span></Button>),
-    piece("secondary",<IconButton variant="cream" aria-label="Reset focus session" onClick={()=>focusAction("reset")}><AnimatedIcon className="v-assembly-content" name="refresh-cw"/></IconButton>),
+    piece("secondary",<IconButton variant="cream" aria-label="Reset focus session" onClick={()=>focusAction("reset")}><span className="v-assembly-content"><AnimatedIcon name="refresh-cw"/></span></IconButton>),
     piece("caption",<Meta className="v-organism__local-note"><span className="v-assembly-content">A local timer. No sound, no notifications.</span></Meta>),
   );
   else if(kind==="invite")elements.push(
@@ -200,8 +205,9 @@ export function OrganismComposition({kind="profile",assembled=true,name,descript
     piece("progress",<CardContent className="v-organism__progress v-organism__panel-progress"><Progress className="v-assembly-content" value={progress} aria-label="Completed tasks"/><Meta className="v-assembly-content">{progress}%</Meta></CardContent>),
     piece("secondary",<Button variant="ghost" size="sm" onClick={()=>{update({completed:[]});dispatch({action:"clear"})}}><span className="v-assembly-content v-organism__button-label"><AnimatedIcon name="refresh-cw"/>Start fresh</span></Button>),
   );
-  return <section {...props} ref={kind==="dock"&&visible?dockFlowRef:attach} data-slot="organism-composition" data-kind={kind} data-assembled={!scattered} data-settled={settled} aria-label={props["aria-label"]??title} className={cn("v-organism",kind==="dock"&&"v-seg",className)} style={{...style,height:initialHeight}}>
-    {elements}
+  return <section {...props} ref={kind==="dock"&&visible?dockFlowRef:attach} data-slot="organism-composition" data-kind={kind} data-particle-count={particleCount} data-assembled={!scattered} data-settled={settled} aria-label={props["aria-label"]??title} className={cn("v-organism",kind==="dock"&&"v-seg",className)} style={{...style,height:initialHeight}}>
+    <AnimatePresence initial={false}>{elements}</AnimatePresence>
+    {particleCount > 0 && <AssemblyParticles hostRef={host} assembled={!scattered} settled={settled} count={particleCount} />}
     <span className="sr-only" role="status">{state.noticeKind===kind?state.notice:""}</span>
   </section>;
 }

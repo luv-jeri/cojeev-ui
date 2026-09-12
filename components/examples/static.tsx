@@ -54,9 +54,11 @@ import {
   MessageDescription,
 } from "@/registry/cojeev/ui/message";
 import { Progress } from "@/registry/cojeev/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/registry/cojeev/ui/radio-group";
 import { Separator } from "@/registry/cojeev/ui/separator";
 import { Shape, ShapeMorph, shapeNames, signatureShapeNames, type SignatureShapeName } from "@/registry/cojeev/ui/shape";
 import { Skeleton, SkeletonGroup } from "@/registry/cojeev/ui/skeleton";
+import { Slider, SliderOutput, SliderRow, SliderWrapper } from "@/registry/cojeev/ui/slider";
 import { Spinner } from "@/registry/cojeev/ui/spinner";
 import {
   Typography,
@@ -171,53 +173,87 @@ export function BubbleExample() {
 export function ButtonExample({
   variant = "default",
   size = "default",
+  compact = false,
 }: ExampleProps) {
   const [count, setCount] = React.useState(0);
   const [outcome, setOutcome] = React.useState("success");
-  const [phase, setPhase] = React.useState<"idle" | "pending" | "success" | "error">("idle");
+  const [duration, setDuration] = React.useState(3);
+  const [phase, setPhase] = React.useState<"idle" | "pending" | "success" | "error" | "cancelled">("idle");
   const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const outcomeId = React.useId();
-  React.useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  const durationId = React.useId();
+  React.useEffect(() => () => {
+    if (timer.current !== null) clearTimeout(timer.current);
+    timer.current = null;
+  }, []);
   function runExample() {
-    if (timer.current) return;
+    if (timer.current !== null) return;
     setPhase("pending");
     timer.current = setTimeout(() => {
       timer.current = null;
       if (outcome === "error") setPhase("error");
       else { setCount((value) => value + 1); setPhase("success"); }
-    }, 650);
+    }, (compact ? 3 : duration) * 1000);
+  }
+  function cancelExample() {
+    if (timer.current === null) return;
+    clearTimeout(timer.current);
+    timer.current = null;
+    setPhase("cancelled");
   }
   return (
-    <div style={{ display: "grid", gap: 16 }}>
+    <div data-button-demo={compact ? "compact" : "full"} style={{ display: "grid", gap: 16, minWidth: 0 }}>
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
         <Button
+          type="button"
           variant={variant as React.ComponentProps<typeof Button>["variant"]}
           size={size as React.ComponentProps<typeof Button>["size"]}
           onClick={runExample}
           loading={phase === "pending"}
-          disabled={phase === "pending"}
+          style={{ minInlineSize: "9rem" }}
         >
           {phase === "pending" ? "Adding…" : phase === "error" ? "Retry example" : "Add a note"}
         </Button>
         <Button
+          type="button"
           variant={variant as React.ComponentProps<typeof Button>["variant"]}
           size={size as React.ComponentProps<typeof Button>["size"]}
           disabled
         >
           Disabled
         </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={cancelExample}
+          disabled={phase !== "pending"}
+          aria-hidden={phase !== "pending"}
+          style={{ visibility: phase === "pending" ? "visible" : "hidden" }}
+        >
+          Cancel
+        </Button>
       </div>
-      <div style={{ display: "grid", justifyItems: "start", gap: 8 }}>
-        <Label htmlFor={outcomeId}>Example outcome</Label>
-        <NativeSelect id={outcomeId} value={outcome} disabled={phase === "pending"} onChange={(event) => setOutcome(event.target.value)}>
-          <NativeSelectOption value="success">Success</NativeSelectOption>
-          <NativeSelectOption value="error">Error and retry</NativeSelectOption>
-        </NativeSelect>
-      </div>
-      <Meta role="status" aria-live="polite">
-        {phase === "pending" ? "Running the local example…" : phase === "error" ? "The example action failed. Choose Success and retry." : `${count} ${count === 1 ? "note" : "notes"} added in this example.`}
+      {!compact && <>
+        <SliderWrapper style={{ width: "100%", maxWidth: 360 }}>
+          <SliderRow>
+            <Label id={durationId}>Loading duration</Label>
+            <SliderOutput>{duration} s</SliderOutput>
+          </SliderRow>
+          <Slider aria-labelledby={durationId} min={0.5} max={10} step={0.5} value={[duration]} disabled={phase === "pending"} onValueChange={([value]) => setDuration(value)} />
+        </SliderWrapper>
+        <div style={{ display: "grid", justifyItems: "start", gap: 8 }}>
+          <Label id={outcomeId}>Example outcome</Label>
+          <RadioGroup aria-labelledby={outcomeId} orientation="horizontal" value={outcome} disabled={phase === "pending"} onValueChange={setOutcome} style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+            <RadioGroupItem value="success">Success</RadioGroupItem>
+            <RadioGroupItem value="error">Error and retry</RadioGroupItem>
+          </RadioGroup>
+        </div>
+      </>}
+      <Meta className={compact ? "sr-only" : undefined} role="status" aria-live="polite" style={compact ? undefined : { minBlockSize: "2.6em" }}>
+        {phase === "pending" ? "Running the local example…" : phase === "cancelled" ? "Cancelled. No note was added." : phase === "error" ? "The example action failed. Choose Success and retry." : `${count} ${count === 1 ? "note" : "notes"} added in this example.`}
       </Meta>
-      <Meta>This demo only updates the count on this page.</Meta>
+      {!compact && <Meta>This demo only updates the count on this page.</Meta>}
     </div>
   );
 }

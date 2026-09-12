@@ -27,8 +27,9 @@
     "source": {
       "name": "Radial chart",
       "variants": [
-        "full",
-        "semicircle"
+        "analysis",
+        "brief",
+        "ledger"
       ],
       "sizes": [
         "default"
@@ -60,7 +61,7 @@
         ]
       }
     ],
-    "category": "Data display",
+    "category": "Charts",
     "fidelity": "refined-design-family",
     "baseComponent": false
   },

@@ -1,4 +1,8 @@
 import { LIMITS, redact, safeRoute, type DiagnosticEvent, type Diagnostics } from "./contracts";
+import { readSiteFlags } from "../site-config";
+
+/** Same shape check as the analytics payload, so a malformed release identifier never reaches a report body. */
+export const releaseIdentifier = (sha?: string): string => readSiteFlags({ NEXT_PUBLIC_RELEASE_SHA: sha }).releaseSha ?? "development";
 
 const buffers: Required<Pick<Diagnostics, "console" | "network" | "actions">> = { console: [], network: [], actions: [] };
 const excluded = () => typeof location === "undefined" || location.pathname.includes("feedback-admin");
@@ -72,7 +76,7 @@ export function snapshotDiagnostics(): Diagnostics {
   if (excluded()) return {};
   return {
     environment: {
-      appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? "0.2.0", userAgent: redact(navigator.userAgent), platform: navigator.platform,
+      appVersion: releaseIdentifier(process.env.NEXT_PUBLIC_RELEASE_SHA), userAgent: redact(navigator.userAgent), platform: navigator.platform,
       language: navigator.language, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, viewport: `${innerWidth}×${innerHeight}`,
       screen: `${screen.width}×${screen.height}`, pixelRatio: devicePixelRatio, online: navigator.onLine,
       theme: document.documentElement.dataset.mode === "dark" ? "dark" : "light", reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,

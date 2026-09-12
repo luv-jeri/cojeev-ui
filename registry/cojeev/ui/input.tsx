@@ -4,6 +4,11 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Icon } from "@/registry/cojeev/ui/icon";
+import { Button } from "@/registry/cojeev/ui/button";
+import {
+  controlRadiusStyle,
+  type ControlAppearanceProps,
+} from "../lib/control-appearance";
 
 const inputVariants = cva(
   "v-input flex w-full items-center gap-[12px] h-[48px] px-[18px] py-0 rounded-[var(--r-pill)] [border:0] bg-[var(--input)] text-[color:var(--v-text)] text-[length:var(--fs-body)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none",
@@ -23,17 +28,23 @@ const inputVariants = cva(
   },
 );
 export type InputProps = Omit<React.ComponentProps<"input">, "size"> &
-  VariantProps<typeof inputVariants> & { nativeSize?: number };
+  VariantProps<typeof inputVariants> &
+  ControlAppearanceProps & { nativeSize?: number };
 export function Input({
   className,
   variant,
   size,
   nativeSize,
+  radius,
+  appearance,
+  style,
   ...props
 }: InputProps) {
   return (
     <input
       data-slot="input"
+      data-appearance={appearance}
+      style={{ ...style, ...controlRadiusStyle(radius) }}
       data-part="root"
       data-state={
         props.disabled
@@ -49,8 +60,16 @@ export function Input({
   );
 }
 export type InputWrapperProps = React.HTMLAttributes<HTMLElement> &
-  VariantProps<typeof inputVariants> & { ref?: React.Ref<HTMLElement>; as?: "div" | "label" };
-export function InputWrapper({ref: externalMorphRef, 
+  VariantProps<typeof inputVariants> &
+  ControlAppearanceProps & {
+    ref?: React.Ref<HTMLElement>;
+    as?: "div" | "label";
+  };
+export function InputWrapper({
+  ref: externalMorphRef,
+  radius,
+  appearance,
+  style,
   className,
   variant,
   size,
@@ -61,6 +80,10 @@ export function InputWrapper({ref: externalMorphRef,
   return React.createElement(as, {
     ref: ownedMorphRef,
     "data-slot": "input",
+    "data-stable-hit": "",
+    "data-appearance": appearance,
+    "data-motion": appearance === "editorial" ? "off" : undefined,
+    style: { ...style, ...controlRadiusStyle(radius) },
     "data-part": "root",
     className: cn(inputVariants({ variant, size }), className),
     ...rest,
@@ -118,13 +141,15 @@ export function InputClear({
   ...props
 }: InputClearProps) {
   return (
-    <button
+    <Button
       data-slot="input-clear"
       data-part="clear"
       type="button"
+      variant="ghost"
+      data-stable-hit=""
       aria-label="Clear input"
       className={cn(
-        "v-clear grid shrink-0 place-items-center size-[26px] [border-radius:50%] mr-[-8px] text-[color:var(--v-text-2)] hover:bg-[var(--v-canvas)] hover:text-[color:var(--v-text)]",
+        "v-clear grid shrink-0 place-items-center text-[color:var(--v-text-2)]",
         className,
       )}
       onClick={(event) => {
@@ -134,7 +159,7 @@ export function InputClear({
       {...props}
     >
       {children ?? <Icon name="x" />}
-    </button>
+    </Button>
   );
 }
 export { inputVariants };

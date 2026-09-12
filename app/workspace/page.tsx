@@ -5,7 +5,7 @@ import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbItem } from "@/re
 import { ThemeControl } from "@/components/theme-control";
 import "./workspace.css";
 
-export const metadata: Metadata = { title: "Agent workspace · Cojeev UI", description: "An interactive monitoring workspace built with Cojeev UI components." };
+export const metadata: Metadata = { robots: { index: false, follow: false }, title: "Agent workspace · Cojeev UI", description: "An interactive monitoring workspace built with Cojeev UI components." };
 
 export default function WorkspacePage() {
   return <main className="workspace-page">

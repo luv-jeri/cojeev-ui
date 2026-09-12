@@ -14,6 +14,7 @@ export function InfiniteSpiral({items,paused=false,speed=.35,direction="up",clas
  const running=enabled&&inView&&!paused&&!localPaused&&!engaged&&items.length>1;
  const rate=Number.isFinite(speed)?Math.min(2,Math.max(.1,speed)):.35;
  const active=galleryIndex(selected,items.length);
+ const itemKey=JSON.stringify(items.map(item=>item.id));
  React.useEffect(()=>{
   const root=stage.current;if(!root)return;
   const cards=Array.from(root.querySelectorAll<HTMLElement>("[data-spiral-card]"));
@@ -22,7 +23,7 @@ export function InfiniteSpiral({items,paused=false,speed=.35,direction="up",clas
   const tick=(now:number)=>{position.current+=(now-last>100?0:now-last)*.001*rate*(direction==="up"?1:-1);last=now;paint();setSelected(galleryIndex(position.current,items.length));frame=requestAnimationFrame(tick);};
   if(running)frame=requestAnimationFrame(tick);
   return ()=>{cancelAnimationFrame(frame);resize.disconnect();};
- },[running,rate,direction,items.length,selected]);
+ },[running,rate,direction,items.length,selected,itemKey]);
  const choose=(index:number)=>{const next=galleryIndex(index,items.length);if(next<0)return;setLocalPaused(true);position.current=next;setSelected(next);};
  return <div {...props} ref={useGalleryRef(host,ref)} className={cn("v-infinite-spiral",className)} data-slot="infinite-spiral" data-running={running} onMouseEnter={event=>{setEngaged(true);props.onMouseEnter?.(event);}} onMouseLeave={event=>{setEngaged(false);props.onMouseLeave?.(event);}} onFocusCapture={event=>{setEngaged(true);props.onFocusCapture?.(event);}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setEngaged(false);props.onBlurCapture?.(event);}}>
  <div ref={stage} className="v-infinite-spiral__stage" aria-hidden="true">{items.map(item=><img key={item.id} data-spiral-card="" className="v-infinite-spiral__card" src={item.src} alt=""/>)}{items.length===0&&<p>No images available.</p>}</div>

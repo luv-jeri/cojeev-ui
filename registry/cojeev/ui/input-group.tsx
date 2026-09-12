@@ -3,6 +3,7 @@ import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
+import { controlRadiusStyle, type ControlAppearanceProps } from "../lib/control-appearance";
 import { Button, type ButtonProps } from "@/registry/cojeev/ui/button";
 import {
   InputControl,
@@ -12,12 +13,16 @@ import { Textarea, type TextareaProps } from "@/registry/cojeev/ui/textarea";
 export const inputGroupVariants = cva(
   "v-igroup flex items-center h-[52px] gap-[10px] py-0 pl-[18px] pr-[6px] rounded-[var(--r-pill)] [border:0] bg-[var(--input)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
 );
-export type InputGroupProps = React.ComponentProps<"div">;
-export function InputGroup({ref: externalMorphRef,  className, ...props }: InputGroupProps) {
+export type InputGroupProps = React.ComponentProps<"div"> & ControlAppearanceProps;
+export function InputGroup({ref: externalMorphRef, radius, appearance, style, className, ...props }: InputGroupProps) {
   const ownedMorphRef = useMorph<HTMLDivElement>("inputs", externalMorphRef);
   return (
     <div ref={ownedMorphRef}
       data-slot="input-group"
+      data-stable-hit=""
+      data-appearance={appearance}
+      data-motion={appearance === "editorial" ? "off" : undefined}
+      style={{ ...style, ...controlRadiusStyle(radius) }}
       data-part="root"
       className={cn(inputGroupVariants(), className)}
       {...props}

@@ -1,16 +1,35 @@
 import fs from "node:fs";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 
 const started = new Date().toISOString();
 const docsOutput = process.env.COJEEV_DOCS_EVIDENCE ?? "artifacts/production-docs";
 const registryHash = createHash("sha256").update(fs.readFileSync("out/r/registry.json")).digest("hex");
-const runs = [
-  ["documentation", ["scripts/check-docs.mjs", "--serve", `--output=${docsOutput}`]],
-  ["motion", ["--import", "tsx", "scripts/check-motion.mjs", "--serve"]],
-].map(([name, args]) => ({ name, status: spawnSync(process.execPath, args, { stdio: "inherit" }).status }));
 const read = (file) => fs.existsSync(file) && fs.statSync(file).mtimeMs >= Date.parse(started)
   ? JSON.parse(fs.readFileSync(file, "utf8")) : null;
+const shards = Number(process.env.COJEEV_DOCS_SHARDS ?? 1);
+assert(Number.isInteger(shards) && shards >= 1 && shards <= 3, "Use one to three independent documentation workers");
+const expected = JSON.parse(fs.readFileSync("registry.json", "utf8")).items.filter(item => item.type === "registry:ui").map(item => item.name);
+const partitions = Array.from({ length: shards }, (_, index) => expected.filter((_, position) => position % shards === index));
+const runs = await Promise.all(partitions.map((ids, index) => new Promise((resolve, reject) => {
+  const output = shards === 1 ? docsOutput : `${docsOutput}/shard-${index + 1}`;
+  const child = spawn(process.execPath, ["scripts/check-docs.mjs", "--serve", `--output=${output}`, `--ids=${ids.join(",")}`, ...(process.env.COJEEV_SOURCE_SNAPSHOT === "1" ? ["--source-snapshot"] : [])], { stdio: "inherit" });
+  child.on("error", reject);
+  child.on("exit", (status, signal) => resolve({ name: `documentation-${index + 1}`, status, signal, output }));
+})));
+if (shards > 1) {
+  const reports = runs.map(run => read(`${run.output}/results.json`));
+  assert(reports.every(Boolean), "Every worker must produce fresh evidence");
+  const entries = reports.flatMap((report, index) => report.entries.map(entry => ({ ...entry, evidenceDirectory: runs[index].output }))).sort((a, b) => a.id.localeCompare(b.id));
+  assert.deepEqual(entries.map(entry => entry.id).sort(), [...expected].sort(), "Every component must occur exactly once");
+  for (const report of reports) {
+    assert.deepEqual(report.revisionStart, reports[0].revisionStart, "Workers must use the same source snapshot");
+    assert.deepEqual(report.revisionEnd, report.revisionStart, "Source must remain unchanged during verification");
+  }
+  fs.writeFileSync(`${docsOutput}/results.json`, JSON.stringify({ ...reports[0], ended: new Date().toISOString(), entries, chrome: reports.flatMap(report => report.chrome), workers: shards }, null, 2));
+}
+runs.push({ name: "motion", status: spawnSync(process.execPath, ["--import", "tsx", "scripts/check-motion.mjs", "--serve"], { stdio: "inherit" }).status });
 const docs = read(`${docsOutput}/results.json`);
 const motion = read("artifacts/production-motion/results.json");
 const passed = runs.every(run => run.status === 0);
@@ -19,6 +38,7 @@ const lines = [
   "# Production gate", "",
   `Result: **${passed ? "PASS" : "FAIL"}**. Started ${started}; finished ${new Date().toISOString()}.`, "",
   `Built registry SHA-256: \`${registryHash}\`.`, "",
+  `Source provenance: ${JSON.stringify(docs?.revisionStart ?? "unavailable")}. Source-snapshot mode, when requested, hashes the copied source and does not certify Git history.`, "",
   "Run `npm run build && npm run gate` to reproduce. This gate serves the static build. It checks default specimens at 360, 768 and 1440 pixels in both themes, documentation controls and meaningful component interactions. Copied variant/size snippets are separately compiled by `npm run check:examples`. It does not claim every state in every browser or physical-device verification.", "",
   `Documentation: ${docs?.entries.length ?? 0} entries, ${docs?.entries.reduce((n, e) => n + e.layouts.length, 0) ?? 0} layouts. Shell checks: ${docs?.chrome.filter(c => c.status === "pass").length ?? 0}/${docs?.chrome.length ?? 0}.`, "",
   "| Component | Layouts | Preview / copy | Behavior | Runtime errors |",

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" role="img" aria-label="The 000h seed mark on warm paper, with organic shapes drifting right into a pale-blue stage that holds a profile card.">
+  <title>000h by Cojeev</title>
+  <desc>An illustration drawn in the library's own language: warm paper, precise ink, a pale-blue pigment stage, and organic shapes gathering into a profile card. It is artwork, not a screenshot of the website.</desc>
+
+  <rect width="1280" height="360" fill="#FBF4E6"/>
+
+  <!-- Two quiet washes hold the two halves: olive under the seed, blue under the stage. -->
+  <g opacity="0.18" transform="translate(15 2) scale(4.47 3.45)">
+    <path fill="#9AAB63" d="M94.5 50.0L94.3 57.0L91.9 63.6L87.5 69.1L82.1 73.3L76.6 76.6L71.8 80.0L67.4 84.2L62.7 89.0L56.9 93.3L50.0 95.7L42.8 95.5L36.1 92.8L30.3 88.6L25.4 83.8L20.9 79.1L16.7 74.2L13.2 68.8L10.8 62.7L10.1 56.3L10.5 50.0L11.3 43.9L12.0 37.7L12.7 31.0L14.1 23.9L17.2 17.2L22.4 12.1L29.3 9.4L36.7 9.1L43.7 10.3L50.0 11.7L55.9 12.5L62.1 12.9L68.5 13.7L74.8 15.9L80.3 19.7L84.7 24.8L88.0 30.6L90.7 36.8L93.0 43.2Z"/>
+  </g>
+  <g opacity="0.5" transform="translate(640 -14) scale(6.5 3.8)">
+    <path fill="#B6CAEB" d="M94.5 50.0L94.3 57.0L91.9 63.6L87.5 69.1L82.1 73.3L76.6 76.6L71.8 80.0L67.4 84.2L62.7 89.0L56.9 93.3L50.0 95.7L42.8 95.5L36.1 92.8L30.3 88.6L25.4 83.8L20.9 79.1L16.7 74.2L13.2 68.8L10.8 62.7L10.1 56.3L10.5 50.0L11.3 43.9L12.0 37.7L12.7 31.0L14.1 23.9L17.2 17.2L22.4 12.1L29.3 9.4L36.7 9.1L43.7 10.3L50.0 11.7L55.9 12.5L62.1 12.9L68.5 13.7L74.8 15.9L80.3 19.7L84.7 24.8L88.0 30.6L90.7 36.8L93.0 43.2Z"/>
+  </g>
+
+  <!-- The seed: one asymmetric zero with a single hand-shaped opening. -->
+  <g transform="translate(148 82) scale(1.98)">
+    <path fill="#27292d" fill-rule="evenodd" d="M58 9C77 10 87 27 86 45C84 66 63 87 43 86C25 85 10 71 10 52C10 33 36 7 58 9ZM56 30C47 27 35 36 31 47C26 60 32 70 40 69C52 68 64 54 65 43C66 37 62 32 56 30Z"/>
+  </g>
+
+  <!-- Loose pieces, smaller as they travel, gathering toward the stage. -->
+  <g transform="translate(382 200) scale(0.78)" opacity="0.92">
+    <path fill="#9AAB63" d="M82.5 82.5L80.8 83.5L77.3 84.5L72.7 85.3L67.2 85.5L61.0 85.0L54.6 83.7L48.0 81.5L41.6 78.5L35.6 74.5L30.2 69.8L25.5 64.4L21.5 58.4L18.5 52.0L16.3 45.4L15.0 39.0L14.5 32.8L14.7 27.3L15.5 22.7L16.5 19.2L17.5 17.5L19.2 16.5L22.7 15.5L27.3 14.7L32.8 14.5L39.0 15.0L45.4 16.3L52.0 18.5L58.4 21.5L64.4 25.5L69.8 30.2L74.5 35.6L78.5 41.6L81.5 48.0L83.7 54.6L85.0 61.0L85.5 67.2L85.3 72.7L84.5 77.3L83.5 80.8Z"/>
+  </g>
+  <g transform="translate(492 158) scale(0.56)" opacity="0.9">
+    <path fill="#F5D867" d="M94.5 50.0L94.3 57.0L91.9 63.6L87.5 69.1L82.1 73.3L76.6 76.6L71.8 80.0L67.4 84.2L62.7 89.0L56.9 93.3L50.0 95.7L42.8 95.5L36.1 92.8L30.3 88.6L25.4 83.8L20.9 79.1L16.7 74.2L13.2 68.8L10.8 62.7L10.1 56.3L10.5 50.0L11.3 43.9L12.0 37.7L12.7 31.0L14.1 23.9L17.2 17.2L22.4 12.1L29.3 9.4L36.7 9.1L43.7 10.3L50.0 11.7L55.9 12.5L62.1 12.9L68.5 13.7L74.8 15.9L80.3 19.7L84.7 24.8L88.0 30.6L90.7 36.8L93.0 43.2Z"/>
+  </g>
+  <g transform="translate(580 122) scale(0.40)" opacity="0.95">
+    <path fill="#F5B8DB" d="M96.0 50.0L94.5 53.9L90.4 57.1L84.8 59.3L79.1 60.6L74.8 61.6L72.5 63.0L72.4 65.7L73.7 69.9L75.5 75.5L76.4 81.4L75.6 86.6L73.0 89.8L68.9 90.5L64.0 88.5L59.3 84.8L55.4 80.5L52.4 77.2L50.0 76.0L47.6 77.2L44.6 80.5L40.7 84.8L36.0 88.5L31.1 90.5L27.0 89.8L24.4 86.6L23.6 81.4L24.5 75.5L26.3 69.9L27.6 65.7L27.5 63.0L25.2 61.6L20.9 60.6L15.2 59.3L9.6 57.1L5.5 53.9L4.0 50.0L5.5 46.1L9.6 42.9L15.2 40.7L20.9 39.4L25.2 38.4L27.5 37.0L27.6 34.3L26.3 30.1L24.5 24.5L23.6 18.6L24.4 13.4L27.0 10.2L31.1 9.5L36.0 11.5L40.7 15.2L44.6 19.5L47.6 22.8L50.0 24.0L52.4 22.8L55.4 19.5L59.3 15.2L64.0 11.5L68.9 9.5L73.0 10.2L75.6 13.4L76.4 18.6L75.5 24.5L73.7 30.1L72.4 34.3L72.5 37.0L74.8 38.4L79.1 39.4L84.8 40.7L90.4 42.9L94.5 46.1Z"/>
+  </g>
+  <circle cx="658" cy="104" r="10" fill="#9AAB63" opacity="0.8"/>
+
+  <!-- A profile card, drawn flat in the library's own tokens. No lettering: this is artwork, not a screen capture. -->
+  <g>
+    <rect x="768" y="76" width="408" height="224" rx="24" fill="#F3ECDF" stroke="#D9D2C4" stroke-width="2"/>
+    <circle cx="826" cy="134" r="28" fill="#F5B8DB"/>
+    <rect x="872" y="120" width="150" height="14" rx="7" fill="#27292d"/>
+    <rect x="872" y="143" width="100" height="10" rx="5" fill="#27292d" opacity="0.36"/>
+    <rect x="798" y="192" width="324" height="10" rx="5" fill="#27292d" opacity="0.2"/>
+    <rect x="798" y="213" width="234" height="10" rx="5" fill="#27292d" opacity="0.2"/>
+    <rect x="798" y="243" width="118" height="34" rx="17" fill="#27292d"/>
+    <rect x="928" y="243" width="118" height="34" rx="17" fill="none" stroke="#87806F" stroke-width="2"/>
+  </g>
+</svg>

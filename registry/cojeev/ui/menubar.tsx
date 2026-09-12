@@ -25,7 +25,7 @@ function useRetainedMenuContentRef(ref?: React.Ref<HTMLDivElement>) {
   return { nodeRef, composedRef };
 }
 
-import { adornItem, itemText, type ItemAdornmentItemProps } from "@/registry/cojeev/ui/item-adornment";
+import { adornItem, adornMenuItem, itemText, type ItemAdornmentItemProps } from "@/registry/cojeev/ui/item-adornment";
 import { StateChevron, AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
 
 export type MenubarProps = React.ComponentProps<typeof Primitive.Root>;
@@ -196,7 +196,7 @@ export function MenubarItem({
   adornmentId,
       )}
       {...props}
-    >{adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>
+    >{adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>
   );
 }
 export type MenubarSubTriggerProps = React.ComponentProps<
@@ -221,7 +221,7 @@ export function MenubarSubTrigger({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <StateChevron direction="right" />)}
+      {adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <StateChevron direction="right" />)}
     </Primitive.SubTrigger>
   );
 }
@@ -245,7 +245,7 @@ export function MenubarCheckboxItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="menubar-item-indicator" data-part="indicator"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator></span>)}
+      {adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="menubar-item-indicator" data-part="indicator"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.CheckboxItem>
   );
 }
@@ -269,7 +269,7 @@ export function MenubarRadioItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="menubar-item-indicator" data-part="indicator"><AnimatedIcon name="dot" preset="validation" /></Primitive.ItemIndicator></span>)}
+      {adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="menubar-item-indicator" data-part="indicator"><AnimatedIcon name="dot" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.RadioItem>
   );
 }

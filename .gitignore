@@ -61,3 +61,8 @@ node_modules/
 
 # Upstream research captures retain their source licenses; never publish them as our code.
 /reference/expansion/*/receipts/
+
+# Isolated browser analytics verification output.
+.next-analytics/
+
+!.env.example

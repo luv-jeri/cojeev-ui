@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-08T09:06:59.606875+00:00",
+  "generatedAt": "2026-09-10T17:07:22+05:30",
   "title": "Design System: Cojeev UI",
   "extensions": {
     "colorMeta": {
@@ -558,6 +558,21 @@
         "name": "The Owned Depth Rule",
         "body": "Depth belongs to the component that implements it. Keep its foreground, watermark and pointer light on distinct planes; avoid two motion owners writing the same transform.",
         "section": "elevation"
+      },
+      {
+        "name": "The Visible Variants Rule",
+        "body": "When documenting a component, keep one full interactive specimen and show structurally distinct variants live; compact galleries omit repeated configuration controls, and appearance parameters are not promoted to variants.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Working Object Rule",
+        "body": "Related stacked tasks read as one connected file object: the active card owns heading and close, while every alternate card keeps an attached, readable handle that can be reached without hover.",
+        "section": "components"
+      },
+      {
+        "name": "The Honest Scrollbar Rule",
+        "body": "Call a scrollbar organic only when ScrollArea or PageScrollbar renders the contour; native fallback is slim and theme-coloured but remains platform paint.",
+        "section": "components"
       }
     ],
     "dos": [
@@ -565,13 +580,17 @@
       "Do use the shared spacing, corner and focus vocabulary, with flexible text and content-driven heights for long content.",
       "Do compose agent and other compound patterns from the registry primitives and keep demo activity visibly labelled.",
       "Do place stable keys at real removal boundaries when using MotionPresence, and retain native pointer, keyboard and touch behavior.",
-      "Do check the actual rendered light, dark, small-screen and quiet-motion states when adding or changing a component."
+      "Do check the actual rendered light, dark, small-screen and quiet-motion states when adding or changing a component.",
+      "Do keep a full interactive specimen beside visible structural variants, and let optional backgrounds be removed without resetting specimen state.",
+      "Do keep related stacked tasks one connected object, with the active heading and close action on the card and alternate labels readable without hover.",
+      "Do configure scrollbar appearance once at the application root, while preserving native scroll ownership and semantics on fallback surfaces."
     ],
     "donts": [
       "Don't turn the documentation rail or a single workspace composition into a mandatory layout for every product surface.",
       "Don't use decorative paint, clipped containers or motion to conceal text, focus, scroll affordances or disabled state.",
       "Don't replace an explicit documented shape variant with a generic morph silhouette.",
-      "Don't assume a lifecycle wrapper proves every nested interaction, or describe a local simulation as a connected agent backend."
+      "Don't assume a lifecycle wrapper proves every nested interaction, or describe a local simulation as a connected agent backend.",
+      "Don't describe a styled native scrollbar fallback as the organic custom contour."
     ]
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { controlRadiusStyle, type ControlRadius } from "@/registry/cojeev/lib/control-appearance";
 import {
   SelectorGlyph,
   selectorStyle,
@@ -24,6 +25,7 @@ export const radioGroupVariants = cva("v-radios grid gap-2", {
   defaultVariants: { pictographic: false },
 });
 const RadioStyleContext = React.createContext<{
+  appearance?: "row" | "card" | "chip";
   pictographic: boolean;
   shape: SelectorShape;
   tone: SelectorTone;
@@ -41,6 +43,8 @@ export type RadioGroupProps = React.ComponentProps<typeof Primitive.Root> &
     size?: SelectorSize;
     indicator?: SelectorIndicator;
     showIndicator?: boolean;
+    appearance?: "row" | "card" | "chip";
+    radius?: ControlRadius;
   };
 export function RadioGroup({
   className,
@@ -52,6 +56,9 @@ export function RadioGroup({
   size,
   indicator = "auto",
   showIndicator = true,
+  appearance,
+  radius,
+  style,
   value: controlled,
   defaultValue,
   onValueChange,
@@ -81,7 +88,8 @@ export function RadioGroup({
   return (
     <RadioStyleContext.Provider
       value={{
-        pictographic: !!pictographic,
+        pictographic: !!pictographic && !appearance,
+        appearance,
         shape,
         tone,
         size,
@@ -133,14 +141,16 @@ export function RadioGroup({
         }}
         data-slot="radio-group"
         data-part="root"
+        data-appearance={appearance}
+        style={{ ...controlRadiusStyle(radius), ...style }}
         value={value}
         onValueChange={(next) => {
           if (controlled === undefined) setLocal(next);
           onValueChange?.(next);
         }}
-        data-flow-group={pictographic ? "" : undefined}
-        data-flow={pictographic ? undefined : "off"}
-        className={cn(radioGroupVariants({ pictographic }), className)}
+        data-flow-group={pictographic && !appearance ? "" : undefined}
+        data-flow={pictographic && !appearance ? undefined : "off"}
+        className={cn(radioGroupVariants({ pictographic: !!pictographic && !appearance }), className)}
         {...props}
       >
         {children}
@@ -150,7 +160,7 @@ export function RadioGroup({
 }
 export type RadioGroupItemProps = React.ComponentProps<
   typeof Primitive.Item
-> & { pictographic?: boolean; shape?: SelectorShape; tone?: SelectorTone; size?: SelectorSize; indicator?: SelectorIndicator; showIndicator?: boolean };
+> & { appearance?: "row" | "card" | "chip"; radius?: ControlRadius; pictographic?: boolean; shape?: SelectorShape; tone?: SelectorTone; size?: SelectorSize; indicator?: SelectorIndicator; showIndicator?: boolean };
 export function RadioGroupItem({
   className,
   pictographic,
@@ -160,13 +170,15 @@ export function RadioGroupItem({
   indicator,
   showIndicator,
   style,
+  appearance,
+  radius,
   children,
   ref,
   onKeyDown,
   ...props
 }: RadioGroupItemProps) {
   const inherited = React.useContext(RadioStyleContext);
-  const icon = pictographic ?? inherited.pictographic;
+  const icon = !(appearance ?? inherited.appearance) && (pictographic ?? inherited.pictographic);
   const selectedShape = shape ?? inherited.shape;
   const selectedTone = tone ?? inherited.tone;
   return (
@@ -178,8 +190,9 @@ export function RadioGroupItem({
       }}
       data-slot="radio-group-item"
       data-part="item"
+      data-appearance={appearance ?? inherited.appearance}
       data-selector-shape={selectedShape}
-      style={selectorStyle(selectedTone, style, size ?? inherited.size ?? (icon ? 16 : "default"))}
+      style={selectorStyle(selectedTone, { ...controlRadiusStyle(radius), ...style }, size ?? inherited.size ?? (icon ? 16 : "default"))}
       data-pictographic={icon || undefined}
       className={cn(
         icon ? "v-iradio" : "v-radio inline-flex items-center gap-[var(--s-3)]",

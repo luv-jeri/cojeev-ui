@@ -16,8 +16,7 @@ import {
   type PaginationProps,
 } from "@/registry/cojeev/ui/pagination";
 import { Button } from "@/registry/cojeev/ui/button";
-import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
-import { motionTokens } from "@/registry/cojeev/motion/choreography";
+import { Icon } from "@/registry/cojeev/ui/icon";
 import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
 export type DataTableColumn<T> = {
   id: string;
@@ -52,6 +51,7 @@ export type DataTableProps<T> = Omit<
   emptyMessage?: React.ReactNode;
   caption?: string;
   onRowClick?: (row: T) => void;
+  appearance?: "ledger" | "rich";
 };
 export function DataTable<T>({
   data,
@@ -68,6 +68,7 @@ export function DataTable<T>({
   emptyMessage = "No matching records",
   caption,
   onRowClick,
+  appearance,
   className,
   ...props
 }: DataTableProps<T>) {
@@ -135,6 +136,7 @@ export function DataTable<T>({
   return (
     <div
       data-slot="data-table"
+      data-appearance={appearance}
       data-state={filtered.length ? "full" : "filtered-empty"}
       className={cn("grid gap-[16px]", className)}
       {...props}
@@ -159,7 +161,7 @@ export function DataTable<T>({
         </DataTableFilters>
       )}
       <DataTableViewport>
-        <Table>
+        <Table appearance={appearance}>
           {caption && <caption className="v-sr">{caption}</caption>}
           <TableHeader>
             <TableRow>
@@ -179,9 +181,13 @@ export function DataTable<T>({
                   }
                 >
                   {col.sortValue ? (
-                    <button
+                    <Button
                       type="button"
-                      className="text-inherit uppercase tracking-inherit"
+                      variant="ghost"
+                      size="sm"
+                      data-stable-hit=""
+                      className="v-data-table__sort"
+                      aria-label={`Sort ${typeof col.header === "string" ? col.header : col.id} ${sort?.id === col.id && sort.direction === "asc" ? "descending" : "ascending"}`}
                       onClick={() =>
                         setSort((old) => ({
                           id: col.id,
@@ -193,9 +199,17 @@ export function DataTable<T>({
                       }
                     >
                       {col.header}
-                      {sort?.id === col.id &&
-                        (sort.direction === "asc" ? " ↑" : " ↓")}
-                    </button>
+                      <Icon
+                        name={
+                          sort?.id === col.id
+                            ? sort.direction === "asc"
+                              ? "chevron-up"
+                              : "chevron-down"
+                            : "arrow-up-down"
+                        }
+                        size="sm"
+                      />
+                    </Button>
                   ) : (
                     col.header
                   )}
@@ -204,90 +218,89 @@ export function DataTable<T>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            <MotionPresence>
-              {visible.map(({ row, id }, index) => (
-                <MotionSurface
-                  key={id}
-                  asChild
-                  preset="fade"
-                  delay={Math.min(index, 5) * motionTokens.stagger}
-                >
-                  <TableRow
-                    data-row-id={id}
-                    tabIndex={onRowClick ? 0 : undefined}
-                    onClick={(event) => {
-                      if (event.defaultPrevented) return;
-                      const target = event.target as Element;
-                      if (
-                        target.closest(
-                          "button,a,input,select,textarea,summary,[role='button'],[role='link'],[role='checkbox'],[role='switch'],[role='radio'],[contenteditable='true'],[data-row-action]",
-                        )
-                      )
-                        return;
-                      onRowClick?.(row);
-                    }}
-                    onKeyDown={(event) => {
-                      if (
-                        onRowClick &&
-                        !event.defaultPrevented &&
-                        event.target === event.currentTarget &&
-                        (event.key === "Enter" || event.key === " ")
-                      ) {
-                        event.preventDefault();
-                        onRowClick(row);
-                      }
-                    }}
+            {visible.map(({ row, id }) => (
+              <TableRow
+                key={id}
+                data-row-id={id}
+                tabIndex={onRowClick ? 0 : undefined}
+                onClick={(event) => {
+                  if (event.defaultPrevented) return;
+                  const target = event.target as Element;
+                  if (
+                    target.closest(
+                      "button,a,input,select,textarea,summary,[role='button'],[role='link'],[role='checkbox'],[role='switch'],[role='radio'],[contenteditable='true'],[data-row-action]",
+                    )
+                  )
+                    return;
+                  onRowClick?.(row);
+                }}
+                onKeyDown={(event) => {
+                  if (
+                    onRowClick &&
+                    !event.defaultPrevented &&
+                    event.target === event.currentTarget &&
+                    (event.key === "Enter" || event.key === " ")
+                  ) {
+                    event.preventDefault();
+                    onRowClick(row);
+                  }
+                }}
+              >
+                {columns.map((col) => (
+                  <TableCell
+                    key={col.id}
+                    numeric={col.numeric}
+                    className={col.className}
                   >
-                    {columns.map((col) => (
-                      <TableCell
-                        key={col.id}
-                        numeric={col.numeric}
-                        className={col.className}
+                    {col.cell
+                      ? col.cell(row)
+                      : col.accessorKey === undefined
+                        ? null
+                        : String(row[col.accessorKey] ?? "")}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+            {!filtered.length && (
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <DataTableEmpty>
+                    <b className="v-state__word">{emptyMessage}</b>
+                    <span className="v-state__why">
+                      {data.length
+                        ? "Try another filter to see more records."
+                        : "Add a record to begin this collection."}
+                    </span>
+                    {activeFilter !== "all" && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setFilter("all")}
                       >
-                        {col.cell
-                          ? col.cell(row)
-                          : col.accessorKey === undefined
-                            ? null
-                            : String(row[col.accessorKey] ?? "")}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </MotionSurface>
-              ))}
-            </MotionPresence>
+                        Clear filters
+                      </Button>
+                    )}
+                  </DataTableEmpty>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </DataTableViewport>
-      <MotionPresence>
-        {!filtered.length && (
-          <MotionSurface key="empty" asChild preset="rise">
-            <DataTableEmpty>
-              <b className="v-state__word">{emptyMessage}</b>
-              <span className="v-state__why">
-                Try another filter to see more records.
-              </span>
-              {activeFilter !== "all" && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setFilter("all")}
-                >
-                  Clear filters
-                </Button>
-              )}
-            </DataTableEmpty>
-          </MotionSurface>
-        )}
-      </MotionPresence>
       <div className="flex items-center justify-between gap-[12px] flex-wrap">
         <span className="v-meta" role="status">
-          {filtered.length} of {data.length} records
+          {filtered.length
+            ? `${(current - 1) * size + 1}–${Math.min(current * size, filtered.length)} of ${filtered.length}`
+            : "0"}{" "}
+          records{activeFilter !== "all" && ` · ${data.length} total`}
         </span>
-        <DataTablePagination
-          page={current}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
+        {totalPages > 1 && (
+          <DataTablePagination
+            page={current}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        )}
       </div>
     </div>
   );
@@ -315,7 +328,7 @@ export function DataTableFilters({
     />
   );
 }
-export type DataTableFilterButtonProps = React.ComponentProps<"button"> & {
+export type DataTableFilterButtonProps = React.ComponentProps<typeof Button> & {
   pressed?: boolean;
 };
 export function DataTableFilterButton({
@@ -324,12 +337,12 @@ export function DataTableFilterButton({
   ...props
 }: DataTableFilterButtonProps) {
   return (
-    <button
+    <Button
       data-slot="data-table-filter-button"
-      className={cn(
-        "v-tab shrink-0 h-[var(--ctl-sm)] px-[14px] rounded-[var(--r-pill)] bg-[var(--v-beige)] text-[13px] font-medium text-[color:var(--v-text)]",
-        className,
-      )}
+      variant={pressed ? "accent" : "ghost"}
+      size="sm"
+      data-stable-hit=""
+      className={cn("v-tab shrink-0", className)}
       type="button"
       aria-pressed={pressed}
       data-state={pressed ? "on" : "off"}

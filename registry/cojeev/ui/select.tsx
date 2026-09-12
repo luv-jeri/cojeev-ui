@@ -4,7 +4,16 @@ import { ScrollAreaList } from "@/registry/cojeev/ui/scroll-area";
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
-import { ItemAdornment, itemText, type ItemAdornmentItemProps } from "@/registry/cojeev/ui/item-adornment";
+import {
+  controlRadiusStyle,
+  type ControlAppearanceProps,
+} from "../lib/control-appearance";
+import {
+  ItemAdornment,
+  itemText,
+  menuAdornment,
+  type ItemAdornmentItemProps,
+} from "@/registry/cojeev/ui/item-adornment";
 import { StateChevron, AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
 import { Icon } from "@/registry/cojeev/ui/icon";
 import * as Primitive from "@radix-ui/react-select";
@@ -20,21 +29,91 @@ const SelectInteractionContext = React.createContext<{
   setPointer: (pointer: boolean) => void;
   triggerWidth: number;
   setTriggerWidth: (width: number) => void;
-}>({ pointer: false, setPointer: () => {}, triggerWidth: 0, setTriggerWidth: () => {} });
+}>({
+  pointer: false,
+  setPointer: () => {},
+  triggerWidth: 0,
+  setTriggerWidth: () => {},
+});
 export type SelectProps = React.ComponentProps<typeof Primitive.Root> & {
   containerProps?: React.ComponentProps<"span">;
 };
-export function Select({ children, containerProps, ...props }: SelectProps) {
+export function Select({
+  children,
+  containerProps,
+  value,
+  defaultValue,
+  onValueChange,
+  ...props
+}: SelectProps) {
   const [pointer, setPointer] = React.useState(false);
   const [triggerWidth, setTriggerWidth] = React.useState(0);
+  const [localValue, setLocalValue] = React.useState(defaultValue ?? "");
+  const currentValue = value ?? localValue;
+  const initialValue = React.useRef(value ?? defaultValue ?? "");
+  const resetting = React.useRef(false);
+  const host = React.useRef<HTMLSpanElement>(null);
+  const latest = React.useRef({ value, currentValue, onValueChange });
+  React.useLayoutEffect(() => {
+    latest.current = { value, currentValue, onValueChange };
+  });
+  const containerRef = containerProps?.ref;
+  const attachContainer = React.useCallback(
+    (node: HTMLSpanElement | null) => {
+      host.current = node;
+      return assignMotionRef(containerRef, node);
+    },
+    [containerRef],
+  );
+  React.useEffect(() => {
+    const form = props.form
+      ? host.current?.ownerDocument.getElementById(props.form)
+      : host.current?.closest("form");
+    if (!(form instanceof HTMLFormElement)) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const reset = (event: Event) => {
+      resetting.current = true;
+      clearTimeout(timer);
+      // Radix resets on the form's target before bubbling handlers can cancel.
+      // Keep a single value owner and wait until the complete event dispatch.
+      timer = setTimeout(() => {
+        const config = latest.current;
+        if (
+          !event.defaultPrevented &&
+          config.currentValue !== initialValue.current
+        ) {
+          if (config.value === undefined) setLocalValue(initialValue.current);
+          config.onValueChange?.(initialValue.current);
+        }
+        resetting.current = false;
+      }, 0);
+    };
+    form.addEventListener("reset", reset, true);
+    return () => {
+      form.removeEventListener("reset", reset, true);
+      clearTimeout(timer);
+      resetting.current = false;
+    };
+  }, [props.form]);
   return (
-    <SelectInteractionContext.Provider value={{ pointer, setPointer, triggerWidth, setTriggerWidth }}>
-      <Primitive.Root {...props}>
+    <SelectInteractionContext.Provider
+      value={{ pointer, setPointer, triggerWidth, setTriggerWidth }}
+    >
+      <Primitive.Root
+        {...props}
+        value={currentValue}
+        onValueChange={(next) => {
+          if (resetting.current || next === currentValue) return;
+          if (value === undefined) setLocalValue(next);
+          onValueChange?.(next);
+        }}
+      >
         <span
           data-slot="select"
           data-part="root"
           data-select=""
           {...containerProps}
+          ref={attachContainer}
           className={cn(
             "v-menuhost relative inline-block",
             containerProps?.className,
@@ -49,8 +128,14 @@ export function Select({ children, containerProps, ...props }: SelectProps) {
 export const selectTriggerVariants = cva(
   "v-select [display:inline-flex] [align-items:center] [justify-content:space-between] [border-radius:var(--r-pill)] [font-size:var(--fs-control)] [white-space:nowrap] [cursor:pointer] [height:40px] [padding:0_12px_0_16px] [gap:10px] [box-shadow:inset_0_0_0_1px_var(--v-edge)] [background:var(--v-canvas)] [color:var(--v-text)] [font-weight:500]",
 );
-export type SelectTriggerProps = React.ComponentProps<typeof Primitive.Trigger>;
+export type SelectTriggerProps = React.ComponentProps<
+  typeof Primitive.Trigger
+> &
+  ControlAppearanceProps;
 export function SelectTrigger({
+  radius,
+  appearance,
+  style,
   className,
   ref,
   children,
@@ -58,20 +143,28 @@ export function SelectTrigger({
   onKeyDown,
   ...props
 }: SelectTriggerProps) {
-  const { setPointer, setTriggerWidth } = React.useContext(SelectInteractionContext);
+  const { setPointer, setTriggerWidth } = React.useContext(
+    SelectInteractionContext,
+  );
   const morphRef = useMorph<HTMLButtonElement>("buttons", ref);
   const pressRef = useFlowPress(morphRef);
-  const attach = React.useCallback((node: HTMLButtonElement | null) => {
-    const release = assignMotionRef(pressRef, node);
-    if (!node) return release;
-    // Popper reports a transformed rect. Use layout width so the press spring
-    // cannot resize a portalled menu or feed its ScrollArea observers in Safari.
-    const measure = () => setTriggerWidth(node.offsetWidth);
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(node);
-    return () => { observer.disconnect(); release(); };
-  }, [pressRef, setTriggerWidth]);
+  const attach = React.useCallback(
+    (node: HTMLButtonElement | null) => {
+      const release = assignMotionRef(pressRef, node);
+      if (!node) return release;
+      // Popper reports a transformed rect. Use layout width so the press spring
+      // cannot resize a portalled menu or feed its ScrollArea observers in Safari.
+      const measure = () => setTriggerWidth(node.offsetWidth);
+      measure();
+      const observer = new ResizeObserver(measure);
+      observer.observe(node);
+      return () => {
+        observer.disconnect();
+        release();
+      };
+    },
+    [pressRef, setTriggerWidth],
+  );
   return (
     <Primitive.Trigger
       ref={attach}
@@ -84,6 +177,10 @@ export function SelectTrigger({
         if (!event.defaultPrevented) setPointer(false);
       }}
       data-slot="select-trigger"
+      data-stable-hit
+      data-appearance={appearance}
+      data-motion={appearance === "editorial" ? "off" : undefined}
+      style={{ ...style, ...controlRadiusStyle(radius) }}
       data-part="trigger"
       className={cn(selectTriggerVariants(), className)}
       {...props}
@@ -109,11 +206,13 @@ export function SelectContent({
   style,
   ...props
 }: SelectContentProps) {
-  const { pointer, setPointer, triggerWidth } = React.useContext(SelectInteractionContext);
+  const { pointer, setPointer, triggerWidth } = React.useContext(
+    SelectInteractionContext,
+  );
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
   const groupRef = useFlowGroup<HTMLDivElement>(morphRef, {
     itemSelector: ".v-menu__item",
-    activeSelector: "[data-highlighted],[data-state=checked]",
+    activeSelector: "[data-highlighted]",
   });
   const flowRef = useFlowAppearance<HTMLDivElement>(true, groupRef, "grow");
   return (
@@ -129,17 +228,28 @@ export function SelectContent({
         }}
         onPointerMove={(event) => {
           onPointerMove?.(event);
-          if (!event.defaultPrevented && event.pointerType === "mouse") setPointer(true);
+          if (!event.defaultPrevented && event.pointerType === "mouse")
+            setPointer(true);
         }}
         className={cn("v-listbox v-menu", className)}
         position={position}
         sideOffset={sideOffset}
         collisionPadding={12}
-        style={{ "--select-anchor-width": `${triggerWidth}px`, ...style } as React.CSSProperties}
+        style={
+          {
+            "--select-anchor-width": `${triggerWidth}px`,
+            ...style,
+          } as React.CSSProperties
+        }
         {...props}
       >
         <SelectScrollUpButton />
-        <ScrollAreaList maxHeight="min(320px, calc(var(--radix-select-content-available-height, 60dvh) - 24px))" viewportWrapper={viewport => <Primitive.Viewport asChild>{viewport}</Primitive.Viewport>}>
+        <ScrollAreaList
+          maxHeight="min(320px, calc(var(--radix-select-content-available-height, 60dvh) - 24px))"
+          viewportWrapper={(viewport) => (
+            <Primitive.Viewport asChild>{viewport}</Primitive.Viewport>
+          )}
+        >
           {children}
         </ScrollAreaList>
         <SelectScrollDownButton />
@@ -147,9 +257,14 @@ export function SelectContent({
     </Primitive.Portal>
   );
 }
-export type SelectItemProps = React.ComponentProps<typeof Primitive.Item> & ItemAdornmentItemProps & { showIndicator?: boolean };
+export type SelectItemProps = React.ComponentProps<typeof Primitive.Item> &
+  ItemAdornmentItemProps & {
+    showIndicator?: boolean;
+    /** Supporting text stays outside the selected value. */ description?: React.ReactNode;
+  };
 export function SelectItem({
-  showIndicator = true,
+  showIndicator = false,
+  description,
   className,
   adornment,
   adornmentId,
@@ -158,17 +273,38 @@ export function SelectItem({
   ...props
 }: SelectItemProps) {
   const morphRef = useMorph<HTMLDivElement>("nav", ref);
+  const descriptionId = React.useId();
   return (
     <Primitive.Item
       ref={morphRef}
       data-slot="select-item"
       data-part="item"
       className={cn("v-menu__item outline-none", className)}
+      aria-describedby={description ? descriptionId : undefined}
       {...props}
     >
-      <ItemAdornment identity={adornmentId ?? props.value ?? itemText(children)} value={adornment} />
-      <Primitive.ItemText>{children}</Primitive.ItemText>
-      {showIndicator && <Primitive.ItemIndicator className="v-select__indicator" aria-hidden="true"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator>}
+      <ItemAdornment
+        identity={adornmentId ?? props.value ?? itemText(children)}
+        value={menuAdornment(adornment)}
+      />
+      {description ? (
+        <span className="v-select__rich">
+          <Primitive.ItemText>{children}</Primitive.ItemText>
+          <span id={descriptionId} className="v-select__description">
+            {description}
+          </span>
+        </span>
+      ) : (
+        <Primitive.ItemText>{children}</Primitive.ItemText>
+      )}
+      {showIndicator && (
+        <Primitive.ItemIndicator
+          className="v-select__indicator"
+          aria-hidden="true"
+        >
+          <AnimatedIcon name="check" preset="validation" />
+        </Primitive.ItemIndicator>
+      )}
     </Primitive.Item>
   );
 }

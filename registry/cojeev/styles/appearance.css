@@ -18,7 +18,7 @@
   background:var(--mfill); color:var(--v-text); box-shadow:inset 0 0 0 1px var(--v-border);
 }
 :root .v-btn.v-appearance-trigger[data-slot][data-compact]:is(:hover,:focus-visible) { --mfill:var(--v-beige); --mstroke:var(--v-text-2); }
-:root .v-btn.v-appearance-trigger[data-slot][data-compact].v-morph-live { background:transparent; box-shadow:none; }
+:root .v-btn.v-appearance-trigger[data-slot][data-compact]:has(>svg.v-morph) { background:transparent; box-shadow:none; }
 [data-slot="appearance-palette-icon"] { flex:none; overflow:visible; }
 .v-appearance-trigger__label { color:inherit; font:500 13px/1 var(--font-text); }
 :root .v-btn.v-appearance-trigger[data-slot][data-compact="true"] { min-width:44px; width:44px; padding:0; }

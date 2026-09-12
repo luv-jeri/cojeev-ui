@@ -16,19 +16,26 @@ let activePage;
 const run = Date.now().toString(36);
 const imageBytes = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf3sAAAAASUVORK5CYII=", "base64");
 const screenshot = async (page, name) => { if (await page.locator(".report-launcher").count()) await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false); await page.screenshot({ path: `${output}/${name}.png`, fullPage: false, caret: "initial" }); };
-const panel = page => page.getByRole("dialog", { name: "Make it better", exact: true });
-const open = async page => { await page.getByRole("button", { name: "Request a component or report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor(); };
+const panel = page => page.getByRole("dialog", { name: "Request a feature or report a bug", exact: true });
+const open = async page => { await page.getByRole("button", { name: "Request a feature or report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor(); };
 const fill = async (page, kind, title) => {
-  await page.getByRole("button", { name: kind === "bug" ? "Report a bug" : "Request a component", exact: true }).last().click();
+  const kindTab = panel(page).getByRole("tab", { name: kind === "bug" ? "Report a bug" : "Request a feature", exact: true });
+  await kindTab.click();
+  assert.equal(await kindTab.getAttribute("aria-selected"), "true");
   await page.getByRole("textbox", { name: kind === "bug" ? "What went wrong?" : "Component title", exact: true }).fill(title);
   await page.getByRole("textbox", { name: kind === "bug" ? "What happened, and what did you expect?" : "Details, inspiration & links", exact: true }).fill("Local browser verification. Reference: https://example.com/reference");
   await page.getByRole("textbox", { name: "Your email", exact: true }).fill(`browser-${run}@example.com`);
 };
 const accepted = async page => page.getByRole("heading", { name: /Your (request|report) is received/ }).waitFor();
 const assertFits = async page => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && Array.from(document.querySelectorAll(".report-sheet")).every(node => node.scrollWidth <= node.clientWidth + 1)), "No page or panel horizontal overflow");
+const localOnly = context => context.route(/^https?:\/\//, route => {
+  const url = new URL(route.request().url());
+  return ["localhost", "127.0.0.1"].includes(url.hostname) ? route.continue() : route.abort();
+});
 
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
+  await localOnly(context);
   const page = await context.newPage(); activePage = page; page.on("pageerror", error => pageErrors.push(error.message)); page.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(page);
   await fill(page, "request", `Browser request ${run}`);
@@ -72,8 +79,9 @@ try {
   await page.getByRole("button", { name: "Clear receipt & start another", exact: true }).click();
   await fill(page, "bug", `Browser bug ${run}`);
   await page.evaluate(() => { document.documentElement.dataset.mode = "dark"; console.warn("Browser test warning Bearer secret-test-value person@example.com"); });
+  assert.equal(await page.locator(".report-diagnostic-groups details").count(), 0);
+  await page.getByRole("button", { name: "Include browser details", exact: true }).click();
   assert.equal(await page.locator(".report-diagnostic-groups details").count(), 4);
-  await page.getByRole("button", { name: "Refresh browser details", exact: true }).click();
   const reviewedDiagnostics = await page.locator(".report-diagnostic-groups pre").allTextContents();
   await page.getByRole("button", { name: "Close reporting panel", exact: true }).click();
   await page.reload({ waitUntil: "domcontentloaded" }); await open(page);
@@ -121,7 +129,7 @@ try {
   await page.getByRole("button", { name: "Send report", exact: true }).click(); await accepted(page); await page.getByText("1 of 1 uploaded", { exact: true }).waitFor();
   const bugDetail = await fetch(`${api}/v1/admin/reports/${bugPayload.id}`, { headers: { Authorization: `Bearer ${adminToken}` } }).then(response => response.json());
   assert.equal(bugDetail.report.kind, "bug"); assert.equal(bugDetail.attachments[0].state, "uploaded");
-  results.push("Bug diagnostics default on, captured data-mode and reviewed warnings survive reload unchanged, secrets redact, capture and crop upload to the local Worker");
+  results.push("Bug diagnostics require explicit inclusion; captured data-mode and reviewed warnings survive reload unchanged, secrets redact, capture and crop upload to the local Worker");
   await page.goto(`${base}/feedback-admin/?report=${bugPayload.id}`, { waitUntil: "domcontentloaded" });
   assert.equal(await page.locator(".report-launcher").count(), 0);
   await page.getByLabel("Maintainer token", { exact: true }).fill(adminToken); await page.getByRole("button", { name: "Unlock reports", exact: true }).click();
@@ -135,6 +143,7 @@ try {
   await context.close();
 
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+  await localOnly(mobile);
   const mobilePage = await mobile.newPage(); activePage = mobilePage; mobilePage.on("pageerror", error => pageErrors.push(error.message)); mobilePage.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await mobilePage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await screenshot(mobilePage, "request-board-mobile"); await open(mobilePage);
   await fill(mobilePage, "request", "A mobile calendar with date ranges"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await assertFits(mobilePage); await screenshot(mobilePage, "request-mobile-light");

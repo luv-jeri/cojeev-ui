@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site-config";
 import { CreatorPage } from "@/components/landing/creator-page";
 import "@/components/landing/landing.css";
 
-export const metadata: Metadata = { title: "Work with Sanjay · Cojeev UI", description: "Thoughtful products, expressive interfaces and working code. Meet Sanjay Kumar, the creator of Cojeev UI." };
+export const metadata = pageMetadata("Meet the maker", "Meet Sanjay Kumar, the designer and developer building 000h by Cojeev.", "/about/");
 export default function WorkWithMe() { return <CreatorPage />; }

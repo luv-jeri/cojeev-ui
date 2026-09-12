@@ -2,6 +2,10 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
+import {
+  controlRadiusStyle,
+  type ControlAppearanceProps,
+} from "../lib/control-appearance";
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
 export const nativeSelectVariants = cva(
   "v-native appearance-none h-[var(--ctl-md)] pl-[var(--s-5)] pr-[40px] py-0 rounded-[var(--r-pill)] [border:0] bg-[var(--v-beige)] text-[length:var(--fs-control)] font-medium text-[color:var(--v-text)] cursor-pointer [box-shadow:inset_0_0_0_1px_var(--v-edge)] focus-visible:outline-2 focus-visible:outline-[var(--ring)] focus-visible:outline-offset-2",
@@ -16,17 +20,25 @@ export const nativeSelectVariants = cva(
   },
 );
 export type NativeSelectProps = React.ComponentProps<"select"> &
-  VariantProps<typeof nativeSelectVariants>;
+  VariantProps<typeof nativeSelectVariants> &
+  ControlAppearanceProps;
 export function NativeSelect({
   ref,
   className,
   variant,
+  radius,
+  appearance,
+  style,
   ...props
 }: NativeSelectProps) {
   const morphRef = useMorph<HTMLSelectElement>("buttons", ref);
   return (
     <select
       data-slot="native-select"
+      data-stable-hit
+      data-appearance={appearance}
+      data-motion={appearance === "editorial" ? "off" : undefined}
+      style={{ ...style, ...controlRadiusStyle(radius) }}
       data-part="root"
       ref={morphRef}
       className={cn(nativeSelectVariants({ variant }), className)}

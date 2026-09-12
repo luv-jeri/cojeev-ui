@@ -11,7 +11,7 @@ import {
   useFlowGroup,
 } from "@/registry/cojeev/motion/use-flow";
 
-import { adornItem, itemText, type ItemAdornmentItemProps } from "@/registry/cojeev/ui/item-adornment";
+import { adornItem, adornMenuItem, itemText, type ItemAdornmentItemProps } from "@/registry/cojeev/ui/item-adornment";
 import { StateChevron, AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
 
 export type DropdownMenuProps = React.ComponentProps<typeof Primitive.Root>;
@@ -150,7 +150,7 @@ export function DropdownMenuItem({
         className,
       )}
       {...props}
-    >{adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>
+    >{adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild)}</Primitive.Item>
   );
 }
 export type DropdownMenuSubTriggerProps = React.ComponentProps<
@@ -175,7 +175,7 @@ export function DropdownMenuSubTrigger({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <StateChevron direction="right" />)}
+      {adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <StateChevron direction="right" />)}
     </Primitive.SubTrigger>
   );
 }
@@ -199,7 +199,7 @@ export function DropdownMenuCheckboxItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="dropdown-menu-item-indicator" data-part="indicator"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator></span>)}
+      {adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="dropdown-menu-item-indicator" data-part="indicator"><AnimatedIcon name="check" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.CheckboxItem>
   );
 }
@@ -223,7 +223,7 @@ export function DropdownMenuRadioItem({
       className={cn("v-menu__item", className)}
       {...props}
     >
-      {adornItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="dropdown-menu-item-indicator" data-part="indicator"><AnimatedIcon name="dot" preset="validation" /></Primitive.ItemIndicator></span>)}
+      {adornMenuItem(children, adornment, adornmentId ?? props.textValue ?? props.id ?? itemText(children), props.asChild, <span className="v-menu__check" aria-hidden="true"><Primitive.ItemIndicator data-slot="dropdown-menu-item-indicator" data-part="indicator"><AnimatedIcon name="dot" preset="validation" /></Primitive.ItemIndicator></span>)}
     </Primitive.RadioItem>
   );
 }

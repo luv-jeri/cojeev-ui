@@ -19,3 +19,12 @@
    SVG is the immediate SSR/Off/reduced fallback; the mark stays above either. */
 [data-slot="selector-glyph"]:has([data-slot="selector-surface-host"] > svg.v-morph) [data-slot="selector-surface"] { opacity:0; }
 [data-slot="selector-drawing"] { position:relative; pointer-events:none; }
+
+/* Composition is a public prop; legacy glyph and -block contracts stay intact. */
+.v-check[data-slot="checkbox"][data-appearance] { padding:10px 12px; border-radius:var(--v-control-radius,12px); gap:12px; }
+.v-check[data-slot="checkbox"][data-appearance="row"] { border-radius:0; border-bottom:1px solid var(--v-border); width:100%; }
+.v-check[data-slot="checkbox"][data-appearance="card"] { display:grid; grid-template-columns:var(--selector-size,28px) minmax(0,1fr); align-items:start; width:100%; padding:18px; border-radius:min(var(--v-control-radius,16px),24px); background:var(--card); box-shadow:inset 0 0 0 1px var(--v-edge); }
+.v-check[data-slot="checkbox"][data-appearance="chip"] { width:fit-content; border-radius:var(--v-control-radius,999px); box-shadow:inset 0 0 0 1px var(--v-edge); gap:8px; }
+.v-check[data-slot="checkbox"][data-appearance]:not([data-disabled]):is([data-state="checked"],[data-state="indeterminate"]) { background:color-mix(in oklab,var(--selector-accent) 18%,var(--v-canvas)); }
+.v-check[data-slot="checkbox"][data-appearance]:focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+.v-check[data-slot="checkbox"][data-appearance]:focus-visible [data-slot="checkbox-indicator"] { outline:none; }
