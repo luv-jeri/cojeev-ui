@@ -4,6 +4,7 @@ import postcss from "postcss";
 import { execFileSync } from "node:child_process";
 import { componentAPIs } from "./component-api.mjs";
 import { sourceImport, rewriteInstalledImports } from "./registry-imports.mjs";
+import { noticeText } from "./registry-notices.mjs";
 
 const baseURL=process.env.COJEEV_REGISTRY_URL??"https://luv-jeri.github.io/cojeev-ui";
 const source="registry/cojeev";
@@ -69,6 +70,11 @@ base.files.push(...fs.readdirSync(`${source}/motion`).filter(name=>/\.tsx?$/.tes
 base.files.push({path:`${source}/styles/fonts.css`,type:"registry:file",target:"styles/cojeev-fonts.css"});
 base.files.push(...foundationStyles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`})));
 base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({path:`reference/cojeev-handoff-v4/fonts/${name}`,type:"registry:file",target:`styles/fonts/${name}`})));
+// Every entry installs this base, so one notices file reaches every consumer.
+// It has to be a file: the installer re-prints the TypeScript it copies and
+// drops the comment a source opens with, notice included.
+fs.writeFileSync(`${source}/NOTICES.txt`,noticeText(fs.readFileSync("LICENCE","utf8"),["lib","motion","ui"].flatMap(folder=>fs.readdirSync(`${source}/${folder}`).sort().filter(name=>/\.tsx?$/.test(name)).map(name=>[`${source}/${folder}/${name}`,fs.readFileSync(`${source}/${folder}/${name}`,"utf8")]))));
+base.files.push({path:`${source}/NOTICES.txt`,type:"registry:file",target:"lib/cojeev/NOTICES.txt"});
 const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"cojeev",homepage:baseURL,items};
 fs.writeFileSync("registry.json",JSON.stringify(registry,null,2)+"\n");
 // Refresh the live documentation catalogue without producing distributable

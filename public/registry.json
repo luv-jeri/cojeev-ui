@@ -371,6 +371,11 @@
           "path": "reference/cojeev-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
           "type": "registry:file",
           "target": "styles/fonts/BricolageGrotesque-OFL.txt"
+        },
+        {
+          "path": "registry/cojeev/NOTICES.txt",
+          "type": "registry:file",
+          "target": "lib/cojeev/NOTICES.txt"
         }
       ],
       "css": {
