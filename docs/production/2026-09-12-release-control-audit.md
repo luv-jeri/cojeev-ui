@@ -43,6 +43,12 @@ The authenticated GitHub CLI works. The browser inventory returned **User unavai
 
 There are no repository-level secrets. An existing bundle's name does not prove which keys it contains: preserve it rather than replacing it with an incomplete reconstruction. Before provisioning supplemental values, follow [the operations runbook](OPERATIONS.md), including its overlap rejection.
 
+Read-only CLI update, 12 September 2026 at 11:13 UTC: the primary agent's Wrangler `whoami` check reported `loggedIn=true` through OAuth and one account. No account ID, token or secret values were recorded. This refines the earlier browser inventory evidence; it does not establish that the browser is unlocked or that a provider has been activated.
+
+The configured production reporting Worker, `cojeev-ui-reporting`, listed exactly these secret names: `ADMIN_TOKEN`, `GITHUB_WEBHOOK_SECRET`, `IP_HASH_SECRET` and `TURNSTILE_SECRET`. The configured beta Worker, `cojeev-ui-reporting-beta`, returned not found, and its configuration lacks `TURNSTILE_SITE_KEY`. Existing production configuration and secrets must be preserved.
+
+GitHub protected deployment secrets remain incomplete independently of this local OAuth session. Existing bundle contents remain uninspected; their required internal keys are not proven missing. This update involved no provider writes, secret-value reads or test runs and does not certify deployment or live-service readiness.
+
 Before beta deployment, verify the isolated real Turnstile widget and required admin/health/IP-hash, repository-scoped GitHub and signed webhook bindings; provision only those confirmed missing. Production must retain its existing Worker secrets and check their names before adding missing bindings. These values must be provisioned through protected secret entry, never committed or pasted into evidence.
 
 Repository auto-merge is disabled. No setting was changed. An ordinary checkpoint merge is permitted only after the same required checks, review and acceptance conditions; no administrator bypass is permitted.
