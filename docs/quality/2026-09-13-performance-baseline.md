@@ -41,7 +41,7 @@ The first four checks establish that the export was built from matching **source
 | Inlined `NEXT_PUBLIC_*` key | Value |
 | --- | --- |
 | `NEXT_PUBLIC_ANALYTICS_ENABLED` | `"false"` |
-| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | **present** — 21 characters, `phc_` prefix; value deliberately not reproduced |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | **present** — 21 characters, `phc_` prefix; value not reproduced here, since it is not needed to read this table |
 | `NEXT_PUBLIC_POSTHOG_HOST` | `"https://eu.i.posthog.com"` |
 | `NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT` | `"beta"` |
 | `NEXT_PUBLIC_RELEASE_SHA` | forty zeroes (placeholder) |
@@ -52,7 +52,7 @@ Read from `out/_next/static/chunks/0ar0_yk0a5ecr.js`.
 
 Two consequences, both of which the superseded document got wrong:
 
-- **The export is not key-free and must not be treated as safe to publish or share on that basis.** It contains a live-format PostHog project token.
+- **The token is published by design, not leaked.** `NEXT_PUBLIC_` *is* the mechanism by which Next inlines a value into the client bundle, and `lib/analytics/client.ts:110-127` hands the token to the browser whenever the flag is on — so a production web export containing it is that code working as written, not an incident. It is a client-side ingestion identifier, not a server credential. The residual exposure is that anyone holding it can send events into that PostHog project, which is a quota and data-quality question for whoever owns the release build, not a disclosure one. (The token's exact privilege model was not checked against PostHog's own documentation; this environment has no network access. The structural half — that `NEXT_PUBLIC_*` ships to the browser deliberately — rests on the repository alone.)
 - **What keeps analytics inert is the flag, not a missing key.** `lib/analytics/client.ts:119` gates capture on `NEXT_PUBLIC_ANALYTICS_ENABLED === "true"`, and `:122` requires host *and* token *and* that flag. The export declares `NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT` = `beta`, so this already **is** a beta-configured build; only the enable flag suppresses the traffic. The zero-outbound result below is therefore a property of that flag plus the interception, not of an unconfigured build.
 
 This is source-level and build-product-level equality plus a direct reading of the inlined environment. The export was **not** rebuilt, so a rebuild could still differ in chunk hashes.
@@ -167,7 +167,7 @@ Three things follow, each from retained evidence rather than inference:
 
 1. **Router prefetch is the smaller part everywhere, and `/docs/` prefetches the most, not the least.** The superseded claim — docs routes under 12 KiB, light pages 266–272 KiB — inverted the ranking because it was measuring arrival time.
 
-2. **The post-load scripts are the prefetched routes' own initial chunks.** Checked directly against the export: all six of `/privacy/`'s post-load scripts are referenced by the **homepage's** HTML, and `/privacy/` prefetched the homepage payload. All ten of the homepage's post-load scripts are referenced by **`/docs/`'s** HTML, and the homepage prefetched the `/docs/` payload. `/requests/` prefetches both and pulls both sets, which is why it is the heaviest. One exception found and worth naming: `2g8ahsyh7hdiw.js` is referenced by `/requests/`'s own HTML, so a small part of that route's post-load traffic is its own late-loading chunk rather than prefetch-driven; and `1s4bz9js5e6i1.js` belongs to a docs component route outside the measured five.
+2. **The post-load scripts are the prefetched routes' own initial chunks.** Checked directly against the export: all six of `/privacy/`'s post-load scripts are referenced by the **homepage's** HTML, and `/privacy/` prefetched the homepage payload. All ten of the homepage's post-load scripts are referenced by **`/docs/`'s** HTML, and the homepage prefetched the `/docs/` payload. `/requests/` prefetches both and pulls both sets, which is why it is the heaviest. Enumerated across all 50 post-load scripts in the set, **exactly one is not a prefetched route's chunk**: on `/docs/accordion-gallery/`, `1s4bz9js5e6i1.js` (6,573 B) is referenced by no exported HTML at all — its only reference anywhere in the export is inside `37ltce3dhauwn.js`, which `baseline.json` records as **initial** on that same route. It is a lazily-imported sub-chunk of the route's own initial payload, and the only post-load script in the set that is the route's own deferred code. `2g8ahsyh7hdiw.js` confirms the mechanism rather than excepting it: it is `/requests/`'s own **initial** chunk, and it appears post-load on `/docs/`, which prefetched the `/requests/` payload.
 
 3. **The aborted requests are zero-byte and accounted for.** Each is a `Fetch` to a route *directory* (`/cojeev-ui/`, `/cojeev-ui/docs/`) that receives HTTP 200 and is then cancelled before any body is read. They contribute to the request count and nothing to bytes. **Why the router issues them is not established by this run** — request initiators were captured but not retained, so no mechanism is claimed here. Every post-load request in this set was either HTTP 200 or one of these aborts; the artifact records a status histogram per route so this is checkable rather than asserted.
 
