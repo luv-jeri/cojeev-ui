@@ -28,7 +28,7 @@ Four things move data off the visitor's device: the reporting widget, optional P
 analytics, the Cloudflare Turnstile check, and the hosting Worker's own request handling
 (which includes a registry-metrics sink that is present in code but unbound in the
 committed configuration — section 6). There is **no web contact form**. Contact is a
-`mailto:` link to `hello@cojeev.com`, rendered only when `NEXT_PUBLIC_CONTACT_ENABLED=true` (currently `false` in `.env.example`), plus
+`mailto:` link to `hello@cojeev.com`, rendered only when `NEXT_PUBLIC_CONTACT_ENABLED=true` (release default is `false`; actual release value comes from CI), plus
 a link to the maintainer's GitHub profile (`app/privacy/page.tsx:14`,
 `components/landing/creator-page.tsx:17`).
 
@@ -73,11 +73,12 @@ adds a capturing `click` listener. Each group holds at most 40 events (`LIMITS.e
 | `network` | Only failed or ≥400 requests, as `<status> <route>`. Route is reduced to `/:segment/…` unless it is a public docs/requests path. `/v1/` and `feedback-admin` URLs are skipped entirely | URLs with query strings, request/response bodies, headers, cookies |
 | `actions` | Clicks as `<route> <structural path> theme=<light\|dark>` | Clicks inside `input`, `textarea`, `select`, `[contenteditable]`, `[data-private]` or reporting chrome; no text, no values |
 
-**Snapshot** (`lib/reporting/diagnostics.ts:75-87`) adds a device block. The server
-allowlist for it is exact (`lib/reporting/contracts.ts:15`): `appVersion`, `userAgent`
+**Snapshot** (`lib/reporting/diagnostics.ts:75-87`) adds a device block. This client collects `appVersion`, `userAgent`
 (redacted), `platform`, `language`, `timezone`, `viewport`, `screen`, `pixelRatio`,
-`online`, `theme`, `reducedMotion`, `touchPoints`, `hardwareConcurrency`, `deviceMemory`,
-`connection`, `page`, `capturedAt`. Any other key is rejected outright — verified by
+`online`, `theme`, `reducedMotion`, `touchPoints`, `page`, `capturedAt`. The server
+allowlist (`lib/reporting/contracts.ts:15`) additionally accepts `hardwareConcurrency`,
+`deviceMemory` and `connection`; this client does not populate those three fields.
+Keys outside that allowlist are rejected outright — verified by
 execution, see section 12.
 
 `redact()` (`lib/reporting/contracts.ts:66-74`) rewrites URLs to route shapes, and masks
@@ -93,10 +94,20 @@ only; **image and video content is never inspected or redacted**.
 | `000h.analytics-opt-out` | localStorage | `"true"` / `"false"` | Only when the visitor toggles the analytics preference | None; cleared with site data | Code — analytics/client.ts:3,284-292 |
 | `cojeev-docs-theme` | localStorage | `light` / `dark` / system choice | Theme control used | None | Code — theme-control.tsx:71 |
 | `cojeev-docs-navigation` | localStorage | `collapsed` or absent | Docs sidebar toggled | None | Code — docs-shell.tsx:119 |
-| `cojeev-receipt-<id>.json` | File download | Report id **and its bearer token** | "Download receipt" pressed | Under the visitor's control only | Code — widget:1135-1152 |
+| `cojeev-appearance` | localStorage | Normalized palette, contrast and appearance settings | Appearance controls used; read by the root appearance provider | None; cleared with site data | Code — registry/cojeev/ui/appearance.tsx:18-36,45-51 |
+| `v-motion` | localStorage | Version, motion mode and category choices | Motion controls used | None; cleared with site data | Code — registry/cojeev/motion/settings.ts:20,121-125 |
+| `v-flow-v1` | localStorage | Flow behavior settings | Flow controls or reset used | None; reset stores defaults | Code — registry/cojeev/motion/settings.ts:22,126-127 |
+| `v-morph-cfg-v3` | localStorage | Authored morph configuration and tiers | Morph settings edited/imported | No TTL; reset removes the key | Code — registry/cojeev/motion/settings.ts:21,128-137 |
+| `v-alive-settings`, `v-morph-cfg`, `v-morph-cfg-v2`, `v-motion-cfg` | localStorage, legacy | Prior motion configuration | Current runtime does not write these keys | Removed when motion settings load | Code — registry/cojeev/motion/settings.ts:102 |
+| `cojeev-receipt-<id>.json` | File download | Report id **and its bearer token** | "Download receipt" pressed | Under the visitor's control only | Code — widget:1137-1153 |
 
 No cookie is set by this application's own code (`document.cookie` appears nowhere in
-`app/`, `components/`, `lib/` or `workers/`). Analytics requests are sent with
+`app/`, `components/`, `lib/`, `workers/` or shipped `registry/` TypeScript).
+The storage sweep includes `registry/` because its controls are rendered by the site.
+The archived `reference/cojeev-handoff-v4/` contains old storage code, but no import
+or served reference to that archive was found in app/components/lib, the Next config
+or release scripts; it is not a second current runtime established by this inventory.
+Analytics requests are sent with
 `credentials: "omit"` (analytics/client.ts:314). Whether the Cloudflare Turnstile script
 sets cookies or storage of its own was **not measured** in this review — Provider.
 
@@ -105,6 +116,14 @@ sets cookies or storage of its own was **not measured** in this review — Provi
 Capture is off unless `NEXT_PUBLIC_ANALYTICS_ENABLED === "true"` **and** a permitted host
 **and** a project token are all present (`lib/analytics/client.ts:111-128`). `.env.example`
 ships `false`. A build with `NODE_ENV=production` alone does not enable it.
+
+The release contract is `scripts/release-config.mjs:15-19`, not `.env.example`:
+it pins the PostHog host to EU, restricts accepted public settings and defaults
+analytics/contact flags to `false`. `scripts/release.mjs:27,95-97` supplies a scrubbed
+build environment using CI variables `BETA_ANALYTICS_ENABLED`,
+`PRODUCTION_ANALYTICS_ENABLED`, the matching project-token variables and
+`PUBLIC_CONTACT_ENABLED`. Their live values were not inspected for this inventory.
+Defaults and sample files do not prove that an actual deployed artifact has tracking off.
 
 Nine events, each with a closed property allowlist (`lib/analytics/client.ts:13-50,191-256`):
 `page_viewed`, `component_impression`, `demo_interacted`, `variant_selected`,
@@ -196,7 +215,15 @@ contents are emailed to an operator inbox: there is no maintainer-notification j
 maintainer reads reports through `/feedback-admin/`, whose token is held in memory for
 the tab only (`components/reporting/admin.tsx:51`).
 
-The site loads no web fonts, tag managers or other third-party assets.
+Beta also checks the submitted address against this allowlist **before storage**
+and rejects other addresses (`workers/reporting/src/reports.ts:30`), independently
+of the send-time restriction. That comparison is intake access control as well as
+delivery control. The approved tester's personal address is itself stored in
+committed configuration and as a fallback in `resend.ts:8`; it is intentionally
+not repeated here. Whether to retain that hardcoded fallback is an owner decision.
+
+Fonts are bundled inline; no remotely hosted fonts or tag managers were found.
+The external services named above remain third-party requests, not an absence of them.
 
 The hosting Worker sets the Content-Security-Policy that bounds all of the above
 (`workers/registry-host/src/index.mjs:16`): `connect-src` permits only `'self'`, the
@@ -280,7 +307,9 @@ are stated as engineering findings; the remediation belongs to E03, E06, E07, E0
    kept deliberately (`workers/reporting/src/reports.ts:40-41`). Anyone holding
    `IP_HASH_SECRET` can confirm a candidate address against it. No period is defined
    anywhere, and rotating `IP_HASH_SECRET` would change every future hash and break demand
-   counting against the rows already stored.
+   counting against the rows already stored. The same secret also keys the GitHub
+   issue marker and duplicate lookup (`delivery.ts:36,44`), so rotating it can
+   disrupt duplicate-issue reconciliation too; this inventory does not recommend rotation.
 7. **The report UUID is disclosed to Cloudflare Turnstile** as `idempotency_key`
    alongside the client IP (`workers/reporting/src/security.ts:46`), and the same UUID is
    published in the GitHub issue body (`delivery.ts:36,50`). Neither is documented.
@@ -303,6 +332,9 @@ are stated as engineering findings; the remediation belongs to E03, E06, E07, E0
     settings" (:14) for a channel that stores an email address, free text, attachments and
     diagnostics on a Cloudflare service and opens a public GitHub issue. E02 owns the fix;
     it is recorded here because it is a promise-versus-behaviour gap, not a style issue.
+    The reporting README's statement that bounded diagnostics are kept in memory
+    (`docs/reporting/README.md:77`) also needs the persisted-draft qualification:
+    a snapshot stored in IndexedDB is no longer only an in-memory buffer.
 12. **No prior-consent gate exists for analytics** (section 6). Recorded as behaviour, not
     as a conclusion about whether one is required.
 13. **A second analytics sink exists in code with no binding.** `REGISTRY_METRICS` is
@@ -313,7 +345,8 @@ are stated as engineering findings; the remediation belongs to E03, E06, E07, E0
     `eu-assets.i.posthog.com` is permitted for `script-src` and `connect-src` although
     nothing loads the PostHog SDK, while `us.i.posthog.com` — still an accepted host in
     `lib/analytics/client.ts:89-92` — would be blocked
-    (`workers/registry-host/src/index.mjs:16`).
+    (`workers/registry-host/src/index.mjs:16`). `docs/launch/analytics.md:10,83`
+    still instructs the US host, contrary to the EU-pinned release configuration.
 
 ## 11. Owner decisions required
 
@@ -332,6 +365,7 @@ invent them.
 | PostHog project retention and region settings; Resend retention; whether data-processing terms are in place with Cloudflare, GitHub, Resend and PostHog | Provider/account configuration, outside this source. |
 | Whether public GitHub issues are acceptable as the permanent record of a report's existence | Issues are never deleted by any code path. |
 | Children's-data position and any age statement | Nothing in the product addresses it. |
+| Whether the approved beta tester address should remain a hardcoded source fallback | The address is personal data in committed configuration and `resend.ts:8`; intake also compares against it before saving a report. |
 
 ## 12. Verification
 
