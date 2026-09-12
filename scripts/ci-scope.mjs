@@ -43,6 +43,35 @@ const NAMED = new Map([
 
   ["scripts/verify-install.mjs", "install-consumer"],
   ["scripts/run-install-verification.mjs", "install-consumer"],
+
+  // I03 licence notices. The generator, the notices file it writes and the four
+  // payloads it regenerates. The notice only ever reaches a recipient as an
+  // installed file, so the proportionate check is proving the committed
+  // generated output still matches its source and then installing it for real.
+  ["scripts/build-registry.mjs", "registry-generation"],
+  ["scripts/registry-notices.mjs", "registry-generation"],
+  ["tests/registry-notices.test.mjs", "registry-generation"],
+  ["registry/cojeev/NOTICES.txt", "registry-generation"],
+  ["registry.json", "registry-generation"],
+  ["public/registry.json", "registry-generation"],
+  ["public/r/registry.json", "registry-generation"],
+  ["public/r/cojeev.json", "registry-generation"],
+
+  // E08-1 reporting consent. The widget is product code, so its reduced scope
+  // carries the complete Worker-backed reporting journey and a real build as
+  // well as the focused consent check: a later change to the same file is
+  // larger than one line and must not pass on consent evidence alone. Every
+  // neighbour under components/reporting/, workers/reporting/ and scripts/ is
+  // deliberately absent and still runs the full job.
+  ["components/reporting/reporting-widget.tsx", "reporting-consent"],
+  ["scripts/check-reporting-consent.mjs", "reporting-consent"],
+  ["scripts/check-reporting-browser.mjs", "reporting-consent"],
+
+  // G01 standalone loading measurement. No product code imports it and no job
+  // runs it, so lint, type checking and the unit suites are the whole check;
+  // its samples are taken deliberately, not on a shared runner whose hardware
+  // would make the numbers mean something else.
+  ["scripts/measure-loading-baseline.mjs", "unit"],
 ]);
 
 // Each kind carries the quick checks; only prose runs without dependencies.
@@ -50,11 +79,13 @@ const SUITES = {
   prose: ["prose"],
   unit: ["quick"],
   "ci-contract": ["quick", "ci-contract"],
+  "registry-generation": ["quick", "registry-generation", "install-consumer"],
+  "reporting-consent": ["quick", "reporting-consent"],
   "analytics-browser": ["quick", "analytics-browser"],
   "transient-timing": ["quick", "transient-timing"],
   "install-consumer": ["quick", "install-consumer"],
 };
-const ORDER = ["prose", "quick", "ci-contract", "analytics-browser", "transient-timing", "install-consumer"];
+const ORDER = ["prose", "quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer"];
 
 function kind(file) {
   if (NAMED.has(file)) return NAMED.get(file);
@@ -113,12 +144,14 @@ export function resolveScope({ event, baseRef, paths, readPaths }) {
 export const SUITE_FLAGS = {
   run_prose: ["prose"],
   run_quick: ["quick"],
+  run_registry: ["registry-generation"],
+  run_reporting: ["reporting-consent"],
   run_analytics: ["analytics-browser"],
   run_transient: ["transient-timing"],
   run_install: ["install-consumer"],
   // Derived. Prose alone needs no dependencies, no browser and no build.
-  run_npm: ["quick", "ci-contract", "analytics-browser", "transient-timing", "install-consumer"],
-  run_build: ["analytics-browser", "transient-timing", "install-consumer"],
+  run_npm: ["quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer"],
+  run_build: ["reporting-consent", "analytics-browser", "transient-timing", "install-consumer"],
 };
 
 export function outputsFor(decision) {

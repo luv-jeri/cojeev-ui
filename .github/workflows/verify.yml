@@ -26,6 +26,8 @@ jobs:
       omitted: ${{ steps.select.outputs.omitted }}
       run_prose: ${{ steps.select.outputs.run_prose }}
       run_quick: ${{ steps.select.outputs.run_quick }}
+      run_registry: ${{ steps.select.outputs.run_registry }}
+      run_reporting: ${{ steps.select.outputs.run_reporting }}
       run_analytics: ${{ steps.select.outputs.run_analytics }}
       run_transient: ${{ steps.select.outputs.run_transient }}
       run_install: ${{ steps.select.outputs.run_install }}
@@ -99,6 +101,15 @@ jobs:
         run: npm run reporting:test
       - if: needs.scope.outputs.run_quick == 'true'
         run: npm run registry-host:test
+      # The committed registry payloads and the generated notices file must still
+      # be exactly what their generator produces from the sources in this commit.
+      # `npm run build` regenerates them too, so this runs first: afterwards a
+      # stale committed payload would already have been quietly overwritten.
+      - name: Confirm the committed registry output still matches its generator
+        if: needs.scope.outputs.run_registry == 'true'
+        run: |
+          node scripts/build-registry.mjs
+          git diff --exit-code -- registry.json public/registry.json public/r registry/cojeev/NOTICES.txt
       - if: needs.scope.outputs.run_build == 'true'
         run: npm run build
       # The affected components only, not the catalogue: the B02-2 harness and
@@ -111,6 +122,19 @@ jobs:
       - name: Install into a fresh consumer project from the locally served registry
         if: needs.scope.outputs.run_install == 'true'
         run: node scripts/run-install-verification.mjs
+      # The same disposable loopback fixture and journey the release job runs, in
+      # the same order: the consent check is never the only reporting evidence.
+      - name: Build the disposable local reporting fixture
+        if: needs.scope.outputs.run_reporting == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_REPORTING_API_URL: http://127.0.0.1:8787
+      - name: Exercise receipt, attachment and maintainer journeys without live services
+        if: needs.scope.outputs.run_reporting == 'true'
+        run: node scripts/run-reporting-browser.mjs
+      - name: Confirm a new bug draft attaches no browser details until asked
+        if: needs.scope.outputs.run_reporting == 'true'
+        run: node scripts/check-reporting-consent.mjs
       # The same three analytics configurations the release job runs. The plain
       # build above sets no analytics variables, so it is the unset case.
       - name: Confirm silence when analytics is unconfigured
