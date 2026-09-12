@@ -62,6 +62,13 @@ Suites: `quick`, `reporting-consent` (which implies a real `npm run build`).
   `node scripts/run-reporting-browser.mjs` runs the existing receipt, attachment and maintainer
   journeys. Both steps are guarded by the same `run_reporting` flag, so the journey cannot be
   dropped while the consent check runs.
+- **The analytics unset case is preserved the way the release job preserves it.** The reporting
+  fixture build sets no analytics value, so when a diff selects both reporting and analytics the
+  "silent when unconfigured" check reuses that fixture — the same reuse, in the same order, as the
+  release job. Without reporting, the plain `npm run build` is the unset case, as before. A test
+  asserts for both jobs that the fixture is built before its journey, the journey runs before the
+  unset check, and the unset check runs before any analytics-enabled rebuild, and that neither
+  build carries an analytics variable.
 - **The reporting contract tests**, via `npm run reporting:test` in the quick suite.
 
 The widget is product code and the next change to it will be larger than one line. A test asserts
@@ -72,10 +79,22 @@ a real build.
 
 Path: `scripts/measure-loading-baseline.mjs`. Suites: `quick`.
 
-Lint (which parses it, so this is also its syntax check), type checking and the unit suites. CI
-takes no performance samples: a test asserts that no job in the workflow ever invokes this script.
-Fifteen samples on a shared runner would measure that runner, not the product, and the baseline it
-is compared against was taken deliberately on known hardware.
+Exactly two things, and it is worth being precise about both:
+
+1. **eslint parses the file** under the repository configuration, through `npm run lint`, which
+   already lints the whole `scripts` directory. Parsing is also its syntax check: a file that does
+   not parse fails here.
+2. **The repository's existing suites run** — `npm test`, `npm run reporting:test`,
+   `npm run registry-host:test` — alongside `npm run typecheck`.
+
+Those are repository tests, **not tests of this script's measurement math.** Nothing in the quick
+suite exercises its sampling, its timing arithmetic or the numbers it reports; no test in the
+repository imports it, and CI never executes it. The suite proves the file parses, satisfies the
+lint rules and breaks nothing else. No more than that.
+
+CI takes no performance samples: a test asserts that no job in the workflow ever invokes this
+script. Fifteen samples on a shared runner would measure that runner, not the product, and the
+baseline it is compared against was taken deliberately on known hardware.
 
 ## What still runs the complete release job
 
@@ -142,6 +161,9 @@ written to their code, output or checkout, and `git status` in each was unchange
 | `node scripts/build-registry.mjs && git diff --exit-code -- registry.json public/registry.json public/r registry/cojeev/NOTICES.txt` | exit 0 — 173 items, committed output already matches its generator |
 | `node scripts/check-reporting-consent.mjs` in `diagnostic-opt-in` | **PASS** — new bug drafts omit diagnostics; explicit inclusion and removal persist through reload |
 | `node --check` and `eslint --max-warnings=0` on G01's committed measurement script | exit 0 for both |
+| `node --test tests/ci-scope.test.mjs` after the analytics-unset assertion | **91/91 pass** |
+| Negative control: an analytics value added to the reporting fixture build | **1 fail** — the new assertion catches it |
+| Negative control: the unset check moved before the reporting journey | **1 fail** — the new assertion catches it; workflow restored from git both times |
 
 Not run locally, and stated as such: `npm run build`, `node scripts/run-install-verification.mjs`
 and `node scripts/run-reporting-browser.mjs`. Each needs a full Next build, which was deliberately

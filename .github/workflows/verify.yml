@@ -135,8 +135,12 @@ jobs:
       - name: Confirm a new bug draft attaches no browser details until asked
         if: needs.scope.outputs.run_reporting == 'true'
         run: node scripts/check-reporting-consent.mjs
-      # The same three analytics configurations the release job runs. The plain
-      # build above sets no analytics variables, so it is the unset case.
+      # The same three analytics configurations the release job runs. The unset
+      # case reuses whichever analytics-free build ran last: the reporting
+      # fixture above when reporting is selected, exactly as the release job
+      # does, and otherwise the plain build. Neither sets an analytics value, and
+      # a test locks that order so silence can never be measured on a configured
+      # build.
       - name: Confirm silence when analytics is unconfigured
         if: needs.scope.outputs.run_analytics == 'true'
         run: node tests/analytics.browser.mjs --expect-silent

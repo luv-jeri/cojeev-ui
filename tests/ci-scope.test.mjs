@@ -350,6 +350,36 @@ test('the loading measurement is checked in CI, never sampled there', () => {
     'no job may take performance samples on a shared runner');
 });
 
+test('the analytics unset case stays an analytics-free build, reused as the release job does', () => {
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const analytics = /NEXT_PUBLIC_ANALYTICS_ENABLED|NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN|NEXT_PUBLIC_POSTHOG_HOST/;
+
+  // The unset case is whichever analytics-free build ran last before it. With
+  // reporting selected that is the reporting fixture, exactly as in the release
+  // job; without it, the plain build. Either way it must set no analytics value,
+  // or "silent when unconfigured" would be measuring a configured build.
+  for (const job of ['checkpoint', 'verify']) {
+    const steps = workflow.jobs[job].steps;
+    const at = predicate => steps.findIndex(predicate);
+    const reportingBuild = at(step => String(step.run ?? '') === 'npm run build' && step.env?.NEXT_PUBLIC_REPORTING_API_URL);
+    const journey = at(step => /run-reporting-browser\.mjs/.test(String(step.run ?? '')));
+    const unset = at(step => /analytics\.browser\.mjs --expect-silent/.test(String(step.run ?? '')));
+    const enabled = at(step => analytics.test(JSON.stringify(step.env ?? {})) && step.env?.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true');
+    assert.ok(reportingBuild >= 0 && journey >= 0 && unset >= 0 && enabled >= 0, `${job} must keep all four steps`);
+    assert.ok(reportingBuild < journey, `${job}: the fixture must be built before its journey`);
+    assert.ok(journey < unset, `${job}: the reporting fixture must be the build the unset case reuses`);
+    assert.ok(unset < enabled, `${job}: silence must be proved before analytics is switched on`);
+    assert.doesNotMatch(JSON.stringify(steps[reportingBuild].env), analytics, `${job}: the reporting fixture sets no analytics value`);
+  }
+
+  // The plain build the transient, install and analytics-unset steps share must
+  // stay bare: it is the unset case whenever reporting is not selected.
+  const plain = workflow.jobs.checkpoint.steps.find(step =>
+    String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes("run_build == 'true'"));
+  assert.ok(plain, 'the shared plain build must stay guarded by run_build');
+  assert.equal(plain.env, undefined, 'the plain build must set no environment at all');
+});
+
 test('one unit invocation already covers the classifier and partition runner', () => {
   const suite = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).scripts.test;
   assert.ok(suite.includes('tests/*.test.mjs'), 'npm test must glob the mjs suites');
