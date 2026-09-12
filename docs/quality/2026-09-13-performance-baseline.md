@@ -1,26 +1,61 @@
-# Loading performance baseline — 13 September 2026
+# Loading and interaction baseline — 13 September 2026
 
-Status: **Measured baseline recorded. No optimization has been applied, and no budget below is approved.**
+Status: **Measured baseline recorded. No optimization has been applied. No budget below is approved, and G01 is not closed.**
 
-This is the "before" measurement for loading work: a repeatable, bounded set of numbers taken from the existing production export under one explicitly stated device and network condition, so that a later change can be shown to help or hurt. It deliberately measures loading only. It is not a full catalogue sweep, not a Lighthouse score, and not an accessibility or visual review.
+This is the "before" measurement for loading work: a repeatable, bounded set of numbers taken from the existing production export under one explicitly stated device and network condition, so that a later change can be shown to help or hurt. It measures loading, plus one small scripted interaction. It is not a full catalogue sweep, not a Lighthouse score, and not an accessibility or visual review.
 
-Every number below came from the run recorded in this document. Where a metric could not be measured it is marked unavailable rather than estimated.
+Every number below came from the run recorded in this document. Where a metric could not be measured it is marked unavailable rather than estimated. Figures computed outside the measurement script are labelled as such, with the command that produced them.
+
+## This supersedes the 2026-09-12 desktop set
+
+An earlier version of this document recorded a desktop run (1440 × 900, DPR 1). **That set is superseded partial data. Its numbers must not be cited.** It remains in git history at commit `f712294` for audit only. It was partial because checklist G01 asks for *mobile* throttling and for *interaction traces*, and it delivered neither; and it was wrong in these specific ways, each corrected here:
+
+| Superseded claim | What was actually true |
+| --- | --- |
+| "The export carries no PostHog project key" | The export **does** carry a PostHog project token and host. Capture is off because of a separate flag. See the next section. |
+| Representativeness proved by source and `registry.json` equality | `registry.json` is produced by a separate Node script that never reads `NEXT_PUBLIC_*`, so it is no evidence at all about build-time environment — the one axis that did vary. A build-env row is now included. |
+| "Prefetch transfer" per route | That column was a **time bucket** (anything requested after the load event), not a prefetch measurement. Classified by request headers instead, real prefetch is 2.9× to 9.8× smaller on transfer, and the asymmetry the old document described reverses. |
+| "CLS" | That figure was a whole-window sum of every layout shift. Core Web Vitals CLS is the largest 5 s session window. Both are now reported, separately labelled. |
+| "CLS there varies between roughly 0.029 and 0.057" | Arithmetically impossible as stated: 0.029 was the median of three runs and 0.0571 was a single shift inside one run, which is an upper bound on nothing. Per-run values are now retained. |
+| "dedicated temporary profile created and deleted per run" | One browser context was shared by all 15 measurements. This run uses a genuinely fresh context per sample. |
+| "Chrome's Slow 4G preset" | Unsourced. The values applied did not match that profile's documented derating. No preset is named here; the raw settings are the definition. |
+| "roughly 4.9 ms per KiB" | 1024 ÷ 204.8 = 5.0. It was the inverse of the emulated bandwidth — true by construction, not a measurement. Removed. |
+| "writes the full per-asset result" | It wrote aggregates plus a top-10 slice, which is why the prefetch claim could not be checked against it. It now writes every request. |
+| Byte totals "identical across all three runs" | Only initial transfer was compared. All four phase totals are compared now. |
 
 ## What was measured, and why it represents this revision
 
 The measurement used the already-built production export at `analytics-fixture/out`, served read-only. The export was not rebuilt and not modified.
 
-Equality between that export's source and this checkpoint's base commit `5358d25` was verified before treating it as representative:
-
 | Check | Result |
 | --- | --- |
 | Export's source worktree revision | `0ed8d06`, clean working tree, an ancestor of `5358d25` |
 | `git diff --name-only 0ed8d06 5358d25 -- app components lib public data registry next.config.ts package.json package-lock.json postcss.config.mjs tsconfig.json` | empty — no product file and no dependency lock differs |
-| Complete diff between the two revisions | 14 files, all of them documentation, CI scripts or tests (`docs/`, `scripts/check-docs.mjs`, `scripts/verify-install.mjs`, `tests/`) |
+| Complete diff between the two revisions | 14 files, all of them documentation, CI scripts or tests |
 | `registry.json` in the export versus the committed `registry.json` | identical, SHA-256 `c503f2622a2867863e5a790cf70d76043e5571aab1bf388f59e34544da8b3381` |
 | Rendered copy present in the export | homepage, `/privacy/`, `/requests/` and `/docs/` each contain their current source strings |
+| **Build-time environment inlined into the export** | see the table below — **this is not established by any of the checks above** |
 
-`registry.json` is a build product that `npm run build` regenerates immediately before `next build`, so its byte equality is direct evidence that the export was produced from source matching this revision. This is source-level and build-product-level equality; the export was not rebuilt to prove byte-identical output, so a rebuild could still differ in chunk hashes.
+The first four checks establish that the export was built from matching **source**. They say nothing about the **build configuration**. In particular `registry.json` is generated by `scripts/build-registry.mjs`, a separate Node script that `package.json:7` runs before `next build` and which never reads a `NEXT_PUBLIC_*` variable, so its byte equality is independent by construction of the environment `next build` inlines. That environment is enumerated directly instead:
+
+| Inlined `NEXT_PUBLIC_*` key | Value |
+| --- | --- |
+| `NEXT_PUBLIC_ANALYTICS_ENABLED` | `"false"` |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | **present** — 21 characters, `phc_` prefix; value deliberately not reproduced |
+| `NEXT_PUBLIC_POSTHOG_HOST` | `"https://eu.i.posthog.com"` |
+| `NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT` | `"beta"` |
+| `NEXT_PUBLIC_RELEASE_SHA` | forty zeroes (placeholder) |
+| `NEXT_PUBLIC_REPORTING_API_URL` | **absent** from the inlined object; read at runtime as `?? ""` |
+| `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | likewise absent from the inlined object |
+
+Read from `out/_next/static/chunks/0ar0_yk0a5ecr.js`.
+
+Two consequences, both of which the superseded document got wrong:
+
+- **The export is not key-free and must not be treated as safe to publish or share on that basis.** It contains a live-format PostHog project token.
+- **What keeps analytics inert is the flag, not a missing key.** `lib/analytics/client.ts:119` gates capture on `NEXT_PUBLIC_ANALYTICS_ENABLED === "true"`, and `:122` requires host *and* token *and* that flag. The export declares `NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT` = `beta`, so this already **is** a beta-configured build; only the enable flag suppresses the traffic. The zero-outbound result below is therefore a property of that flag plus the interception, not of an unconfigured build.
+
+This is source-level and build-product-level equality plus a direct reading of the inlined environment. The export was **not** rebuilt, so a rebuild could still differ in chunk hashes.
 
 ## Environment
 
@@ -29,149 +64,214 @@ Equality between that export's source and this checkpoint's base commit `5358d25
 | Artifact under test | `/private/tmp/000h-phase1-jKXhib/analytics-fixture/out` (existing export, read-only, unmodified) |
 | Source revision of that artifact | `0ed8d06`, product files identical to base `5358d25` |
 | Server | Vite 7.3.6 preview, `127.0.0.1`, random port, base `/cojeev-ui/`, gzip enabled, `cache-control: no-cache` |
-| Browser | Chromium 153.0.8010.12 via Playwright 1.63.0, headless, dedicated temporary profile created and deleted per run |
+| Browser | Chromium 153.0.8010.12 via Playwright 1.63.0, headless |
 | Node | v22.22.0 |
-| Viewport | 1440 × 900, device pixel ratio 1 |
-| CPU | 4× slowdown (`Emulation.setCPUThrottlingRate`) |
-| Network | 1638.4 kbps down (204.8 KiB/s), 750 kbps up, 150 ms latency — Chrome's "Slow 4G" preset |
-| Cache | disabled; every run is a cold load |
-| Settle window | 3000 ms after the load event, so post-load prefetch is captured |
-| Runs | 3 per route; timings reported as the median, byte totals from the final run |
-| Outbound traffic | every non-loopback request aborted and logged; **zero were attempted on any route** |
-| Captured | 2026-09-12T18:50:30Z |
+| Viewport | 390 × 844, device pixel ratio 2, `isMobile` set, touch enabled |
+| User agent | `Mozilla/5.0 (Linux; Android 14; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Mobile Safari/537.36` — the string this script sets, recorded verbatim; not a claim about any physical handset |
+| CPU | `Emulation.setCPUThrottlingRate` rate 4 |
+| Network | `Network.emulateNetworkConditions` with `downloadThroughput` 209715.2 B/s, `uploadThroughput` 96000 B/s, `latency` 150 ms |
+| Cache | `Network.setCacheDisabled` true; every sample is a cold load |
+| Settle window | 3000 ms after the load event, so post-load traffic is captured |
+| Isolation | one **fresh browser context per sample**, closed after it; one Chromium process for the whole set |
+| Runs | 3 per route, 5 routes, plus 3 repetitions of one scripted interaction |
+| Outbound traffic | every non-loopback request refused and logged; **zero were attempted, on every route and on every one of the three runs** |
+| Captured | 2026-09-12T19:24:37Z |
 
-The export carries no PostHog project key and no `NEXT_PUBLIC_REPORTING_API_URL`, so the analytics and reporting clients ship in the bundle but stay inert. Zero outbound requests is therefore a property of this build's configuration as well as of the interception. A configured beta or production build would add analytics and reporting traffic that this baseline does not represent.
+**No vendor throttling preset is claimed or matched.** The four numbers above are the raw values handed to the Chrome DevTools Protocol and they are this measurement's entire definition of the condition. They were chosen to be a slow mobile link; they have not been checked against any published profile, and the document makes no claim that they reproduce one.
+
+**Isolation is bounded.** A fresh context gives each sample its own cache, storage and cookie partition. V8 code cache and JIT warmth still live in the shared Chromium process, and routes run in a **fixed order**. Cross-route comparisons below are therefore confounded by order and are presented as observations, never as demonstrated causes.
 
 ## Loading and main-thread metrics
 
 Median of three runs.
 
-| Route | TTFB | FCP | LCP | LCP element | DOMContentLoaded | Load | CLS |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `/` | 5.7 ms | 5380 ms | 5380 ms | `h1#hero-title.v-hero` | 5594 ms | 5594 ms | 0.0102 |
-| `/docs/` | 6.2 ms | 5592 ms | 5592 ms | `h1.v-display` | 5755 ms | 5756 ms | 0 |
-| `/docs/accordion-gallery/` | 6.4 ms | 5728 ms | 5860 ms | `img.v-accordion-gallery__image` | 6031 ms | 6032 ms | 0.0290 |
-| `/privacy/` | 6.5 ms | 4820 ms | 4820 ms | `p` | 4917 ms | 4917 ms | 0.0001 |
-| `/requests/` | 8.0 ms | 4672 ms | 4672 ms | `h1` | 4779 ms | 4780 ms | 0.0002 |
+| Route | TTFB | FCP | LCP | LCP element | DOMContentLoaded | Load |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/` | 8.7 ms | 5352 ms | 5352 ms | `h1#hero-title.v-hero` | 5553 ms | 5553 ms |
+| `/docs/` | 5.0 ms | 5484 ms | 5484 ms | `p.v-body-2` | 5589 ms | 5597 ms |
+| `/docs/accordion-gallery/` | 7.2 ms | 5616 ms | 5616 ms | `p.v-body-2` | 5829 ms | 5838 ms |
+| `/privacy/` | 4.3 ms | 4792 ms | 4792 ms | `p` | 4874 ms | 4874 ms |
+| `/requests/` | 3.9 ms | 4620 ms | 4620 ms | `h1` | 4702 ms | 4702 ms |
 
 | Route | Long tasks | Total long-task time | Longest task | Blocking time beyond 50 ms | DOM nodes |
 | --- | --- | --- | --- | --- | --- |
-| `/` | 6 | 1018 ms | 531 ms | 635 ms | 1115 |
-| `/docs/` | 8 | 1941 ms | 1366 ms | 1541 ms | 1251 |
-| `/docs/accordion-gallery/` | 8 | 2154 ms | 1609 ms | 1754 ms | 1725 |
-| `/privacy/` | 3 | 299 ms | 122 ms | 149 ms | 235 |
-| `/requests/` | 3 | 336 ms | 121 ms | 186 ms | 217 |
+| `/` | 4 | 873 ms | 483 ms | 673 ms | 1110 |
+| `/docs/` | 5 | 664 ms | 373 ms | 414 ms | 583 |
+| `/docs/accordion-gallery/` | 5 | 791 ms | 480 ms | 541 ms | 1062 |
+| `/privacy/` | 3 | 256 ms | 105 ms | 106 ms | 222 |
+| `/requests/` | 3 | 241 ms | 92 ms | 91 ms | 217 |
 
 TTFB is single-digit because the server is on loopback. It carries no information about production hosting and must not be read as a hosting result.
 
 "Blocking time beyond 50 ms" is the sum of `max(0, duration − 50)` over observed `longtask` entries across the whole measured window. It is a main-thread work indicator from the Long Tasks API, not a Lighthouse Total Blocking Time, which is defined against a different interval and is not claimed here.
 
-Layout shift is small everywhere, and the route worth naming is `/docs/accordion-gallery/`. Its median CLS is 0.0290, but its final run recorded a single shift of 0.0571 attributed to a `section` element — larger than the route's own median, so CLS there varies run to run between roughly 0.029 and 0.057 and comes from one shifting section rather than from many small movements. It is the largest single shift observed anywhere in the set; the next largest is 0.0018 on the homepage. Per-run CLS values were not retained, only the median and the worst single shift, so the spread is bounded rather than characterised.
+### Layout shift: two figures, separately defined
 
-**INP: unavailable.** This is a load-only measurement with no scripted interaction, so no interaction latency was produced and none is reported. No approximation has been substituted.
+Core Web Vitals CLS is the **largest session window** — shifts grouped so that a gap over 1 s or a span over 5 s starts a new group, taking the largest group's sum. The superseded document reported the **whole-window total** under the name CLS. Both are given, per run, so neither definition is implied by the other.
 
-## Bytes: transfer, decoded, and prefetch
+| Route | Run 1 session / total | Run 2 session / total | Run 3 session / total | Shift entries per run |
+| --- | --- | --- | --- | --- |
+| `/` | 0.0196 / 0.0196 | 0.0185 / 0.0185 | 0.0173 / 0.0173 | 15, 15, 13 |
+| `/docs/` | 0 / 0 | 0 / 0 | 0 / 0 | 0 |
+| `/docs/accordion-gallery/` | 0 / 0 | 0 / 0 | 0 / 0 | 0 |
+| `/privacy/` | 0 / 0 | 0 / 0 | 0 / 0 | 0 |
+| `/requests/` | 0 / 0 | 0 / 0 | 0 / 0 | 0 |
+
+At this viewport the two figures coincide on every route, because the homepage's shifts all fall inside one session window and no other route shifts at all. **The `/docs/accordion-gallery/` shifting `section` that the superseded desktop set flagged does not appear here.** That is a difference between the two conditions, not a fix: nothing was changed, and this run cannot say whether the desktop behaviour still exists.
+
+**INP: unavailable.** INP is a field metric derived from a percentile of real user interactions. Nothing of the kind was collected. The scripted interaction below produces individual Event Timing entries and is not a substitute; no approximation has been recorded.
+
+## Bytes: initial, post-load, inlined — and prefetch as a separate question
 
 Transfer is gzip bytes actually received over the wire, including response headers, from `Network.loadingFinished`. Decoded is bytes after decompression, from `Network.dataReceived`.
 
-"Initial" is everything requested up to the load event. "Prefetch and post-load" is everything requested after it — chiefly Next's router prefetching route payloads and their chunks.
+**Phase** answers "when was this requested": "initial" is up to the load event, "post-load" after it. **Inlined** is payload delivered inside a `data:` URL, which costs no network bytes of its own.
 
-"Inlined" is payload delivered inside a `data:` URL. **These bytes are a subset already counted inside the initial totals** — the fonts arrive inside a stylesheet, the images inside the HTML document. Chromium reports them as separate requests with their own byte counts, so counting them as network transfer would double-count them; they are separated here instead. The request counts in the last column are therefore disjoint — an inlined entry is not also counted as an initial request — while the inlined bytes are not: those already sit inside an initial response. This matters: the earlier, uncorrected form of this measurement overstated every route's transfer by roughly 300 KiB.
+**Prefetch is a separate dimension and is never folded into a phase.** It is determined by the request's own headers, not by its arrival time. Every prefetch observed here carries both `next-router-prefetch: 1` and `rsc: 1`; those are the only prefetch-signalling headers seen in the whole set.
 
-| Route | Initial transfer | Initial decoded | Prefetch transfer | Prefetch decoded | Inlined (subset of initial) | Requests initial / post-load / inlined |
-| --- | --- | --- | --- | --- | --- | --- |
-| `/` | 987.7 KiB | 3066.3 KiB | 208.6 KiB | 756.7 KiB | 347.2 KiB | 34 / 42 / 14 |
-| `/docs/` | 1032.6 KiB | 3294.8 KiB | 9.1 KiB | 10.7 KiB | 300.4 KiB | 36 / 26 / 2 |
-| `/docs/accordion-gallery/` | 1057.3 KiB | 3432.3 KiB | 11.3 KiB | 24.8 KiB | 316.4 KiB | 37 / 18 / 6 |
-| `/privacy/` | 889.8 KiB | 2718.5 KiB | 266.4 KiB | 832.4 KiB | 304.3 KiB | 28 / 34 / 3 |
-| `/requests/` | 851.8 KiB | 2597.5 KiB | 271.7 KiB | 863.2 KiB | 300.4 KiB | 26 / 28 / 2 |
+| Route | Initial transfer | Initial decoded | Post-load transfer | Post-load decoded | Of which header-tagged prefetch | Inlined decoded | Requests initial / post-load / inlined |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `/` | 987.7 KiB | 3066.3 KiB | 176.5 KiB | 570.2 KiB | **27.8 KiB** (6 req) | 347.2 KiB | 34 / 19 / 14 |
+| `/docs/` | 1032.6 KiB | 3294.8 KiB | 155.8 KiB | 587.5 KiB | **53.1 KiB** (12 req) | 300.4 KiB | 36 / 29 / 2 |
+| `/docs/accordion-gallery/` | 1057.3 KiB | 3432.3 KiB | 118.1 KiB | 387.9 KiB | **27.8 KiB** (6 req) | 316.4 KiB | 37 / 18 / 6 |
+| `/privacy/` | 889.8 KiB | 2718.5 KiB | 87.8 KiB | 265.5 KiB | **12.6 KiB** (3 req) | 304.3 KiB | 28 / 11 / 3 |
+| `/requests/` | 851.8 KiB | 2597.5 KiB | 271.7 KiB | 863.2 KiB | **27.8 KiB** (6 req) | 300.4 KiB | 26 / 28 / 2 |
 
-Byte totals were identical across all three runs on every route, so this part of the baseline is deterministic and safe to compare against later.
+**All four phase totals — initial transfer, initial decoded, post-load transfer, post-load decoded — plus inlined decoded were identical across all three runs on every route.** This is the actual check the script now performs, not an extrapolation from one of them. **No request was unfinished at the settle cut-off on any route**, so no byte total below is truncated by it; the script reports an unfinished count per phase specifically so that a truncated total could not be mistaken for a complete one.
 
-Initial payload by resource type:
+On inlined bytes: the inlined figure is the **decoded payload** (307,632 B of woff2 across two faces, on every route, plus per-route images). What sits inside the stylesheet is that payload's **base64 text**, which is 410,180 characters — larger. So the inlined column is *not* a subtractable slice of the initial decoded column, and subtracting it gives the wrong answer. It is reported separately because Chromium raises a distinct request with its own byte counts for each `data:` URL, and counting those as network transfer would overstate every route by roughly 300 KiB — which an earlier, uncorrected form of this measurement did.
+
+Initial payload by resource type (transfer / decoded):
 
 | Route | Script | Stylesheet | Document | Inlined font | Inlined image |
 | --- | --- | --- | --- | --- | --- |
-| `/` | 29 files, 499 KiB / 1632 KiB | 4 files, 428 KiB / 1176 KiB | 61 KiB / 259 KiB | 2 faces, 300 KiB | 12 images, 47 KiB |
-| `/docs/` | 32 files, 563 KiB / 1828 KiB | 3 files, 427 KiB / 1174 KiB | 43 KiB / 293 KiB | 2 faces, 300 KiB | — |
-| `/docs/accordion-gallery/` | 33 files, 574 KiB / 1860 KiB | 3 files, 427 KiB / 1174 KiB | 57 KiB / 398 KiB | 2 faces, 300 KiB | 4 images, 16 KiB |
-| `/privacy/` | 24 files, 443 KiB / 1468 KiB | 3 files, 426 KiB / 1171 KiB | 21 KiB / 80 KiB | 2 faces, 300 KiB | 1 image, 4 KiB |
-| `/requests/` | 22 files, 414 KiB / 1383 KiB | 3 files, 421 KiB / 1145 KiB | 17 KiB / 70 KiB | 2 faces, 300 KiB | — |
+| `/` | 29 files, 498.7 / 1632.0 KiB | 4 files, 427.8 / 1175.7 KiB | 61.2 / 258.6 KiB | 2 faces, 300.4 KiB decoded | 12 images, 46.7 KiB decoded |
+| `/docs/` | 32 files, 562.5 / 1827.7 KiB | 3 files, 426.7 / 1174.1 KiB | 43.4 / 293.0 KiB | 2 faces, 300.4 KiB decoded | — |
+| `/docs/accordion-gallery/` | 33 files, 573.6 / 1859.8 KiB | 3 files, 426.7 / 1174.1 KiB | 57.0 / 398.4 KiB | 2 faces, 300.4 KiB decoded | 4 images, 16.0 KiB decoded |
+| `/privacy/` | 24 files, 442.8 / 1467.6 KiB | 3 files, 426.3 / 1171.3 KiB | 20.7 / 79.6 KiB | 2 faces, 300.4 KiB decoded | 1 image, 3.9 KiB decoded |
+| `/requests/` | 22 files, 414.0 / 1383.3 KiB | 3 files, 421.2 / 1144.5 KiB | 16.6 / 69.7 KiB | 2 faces, 300.4 KiB decoded | — |
 
-### Prefetch is uneven, and the light pages prefetch the most
+### What the post-load traffic actually is
 
-`/privacy/` and `/requests/` each pull about 266–272 KiB after load — roughly 30% again on top of their own initial payload — while the two docs routes pull under 12 KiB. The route payload files those requests target all exist in the export (1090 `.txt` payloads), so this is real prefetched content and not a wave of 404s.
+The superseded document called this whole bucket "prefetch" and concluded that the lightest pages prefetch the most. Classified by header instead, and with every URL and status now retained in the artifact, the composition is:
 
-The asymmetry is worth an owner decision rather than a silent fix: the cheapest pages in the site are the ones spending the most post-load bandwidth, and on a metered or slow connection that is charged to a visitor who may never follow the link.
+| Route | Post-load total | Prefetched route payloads (`next-router-prefetch`) | Script | Stylesheet | Aborted, zero bytes |
+| --- | --- | --- | --- | --- | --- |
+| `/` | 176.5 KiB | 27.8 KiB, 6 `.txt` | 141.3 KiB, 10 files | 7.4 KiB, 1 file | 2 |
+| `/docs/` | 155.8 KiB | 53.1 KiB, 12 `.txt` | 92.3 KiB, 9 files | 10.4 KiB, 3 files | 5 |
+| `/docs/accordion-gallery/` | 118.1 KiB | 27.8 KiB, 6 `.txt` | 81.7 KiB, 8 files | 8.5 KiB, 2 files | 2 |
+| `/privacy/` | 87.8 KiB | 12.6 KiB, 3 `.txt` | 73.6 KiB, 6 files | 1.5 KiB, 1 file | 1 |
+| `/requests/` | 271.7 KiB | 27.8 KiB, 6 `.txt` | 228.0 KiB, 17 files | 15.9 KiB, 3 files | 2 |
+
+Three things follow, each from retained evidence rather than inference:
+
+1. **Router prefetch is the smaller part everywhere, and `/docs/` prefetches the most, not the least.** The superseded claim — docs routes under 12 KiB, light pages 266–272 KiB — inverted the ranking because it was measuring arrival time.
+
+2. **The post-load scripts are the prefetched routes' own initial chunks.** Checked directly against the export: all six of `/privacy/`'s post-load scripts are referenced by the **homepage's** HTML, and `/privacy/` prefetched the homepage payload. All ten of the homepage's post-load scripts are referenced by **`/docs/`'s** HTML, and the homepage prefetched the `/docs/` payload. `/requests/` prefetches both and pulls both sets, which is why it is the heaviest. One exception found and worth naming: `2g8ahsyh7hdiw.js` is referenced by `/requests/`'s own HTML, so a small part of that route's post-load traffic is its own late-loading chunk rather than prefetch-driven; and `1s4bz9js5e6i1.js` belongs to a docs component route outside the measured five.
+
+3. **The aborted requests are zero-byte and accounted for.** Each is a `Fetch` to a route *directory* (`/cojeev-ui/`, `/cojeev-ui/docs/`) that receives HTTP 200 and is then cancelled before any body is read. They contribute to the request count and nothing to bytes. **Why the router issues them is not established by this run** — request initiators were captured but not retained, so no mechanism is claimed here. Every post-load request in this set was either HTTP 200 or one of these aborts; the artifact records a status histogram per route so this is checkable rather than asserted.
+
+**No prefetch budget is proposed.** The composition above is now understood, but how much speculative traffic is acceptable is a policy question about prefetch behaviour, and that decision has not been made.
+
+## Interaction: three scripted taps on `/requests/`
+
+Checklist G01 asks for interaction traces. This is a **small scripted trace, not a field metric**: three repetitions of open the report launcher → switch to the "Report a bug" tab → close the panel, driven as touch taps in a fresh context after a normal cold load and settle. All nine steps succeeded.
+
+**This is not INP.** INP is a percentile over real user interactions. These are individual Event Timing entries for synthetic taps, `durationThreshold` 16 ms, reported by the API at 8 ms granularity. No percentile is computed and none should be read into these figures.
+
+| Step | Run | Tap-to-paint (Event Timing `duration`) | `click` handler processing | Input delay | Long task in the step | New network requests |
+| --- | --- | --- | --- | --- | --- | --- |
+| Open launcher | 1 / 2 / 3 | 248 / 184 / 264 ms | 155.6 / 122.8 / 179.8 ms | 29.3 / 15.7 / 14.3 ms | 202 / 132 / 192 ms | 0 / 0 / 0 |
+| Switch tab | 1 / 2 / 3 | 192 / 168 / 160 ms | 153.9 / 122.6 / 123.7 ms | 15.5 / 13.6 / 14.3 ms | 157 / 126 / 129 ms | 0 / 0 / 0 |
+| Close panel | 1 / 2 / 3 | 80 / — / 88 ms | 24.4 / — / 28.0 ms | 14.2 / — / 14.5 ms | none | 0 / 0 / 0 |
+
+Reading these honestly:
+
+- **Every pointer and touch event in one tap reports the same `duration`**, because Event Timing measures each to the same next presentation frame. The figure is therefore per-tap, not per-event. The `click` processing column is the part that is genuinely per-handler.
+- **Run 2's close step recorded no entries at all** — every event in it fell below the 16 ms observer threshold. That is recorded rather than smoothed over, and it means close was the cheapest step in all three runs.
+- **Wall-clock step times (319–1177 ms) are deliberately not in the table above.** They include Playwright's own locator waiting and the panel's open/close animation, so they measure the script waiting, not interaction latency. They are retained in the artifact for completeness and should not be read as a responsiveness figure.
+- **Opening the reporting widget triggered zero network requests in all three runs.** The widget's code is already in the initial payload; nothing is fetched on intent. That is a measurement, offered as input to whoever looks at deferring optional UI — not a recommendation, which is outside this checkpoint.
 
 ## Prioritized measured hotspots
 
-Ranked by measured impact on the critical path, highest first.
+Ranked by measured size on the critical path, highest first. No timing benefit is predicted for any of them: nothing below has been experimentally established as a cause of the timings above.
 
-### 1. Two web font faces are base64-inlined into the largest render-blocking stylesheet — about 306 KiB gzip on every route
+### 1. Two web font faces are base64-inlined into the largest render-blocking stylesheet
 
-`_next/static/chunks/1yxscuwxml--j.css` is 1,156,910 bytes decoded and 427,393 bytes gzipped. Two `data:font/woff2;base64` faces inside it account for 410,180 of those decoded bytes. Re-compressing the same file with those two data URLs removed gives **114,693 bytes gzipped**, so the inlined faces are **312,700 bytes gzip, 73.2% of the file**. The underlying font binaries are 307,635 bytes, so base64 itself costs only about 5 KiB once gzipped — the cost is structural, not encoding.
+`_next/static/chunks/1yxscuwxml--j.css` is the largest initial resource on every route: **426,697 bytes transfer** as served here, 1,156,910 bytes decoded. Two `data:font/woff2;base64` faces inside it account for 410,180 of those decoded characters, carrying 307,632 bytes of woff2 binary.
 
-The consequences are all measurable: the stylesheet is render-blocking, so first paint cannot happen until all 427 KiB has arrived; at 204.8 KiB/s that is about 2.04 s of critical path, of which about 1.49 s is font binary. The fonts cannot be preloaded in parallel, cannot be fetched with their own priority, and cannot be cached independently of the CSS, so any CSS change re-downloads both faces. This applies identically to all five routes.
+Computed outside the measurement script, with `gzip -9 -c <file> | wc -c` on the export copy and on the same file with the two `url(data:font/woff2;base64,…)` payloads removed:
 
-One caveat matters for judging any fix, and it is arithmetic rather than opinion: de-inlining moves these bytes **off the render-blocking path, it does not delete them**. The 305.4 KiB of gzipped data URL would be replaced by 300.4 KiB of separately fetched woff2, a net saving of only 4.9 KiB in total transfer. The win is that first paint would no longer wait for font binary, and that the fonts become independently cacheable and preloadable — not a byte reduction. Anyone reading the per-KiB conversion in hotspot 3 should not apply it to this item.
+| | gzip -9 bytes |
+| --- | --- |
+| The file as shipped | 427,411 |
+| The same file with both data URLs removed | 114,697 |
+| Difference attributable to the inlined faces | **312,714 (73.2% of the file)** |
 
-### 2. The initial script payload is 414–574 KiB gzip across 22–33 chunks, and it is what the main thread spends its time on
+The 714-byte gap between the standalone `gzip -9` figure and the 426,697 bytes measured over the wire is the preview server's own compression level; it is not investigated here.
 
-Scripts are the largest non-inlined category on four of five routes. The two docs routes carry the most (563 and 574 KiB gzip, 1.83 and 1.86 MiB decoded) and also show the most main-thread work: 8 long tasks, 1941 ms and 2154 ms of long-task time, with a single task of 1366 ms and 1609 ms respectively. `/privacy/` and `/requests/`, with roughly 140 KiB less script, show 3 long tasks and under 340 ms. The correlation across the set is direct.
+What is **measured**: this file is render-blocking, it is the largest initial resource on all five routes, and just under three-quarters of it is font binary. What is **arithmetic, not a prediction**: de-inlining **relocates** these bytes rather than deleting them. The 312,714 gzip bytes removed would be replaced by 307,632 bytes of woff2 fetched separately — and woff2 is already compressed, so gzipping the two faces standalone gives 307,498 bytes, essentially no change. Net transfer change is about −5 KiB. The case for the change is that first paint would no longer wait on font binary and that the faces become independently cacheable and preloadable. **That benefit is not measured here and no figure is offered for it.**
 
-### 3. First paint is bandwidth-bound on the whole initial payload
+### 2. The initial script payload is 414–574 KiB gzip across 22–33 chunks
 
-Predicted download time for each route's initial transfer at the emulated 204.8 KiB/s, against measured FCP:
+Scripts are the largest non-inlined category on four of five routes; `/requests/` is stylesheet-led (421.2 KiB stylesheet against 414.0 KiB script). The two docs routes carry the most script (562.5 and 573.6 KiB gzip; 1.83 and 1.86 MiB decoded).
 
-| Route | Initial transfer | Predicted download | Measured FCP | Difference |
-| --- | --- | --- | --- | --- |
-| `/` | 987.7 KiB | 4823 ms | 5380 ms | +557 ms |
-| `/docs/` | 1032.6 KiB | 5042 ms | 5592 ms | +550 ms |
-| `/docs/accordion-gallery/` | 1057.3 KiB | 5163 ms | 5728 ms | +565 ms |
-| `/privacy/` | 889.8 KiB | 4345 ms | 4820 ms | +475 ms |
-| `/requests/` | 851.8 KiB | 4159 ms | 4672 ms | +513 ms |
+The superseded document asserted a direct correlation between script weight and main-thread time. **This run does not support that as a causal claim and it is withdrawn.** The two lightest-script routes do show the least main-thread work (3 long tasks, 241–256 ms), but the heaviest-script route, `/docs/accordion-gallery/`, shows *less* long-task time than the homepage (791 ms against 873 ms) despite carrying 75 KiB more script. Route order is fixed and V8 code cache is shared across the set, so the comparison is confounded either way. What stands is the size, not an explanation of the timings.
 
-The residual is 475–565 ms across every route — a tight, consistent band. First paint is therefore gated by the arrival of essentially the entire initial payload plus about half a second of main-thread work, not by the stylesheet alone. Any byte genuinely **removed** from the initial payload converts to first-paint time at roughly 4.9 ms per KiB under these conditions. This is the single most useful fact in this document for judging a later change — and the reason hotspot 1, which relocates bytes rather than removing them, must be assessed on render-blocking behaviour instead of on this rate.
+### 3. First paint ranks with initial transfer across this set
 
-### 4. The HTML documents are large, and on docs routes they are the third-biggest initial resource
+| Route | Initial transfer | FCP |
+| --- | --- | --- |
+| `/requests/` | 851.8 KiB | 4620 ms |
+| `/privacy/` | 889.8 KiB | 4792 ms |
+| `/` | 987.7 KiB | 5352 ms |
+| `/docs/` | 1032.6 KiB | 5484 ms |
+| `/docs/accordion-gallery/` | 1057.3 KiB | 5616 ms |
 
-`/docs/accordion-gallery/` ships a 398 KiB decoded document (57 KiB gzip) and `/docs/` a 293 KiB one. The homepage document decodes to 259 KiB, of which 47 KiB is 12 inlined `data:` images. These are real bytes on the critical path, though an order of magnitude below items 1 and 2.
+The two orderings agree on all five routes. That is the whole finding: an observed rank agreement over five points, one condition, fixed route order. **No rate is derived from it and no per-byte conversion is offered** — the superseded document's "4.9 ms per KiB" was the inverse of the emulated bandwidth, true by construction regardless of what the site does, and it is removed rather than restated.
+
+### 4. The HTML documents are large on docs routes
+
+`/docs/accordion-gallery/` ships a 398.4 KiB decoded document (57.0 KiB transfer) and `/docs/` a 293.0 KiB one. The homepage document decodes to 258.6 KiB, of which 46.7 KiB is 12 inlined `data:` images. Real bytes on the critical path, an order of magnitude below items 1 and 2.
 
 ## Proposed budgets — for owner review, not approved
 
-These are proposals derived from the measurements above. Nothing here is a decision, and none of it has been agreed. They are written as per-route ceilings under the exact condition in the Environment section, so a later run of the same script can check them mechanically.
+**None of these is agreed and none is in force.** They are proposals derived from the measurements above, written as per-route ceilings under the exact condition in the Environment section, so a later run of the same script can check them mechanically. The script has no budget-check mode; it always exits 0.
 
-| Budget | Proposed ceiling | Current worst route | Rationale |
+| Budget | Proposed ceiling | Current worst route | Basis |
 | --- | --- | --- | --- |
-| Initial transfer (gzip) | 900 KiB | 1057.3 KiB (`/docs/accordion-gallery/`) | Needs script reduction, not the font change: de-inlining nets only 4.9 KiB. Bringing the docs routes to the lightest route's script weight (414 KiB) would put the worst route at about 897 KiB |
-| Render-blocking stylesheet transfer (gzip) | 150 KiB | 427 KiB | Reachable by de-inlining the two faces alone, without touching application code: the same file measures 114.7 KiB once they are removed |
-| Initial script transfer (gzip) | 450 KiB | 574 KiB | Within reach of the two lightest routes today (414 KiB), so it asks the docs routes to match pages that already exist |
-| Post-load prefetch transfer (gzip) | 100 KiB | 271.7 KiB (`/requests/`) | Needs an owner decision on prefetch policy, not only an implementation change |
-| Long tasks over 50 ms | 5 per route | 8 | Directly observable; the light routes already sit at 3 |
-| Longest single task | 350 ms | 1609 ms | A 1.6 s uninterrupted task is the clearest main-thread defect in the set |
-| CLS | 0.05 | 0.0571 (worst single run, `/docs/accordion-gallery/`) | Met on four routes and by the fifth route's median, but exceeded by that route's worst run; the shifting `section` needs reserved space before this can be called met |
-| LCP | to be set after the first optimization pass | 5860 ms | Absolute timings here include no real hosting or CDN, so a production LCP target cannot honestly be derived from this run |
+| Initial transfer (gzip) | 900 KiB | 1057.3 KiB (`/docs/accordion-gallery/`) | Bringing the docs routes to the lightest route's script weight (414.0 KiB) would put the worst route near 898 KiB. Not reachable by the font change, which nets about 5 KiB |
+| Render-blocking stylesheet transfer per route (gzip) | 150 KiB | 427.8 KiB (`/`, 4 files) | Per route, not per file. De-inlining the two faces from the shared stylesheet would put the worst route near 123 KiB, using the 114,697-byte manual figure above. Derived arithmetically, not measured |
+| Initial script transfer (gzip) | 450 KiB | 573.6 KiB (`/docs/accordion-gallery/`) | Two routes already sit at 414.0 and 442.8 KiB, so it asks the docs routes to match pages that exist today |
+| Post-load transfer | **none proposed** | 271.7 KiB (`/requests/`) | Needs an owner decision on prefetch policy first. The traffic is understood — prefetched route payloads plus those routes' chunks — but how much speculative traffic is acceptable is not a measurement question |
+| Long tasks over 50 ms | 4 per route | 5 (`/docs/`, `/docs/accordion-gallery/`) | Two routes already sit at 3 |
+| Longest single task | 350 ms | 483 ms (`/`) | Two of five routes are already inside it (105 ms and 92 ms); `/docs/` at 373 ms is the nearest of the three that are not |
+| CLS (session window) | 0.05 | 0.0196 (`/`, worst of three runs) | Against the session-window definition, the only one this threshold means anything under. Currently met on every route and every run at this viewport |
+| LCP | to be set after the first optimization pass | 5616 ms | Absolute timings here include no real hosting or CDN, so a production target cannot honestly be derived from this run |
+| Interaction | none proposed | 264 ms tap-to-paint (open launcher) | Three scripted taps are not a basis for a responsiveness budget |
 
 ## Limitations
 
-- **INP is unavailable** and no substitute has been recorded. Measuring it needs a separate interaction-driven run.
-- **LCP and every other absolute timing are local-server figures.** TTFB is single-digit milliseconds because the server is on loopback, so these values cannot be read as production numbers. Their value is as a like-for-like reference for a later run of the same script.
-- **One condition only.** Throttled desktop at 1440 × 900, Slow 4G, 4× CPU. No mobile viewport, no unthrottled pass, no second device class.
-- **gzip only.** The local server serves gzip. Production hosting may serve brotli, which would reduce transfer figures; the ranking of hotspots would not change, since the largest item is already-compressed font binary.
-- **Cold cache every run.** Repeat visits, which benefit from Next's immutable asset hashing, are not represented.
-- **Chromium only**, headless, version 153.0.8010.12. No WebKit or Gecko figures.
-- **No analytics or reporting traffic is represented**, because this export has neither endpoint configured. A configured build would load and send more.
-- **Three runs per route.** Byte totals were identical across runs; timings are medians of three and will vary with machine load.
-- **The export was not rebuilt.** Representativeness rests on source and build-product equality, documented above, not on a reproduced build.
+- **INP is unavailable** and nothing substitutes for it. The scripted trace above is three synthetic interactions, not a field percentile.
+- **LCP and every other absolute timing are local-server figures.** TTFB is single-digit milliseconds because the server is on loopback, so these cannot be read as production numbers. Their value is as a like-for-like reference for a later run of the same script.
+- **One condition only.** Mobile-sized viewport, one throttling setting, one browser. No desktop pass in this set, no unthrottled pass, no second device class. The superseded desktop set is not a second condition — it was taken with a script that has since been corrected in ways that change its numbers.
+- **The throttling values are not a named preset** and have not been validated against any published mobile profile. They are a stated condition, nothing more.
+- **Route order is fixed and the Chromium process is shared**, so V8 code cache and JIT warmth carry across routes. Cross-route comparisons are confounded; no route ordering was randomised and no warm-up sample was discarded.
+- **gzip only.** The local server serves gzip. Production hosting may serve brotli, which would reduce transfer figures; the largest single item is already-compressed font binary, so it would be least affected.
+- **Cold cache every sample.** Repeat visits, which benefit from Next's immutable asset hashing, are not represented.
+- **Chromium only**, headless, version 153.0.8010.12. No WebKit or Gecko figures. Headless emulation is not a real handset: no real GPU, thermal behaviour, radio or memory pressure.
+- **Analytics and reporting traffic is not represented.** Not because the export lacks configuration — it carries a PostHog token and host — but because `NEXT_PUBLIC_ANALYTICS_ENABLED` is `"false"` and every non-loopback request was refused. A build with that flag set to `"true"` would load and send more.
+- **Three runs per route.** All byte totals were identical across runs; timings are medians of three and will vary with machine load.
+- **The export was not rebuilt.** Representativeness rests on source equality, build-product equality and the direct reading of the inlined environment documented above, not on a reproduced build.
 - **No Lighthouse run and no Chrome DevTools MCP trace** was available in this environment; metrics come from the Performance APIs and the CDP Network domain directly. No Lighthouse score, Speed Index or Total Blocking Time is claimed.
+- **The gzip figures in hotspot 1 were produced by hand**, not by the measurement script, so a later run of the script will not re-check that row.
 
 ## Repeating this measurement
 
 ```sh
 npm ci
 npm run build   # or point --export at an existing export
-node scripts/measure-loading-baseline.mjs --export=out --runs=3
+node scripts/measure-loading-baseline.mjs --export=out --runs=3 --interaction-runs=3
 ```
 
-`scripts/measure-loading-baseline.mjs` serves the export read-only on a random loopback port, drives a disposable Chromium profile under the fixed condition recorded above, refuses and logs every non-loopback request, and writes the full per-asset result to `artifacts/performance-baseline/baseline.json` (ignored by Git). It modifies nothing in the export and touches no application code.
+`scripts/measure-loading-baseline.mjs` serves the export read-only on a random loopback port, drives a fresh browser context per sample under the fixed condition recorded above, refuses and logs every non-loopback request, and writes **every request of each route's final run — URL, type, phase, status, finish state, prefetch headers, transfer and decoded bytes — together with every run's metrics and every run's refused-outbound list** to `artifacts/performance-baseline/baseline.json` (ignored by Git). `data:` URL payloads are truncated to a short prefix, so the artifact carries no embedded binary. It modifies nothing in the export and touches no application code.
