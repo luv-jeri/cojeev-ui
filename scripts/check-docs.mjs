@@ -9,6 +9,8 @@ import { createReferenceTests } from "./docs-behaviors-reference.mjs";
 import { createEffectTests } from "./docs-behaviors-effects.mjs";
 import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
+import { armOpacityObservation } from "./docs-transient-paint.mjs";
+import { docsHarnessFiles, docsHarnessFingerprint } from "./docs-harness-fingerprint.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -212,13 +214,26 @@ const tests = {
     await text(root,"Permission denied. I did not use the selected context.");
     assert.equal(await root.getByRole("button",{name:"Allow once",exact:true}).count(),0);
     await reset();
-    await draft.fill("Keep this conversation");
-    await root.getByRole("button",{name:"Send message",exact:true}).click();
-    assert(await draft.evaluate(el=>el===document.activeElement),"Sending returns focus to the draft before Send is replaced");
-    await root.getByRole("button",{name:"Stop generation",exact:true}).click();
-    await text(root,"Stopped. This demo did not read or change any files.");
-    await page.waitForTimeout(1500);
-    assert.equal(await root.getByRole("button",{name:"Allow once",exact:true}).count(),0,"Cancelled timer must not reopen permission");
+    // Hold the demo's phase timer while real pointer actions and focus checks
+    // cross the driver boundary. Advancing time still verifies cancellation.
+    const clockInstant = new Date("2020-01-01T00:00:00Z");
+    await page.clock.install({ time: clockInstant });
+    try {
+      // Fixed wall time cannot make pauseAt's target stale while the driver is
+      // delayed. pauseAt then freezes the timers before this run is started.
+      await page.clock.setFixedTime(clockInstant);
+      await page.clock.pauseAt(clockInstant);
+      await draft.fill("Keep this conversation");
+      await root.getByRole("button",{name:"Send message",exact:true}).click();
+      assert(await draft.evaluate(el=>el===document.activeElement),"Sending returns focus to the draft before Send is replaced");
+      await root.getByRole("button",{name:"Stop generation",exact:true}).click();
+      await text(root,"Stopped. This demo did not read or change any files.");
+      await page.clock.runFor(1500);
+      assert.equal(await root.getByRole("button",{name:"Allow once",exact:true}).count(),0,"Cancelled timer must not reopen permission");
+    } finally {
+      try { await page.clock.setSystemTime(new Date()); }
+      finally { await page.clock.resume(); }
+    }
     await reset();
     const chooser=page.waitForEvent("filechooser");
     await root.getByRole("button",{name:"Attach files",exact:true}).click();
@@ -429,12 +444,16 @@ const tests = {
   },
   "text-reveal": async ({ root, page }) => {
     const heading = root.getByRole("heading", { name: "Good things take shape." });
+    await heading.scrollIntoViewIfNeeded();
+    await attribute(heading, "data-motion-quiet", "false");
+    await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).every(word => Number(getComputedStyle(word).opacity) >= .999)), "Initial entrance settles before replay observation");
     const before = await heading.boundingBox();
-    await root.getByRole("button", { name: "Replay reveal" }).click();
-    await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).some(word => {
-      const opacity = Number(getComputedStyle(word).opacity);
-      return opacity > 0 && opacity < .99;
-    })), "Replay produces a visible intermediate word opacity");
+    const replay = root.getByRole("button", { name: "Replay reveal" });
+    const paint = await armOpacityObservation(heading, replay, { units: '[data-reveal-word]', upperBound: .99 });
+    try {
+      await replay.click();
+      await eventually(paint.seen, "Replay produces a visible intermediate word opacity");
+    } finally { await paint.dispose(); }
     await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).every(word => Number(getComputedStyle(word).opacity) >= .999)), "Replay finishes with fully readable words");
     await text(root, "Replayed 1 time.");
     await key(root.getByRole("button", { name: "Replay reveal" }), "Enter");
@@ -1327,7 +1346,8 @@ async function chromeCheck(page, width) {
 }
 const run = {
   started: new Date().toISOString(),
-  harnessSha256: createHash("sha256").update(fs.readFileSync(new URL(import.meta.url))).digest("hex"),
+  harnessFiles: docsHarnessFiles,
+  harnessSha256: docsHarnessFingerprint(),
   url: base,
   revisionStart: revision(),
   entries: [],
@@ -1634,7 +1654,7 @@ try {
 } finally {
   run.ended = new Date().toISOString();
   run.revisionEnd = revision(true);
-  run.harnessEndSha256 = createHash("sha256").update(fs.readFileSync(new URL(import.meta.url))).digest("hex");
+  run.harnessEndSha256 = docsHarnessFingerprint();
   fs.writeFileSync(
     path.join(output, "results.json"),
     JSON.stringify(run, null, 2),
