@@ -1,77 +1,76 @@
+![The 000h seed mark on warm paper, with organic shapes drifting right into a pale-blue stage that holds a profile card.](docs/readme/000h-readme-banner.svg)
+
+<sub>Artwork, not a screenshot — the seed mark, the pigment stage and a profile card drawn in the library's own tokens. The components themselves move: **[open the live gallery](https://000h.cojeev.com/)**.</sub>
+
 # 000h by Cojeev
 
-Expressive React components with organic shapes and purposeful motion. The existing `@cojeev` registry configuration and component import paths remain compatible. See [launch setup](docs/launch/README.md) for analytics and domain configuration.
+Expressive React components with organic shapes, purposeful motion, and source you can make your own.
 
-**124 React components. Warm surfaces, expressive shapes and considered motion.**
+**172 installable components**, MIT licensed and shadcn-compatible, with no dependency on the private Cojeev application. You add one entry at a time and the source lands in your project, where it is yours to change.
 
-An MIT-licensed component library for building thoughtful products. Install only the pieces you need through the shadcn registry; the source lives in your project and is yours to change. No dependency on the private Cojeev application.
+[Website](https://000h.cojeev.com/) · [Browse components](https://000h.cojeev.com/docs/) · [Work with Sanjay](https://000h.cojeev.com/work-with-me/)
 
-[Documentation](https://luv-jeri.github.io/cojeev-ui/) · [Browse components](https://luv-jeri.github.io/cojeev-ui/docs/) · [Registry](https://luv-jeri.github.io/cojeev-ui/r/registry.json) · [Work with Sanjay](https://luv-jeri.github.io/cojeev-ui/work-with-me/)
+## Install one component
 
-## Get started
-
-Use React 19, TypeScript, Tailwind CSS v4 and an initialized shadcn project with an `@/` alias.
+You need React 19, TypeScript, Tailwind CSS v4 and an initialized shadcn project with an `@/` alias.
 
 ```sh
-npx shadcn@latest add https://luv-jeri.github.io/cojeev-ui/r/button.json
+npx shadcn@latest add https://000h.cojeev.com/r/button.json
 ```
 
 ```tsx
 import { Button } from "@/components/ui/button";
 
 export function ContinueAction() {
-  return <Button onClick={() => console.log("Continue")}>Continue</Button>;
+  return <Button variant="accent">Continue</Button>;
 }
 ```
 
-Set `data-mode="light"` or `data-mode="dark"` on the document element. See [installation details](INSTALLATION.md) for registry namespaces, styling and consumer verification.
+The added stylesheet carries both light and dark token values. Choose one with `document.documentElement.dataset.mode = "dark"`. [Installation details](INSTALLATION.md) cover the `@cojeev` registry configuration, theming and the fresh-install check.
 
-## What is inside
+## Four to start with
 
-The catalogue contains **66 original base components and 58 additions**:
+![Four component previews on warm paper under the heading "Find your next detail." — a pink card holding a rubber slider at 64, a blue card with a stack of panels and an Open drawer button, an olive card of coloured bento tiles labelled Home, Grow, Add and Keep, and a beige card showing a command palette listing Button, Card and Dialog.](docs/readme/000h-readme-gallery.png)
 
-- Forms, selectors, menus, navigation, overlays, accessible scrolling and data display.
-- Six palettes with persistent contrast controls, nine motion characters, organic progress and sliders, configurable selector shapes and sizes, and optional list adornments.
-- Profile, invitation and focus cards; task, conversation and agent panels; a reusable action dock. Composite components use the same native library primitives.
-- Area, bar, line, pie, radar and radial charts, with shared tooltip and keyboard interactions.
-- Text Reveal, Word Relay, Text Ribbon, Animated Number, Number Input, Writing Caret, Living Link, Reading Trail, Activity Feed and Milestone Path.
-- Ambient and depth backgrounds, pigment and contour fields, scroll layers, a measured marquee, reusable presence and illustrated pointer cues.
-- Shape Artwork with SVG export; shared sculpture orbit controls; glyph, dither, ink, glass, fluid and particle sculptures. The material sculptures use bounded WebGL scenes with static fallbacks. Three.js is installed only with components that need it.
-- Component previews with copyable example code, API details, dependency information and guides.
+<sub>A still of the homepage gallery in this release, rendered from this repository's source. On the page itself each tile is the installed component, running.</sub>
 
-The landing page is built from this library: stationary foreground content, quiet background depth, scroll entrances, and real components assembling from small organic shapes. The shape workbench exports SVG or React code with the current shadow and outline settings.
+| Component | How it feels |
+| --- | --- |
+| [`Slider`](https://000h.cojeev.com/docs/slider/) | The track answers the value. A rubber strand rests thick over a short span and stretches thin as you pull it wide. |
+| [`MotionDrawer`](https://000h.cojeev.com/docs/motion-drawer/) | Drag it shut from any non-interactive area — buttons and links never start one. Stacked panels keep half-filled fields while they wait behind. |
+| [`BentoGrid`](https://000h.cojeev.com/docs/bento-grid/) | Rounded cards, or one continuous puzzle whose tiles share seeded edges. Change the seed and the seams redraw while every tile and label stays put. |
+| [`Command`](https://000h.cojeev.com/docs/command/) | Type to narrow, arrow through, press to run — or open the same list over the page as a palette. |
 
-Motion respects reduced-motion preferences, shared quiet settings and visibility. Decorative scenes stop work offscreen; real controls remain keyboard accessible. Individual guides explain each component's behaviour and limitations.
+## Motion you can turn down
 
-## This release's scope
+Motion here is a setting, not a decoration. Nine motion characters change how a control answers a press. `Motion Off` and the system's reduced-motion preference are designed to leave an interface complete and still rather than broken, and decorative backgrounds and WebGL sculptures are built to stop work offscreen and fall back to a static rendering. Each component's guide records what it does and where that stops — read the guide beside the component you install.
 
-After reviewing Skiper, Remocn, Canvas UI and React Bits, this expansion added **18 new entries** and improved existing components. Further cloning has stopped at the owner's request. The full 613-entry reference inventory remains a research record, not a claim that all of those components are implemented.
+<details>
+<summary><strong>Developing this repository</strong></summary>
 
-Original Cojeev implementations draw on useful interaction ideas and retain the library's own visual language. Restricted source was not redistributed. [The expansion ledger](reference/expansion/coverage.json) records each reviewed concept and its differences; [the release report](RELEASE-0.2.0.md) records verification and publication status.
-
-## Develop
-
-Requires Node.js 22.12 or newer.
+Node.js 22.12 or newer, as declared in `engines`. Continuous integration pins 22.22.0.
 
 ```sh
 npm ci
-npm run dev -- --hostname 0.0.0.0 --port 4320
+npm run dev -- --port 4320
 ```
-
-Open [localhost:4320/cojeev-ui](http://localhost:4320/cojeev-ui/). On a phone on the same Wi-Fi, replace `localhost` with the Mac's Wi-Fi IP. Set `COJEEV_DEV_ORIGINS` to that IP for development updates.
 
 ```sh
-npm run lint
-npm run typecheck
-npm test
-npm run build
-npm run check:examples
+npm run lint && npm run typecheck && npm test && npm run build
+npm run check:examples   # every copyable example still compiles
+npm run gate             # the built catalogue at three widths, both themes
 ```
 
-The build generates the installable registry and static documentation in `out/`. `npm run gate` checks the built catalogue at three widths in both themes; mobile and marketing gates cover additional WebKit and landing interactions. GitHub Actions runs verification before deploying GitHub Pages.
+Pull requests, and pushes to `main`, run lint, typecheck, the unit and worker test suites, then build a matched beta and production pair from the same commit, check each against its hosting content-security policy, run the browser gates, and verify a fresh consumer installation from each artifact. On `main`, beta deploys first and production promotes that same verified artifact after environment approval.
 
-## Design and licences
+[CONTRIBUTING.md](CONTRIBUTING.md) describes what a new component needs.
 
-The supplied design system is preserved under `reference/cojeev-handoff-v4`. Production components do not import its CSS or JavaScript. Shared type, spacing, accessible colour roles, organic shapes and motion guide new work.
+</details>
 
-Documentation uses [Fumadocs](https://github.com/fuma-nama/fumadocs) with Cojeev's visible components. Registry tooling uses [shadcn](https://github.com/shadcn-ui/ui). Library code uses [MIT](LICENCE); fonts retain their [SIL Open Font Licences](FONT-NOTICES.md), and attributed icon geometry retains its bundled notices.
+## Licences
+
+Library code is [MIT](LICENCE). The bundled DM Sans and Bricolage Grotesque keep their [SIL Open Font Licences](FONT-NOTICES.md), and the icon geometry files keep the Lucide and Feather notices inside them — preserve those when you copy the source. The supplied design system stays in `reference/cojeev-handoff-v4` for type, spacing, colour roles and shape language; production components import none of its CSS or JavaScript.
+
+Documentation is built with [Fumadocs](https://github.com/fuma-nama/fumadocs); registry tooling is [shadcn](https://github.com/shadcn-ui/ui).
+
+Built by Sanjay Kumar. [Work with me](https://000h.cojeev.com/work-with-me/) · [github.com/luv-jeri/cojeev-ui](https://github.com/luv-jeri/cojeev-ui)
