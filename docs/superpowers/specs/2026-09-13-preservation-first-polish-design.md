@@ -3,7 +3,8 @@
 Checkpoint: H03-1. Source baseline: `999e9d3`.
 Sanjay approved the direction on 13 September: preserve the current variants,
 clarify shape symbols, improve spacing, and calm the Accordion composition.
-This document records the bounded implementation contract; written review is pending.
+Sanjay approved this written contract with “looks good” on 13 September.
+Implementation and rendered-result acceptance remain separate checkpoints.
 
 ## Job and visual idea
 
