@@ -52,6 +52,8 @@ jobs:
         run: npm run build
       - run: npm run check:examples
       - run: npm run gate
+        env:
+          COJEEV_DOCS_SHARDS: '3'
       - run: npm run gate:mobile
       - run: npm run gate:marketing
       - run: npm run gate:smooth-scroll
