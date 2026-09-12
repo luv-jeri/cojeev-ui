@@ -10,13 +10,202 @@ permissions:
   contents: read
 
 jobs:
+  # Choose how much verification this change has to run. This job never fails:
+  # a failing scope job would skip every dependent job and leave a pull request
+  # with no verification at all. `scripts/ci-scope.mjs` defaults to full for an
+  # unknown path, an empty diff or a failed diff lookup, and the `verify` job
+  # below repeats the release guard without reading any output of it.
+  scope:
+    name: Select verification scope
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      scope: ${{ steps.select.outputs.scope }}
+      reason: ${{ steps.select.outputs.reason }}
+      suites: ${{ steps.select.outputs.suites }}
+      omitted: ${{ steps.select.outputs.omitted }}
+      run_prose: ${{ steps.select.outputs.run_prose }}
+      run_quick: ${{ steps.select.outputs.run_quick }}
+      run_analytics: ${{ steps.select.outputs.run_analytics }}
+      run_transient: ${{ steps.select.outputs.run_transient }}
+      run_install: ${{ steps.select.outputs.run_install }}
+      run_npm: ${{ steps.select.outputs.run_npm }}
+      run_build: ${{ steps.select.outputs.run_build }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
+      # Pull request values reach the classifier as environment variables and are
+      # never interpolated into a shell command.
+      - id: select
+        run: node scripts/ci-scope.mjs
+        env:
+          CI_SCOPE_EVENT: ${{ github.event_name }}
+          CI_SCOPE_BASE_REF: ${{ github.base_ref }}
+          CI_SCOPE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_SCOPE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+  # Proportionate checks for a pull request that only touches allowlisted paths.
+  # This is never release acceptance: it builds no release pair, publishes no
+  # release artifact and runs no catalogue gate.
+  checkpoint:
+    name: Checkpoint check
+    needs: scope
+    # Only an explicitly known reduced scope selects this job. A blank, missing
+    # or unrecognised output selects nothing here and reaches `verify` instead.
+    if: >-
+      github.event_name == 'pull_request'
+      && github.base_ref != 'main'
+      && needs.scope.result == 'success'
+      && (needs.scope.outputs.scope == 'docs'
+      || needs.scope.outputs.scope == 'checkpoint')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: checkpoint-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check documentation whitespace and conflict markers
+        if: needs.scope.outputs.run_prose == 'true'
+        run: git diff --check "$BASE_SHA...$HEAD_SHA"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      # A prose-only change installs no dependencies and starts no browser.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        if: needs.scope.outputs.run_npm == 'true'
+        with:
+          node-version: 22.22.0
+          cache: npm
+      - if: needs.scope.outputs.run_npm == 'true'
+        run: npm ci
+      - if: needs.scope.outputs.run_build == 'true'
+        run: npx playwright install --with-deps chromium
+      - if: needs.scope.outputs.run_quick == 'true'
+        run: npm run lint
+      - if: needs.scope.outputs.run_quick == 'true'
+        run: npx next typegen && npm run typecheck
+      - if: needs.scope.outputs.run_quick == 'true'
+        run: npm test
+      - if: needs.scope.outputs.run_quick == 'true'
+        run: npm run reporting:test
+      - if: needs.scope.outputs.run_quick == 'true'
+        run: npm run registry-host:test
+      - if: needs.scope.outputs.run_build == 'true'
+        run: npm run build
+      # The affected components only, not the catalogue: the B02-2 harness and
+      # its negative control, which must still fail on unrepaired transient paint.
+      - name: Exercise the transient paint harness and its negative control
+        if: needs.scope.outputs.run_transient == 'true'
+        run: |
+          node tests/docs-transient-timing.browser.mjs
+          node tests/docs-transient-timing.browser.mjs --negative
+      - name: Install into a fresh consumer project from the locally served registry
+        if: needs.scope.outputs.run_install == 'true'
+        run: node scripts/run-install-verification.mjs
+      # The same three analytics configurations the release job runs. The plain
+      # build above sets no analytics variables, so it is the unset case.
+      - name: Confirm silence when analytics is unconfigured
+        if: needs.scope.outputs.run_analytics == 'true'
+        run: node tests/analytics.browser.mjs --expect-silent
+      - name: Rebuild the Pages fixture with analytics explicitly disabled
+        if: needs.scope.outputs.run_analytics == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_ANALYTICS_ENABLED: 'false'
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: phc_public_test_token
+          NEXT_PUBLIC_POSTHOG_HOST: https://eu.i.posthog.com
+          NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
+          NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
+      - name: Confirm silence when analytics is explicitly disabled
+        if: needs.scope.outputs.run_analytics == 'true'
+        run: node tests/analytics.browser.mjs --expect-silent
+      - name: Rebuild the Pages fixture with analytics capture enabled
+        if: needs.scope.outputs.run_analytics == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_ANALYTICS_ENABLED: 'true'
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: phc_public_test_token
+          NEXT_PUBLIC_POSTHOG_HOST: https://eu.i.posthog.com
+          NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
+          NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
+      - if: needs.scope.outputs.run_analytics == 'true'
+        run: npm run analytics:browser
+        env:
+          ANALYTICS_TEST_ENVIRONMENT: beta
+          ANALYTICS_TEST_RELEASE: '0000000000000000000000000000000000000000'
+      - name: Preserve sanitized checkpoint evidence
+        if: always() && needs.scope.outputs.run_build == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: checkpoint-evidence-${{ github.sha }}
+          path: |
+            output/playwright/transient-delayed/
+            output/playwright/transient-negative/
+            artifacts/analytics/
+          if-no-files-found: ignore
+          retention-days: 14
+          include-hidden-files: false
+      - name: Report the selected scope
+        if: always()
+        run: |
+          {
+            echo "## Checkpoint check"
+            echo
+            echo "Checkpoint only, **not release acceptance**. No release pair was built, no release"
+            echo "artifact was published and the component catalogue gate did not run."
+            echo
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Pull request head | \`$HEAD_SHA\` |"
+            echo "| Tested merge commit | \`$MERGE_SHA\` |"
+            echo "| Scope | $SCOPE |"
+            echo "| Reason | $REASON |"
+            echo "| Suites selected | $SUITES |"
+            echo "| Suites omitted | $OMITTED |"
+            echo
+            echo "Selection is not a pass: see each step outcome for execution and failures."
+            echo "Every gate not listed above was **not run** and is not reported as passing."
+            echo "Release acceptance is the \`Verify release\` job, which is forced for pushes to"
+            echo "main, manual dispatch and every pull request into main."
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          MERGE_SHA: ${{ github.sha }}
+          SCOPE: ${{ needs.scope.outputs.scope }}
+          REASON: ${{ needs.scope.outputs.reason }}
+          SUITES: ${{ needs.scope.outputs.suites }}
+          OMITTED: ${{ needs.scope.outputs.omitted }}
+
   verify:
     name: Verify release
+    needs: scope
+    # Release acceptance never depends on the classifier being right. A push to
+    # main, a manual dispatch and any pull request into main reach this job
+    # through conditions that read no output of the scope job, and a scope job
+    # that fails, or that publishes a blank or unrecognised scope, also runs it.
+    # `!cancelled()` rather than `always()`, so a cancelled run stays cancelled.
+    if: >-
+      !cancelled()
+      && (github.event_name != 'pull_request'
+      || github.base_ref == 'main'
+      || needs.scope.result != 'success'
+      || (needs.scope.outputs.scope != 'docs'
+      && needs.scope.outputs.scope != 'checkpoint'))
     runs-on: ubuntu-latest
     timeout-minutes: 90
     concurrency:
       group: verify-${{ github.ref }}
-      cancel-in-progress: true
+      # Supersede an outdated pull request check, never a main release run.
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     outputs:
       beta_digest: ${{ steps.release.outputs.beta_digest }}
       production_digest: ${{ steps.release.outputs.production_digest }}

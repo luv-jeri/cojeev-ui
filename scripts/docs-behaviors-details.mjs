@@ -1,4 +1,6 @@
 /** Existing detail examples: real controls, visible outcomes and quiet fallbacks. */
+import { armOpacityObservation } from "./docs-transient-paint.mjs";
+
 export function createDetailTests({ assert, eventually, text, attribute, key }) {
   const reduced = async (page, run) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -55,10 +57,16 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       const ring = pointer.locator('[data-slot="guided-pointer-ring"]');
       assert(await pointer.evaluate(el => el.inert && el.getAttribute("aria-hidden") === "true"));
       assert(await root.getByRole("button", { name: "Previous", exact: true }).isDisabled());
-      await root.getByRole("button", { name: "Next moment", exact: true }).click();
-      await text(root.getByRole("status"), "Choose a direction · moment 2 of 3");
-      await eventually(() => position.evaluate(el => Number(el.dataset.x) === .79 && Number(el.dataset.y) === .5), "Pointer reaches the chosen waypoint");
-      await eventually(() => ring.evaluate(el => Number(getComputedStyle(el).opacity) > 0), "Arrival produces a finite visible ring");
+      await pointer.scrollIntoViewIfNeeded();
+      await attribute(pointer, "data-state", "still");
+      const next = root.getByRole("button", { name: "Next moment", exact: true });
+      const paint = await armOpacityObservation(ring, next);
+      try {
+        await next.click();
+        await text(root.getByRole("status"), "Choose a direction · moment 2 of 3");
+        await eventually(() => position.evaluate(el => Number(el.dataset.x) === .79 && Number(el.dataset.y) === .5), "Pointer reaches the chosen waypoint");
+        await eventually(paint.seen, "Arrival produces a finite visible ring");
+      } finally { await paint.dispose(); }
       await eventually(() => ring.evaluate(el => getComputedStyle(el).opacity === "0"), "Arrival ring settles");
       await key(root.getByRole("button", { name: "Hand", exact: true }), "Enter");
       await attribute(pointer, "data-glyph", "hand");

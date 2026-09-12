@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | Component overhaul | Recovery report records all 55 intake rows, plus Hero Button and shared-shell work | Final acceptance checklist below, with reopened defects actually repaired |
 | Homepage | Earlier version restored; rejected redesign preserved | New design approved, implemented and verified |
-| PR #2 | Open and blocked; required check cancelled | Complete passing checks, then normal merge |
+| Release PR | Original #2 closed automatically when its source branch was renamed; replacement pending | Complete passing combined-candidate checks and owner gates, then normal merge |
 | Production | Existing older website remains online | Approved, recorded release and live acceptance |
 | Beta | Resources partly provisioned; last DNS checks failed | Credentials, Workers, domains, HTTPS and isolated live tests |
 | Email/reporting/analytics | Code and some accounts ready | Real end-to-end evidence, privacy controls and owner inbox confirmation |
@@ -29,9 +29,9 @@
 ### The next actions, in order
 
 1. Agree which audit fixes block launch, and confirm the business/privacy facts in section A.
-2. Repair the CI time-budget problem without removing tests. Finish account credentials in parallel where account access permits.
+2. Repair CI scheduling: use affected checks on small PRs and the full suite for the combined candidate. Finish account credentials in parallel where account access permits.
 3. Close the launch-blocking privacy, accessibility, licensing and product issues; approve the final homepage and component visuals.
-4. Run all checks against the final source revision. Merge PR #2 only when its required checks pass and beta can deploy safely.
+4. Run all checks against the final source revision. Merge the release PR only when its required checks pass and beta can deploy safely.
 5. Deploy and verify beta. Exercise recovery. Obtain production approval, promote the same recorded source revision, and complete production smoke tests.
 6. Submit the production site to search tools, then submit the approved registry namespace and launch the approved marketing campaign.
 
@@ -52,7 +52,7 @@ Work may proceed in parallel, but a later phase cannot turn an earlier failed ga
 ## Global constraints
 
 - Preserve unrelated local changes, private files, backups, production reports and existing resource identifiers.
-- Keep this checklist in the durable project folder. The current release checkout is `/private/tmp/cojeev-production-cLJFa8tY/repo`; it is a separate working copy, not the original checkout's current source. Do not overwrite one with the other.
+- Keep the owner's tracking copy of this checklist in the durable original project folder, `/Users/sanjaykumar/Documents/ChatGPT/sahajiv ui`. The release source baseline is branch `chore/production-beta` at `cc971887e4e6825bd5568815cb76ebf22c602e04`; Phase 1 runs in isolated worktrees, with W01 integration in `/private/tmp/000h-phase1-jKXhib/repo`. The earlier `/private/tmp/cojeev-production-cLJFa8tY/repo` path is historical, not the current-checkout authority. Do not overwrite the durable original's dirty application source or one working copy with another.
 - Do not deploy an uncommitted snapshot. Build beta and production from the same reviewed commit, using their own public URLs and separately verified artifacts.
 - No paid upgrade, billing activation or new paid dependency is authorized.
 - Keep secrets out of chat, browser build variables, source, logs and public evidence. Owner security prompts remain owner actions.
@@ -62,7 +62,7 @@ Work may proceed in parallel, but a later phase cannot turn an earlier failed ga
 
 ## Handoff bootstrap
 
-- [ ] **W01 · C — Land the handoff rules.** Carry this checklist, `docs/checkpoint-workflow.md` and the scoped `AGENTS.md` rule into the verified release working copy without replacing other instructions or dirty source. Review and commit them on `codex/chore/w01-checkpoint-workflow`, open a `chore(workflow)` PR and follow the required checks/merge process. These local documents are not yet a merged policy change.
+- [ ] **W01 · C — Land the handoff rules.** Carry this checklist, `docs/checkpoint-workflow.md` and the scoped `AGENTS.md` rule into the verified release working copy without replacing other instructions or dirty source. Review and commit them on `chore/w01-checkpoint-workflow`, open a `chore(workflow)` PR and follow the required checks/merge process. These local documents are not yet a merged policy change.
 
 ## Completed baseline — retain these achievements
 
@@ -70,7 +70,7 @@ These checkmarks refer to recorded source/provisioning work, not a production la
 
 - [x] **D01 · C — Original overhaul inventory recorded.** All reported component families and shared-shell requests are retained in the intake and recovery documents.
 - [x] **D02 · C — Recovery implementation recorded.** The September 11 report records all 55 intake rows, twelve Hero Button concepts, Bento and shared-shell fixes. Owner aesthetic approval is explicitly separate.
-- [x] **D03 · C — Earlier homepage restored.** Release commit `cc971887e4e6825bd5568815cb76ebf22c602e04` restores the four earlier homepage files while retaining other release work. The rejected design remains on `codex/homepage-rework-preserved`.
+- [x] **D03 · C — Earlier homepage restored.** Release commit `cc971887e4e6825bd5568815cb76ebf22c602e04` restores the four earlier homepage files while retaining other release work. The rejected design remains on `chore/homepage-rework-preserved`.
 - [x] **D04 · C — Local rollback checks recorded.** Static build/type checks, lint and targeted homepage/browser checks passed. These do not replace the incomplete full GitHub release run.
 - [x] **D05 · C — Deployment and recovery implementation prepared.** Environment-aware build/deployment configuration, operating procedures and local reporting/hosting tests exist; live exercises remain below.
 - [x] **D06 · B — GitHub protections configured.** Main requires PR checks; beta/production environments exist; production requires `luv-jeri` approval, including permitted owner self-approval. Do not bypass them.
@@ -85,10 +85,10 @@ These checkmarks refer to recorded source/provisioning work, not a production la
 
 These links intentionally point to the release revision, because the original local checkout does not contain all release documents.
 
-- [PR #2](https://github.com/luv-jeri/cojeev-ui/pull/2) — freshly checked: OPEN, BLOCKED, head `cc971887e4e6825bd5568815cb76ebf22c602e04`.
+- [Original PR #2](https://github.com/luv-jeri/cojeev-ui/pull/2) — historical discussion, now closed after its source branch was renamed to `chore/production-beta`; commit `cc971887e4e6825bd5568815cb76ebf22c602e04` is preserved. Replacement pending.
 - [Cancelled required check](https://github.com/luv-jeri/cojeev-ui/actions/runs/34666264387/job/103478640491) — beta and production jobs were skipped.
 - [Original intake](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/quality/2026-09-10-library-overhaul-intake.md), [recovery delivery](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/quality/2026-09-11-recovery-delivery.md), [release verification](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/quality/2026-09-11-release-verification.md).
-- [Homepage rollback](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/production/2026-09-12-homepage-rollback.md), [preserved rejected design](https://github.com/luv-jeri/cojeev-ui/tree/codex/homepage-rework-preserved).
+- [Homepage rollback](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/production/2026-09-12-homepage-rollback.md), [preserved rejected design](https://github.com/luv-jeri/cojeev-ui/tree/chore/homepage-rework-preserved).
 - [Provisioning record](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/production/provisioning-status.md), [operations runbook](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/production/OPERATIONS.md), [local release evidence](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/production/2026-09-12-local-release-verification.md).
 - [Marketing start here](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/marketing/START-HERE.md), [creator shortlist](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/marketing/2026-09-12-creator-shortlist.md), [outreach research](https://github.com/luv-jeri/cojeev-ui/blob/cc971887e4e6825bd5568815cb76ebf22c602e04/docs/marketing/2026-09-12-launch-outreach-research.md).
 
@@ -100,18 +100,24 @@ These links intentionally point to the release revision, because the original lo
 - [ ] **A04 · B — Confirm release design.** Approve the new homepage after review, or explicitly choose the restored homepage for this release. Keep the rejected version isolated.
 - [ ] **A05 · S/L — Resolve applicable-law questions.** Use A01 and actual data flows to determine Indian requirements and any EU/UK or other targeting/monitoring obligations. Review current commencement dates and rules; a worldwide-accessible site does not by itself settle jurisdiction. Record advice and remaining risks, not a blanket compliance guarantee.
 
-## B. CI/CD and PR #2
+## B. CI/CD and the release PR
 
-**Current blocker:** the required `Verify release` job ran into its 90-minute budget. The recorded run reached 132 of 172 catalogue entries without recorded failures before cancellation; later checks did not execute. Partial progress is not a passing gate.
+**Starting blocker, before Phase 1:** the required `Verify release` job ran into its 90-minute budget. The recorded run reached 132 of 172 catalogue entries without recorded failures before cancellation; later checks did not execute. Partial progress is not a passing gate.
+
+**Phase 1 update, 12 September:** bounded parallelism subsequently completed all 172 entries / 1,032 layouts and all nine motion presets in run `34688330949`, but enabled analytics failed on a removed homepage Slider fixture. A second run (`34688474452`) exposed three short-lived interaction observation failures. B02-1 and B02-2 track these separately. No complete required run or accepted release artifact exists yet; earlier partial evidence is retained, not presented as a pass.
 
 **Implementation locations:** `.github/workflows/verify.yml`, `scripts/run-production-gate.mjs`, release scripts and `docs/production/OPERATIONS.md` in the release checkout.
 
-- [ ] **B01 · C — Repair CI runtime after approval.** Evaluate the existing `COJEEV_DOCS_SHARDS` support to run the catalogue in bounded parallel partitions. Preserve exact coverage, source provenance and all later checks. Done when the entire run finishes within its budget without hiding failures.
+**Owner correction:** small checkpoint PRs must use affected checks, not repeat all 172 components. Keep full coverage for the combined release candidate, shared/uncertain-impact changes and main promotion. Plain `feat/`, `fix/` and `chore/` branch names are required. PRs #2–#8 were closed automatically by source-branch renaming; their commits and discussions are preserved and linked replacement PRs are pending. None of these closures was a merge.
+
+- [ ] **B01 · C — Repair CI runtime and scope.** Retain bounded catalogue partitions and add conservative affected-check selection for small checkpoints. Preserve exact full-release coverage, source provenance and all later checks. Scoped code acceptance permits the repair PR to merge; this runtime checkpoint closes when the combined full run finishes within its budget without hiding failures.
 - [ ] **B02 · C — Verify the complete final-source gate.** Lint, type checking, unit tests, reporting/hosting tests, code-example checks, catalogue/browser/motion tests, reporting/analytics browser checks and clean-consumer install/build must all finish. Save sanitized evidence from the exact final revision.
+  - [ ] **B02-1 · C — Repair the stale landing analytics fixture.** Run34688330949 passed the full catalogue/motion and later browser stages, then waited for a Slider no longer present on the restored homepage. Reproduce the failure and test an actual featured landing component without removing impression, deduplication, copy or privacy checks. Use its own `fix(ci)` PR; keep homepage and analytics product code unchanged unless a distinct defect is separately evidenced.
+  - [ ] **B02-2 · C — Observe short-lived interactions reliably.** Run34688474452 missed Agent Chat cancellation, Guided Pointer arrival and Text Reveal replay states. Source and browser diagnosis must distinguish a product failure from late test observation. Preserve real pointer/keyboard actions, visible-frame and completion assertions; prove the correction with delayed-driver reproduction and negative controls. Use a separate `fix(ci)` PR without changing product timing or weakening checks.
 - [ ] **B03 · C — Verify release safety controls.** Confirm pinned Node/dependencies/actions, no deployment secrets for fork PRs, per-environment serialization, no independent automatic GitHub Pages publication, and preserved manual Pages compatibility.
   - [ ] **B03-1 · C — Pin the consumer installer.** Phase 1 inspection found two `shadcn@latest` invocations in `scripts/verify-install.mjs`. Use the repository's reviewed exact installer version, keep the fresh consumer outside the repo, and verify its real install/build. Separate `fix(ci)` PR; do not change component code or silently upgrade dependencies.
 - [ ] **B04 · C — Verify artifact identity and separation.** Record commit, beta/prod artifact hashes and build configuration. Reject localhost URLs, wrong base paths and cross-environment API/download dependencies. Do not rebuild an arbitrary newer commit after approval.
-- [ ] **B05 · B — Merge PR #2 normally.** Recheck its exact head, diff, conversations and required checks; confirm beta prerequisites are ready. Merge only the reviewed head with protections intact. Record the merge commit; do not call this a production deployment.
+- [ ] **B05 · B — Merge the release PR normally.** Recheck the successor to original PR #2: exact head, diff, conversations and required checks; confirm beta prerequisites are ready. Merge only the reviewed head with protections intact. Record the merge commit; do not call this a production deployment.
 - [ ] **B06 · C — Exercise a failed release safely.** Demonstrate that a failing gate or wrong artifact blocks promotion; keep test failures out of production. Record the negative test as well as the successful release.
 
 ## C. Hosting, credentials and live services
@@ -347,6 +353,14 @@ Add one row when closing or reopening a task. Never record secrets, personal rep
 | 2026-09-12 | B01 | Implemented and reviewed; full remote acceptance pending | `d345a58` | [PR #3](https://github.com/luv-jeri/cojeev-ui/pull/3), [full run](https://github.com/luv-jeri/cojeev-ui/actions/runs/34688330949); 14 focused runner checks and 343 unit tests passed; 90-minute budget and all later checks retained | Cojeev; do not close on partial/cancelled results |
 | 2026-09-12 | A03 / C01–C03 | Prerequisites rechecked; still incomplete | GitHub access verified; browser reports User unavailable | beta and production each list only the preserved REPORTING_SECRETS_JSON bundle; no repository secrets. Main protections and owner production approval are intact. Auto-merge is disabled | Sanjay + Cojeev; owner-assisted credentials remain separate from CI |
 | 2026-09-12 | B03-1 | Implemented and reviewed; checks/merge pending | [`e9d45b0`](https://github.com/luv-jeri/cojeev-ui/commit/e9d45b08c989b8292c4b6c0ca019bcce6b765646), [PR #5](https://github.com/luv-jeri/cojeev-ui/pull/5) | Installer pinned to 4.21.0; real fresh-consumer install/build passed. Primary review confirmed 343 unit tests and consumer rebuild passed; [scoped evidence](../../production/2026-09-12-phase-1-release-controls.md). Full CI acceptance remains pending | Cojeev; require complete checks and merge before closing |
+| 2026-09-12 | B03-1 | Opened after release-control inspection | `scripts/verify-install.mjs` in `cc971887` | Two unpinned installer invocations; exact root dependency is 4.21.0. No upgrade or installation claim | Cojeev; scoped installer pin and real consumer verification |
+| 2026-09-12 | B03-1 | Implemented and reviewed; required checks/merge pending | `e9d45b0` | [PR #5](https://github.com/luv-jeri/cojeev-ui/pull/5); pinned installer and real five-component install/build passed; [scoped evidence](https://github.com/luv-jeri/cojeev-ui/blob/e9d45b08c989b8292c4b6c0ca019bcce6b765646/docs/production/2026-09-12-phase-1-release-controls.md) | Cojeev; complete remote checks and merge parent checkpoints first |
+| 2026-09-12 | B03 | Source controls reviewed; checks/merge pending | `89fdef4`, final tracking `1491794` | [PR #6](https://github.com/luv-jeri/cojeev-ui/pull/6); [dated control audit](https://github.com/luv-jeri/cojeev-ui/blob/89fdef409810c026a55796d5c8cd44a24488b751/docs/production/2026-09-12-release-control-audit.md); 25 release/operations fixture tests passed, GitHub protections freshly verified, independent review approved | Cojeev; merge after PR #5 and complete checks; B02/B04 and live acceptance remain separate |
+| 2026-09-12 | A03 / C01–C03 | Cloudflare command-line access verified; provisioning still pending | Read-only update at 11:13 UTC | Production reporting Worker lists ADMIN_TOKEN, GITHUB_WEBHOOK_SECRET, IP_HASH_SECRET and TURNSTILE_SECRET. Configured beta reporting Worker returned not found. GitHub deployment credentials remain missing; no values read or provider changes made. Evidence update on [PR #6](https://github.com/luv-jeri/cojeev-ui/pull/6) | Cojeev; preserve existing bindings and provision only verified gaps in the deployment phase |
+| 2026-09-12 | B01 / W01 | Full checks failed; checkpoints remain open | Runs `34688330949` / `34688474452` | First run passed catalogue/motion but failed stale landing analytics; second failed Agent Chat cancellation, Guided Pointer arrival and Text Reveal replay observation. Downstream skipped checks are not passes. Findings recorded on [PR #3](https://github.com/luv-jeri/cojeev-ui/pull/3#issuecomment-5645736706) and [PR #4](https://github.com/luv-jeri/cojeev-ui/pull/4#issuecomment-5645736846) | Cojeev; repair B02-1/B02-2, then rerun complete checks |
+| 2026-09-12 | B02-1 | Implemented and independently reviewed; full CI pending | `4601595` | [PR #7](https://github.com/luv-jeri/cojeev-ui/pull/7), [run](https://github.com/luv-jeri/cojeev-ui/actions/runs/34692165467); exact old selector failure reproduced, complete enabled test passed locally, separate unset/disabled builds captured nothing, 12 focused tests passed | Cojeev; preserve the restored homepage and await full acceptance |
+| 2026-09-12 | B02-2 | Implemented and independently reviewed; full CI/merge pending | `39d0c31` | [PR #8](https://github.com/luv-jeri/cojeev-ui/pull/8), stacked on PR #7; [full run](https://github.com/luv-jeri/cojeev-ui/actions/runs/34693991893) pending. Delayed-driver reproduction and negative controls passed; provenance and full-intervention guard corrections reviewed; 345 root tests passed; zero product changes | Cojeev; await complete final-source CI and dependency acceptance; no checkpoint closure |
+| 2026-09-12 | W01 | Reviewed dependencies integrated locally; full checks/merge pending | Local merge `b613fb2`, incorporating `39d0c31` | [PR #4](https://github.com/luv-jeri/cojeev-ui/pull/4); combined tree passed 345 root tests and whitespace checks; product directories and package manifests unchanged from W01 start `93fe99b`. B01/B02-1/B02-2 remote acceptance remains pending | Cojeev; primary review and exact-final-source checks before delivery or closure |
 
 ## Final sign-off card
 
