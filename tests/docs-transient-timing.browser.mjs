@@ -5,6 +5,27 @@ import path from "node:path";
 import { chromium } from "playwright";
 
 const negative = process.argv.includes("--negative");
+function requireInterventions(observed, isNegative) {
+  const expected = isNegative
+    ? ["retain-cancelled-timer", "hide-ring", "opaque-reveal"]
+    : ["clock-setup", "stop-generation", "next-moment", "replay-reveal"];
+  assert.deepEqual([...new Set(observed)].sort(), expected.sort(), "Every expected intervention must run");
+}
+if (process.argv.includes("--check-intervention-guard")) {
+  let rejected = 0;
+  for (const [mode, ids] of [
+    [false, ["clock-setup", "stop-generation", "next-moment", "replay-reveal"]],
+    [true, ["retain-cancelled-timer", "hide-ring", "opaque-reveal"]],
+  ]) {
+    requireInterventions(ids, mode);
+    for (const missing of ids) {
+      assert.throws(() => requireInterventions(ids.filter(id => id !== missing), mode), { code: "ERR_ASSERTION" }, `Missing ${missing} must be rejected`);
+      rejected++;
+    }
+  }
+  console.log(JSON.stringify({ guard: "pass", completeModes: 2, missingIdsRejected: rejected }));
+  process.exit(0);
+}
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const output = path.resolve(process.argv.find(arg => arg.startsWith("--output="))?.slice(9) ?? (negative ? "output/playwright/transient-negative" : "output/playwright/transient-delayed"));
 process.argv = [process.argv[0], "scripts/check-docs.mjs", "--serve", "--ids=agent-chat,guided-pointer,text-reveal", "--widths=1440", "--themes=light", `--output=${output}`];
@@ -22,7 +43,7 @@ const realPauseAt = clockPrototype.pauseAt;
 await probeBrowser.close();
 const injected = [];
 clockPrototype.pauseAt = async function (...args) {
-  if (!negative) { injected.push("clock setup driver delayed"); await delay(2500); }
+  if (!negative) { injected.push("clock-setup"); await delay(2500); }
   return realPauseAt.apply(this, args);
 };
 locatorPrototype.click = async function (options) {
@@ -32,16 +53,16 @@ locatorPrototype.click = async function (options) {
   if (negative && named("Stop generation")) {
     clearTimeout = await this.page().evaluateHandle(() => window.clearTimeout);
     await this.page().evaluate(() => { window.clearTimeout = () => {}; });
-    injected.push("cancelled timer deliberately retained");
+    injected.push("retain-cancelled-timer");
   }
   try {
     if (!negative && named("Stop generation")) {
-      injected.push(description);
+      injected.push("stop-generation");
       await delay(2500);
     }
     const result = await realClick.call(this, options);
     if (!negative && ["Replay reveal", "Next moment"].some(named)) {
-      injected.push(description);
+      injected.push(named("Replay reveal") ? "replay-reveal" : "next-moment");
       await delay(2500);
     }
     return result;
@@ -57,11 +78,11 @@ pagePrototype.goto = async function (...args) {
   if (negative) {
     if (new URL(this.url()).pathname.endsWith("/text-reveal/")) {
       await this.addStyleTag({ content: '[data-reveal-word] { opacity: 1 !important; }' });
-      injected.push("text intermediate paint disabled");
+      injected.push("opaque-reveal");
     }
     if (new URL(this.url()).pathname.endsWith("/guided-pointer/")) {
       await this.addStyleTag({ content: '[data-slot="guided-pointer-ring"] { opacity: 0 !important; }' });
-      injected.push("ring paint disabled");
+      injected.push("hide-ring");
     }
   }
   return response;
@@ -77,7 +98,7 @@ const results = JSON.parse(fs.readFileSync(path.join(output, "results.json"), "u
 assert.deepEqual(results.revisionEnd, results.revisionStart, "Source provenance must remain stable, including negative runs");
 assert.equal(results.harnessEndSha256, results.harnessSha256, "The gate must not change during verification");
 assert.equal(results.entries.length, 3);
-assert(injected.length > 0, "The intended delay or negative intervention must run");
+requireInterventions(injected, negative);
 for (const entry of results.entries) {
   assert(entry.layouts.every(layout => layout.status === "pass"), `${entry.id} layouts`);
   assert.equal(entry.preview.status, "pass", `${entry.id} shared preview`);
