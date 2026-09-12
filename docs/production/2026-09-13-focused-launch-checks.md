@@ -13,7 +13,7 @@ Three launch checkpoints were prepared in isolated worktrees, and all three reso
 | --- | --- | --- |
 | I03 licence notices | `licensing` `5f5aba7` | a notices generator, the text file it writes and the four registry payloads it regenerates |
 | E08-1 reporting consent | `diagnostic-opt-in` `05cc9ae` | one line of the reporting widget, its browser journey and a new focused consent check |
-| G01 loading baseline | `performance` `f712294` | one standalone measurement script that nothing imports |
+| G01 loading baseline | `performance` `9f42777` (corrected measurement baseline) | one standalone measurement script that nothing imports |
 
 Repeating the whole component catalogue for each of these is the behaviour the owner corrected on
 12 September. Skipping release acceptance is not the alternative: the full job still runs for every
@@ -47,12 +47,23 @@ Suites: `quick`, `registry-generation`, `install-consumer`.
 
 No component catalogue, no browser gate, no release pair.
 
+An isolated change to the root `LICENCE` selects the unit suites, which check
+notice-text consistency after I03 lands. It does not trigger a complete consumer
+installation just to compare licence text. Other generated-registry changes still
+run the real installation journey above.
+
 ### E08-1 — `reporting-consent`
 
 Paths: `components/reporting/reporting-widget.tsx`, `scripts/check-reporting-consent.mjs`,
 `scripts/check-reporting-browser.mjs`.
 
 Suites: `quick`, `reporting-consent` (which implies a real `npm run build`).
+
+Reporting-only changes build their disposable fixture once. The earlier plain
+site build is omitted unless transient-paint or consumer-install checks also need
+it. Chromium installation is still enabled for every reporting journey. An
+analytics check combined with reporting reuses the same analytics-unconfigured
+fixture before the explicit disabled/enabled builds.
 
 - **The focused consent check.** `node scripts/check-reporting-consent.mjs` mounts the actual
   `ReportingWidget` and asserts a new bug draft attaches no browser details until the reader asks,

@@ -15,7 +15,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const rows = [
   ['prose only', ['docs/production/2026-09-12-phase-1-ci.md'], 'docs', 'prose'],
   ['nested prose', ['docs/superpowers/plans/a.md', 'README.md', 'AGENTS.md'], 'docs', 'prose'],
-  ['licence at root', ['LICENCE'], 'docs', 'prose'],
+  ['licence at root verifies generated notice consistency', ['LICENCE'], 'checkpoint', 'quick'],
   ['deleted prose still prose', ['docs/old-report.md'], 'docs', 'prose'],
   ['root unit tests', ['tests/release.test.mjs'], 'checkpoint', 'quick'],
   ['typescript unit test', ['tests/settings.test.ts'], 'checkpoint', 'quick'],
@@ -378,6 +378,15 @@ test('the analytics unset case stays an analytics-free build, reused as the rele
     String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes("run_build == 'true'"));
   assert.ok(plain, 'the shared plain build must stay guarded by run_build');
   assert.equal(plain.env, undefined, 'the plain build must set no environment at all');
+});
+
+test('reporting reuses its fixture build unless another selected journey needs the plain build', () => {
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const steps = workflow.jobs.checkpoint.steps;
+  const plain = steps.find(step => String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes("run_build == 'true'"));
+  assert.equal(plain?.if, "needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true')");
+  const browser = steps.find(step => String(step.run ?? '').includes('playwright install'));
+  assert.equal(browser?.if, "needs.scope.outputs.run_build == 'true'", 'reporting still needs Chromium even when the plain build is omitted');
 });
 
 test('one unit invocation already covers the classifier and partition runner', () => {

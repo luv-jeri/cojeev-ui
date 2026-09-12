@@ -18,7 +18,8 @@ import fs from "node:fs";
 const NAMED = new Map([
   ["README.md", "prose"],
   ["AGENTS.md", "prose"],
-  ["LICENCE", "prose"],
+  // The distributed notices embed LICENCE; unit tests verify that it matches.
+  ["LICENCE", "unit"],
   ["LICENSE", "prose"],
   ["LICENSE.md", "prose"],
 

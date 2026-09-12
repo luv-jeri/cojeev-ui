@@ -110,7 +110,9 @@ jobs:
         run: |
           node scripts/build-registry.mjs
           git diff --exit-code -- registry.json public/registry.json public/r registry/cojeev/NOTICES.txt
-      - if: needs.scope.outputs.run_build == 'true'
+      # Reporting builds its own disposable fixture below. Only build twice
+      # when an earlier install or transient journey also needs the plain site.
+      - if: needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true')
         run: npm run build
       # The affected components only, not the catalogue: the B02-2 harness and
       # its negative control, which must still fail on unrepaired transient paint.
