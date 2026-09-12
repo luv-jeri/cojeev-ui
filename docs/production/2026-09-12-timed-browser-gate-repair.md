@@ -57,3 +57,34 @@ rtk proxy node node_modules/eslint/bin/eslint.js scripts/check-docs.mjs scripts/
 ```
 
 Results: **2/2 fingerprint tests pass**; delayed mode passes all three full behaviors; negative mode rejects exactly the original cancellation/ring/reveal failures. Both runs preserve passing layouts, shared preview, runtime checks, chrome and start/end provenance. Their amended fingerprint is `3634775e6f186b7f014da230795f44ab5e278444c75783c069dd0cbc119ef3fb`. Focused lint passes. No full catalogue rerun, application change or new build was needed for this provenance-only correction.
+
+## Continuation: observe button loading before it completes
+
+Run [34692165467](https://github.com/luv-jeri/cojeev-ui/actions/runs/34692165467) failed the `button` behavior check while all six of its layouts passed. After Loading duration was set to its 0.5s minimum and Add a note was pressed, `getByRole("button", { name: "Adding…", exact: true }).isDisabled()` timed out at 10000ms because the pending phase had already finished. The other two failures in that run were already corrected by `39d0c31`.
+
+`ButtonExample` in `components/examples/static.tsx` sets phase `pending` and schedules exactly one `setTimeout` at `duration * 1000`; the loading Button renders `aria-busy` and `aria-disabled` and never sets the native `disabled` attribute. At the minimum duration the entire observable window is 500ms, shorter than a delayed driver round trip. Component behavior, CSS, product durations and gate timeouts are unchanged.
+
+### Correction
+
+The `button` case now uses the same narrow browser-clock pattern as Agent Chat, scoped to the first loading run only. It installs the clock while idle, fixes wall time to a known instant, then pauses at that same instant **before** the press, so a delayed `pauseAt` call cannot receive a stale target. Add a note remains a native Playwright click. The held clock makes the real pending semantics readable: the status message `Running the local example…`, `Adding…` reported disabled through `aria-disabled`, and no native `disabled` attribute. Advancing the clock by 1000ms then fires the actual 500ms timer and the success message is asserted. A nested `finally` restores system time and resumes the clock even if setup or an assertion fails. Every later assertion — duration slider control, keyboard error path, retry, the 10s cancellation and the final natively disabled control — runs on resumed real time and is unchanged. No assertion was dropped or weakened; two existing bare assertions gained explicit failure messages.
+
+`tests/docs-transient-timing.browser.mjs` adds `button` as a fourth case in the existing mechanism. One new delayed intervention, `add-note`, sleeps 2500ms after the real Add a note click, so the driver observes the pending state late. One new negative intervention, `enabled-pending`, breaks only the pending semantic: a `MutationObserver` on the disposable browser page removes `aria-disabled` from `[data-slot="button"][aria-busy="true"]`, leaving a busy control that never blocks input. Expected case count, both intervention lists and the missing-intervention guard were updated accordingly.
+
+### Verification
+
+Node **25.3.0**, existing Chromium and locked dependencies. `out` was temporarily linked to an existing export whose tracked application source is byte-identical to this worktree (`app`, `components`, `registry`, `lib`, `data`, `public`, `workers`, `apps`, `next.config.ts`, `package.json`, `registry.json`, `components.json`, `postcss.config.mjs`, `tsconfig.json` all compared equal); the link was removed afterwards. No new build or dependency installation was performed.
+
+```sh
+rtk run node tests/docs-transient-timing.browser.mjs --output=output/playwright/transient-delayed-red
+rtk run node tests/docs-transient-timing.browser.mjs
+rtk run node tests/docs-transient-timing.browser.mjs --negative
+rtk run node tests/docs-transient-timing.browser.mjs --check-intervention-guard
+rtk run node node_modules/eslint/bin/eslint.js scripts/check-docs.mjs tests/docs-transient-timing.browser.mjs --max-warnings=0
+rtk git diff --check
+```
+
+The red command was run with the delayed intervention in place and the original `button` case. It failed that case with `Expected text: Running the local example…`, reaching the missed transient state one assertion earlier than CI did and from the same cause; agent-chat, guided-pointer and text-reveal still passed, as did all layouts, previews and chrome. The corrected delayed run passed all **4** behaviors. The negative run rejected exactly four cases, `button` for the intended reason `Pending action must stay busy-disabled while it runs`, alongside the original cancellation, ring and reveal rejections, with layouts, preview, runtime checks, chrome and start/end provenance still passing. The intervention guard reported `{"guard":"pass","completeModes":2,"missingIdsRejected":9}`. Focused lint and whitespace checks passed.
+
+Both corrected runs recorded matching start and end harness fingerprints of `67e7ae758f544d118b275515616e62c1254a75f46f53f1a465a36fe034c39dfd` over the existing four-file list, and `dirty: false` for the Git-backed application-source revision at `39d0c31320daed6081f18f4d4ef1456e8770f23c`, confirming this checkpoint changed no application source. The pre-correction red run recorded the previous fingerprint `3634775e6f186b7f014da230795f44ab5e278444c75783c069dd0cbc119ef3fb`.
+
+Scope: no full catalogue pass, no 172-component or multi-width run, and no CI run is claimed here. Primary review and the complete final-revision gate remain owner-held steps. Rollback is a revert of this test-only commit.

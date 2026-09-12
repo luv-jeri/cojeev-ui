@@ -328,17 +328,32 @@ const tests = {
     assert.match(await page.evaluate(() => document.activeElement?.textContent), /Projects/);
     return "Keyboard ancestor navigation updates the local folder and transfers focus to its heading";
   },
-  button: async ({ root }) => {
+  button: async ({ root, page }) => {
     const duration = root.getByRole("slider", { name: "Loading duration", exact: true });
     await attribute(duration, "aria-valuenow", "3");
     await duration.press("Home");
     await attribute(duration, "aria-valuenow", "0.5");
     const b = root.getByRole("button", { name: "Add a note", exact: true });
-    await b.click();
-    await text(root, "Running the local example…");
-    assert(await root.getByRole("button", { name: "Adding…", exact: true }).isDisabled());
-    assert.equal(await root.getByRole("button", { name: "Adding…", exact: true }).getAttribute("disabled"), null);
-    await text(root, "1 note added in this example.");
+    // Hold the demo's completion timer while the real pending state is read, so
+    // a driver delayed after the press still observes the actual busy semantics.
+    const clockInstant = new Date("2020-01-01T00:00:00Z");
+    await page.clock.install({ time: clockInstant });
+    try {
+      // Fixed wall time cannot make pauseAt's target stale while the driver is
+      // delayed. pauseAt then freezes the timers before this run is started.
+      await page.clock.setFixedTime(clockInstant);
+      await page.clock.pauseAt(clockInstant);
+      await b.click();
+      await text(root, "Running the local example…");
+      const pending = root.getByRole("button", { name: "Adding…", exact: true });
+      assert(await pending.isDisabled(), "Pending action must stay busy-disabled while it runs");
+      assert.equal(await pending.getAttribute("disabled"), null, "Pending action must not paint the native disabled control");
+      await page.clock.runFor(1000);
+      await text(root, "1 note added in this example.");
+    } finally {
+      try { await page.clock.setSystemTime(new Date()); }
+      finally { await page.clock.resume(); }
+    }
     await root.getByRole("radio", { name: "Error and retry", exact: true }).click();
     await key(b, "Enter");
     await text(root, "The example action failed.");
