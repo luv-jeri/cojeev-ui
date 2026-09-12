@@ -15,6 +15,22 @@ Owner directive: Sanjay, 12 September 2026. This is the repository's source of t
 
 For an account configuration, research or manual acceptance checkpoint, commit sanitized procedures/results and link the PR. The audit trail is required even when no application code changes. Never commit credentials or personal inbox/report contents as evidence.
 
+## Proportionate verification
+
+Owner correction, 12 September 2026: match verification to the actual change. Do not repeat the full component catalogue for every small checkpoint or status update.
+
+| Change | Required checkpoint evidence |
+| --- | --- |
+| Prose, tracking or naming rules only | Review the actual diff, changed links and whitespace; no component rebuild or catalogue sweep |
+| A test, CI runner or installer repair | Focused executable tests for that repair and the affected browser/install journey; list unrun release checks explicitly |
+| An isolated component change | Its relevant states, pointer/keyboard interactions, layout and motion checks, plus affected consumers |
+| Shared tokens, motion, dependencies, build configuration, or uncertain impact | Broader regression checks; use the complete gate when the impact cannot be bounded |
+| Combined release candidate or promotion into main | The full release workflow, including both exact-revision artifacts and fresh consumer installation |
+
+The automated fast path uses a conservative allowlist. Unsupported paths still run the full workflow; the policy does not claim automatic dependency-aware component selection already exists. A scoped pass is checkpoint evidence, never release acceptance. A failed or cancelled required check is not a pass.
+
+Review and merge dependency checkpoints with their applicable checks, then verify the combined candidate once. If that run exposes a defect, reproduce and repair the affected case first; do not restart an hour-long run for every exploratory edit. A substantive candidate change requires updated acceptance evidence. Do not invalidate completed functional evidence merely to append a status note; carry tracking into the next planned checkpoint.
+
 ## Naming scheme
 
 Use lowercase kebab-case in new branch names. Use exactly these change types unless the owner revises this convention:
@@ -25,9 +41,9 @@ Use lowercase kebab-case in new branch names. Use exactly these change types unl
 | `fix` | Correct behavior, accessibility, security or a demonstrated performance problem | `fix(ci): complete release checks within the job budget` |
 | `chore` | Documentation, tests, maintenance, tracking or operational configuration | `chore(privacy): document report retention` |
 
-**Branch:** `codex/<type>/<checkpoint-id>-<short-description>`
+**Branch:** `<type>/<checkpoint-id>-<short-description>`
 
-Examples: `codex/fix/b01-ci-partitions`, `codex/feat/h01-homepage-rework`, `codex/chore/e02-privacy-notice`. Child example: `codex/fix/h01-1-profile-motion`.
+Examples: `fix/b01-ci-partitions`, `feat/h01-homepage-rework`, `chore/e02-privacy-notice`. Child example: `fix/h01-1-profile-motion`.
 
 **Commit subject:** `<type>(<scope>): <imperative summary>`
 
@@ -37,7 +53,7 @@ Use a concise explanation of the actual change, not `updates`, `changes` or `fix
 
 Example: `fix(ci): complete release checks within the job budget [B01]`.
 
-Existing release branches and PR #2 are historical exceptions to the new naming scheme. Preserve their history; inspect their actual diff and status before deciding how dependent checkpoint PRs should target them. Do not force-rename, discard or rewrite them just to match the new convention.
+Owner correction, 12 September 2026: use plain conventional names without an agent/vendor prefix, generated-by label or automatic co-author footer. The release branch is `chore/production-beta`; the rejected homepage is preserved on `chore/homepage-rework-preserved`. Renaming preserves every commit. Keep superseded PR discussions and published history intact, and link replacement PRs where the hosting service cannot rename their source branch in place.
 
 ## Required PR description
 
@@ -62,4 +78,4 @@ Use these headings in every checkpoint PR:
 
 ## Handoff bootstrap
 
-The checklist and this rule were written in the durable original project folder, while release work exists separately. Before starting implementation elsewhere, carry only the reviewed checklist, workflow and scoped `AGENTS.md` addition into the verified working copy, preserving its existing instructions. Put that bootstrap documentation into its own `chore(workflow)` checkpoint PR, named `codex/chore/w01-checkpoint-workflow`. Do not copy the original dirty application tree over the release checkout.
+The checklist and this rule were written in the durable original project folder, while release work exists separately. Before starting implementation elsewhere, carry only the reviewed checklist, workflow and scoped `AGENTS.md` addition into the verified working copy, preserving its existing instructions. Put that bootstrap documentation into its own `chore(workflow)` checkpoint PR, named `chore/w01-checkpoint-workflow`. Do not copy the original dirty application tree over the release checkout.
