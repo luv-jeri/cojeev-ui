@@ -138,6 +138,16 @@ jobs:
         run: |
           node tests/docs-transient-timing.browser.mjs
           node tests/docs-transient-timing.browser.mjs --negative
+      # The clock a behavior case installs belongs to the browser context, not to
+      # its page, so it outlived every later entry in the same worker. The
+      # negative control restores that lifetime and must still reject the three
+      # cases whose exit animations it broke.
+      - name: Exercise the clock-isolation harness and its negative control
+        if: needs.scope.outputs.run_transient == 'true'
+        run: |
+          node tests/docs-clock-isolation.browser.mjs --probe
+          node tests/docs-clock-isolation.browser.mjs
+          node tests/docs-clock-isolation.browser.mjs --negative
       - name: Install into a fresh consumer project from the locally served registry
         if: needs.scope.outputs.run_install == 'true'
         run: node scripts/run-install-verification.mjs
@@ -197,6 +207,8 @@ jobs:
           path: |
             output/playwright/transient-delayed/
             output/playwright/transient-negative/
+            output/playwright/clock-isolation/
+            output/playwright/clock-isolation-negative/
             artifacts/analytics/
             output/playwright/refinement-marketing/
             output/playwright/landing-guides/

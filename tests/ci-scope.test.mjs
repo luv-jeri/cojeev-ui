@@ -72,6 +72,7 @@ const rows = [
   ['analytics browser test', ['tests/analytics.browser.mjs'], 'checkpoint', 'quick,analytics-browser'],
   ['transient harness', ['scripts/docs-transient-paint.mjs'], 'checkpoint', 'quick,transient-timing'],
   ['transient harness test', ['tests/docs-transient-timing.browser.mjs'], 'checkpoint', 'quick,transient-timing'],
+  ['clock isolation test', ['tests/docs-clock-isolation.browser.mjs'], 'checkpoint', 'quick,transient-timing'],
   ['docs behaviour details', ['scripts/docs-behaviors-details.mjs'], 'checkpoint', 'quick,transient-timing'],
   ['catalogue harness entrypoint', ['scripts/check-docs.mjs'], 'checkpoint', 'quick,transient-timing'],
   ['consumer install script', ['scripts/verify-install.mjs'], 'checkpoint', 'quick,install-consumer'],
@@ -366,6 +367,7 @@ test('the scoped job runs the suite commands its allowlist promises', () => {
   assert.ok(guarded('run_analytics').includes('npm run analytics:browser'), 'the analytics suite must run the enabled check');
   assert.ok(guarded('run_transient').includes('tests/docs-transient-timing.browser.mjs'), 'the transient suite must run its harness');
   assert.ok(guarded('run_transient').includes('--negative'), 'the transient suite must run its negative control');
+  assert.ok(guarded('run_transient').includes('tests/docs-clock-isolation.browser.mjs'), 'the transient suite must run the clock-isolation harness');
   assert.ok(guarded('run_install').includes('run-install-verification.mjs'), 'the install suite must install from a locally served registry');
   assert.ok(guarded('run_registry').includes('scripts/build-registry.mjs'), 'the registry suite must regenerate the committed output');
   assert.ok(guarded('run_registry').includes('git diff --exit-code'), 'the registry suite must fail when generated output no longer matches its source');

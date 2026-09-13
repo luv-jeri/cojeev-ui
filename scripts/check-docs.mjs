@@ -1387,22 +1387,26 @@ async function measurementPage(context, errors) {
   });
   return page;
 }
+async function docsContext(width, theme) {
+  const context = await browser.newContext({
+    viewport: { width, height: 1000 },
+    colorScheme: theme,
+    permissions: ["clipboard-read", "clipboard-write"],
+    acceptDownloads: true,
+  });
+  await context.addInitScript(
+    ({ theme }) => {
+      if (!/^https?:$/.test(location.protocol)) return;
+      localStorage.setItem("cojeev-docs-theme", theme);
+    },
+    { theme },
+  );
+  return context;
+}
 try {
   for (const width of widths)
     for (const theme of themes) {
-      const context = await browser.newContext({
-        viewport: { width, height: 1000 },
-        colorScheme: theme,
-        permissions: ["clipboard-read", "clipboard-write"],
-        acceptDownloads: true,
-      });
-      await context.addInitScript(
-        ({ theme }) => {
-          if (!/^https?:$/.test(location.protocol)) return;
-          localStorage.setItem("cojeev-docs-theme", theme);
-        },
-        { theme },
-      );
+      const context = await docsContext(width, theme);
       const errors = [];
       const page = await measurementPage(context, errors);
       contexts.push({ context, page, width, theme, errors });
@@ -1637,8 +1641,17 @@ try {
       }),
     );
     // The primary behavior page can keep animated examples and modal state
-    // alive while the next entry's other five layouts run. Retire it too.
+    // alive while the next entry's other five layouts run. Retire the whole
+    // context, not only the page: `page.clock` is the browser context's clock,
+    // every clock call is kept as a context init script and replayed into each
+    // page opened afterwards, and the client API has no uninstall. A case that
+    // installs a clock would otherwise leave fake Date, setTimeout and
+    // requestAnimationFrame on every later entry in this worker, where exit
+    // animations no longer finish against Playwright's real deadline. One fresh
+    // context per entry also isolates storage, permissions and service state.
     await page.close();
+    await primary.context.close();
+    primary.context = await docsContext(primary.width, primary.theme);
     primary.page = await measurementPage(primary.context, primary.errors);
   }
   for (const surface of contexts) {
