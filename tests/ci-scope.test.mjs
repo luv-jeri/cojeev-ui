@@ -10,6 +10,51 @@ import { changedPaths, classify, outputsFor, resolveScope, SUITE_FLAGS } from '.
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 
+test('choice and accordion polish select real browser and generated-output checks, not the full catalogue', () => {
+  for (const file of [
+    'components/component-preview.tsx', 'components/examples/choice-foundations.tsx',
+    'registry/cojeev/styles/choice-foundations.css', 'registry/cojeev/styles/accordion.css',
+    'public/r/checkbox.json', 'public/r/radio-group.json', 'public/r/switch.json', 'public/r/accordion.json',
+    'tests/choice-recovery.docs.browser.mjs', 'tests/disclosure-recovery.docs.browser.mjs',
+    'tests/workbench.browser.mjs', 'tests/docs-compact-navigation.browser.mjs',
+    'scripts/run-component-polish.mjs',
+  ]) {
+    const decision = classify([file]);
+    assert.equal(decision.scope, 'checkpoint', file);
+    assert.deepEqual(decision.suites, ['quick', 'registry-generation', 'component-polish'], file);
+    const output = outputsFor(decision);
+    assert.equal(output.run_polish, 'true', file);
+    assert.equal(output.run_registry, 'true', file);
+    assert.equal(output.run_build, 'true', file);
+  }
+  for (const file of ['registry/cojeev/lib/selector.tsx', 'registry/cojeev/ui/accordion.tsx',
+    'components/examples/disclosure.tsx', 'registry/cojeev/styles/accordion.css.bak',
+    'components/component-preview-new.tsx', 'scripts/run-component-polish.mjs.bak']) {
+    assert.equal(classify([file]).scope, 'full', file);
+  }
+});
+
+test('the six reviewed evidence images need no component rebuild and do not exempt neighbouring assets', () => {
+  for (const file of [
+    'docs/quality/evidence/h03-2/before-shape-menu.png', 'docs/quality/evidence/h03-2/after-shape-menu.png',
+    'docs/quality/evidence/h03-2/after-mobile-comparisons.png',
+    'docs/quality/evidence/v50-1/before-editorial-mobile.png', 'docs/quality/evidence/v50-1/after-editorial-mobile.png',
+    'docs/quality/evidence/v50-1/after-chapters-desktop.png',
+  ]) assert.equal(classify([file]).scope, 'docs', file);
+  assert.equal(classify(['docs/quality/evidence/h03-2/unknown.png']).scope, 'full');
+  assert.equal(classify(['docs/quality/evidence/h03-2/after-shape-menu.png', 'app/page.tsx']).scope, 'full');
+});
+
+test('component polish actually runs its browser runner after a build, even when reporting is also selected', () => {
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const steps = workflow.jobs.checkpoint.steps;
+  const run = steps.findIndex(step => step.run === 'node scripts/run-component-polish.mjs');
+  assert.ok(run >= 0, 'polish browser runner must execute');
+  assert.match(steps[run].if, /run_polish == 'true'/);
+  const build = steps.findIndex(step => step.run === 'npm run build' && String(step.if).includes('run_polish'));
+  assert.ok(build >= 0 && build < run, 'polish must use the freshly built plain fixture');
+});
+
 // Every row is a real diff shape. The right-hand side is the whole contract:
 // an unlisted path anywhere in the diff must pull the entire run to full.
 const rows = [
@@ -384,7 +429,7 @@ test('reporting reuses its fixture build unless another selected journey needs t
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
   const steps = workflow.jobs.checkpoint.steps;
   const plain = steps.find(step => String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes("run_build == 'true'"));
-  assert.equal(plain?.if, "needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true')");
+  assert.equal(plain?.if, "needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true' || needs.scope.outputs.run_polish == 'true')");
   const browser = steps.find(step => String(step.run ?? '').includes('playwright install'));
   assert.equal(browser?.if, "needs.scope.outputs.run_build == 'true'", 'reporting still needs Chromium even when the plain build is omitted');
 });
