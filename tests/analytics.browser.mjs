@@ -74,7 +74,7 @@ async function waitFor(captures, predicate, label, timeout = 6_000) {
     if (found) return found.payload;
     await delay(40);
   }
-  assert.fail(`Timed out waiting for analytics event: ${label}. Saw: ${captures.map(({ payload }) => payload.event).join(", ")}`);
+  assert.fail(`Timed out waiting for analytics event: ${label}. Saw: ${captures.map(({ payload }) => `${payload.event}${payload.properties.component_id ? `(${payload.properties.component_id})` : ""}`).join(", ")}`);
 }
 
 function events(captures, name) {
@@ -257,11 +257,27 @@ try {
     const specimen = page.locator('[data-featured-component="motion-drawer"] [data-analytics-preview="motion-drawer"]');
     await specimen.waitFor();
     await specimen.scrollIntoViewIfNeeded();
+    const visibilitySnapshot = () => specimen.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        bounds: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        viewport: { width: innerWidth, height: innerHeight },
+        scroll: { x: scrollX, y: scrollY },
+        visibility: document.visibilityState,
+        ready: document.readyState,
+        fonts: document.fonts.status,
+        htmlClass: document.documentElement.className,
+      };
+    });
+    const exposureStart = await visibilitySnapshot();
     const impression = await waitFor(
       captures,
       (payload) => payload.event === "component_impression" && payload.properties.component_id === "motion-drawer",
       "50 percent visible for one second",
-    );
+    ).catch(async (error) => {
+      console.error("Landing impression visibility:", JSON.stringify({ start: exposureStart, end: await visibilitySnapshot() }));
+      throw error;
+    });
     assert.deepEqual(impression.properties, {
       component_id: "motion-drawer",
       placement: "landing",
