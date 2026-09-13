@@ -4,7 +4,9 @@ import { mkdir } from "node:fs/promises";
 
 // Removing the pre-paint theme, or replaying the server's light snapshot during
 // hydration, must fail even when the eventual settled screenshot looks correct.
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321";
+// The default matches the configured basePath in next.config.ts, as the sibling
+// browser suites do. POLISH_URL still overrides it for a blank-base-path server.
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/cojeev-ui";
 const output = process.env.THEME_OUTPUT ?? "output/playwright/theme-first-paint";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
@@ -13,6 +15,9 @@ try {
     { stored: "dark", system: "light", expected: "dark" },
     { stored: "light", system: "dark", expected: "light" },
     { stored: null, system: "dark", expected: "dark" },
+    // System dark, not light: an unusable stored value must fall through to the
+    // system preference, and expecting light here would also pass a hard-coded one.
+    { stored: "invalid", system: "dark", expected: "dark" },
     { stored: "invalid", system: "light", expected: "light" },
     { stored: null, system: "dark", expected: "dark", blocked: true },
   ]) {
