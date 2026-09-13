@@ -29,7 +29,6 @@ async function operation<T>(mode: IDBTransactionMode, action: (store: IDBObjectS
 }
 export async function loadDraft(): Promise<ReportingDraft | null> { return (await operation("readonly", store => store.get("current"))) ?? null; }
 export async function saveDraft(draft: ReportingDraft): Promise<void> { await operation("readwrite", store => store.put(draft, "current")); }
-export async function deleteDraft(): Promise<void> { await operation("readwrite", store => store.delete("current")); }
 
 export type ReportingDraftWorkspace = {
   activeKind: ReportKind;
