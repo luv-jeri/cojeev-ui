@@ -46,8 +46,10 @@ export function DocsThemeSync() {
   const mode = useDocsTheme();
   const {quiet}=useChoreography();
   const initialized=React.useRef(false);
-  React.useEffect(() => {
-    applyTheme(initialized.current ? mode : readTheme(), !initialized.current || quiet);
+  React.useLayoutEffect(() => {
+    // Hydration (including Strict Mode replay) still holds the server's light
+    // snapshot. Resolve the actual preference instead of painting that snapshot.
+    applyTheme(readTheme(), !initialized.current || quiet);
     initialized.current=true;
   }, [mode,quiet]);
   return null;

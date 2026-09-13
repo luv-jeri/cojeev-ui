@@ -2,6 +2,16 @@
 
 Started 2026-09-10. Local review: http://127.0.0.1:4320/cojeev-ui/
 
+## RF-H04-1 — Saved dark appearance flashes light on page load (13 September)
+
+- Reported on `/docs/buy-me-coffee/`; shared root cause affects docs and marketing shells.
+- Reproduction: block Next JavaScript while loading saved dark mode. Server HTML painted light. Frame sampling also caught light → dark → light during hydration, although the eventual screenshot looked dark and readable.
+- Cause: root HTML always began light; DocsThemeSync waited for a passive effect. Its initialized ref then allowed Strict Mode effect replay to apply the stale server light snapshot as an animated change.
+- Fix: a synchronous head script resolves the existing saved/system preference before content paints. The shared theme synchronizer reads the current preference in a layout effect, including hydration replay. Explicit user theme changes retain their existing reveal. No palette redesign, hidden-page workaround, new storage, or component API change.
+- Verification: `POLISH_URL=http://127.0.0.1:4321 node tests/theme-first-paint.browser.mjs`; first asserted light ≠ dark before the fix, then passed stored light/dark, system fallback, invalid preference, blocked storage, delayed hydration and reload. Coffee text/description/action measured 14.15/8.61/14.15:1 in dark and 14.75/9.00/14.75:1 in light. Mobile 390px and desktop 1440px captures inspected; support link works by keyboard with no horizontal overflow.
+- `tests/theme-glyph-seam.browser.mjs` passed both directions at 1x/2x, keyboard focus and quiet motion. Seven affected appearance/theme/scroll unit checks, lint, type generation and TypeScript passed. One concurrent type-generation/dev-server manifest race produced a temporary 500; a separate rerun after generation completed passed. Not a passing run and not a product regression.
+- Evidence: `output/playwright/theme-first-paint/` and `output/playwright/theme-glyph-seam/`. Local checkpoint evidence only; no production build, whole-catalogue rerun, deployment or blanket accessibility certification. Settled card text did not need a separate colour override; the mixed-theme startup was corrected at its source.
+
 ## Final recovery checkpoint — 2026-09-11
 
 Primary-agent implementation and local verification now cover all 55 overhaul intake rows, the separate twelve-concept Hero Button collection and scoped shared-shell requests. Current verified runtime is port 4321. See [recovery delivery](2026-09-11-recovery-delivery.md) for the complete family record, retained original controls and precise limits. Historical checkpoints below are not current completion counts. No sub-agents, commits, publication or project dependency changes were used in this recovery; owner aesthetic acceptance is separate.
