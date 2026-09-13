@@ -32,6 +32,7 @@ jobs:
       run_transient: ${{ steps.select.outputs.run_transient }}
       run_install: ${{ steps.select.outputs.run_install }}
       run_polish: ${{ steps.select.outputs.run_polish }}
+      run_maintenance: ${{ steps.select.outputs.run_maintenance }}
       run_npm: ${{ steps.select.outputs.run_npm }}
       run_build: ${{ steps.select.outputs.run_build }}
     steps:
@@ -113,11 +114,23 @@ jobs:
           git diff --exit-code -- registry.json public/registry.json public/r registry/cojeev/NOTICES.txt
       # Reporting builds its own disposable fixture below. Only build twice
       # when an earlier install or transient journey also needs the plain site.
-      - if: needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true' || needs.scope.outputs.run_polish == 'true')
+      - if: needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true' || needs.scope.outputs.run_polish == 'true' || needs.scope.outputs.run_maintenance == 'true')
         run: npm run build
       - name: Check choice, disclosure, workbench and compact navigation journeys
         if: needs.scope.outputs.run_polish == 'true'
         run: node scripts/run-component-polish.mjs
+      # The journeys that actually consume the named maintenance paths: the two
+      # marketing routes and, because components/landing/landing.css is shared,
+      # the three further routes that import it. Never the catalogue.
+      - name: Check the marketing routes that share these landing styles
+        if: needs.scope.outputs.run_maintenance == 'true'
+        run: npm run gate:marketing
+      - name: Check the guide and maker routes that share these landing styles
+        if: needs.scope.outputs.run_maintenance == 'true'
+        run: node scripts/check-landing-guides.mjs --serve
+      - name: Confirm draft storage still migrates, saves and clears each kind
+        if: needs.scope.outputs.run_maintenance == 'true'
+        run: node tests/reporting-drafts.browser.mjs
       # The affected components only, not the catalogue: the B02-2 harness and
       # its negative control, which must still fail on unrepaired transient paint.
       - name: Exercise the transient paint harness and its negative control
@@ -125,6 +138,16 @@ jobs:
         run: |
           node tests/docs-transient-timing.browser.mjs
           node tests/docs-transient-timing.browser.mjs --negative
+      # The clock a behavior case installs belongs to the browser context, not to
+      # its page, so it outlived every later entry in the same worker. The
+      # negative control restores that lifetime and must still reject the three
+      # cases whose exit animations it broke.
+      - name: Exercise the clock-isolation harness and its negative control
+        if: needs.scope.outputs.run_transient == 'true'
+        run: |
+          node tests/docs-clock-isolation.browser.mjs --probe
+          node tests/docs-clock-isolation.browser.mjs
+          node tests/docs-clock-isolation.browser.mjs --negative
       - name: Install into a fresh consumer project from the locally served registry
         if: needs.scope.outputs.run_install == 'true'
         run: node scripts/run-install-verification.mjs
@@ -184,7 +207,11 @@ jobs:
           path: |
             output/playwright/transient-delayed/
             output/playwright/transient-negative/
+            output/playwright/clock-isolation/
+            output/playwright/clock-isolation-negative/
             artifacts/analytics/
+            output/playwright/refinement-marketing/
+            output/playwright/landing-guides/
             output/playwright/choice-recovery/
             output/playwright/disclosure-recovery/
             output/playwright/overhaul-workbench/

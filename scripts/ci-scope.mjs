@@ -41,6 +41,9 @@ const NAMED = new Map([
   ["scripts/docs-transient-paint.mjs", "transient-timing"],
   ["scripts/docs-harness-fingerprint.mjs", "transient-timing"],
   ["tests/docs-transient-timing.browser.mjs", "transient-timing"],
+  // B02-3 clock isolation. Same harness, same proportionate scope: it renders
+  // the two clock-owning cases and the three that follow them, not the catalogue.
+  ["tests/docs-clock-isolation.browser.mjs", "transient-timing"],
 
   ["scripts/verify-install.mjs", "install-consumer"],
   ["scripts/run-install-verification.mjs", "install-consumer"],
@@ -84,6 +87,16 @@ const NAMED = new Map([
     "tests/workbench.browser.mjs", "tests/docs-compact-navigation.browser.mjs",
     "scripts/run-component-polish.mjs",
   ].map(file => [file, "component-polish"]),
+  // G07 unused-code removal. launch-faq.tsx is deleted outright, landing.css
+  // loses only the rules exclusive to it, and draft.ts loses one unused export.
+  // landing.css is shared by five routes: the marketing gate opens two of them
+  // and check-landing-guides.mjs opens the other three, so the shared guide
+  // rules are proved on the real pages. scripts/check-refinement-marketing.mjs
+  // is deliberately absent: it is a release gate, and a change to it stays full.
+  ...[
+    "components/landing/launch-faq.tsx", "components/landing/landing.css", "lib/reporting/draft.ts",
+    "scripts/check-landing-guides.mjs", "tests/reporting-drafts.browser.mjs",
+  ].map(file => [file, "maintenance"]),
   ...[
     "docs/quality/evidence/h03-2/before-shape-menu.png", "docs/quality/evidence/h03-2/after-shape-menu.png",
     "docs/quality/evidence/h03-2/after-mobile-comparisons.png",
@@ -103,8 +116,9 @@ const SUITES = {
   "transient-timing": ["quick", "transient-timing"],
   "install-consumer": ["quick", "install-consumer"],
   "component-polish": ["quick", "registry-generation", "component-polish"],
+  maintenance: ["quick", "maintenance"],
 };
-const ORDER = ["prose", "quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish"];
+const ORDER = ["prose", "quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish", "maintenance"];
 
 function kind(file) {
   if (NAMED.has(file)) return NAMED.get(file);
@@ -169,9 +183,10 @@ export const SUITE_FLAGS = {
   run_transient: ["transient-timing"],
   run_install: ["install-consumer"],
   run_polish: ["component-polish"],
+  run_maintenance: ["maintenance"],
   // Derived. Prose alone needs no dependencies, no browser and no build.
-  run_npm: ["quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish"],
-  run_build: ["reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish"],
+  run_npm: ["quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish", "maintenance"],
+  run_build: ["reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish", "maintenance"],
 };
 
 export function outputsFor(decision) {
