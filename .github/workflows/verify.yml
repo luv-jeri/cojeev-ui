@@ -266,7 +266,9 @@ jobs:
       || (needs.scope.outputs.scope != 'docs'
       && needs.scope.outputs.scope != 'checkpoint'))
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # A complete catalogue pass took 82 minutes on the shared runner. Reserve
+    # time for the remaining mobile, reporting, analytics and install checks.
+    timeout-minutes: 120
     concurrency:
       group: verify-${{ github.ref }}
       # Supersede an outdated pull request check, never a main release run.

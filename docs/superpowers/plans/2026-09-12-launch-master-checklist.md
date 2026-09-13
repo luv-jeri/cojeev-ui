@@ -108,6 +108,13 @@ These links intentionally point to the release revision, because the original lo
 
 ## B. CI/CD and the release PR
 
+- [ ] **B01-6 · C — Reserve enough time for complete release verification.**
+  The latest complete catalogue pass took 81m 41s; the 90-minute outer job limit
+  then cancelled mobile checks. Raise only the outer release budget to 120 minutes,
+  preserving every check and the 20-minute checkpoint budget. This closes on its
+  focused PR merge; full release acceptance stays open. See the
+  [measured timeout evidence](../../production/2026-09-14-release-runtime-headroom.md).
+
 **Starting blocker, before Phase 1:** the required `Verify release` job ran into its 90-minute budget. The recorded run reached 132 of 172 catalogue entries without recorded failures before cancellation; later checks did not execute. Partial progress is not a passing gate.
 
 **Phase 1 update, 12 September:** bounded parallelism subsequently completed all 172 entries / 1,032 layouts and all nine motion presets in run `34688330949`, but enabled analytics failed on a removed homepage Slider fixture. A second run (`34688474452`) exposed three short-lived interaction observation failures. B02-1 and B02-2 track these separately. No complete required run or accepted release artifact exists yet; earlier partial evidence is retained, not presented as a pass.
