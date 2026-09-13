@@ -93,9 +93,17 @@ const NAMED = new Map([
   // and check-landing-guides.mjs opens the other three, so the shared guide
   // rules are proved on the real pages. scripts/check-refinement-marketing.mjs
   // is deliberately absent: it is a release gate, and a change to it stays full.
+  // B01-5 adds the two body-copy files E02-1 edits to the same suite, because
+  // the journeys it already runs are exactly the ones that render them:
+  // check-landing-guides.mjs opens /privacy/ and asserts this page's heading,
+  // and it opens /about/ while the marketing gate opens /work-with-me/, the two
+  // routes that render creator-page.tsx. Their neighbours stay on full: the
+  // guide shell, marketing shell, sibling route files and the analytics control
+  // the privacy page embeds are all deliberately absent.
   ...[
     "components/landing/launch-faq.tsx", "components/landing/landing.css", "lib/reporting/draft.ts",
     "scripts/check-landing-guides.mjs", "tests/reporting-drafts.browser.mjs",
+    "app/privacy/page.tsx", "components/landing/creator-page.tsx",
   ].map(file => [file, "maintenance"]),
   ...[
     "docs/quality/evidence/h03-2/before-shape-menu.png", "docs/quality/evidence/h03-2/after-shape-menu.png",

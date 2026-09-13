@@ -166,6 +166,21 @@ const rows = [
     'components/landing/landing.css', 'tests/analytics.browser.mjs',
   ], 'checkpoint', 'quick,analytics-browser,maintenance'],
 
+  // B01-5: the two body-copy files E02-1 edits. /privacy/ is opened by
+  // check-landing-guides.mjs and creator-page.tsx renders /about/ there and
+  // /work-with-me/ in the marketing gate, so both join that same suite.
+  ['the privacy page body copy', ['app/privacy/page.tsx'], 'checkpoint', 'quick,maintenance'],
+  ['the creator page body copy', ['components/landing/creator-page.tsx'], 'checkpoint', 'quick,maintenance'],
+  ['both E02-1 copy files together', [
+    'app/privacy/page.tsx', 'components/landing/creator-page.tsx',
+  ], 'checkpoint', 'quick,maintenance'],
+  // The expected changed-file list of the E02-1 copy checkpoint.
+  ['the E02-1 change itself', [
+    'app/privacy/page.tsx',
+    'components/landing/creator-page.tsx',
+    'docs/superpowers/plans/2026-09-12-launch-master-checklist.md',
+  ], 'checkpoint', 'prose,quick,maintenance'],
+
   // Fallbacks.
   ['empty diff', [], 'full', ''],
   ['application source', ['registry/cojeev/ui/button.tsx'], 'full', ''],
@@ -211,7 +226,11 @@ const rows = [
   ['the marketing shell', ['components/landing/marketing-shell.tsx'], 'full', ''],
   ['a neighbouring landing stylesheet', ['components/landing/shape-playground.css'], 'full', ''],
   ['backup of the shared stylesheet', ['components/landing/landing.css.bak'], 'full', ''],
-  ['a page that imports the shared stylesheet', ['app/privacy/page.tsx'], 'full', ''],
+  ['a page that imports the shared stylesheet', ['app/getting-started/page.tsx'], 'full', ''],
+  ['a sibling route that renders the allowlisted creator page', ['app/about/page.tsx'], 'full', ''],
+  ['the other route that renders the allowlisted creator page', ['app/work-with-me/page.tsx'], 'full', ''],
+  ['backup of the creator page', ['components/landing/creator-page.tsx.bak'], 'full', ''],
+  ['the interactive control the privacy page embeds', ['components/analytics/analytics-preferences.tsx'], 'full', ''],
   ['another reporting library file', ['lib/reporting/client.ts'], 'full', ''],
   ['backup of the draft store', ['lib/reporting/draft.ts.orig'], 'full', ''],
   ['a different reporting browser journey', ['tests/reporting-stack.browser.mjs'], 'full', ''],
@@ -243,6 +262,15 @@ test('release acceptance is forced regardless of the changed paths', () => {
   assert.equal(resolveScope({ event: 'pull_request', baseRef: 'main', paths: prose }).scope, 'full');
   assert.equal(resolveScope({ event: 'pull_request', baseRef: 'refs/heads/main', paths: prose }).scope, 'full');
   assert.equal(resolveScope({ event: 'pull_request', baseRef: 'release-candidate', paths: prose }).scope, 'docs');
+
+  // The same guards for the B01-5 paths: a reduced scope exists only on a pull
+  // request that is not into main, never on a push or a manual dispatch.
+  const copy = ['app/privacy/page.tsx', 'components/landing/creator-page.tsx'];
+  assert.equal(resolveScope({ event: 'push', baseRef: '', paths: copy }).scope, 'full');
+  assert.equal(resolveScope({ event: 'workflow_dispatch', baseRef: '', paths: copy }).scope, 'full');
+  assert.equal(resolveScope({ event: 'pull_request', baseRef: 'main', paths: copy }).scope, 'full');
+  assert.equal(resolveScope({ event: 'pull_request', baseRef: 'refs/heads/main', paths: copy }).scope, 'full');
+  assert.equal(resolveScope({ event: 'pull_request', baseRef: 'release-candidate', paths: copy }).scope, 'checkpoint');
 });
 
 test('a diff lookup failure falls back to full instead of exempting the change', () => {
@@ -539,6 +567,50 @@ test('every route that imports the shared landing stylesheet is actually opened 
     const opened = route === '/' ? covered.includes('${base}/`') : covered.includes(route);
     assert.ok(opened, `${route} imports landing.css and must be opened by a maintenance check`);
   }
+});
+
+test('the E02-1 copy files are opened, as built pages, by the suite they select', () => {
+  // Body copy only exists once a page is rendered, so lint and unit tests are
+  // never the evidence here: the selected suite has to build the site and open
+  // every route that renders these two files.
+  for (const file of ['app/privacy/page.tsx', 'components/landing/creator-page.tsx']) {
+    const outputs = outputsFor(classify([file]));
+    assert.equal(outputs.run_maintenance, 'true', file);
+    assert.equal(outputs.run_build, 'true', file);
+    assert.equal(outputs.run_quick, 'true', file);
+    assert.equal(outputs.run_polish, 'false', file);
+    assert.equal(outputs.run_registry, 'false', file);
+  }
+
+  // Read the renderers from the tree: a third route rendering CreatorPage added
+  // later fails here instead of silently riding along on a reduced scope.
+  const appRoot = path.join(root, 'app');
+  const renderers = fs.readdirSync(appRoot, { recursive: true })
+    .filter(file => /(^|\/)(page|layout)\.tsx$/.test(file))
+    .filter(file => fs.readFileSync(path.join(appRoot, file), 'utf8').includes('components/landing/creator-page'));
+  assert.deepEqual(renderers.filter(file => /(^|\/)layout\.tsx$/.test(file)), [],
+    'a layout-level render requires explicit coverage of its descendant routes');
+  const routes = [...new Set(['/privacy/', ...renderers.map(file => `/${file.replace(/page\.tsx$/, '')}`)])].sort();
+  assert.deepEqual(routes, ['/about/', '/privacy/', '/work-with-me/']);
+
+  const checks = {
+    'check-landing-guides.mjs': fs.readFileSync(path.join(root, 'scripts/check-landing-guides.mjs'), 'utf8'),
+    'check-refinement-marketing.mjs': fs.readFileSync(path.join(root, 'scripts/check-refinement-marketing.mjs'), 'utf8'),
+  };
+  for (const route of routes) {
+    assert.ok(Object.values(checks).some(source => source.includes(route)),
+      `${route} renders allowlisted copy and must be opened by a maintenance check`);
+  }
+  // Those journeys are guarded by run_maintenance and run after a real build.
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const steps = workflow.jobs.checkpoint.steps;
+  const guarded = steps.filter(step => String(step.if ?? '').includes("needs.scope.outputs.run_maintenance == 'true'"));
+  const commands = guarded.map(step => String(step.run ?? ''));
+  assert.ok(commands.includes('npm run gate:marketing'), '/work-with-me/ must be opened');
+  assert.ok(commands.some(command => command.includes('check-landing-guides.mjs')), '/privacy/ and /about/ must be opened');
+  const build = steps.findIndex(step => String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes('run_maintenance'));
+  assert.ok(build >= 0 && build < steps.indexOf(guarded.find(step => String(step.run ?? '') !== 'npm run build')),
+    'the copy must be read from a freshly built static export');
 });
 
 test('deployment still depends on the full job and its digests', () => {
