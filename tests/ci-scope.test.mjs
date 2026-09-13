@@ -136,6 +136,35 @@ const rows = [
     'scripts/measure-loading-baseline.mjs',
   ], 'checkpoint', 'prose,quick'],
 
+  // G07 maintenance: the three named files, plus the two checks that exercise them.
+  ['deleted unused landing section', ['components/landing/launch-faq.tsx'], 'checkpoint', 'quick,maintenance'],
+  ['shared landing stylesheet', ['components/landing/landing.css'], 'checkpoint', 'quick,maintenance'],
+  ['reporting draft store', ['lib/reporting/draft.ts'], 'checkpoint', 'quick,maintenance'],
+  ['guide route check', ['scripts/check-landing-guides.mjs'], 'checkpoint', 'quick,maintenance'],
+  ['draft persistence journey', ['tests/reporting-drafts.browser.mjs'], 'checkpoint', 'quick,maintenance'],
+  ['the whole named maintenance set', [
+    'components/landing/landing.css', 'components/landing/launch-faq.tsx', 'lib/reporting/draft.ts',
+  ], 'checkpoint', 'quick,maintenance'],
+  // The complete changed-file list of the prepared G07 commit.
+  ['the G07 change itself', [
+    'components/landing/landing.css',
+    'components/landing/launch-faq.tsx',
+    'docs/quality/2026-09-13-unused-private-code.md',
+    'lib/reporting/draft.ts',
+  ], 'checkpoint', 'prose,quick,maintenance'],
+  // The complete changed-file list of this extension itself.
+  ['the B01-4 change itself', [
+    '.github/workflows/verify.yml',
+    'docs/production/2026-09-13-maintenance-check-scope.md',
+    'scripts/check-landing-guides.mjs',
+    'scripts/ci-scope.mjs',
+    'tests/ci-scope.test.mjs',
+  ], 'checkpoint', 'prose,quick,ci-contract,maintenance'],
+  ['maintenance mixed with prose stays checkpoint', ['docs/a.md', 'lib/reporting/draft.ts'], 'checkpoint', 'prose,quick,maintenance'],
+  ['maintenance mixed with another named suite keeps both', [
+    'components/landing/landing.css', 'tests/analytics.browser.mjs',
+  ], 'checkpoint', 'quick,analytics-browser,maintenance'],
+
   // Fallbacks.
   ['empty diff', [], 'full', ''],
   ['application source', ['registry/cojeev/ui/button.tsx'], 'full', ''],
@@ -176,6 +205,19 @@ const rows = [
   ['the reporting journey runner', ['scripts/run-reporting-browser.mjs'], 'full', ''],
   ['a different measurement script', ['scripts/measure-interaction-baseline.mjs'], 'full', ''],
   ['backup of the measurement script', ['scripts/measure-loading-baseline.mjs.bak'], 'full', ''],
+  ['a landing component beside the deleted one', ['components/landing/landing-page.tsx'], 'full', ''],
+  ['the guide shell that consumes the shared styles', ['components/landing/guide-shell.tsx'], 'full', ''],
+  ['the marketing shell', ['components/landing/marketing-shell.tsx'], 'full', ''],
+  ['a neighbouring landing stylesheet', ['components/landing/shape-playground.css'], 'full', ''],
+  ['backup of the shared stylesheet', ['components/landing/landing.css.bak'], 'full', ''],
+  ['a page that imports the shared stylesheet', ['app/privacy/page.tsx'], 'full', ''],
+  ['another reporting library file', ['lib/reporting/client.ts'], 'full', ''],
+  ['backup of the draft store', ['lib/reporting/draft.ts.orig'], 'full', ''],
+  ['a different reporting browser journey', ['tests/reporting-stack.browser.mjs'], 'full', ''],
+  ['the release marketing gate itself', ['scripts/check-refinement-marketing.mjs'], 'full', ''],
+  ['backup of the guide route check', ['scripts/check-landing-guides.mjs.bak'], 'full', ''],
+  ['maintenance beside an unknown path', ['components/landing/landing.css', 'registry/cojeev/styles/tokens.css'], 'full', ''],
+  ['maintenance beside application source', ['lib/reporting/draft.ts', 'app/page.tsx'], 'full', ''],
   ['leading slash', ['/README.md'], 'full', ''],
 ];
 
@@ -301,7 +343,9 @@ test('the scoped job is bounded and never publishes release evidence', () => {
   const serialized = JSON.stringify(checkpoint);
   assert.doesNotMatch(serialized, /release-\$\{\{ github\.sha \}\}/, 'the scoped job must not publish a release artifact');
   assert.doesNotMatch(serialized, /build-pair/, 'the scoped job must not build the release pair');
-  assert.doesNotMatch(serialized, /npm run gate\b/, 'the scoped job must not run the catalogue gate');
+  // The catalogue gate is `npm run gate` exactly. A named journey script such
+  // as `npm run gate:marketing` opens a bounded set of real pages and is not it.
+  assert.doesNotMatch(serialized, /npm run gate(?!:marketing\b)/, 'only the named marketing journey is allowed here, not other catalogue gates');
   assert.doesNotMatch(serialized, /release\.mjs/, 'the scoped job must not touch the release script');
 
   const summary = checkpoint.steps.at(-1);
@@ -429,7 +473,7 @@ test('reporting reuses its fixture build unless another selected journey needs t
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
   const steps = workflow.jobs.checkpoint.steps;
   const plain = steps.find(step => String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes("run_build == 'true'"));
-  assert.equal(plain?.if, "needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true' || needs.scope.outputs.run_polish == 'true')");
+  assert.equal(plain?.if, "needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true' || needs.scope.outputs.run_polish == 'true' || needs.scope.outputs.run_maintenance == 'true')");
   const browser = steps.find(step => String(step.run ?? '').includes('playwright install'));
   assert.equal(browser?.if, "needs.scope.outputs.run_build == 'true'", 'reporting still needs Chromium even when the plain build is omitted');
 });
@@ -444,6 +488,55 @@ test('one unit invocation already covers the classifier and partition runner', (
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
   const extra = workflow.jobs.checkpoint.steps.filter(step => /node --test/.test(String(step.run ?? '')));
   assert.deepEqual(extra, [], 'the scoped job must not run those suites a second time');
+});
+
+test('unused-code maintenance runs the real journeys of the files it names, after a build', () => {
+  const decision = classify(['components/landing/landing.css']);
+  const outputs = outputsFor(decision);
+  // landing.css is product styling shared by five routes, so lint and unit
+  // tests alone are never the evidence: the pages have to be built and opened.
+  assert.equal(outputs.run_maintenance, 'true');
+  assert.equal(outputs.run_build, 'true');
+  assert.equal(outputs.run_quick, 'true');
+  assert.equal(outputs.run_npm, 'true');
+  assert.equal(outputs.run_polish, 'false');
+  assert.equal(outputs.run_registry, 'false');
+
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const steps = workflow.jobs.checkpoint.steps;
+  const guarded = steps.filter(step => String(step.if ?? '').includes("needs.scope.outputs.run_maintenance == 'true'"));
+  const commands = guarded.map(step => String(step.run ?? ''));
+  assert.ok(commands.includes('npm run gate:marketing'), 'the homepage and creator routes must be opened');
+  assert.ok(commands.some(command => command.includes('check-landing-guides.mjs')), 'the remaining landing.css routes must be opened');
+  assert.ok(commands.some(command => command.includes('tests/reporting-drafts.browser.mjs')), 'draft storage must still be exercised');
+  const build = steps.findIndex(step => String(step.run ?? '') === 'npm run build' && String(step.if ?? '').includes('run_maintenance'));
+  const first = steps.indexOf(guarded.find(step => String(step.run ?? '') !== 'npm run build'));
+  assert.ok(build >= 0 && build < first, 'the journeys must run against a freshly built static export');
+  // A bounded set of real pages, never the catalogue gate or a release build.
+  const serialized = JSON.stringify(guarded);
+  assert.doesNotMatch(serialized, /npm run gate(?!:marketing\b)/, 'only the named marketing journey is allowed here, not other catalogue gates');
+  assert.doesNotMatch(serialized, /gate:docs|gate:mobile|gate:reference|build-pair|release\.mjs/, 'no release or catalogue work in a maintenance check');
+});
+
+test('every route that imports the shared landing stylesheet is actually opened by a check', () => {
+  // The allowlist's promise: no consumer of components/landing/landing.css is
+  // left untested. Both lists are read from the tree, so a sixth consumer added
+  // later fails here instead of silently riding along on a reduced scope.
+  const appRoot = path.join(root, 'app');
+  const consumers = fs.readdirSync(appRoot, { recursive: true })
+    .filter(file => /(^|\/)(page|layout)\.tsx$/.test(file))
+    .filter(file => fs.readFileSync(path.join(appRoot, file), 'utf8').includes('components/landing/landing.css'));
+  assert.deepEqual(consumers.filter(file => /(^|\/)layout\.tsx$/.test(file)), [],
+    'a shared-layout stylesheet import requires explicit coverage of its descendant routes');
+  const pages = consumers.map(file => `/${file.replace(/page\.tsx$/, '')}`);
+  const covered = ['check-refinement-marketing.mjs', 'check-landing-guides.mjs']
+    .map(file => fs.readFileSync(path.join(root, 'scripts', file), 'utf8')).join('\n');
+  assert.ok(pages.length >= 5, `expected the known landing.css consumers, found ${pages.join(', ')}`);
+  for (const route of pages) {
+    // The homepage is opened as a template literal, the rest as literal paths.
+    const opened = route === '/' ? covered.includes('${base}/`') : covered.includes(route);
+    assert.ok(opened, `${route} imports landing.css and must be opened by a maintenance check`);
+  }
 });
 
 test('deployment still depends on the full job and its digests', () => {
