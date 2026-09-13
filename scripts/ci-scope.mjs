@@ -73,6 +73,23 @@ const NAMED = new Map([
   // its samples are taken deliberately, not on a shared runner whose hardware
   // would make the numbers mean something else.
   ["scripts/measure-loading-baseline.mjs", "unit"],
+
+  // H03-2 / V50-1: named docs surfaces and their stylesheet payloads. Keep
+  // shared selector/motion engines and component implementations on full.
+  ...[
+    "components/component-preview.tsx", "components/examples/choice-foundations.tsx",
+    "registry/cojeev/styles/choice-foundations.css", "registry/cojeev/styles/accordion.css",
+    "public/r/checkbox.json", "public/r/radio-group.json", "public/r/switch.json", "public/r/accordion.json",
+    "tests/choice-recovery.docs.browser.mjs", "tests/disclosure-recovery.docs.browser.mjs",
+    "tests/workbench.browser.mjs", "tests/docs-compact-navigation.browser.mjs",
+    "scripts/run-component-polish.mjs",
+  ].map(file => [file, "component-polish"]),
+  ...[
+    "docs/quality/evidence/h03-2/before-shape-menu.png", "docs/quality/evidence/h03-2/after-shape-menu.png",
+    "docs/quality/evidence/h03-2/after-mobile-comparisons.png",
+    "docs/quality/evidence/v50-1/before-editorial-mobile.png", "docs/quality/evidence/v50-1/after-editorial-mobile.png",
+    "docs/quality/evidence/v50-1/after-chapters-desktop.png",
+  ].map(file => [file, "prose"]),
 ]);
 
 // Each kind carries the quick checks; only prose runs without dependencies.
@@ -85,8 +102,9 @@ const SUITES = {
   "analytics-browser": ["quick", "analytics-browser"],
   "transient-timing": ["quick", "transient-timing"],
   "install-consumer": ["quick", "install-consumer"],
+  "component-polish": ["quick", "registry-generation", "component-polish"],
 };
-const ORDER = ["prose", "quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer"];
+const ORDER = ["prose", "quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish"];
 
 function kind(file) {
   if (NAMED.has(file)) return NAMED.get(file);
@@ -150,9 +168,10 @@ export const SUITE_FLAGS = {
   run_analytics: ["analytics-browser"],
   run_transient: ["transient-timing"],
   run_install: ["install-consumer"],
+  run_polish: ["component-polish"],
   // Derived. Prose alone needs no dependencies, no browser and no build.
-  run_npm: ["quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer"],
-  run_build: ["reporting-consent", "analytics-browser", "transient-timing", "install-consumer"],
+  run_npm: ["quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish"],
+  run_build: ["reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish"],
 };
 
 export function outputsFor(decision) {

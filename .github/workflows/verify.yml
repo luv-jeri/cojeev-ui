@@ -31,6 +31,7 @@ jobs:
       run_analytics: ${{ steps.select.outputs.run_analytics }}
       run_transient: ${{ steps.select.outputs.run_transient }}
       run_install: ${{ steps.select.outputs.run_install }}
+      run_polish: ${{ steps.select.outputs.run_polish }}
       run_npm: ${{ steps.select.outputs.run_npm }}
       run_build: ${{ steps.select.outputs.run_build }}
     steps:
@@ -112,8 +113,11 @@ jobs:
           git diff --exit-code -- registry.json public/registry.json public/r registry/cojeev/NOTICES.txt
       # Reporting builds its own disposable fixture below. Only build twice
       # when an earlier install or transient journey also needs the plain site.
-      - if: needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true')
+      - if: needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true' || needs.scope.outputs.run_polish == 'true')
         run: npm run build
+      - name: Check choice, disclosure, workbench and compact navigation journeys
+        if: needs.scope.outputs.run_polish == 'true'
+        run: node scripts/run-component-polish.mjs
       # The affected components only, not the catalogue: the B02-2 harness and
       # its negative control, which must still fail on unrepaired transient paint.
       - name: Exercise the transient paint harness and its negative control
@@ -181,6 +185,10 @@ jobs:
             output/playwright/transient-delayed/
             output/playwright/transient-negative/
             artifacts/analytics/
+            output/playwright/choice-recovery/
+            output/playwright/disclosure-recovery/
+            output/playwright/overhaul-workbench/
+            output/playwright/docs-compact-navigation/
           if-no-files-found: ignore
           retention-days: 14
           include-hidden-files: false
