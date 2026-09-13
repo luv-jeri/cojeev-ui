@@ -343,7 +343,7 @@ test('the workflow keeps release acceptance independent of the classifier', () =
   assert.match(verifyIf, /github\.event_name != 'pull_request'/);
   assert.match(verifyIf, /github\.base_ref == 'main'/);
   // A resolver that fails must not silently skip every job, but a run the user
-  // cancelled must stay cancelled rather than start a 90-minute release job.
+  // cancelled must stay cancelled rather than start a full release job.
   assert.match(verifyIf, /!cancelled\(\)/);
   assert.doesNotMatch(verifyIf, /always\(\)/);
   assert.match(verifyIf, /needs\.scope\.result != 'success'/);
@@ -640,7 +640,12 @@ test('the full job keeps every gate it had before the split', () => {
   ]) {
     assert.ok(verify.includes(gate), `the full job must still run ${gate}`);
   }
-  assert.equal(workflow.jobs.verify['timeout-minutes'], 90, 'the release budget is unchanged');
+  // Run34778271915: catalogue81m41s. Previous complete run34748534759:
+  // other stages13m43s. Preserve 20% shared-runner headroom without an unbounded job.
+  const releaseBudgetSeconds = workflow.jobs.verify['timeout-minutes'] * 60;
+  assert.ok(releaseBudgetSeconds >= (4901 + 823) * 1.2,
+    'the release budget must accommodate observed complete work plus runner variation');
+  assert.ok(releaseBudgetSeconds <= 120 * 60, 'the release job must remain bounded');
   assert.equal(workflow.jobs.verify.concurrency['cancel-in-progress'], "${{ github.event_name == 'pull_request' }}");
 });
 
