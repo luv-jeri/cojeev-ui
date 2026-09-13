@@ -41,6 +41,9 @@ const NAMED = new Map([
   ["scripts/docs-transient-paint.mjs", "transient-timing"],
   ["scripts/docs-harness-fingerprint.mjs", "transient-timing"],
   ["tests/docs-transient-timing.browser.mjs", "transient-timing"],
+  // B02-3 clock isolation. Same harness, same proportionate scope: it renders
+  // the two clock-owning cases and the three that follow them, not the catalogue.
+  ["tests/docs-clock-isolation.browser.mjs", "transient-timing"],
 
   ["scripts/verify-install.mjs", "install-consumer"],
   ["scripts/run-install-verification.mjs", "install-consumer"],
