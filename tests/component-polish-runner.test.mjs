@@ -20,6 +20,7 @@ for (const failAt of [-1, 1]) test(`polish runner ${failAt < 0 ? 'serves this ex
     import fs from 'node:fs';
     assert.equal(process.env.DOCS_BASE_URL, process.env.POLISH_URL);
     assert.match(await (await fetch(process.env.DOCS_BASE_URL + '/')).text(), /local-checkpoint-fixture/);
+    assert.equal((await fetch(process.env.DOCS_BASE_URL + '/missing-component/')).status, 404);
     fs.appendFileSync('observed', '${index}');
     process.exit(${index === failAt ? 7 : 0});
   `);

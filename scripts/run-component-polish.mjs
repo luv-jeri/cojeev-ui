@@ -7,7 +7,7 @@ if (supplied && !['127.0.0.1', 'localhost', '[::1]'].includes(new URL(supplied).
   throw new Error('Component checks require a loopback preview, not a live website.');
 }
 const server = supplied ? null : await preview({
-  configFile: false, base: '/cojeev-ui/', build: { outDir: 'out' },
+  configFile: false, appType: 'mpa', base: '/cojeev-ui/', build: { outDir: 'out' },
   preview: { host: '127.0.0.1', port: 0, strictPort: true },
 });
 try {

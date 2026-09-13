@@ -188,6 +188,7 @@ jobs:
             output/playwright/choice-recovery/
             output/playwright/disclosure-recovery/
             output/playwright/overhaul-workbench/
+            output/playwright/docs-compact-navigation/
           if-no-files-found: ignore
           retention-days: 14
           include-hidden-files: false
