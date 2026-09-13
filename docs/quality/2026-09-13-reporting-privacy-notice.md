@@ -1,6 +1,6 @@
 # E02-2 — the reporting data flow on the privacy page
 
-13 September 2026 · base `b80e070` · branch `chore/e02-2-reporting-privacy`.
+13 September 2026 · base `b80e070` · branch `chore/e02-2-reporting-privacy` · source commit `21defd9`, plus the final copy corrections on top of it.
 Child checkpoint [E02-2](../superpowers/plans/2026-09-12-launch-master-checklist.md): prepare page
 copy for what the reporting code already does; nothing here is deployed. Copy only — no tracking, policy enforcement, lawful
 basis, retention decision or provider activation is introduced.
@@ -44,8 +44,22 @@ node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json                 #
 
 The first `tsc` run reported `TS2307` for `brand-sculpture.tsx` because the generated `next-env.d.ts` is absent from a fresh worktree; copying that generated file in produced the clean run. Not a repository defect, and no source was changed for it.
 
-Not run: the component catalogue, the Next build, `check-landing-guides.mjs` and every Worker-backed reporting journey. The heading `A little clarity.` asserted by `scripts/check-landing-guides.mjs:25` is unchanged. No live account, production report or browser session was touched.
+For source commit `21defd9`, the primary ran all six `check-landing-guides.mjs` cases, TypeScript and lint successfully. Scoped remote run `34775004866` also passed for that revision. The final prose corrections below have a separate scoped lint check; that earlier remote run does not cover them.
+
+Not run, and deliberately so: the component catalogue, the Next build and every Worker-backed reporting journey. No live account, production report or browser session was touched.
+
+The "still uncommitted" wording in earlier revisions of the implementer report was accurate when written — the coordinator committed the work as `21defd9` afterwards. It is a historical status, not a Git discrepancy.
 
 ## 4. Still open
 
 E02 remains open: purposes, lawful bases, the rights and erasure-request process, transfer statements and any children/age statement are unpublished. A05 cannot be settled until A01 records the postal address, registration status, countries served and intended age audience. Inventory section 11 owner decisions — `contact_hash` retention, whether an email address must be required, mailbox provider and retention, and whether permanent public issues are acceptable — are unchanged here. Rollback is a plain revert; no schema, flag, provider or stored report is affected.
+
+## 5. Final copy corrections
+
+Three factual gaps from the independent review were closed in `app/privacy/page.tsx`, prose only:
+
+1. **Keyed contact code.** `Where a report goes` now says a protected code worked out from the email address is stored to count how many different people asked for the same thing, that erasing the address does not remove it, and that no removal date is set — `workers/reporting/src/reports.ts:47` writes `keyedDigest(IP_HASH_SECRET,'report-contact:'+email)`, `lifecycle.ts:52` clears `email` but not `contact_hash`, and `reports.ts:81` counts `DISTINCT r.contact_hash`. It is not described as anonymous and no expiry is claimed.
+2. **Rate-limit IP hash.** `Verification, receipt and email` now says the service sees the IP on arrival, keeps a protected hash tied to a ten-minute window instead of the address, uses it only to limit how many reports one source sends, and that the entry stops counting at the window boundary with a later cleanup pass removing it — `security.ts:37-41` keys on `IP_HASH_SECRET:ip:slot` with `expires_at=(slot+1)*600000`, and `lifecycle.ts:53` deletes expired rows. No instant physical deletion is promised.
+3. **Capture versus uploaded media.** `When you send a report` now separates files the visitor attaches, which are not inspected or redacted, from the panel's own screenshot, which leaves out form controls and regions marked private as a best effort — `lib/reporting/capture.ts:2,18,21` filters and blanks `input,textarea,select,[contenteditable],[data-private]`. The review step is still named as the last check either way.
+
+No layout, token, motion, operator fact or feature flag changed; no legal, retention, schema or activation claim was added.
