@@ -13,6 +13,14 @@ try {
     permissions: ["clipboard-read", "clipboard-write"],
   });
   const errors = [];
+  const shapeNames = [
+    "Organic",
+    "Circle",
+    "Rounded",
+    "Pebble",
+    "Leaf",
+    "Flower",
+  ];
   page.on("pageerror", (error) => errors.push(error.message));
   for (const id of ["checkbox", "radio-group"]) {
     await page.goto(`${base}/docs/${id}/`, { waitUntil: "domcontentloaded" });
@@ -23,6 +31,20 @@ try {
       .locator('.docs-playground [data-slot="preview"]')
       .first();
     const example = preview.locator('[data-example-role="interactive"]');
+    // A capture must show the product, not a hover card the test's own cursor opened.
+    const restPointer = async () => {
+      const box = await example.locator(".v-choice-result").boundingBox();
+      if (box) await page.mouse.move(box.x + 4, box.y + box.height - 2);
+      await page
+        .locator(".docs-component-peek")
+        .waitFor({ state: "detached", timeout: 2000 })
+        .catch(() => {});
+      assert.equal(
+        await page.locator(".docs-component-peek").count(),
+        0,
+        "no sidebar quick look may cover the captured example",
+      );
+    };
     const role = id === "checkbox" ? "checkbox" : "radio";
     const choose = async (setting, name) => {
       await preview
@@ -42,6 +64,60 @@ try {
       0,
       "Row must not offer a no-op corner setting",
     );
+    const shapeMenu = preview.getByRole("combobox", {
+      name: "Example glyph shape",
+    });
+    await shapeMenu.click();
+    for (const shape of shapeNames) {
+      assert.equal(
+        await page
+          .getByRole("option", { name: shape, exact: true })
+          .locator(
+            `[data-slot="selector-glyph"][data-selector-shape="${shape.toLowerCase()}"]`,
+          )
+          .count(),
+        1,
+        `the ${shape} option must show its own retained silhouette, not an unrelated icon`,
+      );
+    }
+    assert.equal(
+      await page
+        .getByRole("option", { name: "Organic", exact: true })
+        .locator(".v-select__indicator")
+        .count(),
+      1,
+      "the silhouette in use must stay visibly marked as selected",
+    );
+    assert.equal(
+      await page.getByRole("listbox").locator(".v-select__indicator").count(),
+      1,
+      "exactly one silhouette reads as the current choice",
+    );
+    const silhouette = page
+      .getByRole("option", { name: "Leaf", exact: true })
+      .locator('[data-slot="item-adornment"] [data-slot="selector-glyph"]');
+    assert.equal(
+      await silhouette.evaluate((el) => getComputedStyle(el).pointerEvents),
+      "none",
+      "the drawing stays decoration; the option row owns the pointer",
+    );
+    await silhouette.click({ force: true });
+    await page.getByRole("listbox").waitFor({ state: "detached" });
+    assert.deepEqual(
+      await example
+        .getByRole(role)
+        .evaluateAll((items) => items.map((item) => item.dataset.selectorShape)),
+      Array(3).fill("leaf"),
+      "pointing at the drawing still chooses its silhouette",
+    );
+    await preview.getByRole("combobox", { name: "Example approach" }).click();
+    assert.equal(
+      await page.getByRole("listbox").locator(".v-select__indicator").count(),
+      0,
+      "the shape marker stays local; other menus keep their existing rows",
+    );
+    await page.keyboard.press("Escape");
+    await page.getByRole("listbox").waitFor({ state: "detached" });
     await example.getByRole(role).nth(1).click();
     const selected = () =>
       example
@@ -51,14 +127,7 @@ try {
         );
     const before = await selected();
     const paths = new Set();
-    for (const shape of [
-      "Organic",
-      "Circle",
-      "Rounded",
-      "Pebble",
-      "Leaf",
-      "Flower",
-    ]) {
+    for (const shape of shapeNames) {
       await choose("glyph shape", shape);
       assert.deepEqual(
         await example
@@ -115,6 +184,24 @@ try {
     const copied = await page.evaluate(() => navigator.clipboard.readText());
     assert.match(copied, /shape="flower"/);
     assert.match(copied, /showIndicator=\{false\}/);
+    await shapeMenu.press("Enter");
+    await page.getByRole("listbox").waitFor();
+    await page.keyboard.press("ArrowUp");
+    await page.keyboard.press("Enter");
+    await page.getByRole("listbox").waitFor({ state: "detached" });
+    assert.deepEqual(
+      await example
+        .getByRole(role)
+        .evaluateAll((items) => items.map((item) => item.dataset.selectorShape)),
+      Array(3).fill("leaf"),
+      "the shape menu stays fully operable from the keyboard",
+    );
+    assert.deepEqual(
+      await selected(),
+      before,
+      "keyboard shape selection preserves the answer",
+    );
+    await choose("glyph shape", "Organic");
     await choose("selected mark", "Check");
     for (const approach of ["Card", "Chip", "Row"]) {
       await choose("approach", approach);
@@ -153,6 +240,7 @@ try {
             theme,
           );
           await example.scrollIntoViewIfNeeded();
+          await restPointer();
           await example.screenshot({
             path: `${output}/${id}-${approach.toLowerCase()}-${width}-${theme}.png`,
           });
@@ -176,6 +264,53 @@ try {
         }
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
+    const rowBorders = await example
+      .locator('.v-choice-options[data-approach="row"] > *')
+      .evaluateAll((items) =>
+        items.map((item) => getComputedStyle(item).borderBottomWidth),
+      );
+    assert.equal(rowBorders.length, 3);
+    assert.equal(
+      rowBorders.at(-1),
+      "0px",
+      "the last Row control does not double the closing rule",
+    );
+    assert.ok(
+      rowBorders.slice(0, -1).every((width) => width !== "0px"),
+      "Row keeps its quiet internal divisions",
+    );
+    assert.notEqual(
+      await example
+        .locator(".v-choice-result")
+        .evaluate((el) => getComputedStyle(el).borderTopWidth),
+      "0px",
+      "the selected-value summary remains the one closing divider",
+    );
+    const gallery = preview.locator('[data-example-role="gallery"]');
+    const tiles = await gallery.count();
+    assert.ok(tiles >= 3, "every retained approach keeps a comparison tile");
+    assert.equal(
+      await gallery.locator(".v-choice-example header").count(),
+      0,
+      "comparison tiles let their approach label lead",
+    );
+    for (let tile = 0; tile < tiles; tile += 1) {
+      assert.equal(
+        await gallery.nth(tile).locator('[role="status"]').count(),
+        1,
+        "every comparison tile keeps live selection feedback",
+      );
+      assert.equal(
+        await gallery
+          .nth(tile)
+          .locator(
+            `[role="${role === "checkbox" ? "group" : "radiogroup"}"][aria-label]`,
+          )
+          .count(),
+        1,
+        "every interactive comparison tile keeps an accessible group name",
+      );
+    }
     const control = example.getByRole(role).nth(1);
     await control.focus();
     if (id === "checkbox") {
@@ -205,7 +340,7 @@ try {
   }
   assert.deepEqual(errors, []);
   console.log(
-    "PASS choice recovery: six shapes, five marks plus hidden, preserved answers, honest corners, copy, keyboard and 24 responsive/theme captures",
+    "PASS choice recovery: six named silhouettes in the menu, five marks plus hidden, preserved answers, honest corners, one closing rule, named compact tiles, copy, keyboard and 24 responsive/theme captures",
   );
 } finally {
   await browser.close();
