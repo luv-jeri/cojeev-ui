@@ -57,7 +57,7 @@ Work may proceed in parallel, but a later phase cannot turn an earlier failed ga
 - No paid upgrade, billing activation or new paid dependency is authorized.
 - Keep secrets out of chat, browser build variables, source, logs and public evidence. Owner security prompts remain owner actions.
 - Historical reports must not be automatically emailed or published when integrations are enabled.
-- Registry registration and marketing are included here as **future work**. Obtain final approval of the namespace/submission or exact outreach text and destination before acting.
+- Sanjay authorized shadcn registration on 13 September and confirmed `@cojeev`, the production URLs and the existing theme-adapted 000h mark. Submit after verified release/download acceptance; maintainers control acceptance. Exact marketing text and destinations still need approval.
 - Do not claim guaranteed indexing, directory acceptance, search ranking, legal compliance, or complete accessibility from limited evidence.
 
 ## Handoff bootstrap
@@ -336,8 +336,8 @@ These tasks begin after the production page/content is approved and live. Keep b
 
 Direct component URLs working is not the same as a namespace being accepted into the directory. This phase is now on the checklist; no submission has been made by creating this document.
 
-- [ ] **K01 · B — Choose and approve the namespace.** Check current availability, branding and upstream requirements; record the exact requested name. Do not assume an earlier proposed namespace is reserved or that a numeric name guarantees placement.
-- [ ] **K02 · C — Verify public registry eligibility.** Validate the current production catalogue/index, item schemas, HTTPS URLs, metadata, licence notices and dependency closures against the official requirements. Distinguish catalogue metadata from install payloads; do not remove required payload content based on index-only rules.
+- [x] **K01 · B — Choose and approve the namespace.** Sanjay explicitly approved `@cojeev`, `https://000h.cojeev.com`, `/r/{name}.json` and the existing 000h mark adapted to the directory theme on 13 September. The primary checked the live 344-entry directory: `@cojeev` was absent. This is approval and availability evidence, not reservation or acceptance. [Prepared submission](../../launch/2026-09-13-registry-submission.md).
+- [ ] **K02 · C — Verify public registry eligibility.** [Readiness evidence](../../launch/2026-09-13-registry-submission.md) records schema/endpoint checks and dry-run resolution. The old production downloads still lack the project's MIT notice; I03 is in newer source. Verify the released notices and real installation before closing. Keep catalogue metadata distinct from inline install payloads.
 - [ ] **K03 · C — Test real consumer installation from production.** Install/build representative simple, motion-heavy, form and composed components in a clean app. Confirm files come from production only, no private/local paths leak, and docs show correct commands.
 - [ ] **K04 · B — Prepare and approve the upstream submission.** Follow the current official process: update the directory entry, run its validator and prepare the PR. Review exact metadata/logo/homepage/registry URL and Sanjay's approval before posting. [Official registry submission guide](https://ui.shadcn.com/docs/registry/registry-index).
 - [ ] **K05 · C — Submit and handle review.** Record the upstream PR URL, date and requested changes; keep status Submitted until the maintainers actually accept it. Do not mark acceptance when a PR is merely opened.
@@ -375,6 +375,7 @@ Add one row when closing or reopening a task. Never record secrets, personal rep
 
 | Date | Task ID | Status change | Revision / environment | Evidence and result | Owner / next action |
 | --- | --- | --- | --- | --- | --- |
+| 2026-09-13 | K01 / K02 | Namespace approved; submission prepared, not posted | Existing production origin; candidate `f3fa84b` still unreleased | [Prepared entry and evidence](../../launch/2026-09-13-registry-submission.md); owner confirmed @cojeev and existing mark. Live namespace absent; older downloads resolve but lack own MIT notice | Cojeev; release verification, K03 and upstream validation before posting |
 | 2026-09-12 | D01–D12 | Recorded baseline only | Release `cc971887` plus linked historical checkpoints | Evidence index above; not production acceptance | Cojeev; revalidate affected checks after changes |
 | 2026-09-12 | B05 | Still blocked | PR #2, head `cc971887` | Required Verify release cancelled; beta/prod skipped | Cojeev; B01–B04 and beta prerequisites |
 | 2026-09-12 | H01 | Visual rework pending | Earlier homepage restored | Rejected implementation preserved on separate branch | Sanjay + Cojeev; approve next design or release fallback |
