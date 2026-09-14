@@ -10,7 +10,25 @@
 
 **Status date:** 12 September 2026. **Owner:** Sanjay. **Implementation/review:** Cojeev. This document consolidates the recorded work and latest audit; it is not a fresh test of every component or account setting.
 
-## Start here
+## Current verified snapshot — 14 September 2026
+
+The production site is live at [000h.cojeev.com](https://000h.cojeev.com), and the isolated beta is live at [beta.000h.cojeev.com](https://beta.000h.cojeev.com). This does **not** close every launch acceptance item below. Public health checks on 14 September returned production release `4a1a4f95` and matching beta website/API release `00922a2b`; the later UI repairs are not deployed by that evidence.
+
+Beta update [run 34808013073](https://github.com/luv-jeri/cojeev-ui/actions/runs/34808013073) initially failed the website upload with Cloudflare's sanitized "Received a malformed response from the API" after the API upload succeeded. Retrying only its failed deployment jobs reused the already-built artifact and passed beta deployment/live checks. The underlying malformed-response cause is unconfirmed; this does not prove a credential or source defect. Production promotion awaits the owner. The C04-5 retry repair below was not part of that run.
+
+| Checkpoint | Current evidence | Still pending |
+| --- | --- | --- |
+| B01-8: proportionate release checks | [PR #47](https://github.com/luv-jeri/cojeev-ui/pull/47) merged as `8f7b79f1`; exact-relocation classifier reviewed and corrected | Shared/unknown UI changes still use the broader gate; this is not a general affected-component classifier |
+| I04-1: repository structure | [PR #48](https://github.com/luv-jeri/cojeev-ui/pull/48) merged as `00922a2b`; historical documents relocated, links repaired and installation compatibility pointer retained | Wider public-claims and asset review remain separate |
+| H02-1: sidebar scrollbar | [PR #52](https://github.com/luv-jeri/cojeev-ui/pull/52), `df47cb1`; 32 focused production-build assertions passed after review correction | Required PR checks, merge and live acceptance; new focused check not yet wired into CI |
+| G02-1 / F05-1 / G01-1: homepage loading, names and evidence | Reviewed stacked [PR #49](https://github.com/luv-jeri/cojeev-ui/pull/49), [#50](https://github.com/luv-jeri/cojeev-ui/pull/50), [#51](https://github.com/luv-jeri/cojeev-ui/pull/51) | Required checks, merge, production measurement and Pages-base-path preload verification; local median performance is 96, not 100 |
+| K05: shadcn submission | [Upstream PR #11899](https://github.com/shadcn-ui/ui/pull/11899) is submitted for approved `@cojeev`; signing checks pass | First maintainer review and acceptance; no listing approval is claimed |
+
+The exact-release test waiver has been cleared. Production approval remains an owner action. Cloudflare's automatically injected, CSP-blocked analytics script still needs scoped injection removal when dashboard access is available; do not weaken CSP to accommodate it. Live email/contact, recovery, wider accessibility/privacy, indexing and approved marketing acceptance remain separate open work.
+
+The following starting-position table and dated evidence are retained as historical context. Use the newest dated evidence and actual PR/deployment state when determining whether an individual checkpoint is complete; do not interpret the historical "not deployed" statements as today's hosting status.
+
+## Original starting position — 12 September
 
 **The project is not launch-complete.** Component recovery has implementation evidence, but final owner visual acceptance is still open. The rejected homepage was reverted and preserved separately. The latest release has not reached production or beta.
 
@@ -174,6 +192,7 @@ Last live probes: older production homepage returned 200; website/API `/health` 
 - [ ] **C02 · B — Finish Cloudflare CI credentials and server secrets.** Add only required deployment/health/webhook/auth values through protected secrets. Preserve the existing Resend bundles; do not replace them with incomplete values or rotate keys merely because setup buffers are gone.
 - [ ] **C03 · B — Configure isolated Turnstile.** Create the beta widget with exact allowed hosts and separate key/secret; verify production bindings. Test valid challenges, failure, expiry and retry in the real browser.
 - [ ] **C04 · C — Deploy isolated beta services.** Bind only beta D1/media/secrets/repository, apply reviewed migrations and deploy beta website/API Workers. Never copy production reports into beta.
+  - [ ] **C04-5 · C — Bound post-deployment propagation retries.** Retry a temporarily unavailable or stale public release within a short wall-clock budget, without accepting broken final headers, identity or delivery health. Preserve sanitized diagnostics and immediate failure on permanent delivery/configuration problems. See [the focused implementation evidence](../../production/2026-09-14-live-health-propagation.md). Source review and affected tests are separate from merge and a real deployment exercise.
   - [ ] **C04-3 · C — Repair deployment diagnostics and the Worker upload.** Record sanitized error codes and explanations without exposing credentials; identify and repair the actual uploader failure. Keep the [incident log](../../production/2026-09-14-deployment-incident.md), scoped PR and successful deployment evidence. Automated component suites remain deferred under the owner's expedited-release instruction.
   - [ ] **C04-4 · C — Fix confirmed Linux secret-file upload failure.** Run34800732477 exposed ENXIO opening `/dev/stdin`. Use a temporary 0700 directory and 0600 JSON secrets file outside the release artifact, with unconditional cleanup. Preserve the atomic code-and-secrets upload, incident evidence and production approval. Close only after actual CI upload succeeds.
 - [ ] **C05 · C — Connect domains and verify HTTPS.** Configure the exact beta website and API hostnames, validate DNS and certificates, and preserve existing production DNS/mail records.
@@ -399,6 +418,9 @@ Add one row when closing or reopening a task. Never record secrets, personal rep
 
 | Date | Task ID | Status change | Revision / environment | Evidence and result | Owner / next action |
 | --- | --- | --- | --- | --- | --- |
+| 2026-09-14 | B01-8 | Merged | `8f7b79f1` | [PR #47](https://github.com/luv-jeri/cojeev-ui/pull/47); independent review finding fixed, 144 focused classifier tests and required CI passed | Keep unknown/shared-impact checks and production approval intact |
+| 2026-09-14 | I04-1 | Merged | `00922a2b` | [PR #48](https://github.com/luv-jeri/cojeev-ui/pull/48); 54 historical root documents relocated, actual links/diffs reviewed, required CI passed | Wider I04 remains open |
+| 2026-09-14 | K05 | Submitted, not accepted | Approved `@cojeev` identity | [Upstream PR #11899](https://github.com/shadcn-ui/ui/pull/11899); no maintainer review yet, signing checks pass | Await external review; do not duplicate the submission |
 | 2026-09-13 | K01 / K02 | Namespace approved; submission prepared, not posted | Existing production origin; candidate `f3fa84b` still unreleased | [Prepared entry and evidence](../../launch/2026-09-13-registry-submission.md); owner confirmed @cojeev and existing mark. Live namespace absent; older downloads resolve but lack own MIT notice | Cojeev; release verification, K03 and upstream validation before posting |
 | 2026-09-12 | D01–D12 | Recorded baseline only | Release `cc971887` plus linked historical checkpoints | Evidence index above; not production acceptance | Cojeev; revalidate affected checks after changes |
 | 2026-09-12 | B05 | Still blocked | PR #2, head `cc971887` | Required Verify release cancelled; beta/prod skipped | Cojeev; B01–B04 and beta prerequisites |
