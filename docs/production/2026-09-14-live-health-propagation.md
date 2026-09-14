@@ -138,6 +138,32 @@ Thirteen tests in total. Regression:
 `node --test tests/release-live.test.mjs tests/operations.test.mjs tests/release.test.mjs`
 — 38 passed. `node --check` on both changed files: clean.
 
+## CI lifetime correction for the deadline test
+
+Run `34809526859` cancelled `tests/release-live.test.mjs:107` with
+`cancelledByParent: Promise resolution is still pending but the event loop has
+already resolved`, and the seven sibling tests after it never executed. No
+product assertion failed, and nothing about the release code was implicated.
+
+Cause: the deadline test's stub fetcher returns a promise that settles only when
+the budget's abort signal fires. Unlike a real `fetch`, that stub holds no
+referenced I/O handle, and `AbortSignal.timeout()` does not keep Node's event
+loop alive. With nothing referenced, the loop could drain while the promise was
+still pending and the runner cancelled the test.
+
+Correction, confined to that test: hold one `setTimeout` — referenced, and
+bounded at 2s, longer than the 50ms budget but shorter than the elapsed bound the
+test already asserts — for the duration of the assertion, cleared unconditionally
+in `t.after`. The abort requirement and the elapsed-time bound are unchanged, no
+production code was touched, no assertion was weakened into a sleep or a fake
+success, and no suite timeout was raised.
+
+This was not reproduced locally: the file passed locally before the change, both
+plainly and under `--import tsx`, so the repair follows from the mechanism rather
+than from a local reproduction. What local runs do show is that the timer is
+cleared rather than left to expire — the three focused files complete in ~0.33s
+plain and ~0.44s under tsx, far below the 2s bound, and report `cancelled 0`.
+
 ## Known limits, recorded rather than fixed
 
 - **An exhausted budget is reported with propagation codes, not a timeout code.**

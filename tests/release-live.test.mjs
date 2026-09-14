@@ -104,11 +104,21 @@ test('the budget is wall-clock time including the reads, not only the sleeping',
   assert.equal(waited.reduce((total,wait)=>total+wait,0)+18000*(waited.length+1)<=LIVE_BUDGET_MS+18000,true);
 });
 
-test('the deadline actually fires: a read that never answers is aborted, not waited out',async()=>{
+test('the deadline actually fires: a read that never answers is aborted, not waited out',async t=>{
   // Real clock, real timers, no network. The stub never resolves on its own, so
   // only the budget's own AbortSignal can end this. Its 15s per-request timeout
   // and the 4s first wait are both far longer than the budget below, so the test
   // finishing at all is the evidence.
+  //
+  // The stub has no referenced I/O handle, unlike a real fetch, and
+  // AbortSignal.timeout() does not keep Node's event loop alive. With nothing
+  // referenced, the loop can drain while this promise is still pending and the
+  // runner cancels the test (CI run 34809526859). Hold one short, bounded,
+  // referenced timer for the duration of the assertion — longer than the 50ms
+  // budget, shorter than the elapsed bound asserted below — and clear it
+  // unconditionally, so it can never extend the suite on any path.
+  const keepEventLoopAlive=setTimeout(()=>{},2000);
+  t.after(()=>clearTimeout(keepEventLoopAlive));
   const aborted=[];
   const hanging=(url,options)=>new Promise((resolve,reject)=>{
     options.signal.addEventListener('abort',()=>{aborted.push(url);reject(new Error('aborted'));},{once:true});
