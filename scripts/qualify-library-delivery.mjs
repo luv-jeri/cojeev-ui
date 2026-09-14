@@ -65,7 +65,8 @@ const run = (label, command, args, cwd, timeout = 120_000) => new Promise((resol
   child.once("error", error => { finish("spawn-error", error); reject(error); });
   child.once("close", code => {
     if (commands.at(-1)?.label !== label) finish(code ?? 1);
-    code === 0 ? resolve() : reject(new Error(`${label} ${timedOut ? `timed out after ${timeout / 1000}s` : `exited ${code}`}`));
+    if (code === 0) resolve();
+    else reject(new Error(`${label} ${timedOut ? `timed out after ${timeout / 1000}s` : `exited ${code}`}`));
   });
 });
 
@@ -262,7 +263,8 @@ function measureProfile(directory, profile, components) {
   const walk = current => {
     for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
       const file = path.join(current, entry.name);
-      entry.isDirectory() ? walk(file) : files.push(file);
+      if (entry.isDirectory()) walk(file);
+      else files.push(file);
     }
   };
   walk(dist);
