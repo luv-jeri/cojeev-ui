@@ -1,0 +1,604 @@
+{
+ "ran": "2026-09-14T16:24:01.716Z",
+ "suites": {
+  "lifecycle (round 2 suite)": {
+   "passed": 53,
+   "total": 53
+  },
+  "details (round 3 suite)": {
+   "passed": 45,
+   "total": 45
+  }
+ },
+ "errors": [],
+ "results": [
+  {
+   "suite": "lifecycle",
+   "name": "renderer is webgl",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "membrane covers the viewport",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "opens at beat 0 with an empty, editable prompt",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "prompt field shows no focus outline",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "organisms move while idle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "idle frame time p95 under 34ms",
+   "pass": true,
+   "detail": "p95=16.8ms"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "free organisms stay off the prompt text",
+   "pass": true,
+   "detail": "covered 0.0% of samples"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "Enter on an empty field types the thought first",
+   "pass": true,
+   "detail": "partial=\"Plan our next \""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "then the bond starts",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "the typed prompt stays in the field during the bond",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "bond frame time p95 under 34ms",
+   "pass": true,
+   "detail": "p95=16.7ms"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "prompt is read-only while bonded",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "launch opens the conversation panel",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "the sent bubble carries the prompt",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "the field empties into the composer",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "composer sits at the bottom of the panel",
+   "pass": true,
+   "detail": "{\"inside\":true,\"belowRows\":true}"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "pause freezes the membrane",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "pause holds the beat",
+   "pass": true,
+   "detail": "beat 3"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "paused story does not advance",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "resume moves the membrane again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "footer opens at about 40vh",
+   "pass": true,
+   "detail": "height=360"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "open footer freezes the membrane",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "Escape closes the footer",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "story settles at beat 9",
+   "pass": true,
+   "detail": "22.9s"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "every work row appeared during the run",
+   "pass": true,
+   "detail": "row0 | row1 | row2 | row3 | row4 | row5"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "the reply was checked",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "prompt editable again at settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "settled arrow is enabled",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "the automation offer is still there at settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "Enter at settle relaunches the conversation",
+   "pass": true,
+   "detail": "beat 2"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "the new thought replaces the sent bubble",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "second run recalls the kept memory",
+   "pass": true,
+   "detail": "recalled \u00b7 launch plan v1, changelog"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "replay returns to beat 0",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "organisms move again after replay",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "nothing happens before the idle window",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "after the idle window the page starts typing",
+   "pass": true,
+   "detail": "\"Plan our next launch.\""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "the typed thought is sent by itself",
+   "pass": true,
+   "detail": "beat 1"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "typing cancels the idle auto-start",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: start control bonds",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: no autoplay",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: closed panel is inert",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: no idle auto-advance",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: suggestion is exposed and enabled",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: suggestion is keyboard reachable",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: suggestion acknowledged",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: Next reaches every beat to settle",
+   "pass": true,
+   "detail": "2,3,4,5,6,7,8,9"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "quiet: replay returns to beat 0",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "mobile: no horizontal overflow",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "mobile: no auto focus (keyboard stays down)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "mobile: tap start control bonds",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "mobile: story settles",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "lifecycle",
+   "name": "mobile: every row fits above the composer",
+   "pass": true,
+   "detail": "{\"rowsInside\":true,\"overflow\":true}"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "no page errors",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "six pairs of eyes visible at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "send button shows the arrow",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "bond starts",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "button becomes a stop while bonding",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "launch",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "stop is live after launch",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "recall",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "memory cards visible with words",
+   "pass": true,
+   "detail": "[[\"team decisions\",\"1.00\",134],[\"last launch notes\",\"0.86\",149],[\"\",\"0.00\",51],[\"\",\"0.00\",51]]"
+  },
+  {
+   "suite": "details",
+   "name": "prepare",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "row 1 shows the brain glyph",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "reach",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "teammate avatar + subagent bot cards",
+   "pass": true,
+   "detail": "[[\"\",\"memory\",\"0.00\"],[\"\",\"memory\",\"0.00\"],[\"a teammate\",\"person\",\"1.00\"],[\"a subagent\",\"agent\",\"0.95\"]]"
+  },
+  {
+   "suite": "details",
+   "name": "right head wakes during reach",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "check",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "lead half-lids while the reply types",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "keep",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "kept card appears outside",
+   "pass": true,
+   "detail": "{\"o\":1,\"t\":\"launch plan v1\",\"sub\":\"kept for next time\",\"kind\":\"kept\",\"w\":133,\"r\":{\"x\":209,\"y\":368.2875061035156,\"width\":133.28125,\"height\":36.625,\"top\":368.2875061035156,\"right\":342.28125,\"bottom\":404.9125061035156,\"left\":209}}"
+  },
+  {
+   "suite": "details",
+   "name": "settle at 9",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "arrow is back at settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "second launch",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "previous exchange folds above the new bubble",
+   "pass": true,
+   "detail": "{\"o\":1,\"text\":\"\u203a Plan our next launch.launch plan v1\",\"top\":350.640625,\"sentTop\":372.640625}"
+  },
+  {
+   "suite": "details",
+   "name": "new sent bubble",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "second recall",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "second story recalls what was kept",
+   "pass": true,
+   "detail": "[\"launch plan v1\",\"changelog\",\"\",\"\"]"
+  },
+  {
+   "suite": "details",
+   "name": "second settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "rows fit above the composer with a fold",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "fold counts earlier exchanges",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "stop: reach",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "stop jumps to the settled beat",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "stop cue",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "what was reached stays, the rest is let go",
+   "pass": true,
+   "detail": "[true,true,true,false,false,false]"
+  },
+  {
+   "suite": "details",
+   "name": "composer is editable after stop",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "next thought after a stop launches",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "fold after a stop has no kept chip",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "quiet: memory cards readable at the still",
+   "pass": true,
+   "detail": "[[\"team decisions\",1],[\"last launch notes\",1],[\"\",0],[\"\",0]]"
+  },
+  {
+   "suite": "details",
+   "name": "quiet: agent cards readable at the still",
+   "pass": true,
+   "detail": "[[\"\",0],[\"\",0],[\"a teammate\",1],[\"a subagent\",1]]"
+  },
+  {
+   "suite": "details",
+   "name": "quiet: stop works",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "quiet: second thought shows the fold and the new bubble at once",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "mobile: compact cards",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "mobile: recall",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "mobile: glyph-only cards on screen",
+   "pass": true,
+   "detail": "[[\"1.00\",22,7],[\"0.79\",22,16],[\"0.00\",22,-11],[\"0.00\",22,-11]]"
+  },
+  {
+   "suite": "details",
+   "name": "mobile: settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "mobile: second settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "mobile: rows and fold fit above the composer",
+   "pass": true,
+   "detail": "{\"ok\":true,\"bottoms\":[323,357,380,400,420,462,485,513],\"formTop\":521}"
+  },
+  {
+   "suite": "details",
+   "name": "mobile: no horizontal overflow",
+   "pass": true,
+   "detail": ""
+  }
+ ]
+}

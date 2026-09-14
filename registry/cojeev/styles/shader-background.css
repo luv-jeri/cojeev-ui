@@ -1,0 +1,6 @@
+.v-shader-background{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 12% 30%,#ebedff,transparent 60%),radial-gradient(ellipse at 85% 85%,#dbf8ff,transparent 65%),#f3f2f8}
+.v-shader-background[data-mode=dark]{background:radial-gradient(ellipse at 20% 60%,#606080,transparent 65%),radial-gradient(ellipse at 90% 20%,#8d7dca,transparent 70%),#20242a}
+.v-shader-background::after{content:"";position:absolute;inset:0;pointer-events:none;background:transparent}
+.v-shader-background[data-mode=dark]::after{background:linear-gradient(180deg,#15171a88,#15171a33 30%,#15171a44 75%,#15171a99)}
+
+.v-shader-background[data-original=true]::after{display:none}

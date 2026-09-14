@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": [
+    "all five feature labels and full descriptions",
+    "continuous O path morph and drift with other features selected",
+    "animated SVG background",
+    "morphing feature controls and moving icon glyphs",
+    "40dvh organic SVG footer",
+    "stationary page, wheel reversal, Escape and focus return",
+    "pause stops O and background",
+    "390px, 320px and short landscape layouts",
+    "touch feature shortcuts and internally scrollable footer",
+    "reduced motion keeps artwork still"
+  ],
+  "errors": [],
+  "checkSeconds": 45.81
+}

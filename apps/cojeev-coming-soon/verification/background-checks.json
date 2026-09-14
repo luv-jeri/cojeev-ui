@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "background layers animate",
+    "pause freezes the field",
+    "desktop and mobile capture",
+    "no horizontal overflow",
+    "no page errors"
+  ],
+  "checkSeconds": 4.79
+}

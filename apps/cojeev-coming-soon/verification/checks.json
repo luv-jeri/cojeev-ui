@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": [
+    "three compositions and feature shortcuts",
+    "visible animated-icon stroke and actual moving glyph",
+    "button contour changes on pointer",
+    "shape path interpolation",
+    "jelly selection moves",
+    "five feature panels",
+    "stationary page and 40vh wheel footer",
+    "Escape and pause/resume",
+    "390 and 320px layouts",
+    "touch peel and feature activation",
+    "landscape last feature accessible",
+    "reduced-motion still"
+  ],
+  "errors": [],
+  "checkSeconds": 16.77
+}

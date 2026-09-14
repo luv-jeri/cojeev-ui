@@ -1,0 +1,67 @@
+# Cojeev coming soon — Type
+
+The owner-selected Type composition is the only active page. Five persistent feature controls sit beneath the interactive Cojeev wordmark. Each letter or feature opens its corresponding detail in a 40dvh footer with a continuous SVG curve. Scroll down, swipe up, Page Down, or “What’s taking shape” opens the same footer. Escape, the close control, reverse wheel, or swipe down closes it. The document stays fixed.
+
+All five feature descriptions appear together on desktop. Smaller screens scroll inside the footer; a feature shortcut centers the chosen detail, and the close control remains outside that scrolling area. The earlier Living and Peel source files and direction verification are retained as historical design studies, not active routes.
+
+## Run locally
+
+The active preview is http://127.0.0.1:4345/ . Its durable runtime mirror is `/Users/sanjaykumar/Developer/cojeev-coming-soon-preview`; matching application source is saved in the project worktree. The mirror avoids stalled Documents dependency reads and contains this worktree's actual registry baseline. It is not a separate published library version.
+
+From this app directory, `npm run dev -- --port 4345` starts the preview; `npm run build` produces the static site. Run `npm ci` here first. ShaderGradient, its compatible graphics dependencies, and Vite are pinned in this app’s package-lock.json. Existing Cojeev component dependencies still come from the installed repository root. The Vite aliases resolve the app’s graphics packages explicitly, leaving the main library’s Three.js version untouched. Vite uses the Tailwind PostCSS plugin; utilities.css scans both app and registry source so library icon strokes and control utilities compile correctly.
+
+## Existing Cojeev components
+
+- ShapeMorph supplies the O, feature artwork, and stretched cloud-3 footer edge.
+- FloatLayer owns the O's gentle drift. ShapeMorph owns its continuous path changes, independently of the highlighted letter.
+- ShaderBackground is a new library-source composition using the original ShaderGradient renderer. Light mode uses the owner’s latest pale waterPlane colours and motion, with no grain. Its full-screen framing disables the editor wide view, centres the surface and moves the camera closer so the mesh edges overflow the viewport. Its original pale lavender/ice colours have no warm override or wash. Dark mode retains the previously accepted midnight waterPlane, adapted palette and ink wash. HDR environment assets are served locally. ThemeToggle is the existing animated Cojeev switch, with an app-owned persisted preference.
+- Button owns the feature/control morphing; AnimatedIcon supplies all interactive glyphs.
+- Drawer preserves dialog semantics, Escape, focus restoration and the slide-up surface.
+
+The page composes existing controls and adds shader-background.tsx, shader-background-scene.tsx and shader-background.css to the isolated worktree’s library source. This component is a local prototype, not a published registry entry. It respects the shared motion preference, reduced motion, and visibility. Opening the footer quiets the scene behind it. Ambient artwork can move continuously; compact controls respond to interaction. The previous implementation's static icons and missing Tailwind compilation were implementation issues. No feature tabs remain in the selected composition.
+
+## Launch timing
+
+`public/launch.json` remains `{"startedAt": null}` for local review. At the first approved publication, set startedAt once to the actual UTC publication instant. Every visitor uses that same start plus exactly 30 days. Visits and rebuilds must not reset it; keep the manifest uncached on the host. No publication date has been set.
+
+The preview displays 30:00:00:00 without the removed explanatory sentence. A failed manifest fetch hides the numbers; expiry says Almost here instead of falsely declaring the product launched.
+
+## Previous contour/Type verification — before the shader change
+
+The final production build passed: 2.81 seconds in Vite, 4.60 seconds including the build process. Focused browser checks passed in 45.81 seconds with no page errors. Check-running time is separate from implementation, debugging, visual inspection and review.
+
+`verification/check-type.mjs` and `verification/type-checks.json` cover all five feature entries/descriptions, actual O path changes and drift while another feature is highlighted, SVG background movement, icon strokes and glyph movement, feature-button morphing, the 40dvh curved footer, stationary document, wheel reversal, Escape/focus return, pause/resume, reduced motion, touch activation, and 390px, 320px and short-landscape layouts. Selected details and the independent close control remain visible on those small viewports.
+
+Desktop/mobile captures were inspected. An independent read-only visual review of the composition identified no additional material issue beyond the footer join and short-screen access, which were then corrected and checked in the final run. The build still reports its existing client-directive and bundle-size warnings; these do not fail the local build.
+
+This is a local visual refinement, not a production publication or checkpoint release acceptance. Owner visual approval and checkpoint delivery remain separate. No signup collection, analytics, provider connections or live-agent claims are included.
+
+The screenshot-reference background refinement passed focused movement, pause, responsive overflow and page-error checks in 4.79 seconds. Desktop and mobile captures are saved as verification/reference-contour-*.png; results are in verification/background-checks.json. Earlier whole-page checks remain applicable to the unchanged interactions and footer.
+
+## Shader preview — 14 September 2026
+
+Current background evidence and limitations are in `verification/shader-preview.md`. The previous contour movement checks above are historical, not evidence for the current shader. The selected Type layout and countdown behavior are preserved. `/layout-wireframes.html` contains three composition studies only; it does not switch the actual landing page’s layout.
+
+`?source-shader` uses the original supplied colour props without the Cojeev wash, for local source-preset comparison. The normal route uses the adapted palettes. Both routes use the same original renderer and camera/geometry settings.
+
+## Alternative layout board
+
+`/layout-variations.html` offers The Orbit, One Prompt / Five Paths, and The Living Index, with desktop/mobile wireframes, light/midnight previews, a 40vh footer toggle and the five-feature content map. These are composition studies only; the live landing layout remains unchanged. The earlier `/layout-wireframes.html` is retained as the first design study.
+
+Verified all three selectors and both preview toggles in the browser, inspected the three compositions, and checked no horizontal overflow at 390px. No captured page errors. No production build was needed for this standalone wireframe HTML.
+
+## The Bond interaction demo
+
+`/bond.html` is a separate interactive story prototype: a single prompt line that a living presence bonds with, and the conversation that grows out of it. Six small organisms roam the whole viewport, curious about the prompt. Enter (or the arrow, or the invitation) sends them to the line along their own momentum; they clasp its ends, spread into a membrane and the prompt lives inside. The line then grows into a conversation panel: the prompt lifts into a sent bubble, the field drops to the bottom as the composer, and the lifecycle plays inside the body as work rows and reaching tendrils: memories recalled from outside, instructions and a skill woven in, the task reaching a teammate and a subagent, a reply that types itself and gets a second look, one line kept to memory, and a noticed rhythm offered as an automation. The panel settles ready for the next thought. A later thought folds the previous exchange into one line at the top rim of the panel (its prompt, what was kept, `+n earlier`) and runs again inside the same panel, recalling what the last one kept. Four illustrative stories cycle: plan the launch, draft the release notes, summarize the week, why the deploy failed.
+
+The field opens empty with the example prompt as its placeholder. Enter on an empty field types the example first. After roughly six and a half seconds with no key or tap, the page types a thought by itself and sends it; any keypress or tap cancels that. Focus is shown in the field's own underline, not as an outline box. While the organism works, the send arrow becomes a stop square; stopping keeps what was already reached, lets the rest go, and hands the composer back. What the organism reaches for outside the panel are cards (a glyph, a title, a subtitle) held in pockets of membrane: memories fold to their glyph and ride in onto their row, agents receive the task packet, the kept card is carried out; on narrow screens the cards are glyph-only. All six organisms have eyes, and the lead reacts: it widens, half-lids, squints and blinks with the story, and the right head wakes to watch the teammates. Uses the actual Cojeev ShaderBackground, InputControl, Button, AnimatedIcon, BubbleContent, ThemeToggle and Drawer (the teammate initials disc uses the avatar tokens directly, since this app does not install the avatar's Radix dependency), plus Motion sequences on a plain-object world painted by one frame loop. The membrane is a local WebGL prototype in library source (`registry/cojeev/lib/membrane-field.ts`, `registry/cojeev/ui/membrane.tsx`) with a 2D canvas fallback; it is not a registry entry. Countdown shares launch.json.
+
+A local pause stops the story, the typing, the roaming and shader rendering; the open footer and a hidden page do the same. Reduced motion shows every beat as a readable still, with Back and Next for stepping and no auto-start. The dark background sits its camera slightly closer than the source preset so the plane's corners stay outside wide frames. Rows, memories, teammates and automations are illustrative, with no agent integration. The production build has entries for both index.html and bond.html. Evidence: verification/prompt-bond.md.
+
+## Two additional story demos
+
+`/resident.html`: The Resident inhabits the border of a suggested computer window. Five scenes (Meet, Remember, Connect, Notice, Stay) auto-advance while visible and moving; chapter controls and replay remain available. The Notice scene accepts an illustrative skill suggestion. Stay changes the resident's inner intelligence. No actual skill or backend is created.
+
+`/mind.html`: Changing Mind is a sculptural SVG/CSS volume study, using perspective, membrane layers and Cojeev shapes. It is not a new 3D WebGL scene. Creative/Analytical/Curious controls change the core. Up to three illustrative thought beads persist across mind and character changes within this page instance. Gentle/Playful changes the membrane rhythm independently. Clear resets the beads. There is no durable memory storage.
+
+All three story demos have shared comparison links. The two new demos share theme, pause, countdown, visibility/quiet policy and the curved feature drawer; they reuse the existing shader and add no dependencies. Vite builds the main landing plus all three demo HTML entries. See verification/other-demos.md.

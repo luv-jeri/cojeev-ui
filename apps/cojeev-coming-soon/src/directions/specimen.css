@@ -1,0 +1,16 @@
+.specimen-direction{position:absolute;inset:0;display:grid;place-items:center;padding:112px 26px 120px}
+.specimen-title{position:absolute;left:9%;top:30%;z-index:2;font:500 clamp(42px,5.4vw,84px)/.98 var(--font-display);letter-spacing:-.04em;margin:0;pointer-events:none}.specimen-title span{margin-left:30px}
+.specimen-object{position:relative;width:min(48vw,530px,65dvh);aspect-ratio:1;margin-left:13%;isolation:isolate}
+.specimen-offset{position:absolute;inset:4% -4% -4% 4%;color:var(--v-blue);transform:rotate(-12deg)}.specimen-offset svg{width:100%;height:100%}
+.specimen-touch.v-btn[data-slot]{position:absolute;inset:0;display:block;width:100%;height:100%;border-radius:50%;padding:0;background:transparent;color:var(--v-ink);box-shadow:none}.specimen-touch.v-btn[data-slot]:hover{background:transparent}
+.specimen-contour{position:absolute;inset:0;width:100%;height:100%;color:var(--specimen-color);transition:color .7s var(--enter)}
+.specimen-ampersand{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:6%;font:500 clamp(160px,25vw,290px)/1 var(--font-display);letter-spacing:-.04em;transform:rotate(-8deg)}
+.specimen-stamp{position:absolute;right:1%;top:5%;width:24%;aspect-ratio:1;transform:rotate(13deg)}.specimen-stamp svg{position:absolute;inset:0;width:100%;height:100%;color:var(--v-yellow)}.specimen-stamp>span{position:absolute;inset:0;display:grid;align-content:center;text-align:center;font:500 clamp(9px,1.1vw,14px)/1.1 var(--font-text);letter-spacing:-.02em}
+.specimen-caption{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:9px;width:max-content;max-width:95%}.specimen-invitation{font:400 11px/1.4 var(--font-text);color:var(--v-text-2)}.specimen-discovery.v-btn[data-slot]{height:34px;min-height:34px;font-size:15px;padding:0 10px;background:transparent;box-shadow:none;gap:14px}
+@media(max-width:900px){.specimen-title{left:8%;top:23%;font-size:clamp(38px,7vw,60px)}.specimen-object{width:min(62vw,470px,57dvh);margin-left:15%}.specimen-ampersand{font-size:clamp(150px,30vw,255px)}}
+@media(max-width:600px){.specimen-direction{padding:125px 0 110px}.specimen-title{top:20%;left:7%;font-size:42px;line-height:.96}.specimen-title span{margin-left:16px}.specimen-object{width:min(83vw,390px,47dvh);margin-left:8%;margin-top:37px}.specimen-ampersand{font-size:clamp(170px,48vw,220px)}.specimen-stamp>span{font-size:10px}.specimen-caption{bottom:17%;gap:7px}.specimen-discovery.v-btn[data-slot]{font-size:13px;gap:9px}}
+@media(max-height:700px){.specimen-object{width:min(44vw,450px,54dvh)}.specimen-title{top:28%;font-size:clamp(36px,5vw,70px)}.specimen-caption{bottom:13%;gap:4px}}
+@media(max-height:700px) and (max-width:600px){.specimen-title{top:21%;font-size:34px}.specimen-object{width:min(76vw,38dvh);margin-top:30px}.specimen-ampersand{font-size:140px}.specimen-caption{bottom:17%}}
+@media(prefers-reduced-motion:reduce){.specimen-contour{transition:none}}
+
+.cojeev-page[data-paused=true] .specimen-contour{transition:none}

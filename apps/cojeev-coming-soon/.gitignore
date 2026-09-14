@@ -1,0 +1,5 @@
+dist/
+node_modules/
+verification/*.png
+verification/build.log
+verification/*.jpg

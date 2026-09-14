@@ -1,0 +1,37 @@
+{
+  "scope": "Local IAB on this Mac, short warm samples; mobile viewport emulation, not physical phone performance. Browser rAF cadence and actual WebGL draw-call counts, not GPU timer measurements. Temporary instrumentation restored after every sample.",
+  "desktop": {
+    "seconds": 1.8098,
+    "rafFPS": 60.22765,
+    "drawCalls": 109,
+    "p95FrameMs": 17.6,
+    "framesOver33ms": 0,
+    "canvas": [
+      1266,
+      877
+    ]
+  },
+  "paused": {
+    "seconds": 1.8107,
+    "drawCalls": 0
+  },
+  "reducedMotion": {
+    "seconds": 1.8022,
+    "drawCalls": 2,
+    "note": "Two settling redraws following the preference change; continuous rendering stopped."
+  },
+  "mobileViewport": {
+    "seconds": 1.8159,
+    "rafFPS": 60.02533,
+    "drawCalls": 109,
+    "p95FrameMs": 17.3,
+    "framesOver33ms": 0,
+    "canvas": [
+      390,
+      844
+    ],
+    "horizontalOverflow": false
+  },
+  "pageErrors": [],
+  "darkSourceUnchanged": true
+}
