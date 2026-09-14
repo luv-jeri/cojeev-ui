@@ -722,12 +722,19 @@ test('release depth reduces only documentation and named tooling, and defaults t
   assert.equal(depthOf([]), 'full', 'an empty diff proves nothing');
 });
 
-test('licence and generated root reports are never treated as prose', () => {
+test('licence-bearing files are never treated as prose', () => {
   // scripts/build-registry.mjs embeds LICENCE in the NOTICES.txt shipped with
-  // every entry, so a licence change keeps its generator and packaging checks.
-  for (const file of ['LICENCE', 'LICENSE', 'FONT-NOTICES.md', 'GATE.md', 'GATE-MOTION.md', 'GATE-INTERACTIONS.md']) {
+  // every entry, and FONT-NOTICES.md carries the bundled fonts' SIL obligation.
+  for (const file of ['LICENCE', 'LICENSE', 'LICENSE.md', 'LICENCE.md', 'FONT-NOTICES.md']) {
     assert.equal(depthOf([file]), 'full', file);
   }
+  // A gate report is evidence a gate writes: changing or deleting one cannot
+  // alter a rendered surface, so it does not force the catalogue.
+  assert.equal(depthOf(['GATE.md', 'docs/gates/GATE.md']), 'docs');
+  // reference/ prose is documentation, but the design handoff the gate fixtures
+  // read is not.
+  assert.equal(depthOf(['reference/expansion/README.md']), 'docs');
+  assert.equal(depthOf(['reference/cojeev-handoff-v4/entries/menubar/contract.md']), 'full');
 });
 
 test('a path traversal or empty segment is never documentation', () => {
@@ -736,35 +743,50 @@ test('a path traversal or empty segment is never documentation', () => {
   }
 });
 
-test('relocation-sensitive files reduce only when the diff is nothing but the relocation', () => {
-  const moved = [
-    '--- a/scripts/run-production-gate.mjs',
-    '+++ b/scripts/run-production-gate.mjs',
-    '@@ -52 +52,2 @@',
-    '-fs.writeFileSync("GATE.md", lines.join("\\n"));',
+test('a relocation reduces only when the rewritten removal reproduces the addition exactly', () => {
+  const hunk = (lines, file = 'scripts/run-production-gate.mjs') =>
+    [`diff --git a/${file} b/${file}`, `--- a/${file}`, `+++ b/${file}`, '@@ -1 +1 @@', ...lines].join('\n');
+  // The reviewed substitution, plus the one insertion that creates the directory.
+  assert.ok(relocationOnly(hunk([
+    '-fs.writeFileSync("GATE.md", lines.join("\\n") + "\\n");',
     '+fs.mkdirSync("docs/gates", { recursive: true });',
-    '+fs.writeFileSync("docs/gates/GATE.md", lines.join("\\n"));',
-  ].join('\n');
-  assert.ok(relocationOnly(moved));
-  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'docs/note.md'], moved), 'affected');
-  assert.equal(depthOf(['app/getting-started/page.tsx'], [
-    '--- a/app/getting-started/page.tsx',
-    '+++ b/app/getting-started/page.tsx',
-    '@@ -18 +18 @@',
-    '-    <a href={`${site.sourceUrl}/blob/main/INSTALLATION.md`}>',
-    '+    <a href={`${site.sourceUrl}/blob/main/docs/guides/INSTALLATION.md`}>',
-  ].join('\n')), 'affected');
-
-  // One unrelated line in the same file, and the change is a logic change again.
-  const alsoLogic = `${moved}\n@@ -60 +60 @@\n-const shards = 3;\n+const shards = 1;`;
-  assert.equal(relocationOnly(alsoLogic), false);
-  assert.equal(depthOf(['scripts/run-production-gate.mjs'], alsoLogic), 'full');
-  // A missing or empty diff proves nothing and never reduces.
+    '+fs.writeFileSync("docs/gates/GATE.md", lines.join("\\n") + "\\n");',
+  ])));
+  // A substring test would pass this: the line still names the moved file while
+  // changing something else entirely. The exact rule refuses it.
+  assert.equal(relocationOnly(hunk([
+    '-const report = "GATE.md", shards = 3;',
+    '+const report = "docs/gates/GATE.md", shards = 1;',
+  ])), false);
+  assert.equal(relocationOnly(hunk([
+    '-<a href={`${url}/blob/main/INSTALLATION.md`}>Read the notes</a>',
+    '+<a href={`${url}/evil/INSTALLATION.md`}>Read the notes</a>',
+  ], 'app/getting-started/page.tsx')), false);
+  // An unreviewed insertion is not a relocation either.
+  assert.equal(relocationOnly(hunk([
+    '-fs.writeFileSync("GATE.md", text);',
+    '+fs.writeFileSync("docs/gates/GATE.md", text);',
+    '+process.exitCode = 0;',
+  ])), false);
+  // A pure deletion, an empty diff and a missing diff all prove nothing.
+  assert.equal(relocationOnly(hunk(['-fs.writeFileSync("GATE.md", text);'])), false);
   assert.equal(relocationOnly(''), false);
   assert.equal(relocationOnly(undefined), false);
   assert.equal(depthOf(['scripts/run-production-gate.mjs'], undefined), 'full');
-  // The relocation allowance never spreads to a file outside the named set.
+  // The allowance never spreads to a file outside the named set.
+  const moved = hunk(['-fs.writeFileSync("GATE.md", text);', '+fs.writeFileSync("docs/gates/GATE.md", text);']);
+  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'docs/note.md'], moved), 'affected');
   assert.equal(depthOf(['scripts/run-production-gate.mjs', 'components/ui/button.tsx'], moved), 'full');
+  // One file's clean relocation never excuses another's real edit, and the reason
+  // names the file that actually needs the complete job.
+  const mixed = `${moved}\n${hunk([
+    '-  fs.writeFileSync(arg("report")??"GATE.md", text);',
+    '+  const reportPath = arg("report")??"docs/gates/GATE.md";',
+    '+  fs.writeFileSync(reportPath, text);',
+  ], 'apps/gate/run.mjs')}`;
+  const decision = releaseDepth(['scripts/run-production-gate.mjs', 'apps/gate/run.mjs'], mixed);
+  assert.equal(decision.depth, 'full');
+  assert.ok(decision.reason.includes('apps/gate/run.mjs'), decision.reason);
 });
 
 test('paths that own a bounded browser harness select it instead of the catalogue, never nothing', () => {
@@ -831,6 +853,16 @@ test('the release command reads a real diff and publishes one of the three known
   assert.ok(diff.includes('docs/gates/GATE.md'), diff);
   assert.ok(!diff.includes('docs/note.md'), 'only relocation-sensitive files are read');
   assert.equal(releaseDepth(paths, diff).depth, 'affected');
+
+  // The shape the real cleanup used in apps/gate/run.mjs: the write is moved into
+  // a new variable. That is a code change, not a path substitution, so it keeps
+  // the complete job until it is rewritten as a substitution.
+  fs.writeFileSync(path.join(cwd, 'scripts/run-production-gate.mjs'),
+    'const reportPath="docs/gates/GATE.md";\nfs.mkdirSync("docs/gates",{recursive:true});\nfs.writeFileSync(reportPath, text);\n');
+  git('commit', '-qam', 'extract a variable');
+  const extracted = git('rev-parse', 'HEAD').trim();
+  const extractedPaths = changedPaths({ base: head, head: extracted, cwd });
+  assert.equal(releaseDepth(extractedPaths, relocationDiff({ base: head, head: extracted, paths: extractedPaths, cwd })).depth, 'full');
 
   const { result, published } = publish(t, {
     CI_SCOPE_MODE: 'release', CI_SCOPE_EVENT: 'push',
@@ -919,5 +951,18 @@ test('a documentation-only release run installs, builds and deploys nothing', ()
   assert.match(String(diff.if), /run_checks != 'true'/);
   for (const name of ['beta', 'production']) {
     assert.match(String(workflow.jobs[name].if), /needs\.verify\.outputs\.run_release == 'true'/, name);
+  }
+});
+
+test('nothing selected at a reduced depth needs a browser Playwright did not install', () => {
+  // Playwright is installed only for the catalogue and the bounded harness, so
+  // every other step selected at `affected` depth must be browser-free.
+  const launches = source => /from ['"]playwright['"]/.test(source);
+  for (const name of fs.readdirSync(path.join(root, 'tests')).filter(file => /\.test\.(?:mjs|ts)$/.test(file))) {
+    assert.equal(launches(fs.readFileSync(path.join(root, 'tests', name), 'utf8')), false,
+      `${name} runs in npm test, which is selected without a browser`);
+  }
+  for (const script of ['scripts/release-csp.mjs', 'scripts/release-install.mjs', 'scripts/verify-install.mjs', 'scripts/check-example-source.mjs']) {
+    assert.equal(launches(fs.readFileSync(path.join(root, script), 'utf8')), false, script);
   }
 });

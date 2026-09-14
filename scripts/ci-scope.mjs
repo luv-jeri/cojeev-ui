@@ -235,23 +235,24 @@ const CATALOGUE_EXEMPT = new Set([
   "tests/operations.test.mjs",
 ]);
 
-// Root markdown that is NOT prose. `GATE.md`, `GATE-MOTION.md` and
-// `GATE-INTERACTIONS.md` are generated gate reports that the gate tooling writes
-// and reads back; `FONT-NOTICES.md` carries the bundled fonts' SIL licence
-// obligation and is listed in the public snapshot. Everything else at the root
-// was checked: no string literal naming a root `.md` file appears in app,
-// component, registry, worker, script or gate source except those reports, so no
-// other root markdown file is read, embedded or rendered.
-// `LICENCE`/`LICENSE` are deliberately absent from this rule entirely:
-// `scripts/build-registry.mjs` embeds `LICENCE` into the NOTICES.txt shipped with
-// every registry entry, so a licence change must keep its generator, packaging
-// and consumer-installation checks and runs the complete job.
-const GENERATED_ROOT_MARKDOWN = new Set(["GATE.md", "GATE-MOTION.md", "GATE-INTERACTIONS.md", "FONT-NOTICES.md"]);
+// Root markdown that is NOT prose. `LICENCE`/`LICENSE` carry no extension and
+// already fall through to the complete job; `LICENSE.md`, `LICENCE.md` and
+// `FONT-NOTICES.md` must join them, because `scripts/build-registry.mjs` embeds
+// the licence in the NOTICES.txt shipped with every registry entry and the font
+// notices carry the bundled fonts' SIL obligation. The generated gate reports
+// are deliberately NOT excluded: a gate report is evidence a gate writes, and
+// changing, moving or deleting one cannot alter a rendered surface.
+const LICENCE_MARKDOWN = new Set(["LICENSE.md", "LICENCE.md", "FONT-NOTICES.md"]);
+// The design handoff is read by the gate fixtures — `apps/gate/fixture-semantic-map.json`
+// names contract.md files under it — so its markdown is not prose. Other
+// `reference/` prose is.
+const REFERENCE_SOURCE = "reference/cojeev-handoff-v4/";
 function documentation(file) {
   const segments = file.split("/");
   if (segments.some(segment => segment === "" || segment === "." || segment === "..")) return false;
-  if (segments.length === 1) return file.endsWith(".md") && !GENERATED_ROOT_MARKDOWN.has(file);
-  return segments[0] === "docs" && DOCUMENTATION_SUFFIX.test(file);
+  if (segments.length === 1) return file.endsWith(".md") && !LICENCE_MARKDOWN.has(file);
+  if (segments[0] === "docs") return DOCUMENTATION_SUFFIX.test(file);
+  return segments[0] === "reference" && file.endsWith(".md") && !file.startsWith(REFERENCE_SOURCE);
 }
 
 // Paths that must keep real browser evidence without running the whole
@@ -283,24 +284,76 @@ const RELOCATION_SENSITIVE = new Set([
   "tests/production-gate.test.mjs",
   "app/getting-started/page.tsx",
 ]);
-const RELOCATION_LINE = /(?:GATE\.md|GATE-MOTION\.md|INSTALLATION\.md|BASELINE-STATUS\.md|mkdirSync)/;
+// The exact reviewed substitutions this relocation performs. A removed line is
+// rewritten with these and must then equal an added line character for character:
+// a substring test would let a long JSX or template line change anything at all
+// while still mentioning a moved filename.
+const RELOCATIONS = [
+  ["GATE-MOTION.md", "docs/gates/GATE-MOTION.md"],
+  ["GATE.md", "docs/gates/GATE.md"],
+  ["INSTALLATION.md", "docs/guides/INSTALLATION.md"],
+  ["(BASELINE-STATUS.md)", "(../archive/status/BASELINE-STATUS.md)"],
+  ["(PHASE-0-DECISION.md)", "(../../PHASE-0-DECISION.md)"],
+  ["(reference/cojeev-handoff-v4/", "(../../reference/cojeev-handoff-v4/"],
+  ["(../../RELEASE-0.2.0.md)", "(../../docs/archive/release/RELEASE-0.2.0.md)"],
+];
+// The only added lines allowed to have no removed counterpart: creating the
+// destination directory, and the import one of them needs.
+const RELOCATION_INSERTIONS = [
+  /^import path from ['"]node:path['"];?$/,
+  /^fs\.mkdirSync\(.*\{\s*recursive:\s*true\s*\}\);?$/,
+];
+
+/**
+ * True only when every removed line, rewritten by the reviewed substitutions
+ * above, reproduces an added line exactly, and every unmatched added line is a
+ * reviewed insertion. Anything else is a code change and runs the full job.
+ */
+/** Split a unified diff into one text per file, so one file cannot excuse another. */
+export function splitDiff(diff) {
+  const files = new Map();
+  let current;
+  for (const line of String(diff ?? "").split("\n")) {
+    const header = line.match(/^diff --git a\/(.+?) b\/(.+)$/);
+    if (header) { current = header[2]; files.set(current, []); continue; }
+    if (current) files.get(current).push(line);
+  }
+  return new Map([...files].map(([file, lines]) => [file, lines.join("\n")]));
+}
+
 export function relocationOnly(diff) {
-  const changed = String(diff ?? "").split("\n")
-    .filter(line => /^[-+]/.test(line) && !/^(?:\+\+\+|---)/.test(line));
-  // An empty or unreadable diff proves nothing, so it is not a relocation.
-  return changed.length > 0 && changed.every(line => RELOCATION_LINE.test(line));
+  const removed = [], added = [];
+  for (const line of String(diff ?? "").split("\n")) {
+    if (/^(?:\+\+\+|---|@@|diff |index |new file|deleted file|similarity|rename )/.test(line)) continue;
+    if (line.startsWith("-")) removed.push(line.slice(1).trim());
+    else if (line.startsWith("+")) added.push(line.slice(1).trim());
+  }
+  if (!removed.length && !added.length) return false;
+  const rewrite = line => RELOCATIONS.reduce((value, [from, to]) => value.split(from).join(to), line);
+  const remaining = [...added];
+  for (const line of removed) {
+    const index = remaining.indexOf(rewrite(line));
+    // A removed line whose rewrite reproduces nothing is a deletion or an edit,
+    // not a relocation.
+    if (index === -1) return false;
+    remaining.splice(index, 1);
+  }
+  return remaining.every(line => RELOCATION_INSERTIONS.some(pattern => pattern.test(line)));
 }
 
 export function releaseDepth(paths, diff) {
   if (!paths.length) return { depth: "full", suites: [], reason: "empty diff" };
-  const relocation = paths.some(file => RELOCATION_SENSITIVE.has(file)) && relocationOnly(diff);
+  // Judged per file: one file's unrelated edit must not excuse another's, and the
+  // reason must name the file that actually needs the complete job.
+  const perFile = splitDiff(diff);
+  let relocation = false;
   const suites = new Set();
   let depth = "docs";
   for (const file of paths) {
     if (documentation(file)) continue;
     if (FOCUSED_BROWSER.has(file)) { depth = "affected"; suites.add(FOCUSED_BROWSER.get(file)); continue; }
     if (CATALOGUE_EXEMPT.has(file)) { depth = "affected"; continue; }
-    if (relocation && RELOCATION_SENSITIVE.has(file)) { depth = "affected"; continue; }
+    if (RELOCATION_SENSITIVE.has(file) && relocationOnly(perFile.get(file))) { depth = "affected"; relocation = true; continue; }
     return { depth: "full", suites: [], reason: oneLine(`not exempt from release catalogue verification: ${file}`) };
   }
   const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;

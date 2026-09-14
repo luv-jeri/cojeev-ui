@@ -41,6 +41,15 @@ Tests assert this structurally: `build-pair`, `release-csp.mjs` and
 `release-install.mjs` are gated on `run_release` and must not mention
 `run_catalogue` at all.
 
+Playwright browsers are installed only for the catalogue and the bounded
+harness, so a review question was whether anything else selected at `affected`
+depth launches one. Checked: `scripts/release-csp.mjs` imports the hosting
+Worker handler directly and is a header contract check, not a browser;
+`scripts/release-install.mjs`, `scripts/verify-install.mjs` and
+`scripts/check-example-source.mjs` import no browser; and no file matched by the
+`npm test` glob imports `playwright`. A test now locks that invariant, so adding
+a browser to any of them fails instead of failing the release run.
+
 At `docs` depth nothing deployable changed, so no release artifact is published
 and both deploy jobs are switched off by `needs.verify.outputs.run_release`. The
 live site keeps serving the previous release; a documentation merge no longer
@@ -56,13 +65,18 @@ embedded or rendered.
 
 Explicitly **not** documentation, after primary review:
 
-- `LICENCE` / `LICENSE` — `scripts/build-registry.mjs` embeds `LICENCE` in the
-  `NOTICES.txt` shipped with every registry entry, so a licence change keeps its
-  generator, packaging and consumer-installation checks.
-- `FONT-NOTICES.md` — carries the bundled fonts' SIL licence obligation and is
-  listed in the public snapshot.
-- `GATE.md`, `GATE-MOTION.md`, `GATE-INTERACTIONS.md` — generated gate reports
-  that the gate tooling writes and reads back.
+- `LICENCE` / `LICENSE` (no extension, so they already fall through) and
+  `LICENSE.md` / `LICENCE.md` — `scripts/build-registry.mjs` embeds `LICENCE` in
+  the `NOTICES.txt` shipped with every registry entry, so a licence change keeps
+  its generator, packaging and consumer-installation checks.
+- `FONT-NOTICES.md` — carries the bundled fonts' SIL licence obligation.
+- `reference/cojeev-handoff-v4/**` — `apps/gate/fixture-semantic-map.json` names
+  `contract.md` files under it, so the design handoff's markdown is read by the
+  gate. Other `reference/` prose is documentation.
+
+The generated gate reports (`GATE.md`, `GATE-MOTION.md`) are deliberately **not**
+excluded, reversing an earlier draft: a gate report is evidence a gate writes,
+and changing, moving or deleting one cannot alter a rendered surface.
 
 **Named release, deployment and CI tooling**, by exact path only: the four
 workflows, the pinned Wrangler runtime manifests, the classifier and its tests,
@@ -74,15 +88,22 @@ absent: `scripts/release-config.mjs`, `scripts/release-manifest.mjs`,
 the built site contains or how it is validated, and
 `scripts/run-production-gate.mjs`, which is the catalogue runner itself.
 
-**A verified path relocation.** The cleanup moves generated reports and a
-documentation link out of the repository root, which touches the gate runner,
+**A verified path relocation.** The cleanup moves generated reports and
+documentation links out of the repository root, which touches the gate runner,
 the motion gate, `apps/gate/run.mjs`, their test and one app page. A path rule
-cannot tell a relocation from a logic change, so these are decided on the
-**actual diff**: every added and removed line must name a moved destination
-(`GATE.md`, `GATE-MOTION.md`, `INSTALLATION.md`, `BASELINE-STATUS.md`) or be the
-one recursive `mkdirSync` a writer needs before writing into a directory that may
-not exist. One unrelated line in the same file returns the whole change to the
-full job, and an empty or unreadable diff never reduces.
+cannot tell a relocation from a logic change — and neither can a substring test,
+which would let a long JSX or template line change anything at all while still
+mentioning a moved filename. So these files are decided on the **actual diff**,
+per file, by an exact rewrite: each removed line is rewritten with a fixed table
+of reviewed substitutions (`GATE.md`, `GATE-MOTION.md`, `INSTALLATION.md`,
+`(BASELINE-STATUS.md)`, `(PHASE-0-DECISION.md)`,
+`(reference/cojeev-handoff-v4/`, `(../../RELEASE-0.2.0.md)`) and must then
+reproduce an added line **character for character**. The only added lines
+allowed without a removed counterpart are two reviewed insertions:
+`import path from 'node:path'` and an `fs.mkdirSync(…, { recursive: true })`.
+A pure deletion, an unreviewed insertion, an empty or missing diff, and one
+unrelated line anywhere in that file all return it to the complete job, and one
+file's clean relocation never excuses another file's real edit.
 
 **Paths that own a bounded browser harness.** `scripts/check-docs.mjs`,
 `tests/docs-transient-timing.browser.mjs` and their transient-paint and
@@ -117,7 +138,41 @@ The gate evidence upload now accepts `GATE.md`, `docs/gates/GATE.md` and
 both before and after the cleanup moves the report, so the two changes have no
 ordering dependency.
 
+## Verified against the real cleanup commit
+
+Run against the sibling `postlaunch-docs` worktree's actual commit `e022cb0`
+(120 changed paths under `--no-renames`), not an invented fixture:
+
+- Every documentation path passes, including the deleted root markdown, the new
+  `docs/archive/**` homes, `README.md`, `reference/expansion/README.md` and the
+  `GATE.md` → `docs/gates/GATE.md` move.
+- Six of the seven relocation-sensitive files pass the exact rewrite rule:
+  `app/getting-started/page.tsx` (the long JSX line included),
+  `scripts/append-gate-report.mjs`, `scripts/gate-motion-report.mjs`,
+  `scripts/gate-motion.mjs`, `scripts/run-production-gate.mjs` and
+  `tests/production-gate.test.mjs`.
+- **One file blocks it:** `apps/gate/run.mjs`. That hunk extracts a new variable
+  (`const reportPath = arg("report") ?? "docs/gates/GATE.md";`), which is a code
+  change, not a path substitution, so the whole change classifies as `full` and
+  the reason names that file exactly.
+
+Rewriting that one hunk as a pure substitution plus the reviewed insertion —
+
+```js
+fs.mkdirSync(path.dirname(arg("report")??"docs/gates/GATE.md"),{recursive:true});
+fs.writeFileSync(arg("report")??"docs/gates/GATE.md",text.join("\n"));
+```
+
+— was re-classified against the otherwise untouched real diff and the whole
+120-path change becomes `affected`. (`path` is already imported in that file, so
+no import is needed.) The classifier was deliberately **not** widened to accept
+the variable extraction: proving that transformation harmless is a general
+program-equivalence problem, and the cheaper, safer fix is the two-line change
+above.
+
 ## Verification
+
+
 
 - `node --test tests/ci-scope.test.mjs` — 142 passed (130 pre-existing, 12 new).
   The new tests cover each depth, the licence and generated-report exclusions,
@@ -126,9 +181,13 @@ ordering dependency.
   event handling, a real git range read end to end, and the workflow wiring:
   which steps may be gated on `run_catalogue` and which may not, that `npm ci`
   and the release build can never diverge, that the depth step sees no secret,
-  and that both deploy jobs require `run_release`.
+  and that both deploy jobs require `run_release`. The exact relocation rule is
+  tested with its adversarial negatives: a line that keeps the moved filename
+  while changing a neighbouring value, a rewritten URL that keeps the filename,
+  an unreviewed insertion, a pure deletion, and the real variable-extraction
+  shape built in a real git repository.
 - `node --test tests/release-live.test.mjs tests/operations.test.mjs
-  tests/release.test.mjs` — 31 passed.
+  tests/release.test.mjs` — 33 passed.
 - ESLint over `scripts/ci-scope.mjs` and `tests/ci-scope.test.mjs` with
   `--max-warnings=0`: no findings.
 - `.github/workflows/verify.yml` parses; the pre-existing workflow-contract tests
