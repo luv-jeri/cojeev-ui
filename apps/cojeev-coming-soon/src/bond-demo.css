@@ -8,3 +8,28 @@
 
 .bond-header{position:relative;z-index:8}
 @media(max-width:700px){.memory-one{left:22%;top:22.5%}.memory-two{left:21%;top:82.5%}.agent-0{left:75.5%;top:20%}.agent-1{left:80%;top:57.5%}.agent-2{left:73%;top:86.25%}}
+
+/* Round 6: a page that is only the timer, the line and the story. Header carries the wordmark and a quiet "Coming soon"; the bottom bar keeps replay, the slide-up and the controls. */
+.bond-header{justify-content:space-between}.bond-soon{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--v-text-2)}
+.bond-bottom .replay-button.v-btn[data-slot]{color:var(--v-text-2)}
+.bond-footer-trigger.v-btn[data-slot]{gap:8px;background:color-mix(in srgb,var(--v-paper) 55%,transparent);border-color:color-mix(in srgb,var(--v-ink) 14%,transparent)}
+.bond-footer-trigger svg.v-icon{animation:trigger-nudge 2.6s ease-in-out infinite}
+@keyframes trigger-nudge{0%,100%{translate:0 0}50%{translate:0 -2px}}
+/* The slide-up: a rounded sheet with a handle, the title on the left, five capabilities in a row, a note underneath. */
+.bond-tray.future-tray.v-drawer[data-slot=drawer-content]{height:auto;max-height:min(46dvh,420px);border-radius:28px 28px 0 0;background:var(--tray-paper);box-shadow:0 -1px 0 color-mix(in srgb,var(--v-ink) 10%,transparent),0 -24px 60px -30px #0005;overflow:hidden}
+.bond-tray .tray-handle{position:absolute;left:50%;top:10px;translate:-50% 0;width:40px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--v-ink) 22%,transparent);z-index:2}
+.bond-tray .tray-scroll{position:relative;inset:auto;max-height:min(46dvh,420px);overflow-y:auto;overscroll-behavior:contain;padding:36px 5% 22px;display:flex;flex-direction:column;gap:20px;outline:none}
+.bond-tray .tray-heading{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:0}
+.bond-tray .tray-heading [data-slot=drawer-title]{font:500 clamp(24px,2.4vw,34px)/1.08 var(--font-display);letter-spacing:-.04em;margin:0}
+.bond-tray .tray-heading [data-slot=drawer-description]{font-size:12px;color:var(--v-text-2);margin:0}
+.bond-tray .tray-close.v-btn[data-slot]{top:14px;right:5%;width:36px;min-width:36px;height:36px;background:color-mix(in srgb,var(--v-ink) 7%,transparent)}
+.tray-features{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.tray-feature{display:flex;flex-direction:column;gap:10px;padding:16px 16px 18px;border-radius:18px;background:color-mix(in srgb,var(--v-paper) 60%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--v-ink) 8%,transparent);min-width:0;--tone:var(--v-olive-deep,#808F53)}
+.tray-feature[data-tone=lifecycle]{--tone:var(--v-pink-deep,#E09CC1)}.tray-feature[data-tone=agents]{--tone:var(--v-blue-deep,#8BA2C8)}.tray-feature[data-tone=proactive]{--tone:var(--v-yellow-deep,#E8C84D)}.tray-feature[data-tone=character]{--tone:var(--v-brand)}
+.tray-feature-glyph{display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:color-mix(in srgb,var(--tone) 38%,transparent);color:var(--v-ink)}.tray-feature-glyph svg.v-icon{width:17px;height:17px}
+.tray-feature h2{font:600 14px/1.15 var(--font-display);letter-spacing:-.02em;margin:0}
+.tray-feature p{font:400 11.5px/1.5 var(--font-text);color:var(--v-text-2);margin:0}
+.tray-note{font-size:10px;color:var(--v-text-2);margin:0}
+:root[data-mode=dark] .bond-tray.future-tray.v-drawer[data-slot=drawer-content]{--tray-paper:#1d1a24;color:#F6EFE2}:root[data-mode=dark] .tray-feature{background:#F6EFE20d;box-shadow:0 0 0 1px #F6EFE214}:root[data-mode=dark] .tray-feature-glyph{color:#F6EFE2}:root[data-mode=dark] .bond-tray .tray-close.v-btn[data-slot]{background:#F6EFE214;color:#F6EFE2}:root[data-mode=dark] .bond-tray .tray-handle{background:#F6EFE23a}:root[data-mode=dark] .bond-footer-trigger.v-btn[data-slot]{background:#F6EFE212;border-color:#F6EFE22e}
+@media(max-width:700px){.bond-tray.future-tray.v-drawer[data-slot=drawer-content],.bond-tray .tray-scroll{max-height:68dvh}.bond-tray .tray-scroll{padding:30px 20px 24px;gap:16px}.tray-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tray-feature{padding:14px;gap:8px}.tray-feature:last-child{grid-column:span 2}.bond-tray .tray-close.v-btn[data-slot]{right:16px;top:12px}.bond-footer-trigger.v-btn[data-slot]{top:auto}.bond-bottom{align-items:center;padding-bottom:0;height:100px}.bond-soon{display:none}}
+@media(max-height:740px) and (min-width:701px){.bond-tray.future-tray.v-drawer[data-slot=drawer-content],.bond-tray .tray-scroll{max-height:min(52dvh,360px)}.bond-tray .tray-scroll{padding:30px 5% 16px;gap:14px}.tray-feature{padding:12px 12px 14px;gap:8px}.tray-feature p{font-size:11px}}

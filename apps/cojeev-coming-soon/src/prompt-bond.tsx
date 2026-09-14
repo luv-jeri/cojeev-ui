@@ -23,35 +23,50 @@ export const beats = [
  {cue:'One prompt ends. The next starts wiser.',label:'Again'},
 ] as const;
 const LAST=beats.length-1;
-const IDLE_MS=6500;
+const IDLE_MS=9000;
 
-/** Something the organism reaches for outside the panel: a memory, a teammate, a subagent, a thing worth keeping. */
+/** Something that lives in the environment around the panel: a memory, a teammate, a subagent, a thing worth keeping. */
 type Thing={title:string;sub:string;icon?:string;initials?:string};
+type Kind='memory'|'teammate'|'subagent'|'kept';
 type Story={prompt:string;memories:[Thing,Thing];woven:string;agents:[Thing,Thing];kept:Thing;automation:string;reply:[number,number,number]};
-/** Illustrative conversations, one per thought. Each one recalls what the one before it kept. */
+/** Illustrative conversations, one per thought. Each one's first memory is what the one before it kept. */
 export const stories:Story[]=[
  {prompt:'Plan our next launch.',memories:[{title:'team decisions',sub:'12 notes',icon:'file-text'},{title:'last launch notes',sub:'kept three weeks ago',icon:'brain'}],woven:'your instructions, launch skill',agents:[{title:'a teammate',sub:'takes the timeline',initials:'MK'},{title:'a subagent',sub:'checks the dates',icon:'bot'}],kept:{title:'launch plan v1',sub:'kept for next time',icon:'bookmark'},automation:'Make this an automation?',reply:[1,.82,.56]},
  {prompt:'Draft the release notes.',memories:[{title:'launch plan v1',sub:'kept just now',icon:'bookmark'},{title:'changelog',sub:'34 commits',icon:'git-branch'}],woven:'your voice, release-notes skill',agents:[{title:'a teammate',sub:'reviews the wording',initials:'AR'},{title:'a subagent',sub:'collects the diffs',icon:'bot'}],kept:{title:'release notes v1',sub:'kept for next time',icon:'bookmark'},automation:'Draft notes on every release?',reply:[1,.9,.7]},
- {prompt:'Summarize this week for the team.',memories:[{title:'this week’s threads',sub:'7 conversations',icon:'list'},{title:'release notes v1',sub:'kept just now',icon:'bookmark'}],woven:'your instructions, summary skill',agents:[{title:'a teammate',sub:'adds the numbers',initials:'JL'},{title:'a subagent',sub:'reads the board',icon:'bot'}],kept:{title:'weekly summary',sub:'kept for next time',icon:'bookmark'},automation:'Summarize every Friday?',reply:[.9,1,.5]},
+ {prompt:'Summarize this week for the team.',memories:[{title:'release notes v1',sub:'kept just now',icon:'bookmark'},{title:'this week’s threads',sub:'7 conversations',icon:'list'}],woven:'your instructions, summary skill',agents:[{title:'a teammate',sub:'adds the numbers',initials:'JL'},{title:'a subagent',sub:'reads the board',icon:'bot'}],kept:{title:'weekly summary',sub:'kept for next time',icon:'bookmark'},automation:'Summarize every Friday?',reply:[.9,1,.5]},
  {prompt:'Why did the deploy fail?',memories:[{title:'deploy log',sub:'last run',icon:'terminal'},{title:'runbook',sub:'kept two months ago',icon:'list'}],woven:'your instructions, debugging skill',agents:[{title:'an ops teammate',sub:'checks the cluster',initials:'SP'},{title:'a subagent',sub:'reads the trace',icon:'bot'}],kept:{title:'root cause: expired token',sub:'kept for next time',icon:'bookmark'},automation:'Watch deploys for this?',reply:[1,.7,.85]},
 ];
 const storyAt=(run:number)=>stories[run%stories.length];
-/** A work row is written in parts: plain parts type in, bold parts are stamped in whole when what they name lands. Up to four per row (keys a–d). */
 type Part={t:string;b?:boolean};
-type PartKey='a'|'b'|'c'|'d';const KEYS:PartKey[]=['a','b','c','d'];
-const partsOf=(s:Story):Record<number,Part[]>=>{const [w0,w1='']=s.woven.split(', ');return {
+/** The work rows: plain words and, in bold, the things that were pulled in. */
+const rowsFor=(s:Story):Record<number,Part[]>=>({
  1:[{t:'recalled · '},{t:s.memories[0].title,b:true},{t:', '},{t:s.memories[1].title,b:true}],
- 2:[{t:'woven in · '},{t:w0,b:true},{t:', '},{t:w1,b:true}],
+ 2:[{t:'woven in · '},{t:s.woven,b:true}],
  3:[{t:'task → '},{t:s.agents[0].title,b:true},{t:' · notified '},{t:s.agents[1].title,b:true}],
  5:[{t:'kept · '},{t:s.kept.title,b:true}],
- 6:[{t:s.automation}],
-};};
-const kindOf=(th:Thing|null)=>th?.initials?'teammate':th?.icon==='bot'?'subagent':th?.icon==='bookmark'?'kept':'memory';
-/** Which cards stand outside the panel in a beat: memories on the left, agents on the right, the kept thing back on the left. */
-const thingsFor=(beat:number,s:Story):(Thing|null)[]=>beat===3?[s.memories[0],s.memories[1],null,null]:beat===5?[null,null,s.agents[0],s.agents[1]]:beat===7?[s.kept,null,null,null]:[null,null,null,null];
+});
+const kindOf=(th:Thing):Kind=>th.initials?'teammate':th.icon==='bot'?'subagent':th.icon==='bookmark'?'kept':'memory';
+const KIND_TITLE:Record<Kind,string>={memory:'Memory',teammate:'Teammate',subagent:'Subagent',kept:'Kept'};
 const ROW_ICONS=['','brain','sparkles','users','','bookmark',''];
-/** Each row's glyph moves in its own way when it lands: the brain draws itself, the sparkles twinkle, the second figure steps out, the bookmark slides into place. */
+/** Each row's glyph moves in its own way when something lands: the brain draws itself, the sparkles twinkle, the second figure steps out, the bookmark slides into place. */
 const ROW_PRESET=['auto','draw','auto','auto','auto','auto','draw'] as const;
+
+/* ── The environment: five float slots, three on the left (memories, and the thing kept last) and two on the right (agents).
+ * Things drift there on their own until a tendril grabs one; what is eaten leaves, what is kept is placed back out. */
+
+type Floating={thing:Thing;eaten:boolean};
+const SLOTS=5,LEFT=[0,1,2],RIGHT=[3,4],KEPT_SLOT=2;
+/** What floats around a story once `upTo` beats have happened. `prevKept` is the title of what the previous thought kept, so it keeps its slot. */
+function poolFor(s:Story,upTo:number,prevKept:string):(Floating|null)[]{
+ const pool:(Floating|null)[]=Array(SLOTS).fill(null);
+ const [m0,m1]=s.memories,eaten=upTo>3;
+ if(m0.title===prevKept){pool[KEPT_SLOT]={thing:m0,eaten};pool[0]={thing:m1,eaten};}
+ else{pool[0]={thing:m0,eaten};pool[1]={thing:m1,eaten};}
+ if(upTo>=7)pool[KEPT_SLOT]={thing:s.kept,eaten:false};
+ pool[3]={thing:s.agents[0],eaten:false};pool[4]={thing:s.agents[1],eaten:false};
+ return pool;
+}
+const slotOf=(pool:(Floating|null)[],title:string)=>pool.findIndex(f=>f?.thing.title===title);
 
 /* ── World: plain objects the timelines tween and the frame loop paints ──
  * Positions are named px/py on purpose: Motion treats keys called x and y as
@@ -60,11 +75,11 @@ const ROW_PRESET=['auto','draw','auto','auto','auto','auto','draw'] as const;
 
 type Cell={px:number;py:number;hw:number;hh:number;r:number;tone:number;rot:number;w:number};
 type Strand={ax:number;ay:number;bx:number;by:number;r:number;tone:number;taper:number;w:number};
-/** A card outside the panel: anchored at its glyph, `s` scales it around that glyph, `t` reveals its text; `rip` is the ring that
- * ripples out when it surfaces (1 = gone), `flash` its light, `fan` the stack behind a memory, `busy` a teammate's or subagent's activity. */
-type Node={px:number;py:number;o:number;s:number;t:number;rip:number;flash:number;fan:number;busy:number};
-/** A row: `g` is its glyph chip coming into being, `p` the ring that ripples off the chip, a–d the progress of its written parts. */
-type Row={o:number;dy:number;p:number;g:number;a:number;b:number;c:number;d:number};
+/** A floating thing: anchored at its shape, `s` scales it around that shape, `t` shows its label, `free` blends its drift
+ * (1 floating, 0 held), `rip` is the ring that ripples out when it surfaces (1 = gone), `flash` its light, `busy` its activity. */
+type Node={px:number;py:number;o:number;s:number;t:number;free:number;rip:number;flash:number;busy:number};
+/** A row: `g` is its glyph chip coming into being, `p` the ring that ripples off the chip. */
+type Row={o:number;dy:number;p:number;g:number};
 type Eye={o:number;lid:number};
 type World={
  env:{free:number;breath:number;wobble:number;underline:number;pulse:number;contour:number;panel:number};
@@ -83,8 +98,8 @@ function createWorld():World{
   A:cell(0),B:cell(2),O:[cell(0),cell(2),cell(0),cell(2)],PL:cell(0),PR:cell(2),
   K:[cell(1,1.4),cell(1,1.4),cell(1,1.2),cell(1,1.2)],U:[cell(2),cell(2)],Y:cell(3),
   strands:Array.from({length:8},(_,i)=>strand(i>5?0:1)),
-  nodes:Array.from({length:4},()=>({px:0,py:0,o:0,s:1,t:1,rip:1,flash:0,fan:0,busy:0})),
-  rows:Array.from({length:ROWS},()=>({o:0,dy:0,p:0,g:0,a:0,b:0,c:0,d:0})),fold:{o:0,dy:0},
+  nodes:Array.from({length:SLOTS},()=>({px:0,py:0,o:0,s:1,t:1,free:1,rip:1,flash:0,busy:0})),
+  rows:Array.from({length:ROWS},()=>({o:0,dy:0,p:0,g:0})),fold:{o:0,dy:0},
   eyes:Array.from({length:ORGANISMS},()=>({o:1,lid:0})),gaze:{px:0,py:0,w:0},
   lines:{a:0,b:0,c:0,check:0,typing:0},
  };
@@ -105,13 +120,13 @@ function damp(r:Roam,tx:number,ty:number,smooth:number,dt:number){
 /* ── Layout: everything is measured from the real prompt field and panel ── */
 
 type Point={x:number;y:number};
-/** A measured card: its box, and where its glyph sits so a pocket can wrap the box while the anchor stays on the glyph. */
-type Size={w:number;h:number;off:number};
+/** A measured shape: its box; the pocket wraps the box and the anchor is its centre. */
+type Size={w:number;h:number};
 type Rect={cx:number;cy:number;hw:number;hh:number};
 type Layout={
  W:number;H:number;k:number;field:Rect;panel:Rect&{left:number;right:number;top:number;bottom:number};composerDy:number;
  endL:Point;endR:Point;docks:Point[];rest:Point[];bounds:{x0:number;y0:number;x1:number;y1:number};
- M1:Point;M2:Point;T1:Point;T2:Point;P1:Point;P2:Point;Q1:Point;Q2:Point;roomy:boolean;
+ slots:Point[];rims:Point[];roomy:boolean;
  rows:Point[];reply:{x:number;y:number;w:number;h:number};
 };
 function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HTMLElement|null)[],replyEl:HTMLElement|null,formDy:number):Layout|null{
@@ -127,39 +142,45 @@ function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HT
  const rows=Array.from({length:ROWS},(_,i)=>{const el=rowEls[i];return el?{x:pl+el.offsetLeft+10,y:pt+el.offsetTop+el.offsetHeight/2}:{x:pcx,y:pcy};});
  const reply=replyEl?{x:pl+replyEl.offsetLeft,y:pt+replyEl.offsetTop,w:replyEl.offsetWidth,h:replyEl.offsetHeight}:{x:pcx-60,y:pcy,w:120,h:40};
  const left=pcx-phw,right=pcx+phw,top=pcy-phh,bottom=pcy+phh;
- // the cards outside carry text when there is room beside the panel; otherwise only their glyph.
- // With room they sit far out near the page edges, so pulling one in crosses real distance.
+ // things carry a label when there is room beside the panel; otherwise only their shape.
+ // With room they float far out near the page edges, so grabbing one crosses real distance.
  const roomy=left>=230*k&&W-right>=230*k;
- const farL=roomy?Math.max(150*k,left-300*k):left-30*k,farR=roomy?Math.min(W-150*k,right+300*k):right+30*k;
- const clampX=(x:number)=>Math.min(W-22*k,Math.max(22*k,x)),clampY=(y:number)=>Math.min(H-22*k,Math.max(22*k,y));
- const M1={x:clampX(farL),y:clampY(top+34*k)},M2={x:clampX(farL+16*k),y:clampY(bottom-84*k)};
- const T1={x:clampX(farR),y:clampY(top+58*k)},T2={x:clampX(farR-16*k),y:clampY(pcy+58*k)};
+ const farL=roomy?Math.max(150*k,left-300*k):left-34*k,farR=roomy?Math.min(W-150*k,right+300*k):right+34*k;
+ const clampX=(x:number)=>Math.min(W-26*k,Math.max(26*k,x)),clampY=(y:number)=>Math.min(H-26*k,Math.max(26*k,y));
+ const slots=[
+  {x:clampX(farL),y:clampY(top+40*k)},{x:clampX(farL+14*k),y:clampY(pcy+30*k)},{x:clampX(farL-6*k),y:clampY(bottom-70*k)},
+  {x:clampX(farR),y:clampY(top+60*k)},{x:clampX(farR-14*k),y:clampY(pcy+56*k)},
+ ];
+ const rims=[{x:left+6,y:slots[0].y+10*k},{x:left+6,y:slots[1].y-6*k},{x:left+6,y:slots[2].y-16*k},{x:right-6,y:slots[3].y+8*k},{x:right-6,y:slots[4].y}];
  return {W,H,k,field:{cx,cy,hw,hh},panel:{cx:pcx,cy:pcy,hw:phw,hh:phh,left,right,top,bottom},composerDy,
   endL,endR,bounds,
   docks:[endL,endR,{x:cx-hw*.35,y:cy-hh+3},{x:cx+hw*.3,y:cy-hh+3},{x:cx-hw*.05,y:cy+hh-3},{x:cx+hw*.5,y:cy+hh-3}],
   rest:[place(cx-hw*.75,cy-hh-80*k),place(cx+hw*.7,cy+hh+78*k),place(cx-hw-150*k,cy-40*k),place(cx+hw*.25,cy-hh-150*k),place(cx-hw*.3,cy+hh+140*k),place(cx+hw+160*k,cy+30*k)],
-  M1,M2,T1,T2,P1:{x:left+6,y:M1.y+12*k},P2:{x:left+6,y:M2.y-8*k},Q1:{x:right-6,y:T1.y+8*k},Q2:{x:right-6,y:T2.y},
-  roomy,rows,reply,
+  slots,rims,roomy,rows,reply,
  };
 }
 const at=(p:Point)=>({px:p.x,py:p.y});
 const zero={hw:0,hh:0,r:0};
-/** A pocket of membrane grown around a card; its centre sits `off` from the card's glyph. */
-const pocket=(size:Size,k:number,anchor:Point)=>({px:anchor.x+size.off,py:anchor.y,hw:size.w/2+11*k,hh:size.h/2+9*k,r:Math.min(size.h/2+9*k,18*k)});
+/** A pocket of membrane grown around a shape. */
+const pocket=(size:Size,k:number,anchor:Point)=>({px:anchor.x,py:anchor.y,hw:size.w/2+9*k,hh:size.h/2+9*k,r:Math.min(size.h/2+9*k,22*k)});
 
-/** Beat 0: six free organisms, nothing else. */
-function restPose(w:World,L:Layout,roam:Roam[]){
+/** Everything that floats, at its slot, drifting; eaten things are gone. */
+function floatPose(w:World,L:Layout,pool:(Floating|null)[]){
+ w.nodes.forEach((n,i)=>{const f=pool[i];Object.assign(n,{...at(L.slots[i]),o:f&&!f.eaten?1:0,s:1,t:1,free:1,rip:1,flash:0,busy:0});});
+}
+/** Beat 0: six free organisms, and the environment around them. */
+function restPose(w:World,L:Layout,roam:Roam[],pool:(Floating|null)[]){
  const k=L.k;Object.assign(w.env,{free:1,breath:0,wobble:1.2,underline:1,pulse:0,contour:0,panel:0});
  [w.A,w.B,...w.O].forEach((c,i)=>{const r=RADII[i]*k;Object.assign(c,{...at(L.rest[i]),hw:r,hh:r,r,rot:0});const o=roam[i];o.x=L.rest[i].x;o.y=L.rest[i].y;o.vx=o.vy=0;o.r=r;o.wait=0;o.tx=o.x;o.ty=o.y;});
  for(const c of [w.PL,w.PR,...w.K,...w.U,w.Y])Object.assign(c,{px:L.field.cx,py:L.field.cy,...zero,rot:0});
  for(const s of w.strands)Object.assign(s,{ax:L.field.cx,ay:L.field.cy,bx:L.field.cx,by:L.field.cy,r:0,taper:0});
- for(const n of w.nodes){n.o=0;n.s=1;n.t=1;n.rip=1;n.flash=0;n.fan=0;n.busy=0;}for(const r of w.rows){r.o=0;r.dy=0;r.p=0;r.g=0;r.a=r.b=r.c=r.d=0;}w.fold.o=0;w.fold.dy=0;
+ floatPose(w,L,pool);for(const r of w.rows){r.o=0;r.dy=0;r.p=0;r.g=0;}w.fold.o=0;w.fold.dy=0;
  for(const e of w.eyes){e.o=1;e.lid=0;}Object.assign(w.gaze,{px:L.field.cx,py:L.field.cy,w:0});
  Object.assign(w.lines,{a:0,b:0,c:0,check:0,typing:0});
 }
 /** The settled bonded line: two heads at the ends, membrane between. */
-function bondedPose(w:World,L:Layout,roam:Roam[]){
- restPose(w,L,roam);const e=L.field.hh+3,F=L.field;
+function bondedPose(w:World,L:Layout,roam:Roam[],pool:(Floating|null)[]){
+ restPose(w,L,roam,pool);const e=L.field.hh+3,F=L.field;
  Object.assign(w.env,{free:0,breath:1,wobble:1.5,underline:0,contour:.7});
  Object.assign(w.A,{...at(L.endL),hw:e,hh:e,r:e});Object.assign(w.B,{...at(L.endR),hw:e,hh:e,r:e});
  [w.A,w.B,...w.O].forEach((c,i)=>{const o=roam[i];o.x=L.docks[i].x;o.y=L.docks[i].y;o.vx=o.vy=0;if(i>1)Object.assign(c,{...at(L.docks[i]),...zero});});
@@ -173,13 +194,13 @@ const headR=(L:Layout)=>({px:L.panel.right-30*L.k,py:L.panel.top+4*L.k,hw:20*L.k
 const bodyL=(L:Layout)=>({px:L.panel.cx-L.panel.hw*.22,py:L.panel.cy,hw:L.panel.hw*.78,hh:L.panel.hh,r:30*L.k});
 const bodyR=(L:Layout)=>({px:L.panel.cx+L.panel.hw*.22,py:L.panel.cy,hw:L.panel.hw*.78,hh:L.panel.hh,r:30*L.k});
 /** The open panel with everything the beats before `upTo` already revealed. */
-function panelPose(w:World,L:Layout,roam:Roam[],upTo:number,folded:boolean){
- bondedPose(w,L,roam);
+function panelPose(w:World,L:Layout,roam:Roam[],upTo:number,folded:boolean,pool:(Floating|null)[]){
+ bondedPose(w,L,roam,pool);
  Object.assign(w.env,{panel:1,contour:.3});
  Object.assign(w.A,headL(L));Object.assign(w.B,headR(L));Object.assign(w.PL,bodyL(L));Object.assign(w.PR,bodyR(L));
  Object.assign(w.gaze,{px:L.panel.cx,py:L.panel.top+40*L.k,w:1});
  w.rows[0].o=1;w.fold.o=folded?1:0;
- const done=(i:number)=>{const r=w.rows[i];r.o=1;r.g=1;r.a=r.b=r.c=r.d=1;};
+ const done=(i:number)=>{const r=w.rows[i];r.o=1;r.g=1;};
  if(upTo>3)done(1);if(upTo>4)done(2);if(upTo>5)done(3);
  if(upTo>6){w.rows[4].o=1;Object.assign(w.lines,{a:1,b:1,c:1,check:1});}
  if(upTo>7)done(5);if(upTo>8)done(6);
@@ -188,24 +209,18 @@ function panelPose(w:World,L:Layout,roam:Roam[],upTo:number,folded:boolean){
 /* ── Choreography: one Motion sequence per beat ── */
 
 type Beat={seq:AnimationSequence;still:number};
-const flow=[.6,0,.15,1] as const,settle=[.4,0,.2,1] as const,inOut='easeInOut' as const,out='easeOut' as const;
+const flow=[.6,0,.15,1] as const,settle=[.4,0,.2,1] as const,haul=[.65,0,.35,1] as const,inOut='easeInOut' as const,out='easeOut' as const;
 const spring=(stiffness:number,damping:number)=>({type:'spring' as const,stiffness,damping});
 const lookAt=(w:World,p:Point,t:number,d=.4):AnimationSequence[number]=>[w.gaze,{...at(p),w:1},{duration:d,at:t}];
 const home=(w:World,L:Layout,t:number):AnimationSequence[number]=>[w.gaze,{px:L.panel.cx,py:L.panel.top+40*L.k},{duration:.5,at:t}];
-/** A row rises into place, blank; what gets written on it is sequenced by the beat (see write/stamp/arrive). */
-const land=(w:World,L:Layout,i:number,t:number):AnimationSequence=>[[w.rows[i],{dy:12*L.k,g:0,p:0,a:0,b:0,c:0,d:0},{duration:.01,at:0}],[w.rows[i],{o:1,dy:0},{duration:.5,ease:settle,at:t}]];
-const CPS=30; // characters per second the organism writes
-/** A plain part types in behind the caret. */
-const write=(w:World,i:number,key:PartKey,len:number,t:number):AnimationSequence[number]=>[w.rows[i],{[key]:1} as Partial<Row>,{duration:Math.max(.12,len/CPS),ease:'linear',at:t}];
-/** A bold part is stamped in whole, unrolling under a marker stroke. */
-const stamp=(w:World,i:number,key:PartKey,t:number):AnimationSequence[number]=>[w.rows[i],{[key]:1} as Partial<Row>,{...spring(320,22),at:t}];
+/** A row settles into place, quietly. */
+const land=(w:World,L:Layout,i:number,t:number):AnimationSequence=>[[w.rows[i],{dy:8*L.k,g:0,p:0},{duration:.01,at:0}],[w.rows[i],{o:1,dy:0},{duration:.5,ease:settle,at:t}]];
 /** The row's glyph chip pops into being and a ring ripples off it: what was pulled has arrived. */
-const arrive=(w:World,i:number,t:number):AnimationSequence=>[[w.rows[i],{g:1},{...spring(260,13),at:t}],...ripple(w,i,t+.02)];
+const arrive=(w:World,i:number,t:number):AnimationSequence=>[[w.rows[i],{g:1},{...spring(240,14),at:t}],...ripple(w,i,t+.02)];
 const ripple=(w:World,i:number,t:number):AnimationSequence=>[[w.rows[i],{p:1},{duration:.08,at:t}],[w.rows[i],{p:0},{duration:.85,ease:out,at:t+.1}]];
-const len=(ps:Part[]|undefined,j:number)=>ps?.[j]?.t.length??1;
-/** A card surfaces: it springs up, flashes, and a ring ripples away from it. */
+/** A thing surfaces in the environment: it springs up, flashes, and a ring ripples away from it. */
 const surface=(n:Node,M:Point,t:number,text=1):AnimationSequence=>[
- [n,{...at(M),o:0,s:.5,t:text,rip:0,flash:0,fan:0,busy:0},{duration:.01,at:t}],
+ [n,{...at(M),o:0,s:.5,t:text,rip:0,flash:0,busy:0},{duration:.01,at:t}],
  [n,{o:1,s:1},{...spring(170,13),at:t+.02}],
  [n,{flash:1},{duration:.1,at:t+.02}],[n,{flash:0},{duration:.5,ease:out,at:t+.12}],
  [n,{rip:1},{duration:.8,ease:out,at:t+.04}],
@@ -218,7 +233,7 @@ const blink=(w:World,t:number):AnimationSequence=>[[w.eyes[0],{lid:1},{duration:
 function bond(w:World,L:Layout):Beat{
  const e=L.field.hh+3,F=L.field,half=(F.cx-L.endL.x)/2+8;
  return {still:3,seq:[
-  [w.env,{underline:3.2},{duration:.26,ease:out,at:0}],
+  [w.env,{underline:3.2},{duration:.9,ease:out,at:0}],
   lookAt(w,{x:F.cx,y:F.cy},.1,.3),
   // contact: the heads flatten onto the ends of the line
   [w.env,{free:0},{duration:.25,at:.95}],
@@ -231,7 +246,7 @@ function bond(w:World,L:Layout):Beat{
   [w.PR,{px:L.endR.x-2,py:F.cy,hw:2,hh:F.hh+2,r:F.hh+2},{duration:.01,at:1.04}],
   [w.PL,{px:L.endL.x+half,hw:half},{duration:1.05,ease:flow,at:1.0}],
   [w.PR,{px:L.endR.x-half,hw:half},{duration:1.05,ease:flow,at:1.06}],
-  [w.env,{underline:0},{duration:.7,at:1.1}],
+  [w.env,{underline:0},{duration:.9,at:1.0}],
   [w.eyes[1],{lid:1},{duration:.35,at:1.2}],
   [w.eyes[1],{o:0},{duration:.4,at:1.55}],
   // fusion pulse, then settle
@@ -251,11 +266,12 @@ function bond(w:World,L:Layout):Beat{
  ]};
 }
 
-/** Beat 2: the line grows into a panel; the prompt lifts into the conversation. Later thoughts fold the last exchange away first. */
-function launch(w:World,L:Layout,again:boolean):Beat{
+/** Beat 2: the line grows into a panel; the prompt lifts into the conversation. Later thoughts fold the last exchange away first,
+ * and the new story's things surface in the environment. */
+function launch(w:World,L:Layout,again:boolean,fresh:number[]):Beat{
  const k=L.k,[sent,...rest]=w.rows;
  if(again)return {still:1.3,seq:[
-  [rest,{o:0,g:0,p:0,a:0,b:0,c:0,d:0},{duration:.3,at:0}],
+  [rest,{o:0,g:0,p:0},{duration:.3,at:0}],
   [w.lines,{a:0,b:0,c:0,check:0,typing:0},{duration:.3,at:0}],
   [sent,{dy:-12*k,o:0},{duration:.3,ease:settle,at:0}],
   [w.fold,{o:0,dy:8*k},{duration:.01,at:0}],
@@ -264,6 +280,7 @@ function launch(w:World,L:Layout,again:boolean):Beat{
   [sent,{dy:0,o:1},{duration:.55,ease:settle,at:.55}],
   ...blink(w,.35),
   home(w,L,.5),
+  ...fresh.flatMap((i,j)=>[[w.nodes[i],{o:0,free:1},{duration:.01,at:0}] as AnimationSequence[number],...surface(w.nodes[i],L.slots[i],.6+j*.18)]),
  ]};
  return {still:1.4,seq:[
   [sent,{dy:26*k,o:0},{duration:.01,at:0}],
@@ -278,56 +295,53 @@ function launch(w:World,L:Layout,again:boolean):Beat{
  ]};
 }
 
-/** Beat 3: a memory surfaces far out; a tendril reaches it, the membrane closes around it, and the whole card is hauled across into the panel,
- * where its name is stamped onto the "recalled" line the moment its glyph lands. */
-function recall(w:World,L:Layout,sizes:Size[],ps:Part[]):Beat{
- const k=L.k,[S0,S1]=w.strands,[K0,K1]=w.K,[U0,U1]=w.U,[n0,n1]=w.nodes,row=L.rows[1];
- const one=(S:Strand,K:Cell,U:Cell,n:Node,size:Size,P:Point,M:Point,t:number):AnimationSequence=>{const pk=pocket(size,k,M);return [
-  // something is out there: the card surfaces first, on its own, and the notes behind it fan out
-  ...surface(n,M,t),
-  [n,{fan:1},{...spring(120,9),at:t+.15}],
-  lookAt(w,M,t+.1),
-  // the organism reaches for it: a tendril crosses the gap and the membrane closes around the card
-  [S,{ax:P.x,ay:P.y,bx:P.x,by:P.y,r:9*k,taper:.35,tone:1},{duration:.01,at:t+.3}],
-  [S,{bx:M.x,by:M.y},{duration:.75,ease:out,at:t+.32}],
-  [K,{px:pk.px,py:pk.py,...zero,r:pk.r,tone:1,w:1.3,rot:0},{duration:.01,at:t+1.02}],
-  [K,{hw:pk.hw,hh:pk.hh},{...spring(210,14),at:t+1.05}],
-  [n,{s:1.1},{duration:.14,ease:out,at:t+1.05}],
-  [n,{s:1},{duration:.35,at:t+1.19}],
-  [n,{fan:0},{duration:.35,at:t+1.7}],
-  // a first packet streams down the tendril ahead of the card
-  [U,{px:M.x,py:M.y,...zero,r:5*k,tone:1,w:1.3,rot:0},{duration:.01,at:t+1.95}],
-  [U,{hw:5*k,hh:5*k},{duration:.15,at:t+1.97}],
-  [U,{px:P.x,py:P.y},{duration:.6,ease:inOut,at:t+2.12}],
-  [U,zero,{duration:.15,at:t+2.72}],
-  // the pull: card and pocket travel the whole way to the rim while the tendril thickens to haul
-  [S,{r:13*k},{duration:.3,at:t+2.1}],
-  [K,{px:P.x+size.off*.8,py:P.y,hw:pk.hw*.8,hh:pk.hh*.8},{duration:.9,ease:inOut,at:t+2.1}],
-  [n,{px:P.x,py:P.y,s:.8},{duration:.9,ease:inOut,at:t+2.1}],
-  [S,{bx:P.x,by:P.y},{duration:.9,ease:inOut,at:t+2.1}],
-  // swallowed at the rim: the words fold into the glyph, the body pulses, the glyph slides onto its row
-  [n,{t:0,s:.5},{duration:.2,at:t+3.0}],
-  [K,{px:P.x,hw:9*k,hh:9*k,r:9*k},{duration:.2,at:t+3.0}],
-  [S,{r:0},{duration:.2,at:t+3.0}],
-  [w.env,{pulse:1},{duration:.12,at:t+3.0}],
-  [w.env,{pulse:0},{duration:.3,at:t+3.12}],
-  [K,{px:row.x,py:row.y},{duration:.45,ease:inOut,at:t+3.2}],
-  [n,{px:row.x,py:row.y},{duration:.45,ease:inOut,at:t+3.2}],
-  [n,{o:0},{duration:.15,at:t+3.6}],
-  [K,zero,{duration:.25,at:t+3.65}],
+/** Beat 3: two memories float on the left. A tendril reaches each one, the membrane closes around its shape, and the shape is hauled
+ * across and swallowed: the body bulges, the shape sinks in, and its name settles onto the "recalled" line. */
+function recall(w:World,L:Layout,sizes:Size[],pool:(Floating|null)[],s:Story):Beat{
+ const k=L.k,[S0,S1]=w.strands,[K0,K1]=w.K,[U0,U1]=w.U,row=L.rows[1];
+ const one=(S:Strand,K:Cell,U:Cell,slot:number,t:number):AnimationSequence=>{const n=w.nodes[slot],M=L.slots[slot],P=L.rims[slot],pk=pocket(sizes[slot],k,M);return [
+  lookAt(w,M,t+.05),
+  // the organism reaches for it: a tendril crosses the gap
+  [S,{ax:P.x,ay:P.y,bx:P.x,by:P.y,r:9*k,taper:.35,tone:1},{duration:.01,at:t}],
+  [S,{bx:M.x,by:M.y},{duration:.7,ease:out,at:t+.02}],
+  // grabbed: the drift stops, the membrane closes around the shape, the thing lights up
+  [n,{free:0},{duration:.3,at:t+.6}],
+  [K,{px:pk.px,py:pk.py,...zero,r:pk.r,tone:1,w:1.3,rot:0},{duration:.01,at:t+.72}],
+  [K,{hw:pk.hw,hh:pk.hh},{...spring(210,14),at:t+.75}],
+  [n,{flash:1},{duration:.1,at:t+.75}],[n,{flash:0},{duration:.4,ease:out,at:t+.85}],
+  [n,{s:1.1},{duration:.14,ease:out,at:t+.75}],
+  [n,{s:1},{duration:.35,at:t+.89}],
+  // a first packet streams down the tendril, then the label folds and the shape is hauled to the rim
+  [U,{px:M.x,py:M.y,...zero,r:5*k,tone:1,w:1.3,rot:0},{duration:.01,at:t+1.15}],
+  [U,{hw:5*k,hh:5*k},{duration:.15,at:t+1.17}],
+  [U,{px:P.x,py:P.y},{duration:.55,ease:inOut,at:t+1.32}],
+  [U,zero,{duration:.15,at:t+1.87}],
+  [n,{t:0},{duration:.25,at:t+1.3}],
+  [S,{r:13*k},{duration:.3,at:t+1.5}],
+  [K,{px:P.x,py:P.y,hw:pk.hw*.85,hh:pk.hh*.85},{duration:.85,ease:haul,at:t+1.5}],
+  [n,{px:P.x,py:P.y,s:.85},{duration:.85,ease:haul,at:t+1.5}],
+  [S,{bx:P.x,by:P.y},{duration:.85,ease:haul,at:t+1.5}],
+  // swallowed: the shape sinks into the body, which bulges, and the glyph slides onto its row
+  [n,{s:.3,o:0},{duration:.3,at:t+2.35}],
+  [K,{hw:9*k,hh:9*k,r:9*k},{duration:.3,at:t+2.35}],
+  [S,{r:0},{duration:.25,at:t+2.35}],
+  [w.env,{pulse:1},{duration:.12,at:t+2.4}],
+  [w.env,{pulse:0},{duration:.35,at:t+2.52}],
+  [K,{px:row.x,py:row.y},{duration:.4,ease:inOut,at:t+2.65}],
+  [K,zero,{duration:.25,at:t+3.05}],
  ];};
+ const a=slotOf(pool,s.memories[0].title),b=slotOf(pool,s.memories[1].title);
  return {still:2.0,seq:[
-  ...one(S0,K0,U0,n0,sizes[0],L.P1,L.M1,0),
-  ...one(S1,K1,U1,n1,sizes[1],L.P2,L.M2,.45),
-  ...widen(w,1.05,1.3),
-  // the line is written as the glyphs land: "recalled · " types, each memory's name is stamped as it arrives
-  ...land(w,L,1,3.1),write(w,1,'a',len(ps,0),3.2),...arrive(w,1,3.6),stamp(w,1,'b',3.68),write(w,1,'c',len(ps,2),4.0),stamp(w,1,'d',4.12),
-  home(w,L,4.7),
+  ...one(S0,K0,U0,a<0?0:a,0),
+  ...one(S1,K1,U1,b<0?1:b,.5),
+  ...widen(w,.8,1.2),
+  ...land(w,L,1,2.9),...arrive(w,1,3.3),...ripple(w,1,3.8),
+  home(w,L,4.3),
  ]};
 }
 
-/** Beat 4: instructions and a skill bud from the rim and sink into the work; each is stamped onto the "woven in" line as it sinks. */
-function prepare(w:World,L:Layout,ps:Part[]):Beat{
+/** Beat 4: instructions and a skill bud from the rim and sink into the work. */
+function prepare(w:World,L:Layout):Beat{
  const k=L.k,[K0,K1]=w.K,row=L.rows[2],top=L.panel.top;
  const bud=(K:Cell,x:number,hw:number,t:number):AnimationSequence=>[
   [K,{px:x,py:top+2,...zero,r:14*k,tone:1.6,w:1.3,rot:0},{duration:.01,at:t}],
@@ -338,57 +352,55 @@ function prepare(w:World,L:Layout,ps:Part[]):Beat{
  ];
  return {still:1.1,seq:[
   ...bud(K0,L.panel.cx-L.panel.hw*.3,Math.max(44,58*k),0),
-  ...bud(K1,L.panel.cx+L.panel.hw*.2,Math.max(52,70*k),.75),
-  ...land(w,L,2,.9),write(w,2,'a',len(ps,0),1.0),...arrive(w,2,1.5),stamp(w,2,'b',1.62),write(w,2,'c',len(ps,2),2.2),stamp(w,2,'d',2.38),
-  home(w,L,2.9),
+  ...bud(K1,L.panel.cx+L.panel.hw*.2,Math.max(52,70*k),.7),
+  ...land(w,L,2,1.2),...arrive(w,2,1.6),...ripple(w,2,2.3),
+  home(w,L,2.7),
  ]};
 }
 
-/** Beat 5: a teammate and a subagent wait far out on the right; the task line names them, tendrils reach them, the task itself travels the whole way,
- * they get busy, and context comes back. The right head wakes to watch. */
-function reach(w:World,L:Layout,sizes:Size[],ps:Part[]):Beat{
- const k=L.k,[S0,S1]=w.strands,[K0,K1,K2]=w.K,[U0,U1]=w.U,[,,n2,n3]=w.nodes,row=L.rows[3];
- const one=(S:Strand,U:Cell,K:Cell,n:Node,size:Size,Q:Point,T:Point,t:number):AnimationSequence=>{const pk=pocket(size,k,T);return [
-  ...surface(n,T,t),
-  lookAt(w,T,t+.1),
-  [S,{ax:Q.x,ay:Q.y,bx:Q.x,by:Q.y,r:8*k,taper:.3,tone:2},{duration:.01,at:t+.3}],
-  [S,{bx:T.x,by:T.y},{duration:.75,ease:out,at:t+.32}],
-  [U,{px:pk.px,py:pk.py,...zero,r:pk.r,tone:2,rot:0},{duration:.01,at:t+1.02}],
-  [U,{hw:pk.hw,hh:pk.hh},{...spring(240,15),at:t+1.05}],
-  [n,{s:1.08},{duration:.14,ease:out,at:t+1.05}],
-  [n,{s:1},{duration:.3,at:t+1.19}],
+/** Beat 5: a teammate and a subagent float on the right. Tendrils reach them, the task itself travels the whole way, they get busy,
+ * context comes back, and they are let go to float again. The right head wakes to watch. */
+function reach(w:World,L:Layout,sizes:Size[]):Beat{
+ const k=L.k,[S0,S1]=w.strands,[K0,K1,K2]=w.K,[U0,U1]=w.U,row=L.rows[3];
+ const one=(S:Strand,U:Cell,K:Cell,slot:number,t:number):AnimationSequence=>{const n=w.nodes[slot],T=L.slots[slot],Q=L.rims[slot],pk=pocket(sizes[slot],k,T);return [
+  lookAt(w,T,t+.05),
+  [S,{ax:Q.x,ay:Q.y,bx:Q.x,by:Q.y,r:8*k,taper:.3,tone:2},{duration:.01,at:t}],
+  [S,{bx:T.x,by:T.y},{duration:.7,ease:out,at:t+.02}],
+  [n,{free:0},{duration:.3,at:t+.6}],
+  [U,{px:pk.px,py:pk.py,...zero,r:pk.r,tone:2,rot:0},{duration:.01,at:t+.72}],
+  [U,{hw:pk.hw,hh:pk.hh},{...spring(240,15),at:t+.75}],
+  [n,{s:1.08},{duration:.14,ease:out,at:t+.75}],
+  [n,{s:1},{duration:.3,at:t+.89}],
   // the task leaves its row, crosses the rim and rides the whole tendril to be received
-  [K,{px:row.x,py:row.y,hw:7*k,hh:7*k,r:7*k,tone:0,w:1.4},{duration:.01,at:t+1.2}],
-  [K,at(Q),{duration:.45,ease:inOut,at:t+1.25}],
-  [K,at(T),{duration:.8,ease:inOut,at:t+1.7}],
-  [K,zero,{duration:.15,at:t+2.5}],
-  [n,{s:1.2},{duration:.15,ease:out,at:t+2.45}],
-  [n,{s:1},{duration:.4,at:t+2.6}],
+  [K,{px:row.x,py:row.y,hw:7*k,hh:7*k,r:7*k,tone:0,w:1.4},{duration:.01,at:t+.9}],
+  [K,at(Q),{duration:.45,ease:inOut,at:t+.95}],
+  [K,at(T),{duration:.75,ease:inOut,at:t+1.4}],
+  [K,zero,{duration:.15,at:t+2.15}],
+  [n,{s:1.2},{duration:.15,ease:out,at:t+2.1}],
+  [n,{s:1},{duration:.4,at:t+2.25}],
   // received: the teammate starts typing, the subagent's ring spins
-  [n,{busy:1},{duration:.2,at:t+2.5}],
-  [n,{busy:0},{duration:.2,at:t+3.2}],
-  // release: the card lets go and the tendril returns
-  [n,{t:0},{duration:.25,at:t+3.3}],
-  [n,{o:0,s:.7},{duration:.35,at:t+3.4}],
-  [S,{bx:Q.x,by:Q.y,taper:.9},{duration:.55,ease:inOut,at:t+3.45}],
-  [U,zero,{duration:.45,at:t+3.5}],
-  [S,{r:0},{duration:.2,at:t+3.95}],
+  [n,{busy:1},{duration:.2,at:t+2.15}],
+  [n,{busy:0},{duration:.2,at:t+2.95}],
+  // release: the pocket opens, the tendril returns, the thing floats again
+  [U,zero,{duration:.4,at:t+3.05}],
+  [S,{bx:Q.x,by:Q.y,taper:.9},{duration:.5,ease:inOut,at:t+3.05}],
+  [S,{r:0},{duration:.2,at:t+3.5}],
+  [n,{free:1},{duration:.5,at:t+3.1}],
  ];};
- return {still:2.0,seq:[
-  ...one(S0,U0,K0,n2,sizes[2],L.Q1,L.T1,0),
-  ...one(S1,U1,K1,n3,sizes[3],L.Q2,L.T2,.45),
-  // "task → a teammate" is written before the task leaves the row for them; " · notified a subagent" before the second packet
-  ...land(w,L,3,.5),write(w,3,'a',len(ps,0),.6),...arrive(w,3,.9),stamp(w,3,'b',1.0),write(w,3,'c',len(ps,2),1.3),stamp(w,3,'d',1.6),
-  [w.eyes[1],{o:1,lid:0},{duration:.35,at:.5}],
-  [w.eyes[1],{lid:1},{duration:.3,at:3.9}],
-  [w.eyes[1],{o:0},{duration:.3,at:4.2}],
+ return {still:1.9,seq:[
+  ...one(S0,U0,K0,3,0),
+  ...one(S1,U1,K1,4,.45),
+  ...land(w,L,3,.4),...arrive(w,3,.75),
+  [w.eyes[1],{o:1,lid:0},{duration:.35,at:.4}],
+  [w.eyes[1],{lid:1},{duration:.3,at:3.5}],
+  [w.eyes[1],{o:0},{duration:.3,at:3.8}],
   // the teammate sends context back the same way
-  [K2,{...at(L.T1),hw:6*k,hh:6*k,r:6*k,tone:2,w:1.4},{duration:.01,at:2.7}],
-  [K2,at(L.Q1),{duration:.6,ease:inOut,at:2.75}],
-  [K2,{px:row.x,py:row.y},{duration:.4,ease:inOut,at:3.35}],
-  [K2,zero,{duration:.2,at:3.75}],
-  ...ripple(w,3,3.7),
-  home(w,L,4.3),
+  [K2,{...at(L.slots[3]),hw:6*k,hh:6*k,r:6*k,tone:2,w:1.4},{duration:.01,at:2.4}],
+  [K2,at(L.rims[3]),{duration:.55,ease:inOut,at:2.45}],
+  [K2,{px:row.x,py:row.y},{duration:.4,ease:inOut,at:3.0}],
+  [K2,zero,{duration:.2,at:3.4}],
+  ...ripple(w,3,3.35),
+  home(w,L,3.9),
  ]};
 }
 
@@ -416,40 +428,37 @@ function check(w:World,L:Layout,story:Story):Beat{
  ]};
 }
 
-/** Beat 7: one line of the reply is worth keeping; it is named on the "kept" line, then carried all the way out to where the memories live, becomes a card, and is stored. */
-function keep(w:World,L:Layout,sizes:Size[],ps:Part[]):Beat{
- const k=L.k,[,S1]=w.strands,[K0]=w.K,[n0]=w.nodes,R=L.reply,row=L.rows[5],M={x:L.M1.x+10*k,y:L.M1.y+24*k},pk=pocket(sizes[0],k,M);
- return {still:3.4,seq:[
+/** Beat 7: one line of the reply is worth keeping. It settles on the "kept" line, then is carried out along a tendril and placed in the
+ * environment as a new thing that takes shape and starts to float there, where the next thought can find it. */
+function keep(w:World,L:Layout,sizes:Size[]):Beat{
+ const k=L.k,[,S1]=w.strands,[K0]=w.K,n=w.nodes[KEPT_SLOT],R=L.reply,row=L.rows[5],M=L.slots[KEPT_SLOT],P=L.rims[KEPT_SLOT];
+ return {still:3.2,seq:[
+  [n,{...at(M),o:0,s:.4,t:0,free:0,rip:1,flash:0,busy:0},{duration:.01,at:0}],
   [K0,{px:R.x+R.w*.4,py:R.y+R.h*.55,...zero,tone:1,w:1.5,rot:0},{duration:.01,at:0}],
   [K0,{hw:8*k,hh:8*k,r:8*k},{duration:.2,at:.1}],
   lookAt(w,{x:R.x+R.w*.4,y:R.y+R.h*.55},0,.3),
   [K0,{px:row.x,py:row.y},{duration:.7,ease:inOut,at:.4}],
-  ...land(w,L,5,.85),write(w,5,'a',len(ps,0),.95),...arrive(w,5,1.15),stamp(w,5,'b',1.25),
-  [K0,at(L.P1),{duration:.5,ease:inOut,at:1.3}],
+  ...land(w,L,5,.85),...arrive(w,5,1.15),
+  [K0,at(P),{duration:.5,ease:inOut,at:1.3}],
   // carried out along a tendril to where the memories live
-  [S1,{ax:L.P1.x,ay:L.P1.y,bx:L.P1.x,by:L.P1.y,r:9*k,taper:.3,tone:1},{duration:.01,at:1.4}],
+  [S1,{ax:P.x,ay:P.y,bx:P.x,by:P.y,r:9*k,taper:.3,tone:1},{duration:.01,at:1.4}],
   [S1,{bx:M.x,by:M.y},{duration:.85,ease:out,at:1.45}],
   [K0,at(M),{duration:.85,ease:out,at:1.8}],
   lookAt(w,M,1.9),
-  // the pocket opens around the card only after the travel above has ended (no overlapping tweens on px)
-  [K0,{px:pk.px,hw:pk.hw,hh:pk.hh,r:pk.r},{...spring(200,15),at:2.7}],
-  [n0,{...at(M),o:0,s:.5,t:0,rip:1,flash:0,fan:0,busy:0},{duration:.01,at:0}],
-  ...surface(n0,M,2.73,0),
-  [n0,{t:1},{duration:.3,at:2.9}],
+  // placed: the body lets go, a new thing takes shape and starts to float
+  [K0,{hw:0,hh:0},{duration:.3,at:2.7}],
+  ...surface(n,M,2.66,0),
+  [n,{t:1},{duration:.3,at:2.95}],
   ...blink(w,3.2),
-  [S1,{bx:L.P1.x,by:L.P1.y,taper:.95},{duration:.5,ease:inOut,at:3.6}],
-  [S1,{r:0},{duration:.2,at:4.05}],
-  // stored: it drifts up and away, kept
-  [n0,{t:0},{duration:.25,at:4.1}],
-  [n0,{py:M.y-60*k,o:0,s:.7},{duration:.9,ease:out,at:4.2}],
-  [K0,{py:M.y-60*k},{duration:1.0,ease:out,at:4.1}],
-  [K0,{hw:0,hh:0},{duration:.7,at:4.4}],
-  home(w,L,4.4),
+  [S1,{bx:P.x,by:P.y,taper:.95},{duration:.5,ease:inOut,at:3.3}],
+  [S1,{r:0},{duration:.2,at:3.75}],
+  [n,{free:1},{duration:.6,at:3.4}],
+  home(w,L,3.8),
  ]};
 }
 
-/** Beat 8: the organism re-reads the thread (a ripple runs down the rows), a rhythm is noticed along the rim, and the offer writes itself. */
-function notice(w:World,L:Layout,ps:Part[]):Beat{
+/** Beat 8: the organism re-reads the thread (a ripple runs down the rows), a rhythm is noticed along the rim, and an offer is made. */
+function notice(w:World,L:Layout):Beat{
  const k=L.k,[K0,K1,K2]=w.K,Y=w.Y,row=L.rows[6],y=L.panel.bottom-9*k;
  const dot=(K:Cell,x:number,t:number):AnimationSequence=>[
   [K,{px:x,py:y,...zero,r:5*k,tone:3,w:1.6,rot:0},{duration:.01,at:t}],
@@ -457,7 +466,7 @@ function notice(w:World,L:Layout,ps:Part[]):Beat{
   [w.env,{pulse:1},{duration:.1,at:t}],
   [w.env,{pulse:0},{duration:.32,at:t+.1}],
  ];
- return {still:2.8,seq:[
+ return {still:2.6,seq:[
   ...[1,2,3,5].flatMap((i,j)=>ripple(w,i,.05+j*.16)),
   ...dot(K0,L.panel.cx-44*k,0),...dot(K1,L.panel.cx,.32),...dot(K2,L.panel.cx+44*k,.64),
   lookAt(w,{x:L.panel.cx,y},.3),
@@ -466,26 +475,36 @@ function notice(w:World,L:Layout,ps:Part[]):Beat{
   [Y,{px:L.panel.right+2,py:row.y,...zero,r:16*k,tone:3,rot:0},{duration:.01,at:1.5}],
   [Y,{hw:18*k,hh:14*k},{...spring(210,15),at:1.55}],
   [K0,zero,{duration:.3,at:1.6}],
-  // the offer: the workflow glyph draws itself, the question is written, then the pill glows
-  ...land(w,L,6,1.4),...arrive(w,6,1.55),write(w,6,'a',len(ps,0),1.75),...ripple(w,6,3.0),
+  ...land(w,L,6,1.4),...arrive(w,6,1.55),...ripple(w,6,2.7),
   lookAt(w,{x:row.x+40*k,y:row.y},1.6),
   ...widen(w,1.7,.9),
   // hold for the visitor, then the offer sinks back into the body
-  [Y,{hw:0,hh:0,px:L.panel.right-8},{duration:.5,ease:inOut,at:4.4}],
-  home(w,L,4.6),
+  [Y,{hw:0,hh:0,px:L.panel.right-8},{duration:.5,ease:inOut,at:4.2}],
+  home(w,L,4.4),
  ]};
 }
 
-function buildBeat(beat:number,w:World,L:Layout,run:number,sizes:Size[]):Beat|null{
- const s=storyAt(run),ps=partsOf(s);
- switch(beat){case 1:return bond(w,L);case 2:return launch(w,L,run>0);case 3:return recall(w,L,sizes,ps[1]);case 4:return prepare(w,L,ps[2]);case 5:return reach(w,L,sizes,ps[3]);case 6:return check(w,L,s);case 7:return keep(w,L,sizes,ps[5]);case 8:return notice(w,L,ps[6]);default:return null;}
+/** `again` is true for every thought after the first (an earlier exchange is folded), whatever story it plays. */
+function buildBeat(beat:number,w:World,L:Layout,run:number,sizes:Size[],again:boolean,pool:(Floating|null)[]):Beat|null{
+ const s=storyAt(run);
+ switch(beat){
+  case 1:return bond(w,L);
+  case 2:return launch(w,L,again,pool.map((f,i)=>f&&!f.eaten&&i!==KEPT_SLOT?i:-1).filter(i=>i>=0));
+  case 3:return recall(w,L,sizes,pool,s);
+  case 4:return prepare(w,L);
+  case 5:return reach(w,L,sizes);
+  case 6:return check(w,L,s);
+  case 7:return keep(w,L,sizes);
+  case 8:return notice(w,L);
+  default:return null;
+ }
 }
 
 /* ── Component ── */
 
 type Fold={prompt:string;kept:string};
 
-export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:boolean}){
+export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;quiet:boolean;clock?:React.ReactNode}){
  const [beat,setBeat]=React.useState(0);
  const [prompt,setPrompt]=React.useState('');
  const [sent,setSent]=React.useState('');
@@ -495,28 +514,32 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const [stopped,setStopped]=React.useState(false);
  const [checkOn,setCheckOn]=React.useState(false);
  const [glyphOn,setGlyphOn]=React.useState<boolean[]>(()=>Array(ROWS).fill(false));
+ const [picked,setPicked]=React.useState<string|null>(null);
  const [ready,setReady]=React.useState(0);
- const glyphRef=React.useRef<boolean[]>(Array(ROWS).fill(false)),partEls=React.useRef<HTMLElement[][]>([]);
+ const glyphRef=React.useRef<boolean[]>(Array(ROWS).fill(false));
  const input=React.useRef<HTMLInputElement>(null),form=React.useRef<HTMLFormElement>(null),stage=React.useRef<HTMLElement>(null),panel=React.useRef<HTMLDivElement>(null);
  const membrane=React.useRef<MembraneHandle>(null);
- const underline=React.useRef<HTMLDivElement>(null),eyeRefs=React.useRef<(HTMLSpanElement|null)[]>([]),foldEl=React.useRef<HTMLDivElement>(null);
+ const eyeRefs=React.useRef<(HTMLSpanElement|null)[]>([]),foldEl=React.useRef<HTMLDivElement>(null);
  const nodeRefs=React.useRef<(HTMLSpanElement|null)[]>([]),rowRefs=React.useRef<(HTMLElement|null)[]>([]),reply=React.useRef<HTMLDivElement>(null);
  const world=React.useRef(createWorld()),roam=React.useRef(createRoam()),layout=React.useRef<Layout|null>(null);
  const capture=React.useRef<Capture|null>(null),formDy=React.useRef(0),reached=React.useRef(0),pending=React.useRef<string|null>(null);
  const controls=React.useRef<AnimationPlaybackControls|null>(null),generation=React.useRef(0);
- const clock=React.useRef(0),pointer=React.useRef<Point|null>(null),checkRef=React.useRef(false);
+ const clock_=React.useRef(0),pointer=React.useRef<Point|null>(null),checkRef=React.useRef(false);
  const typing=React.useRef<{text:string;at:number;fast:boolean;n:number}|null>(null),typed=React.useRef(false),idle=React.useRef<number|null>(null);
  const scene=React.useRef({cells:Array.from({length:15},():MembraneCell=>({x:0,y:0,hw:0,hh:0,r:0,tone:0,rot:0,w:1})),strands:Array.from({length:8},():MembraneStrand=>({ax:0,ay:0,bx:0,by:0,r:0,tone:0,taper:0,w:1}))});
  const bonded=beat>0;
- const state=React.useRef({moving,quiet,beat,prompt,run,sent,stopped,folded:folds.length>0});
- state.current={moving,quiet,beat,prompt,run,sent,stopped,folded:folds.length>0};
+ const story=storyAt(run),lastFold=folds[folds.length-1];
+ const upTo=beat===LAST&&stopped?reached.current:beat;
+ const pool=React.useMemo(()=>poolFor(story,upTo,lastFold?.kept??''),[story,upTo,lastFold]);
+ const state=React.useRef({moving,quiet,beat,prompt,run,sent,stopped,folded:folds.length>0,pool});
+ state.current={moving,quiet,beat,prompt,run,sent,stopped,folded:folds.length>0,pool};
  const startRef=React.useRef<()=>void>(()=>{});
 
  /* Steering for one free organism: wander with arrival, keep company, keep off the prompt text. */
  const stepRoam=React.useCallback((i:number,dt:number,L:Layout)=>{
   const R=roam.current,r=R[i],k=L.k,F=L.field,cap=capture.current;
   if(cap){
-   const tc=clock.current-cap.t0,dock=L.docks[i],from=cap.from[i],startAt=.28+i*.07;
+   const tc=clock_.current-cap.t0,dock=L.docks[i],from=cap.from[i],startAt=.28+i*.07;
    if(tc>=1.3){r.x=dock.x;r.y=dock.y;r.vx=r.vy=0;return;}
    if(tc<startAt){const dx=dock.x-from.x,dy=dock.y-from.y,d=Math.hypot(dx,dy)||1,pull=(i<2?22:12)*k;damp(r,from.x-dx/d*pull,from.y-dy/d*pull,.18,dt);}
    else damp(r,dock.x,dock.y,i<2?.22:.2,dt);
@@ -545,8 +568,8 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const paint=React.useCallback((delta:number)=>{
   const w=world.current,L=layout.current,m=membrane.current;if(!L||!m)return;
   const {moving:live,quiet:still}=state.current;
-  const dt=live&&!still?Math.min(delta,40)/1000:0;clock.current+=dt;
-  const t=clock.current,k=L.k,f=w.env.free,p=pointer.current,R=roam.current;
+  const dt=live&&!still?Math.min(delta,40)/1000:0;clock_.current+=dt;
+  const t=clock_.current,k=L.k,f=w.env.free,p=pointer.current,R=roam.current;
   if(f>0)for(let i=0;i<ORGANISMS;i++)stepRoam(i,dt,L);
   // typing rides the same clock so a paused page pauses the typing too
   const ty=typing.current;
@@ -571,22 +594,20 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   probe(0,pos[0],{x:L.endL.x+40*k,y:L.field.cy},0);probe(1,pos[1],{x:L.endR.x-40*k,y:L.field.cy},2.4);
   m.draw({cells:out,strands,blend:24*k+4,wobble:still?0:w.env.wobble,contour:w.env.contour,time:t});
   // DOM riding on the body
-  if(underline.current){underline.current.style.opacity=String(Math.min(1,w.env.underline));underline.current.style.transform=`scaleY(${Math.max(.01,w.env.underline)})`;}
   const gazeTo=(from:Point)=>{let tx:number,ty:number;if(w.gaze.w>.5){tx=w.gaze.px;ty=w.gaze.py;}else if(p){tx=p.x;ty=p.y;}else{tx=L.field.cx;ty=L.field.cy;}const dx=tx-from.x,dy=ty-from.y,d=Math.hypot(dx,dy)||1,a=Math.min(1,d/80)*3.5*k;return {x:dx/d*a,y:dy/d*a};};
   w.eyes.forEach((e,i)=>{const el=eyeRefs.current[i];if(!el)return;const g=gazeTo(pos[i]);el.style.transform=`translate(${(pos[i].x+g.x).toFixed(1)}px,${(pos[i].y+g.y-2*k).toFixed(1)}px)`;el.style.opacity=String(e.o);el.style.setProperty('--lid',e.lid.toFixed(3));});
-  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;el.style.transform=`translate(${n.px.toFixed(1)}px,${n.py.toFixed(1)}px) translate(${-(el.dataset.gx??0)}px,-50%) scale(${n.s.toFixed(3)})`;el.style.opacity=String(n.o);const st=el.style;st.setProperty('--t',n.t.toFixed(3));st.setProperty('--rip',n.rip.toFixed(3));st.setProperty('--flash',n.flash.toFixed(3));st.setProperty('--fan',n.fan.toFixed(3));st.setProperty('--busy',n.busy.toFixed(3));});
+  // things drift on their own while free; a held thing sits exactly where the tendril has it
+  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const d=still?0:n.free,ox=Math.sin(t*.55+i*1.3)*9*k*d,oy=Math.cos(t*.42+i*.9)*7*k*d,rot=Math.sin(t*.35+i)*3*d;
+   el.style.transform=`translate(${(n.px+ox).toFixed(1)}px,${(n.py+oy).toFixed(1)}px) translate(${-(el.dataset.gx??0)}px,-50%) rotate(${rot.toFixed(2)}deg) scale(${n.s.toFixed(3)})`;el.style.opacity=String(n.o);
+   const st=el.style;st.setProperty('--t',n.t.toFixed(3));st.setProperty('--rip',n.rip.toFixed(3));st.setProperty('--flash',n.flash.toFixed(3));st.setProperty('--busy',n.busy.toFixed(3));});
   if(state.current.beat===2&&w.rows[0].o>.05&&state.current.prompt)setPrompt('');
   if(pending.current&&w.rows[0].o<.05){setSent(pending.current);pending.current=null;}
-  // rows: the frame loop owns the typed parts' text and the stamped parts' unroll, so Motion stays the only thing moving them
   w.rows.forEach((r,i)=>{const el=rowRefs.current[i];if(!el)return;el.style.opacity=String(r.o);el.style.setProperty('--dy',`${r.dy.toFixed(1)}px`);el.style.setProperty('--p',r.p.toFixed(3));el.style.setProperty('--g',r.g.toFixed(3));
-   let writing=false;
-   partEls.current[i]?.forEach((sp,j)=>{const v=r[KEYS[j]];const full=sp.dataset.t;if(full!==undefined){const text=full.slice(0,Math.round(v*full.length));if(sp.textContent!==text)sp.textContent=text;if(v>0&&v<1)writing=true;}else sp.style.setProperty('--u',v.toFixed(3));});
-   const wr=writing?'true':'false';if(el.dataset.writing!==wr)el.dataset.writing=wr;
    const on=r.g>.4;if(glyphRef.current[i]!==on){glyphRef.current[i]=on;setGlyphOn(prev=>{const next=[...prev];next[i]=on;return next;});}
    const hidden=r.o<.5;if(el.inert!==hidden){el.inert=hidden;el.setAttribute('aria-hidden',hidden?'true':'false');}});
   if(foldEl.current){foldEl.current.style.opacity=String(w.fold.o);foldEl.current.style.transform=`translateY(${w.fold.dy.toFixed(1)}px)`;}
   if(reply.current){const el=reply.current;el.style.setProperty('--la',String(w.lines.a));el.style.setProperty('--lb',String(w.lines.b));el.style.setProperty('--lc',String(w.lines.c));el.style.setProperty('--check',String(w.lines.check));el.style.setProperty('--typing',String(w.lines.typing));const on=w.lines.check>.5;if(on!==checkRef.current){checkRef.current=on;setCheckOn(on);}}
-  if(form.current){const dy=w.env.panel*L.composerDy;formDy.current=dy;form.current.style.transform=`translateY(${dy.toFixed(1)}px)`;}
+  if(form.current){const dy=w.env.panel*L.composerDy;formDy.current=dy;form.current.style.transform=`translateY(${dy.toFixed(1)}px)`;form.current.style.setProperty('--line',w.env.underline.toFixed(3));}
   if(panel.current){const el=panel.current,open=w.env.panel>.5;el.style.opacity=String(w.env.panel);if((el.dataset.open==='true')!==open){el.dataset.open=open?'true':'false';el.inert=!open;}}
  },[stepRoam]);
 
@@ -603,8 +624,8 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   if(!stage.current||!form.current||!panel.current)return;
   const L=measure(stage.current,form.current,panel.current,rowRefs.current,reply.current,formDy.current);if(!L)return;
   const first=!layout.current;layout.current=L;
-  const w=world.current,{beat:b,stopped:st,folded}=state.current;
-  if(b===0)restPose(w,L,roam.current);else if(b===1)bondedPose(w,L,roam.current);else panelPose(w,L,roam.current,b===LAST&&st?reached.current:b,folded);
+  const w=world.current,{beat:b,stopped:st,folded,pool:pl}=state.current;
+  if(b===0)restPose(w,L,roam.current,pl);else if(b===1)bondedPose(w,L,roam.current,pl);else panelPose(w,L,roam.current,b===LAST&&st?reached.current:b,folded,pl);
   if(first||b>0)setReady(v=>v+1);
  },[]);
  /* A folded thread shifts the rows; re-measure them without touching the pose. */
@@ -620,26 +641,19 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   if(!L)return;
   if(beat===1){
    // the organisms fly in from wherever they are; the heads' tween targets are their docks
-   if(!capture.current)capture.current={t0:clock.current,from:roam.current.map(r=>({x:r.x,y:r.y}))};
+   if(!capture.current)capture.current={t0:clock_.current,from:roam.current.map(r=>({x:r.x,y:r.y}))};
    [w.A,w.B,...w.O].forEach((c,i)=>Object.assign(c,at(L.docks[i])));
    if(quiet||!moving)roam.current.forEach((r,i)=>{r.x=L.docks[i].x;r.y=L.docks[i].y;r.vx=r.vy=0;});
   } else capture.current=null;
-  // measure this beat's cards at full size, and remember where each glyph sits so the card scales around it
+  // measure each thing's shape, and remember where it sits so the thing scales and folds around it
   const sizes=nodeRefs.current.map((el):Size=>{
-   if(!el)return {w:26,h:26,off:0};
-   el.style.setProperty('--t','1');
-   const g=el.querySelector<HTMLElement>('.thing-glyph'),w=el.offsetWidth,h=el.offsetHeight,gx=g?g.offsetLeft+g.offsetWidth/2:w/2;
+   if(!el)return {w:30,h:30};
+   const g=el.querySelector<HTMLElement>('.thing-shape'),w=g?.offsetWidth??30,h=g?.offsetHeight??30,gx=g?g.offsetLeft+w/2:w/2;
    el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;
-   return {w,h,off:w/2-gx};
+   return {w,h};
   });
-  // and this story's row parts: remember each row's part elements, and measure each stamp at full width so it can unroll to exactly that
-  partEls.current=rowRefs.current.map(el=>{
-   const parts=el?Array.from(el.querySelectorAll<HTMLElement>('.row-part')):[];
-   for(const sp of parts)if(sp.dataset.t===undefined){sp.style.removeProperty('--w');sp.style.setProperty('--u','1');sp.style.setProperty('--w',`${sp.getBoundingClientRect().width.toFixed(1)}px`);}
-   return parts;
-  });
-  const built=buildBeat(beat,w,L,run,sizes);
-  if(!built){if(beat===0)restPose(w,L,roam.current);else panelPose(w,L,roam.current,stopped?reached.current:beat,folds.length>0);return;}
+  const built=buildBeat(beat,w,L,run,sizes,folds.length>0,pool);
+  if(!built){if(beat===0)restPose(w,L,roam.current,pool);else panelPose(w,L,roam.current,stopped?reached.current:beat,folds.length>0,pool);return;}
   const own=++generation.current;
   const c=animate(built.seq,{defaultTransition:{ease:'easeInOut'}});
   controls.current=c;
@@ -654,14 +668,14 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const nextPrompt=()=>storyAt(state.current.beat===0?0:state.current.run+1).prompt;
  const typeThenStart=React.useCallback((text:string,fast:boolean)=>{
   if(state.current.quiet||!state.current.moving){setPrompt(text);typing.current=null;window.setTimeout(()=>startRef.current(),60);return;}
-  typing.current={text,at:clock.current,fast,n:0};
+  typing.current={text,at:clock_.current,fast,n:0};
  },[]);
  const start=React.useCallback(()=>{
   const {beat:b,prompt:text,quiet:still,moving:live}=state.current;
   if(b!==0&&b!==LAST)return;
   if(typing.current){const ty=typing.current;typing.current=null;setPrompt(ty.text);window.setTimeout(()=>startRef.current(),40);return;}
   if(!text.trim()){typeThenStart(nextPrompt(),true);return;}
-  typed.current=false;setNoted(false);input.current?.blur();
+  typed.current=false;setNoted(false);setPicked(null);input.current?.blur();
   // a thought that matches one of the stories plays that story; anything else plays the next one in the cycle
   const chosen=stories.findIndex(s=>s.prompt===text.trim());
   if(b===0){if(chosen>=0)setRun(chosen);setSent(text.trim());setBeat(1);return;}
@@ -701,52 +715,51 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
 
  const next=()=>{controls.current?.complete();setBeat(b=>Math.min(LAST,b+1));};
  const back=()=>{controls.current?.complete();setBeat(b=>Math.max(1,b-1));};
- const acceptSuggestion=()=>{setNoted(true);const c=controls.current;if(c&&c.time<4.25)c.time=4.25;if(!moving||quiet)paintSoon();};
- /* A picked thought is typed quickly into the field and sent. */
- const pick=(text:string)=>{typing.current=null;typed.current=false;typeThenStart(text,true);};
+ const acceptSuggestion=()=>{setNoted(true);const c=controls.current;if(c&&c.time<4.05)c.time=4.05;if(!moving||quiet)paintSoon();};
+ /* A picked thought shrinks away as it is typed quickly into the field and sent. */
+ const pick=(text:string)=>{typing.current=null;typed.current=false;setPicked(text);typeThenStart(text,true);};
  const onPointer=(e:React.PointerEvent)=>{const s=stage.current?.getBoundingClientRect();if(!s)return;pointer.current={x:e.clientX-s.left,y:e.clientY-s.top};};
- const story=storyAt(run),parts=partsOf(story),things=thingsFor(beat,story),lastFold=folds[folds.length-1];
+ const rows=rowsFor(story);
  const cue=beat===8&&noted?'Noted. It will be there next time.':beat===LAST&&stopped?'Stopped. Whenever you’re ready.':beats[beat].cue;
  const composing=beat===0||beat===LAST,working=bonded&&!composing;
  const suggestions=beat===0?stories.slice(0,3).map(s=>s.prompt):beat===LAST?[storyAt(run+1).prompt]:[];
- const renderParts=(ps:Part[])=><span className="chat-row-text">{ps.map((p,j)=>p.b?<b key={j} className="row-part row-stamp">{p.t}</b>:<span key={j} className="row-part" data-t={p.t}/>)}<i className="row-caret" aria-hidden="true"/></span>;
+ const compact=layout.current?!layout.current.roomy:false;
  React.useEffect(()=>{if(composing&&matchMedia('(hover:hover) and (pointer:fine)').matches)requestAnimationFrame(()=>input.current?.focus({preventScroll:true}));},[composing]);
+ const renderParts=(ps:Part[])=><span className="chat-row-text">{ps.map((p,j)=>p.b?<b key={j}>{p.t}</b>:<span key={j}>{p.t}</span>)}</span>;
 
- return <main className="prompt-story" ref={stage} data-beat={beat} data-bonded={bonded} data-moving={moving} data-quiet={quiet} data-compact={layout.current?!layout.current.roomy:false} onPointerMove={onPointer} onPointerLeave={()=>{pointer.current=null;}}>
+ return <main className="prompt-story" ref={stage} data-beat={beat} data-bonded={bonded} data-moving={moving} data-quiet={quiet} data-compact={compact} onPointerMove={onPointer} onPointerLeave={()=>{pointer.current=null;}}>
   <Membrane ref={membrane} className="prompt-membrane" onMeasure={relayout}/>
   <div className="stage-layer" aria-hidden="true">
    {RADII.map((_,i)=><span key={i} className="eyes" data-small={i>1} ref={el=>{eyeRefs.current[i]=el;}}><i/><i/></span>)}
-   {things.map((th,i)=><span key={i} ref={el=>{nodeRefs.current[i]=el;}} className="thing" data-side={i<2?'left':'right'} data-kind={kindOf(th)}>
-    <i className="thing-ring" aria-hidden="true"/><i className="thing-flash" aria-hidden="true"/>
-    <span className="thing-glyph">{th?.initials?th.initials:<AnimatedIcon name={th?.icon??'brain'} size="sm"/>}</span>
-    <span className="thing-text"><em className="thing-kind">{th?kindOf(th):''}</em><b>{th?.title??''}</b><small>{th?.sub??''}</small><span className="thing-busy" aria-hidden="true"><i/><i/><i/></span></span>
-   </span>)}
+   {pool.map((f,i)=>{const th=f?.thing??null,kind=th?kindOf(th):'memory';return <span key={i} ref={el=>{nodeRefs.current[i]=el;}} className="thing" data-side={i<3?'left':'right'} data-kind={kind}>
+    <span className="thing-shape"><i className="thing-ring"/><i className="thing-flash"/>{th?.initials?<b>{th.initials}</b>:<AnimatedIcon name={th?.icon??'brain'} size="sm"/>}<span className="thing-busy"><i/><i/><i/></span></span>
+    <span className="thing-label"><em>{KIND_TITLE[kind]}</em><b>{th?.title??''}</b><small>{th?.sub??''}</small></span>
+   </span>;})}
   </div>
-  <div className="prompt-title"><span className="prompt-eyebrow">THE BOND</span><h1>Every prompt.<br/>A little more alive.</h1></div>
+  <div className="prompt-title">{clock&&<div className="prompt-clock">{clock}</div>}<h1>Every prompt.<br/>A little more alive.</h1></div>
   <div className="prompt-theatre" role="group" aria-label="An illustrative prompt lifecycle">
-   <div className="prompt-understroke" ref={underline} aria-hidden="true"/>
    <div className="chat-panel" ref={panel} data-open="false" inert>
     {lastFold&&<div className="chat-fold" ref={foldEl}><span className="chat-fold-prompt">› {lastFold.prompt}</span>{lastFold.kept&&<span className="chat-fold-kept"><AnimatedIcon name="bookmark" size="sm"/>{lastFold.kept}</span>}{folds.length>1&&<span className="chat-fold-more">+{folds.length-1} earlier</span>}</div>}
     <div className="chat-sent" ref={el=>{rowRefs.current[0]=el;}}><BubbleContent variant="me" className="chat-bubble chat-bubble-me">{sent}</BubbleContent></div>
     <ul className="chat-work">
-     {[1,2,3].map(i=><li key={i} className="chat-row" data-tone={['memory','prepare','reach'][i-1]} ref={el=>{rowRefs.current[i]=el;}}><span className="chat-row-glyph"><AnimatedIcon name={ROW_ICONS[i]} preset={ROW_PRESET[i]} active={glyphOn[i]} size="sm"/></span>{renderParts(parts[i])}</li>)}
+     {[1,2,3].map(i=><li key={i} className="chat-row" data-tone={['memory','prepare','reach'][i-1]} ref={el=>{rowRefs.current[i]=el;}}><span className="chat-row-glyph"><AnimatedIcon name={ROW_ICONS[i]} preset={ROW_PRESET[i]} active={glyphOn[i]} size="sm"/></span>{renderParts(rows[i])}</li>)}
     </ul>
     <div className="chat-reply" ref={el=>{rowRefs.current[4]=el;}}><span className="chat-glyph" aria-hidden="true"/><div className="chat-bubble chat-bubble-reply" ref={reply}><span className="chat-typing" aria-hidden="true"><i/><i/><i/></span><i className="chat-line"/><i className="chat-line"/><i className="chat-line"/><span className="response-check"><AnimatedIcon name="check" preset="draw" active={checkOn} size="sm"/></span></div></div>
     <ul className="chat-work">
-     <li className="chat-row" data-tone="kept" ref={el=>{rowRefs.current[5]=el;}}><span className="chat-row-glyph"><AnimatedIcon name="bookmark" preset={ROW_PRESET[5]} active={glyphOn[5]} size="sm"/></span>{renderParts(parts[5])}</li>
-     <li className="chat-row chat-row-action" data-tone="automation" ref={el=>{rowRefs.current[6]=el;}}><Button variant="ghost" className="bud-button" onClick={acceptSuggestion} disabled={noted}>{noted?<><AnimatedIcon name="check" size="sm" active/>Automation saved</>:<><AnimatedIcon name="workflow" preset={ROW_PRESET[6]} active={glyphOn[6]} size="sm"/><span className="row-part" data-t={story.automation}/></>}</Button></li>
+     <li className="chat-row" data-tone="kept" ref={el=>{rowRefs.current[5]=el;}}><span className="chat-row-glyph"><AnimatedIcon name="bookmark" preset={ROW_PRESET[5]} active={glyphOn[5]} size="sm"/></span>{renderParts(rows[5])}</li>
+     <li className="chat-row chat-row-action" data-tone="automation" ref={el=>{rowRefs.current[6]=el;}}><Button variant="ghost" className="bud-button" onClick={acceptSuggestion} disabled={noted}><AnimatedIcon name={noted?'check':'workflow'} preset={noted?'auto':ROW_PRESET[6]} active={noted||glyphOn[6]} size="sm"/>{noted?'Automation saved':story.automation}</Button></li>
     </ul>
    </div>
    <form className="living-prompt" ref={form} data-has-text={composing&&prompt.trim().length>0} onSubmit={e=>{e.preventDefault();start();}}>
     <span className="prompt-prefix" aria-hidden="true">›</span>
-    <InputControl ref={input} aria-label="Your prompt" value={prompt} maxLength={80} placeholder={beat===0?(layout.current&&!layout.current.roomy?'Type a thought…':'Type a thought, or pick one below'):beat===LAST?'Next thought…':undefined} readOnly={!composing} onChange={e=>{typed.current=e.target.value.length>0;setPrompt(e.target.value);}} onKeyDown={e=>{if(e.nativeEvent.isComposing&&e.key==='Enter')e.preventDefault();}}/>
+    <InputControl ref={input} aria-label="Your prompt" value={prompt} maxLength={80} placeholder={beat===0?'Type a thought…':beat===LAST?'Next thought…':undefined} readOnly={!composing} onChange={e=>{typed.current=e.target.value.length>0;setPrompt(e.target.value);}} onKeyDown={e=>{if(e.nativeEvent.isComposing&&e.key==='Enter')e.preventDefault();}}/>
     <Button type={working?'button':'submit'} variant="ghost" data-morph="fill" data-tier="pill" className="prompt-send" data-state={working?'stop':'send'} disabled={beat===1} onClick={working?stop:undefined} aria-label={working?'Stop working':beat===LAST?'Send another thought':'Start the bond'}>
      <span className="send-glyph"><AnimatedIcon name="arrow-right" size="sm"/></span><span className="stop-glyph"><i/></span>
     </Button>
    </form>
   </div>
   <div className="prompt-caption">
-   {suggestions.length>0&&<div className="prompt-suggestions" role="group" aria-label="Thoughts to try">{suggestions.map((s,i)=><Button key={s} variant="ghost" className="suggestion-chip" style={{'--i':i} as React.CSSProperties} onClick={()=>pick(s)}><AnimatedIcon name="sparkles" size="sm"/>{s}</Button>)}</div>}
+   {suggestions.length>0&&<div className="prompt-thoughts" role="group" aria-label="Thoughts to try"><span className="thoughts-label">{beat===0?'or pick a thought':'next'}</span>{suggestions.map((s,i)=><Button key={s} variant="ghost" className="thought" style={{'--i':i} as React.CSSProperties} data-picked={picked===s} onClick={()=>pick(s)}><i className="thought-tail" aria-hidden="true"><b/><b/></i>{s}</Button>)}</div>}
    <p aria-live="polite" aria-atomic="true">{cue}</p>
    {beat===0?<Button className="enter-invitation" variant="ghost" onClick={start}>Press <kbd>Enter ↵</kbd></Button>
    :beat===LAST?<p className="again-hint">Type another thought and press <kbd>Enter ↵</kbd></p>
