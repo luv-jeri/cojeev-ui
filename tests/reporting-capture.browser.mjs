@@ -16,7 +16,7 @@ const review = page => page.getByRole("heading", { name: "Review your screenshot
 const localOnly = context => context.route(/^https?:\/\//, route =>
   ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort());
 const openBug = async page => {
-  await page.getByRole("button", { name: "Request a feature or report a bug" }).click();
+  await page.getByRole("button", { name: "Request a feature / Report a bug" }).click();
   await panel(page).waitFor();
   await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor();
   await panel(page).getByRole("tab", { name: "Report a bug", exact: true }).click();
