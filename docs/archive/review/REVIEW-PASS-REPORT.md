@@ -31,9 +31,9 @@ The no-emit compiler had stalled while reading obsolete `.next` generated declar
 
 - Repository no-emit TypeScript check and lint: **pass**, repeated after the final Select source change.
 - Focused unit checks: **24 passed** across appearance, assembly geometry, progress geometry, adornments, choreography and theme/scroll behavior.
-- Copied-example validation: **18 defaults, 130 snippets, zero diagnostics**. [Receipt](output/playwright/review-copied-examples-final.json).
-- Appearance integration: desktop/mobile Chromium, light/dark, palette/contrast persistence, docs/workspace and shader controls. [Initial final matrix](output/playwright/review-appearance/results.json).
-- Final Safari integration after the sizing correction: WebKit, 390px, six palettes, keyboard contrast/reset, saved theme and intentional reveal, appearance documentation. [Final receipt](output/playwright/review-appearance-final/results.json).
+- Copied-example validation: **18 defaults, 130 snippets, zero diagnostics**. [Receipt](../../../output/playwright/review-copied-examples-final.json).
+- Appearance integration: desktop/mobile Chromium, light/dark, palette/contrast persistence, docs/workspace and shader controls. [Initial final matrix](../../../output/playwright/review-appearance/results.json).
+- Final Safari integration after the sizing correction: WebKit, 390px, six palettes, keyboard contrast/reset, saved theme and intentional reveal, appearance documentation. [Final receipt](../../../output/playwright/review-appearance-final/results.json).
 - [Selector and list report](REVIEW-SELECTORS-LISTS.md), including targeted Select scrolling, Command filter/keyboard, NavigationMenu links and appearance fitting checks.
 - [Nine-preset, Progress and Slider report](REVIEW-MOTION-PROGRESS.md), with interrupted/quiet behavior and native input semantics.
 - [Persistent assembly report](REVIEW-ASSEMBLY.md), with native element identity, interactions, responsive geometry and final landing paint checks.

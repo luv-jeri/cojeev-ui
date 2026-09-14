@@ -79,7 +79,7 @@ for (const shards of [1, 2, 3]) {
     const motion = run.json('motion-invocation.json');
     assert.deepEqual(motion.args, ['--serve']);
     assert.deepEqual(motion.execArgv, ['--import', 'tsx']);
-    const gate = run.read('GATE.md');
+    const gate = run.read('docs/gates/GATE.md');
     assert.match(gate, /Result: \*\*PASS\*\*/);
     assert.match(gate, /Documentation: 7 entries, 14 layouts/);
     assert.match(gate, /Motion presets: 1\/1/);
@@ -93,7 +93,7 @@ for (const scenario of ['docs-failure', 'motion-failure']) {
     assert.equal(run.status, 1, run.stderr);
     assert.equal(run.json(`${docsOutput}/results.json`).entries.length, ids.length);
     assert(run.read('motion-invocation.json'), 'The later motion gate must still run');
-    assert.match(run.read('GATE.md'), /Result: \*\*FAIL\*\*/);
+    assert.match(run.read('docs/gates/GATE.md'), /Result: \*\*FAIL\*\*/);
   });
 }
 
@@ -111,7 +111,7 @@ for (const [scenario, message] of [
     assert.match(run.stderr, message);
     assert.equal(run.read(`${docsOutput}/results.json`), null);
     assert.equal(run.read('motion-invocation.json'), null);
-    assert.equal(run.read('GATE.md'), null);
+    assert.equal(run.read('docs/gates/GATE.md'), null);
   });
 }
 

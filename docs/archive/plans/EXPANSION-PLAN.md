@@ -8,7 +8,7 @@ The catalogue contains 66 base entries and 58 additions. It grew from 106 to 124
 
 Keep the existing native controls, readable palettes, organic shapes, responsive layouts, quiet-motion behavior and documented examples. Preserve each component's supported inputs, resource limits, fallbacks and known differences. No additional source component or prototype belongs in this release.
 
-The production build passed with **131 static routes**. Copied-example compilation passed for **124 components and 524 snippets**, with **zero TypeScript diagnostics**. Final unit, lint, installation and publication results remain to be recorded in [RELEASE-0.2.0.md](RELEASE-0.2.0.md).
+The production build passed with **131 static routes**. Copied-example compilation passed for **124 components and 524 snippets**, with **zero TypeScript diagnostics**. Final unit, lint, installation and publication results remain to be recorded in [RELEASE-0.2.0.md](../release/RELEASE-0.2.0.md).
 
 ## Historical source inventory
 

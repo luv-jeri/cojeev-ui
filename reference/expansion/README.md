@@ -6,4 +6,4 @@ Upstream source, page and registry captures in each `receipts/` directory retain
 
 All first-batch production additions are independently authored Cojeev code. Renaming or recoloring restricted third-party source is not our implementation strategy. Read the per-source research files for exact reuse boundaries and remaining work. In particular, the first two shader backgrounds establish shared rendering infrastructure; they do not close any Canvas HTML-refraction or particle-object row.
 
-Expansion closed on 2026-09-09 at the owner's request. The release contains 124 native UI entries, including 18 additions from this research phase. Remaining reference comparisons are deferred. Checkpoint 04 records the final verified scope; [RELEASE-0.2.0.md](../../RELEASE-0.2.0.md) records publication status.
+Expansion closed on 2026-09-09 at the owner's request. The release contains 124 native UI entries, including 18 additions from this research phase. Remaining reference comparisons are deferred. Checkpoint 04 records the final verified scope; [RELEASE-0.2.0.md](../../docs/archive/release/RELEASE-0.2.0.md) records publication status.

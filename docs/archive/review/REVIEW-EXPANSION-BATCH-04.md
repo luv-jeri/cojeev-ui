@@ -1,6 +1,6 @@
 # Final expansion checkpoint
 
-Expansion was stopped by the owner on 2026-09-09. This closes the existing work at **124 native UI entries**, including **18 additions since the four-source request**. No remaining source inventory is scheduled for cloning. Publication is authorized; see [the release record](RELEASE-0.2.0.md).
+Expansion was stopped by the owner on 2026-09-09. This closes the existing work at **124 native UI entries**, including **18 additions since the four-source request**. No remaining source inventory is scheduled for cloning. Publication is authorized; see [the release record](../release/RELEASE-0.2.0.md).
 
 This checkpoint adds Writing Caret, Guided Pointer, Glass Sculpture, Flow Sculpture, Particle Sculpture and Number Input to the previous 118-entry checkpoint. Animated Number, Text Ribbon and Marquee receive the existing numeric and typographic-loop improvements. These are original native implementations with documented source differences, not claims of identical upstream code or APIs.
 

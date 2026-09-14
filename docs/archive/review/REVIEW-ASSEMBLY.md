@@ -33,21 +33,21 @@ The chooser uses four native Buttons with pressed state, arrow-key traversal and
 
 Implementation:
 
-- [assembly-geometry.ts](registry/cojeev/lib/assembly-geometry.ts)
-- [assembly-part.tsx](registry/cojeev/ui/assembly-part.tsx)
-- [organism-composition.tsx](registry/cojeev/ui/organism-composition.tsx)
-- [organism-assembly.tsx](registry/cojeev/ui/organism-assembly.tsx)
-- [assembly-part.css](registry/cojeev/styles/assembly-part.css)
-- [organism-composition.css](registry/cojeev/styles/organism-composition.css)
-- [organism-assembly.css](registry/cojeev/styles/organism-assembly.css)
-- [assembly.tsx](components/examples/assembly.tsx)
+- [assembly-geometry.ts](../../../registry/cojeev/lib/assembly-geometry.ts)
+- [assembly-part.tsx](../../../registry/cojeev/ui/assembly-part.tsx)
+- [organism-composition.tsx](../../../registry/cojeev/ui/organism-composition.tsx)
+- [organism-assembly.tsx](../../../registry/cojeev/ui/organism-assembly.tsx)
+- [assembly-part.css](../../../registry/cojeev/styles/assembly-part.css)
+- [organism-composition.css](../../../registry/cojeev/styles/organism-composition.css)
+- [organism-assembly.css](../../../registry/cojeev/styles/organism-assembly.css)
+- [assembly.tsx](../../../components/examples/assembly.tsx)
 
 Evidence and runnable confirmation:
 
-- [assembly-geometry.test.ts](tests/assembly-geometry.test.ts)
-- [assembly-composition.test.ts](tests/assembly-composition.test.ts)
-- [check-assembly-landing.mjs](scripts/check-assembly-landing.mjs)
-- [check-organism-assembly.mjs](scripts/check-organism-assembly.mjs) and [check-assembly-paint.mjs](scripts/check-assembly-paint.mjs) now delegate to the current landing proof instead of asserting the rejected dashboard/eight-root arrangement.
+- [assembly-geometry.test.ts](../../../tests/assembly-geometry.test.ts)
+- [assembly-composition.test.ts](../../../tests/assembly-composition.test.ts)
+- [check-assembly-landing.mjs](../../../scripts/check-assembly-landing.mjs)
+- [check-organism-assembly.mjs](../../../scripts/check-organism-assembly.mjs) and [check-assembly-paint.mjs](../../../scripts/check-assembly-paint.mjs) now delegate to the current landing proof instead of asserting the rejected dashboard/eight-root arrangement.
 
 ## Verified and pending
 

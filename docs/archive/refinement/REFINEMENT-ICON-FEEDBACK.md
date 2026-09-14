@@ -4,10 +4,10 @@ General `Icon` instances now respond to their nearest native button, link, summa
 
 ## Frozen files and API
 
-- [icon.tsx](registry/cojeev/ui/icon.tsx): `IconProps.feedback?: boolean`, default `true`. Existing SVG props, native SVG refs, consumer event handlers, `name`, `size`, and `draw` remain supported. `feedback={false}` installs no shared feedback listeners or observer.
-- [animated-icon.tsx](registry/cojeev/ui/animated-icon.tsx): `AnimatedIcon` and `StateChevron` explicitly disable inner `Icon` feedback, keeping a single animation owner. `AnimatedIcon` observes disabled/inert/hidden owner and ancestor changes; explicit `active` cannot override an unavailable control.
-- [check-icon-feedback.mjs](scripts/check-icon-feedback.mjs): runnable source-consumer browser fixture and assertions.
-- [item-adornment.test.ts](tests/item-adornment.test.ts): all-name SVG server-rendering proof, including the final AgentChat glyphs.
+- [icon.tsx](../../../registry/cojeev/ui/icon.tsx): `IconProps.feedback?: boolean`, default `true`. Existing SVG props, native SVG refs, consumer event handlers, `name`, `size`, and `draw` remain supported. `feedback={false}` installs no shared feedback listeners or observer.
+- [animated-icon.tsx](../../../registry/cojeev/ui/animated-icon.tsx): `AnimatedIcon` and `StateChevron` explicitly disable inner `Icon` feedback, keeping a single animation owner. `AnimatedIcon` observes disabled/inert/hidden owner and ancestor changes; explicit `active` cannot override an unavailable control.
+- [check-icon-feedback.mjs](../../../scripts/check-icon-feedback.mjs): runnable source-consumer browser fixture and assertions.
+- [item-adornment.test.ts](../../../tests/item-adornment.test.ts): all-name SVG server-rendering proof, including the final AgentChat glyphs.
 
 No stylesheet or dependency was added. Feedback uses the existing shared choreography, Motion scalar lane, and native ref utility. The pack now exposes **136 unique names**, including `github`, `arrow-up`, `paperclip`, `square`, and `shield-check`.
 

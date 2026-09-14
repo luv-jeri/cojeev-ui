@@ -1,5 +1,6 @@
 import fs from 'node:fs'
-export function writeMotionReport({rows,scenarios,fixtures,widths,modes,output='artifacts/gate-motion',report='GATE-MOTION.md'}){
+import path from 'node:path'
+export function writeMotionReport({rows,scenarios,fixtures,widths,modes,output='artifacts/gate-motion',report='docs/gates/GATE-MOTION.md'}){
  fs.writeFileSync(output+'/results.json',JSON.stringify(rows,null,2)+'\n')
  const full=fixtures.motionScenarios.length*fixtures.motionWidths.length*2,total=scenarios.length*widths.length*modes.length,pass=rows.filter(row=>row.verdict==='PASS').length
  const lines=[
@@ -31,5 +32,6 @@ export function writeMotionReport({rows,scenarios,fixtures,widths,modes,output='
  `The raw results and PNGs are in ${output} in the worktree where the command ran. MOTION_GATE_OUTPUT and MOTION_GATE_REPORT select distinct artifact destinations for bounded checks. All public production hook signatures remain unchanged.`,
  ''
  ]
+ fs.mkdirSync(path.dirname(report),{recursive:true})
  fs.writeFileSync(report,lines.join('\n'))
 }
