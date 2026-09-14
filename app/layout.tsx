@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { preload } from "react-dom";
+import displayFont from "./fonts/bricolage-grotesque-variable.woff2";
 import { PageScrollBar, ScrollbarProvider } from "@/registry/cojeev/ui/scroll-area";
 import { AppearanceProvider } from "@/registry/cojeev/ui/appearance";
 import { ReportingWidget } from "@/components/reporting/reporting-widget";
@@ -21,6 +23,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // The hero heading is the LCP element; fetch its face alongside the stylesheet instead of after it.
+  preload(displayFont, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   return (
     <html lang="en" data-mode="light" data-scrollbar-policy="cojeev" suppressHydrationWarning>
       <head>

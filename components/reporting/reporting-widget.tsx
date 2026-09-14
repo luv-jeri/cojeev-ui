@@ -1210,7 +1210,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
             className="report-launcher"
             disabled={!loaded}
             data-hidden={open || picking || undefined}
-            aria-label="Request a feature or report a bug"
           >
             <span className="report-launcher-shape" aria-hidden="true">
               <Sparkles size={21} />

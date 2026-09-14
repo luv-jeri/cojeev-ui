@@ -22,7 +22,7 @@ try {
     const search = sidebar.getByRole('button', { name: 'Search components', exact: true });
     const motion = sidebar.getByRole('button', { name: 'Motion settings', exact: true });
     const theme = sidebar.getByRole('switch', { name: 'Dark appearance' });
-    const colour = sidebar.getByRole('button', { name: 'Colour and contrast', exact: true });
+    const colour = sidebar.getByRole('button', { name: 'Colours and contrast', exact: true });
     const brand = sidebar.locator('.docs-brand');
     const expand = sidebar.getByRole('button', { name: 'Expand navigation', exact: true });
     const left = async locator => (await locator.boundingBox()).x;
