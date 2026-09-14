@@ -10,12 +10,22 @@ import {createManifest,manifestDigest} from '../scripts/release-manifest.mjs';
 import {deployRelease} from '../scripts/release.mjs';
 import {verifyRollbackRun} from '../scripts/release-rollback-run.mjs';
 
-const healthy={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850},providers:{email:true,github:true,resendWebhook:true},activationCutoff:1};
+const healthy={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850},providers:{email:true,github:true,resendWebhook:true,ownerNotification:true},activationCutoff:1,deploymentIntent:'active'};
 test('delivery monitor detects stalled work, quota, failures and invalid responses without retaining private payloads',()=>{
   assert.deepEqual(assessHealth(healthy),[]);
   for(const row of [{state:'pending',oldestAgeMs:3600000,count:1},{state:'needs_review',count:1,oldestAgeMs:1},{state:'pending',delivery_status:'quota',count:1,oldestAgeMs:1}]) assert.ok(assessHealth({...healthy,queue:[row],privateText:'secret'}).length>0);
   assert.ok(assessHealth({}).includes('invalid-delivery-health'));
   assert.ok(assessHealth({...healthy,usage:{daily:95,monthly:1}}).includes('email-quota'));
+});
+test('reporting readiness separates a staged environment from an active one and keeps reviewed holds out of failures',()=>{
+  const staged={...healthy,providers:{email:false,github:false,resendWebhook:false,ownerNotification:false},activationCutoff:null,deploymentIntent:'staged'};
+  assert.deepEqual(assessHealth(staged),[],'an environment that never declared itself active is not an incident');
+  assert.deepEqual(assessHealth({...staged,deploymentIntent:'active'}),['provider-unconfigured']);
+  for(const missing of ['email','github','resendWebhook','ownerNotification']) assert.deepEqual(assessHealth({...healthy,providers:{...healthy.providers,[missing]:false}}),['provider-unconfigured'],missing);
+  assert.deepEqual(assessHealth({...healthy,activationCutoff:null}),['provider-unconfigured'],'an active service without an activation cutoff delivers nothing');
+  // An activated environment is still checked even before it declares its intent.
+  assert.deepEqual(assessHealth({...healthy,deploymentIntent:undefined,providers:{...healthy.providers,email:false}}),['provider-unconfigured']);
+  assert.deepEqual(assessHealth({...healthy,queue:[{state:'held',count:6,oldestAgeMs:9999999}]}),[],'reviewed historical holds are deliberate, not failures');
 });
 test('health fetch pins origins, verifies matching release, refuses redirects and never prints response bodies',async()=>{
   const seen=[];

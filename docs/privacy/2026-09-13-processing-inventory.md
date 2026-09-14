@@ -205,15 +205,20 @@ logs and traces is Provider.
 | Cloudflare Worker `cojeev-ui-registry` on `000h.cojeev.com` (beta `beta.000h.cojeev.com`) | Every page view | Serves the static export. Sees the full request: URL, client IP, user agent, referrer | Config — workers/registry-host/wrangler.jsonc |
 | GitHub Pages (`luv-jeri.github.io`) | Only if a visitor uses that origin | Retained as a permitted browser origin and build-compatibility target, not the primary host | Config — workers/reporting/wrangler.jsonc:31; docs/production/OPERATIONS.md:16 |
 | Resend (`api.resend.com`) | Outbox email job, only when `EMAIL_ENABLED=true` with a verified sender | Recipient address, subject, text and HTML body, `reply_to: hello@cojeev.com`, idempotency key `cojeev/<jobId>` | Code — delivery.ts:72, resend.ts:27 |
+| `REPORT_NOTIFICATION_EMAIL` maintainer inbox (currently `unread.fyi@gmail.com`) | Outbox `email_owner_received` job, queued per newly saved report only while that address is configured | Report kind, report UUID and the maintainer-only admin link. **No title, description, reporter address, reference link, diagnostics or attachment reaches this inbox** | Code — reports.ts:58, delivery.ts:24-32,81-86; config — workers/reporting/wrangler.jsonc:40,84,129 |
 | `hello@cojeev.com` mailbox | Replies to notification emails; the `mailto:` contact link | Whatever the sender writes | Code — delivery.ts:72, site-config.ts:14 |
 
 Email is currently **disabled** in both committed environments (`EMAIL_ENABLED: "false"`,
-`DELIVERY_ACTIVATED_AT: ""` — workers/reporting/wrangler.jsonc:34-36,76-78), and beta sending is further
+`DELIVERY_ACTIVATED_AT: ""` — workers/reporting/wrangler.jsonc:34,36,78,80,123,125), and beta sending is further
 restricted to the single address in `BETA_TESTER_EMAILS`
-(workers/reporting/wrangler.jsonc:81, enforced at resend.ts:8). No report
-contents are emailed to an operator inbox: there is no maintainer-notification job. A
-maintainer reads reports through `/feedback-admin/`, whose token is held in memory for
-the tab only (`components/reporting/admin.tsx:51`).
+(workers/reporting/wrangler.jsonc:83, enforced at resend.ts:8), which also gates the maintainer
+alert's recipient in beta (delivery.ts:84). Source line references recorded elsewhere in this
+dated inventory predate C10-1 and were not renumbered; the reporter acknowledgement send is now
+`delivery.ts:90`. A maintainer-notification job now exists
+(`email_owner_received`, added under checkpoint C10-1), but **no report content is emailed to the
+operator inbox**: that message carries only the report kind, the report UUID and the admin link
+(delivery.ts:24-32). The maintainer still reads the report itself through `/feedback-admin/`, whose
+token is held in memory for the tab only (`components/reporting/admin.tsx:51`).
 
 Beta also checks the submitted address against this allowlist **before storage**
 and rejects other addresses (`workers/reporting/src/reports.ts:30`), independently

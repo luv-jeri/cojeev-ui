@@ -440,3 +440,75 @@ test('migration holds legacy pending/processing jobs without erasing receipts or
     assert.equal((await old.prepare('SELECT token_hash FROM reports').first()).token_hash,hash(token));
   } finally {await legacy.dispose();}
 });
+
+const ownerEnv=more=>resendEnv({REPORT_NOTIFICATION_EMAIL:'owner@example.com',...more});
+const acceptLocal=(env,p)=>backend.accept(new Request('http://localhost/v1/reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':p.id},body:JSON.stringify({report:p,token})}),env);
+const ownerJobs=async id=>(await db.prepare("SELECT COUNT(*) AS n FROM outbox WHERE report_id=? AND kind='email_owner_received'").bind(id).first()).n;
+test('a saved report queues exactly one owner alert, never a duplicate and never a backfill',async()=>{
+  const configured=ownerEnv();const p=payload();
+  await acceptLocal(configured,p);
+  assert.equal(await ownerJobs(p.id),1);
+  await acceptLocal(configured,p);
+  assert.equal(await ownerJobs(p.id),1,'a duplicate submission must not add a second alert');
+  // A report saved before an owner address existed is never backfilled by configuring one.
+  const historical=payload();await acceptLocal(resendEnv(),historical);
+  assert.equal(await ownerJobs(historical.id),0);
+  await backend.drain(configured,historical.id,async()=>Response.json({id:'historical-ack'}));
+  assert.equal(await ownerJobs(historical.id),0,'activation must not manufacture historical owner alerts');
+});
+test('the owner alert reaches only the configured owner and carries no private report content',async()=>{
+  const env=ownerEnv();
+  const p=payload({title:'Private acquisition title',description:'Private acquisition details',email:'reporter-one@example.com',references:['https://private.example.com/secret']});
+  await acceptLocal(env,p);
+  const sent=[];
+  await backend.drain(env,p.id,async(_url,init)=>{sent.push(JSON.parse(init.body));return Response.json({id:`sent-${sent.length}`});});
+  const owner=sent.filter(message=>message.to[0]==='owner@example.com');
+  assert.equal(owner.length,1,'exactly one owner alert');
+  assert.deepEqual(owner[0].to,['owner@example.com']);
+  const body=JSON.stringify(owner[0]);
+  for(const secret of [p.title,p.description,p.email,p.references[0],token,env.RESEND_API_KEY,env.IP_HASH_SECRET]) assert.ok(!body.includes(secret),'owner alert must not carry private text or secrets');
+  assert.ok(owner[0].text.includes(p.id)&&owner[0].text.includes(`/feedback-admin/?report=${p.id}`),'owner alert carries a reference and an authenticated inbox link');
+  assert.ok(sent.some(message=>message.to[0]===p.email),'the reporter still receives their own acknowledgment');
+});
+test('a failing owner alert never discards the reporter or GitHub job',async()=>{
+  const env=ownerEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
+  const p=payload({email:'reporter-two@example.com'});
+  await acceptLocal(env,p);
+  await db.prepare('UPDATE reports SET issue_number=55,issue_node_id=?,issue_url=? WHERE id=?').bind('I_owner','https://github.com/owner/library/issues/55',p.id).run();
+  await backend.drain(env,p.id,async(url,init)=>url==='https://api.resend.com/emails'&&JSON.parse(init.body).to[0]==='owner@example.com'
+    ?Response.json({name:'internal_server_error'},{status:500}):Response.json({id:'reporter-accepted'}));
+  const jobs=Object.fromEntries((await db.prepare('SELECT kind,state FROM outbox WHERE report_id=?').bind(p.id).all()).results.map(job=>[job.kind,job.state]));
+  assert.deepEqual({...jobs},{github:'done',email_received:'done',email_owner_received:'needs_review'});
+  assert.ok(await db.prepare('SELECT id FROM reports WHERE id=?').bind(p.id).first(),'the saved report survives an owner alert failure');
+});
+test('an unset or malformed owner address queues nothing and never guesses a recipient',async()=>{
+  for(const value of [undefined,'','not-an-address','owner@example.invalid']) {
+    const p=payload();await acceptLocal(resendEnv({REPORT_NOTIFICATION_EMAIL:value}),p);
+    assert.equal(await ownerJobs(p.id),0,`address ${String(value)} must not queue an owner alert`);
+  }
+  const p=payload();await acceptLocal(ownerEnv(),p);let sends=0;
+  await backend.drain(resendEnv(),p.id,async()=>{sends++;return Response.json({id:'reporter-only'});});
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE id=?').bind(`${p.id}:email_owner_received`).first()).state,'needs_review');
+  assert.equal(sends,1,'only the reporter acknowledgment may send when the owner address is gone');
+});
+test('beta restricts the owner alert to an allowlisted recipient',async()=>{
+  await db.prepare('DELETE FROM email_attempts').run();
+  const beta=more=>ownerEnv({ENVIRONMENT:'beta',EMAIL_DAILY_LIMIT:'5',...more});
+  const blocked=beta({BETA_TESTER_EMAILS:'unread.fyi@gmail.com'});
+  const p=payload({email:'unread.fyi@gmail.com'});await acceptLocal(blocked,p);let sends=0;
+  await backend.drain(blocked,p.id,async()=>{sends++;return Response.json({id:`beta-${sends}`});});
+  assert.equal(sends,1,'an unlisted owner address must not receive beta mail');
+  assert.equal((await db.prepare('SELECT state FROM outbox WHERE id=?').bind(`${p.id}:email_owner_received`).first()).state,'needs_review');
+  const allowed=beta({BETA_TESTER_EMAILS:'unread.fyi@gmail.com,owner@example.com'});
+  const q=payload({email:'unread.fyi@gmail.com'});await acceptLocal(allowed,q);const recipients=[];
+  await backend.drain(allowed,q.id,async(_url,init)=>{recipients.push(JSON.parse(init.body).to[0]);return Response.json({id:`beta-ok-${recipients.length}`});});
+  assert.deepEqual(recipients.sort(),['owner@example.com','unread.fyi@gmail.com']);
+});
+test('admin health publishes reporting readiness without disclosing any address',async()=>{
+  const body=await (await request('/v1/admin/health','GET',undefined,healthToken)).text();
+  const health=JSON.parse(body);
+  assert.equal(health.deploymentIntent,'staged','an environment that has not declared itself active stays staged');
+  assert.equal(health.providers.ownerNotification,false);
+  assert.equal(typeof health.activationCutoff,'number');
+  assert.ok(!body.includes('@'),'health must never disclose an address');
+});

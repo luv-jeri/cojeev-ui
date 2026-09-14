@@ -1,5 +1,5 @@
 import { keyedDigest } from "./security";
-import { activationCutoff, emailEnabled, githubEnabled, now, type Delivery, type Env, type ReportRow } from "./types";
+import { activationCutoff, emailEnabled, githubEnabled, now, ownerNotificationEmail, type Delivery, type Env, type ReportRow } from "./types";
 import { getReport } from "./reports";
 import { sendResend, testerAllowed } from './resend';
 
@@ -17,6 +17,17 @@ export function emailMessage(row: ReportRow, kind: string, site: string) {
   const reference=`Reference: ${row.id}`;
   const text=`${heading}\n\n${message}\n\n${reference}\n${label}: ${url}\n\nCojeev UI`;
   const html=`<!doctype html><html><body style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:36px auto;padding:32px"><p style="font-size:13px;letter-spacing:2px">COJEEV UI</p><h1 style="font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p>${escapeHTML(message)}</p><p><a href="${escapeHTML(url)}" style="display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none">${label}</a></p><p style="font-size:12px;color:#5f5b55">${reference}</p></main></body></html>`;
+  return {subject:`${heading} · Cojeev UI`,text,html};
+}
+// The maintainer alert says a report exists and where to read it. Its private title,
+// description, reporter address, diagnostics and media stay in the authenticated inbox.
+export function ownerMessage(row: ReportRow, site: string) {
+  const heading=row.kind==="request"?"New component request saved":"New bug report saved";
+  const url=`${site.replace(/\/$/,"")}/feedback-admin/?report=${row.id}`;
+  const message="Open the private report to read its details. This alert carries no report content.";
+  const reference=`Reference: ${row.id}`;
+  const text=`${heading}\n\n${message}\n\n${reference}\nOpen the private report: ${url}\n\nCojeev UI`;
+  const html=`<!doctype html><html><body style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:36px auto;padding:32px"><p style="font-size:13px;letter-spacing:2px">COJEEV UI</p><h1 style="font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p>${escapeHTML(message)}</p><p><a href="${escapeHTML(url)}" style="display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none">Open the private report</a></p><p style="font-size:12px;color:#5f5b55">${reference}</p></main></body></html>`;
   return {subject:`${heading} · Cojeev UI`,text,html};
 }
 async function github(env:Env,path:string,init:RequestInit={}, send=fetch) {
@@ -65,8 +76,15 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     if(result.errors) throw new DeliveryFailure("GitHub Project rejected the update. Check project permissions.",false,true);
     return "added";
   }
-  if(job.kind!=="email_received"&&job.kind!=="email_resolved") throw new DeliveryFailure("Unknown delivery type.",false,true);
+  if(!["email_received","email_resolved","email_owner_received"].includes(job.kind)) throw new DeliveryFailure("Unknown delivery type.",false,true);
   if(!emailEnabled(env)) throw new DeliveryFailure("Email domain setup required.",false,true);
+  if(job.kind==="email_owner_received") {
+    // This recipient is the configured maintainer, never the address on the report.
+    const owner=ownerNotificationEmail(env);
+    if(!owner) throw new DeliveryFailure("Owner notification address setup required.",false,true);
+    if(!testerAllowed(env,owner)) throw new DeliveryFailure('Beta recipient requires allowlist review.',false,true);
+    return sendResend(env,job,JSON.stringify({to:[owner],from:`000h by Cojeev <${env.EMAIL_FROM}>`,reply_to:'hello@cojeev.com',...ownerMessage(row,env.SITE_URL)}),send);
+  }
   if(job.kind==="email_resolved" && row.status!=="resolved") throw new DeliveryFailure("Report was reopened before its release email sent. Review before retrying.",false,true);
   if(!testerAllowed(env,row.email)) throw new DeliveryFailure('Beta recipient requires allowlist review.',false,true);
   return sendResend(env,job,JSON.stringify({to:[row.email],from:`000h by Cojeev <${env.EMAIL_FROM}>`,reply_to:'hello@cojeev.com',...emailMessage(row,job.kind,env.SITE_URL)}),send);
@@ -77,7 +95,7 @@ export async function drain(env:Env,reportId?:string,send=fetch) {
   const cutoff=activationCutoff(env);
   await env.DB.prepare("UPDATE outbox SET state='held',last_error='Delivery activation or historical review required.' WHERE state='pending' AND (? IS NULL OR (reviewed_at IS NULL AND report_id IN (SELECT id FROM reports WHERE created_at<?)))").bind(cutoff,cutoff).run();
   if(cutoff===null) return {processed:0};
-  const enabledKinds=[...(emailEnabled(env)?["email_received","email_resolved"]:[]),...(githubEnabled(env)?["github",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:[])];
+  const enabledKinds=[...(emailEnabled(env)?["email_received","email_resolved","email_owner_received"]:[]),...(githubEnabled(env)?["github",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:[])];
   if(!enabledKinds.length) return {processed:0};
   // Disabled providers must not consume the batch window and starve enabled work.
   const jobs=await env.DB.prepare(`SELECT * FROM outbox WHERE state='pending' AND due_at<=? AND kind IN (${enabledKinds.map(()=>"?").join(",")}) ${reportId?"AND report_id=?":""} ORDER BY created_at,id LIMIT 20`).bind(now(),...enabledKinds,...(reportId?[reportId]:[])).all<Delivery>();

@@ -10,6 +10,7 @@ export interface Env {
   RESEND_API_KEY?: string; RESEND_WEBHOOK_SECRET?: string;
   ENVIRONMENT?: string; RELEASE?: string; DELIVERY_ACTIVATED_AT?: string;
   EMAIL_DAILY_LIMIT?: string; EMAIL_MONTHLY_LIMIT?: string; BETA_TESTER_EMAILS?: string;
+  REPORT_NOTIFICATION_EMAIL?: string; DEPLOYMENT_INTENT?: string;
 }
 export interface ReportRow {
   id: string; token_hash: string; payload_hash: string; kind: ReportKind;
@@ -23,6 +24,15 @@ export interface AttachmentRow { id: string; report_id: string; name: string; ty
 export interface Delivery { id: string; report_id: string; kind: string; state: string; attempts: number; due_at: number; lease_until: number; lease_token: string | null; last_error: string | null; payload_json: string | null; first_attempt_at: number | null; reviewed_at: number | null; delivery_status: string; provider_id: string | null }
 export const now = () => Date.now();
 export const local = (env: Env) => env.LOCAL_MODE === "true";
-export const emailEnabled = (env: Env) => env.EMAIL_ENABLED === "true" && !!env.RESEND_API_KEY && !!env.EMAIL_FROM && /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(env.EMAIL_FROM) && !env.EMAIL_FROM.endsWith(".invalid");
+const ADDRESS = /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/;
+// Validate exactly the string that would be sent, never a tidied copy of it.
+const sendable = (value: string | undefined): string | null => value && ADDRESS.test(value) && !value.endsWith(".invalid") ? value : null;
+export const emailEnabled = (env: Env) => env.EMAIL_ENABLED === "true" && !!env.RESEND_API_KEY && !!sendable(env.EMAIL_FROM);
+// The maintainer alert has its own explicit recipient. An unset or unusable value
+// queues nothing, so a misconfigured environment never guesses an address.
+export const ownerNotificationEmail = (env: Env) => sendable(env.REPORT_NOTIFICATION_EMAIL);
+// Staging is the default: only an environment that declares itself active is
+// expected to have every delivery path configured.
+export const expectedActive = (env: Env) => env.DEPLOYMENT_INTENT === "active";
 export const githubEnabled = (env: Env) => !!env.GITHUB_TOKEN && /^[\w.-]+\/[\w.-]+$/.test(env.GITHUB_REPOSITORY ?? "");
 export const activationCutoff = (env:Env) => {const value=Date.parse(env.DELIVERY_ACTIVATED_AT??"");return Number.isFinite(value)&&value>0&&value<=now()?value:null;};

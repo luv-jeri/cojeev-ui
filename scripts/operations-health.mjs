@@ -12,8 +12,12 @@ export function assessHealth(data) {
     if(row.count>0 && row.delivery_status==='quota') problems.add('email-quota');
   }
   if(data.usage.daily>=data.limits.daily || data.usage.monthly>=data.limits.monthly) problems.add('email-quota');
-  // Held historical work and intentional disabled rollout are not an incident.
-  if(data.activationCutoff && (!data.providers.email||!data.providers.github||!data.providers.resendWebhook)) problems.add('provider-unconfigured');
+  // Held historical work and an environment that never declared itself active are not
+  // an incident. A service declared active, or one already activated, must have every
+  // delivery path configured — including the owner alert, whose absence is otherwise
+  // silent: reports keep arriving and nobody is told.
+  const ready=!!data.activationCutoff&&data.providers.email&&data.providers.github&&data.providers.resendWebhook&&data.providers.ownerNotification;
+  if((data.deploymentIntent==='active'||data.activationCutoff)&&!ready) problems.add('provider-unconfigured');
   return [...problems].sort();
 }
 export async function checkHealth(environment,{token,commit,fetcher=fetch}={}) {
