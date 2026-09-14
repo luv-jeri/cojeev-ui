@@ -105,7 +105,17 @@ export async function deployRelease(directory,environment,commit,digest,{rollbac
 // further waiting repairs, so they fail on the first attempt; a run that carries
 // any one of them never retries, even alongside a propagation code.
 export const TRANSIENT_LIVE_PROBLEMS=new Set(['http-health','release-mismatch','site-unreachable','site-release-mismatch']);
-export const LIVE_RETRY_WAITS=[5000,10000,15000,20000];
+export const LIVE_RETRY_WAITS=[4000,8000,12000,16000];
+// One real wall-clock budget for the whole check, reads included. Every request
+// is aborted at the deadline and every wait is truncated to what is left, so the
+// deploy job cannot be held open by slow reads rather than by sleeping.
+export const LIVE_BUDGET_MS=60000;
+const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
+  const remaining=deadline-clock();
+  if(remaining<=0) throw new Error('Live check budget exhausted');
+  const signals=[options.signal,AbortSignal.timeout(remaining)].filter(Boolean);
+  return fetcher(url,{...options,signal:AbortSignal.any(signals)});
+};
 /** Sanitized fixed codes for one live read of the deployed site and API. */
 export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,fetcher=fetch}={}) {
   let problems=await checkHealth(environment,{token,commit,fetcher}).then(result=>result.problems);
@@ -128,15 +138,26 @@ export async function liveProblems(environment,commit,{token=process.env.HEALTH_
   }
   return [...new Set(problems)].sort();
 }
-/** Bounded propagation retries: at most five reads, at most 50s of added waiting. */
-export async function checkLiveRelease(environment,commit,{waits=LIVE_RETRY_WAITS,sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),log=console.log,...options}={}) {
+/** Bounded propagation retries: at most five reads inside one wall-clock budget. */
+export async function checkLiveRelease(environment,commit,{
+  waits=LIVE_RETRY_WAITS,budgetMs=LIVE_BUDGET_MS,clock=Date.now,
+  sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),log=console.log,fetcher=fetch,...options
+}={}) {
+  const deadline=clock()+budgetMs;
+  const bounded=boundedFetcher(fetcher,deadline,clock);
   for(let attempt=0;;attempt++) {
-    const problems=await liveProblems(environment,commit,options);
+    const problems=await liveProblems(environment,commit,{...options,fetcher:bounded});
     if(!problems.length) return problems;
-    const wait=problems.every(code=>TRANSIENT_LIVE_PROBLEMS.has(code))?waits[attempt]:undefined;
-    if(wait===undefined) throw new Error(`Live checks failed after ${attempt+1} attempt${attempt?'s':''}: ${problems.join(', ')}`);
+    const transient=problems.every(code=>TRANSIENT_LIVE_PROBLEMS.has(code));
+    // Another attempt must be permitted, and must still fit in the budget.
+    const remaining=deadline-clock();
+    const wait=Math.min(waits[attempt]??-1,remaining);
+    if(!transient||wait<=0) {
+      const limit=transient?` within the ${budgetMs/1000}s propagation budget`:'';
+      throw new Error(`Live checks failed after ${attempt+1} attempt${attempt?'s':''}${limit}: ${problems.join(', ')}`);
+    }
     // Fixed codes only. No response body, header, credential or URL is printed.
-    log(`Live checks attempt ${attempt+1}/${waits.length+1}: ${problems.join(', ')}; retrying in ${wait/1000}s`);
+    log(`Live checks attempt ${attempt+1}/${waits.length+1}: ${problems.join(', ')}; retrying in ${Math.round(wait/1000)}s`);
     await sleep(wait);
   }
 }

@@ -25,8 +25,14 @@ their own codes so they can be reasoned about the same way as the health codes:
 `checkLiveRelease()` wraps that in a bounded retry. It retries **only** the codes
 a later read can resolve — `http-health`, `release-mismatch`,
 `site-unreachable`, `site-release-mismatch` — for at most 5 attempts with waits
-of 5s, 10s, 15s and 20s, so at most 50 seconds of added waiting inside a
-20-minute job.
+of 4s, 8s, 12s and 16s.
+
+The bound is a real wall-clock budget of 60 seconds for the whole check, reads
+included, not a sleep total. Every request is issued through a fetcher that
+aborts it at the deadline, and every wait is truncated to whatever is left, so
+slow reads consume the budget exactly as sleeping does and the deploy job cannot
+be held open by a hanging edge. The worst case is the budget plus the one read
+already in flight when it expires.
 
 Everything else fails on the first attempt: a missing health token, a stalled or
 failed delivery queue, email quota, an unconfigured provider, and any broken
@@ -46,7 +52,7 @@ condition is deferred, never hidden.
 Each retry prints exactly one line:
 
 ```
-Live checks attempt 2/5: release-mismatch, site-release-mismatch; retrying in 10s
+Live checks attempt 2/5: release-mismatch, site-release-mismatch; retrying in 8s
 ```
 
 Fixed codes and the attempt counter only. No response body, header, URL,
@@ -55,17 +61,23 @@ and the release SHA never appear in a retry line.
 
 ## Verification
 
-Six focused tests in `tests/release-live.test.mjs`, run with
-`node --test tests/release-live.test.mjs` — 6 passed:
+Eight focused tests in `tests/release-live.test.mjs`, run with
+`node --test tests/release-live.test.mjs` — 8 passed:
 
 - a fully propagated release passes on the first read and waits zero times;
 - a lagging edge is retried and passes once it catches up, with the exact
   bounded wait sequence asserted;
-- a completely unreachable site is retried, then fails after exactly 5 attempts;
+- a completely unreachable site is retried, then fails after exactly 5 attempts,
+  naming the propagation budget in the message;
 - a missing token, a stalled delivery queue and a broken header contract each
   fail on attempt 1 with no waiting;
 - a permanent code alongside a propagation code stops immediately;
-- the transient set is asserted exactly, so widening it later is a visible edit.
+- the transient set is asserted exactly, so widening it later is a visible edit;
+- an injected clock proves the budget is wall-clock time: reads that each consume
+  18s stop the retries early, even though the wait list alone would still permit
+  five attempts;
+- every request is issued with an abort signal rather than being left to its own
+  timeout.
 
 Regression: `node --test tests/operations.test.mjs tests/release.test.mjs` — 25
 passed.

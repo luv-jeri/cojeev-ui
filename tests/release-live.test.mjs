@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {checkLiveRelease,liveProblems,LIVE_RETRY_WAITS,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
+import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
 
 const commit='a'.repeat(40),token='t'.repeat(40);
 const site='https://beta.000h.cojeev.com',api='https://feedback-beta.cojeev.com';
@@ -53,8 +53,32 @@ test('an unreachable site is treated as propagation and retried, not reported as
   const waited=[];
   await assert.rejects(
     checkLiveRelease('beta',commit,{token,fetcher:edge({unreachable:true}),sleep:async ms=>waited.push(ms),log:()=>{}}),
-    /Live checks failed after 5 attempts: http-health, site-unreachable/);
+    /Live checks failed after 5 attempts within the 60s propagation budget: http-health, site-unreachable/);
   assert.deepEqual(waited,LIVE_RETRY_WAITS);
+});
+
+test('the budget is wall-clock time including the reads, not only the sleeping',async()=>{
+  // Every read takes 18s of the budget; the waits alone would still allow five
+  // attempts, so only a real deadline can stop this.
+  let now=0;
+  const waited=[],clock=()=>now;
+  const slow=async url=>{now+=18000;return edge({release:'b'.repeat(40)})(url);};
+  await assert.rejects(
+    checkLiveRelease('beta',commit,{token,fetcher:slow,clock,sleep:async ms=>{waited.push(ms);now+=ms;},log:()=>{}}),
+    /within the 60s propagation budget/);
+  assert.ok(waited.length<LIVE_RETRY_WAITS.length,`stopped after ${waited.length} waits`);
+  assert.ok(now<=LIVE_BUDGET_MS+18000,`total ${now}ms stayed inside the budget plus one in-flight read`);
+  // A wait is truncated to what is left rather than overrunning the deadline.
+  assert.ok(waited.every(wait=>wait>0));
+  assert.equal(waited.reduce((total,wait)=>total+wait,0)+18000*(waited.length+1)<=LIVE_BUDGET_MS+18000,true);
+});
+
+test('every request is aborted at the deadline rather than waiting out its own timeout',async()=>{
+  const signals=[];
+  const fetcher=async(url,options)=>{signals.push(options.signal);return edge()(url);};
+  await checkLiveRelease('beta',commit,{token,fetcher,sleep:async()=>{},log:()=>{}});
+  assert.ok(signals.length>=4);
+  for(const signal of signals) assert.ok(signal instanceof AbortSignal);
 });
 
 test('a permanent failure is reported on the first read and is never retried',async()=>{
