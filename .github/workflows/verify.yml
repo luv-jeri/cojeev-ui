@@ -301,7 +301,7 @@ jobs:
             if [[ "$deferred" == true ]]; then
               echo "Owner-approved expedited launch (B02-6, 14 September 2026)."
               echo "Automated test, lint, standalone typecheck, example, browser, motion, CSP-browser and consumer-install suites are NOT RUN, not passing."
-              echo "Clean-source builds, artifact identity/environment validation, private backup, protected deployment approval and live health checks remain required."
+              echo "Clean-source builds, artifact identity/environment validation, D1 recovery bookmark, protected deployment approval and live health checks remain required."
             else
               echo "No matching owner exception: full verification remains required."
             fi
@@ -468,7 +468,7 @@ jobs:
         with:
           name: release-${{ github.sha }}
           path: artifacts/release
-      - name: Verify, privately back up, migrate, and deploy beta
+      - name: Record D1 recovery point, migrate, and deploy beta
         run: node scripts/release.mjs deploy beta "$GITHUB_SHA" artifacts/release/beta "$DIGEST"
         env:
           DIGEST: ${{ needs.verify.outputs.beta_digest }}

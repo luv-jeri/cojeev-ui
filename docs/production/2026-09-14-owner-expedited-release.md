@@ -17,9 +17,13 @@ catalogue/motion/mobile/marketing/scroll/browser checks, CSP browser checks and
 fresh consumer installation. The workflow summary explicitly records NOT RUN.
 No component code or unfinished B02-5 test correction is included here.
 
+Update C04-1: [native D1 recovery](2026-09-14-first-launch-recovery.md) replaces
+the extra R2 export as the pre-migration safeguard. No data is deleted; the
+separate external-snapshot transport investigation is deferred until after launch.
+
 Still required: locked dependencies and clean-source production builds, separate
 beta/production artifacts, URL/environment and hash validation, private database
-backup before migrations, normal protected-main merge, beta live health checks,
+recovery bookmark before migrations, normal protected-main merge, beta live health checks,
 Sanjay's protected production approval, and production live health checks. Email
 and analytics activation flags are unchanged. No historical delivery is enabled.
 
