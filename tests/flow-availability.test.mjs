@@ -28,6 +28,9 @@ const bundle = await build({
         checkedState: "checked",
         toggleState: "on",
         disclosureState: "open",
+        idleState: "idle",
+        customState: "custom-a",
+        introducedState: null,
         cleanupMounted: true,
       };
 
@@ -51,6 +54,9 @@ const bundle = await build({
           <HookControl id="checked-control" state={props.checkedState} />
           <HookControl id="toggle-control" state={props.toggleState} />
           <HookControl id="disclosure-control" state={props.disclosureState} />
+          <HookControl id="idle-control" state={props.idleState} />
+          <HookControl id="custom-control" state={props.customState} />
+          <HookControl id="introduced-control" state={props.introducedState} />
           <Button id="quiet-button">Quiet activation</Button>
           {props.cleanupMounted && <Button
             id="cleanup-button"
@@ -139,6 +145,9 @@ test("flow press distinguishes readiness from semantic state and input", async (
       "checked-control",
       "toggle-control",
       "disclosure-control",
+      "idle-control",
+      "custom-control",
+      "introduced-control",
       "quiet-button",
       "cleanup-button",
     ]);
@@ -179,6 +188,19 @@ test("flow press distinguishes readiness from semantic state and input", async (
     assert.deepEqual(batch.oldValues, ["disabled", "busy"], "fixture must expose both old values in one readiness batch");
     assert.equal(batch.finalValue, "rest");
     assert.equal(batch.pulses, 0, "disabled to busy to rest must remain quiet");
+
+    const unsupportedIds = ["idle-control", "custom-control", "introduced-control"];
+    await page.evaluate(() => window.patchFixture({
+      idleState: "ready",
+      customState: "custom-b",
+      introducedState: "custom",
+    }));
+    await page.waitForTimeout(80);
+    assert.deepEqual(
+      await page.evaluate(ids => window.readFlowPulses(ids), unsupportedIds),
+      Object.fromEntries(unsupportedIds.map(id => [id, 0])),
+      "unsupported data-state changes must remain quiet",
+    );
 
     await page.getByRole("button", { name: "Pointer activation", exact: true }).click();
     await page.getByRole("button", { name: "Keyboard activation", exact: true }).press("Enter");

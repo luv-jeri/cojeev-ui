@@ -3,7 +3,7 @@ import * as React from "react"
 import { acquireFlowEnvironment, isFlowQuiet, pulseFlow, cancelFlowPulse } from "./flow"
 import { subscribeSettings } from "./settings"
 export const pulseFlowPress=pulseFlow
-const availabilityStates=new Set(['disabled','busy','rest'])
+const semanticStateTransitions=new Set(['checked:unchecked','unchecked:checked','on:off','off:on','open:closed','closed:open'])
 /** Standalone release/change pulse; selected children defer to their group's travelling body. */
 export function useFlowPress<T extends HTMLElement>(externalRef?:React.Ref<T>):React.RefCallback<T>{
  return React.useCallback((el:T|null)=>{
@@ -28,7 +28,7 @@ export function useFlowPress<T extends HTMLElement>(externalRef?:React.Ref<T>):R
    const nextValues=new Map<string,string|null>();let changed=false
    for(let index=records.length-1;index>=0;index--){const record=records[index],name=record.attributeName;if(record.target!==el||!name)continue
     const next=nextValues.has(name)?nextValues.get(name)!:el.getAttribute(name);nextValues.set(name,record.oldValue)
-    if(name==='data-state')changed ||= record.oldValue!==next&&!availabilityStates.has(record.oldValue??'')&&!availabilityStates.has(next??'')
+    if(name==='data-state')changed ||= semanticStateTransitions.has(`${record.oldValue}:${next}`)
     else if(name==='aria-checked'||name==='aria-pressed')changed ||= record.oldValue!==next
    }
    if(changed)pulse(el)

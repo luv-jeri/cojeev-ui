@@ -151,3 +151,87 @@ command.
   unverified and is not claimed fixed here.
 - The checkpoint preserves genuine disabled styling; it does not change how a
   consumer chooses between native disabled and transient busy semantics.
+
+## Reviewer fix round 1 of 5 — semantic `data-state` whitelist
+
+Base: `89e0537fe13702344f568fc9c8bd15c701b35a67`.
+
+The first implementation treated every `data-state` transition whose endpoints
+were outside `disabled`, `busy`, and `rest` as semantic. That still allowed
+unsupported values such as `idle` -> `ready`, `custom-a` -> `custom-b`, and a
+new `custom` value to pulse the control.
+
+The focused test now asserts those three transitions produce zero scale writes.
+The hook whitelists only both directions of `checked`/`unchecked`, `on`/`off`,
+and `open`/`closed`. Existing `aria-checked` and `aria-pressed` handling, the
+readiness mutation-batch reconstruction, pointer/keyboard feedback, quiet mode,
+and cleanup coverage remain unchanged.
+
+### Round 1 RED
+
+Command:
+
+```text
+rtk proxy fnm exec --using v22.22.0 node --test tests/flow-availability.test.mjs
+```
+
+Result: exit 1; test-runner duration 1929.15 ms; tool wall time 1.90 s.
+
+```text
+TAP version 13
+# Subtest: flow press distinguishes readiness from semantic state and input
+not ok 1 - flow press distinguishes readiness from semantic state and input
+  ---
+  duration_ms: 1224.390209
+  failureType: 'testCodeFailure'
+  error: |-
+    unsupported data-state changes must remain quiet
+    + actual - expected
+
+      {
+    +   'custom-control': 6,
+    +   'idle-control': 6,
+    +   'introduced-control': 6
+    -   'custom-control': 0,
+    -   'idle-control': 0,
+    -   'introduced-control': 0
+      }
+1..1
+# tests 1
+# pass 0
+# fail 1
+# duration_ms 1929.145792
+```
+
+### Round 1 GREEN
+
+Command:
+
+```text
+rtk proxy fnm exec --using v22.22.0 node --test tests/flow-availability.test.mjs
+```
+
+Result: exit 0; test-runner duration 3410.42 ms; tool wall time 3.42 s.
+
+```text
+TAP version 13
+# Subtest: flow press distinguishes readiness from semantic state and input
+ok 1 - flow press distinguishes readiness from semantic state and input
+  ---
+  duration_ms: 2564.189167
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3410.415917
+```
+
+Round 1 check time is reported separately above. Implementation, review, and
+report editing time were not measured by a command. No full suite, catalogue,
+server, app, visual pass, install, or deployment was run.
