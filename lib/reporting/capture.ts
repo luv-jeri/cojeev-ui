@@ -25,6 +25,29 @@ export function captureArea(area: CaptureArea, viewportWidth: number, viewportHe
 }
 /** Lets the browser paint the capture status before the main thread is held by cloning. */
 const paint = () => new Promise<void>(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+/**
+ * modern-screenshot measures default styles in a sandbox iframe it makes on first use, reading its
+ * `contentDocument.body` right after assigning `srcdoc` — and while that navigation commits the
+ * document has no body, so a clone that yields into the window measures against null. This frame
+ * is written in place and never navigated, so the body is there wherever the clone yields.
+ */
+function captureSandbox(): HTMLIFrameElement {
+  const sandbox = document.createElement("iframe");
+  sandbox.id = "__SANDBOX__report-capture";
+  // Capture chrome, so the measuring frame is filtered out of the screenshot like the drawer is.
+  sandbox.setAttribute("data-reporting-chrome", "");
+  sandbox.width = "0"; sandbox.height = "0";
+  sandbox.style.visibility = "hidden"; sandbox.style.position = "fixed";
+  document.body.appendChild(sandbox);
+  // Nothing owns the frame until it is handed to the context, so its own failure has to clear it.
+  try {
+    const sandboxDocument = sandbox.contentDocument;
+    // Standards mode, matching the document the library would have navigated to.
+    sandboxDocument?.open(); sandboxDocument?.write('<!DOCTYPE html><meta charset="UTF-8"><title></title><body>'); sandboxDocument?.close();
+    if (!sandboxDocument?.body) throw new Error("Your browser blocked the frame this screenshot needs. Attach an image instead.");
+  } catch (cause) { sandbox.remove(); throw cause; }
+  return sandbox;
+}
 export async function capturePage(mode: "viewport" | "page", options: CaptureOptions = {}): Promise<File> {
   if (location.pathname.includes("feedback-admin")) throw new Error("Capture is unavailable on private reports.");
   const report = options.onProgress ?? (() => {});
@@ -70,6 +93,8 @@ export async function capturePage(mode: "viewport" | "page", options: CaptureOpt
   const deadline = setTimeout(expire, CAPTURE_DEADLINE);
   try {
     stop();
+    // Given a settled sandbox the library never creates — and never immediately uses — its own.
+    context.sandbox = captureSandbox();
     report({ phase: "reading" });
     const canvas = await Promise.race([domToCanvas(context), expired]);
     stop();
