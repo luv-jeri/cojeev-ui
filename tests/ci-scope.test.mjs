@@ -789,6 +789,51 @@ test('a relocation reduces only when the rewritten removal reproduces the additi
   assert.ok(decision.reason.includes('apps/gate/run.mjs'), decision.reason);
 });
 
+test('a relocation is refused when no reviewed substitution touched the removed line', () => {
+  const hunk = (lines, file = 'app/getting-started/page.tsx') =>
+    [`diff --git a/${file} b/${file}`, `--- a/${file}`, `+++ b/${file}`, '@@ -1 +1 @@', ...lines].join('\n');
+  // Reordering. Every removed line reappears verbatim, so a match that ignored
+  // whether a substitution applied would call moving rendered sections around a
+  // relocation and skip the catalogue.
+  const reordered = hunk([
+    '-    <section><h2>01 / Prepare your project</h2></section>',
+    '-    <section><h2>02 / Add a component</h2></section>',
+    '+    <section><h2>02 / Add a component</h2></section>',
+    '+    <section><h2>01 / Prepare your project</h2></section>',
+  ]);
+  assert.equal(relocationOnly(reordered), false);
+  assert.equal(releaseDepth(['app/getting-started/page.tsx'], reordered).depth, 'full');
+  // Re-indentation. The text inside a rendered code block is whitespace, so the
+  // comparison keeps it rather than trimming it away.
+  const reindented = hunk([
+    '-  <CodeBlock code={`npx shadcn@latest add button`} />',
+    '+        <CodeBlock code={`npx shadcn@latest add button`} />',
+  ]);
+  assert.equal(relocationOnly(reindented), false);
+  assert.equal(releaseDepth(['app/getting-started/page.tsx'], reindented).depth, 'full');
+  // A source line beginning with `++` at column 0 makes a diff line of `+++…`.
+  // The header test carries its trailing space so the line is still compared.
+  const preIncrement = hunk([
+    '-fs.writeFileSync("GATE.md", text);',
+    '+fs.writeFileSync("docs/gates/GATE.md", text);',
+    '+++failures;',
+  ], 'scripts/run-production-gate.mjs');
+  assert.equal(relocationOnly(preIncrement), false);
+  assert.equal(releaseDepth(['scripts/run-production-gate.mjs'], preIncrement).depth, 'full');
+  // The real cleanup's own shapes still pass: an indented insertion, an import
+  // with no semicolon, and a substitution inside a long JSX line.
+  assert.ok(relocationOnly(hunk([
+    "-export function writeMotionReport({report='GATE-MOTION.md'}){",
+    "+import path from 'node:path'",
+    "+export function writeMotionReport({report='docs/gates/GATE-MOTION.md'}){",
+    '+ fs.mkdirSync(path.dirname(report),{recursive:true})',
+  ], 'scripts/gate-motion-report.mjs')));
+  assert.ok(relocationOnly(hunk([
+    '-    <p><a href={`${site.sourceUrl}/blob/main/INSTALLATION.md`}>Read the notes</a></p>',
+    '+    <p><a href={`${site.sourceUrl}/blob/main/docs/guides/INSTALLATION.md`}>Read the notes</a></p>',
+  ])));
+});
+
 test('paths that own a bounded browser harness select it instead of the catalogue, never nothing', () => {
   const decision = releaseDepth(['scripts/check-docs.mjs', 'tests/docs-transient-timing.browser.mjs']);
   assert.equal(decision.depth, 'affected');

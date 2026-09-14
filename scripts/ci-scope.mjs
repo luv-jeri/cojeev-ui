@@ -272,9 +272,12 @@ const FOCUSED_BROWSER = new Map([
 // one documented cleanup — moving a generated report or a documentation link to
 // its new home — cannot alter a rendered component. A path rule alone cannot tell
 // a relocation from a logic change, so these are decided on the actual diff: every
-// added and removed line must name a moved destination, or be the one recursive
-// mkdir a writer needs before writing into a directory that may not exist yet.
-// Anything else in the same file returns the change to the full job.
+// removed line must be rewritten by a reviewed substitution below and reproduce an
+// added line character for character, whitespace included, and every added line
+// without a removed counterpart must be the recursive mkdir, or its import, that a
+// writer needs before writing into a directory that may not exist yet. Anything
+// else in the same file — including reordering or re-indenting lines that no
+// substitution touches — returns the change to the full job.
 const RELOCATION_SENSITIVE = new Set([
   "scripts/run-production-gate.mjs",
   "scripts/append-gate-report.mjs",
@@ -305,9 +308,10 @@ const RELOCATION_INSERTIONS = [
 ];
 
 /**
- * True only when every removed line, rewritten by the reviewed substitutions
- * above, reproduces an added line exactly, and every unmatched added line is a
- * reviewed insertion. Anything else is a code change and runs the full job.
+ * True only when every removed line is actually rewritten by the reviewed
+ * substitutions above and, so rewritten, reproduces an added line exactly —
+ * whitespace included — and every unmatched added line is a reviewed insertion.
+ * Anything else is a code change and runs the full job.
  */
 /** Split a unified diff into one text per file, so one file cannot excuse another. */
 export function splitDiff(diff) {
@@ -324,21 +328,33 @@ export function splitDiff(diff) {
 export function relocationOnly(diff) {
   const removed = [], added = [];
   for (const line of String(diff ?? "").split("\n")) {
-    if (/^(?:\+\+\+|---|@@|diff |index |new file|deleted file|similarity|rename )/.test(line)) continue;
-    if (line.startsWith("-")) removed.push(line.slice(1).trim());
-    else if (line.startsWith("+")) added.push(line.slice(1).trim());
+    // Header prefixes only. `+++`/`---` carry their trailing space: without it a
+    // source line beginning with `++` or `--` at column 0 would be dropped from
+    // the comparison entirely and could ride along unreviewed.
+    if (/^(?:\+\+\+ |--- |@@|diff |index |new file|deleted file|similarity|rename )/.test(line)) continue;
+    // Indentation is kept. Re-indenting changes what a template literal or a
+    // rendered page emits, so it is a code change, not a relocation.
+    if (line.startsWith("-")) removed.push(line.slice(1));
+    else if (line.startsWith("+")) added.push(line.slice(1));
   }
   if (!removed.length && !added.length) return false;
   const rewrite = line => RELOCATIONS.reduce((value, [from, to]) => value.split(from).join(to), line);
   const remaining = [...added];
   for (const line of removed) {
-    const index = remaining.indexOf(rewrite(line));
+    const rewritten = rewrite(line);
+    // A removed line no reviewed substitution touches is not part of a
+    // relocation: reordering or re-indenting existing lines is a code change,
+    // and an untouched line would otherwise match its own copy on the other side.
+    if (rewritten === line) return false;
+    const index = remaining.indexOf(rewritten);
     // A removed line whose rewrite reproduces nothing is a deletion or an edit,
     // not a relocation.
     if (index === -1) return false;
     remaining.splice(index, 1);
   }
-  return remaining.every(line => RELOCATION_INSERTIONS.some(pattern => pattern.test(line)));
+  // Only the insertions ignore indentation: a mkdir added inside a function is
+  // legitimately indented, while its text is still matched exactly.
+  return remaining.every(line => RELOCATION_INSERTIONS.some(pattern => pattern.test(line.trim())));
 }
 
 export function releaseDepth(paths, diff) {
