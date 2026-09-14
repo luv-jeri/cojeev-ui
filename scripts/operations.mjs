@@ -48,8 +48,9 @@ export function wrangler(args,input) {
   if(!executable||!path.isAbsolute(executable)) throw new Error('Canonical external WRANGLER_BIN required');
   const canonical=realpathSync(executable),root=realpathSync(process.cwd());
   if(canonical.startsWith(`${root}${path.sep}`)||JSON.parse(readFileSync(path.resolve(canonical,'../../package.json'),'utf8')).version!=='4.131.1') throw new Error('External Wrangler 4.131.1 required');
-  // Secrets stay in the stdin pipe and protected environment, never a file,
-  // argument, artifact or emitted subprocess diagnostic.
+  // Secret values stay out of arguments, artifacts and emitted diagnostics.
+  // release.mjs uses an owner-only temporary secrets file for Wrangler on Linux,
+  // removed in finally; input is also available to the diagnostic redactor.
   const logs=mkdtempSync(path.join(os.tmpdir(),'cojeev-log-sink-'));
   const sink=path.join(logs,'discard.log');symlinkSync('/dev/null',sink);
   // Wrangler emits --json results through its normal log channel. Capture that

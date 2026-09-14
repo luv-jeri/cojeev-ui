@@ -79,7 +79,21 @@ export async function deployRelease(directory,environment,commit,digest,{rollbac
     await backupDatabase(environment,config);
     run(['d1','migrations','apply',target.database,'--remote','--config',config]);
   }
-  run(['deploy','--config',config,'--no-bundle','--secrets-file','/dev/stdin'],JSON.stringify(secrets));
+  // Wrangler opens --secrets-file by pathname. Node subprocess stdin is a socket
+  // on Linux, so /dev/stdin fails with ENXIO even though it works on macOS.
+  // Use the supported file interface outside the immutable artifact/workspace.
+  const secretDirectory=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-deploy-secrets-'));
+  try {
+    await fs.chmod(secretDirectory,0o700);
+    const secretsFile=path.join(secretDirectory,'secrets.json');
+    const serializedSecrets=JSON.stringify(secrets);
+    await fs.writeFile(secretsFile,serializedSecrets,{mode:0o600,flag:'wx'});
+    // Keep the in-memory bundle available to the wrapper's error redactor too.
+    // No secret value is placed in argv or in the packaged release.
+    run(['deploy','--config',config,'--no-bundle','--secrets-file',secretsFile],serializedSecrets);
+  } finally {
+    await fs.rm(secretDirectory,{recursive:true,force:true});
+  }
   run(['deploy','--config',path.join(directory,'website/wrangler.jsonc'),'--no-bundle']);
   return {environment,commit,manifestDigest:digest,rollback};
 }
