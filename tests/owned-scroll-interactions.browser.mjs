@@ -112,7 +112,7 @@ try {
   );
   await page
     .getByRole("button", {
-      name: "Request a feature or report a bug",
+      name: "Request a feature / Report a bug",
       exact: true,
     })
     .click();

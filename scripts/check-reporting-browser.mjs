@@ -17,7 +17,7 @@ const run = Date.now().toString(36);
 const imageBytes = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf3sAAAAASUVORK5CYII=", "base64");
 const screenshot = async (page, name) => { if (await page.locator(".report-launcher").count()) await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false); await page.screenshot({ path: `${output}/${name}.png`, fullPage: false, caret: "initial" }); };
 const panel = page => page.getByRole("dialog", { name: "Request a feature or report a bug", exact: true });
-const open = async page => { await page.getByRole("button", { name: "Request a feature or report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor(); };
+const open = async page => { await page.getByRole("button", { name: "Request a feature / Report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor(); };
 const fill = async (page, kind, title) => {
   const kindTab = panel(page).getByRole("tab", { name: kind === "bug" ? "Report a bug" : "Request a feature", exact: true });
   await kindTab.click();

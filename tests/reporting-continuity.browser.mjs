@@ -15,7 +15,7 @@ try {
     await page.goto(`${base}/docs/hero-button/`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => document.fonts.ready);
     await page.waitForFunction(() => document.querySelector('.report-launcher')?.disabled === false);
-    await page.getByRole('button', { name: 'Request a feature or report a bug', exact: true }).click();
+    await page.getByRole('button', { name: 'Request a feature / Report a bug', exact: true }).click();
     const dialog = page.getByRole('dialog', { name: 'Request a feature or report a bug', exact: true });
     for (const [kind, label] of [['request', 'Request a feature'], ['bug', 'Report a bug'], ['request-return', 'Request a feature']]) {
       await dialog.getByRole('tab', { name: label, exact: true }).click({ timeout: 5000 });
