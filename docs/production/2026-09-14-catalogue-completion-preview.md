@@ -118,9 +118,9 @@ gains a mode.
 ## Checkpoint tracking
 
 - B02-5 is a child of **B02 — Verify the complete final-source gate**, in
-  `docs/superpowers/plans/2026-09-12-launch-master-checklist.md`. That file has no B02-5 or
-  B02-7 row yet and is deliberately not edited by this checkpoint; the rows, PR URLs and
-  source commits are owed in a later tracking change.
+  `docs/superpowers/plans/2026-09-12-launch-master-checklist.md`. B02-5 and the separate
+  unresolved B02-7 now have explicit open rows. The PR records its exact reviewed source;
+  merge and release results must be recorded only after they occur.
 - **This checkpoint does not close B02-5 acceptance.** It repairs the case and proves the
   repair locally. Closure still needs the focused CI run on this branch, review, and merge.
 - **B02 remains open.** The combined release gate has not been rerun, and B02-7 (`shape-scene`
