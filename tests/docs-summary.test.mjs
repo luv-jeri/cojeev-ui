@@ -59,6 +59,11 @@ test("truncation is bounded and keeps the stage the run reached", () => {
   assert(bounded.length <= docsDetailLimit, `bounded to ${docsDetailLimit}, got ${bounded.length}`);
   assert(bounded.startsWith("locator.click: Timeout 10000ms exceeded."));
   assert(bounded.endsWith("waiting for scheduled navigations to finish"));
-  assert(!bounded.includes("<button"), "the resolved element's markup is dropped with the middle");
+  // In this particular message the element markup happens to sit in the middle, so it does
+  // not survive. That is a property of this fixture's shape, not a guarantee the helper
+  // makes: it bounds length and does not redact.
+  assert(!bounded.includes("<button"), "this fixture's markup sits in the discarded middle");
   assert.equal(boundDetail("short"), "short", "a short message is passed through unchanged");
+  const inlineMarkup = `<button class="${"x".repeat(20)}">…</button>`;
+  assert.equal(boundDetail(inlineMarkup), inlineMarkup, "a message within the limit is never altered");
 });

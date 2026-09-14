@@ -12,8 +12,12 @@ const elision = " …elided… ";
  * Keep a bounded excerpt of a failure message. The head carries the assertion, and the
  * tail carries the stage it reached — for a Playwright call log that last line is the
  * whole diagnosis — so an over-long message loses its middle rather than its end. The
- * middle is also where a resolved element's markup sits, which does not belong in a log.
- * The result never exceeds `limit`; results.json keeps the untruncated text.
+ * result never exceeds `limit`; results.json keeps the untruncated text.
+ *
+ * This is length bounding and nothing more. It is not redaction and removes no category
+ * of content: what falls in the middle depends entirely on the message, and a message at
+ * or under the limit is printed exactly as given. Keeping unwanted content out of these
+ * strings remains the job of whatever produces them.
  */
 export function boundDetail(message, limit = docsDetailLimit) {
   const text = String(message ?? "").trim();

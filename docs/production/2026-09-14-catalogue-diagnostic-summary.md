@@ -64,12 +64,44 @@ instead of building the object inline.
 Each added message is bounded to 400 characters. When a message is longer, its **middle**
 is dropped rather than its end: the head carries the assertion and the tail carries the
 stage reached, and for a Playwright call log that final line is the whole diagnosis. The
-discarded middle is also where the resolved element's markup sits, which does not belong in
-a job log. The untruncated text stays in `results.json`.
+untruncated text stays in `results.json`.
+
+That bounding is a length limit and nothing more. It is **not** redaction and it removes no
+category of content. What lands in the discarded middle depends entirely on the message, and
+a message at or under the limit is printed exactly as given. In the two messages above the
+resolved element's markup happens to sit in the middle and so does not survive, but that is
+a property of those messages, not a guarantee. Keeping unwanted content out of these strings
+is the job of whatever produces them; this checkpoint adds no new source of text, printing
+only what the runner had already recorded.
 
 `tests/docs-summary.test.mjs` checks that a passing entry gains no fields, that a failed
 record carries both reasons, that a layout recorded as an `issue` gains no reason it never
 had, and that truncation stays within the limit while keeping the assertion and the stage.
+
+## Classifier scope
+
+A new helper path is unclassified, and `scripts/ci-scope.mjs` resolves anything unnamed to
+the full release job. Left alone, changing a printed line would have run the whole catalogue.
+
+Both new paths are therefore named, as exact paths, in the two maps that already carry this
+harness:
+
+| Map | What it decides | Added |
+| --- | --- | --- |
+| `NAMED` | the checkpoint scope and its suites | `scripts/lib/docs-summary.mjs`, `tests/docs-summary.test.mjs` → `transient-timing` |
+| `FOCUSED_BROWSER` | `affected` rather than the full catalogue | the same two paths → `transient-timing` |
+
+No wildcard, prefix or suffix rule is introduced, no workflow step or branch protection is
+touched, and no new suite is created: these two files join the harness that
+`scripts/check-docs.mjs` already selects, because the formatter is imported by it. Browser
+evidence is reduced to that bounded harness, never removed.
+
+`tests/ci-scope.test.mjs` gains both classify rows, this checkpoint's own complete changed-file
+list, and three negatives proving the mapping stays exact — an unnamed sibling under
+`scripts/lib/`, a `.bak` of the helper and a `scripts/libs/` directory lookalike all still
+resolve to the full job. Each map entry was confirmed load-bearing by removing it and watching
+the suite fail: dropping the `NAMED` entry fails both classify rows, and dropping the
+`FOCUSED_BROWSER` entry fails the bounded-harness selection test.
 
 ## Deliberately not done
 
