@@ -97,6 +97,49 @@ export async function deployRelease(directory,environment,commit,digest,{rollbac
   run(['deploy','--config',path.join(directory,'website/wrangler.jsonc'),'--no-bundle']);
   return {environment,commit,manifestDigest:digest,rollback};
 }
+// Cloudflare acknowledges a deploy before every edge serves the new Worker and
+// asset version, so the first live read can legitimately still answer with the
+// previous release. Retry only the codes a later read can resolve. A missing
+// health token, a stalled or failed delivery queue, email quota, an unconfigured
+// provider and a broken header/404 contract are real defects that no amount of
+// further waiting repairs, so they fail on the first attempt; a run that carries
+// any one of them never retries, even alongside a propagation code.
+export const TRANSIENT_LIVE_PROBLEMS=new Set(['http-health','release-mismatch','site-unreachable','site-release-mismatch']);
+export const LIVE_RETRY_WAITS=[5000,10000,15000,20000];
+/** Sanitized fixed codes for one live read of the deployed site and API. */
+export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,fetcher=fetch}={}) {
+  let problems=await checkHealth(environment,{token,commit,fetcher}).then(result=>result.problems);
+  // checkHealth reports a missing token and an admin endpoint that did not answer
+  // usefully under one code. A token was supplied here, and the public endpoints
+  // are unreachable too, so that is one outage rather than a second, permanent
+  // configuration defect. If the outage clears while the admin answer is still
+  // unusable, the code reappears on the next read and stops the run at once.
+  if(token&&problems.includes('http-health')) problems=problems.filter(code=>code!=='invalid-delivery-health');
+  const target=environmentConfig(environment);
+  for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
+    let response;
+    try {response=await fetcher(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
+    catch {problems.push('site-unreachable');continue;}
+    if(response.status!==status||response.headers.get('x-content-type-options')!=='nosniff'||environment==='beta'&&!response.headers.get('x-robots-tag')?.includes('noindex')) {problems.push('site-contract');continue;}
+    if(route!=='/release.json') continue;
+    let value;
+    try {value=await response.json();} catch {problems.push('site-contract');continue;}
+    if(value.release!==commit||value.environment!==environment) problems.push('site-release-mismatch');
+  }
+  return [...new Set(problems)].sort();
+}
+/** Bounded propagation retries: at most five reads, at most 50s of added waiting. */
+export async function checkLiveRelease(environment,commit,{waits=LIVE_RETRY_WAITS,sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),log=console.log,...options}={}) {
+  for(let attempt=0;;attempt++) {
+    const problems=await liveProblems(environment,commit,options);
+    if(!problems.length) return problems;
+    const wait=problems.every(code=>TRANSIENT_LIVE_PROBLEMS.has(code))?waits[attempt]:undefined;
+    if(wait===undefined) throw new Error(`Live checks failed after ${attempt+1} attempt${attempt?'s':''}: ${problems.join(', ')}`);
+    // Fixed codes only. No response body, header, credential or URL is printed.
+    log(`Live checks attempt ${attempt+1}/${waits.length+1}: ${problems.join(', ')}; retrying in ${wait/1000}s`);
+    await sleep(wait);
+  }
+}
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
     const [command,environment,commit,directory,digest]=process.argv.slice(2);
@@ -115,16 +158,7 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
       }
     } else if(command==='verify') {await readArtifact(path.resolve(directory),environment,commit,digest);console.log('Artifact verified');}
     else if(command==='deploy'||command==='rollback') console.log(JSON.stringify(await deployRelease(path.resolve(directory),environment,commit,digest,{rollback:command==='rollback'})));
-    else if(command==='live') {
-      const result=await checkHealth(environment,{token:process.env.HEALTH_TOKEN,commit});
-      if(result.problems.length) throw new Error(`Live checks failed: ${result.problems.join(', ')}`);
-      const target=environmentConfig(environment);
-      for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
-        const response=await fetch(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});
-        if(response.status!==status||response.headers.get('x-content-type-options')!=='nosniff'||environment==='beta'&&!response.headers.get('x-robots-tag')?.includes('noindex')) throw new Error('Live website contract failed');
-        if(route==='/release.json') {const value=await response.json();if(value.release!==commit||value.environment!==environment) throw new Error('Live artifact identity failed');}
-      }
-      console.log('Live release checks passed');
-    } else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
+    else if(command==='live') {await checkLiveRelease(environment,commit);console.log('Live release checks passed');}
+    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }
