@@ -62,10 +62,17 @@ export async function readArtifact(directory,environment,commit,digest) {
   if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');
   return manifest;
 }
+export function deploymentSecrets(environment,env=process.env) {
+  const bundles=composeSecretBundles(env.REPORTING_SECRETS_JSON,env.REPORTING_ADDITIONAL_SECRETS_JSON);
+  // Provision webhook signing separately without rewriting either protected
+  // bundle. Refuse overlaps so rotation is explicit, never a silent overwrite.
+  const webhook=env.RESEND_WEBHOOK_SECRET ? JSON.stringify({RESEND_WEBHOOK_SECRET:env.RESEND_WEBHOOK_SECRET}) : undefined;
+  return validateSecrets(composeSecretBundles(bundles,webhook),environment);
+}
 export async function deployRelease(directory,environment,commit,digest,{rollback=false,run=wrangler,backupDatabase=prepareDatabaseRecovery,cf=cloudflare}={}) {
   const manifest=await readArtifact(directory,environment,commit,digest);
   const target=environmentConfig(environment);
-  const secrets=validateSecrets(composeSecretBundles(process.env.REPORTING_SECRETS_JSON,process.env.REPORTING_ADDITIONAL_SECRETS_JSON),environment);
+  const secrets=deploymentSecrets(environment);
   const config=path.join(directory,'api/wrangler.jsonc');
   if(environment==='production') {
     const existing=await cf(`workers/scripts/${target.worker}/secrets`);

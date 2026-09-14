@@ -204,16 +204,26 @@ logs and traces is Provider.
 | GitHub (`api.github.com` → public repo `luv-jeri/cojeev-ui`; beta `luv-jeri/cojeev-ui-beta-feedback`, recorded as private in docs/production/OPERATIONS.md:84) | Outbox `github` job | Issue titled `[Bug report]`/`[Component request] <first 8 of UUID>`; body carries the full report UUID, an HMAC marker, and a maintainer-only admin link. **No title, description, email, diagnostics or attachment reaches GitHub** | Code — delivery.ts:36,48-51 |
 | Cloudflare Worker `cojeev-ui-registry` on `000h.cojeev.com` (beta `beta.000h.cojeev.com`) | Every page view | Serves the static export. Sees the full request: URL, client IP, user agent, referrer | Config — workers/registry-host/wrangler.jsonc |
 | GitHub Pages (`luv-jeri.github.io`) | Only if a visitor uses that origin | Retained as a permitted browser origin and build-compatibility target, not the primary host | Config — workers/reporting/wrangler.jsonc:31; docs/production/OPERATIONS.md:16 |
-| Resend (`api.resend.com`) | Outbox email job, only when `EMAIL_ENABLED=true` with a verified sender | Recipient address, subject, text and HTML body, `reply_to: hello@cojeev.com`, idempotency key `cojeev/<jobId>` | Code — delivery.ts:72, resend.ts:27 |
+| Resend (`api.resend.com`) | Outbox email job, only when `EMAIL_ENABLED=true` with a verified sender | Recipient address, subject, text and HTML body, `reply_to: hello@cojeev.com`, idempotency key `cojeev/<jobId>`, and since C10-1 three correlation tags — environment name, report UUID, outbox job kind (no report content) | Code — delivery.ts:72, resend.ts:27 |
+| `REPORT_NOTIFICATION_EMAIL` maintainer inbox (currently `unread.fyi@gmail.com`) | Outbox `email_owner_received` job, queued per newly saved report only while that address is configured | Report kind, report UUID and the maintainer-only admin link. **No title, description, reporter address, reference link, diagnostics or attachment reaches this inbox** | Code — `reports.ts` accept, `delivery.ts` ownerMessage and deliver; config — workers/reporting/wrangler.jsonc:40,84,129 |
 | `hello@cojeev.com` mailbox | Replies to notification emails; the `mailto:` contact link | Whatever the sender writes | Code — delivery.ts:72, site-config.ts:14 |
 
-Email is currently **disabled** in both committed environments (`EMAIL_ENABLED: "false"`,
-`DELIVERY_ACTIVATED_AT: ""` — workers/reporting/wrangler.jsonc:34-36,76-78), and beta sending is further
-restricted to the single address in `BETA_TESTER_EMAILS`
-(workers/reporting/wrangler.jsonc:81, enforced at resend.ts:8). No report
-contents are emailed to an operator inbox: there is no maintainer-notification job. A
-maintainer reads reports through `/feedback-admin/`, whose token is held in memory for
-the tab only (`components/reporting/admin.tsx:51`).
+In the C10-1 candidate, production email remains **disabled** with no activation
+cutoff. Beta source enables email with the fixed cutoff `2026-09-14T06:52:56.000Z`
+(`workers/reporting/wrangler.jsonc`, production and beta vars). This describes the
+candidate, not verified live delivery. Beta sending is restricted to the single
+address in `BETA_TESTER_EMAILS` by `resend.ts` testerAllowed, including the
+maintainer alert's recipient in `delivery.ts` deliver. Since C10-1 the signed provider webhook also stores an
+event only when the message is provably this deployment's own — a recorded provider ID, or tags
+matching a local job's stored sent body. Other applications' and the other environment's
+team-wide events on a shared provider account are acknowledged and discarded, so their provider
+message IDs are no longer written to `email_events`. Source line references recorded elsewhere in this
+dated inventory predate C10-1 and were not renumbered; current email paths are
+`delivery.ts` deliver and emailPayload. A maintainer-notification job now exists
+(`email_owner_received`, added under checkpoint C10-1), but **no report content is emailed to the
+operator inbox**: that message carries only the report kind, the report UUID and the admin link
+(`delivery.ts` ownerMessage). The maintainer still reads the report itself through `/feedback-admin/`, whose
+token is held in memory for the tab only (`components/reporting/admin.tsx:51`).
 
 Beta also checks the submitted address against this allowlist **before storage**
 and rejects other addresses (`workers/reporting/src/reports.ts:30`), independently

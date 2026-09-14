@@ -5,14 +5,16 @@ import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,TRANSIENT_
 const commit='a'.repeat(40),token='t'.repeat(40);
 const site='https://beta.000h.cojeev.com',api='https://feedback-beta.cojeev.com';
 const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex, nofollow'};
-const delivery={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850},providers:{email:true,github:true,resendWebhook:true},activationCutoff:1};
+// A live release is a service expected to deliver, so this stands for one that declares
+// itself active with every delivery path configured, the maintainer alert included.
+const delivery={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850},providers:{email:true,github:true,resendWebhook:true,ownerNotification:true},activationCutoff:1,deploymentIntent:'active'};
 
 /** One simulated edge. `release` is what this edge currently serves. */
-function edge({release=commit,unreachable=false,contract=false,stalled=false}={}) {
+function edge({release=commit,unreachable=false,contract=false,stalled=false,health=delivery}={}) {
   return async url=>{
     if(unreachable) throw new Error('connect ECONNREFUSED 127.0.0.1:443');
     if(url===`${site}/health`||url===`${api}/health`) return Response.json({status:'ok',environment:'beta',release},{headers});
-    if(url===`${api}/v1/admin/health`) return Response.json(stalled?{...delivery,queue:[{state:'pending',count:4,oldestAgeMs:3600000}]}:delivery,{headers});
+    if(url===`${api}/v1/admin/health`) return Response.json(stalled?{...health,queue:[{state:'pending',count:4,oldestAgeMs:3600000}]}:health,{headers});
     if(url===`${site}/release.json`) return Response.json({environment:'beta',release},{headers:contract?{}:headers});
     if(url===`${site}/r/button.json`) return Response.json({name:'button'},{headers});
     if(url===`${site}/__cojeev_missing_release_probe__/`) return new Response('not found',{status:404,headers});
@@ -234,4 +236,26 @@ test('an unready read can never be mistaken for a clean one',async()=>{
     // And every code it did report is one a later read can resolve, so it retries.
     assert.ok(problems.every(code=>TRANSIENT_LIVE_PROBLEMS.has(code)),problems.join(', '));
   }
+});
+
+test('a deployed release is not live while its declared delivery readiness is incomplete',async()=>{
+  // Everything else about these reads is perfect: both hosts serve this release, the route
+  // contract holds and the queue is clean. Only readiness is short — first the maintainer
+  // alert nobody configured, then a service that declares itself active while its activation
+  // cutoff would let it deliver nothing.
+  for(const health of [
+    {...delivery,providers:{...delivery.providers,ownerNotification:false}},
+    {...delivery,activationCutoff:null},
+  ]) {
+    const unready=edge({health});
+    assert.deepEqual(await liveProblems('beta',commit,{token,fetcher:unready}),['provider-unconfigured']);
+    // A configuration gap is not a propagation delay: no later read resolves it, so the
+    // release stops on the first attempt instead of spending the propagation budget.
+    const waited=[];
+    await assert.rejects(
+      checkLiveRelease('beta',commit,{token,fetcher:unready,sleep:async ms=>waited.push(ms),log:()=>{}}),
+      /after 1 attempt: provider-unconfigured/);
+    assert.deepEqual(waited,[]);
+  }
+  assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('provider-unconfigured'),'an unconfigured provider must never be retried as propagation lag');
 });

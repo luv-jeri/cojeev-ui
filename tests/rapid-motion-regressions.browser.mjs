@@ -49,7 +49,7 @@ export async function checkRapidMotion({ page, cdp, navigate, base = "http://127
   await read(selector);
   await page.getByRole("button", { name: "Pause effect", exact: true }).click();
   await page.getByRole("button", { name: "Resume effect", exact: true }).waitFor({ state: "visible" });
-  await page.getByRole("button", { name: "Colour and contrast", exact: true }).click();
+  await page.getByRole("button", { name: "Colours and contrast", exact: true }).click();
   const palette = page.getByRole("combobox", { name: "Colour palette", exact: true });
   const original = (await palette.innerText()).trim();
   const alternate = original === "Grove" ? "Paper" : "Grove";

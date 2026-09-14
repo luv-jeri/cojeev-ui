@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { preload } from "react-dom";
+import displayFont from "./fonts/bricolage-grotesque-variable.woff2";
 import { PageScrollBar, ScrollbarProvider } from "@/registry/cojeev/ui/scroll-area";
+import { pageScrollbarBootstrap } from "@/registry/cojeev/motion/scroll-thumb";
 import { AppearanceProvider } from "@/registry/cojeev/ui/appearance";
 import { ReportingWidget } from "@/components/reporting/reporting-widget";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
@@ -21,11 +24,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // The hero heading is the LCP element; fetch its face alongside the stylesheet instead of after it.
+  preload(displayFont, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   return (
     <html lang="en" data-mode="light" data-scrollbar-policy="cojeev" suppressHydrationWarning>
       <head>
         {/* Resolve before first paint, without waiting for React or a network script. */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){var mode;try{mode=localStorage.getItem("cojeev-docs-theme")}catch(e){}if(mode!=="light"&&mode!=="dark")mode=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.mode=mode})()` }} />
+        {/* Claim the scrollbar paint before first paint, and hand it back if the bundle
+            never mounts the overlay. Both halves live in the component's own helper. */}
+        <script dangerouslySetInnerHTML={{ __html: pageScrollbarBootstrap }} />
       </head>
       <body suppressHydrationWarning><AnalyticsProvider><AppearanceProvider><ScrollbarProvider scrollbarSize={4}>{children}<PageScrollBar /><ReportingWidget entries={catalog().map(({name,title,description}) => ({name,title,description}))} /></ScrollbarProvider></AppearanceProvider></AnalyticsProvider></body>
     </html>

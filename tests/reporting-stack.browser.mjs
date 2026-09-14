@@ -17,7 +17,7 @@ try {
     await page.route("**/v1/reports**", route => { submissions.push(route.request().url()); return route.abort(); });
     await page.addInitScript(mode => localStorage.setItem("cojeev-docs-theme", mode), mode);
     await page.goto(`${base}/docs/motion-drawer/`, { waitUntil: "domcontentloaded" });
-    const launcher = page.getByRole("button", { name: "Request a feature or report a bug", exact: true });
+    const launcher = page.getByRole("button", { name: "Request a feature / Report a bug", exact: true });
     await page.waitForFunction(() => document.querySelector('.report-launcher')?.disabled === false);
     assert.equal(await page.locator('.report-launcher-shape').evaluate(node => getComputedStyle(node).animationName), 'none', 'Reporting has no perpetual decorative idle animation');
     await launcher.hover();

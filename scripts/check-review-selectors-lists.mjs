@@ -141,7 +141,7 @@ try {
         assert.equal(await page.locator("#review-events").textContent(), "command:option-24"); await input.fill("no-such-option"); assert(await page.getByText("No matching commands", { exact: true }).isVisible()); await input.fill("");
       });
       await verify("appearance scroll geometry reflects actual content overflow", async () => {
-        await page.getByRole("button", { name: "Colour and contrast", exact: true }).click();
+        await page.getByRole("button", { name: "Colours and contrast", exact: true }).click();
         const surface = page.locator('.v-appearance-popover').last(); await surface.waitFor(); await page.waitForTimeout(200);
         record.appearanceGeometry = await surface.evaluate(node => {
           const viewport = node.querySelector('[data-radix-scroll-area-viewport]'), box = viewport.getBoundingClientRect(), thumb = node.querySelector('[data-slot="scroll-area-thumb"]');
