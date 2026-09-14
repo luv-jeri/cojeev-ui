@@ -74,7 +74,7 @@ export function InputWrapper({
   variant,
   size,
   ...props
-}: InputWrapperProps) {
+}: InputWrapperProps): React.ReactElement {
   const ownedMorphRef = useMorph<HTMLElement>("inputs", externalMorphRef);
   const { as = "div", ...rest } = props;
   return React.createElement(as, {
