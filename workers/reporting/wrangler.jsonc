@@ -37,6 +37,8 @@
     "EMAIL_DAILY_LIMIT": "95",
     "EMAIL_MONTHLY_LIMIT": "2850",
     "BETA_TESTER_EMAILS": "",
+    "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
+    "DEPLOYMENT_INTENT": "staged",
     "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
   },
   "d1_databases": [
@@ -73,12 +75,14 @@
         "ALLOWED_ORIGINS": "https://beta.000h.cojeev.com,https://feedback-beta.cojeev.com",
         "SITE_URL": "https://beta.000h.cojeev.com",
         "LOCAL_MODE": "false",
-        "EMAIL_ENABLED": "false",
+        "EMAIL_ENABLED": "true",
         "EMAIL_FROM": "hello@cojeev.com",
-        "DELIVERY_ACTIVATED_AT": "",
+        "DELIVERY_ACTIVATED_AT": "2026-09-14T06:52:56.000Z",
         "EMAIL_DAILY_LIMIT": "5",
         "EMAIL_MONTHLY_LIMIT": "150",
         "BETA_TESTER_EMAILS": "unread.fyi@gmail.com",
+        "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
+        "DEPLOYMENT_INTENT": "active",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui-beta-feedback"
       },
       "d1_databases": [
@@ -122,6 +126,8 @@
         "EMAIL_DAILY_LIMIT": "95",
         "EMAIL_MONTHLY_LIMIT": "2850",
         "BETA_TESTER_EMAILS": "",
+        "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
+        "DEPLOYMENT_INTENT": "staged",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
       },
       "d1_databases": [

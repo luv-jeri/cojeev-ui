@@ -1,6 +1,6 @@
 import { accept, authorizeReceipt, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
 import { assertBrowserOrigin, equalSecret, HttpError, origins, readJSON, requireAdmin } from "./security";
-import { activationCutoff, emailEnabled, githubEnabled, now, type Env, type Delivery } from "./types";
+import { activationCutoff, emailEnabled, expectedActive, githubEnabled, now, ownerNotificationEmail, type Env, type Delivery } from "./types";
 import { emailLimits, resendWebhook } from './resend';
 import { drain } from "./delivery";
 import { cleanup, updateFromAdmin, webhook } from "./lifecycle";
@@ -30,7 +30,9 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
       const queue=await env.DB.prepare("SELECT state,delivery_status,COUNT(*) AS count,MIN(created_at) AS oldestCreatedAt FROM outbox GROUP BY state,delivery_status").all();
       const time=now(),date=new Date(time);
       const usage=await env.DB.prepare('SELECT SUM(CASE WHEN attempted_at>=? THEN 1 ELSE 0 END) AS daily,COUNT(*) AS monthly FROM email_attempts WHERE attempted_at>=?').bind(Math.floor(time/86400000)*86400000,Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),1)).first();
-      return json({queue:queue.results.map(row=>({...row,oldestAgeMs:time-Number(row.oldestCreatedAt)})),usage,limits:emailLimits(env),providers:{email:emailEnabled(env),github:githubEnabled(env),resendWebhook:!!env.RESEND_WEBHOOK_SECRET},activationCutoff:activationCutoff(env)});
+      return json({queue:queue.results.map(row=>({...row,oldestAgeMs:time-Number(row.oldestCreatedAt)})),usage,limits:emailLimits(env),providers:{email:emailEnabled(env),github:githubEnabled(env),resendWebhook:!!env.RESEND_WEBHOOK_SECRET,ownerNotification:!!ownerNotificationEmail(env)},
+        // Readiness is reported as booleans and a cutoff only: never an address or a secret.
+        activationCutoff:activationCutoff(env),deploymentIntent:expectedActive(env)?'active':'staged'});
     }
     if(!["GET","HEAD"].includes(request.method)) assertBrowserOrigin(request,env);
     if(path==="/v1/admin/reports"&&request.method==="GET") {

@@ -1,6 +1,6 @@
 import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus } from "../../../lib/reporting/contracts";
 import { boundedBody, checkAbuse, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
-import { emailEnabled, githubEnabled, now, type Env, type ReportRow, type AttachmentRow, type Delivery } from "./types";
+import { emailEnabled, githubEnabled, now, ownerNotificationEmail, type Env, type ReportRow, type AttachmentRow, type Delivery } from "./types";
 import { testerAllowed } from './resend';
 
 export async function getReport(env: Env, id: string) {
@@ -53,7 +53,10 @@ export async function accept(request: Request, env: Env): Promise<{receipt:Recei
     VALUES(?,?,?,?,?,?,?,?,?,?,?,COALESCE(?,(SELECT id FROM topics WHERE title_key=?)),COALESCE((SELECT status FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),'received'),(SELECT component_url FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),?,?)`)
     .bind(report.id,tokenHash,payloadHash,report.kind,report.title,report.description,report.email,contactHash,JSON.stringify(report.references),report.diagnostics?JSON.stringify(report.diagnostics):null,JSON.stringify(report.pins),topicId,topicKey,topicId,topicKey,topicId,topicKey,timestamp,timestamp));
   for(const file of report.attachments) statements.push(env.DB.prepare("INSERT INTO attachments(id,report_id,name,type,size,sha256,object_key) VALUES(?,?,?,?,?,?,?)").bind(file.id,report.id,file.name,file.type,file.size,file.sha256,`${report.id}/${file.id}`));
-  for(const kind of ["github","email_received"]) statements.push(env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,?,?,?)").bind(`${report.id}:${kind}`,report.id,kind,timestamp,timestamp));
+  // The maintainer alert is queued with the report it belongs to, so configuring an
+  // owner address later can never manufacture alerts for the existing backlog.
+  const kinds=["github","email_received",...(ownerNotificationEmail(env)?["email_owner_received"]:[])];
+  for(const kind of kinds) statements.push(env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,?,?,?)").bind(`${report.id}:${kind}`,report.id,kind,timestamp,timestamp));
   try { await env.DB.batch(statements); }
   catch(error) {
     // A simultaneous retry may have won the unique ID race. Never manufacture a second record.
