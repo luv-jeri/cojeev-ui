@@ -33,6 +33,19 @@ separate steps; do not mark them complete from these checks.
 
 ## Remaining acceptance
 
+Provider setup now has two enabled Resend hooks: beta
+`e53415c4-8aa1-4da9-a45c-868459b43f28` and production
+`42966ddd-a6d8-48a3-b026-779eab045c8f`. Each subscribes to sent, delivered,
+bounced, failed, complained and suppressed events. Beta's separate protected
+signing secret is present; production's transfer is blocked by the browser
+extension disconnecting. Existing credential bundles were not changed.
+
+The **beta candidate** now declares active delivery with a fixed cutoff of
+`2026-09-14T06:52:56.000Z`, five daily email attempts, and only the existing
+approved tester inbox. This is source configuration, **not a deployment claim**.
+Historical held jobs stay held. Production remains staged with email disabled
+until its signing secret and protected promotion are ready.
+
 - Configure both Resend hooks and protected signing secrets, then verify their presence.
 - Review the new owner-notification and webhook-isolation code.
 - Release a fixed activation cutoff without backdating it to release historical work.
