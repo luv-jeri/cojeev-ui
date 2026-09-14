@@ -11,6 +11,7 @@ import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
 import { armOpacityObservation } from "./docs-transient-paint.mjs";
 import { docsHarnessFiles, docsHarnessFingerprint } from "./docs-harness-fingerprint.mjs";
+import { docsEntrySummary } from "./lib/docs-summary.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -1631,15 +1632,7 @@ try {
       path.join(output, "results.json"),
       JSON.stringify(run, null, 2),
     );
-    console.log(
-      JSON.stringify({
-        id: entry.name,
-        layouts: record.layouts.map((l) => `${l.width}/${l.theme}:${l.status}`),
-        preview: record.preview.status,
-        behavior: record.behavior.status,
-        detail: record.behavior.detail,
-      }),
-    );
+    console.log(JSON.stringify(docsEntrySummary(record)));
     // The primary behavior page can keep animated examples and modal state
     // alive while the next entry's other five layouts run. Retire the whole
     // context, not only the page: `page.clock` is the browser context's clock,
