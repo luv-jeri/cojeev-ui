@@ -20300,6 +20300,7 @@
       "description": "A controlled branch ledger for supplied hierarchical data, with separate disclosure, selection and trailing actions.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
         "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
       ],
       "dependencies": [],
@@ -20321,7 +20322,10 @@
         "source": {
           "name": "Tree",
           "variants": [
-            "branch-ledger"
+            "branch-ledger",
+            "loading-branch",
+            "empty-branch",
+            "failed-branch"
           ],
           "sizes": [
             "default"
