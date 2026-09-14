@@ -54,6 +54,11 @@ export type MembranePalette = {
   tones: readonly [string, string, string, string];
   deep: readonly [string, string, string, string];
   paper: string;
+  /** Night colour: every body is mixed toward it by `dim` (0..1), so the same creature reads deeper on a dark page. */
+  ink?: string;
+  dim?: number;
+  /** Soft luminous halo outside the body (0..1). */
+  glow?: number;
 };
 
 export type MembraneStatus = "webgl" | "fallback";
@@ -78,7 +83,7 @@ uniform vec4 uStrandA[${MEMBRANE_LIMITS.strands}];
 uniform vec4 uStrandB[${MEMBRANE_LIMITS.strands}];
 uniform vec3 uTone[4];
 uniform vec3 uDeep[4];
-uniform vec3 uPaper;
+uniform vec3 uPaper; uniform vec3 uInk; uniform float uDim; uniform float uGlow;
 uniform float uBlend;
 uniform float uWobble;
 uniform float uContour;
@@ -133,7 +138,8 @@ void main() {
   tone /= max(wsum, 1e-5); deep /= max(wsum, 1e-5);
   d += (sin(p.x * 0.021 + uTime * 0.9) * sin(p.y * 0.027 - uTime * 0.7) * 0.6 + sin((p.x - p.y) * 0.017 + uTime * 1.3) * 0.4) * uWobble;
   float cover = 1.0 - smoothstep(-0.9, 0.9, d);
-  if (cover <= 0.003) discard;
+  float halo = exp(-max(d, 0.0) / 34.0) * (1.0 - cover) * uGlow;
+  if (cover <= 0.003 && halo <= 0.004) discard;
   float depth = clamp(-d / 56.0, 0.0, 1.0);
   vec3 body = mix(mix(tone, uPaper, 0.12), deep, depth * 0.26);
   float rim = 1.0 - smoothstep(0.0, 1.9, abs(d + 1.1));
@@ -141,7 +147,9 @@ void main() {
   float ring = abs(fract(-d / 14.0) - 0.5);
   float lines = (1.0 - smoothstep(0.06, 0.16, ring)) * smoothstep(0.0, -7.0, d) * exp(d / 90.0) * uContour;
   body = mix(body, deep, lines * 0.34);
-  gl_FragColor = vec4(body * cover, cover);
+  body = mix(body, uInk, uDim);
+  vec3 light = mix(tone, vec3(1.0), 0.25);
+  gl_FragColor = vec4(body * cover + light * halo, cover + halo);
 }
 `;
 
@@ -159,7 +167,7 @@ export type MembraneRenderer = {
   dispose(): void;
 };
 
-const uniformNames = ["uSize", "uDpr", "uTime", "uCellCount", "uCellA", "uCellB", "uStrandCount", "uStrandA", "uStrandB", "uTone", "uDeep", "uPaper", "uBlend", "uWobble", "uContour"];
+const uniformNames = ["uSize", "uDpr", "uTime", "uCellCount", "uCellA", "uCellB", "uStrandCount", "uStrandA", "uStrandB", "uTone", "uDeep", "uPaper", "uInk", "uDim", "uGlow", "uBlend", "uWobble", "uContour"];
 
 /** Parses any CSS colour the browser understands into unit RGB. */
 function colorParser() {
@@ -186,7 +194,7 @@ const defaultPalette: MembranePalette = {
 export function createMembraneRenderer(canvas: HTMLCanvasElement): MembraneRenderer {
   const parse = colorParser();
   let width = 1, height = 1, dpr = 1;
-  let tones: Rgb[] = [], deep: Rgb[] = [], paper: Rgb = [1, 1, 1];
+  let tones: Rgb[] = [], deep: Rgb[] = [], paper: Rgb = [1, 1, 1], ink: Rgb = [.1, .09, .13], dim = 0, glow = 0;
   let cssTones: string[] = [], cssDeep: string[] = [];
   const cellA = new Float32Array(MEMBRANE_LIMITS.cells * 4), cellB = new Float32Array(MEMBRANE_LIMITS.cells * 4);
   const strandA = new Float32Array(MEMBRANE_LIMITS.strands * 4), strandB = new Float32Array(MEMBRANE_LIMITS.strands * 4);
@@ -199,6 +207,8 @@ export function createMembraneRenderer(canvas: HTMLCanvasElement): MembraneRende
     tones = palette.tones.map((c, i) => parse(c, parse(defaultPalette.tones[i], [1, 1, 1])));
     deep = palette.deep.map((c, i) => parse(c, parse(defaultPalette.deep[i], [.5, .5, .5])));
     paper = parse(palette.paper, parse(defaultPalette.paper, [1, 1, 1]));
+    ink = parse(palette.ink ?? "#1a1620", [.1, .09, .13]);
+    dim = Math.min(1, Math.max(0, palette.dim ?? 0)); glow = Math.min(1, Math.max(0, palette.glow ?? 0));
     cssTones = [...palette.tones]; cssDeep = [...palette.deep];
     for (let i = 0; i < 4; i++) { toneFlat.set(tones[i], i * 3); deepFlat.set(deep[i], i * 3); }
   }
@@ -297,6 +307,9 @@ export function createMembraneRenderer(canvas: HTMLCanvasElement): MembraneRende
     gl.uniform4fv(locations.uStrandB, strandB);
     gl.uniform3fv(locations.uTone, toneFlat);
     gl.uniform3fv(locations.uDeep, deepFlat);
+    gl.uniform3f(locations.uInk, ink[0], ink[1], ink[2]);
+    gl.uniform1f(locations.uDim, dim);
+    gl.uniform1f(locations.uGlow, glow);
     gl.uniform3f(locations.uPaper, paper[0], paper[1], paper[2]);
     gl.uniform1f(locations.uBlend, scene.blend ?? 26);
     gl.uniform1f(locations.uWobble, scene.wobble ?? 0);

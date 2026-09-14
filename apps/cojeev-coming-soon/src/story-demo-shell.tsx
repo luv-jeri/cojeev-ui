@@ -10,7 +10,7 @@ import {Countdown} from "./countdown-display";
 import './demo-switcher.css';
 
 export function DemoSwitcher({current}:{current:'bond'|'resident'|'mind'}){
- return <nav className="demo-switcher" aria-label="Compare story demos">{[['bond','The Bond'],['resident','The Resident'],['mind','Changing Mind']].map(([id,label])=><Button asChild key={id} variant="ghost" data-morph="fill" data-tier="pill"><a href={`/${id}.html`} aria-current={current===id?'page':undefined}>{label}</a></Button>)}</nav>;
+ return <nav className="demo-switcher" aria-label="Compare story demos">{[['bond','The Bond'],['resident','The Resident'],['mind','Changing Mind']].map(([id,label])=><Button asChild key={id} variant="ghost" data-morph="fill" data-tier="pill"><a href={id==='bond'?'/':`/${id}.html`} aria-current={current===id?'page':undefined}>{label}</a></Button>)}</nav>;
 }
 const powers=[['Memory, shared','Context that stays with you and your team.'],['Prompts, extended','Custom hooks before, during and after a response.'],['Agents, connected','Subagents, model selection and a shared coordination board.'],['A little proactive','Patterns suggested as skills and automations.'],['Character, yours','A personality you shape, across different minds and harnesses.']];
 export function StoryDemoShell({kind,children}:{kind:'resident'|'mind';children:(state:{moving:boolean;paused:boolean})=>React.ReactNode}){

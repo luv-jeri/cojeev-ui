@@ -17,5 +17,5 @@ export default defineConfig({
   resolve: { alias: { "@": repository, ...Object.fromEntries(shaderPackages.map(name=>[name,fileURLToPath(import.meta.resolve(name))])) }, dedupe: ["react", "react-dom", "three"] },
   css: { postcss: { plugins: [tailwindcss()] } },
   server: { fs: { allow: [repository] } },
-  build: { outDir: "dist", emptyOutDir: true, rollupOptions: { input: { main: root + "index.html", bond: root + "bond.html", resident: root + "resident.html", mind: root + "mind.html" } } },
+  build: { outDir: "dist", emptyOutDir: true, rollupOptions: { input: { main: root + "index.html", resident: root + "resident.html", mind: root + "mind.html" } } },
 });

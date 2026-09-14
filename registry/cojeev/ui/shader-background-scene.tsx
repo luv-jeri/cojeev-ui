@@ -12,7 +12,7 @@ export const sourcePresets={
 // Camera framing changes coverage without increasing the canvas pixel count.
 // Dark sits closer than its source (2.8): at 2.8 the plane's corners cut into
 // wide frames (21:9 and wider) as the waves move, showing a straight edge.
-const sceneOverrides={light:{zoomOut:false,positionY:0,cDistance:1.5,enableTransition:false},dark:{color1:"#606080",color2:"#A394D1",color3:"#20242A",cDistance:2.4}};
+const sceneOverrides={light:{zoomOut:false,positionY:0,cDistance:1.5,enableTransition:false},dark:{color1:"#606080",color2:"#A394D1",color3:"#20242A",cDistance:2.4,grain:"off"}} as const;
 function FramePolicy({moving,mode}:{moving:boolean;mode:string}){
  const setFrameloop=useThree(s=>s.setFrameloop),invalidate=useThree(s=>s.invalidate);
  React.useEffect(()=>{setFrameloop(moving?"always":"demand");invalidate();},[moving,mode,setFrameloop,invalidate]);

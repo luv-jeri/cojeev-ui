@@ -1,332 +1,141 @@
 {
- "ran": "2026-09-14T16:24:01.716Z",
+ "ran": "2026-09-14T18:32:47.515Z",
+ "page": "http://127.0.0.1:4345/ (home page)",
  "suites": {
-  "lifecycle (round 2 suite)": {
-   "passed": 53,
-   "total": 53
+  "lifecycle (round 4 suite: home page, chrome, theme, pause, hidden, replay, drawer, other entries)": {
+   "passed": 21,
+   "total": 21
   },
-  "details (round 3 suite)": {
-   "passed": 45,
-   "total": 45
+  "details (round 3 suite, re-run on the home page after the round 4 changes)": {
+   "passed": 46,
+   "total": 46
   }
  },
  "errors": [],
  "results": [
   {
    "suite": "lifecycle",
-   "name": "renderer is webgl",
+   "name": "home page serves the Bond",
+   "pass": true,
+   "detail": "Cojeev \u2014 Coming together."
+  },
+  {
+   "suite": "lifecycle",
+   "name": "built output has no bond.html and keeps the three entries",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "membrane covers the viewport",
+   "name": "demo switcher marks the Bond as the home entry",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "opens at beat 0 with an empty, editable prompt",
+   "name": "countdown is on the page",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "prompt field shows no focus outline",
+   "name": "launch.json still has no start",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "organisms move while idle",
+   "name": "webgl membrane",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "idle frame time p95 under 34ms",
+   "name": "theme toggle flips the mode and the membrane night palette",
    "pass": true,
-   "detail": "p95=16.8ms"
+   "detail": "light(0) \u2192 dark(.45)"
   },
   {
    "suite": "lifecycle",
-   "name": "free organisms stay off the prompt text",
-   "pass": true,
-   "detail": "covered 0.0% of samples"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "Enter on an empty field types the thought first",
-   "pass": true,
-   "detail": "partial=\"Plan our next \""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "then the bond starts",
+   "name": "dark headline and cue stay readable (light ink on dark)",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "the typed prompt stays in the field during the bond",
+   "name": "Enter on the empty composer types the thought and starts the bond",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "bond frame time p95 under 34ms",
-   "pass": true,
-   "detail": "p95=16.7ms"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "prompt is read-only while bonded",
+   "name": "launch",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "launch opens the conversation panel",
+   "name": "pause holds the story",
+   "pass": true,
+   "detail": "2\u21922"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "resume continues to recall",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "the sent bubble carries the prompt",
+   "name": "hidden page pauses the story",
+   "pass": true,
+   "detail": "3\u21923"
+  },
+  {
+   "suite": "lifecycle",
+   "name": "visible again resumes",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "the field empties into the composer",
+   "name": "settle",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "composer sits at the bottom of the panel",
-   "pass": true,
-   "detail": "{\"inside\":true,\"belowRows\":true}"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "pause freezes the membrane",
+   "name": "replay returns to the rest state",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "pause holds the beat",
-   "pass": true,
-   "detail": "beat 3"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "paused story does not advance",
+   "name": "bottom bar with replay, drawer, theme and pause is on screen",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "resume moves the membrane again",
+   "name": "the what-is-coming drawer opens",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "footer opens at about 40vh",
-   "pass": true,
-   "detail": "height=360"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "open footer freezes the membrane",
+   "name": "drawer closes on Escape",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "Escape closes the footer",
+   "name": "resident.html still loads",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "lifecycle",
-   "name": "story settles at beat 9",
-   "pass": true,
-   "detail": "22.9s"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "every work row appeared during the run",
-   "pass": true,
-   "detail": "row0 | row1 | row2 | row3 | row4 | row5"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "the reply was checked",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "prompt editable again at settle",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "settled arrow is enabled",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "the automation offer is still there at settle",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "Enter at settle relaunches the conversation",
-   "pass": true,
-   "detail": "beat 2"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "the new thought replaces the sent bubble",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "second run recalls the kept memory",
-   "pass": true,
-   "detail": "recalled \u00b7 launch plan v1, changelog"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "replay returns to beat 0",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "organisms move again after replay",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "nothing happens before the idle window",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "after the idle window the page starts typing",
-   "pass": true,
-   "detail": "\"Plan our next launch.\""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "the typed thought is sent by itself",
-   "pass": true,
-   "detail": "beat 1"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "typing cancels the idle auto-start",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: start control bonds",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: no autoplay",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: closed panel is inert",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: no idle auto-advance",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: suggestion is exposed and enabled",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: suggestion is keyboard reachable",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: suggestion acknowledged",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: Next reaches every beat to settle",
-   "pass": true,
-   "detail": "2,3,4,5,6,7,8,9"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "quiet: replay returns to beat 0",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "mobile: no horizontal overflow",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "mobile: no auto focus (keyboard stays down)",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "mobile: tap start control bonds",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "mobile: story settles",
-   "pass": true,
-   "detail": ""
-  },
-  {
-   "suite": "lifecycle",
-   "name": "mobile: every row fits above the composer",
-   "pass": true,
-   "detail": "{\"rowsInside\":true,\"overflow\":true}"
-  },
-  {
-   "suite": "lifecycle",
-   "name": "no page errors",
+   "name": "mind.html still loads",
    "pass": true,
    "detail": ""
   },
@@ -374,9 +183,15 @@
   },
   {
    "suite": "details",
-   "name": "memory cards visible with words",
+   "name": "memory cards visible with words and a kind label",
    "pass": true,
-   "detail": "[[\"team decisions\",\"1.00\",134],[\"last launch notes\",\"0.86\",149],[\"\",\"0.00\",51],[\"\",\"0.00\",51]]"
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\",149],[\"last launch notes\",\"memory\",\"1.00\",162],[\"\",\"memory\",\"0.00\",59],[\"\",\"memory\",\"0.00\",59]]"
+  },
+  {
+   "suite": "details",
+   "name": "memory cards sit far out from the panel, fully on screen",
+   "pass": true,
+   "detail": "{\"gap\":247,\"left\":24}"
   },
   {
    "suite": "details",
@@ -386,7 +201,7 @@
   },
   {
    "suite": "details",
-   "name": "row 1 shows the brain glyph",
+   "name": "row 1 shows the brain glyph and weighted nouns",
    "pass": true,
    "detail": ""
   },
@@ -398,9 +213,9 @@
   },
   {
    "suite": "details",
-   "name": "teammate avatar + subagent bot cards",
+   "name": "teammate initials + subagent bot cards",
    "pass": true,
-   "detail": "[[\"\",\"memory\",\"0.00\"],[\"\",\"memory\",\"0.00\"],[\"a teammate\",\"person\",\"1.00\"],[\"a subagent\",\"agent\",\"0.95\"]]"
+   "detail": "[[\"\",\"memory\",\"0.00\"],[\"\",\"memory\",\"0.00\"],[\"a teammate\",\"teammate\",\"1.00\"],[\"a subagent\",\"subagent\",\"1.00\"]]"
   },
   {
    "suite": "details",
@@ -430,7 +245,7 @@
    "suite": "details",
    "name": "kept card appears outside",
    "pass": true,
-   "detail": "{\"o\":1,\"t\":\"launch plan v1\",\"sub\":\"kept for next time\",\"kind\":\"kept\",\"w\":133,\"r\":{\"x\":209,\"y\":368.2875061035156,\"width\":133.28125,\"height\":36.625,\"top\":368.2875061035156,\"right\":342.28125,\"bottom\":404.9125061035156,\"left\":209}}"
+   "detail": "[\"launch plan v1\",\"kept\",0.998002]"
   },
   {
    "suite": "details",
@@ -454,7 +269,7 @@
    "suite": "details",
    "name": "previous exchange folds above the new bubble",
    "pass": true,
-   "detail": "{\"o\":1,\"text\":\"\u203a Plan our next launch.launch plan v1\",\"top\":350.640625,\"sentTop\":372.640625}"
+   "detail": "{\"o\":1,\"text\":\"\u203a Plan our next launch.launch plan v1\",\"top\":341.640625,\"sentTop\":363.640625}"
   },
   {
    "suite": "details",
@@ -574,7 +389,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",22,7],[\"0.79\",22,16],[\"0.00\",22,-11],[\"0.00\",22,-11]]"
+   "detail": "[[\"1.00\",24,6],[\"1.00\",24,16],[\"0.00\",24,-12],[\"0.00\",24,-12]]"
   },
   {
    "suite": "details",
@@ -592,7 +407,7 @@
    "suite": "details",
    "name": "mobile: rows and fold fit above the composer",
    "pass": true,
-   "detail": "{\"ok\":true,\"bottoms\":[323,357,380,400,420,462,485,513],\"formTop\":521}"
+   "detail": "{\"ok\":true,\"bottoms\":[323,357,381,402,423,465,489,517],\"formTop\":521}"
   },
   {
    "suite": "details",

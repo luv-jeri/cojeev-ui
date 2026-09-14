@@ -25,6 +25,7 @@ function readPalette(element: HTMLElement): MembranePalette {
     tones: [read("--v-pink", "#F5B8DB"), read("--v-olive", "#9AAB63"), read("--v-blue", "#B6CAEB"), read("--v-yellow", "#F5D867")],
     deep: [read("--v-pink-deep", "#E09CC1"), read("--v-olive-deep", "#808F53"), read("--v-blue-deep", "#8BA2C8"), read("--v-yellow-deep", "#E8C84D")],
     paper: read("--v-paper", read("--v-canvas", "#FBF4E6")),
+    ink: read("--membrane-ink", "#1a1620"), dim: Number(read("--membrane-dim", "0")) || 0, glow: Number(read("--membrane-glow", "0")) || 0,
   };
 }
 

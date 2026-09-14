@@ -36,7 +36,14 @@ export const stories:Story[]=[
  {prompt:'Why did the deploy fail?',memories:[{title:'deploy log',sub:'last run',icon:'terminal'},{title:'runbook',sub:'kept two months ago',icon:'list'}],woven:'your instructions, debugging skill',agents:[{title:'an ops teammate',sub:'checks the cluster',initials:'SP'},{title:'a subagent',sub:'reads the trace',icon:'bot'}],kept:{title:'root cause: expired token',sub:'kept for next time',icon:'bookmark'},automation:'Watch deploys for this?',reply:[1,.7,.85]},
 ];
 const storyAt=(run:number)=>stories[run%stories.length];
-const rowsFor=(s:Story)=>[`recalled · ${s.memories[0].title}, ${s.memories[1].title}`,`woven in · ${s.woven}`,`task → ${s.agents[0].title} · notified ${s.agents[1].title}`,`kept · ${s.kept.title}`];
+type Part={t:string;b?:boolean};
+const rowsFor=(s:Story):Part[][]=>[
+ [{t:'recalled · '},{t:s.memories[0].title,b:true},{t:', '},{t:s.memories[1].title,b:true}],
+ [{t:'woven in · '},{t:s.woven,b:true}],
+ [{t:'task → '},{t:s.agents[0].title,b:true},{t:' · notified '},{t:s.agents[1].title,b:true}],
+ [{t:'kept · '},{t:s.kept.title,b:true}],
+];
+const kindOf=(th:Thing|null)=>th?.initials?'teammate':th?.icon==='bot'?'subagent':th?.icon==='bookmark'?'kept':'memory';
 /** Which cards stand outside the panel in a beat: memories on the left, agents on the right, the kept thing back on the left. */
 const thingsFor=(beat:number,s:Story):(Thing|null)[]=>beat===3?[s.memories[0],s.memories[1],null,null]:beat===5?[null,null,s.agents[0],s.agents[1]]:beat===7?[s.kept,null,null,null]:[null,null,null,null];
 const ROW_ICONS=['','brain','sparkles','users','','bookmark',''];
@@ -113,12 +120,13 @@ function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HT
  const rows=Array.from({length:ROWS},(_,i)=>{const el=rowEls[i];return el?{x:pl+el.offsetLeft+10,y:pt+el.offsetTop+el.offsetHeight/2}:{x:pcx,y:pcy};});
  const reply=replyEl?{x:pl+replyEl.offsetLeft,y:pt+replyEl.offsetTop,w:replyEl.offsetWidth,h:replyEl.offsetHeight}:{x:pcx-60,y:pcy,w:120,h:40};
  const left=pcx-phw,right=pcx+phw,top=pcy-phh,bottom=pcy+phh;
- // the cards outside carry text when there is room beside the panel; otherwise only their glyph
+ // the cards outside carry text when there is room beside the panel; otherwise only their glyph.
+ // With room they sit far out near the page edges, so pulling one in crosses real distance.
  const roomy=left>=230*k&&W-right>=230*k;
- const gapL=roomy?96*k:30*k,gapR=roomy?104*k:30*k;
+ const farL=roomy?Math.max(150*k,left-300*k):left-30*k,farR=roomy?Math.min(W-150*k,right+300*k):right+30*k;
  const clampX=(x:number)=>Math.min(W-22*k,Math.max(22*k,x)),clampY=(y:number)=>Math.min(H-22*k,Math.max(22*k,y));
- const M1={x:clampX(left-gapL),y:clampY(top+40*k)},M2={x:clampX(left-gapL+12*k),y:clampY(bottom-72*k)};
- const T1={x:clampX(right+gapR),y:clampY(top+52*k)},T2={x:clampX(right+gapR-14*k),y:clampY(pcy+44*k)};
+ const M1={x:clampX(farL),y:clampY(top+34*k)},M2={x:clampX(farL+16*k),y:clampY(bottom-84*k)};
+ const T1={x:clampX(farR),y:clampY(top+58*k)},T2={x:clampX(farR-16*k),y:clampY(pcy+58*k)};
  return {W,H,k,field:{cx,cy,hw,hh},panel:{cx:pcx,cy:pcy,hw:phw,hh:phh,left,right,top,bottom},composerDy,
   endL,endR,bounds,
   docks:[endL,endR,{x:cx-hw*.35,y:cy-hh+3},{x:cx+hw*.3,y:cy-hh+3},{x:cx-hw*.05,y:cy+hh-3},{x:cx+hw*.5,y:cy+hh-3}],
@@ -130,7 +138,7 @@ function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HT
 const at=(p:Point)=>({px:p.x,py:p.y});
 const zero={hw:0,hh:0,r:0};
 /** A pocket of membrane grown around a card; its centre sits `off` from the card's glyph. */
-const pocket=(size:Size,k:number,anchor:Point)=>({px:anchor.x+size.off,py:anchor.y,hw:size.w/2+9*k,hh:size.h/2+7*k,r:Math.min(size.h/2+7*k,16*k)});
+const pocket=(size:Size,k:number,anchor:Point)=>({px:anchor.x+size.off,py:anchor.y,hw:size.w/2+11*k,hh:size.h/2+9*k,r:Math.min(size.h/2+9*k,18*k)});
 
 /** Beat 0: six free organisms, nothing else. */
 function restPose(w:World,L:Layout,roam:Roam[]){
@@ -177,8 +185,8 @@ const spring=(stiffness:number,damping:number)=>({type:'spring' as const,stiffne
 const lookAt=(w:World,p:Point,t:number,d=.4):AnimationSequence[number]=>[w.gaze,{...at(p),w:1},{duration:d,at:t}];
 const home=(w:World,L:Layout,t:number):AnimationSequence[number]=>[w.gaze,{px:L.panel.cx,py:L.panel.top+40*L.k},{duration:.5,at:t}];
 /** A row rises into place; its glyph pulses when something lands on it. */
-const land=(w:World,L:Layout,i:number,t:number):AnimationSequence=>[[w.rows[i],{dy:8*L.k},{duration:.01,at:0}],[w.rows[i],{o:1,dy:0},{duration:.45,ease:settle,at:t}],...pulse(w,i,t+.05)];
-const pulse=(w:World,i:number,t:number):AnimationSequence=>[[w.rows[i],{p:1},{duration:.12,at:t}],[w.rows[i],{p:0},{duration:.45,at:t+.12}]];
+const land=(w:World,L:Layout,i:number,t:number):AnimationSequence=>[[w.rows[i],{dy:12*L.k},{duration:.01,at:0}],[w.rows[i],{o:1,dy:0},{duration:.5,ease:settle,at:t}],...pulse(w,i,t+.05)];
+const pulse=(w:World,i:number,t:number):AnimationSequence=>[[w.rows[i],{p:1},{duration:.12,at:t}],[w.rows[i],{p:0},{duration:.9,at:t+.12}]];
 /** The lead's eyes: a wider look, a squint, a blink. */
 const widen=(w:World,t:number,d=.7):AnimationSequence=>[[w.eyes[0],{lid:-.2},{duration:.2,at:t}],[w.eyes[0],{lid:0},{duration:.35,at:t+d}]];
 const blink=(w:World,t:number):AnimationSequence=>[[w.eyes[0],{lid:1},{duration:.1,at:t}],[w.eyes[0],{lid:0},{duration:.22,at:t+.12}]];
@@ -247,37 +255,43 @@ function launch(w:World,L:Layout,again:boolean):Beat{
  ]};
 }
 
-/** Beat 3: tendrils reach memory cards outside the panel; each card folds to its glyph and is pulled onto the row. */
+/** Beat 3: a memory surfaces far out; a tendril reaches it, the membrane closes around it, and the whole card is hauled across into the panel. */
 function recall(w:World,L:Layout,sizes:Size[]):Beat{
  const k=L.k,[S0,S1]=w.strands,[K0,K1]=w.K,[n0,n1]=w.nodes,row=L.rows[1];
  const one=(S:Strand,K:Cell,n:Node,size:Size,P:Point,M:Point,t:number):AnimationSequence=>{const pk=pocket(size,k,M);return [
-  [S,{ax:P.x,ay:P.y,bx:P.x,by:P.y,r:9*k,taper:.35,tone:1},{duration:.01,at:t}],
-  [S,{bx:M.x,by:M.y},{duration:.8,ease:out,at:t+.02}],
-  [K,{px:pk.px,py:pk.py,...zero,tone:1,w:1.3,rot:0},{duration:.01,at:t}],
-  [K,{r:pk.r},{duration:.01,at:t+.7}],
-  [K,{hw:pk.hw,hh:pk.hh},{...spring(200,15),at:t+.72}],
-  [n,{...at(M),o:0,s:.6,t:0},{duration:.01,at:t}],
-  [n,{o:1,s:1},{duration:.4,ease:settle,at:t+.85}],
-  [n,{t:1},{duration:.3,at:t+1.0}],
-  ...widen(w,t+.85),
-  lookAt(w,M,t+.5),
-  // pull: the card folds to its glyph and rides the pocket in through the rim
-  // (the words go before the pocket closes, so no ink is ever left outside on a dark page; and two tweens on one key never overlap)
-  [n,{t:0,s:.55},{duration:.2,at:t+2.0}],
-  [K,{px:M.x,hw:9*k,hh:9*k,r:9*k},{duration:.2,at:t+2.0}],
-  [K,{px:row.x,py:row.y},{duration:.85,ease:inOut,at:t+2.2}],
-  [n,{px:row.x,py:row.y},{duration:.85,ease:inOut,at:t+2.2}],
-  [S,{bx:P.x,by:P.y},{duration:.85,ease:inOut,at:t+2.2}],
-  [n,{o:0},{duration:.2,at:t+2.95}],
-  [K,zero,{duration:.3,at:t+3.0}],
-  [S,{r:0},{duration:.2,at:t+3.05}],
+  // something is out there: the card surfaces first, on its own
+  [n,{...at(M),o:0,s:.5,t:1},{duration:.01,at:t}],
+  [n,{o:1,s:1},{...spring(170,13),at:t+.02}],
+  lookAt(w,M,t+.1),
+  // the organism reaches for it: a tendril crosses the gap and the membrane closes around the card
+  [S,{ax:P.x,ay:P.y,bx:P.x,by:P.y,r:9*k,taper:.35,tone:1},{duration:.01,at:t+.3}],
+  [S,{bx:M.x,by:M.y},{duration:.75,ease:out,at:t+.32}],
+  [K,{px:pk.px,py:pk.py,...zero,r:pk.r,tone:1,w:1.3,rot:0},{duration:.01,at:t+1.02}],
+  [K,{hw:pk.hw,hh:pk.hh},{...spring(210,14),at:t+1.05}],
+  [n,{s:1.1},{duration:.14,ease:out,at:t+1.05}],
+  [n,{s:1},{duration:.35,at:t+1.19}],
+  // the pull: card and pocket travel the whole way to the rim while the tendril thickens to haul
+  [S,{r:13*k},{duration:.3,at:t+2.1}],
+  [K,{px:P.x+size.off*.8,py:P.y,hw:pk.hw*.8,hh:pk.hh*.8},{duration:.9,ease:inOut,at:t+2.1}],
+  [n,{px:P.x,py:P.y,s:.8},{duration:.9,ease:inOut,at:t+2.1}],
+  [S,{bx:P.x,by:P.y},{duration:.9,ease:inOut,at:t+2.1}],
+  // swallowed at the rim: the words fold into the glyph, the body pulses, the glyph slides onto its row
+  [n,{t:0,s:.5},{duration:.2,at:t+3.0}],
+  [K,{px:P.x,hw:9*k,hh:9*k,r:9*k},{duration:.2,at:t+3.0}],
+  [S,{r:0},{duration:.2,at:t+3.0}],
+  [w.env,{pulse:1},{duration:.12,at:t+3.0}],
+  [w.env,{pulse:0},{duration:.3,at:t+3.12}],
+  [K,{px:row.x,py:row.y},{duration:.45,ease:inOut,at:t+3.2}],
+  [n,{px:row.x,py:row.y},{duration:.45,ease:inOut,at:t+3.2}],
+  [n,{o:0},{duration:.15,at:t+3.6}],
+  [K,zero,{duration:.25,at:t+3.65}],
  ];};
- return {still:1.9,seq:[
+ return {still:2.0,seq:[
   ...one(S0,K0,n0,sizes[0],L.P1,L.M1,0),
   ...one(S1,K1,n1,sizes[1],L.P2,L.M2,.45),
-  ...land(w,L,1,2.9),
-  ...pulse(w,1,3.4),
-  home(w,L,4.1),
+  ...widen(w,1.05,1.3),
+  ...land(w,L,1,3.5),
+  home(w,L,4.6),
  ]};
 }
 
@@ -295,52 +309,51 @@ function prepare(w:World,L:Layout):Beat{
   ...bud(K0,L.panel.cx-L.panel.hw*.3,Math.max(44,58*k),0),
   ...bud(K1,L.panel.cx+L.panel.hw*.2,Math.max(52,70*k),.75),
   ...land(w,L,2,1.55),
-  ...pulse(w,2,2.3),
   home(w,L,2.8),
  ]};
 }
 
-/** Beat 5: the task travels out to a teammate and a subagent; context comes back. The right head wakes to watch. */
+/** Beat 5: a teammate and a subagent wait far out on the right; tendrils reach them, the task itself travels the whole way, and context comes back. The right head wakes to watch. */
 function reach(w:World,L:Layout,sizes:Size[]):Beat{
  const k=L.k,[S0,S1]=w.strands,[K0,K1,K2]=w.K,[U0,U1]=w.U,[,,n2,n3]=w.nodes,row=L.rows[3];
  const one=(S:Strand,U:Cell,K:Cell,n:Node,size:Size,Q:Point,T:Point,t:number):AnimationSequence=>{const pk=pocket(size,k,T);return [
-  [S,{ax:Q.x,ay:Q.y,bx:Q.x,by:Q.y,r:8*k,taper:.3,tone:2},{duration:.01,at:t}],
-  [S,{bx:T.x,by:T.y},{duration:.75,ease:out,at:t+.02}],
-  [U,{px:pk.px,py:pk.py,...zero,tone:2,rot:0},{duration:.01,at:t}],
-  [U,{r:pk.r},{duration:.01,at:t+.68}],
-  [U,{hw:pk.hw,hh:pk.hh},{...spring(240,15),at:t+.7}],
-  [n,{...at(T),o:0,s:.6,t:0},{duration:.01,at:t}],
-  [n,{o:1,s:1},{duration:.4,ease:settle,at:t+.85}],
-  [n,{t:1},{duration:.3,at:t+1.0}],
-  lookAt(w,T,t+.5),
-  // a packet of the task leaves the work row, crosses the rim and is received
-  [K,{px:row.x,py:row.y,hw:5*k,hh:5*k,r:5*k,tone:0,w:1.4},{duration:.01,at:t+.9}],
-  [K,at(Q),{duration:.4,ease:inOut,at:t+.95}],
-  [K,at(T),{duration:.6,ease:inOut,at:t+1.35}],
-  [K,zero,{duration:.15,at:t+1.95}],
-  [n,{s:1.12},{duration:.15,ease:out,at:t+1.9}],
-  [n,{s:1},{duration:.35,at:t+2.05}],
-  // release
-  [n,{t:0},{duration:.25,at:t+2.7}],
-  [n,{o:0,s:.7},{duration:.35,at:t+2.85}],
-  [S,{bx:Q.x,by:Q.y,taper:.9},{duration:.55,ease:inOut,at:t+2.8}],
-  [U,zero,{duration:.45,at:t+2.85}],
-  [S,{r:0},{duration:.2,at:t+3.3}],
+  [n,{...at(T),o:0,s:.5,t:1},{duration:.01,at:t}],
+  [n,{o:1,s:1},{...spring(170,13),at:t+.02}],
+  lookAt(w,T,t+.1),
+  [S,{ax:Q.x,ay:Q.y,bx:Q.x,by:Q.y,r:8*k,taper:.3,tone:2},{duration:.01,at:t+.3}],
+  [S,{bx:T.x,by:T.y},{duration:.75,ease:out,at:t+.32}],
+  [U,{px:pk.px,py:pk.py,...zero,r:pk.r,tone:2,rot:0},{duration:.01,at:t+1.02}],
+  [U,{hw:pk.hw,hh:pk.hh},{...spring(240,15),at:t+1.05}],
+  [n,{s:1.08},{duration:.14,ease:out,at:t+1.05}],
+  [n,{s:1},{duration:.3,at:t+1.19}],
+  // the task leaves its row, crosses the rim and rides the whole tendril to be received
+  [K,{px:row.x,py:row.y,hw:7*k,hh:7*k,r:7*k,tone:0,w:1.4},{duration:.01,at:t+1.2}],
+  [K,at(Q),{duration:.45,ease:inOut,at:t+1.25}],
+  [K,at(T),{duration:.8,ease:inOut,at:t+1.7}],
+  [K,zero,{duration:.15,at:t+2.5}],
+  [n,{s:1.2},{duration:.15,ease:out,at:t+2.45}],
+  [n,{s:1},{duration:.4,at:t+2.6}],
+  // release: the card lets go and the tendril returns
+  [n,{t:0},{duration:.25,at:t+3.3}],
+  [n,{o:0,s:.7},{duration:.35,at:t+3.4}],
+  [S,{bx:Q.x,by:Q.y,taper:.9},{duration:.55,ease:inOut,at:t+3.45}],
+  [U,zero,{duration:.45,at:t+3.5}],
+  [S,{r:0},{duration:.2,at:t+3.95}],
  ];};
- return {still:1.8,seq:[
+ return {still:2.0,seq:[
   ...one(S0,U0,K0,n2,sizes[2],L.Q1,L.T1,0),
   ...one(S1,U1,K1,n3,sizes[3],L.Q2,L.T2,.45),
   ...land(w,L,3,.8),
   [w.eyes[1],{o:1,lid:0},{duration:.35,at:.5}],
-  [w.eyes[1],{lid:1},{duration:.3,at:3.3}],
-  [w.eyes[1],{o:0},{duration:.3,at:3.6}],
-  // the teammate sends context back
-  [K2,{...at(L.T1),hw:5*k,hh:5*k,r:5*k,tone:2,w:1.4},{duration:.01,at:2.2}],
-  [K2,at(L.Q1),{duration:.5,ease:inOut,at:2.25}],
-  [K2,{px:row.x,py:row.y},{duration:.4,ease:inOut,at:2.75}],
-  [K2,zero,{duration:.2,at:3.15}],
-  ...pulse(w,3,3.1),
-  home(w,L,3.7),
+  [w.eyes[1],{lid:1},{duration:.3,at:3.9}],
+  [w.eyes[1],{o:0},{duration:.3,at:4.2}],
+  // the teammate sends context back the same way
+  [K2,{...at(L.T1),hw:6*k,hh:6*k,r:6*k,tone:2,w:1.4},{duration:.01,at:2.7}],
+  [K2,at(L.Q1),{duration:.6,ease:inOut,at:2.75}],
+  [K2,{px:row.x,py:row.y},{duration:.4,ease:inOut,at:3.35}],
+  [K2,zero,{duration:.2,at:3.75}],
+  ...pulse(w,3,3.7),
+  home(w,L,4.3),
  ]};
 }
 
@@ -368,33 +381,35 @@ function check(w:World,L:Layout,story:Story):Beat{
  ]};
 }
 
-/** Beat 7: one line of the reply is worth keeping; it becomes a card and goes out to memory. */
+/** Beat 7: one line of the reply is worth keeping; it is carried all the way out to where the memories live, becomes a card, and is stored. */
 function keep(w:World,L:Layout,sizes:Size[]):Beat{
- const k=L.k,[,S1]=w.strands,[K0]=w.K,[n0]=w.nodes,R=L.reply,row=L.rows[5],M={x:L.M1.x+8*k,y:L.M1.y+10*k},pk=pocket(sizes[0],k,M);
- return {still:3.25,seq:[
+ const k=L.k,[,S1]=w.strands,[K0]=w.K,[n0]=w.nodes,R=L.reply,row=L.rows[5],M={x:L.M1.x+10*k,y:L.M1.y+24*k},pk=pocket(sizes[0],k,M);
+ return {still:3.4,seq:[
   [K0,{px:R.x+R.w*.4,py:R.y+R.h*.55,...zero,tone:1,w:1.5,rot:0},{duration:.01,at:0}],
-  [K0,{hw:7*k,hh:7*k,r:7*k},{duration:.2,at:.1}],
+  [K0,{hw:8*k,hh:8*k,r:8*k},{duration:.2,at:.1}],
   lookAt(w,{x:R.x+R.w*.4,y:R.y+R.h*.55},0,.3),
   [K0,{px:row.x,py:row.y},{duration:.7,ease:inOut,at:.4}],
   ...land(w,L,5,.9),
   [K0,at(L.P1),{duration:.5,ease:inOut,at:1.3}],
-  [S1,{ax:L.P1.x,ay:L.P1.y,bx:L.P1.x,by:L.P1.y,r:8*k,taper:.3,tone:1},{duration:.01,at:1.4}],
-  [S1,{bx:M.x,by:M.y},{duration:.7,ease:out,at:1.45}],
-  [K0,at(M),{duration:.7,ease:out,at:1.75}],
-  lookAt(w,M,1.8),
+  // carried out along a tendril to where the memories live
+  [S1,{ax:L.P1.x,ay:L.P1.y,bx:L.P1.x,by:L.P1.y,r:9*k,taper:.3,tone:1},{duration:.01,at:1.4}],
+  [S1,{bx:M.x,by:M.y},{duration:.85,ease:out,at:1.45}],
+  [K0,at(M),{duration:.85,ease:out,at:1.8}],
+  lookAt(w,M,1.9),
   // the pocket opens around the card only after the travel above has ended (no overlapping tweens on px)
-  [K0,{px:pk.px,hw:pk.hw,hh:pk.hh,r:pk.r},{...spring(200,15),at:2.5}],
-  [n0,{...at(M),o:0,s:.6,t:0},{duration:.01,at:0}],
-  [n0,{o:1,s:1},{duration:.4,ease:settle,at:2.6}],
-  [n0,{t:1},{duration:.3,at:2.75}],
-  ...blink(w,3.0),
-  [S1,{bx:L.P1.x,by:L.P1.y,taper:.95},{duration:.5,ease:inOut,at:3.3}],
-  [S1,{r:0},{duration:.2,at:3.75}],
-  [n0,{t:0},{duration:.25,at:3.7}],
-  [n0,{py:M.y-22*k,o:0,s:.8},{duration:.5,ease:out,at:3.8}],
-  [K0,{py:M.y-22*k},{duration:.8,ease:out,at:3.7}],
-  [K0,zero,{duration:.6,at:3.9}],
-  home(w,L,4.0),
+  [K0,{px:pk.px,hw:pk.hw,hh:pk.hh,r:pk.r},{...spring(200,15),at:2.7}],
+  [n0,{...at(M),o:0,s:.5,t:0},{duration:.01,at:0}],
+  [n0,{o:1,s:1},{...spring(170,13),at:2.75}],
+  [n0,{t:1},{duration:.3,at:2.9}],
+  ...blink(w,3.2),
+  [S1,{bx:L.P1.x,by:L.P1.y,taper:.95},{duration:.5,ease:inOut,at:3.6}],
+  [S1,{r:0},{duration:.2,at:4.05}],
+  // stored: it drifts up and away, kept
+  [n0,{t:0},{duration:.25,at:4.1}],
+  [n0,{py:M.y-60*k,o:0,s:.7},{duration:.9,ease:out,at:4.2}],
+  [K0,{py:M.y-60*k},{duration:1.0,ease:out,at:4.1}],
+  [K0,{hw:0,hh:0},{duration:.7,at:4.4}],
+  home(w,L,4.4),
  ]};
 }
 
@@ -522,7 +537,7 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;el.style.transform=`translate(${n.px.toFixed(1)}px,${n.py.toFixed(1)}px) translate(${-(el.dataset.gx??0)}px,-50%) scale(${n.s.toFixed(3)})`;el.style.opacity=String(n.o);el.style.setProperty('--t',n.t.toFixed(3));});
   if(state.current.beat===2&&w.rows[0].o>.05&&state.current.prompt)setPrompt('');
   if(pending.current&&w.rows[0].o<.05){setSent(pending.current);pending.current=null;}
-  w.rows.forEach((r,i)=>{const el=rowRefs.current[i];if(!el)return;el.style.opacity=String(r.o);el.style.transform=`translateY(${r.dy.toFixed(1)}px)`;el.style.setProperty('--p',r.p.toFixed(3));const hidden=r.o<.5;if(el.inert!==hidden){el.inert=hidden;el.setAttribute('aria-hidden',hidden?'true':'false');}});
+  w.rows.forEach((r,i)=>{const el=rowRefs.current[i];if(!el)return;el.style.opacity=String(r.o);el.style.setProperty('--dy',`${r.dy.toFixed(1)}px`);el.style.setProperty('--p',r.p.toFixed(3));const hidden=r.o<.5;if(el.inert!==hidden){el.inert=hidden;el.setAttribute('aria-hidden',hidden?'true':'false');}});
   if(foldEl.current){foldEl.current.style.opacity=String(w.fold.o);foldEl.current.style.transform=`translateY(${w.fold.dy.toFixed(1)}px)`;}
   if(reply.current){const el=reply.current;el.style.setProperty('--la',String(w.lines.a));el.style.setProperty('--lb',String(w.lines.b));el.style.setProperty('--lc',String(w.lines.c));el.style.setProperty('--check',String(w.lines.check));el.style.setProperty('--typing',String(w.lines.typing));const on=w.lines.check>.5;if(on!==checkRef.current){checkRef.current=on;setCheckOn(on);}}
   if(form.current){const dy=w.env.panel*L.composerDy;formDy.current=dy;form.current.style.transform=`translateY(${dy.toFixed(1)}px)`;}
@@ -643,9 +658,9 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   <Membrane ref={membrane} className="prompt-membrane" onMeasure={relayout}/>
   <div className="stage-layer" aria-hidden="true">
    {RADII.map((_,i)=><span key={i} className="eyes" data-small={i>1} ref={el=>{eyeRefs.current[i]=el;}}><i/><i/></span>)}
-   {things.map((th,i)=><span key={i} ref={el=>{nodeRefs.current[i]=el;}} className="thing" data-side={i<2?'left':'right'} data-kind={th?.initials?'person':th?.icon==='bot'?'agent':th?.icon==='bookmark'?'kept':'memory'}>
+   {things.map((th,i)=><span key={i} ref={el=>{nodeRefs.current[i]=el;}} className="thing" data-side={i<2?'left':'right'} data-kind={kindOf(th)}>
     <span className="thing-glyph">{th?.initials?th.initials:<AnimatedIcon name={th?.icon??'brain'} size="sm"/>}</span>
-    <span className="thing-text"><b>{th?.title??''}</b><small>{th?.sub??''}</small></span>
+    <span className="thing-text"><em className="thing-kind">{th?kindOf(th):''}</em><b>{th?.title??''}</b><small>{th?.sub??''}</small></span>
    </span>)}
   </div>
   <div className="prompt-title"><span className="prompt-eyebrow">THE BOND</span><h1>Every prompt.<br/>A little more alive.</h1></div>
@@ -655,11 +670,11 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
     {lastFold&&<div className="chat-fold" ref={foldEl}><span className="chat-fold-prompt">› {lastFold.prompt}</span>{lastFold.kept&&<span className="chat-fold-kept"><AnimatedIcon name="bookmark" size="sm"/>{lastFold.kept}</span>}{folds.length>1&&<span className="chat-fold-more">+{folds.length-1} earlier</span>}</div>}
     <div className="chat-sent" ref={el=>{rowRefs.current[0]=el;}}><BubbleContent variant="me" className="chat-bubble chat-bubble-me">{sent}</BubbleContent></div>
     <ul className="chat-work">
-     {[1,2,3].map(i=><li key={i} className="chat-row" data-tone={['memory','prepare','reach'][i-1]} ref={el=>{rowRefs.current[i]=el;}}><span className="chat-row-glyph"><AnimatedIcon name={ROW_ICONS[i]} size="sm"/></span><span>{rows[i-1]}</span></li>)}
+     {[1,2,3].map(i=><li key={i} className="chat-row" data-tone={['memory','prepare','reach'][i-1]} ref={el=>{rowRefs.current[i]=el;}}><span className="chat-row-glyph"><AnimatedIcon name={ROW_ICONS[i]} size="sm"/></span><span className="chat-row-text">{rows[i-1].map((p,j)=>p.b?<b key={j}>{p.t}</b>:<React.Fragment key={j}>{p.t}</React.Fragment>)}</span></li>)}
     </ul>
     <div className="chat-reply" ref={el=>{rowRefs.current[4]=el;}}><span className="chat-glyph" aria-hidden="true"/><div className="chat-bubble chat-bubble-reply" ref={reply}><span className="chat-typing" aria-hidden="true"><i/><i/><i/></span><i className="chat-line"/><i className="chat-line"/><i className="chat-line"/><span className="response-check"><AnimatedIcon name="check" preset="draw" active={checkOn} size="sm"/></span></div></div>
     <ul className="chat-work">
-     <li className="chat-row" data-tone="memory" ref={el=>{rowRefs.current[5]=el;}}><span className="chat-row-glyph"><AnimatedIcon name="bookmark" size="sm"/></span><span>{rows[3]}</span></li>
+     <li className="chat-row" data-tone="memory" ref={el=>{rowRefs.current[5]=el;}}><span className="chat-row-glyph"><AnimatedIcon name="bookmark" size="sm"/></span><span className="chat-row-text">{rows[3].map((p,j)=>p.b?<b key={j}>{p.t}</b>:<React.Fragment key={j}>{p.t}</React.Fragment>)}</span></li>
      <li className="chat-row chat-row-action" data-tone="automation" ref={el=>{rowRefs.current[6]=el;}}><Button variant="ghost" className="bud-button" onClick={acceptSuggestion} disabled={noted}><AnimatedIcon name={noted?'check':'workflow'} size="sm" active={noted}/>{noted?'Automation saved':story.automation}</Button></li>
     </ul>
    </div>
