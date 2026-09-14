@@ -81,6 +81,7 @@
 .thing[data-kind=subagent]{--kind:color-mix(in srgb,var(--v-blue-deep,#8BA2C8) 55%,var(--v-ink));--fill:color-mix(in srgb,var(--v-blue,#B7C7E6) 70%,var(--v-ink))}
 .thing[data-kind=report]{--kind:var(--v-yellow-deep,#E8C84D);--fill:var(--v-yellow,#F3E39A)}
 .thing[data-kind=skill]{--kind:color-mix(in srgb,var(--v-olive-deep,#808F53) 50%,var(--v-yellow-deep,#E8C84D));--fill:color-mix(in srgb,var(--v-olive,#B9C48E) 50%,var(--v-yellow,#F3E39A))}
+.thing[data-kind=file]{--kind:var(--v-pink-deep,#E09CC1);--fill:var(--v-pink,#F4C6DC)}
 .thing-shape{position:relative;flex:none;display:grid;place-items:center;width:48px;height:46px;color:var(--v-ink);background:color-mix(in srgb,var(--fill) 78%,var(--note));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--kind) 70%,transparent),inset 0 -6px 12px -8px color-mix(in srgb,var(--kind) 60%,transparent),0 10px 24px -12px #0006;border-radius:46% 54% 52% 48%/56% 44% 56% 44%;animation:blob 9s ease-in-out infinite;animation-delay:calc(var(--i,0) * -1.15s)}
 .thing-shape svg.v-icon{width:19px;height:19px;stroke-width:1.9}
 .thing[data-kind=teammate] .thing-shape{width:46px;height:46px;color:var(--v-on-accent,#1a1620);font:700 12px/1 var(--font-display);letter-spacing:.02em;animation-duration:11s}
@@ -88,6 +89,8 @@
 .thing[data-kind=subagent] .thing-shape{width:58px;height:42px;color:#F6EFE2;animation-duration:7s}
 .thing[data-kind=subagent] .thing-shape::after{content:"";position:absolute;inset:-4px;border-radius:inherit;border:2px solid transparent;border-top-color:var(--kind);border-right-color:color-mix(in srgb,var(--kind) 35%,transparent);opacity:var(--busy,0);animation:spin .9s linear infinite}
 .thing[data-kind=report] .thing-shape{width:44px;height:50px;animation-duration:10s}
+.thing[data-kind=file] .thing-shape{width:42px;height:50px;border-radius:44% 56% 48% 52%/52% 48% 52% 48%;animation-duration:8.5s}
+.thing[data-kind=skill] .thing-shape{width:50px;height:44px;animation-duration:6.5s}
 .thing-ring{position:absolute;inset:-8px;border-radius:inherit;border:2px solid var(--kind);opacity:calc((1 - var(--rip,1)) * .9);transform:scale(calc(1 + var(--rip,1) * .9));pointer-events:none}
 .thing-flash{position:absolute;inset:0;border-radius:inherit;background:#fff;opacity:calc(var(--flash,0) * .65);pointer-events:none}
 .thing-busy{position:absolute;left:50%;bottom:-13px;translate:-50% 0;display:none;gap:3px;opacity:var(--busy,0)}.thing[data-kind=teammate] .thing-busy{display:flex}.thing-busy i{width:4px;height:4px;border-radius:50%;background:var(--kind);animation:typing 1s ease-in-out infinite}.thing-busy i:nth-child(2){animation-delay:.15s}.thing-busy i:nth-child(3){animation-delay:.3s}
@@ -95,7 +98,7 @@
 .thing-label em{display:flex;align-items:center;gap:5px;font:700 9px/1 var(--font-text);font-style:normal;letter-spacing:.16em;text-transform:uppercase;color:var(--v-text-2)}.thing-label em::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--kind)}
 .thing-label small{font-size:10.5px;font-weight:500;color:var(--v-text-2)}
 .thing[data-side=left] .thing-label{align-items:flex-end;text-align:right;transform:translateX(calc((var(--t,1) - 1) * 6px))}.thing[data-side=left] .thing-label em{flex-direction:row-reverse}
-.prompt-story[data-compact=true] .thing{gap:0}.prompt-story[data-compact=true] .thing-label{display:none}.prompt-story[data-compact=true] .thing-shape{width:32px;height:31px}.prompt-story[data-compact=true] .thing[data-kind=teammate] .thing-shape{width:31px;height:31px;font-size:9px}.prompt-story[data-compact=true] .thing[data-kind=subagent] .thing-shape{width:38px;height:28px}.prompt-story[data-compact=true] .thing[data-kind=report] .thing-shape{width:30px;height:34px}.prompt-story[data-compact=true] .thing-shape svg.v-icon{width:14px;height:14px}.prompt-story[data-compact=true] .thing[data-kind=teammate] .thing-shape::before{width:7px;height:7px}
+.prompt-story[data-compact=true] .thing{gap:0}.prompt-story[data-compact=true] .thing-label{display:none}.prompt-story[data-compact=true] .thing-shape{width:32px;height:31px}.prompt-story[data-compact=true] .thing[data-kind=teammate] .thing-shape{width:31px;height:31px;font-size:9px}.prompt-story[data-compact=true] .thing[data-kind=subagent] .thing-shape{width:38px;height:28px}.prompt-story[data-compact=true] .thing[data-kind=report] .thing-shape{width:30px;height:34px}.prompt-story[data-compact=true] .thing[data-kind=file] .thing-shape{width:28px;height:34px}.prompt-story[data-compact=true] .thing[data-kind=skill] .thing-shape{width:34px;height:30px}.prompt-story[data-compact=true] .thing-shape svg.v-icon{width:14px;height:14px}.prompt-story[data-compact=true] .thing[data-kind=teammate] .thing-shape::before{width:7px;height:7px}
 
 /* Cue, thoughts to pick, invitation, progress and manual stepping. */
 .prompt-caption{text-align:center;min-height:80px;position:relative;z-index:5}.prompt-caption>p{margin:0 18px 12px;font-size:13px;line-height:1.5;color:var(--v-text-2)}.prompt-story[data-beat="1"] .prompt-caption>p{animation:cue-late 2.4s both}

@@ -1,5 +1,5 @@
 {
- "ran": "2026-09-14T20:52:36.120Z",
+ "ran": "2026-09-14T21:29:14.821Z",
  "page": "http://127.0.0.1:4345/ (home page)",
  "suites": [
   "lifecycle (round 4 suite, round-6 chrome: home page, wordmark + Coming soon, countdown eyebrow, theme, pause, hidden, replay, tray, other entries)",
@@ -179,13 +179,13 @@
    "suite": "details",
    "name": "memory things visible with a title, a name and a note",
    "pass": true,
-   "detail": "[[\"team decisions\",\"memory\",\"1.00\",159],[\"Mira\",\"teammate\",\"1.00\",147],[\"last launch notes\",\"memory\",\"1.00\",171],[\"changelog\",\"memory\",\"1.00\",127],[\"date checker\",\"subagent\",\"1.00\",156],[\"\",\"memory\",\"0.00\",0],[\"Arun\",\"teammate\",\"1.00\",158],[\"this week’s threads\",\"memory\",\"1.00\",186],[\"deploy log\",\"memory\",\"1.00\",126],[\"board reader\",\"subagent\",\"1.00\",155],[\"runbook\",\"memory\",\"1.00\",165],[\"\",\"memory\",\"0.00\",0]]"
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\",159],[\"Mira\",\"teammate\",\"1.00\",147],[\"last launch notes\",\"memory\",\"1.00\",171],[\"instructions.md\",\"file\",\"1.00\",177],[\"changelog\",\"memory\",\"1.00\",127],[\"date checker\",\"subagent\",\"1.00\",156],[\"launch skill\",\"skill\",\"1.00\",135],[\"this week’s threads\",\"memory\",\"1.00\",186],[\"style guide\",\"file\",\"1.00\",132],[\"Arun\",\"teammate\",\"1.00\",158],[\"deploy log\",\"memory\",\"1.00\",126],[\"board reader\",\"subagent\",\"1.00\",155],[\"runbook\",\"memory\",\"1.00\",165],[\"summary skill\",\"skill\",\"1.00\",152],[\"Jules\",\"teammate\",\"1.00\",149],[\"trace reader\",\"subagent\",\"1.00\",151],[\"\",\"memory\",\"0.00\",0],[\"\",\"memory\",\"0.00\",0]]"
   },
   {
    "suite": "details",
-   "name": "memory things float far out from the panel, fully on screen",
+   "name": "memory things float outside the panel, fully on screen",
    "pass": true,
-   "detail": "{\"gap\":166,\"left\":102}"
+   "detail": "{\"gap\":171,\"left\":97}"
   },
   {
    "suite": "details",
@@ -209,7 +209,7 @@
    "suite": "details",
    "name": "teammate and subagent blobs float in the environment",
    "pass": true,
-   "detail": "[[\"team decisions\",\"memory\",\"1.00\"],[\"Mira\",\"teammate\",\"1.00\"],[\"last launch notes\",\"memory\",\"1.00\"],[\"changelog\",\"memory\",\"1.00\"],[\"date checker\",\"subagent\",\"1.00\"],[\"\",\"memory\",\"0.00\"],[\"Arun\",\"teammate\",\"1.00\"],[\"this week’s threads\",\"memory\",\"1.00\"],[\"deploy log\",\"memory\",\"1.00\"],[\"board reader\",\"subagent\",\"1.00\"],[\"runbook\",\"memory\",\"1.00\"],[\"\",\"memory\",\"0.00\"]]"
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\"],[\"Mira\",\"teammate\",\"1.00\"],[\"last launch notes\",\"memory\",\"1.00\"],[\"instructions.md\",\"file\",\"1.00\"],[\"changelog\",\"memory\",\"1.00\"],[\"date checker\",\"subagent\",\"1.00\"],[\"launch skill\",\"skill\",\"1.00\"],[\"this week’s threads\",\"memory\",\"1.00\"],[\"style guide\",\"file\",\"1.00\"],[\"Arun\",\"teammate\",\"1.00\"],[\"deploy log\",\"memory\",\"1.00\"],[\"board reader\",\"subagent\",\"1.00\"],[\"runbook\",\"memory\",\"1.00\"],[\"summary skill\",\"skill\",\"1.00\"],[\"Jules\",\"teammate\",\"1.00\"],[\"trace reader\",\"subagent\",\"1.00\"],[\"\",\"memory\",\"0.00\"],[\"\",\"memory\",\"0.00\"]]"
   },
   {
    "suite": "details",
@@ -239,7 +239,7 @@
    "suite": "details",
    "name": "the kept memory and the report are placed in the environment and float",
    "pass": true,
-   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.986312]"
+   "detail": "[\"launch plan v1\",\"memory\",0.999449,\"Launch timeline\",\"report\",0.974846]"
   },
   {
    "suite": "details",
@@ -281,7 +281,7 @@
    "suite": "details",
    "name": "second story recalls what was kept, from where it floats",
    "pass": true,
-   "detail": "[[\"diff collector\",\"1.00\"],[\"Mira\",\"1.00\"],[\"last launch notes\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"Arun\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"Launch timeline\",\"1.00\"]]"
+   "detail": "[[\"voice notes\",\"1.00\"],[\"release-notes skill\",\"1.00\"],[\"diff collector\",\"1.00\"],[\"instructions.md\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch skill\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"style guide\",\"1.00\"],[\"Arun\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"summary skill\",\"1.00\"],[\"Jules\",\"1.00\"],[\"trace reader\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"Launch timeline\",\"1.00\"]]"
   },
   {
    "suite": "details",
@@ -347,13 +347,13 @@
    "suite": "details",
    "name": "quiet: memory cards readable at the still",
    "pass": true,
-   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"changelog\",1],[\"date checker\",1],[\"\",0],[\"Arun\",1],[\"this week’s threads\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"\",0]]"
+   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"instructions.md\",1],[\"changelog\",1],[\"date checker\",1],[\"launch skill\",1],[\"this week’s threads\",1],[\"style guide\",1],[\"Arun\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"summary skill\",1],[\"Jules\",1],[\"trace reader\",1],[\"\",0],[\"\",0]]"
   },
   {
    "suite": "details",
    "name": "quiet: agent blobs readable at the still",
    "pass": true,
-   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"changelog\",1],[\"date checker\",1],[\"\",0],[\"Arun\",1],[\"this week’s threads\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"\",0]]"
+   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"instructions.md\",1],[\"changelog\",1],[\"date checker\",1],[\"launch skill\",1],[\"this week’s threads\",1],[\"style guide\",1],[\"Arun\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"summary skill\",1],[\"Jules\",1],[\"trace reader\",1],[\"\",0],[\"\",0]]"
   },
   {
    "suite": "details",
@@ -383,7 +383,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",32,5],[\"1.00\",31,12],[\"1.00\",32,3],[\"1.00\",32,16],[\"1.00\",38,-3],[\"0.00\",0,0],[\"1.00\",31,338],[\"1.00\",32,361],[\"1.00\",32,350],[\"1.00\",38,360],[\"1.00\",32,338],[\"0.00\",0,0]]"
+   "detail": "[[\"1.00\",32,11],[\"1.00\",31,348],[\"1.00\",32,9],[\"1.00\",28,355],[\"1.00\",32,8],[\"1.00\",38,341],[\"1.00\",34,343],[\"1.00\",32,11],[\"1.00\",28,18],[\"1.00\",31,353],[\"1.00\",32,7],[\"1.00\",38,343],[\"1.00\",32,350],[\"1.00\",34,10],[\"1.00\",31,347],[\"1.00\",38,0],[\"0.00\",0,0],[\"0.00\",0,0]]"
   },
   {
    "suite": "details",
@@ -423,9 +423,9 @@
   },
   {
    "suite": "details",
-   "name": "light: ten titled blobs float at rest (memories, teammates, subagents), all on screen, all shape-shifting",
+   "name": "light: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",62,222,\"blob\"],[\"teammate\",107,256,\"blob\"],[\"memory\",49,222,\"blob\"],[\"memory\",93,221,\"blob\"],[\"subagent\",57,215,\"blob\"],[\"teammate\",1213,1371,\"blob\"],[\"memory\",1212,1400,\"blob\"],[\"memory\",1179,1307,\"blob\"],[\"subagent\",1221,1375,\"blob\"],[\"memory\",1216,1384,\"blob\"]]"
+   "detail": "[[\"memory\",56,216,\"blob\"],[\"teammate\",1191,1341,\"blob\"],[\"memory\",135,308,\"blob\"],[\"file\",1175,1353,\"blob\"],[\"memory\",208,337,\"blob\"],[\"subagent\",1230,1387,\"blob\"],[\"skill\",1160,1295,\"blob\"],[\"memory\",45,233,\"blob\"],[\"file\",192,327,\"blob\"],[\"teammate\",1159,1318,\"blob\"],[\"memory\",1237,1365,\"blob\"],[\"subagent\",190,346,\"blob\"],[\"memory\",90,256,\"blob\"],[\"skill\",1186,1340,\"blob\"],[\"teammate\",195,347,\"blob\"],[\"subagent\",1084,1236,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -443,7 +443,7 @@
    "suite": "details",
    "name": "the picked thought plays its own story: the memory it needs surfaces at launch",
    "pass": true,
-   "detail": "[\"team decisions\",\"Mira\",\"last launch notes\",\"changelog\",\"date checker\",\"launch plan v1\",\"Arun\",\"this week’s threads\",\"deploy log\",\"board reader\",\"runbook\",\"diff collector\"]"
+   "detail": "[\"release-notes skill\",\"diff collector\",\"last launch notes\",\"instructions.md\",\"changelog\",\"date checker\",\"launch skill\",\"this week’s threads\",\"style guide\",\"Arun\",\"deploy log\",\"board reader\",\"runbook\",\"summary skill\",\"Jules\",\"trace reader\",\"launch plan v1\",\"voice notes\"]"
   },
   {
    "suite": "details",
@@ -455,7 +455,7 @@
    "suite": "details",
    "name": "nothing is eaten: both memories float on after recall",
    "pass": true,
-   "detail": "[[\"team decisions\",\"1.00\"],[\"Mira\",\"1.00\"],[\"last launch notes\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"Arun\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"diff collector\",\"1.00\"]]"
+   "detail": "[[\"release-notes skill\",\"1.00\"],[\"diff collector\",\"1.00\"],[\"last launch notes\",\"1.00\"],[\"instructions.md\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch skill\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"style guide\",\"1.00\"],[\"Arun\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"summary skill\",\"1.00\"],[\"Jules\",\"1.00\"],[\"trace reader\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"voice notes\",\"1.00\"]]"
   },
   {
    "suite": "details",
@@ -465,9 +465,27 @@
   },
   {
    "suite": "details",
+   "name": "the file and the skill are held close against the body, labels folded",
+   "pass": true,
+   "detail": "[[\"release-notes skill\",\"skill\",28,0],[\"voice notes\",\"file\",28,0]]"
+  },
+  {
+   "suite": "details",
+   "name": "the woven line names the file and the skill",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
    "name": "the teammate gets busy when the task arrives, where it floats",
    "pass": true,
    "detail": "[[\"Arun\",1]]"
+  },
+  {
+   "suite": "details",
+   "name": "the subagent informs the other subagents, which light up and get busy for a moment",
+   "pass": true,
+   "detail": "[\"date checker\",\"board reader\",\"trace reader\"]"
   },
   {
    "suite": "details",
@@ -495,6 +513,12 @@
   },
   {
    "suite": "details",
+   "name": "at the settle the held file and skill are let go and float again with their labels",
+   "pass": true,
+   "detail": "[[\"release-notes skill\",1,1],[\"voice notes\",1,1]]"
+  },
+  {
+   "suite": "details",
    "name": "one next thought is offered at the settle",
    "pass": true,
    "detail": ""
@@ -503,7 +527,7 @@
    "suite": "details",
    "name": "the next thought grabs the kept memory from where it floats, plus a memory that was there all along",
    "pass": true,
-   "detail": "[[\"release notes v1\",\"1.00\",0],[\"Release notes draft\",\"1.00\",1],[\"Jules\",\"1.00\",1],[\"changelog\",\"1.00\",1],[\"date checker\",\"1.00\",1],[\"launch plan v1\",\"1.00\",1],[\"Arun\",\"1.00\",1],[\"this week’s threads\",\"1.00\",0],[\"deploy log\",\"1.00\",1],[\"board reader\",\"1.00\",1],[\"runbook\",\"1.00\",1],[\"diff collector\",\"1.00\",1]]"
+   "detail": "[[\"release-notes skill\",\"1.00\",1],[\"diff collector\",\"1.00\",1],[\"release notes v1\",\"1.00\",0],[\"Release notes draft\",\"1.00\",1],[\"instructions.md\",\"1.00\",1],[\"date checker\",\"1.00\",1],[\"launch skill\",\"1.00\",1],[\"this week’s threads\",\"1.00\",0],[\"style guide\",\"1.00\",1],[\"Arun\",\"1.00\",1],[\"deploy log\",\"1.00\",1],[\"board reader\",\"1.00\",1],[\"runbook\",\"1.00\",1],[\"summary skill\",\"1.00\",1],[\"Jules\",\"1.00\",1],[\"trace reader\",\"1.00\",1],[\"launch plan v1\",\"1.00\",1],[\"voice notes\",\"1.00\",1]]"
   },
   {
    "suite": "details",
@@ -519,9 +543,9 @@
   },
   {
    "suite": "details",
-   "name": "dark: ten titled blobs float at rest (memories, teammates, subagents), all on screen, all shape-shifting",
+   "name": "dark: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",62,222,\"blob\"],[\"teammate\",106,256,\"blob\"],[\"memory\",49,222,\"blob\"],[\"memory\",93,221,\"blob\"],[\"subagent\",57,215,\"blob\"],[\"teammate\",1212,1371,\"blob\"],[\"memory\",1212,1400,\"blob\"],[\"memory\",1179,1308,\"blob\"],[\"subagent\",1221,1375,\"blob\"],[\"memory\",1216,1384,\"blob\"]]"
+   "detail": "[[\"memory\",56,216,\"blob\"],[\"teammate\",1191,1341,\"blob\"],[\"memory\",136,309,\"blob\"],[\"file\",1176,1353,\"blob\"],[\"memory\",208,337,\"blob\"],[\"subagent\",1230,1387,\"blob\"],[\"skill\",1160,1295,\"blob\"],[\"memory\",45,234,\"blob\"],[\"file\",192,327,\"blob\"],[\"teammate\",1159,1318,\"blob\"],[\"memory\",1237,1365,\"blob\"],[\"subagent\",190,347,\"blob\"],[\"memory\",90,256,\"blob\"],[\"skill\",1186,1340,\"blob\"],[\"teammate\",195,347,\"blob\"],[\"subagent\",1084,1236,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -549,7 +573,13 @@
   },
   {
    "suite": "details",
-   "name": "quiet: the kept memory and the report float at the notice still, and the reply reads in full",
+   "name": "quiet: the kept memory and the report float at the notice still, the file and skill are still held, and the reply reads in full",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "quiet: at the settle still the file and skill float free again",
    "pass": true,
    "detail": ""
   }

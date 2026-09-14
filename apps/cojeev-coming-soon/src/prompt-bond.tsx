@@ -26,12 +26,14 @@ const LAST=beats.length-1;
 const IDLE_MS=9000;
 
 /** Something that lives in the environment around the panel: a memory, a teammate, a subagent, a report. */
-type Kind='memory'|'skill'|'teammate'|'subagent'|'report';
+type Kind='memory'|'file'|'skill'|'teammate'|'subagent'|'report';
 type Thing={kind:Kind;title:string;sub:string;icon?:string;initials?:string};
 const mem=(title:string,sub:string):Thing=>({kind:'memory',title,sub,icon:'brain'});
 const mate=(title:string,initials:string,sub:string):Thing=>({kind:'teammate',title,sub,initials});
 const bot=(title:string,sub:string):Thing=>({kind:'subagent',title,sub,icon:'bot'});
 const rep=(title:string,sub:string):Thing=>({kind:'report',title,sub,icon:'file-text'});
+const file=(title:string,sub:string):Thing=>({kind:'file',title,sub,icon:'file'});
+const skill=(title:string,sub:string):Thing=>({kind:'skill',title,sub,icon:'sparkles'});
 /** One environment, shared by every story: the things that float around the panel before anything is asked. */
 const T={
  decisions:mem('team decisions','12 notes'),launchNotes:mem('last launch notes','kept three weeks ago'),changelog:mem('changelog','34 commits'),
@@ -39,18 +41,20 @@ const T={
  mira:mate('Mira','MK','takes the timeline'),arun:mate('Arun','AR','reviews the wording'),jules:mate('Jules','JL','adds the numbers'),sam:mate('Sam','SP','checks the cluster'),
  dates:bot('date checker','checks the dates'),diffs:bot('diff collector','collects the diffs'),board:bot('board reader','reads the board'),trace:bot('trace reader','reads the trace'),
  plan:mem('launch plan v1','kept just now'),notes:mem('release notes v1','kept just now'),summary:mem('weekly summary','kept just now'),cause:mem('root cause: expired token','kept just now'),
+ instructions:file('instructions.md','how you like things done'),voice:file('voice notes','how you sound'),styleGuide:file('style guide','from last spring'),
+ launchSkill:skill('launch skill','plans a launch'),notesSkill:skill('release-notes skill','writes the notes'),summarySkill:skill('summary skill','sums up a week'),debugSkill:skill('debugging skill','reads a failure'),
 };
 /** A story: what is recalled, woven in, reached, replied, kept and noticed. `{0}`/`{1}` in a line are the things pulled in, set in bold. */
-type Story={prompt:string;memories:[Thing,Thing];woven:[string,string];agents:[Thing,Thing];reach:string;kept:Thing;report:Thing;reply:[string,string,string];noticed:string;automation:string};
+type Story={prompt:string;memories:[Thing,Thing];woven:[Thing,Thing];agents:[Thing,Thing];reach:string;kept:Thing;report:Thing;reply:[string,string,string];noticed:string;automation:string};
 /** Illustrative conversations, one per thought. Each one's first memory is what the one before it kept. */
 export const stories:Story[]=[
- {prompt:'Plan our next launch.',memories:[T.decisions,T.launchNotes],woven:['your instructions','launch skill'],agents:[T.mira,T.dates],reach:'Handed the timeline to {0}; {1} is checking the dates.',
+ {prompt:'Plan our next launch.',memories:[T.decisions,T.launchNotes],woven:[T.instructions,T.launchSkill],agents:[T.mira,T.dates],reach:'Handed the timeline to {0}; {1} is checking the dates.',
   kept:T.plan,report:rep('Launch timeline','3 milestones, dated'),reply:['Here’s the plan: three milestones, with the dates checked against the last launch.','I recalled what the team decided, and Mira has the timeline.','The launch timeline is written up, so nothing gets lost this time.'],noticed:'You plan a launch like this every quarter.',automation:'Plan the next one automatically?'},
- {prompt:'Draft the release notes.',memories:[T.plan,T.changelog],woven:['your voice','release-notes skill'],agents:[T.arun,T.diffs],reach:'Sent the draft to {0}; {1} is collecting the diffs.',
+ {prompt:'Draft the release notes.',memories:[T.plan,T.changelog],woven:[T.voice,T.notesSkill],agents:[T.arun,T.diffs],reach:'Sent the draft to {0}; {1} is collecting the diffs.',
   kept:T.notes,report:rep('Release notes draft','34 commits, 6 highlights'),reply:['Release notes drafted in your voice, from all 34 commits.','Arun is reviewing the wording; the diff collector caught two fixes the changelog missed.','The notes are kept in memory, and the draft is saved as a report.'],noticed:'Every release ends with notes like these.',automation:'Draft them on every release?'},
- {prompt:'Summarize this week for the team.',memories:[T.notes,T.threads],woven:['your instructions','summary skill'],agents:[T.jules,T.board],reach:'Asked {0} for the numbers; {1} is reading the board.',
+ {prompt:'Summarize this week for the team.',memories:[T.notes,T.threads],woven:[T.instructions,T.summarySkill],agents:[T.jules,T.board],reach:'Asked {0} for the numbers; {1} is reading the board.',
   kept:T.summary,report:rep('Week in review','2 launches, 7 threads'),reply:['This week: two launches shipped, one incident closed, seven threads resolved.','Jules added the numbers, and the board reader filled in the open work.','The summary is saved, and next Friday it can go out before you ask.'],noticed:'Every Friday, a summary for the team.',automation:'Send it every Friday?'},
- {prompt:'Why did the deploy fail?',memories:[T.deployLog,T.runbook],woven:['your instructions','debugging skill'],agents:[T.sam,T.trace],reach:'Asked {0} to check the cluster; {1} is reading the trace.',
+ {prompt:'Why did the deploy fail?',memories:[T.deployLog,T.runbook],woven:[T.instructions,T.debugSkill],agents:[T.sam,T.trace],reach:'Asked {0} to check the cluster; {1} is reading the trace.',
   kept:T.cause,report:rep('Incident report','expired token, 401'),reply:['The deploy failed because the registry token had expired.','I recalled the runbook, and the trace reader confirmed the same 401.','Sam is rotating the token, and the incident report is filed so it never repeats.'],noticed:'Deploys fail this way now and then.',automation:'Watch every deploy for it?'},
 ];
 const storyAt=(run:number)=>stories[run%stories.length];
@@ -59,42 +63,41 @@ const fill=(template:string,names:string[]):Part[]=>template.split(/(\{\d\})/).f
 /** The work rows: one plain sentence each, with the things that were pulled in set in bold. */
 const rowsFor=(s:Story):Record<number,Part[]>=>({
  1:fill('Recalled {0} and {1} from memory.',[s.memories[0].title,s.memories[1].title]),
- 2:fill('Wove in {0} and the {1}.',s.woven),
+ 2:fill('Wove in {0} and the {1}, held close.',[s.woven[0].title,s.woven[1].title]),
  3:fill(s.reach,[s.agents[0].title,s.agents[1].title]),
  5:fill('Kept {0} in memory and wrote {1}.',[s.kept.title,s.report.title]),
  6:[{t:s.noticed}],
 });
-const KIND_TITLE:Record<Kind,string>={memory:'Memory',skill:'Skill',teammate:'Teammate',subagent:'Subagent',report:'Report'};
+const KIND_TITLE:Record<Kind,string>={memory:'Memory',file:'File',skill:'Skill',teammate:'Teammate',subagent:'Subagent',report:'Report'};
 /** How each kind's icon moves when it stirs: the brain and the bot draw themselves, the report and the sparkles play their own recipes. */
-const KIND_PRESET:Record<Kind,'auto'|'draw'>={memory:'draw',skill:'auto',teammate:'auto',subagent:'draw',report:'auto'};
+const KIND_PRESET:Record<Kind,'auto'|'draw'>={memory:'draw',file:'draw',skill:'auto',teammate:'auto',subagent:'draw',report:'auto'};
 const ROW_ICONS=['','brain','sparkles','users','','bookmark','zap'];
 /** Each row's glyph moves in its own way when something lands: the brain draws itself, the sparkles twinkle, the second figure steps out, the bookmark slides into place. */
 const ROW_PRESET=['auto','draw','auto','auto','auto','auto','auto'] as const;
 
-/* ── The environment: twelve float slots, six down each side of the panel. Ten things float there from the start (memories,
- * teammates, subagents) and two slots are free. A story makes sure what it needs is present (surfacing it at launch if not), and
- * what it keeps is placed out into a free slot, or the slot of the oldest thing the story does not need, which drifts away.
- * Nothing is eaten: a grabbed thing gives what matters and floats on. */
+/* ── The environment: eighteen float slots scattered over the whole stage on both sides of the panel. Sixteen things float there from
+ * the start (memories, files, skills, teammates, subagents) and two slots are free. A story makes sure what it needs is present
+ * (surfacing it at launch if not) into a free slot, or the slot of the oldest thing the story does not need, which drifts away.
+ * Nothing is eaten: a memory gives what matters and floats on; a file or skill is held close for the story and let go after. */
 
 type Env=(Thing|null)[];
-const SIDE=6,SLOTS=SIDE*2;
-const BASE:Env=[T.decisions,T.mira,T.launchNotes,T.changelog,T.dates,null,T.arun,T.threads,T.deployLog,T.board,T.runbook,null];
+const SLOTS=18;
+const BASE:Env=[T.decisions,T.mira,T.launchNotes,T.instructions,T.changelog,T.dates,T.launchSkill,T.threads,T.styleGuide,T.arun,T.deployLog,T.board,T.runbook,T.summarySkill,T.jules,T.trace,null,null];
 const slotOf=(env:Env,title:string)=>env.findIndex(t=>t?.title===title);
 type Played={s:Story;upTo:number};
 /** The environment after the stories played so far and `upTo` beats of the current one. Pure, so stills, seeks and steps agree. */
 function envFor(played:Played[],current:Story,upTo:number):Env{
  const env=BASE.slice(),born=env.map((t,i)=>t?i:-1);let tick=SLOTS;const need=new Set<string>();
- const put=(th:Thing,side:0|1)=>{
+ const put=(th:Thing)=>{
   if(slotOf(env,th.title)>=0)return;
-  const range=(sd:number)=>Array.from({length:SIDE},(_,j)=>j+sd*SIDE),order=[...range(side),...range(1-side)];
-  let slot=order.find(i=>!env[i]);
-  if(slot===undefined){const spare=order.filter(i=>!need.has(env[i]!.title));slot=spare.reduce((a,b)=>born[a]<=born[b]?a:b);}
+  let slot=env.findIndex(t=>!t);
+  if(slot<0){const spare=env.map((t,i)=>t&&!need.has(t.title)?i:-1).filter(i=>i>=0);slot=spare.reduce((a,b)=>born[a]<=born[b]?a:b);}
   env[slot]=th;born[slot]=tick++;
  };
  const play=(s:Story,to:number)=>{
-  need.clear();[...s.memories,...s.agents,s.kept,s.report].forEach(t=>need.add(t.title));
-  if(to>=2){put(s.memories[0],0);put(s.memories[1],0);put(s.agents[0],1);put(s.agents[1],1);}
-  if(to>=7){put(s.kept,0);put(s.report,1);}
+  need.clear();[...s.memories,...s.woven,...s.agents,s.kept,s.report].forEach(t=>need.add(t.title));
+  if(to>=2)[...s.memories,...s.woven,...s.agents].forEach(put);
+  if(to>=7){put(s.kept);put(s.report);}
  };
  played.forEach(p=>play(p.s,p.upTo));play(current,upTo);
  return env;
@@ -117,7 +120,7 @@ type Row={o:number;dy:number;p:number;g:number};
 type Eye={o:number;lid:number};
 type World={
  env:{free:number;breath:number;wobble:number;underline:number;pulse:number;contour:number;panel:number};
- A:Cell;B:Cell;O:Cell[];PL:Cell;PR:Cell;K:Cell[];U:Cell[];Y:Cell;
+ A:Cell;B:Cell;O:Cell[];PL:Cell;PR:Cell;K:Cell[];U:Cell[];Y:Cell;H:Cell[];
  strands:Strand[];nodes:Node[];rows:Row[];fold:{o:number;dy:number};
  eyes:Eye[];gaze:{px:number;py:number;w:number};
  lines:{a:number;b:number;c:number;check:number;typing:number};
@@ -130,7 +133,7 @@ function createWorld():World{
  return {
   env:{free:1,breath:0,wobble:1.2,underline:1,pulse:0,contour:0,panel:0},
   A:cell(0),B:cell(2),O:[cell(0),cell(2),cell(0),cell(2)],PL:cell(0),PR:cell(2),
-  K:[cell(1,1.4),cell(1,1.4),cell(1,1.2),cell(1,1.2)],U:[cell(2),cell(2)],Y:cell(3),
+  K:[cell(1,1.4),cell(1,1.4),cell(1,1.2),cell(1,1.2)],U:[cell(2),cell(2)],Y:cell(3),H:[cell(1.6,1.3),cell(1.6,1.3)],
   strands:Array.from({length:8},(_,i)=>strand(i>5?0:1)),
   nodes:Array.from({length:SLOTS},()=>({px:0,py:0,o:0,s:1,t:1,free:1,rip:1,flash:0,busy:0})),
   rows:Array.from({length:ROWS},()=>({o:0,dy:0,p:0,g:0})),fold:{o:0,dy:0},
@@ -160,7 +163,7 @@ type Rect={cx:number;cy:number;hw:number;hh:number};
 type Layout={
  W:number;H:number;k:number;field:Rect;panel:Rect&{left:number;right:number;top:number;bottom:number};composerDy:number;
  endL:Point;endR:Point;docks:Point[];rest:Point[];bounds:{x0:number;y0:number;x1:number;y1:number};
- slots:Point[];rims:Point[];roomy:boolean;
+ slots:Point[];rims:Point[];holds:Point[];roomy:boolean;
  rows:Point[];reply:{x:number;y:number;w:number;h:number};
 };
 function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HTMLElement|null)[],replyEl:HTMLElement|null,formDy:number):Layout|null{
@@ -176,25 +179,32 @@ function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HT
  const rows=Array.from({length:ROWS},(_,i)=>{const el=rowEls[i];return el?{x:pl+el.offsetLeft+10,y:pt+el.offsetTop+el.offsetHeight/2}:{x:pcx,y:pcy};});
  const reply=replyEl?{x:pl+replyEl.offsetLeft,y:pt+replyEl.offsetTop,w:replyEl.offsetWidth,h:replyEl.offsetHeight}:{x:pcx-60,y:pcy,w:120,h:40};
  const left=pcx-phw,right=pcx+phw,top=pcy-phh,bottom=pcy+phh;
- // things carry a label when there is room beside the panel; otherwise only their shape.
- // With room they float far out near the page edges, so grabbing one crosses real distance.
+ // things carry a label when there is room beside the panel; otherwise only their blob.
  const roomy=left>=230*k&&W-right>=230*k;
- // with room, a thing's label needs about 160 px beside its blob, so the columns keep that much from the page edges
- const farL=roomy?Math.max(190*k,left-280*k):left-34*k,farR=roomy?Math.min(W-190*k,right+280*k):right+34*k;
- const clampX=(x:number)=>Math.min(W-26*k,Math.max(26*k,x)),clampY=(y:number)=>Math.min(H-26*k,Math.max(26*k,y));
- // six slots down each side, staggered a little, spread past the panel's height when there is room
- const spread=roomy?70*k:0,slotY=(j:number)=>clampY(top-spread+(bottom-top+2*spread)*(j+.5)/SIDE),jit=[0,26,6,18,2,30];
- const slots=[
-  ...Array.from({length:SIDE},(_,j)=>({x:clampX(farL+jit[j]*k),y:slotY(j)})),
-  ...Array.from({length:SIDE},(_,j)=>({x:clampX(farR-jit[(j+3)%SIDE]*k),y:slotY(j)})),
- ];
- const rims=slots.map((sl,i)=>({x:i<SIDE?left+6:right-6,y:Math.min(bottom-24*k,Math.max(top+24*k,sl.y))}));
+ const slots=scatter(W,H,k,{left,right},roomy);
+ const cl=(v:number,lo:number,hi:number)=>Math.min(hi,Math.max(lo,v));
+ // a tendril leaves the panel from the edge nearest the thing
+ const rims=slots.map(sl=>sl.x<left||sl.x>right?{x:sl.x<left?left+6:right-6,y:cl(sl.y,top+24*k,bottom-24*k)}:{x:cl(sl.x,left+24*k,right-24*k),y:sl.y<pcy?top+6:bottom-6});
+ // where a held file is kept: close against the body, just below the heads
+ const holds=[{x:left-(roomy?18:12)*k,y:top+78*k},{x:right+(roomy?18:12)*k,y:top+78*k},{x:left-(roomy?18:12)*k,y:top+150*k},{x:right+(roomy?18:12)*k,y:top+150*k}];
  return {W,H,k,field:{cx,cy,hw,hh},panel:{cx:pcx,cy:pcy,hw:phw,hh:phh,left,right,top,bottom},composerDy,
   endL,endR,bounds,
   docks:[endL,endR,{x:cx-hw*.35,y:cy-hh+3},{x:cx+hw*.3,y:cy-hh+3},{x:cx-hw*.05,y:cy+hh-3},{x:cx+hw*.5,y:cy+hh-3}],
   rest:[place(cx-hw*.75,cy-hh-80*k),place(cx+hw*.7,cy+hh+78*k),place(cx-hw-150*k,cy-40*k),place(cx+hw*.25,cy-hh-150*k),place(cx-hw*.3,cy+hh+140*k),place(cx+hw+160*k,cy+30*k)],
-  slots,rims,roomy,rows,reply,
+  slots,rims,holds,roomy,rows,reply,
  };
+}
+/** Scatter the float slots over both sides of the stage: a seeded sampler, so the layout is the same on every visit and in every
+ * still, with room for a label beside each blob and no two blobs on top of each other. */
+function scatter(W:number,H:number,k:number,panel:{left:number;right:number},roomy:boolean):Point[]{
+ let seed=11;const rnd=()=>{seed=(seed*48271)%2147483647;return seed/2147483647;};
+ const labelW=roomy?150*k:0,bw=(roomy?60:34)*k,bh=(roomy?54:36)*k;
+ const bands=roomy?[{x0:34*k+labelW,x1:panel.left-74*k},{x0:panel.right+74*k,x1:W-34*k-labelW}]:[{x0:38*k,x1:panel.left-18*k},{x0:panel.right+18*k,x1:W-38*k}];
+ const y0=roomy?100:92,y1=H-(roomy?96:124),pts:Point[]=[];
+ const clear=(p:Point)=>pts.every(q=>Math.abs(p.y-q.y)>=bh+8*k||Math.abs(p.x-q.x)>=bw+labelW);
+ for(let tries=0;tries<800&&pts.length<SLOTS;tries++){const b=bands[tries%2];const p={x:Math.min(W-24*k,Math.max(24*k,b.x0+rnd()*(b.x1-b.x0))),y:y0+rnd()*(y1-y0)};if(clear(p))pts.push(p);}
+ for(let i=pts.length;i<SLOTS;i++){const b=bands[i%2];pts.push({x:Math.min(W-24*k,Math.max(24*k,(b.x0+b.x1)/2)),y:y0+(((i>>1)%9)+.5)*(y1-y0)/9});}
+ return pts;
 }
 const at=(p:Point)=>({px:p.x,py:p.y});
 const zero={hw:0,hh:0,r:0};
@@ -209,7 +219,7 @@ function floatPose(w:World,L:Layout,env:Env){
 function restPose(w:World,L:Layout,roam:Roam[],env:Env){
  const k=L.k;Object.assign(w.env,{free:1,breath:0,wobble:1.2,underline:1,pulse:0,contour:0,panel:0});
  [w.A,w.B,...w.O].forEach((c,i)=>{const r=RADII[i]*k;Object.assign(c,{...at(L.rest[i]),hw:r,hh:r,r,rot:0});const o=roam[i];o.x=L.rest[i].x;o.y=L.rest[i].y;o.vx=o.vy=0;o.r=r;o.wait=0;o.tx=o.x;o.ty=o.y;});
- for(const c of [w.PL,w.PR,...w.K,...w.U,w.Y])Object.assign(c,{px:L.field.cx,py:L.field.cy,...zero,rot:0});
+ for(const c of [w.PL,w.PR,...w.K,...w.U,w.Y,...w.H])Object.assign(c,{px:L.field.cx,py:L.field.cy,...zero,rot:0});
  for(const s of w.strands)Object.assign(s,{ax:L.field.cx,ay:L.field.cy,bx:L.field.cx,by:L.field.cy,r:0,taper:0});
  floatPose(w,L,env);for(const r of w.rows){r.o=0;r.dy=0;r.p=0;r.g=0;}w.fold.o=0;w.fold.dy=0;
  for(const e of w.eyes){e.o=1;e.lid=0;}Object.assign(w.gaze,{px:L.field.cx,py:L.field.cy,w:0});
@@ -226,13 +236,23 @@ function bondedPose(w:World,L:Layout,roam:Roam[],env:Env){
  Object.assign(w.PR,{px:L.endR.x-half,py:F.cy,hw:half,hh:F.hh+2,r:F.hh+2});
  w.eyes.forEach((e,i)=>{if(i>0)Object.assign(e,{o:0,lid:1});});Object.assign(w.gaze,{px:F.cx,py:F.cy,w:1});
 }
+/** Where each woven-in thing is held: the dock on its own side of the panel, the lower one if that side is already taken. */
+function docksFor(L:Layout,env:Env,s:Story):Point[]{
+ const used=new Set<number>();
+ return s.woven.map(th=>{const a=slotOf(env,th.title),sd=a>=0&&L.slots[a].x>=L.W/2?1:0,i=used.has(sd)?sd+2:sd;used.add(sd);return L.holds[i];});
+}
+/** The two woven-in things, held close against the body from prepare until the settle lets them go. */
+function holdPose(w:World,L:Layout,env:Env,s:Story){
+ const k=L.k,docks=docksFor(L,env,s);s.woven.forEach((th,i)=>{const a=slotOf(env,th.title);if(a<0)return;const D=docks[i];Object.assign(w.nodes[a],{...at(D),s:.8,t:0,free:0});Object.assign(w.H[i],{...at(D),hw:26*k,hh:24*k,r:18*k,rot:0});});
+}
 const headL=(L:Layout)=>({px:L.panel.left+30*L.k,py:L.panel.top+4*L.k,hw:22*L.k,hh:22*L.k,r:22*L.k});
 const headR=(L:Layout)=>({px:L.panel.right-30*L.k,py:L.panel.top+4*L.k,hw:20*L.k,hh:20*L.k,r:20*L.k});
 const bodyL=(L:Layout)=>({px:L.panel.cx-L.panel.hw*.22,py:L.panel.cy,hw:L.panel.hw*.78,hh:L.panel.hh,r:30*L.k});
 const bodyR=(L:Layout)=>({px:L.panel.cx+L.panel.hw*.22,py:L.panel.cy,hw:L.panel.hw*.78,hh:L.panel.hh,r:30*L.k});
 /** The open panel with everything the beats before `upTo` already revealed. */
-function panelPose(w:World,L:Layout,roam:Roam[],upTo:number,folded:boolean,env:Env){
+function panelPose(w:World,L:Layout,roam:Roam[],upTo:number,folded:boolean,env:Env,s:Story){
  bondedPose(w,L,roam,env);
+ if(upTo>4)holdPose(w,L,env,s);
  Object.assign(w.env,{panel:1,contour:.3});
  Object.assign(w.A,headL(L));Object.assign(w.B,headR(L));Object.assign(w.PL,bodyL(L));Object.assign(w.PR,bodyR(L));
  Object.assign(w.gaze,{px:L.panel.cx,py:L.panel.top+40*L.k,w:1});
@@ -383,28 +403,61 @@ function recall(w:World,L:Layout,sizes:Size[],env:Env,s:Story):Beat{
  ]};
 }
 
-/** Beat 4: instructions and a skill bud from the rim and sink into the work. */
-function prepare(w:World,L:Layout):Beat{
- const k=L.k,[K0,K1]=w.K,row=L.rows[2],top=L.panel.top;
- const bud=(K:Cell,x:number,hw:number,t:number):AnimationSequence=>[
-  [K,{px:x,py:top+2,...zero,r:14*k,tone:1.6,w:1.3,rot:0},{duration:.01,at:t}],
-  [K,{hw,hh:14*k},{...spring(200,15),at:t+.02}],
-  lookAt(w,{x,y:top},t+.15,.35),
-  [K,{px:row.x+(x>L.panel.cx?26*k:0),py:row.y,hw:hw*.45,hh:9*k},{duration:.6,ease:settle,at:t+1.0}],
-  [K,zero,{duration:.35,at:t+1.6}],
- ];
- return {still:1.1,seq:[
-  ...bud(K0,L.panel.cx-L.panel.hw*.3,Math.max(44,58*k),0),
-  ...bud(K1,L.panel.cx+L.panel.hw*.2,Math.max(52,70*k),.7),
-  ...land(w,L,2,1.2),...arrive(w,2,1.6),...ripple(w,2,2.3),
-  home(w,L,2.7),
+/** Beat 4: a file and a skill float in the environment. A tendril reaches each one, the label folds, and the whole thing is drawn in
+ * and held close against the body in a pocket of membrane, where it stays for the rest of the story; what it says streams in and
+ * settles on the "woven in" line. */
+function prepare(w:World,L:Layout,sizes:Size[],env:Env,s:Story):Beat{
+ const k=L.k,[S0,S1]=w.strands,[K0,K1]=w.K,[U0,U1]=w.U,[H0,H1]=w.H,row=L.rows[2];
+ const one=(S:Strand,K:Cell,U:Cell,Hc:Cell,slot:number,D:Point,t:number):AnimationSequence=>{const n=w.nodes[slot],M=L.slots[slot],P=L.rims[slot],pk=pocket(sizes[slot],k,M);return [
+  lookAt(w,M,t+.05),
+  [S,{ax:P.x,ay:P.y,bx:P.x,by:P.y,r:8*k,taper:.35,tone:1.6},{duration:.01,at:t}],
+  [S,{bx:M.x,by:M.y},{duration:.65,ease:out,at:t+.02}],
+  [n,{free:0},{duration:.3,at:t+.55}],
+  [K,{px:M.x,py:M.y,...zero,r:pk.r,tone:1.6,w:1.3,rot:0},{duration:.01,at:t+.67}],
+  [K,{hw:pk.hw,hh:pk.hh},{duration:.35,ease:out,at:t+.7}],
+  [n,{flash:1},{duration:.1,at:t+.7}],[n,{flash:0},{duration:.4,ease:out,at:t+.8}],
+  // held: the label folds and the whole thing is drawn in and kept close, against the body
+  [n,{t:0},{duration:.25,at:t+1.0}],
+  [S,{r:11*k},{duration:.3,at:t+1.1}],
+  [[n,K],{px:D.x,py:D.y},{duration:.9,ease:haul,at:t+1.15}],
+  [n,{s:.8},{duration:.9,ease:haul,at:t+1.15}],
+  [K,{hw:pk.hw*.8,hh:pk.hh*.8},{duration:.9,ease:haul,at:t+1.15}],
+  [S,{bx:D.x,by:D.y},{duration:.9,ease:haul,at:t+1.15}],
+  // the hold takes over from the tendril: a pocket of body stays around the thing
+  [Hc,{px:D.x,py:D.y,hw:pk.hw*.8,hh:pk.hh*.8,r:pk.r,tone:1.6,w:1.3,rot:0},{duration:.01,at:t+2.05}],
+  [K,zero,{duration:.01,at:t+2.06}],
+  [S,{bx:P.x,by:P.y,taper:.9},{duration:.4,ease:inOut,at:t+2.1}],
+  [S,{r:0},{duration:.2,at:t+2.45}],
+  // what it says streams into the body and settles on the "woven in" line
+  [U,{px:D.x,py:D.y,...zero,r:5*k,tone:1.6,w:1.3,rot:0},{duration:.01,at:t+2.1}],
+  [U,{hw:6*k,hh:6*k},{duration:.15,at:t+2.12}],
+  [U,{px:row.x,py:row.y},{duration:.55,ease:inOut,at:t+2.3}],
+  [U,zero,{duration:.25,at:t+2.85}],
+  [w.env,{pulse:1},{duration:.1,at:t+2.3}],
+  [w.env,{pulse:0},{duration:.3,at:t+2.4}],
+ ];};
+ const a=slotOf(env,s.woven[0].title),b=slotOf(env,s.woven[1].title),docks=docksFor(L,env,s);
+ return {still:2.3,seq:[
+  ...one(S0,K0,U0,H0,a<0?3:a,docks[0],0),
+  ...one(S1,K1,U1,H1,b<0?6:b,docks[1],.45),
+  ...land(w,L,2,2.7),...arrive(w,2,3.2),...ripple(w,2,3.7),
+  home(w,L,4.0),
  ]};
 }
 
 /** Beat 5: a teammate and a subagent float in the environment. Tendrils reach them, the task itself travels the whole way, they get
  * busy, context comes back, and they are let go to float again. The right head wakes to watch. */
 function reach(w:World,L:Layout,sizes:Size[],env:Env,s:Story):Beat{
- const a0=slotOf(env,s.agents[0].title),b0=slotOf(env,s.agents[1].title),a=a0<0?SIDE:a0,b=b0<0?SIDE+1:b0;
+ const a0=slotOf(env,s.agents[0].title),b0=slotOf(env,s.agents[1].title),a=a0<0?1:a0,b=b0<0?5:b0;
+ // once the subagent has the task it informs the other subagents: each lights up, rings, and gets busy for a moment
+ const others=env.map((t,i)=>t?.kind==='subagent'&&i!==b?i:-1).filter(i=>i>=0);
+ const inform=others.flatMap((i,j):AnimationSequence=>{const n=w.nodes[i],t=2.85+j*.22;return [
+  [n,{rip:0,flash:.7},{duration:.01,at:t}],
+  [n,{rip:1},{duration:.9,ease:out,at:t+.02}],
+  [n,{flash:0},{duration:.5,ease:out,at:t+.12}],
+  [n,{busy:1},{duration:.15,at:t+.05}],
+  [n,{busy:0},{duration:.3,at:t+1.1}],
+ ];});
  const k=L.k,[S0,S1]=w.strands,[K0,K1,K2]=w.K,[U0,U1]=w.U,row=L.rows[3];
  const one=(S:Strand,U:Cell,K:Cell,slot:number,t:number):AnimationSequence=>{const n=w.nodes[slot],T=L.slots[slot],Q=L.rims[slot],pk=pocket(sizes[slot],k,T);return [
   lookAt(w,T,t+.05),
@@ -434,6 +487,9 @@ function reach(w:World,L:Layout,sizes:Size[],env:Env,s:Story):Beat{
  return {still:1.9,seq:[
   ...one(S0,U0,K0,a,0),
   ...one(S1,U1,K1,b,.45),
+  [w.nodes[b],{rip:0},{duration:.01,at:2.7}],
+  [w.nodes[b],{rip:1},{duration:.8,ease:out,at:2.72}],
+  ...inform,
   ...land(w,L,3,.4),...arrive(w,3,.75),
   [w.eyes[1],{o:1,lid:0},{duration:.35,at:.4}],
   [w.eyes[1],{lid:1},{duration:.3,at:3.5}],
@@ -477,7 +533,7 @@ function check(w:World,L:Layout):Beat{
  * thought can find them. */
 function keep(w:World,L:Layout,env:Env,s:Story):Beat{
  const k=L.k,[S0,S1]=w.strands,[K0,K1]=w.K,R=L.reply,row=L.rows[5];
- const a0=slotOf(env,s.kept.title),b0=slotOf(env,s.report.title),a=a0<0?SIDE-1:a0,b=b0<0?SLOTS-1:b0;
+ const a0=slotOf(env,s.kept.title),b0=slotOf(env,s.report.title),a=a0<0?SLOTS-2:a0,b=b0<0?SLOTS-1:b0;
  const nA=w.nodes[a],nB=w.nodes[b],MA=L.slots[a],PA=L.rims[a],MB=L.slots[b],PB=L.rims[b];
  return {still:3.4,seq:[
   [nA,{...at(MA),o:0,s:.4,t:0,free:0,rip:1,flash:0,busy:0},{duration:.01,at:0}],
@@ -544,6 +600,15 @@ function notice(w:World,L:Layout):Beat{
  ]};
 }
 
+/** Beat 9: the story settles; the two held things are let go and float back to where they were. */
+function release(w:World,L:Layout,env:Env,s:Story):Beat{
+ return {still:1,seq:s.woven.flatMap((th,i):AnimationSequence=>{const a=slotOf(env,th.title);if(a<0)return [];const n=w.nodes[a],M=L.slots[a];return [
+  [w.H[i],zero,{duration:.35,at:.05+i*.1}],
+  [n,{px:M.x,py:M.y,s:1},{...spring(110,12),at:.1+i*.1}],
+  [n,{t:1},{duration:.3,at:.55+i*.1}],
+  [n,{free:1},{duration:.5,at:.45+i*.1}],
+ ];})};
+}
 /** When each beat's row lands (seconds into the beat), so a stop can tell what was already reached. */
 const LANDED:Record<number,number>={3:2.8,4:1.2,5:.4,6:0,7:.85,8:1.4};
 /** `again` is true for every thought after the first (an earlier exchange is folded), whatever story it plays. */
@@ -553,11 +618,12 @@ function buildBeat(beat:number,w:World,L:Layout,run:number,sizes:Size[],again:bo
   case 1:return bond(w,L);
   case 2:return launch(w,L,again,fresh);
   case 3:return recall(w,L,sizes,env,s);
-  case 4:return prepare(w,L);
+  case 4:return prepare(w,L,sizes,env,s);
   case 5:return reach(w,L,sizes,env,s);
   case 6:return check(w,L);
   case 7:return keep(w,L,env,s);
   case 8:return notice(w,L);
+  case LAST:return release(w,L,env,s);
   default:return null;
  }
 }
@@ -588,7 +654,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
  const controls=React.useRef<AnimationPlaybackControls|null>(null),generation=React.useRef(0);
  const clock_=React.useRef(0),pointer=React.useRef<Point|null>(null),checkRef=React.useRef(false);
  const typing=React.useRef<{text:string;at:number;fast:boolean;n:number}|null>(null),typed=React.useRef(false),idle=React.useRef<number|null>(null);
- const scene=React.useRef({cells:Array.from({length:15},():MembraneCell=>({x:0,y:0,hw:0,hh:0,r:0,tone:0,rot:0,w:1})),strands:Array.from({length:8},():MembraneStrand=>({ax:0,ay:0,bx:0,by:0,r:0,tone:0,taper:0,w:1}))});
+ const scene=React.useRef({cells:Array.from({length:17},():MembraneCell=>({x:0,y:0,hw:0,hh:0,r:0,tone:0,rot:0,w:1})),strands:Array.from({length:8},():MembraneStrand=>({ax:0,ay:0,bx:0,by:0,r:0,tone:0,taper:0,w:1}))});
  const bonded=beat>0;
  const story=storyAt(run),lastFold=folds[folds.length-1];
  const upTo=beat===LAST&&stopped?reached.current:beat;
@@ -659,7 +725,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
    pos[i]={x,y};put(i,c,x,y,hw,hh,rr,f>0?ang:c.rot);
   });
   put(6,w.PL,w.PL.px,w.PL.py,w.PL.hw,w.PL.hh*breath+pulse);put(7,w.PR,w.PR.px,w.PR.py,w.PR.hw,w.PR.hh*breath+pulse);
-  w.K.forEach((c,i)=>put(8+i,c));w.U.forEach((c,i)=>put(12+i,c));put(14,w.Y);
+  w.K.forEach((c,i)=>put(8+i,c));w.U.forEach((c,i)=>put(12+i,c));put(14,w.Y);w.H.forEach((c,i)=>put(15+i,c));
   const strands=scene.current.strands;
   w.strands.forEach((s,i)=>{Object.assign(strands[i],s);});
   // curious pseudopods: the two leads probe toward the prompt while free
@@ -670,7 +736,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   const gazeTo=(from:Point)=>{let tx:number,ty:number;if(w.gaze.w>.5){tx=w.gaze.px;ty=w.gaze.py;}else if(p){tx=p.x;ty=p.y;}else{tx=L.field.cx;ty=L.field.cy;}const dx=tx-from.x,dy=ty-from.y,d=Math.hypot(dx,dy)||1,a=Math.min(1,d/80)*3.5*k;return {x:dx/d*a,y:dy/d*a};};
   w.eyes.forEach((e,i)=>{const el=eyeRefs.current[i];if(!el)return;const g=gazeTo(pos[i]);el.style.transform=`translate(${(pos[i].x+g.x).toFixed(1)}px,${(pos[i].y+g.y-2*k).toFixed(1)}px)`;el.style.opacity=String(e.o);el.style.setProperty('--lid',e.lid.toFixed(3));});
   // things drift on their own while free; a held thing sits exactly where the tendril has it
-  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const d=still?0:n.free,ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d,oy=(Math.cos(t*.38+i*.9)*10+Math.cos(t*.17+i)*6)*k*d,rot=Math.sin(t*.3+i)*4*d;
+  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const side=L.slots[i].x<L.W/2?'left':'right';if(el.dataset.side!==side){el.dataset.side=side;const g=el.querySelector<HTMLElement>('.thing-shape');if(g){const gx=g.offsetLeft+g.offsetWidth/2;el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}}const d=(still?0:n.free)*(L.roomy?1:.6),ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d,oy=(Math.cos(t*.38+i*.9)*10+Math.cos(t*.17+i)*6)*k*d,rot=Math.sin(t*.3+i)*4*d;
    el.style.transform=`translate(${(n.px+ox).toFixed(1)}px,${(n.py+oy).toFixed(1)}px) translate(${-(el.dataset.gx??0)}px,-50%) rotate(${rot.toFixed(2)}deg) scale(${n.s.toFixed(3)})`;el.style.opacity=String(n.o);
    const st=el.style;st.setProperty('--t',n.t.toFixed(3));st.setProperty('--rip',n.rip.toFixed(3));st.setProperty('--flash',n.flash.toFixed(3));st.setProperty('--busy',n.busy.toFixed(3));st.setProperty('--free',n.free.toFixed(2));});
   if(state.current.beat===2&&w.rows[0].o>.05&&state.current.prompt)setPrompt('');
@@ -698,7 +764,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   const L=measure(stage.current,form.current,panel.current,rowRefs.current,reply.current,formDy.current);if(!L)return;
   const first=!layout.current;layout.current=L;
   const w=world.current,{beat:b,stopped:st,folded,env:ev}=state.current;
-  if(b===0)restPose(w,L,roam.current,ev);else if(b===1)bondedPose(w,L,roam.current,ev);else panelPose(w,L,roam.current,b===LAST&&st?reached.current:b,folded,ev);
+  if(b===0)restPose(w,L,roam.current,ev);else if(b===1)bondedPose(w,L,roam.current,ev);else panelPose(w,L,roam.current,b===LAST&&st?reached.current:b,folded,ev,storyAt(state.current.run));
   if(first||b>0)setReady(v=>v+1);
  },[]);
  /* A folded thread shifts the rows; re-measure them without touching the pose. */
@@ -728,7 +794,9 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   // a slot whose thing changed since the last beat: hidden if this beat surfaces it, otherwise simply there
   env.forEach((th,i)=>{if(th?.title!==prevEnv.current[i]?.title)w.nodes[i].o=th&&beat!==2&&beat!==7?1:0;});prevEnv.current=env;
   const built=buildBeat(beat,w,L,run,sizes,folds.length>0,env,fresh);
-  if(!built){if(beat===0)restPose(w,L,roam.current,env);else panelPose(w,L,roam.current,stopped?reached.current:beat,folds.length>0,env);return;}
+  // the settle starts from the still of whatever was reached (a stop lets the rest go), then releases what was held
+  if(beat===LAST)panelPose(w,L,roam.current,stopped?reached.current:LAST,folds.length>0,env,story);
+  if(!built){if(beat===0)restPose(w,L,roam.current,env);return;}
   const own=++generation.current;
   const c=animate(built.seq,{defaultTransition:{ease:'easeInOut'}});
   controls.current=c;
@@ -808,7 +876,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   <Membrane ref={membrane} className="prompt-membrane" onMeasure={relayout}/>
   <div className="stage-layer" aria-hidden="true">
    {RADII.map((_,i)=><span key={i} className="eyes" data-small={i>1} ref={el=>{eyeRefs.current[i]=el;}}><i/><i/></span>)}
-   {env.map((th,i)=>{const kind=th?.kind??'memory';return <span key={i} ref={el=>{nodeRefs.current[i]=el;}} className="thing" data-side={i<SIDE?'left':'right'} data-kind={kind} data-empty={!th} style={{'--i':i} as React.CSSProperties}>
+   {env.map((th,i)=>{const kind=th?.kind??'memory';return <span key={i} ref={el=>{nodeRefs.current[i]=el;}} className="thing" data-kind={kind} data-empty={!th} style={{'--i':i} as React.CSSProperties}>
     <span className="thing-shape"><i className="thing-ring"/><i className="thing-flash"/>{th?.initials?<b>{th.initials}</b>:<AnimatedIcon name={th?.icon??'brain'} preset={KIND_PRESET[kind]} active={lively===i} size="sm"/>}<span className="thing-busy"><i/><i/><i/></span></span>
     <span className="thing-label"><em>{KIND_TITLE[kind]}</em><b>{th?.title??''}</b><small>{th?.sub??''}</small></span>
    </span>;})}

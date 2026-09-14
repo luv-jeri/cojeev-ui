@@ -63,7 +63,7 @@ export type MembranePalette = {
 
 export type MembraneStatus = "webgl" | "fallback";
 
-export const MEMBRANE_LIMITS = { cells: 16, strands: 8 } as const;
+export const MEMBRANE_LIMITS = { cells: 18, strands: 8 } as const;
 
 const vertexSource = `
 attribute vec2 aPosition;
