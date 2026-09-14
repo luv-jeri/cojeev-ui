@@ -21,10 +21,18 @@ const details:[string,string,string,string][]=[
  ['user','Your character','A personality you can shape, across different harnesses and models.','character'],
 ];
 
+/** The page's scale: 1 at 1440 × 900, up to 1.8 on a large screen, 1 on phones (they are tuned by hand in CSS). It is set on the root
+ * element before the first render, so the story measures its layout against the scaled field, and the tray, which the drawer portals
+ * outside the shell, scales too; a window resize refreshes it (the story re-measures on its own when the stage changes size). */
+const fitUi=()=>{const ui=innerWidth<=700?1:Math.min(1.8,Math.max(innerWidth<=1024?.9:.8,Math.min(innerWidth/1440,innerHeight/900)));document.documentElement.style.setProperty('--ui',ui.toFixed(3));};
+fitUi();addEventListener('resize',fitUi);
+
 function Demo(){
  const [paused,setPaused]=React.useState(false),[open,setOpen]=React.useState(false),[replayKey,setReplayKey]=React.useState(0);
  const [mode,setMode]=React.useState<ThemeMode>(()=>document.documentElement.dataset.mode==="dark"?"dark":"light");
  const host=React.useRef<HTMLDivElement>(null),{enabled,inView}=useMotionVisibility(host);
+ // the page's scale: 1 at 1440 × 900, up to 1.8 on a large screen, 1 on phones (they are tuned by hand in CSS)
+
  const moving=enabled&&inView&&!paused&&!open;
  React.useEffect(()=>{let total=0,last=0;const wheel=(e:WheelEvent)=>{if(open||e.ctrlKey||Math.abs(e.deltaX)>Math.abs(e.deltaY))return;const now=performance.now();if(now-last>200)total=0;last=now;total+=Math.max(e.deltaY,0);if(total>70)setOpen(true);};window.addEventListener('wheel',wheel,{passive:true});return()=>window.removeEventListener('wheel',wheel);},[open]);
  const touch=React.useRef<number|null>(null);
@@ -34,7 +42,7 @@ function Demo(){
   <ShaderBackground mode={mode} paused={!moving} envBasePath="/shader-environments/" className="bond-background"/>
   <header className="bond-header"><a href="/" className="bond-brand">cojeev<span>.</span></a><span className="bond-soon">Coming soon</span></header>
   <PromptBond key={replayKey} moving={moving} active={moving} quiet={!enabled} clock={<><span className="launch-label">Arriving in</span><Countdown/></>}/>
-  <footer className="bond-bottom"><Button variant="ghost" className="replay-button" onClick={replay}><AnimatedIcon name="play" size="sm"/>Replay</Button><DrawerTrigger asChild><Button variant="ghost" className="bond-footer-trigger" data-morph="fill" data-tier="pill"><AnimatedIcon name="chevron-up" size="sm"/>What’s coming</Button></DrawerTrigger><div className="bond-controls"><ThemeToggle mode={mode} responsive onModeChange={(next,detail)=>{setMode(next);applyTheme(next,paused,undefined,{origin:detail?.origin});}}/><Button variant="ghost" aria-label={paused?'Resume motion':'Pause motion'} aria-pressed={paused} onClick={()=>setPaused(v=>!v)}><AnimatedIcon name={paused?'play':'pause'} size="sm"/></Button></div></footer>
+  <footer className="bond-bottom"><Button variant="ghost" className="replay-button" onClick={replay}><AnimatedIcon name="play" size="sm"/>Replay</Button><DrawerTrigger asChild><Button variant="ghost" className="bond-footer-trigger" data-morph="fill" data-tier="pill"><AnimatedIcon name="chevron-up" size="sm"/>What’s coming</Button></DrawerTrigger><div className="bond-controls"><ThemeToggle mode={mode} responsive onModeChange={(next,detail)=>{setMode(next);applyTheme(next,paused,undefined,{origin:detail?.origin});}}/><Button variant="ghost" className="pause-button" aria-label={paused?'Resume motion':'Pause motion'} aria-pressed={paused} onClick={()=>setPaused(v=>!v)}><AnimatedIcon name={paused?'play':'pause'} size="sm"/></Button></div></footer>
  </div>
  <DrawerContent className="future-tray bond-tray" data-paused={paused||!enabled}>
   <div className="tray-handle" aria-hidden="true"/>

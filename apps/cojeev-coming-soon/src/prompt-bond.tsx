@@ -170,7 +170,7 @@ function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HT
  const s=stage.getBoundingClientRect(),f=form.getBoundingClientRect(),p=panel.getBoundingClientRect();
  if(!s.width||!f.width||!p.width)return null;
  const W=s.width,H=s.height,cx=f.left-s.left+f.width/2,cy=f.top-s.top+f.height/2-formDy;
- const hw=f.width/2+10,hh=f.height/2+6,k=Math.min(1,Math.max(.62,hw/290));
+ const hw=f.width/2+10,hh=f.height/2+6,k=Math.min(1.8,Math.max(.62,hw/290));
  const pl=p.left-s.left,pt=p.top-s.top,pcx=pl+p.width/2,pcy=pt+p.height/2,phw=p.width/2+10,phh=p.height/2+8;
  const composerDy=pt+p.height-f.height/2-10*k-cy;
  const inset=Math.min(90,H*.1),bounds={x0:40*k,y0:inset,x1:W-40*k,y1:H-inset};
@@ -194,16 +194,20 @@ function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HT
   slots,rims,holds,roomy,rows,reply,
  };
 }
-/** Scatter the float slots over both sides of the stage: a seeded sampler, so the layout is the same on every visit and in every
- * still, with room for a label beside each blob and no two blobs on top of each other. */
+/** Scatter the float slots over both sides of the stage. Each side is cut into rows, one thing per row; the rows are shuffled and the
+ * x jittered by a seeded sampler, so the layout reads scattered yet is the same on every visit and no two things ever stack. */
 function scatter(W:number,H:number,k:number,panel:{left:number;right:number},roomy:boolean):Point[]{
  let seed=11;const rnd=()=>{seed=(seed*48271)%2147483647;return seed/2147483647;};
- const labelW=roomy?150*k:0,bw=(roomy?60:34)*k,bh=(roomy?54:36)*k;
+ // a labelled thing needs 150k beside it and a row of 62k (its 50k body plus the 6k it drifts up and down); a bare blob on a phone
+ // is 32 px tall, drifts less, and takes a row of 44
+ const labelW=roomy?150*k:0,rowH=roomy?62*k:44,per=SLOTS/2;
  const bands=roomy?[{x0:34*k+labelW,x1:panel.left-74*k},{x0:panel.right+74*k,x1:W-34*k-labelW}]:[{x0:38*k,x1:panel.left-18*k},{x0:panel.right+18*k,x1:W-38*k}];
- const y0=roomy?100:92,y1=H-(roomy?96:124),pts:Point[]=[];
- const clear=(p:Point)=>pts.every(q=>Math.abs(p.y-q.y)>=bh+8*k||Math.abs(p.x-q.x)>=bw+labelW);
- for(let tries=0;tries<800&&pts.length<SLOTS;tries++){const b=bands[tries%2];const p={x:Math.min(W-24*k,Math.max(24*k,b.x0+rnd()*(b.x1-b.x0))),y:y0+rnd()*(y1-y0)};if(clear(p))pts.push(p);}
- for(let i=pts.length;i<SLOTS;i++){const b=bands[i%2];pts.push({x:Math.min(W-24*k,Math.max(24*k,(b.x0+b.x1)/2)),y:y0+(((i>>1)%9)+.5)*(y1-y0)/9});}
+ const y0=roomy?108*k:92,y1=H-(roomy?134*k:124);
+ // on a short stage the rows are squeezed: things may then touch, but never stack
+ const rows=Math.max(per,Math.floor((y1-y0)/rowH)),step=(y1-y0)/rows,slack=Math.max(0,step-rowH);
+ const pick=()=>{const idx=Array.from({length:rows},(_,i)=>i);for(let i=idx.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}return idx.slice(0,per);};
+ const chosen=[pick(),pick()],pts:Point[]=[];
+ for(let i=0;i<SLOTS;i++){const b=bands[i%2],row=chosen[i%2][i>>1];pts.push({x:Math.min(W-30*k,Math.max(30*k,b.x0+rnd()*(b.x1-b.x0))),y:y0+row*step+rowH/2+rnd()*slack});}
  return pts;
 }
 const at=(p:Point)=>({px:p.x,py:p.y});
@@ -736,7 +740,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   const gazeTo=(from:Point)=>{let tx:number,ty:number;if(w.gaze.w>.5){tx=w.gaze.px;ty=w.gaze.py;}else if(p){tx=p.x;ty=p.y;}else{tx=L.field.cx;ty=L.field.cy;}const dx=tx-from.x,dy=ty-from.y,d=Math.hypot(dx,dy)||1,a=Math.min(1,d/80)*3.5*k;return {x:dx/d*a,y:dy/d*a};};
   w.eyes.forEach((e,i)=>{const el=eyeRefs.current[i];if(!el)return;const g=gazeTo(pos[i]);el.style.transform=`translate(${(pos[i].x+g.x).toFixed(1)}px,${(pos[i].y+g.y-2*k).toFixed(1)}px)`;el.style.opacity=String(e.o);el.style.setProperty('--lid',e.lid.toFixed(3));});
   // things drift on their own while free; a held thing sits exactly where the tendril has it
-  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const side=L.slots[i].x<L.W/2?'left':'right';if(el.dataset.side!==side){el.dataset.side=side;const g=el.querySelector<HTMLElement>('.thing-shape');if(g){const gx=g.offsetLeft+g.offsetWidth/2;el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}}const d=(still?0:n.free)*(L.roomy?1:.6),ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d,oy=(Math.cos(t*.38+i*.9)*10+Math.cos(t*.17+i)*6)*k*d,rot=Math.sin(t*.3+i)*4*d;
+  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const side=L.slots[i].x<L.W/2?'left':'right';if(el.dataset.side!==side){el.dataset.side=side;const g=el.querySelector<HTMLElement>('.thing-shape');if(g){const gx=g.offsetLeft+g.offsetWidth/2;el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}}const d=(still?0:n.free)*(L.roomy?1:.6),ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d,oy=(Math.cos(t*.38+i*.9)*4+Math.cos(t*.17+i)*2)*k*d,rot=Math.sin(t*.3+i)*4*d;
    el.style.transform=`translate(${(n.px+ox).toFixed(1)}px,${(n.py+oy).toFixed(1)}px) translate(${-(el.dataset.gx??0)}px,-50%) rotate(${rot.toFixed(2)}deg) scale(${n.s.toFixed(3)})`;el.style.opacity=String(n.o);
    const st=el.style;st.setProperty('--t',n.t.toFixed(3));st.setProperty('--rip',n.rip.toFixed(3));st.setProperty('--flash',n.flash.toFixed(3));st.setProperty('--busy',n.busy.toFixed(3));st.setProperty('--free',n.free.toFixed(2));});
   if(state.current.beat===2&&w.rows[0].o>.05&&state.current.prompt)setPrompt('');
@@ -818,6 +822,9 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   if(b!==0&&b!==LAST)return;
   if(typing.current){const ty=typing.current;typing.current=null;setPrompt(ty.text);window.setTimeout(()=>startRef.current(),40);return;}
   if(!text.trim()){typeThenStart(nextPrompt(),true);return;}
+  // a thought the page typed itself, interrupted part-way, is completed rather than sent as a fragment
+  const partial=!typed.current?stories.find(s=>s.prompt.startsWith(text)&&s.prompt!==text):undefined;
+  if(partial){typeThenStart(partial.prompt,true);return;}
   typed.current=false;setNoted(false);setPicked(null);input.current?.blur();
   // a thought that matches one of the stories plays that story; anything else plays the next one in the cycle
   const chosen=stories.findIndex(s=>s.prompt===text.trim());
@@ -852,7 +859,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   if(!moving||quiet||(beat!==0&&beat!==LAST))return;
   const clear=()=>{if(idle.current!==null){window.clearTimeout(idle.current);idle.current=null;}};
   const arm=()=>{clear();idle.current=window.setTimeout(()=>{idle.current=null;if(typed.current||typing.current||state.current.prompt.trim())return;typeThenStart(nextPrompt(),false);},IDLE_MS);};
-  const activity=(e:Event)=>{if(typing.current&&!(e.type==='keydown'&&(e as KeyboardEvent).key==='Enter'))typing.current=null;arm();};
+  const activity=(e:Event)=>{if(typing.current&&!(e.type==='keydown'&&(e as KeyboardEvent).key==='Enter')){typing.current=null;if(!typed.current)setPrompt('');}arm();};
   window.addEventListener('keydown',activity,true);window.addEventListener('pointerdown',activity,true);
   arm();
   return()=>{clear();window.removeEventListener('keydown',activity,true);window.removeEventListener('pointerdown',activity,true);};

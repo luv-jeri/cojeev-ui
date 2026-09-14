@@ -1,5 +1,5 @@
 {
- "ran": "2026-09-14T21:29:14.821Z",
+ "ran": "2026-09-14T22:49:50.657Z",
  "page": "http://127.0.0.1:4345/ (home page)",
  "suites": [
   "lifecycle (round 4 suite, round-6 chrome: home page, wordmark + Coming soon, countdown eyebrow, theme, pause, hidden, replay, tray, other entries)",
@@ -185,7 +185,7 @@
    "suite": "details",
    "name": "memory things float outside the panel, fully on screen",
    "pass": true,
-   "detail": "{\"gap\":171,\"left\":97}"
+   "detail": "{\"gap\":91,\"left\":181}"
   },
   {
    "suite": "details",
@@ -239,7 +239,7 @@
    "suite": "details",
    "name": "the kept memory and the report are placed in the environment and float",
    "pass": true,
-   "detail": "[\"launch plan v1\",\"memory\",0.999449,\"Launch timeline\",\"report\",0.974846]"
+   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.977723]"
   },
   {
    "suite": "details",
@@ -263,7 +263,7 @@
    "suite": "details",
    "name": "previous exchange folds above the new bubble",
    "pass": true,
-   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":355.6875,\"sentTop\":375.6875}"
+   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":331.84375,\"sentTop\":351.84375}"
   },
   {
    "suite": "details",
@@ -383,7 +383,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",32,11],[\"1.00\",31,348],[\"1.00\",32,9],[\"1.00\",28,355],[\"1.00\",32,8],[\"1.00\",38,341],[\"1.00\",34,343],[\"1.00\",32,11],[\"1.00\",28,18],[\"1.00\",31,353],[\"1.00\",32,7],[\"1.00\",38,343],[\"1.00\",32,350],[\"1.00\",34,10],[\"1.00\",31,347],[\"1.00\",38,0],[\"0.00\",0,0],[\"0.00\",0,0]]"
+   "detail": "[[\"1.00\",32,12],[\"1.00\",31,348],[\"1.00\",32,7],[\"1.00\",28,354],[\"1.00\",32,7],[\"1.00\",38,340],[\"1.00\",34,2],[\"1.00\",32,352],[\"1.00\",28,17],[\"1.00\",31,352],[\"1.00\",32,6],[\"1.00\",38,343],[\"1.00\",32,10],[\"1.00\",34,351],[\"1.00\",31,5],[\"1.00\",38,341],[\"0.00\",0,0],[\"0.00\",0,0]]"
   },
   {
    "suite": "details",
@@ -401,7 +401,7 @@
    "suite": "details",
    "name": "mobile: rows and fold fit above the composer",
    "pass": true,
-   "detail": "{\"ok\":true,\"bottoms\":[304,333,352,372,392,457,476,502],\"formTop\":502}"
+   "detail": "{\"ok\":true,\"bottoms\":[306,336,355,375,395,459,478,504],\"formTop\":504}"
   },
   {
    "suite": "details",
@@ -425,7 +425,7 @@
    "suite": "details",
    "name": "light: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",56,216,\"blob\"],[\"teammate\",1191,1341,\"blob\"],[\"memory\",135,308,\"blob\"],[\"file\",1175,1353,\"blob\"],[\"memory\",208,337,\"blob\"],[\"subagent\",1230,1387,\"blob\"],[\"skill\",1160,1295,\"blob\"],[\"memory\",45,233,\"blob\"],[\"file\",192,327,\"blob\"],[\"teammate\",1159,1318,\"blob\"],[\"memory\",1237,1365,\"blob\"],[\"subagent\",190,346,\"blob\"],[\"memory\",90,256,\"blob\"],[\"skill\",1186,1340,\"blob\"],[\"teammate\",195,347,\"blob\"],[\"subagent\",1084,1236,\"blob\"]]"
+   "detail": "[[\"memory\",155,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",86,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",207,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",218,353,\"blob\"],[\"memory\",1112,1301,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",187,316,\"blob\"],[\"subagent\",1165,1322,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1304,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1344,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -467,7 +467,7 @@
    "suite": "details",
    "name": "the file and the skill are held close against the body, labels folded",
    "pass": true,
-   "detail": "[[\"release-notes skill\",\"skill\",28,0],[\"voice notes\",\"file\",28,0]]"
+   "detail": "[[\"release-notes skill\",\"skill\",29,0],[\"voice notes\",\"file\",29,0]]"
   },
   {
    "suite": "details",
@@ -545,7 +545,7 @@
    "suite": "details",
    "name": "dark: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",56,216,\"blob\"],[\"teammate\",1191,1341,\"blob\"],[\"memory\",136,309,\"blob\"],[\"file\",1176,1353,\"blob\"],[\"memory\",208,337,\"blob\"],[\"subagent\",1230,1387,\"blob\"],[\"skill\",1160,1295,\"blob\"],[\"memory\",45,234,\"blob\"],[\"file\",192,327,\"blob\"],[\"teammate\",1159,1318,\"blob\"],[\"memory\",1237,1365,\"blob\"],[\"subagent\",190,347,\"blob\"],[\"memory\",90,256,\"blob\"],[\"skill\",1186,1340,\"blob\"],[\"teammate\",195,347,\"blob\"],[\"subagent\",1084,1236,\"blob\"]]"
+   "detail": "[[\"memory\",155,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",86,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",208,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",218,353,\"blob\"],[\"memory\",1112,1301,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",187,316,\"blob\"],[\"subagent\",1165,1322,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1304,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1344,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -580,6 +580,78 @@
   {
    "suite": "details",
    "name": "quiet: at the settle still the file and skill float free again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "2560×1440: the composition scales with the screen (title ≥ 96 px, field ≥ 900 px, bar buttons ≥ 60 px and level)",
+   "pass": true,
+   "detail": "{\"h1\":102.4,\"field\":960,\"btns\":[64,64,64,64],\"morphOk\":true,\"scrollX\":false}"
+  },
+  {
+   "suite": "details",
+   "name": "2560×1440: no two things overlap at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "2560×1440: nothing overlaps once the kept memory and the report are placed, and the thread fits above the field",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "3440×1440: the composition scales with the screen (title ≥ 96 px, field ≥ 900 px, bar buttons ≥ 60 px and level)",
+   "pass": true,
+   "detail": "{\"h1\":102.4,\"field\":960,\"btns\":[64,64,64,64],\"morphOk\":true,\"scrollX\":false}"
+  },
+  {
+   "suite": "details",
+   "name": "3440×1440: no two things overlap at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "1920×1080: the composition scales with the screen (title ≥ 72 px, field ≥ 700 px, bar buttons ≥ 44 px and level)",
+   "pass": true,
+   "detail": "{\"h1\":76.8,\"field\":720,\"btns\":[48,48,48,48],\"morphOk\":true,\"scrollX\":false}"
+  },
+  {
+   "suite": "details",
+   "name": "1920×1080: no two things overlap at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "a click while the page is typing a thought clears the fragment instead of leaving it",
+   "pass": true,
+   "detail": "\"Plan our next launc\""
+  },
+  {
+   "suite": "details",
+   "name": "Enter after that sends a whole thought",
+   "pass": true,
+   "detail": "Plan our next launch."
+  },
+  {
+   "suite": "details",
+   "name": "Enter while the page is still typing completes the thought before sending it",
+   "pass": true,
+   "detail": "Plan our next launch."
+  },
+  {
+   "suite": "details",
+   "name": "each kind of thing has its own idle life: memory recalls, file flutters, skill twinkles, teammate presence breathes, subagent scans (and spins fast when busy)",
+   "pass": true,
+   "detail": "{\"memory\":\"recall\",\"subagent\":\"spin\",\"teammate\":\"presence\",\"file\":\"blob, flutter\",\"skill\":\"twinkle\",\"busyFast\":true}"
+  },
+  {
+   "suite": "details",
+   "name": "quiet: the idle lives of the things are off",
    "pass": true,
    "detail": ""
   }
