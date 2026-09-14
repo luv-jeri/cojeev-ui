@@ -62,10 +62,10 @@ export type TabsListProps = React.ComponentProps<typeof Primitive.List> &
 export function TabsList({ className, variant, ref, ...props }: TabsListProps) {
   const inherited = React.useContext(TabsVariantContext);
   const resolved = variant ?? inherited;
+  // Underline travels as a ruled-line marker; every other variant moves its
+  // whole selected surface (ink lozenge, beige lens, paper sheet, index line).
   const flowRef = useFlowGroup<HTMLDivElement>(ref, {
-    kind: ["underline", "notebook", "rail"].includes(resolved ?? "")
-      ? "bar"
-      : "pill",
+    kind: resolved === "underline" ? "bar" : "pill",
     itemSelector: '[data-slot="tabs-trigger"]',
     activeSelector: '[aria-selected="true"]',
   });

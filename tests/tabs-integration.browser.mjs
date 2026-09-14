@@ -62,7 +62,22 @@ const bundle = await build({
         </section>;
       }
 
-      root.render(<>{variants.map(variant => <Specimen key={variant} variant={variant} />)}</>);
+      // Notebook and rail: connected sheet and index line, each with a panel.
+      function Composed({ variant }) {
+        return <section className="fixture-card" data-fixture={variant}>
+          <h2>{variant === "notebook" ? "Notebook" : "Rail"}</h2>
+          <Tabs defaultValue="notes" variant={variant} orientation={variant === "rail" ? "vertical" : "horizontal"}>
+            <TabsList aria-label={variant + " sections"}>
+              <TabsTrigger value="notes"><Icon name="notebook" size="sm" aria-hidden="true" /><span>Notes</span><span className="v-tabs__count" aria-hidden="true">12</span></TabsTrigger>
+              <TabsTrigger value="ideas"><Icon name="sparkles" size="sm" aria-hidden="true" /><span>Ideas</span><span className="v-tabs__count" aria-hidden="true">08</span></TabsTrigger>
+            </TabsList>
+            <TabsContent value="notes"><div className="v-tabs__story"><h3>Notes</h3></div></TabsContent>
+            <TabsContent value="ideas"><div className="v-tabs__story"><h3>Ideas</h3></div></TabsContent>
+          </Tabs>
+        </section>;
+      }
+
+      root.render(<>{variants.map(variant => <Specimen key={variant} variant={variant} />)}{["notebook", "rail"].map(variant => <Composed key={variant} variant={variant} />)}</>);
       window.setTabsFlow = variant => setFlowSettings({ variant });
     `,
     loader: "tsx",
@@ -80,7 +95,7 @@ async function mount(page, mode) {
   await page.addStyleTag({ content: `${css}\n${fixtureCss}` });
   await page.addScriptTag({ content: bundle.outputFiles[0].text });
   await page.waitForFunction(
-    () => document.querySelectorAll('[data-slot="tabs-list"].v-glide').length === 2,
+    () => document.querySelectorAll('[data-slot="tabs-list"].v-glide').length === 4,
   );
   await page.waitForTimeout(80);
 }
@@ -258,6 +273,75 @@ test("tabs pair dark travelling paint with icon labels and preserve quiet fallba
     );
     await reduced.close();
     console.log("PASS Tabs dark/light travel paint, icon/text composition, long/disabled/focus states, Flow Off and reduced motion");
+  } finally {
+    await browser.close();
+  }
+});
+
+test("notebook sheets and rail lines travel as whole surfaces and stay connected", async () => {
+  const browser = await chromium.launch();
+  try {
+    for (const mode of ["light", "dark"]) {
+      const page = await browser.newPage({ viewport: { width: 900, height: 1100 } });
+      const errors = [];
+      page.on("pageerror", (error) => errors.push(error.message));
+      await mount(page, mode);
+
+      const notebook = page.locator('[data-fixture="notebook"]');
+      const notebookList = notebook.getByRole("tablist");
+      const notes = notebook.getByRole("tab", { name: "Notes", exact: true });
+      const ideas = notebook.getByRole("tab", { name: "Ideas", exact: true });
+      await assertSettledSelection(notebookList, notes);
+      const sheet = await notebookList.evaluate((node) => {
+        const layer = node.querySelector(":scope > .v-glide__pill > i");
+        const style = getComputedStyle(layer);
+        const paper = getComputedStyle(node).getPropertyValue("--v-paper").trim();
+        const probe = document.createElement("span");
+        probe.style.color = paper;
+        document.body.append(probe);
+        const resolved = getComputedStyle(probe).color;
+        probe.remove();
+        return { background: style.backgroundColor, paper: resolved, ring: style.boxShadow, radius: style.borderRadius, kind: node.dataset.flowKind };
+      });
+      assert.equal(sheet.kind, "pill", "the notebook travels its whole sheet, not a bar");
+      assert.equal(sheet.background, sheet.paper, "the travelling sheet is paper, continuous with its page");
+      assert.match(sheet.ring, /inset/, "the sheet carries an edge on its open sides");
+      assert.match(sheet.radius, /^14px 14px 0px 0px$/, "the sheet keeps the tab's top corners and an open bottom");
+      const join = await notebook.evaluate((node) => {
+        const list = node.querySelector('[data-slot="tabs-list"]');
+        const panel = node.querySelector('[data-slot="tabs-content"]');
+        return { listBottom: list.getBoundingClientRect().bottom, panelTop: panel.getBoundingClientRect().top, panelTopBorder: getComputedStyle(panel).borderTopWidth };
+      });
+      assert.ok(Math.abs(join.listBottom - join.panelTop) < 0.5, "the sheet baseline meets the page with no gap");
+      assert.equal(join.panelTopBorder, "0px", "the page does not draw a second line under the sheets");
+
+      await ideas.click();
+      await page.waitForTimeout(450);
+      await assertSettledSelection(notebookList, ideas);
+      assert.equal(await notebook.getByRole("tabpanel").innerText(), "Ideas");
+
+      const rail = page.locator('[data-fixture="rail"]');
+      const railList = rail.getByRole("tablist");
+      const railNotes = rail.getByRole("tab", { name: "Notes", exact: true });
+      const railIdeas = rail.getByRole("tab", { name: "Ideas", exact: true });
+      await assertSettledSelection(railList, railNotes);
+      assert.equal(await railList.evaluate((node) => node.dataset.flowKind), "pill", "the rail moves its whole selected line");
+      assert.equal(
+        await railList.evaluate((node) => getComputedStyle(node.querySelector(":scope > .v-glide__pill > i")).backgroundColor),
+        await resolvedColor(page, "--v-pink-soft"),
+        "the rail's selected line is the soft pink slip",
+      );
+      await railNotes.focus();
+      await page.keyboard.press("ArrowDown");
+      await page.waitForTimeout(450);
+      assert.equal(await railIdeas.getAttribute("aria-selected"), "true", "vertical arrows move the rail selection");
+      await assertSettledSelection(railList, railIdeas);
+      await notebook.screenshot({ path: `${output}/notebook-${mode}.png` });
+      await rail.screenshot({ path: `${output}/rail-${mode}.png` });
+      assert.deepEqual(errors, []);
+      await page.close();
+    }
+    console.log("PASS Notebook sheet and rail line travel, connection and keyboard checks");
   } finally {
     await browser.close();
   }

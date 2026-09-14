@@ -187,7 +187,7 @@ export function TabsExample({ variant = "notebook" }: ExampleProps) {
           >
             <Icon name={section.icon} size="sm" aria-hidden="true" />
             <span>{section.label}</span>
-            {appearance === "notebook" && (
+            {(appearance === "notebook" || appearance === "rail") && (
               <span className="v-tabs__count" aria-hidden="true">
                 {String(section.count).padStart(2, "0")}
               </span>
