@@ -14,7 +14,12 @@ This runbook describes the runtime contract; it does not claim deployment, sende
 | `EMAIL_MONTHLY_LIMIT` | allocated `2850` (hard ceiling `3000`) | allocated `150` |
 | `BETA_TESTER_EMAILS` | unused | defaults to `unread.fyi@gmail.com` |
 | `REPORT_NOTIFICATION_EMAIL` | `unread.fyi@gmail.com` | `unread.fyi@gmail.com` |
-| `DEPLOYMENT_INTENT` | `staged` until the coordinator declares activation | `staged` until the coordinator declares activation |
+| `DEPLOYMENT_INTENT` | `staged`, email disabled pending signing-key transfer and protected promotion | `active` in the candidate; fixed cutoff `2026-09-14T06:52:56.000Z` |
+
+These are source settings, not live-deployment evidence. Beta's five daily units
+are **email attempts**, not reports: one report normally uses two (acknowledgement
+and maintainer alert), and its release notification uses a third. Exhausted jobs
+stay queued; do not increase the allowance automatically.
 
 `RELEASE` is a non-secret release identifier shown in public health. Use separate D1/R2 resources, Turnstile configuration, Worker secrets, and provider webhooks for each environment. `LOCAL_MODE=true` is for loopback development only. Keep the existing server-enforced `ADMIN_TOKEN`, `IP_HASH_SECRET`, `TURNSTILE_SECRET`, `TURNSTILE_SITE_KEY`, GitHub repository/token/webhook configuration, and origin restrictions.
 

@@ -46,8 +46,8 @@ approved tester inbox. This is source configuration, **not a deployment claim**.
 Historical held jobs stay held. Production remains staged with email disabled
 until its signing secret and protected promotion are ready.
 
-- Configure both Resend hooks and protected signing secrets, then verify their presence.
-- Review the new owner-notification and webhook-isolation code.
+- Complete production's protected signing-key transfer after reconnecting the browser. Beta's GitHub environment secret was verified present at `2026-09-14T06:44:06Z`; neither existing credential bundle was replaced.
+- Independent review of `6059b59` found no code defects. Corrected its documentation findings: beta's source activation state, current source references, and the distinction between email attempts and report counts. The final focused operations/secret checks passed 20/20 in 0.25 seconds after the configuration change.
 - Release a fixed activation cutoff without backdating it to release historical work.
 - Submit a clearly labelled new beta report: receipt, private inbox, issue, reporter acknowledgement, owner notification, and signed status updates.
 - Obtain protected production approval and repeat the live journey once on production.
