@@ -135,11 +135,7 @@
   background: transparent;
 }
 :root[data-mode="dark"] .v-seg[data-flow-owned].v-glide > .v-glide__pill > i,
-:root[data-mode="dark"] .v-pager[data-flow-owned].v-glide > .v-glide__pill > i,
-:root[data-mode="dark"]
-  .v-tabs.-pills[data-flow-owned].v-glide
-  > .v-glide__pill
-  > i {
+:root[data-mode="dark"] .v-pager[data-flow-owned].v-glide > .v-glide__pill > i {
   background: var(--v-pink);
 }
 :root[data-mode="dark"]
@@ -147,11 +143,13 @@
   [data-glide-active],
 :root[data-mode="dark"]
   .v-pager:where([data-slot], [data-slot] *)
-  [data-glide-active],
-:root[data-mode="dark"]
-  .v-tabs:where([data-slot], [data-slot] *).-pills
   [data-glide-active] {
   color: var(--v-on-accent);
+}
+:root[data-mode="dark"]
+  .v-tabs[data-flow-owned].v-glide:is(.-pills, .-lenses) {
+  --glide-bg: var(--v-pink);
+  --glide-fg: var(--v-on-accent);
 }
 .v-weekdays[data-flow-owned].v-glide > .v-glide__pill > i,
 .v-iradios[data-flow-owned].v-glide > .v-glide__pill > i,

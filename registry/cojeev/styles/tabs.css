@@ -146,6 +146,11 @@
   min-width: 0;
   max-width: 100%;
 }
+[data-slot="tabs-trigger"] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
 [data-slot="tabs-list"][data-orientation="vertical"] {
   flex-direction: column;
   align-items: stretch;
