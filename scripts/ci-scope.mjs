@@ -44,6 +44,13 @@ const NAMED = new Map([
   // B02-3 clock isolation. Same harness, same proportionate scope: it renders
   // the two clock-owning cases and the three that follow them, not the catalogue.
   ["tests/docs-clock-isolation.browser.mjs", "transient-timing"],
+  // B02-8 console summary. The formatter decides only what the runner prints; a
+  // pass or fail still comes from results.json, which it does not touch. It is
+  // imported by check-docs.mjs, so it belongs to that harness and earns the same
+  // bounded browser evidence rather than the catalogue — and rather than the full
+  // job it would otherwise take for changing a log line.
+  ["scripts/lib/docs-summary.mjs", "transient-timing"],
+  ["tests/docs-summary.test.mjs", "transient-timing"],
 
   ["scripts/verify-install.mjs", "install-consumer"],
   ["scripts/run-install-verification.mjs", "install-consumer"],
@@ -266,6 +273,8 @@ const FOCUSED_BROWSER = new Map([
   ["scripts/docs-harness-fingerprint.mjs", "transient-timing"],
   ["tests/docs-transient-timing.browser.mjs", "transient-timing"],
   ["tests/docs-clock-isolation.browser.mjs", "transient-timing"],
+  ["scripts/lib/docs-summary.mjs", "transient-timing"],
+  ["tests/docs-summary.test.mjs", "transient-timing"],
 ]);
 
 // Files that MUST keep full catalogue verification for any real change, but whose

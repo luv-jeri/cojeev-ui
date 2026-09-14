@@ -75,6 +75,10 @@ const rows = [
   ['clock isolation test', ['tests/docs-clock-isolation.browser.mjs'], 'checkpoint', 'quick,transient-timing'],
   ['docs behaviour details', ['scripts/docs-behaviors-details.mjs'], 'checkpoint', 'quick,transient-timing'],
   ['catalogue harness entrypoint', ['scripts/check-docs.mjs'], 'checkpoint', 'quick,transient-timing'],
+  // B02-8 console summary. The formatter and its check belong to the same bounded
+  // harness, so changing a printed line must not take the full job.
+  ['catalogue summary formatter', ['scripts/lib/docs-summary.mjs'], 'checkpoint', 'quick,transient-timing'],
+  ['catalogue summary formatter check', ['tests/docs-summary.test.mjs'], 'checkpoint', 'quick,transient-timing'],
   ['consumer install script', ['scripts/verify-install.mjs'], 'checkpoint', 'quick,install-consumer'],
   ['consumer install runner', ['scripts/run-install-verification.mjs'], 'checkpoint', 'quick,install-consumer'],
 
@@ -132,6 +136,18 @@ const rows = [
     'scripts/check-reporting-browser.mjs',
     'scripts/check-reporting-consent.mjs',
   ], 'checkpoint', 'prose,quick,reporting-consent'],
+  // The complete changed-file list of this B02-8 checkpoint, including the two
+  // classifier files it edits to name its own helper. It must earn a checkpoint
+  // with the bounded harness, or a change to a printed line takes the full job.
+  ['the B02-8 change itself', [
+    'docs/production/2026-09-14-catalogue-diagnostic-summary.md',
+    'docs/superpowers/plans/2026-09-12-launch-master-checklist.md',
+    'scripts/check-docs.mjs',
+    'scripts/ci-scope.mjs',
+    'scripts/lib/docs-summary.mjs',
+    'tests/ci-scope.test.mjs',
+    'tests/docs-summary.test.mjs',
+  ], 'checkpoint', 'prose,quick,ci-contract,transient-timing'],
   ['the G01 change itself', [
     'docs/quality/2026-09-13-performance-baseline.md',
     'scripts/measure-loading-baseline.mjs',
@@ -206,6 +222,9 @@ const rows = [
   ['sibling workflow is not allowlisted', ['.github/workflows/health.yml'], 'full', ''],
   ['workflow directory sibling', ['.github/wrangler-runtime/package.json'], 'full', ''],
   ['unknown browser test', ['tests/dock.browser.mjs'], 'full', ''],
+  ['unnamed helper beside the named one', ['scripts/lib/github-traffic.mjs'], 'full', ''],
+  ['backup of the summary formatter', ['scripts/lib/docs-summary.mjs.bak'], 'full', ''],
+  ['directory lookalike for the helper', ['scripts/libs/docs-summary.mjs'], 'full', ''],
   ['browser test named like a unit test', ['tests/dock.browser.test.mjs.txt'], 'full', ''],
   ['nested fixture is not the named one', ['tests/fixtures/other-child.mjs'], 'full', ''],
   ['nested test directory', ['tests/nested/a.test.mjs'], 'full', ''],
@@ -835,7 +854,12 @@ test('a relocation is refused when no reviewed substitution touched the removed 
 });
 
 test('paths that own a bounded browser harness select it instead of the catalogue, never nothing', () => {
-  const decision = releaseDepth(['scripts/check-docs.mjs', 'tests/docs-transient-timing.browser.mjs']);
+  const decision = releaseDepth([
+    'scripts/check-docs.mjs',
+    'tests/docs-transient-timing.browser.mjs',
+    'scripts/lib/docs-summary.mjs',
+    'tests/docs-summary.test.mjs',
+  ]);
   assert.equal(decision.depth, 'affected');
   assert.deepEqual(decision.suites, ['transient-timing']);
   const outputs = releaseOutputs(decision);
