@@ -1,14 +1,14 @@
 {
- "ran": "2026-09-14T18:32:47.515Z",
+ "ran": "2026-09-14T19:22:07.954Z",
  "page": "http://127.0.0.1:4345/ (home page)",
  "suites": {
   "lifecycle (round 4 suite: home page, chrome, theme, pause, hidden, replay, drawer, other entries)": {
    "passed": 21,
    "total": 21
   },
-  "details (round 3 suite, re-run on the home page after the round 4 changes)": {
-   "passed": 46,
-   "total": 46
+  "details (rounds 3\u20135: cards, stop, folds, eyes, written rows, stamped nouns, chips, composer, quiet, mobile)": {
+   "passed": 61,
+   "total": 61
   }
  },
  "errors": [],
@@ -185,13 +185,13 @@
    "suite": "details",
    "name": "memory cards visible with words and a kind label",
    "pass": true,
-   "detail": "[[\"team decisions\",\"memory\",\"1.00\",149],[\"last launch notes\",\"memory\",\"1.00\",162],[\"\",\"memory\",\"0.00\",59],[\"\",\"memory\",\"0.00\",59]]"
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\",162],[\"last launch notes\",\"memory\",\"1.00\",174],[\"\",\"memory\",\"0.00\",69],[\"\",\"memory\",\"0.00\",69]]"
   },
   {
    "suite": "details",
    "name": "memory cards sit far out from the panel, fully on screen",
    "pass": true,
-   "detail": "{\"gap\":247,\"left\":24}"
+   "detail": "{\"gap\":245,\"left\":13}"
   },
   {
    "suite": "details",
@@ -245,7 +245,7 @@
    "suite": "details",
    "name": "kept card appears outside",
    "pass": true,
-   "detail": "[\"launch plan v1\",\"kept\",0.998002]"
+   "detail": "[\"launch plan v1\",\"kept\",1]"
   },
   {
    "suite": "details",
@@ -269,7 +269,7 @@
    "suite": "details",
    "name": "previous exchange folds above the new bubble",
    "pass": true,
-   "detail": "{\"o\":1,\"text\":\"\u203a Plan our next launch.launch plan v1\",\"top\":341.640625,\"sentTop\":363.640625}"
+   "detail": "{\"o\":1,\"text\":\"\u203a Plan our next launch.launch plan v1\",\"top\":350.640625,\"sentTop\":372.640625}"
   },
   {
    "suite": "details",
@@ -389,7 +389,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",24,6],[\"1.00\",24,16],[\"0.00\",24,-12],[\"0.00\",24,-12]]"
+   "detail": "[[\"1.00\",26,5],[\"1.00\",26,15],[\"0.00\",26,-13],[\"0.00\",26,-13]]"
   },
   {
    "suite": "details",
@@ -407,11 +407,101 @@
    "suite": "details",
    "name": "mobile: rows and fold fit above the composer",
    "pass": true,
-   "detail": "{\"ok\":true,\"bottoms\":[323,357,381,402,423,465,489,517],\"formTop\":521}"
+   "detail": "{\"ok\":true,\"bottoms\":[317,351,375,396,417,460,484,512],\"formTop\":515}"
   },
   {
    "suite": "details",
    "name": "mobile: no horizontal overflow",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "light: composer is a visible glass field with readable ink",
+   "pass": true,
+   "detail": "{\"glass\":\"color(srgb 0.984314 0.956863 0.901961 / 0.66)\",\"glassOpacity\":1,\"lum\":34,\"placeholder\":\"Type a thought, or pick one below\",\"chips\":3}"
+  },
+  {
+   "suite": "details",
+   "name": "light: three thoughts to pick at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "picking a thought starts the bond",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "the recalled line is being written behind a caret while the first memory is hauled",
+   "pass": true,
+   "detail": "{\"writing\":\"true\",\"text\":\"recalled launch plan v1changelog\",\"caret\":\"block\",\"cards\":[{\"t\":0,\"note\":0},{\"t\":0.91,\"note\":0.91}]}"
+  },
+  {
+   "suite": "details",
+   "name": "a folded card hides its note along with its words",
+   "pass": true,
+   "detail": "[{\"t\":0,\"note\":0},{\"t\":0.91,\"note\":0.91}]"
+  },
+  {
+   "suite": "details",
+   "name": "recalled line complete: label typed, both nouns stamped to their measured width, glyph in place, caret gone",
+   "pass": true,
+   "detail": "{\"text\":\"recalled \u00b7 launch plan v1, changelog\",\"stamps\":[[1,\"92.4px\"],[1,\"69.9px\"]],\"writing\":\"false\",\"g\":1}"
+  },
+  {
+   "suite": "details",
+   "name": "the picked thought plays its own story",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "teammate and subagent get busy when the task arrives",
+   "pass": true,
+   "detail": "[1,0]"
+  },
+  {
+   "suite": "details",
+   "name": "the offer writes its own question",
+   "pass": true,
+   "detail": "{\"text\":\"Draft notes on every release?\",\"g\":1}"
+  },
+  {
+   "suite": "details",
+   "name": "every line is fully written at the settle and one next thought is offered",
+   "pass": true,
+   "detail": "{\"rows\":[\"recalled \u00b7 launch plan v1, changelog\",\"woven in \u00b7 your voice, release-notes skill\",\"task \u2192 a teammate \u00b7 notified a subagent\",\"kept \u00b7 release notes v1\",\"Draft notes on every release?\"],\"chips\":[\"Summarize this week for the team.\"]}"
+  },
+  {
+   "suite": "details",
+   "name": "dark: composer is a visible glass field with readable ink",
+   "pass": true,
+   "detail": "{\"glass\":\"rgba(246, 239, 226, 0.086)\",\"glassOpacity\":1,\"lum\":240,\"placeholder\":\"Type a thought, or pick one below\",\"chips\":3}"
+  },
+  {
+   "suite": "details",
+   "name": "dark: three thoughts to pick at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "quiet: chips do not drift",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "quiet: picking a thought starts the bond at once",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "quiet: the recalled line is complete at the prepare still",
    "pass": true,
    "detail": ""
   }

@@ -2,6 +2,30 @@
 
 Local visual demo at http://127.0.0.1:4345/ (the home page since this round; it was /bond.html before), dev copy. No deployment, backend or launch manifest change (`public/launch.json` still `startedAt: null`).
 
+## Round 5: the organism writes, the cards become objects, the field invites
+
+Owner feedback after round 4 (five screenshots), numbered so nothing is lost, and what was done with each:
+
+1. **The row glyph animation was generic** (the same swell in front of every line). Each row's chip now pops into being at the moment what was pulled lands (a spring on `--g`), a ring in the row's colour ripples off it (`--p`), and the icon inside plays its own library motion through `AnimatedIcon`'s `active` prop: the brain draws its strokes in (`preset="draw"`), the sparkles twinkle, the second figure steps out of the people icon, the bookmark slides into its reading position, the workflow glyph draws itself. Chips carry the kind colour (olive for memory, olive-blue for what was woven, blue for reach, yellow for kept and the offer), so the row visibly matches the card that fed it.
+2. **The row text animation was the same everywhere.** Rows are now written like a ledger. Plain words type in behind a blinking caret at 30 characters a second ("recalled · ", "woven in · ", "task → ", " · notified ", "kept · "). The bold nouns are not typed: each is stamped, unrolling under a marker stroke in the row's colour to its measured width, at the instant its card's glyph lands on the row. The thing pulled becomes the word. The frame loop owns the typed text and the stamps' unroll (`--u`, `--w`) so Motion stays the only thing moving them; the caret is a CSS blink shown only while a row is `data-writing`.
+3. **Cards and the offer were not eye-grabbing.** Cards are objects now: a memory is a note with a folded corner and a stack behind it that fans out while the organism looks at it; a teammate is an avatar with a presence dot that starts typing when the task arrives; a subagent is a bot whose checking ring spins while it works; something kept is a tabbed note. Every card surfaces with a flash and a ring that ripples away, the kind label carries a coloured dot, titles are larger, and a packet streams down the tendril ahead of each haul. The offer: a ripple runs down the earlier rows as the organism re-reads the thread, the workflow glyph draws itself, the pill grows as its question is written, then it glows.
+4. **Dark mode: the prompt line was almost invisible, and visitors needed a nudge to type.** The composer is a glass pill in both themes (paper 66% on light, paper 9% on dark, with a 1 px edge), the ink is paper white on dark, the prefix is stronger, the placeholder says "Type a thought, or pick one below", and the arrow sits on a brand-coloured disc as soon as there is text. Three thoughts float under the field as chips (two on phones); one click types the thought and sends it, and the picked thought plays its own story instead of the next one in the cycle. After a settle one chip offers the next thought.
+5. **Light mode: the same line was hard to notice.** Same fix as 4; measured ink luminance is 34 on light and 240 on dark.
+
+### Files this round
+
+- `apps/cojeev-coming-soon/src/prompt-bond.tsx`: rows carry `g` and four part keys; `write`, `stamp`, `arrive`, `ripple`, `surface` helpers; every beat sequences its line against its haul; `partsOf` splits "woven in" into two stamps; nodes carry `rip`, `flash`, `fan`, `busy`; the frame loop writes typed text, unroll widths, glyph state and card variables; stamps are measured per story; suggestion chips and `pick`; story matching on the sent text.
+- `apps/cojeev-coming-soon/src/prompt-bond.css`: glass field, has-text send disc, chips, ledger rows (stamp, caret, chip ring), object cards (note, stack, fold, presence, ring, typing dots), kept and automation tones, dark values, small-screen sizes.
+- No library changes this round.
+
+### Checks this round (Playwright, Chrome channel, headless, on `/`)
+
+Details suite, 61/61 (the round-3 and round-4 checks plus fifteen new ones): in both themes the composer is a visible glass field with readable ink and three chips; picking a chip starts the bond; 3.4 s into recall the recalled line is being written behind a caret while a folded card hides its note along with its words; at prepare the line reads "recalled · launch plan v1, changelog" with both stamps unrolled to their measured widths, the glyph in place and the caret gone; the picked thought plays its own story; the teammate gets busy when the task arrives; the offer writes "Draft notes on every release?"; every line is complete at the settle and one next thought is offered; in reduced motion the chips do not drift, a pick starts at once, and the recalled line is complete at the prepare still. Lifecycle suite, 21/21, unchanged. No page errors in any run. Build: `prompt-bond-build.log`, exit 0.
+
+One test-only finding: Playwright refuses to click an element that is still moving, and the chips drift by design, so the test forces the click. A visitor's click lands fine; the drift is 3 px.
+
+Visual review: `prompt-bond-rest.jpg` (rest state in light, dark, on a phone and at 1280 × 720: the glass field, the chips, the caption and the bottom bar all fitting), `prompt-bond-details.jpg` (dark over light key moments), `prompt-bond-light.png` and `prompt-bond-dark.jpg` (full desktop runs), `prompt-bond-quiet.png` (reduced-motion stills), `prompt-bond-mobile.png` (full phone run). Defect found and fixed during review: a folded memory card sliding onto its row still showed its note background as a pale strip, because only its words were tied to the fold; note, ring and flash now follow the fold. Also fixed: the phone placeholder was too long for the narrow field, and the row backing stretched across the whole panel, so rows now shrink-wrap their text.
+
 ## Round 4: the home page, a louder pull, a night palette
 
 Owner feedback after round 3 (with a dark-mode screenshot), and what was done with each point:
