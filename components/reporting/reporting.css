@@ -426,6 +426,19 @@
   border-radius: 4px;
   pointer-events: none;
 }
+.report-area-picker .report-area-surface {
+  position: fixed;
+  inset: 0;
+  pointer-events: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+.report-area-outline {
+  position: fixed;
+  border: 2px solid var(--v-pink);
+  box-shadow: 0 0 0 10000px #1117;
+  pointer-events: none;
+}
 .report-picker-toolbar {
   position: fixed;
   left: 50%;

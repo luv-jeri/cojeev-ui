@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { canEditRejectedSubmission, manifestFiles, receiptSecret, ReportingError } from "../lib/reporting/client";
 import { LIMITS } from "../lib/reporting/contracts";
-import { captureDimensions } from "../lib/reporting/capture";
+import { captureArea, captureDimensions } from "../lib/reporting/capture";
 
 const png = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10, 0, 0]);
 test("attachment manifest hashes original bytes and preserves retry identity", async () => {
@@ -29,4 +29,15 @@ test("first definite validation failures remain editable while uncertain retries
 test("viewport capture does not inherit full-page height limits", () => {
   assert.deepEqual(captureDimensions("viewport", 1440, 45000, 900), { width: 1440, height: 900 });
   assert.throws(() => captureDimensions("page", 1440, 45000, 900), /too large/);
+});
+test("a selected rectangle is rounded to pixels and refused when it cannot be rendered", () => {
+  assert.deepEqual(captureArea({ x: 12.4, y: 30.6, width: 400.5, height: 220.2 }, 1440, 900), { x: 12, y: 31, width: 401, height: 220 });
+  assert.deepEqual(captureArea({ x: 0, y: 0, width: 1440, height: 900 }, 1440, 900), { x: 0, y: 0, width: 1440, height: 900 });
+  for (const area of [{ x: Number.NaN, y: 0, width: 10, height: 10 }, { x: 0, y: 0, width: Number.POSITIVE_INFINITY, height: 10 }])
+    assert.throws(() => captureArea(area, 1440, 900), /not a usable rectangle/);
+  assert.throws(() => captureArea({ x: 10, y: 10, width: 0.4, height: 80 }, 1440, 900), /too small/);
+  assert.throws(() => captureArea({ x: 10, y: 10, width: 80, height: 0 }, 1440, 900), /too small/);
+  assert.throws(() => captureArea({ x: -1, y: 10, width: 80, height: 80 }, 1440, 900), /inside the visible part/);
+  assert.throws(() => captureArea({ x: 1400, y: 10, width: 80, height: 80 }, 1440, 900), /inside the visible part/);
+  assert.throws(() => captureArea({ x: 10, y: 860, width: 80, height: 80 }, 1440, 900), /inside the visible part/);
 });
