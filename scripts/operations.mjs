@@ -132,6 +132,19 @@ export async function backup(environment,configPath,{run=wrangler,cf=cloudflare,
     return receipt;
   } finally {await fs.rm(temp,{recursive:true,force:true});}
 }
+// D1 already keeps automatic point-in-time recovery. Record its pre-migration
+// bookmark instead of making every deployment export an extra copy through R2.
+// Keep backup()/restore() for explicitly requested external snapshot operations.
+export async function prepareDatabaseRecovery(environment,configPath,{run=wrangler}={}) {
+  const target=environmentConfig(environment);
+  const config=JSON.parse(await fs.readFile(configPath,'utf8'));
+  validateDeploymentConfig(environment,config,'api');
+  const result=JSON.parse(run(['d1','time-travel','info',target.database,'--config',configPath,'--json']));
+  if(typeof result.bookmark!=='string'||!/^[a-f0-9-]{16,128}$/i.test(result.bookmark)) throw new Error('D1 recovery bookmark unavailable');
+  // A bookmark is recovery metadata, not report contents or an access token.
+  console.log(JSON.stringify({environment,recovery:'d1-time-travel',bookmark:result.bookmark}));
+  return {environment,bookmark:result.bookmark};
+}
 export async function restore(environment,key,{run=wrangler,cf=cloudflare}={}) {
   environmentConfig(environment);
   if(!new RegExp(`^${environment}/day-[0-6]\\.sql$`).test(key)) throw new Error('Recovery key invalid');
