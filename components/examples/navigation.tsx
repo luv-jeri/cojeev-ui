@@ -184,11 +184,8 @@ export function TabsExample({ variant = "notebook" }: ExampleProps) {
           <TabsTrigger
             key={section.id}
             value={section.id}
-            aria-label={section.label}
           >
-            {appearance === "rail" && (
-              <Icon name={section.icon} size="sm" aria-hidden="true" />
-            )}
+            <Icon name={section.icon} size="sm" aria-hidden="true" />
             <span>{section.label}</span>
             {appearance === "notebook" && (
               <span className="v-tabs__count" aria-hidden="true">

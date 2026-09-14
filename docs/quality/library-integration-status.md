@@ -13,6 +13,25 @@ Selection transitions (`checked`/`unchecked`, `on`/`off`, and `open`/`closed`),
 their feedback. The public `useFlowPress` signature and the existing disabled
 paint and focus styling are unchanged.
 
+## L-02 / C-02 — travelling tabs and icon labels
+
+Dark pills and lenses now pair their travelling selection layer with the
+existing pink accent and fixed accent ink. When Flow is off, or when reduced
+motion requests an immediate result, the stationary selected trigger retains
+that same readable paint relationship. Light treatment and the underline,
+notebook, and rail selection rules are unchanged.
+
+`TabsTrigger` now owns inline icon-and-text alignment with the shared 8px gap.
+The documentation example composes the existing decorative `Icon` beside its
+text label and leaves the SVG hidden from the accessible name. Text-only, long,
+disabled, and keyboard-focused triggers remain supported without a new wrapper
+or a public prop change.
+
+The focused actual-component fixture covers light/dark pills and lenses,
+moving/settled selection, quiet fallbacks, icon paint and alignment, long text,
+disabled behavior, and visible keyboard focus. Its local captures are evidence
+for controller review, not owner visual approval or a full catalogue result.
+
 ## L-03 — consumer-owned transient busy presentation
 
 The remaining short-lived border, fill, or opacity changes seen while a project
