@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './release-config.mjs';
+import {deploymentDiagnostic,recordDeploymentEvent} from './deployment-diagnostics.mjs';
 
 const maxBytes=25*1024*1024;
 const ALLOWED_SECRETS=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
@@ -53,11 +54,17 @@ export function wrangler(args,input) {
   const sink=path.join(logs,'discard.log');symlinkSync('/dev/null',sink);
   // Wrangler emits --json results through its normal log channel. Capture that
   // channel for machine-readable commands; never forward raw stdout/stderr.
-  try {return execFileSync(process.execPath,[canonical,...args],{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false',WRANGLER_LOG:args.includes('--json')?'log':'error',WRANGLER_LOG_PATH:sink,WRANGLER_LOG_SANITIZE:'true'}});}
+  const operation=args.slice(0,args[0]==='deploy'?1:2).join(' ');
+  recordDeploymentEvent({operation,status:'started'});
+  try {
+    const result=execFileSync(process.execPath,[canonical,...args],{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false',WRANGLER_LOG:args.includes('--json')?'log':'error',WRANGLER_LOG_PATH:sink,WRANGLER_LOG_SANITIZE:'true'}});
+    recordDeploymentEvent({operation,status:'succeeded'});
+    return result;
+  }
   catch(error) {
-    const code=String(error.stderr??'').match(/\[code:\s*(\d{3,6})\]/)?.[1];
-    const operation=[args[0],args[1]&&!args[1].startsWith('-')?args[1]:null].filter(Boolean).join(' ');
-    throw new Error(`Cloudflare operation failed (${operation}${code?`; API code ${code}`:''}); private output suppressed`);
+    const diagnostic=deploymentDiagnostic(error,args,input);
+    recordDeploymentEvent(diagnostic);
+    throw new Error(`Cloudflare operation failed (${operation}): ${diagnostic.explanation}`);
   }
   finally {rmSync(logs,{recursive:true,force:true});}
 }
