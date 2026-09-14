@@ -6,6 +6,8 @@ Cojeev UI copies React source into your application through the shadcn CLI. Use 
 
 For the checked compiler baseline, declaration boundary and the separate route
 for stricter TypeScript flags, see [Strict TypeScript integration](strict-typescript-integration.md).
+For the default embedded font delivery and the optional verified file-backed
+conversion, see [Optional local font files](local-fonts.md).
 
 For a Vite project with Tailwind and the alias configured, initialize shadcn and add a component:
 
