@@ -7,6 +7,11 @@ import { SidebarMenuButton, SidebarMenuLabel } from "@/registry/cojeev/ui/sideba
 import { examples } from "@/components/examples";
 import type { DocsLink } from "./docs-shell";
 
+// The sidebar's 24px scroll rail sits in the scrollport's right padding, past the entry's
+// own 12px inset, so a preview offset from the entry alone opens on top of the rail and
+// swallows the pointer aiming for the thumb. Clear the rail, keeping the preview beside it.
+const peekSideOffset = 40;
+
 class PeekBoundary extends React.Component<React.PropsWithChildren, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
@@ -31,7 +36,7 @@ export function DocsNavigationEntry({ entry, active, mobile, onNavigate }: { ent
         </Link>
       </SidebarMenuButton>
     </HoverCardTrigger>
-    {!mobile && open && !dismissed && <HoverCardContent side="right" align="start" sideOffset={18} collisionPadding={16} className="docs-component-peek" data-morph="none" aria-label={`${entry.title} quick look`} onEscapeKeyDown={() => setDismissed(true)}>
+    {!mobile && open && !dismissed && <HoverCardContent side="right" align="start" sideOffset={peekSideOffset} collisionPadding={16} className="docs-component-peek" data-morph="none" aria-label={`${entry.title} quick look`} onEscapeKeyDown={() => setDismissed(true)}>
       <div className="docs-peek-stage" inert aria-hidden="true">
         <PeekBoundary key={entry.name}><React.Suspense fallback={<p className="docs-peek-loading">Preparing a quick look…</p>}>
           {Example && <div className="docs-peek-example" data-peek-example={entry.name}><Example variant={entry.previewVariant} compact /></div>}

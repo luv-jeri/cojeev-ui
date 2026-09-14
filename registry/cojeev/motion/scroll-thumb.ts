@@ -30,11 +30,22 @@ export function pageScrollGeometry(scrollSize: number, viewportSize: number, tra
 }
 
 type ScrollRoot = Pick<Element, "getAttribute" | "setAttribute" | "removeAttribute">;
+
+/** Inline this in the document head so the native scrollbar is never painted and then
+ *  swapped once the overlay mounts. It is deliberately bounded: if the bundle never
+ *  arrives, or never mounts a page scrollbar, the marker clears itself and the native
+ *  scrollbar comes back. Without scripting it never runs, so nothing is hidden. */
+export const pageScrollbarPendingAttribute = "data-page-scrollbar-pending";
+export const pageScrollbarPendingTimeout = 5000;
+export const pageScrollbarBootstrap = `(function(){var r=document.documentElement;r.setAttribute("${pageScrollbarPendingAttribute}","");setTimeout(function(){r.removeAttribute("${pageScrollbarPendingAttribute}")},${pageScrollbarPendingTimeout})})()`;
+
 const pageScrollRoots = new WeakMap<ScrollRoot, { users: number; original: string | null }>();
 /** StrictMode-safe ownership of the native scrollbar override. */
 export function acquirePageScrollbar(root: ScrollRoot) {
   const state = pageScrollRoots.get(root) ?? { users: 0, original: root.getAttribute("data-page-scrollbar") };
-  if (state.users++ === 0) { pageScrollRoots.set(root, state); root.setAttribute("data-page-scrollbar", "mounted"); }
+  // Ownership supersedes the bootstrap's pending marker, and dropping it here is what
+  // lets an unmount inside the bootstrap window hand the native scrollbar straight back.
+  if (state.users++ === 0) { pageScrollRoots.set(root, state); root.removeAttribute(pageScrollbarPendingAttribute); root.setAttribute("data-page-scrollbar", "mounted"); }
   let released = false;
   return () => {
     if (released) return;
