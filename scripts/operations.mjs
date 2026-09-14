@@ -51,8 +51,14 @@ export function wrangler(args,input) {
   // argument, artifact or emitted subprocess diagnostic.
   const logs=mkdtempSync(path.join(os.tmpdir(),'cojeev-log-sink-'));
   const sink=path.join(logs,'discard.log');symlinkSync('/dev/null',sink);
-  try {return execFileSync(process.execPath,[canonical,...args],{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false',WRANGLER_LOG:'error',WRANGLER_LOG_PATH:sink,WRANGLER_LOG_SANITIZE:'true'}});}
-  catch {throw new Error(`Cloudflare operation failed (${args[0]}); private output suppressed`);}
+  // Wrangler emits --json results through its normal log channel. Capture that
+  // channel for machine-readable commands; never forward raw stdout/stderr.
+  try {return execFileSync(process.execPath,[canonical,...args],{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false',WRANGLER_LOG:args.includes('--json')?'log':'error',WRANGLER_LOG_PATH:sink,WRANGLER_LOG_SANITIZE:'true'}});}
+  catch(error) {
+    const code=String(error.stderr??'').match(/\[code:\s*(\d{3,6})\]/)?.[1];
+    const operation=[args[0],args[1]&&!args[1].startsWith('-')?args[1]:null].filter(Boolean).join(' ');
+    throw new Error(`Cloudflare operation failed (${operation}${code?`; API code ${code}`:''}); private output suppressed`);
+  }
   finally {rmSync(logs,{recursive:true,force:true});}
 }
 export async function cloudflare(endpoint) {
