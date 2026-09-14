@@ -6,7 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
-import { changedPaths, classify, outputsFor, resolveScope, SUITE_FLAGS } from '../scripts/ci-scope.mjs';
+import { changedPaths, classify, outputsFor, relocationDiff, relocationOnly, releaseDepth, releaseOutputs, resolveReleaseDepth, resolveScope, SUITE_FLAGS } from '../scripts/ci-scope.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 
@@ -701,4 +701,223 @@ test('the command publishes one of the two known reduced scopes when it resolves
   });
   assert.equal(published.scope, 'full', 'a push is release verification whatever it changed');
   assert.ok(['docs', 'checkpoint', 'full'].includes(published.scope), 'only known scopes are ever published');
+});
+
+// ---------------------------------------------------------------------------
+// Release depth: how much a push to main, or a pull request into main, must run.
+
+const depthOf = (paths, diff) => releaseDepth(paths, diff).depth;
+
+test('release depth reduces only documentation and named tooling, and defaults to full', () => {
+  assert.equal(depthOf(['docs/production/note.md', 'README.md', 'OVERHAUL-PLAN.md']), 'docs');
+  assert.equal(depthOf(['docs/quality/evidence/h03-2/after-shape-menu.png']), 'docs');
+  assert.equal(depthOf(['scripts/release.mjs', 'tests/release-live.test.mjs']), 'affected');
+  assert.equal(depthOf(['.github/workflows/verify.yml', 'docs/note.md']), 'affected');
+  // One unknown path anywhere in the change returns the whole run to full.
+  assert.equal(depthOf(['docs/note.md', 'components/ui/button.tsx']), 'full');
+  assert.equal(depthOf(['registry/cojeev/styles/accordion.css']), 'full');
+  assert.equal(depthOf(['package.json']), 'full');
+  assert.equal(depthOf(['scripts/release-config.mjs']), 'full');
+  assert.equal(depthOf(['scripts/run-production-gate.mjs']), 'full', 'the catalogue runner is not exempt by path');
+  assert.equal(depthOf([]), 'full', 'an empty diff proves nothing');
+});
+
+test('licence and generated root reports are never treated as prose', () => {
+  // scripts/build-registry.mjs embeds LICENCE in the NOTICES.txt shipped with
+  // every entry, so a licence change keeps its generator and packaging checks.
+  for (const file of ['LICENCE', 'LICENSE', 'FONT-NOTICES.md', 'GATE.md', 'GATE-MOTION.md', 'GATE-INTERACTIONS.md']) {
+    assert.equal(depthOf([file]), 'full', file);
+  }
+});
+
+test('a path traversal or empty segment is never documentation', () => {
+  for (const file of ['docs/../components/ui/button.tsx', 'docs//note.md', 'docs/./note.md']) {
+    assert.equal(depthOf([file]), 'full', file);
+  }
+});
+
+test('relocation-sensitive files reduce only when the diff is nothing but the relocation', () => {
+  const moved = [
+    '--- a/scripts/run-production-gate.mjs',
+    '+++ b/scripts/run-production-gate.mjs',
+    '@@ -52 +52,2 @@',
+    '-fs.writeFileSync("GATE.md", lines.join("\\n"));',
+    '+fs.mkdirSync("docs/gates", { recursive: true });',
+    '+fs.writeFileSync("docs/gates/GATE.md", lines.join("\\n"));',
+  ].join('\n');
+  assert.ok(relocationOnly(moved));
+  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'docs/note.md'], moved), 'affected');
+  assert.equal(depthOf(['app/getting-started/page.tsx'], [
+    '--- a/app/getting-started/page.tsx',
+    '+++ b/app/getting-started/page.tsx',
+    '@@ -18 +18 @@',
+    '-    <a href={`${site.sourceUrl}/blob/main/INSTALLATION.md`}>',
+    '+    <a href={`${site.sourceUrl}/blob/main/docs/guides/INSTALLATION.md`}>',
+  ].join('\n')), 'affected');
+
+  // One unrelated line in the same file, and the change is a logic change again.
+  const alsoLogic = `${moved}\n@@ -60 +60 @@\n-const shards = 3;\n+const shards = 1;`;
+  assert.equal(relocationOnly(alsoLogic), false);
+  assert.equal(depthOf(['scripts/run-production-gate.mjs'], alsoLogic), 'full');
+  // A missing or empty diff proves nothing and never reduces.
+  assert.equal(relocationOnly(''), false);
+  assert.equal(relocationOnly(undefined), false);
+  assert.equal(depthOf(['scripts/run-production-gate.mjs'], undefined), 'full');
+  // The relocation allowance never spreads to a file outside the named set.
+  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'components/ui/button.tsx'], moved), 'full');
+});
+
+test('paths that own a bounded browser harness select it instead of the catalogue, never nothing', () => {
+  const decision = releaseDepth(['scripts/check-docs.mjs', 'tests/docs-transient-timing.browser.mjs']);
+  assert.equal(decision.depth, 'affected');
+  assert.deepEqual(decision.suites, ['transient-timing']);
+  const outputs = releaseOutputs(decision);
+  assert.equal(outputs.run_catalogue, 'false');
+  assert.equal(outputs.run_transient, 'true', 'browser evidence is reduced, never removed');
+  assert.equal(outputs.run_checks, 'true');
+  assert.equal(outputs.run_release, 'true');
+});
+
+test('release outputs are complete, explicit and fail safe for every depth', () => {
+  const docs = releaseOutputs(releaseDepth(['docs/note.md']));
+  assert.deepEqual(docs, {
+    depth: 'docs', depth_reason: '1 changed path, all documentation',
+    run_checks: 'false', run_release: 'false', run_catalogue: 'false', run_transient: 'false',
+  });
+  const full = releaseOutputs(releaseDepth(['components/ui/button.tsx']));
+  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient']) assert.equal(full[flag], 'true', flag);
+  assert.equal(full.depth, 'full');
+  assert.ok(full.depth_reason.includes('components/ui/button.tsx'));
+  // Every published value is a single line, so no reason can forge another output.
+  for (const value of Object.values(releaseOutputs({ depth: 'full', suites: [], reason: 'a\nb\nc' }))) {
+    assert.ok(!value.includes('\n'), value);
+  }
+});
+
+test('only a push or a pull request can reduce a release run', () => {
+  for (const event of ['workflow_dispatch', 'schedule', 'release', '']) {
+    const decision = resolveReleaseDepth({ event, paths: ['docs/note.md'] });
+    assert.equal(decision.depth, 'full', event);
+    assert.ok(decision.reason.includes('complete release verification'));
+  }
+  assert.equal(resolveReleaseDepth({ event: 'push', paths: ['docs/note.md'] }).depth, 'docs');
+  assert.equal(resolveReleaseDepth({ event: 'pull_request', paths: ['docs/note.md'] }).depth, 'docs');
+  // A failed diff lookup is full, never an empty reduced run.
+  assert.equal(resolveReleaseDepth({ event: 'push', readPaths: () => { throw new Error('no such ref'); } }).depth, 'full');
+});
+
+test('the release command reads a real diff and publishes one of the three known depths', (t) => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'ci-release-depth-'));
+  t.after(() => fs.rmSync(cwd, { recursive: true, force: true }));
+  const git = (...args) => execFileSync('git', args, { cwd, encoding: 'utf8' });
+  git('init', '-q', '-b', 'main');
+  git('config', 'user.email', 'test@example.invalid');
+  git('config', 'user.name', 'Test');
+  fs.mkdirSync(path.join(cwd, 'docs'));
+  fs.mkdirSync(path.join(cwd, 'scripts'));
+  fs.writeFileSync(path.join(cwd, 'docs/note.md'), 'base\n');
+  fs.writeFileSync(path.join(cwd, 'scripts/run-production-gate.mjs'), 'fs.writeFileSync("GATE.md", text);\n');
+  git('add', '-A');
+  git('commit', '-qm', 'base');
+  const base = git('rev-parse', 'HEAD').trim();
+  fs.writeFileSync(path.join(cwd, 'scripts/run-production-gate.mjs'), 'fs.mkdirSync("docs/gates",{recursive:true});\nfs.writeFileSync("docs/gates/GATE.md", text);\n');
+  fs.appendFileSync(path.join(cwd, 'docs/note.md'), 'more prose\n');
+  git('commit', '-qam', 'relocate the generated report');
+  const head = git('rev-parse', 'HEAD').trim();
+
+  const paths = changedPaths({ base, head, cwd });
+  assert.deepEqual(paths.sort(), ['docs/note.md', 'scripts/run-production-gate.mjs']);
+  const diff = relocationDiff({ base, head, paths, cwd });
+  assert.ok(diff.includes('docs/gates/GATE.md'), diff);
+  assert.ok(!diff.includes('docs/note.md'), 'only relocation-sensitive files are read');
+  assert.equal(releaseDepth(paths, diff).depth, 'affected');
+
+  const { result, published } = publish(t, {
+    CI_SCOPE_MODE: 'release', CI_SCOPE_EVENT: 'push',
+    CI_SCOPE_BASE_SHA: 'not-a-commit', CI_SCOPE_HEAD_SHA: 'HEAD',
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(published.depth, 'full', 'an unreadable range is a complete run, never a blank one');
+  assert.ok(['docs', 'affected', 'full'].includes(published.depth));
+  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient']) {
+    assert.ok(['true', 'false'].includes(published[flag]), `${flag}=${published[flag]}`);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// The release job's wiring: what a reduced depth may and may not switch off.
+
+const releaseJob = () => parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+const stepText = step => `${step.name ?? ''} ${step.run ?? ''} ${step.uses ?? ''} ${JSON.stringify(step.with ?? '')}`;
+const findStep = (job, needle) => job.steps.find(step => stepText(step).includes(needle));
+
+test('the release job decides its own depth and exposes no secret to that decision', () => {
+  const verify = releaseJob().jobs.verify;
+  const depth = verify.steps.find(step => step.id === 'depth');
+  assert.ok(depth, 'the release job must select its own depth');
+  assert.equal(depth.run, 'node scripts/ci-scope.mjs');
+  assert.equal(depth.env.CI_SCOPE_MODE, 'release');
+  // Pull request and push values reach the classifier as environment variables
+  // and are never interpolated into a shell command.
+  assert.ok(!/secrets\./.test(JSON.stringify(depth)), 'no secret reaches the depth decision');
+  assert.ok(!/\$\{\{/.test(String(depth.run)), 'no expression is interpolated into the command');
+  // Unchanged: a push, a manual dispatch and any pull request into main reach
+  // this job through conditions that read no output of the scope job, so a
+  // classifier that fails or publishes a blank scope still runs the release job.
+  assert.match(String(verify.if), /github\.event_name != 'pull_request'/);
+  assert.match(String(verify.if), /github\.base_ref == 'main'/);
+  assert.match(String(verify.if), /needs\.scope\.result != 'success'/);
+  assert.equal(verify.needs, 'scope');
+});
+
+test('a reduced depth switches off the catalogue only, never packaging or integrity', () => {
+  const verify = releaseJob().jobs.verify;
+  // Browser catalogue gates: reducible.
+  for (const gate of ['npm run gate', 'npm run gate:mobile', 'npm run gate:marketing', 'npm run gate:smooth-scroll',
+    'run-reporting-browser.mjs', 'npm run analytics:browser', 'tests/analytics.browser.mjs']) {
+    const step = findStep(verify, gate);
+    assert.ok(step, gate);
+    assert.match(String(step.if), /steps\.depth\.outputs\.run_catalogue == 'true'/, gate);
+  }
+  // Packaging, artifact integrity and consumer installation: never reducible by
+  // the catalogue flag, only absent when nothing deployable changed at all.
+  for (const gate of ['build-pair', 'release-csp.mjs', 'release-install.mjs']) {
+    const step = findStep(verify, gate);
+    assert.ok(step, gate);
+    assert.match(String(step.if), /steps\.depth\.outputs\.run_release == 'true'/, gate);
+    assert.ok(!/run_catalogue/.test(String(step.if)), `${gate} must not depend on the catalogue flag`);
+  }
+  const upload = verify.steps.find(step => JSON.stringify(step.with ?? {}).includes('release-${{ github.sha }}'));
+  assert.match(String(upload.if), /steps\.depth\.outputs\.run_release == 'true'/);
+});
+
+test('paths with their own harness still run real browser evidence at a reduced depth', () => {
+  const step = findStep(releaseJob().jobs.verify, 'docs-clock-isolation.browser.mjs');
+  assert.ok(step, 'the bounded transient/clock harness must exist in the release job');
+  assert.match(String(step.if), /run_transient == 'true'/);
+  assert.match(String(step.if), /run_catalogue != 'true'/, 'the catalogue already renders these cases');
+  for (const control of ['--negative', '--probe']) assert.ok(step.run.includes(control), control);
+});
+
+test('a documentation-only release run installs, builds and deploys nothing', () => {
+  const workflow = releaseJob();
+  const verify = workflow.jobs.verify;
+  for (const gate of ['npm ci', 'npm run lint', 'npm test', 'npm run reporting:test', 'npm run registry-host:test']) {
+    const step = verify.steps.find(candidate => candidate.run === gate);
+    assert.ok(step, gate);
+    assert.match(String(step.if), /steps\.depth\.outputs\.run_checks == 'true'/, gate);
+  }
+  // `npm ci` is gated on run_checks while the release build is gated on
+  // run_release, so the two must never diverge: a build without dependencies
+  // would fail on esbuild, and installing for a prose change wastes the runner.
+  for (const paths of [['docs/note.md'], ['scripts/release.mjs'], ['components/ui/button.tsx']]) {
+    const outputs = releaseOutputs(releaseDepth(paths));
+    assert.equal(outputs.run_checks, outputs.run_release, paths.join(','));
+  }
+  const diff = verify.steps.find(step => String(step.run).includes('git diff --check'));
+  assert.ok(diff, 'a documentation change still gets its diff check');
+  assert.match(String(diff.if), /run_checks != 'true'/);
+  for (const name of ['beta', 'production']) {
+    assert.match(String(workflow.jobs[name].if), /needs\.verify\.outputs\.run_release == 'true'/, name);
+  }
 });

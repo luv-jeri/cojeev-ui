@@ -182,6 +182,174 @@ export function resolveScope({ event, baseRef, paths, readPaths }) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Release depth.
+//
+// A second, deliberately narrower question than the checkpoint allowlist above:
+// how much must a RELEASE run execute? A release run is a push to `main` or a
+// pull request into `main`, and it is the only thing that packages, publishes
+// and deploys. Three answers:
+//
+//   full      the complete job, including the browser component catalogue. The
+//             default for anything unknown, shared, uncertain or manual.
+//   affected  everything except the browser catalogue gates. Selected only for
+//             files that cannot change a rendered component, a style, a registry
+//             payload or a build output: documentation, and the release,
+//             deployment and CI tooling named below by exact path. Lint, type
+//             checking, the Node and Worker suites, the clean-source release
+//             pair, artifact CSP validation, fresh consumer installation,
+//             artifact upload, environment approval and live health all still
+//             run, so the release is still packaged and verified.
+//   docs      documentation only: the diff check, and nothing else. No
+//             dependency install, no build, no release artifact and no
+//             deployment, because nothing a browser or a Worker serves changed.
+//
+// This never reduces a pull request that is not into `main` — that is the
+// checkpoint allowlist's job — and never reduces a manual dispatch, which stays
+// the explicit way to demand a complete run.
+const DOCUMENTATION_SUFFIX = /\.(?:md|txt|png|jpe?g|svg|webp)$/;
+const CATALOGUE_EXEMPT = new Set([
+  // The workflows themselves and the pinned external deployment runtime.
+  ".github/workflows/verify.yml",
+  ".github/workflows/health.yml",
+  ".github/workflows/recovery.yml",
+  ".github/workflows/rollback.yml",
+  ".github/wrangler-runtime/package.json",
+  ".github/wrangler-runtime/package-lock.json",
+  // The classifier and its tests.
+  "scripts/ci-scope.mjs",
+  "tests/ci-scope.test.mjs",
+  // Release packaging, deployment and operations. None of these is imported by
+  // the site, a component or the registry build, so no rendered surface can
+  // change with them. `scripts/release-config.mjs`, `scripts/release-manifest.mjs`,
+  // `scripts/release-csp.mjs`, `scripts/release-install.mjs` and
+  // `scripts/run-production-gate.mjs` are deliberately absent: the first four
+  // decide what the built site contains or how it is validated, and the last is
+  // the catalogue runner itself.
+  "scripts/release.mjs",
+  "scripts/release-rollback-run.mjs",
+  "scripts/operations.mjs",
+  "scripts/operations-health.mjs",
+  "scripts/deployment-diagnostics.mjs",
+  "tests/release-live.test.mjs",
+  "tests/operations.test.mjs",
+]);
+
+// Root markdown that is NOT prose. `GATE.md`, `GATE-MOTION.md` and
+// `GATE-INTERACTIONS.md` are generated gate reports that the gate tooling writes
+// and reads back; `FONT-NOTICES.md` carries the bundled fonts' SIL licence
+// obligation and is listed in the public snapshot. Everything else at the root
+// was checked: no string literal naming a root `.md` file appears in app,
+// component, registry, worker, script or gate source except those reports, so no
+// other root markdown file is read, embedded or rendered.
+// `LICENCE`/`LICENSE` are deliberately absent from this rule entirely:
+// `scripts/build-registry.mjs` embeds `LICENCE` into the NOTICES.txt shipped with
+// every registry entry, so a licence change must keep its generator, packaging
+// and consumer-installation checks and runs the complete job.
+const GENERATED_ROOT_MARKDOWN = new Set(["GATE.md", "GATE-MOTION.md", "GATE-INTERACTIONS.md", "FONT-NOTICES.md"]);
+function documentation(file) {
+  const segments = file.split("/");
+  if (segments.some(segment => segment === "" || segment === "." || segment === "..")) return false;
+  if (segments.length === 1) return file.endsWith(".md") && !GENERATED_ROOT_MARKDOWN.has(file);
+  return segments[0] === "docs" && DOCUMENTATION_SUFFIX.test(file);
+}
+
+// Paths that must keep real browser evidence without running the whole
+// catalogue: their own bounded harness renders the cases they own. These are the
+// same files the checkpoint allowlist above routes to `transient-timing`, and
+// they select that harness here too rather than skipping browser evidence.
+const FOCUSED_BROWSER = new Map([
+  ["scripts/check-docs.mjs", "transient-timing"],
+  ["scripts/docs-behaviors-details.mjs", "transient-timing"],
+  ["scripts/docs-transient-paint.mjs", "transient-timing"],
+  ["scripts/docs-harness-fingerprint.mjs", "transient-timing"],
+  ["tests/docs-transient-timing.browser.mjs", "transient-timing"],
+  ["tests/docs-clock-isolation.browser.mjs", "transient-timing"],
+]);
+
+// Files that MUST keep full catalogue verification for any real change, but whose
+// one documented cleanup — moving a generated report or a documentation link to
+// its new home — cannot alter a rendered component. A path rule alone cannot tell
+// a relocation from a logic change, so these are decided on the actual diff: every
+// added and removed line must name a moved destination, or be the one recursive
+// mkdir a writer needs before writing into a directory that may not exist yet.
+// Anything else in the same file returns the change to the full job.
+const RELOCATION_SENSITIVE = new Set([
+  "scripts/run-production-gate.mjs",
+  "scripts/append-gate-report.mjs",
+  "scripts/gate-motion-report.mjs",
+  "scripts/gate-motion.mjs",
+  "apps/gate/run.mjs",
+  "tests/production-gate.test.mjs",
+  "app/getting-started/page.tsx",
+]);
+const RELOCATION_LINE = /(?:GATE\.md|GATE-MOTION\.md|INSTALLATION\.md|BASELINE-STATUS\.md|mkdirSync)/;
+export function relocationOnly(diff) {
+  const changed = String(diff ?? "").split("\n")
+    .filter(line => /^[-+]/.test(line) && !/^(?:\+\+\+|---)/.test(line));
+  // An empty or unreadable diff proves nothing, so it is not a relocation.
+  return changed.length > 0 && changed.every(line => RELOCATION_LINE.test(line));
+}
+
+export function releaseDepth(paths, diff) {
+  if (!paths.length) return { depth: "full", suites: [], reason: "empty diff" };
+  const relocation = paths.some(file => RELOCATION_SENSITIVE.has(file)) && relocationOnly(diff);
+  const suites = new Set();
+  let depth = "docs";
+  for (const file of paths) {
+    if (documentation(file)) continue;
+    if (FOCUSED_BROWSER.has(file)) { depth = "affected"; suites.add(FOCUSED_BROWSER.get(file)); continue; }
+    if (CATALOGUE_EXEMPT.has(file)) { depth = "affected"; continue; }
+    if (relocation && RELOCATION_SENSITIVE.has(file)) { depth = "affected"; continue; }
+    return { depth: "full", suites: [], reason: oneLine(`not exempt from release catalogue verification: ${file}`) };
+  }
+  const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;
+  if (depth === "docs") return { depth, suites: [], reason: `${count}, all documentation` };
+  return {
+    depth,
+    suites: [...suites],
+    reason: `${count}, all documentation, named release tooling${relocation ? ", verified path relocation" : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
+  };
+}
+
+export function resolveReleaseDepth({ event, paths, diff, readPaths, readDiff }) {
+  // A manual dispatch is the explicit way to demand a complete run, so it never
+  // reduces. Everything that is not a push or a pull request is unknown here.
+  if (event !== "push" && event !== "pull_request") return { depth: "full", suites: [], reason: `${event} runs complete release verification` };
+  try {
+    const files = paths ?? readPaths();
+    return releaseDepth(files, diff ?? readDiff?.(files));
+  } catch (error) {
+    return { depth: "full", suites: [], reason: oneLine(`diff lookup failed: ${error.message}`) };
+  }
+}
+
+/** Unified diff of only the relocation-sensitive files in this change. */
+export function relocationDiff({ base, head, paths, cwd = process.cwd() }) {
+  const files = paths.filter(file => RELOCATION_SENSITIVE.has(file));
+  if (!files.length) return "";
+  const git = args => execFileSync("git", args, { cwd, encoding: "utf8", maxBuffer: 16 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] });
+  const mergeBase = git(["merge-base", base, head]).trim();
+  return git(["diff", "--no-renames", "-U0", mergeBase, head, "--", ...files]);
+}
+
+export function releaseOutputs(decision) {
+  return {
+    depth: decision.depth,
+    depth_reason: oneLine(decision.reason) || "unspecified",
+    // Documentation runs the diff check alone: no install, no suites.
+    run_checks: String(decision.depth !== "docs"),
+    // Packaging, artifact integrity, consumer installation, artifact upload and
+    // every deployment job. Off only when nothing deployable changed.
+    run_release: String(decision.depth !== "docs"),
+    // The browser component catalogue and the other browser gates.
+    run_catalogue: String(decision.depth === "full"),
+    // A bounded browser harness instead of the catalogue: real browser evidence
+    // for the few paths that own one, never zero browser evidence for them.
+    run_transient: String(decision.depth === "full" || (decision.suites ?? []).includes("transient-timing")),
+  };
+}
+
 export const SUITE_FLAGS = {
   run_prose: ["prose"],
   run_quick: ["quick"],
@@ -211,6 +379,25 @@ export function outputsFor(decision) {
 
 function main() {
   const environment = process.env;
+  if (environment.CI_SCOPE_MODE === "release") {
+    let decision;
+    try {
+      const range = { base: environment.CI_SCOPE_BASE_SHA, head: environment.CI_SCOPE_HEAD_SHA };
+      decision = resolveReleaseDepth({
+        event: environment.CI_SCOPE_EVENT,
+        readPaths: () => changedPaths(range),
+        readDiff: paths => relocationDiff({ ...range, paths }),
+      });
+    } catch (error) {
+      decision = { depth: "full", suites: [], reason: oneLine(`release depth selection failed: ${error.message}`) };
+    }
+    const outputs = releaseOutputs(decision);
+    for (const [key, value] of Object.entries(outputs)) console.log(`${key}=${value}`);
+    if (environment.GITHUB_OUTPUT) {
+      fs.appendFileSync(environment.GITHUB_OUTPUT, Object.entries(outputs).map(([key, value]) => `${key}=${value}\n`).join(""));
+    }
+    return;
+  }
   let decision;
   try {
     decision = resolveScope({
