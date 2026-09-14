@@ -182,6 +182,243 @@ export function resolveScope({ event, baseRef, paths, readPaths }) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Release depth.
+//
+// A second, deliberately narrower question than the checkpoint allowlist above:
+// how much must a RELEASE run execute? A release run is a push to `main` or a
+// pull request into `main`, and it is the only thing that packages, publishes
+// and deploys. Three answers:
+//
+//   full      the complete job, including the browser component catalogue. The
+//             default for anything unknown, shared, uncertain or manual.
+//   affected  everything except the browser catalogue gates. Selected only for
+//             files that cannot change a rendered component, a style, a registry
+//             payload or a build output: documentation, and the release,
+//             deployment and CI tooling named below by exact path. Lint, type
+//             checking, the Node and Worker suites, the clean-source release
+//             pair, artifact CSP validation, fresh consumer installation,
+//             artifact upload, environment approval and live health all still
+//             run, so the release is still packaged and verified.
+//   docs      documentation only: the diff check, and nothing else. No
+//             dependency install, no build, no release artifact and no
+//             deployment, because nothing a browser or a Worker serves changed.
+//
+// This never reduces a pull request that is not into `main` — that is the
+// checkpoint allowlist's job — and never reduces a manual dispatch, which stays
+// the explicit way to demand a complete run.
+const DOCUMENTATION_SUFFIX = /\.(?:md|txt|png|jpe?g|svg|webp)$/;
+const CATALOGUE_EXEMPT = new Set([
+  // The workflows themselves and the pinned external deployment runtime.
+  ".github/workflows/verify.yml",
+  ".github/workflows/health.yml",
+  ".github/workflows/recovery.yml",
+  ".github/workflows/rollback.yml",
+  ".github/wrangler-runtime/package.json",
+  ".github/wrangler-runtime/package-lock.json",
+  // The classifier and its tests.
+  "scripts/ci-scope.mjs",
+  "tests/ci-scope.test.mjs",
+  // Release packaging, deployment and operations. None of these is imported by
+  // the site, a component or the registry build, so no rendered surface can
+  // change with them. `scripts/release-config.mjs`, `scripts/release-manifest.mjs`,
+  // `scripts/release-csp.mjs`, `scripts/release-install.mjs` and
+  // `scripts/run-production-gate.mjs` are deliberately absent: the first four
+  // decide what the built site contains or how it is validated, and the last is
+  // the catalogue runner itself.
+  "scripts/release.mjs",
+  "scripts/release-rollback-run.mjs",
+  "scripts/operations.mjs",
+  "scripts/operations-health.mjs",
+  "scripts/deployment-diagnostics.mjs",
+  "tests/release-live.test.mjs",
+  "tests/operations.test.mjs",
+]);
+
+// Root markdown that is NOT prose. `LICENCE`/`LICENSE` carry no extension and
+// already fall through to the complete job; `LICENSE.md`, `LICENCE.md` and
+// `FONT-NOTICES.md` must join them, because `scripts/build-registry.mjs` embeds
+// the licence in the NOTICES.txt shipped with every registry entry and the font
+// notices carry the bundled fonts' SIL obligation. The generated gate reports
+// are deliberately NOT excluded: a gate report is evidence a gate writes, and
+// changing, moving or deleting one cannot alter a rendered surface.
+const LICENCE_MARKDOWN = new Set(["LICENSE.md", "LICENCE.md", "FONT-NOTICES.md"]);
+// The design handoff is read by the gate fixtures — `apps/gate/fixture-semantic-map.json`
+// names contract.md files under it — so its markdown is not prose. Other
+// `reference/` prose is.
+const REFERENCE_SOURCE = "reference/cojeev-handoff-v4/";
+function documentation(file) {
+  const segments = file.split("/");
+  if (segments.some(segment => segment === "" || segment === "." || segment === "..")) return false;
+  if (segments.length === 1) return file.endsWith(".md") && !LICENCE_MARKDOWN.has(file);
+  if (segments[0] === "docs") return DOCUMENTATION_SUFFIX.test(file);
+  return segments[0] === "reference" && file.endsWith(".md") && !file.startsWith(REFERENCE_SOURCE);
+}
+
+// Paths that must keep real browser evidence without running the whole
+// catalogue: their own bounded harness renders the cases they own. These are the
+// same files the checkpoint allowlist above routes to `transient-timing`, and
+// they select that harness here too rather than skipping browser evidence.
+const FOCUSED_BROWSER = new Map([
+  ["scripts/check-docs.mjs", "transient-timing"],
+  ["scripts/docs-behaviors-details.mjs", "transient-timing"],
+  ["scripts/docs-transient-paint.mjs", "transient-timing"],
+  ["scripts/docs-harness-fingerprint.mjs", "transient-timing"],
+  ["tests/docs-transient-timing.browser.mjs", "transient-timing"],
+  ["tests/docs-clock-isolation.browser.mjs", "transient-timing"],
+]);
+
+// Files that MUST keep full catalogue verification for any real change, but whose
+// one documented cleanup — moving a generated report or a documentation link to
+// its new home — cannot alter a rendered component. A path rule alone cannot tell
+// a relocation from a logic change, so these are decided on the actual diff: every
+// removed line must be rewritten by a reviewed substitution below and reproduce an
+// added line character for character, whitespace included, and every added line
+// without a removed counterpart must be the recursive mkdir, or its import, that a
+// writer needs before writing into a directory that may not exist yet. Anything
+// else in the same file — including reordering or re-indenting lines that no
+// substitution touches — returns the change to the full job.
+const RELOCATION_SENSITIVE = new Set([
+  "scripts/run-production-gate.mjs",
+  "scripts/append-gate-report.mjs",
+  "scripts/gate-motion-report.mjs",
+  "scripts/gate-motion.mjs",
+  "apps/gate/run.mjs",
+  "tests/production-gate.test.mjs",
+  "app/getting-started/page.tsx",
+]);
+// The exact reviewed substitutions this relocation performs. A removed line is
+// rewritten with these and must then equal an added line character for character:
+// a substring test would let a long JSX or template line change anything at all
+// while still mentioning a moved filename.
+const RELOCATIONS = [
+  ["GATE-MOTION.md", "docs/gates/GATE-MOTION.md"],
+  ["GATE.md", "docs/gates/GATE.md"],
+  ["INSTALLATION.md", "docs/guides/INSTALLATION.md"],
+  ["(BASELINE-STATUS.md)", "(../archive/status/BASELINE-STATUS.md)"],
+  ["(PHASE-0-DECISION.md)", "(../../PHASE-0-DECISION.md)"],
+  ["(reference/cojeev-handoff-v4/", "(../../reference/cojeev-handoff-v4/"],
+  ["(../../RELEASE-0.2.0.md)", "(../../docs/archive/release/RELEASE-0.2.0.md)"],
+];
+// The only added lines allowed to have no removed counterpart: creating the
+// destination directory, and the import one of them needs.
+const RELOCATION_INSERTIONS = [
+  /^import path from ['"]node:path['"];?$/,
+  /^fs\.mkdirSync\(.*\{\s*recursive:\s*true\s*\}\);?$/,
+];
+
+/**
+ * True only when every removed line is actually rewritten by the reviewed
+ * substitutions above and, so rewritten, reproduces an added line exactly —
+ * whitespace included — and every unmatched added line is a reviewed insertion.
+ * Anything else is a code change and runs the full job.
+ */
+/** Split a unified diff into one text per file, so one file cannot excuse another. */
+export function splitDiff(diff) {
+  const files = new Map();
+  let current;
+  for (const line of String(diff ?? "").split("\n")) {
+    const header = line.match(/^diff --git a\/(.+?) b\/(.+)$/);
+    if (header) { current = header[2]; files.set(current, []); continue; }
+    if (current) files.get(current).push(line);
+  }
+  return new Map([...files].map(([file, lines]) => [file, lines.join("\n")]));
+}
+
+export function relocationOnly(diff) {
+  const removed = [], added = [];
+  for (const line of String(diff ?? "").split("\n")) {
+    // Header prefixes only. `+++`/`---` carry their trailing space: without it a
+    // source line beginning with `++` or `--` at column 0 would be dropped from
+    // the comparison entirely and could ride along unreviewed.
+    if (/^(?:\+\+\+ |--- |@@|diff |index |new file|deleted file|similarity|rename )/.test(line)) continue;
+    // Indentation is kept. Re-indenting changes what a template literal or a
+    // rendered page emits, so it is a code change, not a relocation.
+    if (line.startsWith("-")) removed.push(line.slice(1));
+    else if (line.startsWith("+")) added.push(line.slice(1));
+  }
+  if (!removed.length && !added.length) return false;
+  const rewrite = line => RELOCATIONS.reduce((value, [from, to]) => value.split(from).join(to), line);
+  const remaining = [...added];
+  for (const line of removed) {
+    const rewritten = rewrite(line);
+    // A removed line no reviewed substitution touches is not part of a
+    // relocation: reordering or re-indenting existing lines is a code change,
+    // and an untouched line would otherwise match its own copy on the other side.
+    if (rewritten === line) return false;
+    const index = remaining.indexOf(rewritten);
+    // A removed line whose rewrite reproduces nothing is a deletion or an edit,
+    // not a relocation.
+    if (index === -1) return false;
+    remaining.splice(index, 1);
+  }
+  // Only the insertions ignore indentation: a mkdir added inside a function is
+  // legitimately indented, while its text is still matched exactly.
+  return remaining.every(line => RELOCATION_INSERTIONS.some(pattern => pattern.test(line.trim())));
+}
+
+export function releaseDepth(paths, diff) {
+  if (!paths.length) return { depth: "full", suites: [], reason: "empty diff" };
+  // Judged per file: one file's unrelated edit must not excuse another's, and the
+  // reason must name the file that actually needs the complete job.
+  const perFile = splitDiff(diff);
+  let relocation = false;
+  const suites = new Set();
+  let depth = "docs";
+  for (const file of paths) {
+    if (documentation(file)) continue;
+    if (FOCUSED_BROWSER.has(file)) { depth = "affected"; suites.add(FOCUSED_BROWSER.get(file)); continue; }
+    if (CATALOGUE_EXEMPT.has(file)) { depth = "affected"; continue; }
+    if (RELOCATION_SENSITIVE.has(file) && relocationOnly(perFile.get(file))) { depth = "affected"; relocation = true; continue; }
+    return { depth: "full", suites: [], reason: oneLine(`not exempt from release catalogue verification: ${file}`) };
+  }
+  const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;
+  if (depth === "docs") return { depth, suites: [], reason: `${count}, all documentation` };
+  return {
+    depth,
+    suites: [...suites],
+    reason: `${count}, all documentation, named release tooling${relocation ? ", verified path relocation" : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
+  };
+}
+
+export function resolveReleaseDepth({ event, paths, diff, readPaths, readDiff }) {
+  // A manual dispatch is the explicit way to demand a complete run, so it never
+  // reduces. Everything that is not a push or a pull request is unknown here.
+  if (event !== "push" && event !== "pull_request") return { depth: "full", suites: [], reason: `${event} runs complete release verification` };
+  try {
+    const files = paths ?? readPaths();
+    return releaseDepth(files, diff ?? readDiff?.(files));
+  } catch (error) {
+    return { depth: "full", suites: [], reason: oneLine(`diff lookup failed: ${error.message}`) };
+  }
+}
+
+/** Unified diff of only the relocation-sensitive files in this change. */
+export function relocationDiff({ base, head, paths, cwd = process.cwd() }) {
+  const files = paths.filter(file => RELOCATION_SENSITIVE.has(file));
+  if (!files.length) return "";
+  const git = args => execFileSync("git", args, { cwd, encoding: "utf8", maxBuffer: 16 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] });
+  const mergeBase = git(["merge-base", base, head]).trim();
+  return git(["diff", "--no-renames", "-U0", mergeBase, head, "--", ...files]);
+}
+
+export function releaseOutputs(decision) {
+  return {
+    depth: decision.depth,
+    depth_reason: oneLine(decision.reason) || "unspecified",
+    // Documentation runs the diff check alone: no install, no suites.
+    run_checks: String(decision.depth !== "docs"),
+    // Packaging, artifact integrity, consumer installation, artifact upload and
+    // every deployment job. Off only when nothing deployable changed.
+    run_release: String(decision.depth !== "docs"),
+    // The browser component catalogue and the other browser gates.
+    run_catalogue: String(decision.depth === "full"),
+    // A bounded browser harness instead of the catalogue: real browser evidence
+    // for the few paths that own one, never zero browser evidence for them.
+    run_transient: String(decision.depth === "full" || (decision.suites ?? []).includes("transient-timing")),
+  };
+}
+
 export const SUITE_FLAGS = {
   run_prose: ["prose"],
   run_quick: ["quick"],
@@ -211,6 +448,25 @@ export function outputsFor(decision) {
 
 function main() {
   const environment = process.env;
+  if (environment.CI_SCOPE_MODE === "release") {
+    let decision;
+    try {
+      const range = { base: environment.CI_SCOPE_BASE_SHA, head: environment.CI_SCOPE_HEAD_SHA };
+      decision = resolveReleaseDepth({
+        event: environment.CI_SCOPE_EVENT,
+        readPaths: () => changedPaths(range),
+        readDiff: paths => relocationDiff({ ...range, paths }),
+      });
+    } catch (error) {
+      decision = { depth: "full", suites: [], reason: oneLine(`release depth selection failed: ${error.message}`) };
+    }
+    const outputs = releaseOutputs(decision);
+    for (const [key, value] of Object.entries(outputs)) console.log(`${key}=${value}`);
+    if (environment.GITHUB_OUTPUT) {
+      fs.appendFileSync(environment.GITHUB_OUTPUT, Object.entries(outputs).map(([key, value]) => `${key}=${value}\n`).join(""));
+    }
+    return;
+  }
   let decision;
   try {
     decision = resolveScope({
