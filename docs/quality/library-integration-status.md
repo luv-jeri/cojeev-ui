@@ -21,6 +21,12 @@ motion requests an immediate result, the stationary selected trigger retains
 that same readable paint relationship. Light treatment and the underline,
 notebook, and rail selection rules are unchanged.
 
+15 September (C01-1): every treatment now has its own travelling surface —
+ink lozenge, beige lens, pink baseline marker, three-sided notebook sheet open
+into its panel, vertical rail index line — and phone-width notebook sheets keep
+their labels. See `2026-09-15-tree-tabs-craft.md`; owner visual approval
+pending.
+
 `TabsTrigger` now owns inline icon-and-text alignment with the shared 8px gap.
 The documentation example composes the existing decorative `Icon` beside its
 text label and leaves the SVG hidden from the accessible name. Text-only, long,
@@ -59,6 +65,14 @@ empty, retry and truncation feedback, focus recovery and consumer-owned data
 preserve the approved boundary. C-03 is satisfied by composing this Tree from
 the existing row, icon and control vocabulary; no second decorative component
 or unsupported ARIA treegrid contract was added.
+
+15 September (C01-1): the docs page now imports `tree.css`; the RTL arrow
+works in the real preview after declaring modern build targets (Lightning CSS
+had compiled `:dir()` away) and reading direction from the tree itself. The
+Tree is redesigned as an index card with ruled elbow guides and one travelling
+soft-pink slip through the shared flow group; loading, empty and failed
+branches are separate variants. See `2026-09-15-tree-tabs-craft.md`; owner
+visual approval pending.
 
 The focused source and browser checks passed, including controlled state,
 keyboard behavior, quiet modes, disabled paint, narrow layout and RTL. Five
@@ -156,9 +170,9 @@ deployment, merge or owner visual approval occurred in this checkpoint.
 | ID | Status | Evidence or retained boundary |
 | --- | --- | --- |
 | L-01 | Fixed in qualified source | Focused readiness/semantic-input browser regression |
-| L-02 | Fixed in qualified source | Focused dark travelling Tabs browser regression |
+| L-02 | Fixed in qualified source; treatments refined 15 September | Focused dark travelling Tabs browser regression; notebook/rail travel test; docs matrix |
 | L-03 | Documented consumer boundary | Consumer busy presentation and startup frame still require app evidence |
-| C-01 | Implemented and candidate-installed | Controlled native disclosure-list Tree tests and fixture captures |
+| C-01 | Implemented and candidate-installed; docs stylesheet and RTL repaired, redesigned 15 September | Tree unit and browser tests, docs matrix, `evidence/library-integration/tree/2026-09-15/` |
 | C-02 | Implemented | Existing TabsTrigger composes decorative Icon and text |
 | C-03 | Implemented through C-01 composition | Existing Item/Icon/control vocabulary; no duplicate family |
 | I-01 | Fixed in qualified source | Explicit public return annotations and declaration fixture |
