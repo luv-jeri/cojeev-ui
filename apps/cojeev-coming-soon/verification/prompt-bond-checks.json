@@ -1,5 +1,5 @@
 {
- "ran": "2026-09-14T20:07:33.389Z",
+ "ran": "2026-09-14T20:52:36.120Z",
  "page": "http://127.0.0.1:4345/ (home page)",
  "suites": [
   "lifecycle (round 4 suite, round-6 chrome: home page, wordmark + Coming soon, countdown eyebrow, theme, pause, hidden, replay, tray, other entries)",
@@ -179,13 +179,13 @@
    "suite": "details",
    "name": "memory things visible with a title, a name and a note",
    "pass": true,
-   "detail": "[[\"team decisions\",\"memory\",\"1.00\",157],[\"last launch notes\",\"memory\",\"1.00\",169],[\"\",\"memory\",\"0.00\",115],[\"a teammate\",\"teammate\",\"1.00\",147],[\"a subagent\",\"subagent\",\"1.00\",156]]"
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\",159],[\"Mira\",\"teammate\",\"1.00\",147],[\"last launch notes\",\"memory\",\"1.00\",171],[\"changelog\",\"memory\",\"1.00\",127],[\"date checker\",\"subagent\",\"1.00\",156],[\"\",\"memory\",\"0.00\",0],[\"Arun\",\"teammate\",\"1.00\",158],[\"this week’s threads\",\"memory\",\"1.00\",186],[\"deploy log\",\"memory\",\"1.00\",126],[\"board reader\",\"subagent\",\"1.00\",155],[\"runbook\",\"memory\",\"1.00\",165],[\"\",\"memory\",\"0.00\",0]]"
   },
   {
    "suite": "details",
    "name": "memory things float far out from the panel, fully on screen",
    "pass": true,
-   "detail": "{\"gap\":217,\"left\":48}"
+   "detail": "{\"gap\":166,\"left\":102}"
   },
   {
    "suite": "details",
@@ -195,7 +195,7 @@
   },
   {
    "suite": "details",
-   "name": "row 1 shows the brain glyph and the two recalled names in bold",
+   "name": "row 1 is a sentence with the brain glyph and the two recalled names in bold",
    "pass": true,
    "detail": ""
   },
@@ -207,9 +207,9 @@
   },
   {
    "suite": "details",
-   "name": "teammate avatar + subagent capsule float on the right",
+   "name": "teammate and subagent blobs float in the environment",
    "pass": true,
-   "detail": "[[\"team decisions\",\"memory\",\"0.00\"],[\"last launch notes\",\"memory\",\"0.00\"],[\"\",\"memory\",\"0.00\"],[\"a teammate\",\"teammate\",\"1.00\"],[\"a subagent\",\"subagent\",\"1.00\"]]"
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\"],[\"Mira\",\"teammate\",\"1.00\"],[\"last launch notes\",\"memory\",\"1.00\"],[\"changelog\",\"memory\",\"1.00\"],[\"date checker\",\"subagent\",\"1.00\"],[\"\",\"memory\",\"0.00\"],[\"Arun\",\"teammate\",\"1.00\"],[\"this week’s threads\",\"memory\",\"1.00\"],[\"deploy log\",\"memory\",\"1.00\"],[\"board reader\",\"subagent\",\"1.00\"],[\"runbook\",\"memory\",\"1.00\"],[\"\",\"memory\",\"0.00\"]]"
   },
   {
    "suite": "details",
@@ -237,9 +237,9 @@
   },
   {
    "suite": "details",
-   "name": "the kept thing is placed in the environment and floats",
+   "name": "the kept memory and the report are placed in the environment and float",
    "pass": true,
-   "detail": "[\"launch plan v1\",\"kept\",1]"
+   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.986312]"
   },
   {
    "suite": "details",
@@ -263,7 +263,7 @@
    "suite": "details",
    "name": "previous exchange folds above the new bubble",
    "pass": true,
-   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":356.6875,\"sentTop\":378.6875}"
+   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":355.6875,\"sentTop\":375.6875}"
   },
   {
    "suite": "details",
@@ -281,7 +281,7 @@
    "suite": "details",
    "name": "second story recalls what was kept, from where it floats",
    "pass": true,
-   "detail": "[[\"changelog\",\"1.00\"],[\"\",\"0.00\"],[\"launch plan v1\",\"1.00\"],[\"a teammate\",\"1.00\"],[\"a subagent\",\"1.00\"]]"
+   "detail": "[[\"diff collector\",\"1.00\"],[\"Mira\",\"1.00\"],[\"last launch notes\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"Arun\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"Launch timeline\",\"1.00\"]]"
   },
   {
    "suite": "details",
@@ -347,13 +347,13 @@
    "suite": "details",
    "name": "quiet: memory cards readable at the still",
    "pass": true,
-   "detail": "[[\"team decisions\",1],[\"last launch notes\",1],[\"\",0],[\"a teammate\",1],[\"a subagent\",1]]"
+   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"changelog\",1],[\"date checker\",1],[\"\",0],[\"Arun\",1],[\"this week’s threads\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"\",0]]"
   },
   {
    "suite": "details",
-   "name": "quiet: agent cards readable at the still",
+   "name": "quiet: agent blobs readable at the still",
    "pass": true,
-   "detail": "[[\"team decisions\",0],[\"last launch notes\",0],[\"\",0],[\"a teammate\",1],[\"a subagent\",1]]"
+   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"changelog\",1],[\"date checker\",1],[\"\",0],[\"Arun\",1],[\"this week’s threads\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"\",0]]"
   },
   {
    "suite": "details",
@@ -383,7 +383,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",32,0],[\"1.00\",32,7],[\"0.00\",32,2],[\"1.00\",32,363],[\"1.00\",40,345]]"
+   "detail": "[[\"1.00\",32,5],[\"1.00\",31,12],[\"1.00\",32,3],[\"1.00\",32,16],[\"1.00\",38,-3],[\"0.00\",0,0],[\"1.00\",31,338],[\"1.00\",32,361],[\"1.00\",32,350],[\"1.00\",38,360],[\"1.00\",32,338],[\"0.00\",0,0]]"
   },
   {
    "suite": "details",
@@ -401,7 +401,7 @@
    "suite": "details",
    "name": "mobile: rows and fold fit above the composer",
    "pass": true,
-   "detail": "{\"ok\":true,\"bottoms\":[304,338,362,383,404,447,471,499],\"formTop\":502}"
+   "detail": "{\"ok\":true,\"bottoms\":[304,333,352,372,392,457,476,502],\"formTop\":502}"
   },
   {
    "suite": "details",
@@ -423,9 +423,9 @@
   },
   {
    "suite": "details",
-   "name": "light: the environment is populated at rest: two memories left, a teammate and a subagent right, each titled",
+   "name": "light: ten titled blobs float at rest (memories, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[{\"kind\":\"memory\",\"o\":1,\"x\":98,\"t\":\"Memory\"},{\"kind\":\"memory\",\"o\":1,\"x\":107,\"t\":\"Memory\"},{\"kind\":\"memory\",\"o\":0,\"x\":105,\"t\":\"Memory\"},{\"kind\":\"teammate\",\"o\":1,\"x\":1332,\"t\":\"Teammate\"},{\"kind\":\"subagent\",\"o\":1,\"x\":1322,\"t\":\"Subagent\"}]"
+   "detail": "[[\"memory\",62,222,\"blob\"],[\"teammate\",107,256,\"blob\"],[\"memory\",49,222,\"blob\"],[\"memory\",93,221,\"blob\"],[\"subagent\",57,215,\"blob\"],[\"teammate\",1213,1371,\"blob\"],[\"memory\",1212,1400,\"blob\"],[\"memory\",1179,1307,\"blob\"],[\"subagent\",1221,1375,\"blob\"],[\"memory\",1216,1384,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -441,39 +441,57 @@
   },
   {
    "suite": "details",
-   "name": "the picked thought plays its own story: its things surface",
+   "name": "the picked thought plays its own story: the memory it needs surfaces at launch",
+   "pass": true,
+   "detail": "[\"team decisions\",\"Mira\",\"last launch notes\",\"changelog\",\"date checker\",\"launch plan v1\",\"Arun\",\"this week’s threads\",\"deploy log\",\"board reader\",\"runbook\",\"diff collector\"]"
+  },
+  {
+   "suite": "details",
+   "name": "a grabbed memory keeps its label and stays visible while it is tugged",
+   "pass": true,
+   "detail": "[\"launch plan v1\",\"1.00\",1]"
+  },
+  {
+   "suite": "details",
+   "name": "nothing is eaten: both memories float on after recall",
+   "pass": true,
+   "detail": "[[\"team decisions\",\"1.00\"],[\"Mira\",\"1.00\"],[\"last launch notes\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"Arun\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"diff collector\",\"1.00\"]]"
+  },
+  {
+   "suite": "details",
+   "name": "the recalled line is a sentence naming both memories in bold",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "details",
-   "name": "a grabbed memory folds its label while its shape is hauled in",
+   "name": "the teammate gets busy when the task arrives, where it floats",
    "pass": true,
-   "detail": "[[\"launch plan v1\",\"1.00\",0],[\"changelog\",\"1.00\",0],[\"\",\"0.00\",1],[\"a teammate\",\"1.00\",1],[\"a subagent\",\"1.00\",1]]"
+   "detail": "[[\"Arun\",1]]"
   },
   {
    "suite": "details",
-   "name": "an eaten memory is gone from the environment",
-   "pass": true,
-   "detail": "[[\"launch plan v1\",\"0.00\"],[\"changelog\",\"0.00\"],[\"\",\"0.00\"],[\"a teammate\",\"1.00\"],[\"a subagent\",\"1.00\"]]"
-  },
-  {
-   "suite": "details",
-   "name": "the recalled line names both memories, in bold",
+   "name": "the reply is real text, three sentences shown",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "details",
-   "name": "the teammate gets busy when the task arrives, and stays in the environment",
+   "name": "what was kept is placed out as a memory blob and a report blob, both floating",
    "pass": true,
-   "detail": "[1,0.039]"
+   "detail": "[[\"release notes v1\",\"memory\",\"1.00\"],[\"Release notes draft\",\"report\",\"1.00\"]]"
   },
   {
    "suite": "details",
-   "name": "what was kept is placed back out as a tag and floats",
+   "name": "the kept line and the offer are sentences",
    "pass": true,
-   "detail": "[\"release notes v1\",\"kept\",1]"
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "every row and the reply sit above the composer at the settle",
+   "pass": true,
+   "detail": ""
   },
   {
    "suite": "details",
@@ -483,15 +501,15 @@
   },
   {
    "suite": "details",
-   "name": "the next thought grabs the kept thing from where it floats, plus a fresh memory",
+   "name": "the next thought grabs the kept memory from where it floats, plus a memory that was there all along",
    "pass": true,
-   "detail": "[[\"this week’s threads\",\"1.00\",0.132],[\"\",\"0.00\",1],[\"release notes v1\",\"1.00\",0],[\"a teammate\",\"1.00\",1],[\"a subagent\",\"1.00\",1]]"
+   "detail": "[[\"release notes v1\",\"1.00\",0],[\"Release notes draft\",\"1.00\",1],[\"Jules\",\"1.00\",1],[\"changelog\",\"1.00\",1],[\"date checker\",\"1.00\",1],[\"launch plan v1\",\"1.00\",1],[\"Arun\",\"1.00\",1],[\"this week’s threads\",\"1.00\",0],[\"deploy log\",\"1.00\",1],[\"board reader\",\"1.00\",1],[\"runbook\",\"1.00\",1],[\"diff collector\",\"1.00\",1]]"
   },
   {
    "suite": "details",
    "name": "dark: the field is one glass capsule with readable ink and no stray line",
    "pass": true,
-   "detail": "{\"glass\":\"rgba(246, 239, 226, 0.094)\",\"radius\":\"999px\",\"lum\":240,\"understroke\":false}"
+   "detail": "{\"glass\":\"rgba(246, 239, 226, 0.18)\",\"radius\":\"999px\",\"lum\":240,\"understroke\":false}"
   },
   {
    "suite": "details",
@@ -501,9 +519,9 @@
   },
   {
    "suite": "details",
-   "name": "dark: the environment is populated at rest: two memories left, a teammate and a subagent right, each titled",
+   "name": "dark: ten titled blobs float at rest (memories, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[{\"kind\":\"memory\",\"o\":1,\"x\":98,\"t\":\"Memory\"},{\"kind\":\"memory\",\"o\":1,\"x\":107,\"t\":\"Memory\"},{\"kind\":\"memory\",\"o\":0,\"x\":105,\"t\":\"Memory\"},{\"kind\":\"teammate\",\"o\":1,\"x\":1332,\"t\":\"Teammate\"},{\"kind\":\"subagent\",\"o\":1,\"x\":1322,\"t\":\"Subagent\"}]"
+   "detail": "[[\"memory\",62,222,\"blob\"],[\"teammate\",106,256,\"blob\"],[\"memory\",49,222,\"blob\"],[\"memory\",93,221,\"blob\"],[\"subagent\",57,215,\"blob\"],[\"teammate\",1212,1371,\"blob\"],[\"memory\",1212,1400,\"blob\"],[\"memory\",1179,1308,\"blob\"],[\"subagent\",1221,1375,\"blob\"],[\"memory\",1216,1384,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -513,7 +531,7 @@
   },
   {
    "suite": "details",
-   "name": "quiet: thoughts do not drift",
+   "name": "quiet: thoughts do not drift and blobs hold their shape",
    "pass": true,
    "detail": ""
   },
@@ -525,13 +543,13 @@
   },
   {
    "suite": "details",
-   "name": "quiet: the recalled line is complete and the memories are eaten at the prepare still",
+   "name": "quiet: the recalled sentence is complete and both memories still float at the prepare still",
    "pass": true,
    "detail": ""
   },
   {
    "suite": "details",
-   "name": "quiet: the kept thing floats at the notice still",
+   "name": "quiet: the kept memory and the report float at the notice still, and the reply reads in full",
    "pass": true,
    "detail": ""
   }
