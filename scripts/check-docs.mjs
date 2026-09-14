@@ -247,11 +247,25 @@ const tests = {
     await text(root,"Demo interruption. Your request is saved");
     assert(await resetControl.evaluate(el=>el===document.activeElement),"Completion must preserve focus when it is outside Stop");
     await key(root.getByRole("button",{name:"Retry",exact:true}),"Enter");
-    await allow();
-    await root.getByRole("button",{name:"Stop generation",exact:true}).focus();
-    await text(root,"Your sample brief is ready.");
-    await text(root,"Ready to review");
-    await eventually(()=>draft.evaluate(el=>el===document.activeElement),"Completion returns focus from Stop to the draft");
+    await root.getByRole("button",{name:"Allow once",exact:true}).waitFor();
+    // Permission is stable. Hold the upcoming completion timer until native
+    // focus has crossed the driver boundary, then exercise the real transition.
+    const completionInstant = new Date();
+    await page.clock.setFixedTime(completionInstant);
+    await page.clock.pauseAt(completionInstant);
+    try {
+      await allow();
+      const stopControl = root.getByRole("button",{name:"Stop generation",exact:true});
+      await stopControl.focus();
+      assert(await stopControl.evaluate(el=>el===document.activeElement),"Stop must hold native focus before completion");
+      await page.clock.runFor(2000);
+      await text(root,"Your sample brief is ready.");
+      await text(root,"Ready to review");
+      await eventually(()=>draft.evaluate(el=>el===document.activeElement),"Completion returns focus from Stop to the draft");
+    } finally {
+      try { await page.clock.setSystemTime(new Date()); }
+      finally { await page.clock.resume(); }
+    }
     return "Keyboard send; explicit deny; Stop cancels timers; attach/remove; error and retry reach a sample result; completion restores focused Stop without stealing outside focus";
   },
   accordion: async ({ root }) => {
