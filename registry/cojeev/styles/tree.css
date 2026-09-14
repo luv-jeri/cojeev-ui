@@ -1,4 +1,23 @@
-/* A compact native disclosure list: one soft selection surface and quiet branch lines. */
+/* Tree: an index card of ruled branch guides. Folders open along the guide,
+   one soft slip travels to the selected row, and every notice is a small
+   inset strip on the same paper. The shared flow layer owns the slip; the
+   rules below only supply its paint and the quiet fallback. */
+.v-tree:where([data-slot="tree"]) {
+  --tree-guide: var(--v-border);
+  --tree-tile: 28px;
+  --tree-reach: 22px;
+  --tree-elbow: 20px;
+  --tree-slip: var(--v-pink-soft);
+  --tree-slip-edge: color-mix(in oklab, var(--v-pink) 54%, var(--v-border));
+  --glide-bg: var(--tree-slip);
+  --glide-fg: var(--v-text);
+  --glide-ring: inset 0 0 0 1px var(--tree-slip-edge);
+  --glide-hover-bg: color-mix(in oklab, var(--v-ink) 6%, transparent);
+  color: var(--v-text);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
 .v-tree:where([data-slot="tree"]),
 .v-tree:where([data-slot="tree"]) [data-slot="tree-branch"] {
   min-width: 0;
@@ -12,49 +31,55 @@
   min-width: 0;
 }
 
+/* One row, one surface: chevron tile, name and trailing actions share it. */
 .v-tree:where([data-slot="tree"]) [data-slot="tree-row"] {
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
+  grid-template-columns: var(--tree-tile) minmax(0, 1fr) auto;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
-  min-height: 40px;
-  padding: 2px 4px;
+  min-height: 36px;
+  padding: 2px 6px 2px 2px;
   border-radius: 10px;
   color: var(--v-text);
   transition:
     background var(--t-micro),
-    box-shadow var(--t-micro);
+    box-shadow var(--t-micro),
+    color var(--t-micro);
 }
 
 .v-tree:where([data-slot="tree"])
-  [data-slot="tree-item"]:not([data-selected="true"]):not(
+  [data-slot="tree-row"]:not([data-selected="true"]):not(
     [data-disabled="true"]
-  )
-  > [data-slot="tree-row"]:hover {
-  background: color-mix(in oklab, var(--v-beige) 72%, transparent);
+  ):hover {
+  background: var(--glide-hover-bg);
 }
 
-.v-tree:where([data-slot="tree"])
-  [data-slot="tree-item"][data-selected="true"]
-  > [data-slot="tree-row"] {
-  background: var(--v-pink-soft);
-  box-shadow: inset 0 0 0 1px
-    color-mix(in oklab, var(--v-pink) 54%, var(--v-border));
+/* The pointer preview layer paints hover while the flow group owns the row. */
+:root:not([data-flow-hover="off"])
+  .v-tree[data-flow-owned].v-glide:not([data-flow-hover="off"])
+  [data-slot="tree-row"]:not([data-selected="true"]):not(
+    [data-disabled="true"]
+  ):hover {
+  background: transparent;
 }
 
-.v-tree:where([data-slot="tree"])
-  [data-slot="tree-item"][data-disabled="true"]
-  > [data-slot="tree-row"] {
+.v-tree:where([data-slot="tree"]) [data-slot="tree-row"][data-selected="true"] {
+  background: var(--tree-slip);
+  box-shadow: var(--glide-ring);
+}
+
+.v-tree:where([data-slot="tree"]) [data-slot="tree-row"][data-disabled="true"] {
   color: var(--v-disabled-ink);
   background: var(--v-disabled-face);
-  box-shadow: inset 0 0 0 1px var(--v-disabled-edge);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in oklab, var(--v-disabled-edge) 55%, transparent);
 }
 
 .v-tree:where([data-slot="tree"])
   :is([data-slot="tree-expand"], [data-slot="tree-expand-spacer"]) {
-  inline-size: 32px;
-  block-size: 32px;
+  inline-size: var(--tree-tile);
+  block-size: var(--tree-tile);
 }
 
 .v-tree:where([data-slot="tree"]) [data-slot="tree-expand"] {
@@ -64,6 +89,9 @@
   border-radius: 8px;
   color: var(--v-text-2);
   background: transparent;
+  transition:
+    background var(--t-micro),
+    color var(--t-micro);
 }
 
 .v-tree:where([data-slot="tree"])
@@ -72,7 +100,7 @@
     :focus-visible
   ) {
   color: var(--v-text);
-  background: color-mix(in oklab, var(--v-paper) 68%, var(--v-blue-soft));
+  background: color-mix(in oklab, var(--v-ink) 8%, transparent);
 }
 
 .v-tree:where([data-slot="tree"])
@@ -85,6 +113,7 @@
   background: transparent;
 }
 
+/* The chevron turns toward the branch it opens; the folder glyph opens with it. */
 .v-tree:where([data-slot="tree"]) [data-slot="tree-expand"] .v-icon {
   transition: transform var(--t-element) var(--enter);
 }
@@ -95,13 +124,21 @@
   transform: rotate(90deg);
 }
 
+/* Direction is read from the tree itself, so a right-to-left container inside
+   a left-to-right document (a Radix root, for example) still mirrors the arrow. */
+.v-tree:where([data-slot="tree"]):dir(rtl)
+  [data-slot="tree-expand"][aria-expanded="false"]
+  .v-icon {
+  transform: rotate(180deg);
+}
+
 .v-tree:where([data-slot="tree"]) [data-slot="tree-select"] {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
-  min-height: 36px;
-  padding: 0 4px;
+  min-height: 32px;
+  padding: 0 6px 0 2px;
   border-radius: 8px;
   color: inherit;
   text-align: start;
@@ -115,13 +152,27 @@
   inline-size: 20px;
   block-size: 20px;
   color: var(--v-text-2);
+  transition: color var(--t-micro);
+}
+
+/* Containers read in ink, leaves in secondary ink; selection lifts both. */
+.v-tree:where([data-slot="tree"])
+  [data-slot="tree-item"][data-kind="folder"]
+  > [data-slot="tree-row"]
+  [data-slot="tree-icon"],
+.v-tree:where([data-slot="tree"])
+  [data-slot="tree-row"][data-selected="true"]
+  [data-slot="tree-icon"],
+.v-tree:where([data-slot="tree"])
+  [data-slot="tree-row"][data-glide-active]
+  [data-slot="tree-icon"] {
+  color: currentColor;
 }
 
 .v-tree:where([data-slot="tree"])
-  [data-selected="true"]
-  > [data-slot="tree-row"]
+  [data-slot="tree-row"][data-disabled="true"]
   [data-slot="tree-icon"] {
-  color: var(--v-text);
+  color: var(--v-disabled-ink);
 }
 
 .v-tree:where([data-slot="tree"]) [data-slot="tree-label"] {
@@ -156,58 +207,94 @@
   :is(
     [data-slot="tree-expand"],
     [data-slot="tree-select"],
-    [data-slot="tree-retry"],
     [data-slot="tree-trailing"] button
   ):focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 1px;
 }
 
+/* Branch guides: each child draws its own elbow, and every child except the
+   last continues the ruled line down to its sibling. The line therefore stops
+   at the last child instead of running past the branch. */
 .v-tree:where([data-slot="tree"]) [data-slot="tree-branch"] {
   position: relative;
-  margin-inline-start: 16px;
-  padding-inline-start: 24px;
-  border-inline-start: 1px solid var(--v-border);
-}
-
-.v-tree:where([data-slot="tree"])
-  [data-slot="tree-branch"]
-  > [data-slot="tree-item"]::before,
-.v-tree:where([data-slot="tree"])
-  [data-slot="tree-branch"]
-  > [data-slot="tree-notice"]::before {
-  content: "";
-  position: absolute;
-  inset-block-start: 20px;
-  inset-inline-start: -24px;
-  inline-size: 20px;
-  border-block-start: 1px solid var(--v-border);
-  pointer-events: none;
+  margin-inline-start: calc(var(--tree-tile) / 2 + 2px);
+  padding-inline-start: var(--tree-reach);
+  transition: opacity var(--t-element) var(--enter);
 }
 
 .v-tree:where([data-slot="tree"]) [data-slot="tree-branch"][hidden] {
   display: none;
 }
 
+@starting-style {
+  .v-tree:where([data-slot="tree"]) [data-slot="tree-branch"]:not([hidden]) {
+    opacity: 0;
+  }
+}
+
+.v-tree:where([data-slot="tree"])
+  [data-slot="tree-branch"]
+  > :is([data-slot="tree-item"], [data-slot="tree-notice"])::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(-1 * var(--tree-reach));
+  inline-size: calc(var(--tree-reach) - 6px);
+  block-size: var(--tree-elbow);
+  border-inline-start: 1px solid var(--tree-guide);
+  border-block-end: 1px solid var(--tree-guide);
+  border-end-start-radius: 9px;
+  pointer-events: none;
+}
+
+.v-tree:where([data-slot="tree"])
+  [data-slot="tree-branch"]
+  > :is([data-slot="tree-item"], [data-slot="tree-notice"]):not(
+    :last-child
+  )::after {
+  content: "";
+  position: absolute;
+  inset-block-start: var(--tree-elbow);
+  inset-block-end: 0;
+  inset-inline-start: calc(-1 * var(--tree-reach));
+  border-inline-start: 1px solid var(--tree-guide);
+  pointer-events: none;
+}
+
+/* Notices are inset strips on the same paper: quiet for empty, busy for
+   loading, paired danger paint for errors, and a plain mark for truncation. */
 .v-tree:where([data-slot="tree"]) [data-slot="tree-notice"] {
   position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
-  min-height: 36px;
-  margin: 2px 0;
-  padding: 6px 8px;
-  border-radius: 8px;
+  min-height: 40px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 10px;
   color: var(--v-text-2);
-  background: color-mix(in oklab, var(--v-beige) 55%, transparent);
   font-size: 12px;
   line-height: 1.4;
 }
 
-.v-tree:where([data-slot="tree"]) [data-slot="tree-notice"] > span {
+.v-tree:where([data-slot="tree"]) [data-slot="tree-notice-icon"] {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 20px;
+  block-size: 20px;
+  color: var(--v-text-3);
+}
+
+.v-tree:where([data-slot="tree"]) [data-slot="tree-notice"] > span:not([data-slot]) {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.v-tree:where([data-slot="tree"])
+  [data-slot="tree-notice"][data-status="loading"] {
+  background: color-mix(in oklab, var(--v-ink) 4%, transparent);
 }
 
 .v-tree:where([data-slot="tree"])
@@ -216,24 +303,31 @@
   background: var(--status-danger-bg);
 }
 
-.v-tree:where([data-slot="tree"]) [data-slot="tree-retry"] {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.v-tree:where([data-slot="tree"])
+  [data-slot="tree-notice"][data-status="error"]
+  [data-slot="tree-notice-icon"] {
+  color: currentColor;
+}
+
+/* Retry is the shared outline Button in the notice's own ink; its living
+   edge and press pulse come from the shared morph and flow runtimes. */
+.v-tree[data-slot] [data-slot="tree-notice"] .v-tree__retry.v-btn {
   flex: none;
-  min-height: 32px;
   margin-inline-start: auto;
-  padding: 0 10px;
-  border: 1px solid currentColor;
-  border-radius: var(--r-pill);
+  min-height: 32px;
+  padding-inline: 12px;
   color: inherit;
-  background: transparent;
+  box-shadow: inset 0 0 0 1px currentColor;
   font-size: 12px;
-  font-weight: 600;
+}
+
+.v-tree[data-slot] [data-slot="tree-notice"] .v-tree__retry.v-btn:hover {
+  background: color-mix(in oklab, currentColor 10%, transparent);
 }
 
 .v-tree:where([data-slot="tree"])
   [data-slot="tree-notice"][data-status="loading"]
+  [data-slot="tree-notice-icon"]
   .v-icon {
   animation: v-tree-loading 0.9s linear infinite;
 }
@@ -282,38 +376,31 @@
 }
 
 @media (max-width: 480px) {
+  .v-tree:where([data-slot="tree"]) {
+    --tree-reach: 18px;
+  }
+
   .v-tree:where([data-slot="tree"]) [data-slot="tree-row"] {
-    grid-template-columns: 32px minmax(0, 1fr) min-content;
-  }
-
-  .v-tree:where([data-slot="tree"]) [data-slot="tree-branch"] {
-    margin-inline-start: 12px;
-    padding-inline-start: 16px;
-  }
-
-  .v-tree:where([data-slot="tree"])
-    [data-slot="tree-branch"]
-    > :is([data-slot="tree-item"], [data-slot="tree-notice"])::before {
-    inset-inline-start: -16px;
-    inline-size: 12px;
+    grid-template-columns: var(--tree-tile) minmax(0, 1fr) min-content;
   }
 
   .v-tree:where([data-slot="tree"]) [data-slot="tree-notice"] {
     align-items: flex-start;
     flex-wrap: wrap;
+    padding-block: 8px;
   }
 
-  .v-tree:where([data-slot="tree"]) [data-slot="tree-retry"] {
+  .v-tree[data-slot] [data-slot="tree-notice"] .v-tree__retry.v-btn {
     margin-inline-start: 28px;
   }
 }
 
-/* Documentation specimen: a bounded ledger, not a second Tree implementation. */
+/* Documentation specimen: a bounded card, not a second Tree implementation. */
 .v-tree-example {
   display: grid;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
-  max-width: 680px;
+  max-width: 640px;
   min-width: 0;
   margin-inline: auto;
   color: var(--v-text);
@@ -321,7 +408,8 @@
 
 .v-tree-example > header {
   display: grid;
-  gap: 6px;
+  gap: 4px;
+  padding-inline: 4px;
 }
 
 .v-tree-example > header > span {
@@ -334,7 +422,8 @@
 
 .v-tree-example h3 {
   margin: 0;
-  font: 500 24px/1.15 var(--font-display);
+  font: 500 22px/1.15 var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 .v-tree-example > header p,
@@ -345,23 +434,20 @@
   line-height: 1.55;
 }
 
-.v-tree-example__viewport {
-  max-height: 460px;
+.v-tree-example__card {
   min-width: 0;
-  overflow: auto;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid var(--v-border);
   border-radius: 16px;
-  background: color-mix(in oklab, var(--v-paper) 84%, var(--v-blue-soft));
+  background: var(--v-paper);
 }
 
 .v-tree-example__status {
   min-height: 1.55em;
+  padding-inline: 4px;
 }
 
-@media (max-width: 480px) {
-  .v-tree-example__viewport {
-    max-height: 500px;
-    padding: 6px;
-  }
+.v-tree-example[data-compact="true"] {
+  max-width: 520px;
+  margin-inline: 0;
 }

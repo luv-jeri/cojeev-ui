@@ -2,7 +2,9 @@
 
 import * as React from "react";
 import { useChoreography } from "@/registry/cojeev/motion/choreography";
+import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
 import { cn } from "@/registry/cojeev/lib/utils";
+import { Button } from "@/registry/cojeev/ui/button";
 import { Icon } from "@/registry/cojeev/ui/icon";
 
 export type TreeNode = {
@@ -69,16 +71,26 @@ function TreeBranch({
           : !hasChildren
             ? "This branch is empty."
             : null;
+  const noticeStatus =
+    node.status === "loading" || node.status === "error"
+      ? node.status
+      : "empty";
 
   return (
     <li
       data-slot="tree-item"
       data-tree-node-id={node.id}
+      data-kind={node.kind}
       data-selected={isSelected || undefined}
       data-disabled={node.disabled || undefined}
       aria-busy={node.status === "loading" || undefined}
     >
-      <div data-slot="tree-row">
+      {/* The row is the travelling-selection item: one surface for chevron, name and actions. */}
+      <div
+        data-slot="tree-row"
+        data-selected={isSelected || undefined}
+        data-disabled={node.disabled || undefined}
+      >
         {isFolder ? (
           <button
             ref={(element) => {
@@ -109,7 +121,9 @@ function TreeBranch({
           <span data-slot="tree-icon" aria-hidden="true">
             {node.icon ?? (
               <Icon
-                name={isFolder ? "folder" : "file-text"}
+                name={
+                  isFolder ? (isExpanded ? "folder-open" : "folder") : "file-text"
+                }
                 size="sm"
                 feedback={false}
               />
@@ -144,28 +158,39 @@ function TreeBranch({
           {branchNotice && (
             <li
               data-slot="tree-notice"
-              data-status={node.status ?? "idle"}
+              data-status={noticeStatus}
               role={node.status === "loading" ? "status" : undefined}
             >
-              {node.status === "loading" && (
-                <Icon name="loader" size="sm" feedback={false} />
-              )}
+              <span data-slot="tree-notice-icon" aria-hidden="true">
+                {node.status === "loading" ? (
+                  <Icon name="loader" size="sm" feedback={false} />
+                ) : node.status === "error" ? (
+                  <Icon name="triangle-alert" size="sm" feedback={false} />
+                ) : (
+                  <Icon name="circle-dashed" size="sm" feedback={false} />
+                )}
+              </span>
               <span dir="auto">{branchNotice}</span>
               {node.status === "error" && onRetry && (
-                <button
-                  type="button"
+                <Button
+                  size="sm"
+                  variant="outline"
                   data-slot="tree-retry"
+                  className="v-tree__retry"
+                  style={{ "--mstroke": "currentColor" } as React.CSSProperties}
                   onClick={() => onRetry(node.id)}
                 >
-                  <Icon name="refresh" size="sm" feedback={false} />
+                  <Icon name="refresh-cw" size="sm" />
                   Retry
-                </button>
+                </Button>
               )}
             </li>
           )}
           {node.truncated && (
             <li data-slot="tree-notice" data-status="truncated">
-              <Icon name="ellipsis" size="sm" feedback={false} />
+              <span data-slot="tree-notice-icon" aria-hidden="true">
+                <Icon name="ellipsis" size="sm" feedback={false} />
+              </span>
               <span dir="auto">
                 {node.message ?? "This branch is truncated by the consumer."}
               </span>
@@ -206,6 +231,13 @@ export function Tree({
   const generatedId = React.useId();
   const treeId = `tree-branch-${generatedId.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
   const rootRef = React.useRef<HTMLUListElement>(null);
+  // The shared travelling selection owns the selected surface and pointer preview.
+  // Rows are its items, so the surface glides between files instead of repainting.
+  const flowRef = useFlowGroup<HTMLUListElement>(rootRef, {
+    kind: "pill",
+    itemSelector: '[data-slot="tree-row"]',
+    activeSelector: '[data-selected="true"]',
+  });
   const expandRefs = React.useRef(new Map<string, HTMLButtonElement>());
   const focusedNode = React.useRef<string | undefined>(undefined);
   const previousExpanded = React.useRef(new Set(expandedIds));
@@ -234,8 +266,9 @@ export function Tree({
 
   return (
     <ul
-      ref={rootRef}
+      ref={flowRef}
       data-slot="tree"
+      data-flow-group=""
       data-motion-quiet={quiet || undefined}
       className={cn("v-tree", className)}
       onFocusCapture={(event) => {

@@ -138,7 +138,10 @@
   "tree": {
     "name": "Tree",
     "variants": [
-      "branch-ledger"
+      "branch-ledger",
+      "loading-branch",
+      "empty-branch",
+      "failed-branch"
     ],
     "sizes": [
       "default"

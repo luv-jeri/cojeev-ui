@@ -9,7 +9,7 @@ await mkdir(output, { recursive: true });
 
 const css = (
   await Promise.all(
-    ["tokens", "theme", "base", "icon", "tree"].map((name) =>
+    ["tokens", "theme", "base", "icon", "button", "flow-press", "tree"].map((name) =>
       readFile(`registry/cojeev/styles/${name}.css`, "utf8"),
     ),
   )
@@ -37,7 +37,7 @@ const bundle = await build({
       import React from "react";
       import { createRoot } from "react-dom/client";
       import { Tree } from "./registry/cojeev/ui/tree";
-      import { setMotionMode } from "./registry/cojeev/motion/settings";
+      import { setMotionMode, setFlowSettings } from "./registry/cojeev/motion/settings";
 
       const filler = Array.from({ length: 22 }, (_, index) => ({
         id: "note-" + index,
@@ -76,6 +76,7 @@ const bundle = await build({
           window.selectTree = setSelected;
           window.collapseWorkspace = () => setExpanded(ids => ids.filter(id => id !== "workspace"));
           window.setTreeMotion = setMotionMode;
+          window.setTreeFlow = (variant) => setFlowSettings({ variant });
         }, []);
 
         return <section className="fixture-shell">
@@ -250,19 +251,68 @@ test("Tree keeps controlled disclosure, selection, focus and quiet behavior inde
       "native disabled disclosure cannot receive focus",
     );
 
+    // The shared travelling selection owns the selected slip and the pointer
+    // preview: one layer per tree, painted from the Tree's own tokens.
+    const slip = tree.locator(":scope > .v-glide__pill");
+    const ghost = tree.locator(":scope > .v-glide__hover");
+    await slip.waitFor();
+    await page.waitForTimeout(600);
+    const settled = async (nodeId, tolerance = 1) => {
+      const [paint, row] = await Promise.all([
+        slip.boundingBox(),
+        tree
+          .locator(`[data-tree-node-id="${nodeId}"] > [data-slot="tree-row"]`)
+          .boundingBox(),
+      ]);
+      assert.ok(paint && row, `selection paint and row ${nodeId} are visible`);
+      for (const key of ["x", "y", "width", "height"]) {
+        assert.ok(
+          Math.abs(paint[key] - row[key]) <= tolerance,
+          `slip ${key} matches row ${nodeId}: ${paint[key]} vs ${row[key]}`,
+        );
+      }
+    };
+    await settled("readme");
+    assert.equal(
+      await slip.evaluate((node) =>
+        getComputedStyle(node.firstElementChild).backgroundColor,
+      ),
+      await resolvedColor(page, "--v-pink-soft"),
+      "the slip paints the Tree's soft pink selection",
+    );
+    assert.equal(
+      await readme.evaluate((node) =>
+        getComputedStyle(node.parentElement).backgroundColor,
+      ),
+      "rgba(0, 0, 0, 0)",
+      "the selected row itself stays unpainted while the layer owns selection",
+    );
+
     const enabledRow = tree.locator(
       '[data-tree-node-id="empty"] > [data-slot="tree-row"]',
     );
-    const enabledSurface = await enabledRow.evaluate(
-      (node) => getComputedStyle(node).backgroundColor,
-    );
     await page.getByRole("button", { name: "Collapse Empty archive" }).hover();
-    assert.notEqual(
-      await enabledRow.evaluate(
-        (node) => getComputedStyle(node).backgroundColor,
-      ),
-      enabledSurface,
-      "enabled rows retain their hover feedback",
+    await page.waitForTimeout(260);
+    const [ghostBox, enabledBox] = await Promise.all([
+      ghost.boundingBox(),
+      enabledRow.boundingBox(),
+    ]);
+    assert.ok(
+      ghostBox &&
+        Math.abs(ghostBox.y - enabledBox.y) <= 1 &&
+        Math.abs(ghostBox.height - enabledBox.height) <= 1,
+      "the pointer ghost previews the hovered enabled row",
+    );
+    assert.ok(
+      parseFloat(await ghost.evaluate((node) => getComputedStyle(node).opacity)) > 0.5,
+      "the pointer ghost is visible over an enabled row",
+    );
+    await disabledExpand.hover();
+    await page.waitForTimeout(260);
+    assert.equal(
+      await ghost.evaluate((node) => getComputedStyle(node).opacity),
+      "0",
+      "the pointer ghost never previews a disabled row",
     );
 
     const deepFile = page.getByRole("button", {
@@ -364,6 +414,62 @@ test("Tree keeps controlled disclosure, selection, focus and quiet behavior inde
       ) >= 20,
     );
 
+    // Selection travel: the slip visibly moves under Glide and Stretch, then
+    // settles on the chosen row; Flow Off hands selection back to CSS paint.
+    await scroll.evaluate((node) => {
+      node.scrollTop = 0;
+    });
+    for (const [variant, target, name] of [
+      ["glide", "index", "index.ts"],
+      ["stretch", "readme", "README.md"],
+    ]) {
+      await page.evaluate((value) => window.setTreeFlow(value), variant);
+      await page.waitForFunction(
+        (value) =>
+          document.querySelector('[data-slot="tree"]')?.dataset.flowV === value,
+        variant,
+      );
+      await page.getByRole("button", { name, exact: true }).click();
+      const travel = await tree.evaluate(async (node) => {
+        const values = [];
+        for (let index = 0; index < 18; index += 1) {
+          await new Promise(requestAnimationFrame);
+          values.push(parseFloat(getComputedStyle(node).getPropertyValue("--glide-y")));
+        }
+        return values.filter(Number.isFinite);
+      });
+      assert.ok(
+        new Set(travel.map((value) => value.toFixed(1))).size > 2,
+        `${variant} selection visibly travels: ${travel.join(", ")}`,
+      );
+      await page.waitForTimeout(700);
+      await settled(target, 1.5);
+    }
+    await page.evaluate(() => window.setTreeFlow("off"));
+    await page.waitForFunction(
+      () => !document.querySelector('[data-slot="tree"] > .v-glide__pill'),
+    );
+    // The row's 120ms background transition starts from the transparent
+    // glide-owned paint, so wait for it to land before reading the colour.
+    const pinkSoft = await resolvedColor(page, "--v-pink-soft");
+    const readmeHandle = await readme.elementHandle();
+    await page
+      .waitForFunction(
+        ([node, expected]) =>
+          getComputedStyle(node.parentElement).backgroundColor === expected,
+        [readmeHandle, pinkSoft],
+        { timeout: 1500 },
+      )
+      .catch(() => {});
+    assert.equal(
+      await readme.evaluate((node) =>
+        getComputedStyle(node.parentElement).backgroundColor,
+      ),
+      pinkSoft,
+      "Flow Off restores the stationary soft pink selection",
+    );
+    await page.evaluate(() => window.setTreeFlow("glide"));
+
     await page.evaluate(() => window.setTreeMotion("off"));
     await page.waitForFunction(
       () =>
@@ -450,6 +556,34 @@ test("Tree visual evidence covers light, dark, narrow and RTL layouts", async ()
           "ltr",
           "English file names keep their natural reading and truncation direction in RTL layout",
         );
+
+        const workspaceExpand = page.getByRole("button", {
+          name: "Collapse Workspace",
+          exact: true,
+        });
+        assert.deepEqual(
+          await workspaceExpand.locator("svg").evaluate((node) => {
+            const matrix = new DOMMatrixReadOnly(getComputedStyle(node).transform);
+            return [matrix.a, matrix.b, matrix.c, matrix.d];
+          }),
+          [0, 1, -1, 0],
+          "an expanded RTL folder still points downward",
+        );
+        await workspaceExpand.click();
+        await page.waitForTimeout(500);
+        const collapsedWorkspace = page.getByRole("button", {
+          name: "Expand Workspace",
+          exact: true,
+        });
+        assert.deepEqual(
+          await collapsedWorkspace.locator("svg").evaluate((node) => {
+            const matrix = new DOMMatrixReadOnly(getComputedStyle(node).transform);
+            return [matrix.a, matrix.b, matrix.c, matrix.d];
+          }),
+          [-1, 0, 0, -1],
+          "a collapsed RTL folder points into its mirrored branch",
+        );
+        await collapsedWorkspace.click();
       }
       await page
         .locator(".fixture-shell")
