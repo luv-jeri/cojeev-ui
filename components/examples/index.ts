@@ -157,6 +157,7 @@ export const examples: Record<string, ExampleComponent> = {
   switch: lazy(() => import("./choice-foundations").then((module) => ({ default: module.SwitchExample }))),
   table: lazy(() => import("./tables").then((module) => ({ default: module.TableExample }))),
   tabs: lazy(() => import("./navigation").then((module) => ({ default: module.TabsExample }))),
+  tree: lazy(() => import("./tree").then((module) => ({ default: module.TreeExample }))),
   textarea: lazy(() => import("./form-foundations").then((module) => ({ default: module.TextareaExample }))),
   toast: lazy(() => import("./feedback").then((module) => ({ default: module.ToastExample }))),
   toggle: lazy(() => import("./collection-actions").then((module) => ({ default: module.ToggleExample }))),

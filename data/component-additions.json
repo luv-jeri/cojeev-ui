@@ -135,6 +135,26 @@
       "inspector"
     ]
   },
+  "tree": {
+    "name": "Tree",
+    "variants": [
+      "branch-ledger"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "collapsed",
+      "loading",
+      "empty",
+      "error",
+      "truncated",
+      "disabled",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
   "toast": {
     "variants": [
       "compact",

@@ -154,6 +154,7 @@ export const exampleManifest = {
   switch: { file: "choice-foundations", name: "SwitchExample" },
   table: { file: "tables", name: "TableExample" },
   tabs: { file: "navigation", name: "TabsExample" },
+  tree: { file: "tree", name: "TreeExample" },
   textarea: { file: "form-foundations", name: "TextareaExample" },
   toast: { file: "feedback", name: "ToastExample" },
   toggle: { file: "collection-actions", name: "ToggleExample" },
