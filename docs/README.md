@@ -5,6 +5,9 @@ Extended documentation lives here. The repository root keeps the essentials —
 the files a visitor, a contributor, an agent or a licence check needs to find
 without searching.
 
+The short root `INSTALLATION.md` pointer also remains so links from already
+published website versions continue to reach the full guide.
+
 Nothing was deleted or rewritten in this reorganisation. Historical documents
 were moved, their relative links repaired, and their text left as written.
 
