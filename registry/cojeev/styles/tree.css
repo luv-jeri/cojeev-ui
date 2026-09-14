@@ -28,7 +28,9 @@
 }
 
 .v-tree:where([data-slot="tree"])
-  [data-slot="tree-item"]:not([data-selected="true"])
+  [data-slot="tree-item"]:not([data-selected="true"]):not(
+    [data-disabled="true"]
+  )
   > [data-slot="tree-row"]:hover {
   background: color-mix(in oklab, var(--v-beige) 72%, transparent);
 }

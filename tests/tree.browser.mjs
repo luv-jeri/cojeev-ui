@@ -220,6 +220,18 @@ test("Tree keeps controlled disclosure, selection, focus and quiet behavior inde
     );
     await disabledExpand.hover();
     assert.equal(
+      await disabledRow.evaluate(
+        (node) => getComputedStyle(node).backgroundColor,
+      ),
+      disabledFace,
+      "hover keeps the disabled row surface",
+    );
+    assert.equal(
+      await disabledRow.evaluate((node) => getComputedStyle(node).color),
+      disabledInk,
+      "hover keeps the disabled row ink",
+    );
+    assert.equal(
       await disabledExpand.evaluate((node) => getComputedStyle(node).color),
       disabledInk,
       "hover does not repaint a disabled disclosure",
@@ -236,6 +248,21 @@ test("Tree keeps controlled disclosure, selection, focus and quiet behavior inde
       await disabledExpand.evaluate((node) => document.activeElement === node),
       false,
       "native disabled disclosure cannot receive focus",
+    );
+
+    const enabledRow = tree.locator(
+      '[data-tree-node-id="empty"] > [data-slot="tree-row"]',
+    );
+    const enabledSurface = await enabledRow.evaluate(
+      (node) => getComputedStyle(node).backgroundColor,
+    );
+    await page.getByRole("button", { name: "Collapse Empty archive" }).hover();
+    assert.notEqual(
+      await enabledRow.evaluate(
+        (node) => getComputedStyle(node).backgroundColor,
+      ),
+      enabledSurface,
+      "enabled rows retain their hover feedback",
     );
 
     const deepFile = page.getByRole("button", {
