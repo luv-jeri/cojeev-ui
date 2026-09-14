@@ -63,12 +63,12 @@ Both contexts also passed:
 
 Receipts and inspected screenshots:
 
-- [Combined acceptance](output/playwright/review-motion-progress/verified-results.json)
-- [Raw visual confirmation](output/playwright/review-motion-progress/confirmation/results.json)
-- [Chromium native-focus tail](output/playwright/review-motion-progress/keyboard-tail/results.json)
-- [Light Progress](output/playwright/review-motion-progress/confirmation/chromium-1440-progress-settled.png)
-- [Dark Progress](output/playwright/review-motion-progress/confirmation/webkit-390-progress-settled.png)
-- [Dark Slider held](output/playwright/review-motion-progress/confirmation/webkit-390-slider-held.png)
+- [Combined acceptance](../../../output/playwright/review-motion-progress/verified-results.json)
+- [Raw visual confirmation](../../../output/playwright/review-motion-progress/confirmation/results.json)
+- [Chromium native-focus tail](../../../output/playwright/review-motion-progress/keyboard-tail/results.json)
+- [Light Progress](../../../output/playwright/review-motion-progress/confirmation/chromium-1440-progress-settled.png)
+- [Dark Progress](../../../output/playwright/review-motion-progress/confirmation/webkit-390-progress-settled.png)
+- [Dark Slider held](../../../output/playwright/review-motion-progress/confirmation/webkit-390-slider-held.png)
 
 Reproduce against a running development server:
 

@@ -202,4 +202,4 @@ Motion presets: 9/9. Additional checks: 5/5.
 - Pagination keeps one animated paint owner and steady native targets through selection: PASS
 - Off disables native Button press movement after Morph detaches: PASS
 
-Raw JSON, screenshots and frame samples are written under `artifacts/production-docs/` and `artifacts/production-motion/`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](BASELINE-STATUS.md).
+Raw JSON, screenshots and frame samples are written under `artifacts/production-docs/` and `artifacts/production-motion/`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](../archive/status/BASELINE-STATUS.md).

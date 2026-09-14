@@ -7,7 +7,7 @@ a public deployment certificate or confirmation of real email delivery.
 
 - Unit tests: 329/329, including the disposable reporting fixture; lint passes.
 - Catalogue: 172 default specimens at three widths in light and dark themes — 1,032 layouts;
-  18 documentation-shell checks and nine motion presets. See [the generated gate](../../GATE.md)
+  18 documentation-shell checks and nine motion presets. See [the generated gate](../gates/GATE.md)
   for each interaction and its explicit limitations.
 - Homepage: 19 checks, including real profile controls, assembly/replay, live component filters,
   keyboard focus, reduced motion and offscreen background suspension. Desktop/light and

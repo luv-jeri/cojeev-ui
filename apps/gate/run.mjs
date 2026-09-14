@@ -207,6 +207,7 @@ finally{
   const opened=results.filter(row=>row.statePreparation);
   if(opened.length)text.push("Open-state preparation: the source UI bootstrap closes layers even when the generated isolation file is labeled open (ui.js:330–334). Those state rows load the paired authored rest scene, then perform the same recorded real click/right-click/hover on each side. This avoids stale simultaneous-open menu attributes and verifies an actually visible state. Each raw result names the source file and trigger; the durable authored Toast trigger is used to keep its native timeout out of the static width sweep. Original open files remain unchanged and earlier raw-scene diagnostics are retained.","");
   if(skipped.length)text.push(`This bounded follow-up skipped ${skipped.length} files already exact at every requested width in ${priorReceipt}. The skipped-case manifest is retained separately; those earlier rows are not relabeled as measurements from this revision. The complete default command does not skip any cases.`,"");
-  fs.writeFileSync(arg("report")??"GATE.md",text.join("\n"));
+  fs.mkdirSync(path.dirname(arg("report")??"docs/gates/GATE.md"),{recursive:true});
+  fs.writeFileSync(arg("report")??"docs/gates/GATE.md",text.join("\n"));
   await browser.close();await server.close();
 }

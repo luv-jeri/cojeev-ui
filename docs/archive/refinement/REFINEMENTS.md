@@ -40,7 +40,7 @@ The registry now includes 89 UI entries: the original 66 and 23 additional entri
 
 Shared Motion lanes now drive selection travel, disclosure and popup paint, theme crossfades, organic scrolling, contextual iconography and keyed content changes. Native Radix/cmdk/DayPicker contracts remain responsible for accessible interaction. Compound agent and chart surfaces reuse the library's existing atoms. The refreshed documentation uses the same installable Preview, ScrollArea, buttons, inputs and theme controls.
 
-Dark foregrounds, anchored overlay origins, popup stacking, long-word wrapping, hidden-control geometry and Safari popup anchoring received concrete corrections. [OVERHAUL-COMPONENTS.md](OVERHAUL-COMPONENTS.md) lists all 68 entries in the overhaul brief; [OVERHAUL-LIFECYCLE.md](OVERHAUL-LIFECYCLE.md) explains the actual retained boundaries and native-filtering limit.
+Dark foregrounds, anchored overlay origins, popup stacking, long-word wrapping, hidden-control geometry and Safari popup anchoring received concrete corrections. [OVERHAUL-COMPONENTS.md](../overhaul/OVERHAUL-COMPONENTS.md) lists all 68 entries in the overhaul brief; [OVERHAUL-LIFECYCLE.md](../overhaul/OVERHAUL-LIFECYCLE.md) explains the actual retained boundaries and native-filtering limit.
 
 ## Verification
 

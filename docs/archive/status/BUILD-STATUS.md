@@ -15,4 +15,4 @@
 
 For live development on the same Wi-Fi, use the Mac's current address with port 4320 and `/cojeev-ui/`. Keep the Mac awake. The public site remains available independently.
 
-No owner decision is pending. A custom domain can follow later. [RELEASE-REPORT.md](RELEASE-REPORT.md) records evidence and limits, including the untested physical iPhone. [BASELINE-STATUS.md](BASELINE-STATUS.md) preserves the original source-comparison failures separately from the completed refinement release.
+No owner decision is pending. A custom domain can follow later. [RELEASE-REPORT.md](../release/RELEASE-REPORT.md) records evidence and limits, including the untested physical iPhone. [BASELINE-STATUS.md](BASELINE-STATUS.md) preserves the original source-comparison failures separately from the completed refinement release.
