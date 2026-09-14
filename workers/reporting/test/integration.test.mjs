@@ -15,7 +15,7 @@ const request = (path, method='GET', body, auth, headers={}) => mf.dispatchFetch
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
-  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,HEALTH_TOKEN:healthToken,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
+  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ENVIRONMENT:'production',ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,HEALTH_TOKEN:healthToken,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
@@ -360,12 +360,18 @@ const resendHook=(body,more={})=>{
 };
 test('signed Resend events tolerate replay and ordering without treating acceptance as delivery',async()=>{
   const p=payload();await submit(p);const providerId='webhook-'+p.id;
-  // Provider events can win the race with the send response.
-  const event={type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:providerId}};
-  const id='msg_'+randomUUID();
-  assert.equal((await resendHook(event,{id})).status,202);
-  assert.equal((await resendHook(event,{id})).status,202);
-  await backend.drain(resendEnv(),p.id,async()=>Response.json({id:providerId}));
+  const event={type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:providerId,tags:{}}};
+  const id='msg_'+randomUUID();let early;
+  // Provider events can win the race with the send response. The early event is accepted
+  // because the send itself carried this environment's correlation tags, not merely because
+  // it is signed: before that send there is no job this deployment can prove is its own.
+  await backend.drain(resendEnv(),p.id,async(_url,init)=>{
+    event.data.tags=Object.fromEntries(JSON.parse(init.body).tags.map(tag=>[tag.name,tag.value]));
+    early=[(await resendHook(event,{id})).status,(await resendHook(event,{id})).status];
+    return Response.json({id:providerId});
+  });
+  assert.deepEqual(early,[202,202]);
+  assert.deepEqual(event.data.tags,{environment:'production',report:p.id,kind:'email_received'});
   assert.equal((await db.prepare('SELECT delivery_status FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first()).delivery_status,'delivered');
   await resendHook({...event,type:'email.sent'});
   let receipt=await (await request(`/v1/reports/${p.id}`,'GET',undefined,token)).json();assert.equal(receipt.emailDelivery,'delivered');assert.equal(receipt.email,'sent');
@@ -511,4 +517,49 @@ test('admin health publishes reporting readiness without disclosing any address'
   assert.equal(health.providers.ownerNotification,false);
   assert.equal(typeof health.activationCutoff,'number');
   assert.ok(!body.includes('@'),'health must never disclose an address');
+});
+test('the maintainer alert is signed with the same identity it is sent from',async()=>{
+  const env=ownerEnv();const p=payload();await acceptLocal(env,p);const sent=[];
+  await backend.drain(env,p.id,async(_url,init)=>{sent.push(JSON.parse(init.body));return Response.json({id:`brand-${sent.length}`});});
+  const owner=sent.find(message=>message.to[0]==='owner@example.com');
+  assert.equal(owner.from,'000h by Cojeev <updates@cojeev.com>');
+  assert.ok(owner.subject.includes('000h by Cojeev'),owner.subject);
+  for(const part of [owner.subject,owner.text,owner.html]) assert.ok(!/cojeev ui/i.test(part),'the alert must not carry a second brand name');
+});
+test('a team-wide provider webhook retains only this environment\'s own messages',async()=>{
+  const events=async()=>(await db.prepare('SELECT COUNT(*) AS n FROM email_events').first()).n;
+  const start=await events();
+  const unrelated={type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:'another-application-message'}};
+  assert.equal((await resendHook(unrelated)).status,202,'an unrelated signed event is acknowledged');
+  assert.equal((await resendHook({...unrelated,data:{...unrelated.data,tags:{environment:'production',report:randomUUID(),kind:'email_received'}}})).status,202);
+  assert.equal(await events(),start,'another portfolio message must never be retained here');
+  const p=payload();await submit(p);
+  await backend.drain(resendEnv(),p.id,async()=>Response.json({id:`local-message-${p.id}`}));
+  const foreign={type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:`beta-message-${p.id}`,tags:{environment:'beta',report:p.id,kind:'email_received'}}};
+  assert.equal((await resendHook(foreign)).status,202);
+  assert.equal(await events(),start,'the other environment sent that message, so it is not retained here');
+  const queued=payload();await submit(queued);
+  assert.equal((await resendHook({...unrelated,data:{email_id:'not-sent-yet',tags:{environment:'production',report:queued.id,kind:'email_received'}}})).status,202);
+  assert.equal(await events(),start,'a queued job that has contacted no provider owns no event');
+  // The provider identity this deployment actually recorded is accepted with no tags at all.
+  assert.equal((await resendHook({type:'email.delivered',created_at:new Date().toISOString(),data:{email_id:`local-message-${p.id}`}})).status,202);
+  assert.equal(await events(),start+1);
+  assert.equal((await db.prepare('SELECT delivery_status FROM outbox WHERE id=?').bind(`${p.id}:email_received`).first()).delivery_status,'delivered');
+});
+test('a tag alone cannot adopt a second provider identity or a body that never carried tags',async()=>{
+  const events=async()=>(await db.prepare('SELECT COUNT(*) AS n FROM email_events').first()).n;
+  const hook=(email_id,report)=>resendHook({type:'email.delivered',created_at:new Date().toISOString(),data:{email_id,tags:{environment:'production',report,kind:'email_received'}}});
+  const bound=payload();await submit(bound);
+  await backend.drain(resendEnv(),bound.id,async()=>Response.json({id:`bound-${bound.id}`}));
+  let start=await events();
+  assert.equal((await hook(`other-message-${bound.id}`,bound.id)).status,202);
+  assert.equal(await events(),start,'a job already bound to one provider message cannot own another');
+  // A job attempted by an earlier release stored a body with no tags in it at all.
+  const legacy=payload();await submit(legacy);
+  const job=`${legacy.id}:email_received`;
+  await db.prepare("UPDATE outbox SET payload_json=?,first_attempt_at=?,state='needs_review' WHERE id=?")
+    .bind(JSON.stringify({to:['person@example.com'],subject:'Thanks for reporting this'}),Date.now(),job).run();
+  start=await events();
+  assert.equal((await hook(`legacy-message-${legacy.id}`,legacy.id)).status,202);
+  assert.equal(await events(),start,'a body that never carried tags cannot be adopted by a tag');
 });
