@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import {mkdir,readFile} from 'node:fs/promises';
+import {build} from 'esbuild';
+import {chromium} from 'playwright';
+await mkdir('output/playwright/overhaul-scroll',{recursive:true});
+const browser=await chromium.launch();
+try {
+ for(const mode of ['light','dark']){
+  const page=await browser.newPage({viewport:{width:390,height:900},reducedMotion:'reduce'});
+  await page.addInitScript(mode=>localStorage.setItem('cojeev-docs-theme',mode),mode);
+  await page.goto('http://127.0.0.1:4320/cojeev-ui/docs/button/',{waitUntil:'domcontentloaded'});
+  await page.locator('.report-launcher:not(:disabled)').waitFor();
+  const viewport=page.locator('.docs-props').first();
+  const managed=viewport.locator('xpath=ancestor::*[@data-slot="scroll-area"][1]');
+  assert.equal(await managed.count(),1,'API table must use the real shared organic scroll owner');
+  await viewport.scrollIntoViewIfNeeded();
+  const room=await viewport.evaluate(el=>el.scrollWidth-el.clientWidth);
+  assert.ok(room>40,'Narrow API tables preserve readable columns and horizontal access');
+  await viewport.focus();await viewport.press('ArrowRight');
+  await page.waitForFunction(()=>document.querySelector('.docs-props')?.scrollLeft>0);
+  const thumb=managed.locator('[data-orientation="horizontal"] [data-slot="scroll-area-thumb"]');
+  assert.equal(await thumb.locator('svg').count(),1,'Not merely a recoloured native thumb');
+  const bounds=await thumb.boundingBox();
+  await page.mouse.move(bounds.x+bounds.width/2,bounds.y+bounds.height/2);
+  await page.mouse.down();await page.mouse.move(bounds.x+bounds.width/2+100,bounds.y+bounds.height/2,{steps:8});await page.mouse.up();
+  assert.ok(await viewport.evaluate(el=>el.scrollLeft)>room/3,'Organic thumb drag moves the real table viewport');
+  await managed.screenshot({path:`output/playwright/overhaul-scroll/${mode}-table.png`});
+  await page.goto('http://127.0.0.1:4320/cojeev-ui/docs/reading-trail/',{waitUntil:'domcontentloaded'});
+  await page.locator('.report-launcher:not(:disabled)').waitFor();
+  const article=page.getByRole('region',{name:'Example article',exact:true}).first();
+  assert.equal(await article.locator('xpath=ancestor::*[@data-slot="scroll-area"][1]').count(),1,'Article and table share the same custom scroll primitive');
+  await article.scrollIntoViewIfNeeded();await article.focus();await article.press('PageDown');
+  await page.waitForFunction(()=>document.querySelector('[aria-label="Example article"][data-radix-scroll-area-viewport]')?.scrollTop>50);
+  await page.close();
+ }
+ const bundle=await build({stdin:{contents:`import React from 'react';import {createRoot} from 'react-dom/client';import {TableContainer,Table,TableBody,TableRow,TableCell} from './registry/cojeev/ui/table';createRoot(document.getElementById('root')).render(<TableContainer dir="rtl" ref={node=>{window.tableViewport=node}} aria-label="RTL data" onScroll={()=>{window.scrolled=true}}><Table style={{width:900}}><TableBody><TableRow>{['one','two','three','four'].map(value=><TableCell key={value} style={{minWidth:200}}>{value}</TableCell>)}</TableRow></TableBody></Table></TableContainer>);`,loader:'tsx',resolveDir:process.cwd()},bundle:true,write:false,format:'iife',platform:'browser',define:{'process.env.NODE_ENV':'"production"'}});
+ const rtl=await browser.newPage({viewport:{width:420,height:400},reducedMotion:'reduce'});
+ await rtl.setContent('<style>*{box-sizing:border-box}body{margin:20px}#root{width:360px}:root{--v-text:#181818;--v-text-2:#454545;--v-card:#f4efe6;--v-border:#777;--r-card:20px}td{padding:20px}</style><div id="root"></div>');
+ for(const file of ['scroll-area','table'])await rtl.addStyleTag({content:await readFile(`registry/cojeev/styles/${file}.css`,'utf8')});
+ await rtl.addScriptTag({content:bundle.outputFiles[0].text});
+ const root=rtl.locator('[data-slot="scroll-area"]');
+ const viewport=rtl.getByRole('region',{name:'RTL data'});
+ const thumb=root.locator('[data-orientation="horizontal"] [data-slot="scroll-area-thumb"]');
+ await thumb.waitFor();
+ assert.equal(await root.getAttribute('dir'),'rtl');
+ const box=await thumb.boundingBox();
+ await rtl.mouse.move(box.x+box.width/2,box.y+box.height/2);await rtl.mouse.down();await rtl.mouse.move(box.x+box.width/2-110,box.y+box.height/2,{steps:8});await rtl.mouse.up();
+ assert.ok(await viewport.evaluate(el=>el.scrollLeft)<-100,'RTL thumb drag moves toward the negative native scroll offset');
+ assert.equal(await rtl.evaluate(()=>window.scrolled&&window.tableViewport?.dataset.slot==='table-container'),true,'Scroll callbacks and refs still reach the native owner');
+ await rtl.close();
+ console.log('PASS: real organic table/article scrolling, light/dark keyboard and drag, RTL thumb movement, callbacks and viewport ref.');
+} finally {await browser.close()}

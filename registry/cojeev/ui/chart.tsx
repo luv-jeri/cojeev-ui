@@ -2,12 +2,35 @@
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import * as React from "react";
 import { AnimatePresence, motion, useIsPresent } from "motion/react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/registry/cojeev/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/registry/cojeev/ui/card";
 import { Button } from "@/registry/cojeev/ui/button";
+import { Label } from "@/registry/cojeev/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/registry/cojeev/ui/select";
 import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 import { ChartTooltip } from "@/registry/cojeev/ui/chart-tooltip";
 import { useChoreography } from "@/registry/cojeev/motion/choreography";
-import { chartColor, chartColors, clamp, finiteValue, type ChartPoint, type ChartSeries, type ChartColor } from "@/registry/cojeev/lib/chart-geometry";
+import {
+  chartColor,
+  chartColors,
+  clamp,
+  finiteValue,
+  type ChartPoint,
+  type ChartSeries,
+  type ChartColor,
+} from "@/registry/cojeev/lib/chart-geometry";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import {
@@ -18,8 +41,51 @@ import {
   TableHead,
   TableCell,
   TableCaption,
+  TableContainer,
 } from "@/registry/cojeev/ui/table";
-export type { ChartPoint, ChartSeries, ChartSlice, ChartColor } from "@/registry/cojeev/lib/chart-geometry";
+export type {
+  ChartPoint,
+  ChartSeries,
+  ChartSlice,
+  ChartColor,
+} from "@/registry/cojeev/lib/chart-geometry";
+
+export type ChartDatasetSelectProps = {
+  value: string;
+  onValueChange: (value: string) => void;
+  options: readonly { value: string; label: string }[];
+  label?: string;
+  disabled?: boolean;
+};
+/** The same accessible, custom-scrolling selector ships with the chart family. */
+export function ChartDatasetSelect({
+  value,
+  onValueChange,
+  options,
+  label = "Sample data",
+  disabled,
+}: ChartDatasetSelectProps) {
+  const id = React.useId();
+  return (
+    <div className="v-chart-control">
+      <Label id={`${id}-label`} htmlFor={id}>
+        {label}
+      </Label>
+      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+        <SelectTrigger id={id} aria-labelledby={`${id}-label`}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
 
 export type ChartDatum = {
   label: string;
@@ -203,7 +269,8 @@ export type ChartRingProps = React.ComponentProps<"div"> & {
   draw?: boolean;
   caption?: string;
 };
-export function ChartRing({ref: externalMorphRef, 
+export function ChartRing({
+  ref: externalMorphRef,
   segments,
   strokeWidth = 12,
   gap = 6,
@@ -237,7 +304,8 @@ export function ChartRing({ref: externalMorphRef,
   const ownedMorphRef = useMorph<HTMLDivElement>("surfaces", externalMorphRef);
   return (
     <>
-      <div ref={ownedMorphRef}
+      <div
+        ref={ownedMorphRef}
         data-slot="chart-ring"
         data-part="root"
         data-empty={total ? undefined : ""}
@@ -366,7 +434,8 @@ export function ChartDataTable({
   caption = "Chart data",
   visuallyHidden = true,
 }: ChartDataTableProps) {
-  return (
+  const hasNotes = data.some((item) => item.note || item.value === null);
+  const content = (
     <Table
       data-slot="chart-data-table"
       className={visuallyHidden ? "v-sr" : undefined}
@@ -376,7 +445,7 @@ export function ChartDataTable({
         <TableRow>
           <TableHead>Label</TableHead>
           <TableHead numeric>Value</TableHead>
-          <TableHead>Note</TableHead>
+          {hasNotes && <TableHead>Note</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -384,13 +453,22 @@ export function ChartDataTable({
           <TableRow key={index}>
             <TableCell>{item.label}</TableCell>
             <TableCell numeric>{item.value ?? "—"}</TableCell>
-            <TableCell>
-              {item.note ?? (item.value === null ? "Not observed" : "")}
-            </TableCell>
+            {hasNotes && (
+              <TableCell>
+                {item.note ?? (item.value === null ? "Not observed" : "")}
+              </TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>
     </Table>
+  );
+  return visuallyHidden ? (
+    content
+  ) : (
+    <TableContainer aria-label={`${caption} values`} className="v-chart-values">
+      {content}
+    </TableContainer>
   );
 }
 
@@ -406,21 +484,58 @@ export type ChartFrameProps = {
   legendMode?: "series" | "points";
   interaction?: "x" | "columns" | "y" | "radar" | "shape";
   emptyMessage?: string;
+  /** Independent of the data's line/bar/shape geometry. */
+  appearance?: "analysis" | "brief" | "ledger";
+  /** An explicit source measure; it does not change when a legend series is hidden. */
+  summary?: { label: string; value: React.ReactNode; detail?: string };
   children: (plot: ChartPlotState) => React.ReactNode;
 };
 export type ChartPlotState = {
-  width: number; height: number; left: number; right: number; top: number; bottom: number;
-  data: ChartPoint[]; series: ChartSeries[]; active: number | null; id: string;
+  width: number;
+  height: number;
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+  data: ChartPoint[];
+  series: ChartSeries[];
+  active: number | null;
+  id: string;
   inspect: (index: number) => void;
 };
 
 function ChartPlotSvg(props: React.ComponentProps<typeof motion.svg>) {
   const present = useIsPresent();
-  return <motion.svg {...props} tabIndex={present ? props.tabIndex : -1} aria-hidden={present ? props["aria-hidden"] : true} style={{ ...props.style, pointerEvents: present ? props.style?.pointerEvents : "none" }} />;
+  return (
+    <motion.svg
+      {...props}
+      tabIndex={present ? props.tabIndex : -1}
+      aria-hidden={present ? props["aria-hidden"] : true}
+      style={{
+        ...props.style,
+        pointerEvents: present ? props.style?.pointerEvents : "none",
+      }}
+    />
+  );
 }
 
 /** Shared composition, focus model, legend and semantic fallback for the chart suite. */
-export function ChartFrame({ data, series, caption = "Chart", description, showTable = true, tableVisible = false, valueFormatter = value => value.toLocaleString(), className, legendMode = "series", interaction = "x", emptyMessage = "No observations to plot.", children }: ChartFrameProps) {
+export function ChartFrame({
+  data,
+  series,
+  caption = "Chart",
+  description,
+  showTable = true,
+  tableVisible = false,
+  valueFormatter = (value) => value.toLocaleString(),
+  className,
+  legendMode = "series",
+  interaction = "x",
+  emptyMessage = "No observations to plot.",
+  appearance,
+  summary,
+  children,
+}: ChartFrameProps) {
   const { quiet, transition } = useChoreography();
   const id = React.useId().replace(/:/g, "");
   const plotRef = React.useRef<HTMLDivElement>(null);
@@ -429,70 +544,350 @@ export function ChartFrame({ data, series, caption = "Chart", description, showT
   const [keyboardMode, setKeyboardMode] = React.useState(false);
   const [pointer, setPointer] = React.useState({ x: 80, y: 60 });
   const [hidden, setHidden] = React.useState<string[]>([]);
-  const [tableState, setTableState] = React.useState({ prop: tableVisible, visible: tableVisible });
-  if (tableState.prop !== tableVisible) setTableState({ prop: tableVisible, visible: tableVisible });
-  const table = tableState.prop === tableVisible ? tableState.visible : tableVisible;
-  const resolved = series.map((item, index) => ({ ...item, color: item.color ?? chartColors[index % chartColors.length] }));
-  const legend = legendMode === "points" ? data.map((point, index) => ({ key: `point-${index}`, label: point.label, color: (point.color as ChartColor | undefined) ?? chartColors[index % chartColors.length] })) : resolved;
-  const visibleSeries = legendMode === "series" ? resolved.filter(item => !hidden.includes(item.key)) : resolved;
-  const visibleData: ChartPoint[] = legendMode === "points" ? data.map((point, index) => ({ ...point, color: legend[index].color })).filter((_, index) => !hidden.includes(`point-${index}`)) : data;
+  const [tableState, setTableState] = React.useState({
+    prop: tableVisible,
+    visible: tableVisible,
+  });
+  if (tableState.prop !== tableVisible)
+    setTableState({ prop: tableVisible, visible: tableVisible });
+  const table =
+    tableState.prop === tableVisible ? tableState.visible : tableVisible;
+  const tableShown = showTable && (appearance === "ledger" || table);
+  const measure = summary ?? {
+    label: "Source observations",
+    value: data.length,
+    detail: "Includes rows with missing values.",
+  };
+  const resolved = series.map((item, index) => ({
+    ...item,
+    color: item.color ?? chartColors[index % chartColors.length],
+  }));
+  const legend =
+    legendMode === "points"
+      ? data.map((point, index) => ({
+          key: `point-${index}`,
+          label: point.label,
+          color:
+            (point.color as ChartColor | undefined) ??
+            chartColors[index % chartColors.length],
+        }))
+      : resolved;
+  const visibleSeries =
+    legendMode === "series"
+      ? resolved.filter((item) => !hidden.includes(item.key))
+      : resolved;
+  const visibleData: ChartPoint[] =
+    legendMode === "points"
+      ? data
+          .map((point, index) => ({ ...point, color: legend[index].color }))
+          .filter((_, index) => !hidden.includes(`point-${index}`))
+      : data;
   const height = 300;
-  const left = interaction === "y" ? Math.min(100, width * .27) : 42, right = width - 18, top = 24, bottom = height - 42;
+  const left = interaction === "y" ? Math.min(100, width * 0.27) : 42,
+    right = width - 18,
+    top = 24,
+    bottom = height - 42;
   const current = active !== null ? visibleData[active] : undefined;
-  const hasValues = visibleData.length > 0 && visibleSeries.some(item => visibleData.some(point => finiteValue(point[item.key]) !== null));
+  const hasValues =
+    visibleData.length > 0 &&
+    visibleSeries.some((item) =>
+      visibleData.some((point) => finiteValue(point[item.key]) !== null),
+    );
   React.useLayoutEffect(() => {
-    const node = plotRef.current; if (!node) return;
-    const measure = () => setWidth(Math.max(1, node.clientWidth));
-    measure(); const observer = new ResizeObserver(measure); observer.observe(node);
+    const node = plotRef.current;
+    if (!node) return;
+    const measure = () => {
+      // Hidden preview panels report zero. Keep the last useful viewBox until
+      // reveal, and leave room for both axis gutters in very narrow containers.
+      if (node.clientWidth > 0) setWidth(Math.max(64, node.clientWidth));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
     return () => observer.disconnect();
   }, []);
-  const inspect = (index: number) => setActive(Math.round(clamp(index, 0, visibleData.length - 1)));
-  const tooltip = current ? { label: current.label, items: visibleSeries.map(item => ({ label: item.label, value: finiteValue(current[item.key]), color: legendMode === "points" ? current.color as ChartColor : item.color })) } : null;
-  const tableData = data.flatMap(point => resolved.map(item => ({ label: resolved.length === 1 ? point.label : `${point.label} · ${item.label}`, value: finiteValue(point[item.key]) })));
+  const inspect = (index: number) =>
+    setActive(Math.round(clamp(index, 0, visibleData.length - 1)));
+  const tooltip = current
+    ? {
+        label: current.label,
+        items: visibleSeries.map((item) => ({
+          label: item.label,
+          value: finiteValue(current[item.key]),
+          color:
+            legendMode === "points"
+              ? (current.color as ChartColor)
+              : item.color,
+        })),
+      }
+    : null;
+  const tableData = data.flatMap((point) =>
+    resolved.map((item) => ({
+      label:
+        resolved.length === 1 ? point.label : `${point.label} · ${item.label}`,
+      value: finiteValue(point[item.key]),
+    })),
+  );
   const keyboard = (event: React.KeyboardEvent<SVGSVGElement>) => {
-    if (event.key === "Escape") { setActive(null); return; }
-    if (!["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+    if (event.key === "Escape") {
+      setActive(null);
+      return;
+    }
+    if (
+      ![
+        "ArrowRight",
+        "ArrowLeft",
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+      ].includes(event.key)
+    )
+      return;
     event.preventDefault();
-    const next = event.key === "Home" ? 0 : event.key === "End" ? visibleData.length - 1 : (active ?? 0) + (["ArrowLeft", "ArrowUp"].includes(event.key) ? -1 : 1);
-    const index = Math.round(clamp(next, 0, visibleData.length - 1)); inspect(index);
-    setPointer({ x: left + (right - left) * (index + .5) / Math.max(1, visibleData.length), y: height * .36 });
+    const next =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? visibleData.length - 1
+          : (active ?? 0) +
+            (["ArrowLeft", "ArrowUp"].includes(event.key) ? -1 : 1);
+    const index = Math.round(clamp(next, 0, visibleData.length - 1));
+    inspect(index);
+    setPointer({
+      x:
+        left +
+        ((right - left) * (index + 0.5)) / Math.max(1, visibleData.length),
+      y: height * 0.36,
+    });
   };
-  return <ChartContainer className={cn("v-chart-frame", className)} aria-labelledby={`${id}-title`} aria-describedby={description ? `${id}-description` : undefined}>
-    <AnimatePresence initial={!quiet}>
-      <motion.div key="chart" initial={quiet ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: quiet ? 0 : -4 }} transition={transition}>
-        <Card>
-          <CardHeader className="v-chart-frame__header"><CardTitle id={`${id}-title`}>{caption}</CardTitle>{description && <CardDescription id={`${id}-description`}>{description}</CardDescription>}</CardHeader>
-          <CardContent className="v-chart-frame__content">
-            <div className="v-chart-legend" role="group" aria-label={`${caption} visible data`}>
-              <MotionPresence>{legend.map(item => <MotionSurface key={item.key} asChild preset="fade"><Button variant="ghost" size="sm" aria-pressed={!hidden.includes(item.key)} className="v-chart-legend__item" onClick={() => { setHidden(items => items.includes(item.key) ? items.filter(key => key !== item.key) : [...items, item.key]); setActive(null); }}><span className="v-chart-key" style={{ background: chartColor(item.color) }} aria-hidden="true" />{item.label}</Button></MotionSurface>)}</MotionPresence>
-            </div>
-            <div ref={plotRef} className="v-chart-plot" data-slot="chart-plot" style={{ height }} onPointerLeave={() => setActive(null)}>
-              <AnimatePresence initial={false} mode="wait">
-                {hasValues ? <ChartPlotSvg key="plot" viewBox={`0 0 ${width} ${height}`} role="group" tabIndex={0}
-                  aria-label={`${caption}. Use arrow keys to inspect observations; Escape dismisses the tooltip.`} aria-describedby={current ? `${id}-tooltip` : undefined}
-                  className="v-chart-svg" data-slot="chart-svg"
-                  initial={quiet ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}
-                  onFocus={() => { setKeyboardMode(true); if (active === null) { inspect(0); setPointer({ x: left, y: top }); } }} onBlur={() => { setKeyboardMode(false); setActive(null); }} onKeyDown={keyboard}
-                  onPointerMove={event => {
-                    setKeyboardMode(false);
-                    const box = event.currentTarget.getBoundingClientRect(); const x = (event.clientX - box.left) * width / box.width, y = (event.clientY - box.top) * height / box.height;
-                    setPointer({ x, y });
-                    if (interaction === "x") inspect(Math.round((x - left) / (right - left) * Math.max(0, visibleData.length - 1)));
-                    if (interaction === "columns") inspect(Math.floor((x - left) / (right - left) * visibleData.length));
-                    if (interaction === "y") inspect(Math.floor((y - top) / (bottom - top) * visibleData.length));
-                    if (interaction === "radar") { const angle = (Math.atan2(y - height / 2, x - width / 2) + Math.PI / 2 + Math.PI * 2) % (Math.PI * 2); inspect(Math.round(angle / (Math.PI * 2) * visibleData.length) % visibleData.length); }
-                  }}>
-                  {children({ width, height, left, right, top, bottom, data: visibleData, series: visibleSeries, active, id, inspect })}
-                </ChartPlotSvg> : <motion.div key="empty" className="v-chart-empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}><span className="v-chart-key" aria-hidden="true" />{hidden.length ? "Choose a legend item to show its data." : emptyMessage}</motion.div>}
-              </AnimatePresence>
-              <span className="v-sr" role="status" aria-live="polite" aria-atomic="true">{keyboardMode && current ? `${current.label}. ${visibleSeries.map(item => `${item.label}: ${finiteValue(current[item.key]) === null ? "No observation" : valueFormatter(finiteValue(current[item.key])!)}`).join(". ")}` : ""}</span>
-              <ChartTooltip id={`${id}-tooltip`} active={tooltip} position={pointer} bounds={{ width, height }} valueFormatter={valueFormatter} />
-            </div>
-          </CardContent>
-          <CardFooter className="v-chart-frame__footer"><span>Hover to explore · Arrow keys to inspect</span>{showTable && <Button variant="ghost" size="sm" aria-expanded={table} aria-controls={`${id}-data`} onClick={() => setTableState(value => ({ ...value, visible: !value.visible }))}>{table ? "Hide data" : "Show data"}</Button>}</CardFooter>
-          {showTable && <div id={`${id}-data`} className={table ? "v-chart-frame__table" : undefined}><ChartDataTable data={tableData} caption={caption} visuallyHidden={!table} /></div>}
-        </Card>
-      </motion.div>
-    </AnimatePresence>
-  </ChartContainer>;
+  return (
+    <ChartContainer
+      className={cn("v-chart-frame", className)}
+      data-appearance={appearance}
+      data-table-visible={tableShown}
+      aria-labelledby={`${id}-title`}
+      aria-describedby={description ? `${id}-description` : undefined}
+    >
+      <AnimatePresence initial={!quiet}>
+        <motion.div
+          key="chart"
+          initial={quiet ? false : { opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: quiet ? 0 : -4 }}
+          transition={transition}
+        >
+          <Card>
+            <CardHeader className="v-chart-frame__header">
+              <CardTitle id={`${id}-title`}>{caption}</CardTitle>
+              {description && (
+                <CardDescription id={`${id}-description`}>
+                  {description}
+                </CardDescription>
+              )}
+            </CardHeader>
+            {appearance === "brief" && (
+              <div className="v-chart-summary">
+                <span>{measure.label}</span>
+                <strong>{measure.value}</strong>
+                {measure.detail && <p>{measure.detail}</p>}
+                <span className="v-chart-summary__scope">
+                  Source measure · not filtered by the legend
+                </span>
+              </div>
+            )}
+            <CardContent className="v-chart-frame__content">
+              <div
+                className="v-chart-legend"
+                role="group"
+                aria-label={`${caption} visible data`}
+              >
+                <MotionPresence>
+                  {legend.map((item) => (
+                    <MotionSurface key={item.key} asChild preset="fade">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-pressed={!hidden.includes(item.key)}
+                        className="v-chart-legend__item"
+                        onClick={() => {
+                          setHidden((items) =>
+                            items.includes(item.key)
+                              ? items.filter((key) => key !== item.key)
+                              : [...items, item.key],
+                          );
+                          setActive(null);
+                        }}
+                      >
+                        <span
+                          className="v-chart-key"
+                          style={{ background: chartColor(item.color) }}
+                          aria-hidden="true"
+                        />
+                        {item.label}
+                      </Button>
+                    </MotionSurface>
+                  ))}
+                </MotionPresence>
+              </div>
+              <div
+                ref={plotRef}
+                className="v-chart-plot"
+                data-slot="chart-plot"
+                style={{ height }}
+                onPointerLeave={() => setActive(null)}
+              >
+                <AnimatePresence initial={false} mode="wait">
+                  {hasValues ? (
+                    <ChartPlotSvg
+                      key="plot"
+                      viewBox={`0 0 ${width} ${height}`}
+                      role="group"
+                      tabIndex={0}
+                      aria-label={`${caption}. Use arrow keys to inspect observations; Escape dismisses the tooltip.`}
+                      aria-describedby={current ? `${id}-tooltip` : undefined}
+                      className="v-chart-svg"
+                      data-slot="chart-svg"
+                      initial={quiet ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={transition}
+                      onFocus={() => {
+                        setKeyboardMode(true);
+                        if (active === null) {
+                          inspect(0);
+                          setPointer({ x: left, y: top });
+                        }
+                      }}
+                      onBlur={() => {
+                        setKeyboardMode(false);
+                        setActive(null);
+                      }}
+                      onKeyDown={keyboard}
+                      onPointerMove={(event) => {
+                        setKeyboardMode(false);
+                        const box = event.currentTarget.getBoundingClientRect();
+                        const x =
+                            ((event.clientX - box.left) * width) / box.width,
+                          y = ((event.clientY - box.top) * height) / box.height;
+                        setPointer({ x, y });
+                        if (interaction === "x")
+                          inspect(
+                            Math.round(
+                              ((x - left) / (right - left)) *
+                                Math.max(0, visibleData.length - 1),
+                            ),
+                          );
+                        if (interaction === "columns")
+                          inspect(
+                            Math.floor(
+                              ((x - left) / (right - left)) *
+                                visibleData.length,
+                            ),
+                          );
+                        if (interaction === "y")
+                          inspect(
+                            Math.floor(
+                              ((y - top) / (bottom - top)) * visibleData.length,
+                            ),
+                          );
+                        if (interaction === "radar") {
+                          const angle =
+                            (Math.atan2(y - height / 2, x - width / 2) +
+                              Math.PI / 2 +
+                              Math.PI * 2) %
+                            (Math.PI * 2);
+                          inspect(
+                            Math.round(
+                              (angle / (Math.PI * 2)) * visibleData.length,
+                            ) % visibleData.length,
+                          );
+                        }
+                      }}
+                    >
+                      {children({
+                        width,
+                        height,
+                        left,
+                        right,
+                        top,
+                        bottom,
+                        data: visibleData,
+                        series: visibleSeries,
+                        active,
+                        id,
+                        inspect,
+                      })}
+                    </ChartPlotSvg>
+                  ) : (
+                    <motion.div
+                      key="empty"
+                      className="v-chart-empty"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={transition}
+                    >
+                      <span className="v-chart-key" aria-hidden="true" />
+                      {hidden.length
+                        ? "Choose a legend item to show its data."
+                        : emptyMessage}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <span
+                  className="v-sr"
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                >
+                  {keyboardMode && current
+                    ? `${current.label}. ${visibleSeries.map((item) => `${item.label}: ${finiteValue(current[item.key]) === null ? "No observation" : valueFormatter(finiteValue(current[item.key])!)}`).join(". ")}`
+                    : ""}
+                </span>
+                <ChartTooltip
+                  id={`${id}-tooltip`}
+                  active={tooltip}
+                  position={pointer}
+                  bounds={{ width, height }}
+                  valueFormatter={valueFormatter}
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="v-chart-frame__footer">
+              <span>Hover to explore · Arrow keys to inspect</span>
+              {showTable && appearance !== "ledger" && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-expanded={tableShown}
+                  aria-controls={`${id}-data`}
+                  onClick={() =>
+                    setTableState((value) => ({
+                      ...value,
+                      visible: !value.visible,
+                    }))
+                  }
+                >
+                  {tableShown ? "Hide data" : "Show data"}
+                </Button>
+              )}
+            </CardFooter>
+            {showTable && (
+              <div
+                id={`${id}-data`}
+                className={tableShown ? "v-chart-frame__table" : undefined}
+              >
+                <ChartDataTable
+                  data={tableData}
+                  caption={caption}
+                  visuallyHidden={!tableShown}
+                />
+              </div>
+            )}
+          </Card>
+        </motion.div>
+      </AnimatePresence>
+    </ChartContainer>
+  );
 }

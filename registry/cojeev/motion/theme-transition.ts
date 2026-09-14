@@ -86,21 +86,50 @@ export function applyTheme(mode:ThemeMode,quiet=false,root?:HTMLElement,options:
   const controlPath=control?`M${control.left+control.height/2} ${control.top}H${control.right-control.height/2}Q${control.right} ${control.top} ${control.right} ${control.top+control.height/2}Q${control.right} ${control.bottom} ${control.right-control.height/2} ${control.bottom}H${control.left+control.height/2}Q${control.left} ${control.bottom} ${control.left} ${control.top+control.height/2}Q${control.left} ${control.top} ${control.left+control.height/2} ${control.top}Z`:"";
   const glyph=toggle?.querySelector<SVGSVGElement>("svg:not(.v-morph)");
   const glyphBox=glyph?.getBoundingClientRect();
+  // Both the snapshot hole and its live replacement must meet on physical
+  // pixels. Fractional edges antialias twice, leaving a light square seam.
+  const ratio=doc.defaultView?.devicePixelRatio||1;
+  const glyphTile=glyphBox?{
+    x:Math.floor(glyphBox.x*ratio)/ratio,
+    y:Math.floor(glyphBox.y*ratio)/ratio,
+    right:Math.ceil(glyphBox.right*ratio)/ratio,
+    bottom:Math.ceil(glyphBox.bottom*ratio)/ratio,
+  }:undefined;
   const image=(svg:string)=>`url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-  if(glyphBox){
-    const{x,y,width:w,height:h}=glyphBox;
+  if(glyphTile){
+    const{x,y,right,bottom}=glyphTile,w=right-x,h=bottom-y;
     canvas.style.setProperty("--v-theme-glyph-position",`${x}px ${y}px`);
     canvas.style.setProperty("--v-theme-glyph-size",`${w}px ${h}px`);
     canvas.style.setProperty("--v-theme-glyph-mask",image(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path fill="white" fill-rule="evenodd" d="M0 0H${width}V${height}H0ZM${x} ${y}H${x+w}V${y+h}H${x}Z"/></svg>`));
   }
   const paintGlyph=()=>{
-    if(!glyph||!toggle)return;
+    if(!glyph||!toggle||!glyphBox||!glyphTile)return;
+    const face=toggle.querySelector<SVGPathElement>("svg.v-morph [data-morph-body]");
+    const paint=face?getComputedStyle(face).fill:getComputedStyle(toggle).backgroundColor;
+    const alpha=paint.match(/(?:rgba\([^,]+,[^,]+,[^,]+,|\/)\s*([\d.]+)(%)?\s*\)/);
+    const opaque=paint!=="none"&&paint!=="transparent"&&(!alpha||Number(alpha[1])/(alpha[2]?100:1)>=.999)&&(!face||Number(getComputedStyle(face).opacity)>=.999);
+    // A transparent control may sit over a gradient or a separate SVG surface.
+    // Its tiny tile cannot reconstruct that backdrop. Keep the native snapshot
+    // there; only replace the glyph when its face supplies an exact opaque fill.
+    if(!opaque){
+      canvas.style.removeProperty("--v-theme-glyph");
+      canvas.style.removeProperty("--v-theme-glyph-mask");
+      return;
+    }
+    const{x,y,right,bottom}=glyphTile;
+    canvas.style.setProperty("--v-theme-glyph-mask",image(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path fill="white" fill-rule="evenodd" d="M0 0H${width}V${height}H0ZM${x} ${y}H${right}V${bottom}H${x}Z"/></svg>`));
     const copy=glyph.cloneNode(true) as SVGSVGElement;
     copy.setAttribute("xmlns","http://www.w3.org/2000/svg");copy.style.color=getComputedStyle(glyph).color;
+    copy.setAttribute("width",String(glyphBox.width));copy.setAttribute("height",String(glyphBox.height));
+    const tile=doc.createElementNS("http://www.w3.org/2000/svg","svg");
+    tile.setAttribute("xmlns","http://www.w3.org/2000/svg");
+    tile.setAttribute("width",String(glyphTile.right-glyphTile.x));
+    tile.setAttribute("height",String(glyphTile.bottom-glyphTile.y));
+    copy.setAttribute("x",String(glyphBox.x-glyphTile.x));
+    copy.setAttribute("y",String(glyphBox.y-glyphTile.y));
     const back=doc.createElementNS("http://www.w3.org/2000/svg","rect");back.setAttribute("width","100%");back.setAttribute("height","100%");
-    const face=toggle.querySelector("svg.v-morph path");
-    back.setAttribute("fill",face?getComputedStyle(face).fill:getComputedStyle(doc.body).backgroundColor);
-    copy.prepend(back);canvas.style.setProperty("--v-theme-glyph",image(copy.outerHTML));
+    back.setAttribute("fill",paint);
+    tile.append(back,copy);canvas.style.setProperty("--v-theme-glyph",image(tile.outerHTML));
   };
   let unsubscribe=()=>{};
   const media=doc.defaultView!.matchMedia("(prefers-reduced-motion: reduce)");

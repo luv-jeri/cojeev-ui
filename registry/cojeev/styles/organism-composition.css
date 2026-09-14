@@ -2,6 +2,7 @@
 .v-organism [data-assembly-part] {z-index:2;}
 .v-organism .v-organism__surface {z-index:0;pointer-events:none;}
 .v-organism .v-organism__cover {z-index:1;padding:0;pointer-events:none;}
+.v-organism > .v-assembly-particles {position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;}
 .v-organism__cover-art {height:100%;display:flex;align-items:center;justify-content:center;gap:3%;overflow:hidden;}
 .v-organism__cover-art [data-slot="shape"] {width:36%;height:128%;flex:none;}
 .v-organism__cover-art [data-slot="shape"]:nth-child(1) {--c:var(--v-yellow);rotate:-18deg;translate:-2% 8%;}
@@ -106,7 +107,7 @@
 .v-organism__message .v-organism__bubble.-me {background:var(--v-blue);color:var(--v-on-accent);border-radius:18px 18px 5px 18px;}
 :root .v-organism[data-kind="chat"] .v-organism__bubble[data-slot] {--mfill:color-mix(in oklab,var(--v-paper) 72%,var(--v-blue));background:var(--mfill);color:var(--v-text);border-radius:18px;border:0;box-shadow:none;}
 :root .v-organism[data-kind="chat"] .v-organism__bubble[data-slot].-me {--mfill:var(--v-blue);color:var(--v-on-accent);border-radius:18px 18px 4px 18px;}
-:root .v-organism[data-kind="chat"] .v-organism__bubble[data-slot].v-morph-live {background:transparent;box-shadow:none;}
+:root .v-organism[data-kind="chat"] .v-organism__bubble[data-slot]:has(>svg.v-morph) {background:transparent;box-shadow:none;}
 .v-organism__conversation .v-organism__bubble.-tail::before {background:var(--mfill);}
 .v-organism[data-kind="chat"] .v-organism__composer[data-slot] {background:var(--v-beige);box-shadow:none;border:0;border-radius:24px;}
 .v-organism[data-kind="chat"] .v-organism__composer [data-slot="input-group-input"] {font-size:12px;padding-inline:15px;}

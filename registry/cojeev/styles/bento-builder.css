@@ -1,0 +1,257 @@
+.v-bento-builder {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 20px;
+  color: var(--v-text);
+}
+.v-bento-builder__heading,
+.v-bento-builder__toolbar,
+.v-bento-builder__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.v-bento-builder__eyebrow {
+  font-size: 12px;
+  color: var(--v-text-2);
+}
+.v-bento-builder h3 {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin: 6px 0 0;
+}
+.v-bento-builder__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.v-bento-builder__templates {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.v-bento-builder__templates button {
+  min-width: 0;
+}
+.v-bento-builder__scroll {
+  width: 100%;
+  min-width: 0;
+}
+.v-bento-builder__scroll-hint {
+  display: none;
+}
+.v-bento-builder__board {
+  position: relative;
+  min-width: 560px;
+  padding: 0;
+}
+.v-bento-builder__board .v-bento {
+  display: grid;
+  grid-template-columns: repeat(var(--bento-columns), minmax(0, 1fr));
+  /* The editor's coordinate canvas cannot grow when a neighbor gets shorter.
+     Content-derived fractional tracks fed their new height back into snapping. */
+  grid-template-rows: repeat(var(--bento-rows), 144px);
+  gap: 10px;
+}
+.v-bento-builder__board .v-bento[data-variant="interlock"] {
+  gap: 0;
+}
+.v-bento-builder__board .v-bento__paint {
+  display: block;
+}
+.v-bento-builder__board .v-bento__tile {
+  padding: 0;
+  min-height: 0;
+}
+.v-bento-builder__board .v-bento[data-variant="interlock"] > .v-bento__tile {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.v-bento-builder__tile {
+  box-sizing: border-box;
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: start;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  cursor: grab;
+  touch-action: pan-x pan-y;
+  min-width: 0;
+  min-height: 0;
+  overflow-wrap: anywhere;
+}
+.v-bento-builder__tile:active {
+  cursor: grabbing;
+}
+.v-bento-builder__tile[aria-pressed="true"] {
+  outline: 2px solid currentColor;
+  outline-offset: -10px;
+}
+.v-bento-builder__tile:focus-visible {
+  outline: 3px solid var(--v-focus);
+  outline-offset: -6px;
+}
+.v-bento-builder__tile-hint {
+  font-size: 10px;
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+}
+.v-bento-builder__board
+  .v-bento[data-variant="interlock"]
+  .v-bento-builder__tile {
+  padding: 24px;
+}
+.v-bento-builder__board .v-bento__label {
+  font-size: clamp(12px, min(12cqi, 18cqb), 27px);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.v-bento-builder__seam {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--v-border);
+  border-radius: 16px;
+  background: var(--v-canvas);
+  color: var(--v-text);
+  cursor: ew-resize;
+  touch-action: none;
+  box-shadow: 0 2px 5px #0001;
+}
+.v-bento-builder__seam[data-side="top"],
+.v-bento-builder__seam[data-side="bottom"] {
+  width: 44px;
+  height: 44px;
+  cursor: ns-resize;
+}
+.v-bento-builder__seam:focus-visible {
+  outline: 3px solid var(--v-focus);
+}
+.v-bento-builder__feedback {
+  position: fixed;
+  z-index: 50;
+  box-sizing: border-box;
+  width: min(256px, calc(100vw - 24px));
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--v-border);
+  border-inline-start: 3px solid var(--v-yellow);
+  border-radius: 12px;
+  background: var(--v-canvas);
+  color: var(--v-text);
+  box-shadow: 0 6px 20px #0002;
+  font-family: var(--font-body, inherit);
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+.v-bento-builder__feedback strong {
+  font-size: 11px;
+  font-weight: 600;
+}
+.v-bento-builder__controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  border-block: 1px solid var(--v-border);
+  padding-block: 20px;
+}
+.v-bento-builder fieldset {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.v-bento-builder legend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.v-bento-builder label {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  font-size: 12px;
+}
+.v-bento-builder__fields {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.v-bento-builder p {
+  font-size: 12px;
+  color: var(--v-text-2);
+  line-height: 1.5;
+  margin: 0;
+}
+.v-bento-builder__resize summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+.v-bento-builder__resize p {
+  margin-block: 12px;
+}
+.v-bento-builder__resize .v-bento-builder__actions > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.v-bento-builder__resize .v-bento-builder__actions > div > span {
+  font-size: 12px;
+  min-width: 40px;
+}
+.v-bento-builder__footer p {
+  flex: 1;
+  min-width: 180px;
+  min-height: 3em;
+}
+.v-bento-builder input,
+.v-bento-builder select {
+  width: 100%;
+  min-width: 0;
+}
+.v-bento-builder button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+@media (max-width: 700px) {
+  .v-bento-builder__scroll-hint {
+    display: block;
+  }
+  .v-bento-builder__templates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .v-bento-builder__controls {
+    grid-template-columns: 1fr;
+  }
+  .v-bento-builder__heading {
+    align-items: flex-start;
+  }
+  .v-bento-builder__heading .v-bento-builder__actions {
+    margin-left: auto;
+  }
+}

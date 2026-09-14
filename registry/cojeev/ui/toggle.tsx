@@ -6,6 +6,10 @@ import { cn } from "@/registry/cojeev/lib/utils";
 import * as Primitive from "@radix-ui/react-toggle";
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import { useFlowPress } from "@/registry/cojeev/motion/flow-press";
+import {
+  controlRadiusStyle,
+  type ControlRadius,
+} from "@/registry/cojeev/lib/control-appearance";
 export const toggleVariants = cva(
   "v-toggle [place-items:center] [border-radius:var(--r-pill)] [font-size:var(--fs-control)] [display:inline-flex] [align-items:center] [justify-content:center] [height:40px] [min-width:40px] [padding:0_16px] [gap:8px] [background:var(--v-canvas)] [color:var(--v-text-2)] [font-weight:500] [box-shadow:inset_0_0_0_1px_var(--v-edge)] [cursor:pointer]",
   {
@@ -21,8 +25,19 @@ export const toggleVariants = cva(
   },
 );
 export type ToggleProps = React.ComponentProps<typeof Primitive.Root> &
-  VariantProps<typeof toggleVariants>;
-export function Toggle({ ref, className, variant, ...props }: ToggleProps) {
+  VariantProps<typeof toggleVariants> & {
+    appearance?: "tool" | "bookmark" | "preference";
+    radius?: ControlRadius;
+  };
+export function Toggle({
+  ref,
+  className,
+  variant,
+  appearance,
+  radius,
+  style,
+  ...props
+}: ToggleProps) {
   const morphRef = useMorph<HTMLButtonElement>("buttons", ref);
   const flowRef = useFlowPress(morphRef);
   return (
@@ -31,7 +46,11 @@ export function Toggle({ ref, className, variant, ...props }: ToggleProps) {
       data-slot="toggle"
       data-part="root"
       data-toggle=""
+      data-appearance={appearance}
+      data-morph={appearance ? "both" : undefined}
+      data-r={appearance ? "css" : undefined}
       className={cn(toggleVariants({ variant }), className)}
+      style={{ ...controlRadiusStyle(radius), ...style }}
       {...props}
     />
   );

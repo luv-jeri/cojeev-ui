@@ -105,11 +105,18 @@ export function AgentChatComposer({ value, onValueChange, onSend, status = "idle
   const running = status === "thinking" || status === "working";
   const canSend = !disabled && !running && (value.trim().length > 0 || attachments.length > 0) && value.length <= maxLength;
   const wasRunning = React.useRef(running);
-  React.useEffect(() => {
-    if (wasRunning.current && !running && document.activeElement?.getAttribute("data-agent-stop") === "true") textarea.current?.focus();
+  const restoreDraftFocus = React.useRef(false);
+  const stopRef = React.useCallback((node: HTMLButtonElement | HTMLAnchorElement | null) => {
+    if (!node) return;
+    // Capture focus before React replaces Stop or disables it as the Send control.
+    return () => { restoreDraftFocus.current = node.ownerDocument.activeElement === node; };
+  }, []);
+  React.useLayoutEffect(() => {
+    if (wasRunning.current && !running && restoreDraftFocus.current) textarea.current?.focus();
+    restoreDraftFocus.current = false;
     wasRunning.current = running;
   }, [running]);
-  return <form data-slot="agent-chat-composer" className={cn("v-agent-chat__composer", className)} onSubmit={(event) => { event.preventDefault(); if (canSend) onSend(); }} {...props}>
+  return <form data-slot="agent-chat-composer" className={cn("v-agent-chat__composer", className)} onSubmit={(event) => { event.preventDefault(); if (canSend) { textarea.current?.focus(); onSend(); } }} {...props}>
     <label className="v-agent-chat__sr-only" htmlFor={`${id}-draft`}>{label}</label>
     <MotionPresence>
       {attachments.length > 0 && <MotionSurface key="attachments" preset="rise" data-slot="agent-chat-attachments" className="v-agent-chat__attachments">
@@ -134,7 +141,7 @@ export function AgentChatComposer({ value, onValueChange, onSend, status = "idle
           const files = Array.from(event.target.files ?? []); if (files.length) onAttach(files); event.target.value = "";
         }} /><InputGroupButton variant="ghost" className="v-agent-chat__attach-button" disabled={disabled || running} onClick={() => input.current?.click()} aria-label="Attach files"><Icon name="paperclip" style={{width:18,height:18}} aria-hidden="true" /></InputGroupButton></>}
         <span className="v-agent-chat__composer-note">{running ? "You can prepare your next message" : "A little context goes a long way"}</span>
-        {running ? <InputGroupButton className="v-agent-chat__send" data-agent-stop="true" variant="secondary" disabled={disabled || !onStop} aria-label="Stop generation" onClick={() => { onStop?.(); textarea.current?.focus(); }}><Icon name="square" style={{width:14,height:14,fill:"currentColor"}} aria-hidden="true" /><span>Stop</span></InputGroupButton> : <InputGroupButton className="v-agent-chat__send" type="submit" disabled={!canSend} aria-label="Send message"><Icon name="arrow-up" style={{width:18,height:18}} aria-hidden="true" /><span>Send</span></InputGroupButton>}
+        {running ? <InputGroupButton key="stop" ref={stopRef} className="v-agent-chat__send" data-agent-stop="true" variant="secondary" disabled={disabled || !onStop} aria-label="Stop generation" onClick={() => { onStop?.(); textarea.current?.focus(); }}><Icon name="square" style={{width:14,height:14,fill:"currentColor"}} aria-hidden="true" /><span>Stop</span></InputGroupButton> : <InputGroupButton key="send" className="v-agent-chat__send" type="submit" disabled={!canSend} aria-label="Send message"><Icon name="arrow-up" style={{width:18,height:18}} aria-hidden="true" /><span>Send</span></InputGroupButton>}
       </InputGroupAddon>
     </InputGroup>
     <p className="v-agent-chat__hint" id={`${id}-hint`}>{hint ?? <><Icon name="corner-down-left" style={{width:12,height:12}} /> Enter for a new line · ⌘ / Ctrl + Enter to send</>}</p>

@@ -1,19 +1,29 @@
 "use client";
 
 import * as React from "react";
-import { useMorph } from "@/registry/cojeev/motion/use-morph";
+import { useChoreography } from "@/registry/cojeev/motion/choreography";
+import { useDisclosureHeight } from "@/registry/cojeev/motion/use-disclosure-height";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Icon } from "@/registry/cojeev/ui/icon";
 import * as Primitive from "@radix-ui/react-collapsible";
-import { useFlowAppearance } from "@/registry/cojeev/motion/use-flow";
 export const collapsibleVariants = cva("v-collapsible");
-export type CollapsibleProps = React.ComponentProps<typeof Primitive.Root>;
-export function Collapsible({ className, ...props }: CollapsibleProps) {
+export type CollapsibleAppearance = "inline" | "checklist" | "inspector";
+export type CollapsibleProps = React.ComponentProps<typeof Primitive.Root> & {
+  appearance?: CollapsibleAppearance;
+};
+export function Collapsible({
+  className,
+  appearance,
+  ...props
+}: CollapsibleProps) {
+  const { quiet } = useChoreography();
   return (
     <Primitive.Root
       data-slot="collapsible"
       data-part="root"
+      data-appearance={appearance}
+      data-motion-quiet={quiet || undefined}
       className={cn(collapsibleVariants(), className)}
       {...props}
     />
@@ -21,10 +31,11 @@ export function Collapsible({ className, ...props }: CollapsibleProps) {
 }
 export type CollapsibleTriggerProps = React.ComponentProps<
   typeof Primitive.Trigger
->;
+> & { indicator?: React.ReactNode };
 export function CollapsibleTrigger({
   className,
   children,
+  indicator,
   ...props
 }: CollapsibleTriggerProps) {
   return (
@@ -32,12 +43,19 @@ export function CollapsibleTrigger({
       data-slot="collapsible-trigger"
       data-part="trigger"
       className={cn(
-        "inline-flex items-center gap-1.5 h-8 text-[length:var(--fs-control)] text-[color:var(--muted-foreground)]",
+        "inline-flex items-center gap-2 min-h-11 text-[length:var(--fs-control)] text-[color:var(--muted-foreground)]",
         className,
       )}
       {...props}
     >
-      {children}
+      {props.asChild ? (
+        children
+      ) : (
+        <>
+          {children}
+          {indicator ?? <CollapsibleIndicator />}
+        </>
+      )}
     </Primitive.Trigger>
   );
 }
@@ -47,31 +65,22 @@ export type CollapsibleContentProps = React.ComponentProps<
 export function CollapsibleContent({
   className,
   ref,
+  children,
   ...props
 }: CollapsibleContentProps) {
   const contentRef = React.useRef<HTMLDivElement>(null);
   React.useImperativeHandle(ref, () => contentRef.current!);
-  const morphRef = useMorph<HTMLDivElement>("cards", contentRef);
-  const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "enter");
-  React.useEffect(() => {
-    const content = contentRef.current;
-    // Radix temporarily disables CSS while measuring. Release that override so
-    // its Presence can observe the shared nonvisual exit sentinel on close.
-    if (content?.dataset.state === "open" && content.style.animationName === "none") {
-      content.style.animationName = props.style?.animationName ?? "";
-    }
-  }, [props.style?.animationName]);
+  useDisclosureHeight(contentRef, props.style?.animationName);
   return (
     <Primitive.Content
-      ref={flowRef}
+      ref={contentRef}
       data-slot="collapsible-content"
       data-part="content"
-      className={cn(
-        "v-collapsible__body mt-[var(--s-2)] py-[var(--s-3)] px-[var(--s-4)] bg-[var(--card)] rounded-[var(--r-md)] text-[13px]",
-        className,
-      )}
+      className={cn("v-collapsible__body text-[13px]", className)}
       {...props}
-    />
+    >
+      <div data-disclosure-inner>{children}</div>
+    </Primitive.Content>
   );
 }
 export type CollapsibleIndicatorProps = React.ComponentProps<"svg">;

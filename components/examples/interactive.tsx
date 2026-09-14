@@ -152,7 +152,7 @@ export function AccordionExample() {
 export function AlertDialogExample() {
   const [archived, setArchived] = React.useState(false);
   return (
-    <div style={{ display: "grid", gap: 16 }}>
+    <div style={{ display: "grid", gap: 16, justifyItems: "start", minWidth: 0 }}>
       <AlertDialogParts.AlertDialog>
         <AlertDialogParts.AlertDialogTrigger asChild>
           <Button variant="danger">Archive example note</Button>
@@ -358,7 +358,7 @@ export function DialogExample() {
   const [draft, setDraft] = React.useState(name);
   const id = React.useId();
   return (
-    <div style={{ display: "grid", gap: 16 }}>
+    <div style={{ display: "grid", gap: 16, justifyItems: "start", minWidth: 0 }}>
       <DialogParts.Dialog>
         <DialogParts.DialogTrigger asChild>
           <Button onClick={() => setDraft(name)}>Rename workspace</Button>
@@ -421,7 +421,7 @@ export function DropdownMenuExample() {
   const [pinned, setPinned] = React.useState(false);
   const [status, setStatus] = React.useState("");
   return (
-    <div style={{ display: "grid", gap: 16 }}>
+    <div style={{ display: "grid", gap: 16, justifyItems: "start", minWidth: 0 }}>
       <DropdownMenuParts.DropdownMenu>
         <DropdownMenuParts.DropdownMenuTrigger asChild>
           <Button variant="secondary">

@@ -46,20 +46,33 @@ export function ReferenceField({ kind, paused = false, tone = "pink", speed = 1,
       image.src = url; return image;
     });
     renderer.images = assets;
+    let appearanceKey = "";
+    const repaint = () => {
+      const css = getComputedStyle(element);
+      const palette = ["--v-pink", "--v-olive", "--v-blue", "--v-yellow"].map((key, i) => css.getPropertyValue(key).trim() || ["#f5b8db", "#9aab63", "#b6caeb", "#f5d867"][i]);
+      const nextKey = JSON.stringify([palette, css.color]);
+      if (appearanceKey === nextKey) return;
+      appearanceKey = nextKey;
+      renderer.palette = palette; renderer.ink = css.color;
+      renderer.invalidate(); renderer.draw(0, false);
+    };
     const resize = () => {
       const width = Math.max(1, element.clientWidth), h = Math.max(1, element.clientHeight);
       const ratio = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(900000 / (width * h)));
       surface.width = Math.round(width * ratio); surface.height = Math.round(h * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       renderer.resize(width, h);
-      renderer.palette = ["--v-pink", "--v-olive", "--v-blue", "--v-yellow"].map((key, i) => getComputedStyle(element).getPropertyValue(key).trim() || ["#f5b8db", "#9aab63", "#b6caeb", "#f5d867"][i]);
-      renderer.ink = getComputedStyle(element).color;
       renderer.tone = ["pink", "olive", "blue", "yellow"].indexOf(tone);
+      repaint();
       renderer.draw(0, false);
       element.dataset.renderState = "ready";
     };
     const observer = new ResizeObserver(resize); observer.observe(element);
-    const theme = new MutationObserver(resize); theme.observe(document.documentElement, { attributes: true, attributeFilter: ["data-mode", "class"] });
+    const theme = new MutationObserver(repaint);
+    for (let ancestor: Element | null = element; ancestor; ancestor = ancestor.parentElement) {
+      theme.observe(ancestor, { attributes: true, attributeFilter: ["data-mode", "data-palette", "data-contrast", "class", "style"] });
+    }
+    window.addEventListener("cojeev:appearancechange", repaint);
     const point = (event: PointerEvent | MouseEvent) => {
       const box = element.getBoundingClientRect();
       return { x: (event.clientX - box.left) * element.clientWidth / Math.max(1, box.width), y: (event.clientY - box.top) * element.clientHeight / Math.max(1, box.height) };
@@ -77,7 +90,7 @@ export function ReferenceField({ kind, paused = false, tone = "pink", speed = 1,
     element.addEventListener("click", click);
     resize();
     return () => {
-      observer.disconnect(); theme.disconnect(); assets.forEach(asset => { asset.onload = null; asset.onerror = null; });
+      observer.disconnect(); theme.disconnect(); window.removeEventListener("cojeev:appearancechange", repaint); assets.forEach(asset => { asset.onload = null; asset.onerror = null; });
       element.removeEventListener("pointermove", move); element.removeEventListener("pointerleave", leave); element.removeEventListener("click", click);
       painter.current = null;
     };

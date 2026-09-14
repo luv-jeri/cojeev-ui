@@ -17,7 +17,7 @@ export async function requireAdmin(request: Request, env: Env) {
   if (!env.ADMIN_TOKEN || env.ADMIN_TOKEN.length < 32) throw new HttpError(503,"Maintainer access has not been configured.");
   if (!await equalSecret(request.headers.get("Authorization") ?? "", `Bearer ${env.ADMIN_TOKEN}`)) throw new HttpError(401,"Enter a valid maintainer access token.");
 }
-export async function boundedBody(request: Request, max: number): Promise<ArrayBuffer> {
+export async function boundedBody(request: Request | Response, max: number): Promise<ArrayBuffer> {
   if (Number(request.headers.get("Content-Length")) > max) throw new HttpError(413,"The upload is too large.");
   if (!request.body) return new ArrayBuffer(0);
   const reader = request.body.getReader(); const parts: Uint8Array[] = []; let size = 0;

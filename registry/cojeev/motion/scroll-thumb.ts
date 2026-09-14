@@ -46,3 +46,20 @@ export function acquirePageScrollbar(root: ScrollRoot) {
     }
   };
 }
+
+const elementScrollRoots = new WeakMap<ScrollRoot, { users: number; original: string | null }>();
+/** A native editor remains the owner; remove only its scrollbar while adapted. */
+export function acquireElementScrollbar(root: ScrollRoot) {
+  const state = elementScrollRoots.get(root) ?? { users: 0, original: root.getAttribute("data-element-scrollbar") };
+  if (state.users++ === 0) { elementScrollRoots.set(root, state); root.setAttribute("data-element-scrollbar", "mounted"); }
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    if (--state.users === 0) {
+      if (state.original === null) root.removeAttribute("data-element-scrollbar");
+      else root.setAttribute("data-element-scrollbar", state.original);
+      elementScrollRoots.delete(root);
+    }
+  };
+}

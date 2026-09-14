@@ -103,3 +103,8 @@
 }
 
 [data-slot="input-search-disk"] .v-icon { width: 20px; height: 20px; stroke-width: 2; }
+
+[data-slot="input-group"] [data-slot="input-group-button"].v-btn { min-height:44px; height:44px; }
+[data-slot="input-group"]:has(textarea) { border-radius:min(var(--v-control-radius,20px),20px); }
+[data-slot="input-group"] [data-slot="input-group-textarea"] { resize:vertical; }
+[data-slot="input-group"] > [data-slot="textarea-scroll-area"] { flex:1 0 100%; }

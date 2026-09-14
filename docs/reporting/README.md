@@ -1,5 +1,7 @@
 # Reporting
 
+Production/beta operations, the Resend adapter, safe activation, and migration instructions are in [OPERATIONS.md](./OPERATIONS.md). Apply that runbook before connecting provider credentials; legacy provisioning examples below are not an activation checklist.
+
 The floating **Make it better** button opens component requests and bug reports. `/requests/` is the public demand board. `/feedback-admin/` is a private maintainer view protected by the Worker, not by the static page. All three use the library's existing design primitives.
 
 ## Run locally
@@ -37,7 +39,7 @@ The target is `luv-jeri/cojeev-ui`. Use a dedicated fine-grained token with **Is
 node scripts/reporting.mjs github-connect
 ```
 
-Alternatively, use `npx wrangler secret put GITHUB_TOKEN --config workers/reporting/wrangler.jsonc`. Never place the token in a source file or shell history. GitHub issue creation starts after the D1 receipt, independently of media upload. Missing credentials leave delivery jobs pending; accepted reports remain available in the maintainer view.
+Alternatively, use `npx wrangler secret put GITHUB_TOKEN --config workers/reporting/wrangler.jsonc`. Never place the token in a source file or shell history. GitHub issue creation starts after the D1 receipt and explicit activation, independently of media upload. Missing credentials leave jobs retained; historical jobs require review. Accepted reports remain available in the maintainer view.
 
 Public issues contain a reference and authenticated report link. Descriptions, reference URLs, email, screenshots, videos and diagnostics are private in D1/R2. Every submission gets a report and tracked issue; related component requests share one demand topic and completion status. An optional `GITHUB_PROJECT_ID` enables GraphQL association; its token additionally needs project access. GitHub Project workflows can map issue state to board columns.
 
@@ -59,13 +61,13 @@ The URL must belong to configured `SITE_URL` and return a live HTML page. Closin
 
 `EMAIL_ENABLED=false` and `EMAIL_FROM=hello@your-domain.invalid` intentionally disable outgoing mail. The interface says email is disconnected; it does not claim an acknowledgement was sent. Pending acknowledgements remain in the outbox.
 
-After acquiring the domain:
+After verifying the sender domain with Resend:
 
-1. Onboard it with `npx wrangler email sending enable YOUR_DOMAIN` and finish the DNS verification reported by Cloudflare.
-2. Add `"send_email": [{ "name": "EMAIL" }]` to the production Worker config. Set `EMAIL_FROM` to your verified sender and `EMAIL_ENABLED` to `true`.
-3. Redeploy. In the maintainer view, run pending deliveries. Verify a real received and completion email in your inbox before promising mail delivery to visitors.
+1. Set the `RESEND_API_KEY` and `RESEND_WEBHOOK_SECRET` Worker secrets and configure the signed events in the operations runbook.
+2. Set `EMAIL_FROM` to the verified sender. Complete the activation/cutoff and quota checklist before setting `EMAIL_ENABLED=true`; no Cloudflare `EMAIL` binding is used.
+3. Verify a new report's receipt, provider acceptance, signed delivery event, and real inbox receipt. Historical jobs stay held until individually reviewed.
 
-The templates have a plain-text and HTML version in Cojeev's colors. A Cloudflare acceptance ID means accepted by the email provider, not guaranteed inbox delivery. Unknown outcomes are held for review; rate-limit failures back off automatically.
+The templates have plain-text and HTML versions. The sender name is `000h by Cojeev` and reply address is `hello@cojeev.com`. A Resend ID means provider acceptance; only a signed delivered event marks delivery. Unknown outcomes require review; quota failures retain jobs.
 
 ## Reliability and privacy
 
@@ -73,7 +75,7 @@ The templates have a plain-text and HTML version in Cojeev's colors. A Cloudflar
 - Each attachment uploads against its saved manifest and private receipt. Server checks size, media signature and SHA-256. A failed upload leaves text saved and can be retried separately. Private downloads require maintainer authorization and are served as attachments with no cache.
 - A D1 outbox drains after submission and every five minutes. Jobs use leases and bounded exponential backoff. Uncertain provider responses require review instead of claiming exactly-once delivery. Maintainers can inspect and retry failed jobs.
 - The browser keeps bounded diagnostics in memory. No form values, cookies, storage contents or network bodies/headers are captured. Screenshots and pins require an explicit action. Review shows the payload and actual attached images/videos. Redaction is best effort; visual media may include personal content the user must review.
-- Diagnostics/media expire after 30 days. Contact and private report details expire after 180 days. A cron performs the deletion. Public request titles/status/demand remain. Local drafts and receipt files belong to the user's device and can be cleared explicitly.
+- Diagnostics/media expire after 30 days. Contact, original titles, private details and persisted email payloads expire after 180 days. A cron performs the deletion. Maintainer-approved public titles/status/demand remain. Original free-text request titles are hidden from the public board and new GitHub issue titles.
 - The public delivery target is **36 hours, depending on demand and complexity**. It is not a timer or an unconditional guarantee.
 
 ## Checks
@@ -88,4 +90,4 @@ npm run reporting:check
 
 With both local services running, `npm run reporting:browser` runs the browser journeys and saves screenshots in `.work/reporting/browser/`. It refuses non-local reporting services and creates clearly named local test reports. Browser checks and final evidence are recorded in `VERIFICATION.md`. They use local services and test provider adapters; those results do not prove actual inbox receipt or a live GitHub issue until those integrations are activated and checked separately.
 
-References: [Cloudflare D1 transactions](https://developers.cloudflare.com/d1/worker-api/d1-database/), [Cloudflare Email Service](https://developers.cloudflare.com/email-service/api/send-emails/workers-api/), [Turnstile validation](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/), [GitHub webhook validation](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries).
+References: [Cloudflare D1 transactions](https://developers.cloudflare.com/d1/worker-api/d1-database/), [Resend idempotency](https://resend.com/docs/dashboard/emails/idempotency-keys), [Turnstile validation](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/), [GitHub webhook validation](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries).

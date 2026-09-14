@@ -29,3 +29,7 @@
 :root[data-mode="dark"] [data-slot="native-select"]:disabled { background-color: var(--v-disabled-face); color: var(--v-disabled-ink); }
 
 :root[data-mode="dark"] [data-slot="native-select"]:disabled { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FBF4E6' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
+.v-form-example .v-native { width:100%; min-height:48px; }
+:root .v-native[data-slot="native-select"][size]:not([size="1"]), :root .v-native[data-slot="native-select"][multiple] { height:auto; min-height:160px; background-image:none; padding:8px; }
+.v-native[size]:not([size="1"]) option, .v-native[multiple] option { padding:10px 12px; }
+@media(forced-colors:active) { :root .v-native[data-slot="native-select"]:is(:enabled,:disabled) { appearance:auto; background-image:none; } }

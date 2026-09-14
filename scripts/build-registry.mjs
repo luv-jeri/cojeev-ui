@@ -3,6 +3,8 @@ import path from "node:path";
 import postcss from "postcss";
 import { execFileSync } from "node:child_process";
 import { componentAPIs } from "./component-api.mjs";
+import { sourceImport, rewriteInstalledImports } from "./registry-imports.mjs";
+import { noticeText } from "./registry-notices.mjs";
 
 const baseURL=process.env.COJEEV_REGISTRY_URL??"https://luv-jeri.github.io/cojeev-ui";
 const source="registry/cojeev";
@@ -49,17 +51,6 @@ function componentImports(id) {
   }
   return { imported: [...imported], helpers: [...helpers] };
 }
-function sourceImport(file, value) {
-  if(value.startsWith("."))return `@/${path.posix.normalize(path.posix.join(path.posix.dirname(file),value))}`;
-  return value;
-}
-function installedImport(file, value) {
-  const resolved=sourceImport(file,value);
-  return resolved.replace("@/registry/cojeev/lib/utils","@/lib/utils")
-    .replace("@/registry/cojeev/motion/","@/lib/cojeev-motion/")
-    .replace("@/registry/cojeev/lib/","@/lib/cojeev/")
-    .replace("@/registry/cojeev/ui/","@/components/ui/");
-}
 function npmPackage(value){return value.startsWith("@")?value.split("/").slice(0,2).join("/"):value.split("/")[0];}
 const extras=additions;
 const items=[base,...ids.map(id=>{
@@ -70,7 +61,8 @@ const items=[base,...ids.map(id=>{
   for(const sibling of siblings)if(!ids.includes(sibling))throw new Error(`Missing dependency ${sibling} of ${id}`);
   const dependencies=[...new Set(imported.filter(value=>!value.startsWith(".")&&!value.startsWith("@/")&&value!=="react").map(npmPackage))].map(name=>(entry.dependencies??[]).find(value=>value===name||value.startsWith(`${name}@`))??name);
   const style=`${source}/styles/${id}.css`;
-  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with Cojeev styling.`,registryDependencies:[`${baseURL}/r/cojeev.json`,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,...(entry.devDependencies?{devDependencies:entry.devDependencies}:{}),files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...helpers.map(file=>({path:file,type:"registry:lib",target:`lib/cojeev/${path.basename(file)}`})),...(fs.existsSync(style)?[{path:style,type:"registry:file",target:`styles/cojeev/${id}.css`}]:[])],...(fs.existsSync(style)?{css:{[`@import "@/styles/cojeev/${id}.css"`]:{}}}:{}),meta:{source:entry,api:apis[id],category:guides[id]?.category??"Tools",fidelity:"refined-design-family",baseComponent:reference[id]?.tier==="base"}};
+  const styles=[...(fs.existsSync(style)?[id]:[]),...(imported.includes(`@/${source}/lib/control-appearance`)?["control-appearance"]:[]),...(["checkbox","radio-group","switch"].includes(id)?["choice-foundations"]:[])];
+  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with Cojeev styling.`,registryDependencies:[`${baseURL}/r/cojeev.json`,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,...(entry.devDependencies?{devDependencies:entry.devDependencies}:{}),files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...helpers.map(file=>({path:file,type:"registry:lib",target:`lib/cojeev/${path.basename(file)}`})),...styles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`}))],...(styles.length?{css:Object.fromEntries(styles.map(name=>[`@import "@/styles/cojeev/${name}.css"`,{}]))}:{}),meta:{source:entry,api:apis[id],category:guides[id]?.category??"Tools",fidelity:"refined-design-family",baseComponent:reference[id]?.tier==="base"}};
 })];
 base.cssVars={theme};
 base.files.push(...fs.readdirSync(`${source}/lib`).filter(name=>name.endsWith(".ts")&&name!=="utils.ts").map(name=>({path:`${source}/lib/${name}`,type:"registry:lib",target:`lib/cojeev/${name}`})));
@@ -78,6 +70,11 @@ base.files.push(...fs.readdirSync(`${source}/motion`).filter(name=>/\.tsx?$/.tes
 base.files.push({path:`${source}/styles/fonts.css`,type:"registry:file",target:"styles/cojeev-fonts.css"});
 base.files.push(...foundationStyles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`})));
 base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({path:`reference/cojeev-handoff-v4/fonts/${name}`,type:"registry:file",target:`styles/fonts/${name}`})));
+// Every entry installs this base, so one notices file reaches every consumer.
+// It has to be a file: the installer re-prints the TypeScript it copies and
+// drops the comment a source opens with, notice included.
+fs.writeFileSync(`${source}/NOTICES.txt`,noticeText(fs.readFileSync("LICENCE","utf8"),["lib","motion","ui"].flatMap(folder=>fs.readdirSync(`${source}/${folder}`).sort().filter(name=>/\.tsx?$/.test(name)).map(name=>[`${source}/${folder}/${name}`,fs.readFileSync(`${source}/${folder}/${name}`,"utf8")]))));
+base.files.push({path:`${source}/NOTICES.txt`,type:"registry:file",target:"lib/cojeev/NOTICES.txt"});
 const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"cojeev",homepage:baseURL,items};
 fs.writeFileSync("registry.json",JSON.stringify(registry,null,2)+"\n");
 // Refresh the live documentation catalogue without producing distributable
@@ -87,7 +84,10 @@ if(process.argv.includes("--metadata-only")) {
   process.exit(0);
 }
 fs.mkdirSync("public/r",{recursive:true});
-execFileSync(process.execPath,["node_modules/shadcn/dist/index.js","build"],{stdio:"inherit"});
-for(const item of items){const file=path.join("public/r",`${item.name}.json`);const data=JSON.parse(fs.readFileSync(file,"utf8"));for(const f of data.files??[])if(f.content){if(/\.[cm]?[jt]sx?$/.test(f.path))f.content=f.content.replace(/((?:from\s+|import\s+)["'])([^"']+)(["'])/g,(_match,start,value,end)=>`${start}${installedImport(f.path,value)}${end}`);if(f.path.startsWith(`${source}/styles/`)){const name=path.basename(f.path,".css");if(!["fonts","tokens","theme","base"].includes(name)){const layer=name==="morph"?"cojeev-morph":name==="flow-press"?"cojeev-flow":"cojeev-states";f.content=`@layer ${layer} {\n${f.content}\n}\n`;}}}fs.writeFileSync(file,JSON.stringify(data,null,2)+"\n");}
+// An isolated copy of the same CLI can be used when local dependency reads stall.
+// Normal builds keep the repository-installed version and unchanged arguments.
+const registryCLI=process.env.COJEEV_REGISTRY_CLI??"node_modules/shadcn/dist/index.js";
+execFileSync(process.execPath,[registryCLI,"build"],{stdio:"inherit"});
+for(const item of items){const file=path.join("public/r",`${item.name}.json`);const data=JSON.parse(fs.readFileSync(file,"utf8"));for(const f of data.files??[])if(f.content){if(/\.[cm]?[jt]sx?$/.test(f.path))f.content=rewriteInstalledImports(f.path,f.content);if(f.path.startsWith(`${source}/styles/`)){const name=path.basename(f.path,".css");if(!["fonts","tokens","theme","base"].includes(name)){const layer=name==="morph"?"cojeev-morph":name==="flow-press"?"cojeev-flow":"cojeev-states";f.content=`@layer ${layer} {\n${f.content}\n}\n`;}}}fs.writeFileSync(file,JSON.stringify(data,null,2)+"\n");}
 fs.copyFileSync("public/r/registry.json","public/registry.json");
 console.log(`Registry built: ${items.length} items (${ids.filter(id=>reference[id]?.tier==="base").length} base components, ${ids.filter(id=>reference[id]?.tier!=="base").length} additional entries)`);

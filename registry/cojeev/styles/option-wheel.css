@@ -1,1 +1,369 @@
-.v-option-wheel{width:100%;min-width:0;border-radius:24px;background:var(--v-beige);overflow:hidden;color:var(--v-ink)}.v-option-wheel__stage{position:relative;height:330px;overflow:hidden;outline-offset:-5px}.v-option-wheel__marker{position:absolute;top:50%;left:7%;transform:translateY(-50%);font-size:36px;color:var(--v-accent-ink)}.v-option-wheel__option{position:absolute;top:50%;left:21%;right:10%;font:clamp(23px,4vw,36px)/1.1 var(--font-display);padding:8px 12px;cursor:pointer;transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .35s;color:var(--v-text);overflow-wrap:anywhere;border-radius:12px;transform-origin:left center}.v-option-wheel__option[aria-selected=true]{background:var(--v-pink);color:var(--v-on-accent);font-weight:650}.v-option-wheel__footer{display:flex;align-items:center;gap:16px;min-height:80px;border-top:1px solid var(--v-border);padding:16px 20px}.v-option-wheel__footer p{flex:1;margin:0;font-size:14px;line-height:1.4}.v-option-wheel__footer button{width:44px;height:44px;flex-shrink:0;border:1px solid var(--v-edge);border-radius:50%;background:var(--v-paper);color:var(--v-ink);cursor:pointer;font-size:20px}.v-option-wheel button:focus-visible,.v-option-wheel__stage:focus-visible{outline:2px solid var(--v-brand);outline-offset:-4px}.v-option-wheel button:disabled{opacity:.5;cursor:default}.v-option-wheel[data-side=right] .v-option-wheel__option{transform-origin:right center;text-align:right}.v-option-wheel[data-motion=off] *{transition:none}@media(prefers-reduced-motion:reduce){.v-option-wheel *{transition:none}}
+/* A paper dial: fixed option slots, projected labels, one coloured readout. */
+.v-option-wheel {
+  width: 100%;
+  min-width: 0;
+  max-width: 600px;
+  margin-inline: auto;
+  border-radius: 28px;
+  background: var(--v-canvas);
+  color: var(--v-text);
+  overflow: hidden;
+  border: 1px solid var(--v-border);
+}
+.v-option-wheel__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 0;
+  font-size: 12px;
+  color: var(--v-text-2);
+}
+.v-option-wheel__heading > span:last-child {
+  font-variant-numeric: tabular-nums;
+  color: var(--v-text);
+}
+.v-option-wheel__heading i {
+  font-style: normal;
+  color: var(--v-text-2);
+}
+.v-option-wheel__stage {
+  position: relative;
+  height: 324px;
+  overflow: hidden;
+  isolation: isolate;
+  outline-offset: -5px;
+}
+.v-option-wheel__stage > p {
+  margin: 0;
+  padding: 100px 24px;
+  text-align: center;
+  color: var(--v-text-2);
+}
+.v-option-wheel__dial {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  width: 310px;
+  height: 310px;
+  top: 7px;
+  left: -222px;
+  border: 1px solid var(--v-edge);
+  border-radius: 50%;
+}
+.v-option-wheel__dial::before,
+.v-option-wheel__dial::after {
+  content: "";
+  position: absolute;
+  border: 1px dashed var(--v-border);
+  border-radius: 50%;
+  inset: 12px;
+}
+.v-option-wheel__dial::after {
+  inset: 28px;
+  border-style: solid;
+  background: color-mix(in oklab, var(--v-yellow) 17%, transparent);
+}
+.v-option-wheel__dial > span {
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: var(--v-yellow);
+  border-radius: 50%;
+}
+.v-option-wheel__dial > i {
+  position: absolute;
+  right: 0;
+  top: calc(50% - 1px);
+  width: 14px;
+  height: 1px;
+  background: var(--v-edge);
+  transform-origin: -140px center;
+}
+.v-option-wheel__dial > i:nth-child(2) {
+  transform: rotate(-30deg);
+}
+.v-option-wheel__dial > i:nth-child(4) {
+  transform: rotate(30deg);
+}
+.v-option-wheel__marker {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  left: 82px;
+  top: calc(50% - 24px);
+  width: 36px;
+  height: 48px;
+  color: var(--v-text);
+  pointer-events: none;
+}
+.v-option-wheel__option {
+  position: absolute;
+  top: calc(50% - 24px + var(--wheel-distance) * 54px);
+  left: 122px;
+  right: 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  cursor: pointer;
+  border-radius: 12px;
+  font: 500 clamp(20px, 3vw, 28px) / 1.15 var(--font-display);
+}
+.v-option-wheel__option > * {
+  pointer-events: none;
+}
+.v-option-wheel__label {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transform: translateX(var(--wheel-bend)) rotate(var(--wheel-tilt));
+  transform-origin: left center;
+}
+.v-option-wheel__option:not([aria-selected="true"]) {
+  color: var(--v-text-2);
+}
+.v-option-wheel__option[data-distance="-2"],
+.v-option-wheel__option[data-distance="2"] {
+  font-size: 20px;
+}
+.v-option-wheel__option[aria-selected="true"] {
+  --mfill: var(--v-pink);
+  --mstroke: none;
+  background: var(--v-pink);
+  color: var(--v-on-accent);
+  border-radius: 17px 24px 19px 14px / 18px 17px 24px 20px;
+}
+.v-option-wheel__option:not([aria-selected="true"]):hover {
+  background: var(--v-beige);
+  color: var(--v-text);
+}
+.v-option-wheel[data-motion="on"] .v-option-wheel__label {
+  animation: v-wheel-arrive 0.22s ease-out both;
+}
+@keyframes v-wheel-arrive {
+  from {
+    opacity: 0.4;
+    translate: 0 6px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.v-option-wheel__footer {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-top: 1px dashed var(--v-border);
+  background: color-mix(in oklab, var(--v-beige) 55%, transparent);
+}
+.v-option-wheel__footer p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 3em;
+  display: flex;
+  align-items: center;
+}
+.v-option-wheel .v-option-wheel__control {
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+}
+.v-option-wheel__stage:focus-visible {
+  outline: 2px solid var(--v-brand);
+  outline-offset: -5px;
+}
+.v-option-wheel[data-side="right"] .v-option-wheel__dial {
+  left: auto;
+  right: -222px;
+  transform: scaleX(-1);
+}
+.v-option-wheel[data-side="right"] .v-option-wheel__marker {
+  left: auto;
+  right: 82px;
+}
+.v-option-wheel[data-side="right"] .v-option-wheel__option {
+  left: 24px;
+  right: 122px;
+  text-align: right;
+}
+.v-option-wheel[data-side="right"] .v-option-wheel__label {
+  transform: translateX(calc(-1 * var(--wheel-bend))) rotate(var(--wheel-tilt));
+  transform-origin: right center;
+}
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__stage {
+  height: 280px;
+  margin: 20px 20px 0;
+}
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__dial {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 26px,
+    var(--v-border) 26px 27px,
+    transparent 27px 54px
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0 8px,
+    transparent 8px calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+}
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__dial > *,
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__dial::before,
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__dial::after {
+  display: none;
+}
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__marker {
+  display: none;
+}
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__option {
+  left: 20px;
+  right: 20px;
+  text-align: center;
+}
+.v-option-wheel[data-presentation="reel"] .v-option-wheel__label {
+  transform: none;
+}
+.v-option-wheel[data-presentation="reel"]
+  .v-option-wheel__option[aria-selected="true"] {
+  --mfill: var(--v-blue);
+  border-radius: 12px;
+  background: var(--v-blue);
+  box-shadow: 0 5px 0 color-mix(in oklab, var(--v-blue) 28%, transparent);
+}
+.v-option-wheel[data-presentation="compact"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 60px;
+  background: var(--v-beige);
+  border-radius: 24px;
+}
+.v-option-wheel[data-presentation="compact"] .v-option-wheel__heading {
+  grid-column: 1 / -1;
+  padding: 20px 20px 0;
+}
+.v-option-wheel[data-presentation="compact"] .v-option-wheel__stage {
+  height: 108px;
+  grid-area: 2 / 1;
+  overflow: visible;
+}
+.v-option-wheel[data-presentation="compact"] .v-option-wheel__option {
+  --mfill: transparent;
+  inset: 20px 8px 20px 20px;
+  height: 68px;
+  padding: 0;
+  background: transparent;
+  color: var(--v-text);
+  font-size: 28px;
+  text-align: left;
+}
+.v-option-wheel[data-presentation="compact"] .v-option-wheel__label {
+  transform: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.v-option-wheel[data-presentation="compact"]
+  :is(.v-option-wheel__dial, .v-option-wheel__marker) {
+  display: none;
+}
+.v-option-wheel[data-presentation="compact"] .v-option-wheel__footer {
+  display: contents;
+}
+.v-option-wheel[data-presentation="compact"] .v-option-wheel__footer p {
+  grid-area: 3 / 1 / 4 / -1;
+  min-height: 0;
+  margin: 0 20px 20px;
+  border-top: 1px dashed var(--v-border);
+  padding-top: 12px;
+}
+.v-option-wheel[data-presentation="compact"] .v-option-wheel__control {
+  grid-column: 2;
+  align-self: center;
+}
+.v-option-wheel[data-presentation="compact"]
+  .v-option-wheel__control:first-child {
+  grid-row: 2;
+  align-self: start;
+  margin-top: 10px;
+}
+.v-option-wheel[data-presentation="compact"]
+  .v-option-wheel__control:last-child {
+  grid-row: 2;
+  align-self: end;
+  margin-bottom: 10px;
+}
+.v-wheel-example {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  max-width: 600px;
+  margin-inline: auto;
+}
+.v-wheel-example > p {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--v-text-2);
+}
+@media (max-width: 480px) {
+  .v-option-wheel__option {
+    left: 78px;
+    right: 16px;
+    padding-inline: 12px;
+    font-size: 20px;
+  }
+  .v-option-wheel__dial {
+    left: -260px;
+  }
+  .v-option-wheel__marker {
+    left: 43px;
+    width: 28px;
+  }
+  .v-option-wheel[data-side="right"] .v-option-wheel__dial {
+    right: -260px;
+  }
+  .v-option-wheel[data-side="right"] .v-option-wheel__marker {
+    right: 43px;
+  }
+  .v-option-wheel[data-side="right"] .v-option-wheel__option {
+    left: 16px;
+    right: 78px;
+  }
+  .v-option-wheel__footer {
+    gap: 12px;
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-option-wheel[data-motion="on"] .v-option-wheel__label {
+    animation: none;
+  }
+}
+/* The shared contour is the sole painted surface when motion is active. */
+:root .v-option-wheel__option[aria-selected="true"]:has(> svg.v-morph) {
+  background: transparent;
+  box-shadow: none;
+}
+@media (forced-colors: active) {
+  .v-option-wheel__option[aria-selected="true"] {
+    outline: 2px solid Highlight;
+    color: Highlight;
+  }
+}

@@ -1,0 +1,2158 @@
+{
+  "date": "2026-09-10",
+  "owner": "motion",
+  "status": "in-progress",
+  "components": [
+    {
+      "id": "accordion-gallery",
+      "category": "Creative",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/accordion-gallery.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-galleries.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared selection/transition geometry and SSR semantics; no automated browser coverage implied."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/accordion-gallery/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "ambient-background",
+      "category": "Backgrounds",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/ambient-background.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/ambient-background/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "animated-icon",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/animated-icon.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/action-icons.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Action icon geometry and motion recipes."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/animated-icon/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "animated-number",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/animated-number.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/number-motion.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Locale-aware parts, rolling targets, finite interpolation and final SSR value."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/animated-number/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "article-headings",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/article-headings.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-additions.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Heading decoding, portal geometry and still SSR."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/article-headings/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "caret-swap",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/caret-swap.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/caret-swap/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "click-spark",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/click-spark.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/click-spark/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "contour-field",
+      "category": "Backgrounds",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/contour-field.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/living-shader.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Bounded uniforms/resolution and still SSR."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/contour-field/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "depth-background",
+      "category": "Visual effects",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/depth-background.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/depth-background.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Deterministic planes and visible/asChild SSR."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/depth-background/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "dither-dissolve",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/dither-dissolve.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-galleries.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared selection/transition geometry and SSR semantics; no automated browser coverage implied."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/dither-dissolve/",
+          "scope": "Default hydrated demo sampled for rendered content/controls and specimen dimensions; image assets loaded where present. No exhaustive interaction claim."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "dither-sculpture",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/dither-sculpture.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/glyph-sculpture.test.ts",
+            "tests/sculpture-objects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Geometry, print rendering, SSR, invalid import data; no live renderer coverage implied."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "elastic-mesh",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/elastic-mesh.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "falling-text",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/falling-text.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "float-layer",
+      "category": "Motion",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/float-layer.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/depth-background.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Deterministic planes and visible/asChild SSR."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "flow-sculpture",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/flow-sculpture.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/sculpture-material-physics.test.ts",
+            "tests/sculpture-material-surfaces.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Material simulation and SSR/invalid geometry."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "ghost-cursor",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/ghost-cursor.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "glass-sculpture",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/glass-sculpture.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/sculpture-material-physics.test.ts",
+            "tests/sculpture-material-surfaces.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Material simulation and SSR/invalid geometry."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "glyph-sculpture",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/glyph-sculpture.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/glyph-sculpture.test.ts",
+            "tests/sculpture-objects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Geometry, print rendering, SSR, invalid import data; no live renderer coverage implied."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "grain-dissolve",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/grain-dissolve.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-galleries.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared selection/transition geometry and SSR semantics; no automated browser coverage implied."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "guided-pointer",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/guided-pointer.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/guided-pointer.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Waypoint normalization and invalid/empty selection."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "image-masking",
+      "category": "Creative",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/image-masking.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "image-trail",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/image-trail.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "infinite-spiral",
+      "category": "Creative",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/infinite-spiral.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-galleries.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared selection/transition geometry and SSR semantics; no automated browser coverage implied."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/infinite-spiral/",
+          "scope": "Pause and six-image same-count replacement reproduced before fix and all six positions verified after fix. InfiniteSpiral Next and Resume also exercised."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-001"
+      ]
+    },
+    {
+      "id": "ink-sculpture",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/ink-sculpture.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/glyph-sculpture.test.ts",
+            "tests/sculpture-objects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Geometry, print rendering, SSR, invalid import data; no live renderer coverage implied."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "magic-rings",
+      "category": "Backgrounds",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/magic-rings.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/magic-rings/",
+          "scope": "Pause state, Paper/Grove appearance, canvas byte comparison before/after fix; paused canvas repaints and remains still."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "marquee",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/marquee.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/marquee-motion.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Periodic scroll response and bounded depth."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "meta-balls",
+      "category": "Backgrounds",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/meta-balls.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "orbit-images",
+      "category": "Creative",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/orbit-images.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/orbit-images/",
+          "scope": "Pause and six-image same-count replacement reproduced before fix and all six positions verified after fix. InfiniteSpiral Next and Resume also exercised."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-001"
+      ]
+    },
+    {
+      "id": "particle-sculpture",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/particle-sculpture.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/sculpture-material-physics.test.ts",
+            "tests/sculpture-material-surfaces.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Material simulation and SSR/invalid geometry."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "particle-text",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/particle-text.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "pigment-field",
+      "category": "Backgrounds",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/pigment-field.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/living-shader.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Bounded uniforms/resolution and still SSR."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "pixel-swap",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/pixel-swap.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "portal-field",
+      "category": "Backgrounds",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/portal-field.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-additions.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Heading decoding, portal geometry and still SSR."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "presence",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/presence.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "ripple-distortion",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/ripple-distortion.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "scroll-expand",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/scroll-expand.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "scroll-organism",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/scroll-organism.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "scroll-reveal",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/scroll-reveal.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "sculpture-orbit",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/sculpture-orbit.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/glyph-sculpture.test.ts",
+            "tests/sculpture-objects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Geometry, print rendering, SSR, invalid import data; no live renderer coverage implied."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "semantic-bloom",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/semantic-bloom.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/semantic-bloom.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Deterministic simulation, attraction, pause, resize, gather and scatter."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "shape-artwork",
+      "category": "Visual effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/shape-artwork.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/shape-artwork.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Live/standalone SVG parity, bounds, layer toggles and escaping."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "shape-scene",
+      "category": "3D",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/shape-scene.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "strands",
+      "category": "Backgrounds",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/strands.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "swarm-cursor",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/swarm-cursor.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": [
+        "RF-M-002"
+      ]
+    },
+    {
+      "id": "target-cursor",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "browser-partial",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/target-cursor.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-effects.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared effect geometry bounds, swarm and ripple math; leaf lifecycle and pointer behavior require live checks."
+        },
+        {
+          "type": "browser",
+          "status": "partial",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/target-cursor/",
+          "scope": "Keyboard Tab transitions through Shapes, Typography, Motion and out to Copy guide; marker hidden on exit."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "text-reveal",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/text-reveal.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/text-sequences.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Unicode line measurement, relay indexing and bounded sequence timing."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "text-ribbon",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/text-ribbon.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/text-ribbon.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Path, copies, dragging phase and periodic geometry."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "typography",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/typography.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "typography-vortex",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/typography-vortex.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "variable-proximity",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/variable-proximity.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "warp-text",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/warp-text.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "wave-wipe",
+      "category": "Effects",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/wave-wipe.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-galleries.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Shared selection/transition geometry and SSR semantics; no automated browser coverage implied."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "word-relay",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/word-relay.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/text-sequences.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Unicode line measurement, relay indexing and bounded sequence timing."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "word-stream",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/word-stream.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "writing-caret",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/writing-caret.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "zoom-words",
+      "category": "Typography",
+      "owner": "motion",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "type": "source",
+          "status": "reviewed",
+          "paths": [
+            "registry/cojeev/ui/zoom-words.tsx"
+          ],
+          "scope": "Reviewed props, refs, handlers, motion gating, effect dependencies, cleanup and readable fallback; shared engines followed read-only except approved ReferenceField fix."
+        },
+        {
+          "type": "automated",
+          "status": "passed",
+          "files": [
+            "tests/reference-typography.test.ts"
+          ],
+          "evidence": "Included in the 19-file focused Node run: 86 tests passed, 0 failed.",
+          "scope": "Text geometry, still SSR and bounded numeric inputs."
+        },
+        {
+          "type": "responsive",
+          "status": "pending",
+          "scope": "No 390px visual verification completed in this group checkpoint."
+        },
+        {
+          "type": "variants",
+          "status": "pending",
+          "scope": "Full variant/size inventory not yet exercised."
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "RF-M-001",
+      "source": "proactive",
+      "components": [
+        "orbit-images",
+        "infinite-spiral"
+      ],
+      "status": "verified",
+      "owner": "motion",
+      "routes": [
+        "http://127.0.0.1:4320/cojeev-ui/docs/orbit-images/",
+        "http://127.0.0.1:4320/cojeev-ui/docs/infinite-spiral/"
+      ],
+      "reproduction": "In the new approved demo controls, pause the gallery, then press Replace images. Both sets contain six images. Before the fix, all six replacement img style.transform values were empty; orbit images piled at the origin and spiral cards piled at the center.",
+      "expected": "New images retain their computed orbit/spiral positions even when count stays the same and motion is paused.",
+      "rootCause": "Effects captured the image nodes but depended only on count and motion options. React remounted src-keyed orbit images or id-keyed spiral cards while the effect retained removed nodes.",
+      "paths": [
+        "registry/cojeev/ui/orbit-images.tsx",
+        "registry/cojeev/ui/infinite-spiral.tsx",
+        "components/examples/reference-effects.tsx",
+        "components/examples/reference-galleries.tsx",
+        "tests/rapid-motion-regressions.browser.mjs"
+      ],
+      "fix": "Track rendered source identities in OrbitImages and item IDs/order in InfiniteSpiral effect dependencies. Added Replace images controls in the two approved public examples.",
+      "verification": [
+        "Pre-fix CUA assertions failed with six empty transforms for each paused gallery.",
+        "Post-fix CUA reads confirmed data-running=false and six distinct non-empty transforms after same-count replacement.",
+        "Scoped ESLint passed for both leaves and examples."
+      ],
+      "related": [
+        "RF-M-002"
+      ],
+      "duplicates": [],
+      "remainingLimits": "The persistent combined browser runner is added; first combined CUA run timed out navigating to orbit-images before assertions. Equivalent individual reproduction/fix checks passed. Mobile, every variant, and long-duration cycles remain pending."
+    },
+    {
+      "id": "RF-M-002",
+      "source": "proactive",
+      "components": [
+        "swarm-cursor",
+        "ghost-cursor",
+        "click-spark",
+        "magic-rings",
+        "strands",
+        "meta-balls",
+        "elastic-mesh",
+        "ripple-distortion",
+        "image-trail"
+      ],
+      "status": "verified",
+      "owner": "motion",
+      "routes": [
+        "http://127.0.0.1:4320/cojeev-ui/docs/magic-rings/"
+      ],
+      "reproduction": "Pause effect, open Colour and contrast, change Paper to Grove. Before fix, computed --v-pink changed from #F0A4CC to #E4A8B2 but canvas data URL stayed byte-identical with data-running=false.",
+      "expected": "Paused effects repaint changed colors without restarting or resetting their motion.",
+      "rootCause": "ReferenceField only observed root class/data-mode. AppearanceProvider updates inline tokens and emits cojeev:appearancechange, which the field did not handle.",
+      "paths": [
+        "registry/cojeev/lib/reference-field.tsx",
+        "tests/rapid-motion-regressions.browser.mjs"
+      ],
+      "fix": "Subscribe to appearance changes and observe actual ancestor theme/style attributes. A color-signature guard invalidates/repaints only changed colors, separately from resizing, and cleanup removes the listener.",
+      "verification": [
+        "Pre-fix live CUA assertion confirmed unchanged canvas after a real palette change.",
+        "After fix, paused canvas changed for the applied palette and data-running remained false.",
+        "Original Paper palette restored after verification.",
+        "Scoped ESLint passed."
+      ],
+      "related": [
+        "RF-M-001"
+      ],
+      "duplicates": [],
+      "remainingLimits": "Live palette proof uses MagicRings; nine wrappers share the repaired engine. Distinct artwork algorithms, nested custom theme combinations and all variants have not each been visually rechecked."
+    }
+  ],
+  "notes": [
+    "Checkpoint requested by coordinator for the current user-visible docs/scroll round; broad motion audit remains in progress.",
+    "All 56 assigned leaf implementations source-reviewed. 86 existing tests passed across 19 focused test files; existing tests largely cover math/SSR rather than browser interaction. After the fixes, the two related reference effect/gallery suites passed all 13 tests again.",
+    "14 default routes have partial browser evidence; dither-sculpture navigation was attempted but its follow-up browser command timed out and is not counted as verified.",
+    "Persistent regression script: tests/rapid-motion-regressions.browser.mjs (exports checkRapidMotion for CUA and has a Playwright CLI runner against the existing server). First combined CUA invocation encountered a navigation timeout before assertions; individual failing/passing browser checks are recorded above.",
+    "Shared file/example ownership was approved by coordinator before edits. No registry rebuild, build, dependency install, new server, commit, push or publication performed by this agent.",
+    "Preserved AGENTS.md, CLAUDE.md and all existing untracked Semantic Bloom names ending in 2.",
+    "Final scoped ESLint, browser script syntax check and git diff --check passed. Temporary audit browser tab closed."
+  ]
+}

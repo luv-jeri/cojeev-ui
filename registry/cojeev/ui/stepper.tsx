@@ -5,10 +5,14 @@ import { cn } from "@/registry/cojeev/lib/utils";
 import { Button, type ButtonProps } from "@/registry/cojeev/ui/button";
 import { AnimatedIcon } from "@/registry/cojeev/ui/animated-icon";
 import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
+import { useMorph } from "@/registry/cojeev/motion/use-morph";
+import { useChoreography } from "@/registry/cojeev/motion/choreography";
+export type StepperPresentation = "rail" | "ledger" | "compact";
 const StepperContext = React.createContext<{
   value: number;
   count: number;
   labels?: string[];
+  presentation?: StepperPresentation;
   change: (value: number) => void;
 } | null>(null);
 export function useStepper() {
@@ -21,6 +25,8 @@ export type StepperProps = React.ComponentProps<"div"> & {
   defaultValue?: number;
   count: number;
   labels?: string[];
+  /** Optional composition; omitted callers retain the original vertical/horizontal list. */
+  presentation?: StepperPresentation;
   onValueChange?: (value: number) => void;
 };
 export function Stepper({
@@ -28,10 +34,12 @@ export function Stepper({
   defaultValue = 1,
   count,
   labels,
+  presentation,
   onValueChange,
   children,
   ...props
 }: StepperProps) {
+  const { quiet } = useChoreography();
   const [local, setLocal] = React.useState(defaultValue);
   const total = Math.max(1, Math.floor(Number.isFinite(count) ? count : 1));
   const current = Math.min(
@@ -42,15 +50,21 @@ export function Stepper({
     ),
   );
   const change = (next: number) => {
-    next = Math.min(total, Math.max(1, next));
+    if (!Number.isFinite(next)) return;
+    next = Math.min(total, Math.max(1, Math.floor(next)));
     if (value === undefined) setLocal(next);
     if (next !== current) onValueChange?.(next);
   };
   return (
     <StepperContext.Provider
-      value={{ value: current, count: total, labels, change }}
+      value={{ value: current, count: total, labels, presentation, change }}
     >
-      <div data-slot="stepper-provider" {...props}>
+      <div
+        data-slot="stepper-provider"
+        data-presentation={presentation}
+        data-motion={quiet ? "off" : undefined}
+        {...props}
+      >
         {children}
       </div>
     </StepperContext.Provider>
@@ -59,8 +73,16 @@ export function Stepper({
 export const stepperVariants = cva(
   "v-stepper-flow grid gap-0 m-0 p-0 list-none [counter-reset:none]",
 );
-export type StepperListProps = React.ComponentProps<"ol"> & { orientation?: "vertical" | "horizontal" };
-export function StepperList({ ref, className, orientation = "vertical", ...props }: StepperListProps) {
+export type StepperListProps = React.ComponentProps<"ol"> & {
+  orientation?: "vertical" | "horizontal";
+};
+export function StepperList({
+  ref,
+  className,
+  orientation = "vertical",
+  ...props
+}: StepperListProps) {
+  const context = React.useContext(StepperContext);
   const flowRef = useFlowGroup<HTMLOListElement>(ref);
   return (
     <ol
@@ -69,7 +91,11 @@ export function StepperList({ ref, className, orientation = "vertical", ...props
       data-part="root"
       data-stepper=""
       data-orientation={orientation}
-      data-flow={orientation === "horizontal" ? "off" : undefined}
+      data-flow={
+        context?.presentation || orientation === "horizontal"
+          ? "off"
+          : undefined
+      }
       className={cn(stepperVariants(), className)}
       {...props}
     />
@@ -105,13 +131,21 @@ export type StepperIndicatorProps = React.ComponentProps<"span"> & {
 };
 export function StepperIndicator({
   step,
+  ref,
   className,
   children,
   ...props
 }: StepperIndicatorProps) {
   const context = useStepper();
+  const morphRef = useMorph<HTMLSpanElement>("buttons", ref);
   return (
     <span
+      ref={morphRef}
+      data-morph={
+        context.presentation && step === context.value ? "fill" : "none"
+      }
+      data-stable-hit=""
+      data-r="14"
       data-slot="stepper-indicator"
       data-part="indicator"
       className={cn(
@@ -120,7 +154,12 @@ export function StepperIndicator({
       )}
       {...props}
     >
-      {children ?? (step < context.value ? <AnimatedIcon name="check" preset="validation" /> : step)}
+      {children ??
+        (step < context.value ? (
+          <AnimatedIcon name="check" preset="validation" />
+        ) : (
+          step
+        ))}
     </span>
   );
 }
@@ -138,17 +177,53 @@ export function StepperTitle({ className, ...props }: StepperTitleProps) {
     />
   );
 }
+export type StepperTriggerProps = ButtonProps & {
+  step: number;
+  /** Explicitly permit navigation to unfinished steps. Validation stays with the caller. */
+  allowFuture?: boolean;
+};
+export function StepperTrigger({
+  step,
+  allowFuture = false,
+  disabled,
+  onClick,
+  ...props
+}: StepperTriggerProps) {
+  const context = useStepper();
+  const blocked =
+    !Number.isInteger(step) ||
+    step < 1 ||
+    step > context.count ||
+    (!allowFuture && step > context.value);
+  return (
+    <Button
+      variant="ghost"
+      {...props}
+      data-slot="stepper-trigger"
+      data-morph="none"
+      data-stable-hit=""
+      disabled={disabled || blocked}
+      aria-current={step === context.value ? "step" : undefined}
+      onClick={(event) => {
+        onClick?.(event);
+        if (!event.defaultPrevented) context.change(step);
+      }}
+    />
+  );
+}
 export type StepperPreviousProps = ButtonProps;
 export function StepperPrevious({
   onClick,
   children,
+  disabled,
   ...props
 }: StepperPreviousProps) {
   const context = useStepper();
   return (
     <Button
       variant="secondary"
-      disabled={context.value === 1}
+      disabled={disabled || context.value === 1}
+      data-stable-hit=""
       data-step-back=""
       onClick={(event) => {
         onClick?.(event);
@@ -161,11 +236,17 @@ export function StepperPrevious({
   );
 }
 export type StepperNextProps = ButtonProps;
-export function StepperNext({ onClick, children, ...props }: StepperNextProps) {
+export function StepperNext({
+  onClick,
+  children,
+  disabled,
+  ...props
+}: StepperNextProps) {
   const context = useStepper();
   return (
     <Button
-      disabled={context.value === context.count}
+      disabled={disabled || context.value === context.count}
+      data-stable-hit=""
       data-step-next=""
       onClick={(event) => {
         onClick?.(event);

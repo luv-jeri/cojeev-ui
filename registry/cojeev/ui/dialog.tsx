@@ -6,6 +6,9 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import * as Primitive from "@radix-ui/react-dialog";
 import { useFlowAppearance } from "@/registry/cojeev/motion/use-flow";
+import { Button } from "./button";
+import { Icon } from "./icon";
+import { ScrollArea, type ScrollAreaProps } from "./scroll-area";
 export type DialogProps = React.ComponentProps<typeof Primitive.Root>;
 export function Dialog(props: DialogProps) {
   return <Primitive.Root {...props} />;
@@ -26,7 +29,11 @@ export function DialogPortal(props: DialogPortalProps) {
   return <Primitive.Portal {...props} />;
 }
 export type DialogOverlayProps = React.ComponentProps<typeof Primitive.Overlay>;
-export function DialogOverlay({ className, ref, ...props }: DialogOverlayProps) {
+export function DialogOverlay({
+  className,
+  ref,
+  ...props
+}: DialogOverlayProps) {
   const flowRef = useFlowAppearance<HTMLDivElement>(true, ref, "fade");
   return (
     <Primitive.Overlay
@@ -46,12 +53,16 @@ export const dialogContentVariants = cva(
 );
 export type DialogContentProps = React.ComponentProps<
   typeof Primitive.Content
-> & { showCloseButton?: boolean };
+> & {
+  showCloseButton?: boolean;
+  appearance?: "confirmation" | "editor" | "exhibit";
+};
 export function DialogContent({
   className,
   ref,
   children,
   showCloseButton = false,
+  appearance,
   ...props
 }: DialogContentProps) {
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
@@ -63,17 +74,43 @@ export function DialogContent({
         ref={flowRef}
         data-slot="dialog-content"
         data-part="content"
+        data-appearance={appearance}
+        data-morph={appearance ? "both" : undefined}
+        data-r={appearance ? "css" : undefined}
+        data-stable-hit=""
         className={cn(dialogContentVariants(), className)}
         {...props}
       >
         {children}
         {showCloseButton && (
-          <DialogClose aria-label="Close" className="absolute right-4 top-4">
-            ×
+          <DialogClose asChild>
+            <Button
+              variant="ghost"
+              aria-label="Close"
+              className="v-dialog__close"
+            >
+              <Icon name="x" />
+            </Button>
           </DialogClose>
         )}
       </Primitive.Content>
     </Primitive.Portal>
+  );
+}
+/** Bounded body; header and actions remain reachable while native content scrolls. */
+export function DialogBody({
+  className,
+  viewportProps,
+  ...props
+}: ScrollAreaProps) {
+  return (
+    <ScrollArea
+      variant="plain"
+      type="always"
+      className={cn("v-dialog__body", className)}
+      viewportProps={{ tabIndex: -1, ...viewportProps }}
+      {...props}
+    />
   );
 }
 export type DialogHeaderProps = React.ComponentProps<"div">;

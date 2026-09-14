@@ -27,9 +27,9 @@
     "source": {
       "name": "Line chart",
       "variants": [
-        "linear",
-        "smooth",
-        "step"
+        "analysis",
+        "brief",
+        "ledger"
       ],
       "sizes": [
         "default"
@@ -55,7 +55,7 @@
         ]
       }
     ],
-    "category": "Data display",
+    "category": "Charts",
     "fidelity": "refined-design-family",
     "baseComponent": false
   },

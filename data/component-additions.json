@@ -1,4 +1,419 @@
 {
+  "sidebar": {
+    "variants": [
+      "folio",
+      "index",
+      "drawer"
+    ],
+    "sizes": [
+      "default"
+    ]
+  },
+  "toggle": {
+    "variants": [
+      "tool",
+      "bookmark",
+      "preference"
+    ],
+    "sizes": [
+      "default"
+    ]
+  },
+  "item": {
+    "variants": [
+      "ledger",
+      "cover",
+      "detail"
+    ],
+    "sizes": [
+      "default"
+    ]
+  },
+  "tooltip": {
+    "variants": [
+      "callout",
+      "shortcut",
+      "annotation"
+    ],
+    "sizes": [
+      "default"
+    ]
+  },
+  "hover-card": {
+    "variants": [
+      "identity",
+      "preview",
+      "media"
+    ],
+    "sizes": [
+      "default"
+    ]
+  },
+  "avatar": {
+    "variants": [
+      "portrait",
+      "identity",
+      "participants"
+    ],
+    "sizes": [
+      "lg",
+      "default",
+      "sm"
+    ]
+  },
+  "badge": {
+    "variants": [
+      "stamp",
+      "tag",
+      "counter"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg"
+    ]
+  },
+  "skeleton": {
+    "variants": [
+      "article",
+      "profile",
+      "board"
+    ],
+    "sizes": [
+      "default"
+    ]
+  },
+  "spinner": {
+    "variants": [
+      "bloom",
+      "orbit",
+      "relay"
+    ],
+    "sizes": [
+      "default"
+    ]
+  },
+  "accordion": {
+    "variants": [
+      "faq",
+      "chapters",
+      "editorial"
+    ]
+  },
+  "breadcrumb": {
+    "variants": [
+      "trail",
+      "pocket",
+      "directory"
+    ]
+  },
+  "stepper": {
+    "variants": [
+      "rail",
+      "ledger",
+      "compact"
+    ]
+  },
+  "carousel": {
+    "variants": [
+      "shelf",
+      "story",
+      "index"
+    ]
+  },
+  "card": {
+    "variants": [
+      "editorial",
+      "project",
+      "collection"
+    ]
+  },
+  "collapsible": {
+    "variants": [
+      "inline",
+      "checklist",
+      "inspector"
+    ]
+  },
+  "toast": {
+    "variants": [
+      "compact",
+      "actionable",
+      "receipt"
+    ]
+  },
+  "pagination": {
+    "variants": [
+      "pages",
+      "chapter",
+      "jump"
+    ]
+  },
+  "navigation-menu": {
+    "variants": [
+      "directory",
+      "shelf",
+      "compact"
+    ]
+  },
+  "table": {
+    "name": "Tables",
+    "variants": [
+      "ledger",
+      "rich",
+      "comparison"
+    ]
+  },
+  "calendar": {
+    "variants": [
+      "single",
+      "range",
+      "multiple"
+    ]
+  },
+  "date-picker": {
+    "variants": [
+      "single",
+      "range",
+      "multiple"
+    ]
+  },
+  "data-table": {
+    "variants": [
+      "ledger",
+      "rich",
+      "comparison"
+    ]
+  },
+  "tabs": {
+    "variants": [
+      "notebook",
+      "rail",
+      "underline",
+      "pills",
+      "lenses"
+    ]
+  },
+  "bento-grid": {
+    "name": "Bento Grid",
+    "variants": [
+      "classic",
+      "interlock"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "responsive",
+      "reduced-motion"
+    ],
+    "reviewOnly": false
+  },
+  "bento-builder": {
+    "name": "Bento Builder",
+    "variants": [
+      "classic",
+      "interlock"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "selected",
+      "dragging",
+      "editing",
+      "undo",
+      "redo",
+      "copied"
+    ],
+    "reviewOnly": false
+  },
+  "input": {
+    "variants": [
+      "contour",
+      "editorial",
+      "inset"
+    ]
+  },
+  "field": {
+    "variants": [
+      "stacked",
+      "inline",
+      "integrated"
+    ]
+  },
+  "input-group": {
+    "variants": [
+      "address",
+      "quantity",
+      "composer"
+    ]
+  },
+  "textarea": {
+    "variants": [
+      "writing",
+      "composer",
+      "response"
+    ]
+  },
+  "label": {
+    "variants": [
+      "required",
+      "optional",
+      "help"
+    ]
+  },
+  "select": {
+    "variants": [
+      "field",
+      "action",
+      "rich"
+    ]
+  },
+  "native-select": {
+    "variants": [
+      "field",
+      "toolbar",
+      "listbox"
+    ]
+  },
+  "dock": {
+    "name": "Dock",
+    "variants": [
+      "default",
+      "shelf",
+      "rail"
+    ],
+    "sizes": [
+      "default",
+      "sm",
+      "lg"
+    ],
+    "states": [
+      "rest",
+      "hover",
+      "focus",
+      "active",
+      "disabled",
+      "still"
+    ]
+  },
+  "dots-background": {
+    "name": "Dots background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "grid-background": {
+    "name": "Grid background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "contours-background": {
+    "name": "Contours background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "weave-background": {
+    "name": "Weave background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "pebbles-background": {
+    "name": "Pebbles background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "sunwash-background": {
+    "name": "Sunwash background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "folds-background": {
+    "name": "Folds background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "sprouts-background": {
+    "name": "Sprouts background",
+    "variants": [
+      "default"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
+  "pattern-background": {
+    "name": "Pattern background",
+    "variants": [
+      "default",
+      "grid",
+      "contours",
+      "weave",
+      "pebbles",
+      "sunwash",
+      "folds",
+      "sprouts",
+      "none"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "rest"
+    ]
+  },
   "preview": {
     "name": "Component preview",
     "variants": [
@@ -14,20 +429,16 @@
     ]
   },
   "icon": {
-    "name": "Icon and icon button",
+    "name": "Icon library",
     "variants": [
       "default",
-      "dashed",
-      "ink",
-      "pink",
-      "beige",
-      "cream"
+      "duotone",
+      "organic"
     ],
     "sizes": [
       "default",
       "sm",
-      "lg",
-      "xl"
+      "lg"
     ],
     "states": [
       "rest",
@@ -37,7 +448,7 @@
     ]
   },
   "shape": {
-    "name": "Shape",
+    "name": "Shape studio",
     "variants": [
       "default"
     ],
@@ -63,6 +474,12 @@
   },
   "code-block": {
     "name": "Code block",
+    "dependencies": [
+      "prismjs@1.30.0"
+    ],
+    "devDependencies": [
+      "@types/prismjs"
+    ],
     "variants": [
       "default"
     ],
@@ -140,10 +557,9 @@
   "multi-select": {
     "name": "Multi-select",
     "variants": [
-      "both",
-      "icon-only",
-      "blob-only",
-      "none"
+      "tokens",
+      "summary",
+      "checklist"
     ],
     "sizes": [
       "default"
@@ -308,9 +724,9 @@
   "area-chart": {
     "name": "Area chart",
     "variants": [
-      "linear",
-      "step",
-      "stacked"
+      "analysis",
+      "brief",
+      "ledger"
     ],
     "sizes": [
       "default"
@@ -326,9 +742,9 @@
   "bar-chart": {
     "name": "Bar chart",
     "variants": [
-      "grouped",
-      "stacked",
-      "horizontal"
+      "analysis",
+      "brief",
+      "ledger"
     ],
     "sizes": [
       "default"
@@ -344,9 +760,9 @@
   "line-chart": {
     "name": "Line chart",
     "variants": [
-      "linear",
-      "smooth",
-      "step"
+      "analysis",
+      "brief",
+      "ledger"
     ],
     "sizes": [
       "default"
@@ -362,8 +778,9 @@
   "pie-chart": {
     "name": "Pie chart",
     "variants": [
-      "pie",
-      "donut"
+      "analysis",
+      "brief",
+      "ledger"
     ],
     "sizes": [
       "default"
@@ -379,9 +796,9 @@
   "radar-chart": {
     "name": "Radar chart",
     "variants": [
-      "polygon",
-      "rounded",
-      "grid"
+      "analysis",
+      "brief",
+      "ledger"
     ],
     "sizes": [
       "default"
@@ -397,8 +814,9 @@
   "radial-chart": {
     "name": "Radial chart",
     "variants": [
-      "full",
-      "semicircle"
+      "analysis",
+      "brief",
+      "ledger"
     ],
     "sizes": [
       "default"
@@ -414,7 +832,9 @@
   "chart-tooltip": {
     "name": "Dynamic chart tooltip",
     "variants": [
-      "default"
+      "compare",
+      "summary",
+      "ranked"
     ],
     "sizes": [
       "default"
@@ -450,12 +870,9 @@
   "checkbox": {
     "name": "Checkbox",
     "variants": [
-      "organic",
-      "circle",
-      "rounded",
-      "pebble",
-      "leaf",
-      "flower"
+      "row",
+      "card",
+      "chip"
     ],
     "sizes": [
       "default",
@@ -470,15 +887,28 @@
       "reduced-motion"
     ]
   },
+  "switch": {
+    "name": "Switch",
+    "variants": [
+      "capsule",
+      "rocker",
+      "latch"
+    ],
+    "sizes": [],
+    "states": [
+      "unchecked",
+      "checked",
+      "focused",
+      "disabled",
+      "reduced-motion"
+    ]
+  },
   "radio-group": {
     "name": "Radio group",
     "variants": [
-      "organic",
-      "circle",
-      "rounded",
-      "pebble",
-      "leaf",
-      "flower"
+      "row",
+      "card",
+      "chip"
     ],
     "sizes": [
       "default",
@@ -496,12 +926,9 @@
   "questionnaire": {
     "name": "Questionnaire",
     "variants": [
-      "organic",
-      "circle",
-      "rounded",
-      "pebble",
-      "leaf",
-      "flower"
+      "stacked",
+      "journey",
+      "worksheet"
     ],
     "sizes": [
       "default",
@@ -704,14 +1131,18 @@
       "reduced-motion"
     ]
   },
+  "alert": {
+    "variants": [
+      "note",
+      "banner",
+      "dispatch"
+    ]
+  },
   "progress": {
     "variants": [
-      "organic",
-      "line",
-      "segmented",
-      "orbit",
-      "cream",
-      "unavail"
+      "inline",
+      "report",
+      "milestones"
     ],
     "sizes": [
       "default",
@@ -722,16 +1153,29 @@
   "slider": {
     "variants": [
       "organic",
+      "rubber",
       "line",
       "segmented",
-      "pink"
+      "range",
+      "vertical"
     ]
   },
   "hero-button": {
     "name": "Hero button",
     "variants": [
       "organic",
-      "capsule"
+      "capsule",
+      "split-arrow",
+      "paper-fold",
+      "pressed-key",
+      "ribbon",
+      "ticket",
+      "seal",
+      "ink-sweep",
+      "orbit",
+      "sliding-window",
+      "stacked-paper",
+      "spotlight"
     ],
     "sizes": [
       "default",
@@ -784,8 +1228,7 @@
   "shape-artwork": {
     "name": "Shape artwork",
     "variants": [
-      "default",
-      "outline"
+      "default"
     ],
     "sizes": [
       "default"
@@ -820,7 +1263,9 @@
   "reading-trail": {
     "name": "Reading trail",
     "variants": [
-      "default"
+      "spine",
+      "bookmark",
+      "overview"
     ],
     "sizes": [
       "default"
@@ -893,7 +1338,9 @@
   "milestone-path": {
     "name": "Milestone path",
     "variants": [
-      "default"
+      "journey",
+      "sequence",
+      "review"
     ],
     "sizes": [
       "default"
@@ -1139,7 +1586,9 @@
   "number-input": {
     "name": "Number input",
     "variants": [
-      "default"
+      "stepper",
+      "quantity",
+      "scrub"
     ],
     "sizes": [
       "default"
@@ -1616,8 +2065,9 @@
   "option-wheel": {
     "name": "Option Wheel",
     "variants": [
-      "left",
-      "right"
+      "arc",
+      "reel",
+      "compact"
     ],
     "sizes": [
       "default"
@@ -1730,8 +2180,10 @@
   "motion-drawer": {
     "name": "Motion Drawer",
     "variants": [
-      "start",
-      "end"
+      "default",
+      "floating",
+      "stack",
+      "bottom"
     ],
     "sizes": [
       "default"
@@ -1747,7 +2199,8 @@
     "name": "Linear Modal",
     "variants": [
       "card",
-      "compact"
+      "centered",
+      "gallery"
     ],
     "sizes": [
       "default"
@@ -1806,6 +2259,23 @@
       "default",
       "active",
       "still"
+    ],
+    "reviewOnly": false
+  },
+  "dialog": {
+    "name": "Dialog",
+    "variants": [
+      "confirmation",
+      "editor",
+      "exhibit"
+    ],
+    "sizes": [
+      "default"
+    ],
+    "states": [
+      "default",
+      "open",
+      "closed"
     ],
     "reviewOnly": false
   }

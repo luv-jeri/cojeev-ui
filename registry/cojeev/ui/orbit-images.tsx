@@ -12,6 +12,7 @@ export function OrbitImages({ images, children, paused = false, duration = 24, r
   const { enabled, inView } = useMotionVisibility(host);
   const running = enabled && inView && !paused && images.length > 1;
   const cycle = boundedNumber(duration, 24, 6, 120);
+  const imageKey = JSON.stringify(images.slice(0, 12).map(image => image.src));
   React.useEffect(() => {
     const element = host.current;
     if (!element) return;
@@ -21,6 +22,6 @@ export function OrbitImages({ images, children, paused = false, duration = 24, r
     const tick = ({ delta }: { delta: number }) => { phase.current = (phase.current + Math.min(delta, 33) / (cycle * 1000) * (reverse ? -1 : 1)) % 1; paint(); };
     if (running) frame.update(tick, true);
     return () => { cancelFrame(tick); observer.disconnect(); };
-  }, [running, cycle, reverse, images.length]);
+  }, [running, cycle, reverse, images.length, imageKey]);
   return <div {...props} ref={React.useCallback((node: HTMLDivElement | null) => { host.current = node; if (typeof ref === "function") return ref(node); if (ref) ref.current = node; }, [ref])} data-slot="orbit-images" data-running={running ? "true" : "false"} className={cn("v-orbit-images", className)}><div className="v-orbit-images__center">{children}</div>{images.slice(0, 12).map((image, i) => <img data-orbit-item="" key={`${i}:${image.src}`} src={image.src} alt={image.alt} className="v-orbit-images__image" />)}</div>;
 }

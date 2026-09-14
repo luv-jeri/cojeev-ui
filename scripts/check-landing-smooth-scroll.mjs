@@ -33,12 +33,14 @@ const browser = await chromium.launch();
 try {
   await record("wheel scroll interpolates and landing lifecycle stays route-scoped", async () => {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "no-preference" });
+    await context.route(/https:\/\/(?:us|eu)\.i\.posthog\.com\//, route => route.fulfill({ status: 200, body: "1" }));
     const page = await context.newPage();
     page.setDefaultTimeout(6000);
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
-    await page.goto(`${base}/`, { waitUntil: "networkidle" });
+    await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
     await page.locator("[data-landing-smooth-scroll]").waitFor();
+    await page.locator("html.lenis").waitFor();
     assert.equal(await page.locator("html.lenis").count(), 1, "Landing page must mount one Lenis root");
     const frames = await page.evaluate(async () => {
       scrollTo(0, 0);
@@ -55,7 +57,7 @@ try {
     assert(positions.length >= 4, `Scroll must advance through several rendered positions: ${positions.join(", ")}`);
     assert(positions[0] < 350, `Balanced smoothing must begin well before the wheel target: ${positions.join(", ")}`);
     assert(positions.some((value, index) => index > 0 && value > positions[index - 1]), `Scroll must advance over time: ${positions.join(", ")}`);
-    await page.getByRole("link", { name: "Explore the library", exact: true }).click();
+    await page.getByRole("link", { name: /^Explore \d+ components$/ }).click();
     await page.waitForURL(url => url.pathname.endsWith("/cojeev-ui/docs/"));
     assert.equal(await page.locator("html.lenis").count(), 0, "Documentation must return to native scrolling");
     assert.deepEqual(errors, [], "No landing or navigation runtime errors");
@@ -65,34 +67,36 @@ try {
 
   await record("landing anchor scroll reaches the requested section", async () => {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "no-preference" });
+    await context.route(/https:\/\/(?:us|eu)\.i\.posthog\.com\//, route => route.fulfill({ status: 200, body: "1" }));
     const page = await context.newPage();
     page.setDefaultTimeout(6000);
-    await page.goto(`${base}/`, { waitUntil: "networkidle" });
-    await page.getByRole("link", { name: /See what takes shape/i }).click();
-    await page.waitForFunction(() => location.hash === "#playground");
-    await page.waitForFunction(() => Math.abs(document.querySelector("#playground").getBoundingClientRect().top) < 40);
-    const top = await page.locator("#playground").evaluate(node => node.getBoundingClientRect().top);
+    await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("link", { name: /Meet the little parts/i }).click();
+    await page.waitForFunction(() => location.hash === "#featured-components");
+    await page.waitForFunction(() => Math.abs(document.querySelector("#featured-components").getBoundingClientRect().top) < 40);
+    const top = await page.locator("#featured-components").evaluate(node => node.getBoundingClientRect().top);
     await context.close();
-    return { hash: "#playground", top };
+    return { hash: "#featured-components", top };
   });
 
   await record("reduced motion makes anchor navigation immediate", async () => {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+    await context.route(/https:\/\/(?:us|eu)\.i\.posthog\.com\//, route => route.fulfill({ status: 200, body: "1" }));
     const page = await context.newPage();
     page.setDefaultTimeout(6000);
-    await page.goto(`${base}/`, { waitUntil: "networkidle" });
-    await page.getByRole("link", { name: /See what takes shape/i }).click();
-    await page.waitForFunction(() => location.hash === "#playground", undefined, { polling: 10 });
+    await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("link", { name: /Meet the little parts/i }).click();
+    await page.waitForFunction(() => location.hash === "#featured-components", undefined, { polling: 10 });
     const evidence = await page.evaluate(() => ({
       reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
       hash: location.hash,
       scrollY,
-      top: document.querySelector("#playground").getBoundingClientRect().top,
+      top: document.querySelector("#featured-components").getBoundingClientRect().top,
     }));
     await page.waitForTimeout(34);
     evidence.scrollYAfterTwoFrames = await page.evaluate(() => scrollY);
     assert(evidence.reduced, "The browser must expose reduced motion");
-    assert.equal(evidence.hash, "#playground");
+    assert.equal(evidence.hash, "#featured-components");
     assert(Math.abs(evidence.top) < 40, `Reduced-motion anchor must settle immediately, got top=${evidence.top}`);
     assert.equal(evidence.scrollYAfterTwoFrames, evidence.scrollY, "Reduced-motion anchor must not continue interpolating");
     await context.close();
@@ -106,6 +110,7 @@ const mobileBrowser = await webkit.launch();
 try {
   await record("touch viewport keeps native page access and controls usable", async () => {
     const context = await mobileBrowser.newContext({ ...devices["iPhone 13"], viewport: { width: 390, height: 844 }, reducedMotion: "no-preference" });
+    await context.route(/https:\/\/(?:us|eu)\.i\.posthog\.com\//, route => route.fulfill({ status: 200, body: "1" }));
     await context.addInitScript(() => {
       window.__landingTouchStarts = 0;
       addEventListener("touchstart", () => window.__landingTouchStarts += 1, { capture: true, passive: true });
@@ -114,14 +119,14 @@ try {
     page.setDefaultTimeout(6000);
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
-    await page.goto(`${base}/`, { waitUntil: "networkidle" });
+    await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
     await page.locator("html.lenis").waitFor();
     assert.equal(await page.locator("html.lenis").count(), 1);
     await page.evaluate(() => scrollTo(0, 640));
     assert(await page.evaluate(() => scrollY > 0), "Touch viewport remains scrollable");
     await page.evaluate(() => scrollTo(0, 0));
-    await page.getByRole("button", { name: "Give me a nudge", exact: true }).tap();
-    await page.getByRole("button", { name: "Again? 1", exact: true }).waitFor();
+    await page.getByRole("button", { name: "Open drawer", exact: true }).tap();
+    await page.getByRole("dialog", { name: "A little room for ideas" }).waitFor();
     assert.deepEqual(errors, [], "No touch-viewport runtime errors");
     const evidence = await page.evaluate(() => ({
       coarsePointer: matchMedia("(pointer: coarse)").matches,

@@ -73,7 +73,7 @@ for (const width of (process.env.WIDTHS ?? "1440,390").split(",").map(Number)) {
       }
       if (doc === "motion-drawer" || doc === "linear-modal") {
         const trigger = stage.getByRole("button").first(); await trigger.focus(); await trigger.press("Enter");
-        const dialog = page.getByRole("dialog", { name: doc === "motion-drawer" ? "A place to begin" : "Room for good ideas", exact: true });
+        const dialog = page.getByRole("dialog", { name: doc === "motion-drawer" ? "Chapters" : "Room for good ideas", exact: true });
         await dialog.waitFor({state:"visible"}); await page.waitForTimeout(500);
         assert(await dialog.evaluate(el=>el.contains(document.activeElement)), "Focus enters the dialog");
         await dialog.screenshot({path:`${output}/${entry.id}-${width}-open.png`});
@@ -82,8 +82,7 @@ for (const width of (process.env.WIDTHS ?? "1440,390").split(",").map(Number)) {
         result.checks.push("keyboard open", "modal focus containment", "Escape dismissal and focus return");
         if (doc === "motion-drawer") {
           await trigger.click(); await dialog.waitFor({state:"visible"}); await page.waitForTimeout(400);
-          const handle=dialog.getByRole("button",{name:"Drag toward the edge to close; press Enter to close"});
-          const rect=await handle.boundingBox(),x=rect.x+rect.width*.5,y=rect.y+rect.height*.5;
+          const rect=await dialog.boundingBox(),x=rect.x+rect.width*.8,y=rect.y+rect.height*.65;
           if(width<500){const cdp=await context.newCDPSession(page);await cdp.send("Input.dispatchTouchEvent",{type:"touchStart",touchPoints:[{x,y}]});await cdp.send("Input.dispatchTouchEvent",{type:"touchMove",touchPoints:[{x:Math.max(1,x-180),y}]});await cdp.send("Input.dispatchTouchEvent",{type:"touchEnd",touchPoints:[]});await cdp.detach();}
           else{await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(Math.max(1,x-180),y,{steps:8});await page.mouse.up();}
           await dialog.waitFor({state:"hidden"}); result.checks.push(width<500?"touch drag dismissal":"pointer drag dismissal");

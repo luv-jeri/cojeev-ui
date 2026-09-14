@@ -59,7 +59,7 @@ test("sculpture treatment APIs inherit public geometry controls without listing 
     for (const name of ["geometry", "turn", "pitch", "zoom", "paused", "pointerTracking", "onGeometryError"]) assert.ok(props.some((prop: { name: string }) => prop.name === name), `${id} should document ${name}`);
     for (const name of ["className", "onClick", "aria-label"]) assert.ok(!props.some((prop: { name: string }) => prop.name === name), `${id} should group native ${name}`);
   }
-  assert.deepEqual(apis.button[0].props.map((prop: { name: string }) => prop.name), ["variant", "size", "fullWidth", "asChild", "ref", "loading", "loadingIndicator"]);
+  assert.deepEqual(apis.button[0].props.map((prop: { name: string }) => prop.name), ["variant", "size", "shape", "fullWidth", "asChild", "ref", "loading", "loadingIndicator", "radius"]);
   assert.equal(apis.button[0].props[0].type, '\"default\" | \"accent\" | \"secondary\" | \"ghost\" | \"outline\" | \"danger\" | \"block\" | null | undefined');
   assert.deepEqual(apis.slider.map((row: { name: string; props: { name: string }[] }) => [row.name, row.props.map(prop => prop.name)]), [["SliderProps", ["variant", "thumbLabel", "appearance"]], ["SliderWrapperProps", []], ["SliderRowProps", []], ["SliderOutputProps", []]]);
   assert.deepEqual(apis["text-reveal"][0].props.map((prop: { name: string; required: boolean }) => [prop.name, prop.required]), [["text", true], ["as", false], ["replayKey", false], ["variant", false], ["split", false], ["stagger", false], ["direction", false], ["duration", false]]);

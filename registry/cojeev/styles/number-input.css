@@ -1,18 +1,266 @@
-.v-number-input{display:inline-flex;align-items:center;gap:4px;inline-size:100%;min-inline-size:0;block-size:48px;padding:4px;background:var(--input);color:var(--v-text);border-radius:var(--r-pill);box-shadow:inset 0 0 0 1px var(--v-edge);font-size:var(--fs-body);font-variant-numeric:tabular-nums}
-.v-number-input:focus-within{outline:2px solid var(--v-accent,var(--v-text));outline-offset:3px}
-.v-number-input__step{display:grid;place-items:center;flex:none;inline-size:38px;block-size:38px;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer}
-.v-number-input__step:hover:not(:disabled){background:var(--v-canvas)}
-.v-number-input__step:focus-visible{outline:2px solid currentColor;outline-offset:-3px}
-.v-number-input__step:disabled{opacity:.35;cursor:default}
-.v-number-input__field{position:relative;flex:1;min-inline-size:0;block-size:100%;display:grid;align-items:center}
-.v-number-input__control{inline-size:100%;min-inline-size:0;block-size:100%;border:0;outline:0;background:transparent;color:transparent;caret-color:var(--v-text);font:inherit;text-align:center;padding:0 6px;box-sizing:border-box}
-.v-number-input__control::placeholder{color:transparent}
-.v-number-input__display{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;white-space:nowrap}
-.v-number-input[data-focused="true"] .v-number-input__control{color:inherit}
-.v-number-input[data-focused="true"] .v-number-input__control::placeholder{color:var(--v-text-2)}
-.v-number-input[data-focused="true"] .v-number-input__display{visibility:hidden}
-.v-number-input[data-disabled="true"]{opacity:.5}
-.v-number-input[data-invalid="true"]{box-shadow:inset 0 0 0 2px var(--v-negative,#aa3434)}
-@media(forced-colors:active){.v-number-input{border:1px solid ButtonText}.v-number-input__control{color:CanvasText}.v-number-input__display{display:none}}
-.v-number-input__field{container-type:inline-size}
-.v-number-input__display .v-animated-number{font-size:min(1em,calc(100cqi / var(--number-length) * 1.55))}
+.v-number-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: 56px;
+  padding: 4px;
+  background: var(--input);
+  color: var(--v-text);
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1px var(--v-edge);
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+}
+.v-number-input:focus-within {
+  outline: 2px solid var(--v-accent, var(--v-text));
+  outline-offset: 3px;
+}
+.v-number-input .v-number-input__step {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 44px;
+  block-size: 44px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.v-number-input__step > .v-icon {
+  pointer-events: none;
+}
+.v-number-input__step:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+}
+.v-number-input__step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.v-number-input__field {
+  position: relative;
+  flex: 1;
+  min-inline-size: 0;
+  block-size: 100%;
+  display: grid;
+  align-items: center;
+}
+.v-number-input__control {
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--v-text);
+  font: inherit;
+  text-align: center;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+.v-number-input__control::placeholder {
+  color: transparent;
+}
+.v-number-input__display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.v-number-input[data-focused="true"] .v-number-input__control {
+  color: inherit;
+}
+.v-number-input[data-focused="true"] .v-number-input__control::placeholder {
+  color: var(--v-text-2);
+}
+.v-number-input[data-focused="true"] .v-number-input__display {
+  visibility: hidden;
+}
+.v-number-input[data-disabled="true"] {
+  opacity: 0.5;
+}
+.v-number-input[data-invalid="true"] {
+  box-shadow: inset 0 0 0 2px var(--v-negative, #aa3434);
+}
+@media (forced-colors: active) {
+  .v-number-input {
+    border: 1px solid ButtonText;
+  }
+  .v-number-input__control {
+    color: CanvasText;
+  }
+  .v-number-input__display {
+    display: none;
+  }
+}
+.v-number-input__field {
+  container-type: inline-size;
+}
+.v-number-input__display .v-animated-number {
+  font-size: min(1em, calc(100cqi / var(--number-length) * 1.55));
+}
+
+/* Quantity is a little numbered ticket; Scrub is an editable measuring strip. */
+.v-number-input[data-presentation="quantity"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  grid-template-rows: 44px 44px;
+  grid-template-areas: "field increase" "field decrease";
+  height: auto;
+  padding: 8px;
+  gap: 4px 12px;
+  border-radius: min(var(--v-control-radius, 24px), 24px);
+}
+.v-number-input[data-presentation="quantity"] .v-number-input__field {
+  grid-area: field;
+  min-height: 88px;
+  font: 500 clamp(24px, 5vw, 40px) / 1.2 var(--font-display);
+  border-inline-end: 1px dashed var(--v-edge);
+  padding-inline: 8px 12px;
+}
+.v-number-input[data-presentation="quantity"] .v-number-input__increase {
+  grid-area: increase;
+}
+.v-number-input[data-presentation="quantity"] .v-number-input__decrease {
+  grid-area: decrease;
+}
+.v-number-input[data-presentation="scrub"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px 44px;
+  grid-template-rows: 52px 56px;
+  gap: 4px;
+  height: auto;
+  padding: 8px;
+  border-radius: min(var(--v-control-radius, 20px), 20px);
+}
+.v-number-input[data-presentation="scrub"] .v-number-input__field {
+  grid-area: 1 / 1;
+  font-size: 24px;
+}
+.v-number-input[data-presentation="scrub"] .v-number-input__control {
+  text-align: start;
+  padding-inline: 12px;
+}
+.v-number-input[data-presentation="scrub"] .v-number-input__display {
+  justify-content: start;
+  padding-inline: 12px;
+}
+.v-number-input[data-presentation="scrub"] .v-number-input__decrease {
+  grid-area: 1 / 2;
+}
+.v-number-input[data-presentation="scrub"] .v-number-input__increase {
+  grid-area: 1 / 3;
+}
+.v-number-input .v-number-input__scrub {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  width: 100%;
+  height: 56px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  touch-action: none;
+  cursor: ew-resize;
+  user-select: none;
+}
+.v-number-input__ruler {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  height: 14px;
+  width: 100%;
+  pointer-events: none;
+}
+.v-number-input__ruler i {
+  width: 1px;
+  height: 5px;
+  background: currentColor;
+  opacity: 0.3;
+}
+.v-number-input__ruler i:nth-child(4n + 1) {
+  height: 10px;
+  opacity: 0.6;
+}
+.v-number-input__grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 12px;
+  pointer-events: none;
+}
+.v-number-input[data-scrubbing="true"] .v-number-input__grip {
+  color: var(--v-brand);
+}
+.v-adjustment-example {
+  display: grid;
+  box-sizing: border-box;
+  padding-inline: 10px;
+  gap: 20px;
+  width: 100%;
+  max-width: 440px;
+  margin-inline: auto;
+  min-width: 0;
+}
+.v-adjustment-example__heading {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.v-adjustment-example__stamp {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: var(--v-yellow);
+  color: var(--v-on-accent);
+  border-radius: 35% 50% 36% 48%;
+  font: 500 20px/1 var(--font-display);
+}
+.v-adjustment-example__heading p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--v-text-2);
+}
+.v-adjustment-example__heading label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.v-adjustment-example__help {
+  margin: 0;
+  color: var(--v-text-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.v-adjustment-example__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.v-adjustment-example__footer .v-btn {
+  min-height: 44px;
+}
+.v-adjustment-example__status {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--v-border);
+  color: var(--v-text-2);
+  font-size: 12px;
+  line-height: 1.5;
+}

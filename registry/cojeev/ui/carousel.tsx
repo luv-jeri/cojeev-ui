@@ -9,6 +9,11 @@ import {
   type IconButtonProps,
 } from "@/registry/cojeev/ui/icon";
 import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
+import { Button } from "@/registry/cojeev/ui/button";
+import { ScrollArea, ScrollBar } from "@/registry/cojeev/ui/scroll-area";
+import { assignMotionRef } from "@/registry/cojeev/motion/refs";
+import { useChoreography } from "@/registry/cojeev/motion/choreography";
+export type CarouselPresentation = "shelf" | "story" | "index";
 type CarouselState = {
   viewportRef: React.RefObject<HTMLDivElement | null>;
   count: number;
@@ -18,7 +23,37 @@ type CarouselState = {
   update: () => void;
   scroll: (direction: number) => void;
   scrollTo: (index: number) => void;
+  refresh: () => void;
+  interrupt: () => void;
+  settle: () => void;
+  presentation?: CarouselPresentation;
+  direction?: "ltr" | "rtl";
 };
+function slidesIn(viewport: HTMLDivElement): HTMLElement[] {
+  const row = Array.from(
+    viewport.querySelectorAll<HTMLElement>("[data-carousel-items]"),
+  ).find((node) => node.closest('[data-slot="carousel-content"]') === viewport);
+  return Array.from((row ?? viewport).children).filter(
+    (node): node is HTMLElement => node instanceof HTMLElement,
+  );
+}
+function slidePosition(viewport: HTMLDivElement, slide: HTMLElement) {
+  const view = viewport.getBoundingClientRect(),
+    rect = slide.getBoundingClientRect(),
+    css = getComputedStyle(viewport);
+  const rtl = css.direction === "rtl",
+    room = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+  const padding =
+    parseFloat(rtl ? css.scrollPaddingRight : css.scrollPaddingLeft) || 0;
+  const left =
+    viewport.scrollLeft +
+    (rtl
+      ? rect.right - view.right + viewport.clientLeft + padding
+      : rect.left - view.left - viewport.clientLeft - padding);
+  return rtl
+    ? Math.max(-room, Math.min(0, left))
+    : Math.max(0, Math.min(room, left));
+}
 const CarouselContext = React.createContext<CarouselState | null>(null);
 export function useCarousel() {
   const state = React.useContext(CarouselContext);
@@ -28,14 +63,20 @@ export function useCarousel() {
 export const carouselVariants = cva("v-carousel relative min-w-0");
 export type CarouselProps = React.ComponentProps<"div"> & {
   onIndexChange?: (index: number) => void;
+  presentation?: CarouselPresentation;
 };
 export function Carousel({
   className,
   children,
   onIndexChange,
+  presentation,
   ...props
 }: CarouselProps) {
+  const { quiet } = useChoreography();
   const viewportRef = React.useRef<HTMLDivElement>(null);
+  const currentRef = React.useRef(0),
+    lastPosition = React.useRef(NaN);
+  const intent = React.useRef<{ index: number; position: number } | null>(null);
   const indexCallback = React.useRef(onIndexChange);
   React.useEffect(() => {
     indexCallback.current = onIndexChange;
@@ -49,21 +90,36 @@ export function Carousel({
   const update = React.useCallback(() => {
     const el = viewportRef.current;
     if (!el) return;
-    const children = Array.from(el.children) as HTMLElement[];
-    const current = children.reduce(
-      (best, child, index) =>
-        Math.abs(child.offsetLeft - el.offsetLeft - el.scrollLeft) <
-        Math.abs(children[best].offsetLeft - el.offsetLeft - el.scrollLeft)
-          ? index
-          : best,
-      0,
-    );
+    const children = slidesIn(el),
+      room = Math.max(0, el.scrollWidth - el.clientWidth);
+    let current = currentRef.current;
+    if (intent.current) {
+      current = intent.current.index;
+      if (Math.abs(el.scrollLeft - intent.current.position) < 2)
+        intent.current = null;
+    } else if (
+      room > 1 &&
+      (!Number.isFinite(lastPosition.current) ||
+        Math.abs(lastPosition.current - el.scrollLeft) > 0.5)
+    ) {
+      let distance = Infinity;
+      children.forEach((child, index) => {
+        const next = Math.abs(slidePosition(el, child) - el.scrollLeft);
+        if (next <= distance) {
+          distance = next;
+          current = index;
+        }
+      });
+    }
+    current = Math.max(0, Math.min(children.length - 1, current));
+    currentRef.current = current;
+    lastPosition.current = el.scrollLeft;
     setState((old) => {
       const next = {
         count: children.length,
         current,
-        canPrevious: el.scrollLeft >= 4,
-        canNext: el.scrollLeft + el.clientWidth <= el.scrollWidth - 4,
+        canPrevious: room > 1 && current > 0,
+        canNext: room > 1 && current < children.length - 1,
       };
       return Object.keys(next).every(
         (key) =>
@@ -77,35 +133,71 @@ export function Carousel({
   React.useEffect(() => {
     indexCallback.current?.(activeIndex);
   }, [activeIndex]);
-  const behavior = (): ScrollBehavior =>
-    matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  const seek = React.useCallback(
+    (index: number, behavior: ScrollBehavior) => {
+      if (!Number.isFinite(index)) return;
+      const el = viewportRef.current;
+      if (!el) return;
+      const children = slidesIn(el),
+        next = Math.max(0, Math.min(children.length - 1, Math.floor(index))),
+        child = children[next];
+      if (!child) {
+        update();
+        return;
+      }
+      const position = slidePosition(el, child);
+      intent.current = { index: next, position };
+      currentRef.current = next;
+      el.scrollTo({ left: position, behavior });
+      update();
+    },
+    [update],
+  );
+  const scrollTo = (index: number) => seek(index, quiet ? "instant" : "smooth");
   const scroll = (direction: number) => {
-    const el = viewportRef.current;
-    if (el)
-      el.scrollBy({
-        left:
-          direction *
-          ((el.firstElementChild as HTMLElement)?.offsetWidth + 16 || 240),
-        behavior: behavior(),
-      });
+    if (Number.isFinite(direction))
+      scrollTo(currentRef.current + Math.sign(direction));
   };
-  const scrollTo = (index: number) => {
+  const refresh = React.useCallback(() => {
     const el = viewportRef.current;
-    const child = el?.children[index] as HTMLElement | undefined;
-    if (el && child)
-      el.scrollTo({
-        left: child.offsetLeft - el.offsetLeft,
-        behavior: behavior(),
-      });
+    if (!el) return;
+    const width = `${el.clientWidth}px`;
+    if (el.style.getPropertyValue("--carousel-viewport-width") !== width)
+      el.style.setProperty("--carousel-viewport-width", width);
+    seek(currentRef.current, "instant");
+  }, [seek]);
+  const interrupt = () => {
+    intent.current = null;
+  };
+  const settle = () => {
+    if (intent.current) {
+      intent.current = null;
+      lastPosition.current = NaN;
+      update();
+    }
   };
   return (
     <CarouselContext.Provider
-      value={{ viewportRef, ...state, update, scroll, scrollTo }}
+      value={{
+        viewportRef,
+        ...state,
+        update,
+        scroll,
+        scrollTo,
+        refresh,
+        interrupt,
+        settle,
+        presentation,
+        direction:
+          props.dir === "rtl" ? "rtl" : props.dir === "ltr" ? "ltr" : undefined,
+      }}
     >
       <div
         data-slot="carousel"
         data-part="root"
         data-carousel=""
+        data-presentation={presentation}
+        data-motion={quiet ? "off" : undefined}
         role="region"
         aria-roledescription="carousel"
         className={cn(carouselVariants(), className)}
@@ -116,59 +208,156 @@ export function Carousel({
     </CarouselContext.Provider>
   );
 }
-export type CarouselContentProps = React.ComponentProps<"div">;
+export type CarouselContentProps = React.ComponentProps<"div"> & {
+  /** Keep the native viewport, with the shared organic horizontal scrollbar. */ scrollbar?: boolean;
+};
 export function CarouselContent({
   ref,
   className,
   onScroll,
   onKeyDown,
+  onPointerDown,
+  onWheel,
+  children,
+  scrollbar = false,
   ...props
 }: CarouselContentProps) {
   const carousel = useCarousel();
-  const { viewportRef, update } = carousel;
+  const { viewportRef, update, refresh, presentation } = carousel;
+  const [inheritedDirection, setInheritedDirection] = React.useState<
+    "ltr" | "rtl"
+  >("ltr");
+  const direction =
+    props.dir === "rtl" || props.dir === "ltr"
+      ? props.dir
+      : (carousel.direction ?? inheritedDirection);
+  React.useLayoutEffect(() => {
+    if (
+      !scrollbar ||
+      carousel.direction ||
+      props.dir === "rtl" ||
+      props.dir === "ltr"
+    )
+      return;
+    const root = viewportRef.current?.closest<HTMLElement>(
+      '[data-slot="carousel"]',
+    );
+    if (!root) return;
+    const read = () =>
+      setInheritedDirection(
+        getComputedStyle(root).direction === "rtl" ? "rtl" : "ltr",
+      );
+    read();
+    const observer = new MutationObserver(read);
+    for (let node: HTMLElement | null = root; node; node = node.parentElement)
+      observer.observe(node, { attributes: true, attributeFilter: ["dir"] });
+    return () => observer.disconnect();
+  }, [viewportRef, scrollbar, carousel.direction, props.dir]);
+  const settleTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bindRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      viewportRef.current = node;
+      const release = assignMotionRef(ref, node);
+      return () => {
+        viewportRef.current = null;
+        release();
+      };
+    },
+    [viewportRef, ref],
+  );
   React.useLayoutEffect(() => {
     const el = viewportRef.current;
     if (!el) return;
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    const mo = new MutationObserver(update);
-    mo.observe(el, { childList: true });
+    const ro = new ResizeObserver(refresh);
+    const observe = () => {
+      ro.disconnect();
+      ro.observe(el);
+      slidesIn(el).forEach((child) => ro.observe(child));
+      refresh();
+    };
+    const row =
+      Array.from(
+        el.querySelectorAll<HTMLElement>("[data-carousel-items]"),
+      ).find((node) => node.closest('[data-slot="carousel-content"]') === el) ??
+      el;
+    const mo = new MutationObserver(observe);
+    mo.observe(row, { childList: true });
+    observe();
     return () => {
       ro.disconnect();
       mo.disconnect();
+      if (settleTimer.current) clearTimeout(settleTimer.current);
     };
-  }, [viewportRef, update]);
-  return (
-    <div
-      ref={(node) => {
-        viewportRef.current = node;
-        if (typeof ref === "function") return ref(node);
-        if (ref) ref.current = node;
+  }, [viewportRef, refresh, scrollbar, presentation, direction]);
+  const attributes: React.ComponentProps<"div"> = {
+    ...props,
+    ref: bindRef,
+    ...{ "data-slot": "carousel-content", "data-part": "viewport" },
+    tabIndex: props.tabIndex ?? 0,
+    className: cn(
+      scrollbar
+        ? "v-carousel__viewport"
+        : "v-carousel__track flex min-w-0 gap-[var(--s-4)] overflow-x-auto overflow-y-hidden [scroll-snap-type:x_mandatory] pt-[2px] px-[2px] pb-[6px] mt-[-2px] mx-[-2px] [scrollbar-width:none] [scroll-padding-inline:2px]",
+      className,
+    ),
+    onScroll: (event) => {
+      update();
+      onScroll?.(event);
+      if (settleTimer.current) clearTimeout(settleTimer.current);
+      settleTimer.current = setTimeout(carousel.settle, 140);
+    },
+    onPointerDown: (event) => {
+      carousel.interrupt();
+      onPointerDown?.(event);
+    },
+    onWheel: (event) => {
+      carousel.interrupt();
+      onWheel?.(event);
+    },
+    onKeyDown: (event) => {
+      onKeyDown?.(event);
+      if (
+        event.defaultPrevented ||
+        event.target !== event.currentTarget ||
+        !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)
+      )
+        return;
+      event.preventDefault();
+      if (event.key === "Home") carousel.scrollTo(0);
+      else if (event.key === "End") carousel.scrollTo(carousel.count - 1);
+      else
+        carousel.scroll(
+          (event.key === "ArrowLeft" ? -1 : 1) *
+            (getComputedStyle(event.currentTarget).direction === "rtl"
+              ? -1
+              : 1),
+        );
+    },
+  };
+  return scrollbar ? (
+    <ScrollArea
+      variant="plain"
+      className="v-carousel-scroll"
+      style={{ "--h": "none" } as React.CSSProperties}
+      dir={direction}
+      viewportProps={{
+        ...attributes,
+        role: props.role ?? "group",
+        "aria-label": props["aria-label"] ?? "Slides",
       }}
-      data-slot="carousel-content"
-      data-part="viewport"
-      tabIndex={0}
-      className={cn(
-        "v-carousel__track flex min-w-0 gap-[var(--s-4)] overflow-x-auto overflow-y-hidden [scroll-snap-type:x_mandatory] pt-[2px] px-[2px] pb-[6px] mt-[-2px] mx-[-2px] [scrollbar-width:none] [scroll-padding-inline:2px]",
-        className,
+      viewportWrapper={(viewport) => (
+        <>
+          {viewport}
+          <ScrollBar orientation="horizontal" />
+        </>
       )}
-      onScroll={(event) => {
-        update();
-        onScroll?.(event);
-      }}
-      onKeyDown={(event) => {
-        onKeyDown?.(event);
-        if (
-          event.defaultPrevented ||
-          !["ArrowLeft", "ArrowRight"].includes(event.key)
-        )
-          return;
-        event.preventDefault();
-        carousel.scroll(event.key === "ArrowLeft" ? -1 : 1);
-      }}
-      {...props}
-    />
+    >
+      <div data-carousel-items="" className="v-carousel__items">
+        {children}
+      </div>
+    </ScrollArea>
+  ) : (
+    <div {...attributes}>{children}</div>
   );
 }
 export type CarouselItemProps = React.ComponentProps<"div"> & {
@@ -212,6 +401,7 @@ export type CarouselPreviousProps = IconButtonProps;
 export function CarouselPrevious({
   children,
   onClick,
+  disabled,
   ...props
 }: CarouselPreviousProps) {
   const carousel = useCarousel();
@@ -220,7 +410,8 @@ export function CarouselPrevious({
       data-slot="carousel-previous"
       data-part="trigger"
       aria-label="Previous slide"
-      disabled={!carousel.canPrevious}
+      disabled={disabled || !carousel.canPrevious}
+      data-stable-hit=""
       onClick={(event) => {
         onClick?.(event);
         if (!event.defaultPrevented) carousel.scroll(-1);
@@ -235,6 +426,7 @@ export type CarouselNextProps = IconButtonProps;
 export function CarouselNext({
   children,
   onClick,
+  disabled,
   ...props
 }: CarouselNextProps) {
   const carousel = useCarousel();
@@ -243,7 +435,8 @@ export function CarouselNext({
       data-slot="carousel-next"
       data-part="trigger"
       aria-label="Next slide"
-      disabled={!carousel.canNext}
+      disabled={disabled || !carousel.canNext}
+      data-stable-hit=""
       onClick={(event) => {
         onClick?.(event);
         if (!event.defaultPrevented) carousel.scroll(1);
@@ -267,8 +460,9 @@ export function CarouselDots({
     <div
       ref={flowRef}
       data-slot="carousel-dots"
+      data-flow="off"
       className={cn(
-        "v-carousel__dots flex items-center gap-[6px] mr-auto",
+        "v-carousel__dots flex flex-wrap items-center gap-[2px] mr-auto",
         className,
       )}
       role="group"
@@ -289,18 +483,29 @@ export function CarouselDot({
   index,
   onClick,
   className,
+  children,
+  disabled,
   ...props
 }: CarouselDotProps) {
   const carousel = useCarousel();
   return (
-    <button
+    <Button
       data-slot="carousel-dot"
       data-part="indicator"
       type="button"
+      variant="ghost"
+      data-stable-hit=""
+      data-morph="none"
+      disabled={
+        disabled ||
+        !Number.isInteger(index) ||
+        index < 0 ||
+        index >= carousel.count
+      }
       aria-label={`Tile ${index + 1}`}
       aria-current={carousel.current === index ? "true" : undefined}
       className={cn(
-        "size-[8px] p-0 [border:0] [border-radius:999px] bg-[var(--v-border)]",
+        "v-carousel__dot size-[44px] p-0 [border:0] bg-transparent",
         className,
       )}
       onClick={(event) => {
@@ -308,7 +513,9 @@ export function CarouselDot({
         if (!event.defaultPrevented) carousel.scrollTo(index);
       }}
       {...props}
-    />
+    >
+      {children ?? <span className="v-carousel__dot-mark" aria-hidden="true" />}
+    </Button>
   );
 }
 export type CarouselDeckProps = React.ComponentProps<"div">;

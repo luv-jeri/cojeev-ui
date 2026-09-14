@@ -1,1 +1,20 @@
-export const categories = ["Actions", "Forms", "Navigation", "Feedback", "Data display", "Layout", "Conversation", "Typography", "Backgrounds", "3D", "Effects", "Creative", "Tools"];
+export const categories = [
+  "Actions",
+  "Forms",
+  "Navigation",
+  "Feedback",
+  "Charts",
+  "Data display",
+  "Layout",
+  "Conversation",
+  "Composition",
+  "Typography",
+  "Subtle backgrounds",
+  "Backgrounds",
+  "3D",
+  "Effects",
+  "Visual effects",
+  "Motion",
+  "Creative",
+  "Tools",
+];

@@ -5,6 +5,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Icon } from "@/registry/cojeev/ui/icon";
+import { Button } from "@/registry/cojeev/ui/button";
 import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
 const SidebarContext = React.createContext<{
   open: boolean;
@@ -52,32 +53,51 @@ export type SidebarProps = React.ComponentProps<"aside"> & {
   onOpenChange?: (open: boolean) => void;
   /** Container layout fills its parent; viewport layout follows the authored standalone rail. */
   layout?: "container" | "viewport";
+  appearance?: "folio" | "index" | "drawer";
 };
 export function Sidebar({
   open,
   defaultOpen = true,
   onOpenChange,
   layout = "container",
+  appearance,
   ...props
 }: SidebarProps) {
   const parent = React.useContext(SidebarContext);
   return parent && open === undefined && onOpenChange === undefined ? (
-    <SidebarRail data-layout={layout} {...props} />
+    <SidebarRail
+      data-layout={layout}
+      data-appearance={appearance}
+      data-morph={appearance ? "both" : undefined}
+      data-r={appearance ? "css" : undefined}
+      {...props}
+    />
   ) : (
     <SidebarProvider
       open={open}
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
-      <SidebarRail data-layout={layout} {...props} />
+      <SidebarRail
+        data-layout={layout}
+        data-appearance={appearance}
+        data-morph={appearance ? "both" : undefined}
+        data-r={appearance ? "css" : undefined}
+        {...props}
+      />
     </SidebarProvider>
   );
 }
-function SidebarRail({ref: externalMorphRef,  className, ...props }: React.ComponentProps<"aside">) {
+function SidebarRail({
+  ref: externalMorphRef,
+  className,
+  ...props
+}: React.ComponentProps<"aside">) {
   const sidebar = useSidebar();
   const ownedMorphRef = useMorph<HTMLElement>("surfaces", externalMorphRef);
   return (
-    <aside ref={ownedMorphRef}
+    <aside
+      ref={ownedMorphRef}
       data-slot="sidebar"
       data-part="root"
       data-state={sidebar.open ? "expanded" : "collapsed"}
@@ -105,24 +125,26 @@ export function SidebarHeader({ className, ...props }: SidebarHeaderProps) {
   );
 }
 export type SidebarTriggerProps = React.ComponentProps<"button">;
-export function SidebarTrigger({ref: externalMorphRef, 
+export function SidebarTrigger({
+  ref: externalMorphRef,
   className,
   children,
   onClick,
   ...props
 }: SidebarTriggerProps) {
   const sidebar = useSidebar();
-  const ownedMorphRef = useMorph<HTMLButtonElement>("icons", externalMorphRef);
   return (
-    <button ref={ownedMorphRef}
+    <Button
+      ref={externalMorphRef}
       data-slot="sidebar-trigger"
       data-part="trigger"
       data-rail-collapse=""
       type="button"
+      variant="ghost"
       aria-expanded={sidebar.open}
       aria-label={sidebar.open ? "Collapse the rail" : "Expand the rail"}
       className={cn(
-        "v-collapse relative ml-auto shrink-0 grid place-items-center size-[30px] overflow-hidden [border-radius:50%] bg-[var(--v-pink)] text-[color:var(--v-on-accent)] text-[13px] font-[family-name:var(--font-text)] font-medium leading-none tracking-normal",
+        "v-collapse relative ml-auto shrink-0 grid place-items-center size-[44px] p-0 [border-radius:50%] text-[13px] font-[family-name:var(--font-text)] font-medium leading-none tracking-normal",
         className,
       )}
       onClick={(event) => {
@@ -131,8 +153,10 @@ export function SidebarTrigger({ref: externalMorphRef,
       }}
       {...props}
     >
-      {children ?? <Icon name="chevron-left" />}
-    </button>
+      {children ?? (
+        <Icon name={sidebar.open ? "chevron-left" : "chevron-right"} />
+      )}
+    </Button>
   );
 }
 export type SidebarContentProps = React.ComponentProps<"nav">;
@@ -174,7 +198,8 @@ export type SidebarMenuButtonProps = React.ComponentProps<"a"> & {
   isActive?: boolean;
   label?: string;
 };
-export function SidebarMenuButton({ref: externalMorphRef, 
+export function SidebarMenuButton({
+  ref: externalMorphRef,
   className,
   asChild,
   isActive,
@@ -185,7 +210,8 @@ export function SidebarMenuButton({ref: externalMorphRef,
   const accessibleLabel = label ?? getSidebarText(props.children);
   const ownedMorphRef = useMorph<HTMLAnchorElement>("nav", externalMorphRef);
   return (
-    <Comp ref={ownedMorphRef}
+    <Comp
+      ref={ownedMorphRef}
       data-slot="sidebar-menu-button"
       data-state={isActive ? "active" : "inactive"}
       aria-current={isActive ? "page" : undefined}
@@ -226,13 +252,15 @@ export function SidebarFooter({ className, ...props }: SidebarFooterProps) {
   );
 }
 export type SidebarMenuBadgeProps = React.ComponentProps<"span">;
-export function SidebarMenuBadge({ref: externalMorphRef, 
+export function SidebarMenuBadge({
+  ref: externalMorphRef,
   className,
   ...props
 }: SidebarMenuBadgeProps) {
   const ownedMorphRef = useMorph<HTMLSpanElement>("pills", externalMorphRef);
   return (
-    <span ref={ownedMorphRef}
+    <span
+      ref={ownedMorphRef}
       data-slot="sidebar-menu-badge"
       className={cn(
         "v-nav__count grid place-items-center min-w-[18px] h-[18px] px-[5px] rounded-[var(--r-pill)] bg-[var(--v-pink)] text-[color:var(--v-on-accent)] text-[10px] font-bold",

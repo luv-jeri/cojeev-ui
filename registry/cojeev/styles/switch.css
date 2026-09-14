@@ -319,3 +319,27 @@
 :root[data-mode="dark"] .v-switch[data-slot="switch"][data-state="checked"]:not([data-disabled]):not(.-ink):hover {
   background:color-mix(in oklab,var(--sw,var(--v-pink)) 88%,var(--ink-fixed));
 }
+
+/* Stable native hit area; only the authored face moves. */
+.v-switch[data-slot="switch"][data-appearance] { width:64px; height:44px; min-width:64px; min-height:44px; padding:0; border:0; border-radius:var(--v-control-radius,999px); }
+.v-switch:is([data-slot="switch"],[data-slot="switch-face"])[data-appearance="capsule"] > [data-slot="switch-thumb"] { top:7px; left:7px; width:30px; height:30px; }
+.v-switch:is([data-slot="switch"],[data-slot="switch-face"])[data-appearance="capsule"][data-state="checked"] > [data-slot="switch-thumb"] { transform:translateX(20px); }
+.v-switch[data-slot="switch"][data-appearance="rocker"],.v-switch[data-slot="switch"][data-appearance="latch"] { border-radius:var(--v-control-radius,8px); }
+[data-slot="switch-rocker"] { position:absolute; inset:5px; display:grid; grid-template-columns:1fr 1fr; border-radius:inherit; background:var(--v-beige-2); color:var(--v-text); box-shadow:inset -3px 0 0 var(--v-edge),-2px 1px 0 var(--v-border); transition:box-shadow var(--t-element) var(--enter); pointer-events:none; }
+[data-slot="switch-rocker"] span { display:grid; place-items:center; font-size:15px; font-weight:600; }
+[data-slot="switch-rocker"] span:first-child { background:var(--v-text); color:var(--v-canvas); border-radius:inherit; }
+[data-state="checked"] > [data-slot="switch-rocker"] { box-shadow:inset 3px 0 0 var(--v-edge),2px 1px 0 var(--v-border); }
+[data-state="checked"] > [data-slot="switch-rocker"] span:first-child { background:transparent; color:var(--v-text); }
+[data-state="checked"] > [data-slot="switch-rocker"] span:last-child { background:var(--v-pink); color:var(--ink-fixed); border-radius:inherit; }
+[data-slot="switch-latch"] { position:absolute; inset:6px; display:grid; place-items:center; border:1.5px solid currentColor; border-radius:inherit; color:var(--v-text); pointer-events:none; }
+[data-slot="switch-latch"] span { grid-area:1/1; font-size:11px; font-weight:750; letter-spacing:.08em; transition:opacity var(--t-element),transform var(--t-element); }
+[data-slot="switch-latch"] [data-mark="on"] { opacity:0; transform:scale(.85); }
+[data-state="checked"] > [data-slot="switch-latch"] { color:var(--ink-fixed); border-style:double; border-width:3px; }
+[data-state="checked"] > [data-slot="switch-latch"] [data-mark="off"] { opacity:0; transform:scale(.85); }
+[data-state="checked"] > [data-slot="switch-latch"] [data-mark="on"] { opacity:1; transform:scale(1); }
+:root [data-slot="switch"][data-motion-quiet] *, :root [data-slot="switch"][data-motion-quiet] { transition:none; }
+[data-slot="switch"][data-disabled] > :is([data-slot="switch-rocker"],[data-slot="switch-latch"]) { color:var(--v-disabled-ink); background:var(--v-disabled-face); }
+:root [data-slot="switch"].v-switch[data-state]:has(> [data-slot="switch-face"]) { background:transparent; box-shadow:none; isolation:isolate; }
+.v-switch[data-slot="switch-face"] { position:absolute; inset:0; width:100%; height:100%; border-radius:inherit; pointer-events:none; }
+[data-slot="switch-face"][data-disabled] > :is([data-slot="switch-rocker"],[data-slot="switch-latch"]) { color:var(--v-disabled-ink); background:var(--v-disabled-face); }
+:root[data-mode="dark"] .v-switch[data-slot="switch-face"][data-state="checked"]:not([data-disabled]) { background:var(--sw,var(--v-pink)); }

@@ -3,7 +3,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/registry/cojeev/lib/utils"
 
-const LabelVariants=cva("v-label [font-size:var(--fs-lead)] [font-weight:600] [line-height:1.2] [box-shadow:none] [border:0] [background:none]",{variants:{variant:{"default":""},size:{"default":"","sm":"-sm [font-size:var(--fs-control)]"}},defaultVariants:{variant:"default",size:"default"}})
+const LabelVariants=cva("v-label [font-size:var(--fs-control)] [font-weight:600] [line-height:1.5] [box-shadow:none] [border:0] [background:none]",{variants:{variant:{"default":""},size:{"default":"","sm":"-sm [font-size:13px]"}},defaultVariants:{variant:"default",size:"default"}})
 export type LabelProps=React.ComponentProps<"label"> & VariantProps<typeof LabelVariants> & { as?:React.ElementType }
 export function Label({as:Tag="label",className,variant,size,...props}:LabelProps){return <Tag data-slot="label" data-part="root" className={cn(LabelVariants({variant,size}),className)} {...props}/>}
 

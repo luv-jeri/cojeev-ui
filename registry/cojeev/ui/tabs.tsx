@@ -14,6 +14,8 @@ export const tabsVariants = cva("v-tabs [display:flex] [gap:var(--s-6)]", {
       pills: "-pills gap-[var(--s-2)]",
       underline: "-underline gap-[var(--s-6)]",
       lenses: "-lenses gap-[var(--s-6)]",
+      notebook: "-notebook",
+      rail: "-rail",
     },
   },
   defaultVariants: { variant: "default" },
@@ -32,14 +34,25 @@ export function Tabs({
   onValueChange,
   ...props
 }: TabsProps) {
-  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+  const [uncontrolledValue, setUncontrolledValue] =
+    React.useState(defaultValue);
   const selected = value ?? uncontrolledValue;
   return (
     <TabsVariantContext.Provider value={variant}>
       <TabsValueContext.Provider value={selected}>
-      <Primitive.Root data-slot="tabs" className={cn("grid min-w-0 gap-[var(--s-4)]", className)} value={selected} onValueChange={next => { if (value === undefined) setUncontrolledValue(next); onValueChange?.(next); }} {...props}>
-        {children}
-      </Primitive.Root>
+        <Primitive.Root
+          data-slot="tabs"
+          data-tabs-appearance={variant}
+          className={cn("v-tabs-root grid min-w-0 gap-[var(--s-4)]", className)}
+          value={selected}
+          onValueChange={(next) => {
+            if (value === undefined) setUncontrolledValue(next);
+            onValueChange?.(next);
+          }}
+          {...props}
+        >
+          {children}
+        </Primitive.Root>
       </TabsValueContext.Provider>
     </TabsVariantContext.Provider>
   );
@@ -47,11 +60,12 @@ export function Tabs({
 export type TabsListProps = React.ComponentProps<typeof Primitive.List> &
   VariantProps<typeof tabsVariants>;
 export function TabsList({ className, variant, ref, ...props }: TabsListProps) {
-  const morphRef = useMorph<HTMLDivElement>("nav", ref);
   const inherited = React.useContext(TabsVariantContext);
   const resolved = variant ?? inherited;
-  const flowRef = useFlowGroup<HTMLDivElement>(morphRef, {
-    kind: resolved === "underline" ? "bar" : "pill",
+  const flowRef = useFlowGroup<HTMLDivElement>(ref, {
+    kind: ["underline", "notebook", "rail"].includes(resolved ?? "")
+      ? "bar"
+      : "pill",
     itemSelector: '[data-slot="tabs-trigger"]',
     activeSelector: '[aria-selected="true"]',
   });
@@ -80,7 +94,13 @@ export function TabsTrigger({ className, ref, ...props }: TabsTriggerProps) {
   );
 }
 export type TabsContentProps = React.ComponentProps<typeof Primitive.Content>;
-export function TabsContent({ className, ref, forceMount, value, ...props }: TabsContentProps) {
+export function TabsContent({
+  className,
+  ref,
+  forceMount,
+  value,
+  ...props
+}: TabsContentProps) {
   const selected = React.useContext(TabsValueContext);
   const content = (
     <Primitive.Content
@@ -88,6 +108,7 @@ export function TabsContent({ className, ref, forceMount, value, ...props }: Tab
       value={value}
       forceMount
       data-slot="tabs-content"
+      data-tabs-managed={!forceMount || undefined}
       data-part="content"
       className={className}
       {...props}
@@ -95,5 +116,13 @@ export function TabsContent({ className, ref, forceMount, value, ...props }: Tab
   );
   // Explicit forceMount leaves visibility under the consumer's control.
   if (forceMount) return content;
-  return <MotionPresence>{selected === value && <MotionSurface key={value} asChild preset="rise">{content}</MotionSurface>}</MotionPresence>;
+  return (
+    <MotionPresence>
+      {selected === value && (
+        <MotionSurface key={value} asChild preset="fade">
+          {content}
+        </MotionSurface>
+      )}
+    </MotionPresence>
+  );
 }

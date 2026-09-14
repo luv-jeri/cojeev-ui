@@ -20,13 +20,28 @@ import { cn } from "@/registry/cojeev/lib/utils";
 import { Label, type LabelProps } from "@/registry/cojeev/ui/label";
 import { Progress } from "@/registry/cojeev/ui/progress";
 import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
+import {
+  controlRadiusStyle,
+  type ControlRadius,
+} from "../lib/control-appearance";
 export const questionnaireVariants = cva("v-quest grid gap-[28px]");
-export type QuestionnaireProps = React.ComponentProps<"div">;
-export function Questionnaire({ className, ...props }: QuestionnaireProps) {
+export type QuestionnaireProps = React.ComponentProps<"div"> & {
+  presentation?: "stacked" | "journey" | "worksheet";
+  radius?: ControlRadius;
+};
+export function Questionnaire({
+  className,
+  presentation,
+  radius,
+  style,
+  ...props
+}: QuestionnaireProps) {
   return (
     <div
       data-slot="questionnaire"
       data-part="root"
+      data-presentation={presentation}
+      style={{ ...style, ...controlRadiusStyle(radius) }}
       className={cn(questionnaireVariants(), className)}
       {...props}
     />
@@ -35,12 +50,14 @@ export function Questionnaire({ className, ...props }: QuestionnaireProps) {
 export type QuestionnaireProgressProps = React.ComponentProps<"div"> & {
   value: number;
   total: number;
+  label?: string;
 };
 export function QuestionnaireProgress({
   value,
   total,
   className,
   children,
+  label = "Questions answered",
   ...props
 }: QuestionnaireProgressProps) {
   const maximum = Math.max(0, Number.isFinite(total) ? total : 0);
@@ -62,7 +79,10 @@ export function QuestionnaireProgress({
           <b>
             {current} of {maximum}
           </b>
-          <Progress value={maximum > 0 ? (current / maximum) * 100 : 0} />
+          <Progress
+            aria-label={label}
+            value={maximum > 0 ? (current / maximum) * 100 : 0}
+          />
         </>
       )}
     </div>
@@ -139,7 +159,44 @@ export function QuestionnaireOptions({
 }: QuestionnaireOptionsProps) {
   const id = React.useId();
   const [local, setLocal] = React.useState(defaultValue);
+  const group = React.useRef<HTMLDivElement>(null);
   const flowRef = useFlowGroup<HTMLDivElement>(ref);
+  const attach = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      group.current = node;
+      const release = flowRef(node);
+      return () => {
+        group.current = null;
+        if (typeof release === "function") release();
+      };
+    },
+    [flowRef],
+  );
+  React.useEffect(() => {
+    const node = group.current,
+      form = node?.querySelector("input")?.form;
+    if (!node || !form) return;
+    let pending: ReturnType<typeof setTimeout> | undefined;
+    const reset = (event: Event) => {
+      clearTimeout(pending);
+      pending = setTimeout(() => {
+        if (event.defaultPrevented) return;
+        const next = value === undefined ? defaultValue : value;
+        if (value === undefined) setLocal(defaultValue);
+        // The browser resets native checked properties even if React's props
+        // did not change. Restore only this group's owned radios after dispatch.
+        for (const input of node.querySelectorAll<HTMLInputElement>(
+          '[data-slot="questionnaire-option-input"]',
+        ))
+          input.checked = input.value === next;
+      }, 0);
+    };
+    form.addEventListener("reset", reset);
+    return () => {
+      form.removeEventListener("reset", reset);
+      clearTimeout(pending);
+    };
+  }, [value, defaultValue]);
   return (
     <ChoiceContext.Provider
       value={{
@@ -157,7 +214,7 @@ export function QuestionnaireOptions({
       }}
     >
       <div
-        ref={flowRef}
+        ref={attach}
         data-slot="questionnaire-options"
         className={cn("v-quest__opts grid gap-[8px]", className)}
         role="radiogroup"
@@ -204,6 +261,7 @@ export function QuestionnaireOption({
       ref={ownedMorphRef}
       style={selectorStyle(tone, style, selectorSize ?? context.selectorSize)}
       data-selector-shape={shape}
+      data-stable-hit=""
       data-slot="questionnaire-option"
       data-state={context.value === value ? "checked" : "unchecked"}
       className={cn(

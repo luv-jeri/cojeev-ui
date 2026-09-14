@@ -1,7 +1,7 @@
 /* Content-driven narrow layout and morph-preview paint need the component boundary. */
 [data-slot="adjuster"] [data-part="body"][hidden] { display: none; }
 [data-slot="adjuster"] [data-slot="adjuster-preview"] { --mfill: var(--v-pink); background: var(--v-pink); padding: 12px 24px; }
-[data-slot="adjuster"] [data-slot="adjuster-preview"].v-morph-live { background: transparent; }
+[data-slot="adjuster"] [data-slot="adjuster-preview"]:has(>svg.v-morph) { background: transparent; }
 [data-slot="adjuster"] [data-part="error"] { color: var(--v-danger-ink); }
 .v-motion-controls { display:grid; gap:24px; min-width:0; color:var(--v-text); }
 .v-motion-controls__row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }

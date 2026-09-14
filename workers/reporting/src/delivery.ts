@@ -1,9 +1,10 @@
 import { keyedDigest } from "./security";
-import { emailEnabled, githubEnabled, now, type Delivery, type Env, type ReportRow } from "./types";
+import { activationCutoff, emailEnabled, githubEnabled, now, type Delivery, type Env, type ReportRow } from "./types";
 import { getReport } from "./reports";
+import { sendResend, testerAllowed } from './resend';
 
 export class DeliveryFailure extends Error {
-  constructor(public reason: string, public ambiguous = false, public permanent = false) { super(reason); }
+  constructor(public reason: string, public ambiguous = false, public permanent = false, public quota = false) { super(reason); }
 }
 export const escapeHTML = (v:string) => v.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
 export function emailMessage(row: ReportRow, kind: string, site: string) {
@@ -44,7 +45,7 @@ export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
     if(issues.length<100) { if(original) return original; break; }
     if(page===10) throw new DeliveryFailure("Issue reconciliation needs a maintainer: too many matching pages.",false,true);
   }
-  const title=row.kind==="request"?`[Component request] ${row.title}`:`[Bug report] ${row.id.slice(0,8)}`;
+  const title=`[${row.kind==="request"?"Component request":"Bug report"}] ${row.id.slice(0,8)}`;
   const adminURL=`${env.SITE_URL.replace(/\/$/,"")}/feedback-admin/?report=${row.id}`;
   const body=`${marker}\n\n${row.kind==="request"?"A component has been requested.":"A library bug has been reported."}\n\n[Open the complete report](${adminURL}) (maintainer access required).\n\nThe private report contains the description, reference links, screenshots or videos, selected elements, technical details and reply address. Attachments may still be uploading; their status is shown in the report.\n\nReference: \`${row.id}\`\n\nTrack progress in the report viewer. For release automation, close as completed with the \`feedback:released\` label. Component requests also require a line in this issue body: \`Component: ${env.SITE_URL.replace(/\/$/,"")}/docs/component-name/\`. Closing alone does not send a release email.`;
   return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify({title,body})},send) as unknown as GitHubIssue;
@@ -67,21 +68,15 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
   if(job.kind!=="email_received"&&job.kind!=="email_resolved") throw new DeliveryFailure("Unknown delivery type.",false,true);
   if(!emailEnabled(env)) throw new DeliveryFailure("Email domain setup required.",false,true);
   if(job.kind==="email_resolved" && row.status!=="resolved") throw new DeliveryFailure("Report was reopened before its release email sent. Review before retrying.",false,true);
-  try {
-    const result=await env.EMAIL!.send({to:row.email,from:{email:env.EMAIL_FROM!,name:"Cojeev UI"},...emailMessage(row,job.kind,env.SITE_URL)});
-    if(!result.messageId) throw new DeliveryFailure("Email acceptance could not be confirmed.",true);
-    return result.messageId;
-  } catch(error) {
-    if(error instanceof DeliveryFailure) throw error;
-    const code=(error as {code?:string})?.code;
-    if(["E_RATE_LIMIT_EXCEEDED","E_DAILY_LIMIT_EXCEEDED"].includes(code??"")) throw new DeliveryFailure(`Email temporarily limited (${code}).`);
-    if(code && ["E_SENDER_NOT_VERIFIED","E_RECIPIENT_SUPPRESSED","E_RECIPIENT_NOT_ALLOWED","E_SENDER_DOMAIN_NOT_AVAILABLE","E_VALIDATION_ERROR","E_DELIVERY_FAILED"].includes(code)) throw new DeliveryFailure(`Email needs attention (${code}).`,false,true);
-    throw new DeliveryFailure("Email response unavailable; delivery may have been accepted. Check the provider before retrying.",true);
-  }
+  if(!testerAllowed(env,row.email)) throw new DeliveryFailure('Beta recipient requires allowlist review.',false,true);
+  return sendResend(env,job,JSON.stringify({to:[row.email],from:`000h by Cojeev <${env.EMAIL_FROM}>`,reply_to:'hello@cojeev.com',...emailMessage(row,job.kind,env.SITE_URL)}),send);
 }
-export async function drain(env:Env,reportId?:string) {
+export async function drain(env:Env,reportId?:string,send=fetch) {
   // A crashed send has an unknown remote outcome. Never blindly resend it.
   await env.DB.prepare("UPDATE outbox SET state='needs_review',last_error='Delivery lease expired; check the provider before retrying.',lease_token=NULL WHERE state='processing' AND lease_until<?").bind(now()).run();
+  const cutoff=activationCutoff(env);
+  await env.DB.prepare("UPDATE outbox SET state='held',last_error='Delivery activation or historical review required.' WHERE state='pending' AND (? IS NULL OR (reviewed_at IS NULL AND report_id IN (SELECT id FROM reports WHERE created_at<?)))").bind(cutoff,cutoff).run();
+  if(cutoff===null) return {processed:0};
   const enabledKinds=[...(emailEnabled(env)?["email_received","email_resolved"]:[]),...(githubEnabled(env)?["github",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:[])];
   if(!enabledKinds.length) return {processed:0};
   // Disabled providers must not consume the batch window and starve enabled work.
@@ -94,12 +89,12 @@ export async function drain(env:Env,reportId?:string) {
     if(!claim) continue;
     processed++;
     try {
-      const provider=await deliver(env,job,await getReport(env,job.report_id));
+      const provider=await deliver(env,job,await getReport(env,job.report_id),send);
       await env.DB.prepare("UPDATE outbox SET state='done',provider_id=?,lease_token=NULL,last_error=NULL WHERE id=? AND lease_token=?").bind(provider,job.id,lease).run();
     } catch(error) {
       const failure=error instanceof DeliveryFailure?error:new DeliveryFailure("Delivery could not be confirmed. Check provider status.",true);
-      const review=failure.ambiguous||failure.permanent||job.attempts>=7;
-      await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+Math.min(86400000,60000*2**job.attempts),job.id,lease).run();
+      const review=!failure.quota&&(failure.ambiguous||failure.permanent||job.attempts>=7);
+      await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL,delivery_status=? WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+(failure.quota?3600000:Math.min(86400000,60000*2**job.attempts)),failure.quota?'quota':failure.ambiguous?'uncertain':review?'failed':'queued',job.id,lease).run();
     }
   }
   return {processed};

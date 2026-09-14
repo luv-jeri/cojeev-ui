@@ -25,3 +25,14 @@
    SVG is the immediate SSR/Off/reduced fallback; the mark stays above either. */
 [data-slot="selector-glyph"]:has([data-slot="selector-surface-host"] > svg.v-morph) [data-slot="selector-surface"] { opacity:0; }
 [data-slot="selector-drawing"] { position:relative; pointer-events:none; }
+
+[data-slot="radio-group-item"][data-appearance] { display:flex; align-items:center; min-height:44px; min-width:0; padding:10px 12px; gap:12px; color:var(--v-text); text-align:start; border:0; border-radius:var(--v-control-radius,12px); background:transparent; cursor:pointer; }
+[data-slot="radio-group-item"][data-appearance="row"] { width:100%; border-radius:0; border-bottom:1px solid var(--v-border); }
+[data-slot="radio-group-item"][data-appearance="card"] { display:grid; grid-template-columns:var(--selector-size,28px) minmax(0,1fr); align-items:start; width:100%; padding:18px; border-radius:min(var(--v-control-radius,16px),24px); background:var(--card); box-shadow:inset 0 0 0 1px var(--v-edge); }
+[data-slot="radio-group-item"][data-appearance="chip"] { width:fit-content; border-radius:var(--v-control-radius,999px); box-shadow:inset 0 0 0 1px var(--v-edge); gap:8px; }
+[data-slot="radio-group-item"][data-appearance]:not([data-disabled])[data-state="checked"] { background:color-mix(in oklab,var(--selector-accent) 18%,var(--v-canvas)); }
+[data-slot="radio-group-item"][data-appearance]:focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+[data-slot="radio-group-item"][data-appearance]:focus-visible [data-slot="radio-group-indicator"] { outline:none; }
+[data-slot="radio-group-item"][data-appearance][data-disabled] { color:var(--v-disabled-ink); cursor:not-allowed; }
+[data-slot="radio-group-body"] { display:grid; gap:3px; min-width:0; overflow-wrap:anywhere; }
+[data-slot="radio-group-body"] small { color:var(--v-text-2); font-size:13px; line-height:1.45; }

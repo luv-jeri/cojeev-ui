@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { controlRadiusStyle, type ControlRadius } from "@/registry/cojeev/lib/control-appearance";
 import {
   SelectorGlyph,
   selectorStyle,
@@ -22,6 +23,8 @@ export const checkboxVariants = cva(
   "v-check [display:inline-flex] [cursor:pointer] [background:none] [gap:12px] [align-items:center] [font-size:var(--fs-body)] [box-shadow:none] [border:0]",
 );
 export type CheckboxProps = React.ComponentProps<typeof Primitive.Root> & {
+  appearance?: "row" | "card" | "chip";
+  radius?: ControlRadius;
   shape?: SelectorShape;
   tone?: SelectorTone;
   size?: SelectorSize;
@@ -38,6 +41,8 @@ export function Checkbox({
   indicator = "auto",
   showIndicator = true,
   style,
+  appearance,
+  radius,
   checked: controlled,
   defaultChecked = false,
   onCheckedChange,
@@ -52,8 +57,9 @@ export function Checkbox({
       ref={ref}
       data-slot="checkbox"
       data-part="root"
+      data-appearance={appearance}
       data-selector-shape={shape}
-      style={selectorStyle(tone, style, size)}
+      style={selectorStyle(tone, { ...controlRadiusStyle(radius), ...style }, size)}
       checked={checked}
       onCheckedChange={(next) => {
         if (controlled === undefined) setLocal(next);

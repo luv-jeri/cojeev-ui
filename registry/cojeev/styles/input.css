@@ -183,3 +183,7 @@
 [data-slot="input"].-ink > .v-icon { color: rgba(251,244,230,.7); }
 
 [data-slot="input-control"][type="time"] { padding: 0 0 0 1px; }
+
+/* Clear is a real shared button; the tiny icon is not its hit rectangle. */
+.v-input:has([data-slot="input-clear"]) { min-height:44px; padding-inline-end:4px; }
+.v-input [data-slot="input-clear"].v-btn { width:44px; height:44px; min-width:44px; padding:0; margin:0; border-radius:50%; }

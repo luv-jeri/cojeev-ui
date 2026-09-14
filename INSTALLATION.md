@@ -8,7 +8,7 @@ For a Vite project with Tailwind and the alias configured, initialize shadcn and
 
 ```sh
 npx shadcn@latest init
-npx shadcn@latest add https://luv-jeri.github.io/cojeev-ui/r/button.json
+npx shadcn@latest add https://000h.cojeev.com/r/button.json
 ```
 
 ```tsx
@@ -32,7 +32,7 @@ For namespace commands, add this entry to your application's `components.json`:
 ```json
 {
   "registries": {
-    "@cojeev": "https://luv-jeri.github.io/cojeev-ui/r/{name}.json"
+    "@cojeev": "https://000h.cojeev.com/r/{name}.json"
   }
 }
 ```

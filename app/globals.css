@@ -14,6 +14,7 @@
 @import "../registry/cojeev/styles/image-masking.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/linear-modal.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/motion-drawer.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/dock.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/article-headings.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/portal-field.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/dither-dissolve.css" layer(cojeev-states);
@@ -49,6 +50,8 @@
 @import "../registry/cojeev/styles/alert-dialog.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/alert.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/aspect-ratio.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/bento-grid.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/bento-builder.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/attachment.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/avatar.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/badge.css" layer(cojeev-states);
@@ -62,6 +65,7 @@
 @import "../registry/cojeev/styles/chart.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/checkbox.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/code-block.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/pattern-background.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/collapsible.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/combobox.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/command.css" layer(cojeev-states);
@@ -152,5 +156,7 @@
 @import "../registry/cojeev/styles/guided-pointer.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/glass-sculpture.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/number-input.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/control-appearance.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/choice-foundations.css" layer(cojeev-states);
 @source "../registry/cojeev";
 @source "../components";

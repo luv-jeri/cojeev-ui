@@ -4,7 +4,7 @@
   background:var(--mfill); color:var(--v-text); box-shadow:inset 0 0 0 1px var(--v-border);
 }
 :root .v-btn.v-theme-toggle[data-slot][data-label]:is(:hover,:focus-visible) { --mfill:var(--v-beige); --mstroke:var(--v-text-2); }
-:root .v-btn.v-theme-toggle[data-slot][data-label].v-morph-live { background:transparent; box-shadow:none; }
+:root .v-btn.v-theme-toggle[data-slot][data-label]:has(>svg.v-morph) { background:transparent; box-shadow:none; }
 [data-slot="theme-toggle-icon"] { flex:none; overflow:visible; }
 .v-theme-toggle__label { color:inherit; font:500 13px/1 var(--font-text); }
 :root .v-btn.v-theme-toggle[data-slot][data-label="hidden"] { min-width:44px; width:44px; padding:0; }

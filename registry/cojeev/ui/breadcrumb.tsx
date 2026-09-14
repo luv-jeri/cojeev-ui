@@ -7,12 +7,20 @@ import { Icon, IconButton } from "@/registry/cojeev/ui/icon";
 export const breadcrumbVariants = cva(
   "v-crumbs flex flex-wrap items-center gap-[10px] text-[14.5px] text-[color:var(--v-text-2)]",
 );
-export type BreadcrumbProps = React.ComponentProps<"nav">;
-export function Breadcrumb({ className, ...props }: BreadcrumbProps) {
+export type BreadcrumbPresentation = "trail" | "pocket" | "directory";
+export type BreadcrumbProps = React.ComponentProps<"nav"> & {
+  presentation?: BreadcrumbPresentation;
+};
+export function Breadcrumb({
+  className,
+  presentation,
+  ...props
+}: BreadcrumbProps) {
   return (
     <nav
       data-slot="breadcrumb"
       data-part="root"
+      data-presentation={presentation}
       aria-label="Breadcrumb"
       className={cn(breadcrumbVariants(), className)}
       {...props}
@@ -52,6 +60,7 @@ export function BreadcrumbLink({
     <Comp
       data-slot="breadcrumb-link"
       data-part="item"
+      data-stable-hit=""
       className={cn(
         "inline h-auto p-0 rounded-[4px] bg-transparent [box-shadow:none] text-[color:var(--v-text-2)] font-normal no-underline",
         className,
@@ -76,14 +85,18 @@ export function BreadcrumbPage({ className, ...props }: BreadcrumbPageProps) {
     />
   );
 }
-export type BreadcrumbSeparatorProps = React.ComponentProps<"li">;
+export type BreadcrumbSeparatorProps = React.ComponentProps<"li"> & {
+  asChild?: boolean;
+};
 export function BreadcrumbSeparator({
   children,
   className,
+  asChild,
   ...props
 }: BreadcrumbSeparatorProps) {
+  const Comp = asChild ? Slot : "li";
   return (
-    <li
+    <Comp
       data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
@@ -91,7 +104,7 @@ export function BreadcrumbSeparator({
       {...props}
     >
       {children ?? <Icon name="chevron-right" />}
-    </li>
+    </Comp>
   );
 }
 export type BreadcrumbEllipsisProps = React.ComponentProps<"span">;
@@ -118,10 +131,11 @@ export function BreadcrumbBack({
     <IconButton
       ref={ref}
       data-slot="breadcrumb-back"
+      data-stable-hit=""
       type="button"
       aria-label="Back"
       className={cn(
-        "v-ibtn inline-grid place-items-center shrink-0 [width:36px] [height:36px] mr-[4px] [border-radius:50%] [border:0] [background:var(--v-canvas)] [color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
+        "v-ibtn inline-grid place-items-center shrink-0 [width:44px] [height:44px] mr-[4px] [border-radius:50%] [border:0] [background:var(--v-canvas)] [color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
         className,
       )}
       {...props}

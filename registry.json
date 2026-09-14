@@ -43,6 +43,11 @@
           "target": "lib/cojeev/assembly-geometry.ts"
         },
         {
+          "path": "registry/cojeev/lib/bento-layout.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/bento-layout.ts"
+        },
+        {
           "path": "registry/cojeev/lib/bloom-engine.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/bloom-engine.ts"
@@ -51,6 +56,11 @@
           "path": "registry/cojeev/lib/chart-geometry.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/chart-geometry.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/control-appearance.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/control-appearance.ts"
         },
         {
           "path": "registry/cojeev/lib/glyph-mesh.ts",
@@ -66,6 +76,11 @@
           "path": "registry/cojeev/lib/living-shader.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/living-shader.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-data.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-data.ts"
         },
         {
           "path": "registry/cojeev/lib/marquee-motion.ts",
@@ -168,6 +183,16 @@
           "target": "lib/cojeev/signature-shapes.ts"
         },
         {
+          "path": "registry/cojeev/lib/stack-outline.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/stack-outline.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/subtle-backgrounds.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/subtle-backgrounds.ts"
+        },
+        {
           "path": "registry/cojeev/lib/text-lines.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/text-lines.ts"
@@ -258,6 +283,11 @@
           "target": "lib/cojeev-motion/shapes.ts"
         },
         {
+          "path": "registry/cojeev/motion/slider-geometry.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev-motion/slider-geometry.ts"
+        },
+        {
           "path": "registry/cojeev/motion/theme-transition.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/theme-transition.ts"
@@ -266,6 +296,11 @@
           "path": "registry/cojeev/motion/use-depth.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-depth.ts"
+        },
+        {
+          "path": "registry/cojeev/motion/use-disclosure-height.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev-motion/use-disclosure-height.ts"
         },
         {
           "path": "registry/cojeev/motion/use-flow.ts",
@@ -336,6 +371,11 @@
           "path": "reference/cojeev-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
           "type": "registry:file",
           "target": "styles/fonts/BricolageGrotesque-OFL.txt"
+        },
+        {
+          "path": "registry/cojeev/NOTICES.txt",
+          "type": "registry:file",
+          "target": "lib/cojeev/NOTICES.txt"
         }
       ],
       "css": {
@@ -642,7 +682,11 @@
           "evidence": "Ext I11",
           "status": "derived",
           "root": ".v-acc",
-          "variants": [],
+          "variants": [
+            "faq",
+            "chapters",
+            "editorial"
+          ],
           "sizes": [],
           "states": [
             "open",
@@ -670,7 +714,14 @@
         "api": [
           {
             "name": "AccordionProps",
-            "props": []
+            "props": [
+              {
+                "name": "appearance",
+                "type": "AccordionAppearance",
+                "required": false,
+                "description": "Optional structural treatment. Omit to preserve the original painted cards."
+              }
+            ]
           },
           {
             "name": "AccordionItemProps",
@@ -824,7 +875,7 @@
       "name": "activity-feed",
       "type": "registry:ui",
       "title": "Activity feed",
-      "description": "Chronological activity composed from native avatars, badges, content rows and motion surfaces.",
+      "description": "An ordered, date-grouped history with a quiet connecting margin, readable actors and timestamps, and updates that keep your place.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
@@ -930,6 +981,7 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
         "https://luv-jeri.github.io/cojeev-ui/r/code-block.json",
         "https://luv-jeri.github.io/cojeev-ui/r/label.json",
         "https://luv-jeri.github.io/cojeev-ui/r/slider.json",
@@ -1464,9 +1516,10 @@
       "name": "alert",
       "type": "registry:ui",
       "title": "Alert",
-      "description": "Displays a prominent message with context and optional actions where an issue or outcome occurs.",
+      "description": "An authored note, attached-action banner or folded dispatch that makes the message and its next step clear.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -1494,11 +1547,9 @@
           "status": "source",
           "root": ".v-alert",
           "variants": [
-            "info",
-            "ok",
-            "warn",
-            "danger",
-            "pink"
+            "note",
+            "banner",
+            "dispatch"
           ],
           "sizes": [],
           "states": [
@@ -1551,6 +1602,12 @@
               {
                 "name": "as",
                 "type": "React.ElementType",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "presentation",
+                "type": "AlertPresentation",
                 "required": false,
                 "description": ""
               }
@@ -1911,7 +1968,7 @@
       "name": "animated-icon",
       "type": "registry:ui",
       "title": "Animated icon",
-      "description": "Contextual motion for the shared icon catalog: draw, tremor, spinning settings, bouncing navigation and morphing validation.",
+      "description": "Replayable micro-interactions for the full Cojeev icon library, with semantic motion families and optional visual treatments.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
@@ -1983,6 +2040,12 @@
               {
                 "name": "duration",
                 "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "ease",
+                "type": "IconMotionEase",
                 "required": false,
                 "description": ""
               }
@@ -2226,9 +2289,9 @@
         "source": {
           "name": "Area chart",
           "variants": [
-            "linear",
-            "step",
-            "stacked"
+            "analysis",
+            "brief",
+            "ledger"
           ],
           "sizes": [
             "default"
@@ -2254,7 +2317,7 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -2527,7 +2590,7 @@
               },
               {
                 "name": "transitionKey",
-                "type": "string",
+                "type": "string | object",
                 "required": false,
                 "description": "Marks a new composition even when a reused part has identical target geometry."
               },
@@ -2732,9 +2795,10 @@
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
-      "description": "Identifies a person or entity with an image, fallback content, or a grouped set of avatars.",
+      "description": "Portraits, identity rows and participant groups that keep the person recognizable—with artwork, initials and independent shape choices.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
       ],
       "dependencies": [
         "@radix-ui/react-avatar",
@@ -2763,10 +2827,14 @@
           "status": "source",
           "root": ".v-avatar",
           "variants": [
-            "square"
+            "portrait",
+            "identity",
+            "participants"
           ],
           "sizes": [
-            "lg"
+            "lg",
+            "default",
+            "sm"
           ],
           "states": [
             "rest",
@@ -2800,7 +2868,13 @@
               },
               {
                 "name": "size",
-                "type": "\"default\" | \"lg\" | null | undefined",
+                "type": "\"default\" | \"sm\" | \"lg\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "shape",
+                "type": "\"circle\" | \"rounded\" | \"pebble\"",
                 "required": false,
                 "description": ""
               }
@@ -2926,7 +3000,7 @@
       "name": "badge",
       "type": "registry:ui",
       "title": "Badge",
-      "description": "Adds a compact status, count, or category label alongside other content.",
+      "description": "Stamp a review state, attach a filing tag or count a collection. Three compact treatments with one clear meaning in text.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
@@ -2942,10 +3016,16 @@
           "path": "registry/cojeev/styles/badge.css",
           "type": "registry:file",
           "target": "styles/cojeev/badge.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/badge.css\"": {}
+        "@import \"@/styles/cojeev/badge.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -2956,25 +3036,12 @@
           "status": "source",
           "root": ".v-badge",
           "variants": [
-            "pink",
-            "yellow",
-            "olive",
-            "blue",
-            "ink",
-            "cream",
-            "pink-soft",
-            "yellow-soft",
-            "olive-soft",
-            "blue-soft",
-            "danger",
-            "pending",
-            "count",
-            "dashed",
-            "caps",
-            "test",
-            "live"
+            "stamp",
+            "tag",
+            "counter"
           ],
           "sizes": [
+            "default",
             "sm",
             "lg"
           ],
@@ -3116,6 +3183,18 @@
                 "type": "\"default\" | \"sm\" | \"lg\" | null | undefined",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"stamp\" | \"tag\" | \"counter\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
               }
             ]
           }
@@ -3152,9 +3231,9 @@
         "source": {
           "name": "Bar chart",
           "variants": [
-            "grouped",
-            "stacked",
-            "horizontal"
+            "analysis",
+            "brief",
+            "ledger"
           ],
           "sizes": [
             "default"
@@ -3180,7 +3259,159 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "bento-builder",
+      "type": "registry:ui",
+      "title": "Bento Builder",
+      "description": "An editable Bento canvas with complete partitions, content swapping, snapped neighbor resizing, history and usable layout export.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/bento-grid.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/input.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/native-select.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+      ],
+      "dependencies": [
+        "react-dom"
+      ],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/bento-builder.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/styles/bento-builder.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/bento-builder.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/cojeev/bento-builder.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Bento Builder",
+          "variants": [
+            "classic",
+            "interlock"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "selected",
+            "dragging",
+            "editing",
+            "undo",
+            "redo",
+            "copied"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "BentoBuilderProps",
+            "props": [
+              {
+                "name": "initialLayout",
+                "type": "BentoLayout",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "initialVariant",
+                "type": "BentoVariant",
+                "required": false,
+                "description": "Initial treatment; later prop changes select a treatment without replacing the edited layout."
+              },
+              {
+                "name": "onChange",
+                "type": "(value: BentoBuilderValue) => void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Layout",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "bento-grid",
+      "type": "registry:ui",
+      "title": "Bento Grid",
+      "description": "A complete canvas of rounded cards or organically interlocking pieces. Compose a layout, then install just the lightweight renderer.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/bento-grid.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/styles/bento-grid.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/bento-grid.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/cojeev/bento-grid.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Bento Grid",
+          "variants": [
+            "classic",
+            "interlock"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "responsive",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "BentoGridProps",
+            "props": [
+              {
+                "name": "layout",
+                "type": "BentoLayout",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "BentoVariant",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "renderTile",
+                "type": "(tile: BentoTile) => React.ReactNode",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Layout",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -3189,7 +3420,7 @@
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
-      "description": "Shows the current location within a hierarchy and links back to its ancestors.",
+      "description": "Find your place with a complete trail, a pocket-sized ancestor menu or a connected directory path.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
@@ -3220,7 +3451,11 @@
           "evidence": "I16",
           "status": "source",
           "root": ".v-crumbs",
-          "variants": [],
+          "variants": [
+            "trail",
+            "pocket",
+            "directory"
+          ],
           "sizes": [],
           "states": [
             "rest",
@@ -3249,7 +3484,14 @@
         "api": [
           {
             "name": "BreadcrumbProps",
-            "props": []
+            "props": [
+              {
+                "name": "presentation",
+                "type": "BreadcrumbPresentation",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "BreadcrumbListProps",
@@ -3276,7 +3518,14 @@
           },
           {
             "name": "BreadcrumbSeparatorProps",
-            "props": []
+            "props": [
+              {
+                "name": "asChild",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "BreadcrumbEllipsisProps",
@@ -3514,10 +3763,16 @@
           "path": "registry/cojeev/styles/button.css",
           "type": "registry:file",
           "target": "styles/cojeev/button.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/button.css\"": {}
+        "@import \"@/styles/cojeev/button.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -3703,6 +3958,12 @@
                 "description": ""
               },
               {
+                "name": "shape",
+                "type": "\"pill\" | \"card\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "fullWidth",
                 "type": "boolean | null | undefined",
                 "required": false,
@@ -3729,6 +3990,12 @@
               {
                 "name": "loadingIndicator",
                 "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
                 "required": false,
                 "description": ""
               }
@@ -3945,12 +4212,13 @@
       "name": "calendar",
       "type": "registry:ui",
       "title": "Calendar",
-      "description": "Displays a month grid for choosing a single date, with optional disabled dates and visual marks.",
+      "description": "Choose one appointment day, a continuous date range, or separate days in an accessible month grid.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
       ],
       "dependencies": [
+        "motion",
         "react-day-picker",
         "class-variance-authority"
       ],
@@ -3976,7 +4244,11 @@
           "evidence": "I15",
           "status": "source",
           "root": ".v-cal",
-          "variants": [],
+          "variants": [
+            "single",
+            "range",
+            "multiple"
+          ],
           "sizes": [],
           "states": [
             "selected",
@@ -3998,8 +4270,49 @@
         },
         "api": [
           {
-            "name": "CalendarProps",
+            "name": "CalendarBaseProps",
             "props": [
+              {
+                "name": "disabled",
+                "type": "Matcher | Matcher[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "marks",
+                "type": "Record<string, CalendarMark>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "required",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "CalendarSingleProps",
+            "props": [
+              {
+                "name": "disabled",
+                "type": "Matcher | Matcher[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "marks",
+                "type": "Record<string, CalendarMark>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "required",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
               {
                 "name": "mode",
                 "type": "\"single\"",
@@ -4023,7 +4336,12 @@
                 "type": "(date: Date | undefined) => void",
                 "required": false,
                 "description": ""
-              },
+              }
+            ]
+          },
+          {
+            "name": "CalendarRangeProps",
+            "props": [
               {
                 "name": "disabled",
                 "type": "Matcher | Matcher[]",
@@ -4041,6 +4359,160 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "mode",
+                "type": "\"range\"",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "selected",
+                "type": "DateRange",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultSelected",
+                "type": "DateRange",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onSelect",
+                "type": "(range: DateRange | undefined) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "min",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "max",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "excludeDisabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "resetOnSelect",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "CalendarMultipleProps",
+            "props": [
+              {
+                "name": "disabled",
+                "type": "Matcher | Matcher[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "marks",
+                "type": "Record<string, CalendarMark>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "required",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "mode",
+                "type": "\"multiple\"",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "selected",
+                "type": "Date[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultSelected",
+                "type": "Date[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onSelect",
+                "type": "(dates: Date[] | undefined) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "min",
+                "type": "number",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "max",
+                "type": "number",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "CalendarProps",
+            "props": [
+              {
+                "name": "disabled",
+                "type": "Matcher | Matcher[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "marks",
+                "type": "Record<string, CalendarMark>",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "required",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "mode",
+                "type": "\"single\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "selected",
+                "type": "Date",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultSelected",
+                "type": "Date",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onSelect",
+                "type": "(date: Date | undefined) => void",
+                "required": false,
+                "description": ""
               }
             ]
           }
@@ -4056,7 +4528,8 @@
       "title": "Card",
       "description": "Groups related content, metadata, and actions into a distinct surface.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -4084,15 +4557,9 @@
           "status": "source",
           "root": ".v-card",
           "variants": [
-            "pink",
-            "yellow",
-            "olive",
-            "blue",
-            "ink",
-            "cream",
-            "featured",
-            "panel",
-            "lift"
+            "editorial",
+            "project",
+            "collection"
           ],
           "sizes": [
             "sm"
@@ -4169,6 +4636,12 @@
               {
                 "name": "lift",
                 "type": "boolean | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "CardAppearance",
                 "required": false,
                 "description": ""
               }
@@ -4275,10 +4748,12 @@
       "name": "carousel",
       "type": "registry:ui",
       "title": "Carousel",
-      "description": "Lets readers move through a horizontal collection of slides using scrolling and navigation controls.",
+      "description": "Browse a peeking shelf, a full reading spread or a miniature index of ideas, with native scrolling and a shared organic scrollbar.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -4306,7 +4781,11 @@
           "evidence": "I11",
           "status": "source",
           "root": ".v-carousel",
-          "variants": [],
+          "variants": [
+            "shelf",
+            "story",
+            "index"
+          ],
           "sizes": [],
           "states": [
             "rest",
@@ -4338,12 +4817,25 @@
                 "type": "(index: number) => void",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "presentation",
+                "type": "CarouselPresentation",
+                "required": false,
+                "description": ""
               }
             ]
           },
           {
             "name": "CarouselContentProps",
-            "props": []
+            "props": [
+              {
+                "name": "scrollbar",
+                "type": "boolean",
+                "required": false,
+                "description": "Keep the native viewport, with the shared organic horizontal scrollbar."
+              }
+            ]
           },
           {
             "name": "CarouselItemProps",
@@ -4397,11 +4889,13 @@
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
-      "description": "Presents numeric comparisons as bars, lines, rings, or ranked rows with companion data-table primitives.",
+      "description": "Compose an understandable chart from a frame, labelled series, inspectable plot and accessible values.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/card.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/label.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/select.json",
         "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
         "https://luv-jeri.github.io/cojeev-ui/r/chart-tooltip.json",
         "https://luv-jeri.github.io/cojeev-ui/r/table.json"
@@ -4457,6 +4951,41 @@
           ]
         },
         "api": [
+          {
+            "name": "ChartDatasetSelectProps",
+            "props": [
+              {
+                "name": "value",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value: string) => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "options",
+                "type": "readonly { value: string; label: string }[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
           {
             "name": "ChartContainerProps",
             "props": []
@@ -4707,6 +5236,18 @@
                 "description": ""
               },
               {
+                "name": "appearance",
+                "type": "\"analysis\" | \"brief\" | \"ledger\"",
+                "required": false,
+                "description": "Independent of the data's line/bar/shape geometry."
+              },
+              {
+                "name": "summary",
+                "type": "{ label: string; value: React.ReactNode; detail?: string }",
+                "required": false,
+                "description": "An explicit source measure; it does not change when a legend series is hidden."
+              },
+              {
                 "name": "children",
                 "type": "(plot: ChartPlotState) => React.ReactNode",
                 "required": true,
@@ -4715,7 +5256,7 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
         "fidelity": "refined-design-family",
         "baseComponent": true
       }
@@ -4724,7 +5265,7 @@
       "name": "chart-tooltip",
       "type": "registry:ui",
       "title": "Dynamic chart tooltip",
-      "description": "A shared bounded data pill with kinetic tracking and pointer/keyboard access.",
+      "description": "Compare a point, read its known subtotal or rank its series. Values update in place and keep their series colours.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/card.json"
@@ -4742,7 +5283,9 @@
         "source": {
           "name": "Dynamic chart tooltip",
           "variants": [
-            "default"
+            "compare",
+            "summary",
+            "ranked"
           ],
           "sizes": [
             "default"
@@ -4794,11 +5337,17 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "presentation",
+                "type": "\"compare\" | \"summary\" | \"ranked\"",
+                "required": false,
+                "description": "Compare original series, show their known subtotal, or rank them by value."
               }
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -4830,10 +5379,22 @@
           "path": "registry/cojeev/styles/checkbox.css",
           "type": "registry:file",
           "target": "styles/cojeev/checkbox.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
+        },
+        {
+          "path": "registry/cojeev/styles/choice-foundations.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/choice-foundations.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/checkbox.css\"": {}
+        "@import \"@/styles/cojeev/checkbox.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {},
+        "@import \"@/styles/cojeev/choice-foundations.css\"": {}
       },
       "meta": {
         "source": {
@@ -4844,12 +5405,9 @@
           "status": "source",
           "root": ".v-check",
           "variants": [
-            "organic",
-            "circle",
-            "rounded",
-            "pebble",
-            "leaf",
-            "flower"
+            "row",
+            "card",
+            "chip"
           ],
           "sizes": [
             "default",
@@ -4888,6 +5446,18 @@
           {
             "name": "CheckboxProps",
             "props": [
+              {
+                "name": "appearance",
+                "type": "\"row\" | \"card\" | \"chip\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
               {
                 "name": "shape",
                 "type": "SelectorShape",
@@ -5043,9 +5613,18 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "prismjs@1.30.0"
+      ],
+      "devDependencies": [
+        "@types/prismjs"
+      ],
       "files": [
         {
           "path": "registry/cojeev/ui/code-block.tsx",
@@ -5063,6 +5642,12 @@
       "meta": {
         "source": {
           "name": "Code block",
+          "dependencies": [
+            "prismjs@1.30.0"
+          ],
+          "devDependencies": [
+            "@types/prismjs"
+          ],
           "variants": [
             "default"
           ],
@@ -5085,6 +5670,12 @@
                 "type": "string",
                 "required": true,
                 "description": ""
+              },
+              {
+                "name": "onCopyResult",
+                "type": "(result: \"success\" | \"failure\") => void",
+                "required": false,
+                "description": "Reports the real copy outcome without exposing copied content."
               }
             ]
           },
@@ -5120,6 +5711,30 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "onCopyResult",
+                "type": "CopyButtonProps[\"onCopyResult\"]",
+                "required": false,
+                "description": "Reports the real copy outcome without exposing copied content."
+              },
+              {
+                "name": "variant",
+                "type": "\"code\" | \"terminal\"",
+                "required": false,
+                "description": "Terminal adds window chrome and a decorative prompt; copied text stays exact."
+              },
+              {
+                "name": "embedded",
+                "type": "boolean",
+                "required": false,
+                "description": "Use a containing viewer's header and copy action instead of nesting chrome."
+              },
+              {
+                "name": "pattern",
+                "type": "PatternBackgroundProps[\"variant\"]",
+                "required": false,
+                "description": "Plain by default to keep source text clear. Decorative patterns are opt-in."
               }
             ]
           }
@@ -5164,7 +5779,11 @@
           "evidence": "Ext I11",
           "status": "derived",
           "root": ".v-collapsible",
-          "variants": [],
+          "variants": [
+            "inline",
+            "checklist",
+            "inspector"
+          ],
           "sizes": [],
           "states": [
             "open",
@@ -5192,11 +5811,25 @@
         "api": [
           {
             "name": "CollapsibleProps",
-            "props": []
+            "props": [
+              {
+                "name": "appearance",
+                "type": "CollapsibleAppearance",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "CollapsibleTriggerProps",
-            "props": []
+            "props": [
+              {
+                "name": "indicator",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "CollapsibleContentProps",
@@ -5803,6 +6436,65 @@
       }
     },
     {
+      "name": "contours-background",
+      "type": "registry:ui",
+      "title": "Contours background",
+      "description": "Nested organic contour lines with generous space between islands.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/contours-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Contours background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "ContoursBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "conversation-panel",
       "type": "registry:ui",
       "title": "Conversation panel",
@@ -5849,7 +6541,7 @@
         "https://luv-jeri.github.io/cojeev-ui/r/table.json",
         "https://luv-jeri.github.io/cojeev-ui/r/pagination.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -5874,7 +6566,11 @@
           "evidence": "I18",
           "status": "source",
           "root": ".v-table-wrap",
-          "variants": [],
+          "variants": [
+            "ledger",
+            "rich",
+            "comparison"
+          ],
           "sizes": [],
           "states": [
             "rest",
@@ -5992,6 +6688,12 @@
                 "type": "(row: T) => void",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"ledger\" | \"rich\"",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -6032,12 +6734,14 @@
       "name": "date-picker",
       "type": "registry:ui",
       "title": "Date Picker",
-      "description": "Opens a calendar from a compact trigger to choose and display one date.",
+      "description": "Choose one day, a range, or multiple dates from a labelled field and calendar popover.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/calendar.json",
         "https://luv-jeri.github.io/cojeev-ui/r/popover.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -6051,10 +6755,16 @@
           "path": "registry/cojeev/styles/date-picker.css",
           "type": "registry:file",
           "target": "styles/cojeev/date-picker.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/date-picker.css\"": {}
+        "@import \"@/styles/cojeev/date-picker.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -6064,7 +6774,11 @@
           "evidence": "I07 I15",
           "status": "source",
           "root": ".v-menuhost[data-datepicker]",
-          "variants": [],
+          "variants": [
+            "single",
+            "range",
+            "multiple"
+          ],
           "sizes": [],
           "states": [
             "open",
@@ -6092,23 +6806,17 @@
         },
         "api": [
           {
-            "name": "DatePickerProps",
+            "name": "DatePickerBaseProps",
             "props": [
               {
-                "name": "date",
-                "type": "Date",
+                "name": "radius",
+                "type": "ControlRadius",
                 "required": false,
                 "description": ""
               },
               {
-                "name": "defaultDate",
-                "type": "Date",
-                "required": false,
-                "description": ""
-              },
-              {
-                "name": "onDateChange",
-                "type": "(date: Date | undefined) => void",
+                "name": "appearance",
+                "type": "FieldAppearance",
                 "required": false,
                 "description": ""
               },
@@ -6143,8 +6851,73 @@
                 "description": ""
               },
               {
-                "name": "calendarProps",
-                "type": "Omit<CalendarProps, \"selected\" | \"onSelect\">",
+                "name": "formatDate",
+                "type": "(date: Date) => string",
+                "required": false,
+                "description": "Format each day; ranges and multiple summaries reuse this formatter."
+              },
+              {
+                "name": "triggerProps",
+                "type": "React.ComponentProps<\"button\">",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "clearLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "doneLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "DatePickerSingleProps",
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "open",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultOpen",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onOpenChange",
+                "type": "(open: boolean) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "placeholder",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               },
@@ -6152,19 +6925,377 @@
                 "name": "formatDate",
                 "type": "(date: Date) => string",
                 "required": false,
-                "description": ""
+                "description": "Format each day; ranges and multiple summaries reuse this formatter."
               },
               {
                 "name": "triggerProps",
                 "type": "React.ComponentProps<\"button\">",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "clearLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "doneLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "mode",
+                "type": "\"single\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "date",
+                "type": "Date",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultDate",
+                "type": "Date",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onDateChange",
+                "type": "(date: Date | undefined) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "calendarProps",
+                "type": "Omit<CalendarSingleProps, \"selected\" | \"onSelect\" | \"mode\" | \"defaultSelected\">",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "DatePickerRangeProps",
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "open",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultOpen",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onOpenChange",
+                "type": "(open: boolean) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "placeholder",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "formatDate",
+                "type": "(date: Date) => string",
+                "required": false,
+                "description": "Format each day; ranges and multiple summaries reuse this formatter."
+              },
+              {
+                "name": "triggerProps",
+                "type": "React.ComponentProps<\"button\">",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "clearLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "doneLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "mode",
+                "type": "\"range\"",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "date",
+                "type": "DateRange",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultDate",
+                "type": "DateRange",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onDateChange",
+                "type": "(range: DateRange | undefined) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "calendarProps",
+                "type": "Omit<CalendarRangeProps, \"selected\" | \"onSelect\" | \"mode\" | \"defaultSelected\">",
+                "required": false,
+                "description": "Range pickers default to one night; set min=0 to allow a one-day range."
+              }
+            ]
+          },
+          {
+            "name": "DatePickerMultipleProps",
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "open",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultOpen",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onOpenChange",
+                "type": "(open: boolean) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "placeholder",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "formatDate",
+                "type": "(date: Date) => string",
+                "required": false,
+                "description": "Format each day; ranges and multiple summaries reuse this formatter."
+              },
+              {
+                "name": "triggerProps",
+                "type": "React.ComponentProps<\"button\">",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "clearLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "doneLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "mode",
+                "type": "\"multiple\"",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "date",
+                "type": "Date[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultDate",
+                "type": "Date[]",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onDateChange",
+                "type": "(dates: Date[] | undefined) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "calendarProps",
+                "type": "Omit<CalendarMultipleProps, \"selected\" | \"onSelect\" | \"mode\" | \"defaultSelected\">",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "DatePickerProps",
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "open",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultOpen",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onOpenChange",
+                "type": "(open: boolean) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "placeholder",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "formatDate",
+                "type": "(date: Date) => string",
+                "required": false,
+                "description": "Format each day; ranges and multiple summaries reuse this formatter."
+              },
+              {
+                "name": "triggerProps",
+                "type": "React.ComponentProps<\"button\">",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "clearLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "doneLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "mode",
+                "type": "\"single\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "date",
+                "type": "Date",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultDate",
+                "type": "Date",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onDateChange",
+                "type": "(date: Date | undefined) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "calendarProps",
+                "type": "Omit<CalendarSingleProps, \"selected\" | \"onSelect\" | \"mode\" | \"defaultSelected\">",
+                "required": false,
+                "description": "Range pickers default to one night; set min=0 to allow a one-day range."
               }
             ]
           },
           {
             "name": "DatePickerTriggerProps",
-            "props": []
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "DatePickerContentProps",
@@ -6259,9 +7390,12 @@
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
-      "description": "Opens a focused overlay for a task or information that needs dedicated attention.",
+      "description": "A decision slip, focused editor or illustrated exhibit. Give one task your attention without losing your place.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -6289,14 +7423,18 @@
           "evidence": "Ext I07",
           "status": "derived",
           "root": ".v-dialog",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "confirmation",
+            "editor",
+            "exhibit"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
+            "default",
             "open",
-            "rest",
-            "hover",
-            "focus",
-            "active"
+            "closed"
           ],
           "dataStates": [],
           "category": "surfaces",
@@ -6313,7 +7451,8 @@
             "default-default-rest-dark-720x480.html",
             "default-default-open-720x480.html",
             "default-default-open-dark-720x480.html"
-          ]
+          ],
+          "reviewOnly": false
         },
         "api": [
           {
@@ -6338,6 +7477,12 @@
               {
                 "name": "showCloseButton",
                 "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"confirmation\" | \"editor\" | \"exhibit\"",
                 "required": false,
                 "description": ""
               }
@@ -6657,6 +7802,165 @@
           }
         ],
         "category": "3D",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "dock",
+      "type": "registry:ui",
+      "title": "Dock",
+      "description": "A compact workspace launcher with a magnifying glass bar, raised shelf and labelled vertical rail.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/dock.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/styles/dock.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/dock.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/cojeev/dock.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Dock",
+          "variants": [
+            "default",
+            "shelf",
+            "rail"
+          ],
+          "sizes": [
+            "default",
+            "sm",
+            "lg"
+          ],
+          "states": [
+            "rest",
+            "hover",
+            "focus",
+            "active",
+            "disabled",
+            "still"
+          ]
+        },
+        "api": [
+          {
+            "name": "DockProps",
+            "props": [
+              {
+                "name": "items",
+                "type": "DockItem[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "DockVariant",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "value",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultValue",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value: string) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "itemSize",
+                "type": "number",
+                "required": false,
+                "description": "Base icon-button size, clamped to 32–72 CSS pixels."
+              },
+              {
+                "name": "magnification",
+                "type": "number",
+                "required": false,
+                "description": "Interaction strength, clamped to 1–2. Glass and shelf use the full scale; rail maps it to a restrained 1–1.12 response."
+              }
+            ]
+          }
+        ],
+        "category": "Navigation",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "dots-background",
+      "type": "registry:ui",
+      "title": "Dots background",
+      "description": "An evenly spaced field of fine points for quiet, familiar structure.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/dots-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Dots background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "DotsBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -7471,10 +8775,16 @@
           "path": "registry/cojeev/styles/field.css",
           "type": "registry:file",
           "target": "styles/cojeev/field.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/field.css\"": {}
+        "@import \"@/styles/cojeev/field.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -7485,7 +8795,9 @@
           "status": "source",
           "root": ".v-field",
           "variants": [
-            "invalid"
+            "stacked",
+            "inline",
+            "integrated"
           ],
           "sizes": [],
           "states": [
@@ -7520,6 +8832,18 @@
                 "description": ""
               },
               {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "invalid",
                 "type": "boolean",
                 "required": false,
@@ -7530,6 +8854,12 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "layout",
+                "type": "\"stacked\" | \"inline\" | \"integrated\"",
+                "required": false,
+                "description": "Place supporting copy beside the control, or collect it in one well."
               }
             ]
           },
@@ -7823,6 +9153,65 @@
         },
         "api": [],
         "category": "Composition",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "folds-background",
+      "type": "registry:ui",
+      "title": "Folds background",
+      "description": "Quiet faceted planes inspired by folded paper, without busy linework.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/folds-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Folds background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "FoldsBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -8363,6 +9752,65 @@
       }
     },
     {
+      "name": "grid-background",
+      "type": "registry:ui",
+      "title": "Grid background",
+      "description": "Hairline rules that give canvases and working surfaces a gentle rhythm.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/grid-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Grid background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "GridBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "guided-pointer",
       "type": "registry:ui",
       "title": "Guided pointer",
@@ -8457,7 +9905,7 @@
       "name": "hero-button",
       "type": "registry:ui",
       "title": "Hero button",
-      "description": "An organic call to action with a drawing arrow and the shared button morph response.",
+      "description": "Twelve tactile calls to action: living ink, paper, keys, tickets and small moments of motion around one native button.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json"
@@ -8484,7 +9932,18 @@
           "name": "Hero button",
           "variants": [
             "organic",
-            "capsule"
+            "capsule",
+            "split-arrow",
+            "paper-fold",
+            "pressed-key",
+            "ribbon",
+            "ticket",
+            "seal",
+            "ink-sweep",
+            "orbit",
+            "sliding-window",
+            "stacked-paper",
+            "spotlight"
           ],
           "sizes": [
             "default",
@@ -8516,6 +9975,12 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "HeroButtonAppearance",
+                "required": false,
+                "description": "An authored composition, independent of the existing surface variant and size."
               }
             ]
           }
@@ -8529,9 +9994,10 @@
       "name": "hover-card",
       "type": "registry:ui",
       "title": "Hover Card",
-      "description": "Shows supplementary preview content when a user hovers over or focuses its trigger.",
+      "description": "A person, an excerpt or a small visual study—three considered previews, close to the thing you are exploring.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -8559,8 +10025,14 @@
           "evidence": "Ext",
           "status": "derived",
           "root": "[data-hovercard]",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "identity",
+            "preview",
+            "media"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
             "open",
             "rest",
@@ -8603,6 +10075,18 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"identity\" | \"preview\" | \"media\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "scrollable",
+                "type": "boolean",
+                "required": false,
+                "description": ""
               }
             ]
           }
@@ -8615,14 +10099,13 @@
     {
       "name": "icon",
       "type": "registry:ui",
-      "title": "Icon and icon button",
-      "description": "Renders named SVG icons and provides supporting icon-button and decorative disk primitives.",
+      "title": "Icon library",
+      "description": "1,722 icon names with Cojeev micro-interactions, outline, duotone and organic treatments, built on Lucide geometry.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "motion"
+        "class-variance-authority"
       ],
       "files": [
         {
@@ -8640,20 +10123,16 @@
       },
       "meta": {
         "source": {
-          "name": "Icon and icon button",
+          "name": "Icon library",
           "variants": [
             "default",
-            "dashed",
-            "ink",
-            "pink",
-            "beige",
-            "cream"
+            "duotone",
+            "organic"
           ],
           "sizes": [
             "default",
             "sm",
-            "lg",
-            "xl"
+            "lg"
           ],
           "states": [
             "rest",
@@ -8689,6 +10168,30 @@
                 "type": "boolean",
                 "required": false,
                 "description": "One-shot feedback from the nearest control. Disable when another owner animates this icon."
+              },
+              {
+                "name": "treatment",
+                "type": "\"outline\"|\"duotone\"|\"organic\"",
+                "required": false,
+                "description": "Optional Cojeev treatments; outline preserves the original glyph footprint."
+              },
+              {
+                "name": "tone",
+                "type": "\"current\"|\"pink\"|\"blue\"|\"olive\"|\"yellow\"",
+                "required": false,
+                "description": "Accent layer color. Outline remains currentColor for readable action icons."
+              },
+              {
+                "name": "feedbackDuration",
+                "type": "number",
+                "required": false,
+                "description": "Bounded timing for native control feedback; AnimatedIcon adds explicit preset motion."
+              },
+              {
+                "name": "feedbackEase",
+                "type": "\"gentle\"|\"settle\"|\"linear\"|readonly [number,number,number,number]",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -9152,7 +10655,8 @@
       "description": "Collects a single-line value through a native input with optional composed affixes and clearing controls.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -9166,10 +10670,16 @@
           "path": "registry/cojeev/styles/input.css",
           "type": "registry:file",
           "target": "styles/cojeev/input.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/input.css\"": {}
+        "@import \"@/styles/cojeev/input.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -9180,7 +10690,9 @@
           "status": "source",
           "root": ".v-input",
           "variants": [
-            "cream"
+            "contour",
+            "editorial",
+            "inset"
           ],
           "sizes": [
             "sm"
@@ -9226,6 +10738,18 @@
                 "description": ""
               },
               {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "nativeSize",
                 "type": "number",
                 "required": false,
@@ -9245,6 +10769,18 @@
               {
                 "name": "size",
                 "type": "\"default\" | \"sm\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
                 "required": false,
                 "description": ""
               },
@@ -9314,10 +10850,16 @@
           "path": "registry/cojeev/styles/input-group.css",
           "type": "registry:file",
           "target": "styles/cojeev/input-group.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/input-group.css\"": {}
+        "@import \"@/styles/cojeev/input-group.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -9327,7 +10869,11 @@
           "evidence": "I15",
           "status": "source",
           "root": ".v-igroup",
-          "variants": [],
+          "variants": [
+            "address",
+            "quantity",
+            "composer"
+          ],
           "sizes": [],
           "states": [
             "rest",
@@ -9353,7 +10899,20 @@
         "api": [
           {
             "name": "InputGroupProps",
-            "props": []
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "InputGroupAddonProps",
@@ -9365,7 +10924,20 @@
           },
           {
             "name": "InputGroupTextareaProps",
-            "props": []
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "InputGroupButtonProps",
@@ -9519,7 +11091,7 @@
       "name": "item",
       "type": "registry:ui",
       "title": "Item",
-      "description": "Presents a compact content row with a title, supporting description, and optional trailing metadata.",
+      "description": "A notebook ledger, an illustrated collection or an actionable detail. Three readable arrangements for the things you want to keep together.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
@@ -9535,10 +11107,16 @@
           "path": "registry/cojeev/styles/item.css",
           "type": "registry:file",
           "target": "styles/cojeev/item.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/item.css\"": {}
+        "@import \"@/styles/cojeev/item.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -9549,10 +11127,13 @@
           "status": "source",
           "root": ".v-item",
           "variants": [
-            "selected",
-            "flat"
+            "ledger",
+            "cover",
+            "detail"
           ],
-          "sizes": [],
+          "sizes": [
+            "default"
+          ],
           "states": [
             "selected",
             "rest",
@@ -9597,6 +11178,18 @@
               {
                 "name": "as",
                 "type": "React.ElementType",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"ledger\" | \"cover\" | \"detail\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
                 "required": false,
                 "description": ""
               }
@@ -9935,7 +11528,11 @@
           "evidence": "I07",
           "status": "source",
           "root": ".v-label",
-          "variants": [],
+          "variants": [
+            "required",
+            "optional",
+            "help"
+          ],
           "sizes": [
             "sm"
           ],
@@ -10057,9 +11654,9 @@
         "source": {
           "name": "Line chart",
           "variants": [
-            "linear",
-            "smooth",
-            "step"
+            "analysis",
+            "brief",
+            "ledger"
           ],
           "sizes": [
             "default"
@@ -10085,7 +11682,7 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -10094,10 +11691,12 @@
       "name": "linear-modal",
       "type": "registry:ui",
       "title": "Linear Modal",
-      "description": "A media card expands into a focused detail dialog with shared image and title continuity.",
+      "description": "Follow a card, image and title into a full detail, then back. Card, Centered and browsable Gallery preserve the reference's shared-layout journey.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
         "https://luv-jeri.github.io/cojeev-ui/r/dialog.json"
       ],
       "dependencies": [
@@ -10123,7 +11722,8 @@
           "name": "Linear Modal",
           "variants": [
             "card",
-            "compact"
+            "centered",
+            "gallery"
           ],
           "sizes": [
             "default"
@@ -10164,6 +11764,12 @@
                 "description": ""
               },
               {
+                "name": "eyebrow",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
                 "name": "open",
                 "type": "boolean",
                 "required": false,
@@ -10177,13 +11783,13 @@
               },
               {
                 "name": "onOpenChange",
-                "type": "(open:boolean)=>void",
+                "type": "(open: boolean) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "variant",
-                "type": "\"card\"|\"compact\"",
+                "type": "\"card\" | \"compact\" | \"centered\"",
                 "required": false,
                 "description": ""
               }
@@ -11104,7 +12710,7 @@
       "name": "milestone-path",
       "type": "registry:ui",
       "title": "Milestone path",
-      "description": "A readable sequence of milestones with supplied status, details and optional actions.",
+      "description": "Follow caller-owned progress as a connected Journey, a scrollable Sequence or a compact checkpoint Review.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
@@ -11112,7 +12718,8 @@
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
         "https://luv-jeri.github.io/cojeev-ui/r/empty.json",
         "https://luv-jeri.github.io/cojeev-ui/r/stepper.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "motion"
@@ -11135,7 +12742,9 @@
         "source": {
           "name": "Milestone path",
           "variants": [
-            "default"
+            "journey",
+            "sequence",
+            "review"
           ],
           "sizes": [
             "default"
@@ -11188,6 +12797,12 @@
                 "type": "(id: string) => void",
                 "required": false,
                 "description": "Makes titles native buttons. Progress remains owned by the caller."
+              },
+              {
+                "name": "presentation",
+                "type": "\"journey\" | \"sequence\" | \"review\"",
+                "required": false,
+                "description": "Omit for the original vertical composition."
               }
             ]
           }
@@ -11201,14 +12816,17 @@
       "name": "motion-drawer",
       "type": "registry:ui",
       "title": "Motion Drawer",
-      "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
+      "description": "A reference-faithful edge drawer, floating quick panel, layered workspace and bottom action tray.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/sheet.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
-        "@radix-ui/react-direction"
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-direction",
+        "motion"
       ],
       "files": [
         {
@@ -11228,8 +12846,10 @@
         "source": {
           "name": "Motion Drawer",
           "variants": [
-            "start",
-            "end"
+            "default",
+            "floating",
+            "stack",
+            "bottom"
           ],
           "sizes": [
             "default"
@@ -11277,19 +12897,97 @@
               },
               {
                 "name": "onOpenChange",
-                "type": "(open:boolean)=>void",
+                "type": "(open: boolean) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "side",
-                "type": "\"start\"|\"end\"",
+                "type": "\"start\" | \"end\"",
                 "required": false,
-                "description": ""
+                "description": "Logical edge, resolved against dir. Bottom trays always dismiss downward."
+              },
+              {
+                "name": "variant",
+                "type": "MotionDrawerVariant",
+                "required": false,
+                "description": "Edge navigation, content-sized panel, layered workspace or bottom action tray."
+              },
+              {
+                "name": "width",
+                "type": "number",
+                "required": false,
+                "description": "Panel width in pixels, bounded to the viewport. Defaults: 300 / 360 / 540 / 640."
               },
               {
                 "name": "enableDrag",
                 "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "dragThreshold",
+                "type": "number",
+                "required": false,
+                "description": "Fraction of the panel to drag toward its edge before dismissing (0.1–0.9)."
+              },
+              {
+                "name": "buttonOpeningVariants",
+                "type": "\"merge\" | \"push\" | \"stay\"",
+                "required": false,
+                "description": "The trigger joins the close control, pushes toward the edge, or fades in place."
+              },
+              {
+                "name": "animationConfig",
+                "type": "{ stiffness?: number; damping?: number; mass?: number }",
+                "required": false,
+                "description": "Spring tuning; ignored when motion is disabled."
+              },
+              {
+                "name": "panels",
+                "type": "MotionDrawerPanel[]",
+                "required": false,
+                "description": "Mounted, selectable card surfaces for the stack variant."
+              },
+              {
+                "name": "value",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "defaultValue",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onValueChange",
+                "type": "(value: string) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "stackStagger",
+                "type": "number",
+                "required": false,
+                "description": "Seconds between stack-card entrances (0–0.25)."
+              },
+              {
+                "name": "trigger",
+                "type": "React.ReactElement",
+                "required": false,
+                "description": "Reusable custom launcher. Its own disabled state is respected."
+              },
+              {
+                "name": "closeLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onCloseAutoFocus",
+                "type": "React.ComponentProps<\n    typeof Dialog.Content\n  >[\"onCloseAutoFocus\"]",
                 "required": false,
                 "description": ""
               }
@@ -11329,19 +13027,24 @@
           "path": "registry/cojeev/styles/multi-select.css",
           "type": "registry:file",
           "target": "styles/cojeev/multi-select.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/multi-select.css\"": {}
+        "@import \"@/styles/cojeev/multi-select.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
           "name": "Multi-select",
           "variants": [
-            "both",
-            "icon-only",
-            "blob-only",
-            "none"
+            "tokens",
+            "summary",
+            "checklist"
           ],
           "sizes": [
             "default"
@@ -11360,6 +13063,24 @@
           {
             "name": "MultiSelectProps",
             "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "presentation",
+                "type": "\"tokens\" | \"summary\" | \"checklist\"",
+                "required": false,
+                "description": "Tokens are individually removable; summary is compact; checklist stays open."
+              },
               {
                 "name": "label",
                 "type": "string",
@@ -11484,10 +13205,16 @@
           "path": "registry/cojeev/styles/native-select.css",
           "type": "registry:file",
           "target": "styles/cojeev/native-select.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/native-select.css\"": {}
+        "@import \"@/styles/cojeev/native-select.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -11498,7 +13225,9 @@
           "status": "derived",
           "root": ".v-native",
           "variants": [
-            "ink"
+            "field",
+            "toolbar",
+            "listbox"
           ],
           "sizes": [],
           "states": [
@@ -11528,6 +13257,18 @@
               {
                 "name": "variant",
                 "type": "\"default\" | \"ink\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
                 "required": false,
                 "description": ""
               }
@@ -11586,7 +13327,11 @@
           "evidence": "I15",
           "status": "source",
           "root": ".v-nav",
-          "variants": [],
+          "variants": [
+            "directory",
+            "shelf",
+            "compact"
+          ],
           "sizes": [],
           "states": [
             "selected",
@@ -11614,7 +13359,14 @@
         "api": [
           {
             "name": "NavigationMenuProps",
-            "props": []
+            "props": [
+              {
+                "name": "appearance",
+                "type": "\"directory\" | \"shelf\" | \"compact\"",
+                "required": false,
+                "description": "Grouped destinations, a preview shelf, or a compact disclosure menu."
+              }
+            ]
           },
           {
             "name": "NavigationMenuListProps",
@@ -11677,7 +13429,8 @@
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/animated-number.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
       ],
       "dependencies": [],
       "files": [
@@ -11689,16 +13442,24 @@
           "path": "registry/cojeev/styles/number-input.css",
           "type": "registry:file",
           "target": "styles/cojeev/number-input.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/number-input.css\"": {}
+        "@import \"@/styles/cojeev/number-input.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
           "name": "Number input",
           "variants": [
-            "default"
+            "stepper",
+            "quantity",
+            "scrub"
           ],
           "sizes": [
             "default"
@@ -11718,6 +13479,18 @@
           {
             "name": "NumberInputProps",
             "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              },
               {
                 "name": "value",
                 "type": "number | null",
@@ -11789,6 +13562,18 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "presentation",
+                "type": "\"stepper\" | \"quantity\" | \"scrub\"",
+                "required": false,
+                "description": "Arrangement, independent from field surface, radius and number animation."
+              },
+              {
+                "name": "scrubLabel",
+                "type": "string",
+                "required": false,
+                "description": ""
               }
             ]
           }
@@ -11802,9 +13587,11 @@
       "name": "option-wheel",
       "type": "registry:ui",
       "title": "Option Wheel",
-      "description": "Curved options rotate into a clear central selection using keyboard and touch controls.",
+      "description": "A paper dial, aligned reel or compact readout for choosing one direction with pointer, wheel or keyboard.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -11825,8 +13612,9 @@
         "source": {
           "name": "Option Wheel",
           "variants": [
-            "left",
-            "right"
+            "arc",
+            "reel",
+            "compact"
           ],
           "sizes": [
             "default"
@@ -11862,15 +13650,21 @@
               },
               {
                 "name": "onSelectionChange",
-                "type": "(index:number)=>void",
+                "type": "(index: number) => void",
                 "required": false,
                 "description": ""
               },
               {
                 "name": "side",
-                "type": "\"left\"|\"right\"",
+                "type": "\"left\" | \"right\"",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "presentation",
+                "type": "\"arc\" | \"reel\" | \"compact\"",
+                "required": false,
+                "description": "Same selection, arranged as a rotary arc, aligned reel or compact readout."
               }
             ]
           }
@@ -12028,6 +13822,18 @@
                 "description": ""
               },
               {
+                "name": "autoAssemble",
+                "type": "boolean",
+                "required": false,
+                "description": "Gather once when the measured studio first becomes visible. User choices take priority."
+              },
+              {
+                "name": "compositions",
+                "type": "OrganismKind[]",
+                "required": false,
+                "description": "An optional curated subset; the default studio still exposes all six compositions."
+              },
+              {
                 "name": "compositionProps",
                 "type": "Omit<OrganismCompositionProps,\"kind\"|\"assembled\"|\"onSettledChange\">",
                 "required": false,
@@ -12073,6 +13879,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "registry/cojeev/lib/assembly-particles.tsx",
+          "type": "registry:lib",
+          "target": "lib/cojeev/assembly-particles.tsx"
+        },
+        {
           "path": "registry/cojeev/styles/organism-composition.css",
           "type": "registry:file",
           "target": "styles/cojeev/organism-composition.css"
@@ -12111,6 +13922,12 @@
                 "type": "boolean",
                 "required": false,
                 "description": "False separates the native roots into floating silhouettes. Quiet mode stays usable."
+              },
+              {
+                "name": "particleCount",
+                "type": "number",
+                "required": false,
+                "description": "Decorative seed count for an assembly scene. Zero leaves a plain usable composition."
               },
               {
                 "name": "name",
@@ -12220,6 +14037,12 @@
                 "description": "False separates the native roots into floating silhouettes. Quiet mode stays usable."
               },
               {
+                "name": "particleCount",
+                "type": "number",
+                "required": false,
+                "description": "Decorative seed count for an assembly scene. Zero leaves a plain usable composition."
+              },
+              {
                 "name": "initials",
                 "type": "string",
                 "required": false,
@@ -12306,10 +14129,11 @@
       "description": "Lets users move between numbered pages and see their current position.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/input.json"
       ],
       "dependencies": [
-        "motion",
         "class-variance-authority"
       ],
       "files": [
@@ -12334,7 +14158,11 @@
           "evidence": "Ext I18",
           "status": "derived",
           "root": ".v-pager",
-          "variants": [],
+          "variants": [
+            "pages",
+            "chapter",
+            "jump"
+          ],
           "sizes": [],
           "states": [
             "selected",
@@ -12383,6 +14211,12 @@
                 "type": "(page: number) => void",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"pages\" | \"chapter\" | \"jump\"",
+                "required": false,
+                "description": "Direct pages, a reading position, or exact entry for a large collection."
               }
             ]
           },
@@ -12645,6 +14479,145 @@
       }
     },
     {
+      "name": "pattern-background",
+      "type": "registry:ui",
+      "title": "Pattern background",
+      "description": "Eight distinct, lightweight backgrounds behind content, with a plain option and adjustable spacing, color and strength.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/pattern-background.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/styles/pattern-background.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/pattern-background.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/cojeev/pattern-background.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Pattern background",
+          "variants": [
+            "default",
+            "grid",
+            "contours",
+            "weave",
+            "pebbles",
+            "sunwash",
+            "folds",
+            "sprouts",
+            "none"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "PatternBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "PatternBackgroundVariant",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "pebbles-background",
+      "type": "registry:ui",
+      "title": "Pebbles background",
+      "description": "Sparse, softly irregular pebble outlines distributed across the surface.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/pebbles-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Pebbles background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "PebblesBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "pie-chart",
       "type": "registry:ui",
       "title": "Pie chart",
@@ -12671,8 +14644,9 @@
         "source": {
           "name": "Pie chart",
           "variants": [
-            "pie",
-            "donut"
+            "analysis",
+            "brief",
+            "ledger"
           ],
           "sizes": [
             "default"
@@ -12698,7 +14672,7 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -13173,16 +15147,33 @@
       "description": "Pairs a live component example with a code view and a copy action.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/card.json",
         "https://luv-jeri.github.io/cojeev-ui/r/code-block.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
         "https://luv-jeri.github.io/cojeev-ui/r/tabs.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pigment-field.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/depth-background.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/ambient-background.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/popover.json"
       ],
       "dependencies": [],
       "files": [
         {
           "path": "registry/cojeev/ui/preview.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/preview-backgrounds.tsx",
+          "type": "registry:lib",
+          "target": "lib/cojeev/preview-backgrounds.tsx"
+        },
+        {
+          "path": "registry/cojeev/lib/preview-background-picker.tsx",
+          "type": "registry:lib",
+          "target": "lib/cojeev/preview-background-picker.tsx"
         },
         {
           "path": "registry/cojeev/styles/preview.css",
@@ -13234,13 +15225,43 @@
                 "name": "controls",
                 "type": "React.ReactNode",
                 "required": false,
-                "description": "Variant selectors or other controls shown with the live specimen."
+                "description": "Optional controls shown with the live specimen."
               },
               {
                 "name": "actions",
                 "type": "React.ReactNode",
                 "required": false,
                 "description": "Optional actions beside the view switcher."
+              },
+              {
+                "name": "pattern",
+                "type": "PreviewBackgroundVariant",
+                "required": false,
+                "description": "Controlled background. Without onPatternChange the background is fixed."
+              },
+              {
+                "name": "defaultPattern",
+                "type": "PreviewBackgroundVariant",
+                "required": false,
+                "description": "Initial background for an uncontrolled preview."
+              },
+              {
+                "name": "onPatternChange",
+                "type": "(pattern: PreviewBackgroundVariant) => void",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "showBackgroundPicker",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onCopyResult",
+                "type": "(result: \"success\" | \"failure\") => void",
+                "required": false,
+                "description": "Reports the source copy outcome without coupling the registry to analytics."
               }
             ]
           }
@@ -13291,7 +15312,7 @@
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
-      "description": "Displays a measured amount of completion or an explicitly unavailable value.",
+      "description": "One measured amount, explained as an inline task, a small report or connected milestones—with independent organic track geometry.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
@@ -13322,12 +15343,9 @@
           "status": "source",
           "root": ".v-track",
           "variants": [
-            "organic",
-            "line",
-            "segmented",
-            "orbit",
-            "cream",
-            "unavail"
+            "inline",
+            "report",
+            "milestones"
           ],
           "sizes": [
             "default",
@@ -13407,7 +15425,7 @@
       "name": "questionnaire",
       "type": "registry:ui",
       "title": "Questionnaire",
-      "description": "Composes labeled questions, single-choice answers, and visible completion progress.",
+      "description": "A little guided brief: open questions, a focused journey or a two-column worksheet with living choice marks and honest completion progress.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/label.json",
@@ -13431,10 +15449,16 @@
           "path": "registry/cojeev/styles/questionnaire.css",
           "type": "registry:file",
           "target": "styles/cojeev/questionnaire.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/questionnaire.css\"": {}
+        "@import \"@/styles/cojeev/questionnaire.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -13445,12 +15469,9 @@
           "status": "derived",
           "root": ".v-quest",
           "variants": [
-            "organic",
-            "circle",
-            "rounded",
-            "pebble",
-            "leaf",
-            "flower"
+            "stacked",
+            "journey",
+            "worksheet"
           ],
           "sizes": [
             "default",
@@ -13486,7 +15507,20 @@
         "api": [
           {
             "name": "QuestionnaireProps",
-            "props": []
+            "props": [
+              {
+                "name": "presentation",
+                "type": "\"stacked\" | \"journey\" | \"worksheet\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "QuestionnaireProgressProps",
@@ -13501,6 +15535,12 @@
                 "name": "total",
                 "type": "number",
                 "required": true,
+                "description": ""
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": false,
                 "description": ""
               }
             ]
@@ -13665,9 +15705,9 @@
         "source": {
           "name": "Radar chart",
           "variants": [
-            "polygon",
-            "rounded",
-            "grid"
+            "analysis",
+            "brief",
+            "ledger"
           ],
           "sizes": [
             "default"
@@ -13699,7 +15739,7 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -13731,8 +15771,9 @@
         "source": {
           "name": "Radial chart",
           "variants": [
-            "full",
-            "semicircle"
+            "analysis",
+            "brief",
+            "ledger"
           ],
           "sizes": [
             "default"
@@ -13764,7 +15805,7 @@
             ]
           }
         ],
-        "category": "Data display",
+        "category": "Charts",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -13796,10 +15837,22 @@
           "path": "registry/cojeev/styles/radio-group.css",
           "type": "registry:file",
           "target": "styles/cojeev/radio-group.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
+        },
+        {
+          "path": "registry/cojeev/styles/choice-foundations.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/choice-foundations.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/radio-group.css\"": {}
+        "@import \"@/styles/cojeev/radio-group.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {},
+        "@import \"@/styles/cojeev/choice-foundations.css\"": {}
       },
       "meta": {
         "source": {
@@ -13810,12 +15863,9 @@
           "status": "source",
           "root": ".v-radios",
           "variants": [
-            "organic",
-            "circle",
-            "rounded",
-            "pebble",
-            "leaf",
-            "flower"
+            "row",
+            "card",
+            "chip"
           ],
           "sizes": [
             "default",
@@ -13888,12 +15938,36 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"row\" | \"card\" | \"chip\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
               }
             ]
           },
           {
             "name": "RadioGroupItemProps",
             "props": [
+              {
+                "name": "appearance",
+                "type": "\"row\" | \"card\" | \"chip\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
               {
                 "name": "pictographic",
                 "type": "boolean",
@@ -13946,9 +16020,12 @@
       "name": "reading-trail",
       "type": "registry:ui",
       "title": "Reading trail",
-      "description": "Tracks actual reading progress and links to named sections with a quiet organic marker.",
+      "description": "Keep your place with a connected spine, an expandable bookmark or a descriptive chapter overview—all following actual reading progress.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/collapsible.json"
       ],
       "dependencies": [],
       "files": [
@@ -13969,7 +16046,9 @@
         "source": {
           "name": "Reading trail",
           "variants": [
-            "default"
+            "spine",
+            "bookmark",
+            "overview"
           ],
           "sizes": [
             "default"
@@ -14008,6 +16087,12 @@
                 "type": "number",
                 "required": false,
                 "description": "Activation line below the scroll viewport's top, in pixels."
+              },
+              {
+                "name": "presentation",
+                "type": "ReadingTrailPresentation",
+                "required": false,
+                "description": "Optional compositions; omission preserves the original document TOC."
               }
             ]
           }
@@ -14023,7 +16108,8 @@
       "title": "Resizable",
       "description": "Divides a region into panels whose relative sizes can be adjusted with a separator.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -14275,6 +16361,52 @@
         },
         "api": [
           {
+            "name": "ScrollbarAppearanceProps",
+            "props": [
+              {
+                "name": "scrollbarSize",
+                "type": "number",
+                "required": false,
+                "description": "Visible thumb thickness in pixels. The 24px rail remains the hit target."
+              },
+              {
+                "name": "scrollbarColor",
+                "type": "string",
+                "required": false,
+                "description": "Thumb and active-rail color."
+              },
+              {
+                "name": "scrollbarVariant",
+                "type": "ScrollbarVariant",
+                "required": false,
+                "description": "Organic contour is the default; rounded and minimal use simpler paint."
+              }
+            ]
+          },
+          {
+            "name": "ScrollbarProviderProps",
+            "props": [
+              {
+                "name": "scrollbarSize",
+                "type": "number",
+                "required": false,
+                "description": "Visible thumb thickness in pixels. The 24px rail remains the hit target."
+              },
+              {
+                "name": "scrollbarColor",
+                "type": "string",
+                "required": false,
+                "description": "Thumb and active-rail color."
+              },
+              {
+                "name": "scrollbarVariant",
+                "type": "ScrollbarVariant",
+                "required": false,
+                "description": "Organic contour is the default; rounded and minimal use simpler paint."
+              }
+            ]
+          },
+          {
             "name": "ScrollAreaProps",
             "props": [
               {
@@ -14300,6 +16432,24 @@
                 "type": "(viewport: React.ReactElement) => React.ReactNode",
                 "required": false,
                 "description": "Compose a primitive around the actual scrolling element, preserving its ref."
+              },
+              {
+                "name": "scrollbarSize",
+                "type": "number",
+                "required": false,
+                "description": "Visible thumb thickness in pixels. The 24px rail remains the hit target."
+              },
+              {
+                "name": "scrollbarColor",
+                "type": "string",
+                "required": false,
+                "description": "Thumb and active-rail color."
+              },
+              {
+                "name": "scrollbarVariant",
+                "type": "ScrollbarVariant",
+                "required": false,
+                "description": "Organic contour is the default; rounded and minimal use simpler paint."
               }
             ]
           },
@@ -14331,6 +16481,24 @@
                 "description": "Compose a primitive around the actual scrolling element, preserving its ref."
               },
               {
+                "name": "scrollbarSize",
+                "type": "number",
+                "required": false,
+                "description": "Visible thumb thickness in pixels. The 24px rail remains the hit target."
+              },
+              {
+                "name": "scrollbarColor",
+                "type": "string",
+                "required": false,
+                "description": "Thumb and active-rail color."
+              },
+              {
+                "name": "scrollbarVariant",
+                "type": "ScrollbarVariant",
+                "required": false,
+                "description": "Organic contour is the default; rounded and minimal use simpler paint."
+              },
+              {
                 "name": "maxHeight",
                 "type": "React.CSSProperties[\"maxHeight\"]",
                 "required": false,
@@ -14340,11 +16508,84 @@
           },
           {
             "name": "ScrollBarProps",
-            "props": []
+            "props": [
+              {
+                "name": "scrollbarSize",
+                "type": "number",
+                "required": false,
+                "description": "Visible thumb thickness in pixels. The 24px rail remains the hit target."
+              },
+              {
+                "name": "scrollbarColor",
+                "type": "string",
+                "required": false,
+                "description": "Thumb and active-rail color."
+              },
+              {
+                "name": "scrollbarVariant",
+                "type": "ScrollbarVariant",
+                "required": false,
+                "description": "Organic contour is the default; rounded and minimal use simpler paint."
+              }
+            ]
           },
           {
             "name": "PageScrollBarProps",
-            "props": []
+            "props": [
+              {
+                "name": "scrollbarSize",
+                "type": "number",
+                "required": false,
+                "description": "Visible thumb thickness in pixels. The 24px rail remains the hit target."
+              },
+              {
+                "name": "scrollbarColor",
+                "type": "string",
+                "required": false,
+                "description": "Thumb and active-rail color."
+              },
+              {
+                "name": "scrollbarVariant",
+                "type": "ScrollbarVariant",
+                "required": false,
+                "description": "Organic contour is the default; rounded and minimal use simpler paint."
+              }
+            ]
+          },
+          {
+            "name": "ElementScrollBarProps",
+            "props": [
+              {
+                "name": "scrollbarSize",
+                "type": "number",
+                "required": false,
+                "description": "Visible thumb thickness in pixels. The 24px rail remains the hit target."
+              },
+              {
+                "name": "scrollbarColor",
+                "type": "string",
+                "required": false,
+                "description": "Thumb and active-rail color."
+              },
+              {
+                "name": "scrollbarVariant",
+                "type": "ScrollbarVariant",
+                "required": false,
+                "description": "Organic contour is the default; rounded and minimal use simpler paint."
+              },
+              {
+                "name": "scrollElement",
+                "type": "HTMLElement | null",
+                "required": true,
+                "description": "Null during attachment never falls back to taking over the document."
+              },
+              {
+                "name": "refreshKey",
+                "type": "unknown",
+                "required": false,
+                "description": "Refresh after a controlled value changes without a native input event."
+              }
+            ]
           }
         ],
         "category": "Layout",
@@ -14708,10 +16949,16 @@
           "path": "registry/cojeev/styles/select.css",
           "type": "registry:file",
           "target": "styles/cojeev/select.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/select.css\"": {}
+        "@import \"@/styles/cojeev/select.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -14721,7 +16968,11 @@
           "evidence": "I07 I11 I15",
           "status": "source",
           "root": ".v-menuhost[data-select]",
-          "variants": [],
+          "variants": [
+            "field",
+            "action",
+            "rich"
+          ],
           "sizes": [],
           "states": [
             "open",
@@ -14765,7 +17016,20 @@
           },
           {
             "name": "SelectTriggerProps",
-            "props": []
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "SelectValueProps",
@@ -14783,6 +17047,12 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "description",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": "Supporting text stays outside the selected value."
               }
             ]
           },
@@ -15039,8 +17309,8 @@
     {
       "name": "shape",
       "type": "registry:ui",
-      "title": "Shape",
-      "description": "A shared catalogue of 36 SVG silhouettes, with 12 original contours that morph smoothly between shapes.",
+      "title": "Shape studio",
+      "description": "One shape studio: twelve compatible living contours, layered artwork and the complete original mask inventory. Compose it here, then take the SVG or React code.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
@@ -15063,7 +17333,7 @@
       },
       "meta": {
         "source": {
-          "name": "Shape",
+          "name": "Shape studio",
           "variants": [
             "default"
           ],
@@ -15150,8 +17420,7 @@
         "source": {
           "name": "Shape artwork",
           "variants": [
-            "default",
-            "outline"
+            "default"
           ],
           "sizes": [
             "default"
@@ -15221,6 +17490,30 @@
                 "type": "string",
                 "required": false,
                 "description": "Omit when decorative."
+              },
+              {
+                "name": "ambient",
+                "type": "boolean",
+                "required": false,
+                "description": "Opt-in ambient contour motion. It pauses offscreen and in quiet motion modes."
+              },
+              {
+                "name": "morphTo",
+                "type": "SignatureShapeName",
+                "required": false,
+                "description": "Compatible signature silhouette used as the far end of the living contour."
+              },
+              {
+                "name": "morphDuration",
+                "type": "number",
+                "required": false,
+                "description": "Full breathe cycle in seconds."
+              },
+              {
+                "name": "motionDelay",
+                "type": "number",
+                "required": false,
+                "description": "Staggers compositions without relying on render-time randomness."
               }
             ]
           }
@@ -15463,10 +17756,11 @@
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Sidebar",
-      "description": "Provides a collapsible navigation rail with grouped destinations, active states, and a footer area.",
+      "description": "A paper folio, a readable compact index and a motion drawer. Three calm ways to keep the same workspace within reach.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -15494,8 +17788,14 @@
           "evidence": "I15 I16 I17 I18",
           "status": "source",
           "root": ".v-sidebar",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "folio",
+            "index",
+            "drawer"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
             "collapsed",
             "rest",
@@ -15580,6 +17880,12 @@
                 "type": "\"container\" | \"viewport\"",
                 "required": false,
                 "description": "Container layout fills its parent; viewport layout follows the authored standalone rail."
+              },
+              {
+                "name": "appearance",
+                "type": "\"folio\" | \"index\" | \"drawer\"",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -15644,7 +17950,7 @@
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
-      "description": "Reserves the visual shape of content while its real data is still loading.",
+      "description": "Give unavailable content a useful outline: a reading page, a person or a board of ideas, with three quiet-safe paint effects.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/card.json"
@@ -15676,12 +17982,13 @@
           "status": "derived",
           "root": ".v-skel",
           "variants": [
-            "line",
-            "disk",
-            "card",
-            "skel-group"
+            "article",
+            "profile",
+            "board"
           ],
-          "sizes": [],
+          "sizes": [
+            "default"
+          ],
           "states": [
             "rest"
           ],
@@ -15720,6 +18027,18 @@
               {
                 "name": "as",
                 "type": "React.ElementType",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "effect",
+                "type": "SkeletonEffect",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
                 "required": false,
                 "description": ""
               }
@@ -15872,9 +18191,11 @@
           "root": ".v-slider",
           "variants": [
             "organic",
+            "rubber",
             "line",
             "segmented",
-            "pink"
+            "range",
+            "vertical"
           ],
           "sizes": [],
           "states": [
@@ -15943,7 +18264,7 @@
       "name": "spinner",
       "type": "registry:ui",
       "title": "Loading",
-      "description": "Shows that work is in progress when an exact completion amount is unavailable.",
+      "description": "Three indeterminate signals: a morphing Bloom, gathering Orbit or handing-off Relay. The original small seed stays the default.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
@@ -15974,9 +18295,13 @@
           "status": "derived",
           "root": ".v-pulse",
           "variants": [
-            "point"
+            "bloom",
+            "orbit",
+            "relay"
           ],
-          "sizes": [],
+          "sizes": [
+            "default"
+          ],
           "states": [
             "rest",
             "hover",
@@ -16026,6 +18351,18 @@
                 "type": "string",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "SpinnerAppearance",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "paused",
+                "type": "boolean",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -16053,10 +18390,69 @@
       }
     },
     {
+      "name": "sprouts-background",
+      "type": "registry:ui",
+      "title": "Sprouts background",
+      "description": "Small paired leaves and seed-like marks with plenty of open space.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/sprouts-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Sprouts background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "SproutsBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
       "name": "stepper",
       "type": "registry:ui",
       "title": "Stepper",
-      "description": "Tracks the current stage of a multi-step sequence and provides previous and next controls.",
+      "description": "Move a real draft through connected stages, a descriptive checkpoint ledger or a focused current-step workspace.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/button.json",
@@ -16087,7 +18483,11 @@
           "evidence": "Ext",
           "status": "derived",
           "root": ".v-stepper-flow",
-          "variants": [],
+          "variants": [
+            "rail",
+            "ledger",
+            "compact"
+          ],
           "sizes": [],
           "states": [
             "selected",
@@ -16142,6 +18542,12 @@
                 "description": ""
               },
               {
+                "name": "presentation",
+                "type": "StepperPresentation",
+                "required": false,
+                "description": "Optional composition; omitted callers retain the original vertical/horizontal list."
+              },
+              {
                 "name": "onValueChange",
                 "type": "(value: number) => void",
                 "required": false,
@@ -16185,6 +18591,23 @@
           {
             "name": "StepperTitleProps",
             "props": []
+          },
+          {
+            "name": "StepperTriggerProps",
+            "props": [
+              {
+                "name": "step",
+                "type": "number",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "allowFuture",
+                "type": "boolean",
+                "required": false,
+                "description": "Explicitly permit navigation to unfinished steps. Validation stays with the caller."
+              }
+            ]
           },
           {
             "name": "StepperPreviousProps",
@@ -16304,6 +18727,65 @@
           }
         ],
         "category": "Backgrounds",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "sunwash-background",
+      "type": "registry:ui",
+      "title": "Sunwash background",
+      "description": "Broad, soft pools of color that leave the content in focus.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/sunwash-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Sunwash background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "SunwashBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }
@@ -16523,10 +19005,22 @@
           "path": "registry/cojeev/styles/switch.css",
           "type": "registry:file",
           "target": "styles/cojeev/switch.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
+        },
+        {
+          "path": "registry/cojeev/styles/choice-foundations.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/choice-foundations.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/switch.css\"": {}
+        "@import \"@/styles/cojeev/switch.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {},
+        "@import \"@/styles/cojeev/choice-foundations.css\"": {}
       },
       "meta": {
         "source": {
@@ -16536,15 +19030,18 @@
           "evidence": "I07",
           "status": "source",
           "root": ".v-switch",
-          "variants": [],
+          "variants": [
+            "capsule",
+            "rocker",
+            "latch"
+          ],
           "sizes": [],
           "states": [
+            "unchecked",
             "checked",
-            "rest",
-            "hover",
-            "focus",
-            "active",
-            "disabled"
+            "focused",
+            "disabled",
+            "reduced-motion"
           ],
           "dataStates": [],
           "category": "controls",
@@ -16567,7 +19064,20 @@
         "api": [
           {
             "name": "SwitchProps",
-            "props": []
+            "props": [
+              {
+                "name": "appearance",
+                "type": "\"capsule\" | \"rocker\" | \"latch\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "SwitchRowProps",
@@ -16582,10 +19092,11 @@
     {
       "name": "table",
       "type": "registry:ui",
-      "title": "Table",
-      "description": "Presents structured data in native rows and columns with headers and an optional caption.",
+      "title": "Tables",
+      "description": "Scan a compact ledger, explore detailed records or compare them side by side. One Tables guide for native parts and the composed DataTable.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -16607,12 +19118,16 @@
       "meta": {
         "source": {
           "id": "table",
-          "name": "Table",
+          "name": "Tables",
           "tier": "base",
           "evidence": "I18",
           "status": "source",
           "root": ".v-table",
-          "variants": [],
+          "variants": [
+            "ledger",
+            "rich",
+            "comparison"
+          ],
           "sizes": [],
           "states": [
             "rest"
@@ -16638,7 +19153,14 @@
           },
           {
             "name": "TableProps",
-            "props": []
+            "props": [
+              {
+                "name": "appearance",
+                "type": "\"ledger\" | \"rich\" | \"comparison\"",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "TableHeaderProps",
@@ -16724,7 +19246,10 @@
           "status": "source",
           "root": ".v-tabs",
           "variants": [
+            "notebook",
+            "rail",
             "underline",
+            "pills",
             "lenses"
           ],
           "sizes": [],
@@ -16775,7 +19300,7 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"default\" | \"pills\" | \"underline\" | \"lenses\" | null | undefined",
+                "type": "\"default\" | \"pills\" | \"underline\" | \"lenses\" | \"notebook\" | \"rail\" | null | undefined",
                 "required": false,
                 "description": ""
               }
@@ -16786,7 +19311,7 @@
             "props": [
               {
                 "name": "variant",
-                "type": "\"default\" | \"pills\" | \"underline\" | \"lenses\" | null | undefined",
+                "type": "\"default\" | \"pills\" | \"underline\" | \"lenses\" | \"notebook\" | \"rail\" | null | undefined",
                 "required": false,
                 "description": ""
               }
@@ -17124,7 +19649,8 @@
       "title": "Textarea",
       "description": "Collects multiline text and offers composer and character-count parts for longer input.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -17138,10 +19664,16 @@
           "path": "registry/cojeev/styles/textarea.css",
           "type": "registry:file",
           "target": "styles/cojeev/textarea.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/textarea.css\"": {}
+        "@import \"@/styles/cojeev/textarea.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -17151,7 +19683,11 @@
           "evidence": "Ext",
           "status": "derived",
           "root": ".v-textarea",
-          "variants": [],
+          "variants": [
+            "writing",
+            "composer",
+            "response"
+          ],
           "sizes": [],
           "states": [
             "rest",
@@ -17176,11 +19712,48 @@
         "api": [
           {
             "name": "TextareaProps",
-            "props": []
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "TextareaScrollAreaProps",
+            "props": [
+              {
+                "name": "children",
+                "type": "React.ReactElement<TextareaProps>",
+                "required": true,
+                "description": "One Textarea (or compatible native editor). Its ref and attributes survive."
+              }
+            ]
           },
           {
             "name": "TextareaComposerProps",
-            "props": []
+            "props": [
+              {
+                "name": "radius",
+                "type": "ControlRadius",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "FieldAppearance",
+                "required": false,
+                "description": ""
+              }
+            ]
           },
           {
             "name": "TextareaComposerBarProps",
@@ -17303,7 +19876,8 @@
       "description": "Reports a brief outcome in a notification area without moving the user away from the current task.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -17331,7 +19905,11 @@
           "evidence": "Ext",
           "status": "derived",
           "root": "[data-toast]",
-          "variants": [],
+          "variants": [
+            "compact",
+            "actionable",
+            "receipt"
+          ],
           "sizes": [],
           "states": [
             "open",
@@ -17377,6 +19955,12 @@
                 "type": "boolean",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"compact\" | \"actionable\" | \"receipt\"",
+                "required": false,
+                "description": ""
               }
             ]
           },
@@ -17406,7 +19990,7 @@
       "name": "toggle",
       "type": "registry:ui",
       "title": "Toggle",
-      "description": "Represents an action or option that stays pressed until it is toggled again.",
+      "description": "A small action with a lasting state: a toolbar tool, a paper bookmark or a descriptive preference. Native targets stay put while the painted surface responds.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
@@ -17423,10 +20007,16 @@
           "path": "registry/cojeev/styles/toggle.css",
           "type": "registry:file",
           "target": "styles/cojeev/toggle.css"
+        },
+        {
+          "path": "registry/cojeev/styles/control-appearance.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/control-appearance.css"
         }
       ],
       "css": {
-        "@import \"@/styles/cojeev/toggle.css\"": {}
+        "@import \"@/styles/cojeev/toggle.css\"": {},
+        "@import \"@/styles/cojeev/control-appearance.css\"": {}
       },
       "meta": {
         "source": {
@@ -17437,11 +20027,13 @@
           "status": "source",
           "root": ".v-toggle",
           "variants": [
-            "pressed",
-            "pink",
-            "circle"
+            "tool",
+            "bookmark",
+            "preference"
           ],
-          "sizes": [],
+          "sizes": [
+            "default"
+          ],
           "states": [
             "on",
             "rest",
@@ -17493,6 +20085,18 @@
               {
                 "name": "variant",
                 "type": "\"circle\" | \"default\" | \"pink\" | \"pressed\" | null | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"tool\" | \"bookmark\" | \"preference\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "radius",
+                "type": "ControlRadius",
                 "required": false,
                 "description": ""
               }
@@ -17585,7 +20189,7 @@
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
-      "description": "Adds a short supplementary explanation to a trigger on hover or keyboard focus.",
+      "description": "Precise ink callouts, useful keyboard hints and small paper annotations. Short explanations that appear where attention already is.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
       ],
@@ -17615,8 +20219,14 @@
           "evidence": "Ext",
           "status": "derived",
           "root": "[data-tooltip]",
-          "variants": [],
-          "sizes": [],
+          "variants": [
+            "callout",
+            "shortcut",
+            "annotation"
+          ],
+          "sizes": [
+            "default"
+          ],
           "states": [
             "open",
             "rest",
@@ -17661,6 +20271,12 @@
               {
                 "name": "portal",
                 "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "appearance",
+                "type": "\"callout\" | \"shortcut\" | \"annotation\"",
                 "required": false,
                 "description": ""
               }
@@ -18388,6 +21004,65 @@
           }
         ],
         "category": "Effects",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
+      }
+    },
+    {
+      "name": "weave-background",
+      "type": "registry:ui",
+      "title": "Weave background",
+      "description": "Interlaced thread-like strokes with visible over-and-under crossings.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/weave-background.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "source": {
+          "name": "Weave background",
+          "variants": [
+            "default"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "rest"
+          ]
+        },
+        "api": [
+          {
+            "name": "WeaveBackgroundProps",
+            "props": [
+              {
+                "name": "color",
+                "type": "string | undefined",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "opacity",
+                "type": "number",
+                "required": false,
+                "description": "Decorative ink strength, from 0 to 1."
+              },
+              {
+                "name": "spacing",
+                "type": "number",
+                "required": false,
+                "description": "Distance between marks, in pixels (8–80)."
+              }
+            ]
+          }
+        ],
+        "category": "Subtle backgrounds",
         "fidelity": "refined-design-family",
         "baseComponent": false
       }

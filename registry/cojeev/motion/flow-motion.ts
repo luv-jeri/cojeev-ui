@@ -40,11 +40,23 @@ export function createFlowPainter(write: (name: string, value: string) => void) 
     paint,
     hide(hover: boolean, immediate = false) {
       for (const prefix of hover ? ["hov"] as const : ["glide", "trail"] as const) {
-        if (immediate) lanes[prefix].o.jump(0);
-        else lanes[prefix].o.to(0, { duration: motionTokens.duration.quick });
+        // Transparent positioned layers still contribute native scroll overflow.
+        // Release their footprint when the fade finishes; painting again cancels
+        // this completion through the opacity lane's existing generation guard.
+        const clearGeometry = () => {
+          for (const key of ["x", "y", "w", "h"] as const) lanes[prefix][key].jump(0);
+          initialized.delete(prefix);
+        };
+        if (immediate) { lanes[prefix].o.jump(0); clearGeometry(); }
+        else lanes[prefix].o.to(0, { duration: motionTokens.duration.quick }, clearGeometry);
       }
     },
-    stop: () => { for (const prefix of families) Object.values(lanes[prefix]).forEach(lane => lane.stop()); },
+    // Selection travel and pointer preview have independent lifetimes. Stopping
+    // a selection phase must not cancel the ghost's fade/geometry cleanup.
+    stop(hover?: boolean) {
+      const targets = hover === undefined ? families : hover ? ["hov"] as const : ["glide", "trail"] as const;
+      for (const prefix of targets) Object.values(lanes[prefix]).forEach(lane => lane.stop());
+    },
     dispose: () => { for (const prefix of families) Object.values(lanes[prefix]).forEach(lane => lane.dispose()); },
   };
 }

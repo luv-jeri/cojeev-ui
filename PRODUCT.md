@@ -12,7 +12,7 @@ Sanjay and developers building Cojeev use this open-source component registry to
 
 ## Confirmed constraints
 
-- MIT licence. GitHub Pages hosts documentation and the registry; a custom domain will follow later.
+- MIT licence. The public documentation and direct component downloads use `https://000h.cojeev.com`. GitHub Pages compatibility remains available; the production/beta release plan uses Cloudflare hosting, automatic beta updates and an explicit production approval gate. Deployment readiness is tracked separately in `docs/production/provisioning-status.md`.
 - React, TypeScript, Radix accessibility primitives, Tailwind v4 and Fumadocs. Documentation controls use the Cojeev library.
 - The September 8 overhaul brief explicitly moves beyond static handoff parity toward expressive, carefully composed UI and standardizes choreography on Framer Motion (Motion for React).
 - Keep installable source and examples synchronized. Track new components explicitly.

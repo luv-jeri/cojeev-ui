@@ -6,6 +6,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import * as Primitive from "@radix-ui/react-hover-card";
 import { useFlowAppearance } from "@/registry/cojeev/motion/use-flow";
+import { ScrollArea } from "./scroll-area";
 export type HoverCardProps = React.ComponentProps<typeof Primitive.Root>;
 export function HoverCard(props: HoverCardProps) {
   return <Primitive.Root openDelay={300} closeDelay={150} {...props} />;
@@ -33,7 +34,11 @@ export const hoverCardContentVariants = cva(
 );
 export type HoverCardContentProps = React.ComponentProps<
   typeof Primitive.Content
-> & { portal?: boolean };
+> & {
+  portal?: boolean;
+  appearance?: "identity" | "preview" | "media";
+  scrollable?: boolean;
+};
 export function HoverCardContent({
   className,
   ref,
@@ -42,22 +47,39 @@ export function HoverCardContent({
   align = "start",
   collisionPadding = 8,
   portal = true,
+  appearance,
+  scrollable = !!appearance,
   ...props
 }: HoverCardContentProps) {
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
   const flowRef = useFlowAppearance<HTMLDivElement>(true, morphRef, "grow");
+  const ownsScroll = scrollable && !props.asChild;
   const content = (
     <Primitive.Content
       ref={flowRef}
       data-slot="hover-card-content"
       data-part="content"
+      data-appearance={appearance}
+      data-morph={appearance ? "both" : undefined}
+      data-r={appearance ? "css" : undefined}
+      data-scrollable={ownsScroll || undefined}
       sideOffset={sideOffset}
       align={align}
       collisionPadding={collisionPadding}
       className={cn(hoverCardContentVariants(), className)}
       {...props}
     >
-      {children}
+      {ownsScroll ? (
+        <ScrollArea
+          variant="plain"
+          className="v-hovercard-scroll"
+          viewportProps={{ "aria-label": "Preview details" }}
+        >
+          {children}
+        </ScrollArea>
+      ) : (
+        children
+      )}
     </Primitive.Content>
   );
   return portal ? <Primitive.Portal>{content}</Primitive.Portal> : content;

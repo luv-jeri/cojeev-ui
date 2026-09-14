@@ -1,11 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { LayoutGroup, motion } from "motion/react";
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import {
   DayPicker,
   useDayPicker,
   type PropsBase,
+  type DayPickerProps,
+  type DateRange,
   type Matcher,
   type DayButtonProps,
   type MonthCaptionProps,
@@ -18,7 +21,6 @@ import {
 import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Icon, IconButton } from "@/registry/cojeev/ui/icon";
-import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
 import {
   motionTokens,
   useChoreography,
@@ -26,19 +28,55 @@ import {
 import { assignMotionRef } from "@/registry/cojeev/motion/refs";
 export type CalendarMark = "pink" | "blue" | "olive" | "yellow" | "ink";
 const MarksContext = React.createContext<Record<string, CalendarMark>>({});
+const SelectionModeContext = React.createContext<
+  "single" | "range" | "multiple"
+>("single");
+// Related, legible silhouettes: selection has a finite contour change, while
+// the native day button and its focus target never move or change shape.
+const selectionContours = [
+  "43% 57% 48% 52% / 55% 44% 56% 45%",
+  "55% 45% 58% 42% / 44% 54% 46% 56%",
+  "48% 52% 41% 59% / 59% 45% 55% 41%",
+  "58% 42% 53% 47% / 47% 59% 41% 53%",
+];
 export const calendarVariants = cva("v-cal [display:grid] [gap:14px]");
-export type CalendarProps = Omit<
+type CalendarBaseProps = Omit<
   PropsBase,
   "mode" | "onSelect" | "selected" | "disabled" | "required"
 > & {
-  mode?: "single";
-  selected?: Date;
-  defaultSelected?: Date;
-  onSelect?: (date: Date | undefined) => void;
   disabled?: Matcher | Matcher[];
   marks?: Record<string, CalendarMark>;
   required?: boolean;
 };
+export type CalendarSingleProps = CalendarBaseProps & {
+  mode?: "single";
+  selected?: Date;
+  defaultSelected?: Date;
+  onSelect?: (date: Date | undefined) => void;
+};
+export type CalendarRangeProps = CalendarBaseProps & {
+  mode: "range";
+  selected?: DateRange;
+  defaultSelected?: DateRange;
+  onSelect?: (range: DateRange | undefined) => void;
+  min?: number;
+  max?: number;
+  excludeDisabled?: boolean;
+  resetOnSelect?: boolean;
+};
+export type CalendarMultipleProps = CalendarBaseProps & {
+  mode: "multiple";
+  selected?: Date[];
+  defaultSelected?: Date[];
+  onSelect?: (dates: Date[] | undefined) => void;
+  min?: number;
+  max?: number;
+};
+export type CalendarProps =
+  | CalendarSingleProps
+  | CalendarRangeProps
+  | CalendarMultipleProps;
+export type { DateRange };
 export function Calendar(calendarProps: CalendarProps) {
   const {
     className,
@@ -55,80 +93,116 @@ export function Calendar(calendarProps: CalendarProps) {
     ...props
   } = calendarProps;
   const { quiet } = useChoreography();
-  const [internalSelected, setInternalSelected] =
-    React.useState(defaultSelected);
+  const layoutId = React.useId();
+  const [internal, setInternal] = React.useState({
+    mode,
+    value: defaultSelected,
+  });
   const controlled = Object.prototype.hasOwnProperty.call(
     calendarProps,
     "selected",
   );
-  const current = controlled ? selected : internalSelected;
-  return (
-    <MarksContext.Provider value={marks}>
-      <DayPicker
-        mode={mode}
-        selected={current}
-        onSelect={(date) => {
-          if (required && !date) return;
-          setInternalSelected(date);
-          onSelect?.(date);
-        }}
-        showWeekNumber
-        weekStartsOn={1}
-        ISOWeek
-        showOutsideDays={false}
-        hideNavigation
-        animate={animate && !quiet}
-        data-slot="calendar"
-        data-part="root"
-        data-cal=""
-        className={cn(calendarVariants(), className)}
-        style={
-          {
-            ...style,
-            "--v-calendar-duration": `${quiet ? 0 : motionTokens.duration.enter}s`,
-            "--v-calendar-ease": `cubic-bezier(${motionTokens.ease.enter.join(",")})`,
-          } as React.CSSProperties
+  const current = controlled
+    ? selected
+    : internal.mode === mode
+      ? internal.value
+      : defaultSelected;
+  const selection =
+    mode === "range"
+      ? {
+          mode,
+          selected: current as DateRange | undefined,
+          onSelect: (date: DateRange | undefined) => {
+            setInternal({ mode, value: date });
+            (onSelect as CalendarRangeProps["onSelect"])?.(date);
+          },
         }
-        classNames={{
-          months: "v-cal__months",
-          month: "v-cal__month-wrap",
-          month_caption: "v-cal__head",
-          month_grid: "v-cal__grid",
-          weekday: "v-cal__wd",
-          week_number: "v-cal__wk",
-          week_number_header: "v-cal__wd -wk",
-          day_button: "v-cal__d",
-          weeks_before_enter: "v-cal__weeks-before-enter",
-          weeks_after_enter: "v-cal__weeks-after-enter",
-          weeks_before_exit: "v-cal__weeks-before-exit",
-          weeks_after_exit: "v-cal__weeks-after-exit",
-          caption_before_enter: "v-cal__caption-enter",
-          caption_after_enter: "v-cal__caption-enter",
-          caption_before_exit: "v-cal__caption-exit",
-          caption_after_exit: "v-cal__caption-exit",
-          ...classNames,
-        }}
-        formatters={{
-          formatWeekdayName: (date) =>
-            date
-              .toLocaleDateString("en", { weekday: "short" })
-              .slice(0, 2)
-              .toUpperCase(),
-          formatWeekNumberHeader: () => "WK",
-        }}
-        components={{
-          Root: CalendarRoot,
-          MonthCaption: CalendarCaption,
-          DayButton: CalendarDayButton,
-          MonthGrid: CalendarGrid,
-          WeekNumber: CalendarWeekNumber,
-          Weekday: CalendarWeekday,
-          WeekNumberHeader: CalendarWeekNumberHeader,
-          ...components,
-        }}
-        {...props}
-      />
-    </MarksContext.Provider>
+      : mode === "multiple"
+        ? {
+            mode,
+            selected: current as Date[] | undefined,
+            onSelect: (date: Date[] | undefined) => {
+              setInternal({ mode, value: date });
+              (onSelect as CalendarMultipleProps["onSelect"])?.(date);
+            },
+          }
+        : {
+            mode,
+            selected: current as Date | undefined,
+            onSelect: (date: Date | undefined) => {
+              setInternal({ mode, value: date });
+              (onSelect as CalendarSingleProps["onSelect"])?.(date);
+            },
+          };
+  // The public legacy required:boolean API is broader than DayPicker's literal
+  // required discriminant. Values/callbacks above are still paired by mode.
+  const selectionProps = { ...selection, required } as DayPickerProps;
+  return (
+    <LayoutGroup id={layoutId}>
+      <SelectionModeContext.Provider value={mode}>
+        <MarksContext.Provider value={marks}>
+          <DayPicker
+            {...selectionProps}
+            showWeekNumber
+            weekStartsOn={1}
+            ISOWeek
+            showOutsideDays={false}
+            hideNavigation
+            animate={animate && !quiet}
+            data-slot="calendar"
+            data-selection-mode={mode}
+            data-part="root"
+            data-cal=""
+            className={cn(calendarVariants(), className)}
+            style={
+              {
+                ...style,
+                "--v-calendar-duration": `${quiet ? 0 : motionTokens.duration.enter}s`,
+                "--v-calendar-ease": `cubic-bezier(${motionTokens.ease.enter.join(",")})`,
+              } as React.CSSProperties
+            }
+            classNames={{
+              months: "v-cal__months",
+              month: "v-cal__month-wrap",
+              month_caption: "v-cal__head",
+              month_grid: "v-cal__grid",
+              weekday: "v-cal__wd",
+              week_number: "v-cal__wk",
+              week_number_header: "v-cal__wd -wk",
+              day_button: "v-cal__d",
+              weeks_before_enter: "v-cal__weeks-before-enter",
+              weeks_after_enter: "v-cal__weeks-after-enter",
+              weeks_before_exit: "v-cal__weeks-before-exit",
+              weeks_after_exit: "v-cal__weeks-after-exit",
+              caption_before_enter: "v-cal__caption-enter",
+              caption_after_enter: "v-cal__caption-enter",
+              caption_before_exit: "v-cal__caption-exit",
+              caption_after_exit: "v-cal__caption-exit",
+              ...classNames,
+            }}
+            formatters={{
+              formatWeekdayName: (date) =>
+                date
+                  .toLocaleDateString("en", { weekday: "short" })
+                  .slice(0, 2)
+                  .toUpperCase(),
+              formatWeekNumberHeader: () => "WK",
+            }}
+            components={{
+              Root: CalendarRoot,
+              MonthCaption: CalendarCaption,
+              DayButton: CalendarDayButton,
+              MonthGrid: CalendarGrid,
+              WeekNumber: CalendarWeekNumber,
+              Weekday: CalendarWeekday,
+              WeekNumberHeader: CalendarWeekNumberHeader,
+              ...components,
+            }}
+            {...props}
+          />
+        </MarksContext.Provider>
+      </SelectionModeContext.Provider>
+    </LayoutGroup>
   );
 }
 
@@ -217,13 +291,9 @@ export function CalendarCaption({
   );
 }
 export function CalendarGrid({ className, ...props }: MonthGridProps) {
-  const flowRef = useFlowGroup<HTMLTableElement>(undefined, {
-    itemSelector: ".v-cal__d",
-    activeSelector: '[data-state="active"]',
-  });
   return (
     <table
-      ref={flowRef}
+      data-flow="off"
       data-slot="calendar-grid"
       data-part="viewport"
       className={cn("v-cal__grid", className)}
@@ -239,20 +309,24 @@ export function CalendarDayButton({
   ...props
 }: DayButtonProps) {
   const marks = React.useContext(MarksContext);
+  const mode = React.useContext(SelectionModeContext);
+  const { quiet } = useChoreography();
   const ref = React.useRef<HTMLButtonElement>(null);
-  const morphRef = useMorph<HTMLButtonElement>("nav", ref);
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
   const date = day.date;
+  const contour = selectionContours[date.getDate() % selectionContours.length];
   const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   const mark = marks[iso];
   return (
     <button
-      ref={morphRef}
+      ref={ref}
       data-slot="calendar-day"
       data-part="item"
       data-d={date.getDate()}
+      data-date={iso}
+      data-outside={modifiers.outside || undefined}
       data-today={modifiers.today || undefined}
       data-range-start={modifiers.range_start || undefined}
       data-range-middle={modifiers.range_middle || undefined}
@@ -267,6 +341,28 @@ export function CalendarDayButton({
       )}
       {...props}
     >
+      {modifiers.selected && !modifiers.range_middle && (
+        <motion.span
+          data-slot="calendar-selection"
+          aria-hidden="true"
+          className="v-cal__selection"
+          layoutId={mode === "single" && !quiet ? "selected-day" : undefined}
+          initial={
+            quiet
+              ? false
+              : {
+                  opacity: 0,
+                  scale: 0.9,
+                  borderRadius: "50% 50% 50% 50% / 50% 50% 50% 50%",
+                }
+          }
+          animate={{ opacity: 1, scale: 1, borderRadius: contour }}
+          transition={{
+            duration: quiet ? 0 : motionTokens.duration.enter,
+            ease: motionTokens.ease.enter,
+          }}
+        />
+      )}
       <span>{children}</span>
       {mark && (
         <i

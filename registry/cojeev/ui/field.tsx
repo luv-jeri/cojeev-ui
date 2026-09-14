@@ -5,6 +5,10 @@ import { useFlowGroup } from "@/registry/cojeev/motion/use-flow";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Label, type LabelProps } from "@/registry/cojeev/ui/label";
+import {
+  controlRadiusStyle,
+  type ControlAppearanceProps,
+} from "../lib/control-appearance";
 const FieldContext = React.createContext<{
   id: string;
   invalid: boolean;
@@ -19,28 +23,48 @@ const fieldVariants = cva(
   },
 );
 export type FieldProps = React.ComponentProps<"div"> &
-  VariantProps<typeof fieldVariants> & {
+  VariantProps<typeof fieldVariants> &
+  ControlAppearanceProps & {
     invalid?: boolean;
     controlId?: string;
+    /** Place supporting copy beside the control, or collect it in one well. */
+    layout?: "stacked" | "inline" | "integrated";
   };
 export function Field({
+  radius,
+  appearance,
+  style,
   className,
   variant,
   invalid = variant === "invalid",
   controlId,
+  layout,
   children,
   ...props
 }: FieldProps) {
   const generatedId = React.useId();
   const [descriptions, setDescriptions] = React.useState<string[]>([]);
   const registerDescription = React.useCallback((id: string) => {
-    setDescriptions(current => current.includes(id) ? current : [...current, id]);
-    return () => setDescriptions(current => current.filter(value => value !== id));
+    setDescriptions((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
+    return () =>
+      setDescriptions((current) => current.filter((value) => value !== id));
   }, []);
   return (
-    <FieldContext.Provider value={{ id: controlId ?? generatedId, invalid, descriptions, registerDescription }}>
+    <FieldContext.Provider
+      value={{
+        id: controlId ?? generatedId,
+        invalid,
+        descriptions,
+        registerDescription,
+      }}
+    >
       <div
         data-slot="field"
+        data-appearance={appearance}
+        data-layout={layout}
+        style={{ ...style, ...controlRadiusStyle(radius) }}
         data-part="root"
         data-state={invalid ? "error" : "rest"}
         className={cn(
@@ -74,7 +98,9 @@ export function FieldControl({ children, ...props }: FieldControlProps) {
       data-part="input"
       id={field?.id}
       aria-invalid={field?.invalid || undefined}
-      aria-describedby={field?.descriptions.length ? field.descriptions.join(" ") : undefined}
+      aria-describedby={
+        field?.descriptions.length ? field.descriptions.join(" ") : undefined
+      }
       {...props}
     >
       {children}
@@ -144,8 +170,15 @@ export function FieldLegend({ className, ...props }: FieldLegendProps) {
     />
   );
 }
-export type FieldGroupProps = React.ComponentProps<"div"> & { asChild?: boolean };
-export function FieldGroup({ ref, asChild, className, ...props }: FieldGroupProps) {
+export type FieldGroupProps = React.ComponentProps<"div"> & {
+  asChild?: boolean;
+};
+export function FieldGroup({
+  ref,
+  asChild,
+  className,
+  ...props
+}: FieldGroupProps) {
   const flowRef = useFlowGroup<HTMLDivElement>(ref);
   const Comp = asChild ? Slot : "div";
   return (

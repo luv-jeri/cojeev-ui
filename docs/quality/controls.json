@@ -1,0 +1,965 @@
+{
+  "date": "2026-09-10",
+  "owner": "controls",
+  "status": "checkpoint-partial",
+  "components": [
+    {
+      "id": "accordion",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/accordion/",
+          "scope": "Pointer switch from first to second question exposed second answer and removed first answer from visible content."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "alert",
+      "category": "Feedback",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "alert-dialog",
+      "category": "Feedback",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "aspect-ratio",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "breadcrumb",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "button",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "button-group",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/button-group/",
+          "scope": "Clicked Month; pressed selection changed and visible Month overview displayed38 notes this month."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "buy-me-coffee",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "calendar",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "card",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "carousel",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "checkbox",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/checkbox/",
+          "scope": "Clicked Keep this idea in my collection; checked state cleared and visible status changed Idea included->Idea excluded."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "collapsible",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "combobox",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/combobox/",
+          "scope": "Cleared query with native keyboard editing;4 choices including disabled Archive appeared. Filtering Reading left Reading list; selecting it updated selected collection:reading."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "context-menu",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "date-picker",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "dialog",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "direction",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "drawer",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "dropdown-menu",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "dropzone",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "empty",
+      "category": "Feedback",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "field",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "2 existing server-render accessibility tests passed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "hero-button",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "input",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "input-group",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "input-otp",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "label",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "linear-modal",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "living-link",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "Existing disabled/native-link markup test passed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "menubar",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "motion-drawer",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "multi-select",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "native-select",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "navigation-menu",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "number-input",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "route": "http://127.0.0.1:4320/cojeev-ui/docs/number-input/",
+          "scope": "Click Increase value changed24.5->25 and visible contribution status updated to$25.00."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "6 existing number motion/stepping/localization/server-render tests passed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "option-wheel",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "pagination",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "popover",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "progress",
+      "category": "Feedback",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        },
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "4 existing geometry tests passed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "questionnaire",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "radio-group",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "reading-trail",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [
+        {
+          "kind": "automated",
+          "result": "passed",
+          "scope": "3 existing reading geometry tests passed; leaf source remains queued."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "resizable",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "scroll-area",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "targeted-fixes-verified",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "scope": "Actual nested docs sidebar wheel to bottom, filtered results, thumb drag to top, no-results unmount, clear-search remount,1440x980->1280x720 resize."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "scope": "Reduced-motion nested sidebar bottom->button filter: real content365px, scrollTop116px,164.4px thumb ending460.94px inside465px rail. Temporary media/viewport overrides cleared."
+        }
+      ],
+      "issues": [
+        "RF-C-001",
+        "RF-C-002"
+      ]
+    },
+    {
+      "id": "select",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "separator",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "sheet",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "sidebar",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "targeted-fixes-verified",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Public props, state/event handling, primitive integration and lifecycle; focused first pass."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "scope": "Actual nested docs sidebar wheel to bottom, filtered results, thumb drag to top, no-results unmount, clear-search remount,1440x980->1280x720 resize."
+        },
+        {
+          "kind": "browser",
+          "result": "passed",
+          "scope": "Reduced-motion nested sidebar bottom->button filter: real content365px, scrollTop116px,164.4px thumb ending460.94px inside465px rail. Temporary media/viewport overrides cleared."
+        }
+      ],
+      "issues": [
+        "RF-C-001",
+        "RF-C-002"
+      ]
+    },
+    {
+      "id": "skeleton",
+      "category": "Feedback",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "slider",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "spinner",
+      "category": "Feedback",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "stepper",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "swapy",
+      "category": "Layout",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "switch",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "tabs",
+      "category": "Navigation",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "textarea",
+      "category": "Forms",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "theme-toggle",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "toast",
+      "category": "Feedback",
+      "owner": "controls",
+      "status": "queued",
+      "checks": [],
+      "issues": []
+    },
+    {
+      "id": "toggle",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    },
+    {
+      "id": "toggle-group",
+      "category": "Actions",
+      "owner": "controls",
+      "status": "source-reviewed",
+      "checks": [
+        {
+          "kind": "source",
+          "result": "reviewed",
+          "scope": "Read complete leaf React source; assessed public props, state/event handling, primitive integration and lifecycle. Styles and all consumer/variant combinations not yet reviewed."
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "RF-C-001",
+      "source": "user",
+      "related": [
+        "RF-U-002"
+      ],
+      "components": [
+        "scroll-area",
+        "sidebar"
+      ],
+      "status": "verified",
+      "owner": "controls",
+      "route": "http://127.0.0.1:4320/cojeev-ui/docs/number-input/",
+      "reproduction": "Scroll the long docs sidebar to its bottom at1280x720.",
+      "symptom": "Thumb is clipped below its rail and visible hit geometry disagrees with scroll travel.",
+      "expected": "The full thumb stays within the rail and uses the same dimensions as drag/position calculation.",
+      "rootCause": "Radix computes an18px minimum thumb; CSS forced36px minimum height/width. On a249px rail the library's223px travel exceeded the available space for36px paint.",
+      "paths": [
+        "registry/cojeev/styles/scroll-area.css"
+      ],
+      "fix": "Aligned vertical/horizontal CSS minimum to Radix18px floor, preserving custom contour and grip.",
+      "verification": [
+        "Before: rail bottom465px; thumb bottom478.94px, height36px.",
+        "After: bottom thumb height18px and bottom460.89px inside rail464.97px.",
+        "Drag filtered164.4px thumb from bottom to top reached native scrollTop0.",
+        "Resize1440x980->1280x720 recalculated36.49px->18px thumb with matching native position."
+      ],
+      "limits": [
+        "No horizontal live fixture exercised yet.",
+        "Touch/mobile not yet verified."
+      ]
+    },
+    {
+      "id": "RF-C-002",
+      "source": "user",
+      "related": [
+        "RF-U-002"
+      ],
+      "components": [
+        "sidebar",
+        "scroll-area"
+      ],
+      "status": "verified",
+      "owner": "controls",
+      "route": "http://127.0.0.1:4320/cojeev-ui/docs/number-input/",
+      "reproduction": "Scroll sidebar to bottom, then type button in Find a component.",
+      "symptom": "Only4 matching links remain but sidebar is blank, with stale scroll range/thumb.",
+      "expected": "Filtered results determine actual scroll range; removed highlights cannot retain old overflow.",
+      "rootCause": "Flow painter hide only set opacity0 and retained positioned layer geometry. Hover/selection layers at removed rows retained thousands of pixels of native overflow. Delayed cleanup also let Radix cache obsolete content height.",
+      "paths": [
+        "registry/cojeev/motion/flow.ts",
+        "registry/cojeev/motion/flow-motion.ts",
+        "tests/rapid-fix-scroll.test.ts"
+      ],
+      "fix": "Clear hidden painter geometry after fade; cancel stale completion on renewed paint; clear hovered geometry when content changes and immediately hide removed selected targets.",
+      "verification": [
+        "Before: filtered nav height365px, viewport scrollHeight6286px and scrollTop6037.5px; screenshot visibly blank.",
+        "After: scrollHeight365px, scrollTop116px, thumb164.4px aligned to rail bottom.",
+        "No-results: scrollHeight=clientHeight249px, scrollTop0, thumb absent. Clear-search restored6987px list.",
+        "New regression tests showed2 failures before implementation. After fix14 focused tests pass for painter hide/retarget, choreography and scroll shape.",
+        "Alternative live FlowGroup consumers: combobox filter+selection and ButtonGroup selection retained visible outcomes. Reduced-motion sidebar filter also passed."
+      ],
+      "limits": [
+        "All live flow character variants and every group consumer are not exhaustively browser-covered; alternate combobox and ButtonGroup verified.",
+        "Full component browser/responsive/variant audit remains ongoing."
+      ]
+    }
+  ],
+  "notes": [
+    "Checkpoint requested by coordinator after user-visible RF-U-002 fixes became stable.52/61 leaf React sources reviewed;9 source reviews remain queued. Broad browser/style/variant coverage is incomplete.",
+    "Browser exercised7 assigned components: sidebar,scroll-area,number-input,combobox,button-group,checkbox,accordion. Alert-dialog default example observed only; not counted as behavior verified.",
+    "Focused RF-U-002 validation:14 painter/choreography/scroll tests passed,3 new regression tests. Targeted ESLint and git diff --check passed.",
+    "User report RF-U-002 interrupted general audit. Shared helper edits exclusively approved by coordinator. No further candidate concern promoted to a defect without reproduction.",
+    "Used systematic-debugging and verification-before-completion skills. No build, registry rebuild, commit,push or publication performed by controls owner."
+  ]
+}

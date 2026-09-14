@@ -55,8 +55,9 @@ export function TargetCursorExample() {
   return <div style={{ width: "100%", display: "grid", gap: 16 }}><TargetCursor><div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center", paddingBlock: 64 }}>{["Shapes", "Typography", "Motion"].map(label => <Button key={label} variant={choice === label ? "accent" : "secondary"} onClick={() => setChoice(label)} aria-pressed={choice === label}>{label}</Button>)}</div></TargetCursor><p role="status">{choice} selected. Hover or Tab between the buttons; press Enter to choose.</p></div>;
 }
 export function OrbitImagesExample() {
-  const [paused, setPaused] = React.useState(false), [reverse, setReverse] = React.useState(false);
-  return <div style={{ width: "100%", display: "grid", gap: 20 }}><OrbitImages images={studioImages} paused={paused} reverse={reverse}><span style={{ fontFamily: "var(--font-display)", fontSize: 30, lineHeight: 1.1 }}>A family<br />of forms.</span></OrbitImages><div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}><Button onClick={() => setPaused(value => !value)}>{paused ? "Resume orbit" : "Pause orbit"}</Button><Button variant="secondary" aria-pressed={reverse} onClick={() => setReverse(value => !value)}>Reverse direction</Button></div></div>;
+  const [paused, setPaused] = React.useState(false), [reverse, setReverse] = React.useState(false), [replaced, setReplaced] = React.useState(false);
+  const images = replaced ? [...studioImages].reverse() : studioImages;
+  return <div style={{ width: "100%", display: "grid", gap: 20 }}><OrbitImages images={images} paused={paused} reverse={reverse}><span style={{ fontFamily: "var(--font-display)", fontSize: 30, lineHeight: 1.1 }}>A family<br />of forms.</span></OrbitImages><div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}><Button onClick={() => setPaused(value => !value)}>{paused ? "Resume orbit" : "Pause orbit"}</Button><Button variant="secondary" aria-pressed={reverse} onClick={() => setReverse(value => !value)}>Reverse direction</Button><Button variant="secondary" aria-pressed={replaced} onClick={() => setReplaced(value => !value)}>Replace images</Button></div></div>;
 }
 export function PixelSwapExample() {
   const [active, setActive] = React.useState(false);

@@ -1376,8 +1376,10 @@
     "name": "Motion Drawer",
     "category": "Layout",
     "variants": [
-      "start",
-      "end"
+      "default",
+      "floating",
+      "stack",
+      "bottom"
     ],
     "sizes": [
       "default"
@@ -1387,16 +1389,16 @@
       "active",
       "still"
     ],
-    "description": "An accessible side sheet with a drag handle and an edge-aware dismiss gesture.",
-    "usage": "Supply caller content and preserve the native labels and example controls.",
-    "accessibility": "Native semantics and keyboard controls; shared motion settings and reduced motion keep essential content usable.",
+    "description": "A reference-faithful edge drawer, floating quick panel, layered workspace and bottom action tray.",
+    "usage": "Choose a structural variant; configure logical side, width, drag threshold and spring response independently. Supply your own content and optional controlled open state.",
+    "accessibility": "Radix Dialog retains focus trapping, Escape, scroll lock and focus return. The close control does not require dragging; reduced motion removes travel.",
     "related": [
       "sheet",
       "drawer"
     ],
     "reference": "https://www.ui-layouts.com/components/motion-drawer",
     "landing": "Useful for mobile library navigation.",
-    "notes": "Compose existing Sheet modal mechanics; adds handle-only drag dismissal and trigger travel.",
+    "notes": "MIT UI Layouts source adapted with its flush 300px default, whole-surface drag and toggle continuity. Cojeev tokens and Radix modal semantics; floating, stack and bottom are structural additions.",
     "observation": "A navigation drawer slides from its edge, tracks drag and moves its trigger.",
     "status": "new"
   },
