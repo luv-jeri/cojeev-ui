@@ -91,6 +91,13 @@ Exact exported type names may follow existing naming; document them and avoid ca
 
 ### Task 5: I-03/I-04/I-05 font delivery, measured payload and installation handoff
 
+Installer-placement clarification: retain the registry target
+`scripts/cojeev-materialize-fonts.mjs`. shadcn places that target beneath
+`src/` in a src-layout consumer, so the measured fixture invokes
+`node src/scripts/cojeev-materialize-fonts.mjs --css src/styles/cojeev-fonts.css`.
+Do not use a `../scripts` target to force project-root placement or risk writing
+outside a consumer without `src/`.
+
 **Files:** inspect scripts/build-registry.mjs, scripts/verify-install.mjs, registry.json, registry/cojeev/styles/fonts.css and licensed font sources; add registry/cojeev/scripts/materialize-fonts.mjs shipped as a text-only registry:file targeting scripts/cojeev-materialize-fonts.mjs; docs/guides/local-fonts.md; docs/quality/library-integration-status.md; create focused delivery/measurement script only if existing scripts cannot express it.
 
 - [ ] Implement explicit offline materialization: `node scripts/cojeev-materialize-fonts.mjs --css src/styles/cojeev-fonts.css` decodes the two existing WOFF2 data sources into sibling fonts/*.woff2 and changes only those src values to relative URLs in the same active stylesheet. Preserve all other CSS/family/weight declarations, shipped OFL notices and default embedded install until opted in. Inspect/verify canonical source hashes; idempotent rerun must not overwrite unrelated fonts or silently accept partial/drifted input. Installed shadcn4.21.0 reads registry files as UTF-8, so never list binary WOFF2 as registry files. No new font endpoint, runtime dependency, second active stylesheet or network request is needed.

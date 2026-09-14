@@ -338,6 +338,11 @@
           "target": "styles/cojeev-fonts.css"
         },
         {
+          "path": "registry/cojeev/scripts/materialize-fonts.mjs",
+          "type": "registry:file",
+          "target": "scripts/cojeev-materialize-fonts.mjs"
+        },
+        {
           "path": "registry/cojeev/styles/tokens.css",
           "type": "registry:file",
           "target": "styles/cojeev/tokens.css"
