@@ -17,6 +17,16 @@ For an account configuration, research or manual acceptance checkpoint, commit s
 
 ## Proportionate verification
 
+### 14 September 2026: exact-source launch exception
+
+Sanjay explicitly requested no more automated tests for the immediate beta and
+production launch. [B02-6](production/2026-09-14-owner-expedited-release.md)
+records the exception, its exact-tree restriction and all omitted suites.
+For that approved tree only, successful build/artifact/deployment checks permit
+release with deferred test acceptance. Skipped tests are never called passing.
+Normal PR/main protections and Sanjay's production environment approval remain.
+The general policy below applies to every other tree.
+
 Owner correction, 12 September 2026: match verification to the actual change. Do not repeat the full component catalogue for every small checkpoint or status update.
 
 | Change | Required checkpoint evidence |

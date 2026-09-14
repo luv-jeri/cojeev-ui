@@ -280,17 +280,49 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+      # Owner-approved launch exception, B02-6. It applies only to an explicitly
+      # recorded source tree, never to arbitrary later commits or fork PRs.
+      - name: Record exact-source owner test deferral
+        id: launch_policy
+        shell: bash
+        env:
+          APPROVED_TREE: ${{ vars.OWNER_DEFER_TESTS_TREE }}
+          TRUSTED_SOURCE: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          actual_tree=$(git rev-parse 'HEAD^{tree}')
+          deferred=false
+          if [[ "$TRUSTED_SOURCE" == true && "$APPROVED_TREE" =~ ^[a-f0-9]{40}$ && "$actual_tree" == "$APPROVED_TREE" ]]; then
+            deferred=true
+          fi
+          echo "deferred=$deferred" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Release verification policy"
+            echo "Source tree: $actual_tree"
+            if [[ "$deferred" == true ]]; then
+              echo "Owner-approved expedited launch (B02-6, 14 September 2026)."
+              echo "Automated test, lint, standalone typecheck, example, browser, motion, CSP-browser and consumer-install suites are NOT RUN, not passing."
+              echo "Clean-source builds, artifact identity/environment validation, private backup, protected deployment approval and live health checks remain required."
+            else
+              echo "No matching owner exception: full verification remains required."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22.22.0
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npm run lint
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npx next typegen && npm run typecheck
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npm test
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npm run reporting:test
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npm run registry-host:test
+        if: steps.launch_policy.outputs.deferred != 'true'
       - name: Prepare both environments from this clean commit
         id: release
         run: node scripts/release.mjs build-pair "$GITHUB_SHA" artifacts/release
@@ -301,23 +333,32 @@ jobs:
           PRODUCTION_ANALYTICS_ENABLED: ${{ vars.PRODUCTION_ANALYTICS_ENABLED || 'false' }}
           PUBLIC_CONTACT_ENABLED: ${{ vars.PUBLIC_CONTACT_ENABLED || 'false' }}
       - name: Check the hosting CSP against each packaged artifact
+        if: steps.launch_policy.outputs.deferred != 'true'
         run: |
           node scripts/release-csp.mjs beta artifacts/release/beta
           node scripts/release-csp.mjs production artifacts/release/production
       - name: Build manual Pages compatibility fixture for existing browser gates
+        if: steps.launch_policy.outputs.deferred != 'true'
         run: npm run build
       - run: npm run check:examples
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npm run gate
+        if: steps.launch_policy.outputs.deferred != 'true'
         env:
           COJEEV_DOCS_SHARDS: '3'
       - run: npm run gate:mobile
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npm run gate:marketing
+        if: steps.launch_policy.outputs.deferred != 'true'
       - run: npm run gate:smooth-scroll
+        if: steps.launch_policy.outputs.deferred != 'true'
       - name: Build the disposable local reporting fixture
+        if: steps.launch_policy.outputs.deferred != 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_REPORTING_API_URL: http://127.0.0.1:8787
       - name: Exercise receipt, attachment and maintainer journeys without live services
+        if: steps.launch_policy.outputs.deferred != 'true'
         run: node scripts/run-reporting-browser.mjs
       # Analytics gate, three cases. The gate serves out/ itself on an ephemeral port
       # when ANALYTICS_URL is unset. Every provider request is intercepted in the
@@ -328,9 +369,11 @@ jobs:
       # 1. Unset: reuse the local reporting fixture above, which sets no analytics
       #    variables at all. Its disposable API is now stopped.
       - run: node tests/analytics.browser.mjs --expect-silent
+        if: steps.launch_policy.outputs.deferred != 'true'
       # 2. Explicitly disabled: the same dummy token and host, refused by the flag
       #    alone, so silence cannot be an artefact of a missing token.
       - name: Rebuild the Pages fixture with analytics explicitly disabled
+        if: steps.launch_policy.outputs.deferred != 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'false'
@@ -339,8 +382,10 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: node tests/analytics.browser.mjs --expect-silent
+        if: steps.launch_policy.outputs.deferred != 'true'
       # 3. Enabled: explicit events only, asserted against the fixture's own stamps.
       - name: Rebuild the Pages fixture with analytics capture enabled
+        if: steps.launch_policy.outputs.deferred != 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'true'
@@ -349,10 +394,12 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: npm run analytics:browser
+        if: steps.launch_policy.outputs.deferred != 'true'
         env:
           ANALYTICS_TEST_ENVIRONMENT: beta
           ANALYTICS_TEST_RELEASE: '0000000000000000000000000000000000000000'
       - name: Verify fresh consumer installation from each verified environment artifact
+        if: steps.launch_policy.outputs.deferred != 'true'
         run: |
           node scripts/release-install.mjs beta "$GITHUB_SHA" artifacts/release/beta "$BETA_DIGEST"
           node scripts/release-install.mjs production "$GITHUB_SHA" artifacts/release/production "$PRODUCTION_DIGEST"
