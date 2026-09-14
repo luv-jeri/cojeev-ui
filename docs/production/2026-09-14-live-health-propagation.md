@@ -36,8 +36,47 @@ already in flight when it expires.
 
 Everything else fails on the first attempt: a missing health token, a stalled or
 failed delivery queue, email quota, an unconfigured provider, and any broken
-header or 404 contract. A run that carries even one permanent code never
+header, status or 404 contract. A run that carries even one permanent code never
 retries, even when a propagation code is present alongside it.
+
+## The missed case, and the guard that fixes it
+
+The first version ran the three route probes on every read, including reads where
+public health had already said this release was not being served yet. A route
+probe that answers with anything other than the expected status produces
+`site-contract`, which is permanent — so an edge mid-rollout, answering 503 or
+404 on *every* endpoint, failed on the first attempt and never retried. That is
+precisely the case this checkpoint exists for.
+
+Reproduced in-process with a stub fetcher, no network, before the fix:
+
+```
+Live checks failed after 1 attempt: http-health, site-contract
+waits performed: 0
+```
+
+An independent review reproduced the same failure and offered two repairs. The
+smaller one is taken here, and it restores the ordering the original `live`
+command had: **public health gates the route contract.** One guard before the
+loop — if the read carries `http-health` or `release-mismatch`, the routes are
+not probed at all, and the read returns its health codes plus `site-unchecked`.
+
+This is deliberately *not* the broader alternative of reclassifying route-probe
+statuses as transient. A wrong status is still a permanent `site-contract`
+failure; it is simply not attributed to this release until public health says
+this release is the one answering.
+
+The code vocabulary is unchanged: no new code is reported for the skip. A draft
+added one and it was removed on review as unnecessary state, because the read
+already carries `http-health` or `release-mismatch`, which is both why success is
+impossible at that point and why the run retries.
+
+**The invariant the guard rests on:** an unready read always carries one of those
+two codes, so `liveProblems` can never return an empty list without having
+actually probed the routes. Success therefore still requires the correct release
+*and* the full route contract, never one without the other. A test drives that
+invariant across four different unready edges, asserting both that the read is
+non-empty and that every code it reports is one a later read can resolve.
 
 One deliberate exception. `checkHealth` reports both "no health token" and "the
 admin endpoint did not answer usefully" under `invalid-delivery-health`. When a
@@ -76,11 +115,50 @@ Eight focused tests in `tests/release-live.test.mjs`, run with
 - an injected clock proves the budget is wall-clock time: reads that each consume
   18s stop the retries early, even though the wait list alone would still permit
   five attempts;
-- every request is issued with an abort signal rather than being left to its own
-  timeout.
+- the deadline is observed **firing**, not merely present: a stub that never
+  resolves on its own is ended only by the budget's own abort signal, with a 50ms
+  budget against the real clock and real timers. The measured run took 52.8ms,
+  against a 15s per-request timeout and a 4s first wait, so the test completing
+  at all is the evidence. This replaces an earlier assertion that only checked
+  the signals were `AbortSignal` instances, which both the primary and the
+  review called out as too weak;
+- an edge answering 503 on every endpoint retries the full budget and never
+  reports `site-contract`;
+- recovery after a 503 and after a 404 health outage both pass, and the routes
+  are read exactly once, after readiness, never against the failing edge;
+- a stale release followed by the new one passes, with the stale edge's routes
+  never requested;
+- after readiness the route contract is authoritative again: a dropped header and
+  a wrong status each fail on the first ready read with no waiting;
+- a stalled delivery queue reported by a reachable admin endpoint during a public
+  outage still stops the run at once, and a missing token stays permanent during
+  an outage.
 
-Regression: `node --test tests/operations.test.mjs tests/release.test.mjs` — 25
-passed.
+Thirteen tests in total. Regression:
+`node --test tests/release-live.test.mjs tests/operations.test.mjs tests/release.test.mjs`
+— 38 passed. `node --check` on both changed files: clean.
+
+## Known limits, recorded rather than fixed
+
+- **An exhausted budget is reported with propagation codes, not a timeout code.**
+  When the deadline passes, `boundedFetcher`'s throw is swallowed into
+  `http-health`, so the failure reads `http-health, site-unchecked` rather than
+  saying the deadline expired. The thrown message does name the budget
+  (`within the 60s propagation budget`), so the run ends correctly and is not
+  misreported, but an operator reading the codes alone sees a diagnosis of the
+  site rather than of the clock. The review classed this as minor; it is left
+  for a separate change rather than widened into this correction.
+- **The `invalid-delivery-health` fold also masks a wrong or expired health token
+  for the duration of an outage.** With a token supplied and `http-health`
+  present, that code is dropped as one outage. If the token is genuinely bad, the
+  code reappears on the first read after recovery and stops the run, so the
+  masking is self-correcting — but it is by design, not by accident, and is
+  recorded here as such.
+- **A route contract defect is only ever detected after public health reports
+  ready.** A site that never becomes ready fails on its health codes, and its
+  route contract is reported as `site-unchecked` rather than diagnosed. That is
+  the intended ordering: an unready edge's headers belong to the previous
+  release.
 
 ESLint over the repository's lint targets (`app components lib registry/cojeev
 apps scripts tests --max-warnings=0`) reported no findings. `npm run lint`

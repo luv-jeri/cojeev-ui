@@ -125,6 +125,18 @@ export async function liveProblems(environment,commit,{token=process.env.HEALTH_
   // configuration defect. If the outage clears while the admin answer is still
   // unusable, the code reappears on the next read and stops the run at once.
   if(token&&problems.includes('http-health')) problems=problems.filter(code=>code!=='invalid-delivery-health');
+  // Public health gates the route contract. Until it confirms this release on
+  // this environment, whatever the site is serving belongs to the PREVIOUS
+  // release, or to nothing at all: its headers, its status codes and its 404
+  // behaviour are that release's, not this one's. Judging them here turned an
+  // ordinary propagation window — every endpoint answering 503 or 404 mid-deploy
+  // — into a permanent `site-contract` failure that stopped after one read.
+  // The routes are checked, and stay fully authoritative, from the first read
+  // that reports this release ready; a broken header then is still permanent.
+  // No extra code is reported for the skip. The read already carries `http-health`
+  // or `release-mismatch`, which is both why success is impossible here and why
+  // the run retries, so an unready read can never be mistaken for a clean one.
+  if(problems.includes('http-health')||problems.includes('release-mismatch')) return [...new Set(problems)].sort();
   const target=environmentConfig(environment);
   for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
     let response;
