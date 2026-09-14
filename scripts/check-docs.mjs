@@ -1159,6 +1159,23 @@ const tests = {
     await text(root, "4 things to read");
     return "Pointer tab and arrow-key tab activate matching content";
   },
+  tree: async ({ root }) => {
+    const status = root.getByRole("status");
+    await root.getByRole("button", { name: "Expand chapters", exact: true }).click();
+    await text(status, "Expanded chapters.");
+    await root.getByRole("button", { name: "01-small-beginnings.md", exact: true }).click();
+    await text(status, "Selected chapter-one.");
+    await attribute(root.getByRole("button", { name: "01-small-beginnings.md", exact: true }), "aria-current", "true");
+    await key(root.getByRole("button", { name: "Collapse chapters", exact: true }), "Enter");
+    await text(status, "Collapsed chapters.");
+    await key(root.getByRole("button", { name: "morning-walk.md", exact: true }), "Enter");
+    await text(status, "Selected morning.");
+    await root.getByRole("button", { name: "More actions for the branch ledger note", exact: true }).click();
+    await text(status, "The note action stayed separate from selection.");
+    await attribute(root.getByRole("button", { name: "morning-walk.md", exact: true }), "aria-current", "true");
+    assert.equal(await root.getByRole("button", { name: "Locked record", exact: true }).isDisabled(), true);
+    return "Pointer expand and select, keyboard collapse and select, trailing action stays separate from selection, locked row disabled; branch states covered by tests/tree.browser.mjs";
+  },
   textarea: async ({ root }) => {
     const input = root.getByRole("textbox");
     await input.click();
