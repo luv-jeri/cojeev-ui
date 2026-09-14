@@ -65,9 +65,22 @@
 }
 
 .v-tree:where([data-slot="tree"])
-  [data-slot="tree-expand"]:where(:hover, :focus-visible) {
+  [data-slot="tree-expand"]:where(:not(:disabled)):where(
+    :hover,
+    :focus-visible
+  ) {
   color: var(--v-text);
   background: color-mix(in oklab, var(--v-paper) 68%, var(--v-blue-soft));
+}
+
+.v-tree:where([data-slot="tree"])
+  :is([data-slot="tree-expand"], [data-slot="tree-select"]):disabled {
+  color: var(--v-disabled-ink);
+  cursor: not-allowed;
+}
+
+.v-tree:where([data-slot="tree"]) [data-slot="tree-expand"]:disabled {
+  background: transparent;
 }
 
 .v-tree:where([data-slot="tree"]) [data-slot="tree-expand"] .v-icon {

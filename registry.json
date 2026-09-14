@@ -20439,59 +20439,6 @@
                 "description": ""
               }
             ]
-          },
-          {
-            "name": "TreeBranchProps",
-            "props": [
-              {
-                "name": "node",
-                "type": "TreeNode",
-                "required": true,
-                "description": ""
-              },
-              {
-                "name": "expanded",
-                "type": "ReadonlySet<string>",
-                "required": true,
-                "description": ""
-              },
-              {
-                "name": "selectedId",
-                "type": "string",
-                "required": false,
-                "description": ""
-              },
-              {
-                "name": "treeId",
-                "type": "string",
-                "required": true,
-                "description": ""
-              },
-              {
-                "name": "expandRefs",
-                "type": "React.RefObject<Map<string, HTMLButtonElement>>",
-                "required": true,
-                "description": ""
-              },
-              {
-                "name": "onExpandedChange",
-                "type": "TreeProps[\"onExpandedChange\"]",
-                "required": true,
-                "description": ""
-              },
-              {
-                "name": "onSelectionChange",
-                "type": "TreeProps[\"onSelectionChange\"]",
-                "required": true,
-                "description": ""
-              },
-              {
-                "name": "onRetry",
-                "type": "TreeProps[\"onRetry\"]",
-                "required": false,
-                "description": ""
-              }
-            ]
           }
         ],
         "category": "Data display",

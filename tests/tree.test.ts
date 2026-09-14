@@ -62,6 +62,10 @@ test("Tree renders labelled native disclosure lists with separate controls and l
 
 test("Tree catalogue metadata exposes the supplied-node contract", () => {
   const api = componentAPIs(["tree"]).tree;
+  assert.deepEqual(
+    api.map((entry: { name: string }) => entry.name),
+    ["TreeNode", "TreeProps"],
+  );
   const node = api.find((entry: { name: string }) => entry.name === "TreeNode");
   assert.ok(node, "TreeNode must be documented beside TreeProps");
   assert.deepEqual(

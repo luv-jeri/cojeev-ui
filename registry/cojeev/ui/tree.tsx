@@ -29,7 +29,7 @@ export type TreeProps = Omit<React.ComponentProps<"ul">, "children"> & {
   onRetry?: (id: string) => void;
 };
 
-type TreeBranchProps = {
+type TreeBranchParameters = {
   node: TreeNode;
   expanded: ReadonlySet<string>;
   selectedId?: string;
@@ -53,7 +53,7 @@ function TreeBranch({
   onExpandedChange,
   onSelectionChange,
   onRetry,
-}: TreeBranchProps) {
+}: TreeBranchParameters) {
   const isFolder = node.kind === "folder";
   const isExpanded = isFolder && expanded.has(node.id);
   const isSelected = selectedId === node.id;
@@ -199,6 +199,7 @@ export function Tree({
   onSelectionChange,
   onRetry,
   onFocusCapture,
+  onBlurCapture,
   ...props
 }: TreeProps) {
   const { quiet } = useChoreography();
@@ -244,6 +245,12 @@ export function Tree({
         if (item?.dataset.treeNodeId)
           focusedNode.current = item.dataset.treeNodeId;
         onFocusCapture?.(event);
+      }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          focusedNode.current = undefined;
+        }
+        onBlurCapture?.(event);
       }}
       {...props}
     >

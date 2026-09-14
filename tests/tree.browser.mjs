@@ -68,7 +68,7 @@ const bundle = await build({
           { id: "empty", label: "Empty archive", kind: "folder", children: [] },
           { id: "loading", label: "Incoming notes", kind: "folder", status: "loading", message: "Loading supplied notes…" },
           { id: "failed", label: "Remote references", kind: "folder", status: "error", message: "References were not supplied." },
-          { id: "disabled", label: "Locked record", kind: "file", disabled: true },
+          { id: "disabled", label: "Locked record", kind: "folder", children: [], disabled: true },
           ...filler,
         ], []);
 
@@ -129,6 +129,18 @@ async function mount(page, mode = "light", direction = "ltr") {
   await page.getByRole("list", { name: "Project files" }).waitFor();
 }
 
+async function resolvedColor(page, property) {
+  return page.locator("html").evaluate((node, name) => {
+    const value = getComputedStyle(node).getPropertyValue(name).trim();
+    const probe = document.createElement("span");
+    probe.style.color = value;
+    document.body.append(probe);
+    const color = getComputedStyle(probe).color;
+    probe.remove();
+    return color;
+  }, property);
+}
+
 test("Tree keeps controlled disclosure, selection, focus and quiet behavior independent", async () => {
   const browser = await chromium.launch();
   try {
@@ -172,16 +184,92 @@ test("Tree keeps controlled disclosure, selection, focus and quiet behavior inde
       ["select", "readme"],
     );
 
+    const disabledExpand = page.getByRole("button", {
+      name: "Expand Locked record",
+    });
+    const disabledSelect = page.getByRole("button", {
+      name: "Locked record",
+      exact: true,
+    });
+    assert.equal(await disabledExpand.isDisabled(), true);
+    assert.equal(await disabledSelect.isDisabled(), true);
+    const disabledInk = await resolvedColor(page, "--v-disabled-ink");
+    const disabledFace = await resolvedColor(page, "--v-disabled-face");
+    const disabledRow = tree.locator(
+      '[data-tree-node-id="disabled"] > [data-slot="tree-row"]',
+    );
+    assert.equal(
+      await disabledRow.evaluate(
+        (node) => getComputedStyle(node).backgroundColor,
+      ),
+      disabledFace,
+    );
+    assert.equal(
+      await disabledExpand.evaluate((node) => getComputedStyle(node).color),
+      disabledInk,
+    );
+    assert.equal(
+      await disabledExpand.evaluate(
+        (node) => getComputedStyle(node).backgroundColor,
+      ),
+      "rgba(0, 0, 0, 0)",
+    );
+    assert.equal(
+      await disabledSelect.evaluate((node) => getComputedStyle(node).color),
+      disabledInk,
+    );
+    await disabledExpand.hover();
+    assert.equal(
+      await disabledExpand.evaluate((node) => getComputedStyle(node).color),
+      disabledInk,
+      "hover does not repaint a disabled disclosure",
+    );
+    assert.equal(
+      await disabledExpand.evaluate(
+        (node) => getComputedStyle(node).backgroundColor,
+      ),
+      "rgba(0, 0, 0, 0)",
+      "hover does not add an active surface to a disabled disclosure",
+    );
+    await disabledExpand.evaluate((node) => node.focus());
+    assert.equal(
+      await disabledExpand.evaluate((node) => document.activeElement === node),
+      false,
+      "native disabled disclosure cannot receive focus",
+    );
+
     const deepFile = page.getByRole("button", {
       name: "controlled-branch-ledger-with-a-long-file-name.tsx",
       exact: true,
     });
     await deepFile.click();
     await deepFile.focus();
-    await page.evaluate(() => window.collapseWorkspace());
+    const externalCollapse = page.getByRole("button", {
+      name: "Collapse workspace externally",
+    });
+    await externalCollapse.click();
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelector(
+            '[data-tree-node-id="workspace"] > [data-slot="tree-row"] [data-slot="tree-expand"]',
+          )
+          ?.getAttribute("aria-expanded") === "false",
+    );
+    assert.equal(
+      await externalCollapse.evaluate(
+        (node) => document.activeElement === node,
+      ),
+      true,
+      "focus that left Tree stays on the external control",
+    );
+
     const workspaceExpand = tree.locator(
       '[data-tree-node-id="workspace"] > [data-slot="tree-row"] [data-slot="tree-expand"]',
     );
+    await workspaceExpand.press("Enter");
+    await deepFile.focus();
+    await page.evaluate(() => window.collapseWorkspace());
     await page.waitForFunction(
       () =>
         document
