@@ -1,5 +1,5 @@
 {
- "ran": "2026-09-15T04:10:12.867Z",
+ "ran": "2026-09-15T05:21:39.451Z",
  "page": "http://127.0.0.1:4345/ (home page)",
  "suites": [
   "lifecycle (round 4 suite, round-6 chrome: home page, wordmark + Coming soon, countdown eyebrow, theme, pause, hidden, replay, tray, other entries)",
@@ -47,7 +47,7 @@
    "suite": "lifecycle",
    "name": "theme toggle flips the mode and the membrane night palette",
    "pass": true,
-   "detail": "light(0) → dark(.45)"
+   "detail": "light(0) → dark(.34)"
   },
   {
    "suite": "lifecycle",
@@ -239,7 +239,7 @@
    "suite": "details",
    "name": "the kept memory and the report are placed in the environment and float",
    "pass": true,
-   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.979389]"
+   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.979216]"
   },
   {
    "suite": "details",
@@ -263,7 +263,7 @@
    "suite": "details",
    "name": "previous exchange folds above the new bubble",
    "pass": true,
-   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":331.84375,\"sentTop\":351.84375}"
+   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":332.9375,\"sentTop\":352.9375}"
   },
   {
    "suite": "details",
@@ -383,7 +383,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",32,12],[\"1.00\",31,348],[\"1.00\",32,8],[\"1.00\",28,354],[\"1.00\",32,7],[\"1.00\",38,340],[\"1.00\",34,2],[\"1.00\",32,352],[\"1.00\",28,17],[\"1.00\",31,352],[\"1.00\",32,6],[\"1.00\",38,343],[\"1.00\",32,10],[\"1.00\",34,351],[\"1.00\",31,5],[\"1.00\",38,341],[\"0.00\",0,0],[\"0.00\",0,0]]"
+   "detail": "[[\"1.00\",32,12],[\"1.00\",31,348],[\"1.00\",32,7],[\"1.00\",28,354],[\"1.00\",32,7],[\"1.00\",38,340],[\"1.00\",34,2],[\"1.00\",32,352],[\"1.00\",28,17],[\"1.00\",31,352],[\"1.00\",32,6],[\"1.00\",38,343],[\"1.00\",32,10],[\"1.00\",34,351],[\"1.00\",31,5],[\"1.00\",38,341],[\"0.00\",0,0],[\"0.00\",0,0]]"
   },
   {
    "suite": "details",
@@ -401,7 +401,7 @@
    "suite": "details",
    "name": "mobile: rows and fold fit above the composer",
    "pass": true,
-   "detail": "{\"ok\":true,\"bottoms\":[306,336,355,375,395,459,478,504],\"formTop\":504}"
+   "detail": "{\"ok\":true,\"bottoms\":[307,337,356,376,396,460,479,505],\"formTop\":505}"
   },
   {
    "suite": "details",
@@ -425,7 +425,7 @@
    "suite": "details",
    "name": "light: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
+   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",145,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -545,7 +545,7 @@
    "suite": "details",
    "name": "dark: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
+   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1318,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -652,6 +652,54 @@
   {
    "suite": "details",
    "name": "quiet: the idle lives of the things are off",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "the countdown runs as a preview clock while no launch date is published (seconds tick, launch.json still null)",
+   "pass": true,
+   "detail": "29:23:59:59 → 29:23:59:58, startedAt=null"
+  },
+  {
+   "suite": "details",
+   "name": "each digit rolls in inside a clipped, tabular slot",
+   "pass": true,
+   "detail": "{\"clipped\":true,\"anim\":\"time-roll\",\"tabular\":\"tabular-nums\"}"
+  },
+  {
+   "suite": "details",
+   "name": "a frosted layer (28 px backdrop blur with a paper tint) sits between the shader and the page",
+   "pass": true,
+   "detail": "{\"blur\":\"blur(28px) saturate(1.06)\",\"z\":\"-1\",\"bg\":\"color(srgb 0.984314 0.956863 0.901961 / 0.3)\"}"
+  },
+  {
+   "suite": "details",
+   "name": "paused: the digits stop rolling",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "phone: the frosted layer is lighter (14 px)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "dark: the satellite, the presence dot and the recall ring are light colours",
+   "pass": true,
+   "detail": "{\"mode\":\"dark\",\"satellite\":\"rgb(246, 239, 226)\",\"presence\":\"rgb(168, 188, 117)\",\"ring\":\"rgb(168, 188, 117)\",\"label\":\"rgb(246, 239, 226)\",\"clock\":\"rgba(246, 239, 226, 0.79)\",\"cue\":\"rgba(246, 239, 226, 0.79)\"}"
+  },
+  {
+   "suite": "details",
+   "name": "dark: labels, cue and clock are paper",
+   "pass": true,
+   "detail": "rgb(246, 239, 226) / rgba(246, 239, 226, 0.79) / rgba(246, 239, 226, 0.79)"
+  },
+  {
+   "suite": "details",
+   "name": "quiet: the clock still runs but its digits do not roll",
    "pass": true,
    "detail": ""
   }

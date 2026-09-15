@@ -2,6 +2,28 @@
 
 Local visual demo at http://127.0.0.1:4345/ (the home page since this round; it was /bond.html before), dev copy. No deployment, backend or launch manifest change (`public/launch.json` still `startedAt: null`).
 
+## Round 11: a frosted background, a clock that runs, dark details in light colours
+
+Owner feedback after round 10, with one dark-mode screenshot of the blobs, numbered, with what was done for each:
+
+1. **Fix this in dark mode (the screenshot).** In dark the subagent’s satellite was a dark grey dot with a dark ring, the memory’s recall ring drew as a second dark outline, and the teammate’s presence dot was a dull deep olive. All three are now in light colours in dark: the satellite is paper with a ring in the blob’s pale fill and a glow while busy, the recall ring and the grab ring use the pale fill, the presence dot is the light olive. Labels are paper with a soft shadow, the eyebrow and the note at 75% paper; the cue and the clock are paper too.
+2. **It is very hard to see things in dark mode.** Besides the details above, the membrane’s night mix is lighter (dim .34, glow .5, from .45 and .42), so the six organisms read brighter, and the frosted layer below softens the darkest reaches of the shader.
+3. **A clock that runs.** With no published launch date the countdown used to sit at 30:00:00:00. It now runs a preview clock: thirty days from the first visit on this browser, kept in this browser’s storage, ticking every second; when it runs out it starts over. Each digit rolls in when it changes (a half-em drop with a blur, half a second), off under reduced motion and when the page is paused. `launch.json` is untouched and still `startedAt: null`; a published date takes over the moment it exists.
+4. **A backdrop blur over the background, tastefully.** The paper tint that already sat over the shader (`.bond-demo::after`) now carries a 28 px backdrop blur with a touch of saturation and a 30% paper tint (24% ink in dark); phones use 14 px. The shader keeps its colour and drift, its harder edges sit back, and everything on top reads clearly.
+
+### Files this round
+
+- `apps/cojeev-coming-soon/src/countdown-display.tsx`: the preview clock (`previewStart`, `cojeev-preview-clock` in localStorage), the tick while previewing, the rolling digit spans.
+- `apps/cojeev-coming-soon/src/bond-demo.css`: the frosted layer (blur, tint, phone value).
+- `apps/cojeev-coming-soon/src/prompt-bond.css`: the digit roll; dark satellite, rings, presence dot, labels, cue, clock; the night mix.
+- No library change this round.
+
+### Checks this round (Playwright, Chrome channel, headless, on `/`)
+
+Details suite, 95/95 (eight new round-11 checks: the seconds tick across two samples while `launch.json` is still null, each digit rolls inside a clipped tabular slot, the frosted layer computes to a 28 px backdrop blur at z-index −1 with a light tint, pause stops the roll, phones get 14 px, dark satellite / presence dot / recall ring are light, dark labels / cue / clock are paper, reduced motion keeps the clock running with no roll); lifecycle suite, 21/21 (the countdown eyebrow check still finds "Arriving in" above the line). Type-check clean for the app files. Production build exit 0.
+
+Also this round: the temporary scratchpad that held the two suites and every capture and evidence script was wiped by a restart. They were rebuilt from the session transcript with a replay script and now live in a durable folder outside the temp directory (`.bond-tools` beside the app, not part of the repo); the rounds 9 and 10 patches to the suites were re-applied and the suites re-run from there.
+
 ## Round 10: the tray is made of the membrane, the blobs get depth, dark gets contrast
 
 Owner feedback after round 9, with five screenshots, numbered, with what was done for each:
