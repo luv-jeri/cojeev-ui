@@ -10,7 +10,7 @@ import { useMotionVisibility } from "@/registry/cojeev/motion/use-motion-visibil
 import { assignMotionRef } from "@/registry/cojeev/motion/refs"
 
 const SkeletonVariants=cva("v-skel [border-radius:999px] [background:var(--v-skel-face)] [background-size:200%_100%] [animation:v-shimmer_1.4s_linear_infinite] [box-shadow:none] [position:relative] [overflow:hidden]",{variants:{variant:{"default":"","pill":"-pill [border-radius:var(--r-pill)]","card":"-card [border-radius:20px]","disk":"-disk [border-radius:50%]","line":"-line [height:12px] [border-radius:999px]","skel-group":"-skel-group"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
-export type SkeletonProps=React.ComponentProps<"div"> & VariantProps<typeof SkeletonVariants> & { as?:React.ElementType }
+export type SkeletonProps=React.ComponentProps<"div"> & VariantProps<typeof SkeletonVariants> & { as?:React.ElementType<React.ComponentProps<"div">> }
 export function Skeleton({as:Tag="div",className,variant,size,ref,children,...props}:SkeletonProps){
   const host=React.useRef<HTMLDivElement>(null)
   const attach=React.useCallback((element:HTMLDivElement|null)=>{host.current=element;const release=assignMotionRef(ref,element);return ()=>{host.current=null;release()}},[ref])
@@ -21,12 +21,12 @@ export function Skeleton({as:Tag="div",className,variant,size,ref,children,...pr
 }
 
 const SkeletonGroupVariants=cva("v-skel-group [gap:8px] [display:grid]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
-export type SkeletonGroupProps=React.ComponentProps<"div"> & VariantProps<typeof SkeletonGroupVariants> & { as?:React.ElementType }
+export type SkeletonGroupProps=React.ComponentProps<"div"> & VariantProps<typeof SkeletonGroupVariants> & { as?:React.ElementType<React.ComponentProps<"div">> }
 export function SkeletonGroup({as:Tag="div",className,variant,size,...props}:SkeletonGroupProps){return <Tag data-slot="skeleton" data-part="root" className={cn(className?.split(/\s+/).includes("v-card")&&cardVariants(),SkeletonGroupVariants({variant,size}),className)} {...props}/>}
 
 const AsyncContentVariants=cva("v-async [display:grid] [gap:10px] [padding:18px] [border-radius:16px] [background:var(--v-beige)] [justify-items:start]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type AsyncContentProps=React.ComponentProps<"div"> & VariantProps<typeof AsyncContentVariants> & {
-  as?:React.ElementType
+  as?:React.ElementType<React.ComponentProps<"div">>
   /** Caller-owned loading state. Omit to preserve the static composition. */
   loading?:boolean
   fallback?:React.ReactNode
@@ -54,9 +54,9 @@ function LoadingContent({as:Tag="div",className,variant,size,ref,children,loadin
 }
 
 const AsyncRowVariants=cva("v-async__row [display:flex] [align-items:center] [gap:10px] [font-size:14px] [color:var(--v-text-2)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
-export type AsyncRowProps=React.ComponentProps<"div"> & VariantProps<typeof AsyncRowVariants> & { as?:React.ElementType }
+export type AsyncRowProps=React.ComponentProps<"div"> & VariantProps<typeof AsyncRowVariants> & { as?:React.ElementType<React.ComponentProps<"div">> }
 export function AsyncRow({as:Tag="div",className,variant,size,...props}:AsyncRowProps){return <Tag data-slot="skeleton-async-row" data-part="async-row" className={cn(AsyncRowVariants({variant,size}),className)} {...props}/>}
 
 const QuietVariants=cva("v-quiet [color:var(--v-text-2)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
-export type QuietProps=React.ComponentProps<"span"> & VariantProps<typeof QuietVariants> & { as?:React.ElementType }
+export type QuietProps=React.ComponentProps<"span"> & VariantProps<typeof QuietVariants> & { as?:React.ElementType<React.ComponentProps<"span">> }
 export function Quiet({as:Tag="span",className,variant,size,...props}:QuietProps){return <Tag data-slot="skeleton-quiet" data-part="quiet" className={cn(QuietVariants({variant,size}),className)} {...props}/>}

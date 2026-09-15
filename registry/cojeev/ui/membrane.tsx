@@ -50,12 +50,18 @@ export function Membrane({ ref, onMeasure, className, style, ...props }: Membran
     const element = host.current, surface = canvas.current;
     if (!element || !surface) return;
     let current = createMembraneRenderer(surface);
+    let measured: {width:number;height:number;dpr:number}|null = null;
     renderer.current = current;
     const repaint = () => { if (lastScene.current) current.draw(lastScene.current); };
     const resize = () => {
       const width = Math.max(1, element.clientWidth), height = Math.max(1, element.clientHeight);
+      const dpr = window.devicePixelRatio || 1;
+      // ResizeObserver delivers an initial notification after the synchronous
+      // measurement below. Do not repeat the layout, scene fit and React update.
+      if(measured?.width===width&&measured.height===height&&measured.dpr===dpr)return;
+      measured={width,height,dpr};
       size.current = { width, height };
-      current.resize(width, height, window.devicePixelRatio || 1);
+      current.resize(width, height, dpr);
       element.dataset.renderer = current.status;
       measure.current?.({ width, height });
       repaint();
@@ -64,6 +70,8 @@ export function Membrane({ ref, onMeasure, className, style, ...props }: Membran
     current.setPalette(readPalette(element));
     const observer = new ResizeObserver(resize);
     observer.observe(element);
+    const fontsChanged = () => { measured = null; resize(); };
+    document.fonts.addEventListener("loadingdone", fontsChanged);
     const theme = new MutationObserver(recolor);
     theme.observe(document.documentElement, { attributes: true, attributeFilter: ["data-mode", "data-skin", "class"] });
     window.addEventListener("v-theme", recolor);
@@ -72,6 +80,7 @@ export function Membrane({ ref, onMeasure, className, style, ...props }: Membran
     const restored = () => {
       current.dispose();
       current = createMembraneRenderer(surface);
+      measured = null;
       renderer.current = current;
       current.setPalette(readPalette(element));
       resize();
@@ -81,6 +90,7 @@ export function Membrane({ ref, onMeasure, className, style, ...props }: Membran
     resize();
     return () => {
       observer.disconnect(); theme.disconnect();
+      document.fonts.removeEventListener("loadingdone", fontsChanged);
       window.removeEventListener("v-theme", recolor); window.removeEventListener("v-palette", recolor);
       surface.removeEventListener("webglcontextlost", lost); surface.removeEventListener("webglcontextrestored", restored);
       current.dispose(); renderer.current = null;

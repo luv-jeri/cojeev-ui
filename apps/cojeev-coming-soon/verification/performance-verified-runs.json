@@ -1,0 +1,74 @@
+[
+  {
+    "mode": "mobile",
+    "run": 1,
+    "report": "lighthouse-verified-mobile-1.json",
+    "score": 100,
+    "seconds": 13.88,
+    "first-contentful-paint": 904.5181,
+    "largest-contentful-paint": 1804.5180999999998,
+    "total-blocking-time": 46.5,
+    "speed-index": 1259.8096799135494,
+    "cumulative-layout-shift": 0
+  },
+  {
+    "mode": "mobile",
+    "run": 2,
+    "report": "lighthouse-verified-mobile-2.json",
+    "score": 100,
+    "seconds": 12.57,
+    "first-contentful-paint": 904.7528,
+    "largest-contentful-paint": 1804.7527999999998,
+    "total-blocking-time": 46.5,
+    "speed-index": 1283.4129784835145,
+    "cumulative-layout-shift": 0
+  },
+  {
+    "mode": "mobile",
+    "run": 3,
+    "report": "lighthouse-verified-mobile-3.json",
+    "score": 100,
+    "seconds": 12.91,
+    "first-contentful-paint": 904.3085000000001,
+    "largest-contentful-paint": 1804.3085,
+    "total-blocking-time": 47.5,
+    "speed-index": 1286.242190326861,
+    "cumulative-layout-shift": 0
+  },
+  {
+    "mode": "desktop",
+    "run": 1,
+    "report": "lighthouse-verified-desktop-1.json",
+    "score": 100,
+    "seconds": 12.69,
+    "first-contentful-paint": 244.6442,
+    "largest-contentful-paint": 404.64419999999996,
+    "total-blocking-time": 0,
+    "speed-index": 403.120900480013,
+    "cumulative-layout-shift": 0
+  },
+  {
+    "mode": "desktop",
+    "run": 2,
+    "report": "lighthouse-verified-desktop-2.json",
+    "score": 100,
+    "seconds": 12.77,
+    "first-contentful-paint": 244.7394,
+    "largest-contentful-paint": 404.73940000000005,
+    "total-blocking-time": 0,
+    "speed-index": 361.24911800151705,
+    "cumulative-layout-shift": 0
+  },
+  {
+    "mode": "desktop",
+    "run": 3,
+    "report": "lighthouse-verified-desktop-3.json",
+    "score": 100,
+    "seconds": 12.66,
+    "first-contentful-paint": 244.47500000000002,
+    "largest-contentful-paint": 404.475,
+    "total-blocking-time": 0,
+    "speed-index": 368.49399915488027,
+    "cumulative-layout-shift": 0
+  }
+]

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {createRoot} from "react-dom/client";
+import {createRoot,hydrateRoot} from "react-dom/client";
 import {PromptBond} from "./prompt-bond";
 import {Button} from "@/registry/cojeev/ui/button";
 import {AnimatedIcon} from "@/registry/cojeev/ui/animated-icon";
@@ -26,13 +26,20 @@ const details:[string,string,string,string][]=[
  * element before the first render, so the story measures its layout against the scaled field, and the tray, which the drawer portals
  * outside the shell, scales too; a window resize refreshes it (the story re-measures on its own when the stage changes size). */
 const fitUi=()=>{const ui=innerWidth<=700?1:Math.min(1.8,Math.max(innerWidth<=1024?.9:.8,Math.min(innerWidth/1440,innerHeight/900)));document.documentElement.style.setProperty('--ui',ui.toFixed(3));};
-fitUi();addEventListener('resize',fitUi);
+if(typeof window!=="undefined"){fitUi();addEventListener('resize',fitUi);}
 
 
-function Demo(){
+export function Demo({initialMode="light"}:{initialMode?:ThemeMode}={}){
  const [paused,setPaused]=React.useState(false),[open,setOpen]=React.useState(false),[replayKey,setReplayKey]=React.useState(0);
- const [mode,setMode]=React.useState<ThemeMode>(()=>document.documentElement.dataset.mode==="dark"?"dark":"light");
+ const [mode,setMode]=React.useState<ThemeMode>(initialMode);
  const host=React.useRef<HTMLDivElement>(null),{enabled,inView}=useMotionVisibility(host);
+ React.useEffect(()=>{
+  const frame=requestAnimationFrame(()=>{
+   document.documentElement.dataset.cojeevInteractive='true';
+   document.dispatchEvent(new Event('cojeev:interactive'));
+  });
+  return()=>cancelAnimationFrame(frame);
+ },[]);
  // the page's scale: 1 at 1440 × 900, up to 1.8 on a large screen, 1 on phones (they are tuned by hand in CSS)
 
  // the story and the field keep moving behind the tray; only pause, hidden and reduced motion stop them
@@ -59,4 +66,8 @@ function Demo(){
  </DrawerContent>
  </Drawer>;
 }
-createRoot(document.getElementById('root')!).render(<React.StrictMode><Demo/></React.StrictMode>);
+if(typeof document!=="undefined"){
+ const root=document.getElementById('root')!;
+ const page=<React.StrictMode><Demo initialMode={document.documentElement.dataset.mode==="dark"?"dark":"light"}/></React.StrictMode>;
+ if(root.hasChildNodes())hydrateRoot(root,page);else createRoot(root).render(page);
+}

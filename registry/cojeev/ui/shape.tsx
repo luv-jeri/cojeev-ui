@@ -7,7 +7,7 @@ import { signatureShapePaths, type SignatureShapeName } from "../lib/signature-s
 import { useChoreography } from "../motion/choreography"
 import { useMotionVisibility } from "../motion/use-motion-visibility"
 import { assignMotionRef } from "../motion/refs"
-export type ShapeProps = React.ComponentProps<"span"> & { name?: string; as?: React.ElementType }
+export type ShapeProps = React.ComponentProps<"span"> & { name?: string; as?: React.ElementType<React.ComponentProps<"span">> }
 export function Shape({as:Tag="i",name="star-4",className,style,...props}:ShapeProps){
  const mask=shapeData[name];
  if(!mask) throw new Error(`Unknown Cojeev shape: ${name}`)

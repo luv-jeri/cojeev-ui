@@ -1,7 +1,7 @@
 # Handoff: the Cojeev coming-soon page
 
 Written 2026-09-15, at commit `e2019e4` on `feat/cj01-coming-soon`. Everything described here is committed and pushed.
-The next piece of work is a performance pass; the measured starting point and the ranked levers are in the last section.
+This is the original design handoff. The performance follow-up is documented in [verification/performance.md](verification/performance.md): three mobile and three desktop production runs scored 100, with the original design preserved. Its review checkout is `~/Developer/cojeev-coming-soon-performance-review` on `fix/cj01-1-performance`; the running preview copy stays at the path below. The original performance baseline is retained in the last section.
 
 ---
 

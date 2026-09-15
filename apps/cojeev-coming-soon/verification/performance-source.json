@@ -1,0 +1,126 @@
+{
+  "base": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+  "files": [
+    {
+      "file": "apps/cojeev-coming-soon/index.html",
+      "sha256": "b210ee30a840fcb6087149b7091f85199abd1fa275a280b6c1909ba18fc63305"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/package.json",
+      "sha256": "bf9d785167ebb6e143f72ca727fa96e9ba15963905257882435a45a4c069a523"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/package-lock.json",
+      "sha256": "d998bcb2fa2a372cc7d6482687d337b48e405c529073f01aada99017cd47884e"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/vite.config.ts",
+      "sha256": "0ff33fecdd8ba07dfc1efb603da69316fe71f05318e778c0deb7a8898931016b"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/bond-demo.tsx",
+      "sha256": "f4de852d5810c96ce8b7dcdb535f7101f2a3f13a8ccc6e264a877cbb57de57f1"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/prompt-bond.tsx",
+      "sha256": "ef7afe3207cdd1c972e64880db128ab4ac6475a310535a4c4ba15f9a05392ade"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/bootstrap.ts",
+      "sha256": "74b42edc690a55fe22ddba97f311872a0b22dcedeac479453113ed4ed7bdd0bb"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/startup.ts",
+      "sha256": "3fd4e0891652b6ba3c5dbea5141e751f85534412f3ee698b7b32474408a2997d"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/prerender.tsx",
+      "sha256": "1ac81dc8057b2ee333f83fe522022c5169bdd573a139f85a3bbb6a7842f47cd8"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/styles.css",
+      "sha256": "e074ea7dcd50bedaeb91fea5eba342b47965d3add4eb2f4b5edca2797cd91b24"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/utilities.css",
+      "sha256": "a78bcf02683fce4b3a6e1fcc6eca41463b1a86c7cc26e3c404902d60bfef36e4"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/component-sources.css",
+      "sha256": "d41d6e156b83504fdd106b40870a5e192d7aef9970e7e811548958633be90df7"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/fonts.css",
+      "sha256": "4d4849c694a116923794a9f603ffe497219d01119a98c2a1a76f63c9cc18fce1"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/scripts/prerender.mjs",
+      "sha256": "76fba610057f3349a1d2e1d4634cfebfc013aab95e1e08205719536dc2f65223"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/scripts/component-sources.mjs",
+      "sha256": "92b3da4aa72c2cefdbb758b85ceda05ae3bfee7d959faf621fc1995409f8eae6"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/scripts/prepare-fonts.py",
+      "sha256": "773ea81028be6d9e731fbff0bf0a33cc257e49889082fa67aba4dcdafde67791"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/scripts/verify-fonts.py",
+      "sha256": "fbfdddaec19dec6ce77a1c82bf10d6fcd3d21d719b00445360b88c6312a0ebb2"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/tsconfig.performance.json",
+      "sha256": "6779463fe8b5179fbb25d4111423fe8acd2f06df09955ad1c269c9fefb755d3b"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/public/font-licenses/dm-sans-OFL.txt",
+      "sha256": "7ec15e79c59bc14b86436a17e5eb7926b46cbcaeb08e1a7e6c110b415e6eb2a2"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/public/font-licenses/bricolage-grotesque-OFL.txt",
+      "sha256": "46ba5f18ee20ea529f21d96c0ef8637a8314c1a5cfb2aa84018bc8157cbeff41"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/fonts/dm-sans-common.woff2",
+      "sha256": "6bccfa4ec192702cd271d228af04ea4f1440e160f398676441b129bb031bc5ee"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/fonts/dm-sans-full.woff2",
+      "sha256": "511199053bc63da8002f95cebf6d8254c0838d7c3515db9a6d92a579ac81eef8"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/fonts/bricolage-grotesque-common.woff2",
+      "sha256": "d986d5c9ca7ab8ffe0d9fcfedf8b9588b491fd8b6907b24752fdfa9628b5192e"
+    },
+    {
+      "file": "apps/cojeev-coming-soon/src/fonts/bricolage-grotesque-full.woff2",
+      "sha256": "732d894c80980fc12f0c5dd955f5e917a6ffefb666553a7cee25a00b058b6368"
+    },
+    {
+      "file": "registry/cojeev/ui/shader-background.tsx",
+      "sha256": "eeae28abca0011a1a48ba5ce66c29645248566a6820cc989970d7a7e18a59374"
+    },
+    {
+      "file": "registry/cojeev/ui/shader-background-scene.tsx",
+      "sha256": "90f1456c80491d2759d1d87d1097cda99867f03844166fc9d477648fbeaa3a53"
+    },
+    {
+      "file": "registry/cojeev/ui/shader-background-worker.tsx",
+      "sha256": "ee4d47a342a79565f41ab6952c7bd1d4395ced68f8a7b888503fd123efae27d3"
+    },
+    {
+      "file": "registry/cojeev/ui/shader-background.worker.tsx",
+      "sha256": "c5ed0a6413e9f232e4d05f020a3a83c4363ab45b9e590f01c6e06ef1c707e237"
+    },
+    {
+      "file": "registry/cojeev/ui/variable-proximity.tsx",
+      "sha256": "ba0080835dd273f1be0778070197b62e2c42052289624e9fd5797d51aa266e2d"
+    },
+    {
+      "file": "registry/cojeev/ui/membrane.tsx",
+      "sha256": "d3ab942f86c9dab6385770c3e2384f93da738b27b17875d9e49f991efb2b7ab5"
+    }
+  ],
+  "note": "Font license line endings and trailing whitespace normalized after measurement; executable source and assets used by the page are unchanged."
+}

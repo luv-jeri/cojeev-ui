@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/postcss";
 import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
+import { componentSources } from "./scripts/component-sources.mjs";
 
 const shaderPackages = ["@shadergradient/react", "@react-three/fiber", "three", "three-stdlib", "camera-controls"];
 const root = fileURLToPath(new URL("./", import.meta.url));
@@ -13,6 +14,7 @@ if (launch.startedAt !== null && (!/T.*Z$/.test(launch.startedAt) || !Number.isF
 
 export default defineConfig({
   root,
+  plugins: [componentSources(root,repository)],
   esbuild: { jsx: "automatic" },
   resolve: { alias: { "@": repository, ...Object.fromEntries(shaderPackages.map(name=>[name,fileURLToPath(import.meta.resolve(name))])) }, dedupe: ["react", "react-dom", "three"] },
   css: { postcss: { plugins: [tailwindcss()] } },

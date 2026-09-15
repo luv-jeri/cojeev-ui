@@ -1,0 +1,598 @@
+{
+ "ran": "2026-09-15T10:43:19.854Z",
+ "passed": 117,
+ "total": 118,
+ "errors": [],
+ "results": [
+  {
+   "name": "six pairs of eyes visible at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "send button shows the arrow",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "bond starts",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "button becomes a stop while bonding",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "launch",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "stop is live after launch",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "recall",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "memory things visible with a title, a name and a note",
+   "pass": true,
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\",155],[\"Mira\",\"teammate\",\"1.00\",147],[\"last launch notes\",\"memory\",\"1.00\",167],[\"instructions.md\",\"file\",\"1.00\",177],[\"changelog\",\"memory\",\"1.00\",124],[\"date checker\",\"subagent\",\"1.00\",156],[\"launch skill\",\"skill\",\"1.00\",133],[\"this week’s threads\",\"memory\",\"1.00\",182],[\"style guide\",\"file\",\"1.00\",132],[\"Arun\",\"teammate\",\"1.00\",158],[\"deploy log\",\"memory\",\"1.00\",123],[\"board reader\",\"subagent\",\"1.00\",151],[\"runbook\",\"memory\",\"1.00\",165],[\"summary skill\",\"skill\",\"1.00\",149],[\"Jules\",\"teammate\",\"1.00\",149],[\"trace reader\",\"subagent\",\"1.00\",148],[\"\",\"memory\",\"0.00\",0],[\"\",\"memory\",\"0.00\",0]]"
+  },
+  {
+   "name": "memory things float outside the panel, fully on screen",
+   "pass": true,
+   "detail": "{\"gap\":91,\"left\":185}"
+  },
+  {
+   "name": "prepare",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "row 1 is a sentence with the brain glyph and the two recalled names in bold",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "reach",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "teammate and subagent blobs float in the environment",
+   "pass": true,
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\"],[\"Mira\",\"teammate\",\"1.00\"],[\"last launch notes\",\"memory\",\"1.00\"],[\"instructions.md\",\"file\",\"1.00\"],[\"changelog\",\"memory\",\"1.00\"],[\"date checker\",\"subagent\",\"1.00\"],[\"launch skill\",\"skill\",\"1.00\"],[\"this week’s threads\",\"memory\",\"1.00\"],[\"style guide\",\"file\",\"1.00\"],[\"Arun\",\"teammate\",\"1.00\"],[\"deploy log\",\"memory\",\"1.00\"],[\"board reader\",\"subagent\",\"1.00\"],[\"runbook\",\"memory\",\"1.00\"],[\"summary skill\",\"skill\",\"1.00\"],[\"Jules\",\"teammate\",\"1.00\"],[\"trace reader\",\"subagent\",\"1.00\"],[\"\",\"memory\",\"0.00\"],[\"\",\"memory\",\"0.00\"]]"
+  },
+  {
+   "name": "right head wakes during reach",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "check",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "lead half-lids while the reply types",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "keep",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "the kept memory and the report are placed in the environment and float",
+   "pass": true,
+   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.982674]"
+  },
+  {
+   "name": "settle at 9",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "arrow is back at settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "second launch",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "previous exchange folds above the new bubble",
+   "pass": true,
+   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":259.625,\"sentTop\":279.625}"
+  },
+  {
+   "name": "new sent bubble",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "second recall",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "second story recalls what was kept, from where it floats",
+   "pass": true,
+   "detail": "[[\"voice notes\",\"1.00\"],[\"release-notes skill\",\"1.00\"],[\"diff collector\",\"1.00\"],[\"instructions.md\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch skill\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"style guide\",\"1.00\"],[\"Arun\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"summary skill\",\"1.00\"],[\"Jules\",\"1.00\"],[\"trace reader\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"Launch timeline\",\"1.00\"]]"
+  },
+  {
+   "name": "second settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "rows fit above the composer with a fold",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "fold counts earlier exchanges",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "stop: reach",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "stop jumps to the settled beat",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "stop cue",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "what was reached stays, the rest is let go",
+   "pass": true,
+   "detail": "[true,true,true,false,false,false]"
+  },
+  {
+   "name": "composer is editable after stop",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "next thought after a stop launches",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "fold after a stop has no kept chip",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "quiet: memory cards readable at the still",
+   "pass": true,
+   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"instructions.md\",1],[\"changelog\",1],[\"date checker\",1],[\"launch skill\",1],[\"this week’s threads\",1],[\"style guide\",1],[\"Arun\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"summary skill\",1],[\"Jules\",1],[\"trace reader\",1],[\"\",0],[\"\",0]]"
+  },
+  {
+   "name": "quiet: agent blobs readable at the still",
+   "pass": true,
+   "detail": "[[\"team decisions\",1],[\"Mira\",1],[\"last launch notes\",1],[\"instructions.md\",1],[\"changelog\",1],[\"date checker\",1],[\"launch skill\",1],[\"this week’s threads\",1],[\"style guide\",1],[\"Arun\",1],[\"deploy log\",1],[\"board reader\",1],[\"runbook\",1],[\"summary skill\",1],[\"Jules\",1],[\"trace reader\",1],[\"\",0],[\"\",0]]"
+  },
+  {
+   "name": "quiet: stop works",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "quiet: second thought shows the fold and the new bubble at once",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "mobile: compact cards",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "mobile: recall",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "mobile: glyph-only cards on screen",
+   "pass": true,
+   "detail": "[[\"1.00\",32,16],[\"1.00\",31,350],[\"1.00\",32,8],[\"1.00\",28,352],[\"1.00\",32,8],[\"1.00\",38,345],[\"1.00\",34,4],[\"1.00\",32,350],[\"1.00\",28,12],[\"1.00\",31,352],[\"1.00\",32,7],[\"1.00\",38,346],[\"1.00\",32,7],[\"1.00\",34,350],[\"1.00\",31,8],[\"1.00\",38,345],[\"0.00\",0,0],[\"0.00\",0,0]]"
+  },
+  {
+   "name": "mobile: settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "mobile: second settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "mobile: rows and fold fit above the composer",
+   "pass": true,
+   "detail": "{\"ok\":true,\"bottoms\":[259,288,307,327,347,411,430,456],\"formTop\":513}"
+  },
+  {
+   "name": "mobile: no horizontal overflow",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "light: the field is one glass capsule with readable ink and no stray line",
+   "pass": true,
+   "detail": "{\"glass\":\"color(srgb 0.984314 0.956863 0.901961 / 0.7)\",\"radius\":\"999px\",\"lum\":34,\"understroke\":false}"
+  },
+  {
+   "name": "light: three thoughts to pick, labelled",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "light: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
+   "pass": true,
+   "detail": "[[\"memory\",159,315,\"blob\"],[\"teammate\",1237,1387,\"blob, nod\"],[\"memory\",98,267,\"blob\"],[\"file\",1201,1378,\"blob, flutter\"],[\"memory\",211,338,\"blob\"],[\"subagent\",1192,1350,\"blob\"],[\"skill\",225,359,\"blob\"],[\"memory\",1116,1299,\"blob\"],[\"file\",120,255,\"blob, flutter\"],[\"teammate\",1128,1287,\"blob, nod\"],[\"memory\",191,316,\"blob\"],[\"subagent\",1167,1321,\"blob\"],[\"memory\",151,317,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",118,270,\"blob, nod\"],[\"subagent\",1190,1340,\"blob\"]]"
+  },
+  {
+   "name": "light: page chrome is the timer and the line",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "picking a thought starts the bond",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "the picked thought plays its own story: the memory it needs surfaces at launch",
+   "pass": true,
+   "detail": "[\"release-notes skill\",\"diff collector\",\"last launch notes\",\"instructions.md\",\"changelog\",\"date checker\",\"launch skill\",\"this week’s threads\",\"style guide\",\"Arun\",\"deploy log\",\"board reader\",\"runbook\",\"summary skill\",\"Jules\",\"trace reader\",\"launch plan v1\",\"voice notes\"]"
+  },
+  {
+   "name": "a grabbed memory keeps its label and stays visible while it is tugged",
+   "pass": true,
+   "detail": "[\"launch plan v1\",\"1.00\",1]"
+  },
+  {
+   "name": "nothing is eaten: both memories float on after recall",
+   "pass": true,
+   "detail": "[[\"release-notes skill\",\"1.00\"],[\"diff collector\",\"1.00\"],[\"last launch notes\",\"1.00\"],[\"instructions.md\",\"1.00\"],[\"changelog\",\"1.00\"],[\"date checker\",\"1.00\"],[\"launch skill\",\"1.00\"],[\"this week’s threads\",\"1.00\"],[\"style guide\",\"1.00\"],[\"Arun\",\"1.00\"],[\"deploy log\",\"1.00\"],[\"board reader\",\"1.00\"],[\"runbook\",\"1.00\"],[\"summary skill\",\"1.00\"],[\"Jules\",\"1.00\"],[\"trace reader\",\"1.00\"],[\"launch plan v1\",\"1.00\"],[\"voice notes\",\"1.00\"]]"
+  },
+  {
+   "name": "the recalled line is a sentence naming both memories in bold",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "the file and the skill are held close against the body, labels folded",
+   "pass": true,
+   "detail": "[[\"release-notes skill\",\"skill\",30,0],[\"voice notes\",\"file\",29,0]]"
+  },
+  {
+   "name": "the woven line names the file and the skill",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "the teammate gets busy when the task arrives, where it floats",
+   "pass": true,
+   "detail": "[[\"Arun\",1]]"
+  },
+  {
+   "name": "the subagent informs the other subagents, which light up and get busy for a moment",
+   "pass": true,
+   "detail": "[\"date checker\",\"board reader\",\"trace reader\"]"
+  },
+  {
+   "name": "the reply is real text, three sentences shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "what was kept is placed out as a memory blob and a report blob, both floating",
+   "pass": true,
+   "detail": "[[\"release notes v1\",\"memory\",\"1.00\"],[\"Release notes draft\",\"report\",\"1.00\"]]"
+  },
+  {
+   "name": "the kept line and the offer are sentences",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "every row and the reply sit above the composer at the settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "at the settle the held file and skill are let go and float again with their labels",
+   "pass": true,
+   "detail": "[[\"release-notes skill\",1,1],[\"voice notes\",1,1]]"
+  },
+  {
+   "name": "one next thought is offered at the settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "the next thought grabs the kept memory from where it floats, plus a memory that was there all along",
+   "pass": true,
+   "detail": "[[\"release-notes skill\",\"1.00\",1],[\"diff collector\",\"1.00\",1],[\"release notes v1\",\"1.00\",0],[\"Release notes draft\",\"1.00\",1],[\"instructions.md\",\"1.00\",1],[\"date checker\",\"1.00\",1],[\"launch skill\",\"1.00\",1],[\"this week’s threads\",\"1.00\",0],[\"style guide\",\"1.00\",1],[\"Arun\",\"1.00\",1],[\"deploy log\",\"1.00\",1],[\"board reader\",\"1.00\",1],[\"runbook\",\"1.00\",1],[\"summary skill\",\"1.00\",1],[\"Jules\",\"1.00\",1],[\"trace reader\",\"1.00\",1],[\"launch plan v1\",\"1.00\",1],[\"voice notes\",\"1.00\",1]]"
+  },
+  {
+   "name": "dark: the field is one glass capsule with readable ink and no stray line",
+   "pass": true,
+   "detail": "{\"glass\":\"rgba(246, 239, 226, 0.28)\",\"radius\":\"999px\",\"lum\":240,\"understroke\":false}"
+  },
+  {
+   "name": "dark: three thoughts to pick, labelled",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "dark: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
+   "pass": true,
+   "detail": "[[\"memory\",158,314,\"blob\"],[\"teammate\",1237,1387,\"blob, nod\"],[\"memory\",98,267,\"blob\"],[\"file\",1201,1378,\"blob, flutter\"],[\"memory\",211,338,\"blob\"],[\"subagent\",1192,1350,\"blob\"],[\"skill\",226,359,\"blob\"],[\"memory\",1116,1300,\"blob\"],[\"file\",120,255,\"blob, flutter\"],[\"teammate\",1128,1287,\"blob, nod\"],[\"memory\",191,316,\"blob\"],[\"subagent\",1167,1321,\"blob\"],[\"memory\",151,318,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",118,270,\"blob, nod\"],[\"subagent\",1190,1340,\"blob\"]]"
+  },
+  {
+   "name": "dark: page chrome is the timer and the line",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "quiet: thoughts do not drift and blobs hold their shape",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "quiet: picking a thought starts the bond at once",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "quiet: the recalled sentence is complete and both memories still float at the prepare still",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "quiet: the kept memory and the report float at the notice still, the file and skill are still held, and the reply reads in full",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "quiet: at the settle still the file and skill float free again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "2560×1440: the composition scales with the screen (title ≥ 96 px, field ≥ 900 px, bar buttons ≥ 60 px and level)",
+   "pass": true,
+   "detail": "{\"h1\":102.4,\"field\":960,\"btns\":[64,64,64,64],\"morphOk\":true,\"scrollX\":false}"
+  },
+  {
+   "name": "2560×1440: no two things overlap at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "2560×1440: nothing overlaps once the kept memory and the report are placed, and the thread fits above the field",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "3440×1440: the composition scales with the screen (title ≥ 96 px, field ≥ 900 px, bar buttons ≥ 60 px and level)",
+   "pass": true,
+   "detail": "{\"h1\":102.4,\"field\":960,\"btns\":[64,64,64,64],\"morphOk\":true,\"scrollX\":false}"
+  },
+  {
+   "name": "3440×1440: no two things overlap at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1920×1080: the composition scales with the screen (title ≥ 72 px, field ≥ 700 px, bar buttons ≥ 44 px and level)",
+   "pass": true,
+   "detail": "{\"h1\":76.8,\"field\":720,\"btns\":[48,48,48,48],\"morphOk\":true,\"scrollX\":false}"
+  },
+  {
+   "name": "1920×1080: no two things overlap at rest",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "a click while the page is typing a thought clears the fragment instead of leaving it",
+   "pass": true,
+   "detail": "\"Plan our next launc\""
+  },
+  {
+   "name": "Enter after that sends a whole thought",
+   "pass": true,
+   "detail": "Plan our next launch."
+  },
+  {
+   "name": "Enter while the page is still typing completes the thought before sending it",
+   "pass": true,
+   "detail": "Plan our next launch."
+  },
+  {
+   "name": "each kind of thing has its own idle life: memory recalls, file flutters, skill twinkles, teammate presence breathes, subagent scans (and spins fast when busy)",
+   "pass": true,
+   "detail": "{\"memory\":\"recall\",\"subagent\":\"orbit\",\"teammate\":\"presence\",\"file\":\"blob, flutter\",\"skill\":\"twinkle\",\"busyFast\":true}"
+  },
+  {
+   "name": "quiet: the idle lives of the things are off",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "the countdown runs as a preview clock while no launch date is published (seconds tick, launch.json still null)",
+   "pass": false,
+   "detail": "30:00:00:00 → 29:23:59:58, startedAt=null"
+  },
+  {
+   "name": "each digit rolls in inside a clipped, tabular slot",
+   "pass": true,
+   "detail": "{\"clipped\":true,\"anim\":\"time-roll\",\"tabular\":\"tabular-nums\"}"
+  },
+  {
+   "name": "a frosted layer (32 px backdrop blur with a paper tint) and a clearing (a radial pool of paper) sit between the shader and the page",
+   "pass": true,
+   "detail": "{\"blur\":\"blur(32px) saturate(1.04)\",\"z\":\"-1\",\"bg\":\"color(srgb 0.984314 0.956863 0.901961 / 0.34)\",\"clearing\":\"radial-gradient(66% 62%, color(srgb 0.984314 0.956863 0.901961 / 0.58) 0%, color(srgb 0.984314 0.956863 0.901961 / 0.36) 48%, rgba(0, 0, 0, 0) 100%)\",\"cz\":\"-1\"}"
+  },
+  {
+   "name": "the bar is three zones: Replay and Pause on the left margin, What’s coming centred, theme on the right margin",
+   "pass": true,
+   "detail": "{\"left\":64.796875,\"pauseAfter\":true,\"centre\":0.0078125,\"right\":64.796875,\"brandLeft\":64.796875}"
+  },
+  {
+   "name": "paused: the digits stop rolling",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone: the frosted layer is lighter (16 px) and the clock still fits in the header",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "dark: the satellite, the presence dot and the recall ring are light colours",
+   "pass": true,
+   "detail": "{\"mode\":\"dark\",\"satellite\":\"rgb(246, 239, 226)\",\"presence\":\"rgb(168, 188, 117)\",\"ring\":\"rgb(168, 188, 117)\",\"label\":\"rgb(246, 239, 226)\",\"clock\":\"rgb(246, 239, 226)\",\"cue\":\"rgba(246, 239, 226, 0.79)\"}"
+  },
+  {
+   "name": "dark: labels, cue and clock are paper",
+   "pass": true,
+   "detail": "rgb(246, 239, 226) / rgb(246, 239, 226) / rgba(246, 239, 226, 0.79)"
+  },
+  {
+   "name": "quiet: the clock still runs but its digits do not roll",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "light: the tray is the library's sheet (ink), floating inset from the edges on the sheet radius, with no membrane",
+   "pass": true,
+   "detail": "{\"state\":\"open\",\"moving\":\"true\",\"left\":100,\"right\":100,\"bottom\":16,\"width\":1240,\"radius\":\"28px\",\"bg\":\"rgb(36, 33, 38)\",\"membrane\":false,\"scrollTop\":0,\"noteVisible\":true,\"overlay\":\"color(srgb 0.0745098 0.0941176 0.12549 / 0.275294)\",\"bar\":\"0\",\"cards\":5}"
+  },
+  {
+   "name": "light: the sheet holds its content (no offset, note in view, five cards); the page keeps moving behind a light veil and the bar steps away",
+   "pass": true,
+   "detail": "{\"scrollTop\":0,\"note\":true,\"moving\":\"true\",\"overlay\":\"color(srgb 0.0745098 0.0941176 0.12549 / 0.275294)\",\"bar\":\"0\"}"
+  },
+  {
+   "name": "light: a scroll up closes the tray again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "dark: the tray is the library's sheet (paper), floating inset from the edges on the sheet radius, with no membrane",
+   "pass": true,
+   "detail": "{\"state\":\"open\",\"moving\":\"true\",\"left\":100,\"right\":100,\"bottom\":16,\"width\":1240,\"radius\":\"28px\",\"bg\":\"rgb(243, 244, 244)\",\"membrane\":false,\"scrollTop\":0,\"noteVisible\":true,\"overlay\":\"color(srgb 0 0 0 / 0.395294)\",\"bar\":\"0\",\"cards\":5}"
+  },
+  {
+   "name": "dark: the sheet holds its content (no offset, note in view, five cards); the page keeps moving behind a light veil and the bar steps away",
+   "pass": true,
+   "detail": "{\"scrollTop\":0,\"note\":true,\"moving\":\"true\",\"overlay\":\"color(srgb 0 0 0 / 0.395294)\",\"bar\":\"0\"}"
+  },
+  {
+   "name": "dark: a scroll up closes the tray again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone: the sheet is inset and the cards go two across",
+   "pass": true,
+   "detail": "{\"state\":\"open\",\"left\":10,\"right\":10,\"cols\":2}"
+  },
+  {
+   "name": "phone: a swipe down on the sheet closes it",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1440: the headline is two voices of the weight variant, \"Every prompt.\" heavy in the ink and \"A little more alive.\" lighter in its own colour, on one line, no showcase box",
+   "pass": true,
+   "detail": "{\"parts\":2,\"texts\":[\"Every prompt.\",\"A little more alive.\"],\"colours\":[\"rgb(36, 33, 38)\",\"rgb(156, 62, 110)\"],\"sameColour\":false,\"rest\":[\"\\\"wght\\\" 620, \\\"wdth\\\" 100\",\"\\\"wght\\\" 340, \\\"wdth\\\" 100\"],\"variants\":[\"weight\",\"weight\"],\"lines\":1,\"role\":\"heading\",\"level\":\"1\",\"box\":\"rgba(0, 0, 0, 0)\",\"pad\":\"0px\",\"onScreen\":true}"
+  },
+  {
+   "name": "the letters nearest the pointer gain weight (towards 700) and fall back to 340 when it leaves",
+   "pass": true,
+   "detail": "{\"near\":[479.958,595.486,625.451,662.509,693.421],\"far\":[340,340,340,340,340]}"
+  },
+  {
+   "name": "1440: the theatre and the field stay put when the story starts (the caption keeps its height)",
+   "pass": true,
+   "detail": "{\"rest\":{\"theatreTop\":223,\"formCy\":439,\"caption\":124},\"mid\":{\"theatreTop\":223,\"formCy\":439,\"caption\":124}}"
+  },
+  {
+   "name": "1440: the cue is a live region revealed word by word",
+   "pass": true,
+   "detail": "{\"units\":6,\"live\":\"polite\",\"text\":\"Sent. The whole conversation is alive.\"}"
+  },
+  {
+   "name": "1440: air between the headline and the panel (≥ 52 px on the page scale), Back and Next right under the progress, inside the caption",
+   "pass": true,
+   "detail": "{\"u\":1,\"gap\":60,\"stepsBelowDots\":2,\"stepsInCaption\":true}"
+  },
+  {
+   "name": "390: the headline is two voices of the weight variant, \"Every prompt.\" heavy in the ink and \"A little more alive.\" lighter in its own colour, on two lines, no showcase box",
+   "pass": true,
+   "detail": "{\"parts\":2,\"texts\":[\"Every prompt.\",\"A little more alive.\"],\"colours\":[\"rgb(36, 33, 38)\",\"rgb(156, 62, 110)\"],\"sameColour\":false,\"rest\":[\"\\\"wght\\\" 620, \\\"wdth\\\" 100\",\"\\\"wght\\\" 340, \\\"wdth\\\" 100\"],\"variants\":[\"weight\",\"weight\"],\"lines\":2,\"role\":\"heading\",\"level\":\"1\",\"box\":\"rgba(0, 0, 0, 0)\",\"pad\":\"0px\",\"onScreen\":true}"
+  },
+  {
+   "name": "390: the theatre and the field stay put when the story starts (the caption keeps its height)",
+   "pass": true,
+   "detail": "{\"rest\":{\"theatreTop\":221,\"formCy\":409,\"caption\":112},\"mid\":{\"theatreTop\":221,\"formCy\":409,\"caption\":112}}"
+  },
+  {
+   "name": "390: the cue is a live region revealed word by word",
+   "pass": true,
+   "detail": "{\"units\":6,\"live\":\"polite\",\"text\":\"Sent. The whole conversation is alive.\"}"
+  },
+  {
+   "name": "390: air between the headline and the panel (≥ 44 px on the page scale), Back and Next right under the progress, inside the caption",
+   "pass": true,
+   "detail": "{\"u\":1,\"gap\":44,\"stepsBelowDots\":2,\"stepsInCaption\":true}"
+  },
+  {
+   "name": "phone: the free things keep their own column outside the panel, clear of the rim, of the things the body holds and of each other",
+   "pass": true,
+   "detail": "{\"onPanel\":[],\"pairs\":[],\"offscreen\":[],\"held\":0,\"panelWidth\":250,\"vw\":390}"
+  },
+  {
+   "name": "phone: the theatre takes the height the screen has, with no scroll and no well of empty space under the caption",
+   "pass": true,
+   "detail": "{\"theatre\":376,\"well\":35,\"scroll\":false}"
+  },
+  {
+   "name": "light: the field fades in after it has settled (hidden at first over a still colour field, fully there by six seconds)",
+   "pass": true,
+   "detail": "{\"name\":\"field-in\",\"delay\":\"3.4s\",\"opacity\":0,\"fallback\":true,\"later\":1}"
+  },
+  {
+   "name": "dark: the field fades in after it has settled (hidden at first over a still colour field, fully there by six seconds)",
+   "pass": true,
+   "detail": "{\"name\":\"field-in\",\"delay\":\"3.4s\",\"opacity\":0,\"fallback\":true,\"later\":1}"
+  },
+  {
+   "name": "quiet: the cue is simply there (no reveal in flight) and the headline does not react",
+   "pass": true,
+   "detail": ""
+  }
+ ]
+}

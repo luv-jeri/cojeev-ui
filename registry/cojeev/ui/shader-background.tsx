@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useMotionVisibility } from "../motion/use-motion-visibility";
-const Scene = React.lazy(() => import("./shader-background-scene"));
+const Scene = React.lazy(() => import("./shader-background-worker"));
 export type ShaderBackgroundProps = {mode: "light" | "dark"; paused?: boolean; className?: string; envBasePath?: string; original?: boolean};
 class ShaderBoundary extends React.Component<React.PropsWithChildren, {failed:boolean}> {
  state={failed:false};
@@ -14,7 +14,16 @@ export function ShaderBackground({mode,paused=false,className="",envBasePath,ori
  const host=React.useRef<HTMLDivElement>(null);
  const {enabled,inView}=useMotionVisibility(host);
  const moving=enabled&&inView&&!paused;
+ const [painted,setPainted]=React.useState(false);
+ React.useEffect(()=>{
+  let second=0,idle=0;
+  const first=requestAnimationFrame(()=>{second=requestAnimationFrame(()=>{
+   if('requestIdleCallback' in window)idle=window.requestIdleCallback(()=>setPainted(true),{timeout:500});
+   else setPainted(true);
+  });});
+  return()=>{cancelAnimationFrame(first);cancelAnimationFrame(second);if(idle)window.cancelIdleCallback(idle);};
+ },[]);
  return <div ref={host} aria-hidden="true" className={`v-shader-background ${className}`} data-mode={mode} data-original={original} data-moving={moving}>
-  <ShaderBoundary><React.Suspense fallback={null}><Scene mode={mode} moving={moving} envBasePath={envBasePath} original={original}/></React.Suspense></ShaderBoundary>
+  {painted&&<ShaderBoundary><React.Suspense fallback={null}><Scene mode={mode} moving={moving} envBasePath={envBasePath} original={original}/></React.Suspense></ShaderBoundary>}
  </div>;
 }
