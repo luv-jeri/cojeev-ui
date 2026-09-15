@@ -32,7 +32,8 @@
       "react-dom/*": [
         "./apps/cojeev-coming-soon/node_modules/@types/react-dom/*"
       ]
-    }
+    },
+    "allowJs": true
   },
   "files": [
     "src/bond-demo.tsx",
