@@ -1,0 +1,18 @@
+{
+  "url": "http://127.0.0.1:4347/",
+  "checks": [
+    "early Enter retains the exact typed prompt through hydration",
+    "light background canvas mounts",
+    "light phone uses compact lanes",
+    "light phone has no horizontal scroll",
+    "light feature drawer opens",
+    "dark background canvas mounts",
+    "dark phone uses compact lanes",
+    "dark phone has no horizontal scroll",
+    "dark feature drawer opens",
+    "unsupported OffscreenCanvas uses the original scene",
+    "no browser errors"
+  ],
+  "errors": [],
+  "seconds": 4.32
+}

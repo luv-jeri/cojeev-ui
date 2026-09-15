@@ -647,7 +647,7 @@ type Fold={prompt:string;kept:string};
 
 export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:boolean}){
  const [beat,setBeat]=React.useState(0);
- const [prompt,setPrompt]=React.useState('');
+ const [prompt,setPrompt]=React.useState(()=>startup.prompt??'');
  const [sent,setSent]=React.useState('');
  const [run,setRun]=React.useState(0);
  const [folds,setFolds]=React.useState<Fold[]>([]);
@@ -668,13 +668,7 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const capture=React.useRef<Capture|null>(null),formDy=React.useRef(0),reached=React.useRef(0),pending=React.useRef<string|null>(null);
  const controls=React.useRef<AnimationPlaybackControls|null>(null),generation=React.useRef(0);
  const clock_=React.useRef(0),pointer=React.useRef<Point|null>(null),checkRef=React.useRef(false);
- const typing=React.useRef<{text:string;at:number;fast:boolean;n:number}|null>(null),typed=React.useRef(false),idle=React.useRef<number|null>(null);
- React.useLayoutEffect(()=>{
-  // Restore text captured before hydration before the interactive event is replayed.
-  let active=true;
-  queueMicrotask(()=>{if(active&&startup.prompt!==null){typed.current=true;setPrompt(startup.prompt);}});
-  return()=>{active=false;};
- },[]);
+ const typing=React.useRef<{text:string;at:number;fast:boolean;n:number}|null>(null),typed=React.useRef(startup.prompt!==null),idle=React.useRef<number|null>(null);
  const scene=React.useRef({cells:Array.from({length:17},():MembraneCell=>({x:0,y:0,hw:0,hh:0,r:0,tone:0,rot:0,w:1})),strands:Array.from({length:8},():MembraneStrand=>({ax:0,ay:0,bx:0,by:0,r:0,tone:0,taper:0,w:1}))});
  const bonded=beat>0;
  const story=storyAt(run),lastFold=folds[folds.length-1];
