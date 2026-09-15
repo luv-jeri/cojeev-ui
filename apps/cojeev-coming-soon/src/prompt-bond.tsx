@@ -653,6 +653,8 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const [folds,setFolds]=React.useState<Fold[]>([]);
  const [noted,setNoted]=React.useState(false);
  const [stopped,setStopped]=React.useState(false);
+ const [stoppedAt,setStoppedAt]=React.useState(0);
+ const [compact,setCompact]=React.useState(false);
  const [checkOn,setCheckOn]=React.useState(false);
  const [glyphOn,setGlyphOn]=React.useState<boolean[]>(()=>Array(ROWS).fill(false));
  const [picked,setPicked]=React.useState<string|null>(null);
@@ -668,18 +670,21 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const clock_=React.useRef(0),pointer=React.useRef<Point|null>(null),checkRef=React.useRef(false);
  const typing=React.useRef<{text:string;at:number;fast:boolean;n:number}|null>(null),typed=React.useRef(false),idle=React.useRef<number|null>(null);
  React.useLayoutEffect(()=>{
-  if(startup.prompt!==null){typed.current=true;setPrompt(startup.prompt);}
+  // Restore text captured before hydration before the interactive event is replayed.
+  let active=true;
+  queueMicrotask(()=>{if(active&&startup.prompt!==null){typed.current=true;setPrompt(startup.prompt);}});
+  return()=>{active=false;};
  },[]);
  const scene=React.useRef({cells:Array.from({length:17},():MembraneCell=>({x:0,y:0,hw:0,hh:0,r:0,tone:0,rot:0,w:1})),strands:Array.from({length:8},():MembraneStrand=>({ax:0,ay:0,bx:0,by:0,r:0,tone:0,taper:0,w:1}))});
  const bonded=beat>0;
  const story=storyAt(run),lastFold=folds[folds.length-1];
- const upTo=beat===LAST&&stopped?reached.current:beat;
+ const upTo=beat===LAST&&stopped?stoppedAt:beat;
  // the environment follows the thread: every story played so far, then this one up to the current beat
  const played=React.useMemo(():Played[]=>folds.flatMap(f=>{const s=stories.find(x=>x.prompt===f.prompt);return s?[{s,upTo:f.kept?LAST:2}]:[];}),[folds]);
  const env=React.useMemo(()=>envFor(played,story,upTo),[played,story,upTo]);
  const fresh=React.useMemo(()=>beat===2?freshBetween(envFor(played,story,1),env):[],[played,story,env,beat]);
  const state=React.useRef({moving,quiet,beat,prompt,run,sent,stopped,folded:folds.length>0,env});
- state.current={moving,quiet,beat,prompt,run,sent,stopped,folded:folds.length>0,env};
+ React.useLayoutEffect(()=>{state.current={moving,quiet,beat,prompt,run,sent,stopped,folded:folds.length>0,env};},[moving,quiet,beat,prompt,run,sent,stopped,folds.length,env]);
  const prevEnv=React.useRef(env);
  // now and then one thing stirs: its icon plays its own motion
  const [lively,setLively]=React.useState(-1);
@@ -791,7 +796,7 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const relayout=React.useCallback(()=>{
   if(!stage.current||!form.current||!panel.current)return;
   const L=measure(stage.current,form.current,panel.current,rowRefs.current,reply.current,formDy.current);if(!L)return;
-  const first=!layout.current;layout.current=L;
+  const first=!layout.current;layout.current=L;setCompact(!L.roomy);
   const w=world.current,{beat:b,stopped:st,folded,env:ev}=state.current;
   if(b===0)restPose(w,L,roam.current,ev);else if(b===1)bondedPose(w,L,roam.current,ev);else panelPose(w,L,roam.current,b===LAST&&st?reached.current:b,folded,ev,storyAt(state.current.run));
   if(first||b>0)setReady(v=>v+1);
@@ -835,12 +840,12 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   // the settle starts from the still of whatever was reached (a stop lets the rest go), then releases what was held
   if(beat===LAST)panelPose(w,L,roam.current,stopped?reached.current:LAST,folds.length>0,env,story);
   if(!built){if(beat===0)restPose(w,L,roam.current,env);return;}
-  const own=++generation.current;
+  const own=++generation.current;let cancelled=false;
   const c=animate(built.seq,{defaultTransition:{ease:'easeInOut'}});
   controls.current=c;
   if(quiet||!moving){c.pause();c.time=quiet?built.still:0;}
-  c.finished.then(()=>{if(generation.current!==own||!state.current.moving||state.current.quiet)return;c.complete();setBeat(b=>Math.min(LAST,b+1));},()=>{});
-  return()=>{generation.current++;if(controls.current===c){c.stop();controls.current=null;}};
+  c.finished.then(()=>{if(cancelled||generation.current!==own||!state.current.moving||state.current.quiet)return;c.complete();setBeat(b=>Math.min(LAST,b+1));},()=>{});
+  return()=>{cancelled=true;if(controls.current===c){c.stop();controls.current=null;}};
  // eslint-disable-next-line react-hooks/exhaustive-deps
  },[beat,ready,quiet,run]);
  React.useEffect(()=>{const c=controls.current;if(!c||quiet)return;if(moving)c.play();else c.pause();},[moving,quiet]);
@@ -869,14 +874,14 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   if(still||!live)setSent(text.trim());else pending.current=text.trim();
   setStopped(false);setRun(r=>chosen>=0?chosen:r+1);setBeat(2);
  },[typeThenStart]);
- startRef.current=start;
+ React.useLayoutEffect(()=>{startRef.current=start;},[start]);
  /* The send button is a stop button while the organism works: what was reached stays, the rest is let go. A row that has
   * already landed in the current beat counts as reached. */
  const stop=(e:React.MouseEvent)=>{
   e.preventDefault(); // the same button is a submit button once the composer returns; the click's default action would send at once
   const b=state.current.beat;if(b<2||b>=LAST)return;
   const landed=LANDED[b]!==undefined&&(controls.current?.time??0)>=LANDED[b];
-  reached.current=landed?b+1:b;setStopped(true);controls.current?.complete();setBeat(LAST);
+  reached.current=landed?b+1:b;setStoppedAt(reached.current);setStopped(true);controls.current?.complete();setBeat(LAST);
  };
  React.useEffect(()=>{
   const onEnter=(e:KeyboardEvent)=>{if(e.key!=='Enter'||e.isComposing||e.defaultPrevented)return;
@@ -910,7 +915,6 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const cue=beat===8&&noted?'Noted. It will be there next time.':beat===LAST&&stopped?'Stopped. Whenever you’re ready.':beats[beat].cue;
  const composing=beat===0||beat===LAST,working=bonded&&!composing;
  const suggestions=beat===0?stories.slice(0,3).map(s=>s.prompt):beat===LAST?[storyAt(run+1).prompt]:[];
- const compact=layout.current?!layout.current.roomy:false;
  React.useEffect(()=>{if(composing&&matchMedia('(hover:hover) and (pointer:fine)').matches)requestAnimationFrame(()=>input.current?.focus({preventScroll:true}));},[composing]);
  const renderParts=(ps:Part[])=><span className="chat-row-text">{ps.map((p,j)=>p.b?<b key={j}>{p.t}</b>:<span key={j}>{p.t}</span>)}</span>;
 

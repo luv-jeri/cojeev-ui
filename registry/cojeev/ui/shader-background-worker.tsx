@@ -8,15 +8,15 @@ export default function WorkerBackground(props:Props) {
  const host=React.useRef<HTMLDivElement>(null);
  const worker=React.useRef<Worker|null>(null);
  const latest=React.useRef(props);
- latest.current=props;
- const [failed,setFailed]=React.useState(false);
+ React.useLayoutEffect(()=>{latest.current=props;},[props]);
+ const [failed,setFailed]=React.useState(()=>typeof HTMLCanvasElement!=='undefined'&&!('transferControlToOffscreen' in HTMLCanvasElement.prototype));
  const fallback=failed||props.original;
  React.useEffect(()=>{
   if(!host.current||fallback)return;
-  if(!('transferControlToOffscreen' in HTMLCanvasElement.prototype)) {setFailed(true);return;}
   const container=host.current,canvas=document.createElement('canvas');
   canvas.style.cssText='display:block;width:100%;height:100%;pointer-events:none';
   container.appendChild(canvas);
+  let active=true;
   let renderer:Worker|undefined;
   let observer:ResizeObserver|undefined;
   try {
@@ -35,9 +35,10 @@ export default function WorkerBackground(props:Props) {
     renderer?.postMessage({type:'resize',width,height});
    });
    observer.observe(container);
-  } catch(error) {console.warn('Background worker unavailable.',error);setFailed(true);}
-  return()=>{observer?.disconnect();renderer?.terminate();worker.current=null;canvas.remove();};
+  } catch(error) {console.warn('Background worker unavailable.',error);queueMicrotask(()=>{if(active)setFailed(true);});}
+  return()=>{active=false;observer?.disconnect();renderer?.terminate();worker.current=null;canvas.remove();};
  },[fallback]);
- React.useEffect(()=>{worker.current?.postMessage({type:'props',...props});},[props.mode,props.moving,props.original,props.envBasePath]);
+ const {mode,moving,original,envBasePath}=props;
+ React.useEffect(()=>{worker.current?.postMessage({type:'props',mode,moving,original,envBasePath});},[mode,moving,original,envBasePath]);
  return fallback?<Fallback {...props}/>:<div ref={host} style={{position:'absolute',inset:0}} data-renderer="worker"/>;
 }

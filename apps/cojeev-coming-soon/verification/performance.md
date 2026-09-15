@@ -64,3 +64,9 @@ The existing browser harness stays in `~/Developer/cojeev-coming-soon-preview/.b
 - [ ] Merge/release gates and production approval.
 
 No deployment, launch activation or production configuration change. `public/launch.json` remains byte-identical with `startedAt: null`. Revert this one scoped commit to restore the parent implementation. The iCloud-backed worktree stalls on some object/file reads, so this change is prepared in a fresh sparse review checkout at `~/Developer/cojeev-coming-soon-performance-review`; the original worktree and parent branch are preserved.
+
+## CJ01-1 publication preflight correction
+
+The first PR run exposed React render-ref/effect lint violations and a Next-only navigation rule applied to the Vite app. The startup handoff now restores captured input in a cancellable microtask; imperative animation snapshots update after commit; stopped/compact display state belongs to React; timeline cleanup cancels its own completion. Worker failures and prop updates follow the same lifecycle rules. No page CSS, shader, font or animation timeline changed.
+
+The shared shader modules also lacked root dependencies. Declaring their existing pinned packages exposed the Fiber JSX namespace colliding with unconstrained polymorphic HTML tags. Those `as` types now use the components' existing DOM prop types; Label preserves its wider polymorphism through React.createElement (including the existing legend examples). Root typecheck and all 166 unit tests pass. Root lint passed after lifecycle fixes; the later type-only changes and Label change also passed affected lint. The production build and 21 lifecycle checks passed; the full story rerun is recorded with the publication evidence. These results replace the earlier typecheck limitation for the root build.
