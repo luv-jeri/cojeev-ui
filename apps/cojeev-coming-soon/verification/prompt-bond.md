@@ -2,6 +2,36 @@
 
 Local visual demo at http://127.0.0.1:4345/ (the home page since this round; it was /bond.html before), dev copy. No deployment, backend or launch manifest change (`public/launch.json` still `startedAt: null`).
 
+## Round 12: the background steps back, the words step forward
+
+Owner feedback after round 11: the background moves too much and its colours swing too far, especially in dark, so nothing on the page can be read or focused on; the clock could go to a corner; the controls could be rearranged to make the page roomier; and a linked ShaderGradient preset (a sphere in teal, orange and periwinkle) was offered for dark. Numbered, with what was done:
+
+1. **The background itself is calmer.** Both fields now run at a third of their source speed (`uSpeed` 0.3 → 0.1) with gentler waves (`uStrength` light 3 → 2.2, dark 1.5 → 1.1). The dark palette moved into a narrow band of luminance: no near-black (`#20242A` → `#2b2836`), a dimmer lilac (`#A394D1` → `#8E80BC`), a plum-grey base (`#606080` → `#4a4364`), brightness 0.9. Measured on the home page with the story and the chrome hidden (four frames two seconds apart, 1440 × 900):
+
+   | field | motion, mean pixel change per two seconds | luminance band, 1st to 99th percentile |
+   |---|---|---|
+   | dark, before | 25.4 | 52 → 165 |
+   | dark, after | 12 (13.8 at 0.12, 10.8 at 0.08) | 54 → 117 |
+   | light, before | 0.9 | 230 → 233 |
+   | light, after | under 4 | 230 → 245 |
+
+   The light field was already nearly one tone; its number barely moves. The dark field now changes half as much and spans half the range.
+2. **The linked sphere preset was tried verbatim and not adopted.** Rendered as given (camera inside the sphere, teal, orange and periwinkle, grain on, env lighting) it fills the screen with a blazing orange sweep over black, the strongest colour swing of anything tried, and it sits outside the design system's palette. It is the opposite of what the feedback asked for, so the dark field keeps its wave with the calmer palette above. The still is `verification/prompt-bond-sphere-try.jpg`.
+3. **A clearing under the words.** Two layers now sit between the shader and the page instead of one. The frost (blur 32 px, paper 34%, ink in dark) softens the field everywhere; the clearing is a radial pool of paper (ink in dark) centred on the composition, 66% by 62% of the viewport, fading to nothing at the edges. The environment stays alive around the composition and goes quiet where the title, the field and the cue are. Phones get a lighter frost (16 px) and a wider pool.
+4. **The clock is in the corner.** The countdown left the title's eyebrow for the header's right corner under "Coming soon", using the site's existing launch-clock rules on the design scale, digits still rolling as they change and still under pause and reduced motion. The title is alone now, with air above and below.
+5. **The bar is three zones.** Replay and Pause sit on the left margin (the motion controls together), "What's coming" alone in the centre, the theme toggle on the right margin; the margins match the header's. On phones the toggle is icon-only so the row fits.
+
+### Files this round
+
+- `registry/cojeev/ui/shader-background-scene.tsx`: speed, wave strength and the dark palette in `sceneOverrides` (the source presets stay untouched for `original`).
+- `apps/cojeev-coming-soon/src/bond-demo.tsx`: the clock in the header corner, the three-zone bar.
+- `apps/cojeev-coming-soon/src/bond-demo.css`: frost and clearing layers, corner clock, bar zones, phone rules.
+- `apps/cojeev-coming-soon/src/prompt-bond.css`: the story's clock rules removed.
+
+### Checks this round (Playwright, Chrome channel, headless, on `/`)
+
+Details suite, 96/96 (round-11 checks re-pointed at the corner clock and the two layers; a new check that the bar is three zones on the header's margins with the invitation centred to within 4 px, and that the clock fits in the phone header). Lifecycle suite, 21/21 (the eyebrow check became: the countdown sits in the header corner and the title has no eyebrow). Type-check clean. Production build exit 0.
+
 ## Round 11: a frosted background, a clock that runs, dark details in light colours
 
 Owner feedback after round 10, with one dark-mode screenshot of the blobs, numbered, with what was done for each:
