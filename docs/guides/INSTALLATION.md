@@ -4,6 +4,11 @@ Cojeev UI is distributed through a public shadcn registry. See [RELEASE-0.2.0.md
 
 Cojeev UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme, fonts and shared motion code; it does not require the private Cojeev application.
 
+For the checked compiler baseline, declaration boundary and the separate route
+for stricter TypeScript flags, see [Strict TypeScript integration](strict-typescript-integration.md).
+For the default embedded font delivery and the optional verified file-backed
+conversion, see [Optional local font files](local-fonts.md).
+
 For a Vite project with Tailwind and the alias configured, initialize shadcn and add a component:
 
 ```sh

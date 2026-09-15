@@ -1,6 +1,10 @@
 import ts from "typescript";
 import path from "node:path";
 
+const supplementalAPITypes = {
+  tree: new Set(["TreeNode"]),
+};
+
 // Read the same types TypeScript checks, including CVA's inferred variant axes.
 // Native DOM props remain available but are documented as a group.
 export function componentAPIs(ids) {
@@ -68,7 +72,11 @@ export function componentAPIs(ids) {
     const source = program.getSourceFile(`registry/cojeev/ui/${id}.tsx`);
     if (!source) throw new Error(`Missing component source: ${id}`);
     const sources = localSources(source);
-    const props = source.statements.filter(node => (ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) && node.name.text.endsWith("Props"));
+    const supplemental = supplementalAPITypes[id] ?? new Set();
+    const props = source.statements.filter(node =>
+      (ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) &&
+      (node.name.text.endsWith("Props") || supplemental.has(node.name.text)),
+    );
     return [id, props.map(declaration => ({
       name: declaration.name.text,
       props: authoredProperties(declaration, sources)

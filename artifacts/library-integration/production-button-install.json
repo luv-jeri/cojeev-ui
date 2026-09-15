@@ -1,0 +1,22 @@
+{
+  "directory": "task-owned temporary consumer (removed after pass)",
+  "baseURL": "https://000h.cojeev.com",
+  "components": [
+    "button"
+  ],
+  "foundationOnly": false,
+  "installer": "shadcn@4.21.0",
+  "node": "v22.22.0",
+  "startedAt": "2026-09-14T15:27:58.721Z",
+  "build": "PASS",
+  "freshDirectory": true,
+  "screenshotVerification": "not-run",
+  "checks": {
+    "publicCLIInstall": "PASS",
+    "typecheckAndBuild": "PASS"
+  },
+  "replacedGeneratedScaffold": true,
+  "finishedAt": "2026-09-14T15:28:54.937Z",
+  "runtimeSeconds": 56.216,
+  "receiptFile": "artifacts/library-integration/production-button-install.json"
+}

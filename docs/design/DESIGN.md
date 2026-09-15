@@ -302,6 +302,12 @@ Menus, dialogs, sheets and popovers pair their own surfaces and foregrounds, pre
 
 **The One Working Object Rule.** Related stacked tasks read as one connected file object: the active card owns heading and close, while every alternate card keeps an attached, readable handle that can be reached without hover.
 
+[Tree](../../registry/cojeev/ui/tree.tsx) is an index card with ruled guides: a hairline drops from each open folder and ends in a rounded elbow at every child, stopping at the last one. Folders read in ink with open or closed folder icons, files in secondary ink, and one soft-pink slip with a hairline edge marks the selection. The slip is the shared flow layer, so glide, stretch and the pointer preview arrive through one motion owner; rows and chevrons never morph. Loading, empty and failed branches are demonstrated as separate specimens with their own icon, tint and a composed Retry button. Direction is read from the tree itself, so a right-to-left tree inside a left-to-right frame still mirrors its arrows.
+
+[Tabs](../../registry/cojeev/ui/tabs.tsx) keep six treatments, each with its own travelling surface: an ink lozenge for pills, a beige lens for lenses, a pink marker on a ruled baseline for underline, a paper sheet outlined on three sides and open into the page for notebook, and a vertical soft-pink index line for rail. Icons, labels and tabular counts share one baseline and the 8px gap.
+
+**The One Travelling Surface Rule.** A list that selects owns exactly one moving surface: the flow layer paints it, the stationary rule paints the same shape when Flow, Motion or reduced motion turns it off, and no other element on that row or trigger animates its own transform.
+
 ### Scrolling
 
 [ScrollbarProvider and the scroll primitives](../../registry/cojeev/ui/scroll-area.tsx) centralize appearance without taking scroll semantics away from the browser. The application mounts one root policy at 4px in [the root layout](../../app/layout.tsx); a standalone provider keeps the compatible 6px default. ScrollArea and PageScrollbar render the organic thumb contour. Unmanaged native overflow receives only the slim, theme-coloured CSS fallback documented in the [coverage audit](../quality/global-scrollbar-audit.md), so browser and operating-system paint, forced-colors behavior and third-party ownership remain honest limits.
