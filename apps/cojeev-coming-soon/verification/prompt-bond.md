@@ -2,6 +2,24 @@
 
 Local visual demo at http://127.0.0.1:4345/ (the home page since this round; it was /bond.html before), dev copy. No deployment, backend or launch manifest change (`public/launch.json` still `startedAt: null`).
 
+## Round 13: the tray is the library's sheet
+
+Owner feedback after round 12, with a screenshot of the open tray on a wide screen: the animation and the background stop when the tray comes up; it does not go back on scroll up; and it looks very bad and needs redesigning and polishing in the same way the rest of the UI is built. Numbered, with what was done:
+
+1. **The page keeps moving behind the tray.** `moving` no longer includes `!open`: only pause, a hidden tab and reduced motion stop the story and the field. The tray's own membrane, its clock and its `still`/`quiet` props are gone with it.
+2. **Scroll up closes it; so does a swipe down.** The wheel listener that opens the tray on a scroll down now also closes it on a scroll up (70 px within a 200 ms run) when the sheet's own scroll is at its top; a touch swipe of 65 px down on the sheet does the same. Escape, the close button and the veil still work.
+3. **The sheet is the library's drawer.** The round-10 tray was a full-width membrane with a wobbling, budded top edge; in dark it was ink on ink and on a wide screen the buds read as lumps and the cards stretched. The tray now follows the library's `DrawerContent`: `background: var(--v-ink)` and `color: var(--v-on-ink)` (an ink sheet in light, a paper sheet in dark, as the tokens flip), floating inset 16 px from the sides and the bottom, the sheet radius (28 px), a handle, the close button, a floating shadow and a hairline edge. On wide screens it stops at 1240 px (on the page scale) and stays centred. Cards are the sheet's own tone (on-ink at 6%, a 10% edge, a lift and a tone edge on hover) and each carries a gel glyph in its colour with the organic radius of the things on the page. Phones get a 10 px inset, a 24 px radius and two cards across.
+4. **Two fixes found while checking.** The site stylesheet still gave the tray's scroll area `top: 65px` (a gap above the title and cards clipped at the bottom) and made the library's scrim transparent (the page behind stayed at full brightness and the bar's buttons peeked out at the sheet's corners). The scroll area is reset, the veil is 60% of the library scrim (a warm-ink veil at about 28% in light, 37% in dark, so the movement behind stays visible), and the bar fades out while the sheet is open.
+
+### Files this round
+
+- `apps/cojeev-coming-soon/src/bond-demo.tsx`: `moving` without `open`; wheel up and swipe down close the tray; `data-open` on the shell; the tray membrane component removed.
+- `apps/cojeev-coming-soon/src/bond-demo.css`: the sheet, its cards and glyphs, the veil, the bar fade, phone and short-window rules; the membrane rules removed.
+
+### Checks this round (Playwright, Chrome channel, headless, on `/`)
+
+Details suite, __D__/__T__ (eight new round-13 checks: in both themes the tray is the library's sheet, inset and centred on the sheet radius with no membrane; it holds its content with the note in view and five cards while the page keeps moving behind a translucent veil and the bar is hidden; a wheel up closes it; on a phone the sheet is inset with two cards across and a swipe down closes it). Lifecycle suite, 21/21. Type-check clean. Production build exit 0.
+
 ## Round 12: the background steps back, the words step forward
 
 Owner feedback after round 11: the background moves too much and its colours swing too far, especially in dark, so nothing on the page can be read or focused on; the clock could go to a corner; the controls could be rearranged to make the page roomier; and a linked ShaderGradient preset (a sphere in teal, orange and periwinkle) was offered for dark. Numbered, with what was done:

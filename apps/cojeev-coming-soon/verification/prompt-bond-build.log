@@ -4,95 +4,95 @@
 
 vite v7.3.6 building client environment for production...
 transforming...
+../../registry/cojeev/ui/button.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/button.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/button.tsx" was ignored.
+../../registry/cojeev/motion/use-motion-visibility.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/motion/use-motion-visibility.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/use-motion-visibility.ts" was ignored.
+../../registry/cojeev/ui/theme-toggle.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/theme-toggle.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/theme-toggle.tsx" was ignored.
+../../registry/cojeev/ui/animated-icon.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/animated-icon.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/animated-icon.tsx" was ignored.
 ../../registry/cojeev/ui/shape.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
 ../../registry/cojeev/ui/shape.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/shape.tsx" was ignored.
 ../../registry/cojeev/ui/drawer.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
 ../../registry/cojeev/ui/drawer.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/drawer.tsx" was ignored.
-../../registry/cojeev/ui/button.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/button.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/button.tsx" was ignored.
-../../registry/cojeev/ui/theme-toggle.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/theme-toggle.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/theme-toggle.tsx" was ignored.
-../../registry/cojeev/motion/use-motion-visibility.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/motion/use-motion-visibility.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/use-motion-visibility.ts" was ignored.
-../../registry/cojeev/ui/animated-icon.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/animated-icon.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/animated-icon.tsx" was ignored.
-../../registry/cojeev/ui/membrane.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/membrane.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/membrane.tsx" was ignored.
 ../../node_modules/@radix-ui/react-dialog/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-dialog/dist/index.mjs" was ignored.
-../../registry/cojeev/ui/bubble.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/bubble.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/bubble.tsx" was ignored.
-../../registry/cojeev/ui/input.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/input.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/input.tsx" was ignored.
-../../node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/components/LayoutGroup/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/LayoutGroup/index.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/components/AnimatePresence/PresenceChild.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimatePresence/PresenceChild.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/components/LazyMotion/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/LazyMotion/index.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/components/MotionConfig/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/MotionConfig/index.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/motion/utils/use-visual-state.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/motion/utils/use-visual-state.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/utils/use-unmount-effect.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-unmount-effect.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/utils/use-isomorphic-effect.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-isomorphic-effect.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/utils/use-force-update.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-force-update.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/components/LayoutGroup/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/LayoutGroup/index.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/render/dom/features-animation.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/dom/features-animation.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/render/dom/features-max.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/dom/features-max.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/utils/use-unmount-effect.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-unmount-effect.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/utils/use-force-update.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-force-update.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/utils/use-isomorphic-effect.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-isomorphic-effect.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/render/dom/features-min.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/dom/features-min.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/render/dom/features-max.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/dom/features-max.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/use-motion-value-event.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-motion-value-event.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-motion-template.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-motion-template.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-motion-value.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-motion-value.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-follow-value.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-follow-value.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/value/use-spring.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-spring.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-time.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-time.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/value/use-scroll.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-scroll.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/value/use-spring.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-spring.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/value/use-velocity.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-velocity.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-transform.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-transform.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-will-change/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-will-change/index.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/value/use-velocity.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-velocity.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion-config.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion-config.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/value/use-scroll.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-scroll.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/animation/hooks/use-animate-style.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/animation/hooks/use-animate-style.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/animation/hooks/use-animate.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/animation/hooks/use-animate.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/animation/hooks/use-animation.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/animation/hooks/use-animation.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/events/use-dom-event.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/events/use-dom-event.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence-data.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence-data.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/animation/hooks/use-animation.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/animation/hooks/use-animation.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/use-animation-frame.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-animation-frame.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/utils/use-cycle.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-cycle.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/use-in-view.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-in-view.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/use-instant-transition.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-instant-transition.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/use-page-in-view.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-page-in-view.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/context/PresenceContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/PresenceContext.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/utils/use-cycle.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-cycle.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/context/MotionContext/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/MotionContext/index.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/context/LayoutGroupContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/LayoutGroupContext.mjs" was ignored.
-../../registry/cojeev/motion/choreography.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/motion/choreography.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/choreography.ts" was ignored.
-../../registry/cojeev/motion/use-flow.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/motion/use-flow.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/use-flow.ts" was ignored.
-../../registry/cojeev/ui/spinner.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/spinner.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/spinner.tsx" was ignored.
-../../registry/cojeev/motion/flow-press.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/motion/flow-press.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/flow-press.ts" was ignored.
-../../registry/cojeev/motion/theme-transition.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/motion/theme-transition.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/theme-transition.ts" was ignored.
 ../../registry/cojeev/ui/presence.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
 ../../registry/cojeev/ui/presence.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/presence.tsx" was ignored.
-../../node_modules/framer-motion/dist/es/context/MotionConfigContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/MotionConfigContext.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/context/SwitchLayoutGroupContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/SwitchLayoutGroupContext.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/context/DeprecatedLayoutGroupContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/DeprecatedLayoutGroupContext.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/components/AnimateSharedLayout.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimateSharedLayout.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/animation/hooks/use-animated-state.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/animation/hooks/use-animated-state.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/value/use-inverted-scale.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-inverted-scale.mjs" was ignored.
+../../registry/cojeev/motion/flow-press.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/motion/flow-press.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/flow-press.ts" was ignored.
+../../registry/cojeev/ui/spinner.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/spinner.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/spinner.tsx" was ignored.
+../../registry/cojeev/motion/theme-transition.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/motion/theme-transition.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/theme-transition.ts" was ignored.
 ../../registry/cojeev/motion/use-morph.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
 ../../registry/cojeev/motion/use-morph.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/use-morph.ts" was ignored.
+../../registry/cojeev/ui/bubble.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/bubble.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/bubble.tsx" was ignored.
+../../registry/cojeev/ui/input.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/input.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/input.tsx" was ignored.
+../../registry/cojeev/motion/use-flow.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/motion/use-flow.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/use-flow.ts" was ignored.
+../../registry/cojeev/ui/membrane.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/membrane.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/membrane.tsx" was ignored.
 ../../registry/cojeev/ui/shader-background-scene.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
 ../../registry/cojeev/ui/shader-background-scene.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/shader-background-scene.tsx" was ignored.
-../../registry/cojeev/ui/icon.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
-../../registry/cojeev/ui/icon.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/icon.tsx" was ignored.
+../../registry/cojeev/motion/choreography.ts (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/motion/choreography.ts (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/motion/choreography.ts" was ignored.
 ../../node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion.mjs" was ignored.
-../../node_modules/@radix-ui/react-focus-guards/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-focus-guards/dist/index.mjs" was ignored.
-../../node_modules/@radix-ui/react-portal/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-portal/dist/index.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/context/MotionConfigContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/MotionConfigContext.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/animation/hooks/use-animated-state.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/animation/hooks/use-animated-state.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/components/AnimateSharedLayout.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/components/AnimateSharedLayout.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/context/SwitchLayoutGroupContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/SwitchLayoutGroupContext.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/context/DeprecatedLayoutGroupContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/DeprecatedLayoutGroupContext.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/context/PresenceContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/PresenceContext.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/value/use-inverted-scale.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-inverted-scale.mjs" was ignored.
+../../registry/cojeev/ui/icon.tsx (1:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+../../registry/cojeev/ui/icon.tsx (1:0): Module level directives cause errors when bundled, "use client" in "../../registry/cojeev/ui/icon.tsx" was ignored.
 ../../node_modules/@radix-ui/react-presence/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-presence/dist/index.mjs" was ignored.
+../../node_modules/@radix-ui/react-portal/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-portal/dist/index.mjs" was ignored.
 ../../node_modules/@radix-ui/react-focus-scope/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-focus-scope/dist/index.mjs" was ignored.
 ../../node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/utils/use-constant.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-constant.mjs" was ignored.
+../../node_modules/@radix-ui/react-focus-guards/dist/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/@radix-ui/react-focus-guards/dist/index.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/context/LazyContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/LazyContext.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/utils/use-constant.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-constant.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/utils/use-is-mounted.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/utils/use-is-mounted.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-combine-values.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-combine-values.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/value/use-computed.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/value/use-computed.mjs" was ignored.
@@ -103,27 +103,27 @@ transforming...
 ../../node_modules/framer-motion/dist/es/motion/features/layout/MeasureLayout.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/motion/features/layout/MeasureLayout.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/context/ReorderContext.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/ReorderContext.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/motion/index.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/motion/index.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/render/html/use-html-visual-state.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/html/use-html-visual-state.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/motion/utils/use-motion-ref.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/motion/utils/use-motion-ref.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/render/dom/use-render.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/dom/use-render.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/render/svg/use-svg-visual-state.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/svg/use-svg-visual-state.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/motion/utils/use-motion-ref.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/motion/utils/use-motion-ref.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/context/MotionContext/create.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/context/MotionContext/create.mjs" was ignored.
-../../node_modules/framer-motion/dist/es/render/html/use-props.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/html/use-props.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/render/dom/use-render.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/dom/use-render.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/render/html/use-html-visual-state.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/html/use-html-visual-state.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs" was ignored.
 ../../node_modules/framer-motion/dist/es/render/svg/use-props.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/svg/use-props.mjs" was ignored.
+../../node_modules/framer-motion/dist/es/render/html/use-props.mjs (1:0): Module level directives cause errors when bundled, "use client" in "../../node_modules/framer-motion/dist/es/render/html/use-props.mjs" was ignored.
 ✓ 646 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/index.html                                      1.69 kB │ gzip:   0.83 kB
+dist/index.html                                      1.69 kB │ gzip:   0.82 kB
 dist/resident.html                                   1.95 kB │ gzip:   0.93 kB
 dist/mind.html                                       1.95 kB │ gzip:   0.93 kB
 dist/assets/story-demos-eUwtxvPG.css                19.95 kB │ gzip:   4.80 kB
-dist/assets/main-D6_MZN_u.css                       39.72 kB │ gzip:   7.92 kB
+dist/assets/main-BcNEaUjZ.css                       40.03 kB │ gzip:   8.08 kB
 dist/assets/styles-DeDFEuOS.css                    529.47 kB │ gzip: 334.51 kB
 dist/assets/mind-DW0UGeGZ.js                         3.89 kB │ gzip:   1.50 kB
 dist/assets/resident-FQ5fAG-r.js                     6.02 kB │ gzip:   2.35 kB
 dist/assets/story-demos-DUzO51dm.js                 10.53 kB │ gzip:   4.05 kB
-dist/assets/main-BvnBV85-.js                        59.99 kB │ gzip:  22.10 kB
+dist/assets/main-BVV0m2M6.js                        59.22 kB │ gzip:  21.74 kB
 dist/assets/styles-5orlUymA.js                     509.76 kB │ gzip: 164.99 kB
 dist/assets/shader-background-scene-BlnUhrYw.js  1,078.59 kB │ gzip: 272.34 kB
 
@@ -131,4 +131,4 @@ dist/assets/shader-background-scene-BlnUhrYw.js  1,078.59 kB │ gzip: 272.34 kB
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 2.74s
+✓ built in 2.46s
