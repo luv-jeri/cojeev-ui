@@ -1,5 +1,5 @@
 {
- "ran": "2026-09-14T22:49:50.657Z",
+ "ran": "2026-09-15T04:10:12.867Z",
  "page": "http://127.0.0.1:4345/ (home page)",
  "suites": [
   "lifecycle (round 4 suite, round-6 chrome: home page, wordmark + Coming soon, countdown eyebrow, theme, pause, hidden, replay, tray, other entries)",
@@ -179,13 +179,13 @@
    "suite": "details",
    "name": "memory things visible with a title, a name and a note",
    "pass": true,
-   "detail": "[[\"team decisions\",\"memory\",\"1.00\",159],[\"Mira\",\"teammate\",\"1.00\",147],[\"last launch notes\",\"memory\",\"1.00\",171],[\"instructions.md\",\"file\",\"1.00\",177],[\"changelog\",\"memory\",\"1.00\",127],[\"date checker\",\"subagent\",\"1.00\",156],[\"launch skill\",\"skill\",\"1.00\",135],[\"this week’s threads\",\"memory\",\"1.00\",186],[\"style guide\",\"file\",\"1.00\",132],[\"Arun\",\"teammate\",\"1.00\",158],[\"deploy log\",\"memory\",\"1.00\",126],[\"board reader\",\"subagent\",\"1.00\",155],[\"runbook\",\"memory\",\"1.00\",165],[\"summary skill\",\"skill\",\"1.00\",152],[\"Jules\",\"teammate\",\"1.00\",149],[\"trace reader\",\"subagent\",\"1.00\",151],[\"\",\"memory\",\"0.00\",0],[\"\",\"memory\",\"0.00\",0]]"
+   "detail": "[[\"team decisions\",\"memory\",\"1.00\",155],[\"Mira\",\"teammate\",\"1.00\",147],[\"last launch notes\",\"memory\",\"1.00\",167],[\"instructions.md\",\"file\",\"1.00\",177],[\"changelog\",\"memory\",\"1.00\",124],[\"date checker\",\"subagent\",\"1.00\",156],[\"launch skill\",\"skill\",\"1.00\",133],[\"this week’s threads\",\"memory\",\"1.00\",182],[\"style guide\",\"file\",\"1.00\",132],[\"Arun\",\"teammate\",\"1.00\",158],[\"deploy log\",\"memory\",\"1.00\",123],[\"board reader\",\"subagent\",\"1.00\",151],[\"runbook\",\"memory\",\"1.00\",165],[\"summary skill\",\"skill\",\"1.00\",149],[\"Jules\",\"teammate\",\"1.00\",149],[\"trace reader\",\"subagent\",\"1.00\",148],[\"\",\"memory\",\"0.00\",0],[\"\",\"memory\",\"0.00\",0]]"
   },
   {
    "suite": "details",
    "name": "memory things float outside the panel, fully on screen",
    "pass": true,
-   "detail": "{\"gap\":91,\"left\":181}"
+   "detail": "{\"gap\":90,\"left\":182}"
   },
   {
    "suite": "details",
@@ -239,7 +239,7 @@
    "suite": "details",
    "name": "the kept memory and the report are placed in the environment and float",
    "pass": true,
-   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.977723]"
+   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.979389]"
   },
   {
    "suite": "details",
@@ -383,7 +383,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",32,12],[\"1.00\",31,348],[\"1.00\",32,7],[\"1.00\",28,354],[\"1.00\",32,7],[\"1.00\",38,340],[\"1.00\",34,2],[\"1.00\",32,352],[\"1.00\",28,17],[\"1.00\",31,352],[\"1.00\",32,6],[\"1.00\",38,343],[\"1.00\",32,10],[\"1.00\",34,351],[\"1.00\",31,5],[\"1.00\",38,341],[\"0.00\",0,0],[\"0.00\",0,0]]"
+   "detail": "[[\"1.00\",32,12],[\"1.00\",31,348],[\"1.00\",32,8],[\"1.00\",28,354],[\"1.00\",32,7],[\"1.00\",38,340],[\"1.00\",34,2],[\"1.00\",32,352],[\"1.00\",28,17],[\"1.00\",31,352],[\"1.00\",32,6],[\"1.00\",38,343],[\"1.00\",32,10],[\"1.00\",34,351],[\"1.00\",31,5],[\"1.00\",38,341],[\"0.00\",0,0],[\"0.00\",0,0]]"
   },
   {
    "suite": "details",
@@ -425,7 +425,7 @@
    "suite": "details",
    "name": "light: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",155,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",86,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",207,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",218,353,\"blob\"],[\"memory\",1112,1301,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",187,316,\"blob\"],[\"subagent\",1165,1322,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1304,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1344,\"blob\"]]"
+   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -467,7 +467,7 @@
    "suite": "details",
    "name": "the file and the skill are held close against the body, labels folded",
    "pass": true,
-   "detail": "[[\"release-notes skill\",\"skill\",29,0],[\"voice notes\",\"file\",29,0]]"
+   "detail": "[[\"release-notes skill\",\"skill\",30,0],[\"voice notes\",\"file\",29,0]]"
   },
   {
    "suite": "details",
@@ -533,7 +533,7 @@
    "suite": "details",
    "name": "dark: the field is one glass capsule with readable ink and no stray line",
    "pass": true,
-   "detail": "{\"glass\":\"rgba(246, 239, 226, 0.18)\",\"radius\":\"999px\",\"lum\":240,\"understroke\":false}"
+   "detail": "{\"glass\":\"rgba(246, 239, 226, 0.28)\",\"radius\":\"999px\",\"lum\":240,\"understroke\":false}"
   },
   {
    "suite": "details",
@@ -545,7 +545,7 @@
    "suite": "details",
    "name": "dark: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",155,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",86,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",208,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",218,353,\"blob\"],[\"memory\",1112,1301,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",187,316,\"blob\"],[\"subagent\",1165,1322,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1304,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1344,\"blob\"]]"
+   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -629,7 +629,7 @@
    "suite": "details",
    "name": "a click while the page is typing a thought clears the fragment instead of leaving it",
    "pass": true,
-   "detail": "\"Plan our next launc\""
+   "detail": "\"Plan our next laun\""
   },
   {
    "suite": "details",
@@ -647,7 +647,7 @@
    "suite": "details",
    "name": "each kind of thing has its own idle life: memory recalls, file flutters, skill twinkles, teammate presence breathes, subagent scans (and spins fast when busy)",
    "pass": true,
-   "detail": "{\"memory\":\"recall\",\"subagent\":\"spin\",\"teammate\":\"presence\",\"file\":\"blob, flutter\",\"skill\":\"twinkle\",\"busyFast\":true}"
+   "detail": "{\"memory\":\"recall\",\"subagent\":\"orbit\",\"teammate\":\"presence\",\"file\":\"blob, flutter\",\"skill\":\"twinkle\",\"busyFast\":true}"
   },
   {
    "suite": "details",

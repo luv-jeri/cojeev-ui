@@ -7,6 +7,7 @@ import {ShaderBackground} from "@/registry/cojeev/ui/shader-background";
 import {ThemeToggle,applyTheme,type ThemeMode} from "@/registry/cojeev/ui/theme-toggle";
 import {useMotionVisibility} from "@/registry/cojeev/motion/use-motion-visibility";
 import {Drawer,DrawerTrigger,DrawerContent,DrawerTitle,DrawerDescription,DrawerClose} from "@/registry/cojeev/ui/drawer";
+import {Membrane,type MembraneHandle} from "@/registry/cojeev/ui/membrane";
 import {Countdown} from "./countdown-display";
 import "./utilities.css";
 import "./styles.css";
@@ -27,6 +28,22 @@ const details:[string,string,string,string][]=[
 const fitUi=()=>{const ui=innerWidth<=700?1:Math.min(1.8,Math.max(innerWidth<=1024?.9:.8,Math.min(innerWidth/1440,innerHeight/900)));document.documentElement.style.setProperty('--ui',ui.toFixed(3));};
 fitUi();addEventListener('resize',fitUi);
 
+/** The tray is made of the same living surface as the panel: a pink-to-blue body whose top edge wobbles and carries three small
+ * buds, painted by its own membrane while the tray is open. `still` freezes its clock (pause, hidden); `quiet` flattens the wobble. */
+function TrayMembrane({still,quiet}:{still:boolean;quiet:boolean}){
+ const ref=React.useRef<MembraneHandle>(null),size=React.useRef({width:1,height:1}),mode=React.useRef({still,quiet});
+ React.useEffect(()=>{mode.current={still,quiet};},[still,quiet]);
+ React.useEffect(()=>{let raf=0,last=performance.now(),t=0,frozen=false;
+  const tick=(now:number)=>{raf=requestAnimationFrame(tick);const {still:hold,quiet:flat}=mode.current;const dt=hold?0:Math.min(40,now-last)/1000;last=now;t+=dt;
+   if(hold&&frozen)return;frozen=hold;
+   const m=ref.current,{width:W,height:H}=size.current;if(!m||W<2)return;
+   const u=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui'))||1,top=72*u,body=(H-top)/2+60,cy=top+body;
+   const buds=[.16,.5,.84].map((f,i)=>({x:W*f+Math.sin(t*.5+i*2.1)*14*u,y:top-5*u+Math.sin(t*.7+i*1.3)*4*u,hw:(22-(i%2)*5)*u,hh:(17-(i%2)*3)*u,r:16*u,tone:[1,3,1][i],w:1.4}));
+   m.draw({cells:[{x:W*.3,y:cy,hw:W*.32+60,hh:body,r:40*u,tone:0},{x:W*.72,y:cy,hw:W*.32+60,hh:body,r:40*u,tone:2},...buds],strands:[],blend:28*u,wobble:flat?0:2.2*u,contour:.35,time:t});};
+  raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf);},[]);
+ return <Membrane ref={ref} className="tray-membrane" onMeasure={s=>{size.current=s;}}/>;
+}
+
 function Demo(){
  const [paused,setPaused]=React.useState(false),[open,setOpen]=React.useState(false),[replayKey,setReplayKey]=React.useState(0);
  const [mode,setMode]=React.useState<ThemeMode>(()=>document.documentElement.dataset.mode==="dark"?"dark":"light");
@@ -45,6 +62,7 @@ function Demo(){
   <footer className="bond-bottom"><Button variant="ghost" className="replay-button" onClick={replay}><AnimatedIcon name="play" size="sm"/>Replay</Button><DrawerTrigger asChild><Button variant="ghost" className="bond-footer-trigger" data-morph="fill" data-tier="pill"><AnimatedIcon name="chevron-up" size="sm"/>What’s coming</Button></DrawerTrigger><div className="bond-controls"><ThemeToggle mode={mode} responsive onModeChange={(next,detail)=>{setMode(next);applyTheme(next,paused,undefined,{origin:detail?.origin});}}/><Button variant="ghost" className="pause-button" aria-label={paused?'Resume motion':'Pause motion'} aria-pressed={paused} onClick={()=>setPaused(v=>!v)}><AnimatedIcon name={paused?'play':'pause'} size="sm"/></Button></div></footer>
  </div>
  <DrawerContent className="future-tray bond-tray" data-paused={paused||!enabled}>
+  <TrayMembrane still={paused||!enabled||!inView} quiet={!enabled}/>
   <div className="tray-handle" aria-hidden="true"/>
   <DrawerClose asChild><Button variant="ghost" className="tray-close" aria-label="Close"><AnimatedIcon name="x" size="sm"/></Button></DrawerClose>
   <div className="tray-scroll">

@@ -2,6 +2,31 @@
 
 Local visual demo at http://127.0.0.1:4345/ (the home page since this round; it was /bond.html before), dev copy. No deployment, backend or launch manifest change (`public/launch.json` still `startedAt: null`).
 
+## Round 10: the tray is made of the membrane, the blobs get depth, dark gets contrast
+
+Owner feedback after round 9, with five screenshots, numbered, with what was done for each:
+
+1. **Redesign the bottom tray so it has the same morphing outline as the main effect; matching UI and UX.** The tray is now a sheet of the same living surface as the panel: it carries its own `Membrane` (`TrayMembrane` in `bond-demo.tsx`), a pink-to-blue body drawn from two wide cells plus three small buds riding the top edge (olive, yellow, olive), with the panel’s blend, wobble and inner contour, painted only while the tray is open. The membrane bleeds past the sheet on every side so the wobbling edge and the buds rise above it; the sheet itself is transparent. On top: the handle, the title and description in ink-on-body, five paper cards (the same paper-on-body bubbles as the reply in the panel, 20 px radius, a 1 px ink edge, a tone edge and a lift on hover), the note, and a close button that turns on hover. Dark uses the panel’s dark body tokens and the membrane’s night palette. The clock freezes on pause or when the page is hidden; reduced motion flattens the wobble.
+2. **The blobs are not polished; make them better.** Each blob is now a small gel: a radial highlight at the top left, the kind’s fill in the middle, the deep tone at the lower right; a 1 px edge in the deep tone, a 1 px inner highlight, a soft shadow in the kind’s own colour; the icon in ink at 1.75 stroke; a more asymmetric shape cycle. The subagent’s rim arc, which read as an offset grey outline, is gone; a small satellite orbits the body instead (`offset-path` around the blob), slow and faint at rest, fast and bright while the subagent works. Labels are a touch smaller and tighter. Dark blobs are lit from within with a glow in their fill.
+3. **In dark mode the input field is hard to see.** The dark glass is 28% paper (was 18%) with a 60% edge and a stronger inner highlight; the placeholder is 79% paper.
+4. **The suggested thoughts are not shown properly in dark.** The bubbles use the same clearer glass and edge, paper text, a brighter hover with a pink edge, and cleaner tails (two glass dots with the same edge). The "or pick a thought" label is 72% paper in dark.
+5. **Make the whole UI better.** Everything above, plus the tray’s cards and close button share the panel’s paper-on-body language so the page reads as one material.
+
+### Files this round
+
+- `apps/cojeev-coming-soon/src/bond-demo.tsx`: `TrayMembrane` (its own frame loop, cells and buds, still/quiet).
+- `apps/cojeev-coming-soon/src/bond-demo.css`: the tray as a transparent sheet over its membrane; ink-on-body and paper-on-body tokens; cards, close, handle, dark.
+- `apps/cojeev-coming-soon/src/prompt-bond.css`: the gel blobs; the orbiting satellite (`orbit`); label sizes; dark field, placeholder, thoughts and tails; blob keyframes.
+- No library change this round (the tray reuses `Membrane` as is).
+
+### Checks this round (Playwright, Chrome channel, headless, on `/`)
+
+Details suite, 87/87 (the round-9 idle-life check now expects `orbit` on the subagent and still measures the busy speed-up; the dark glass check, ≥ .16 alpha, passes at .28). Lifecycle suite, 21/21 (the tray opens on the pill and closes on Escape). Type-check clean for the app files. Production build exit 0.
+
+Visual review: the usual images regenerated; `prompt-bond-rest.jpg` carries the new tray in both themes; `prompt-bond-big.jpg` the 2560 × 1440 stills. Reviewed by eye at 2× in both themes: the tray’s edge and buds, the blobs (all six kinds), the dark field and the dark thoughts.
+
+Limits: the tray runs a second WebGL surface while open (the page’s own membrane is paused then, since the story pauses with the tray open); `offset-path: inset()` needs Chrome 116, Safari 17 or Firefox 122, older browsers show the subagent without its satellite.
+
 ## Round 9: the page scales with the screen, the chrome on the design scale, a life per kind
 
 Owner feedback after round 8 ("we are almost there"), with two screenshots, numbered, with what was done for each:
