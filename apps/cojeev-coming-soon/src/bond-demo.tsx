@@ -8,6 +8,7 @@ import {ThemeToggle,applyTheme,type ThemeMode} from "@/registry/cojeev/ui/theme-
 import {useMotionVisibility} from "@/registry/cojeev/motion/use-motion-visibility";
 import {Drawer,DrawerTrigger,DrawerContent,DrawerTitle,DrawerDescription,DrawerClose} from "@/registry/cojeev/ui/drawer";
 import {Countdown} from "./countdown-display";
+import {TextReveal} from "@/registry/cojeev/ui/text-reveal";
 import "./utilities.css";
 import "./styles.css";
 import "./bond-demo.css";
@@ -51,7 +52,7 @@ function Demo(){
   <div className="tray-handle" aria-hidden="true"/>
   <DrawerClose asChild><Button variant="ghost" className="tray-close" aria-label="Close"><AnimatedIcon name="x" size="sm"/></Button></DrawerClose>
   <div className="tray-scroll" ref={trayScroll}>
-   <div className="tray-heading"><DrawerTitle>A little more than intelligence.</DrawerTitle><DrawerDescription>Five things Cojeev is being built around. One living presence.</DrawerDescription></div>
+   <div className="tray-heading"><DrawerTitle><TextReveal as="span" text="A little more than intelligence." variant="settle" split="word" stagger={45}/></DrawerTitle><DrawerDescription>Five things Cojeev is being built around. One living presence.</DrawerDescription></div>
    <ol className="tray-features">{details.map(([icon,title,copy,tone])=><li className="tray-feature" key={title} data-tone={tone}><span className="tray-feature-glyph"><AnimatedIcon name={icon} size="sm"/></span><h2>{title}</h2><p>{copy}</p></li>)}</ol>
    <p className="tray-note">Cojeev · Coming soon. A visual concept: the memories, teammates, agents and automations on this page are illustrative.</p>
   </div>

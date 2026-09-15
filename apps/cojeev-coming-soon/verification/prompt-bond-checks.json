@@ -1,5 +1,5 @@
 {
- "ran": "2026-09-15T06:25:02.567Z",
+ "ran": "2026-09-15T08:36:34.508Z",
  "page": "http://127.0.0.1:4345/ (home page)",
  "suites": [
   "lifecycle (round 4 suite, round-6 chrome: home page, wordmark + Coming soon, countdown eyebrow, theme, pause, hidden, replay, tray, other entries)",
@@ -185,7 +185,7 @@
    "suite": "details",
    "name": "memory things float outside the panel, fully on screen",
    "pass": true,
-   "detail": "{\"gap\":90,\"left\":182}"
+   "detail": "{\"gap\":90,\"left\":183}"
   },
   {
    "suite": "details",
@@ -239,7 +239,7 @@
    "suite": "details",
    "name": "the kept memory and the report are placed in the environment and float",
    "pass": true,
-   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.982674]"
+   "detail": "[\"launch plan v1\",\"memory\",1,\"Launch timeline\",\"report\",0.978537]"
   },
   {
    "suite": "details",
@@ -263,7 +263,7 @@
    "suite": "details",
    "name": "previous exchange folds above the new bubble",
    "pass": true,
-   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":303.265625,\"sentTop\":323.265625}"
+   "detail": "{\"o\":1,\"text\":\"› Plan our next launch.launch plan v1\",\"top\":259.625,\"sentTop\":279.625}"
   },
   {
    "suite": "details",
@@ -383,7 +383,7 @@
    "suite": "details",
    "name": "mobile: glyph-only cards on screen",
    "pass": true,
-   "detail": "[[\"1.00\",32,12],[\"1.00\",31,348],[\"1.00\",32,7],[\"1.00\",28,354],[\"1.00\",32,8],[\"1.00\",38,340],[\"1.00\",34,2],[\"1.00\",32,352],[\"1.00\",28,17],[\"1.00\",31,352],[\"1.00\",32,7],[\"1.00\",38,343],[\"1.00\",32,10],[\"1.00\",34,351],[\"1.00\",31,5],[\"1.00\",38,341],[\"0.00\",0,0],[\"0.00\",0,0]]"
+   "detail": "[[\"1.00\",32,16],[\"1.00\",31,349],[\"1.00\",32,7],[\"1.00\",28,353],[\"1.00\",32,8],[\"1.00\",38,344],[\"1.00\",34,5],[\"1.00\",32,351],[\"1.00\",28,12],[\"1.00\",31,351],[\"1.00\",32,7],[\"1.00\",38,346],[\"1.00\",32,8],[\"1.00\",34,349],[\"1.00\",31,7],[\"1.00\",38,344],[\"0.00\",0,0],[\"0.00\",0,0]]"
   },
   {
    "suite": "details",
@@ -401,7 +401,7 @@
    "suite": "details",
    "name": "mobile: rows and fold fit above the composer",
    "pass": true,
-   "detail": "{\"ok\":true,\"bottoms\":[281,311,330,350,370,434,453,479],\"formTop\":479}"
+   "detail": "{\"ok\":true,\"bottoms\":[259,288,307,327,347,411,430,456],\"formTop\":513}"
   },
   {
    "suite": "details",
@@ -425,7 +425,7 @@
    "suite": "details",
    "name": "light: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",159,315,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",91,260,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",221,354,\"blob\"],[\"memory\",1113,1297,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1132,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",145,311,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,270,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
+   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",145,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -485,7 +485,7 @@
    "suite": "details",
    "name": "the subagent informs the other subagents, which light up and get busy for a moment",
    "pass": true,
-   "detail": "[\"date checker\",\"board reader\",\"trace reader\"]"
+   "detail": "[\"diff collector\",\"date checker\",\"board reader\",\"trace reader\"]"
   },
   {
    "suite": "details",
@@ -545,7 +545,7 @@
    "suite": "details",
    "name": "dark: sixteen titled blobs float scattered over both sides at rest (memories, files, skills, teammates, subagents), all on screen, all shape-shifting",
    "pass": true,
-   "detail": "[[\"memory\",159,315,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",91,260,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",221,354,\"blob\"],[\"memory\",1113,1297,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1132,1290,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1319,\"blob\"],[\"memory\",145,311,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,270,\"blob, nod\"],[\"subagent\",1191,1341,\"blob\"]]"
+   "detail": "[[\"memory\",159,316,\"blob\"],[\"teammate\",1236,1386,\"blob, nod\"],[\"memory\",90,259,\"blob\"],[\"file\",1199,1377,\"blob, flutter\"],[\"memory\",210,337,\"blob\"],[\"subagent\",1194,1352,\"blob\"],[\"skill\",220,354,\"blob\"],[\"memory\",1112,1296,\"blob\"],[\"file\",117,252,\"blob, flutter\"],[\"teammate\",1133,1291,\"blob, nod\"],[\"memory\",189,315,\"blob\"],[\"subagent\",1165,1318,\"blob\"],[\"memory\",144,310,\"blob\"],[\"skill\",1150,1301,\"blob\"],[\"teammate\",119,271,\"blob, nod\"],[\"subagent\",1192,1341,\"blob\"]]"
   },
   {
    "suite": "details",
@@ -629,7 +629,7 @@
    "suite": "details",
    "name": "a click while the page is typing a thought clears the fragment instead of leaving it",
    "pass": true,
-   "detail": "\"Plan our next laun\""
+   "detail": "\"Plan our next launc\""
   },
   {
    "suite": "details",
@@ -706,6 +706,138 @@
   {
    "suite": "details",
    "name": "quiet: the clock still runs but its digits do not roll",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "light: the tray is the library's sheet (ink), floating inset from the edges on the sheet radius, with no membrane",
+   "pass": true,
+   "detail": "{\"state\":\"open\",\"moving\":\"true\",\"left\":100,\"right\":100,\"bottom\":16,\"width\":1240,\"radius\":\"28px\",\"bg\":\"rgb(36, 33, 38)\",\"membrane\":false,\"scrollTop\":0,\"noteVisible\":true,\"overlay\":\"color(srgb 0.0745098 0.0941176 0.12549 / 0.275294)\",\"bar\":\"0\",\"cards\":5}"
+  },
+  {
+   "suite": "details",
+   "name": "light: the sheet holds its content (no offset, note in view, five cards); the page keeps moving behind a light veil and the bar steps away",
+   "pass": true,
+   "detail": "{\"scrollTop\":0,\"note\":true,\"moving\":\"true\",\"overlay\":\"color(srgb 0.0745098 0.0941176 0.12549 / 0.275294)\",\"bar\":\"0\"}"
+  },
+  {
+   "suite": "details",
+   "name": "light: a scroll up closes the tray again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "dark: the tray is the library's sheet (paper), floating inset from the edges on the sheet radius, with no membrane",
+   "pass": true,
+   "detail": "{\"state\":\"open\",\"moving\":\"true\",\"left\":100,\"right\":100,\"bottom\":16,\"width\":1240,\"radius\":\"28px\",\"bg\":\"rgb(243, 244, 244)\",\"membrane\":false,\"scrollTop\":0,\"noteVisible\":true,\"overlay\":\"color(srgb 0 0 0 / 0.395294)\",\"bar\":\"0\",\"cards\":5}"
+  },
+  {
+   "suite": "details",
+   "name": "dark: the sheet holds its content (no offset, note in view, five cards); the page keeps moving behind a light veil and the bar steps away",
+   "pass": true,
+   "detail": "{\"scrollTop\":0,\"note\":true,\"moving\":\"true\",\"overlay\":\"color(srgb 0 0 0 / 0.395294)\",\"bar\":\"0\"}"
+  },
+  {
+   "suite": "details",
+   "name": "dark: a scroll up closes the tray again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "phone: the sheet is inset and the cards go two across",
+   "pass": true,
+   "detail": "{\"state\":\"open\",\"left\":10,\"right\":10,\"cols\":2}"
+  },
+  {
+   "suite": "details",
+   "name": "phone: a swipe down on the sheet closes it",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "suite": "details",
+   "name": "1440: the headline is two voices of the weight variant, \"Every prompt.\" heavy in the ink and \"A little more alive.\" lighter in its own colour, on one line, no showcase box",
+   "pass": true,
+   "detail": "{\"parts\":2,\"texts\":[\"Every prompt.\",\"A little more alive.\"],\"colours\":[\"rgb(36, 33, 38)\",\"rgb(156, 62, 110)\"],\"sameColour\":false,\"rest\":[\"\\\"wght\\\" 620, \\\"wdth\\\" 100\",\"\\\"wght\\\" 340, \\\"wdth\\\" 100\"],\"variants\":[\"weight\",\"weight\"],\"lines\":1,\"role\":\"heading\",\"level\":\"1\",\"box\":\"rgba(0, 0, 0, 0)\",\"pad\":\"0px\",\"onScreen\":true}"
+  },
+  {
+   "suite": "details",
+   "name": "the letters nearest the pointer gain weight (towards 700) and fall back to 340 when it leaves",
+   "pass": true,
+   "detail": "{\"near\":[479.958,595.486,625.451,662.509,693.421],\"far\":[340,340,340,340,340]}"
+  },
+  {
+   "suite": "details",
+   "name": "1440: the theatre and the field stay put when the story starts (the caption keeps its height)",
+   "pass": true,
+   "detail": "{\"rest\":{\"theatreTop\":223,\"formCy\":439,\"caption\":124},\"mid\":{\"theatreTop\":223,\"formCy\":439,\"caption\":124}}"
+  },
+  {
+   "suite": "details",
+   "name": "1440: the cue is a live region revealed word by word",
+   "pass": true,
+   "detail": "{\"units\":6,\"live\":\"polite\",\"text\":\"Sent. The whole conversation is alive.\"}"
+  },
+  {
+   "suite": "details",
+   "name": "1440: air between the headline and the panel (≥ 52 px on the page scale), Back and Next right under the progress, inside the caption",
+   "pass": true,
+   "detail": "{\"u\":1,\"gap\":60,\"stepsBelowDots\":2,\"stepsInCaption\":true}"
+  },
+  {
+   "suite": "details",
+   "name": "390: the headline is two voices of the weight variant, \"Every prompt.\" heavy in the ink and \"A little more alive.\" lighter in its own colour, on two lines, no showcase box",
+   "pass": true,
+   "detail": "{\"parts\":2,\"texts\":[\"Every prompt.\",\"A little more alive.\"],\"colours\":[\"rgb(36, 33, 38)\",\"rgb(156, 62, 110)\"],\"sameColour\":false,\"rest\":[\"\\\"wght\\\" 620, \\\"wdth\\\" 100\",\"\\\"wght\\\" 340, \\\"wdth\\\" 100\"],\"variants\":[\"weight\",\"weight\"],\"lines\":2,\"role\":\"heading\",\"level\":\"1\",\"box\":\"rgba(0, 0, 0, 0)\",\"pad\":\"0px\",\"onScreen\":true}"
+  },
+  {
+   "suite": "details",
+   "name": "390: the theatre and the field stay put when the story starts (the caption keeps its height)",
+   "pass": true,
+   "detail": "{\"rest\":{\"theatreTop\":221,\"formCy\":409,\"caption\":112},\"mid\":{\"theatreTop\":221,\"formCy\":409,\"caption\":112}}"
+  },
+  {
+   "suite": "details",
+   "name": "390: the cue is a live region revealed word by word",
+   "pass": true,
+   "detail": "{\"units\":6,\"live\":\"polite\",\"text\":\"Sent. The whole conversation is alive.\"}"
+  },
+  {
+   "suite": "details",
+   "name": "390: air between the headline and the panel (≥ 44 px on the page scale), Back and Next right under the progress, inside the caption",
+   "pass": true,
+   "detail": "{\"u\":1,\"gap\":44,\"stepsBelowDots\":2,\"stepsInCaption\":true}"
+  },
+  {
+   "suite": "details",
+   "name": "phone: the free things keep their own column outside the panel, clear of the rim, of the things the body holds and of each other",
+   "pass": true,
+   "detail": "{\"onPanel\":[],\"pairs\":[],\"offscreen\":[],\"held\":0,\"panelWidth\":250,\"vw\":390}"
+  },
+  {
+   "suite": "details",
+   "name": "phone: the theatre takes the height the screen has, with no scroll and no well of empty space under the caption",
+   "pass": true,
+   "detail": "{\"theatre\":376,\"well\":35,\"scroll\":false}"
+  },
+  {
+   "suite": "details",
+   "name": "light: the field fades in after it has settled (hidden at first over a still colour field, fully there by six seconds)",
+   "pass": true,
+   "detail": "{\"name\":\"field-in\",\"delay\":\"3.4s\",\"opacity\":0,\"fallback\":true,\"later\":1}"
+  },
+  {
+   "suite": "details",
+   "name": "dark: the field fades in after it has settled (hidden at first over a still colour field, fully there by six seconds)",
+   "pass": true,
+   "detail": "{\"name\":\"field-in\",\"delay\":\"3.4s\",\"opacity\":0,\"fallback\":true,\"later\":1}"
+  },
+  {
+   "suite": "details",
+   "name": "quiet: the cue is simply there (no reveal in flight) and the headline does not react",
    "pass": true,
    "detail": ""
   }

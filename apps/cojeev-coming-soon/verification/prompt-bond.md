@@ -2,6 +2,45 @@
 
 Local visual demo at http://127.0.0.1:4345/ (the home page since this round; it was /bond.html before), dev copy. No deployment, backend or launch manifest change (`public/launch.json` still `startedAt: null`).
 
+## Round 14: the field and its capsule agree, one headline under pressure, the rhythm gets air
+
+Owner feedback after round 13, in three messages with screenshots: the bonded field's text sat below its capsule ("not aligned properly"); the heading could be one line; the page should carry some of the library's text animation; then, after a first pass with a word-by-word reveal, the spacing between the heading and the panel was "very small" with "a lot of spacing and white space issues", and the animation should be the library's variable-proximity text, pressure variant. Numbered, with what was done:
+
+1. **Why the capsule and the field disagreed.** The caption under the theatre changes height with the beat: thoughts, cue and the Enter invitation at rest (116 px at 1440 × 900), cue and progress mid-story (80 px), thoughts, cue and the hint at the end (106 px). The story is a centred column, so the theatre moved 17 px down when the story started and 4 px back at the end, while the membrane kept the geometry it had measured at rest: its capsule floated above the field by the same 17 px through the bond and the launch. Two fixes for the class of bug, not the instance: the caption keeps the height of its tallest state in every beat (124 px on the page scale, with a 6 px top inset; 112 px on phones; 104 px in short windows), so the theatre never moves; and a `ResizeObserver` on the caption re-measures the layout if its height ever changes anyway (a late font, a state the fixed height did not foresee). Measured: theatre top, field centre and caption height are identical at rest and in the bond, at 1440 and on a phone.
+2. **One headline.** "Every prompt. A little more alive." is one line on a desktop. On a phone it breaks once, between the sentences: the text carries a newline that is a space on a desktop (`white-space: normal`) and a real break on a phone (`pre-line`). A first attempt glued each sentence with non-breaking spaces; Chrome breaks between inline-block words regardless, so the phone wrapped after "A". The heading is a level-1 heading by role.
+3. **The library's text animation, and the headline's two voices.** Three passes, ending where the owner asked: first `TextReveal` (words rising), then `VariableProximity` in the pressure variant, then the **weight** variant with "some character, two different colours or font style". The headline is now two `VariableProximity` parts inside one heading, each on Bricolage's real `wght` axis, reach 160 px on the page scale:
+
+   | part | rest weight | under the pointer | colour, light | colour, dark |
+   |---|---|---|---|---|
+   | "Every prompt." | 620 | 800 | ink | paper |
+   | "A little more alive." | 340 | 700 | mulberry `--v-brand` | soft pink `--v-pink` |
+
+   The statement is set solid, the promise lighter and in the brand's colour, and both lift under the pointer. They are still under pause and reduced motion and ignore touch. The component's showcase box (beige panel, padding, clamped type) is undone in the app stylesheet so the parts sit as a plain heading; each sentence is one unbreakable part, so a phone breaks only between them. The cue keeps a soft word-by-word reveal each time it changes (a live region, so screen readers still hear it), and the tray title settles in when the sheet opens. Under reduced motion the words are simply there.
+
+   A check caught what the eye did not: the light mulberry never applied. `color: inherit` in the rule that undoes the showcase box carries three classes and beat the two-class colour rule, so in light both sentences were ink and only the dark override (which carries the mode attribute, and so more weight) worked. The colour rules now carry the same three classes.
+4. **Rhythm.** The theatre sits 28 px (page scale) under the headline instead of overlapping it by 4, so the panel's top edge, which bleeds 8 px past its box, has about 50 px of air to the headline; Back and Next left the foot of the page and sit right under the progress dots, in the caption's column; the caption's first row has a 6 px inset from the panel.
+5. **The field fades in.** While checking the light headline the light shader showed a flat pink plane with a hard edge sweeping the frame between about one and three seconds after load (the library compiling and framing; independent of camera distance, the camera transition flag, zoom-out and start time, all tried; a theme switch does not replay it). The canvas now fades in over 1.6 s after 3.4 s, so the still colour field shows first and the moving one arrives softly; the dark fallback gradient is retuned to the night palette the scene actually uses, so the crossfade is quiet. Under reduced motion the canvas simply appears at the same moment.
+6. **Phones: the free things kept covering the held ones.** The gutter beside the panel was too narrow to hold both lanes: a free blob is 32 px wide and drifted ±7, but its band ended only 11 px short of the panel, so it sat on the rim and on the things the body holds. The phone panel is narrower (field 64% of the stage, was 76%), the free column ends 44 px short of the panel, its sideways drift is a third of what it was, and a held thing now straddles the rim slightly inside the body. Checked at 360, 390 and 430 wide, at rest and at four beats: nothing overlaps the panel, nothing overlaps another thing, nothing leaves the screen.
+7. **Phones: the composition uses the height it has.** The theatre was a fixed 320 px, which left a well of empty space above the bar on a tall phone. It now grows with the screen between 290 px and 376 px (or half the viewport, whichever is less), and the story's top and bottom insets are tighter, so a 932-high phone fills instead of pooling.
+
+### Files this round
+
+- `apps/cojeev-coming-soon/src/prompt-bond.tsx`: the headline (two `VariableProximity` parts), the cue (`TextReveal`), the caption `ResizeObserver`, no clock prop, the phone scatter bands, the hold offset and the calmer sideways drift.
+- `apps/cojeev-coming-soon/src/prompt-bond.css`: the caption's fixed height, the headline rules and its two colours, the theatre margins and the phone theatre's fluid height, Back and Next inside the caption, phone and short-window values.
+- `apps/cojeev-coming-soon/src/bond-demo.tsx`: the tray title's reveal.
+- `apps/cojeev-coming-soon/src/bond-demo.css`: the field's fade-in and the dark fallback palette.
+- `apps/cojeev-coming-soon/src/styles.css`: imports for `text-reveal.css` and `variable-proximity.css`.
+- No library change: a `delay` prop was added to `TextReveal` for the first pass and removed with it.
+
+### Checks this round (Playwright, Chrome channel, headless, on `/`)
+
+Two gates were repaired this round before the results below could be trusted:
+
+- **The type-check was passing on anything.** It was being run as `tsc -p apps/cojeev-coming-soon/tsconfig.check.json`, but that file lives in the tooling folder, so TypeScript answered `TS5058: The specified path does not exist` and the filter that hides known noise swallowed it. Every "type-check clean" line since the tooling was rebuilt meant only that the config was missing. It now runs through `.bond-tools/typecheck.sh`, which exits 2 if the config cannot be found, filters only the three known noise lines (`react-dom/client`, `countdown.mjs`, "Two different types") and exits 1 on anything else. It was proved red by removing one brace from the story's JSX and green again when it was restored.
+- **Back and Next were a layout change, not a move.** Putting them in the flow under the progress dots added their height to the centred column at the moment the story bonds, which moved the theatre up by 19 px: the same class of bug as the caption, found by the new round-14 check rather than by eye. They now sit inside the caption, whose height is fixed, so the column is identical in every beat. The light shader's still fallback gradient was also missing (the library's `shader-background.css` is not imported by this app; only the dark one had been written by hand), so the fade-in had nothing to fade over; both fallbacks are now in the app stylesheet.
+
+Details suite, 118/118 (round-14 checks: at 1440 and on a phone the headline is a level-1 heading with the right text, one line or two lines broken between the sentences, the pressure variant with no showcase box; letters rest at wdth 75 / wght 500 and the one under the pointer widens and boldens, then relaxes; the theatre, the field and the caption keep their geometry when the story starts; the cue is a live region revealed word by word; the headline has at least 52 px of air to the panel and Back and Next sit under the progress inside the caption; in both themes the canvas carries the fade with a 3.4 s delay over a still colour field and is fully there by six seconds; under reduced motion the cue is static and the headline does not react). The round-9 scale check and the stop-cue check were re-pointed at the new headline and the reveal's accessible text. Lifecycle suite, 21/21. Type-check clean. Production build exit 0. The merged checks file committed with round 13 still carried the round-12 details count because the merge ran from the wrong folder; it is regenerated here.
+
 ## Round 13: the tray is the library's sheet
 
 Owner feedback after round 12, with a screenshot of the open tray on a wide screen: the animation and the background stop when the tray comes up; it does not go back on scroll up; and it looks very bad and needs redesigning and polishing in the same way the rest of the UI is built. Numbered, with what was done:
@@ -18,7 +57,7 @@ Owner feedback after round 12, with a screenshot of the open tray on a wide scre
 
 ### Checks this round (Playwright, Chrome channel, headless, on `/`)
 
-Details suite, __D__/__T__ (eight new round-13 checks: in both themes the tray is the library's sheet, inset and centred on the sheet radius with no membrane; it holds its content with the note in view and five cards while the page keeps moving behind a translucent veil and the bar is hidden; a wheel up closes it; on a phone the sheet is inset with two cards across and a swipe down closes it). Lifecycle suite, 21/21. Type-check clean. Production build exit 0.
+Details suite, 118/118 (eight new round-13 checks: in both themes the tray is the library's sheet, inset and centred on the sheet radius with no membrane; it holds its content with the note in view and five cards while the page keeps moving behind a translucent veil and the bar is hidden; a wheel up closes it; on a phone the sheet is inset with two cards across and a swipe down closes it). Lifecycle suite, 21/21. Type-check clean. Production build exit 0.
 
 ## Round 12: the background steps back, the words step forward
 

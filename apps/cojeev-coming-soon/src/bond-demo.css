@@ -6,6 +6,13 @@
 :root{--ui:1}
 .bond-demo{position:relative;isolation:isolate;height:100dvh;overflow:hidden;color:var(--v-ink);font-family:var(--font-text)}
 .bond-background{z-index:-2}
+/* The field fades in once it has settled: the light shader spends its first seconds compiling and framing (a flat plane with a
+ * hard edge sweeps the frame between about one and three seconds), so the still colour field shows first and the moving one
+ * arrives softly. The dark fallback is retuned to the night palette the scene actually uses, so the crossfade is quiet. */
+.bond-background canvas{animation:field-in 1.6s ease-out 3.4s both}
+.bond-background{background:radial-gradient(ellipse at 12% 30%,#ebedff,transparent 60%),radial-gradient(ellipse at 85% 85%,#dbf8ff,transparent 65%),#f3f2f8}
+.bond-background[data-mode=dark]{background:radial-gradient(ellipse at 20% 60%,#4a4364,transparent 65%),radial-gradient(ellipse at 90% 20%,#8E80BC,transparent 70%),#2b2836}
+@keyframes field-in{from{opacity:0}}
 /* Two layers between the shader and the page. The first is frost: a soft blur and a light tint, so the stronger shapes of the
  * background sit back. The second is the clearing: a pool of paper (ink in dark) where the words live, fading to nothing at the
  * edges where the things live, so the environment stays alive around the composition and quiet under it. */
@@ -69,7 +76,7 @@
 .tray-note{font-size:calc(10px * var(--ui));color:color-mix(in srgb,var(--v-on-ink) 60%,transparent);margin:0}
 :root[data-mode=dark] .bond-demo::before{background:#15171a3d}:root[data-mode=dark] .bond-demo::after{background:radial-gradient(ellipse 66% 62% at 50% 50%,#1a1620a6 0%,#1a162070 48%,transparent 100%)}:root[data-mode=dark] .bond-clock .countdown{color:#F6EFE2}:root[data-mode=dark] .bond-soon,:root[data-mode=dark] .bond-clock.launch-clock,:root[data-mode=dark] .bond-clock .time-label,:root[data-mode=dark] .bond-clock .time-separator{color:#F6EFE2b3}
 :root[data-mode=dark] .bond-footer-trigger.v-btn[data-slot]{background:#F6EFE212;box-shadow:inset 0 0 0 1px #F6EFE22e}:root[data-mode=dark] .bond-footer-trigger.v-btn[data-slot]:hover{background:#F6EFE224}:root[data-mode=dark] .bond-bottom .replay-button.v-btn[data-slot]:hover,:root[data-mode=dark] .bond-bottom .pause-button.v-btn[data-slot]:hover{background:#F6EFE214}
-@media(prefers-reduced-motion:reduce){.bond-demo *{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){.bond-demo *{animation:none!important;transition:none!important}.bond-demo .bond-background canvas{animation:field-in 0s linear 3.4s both!important}}
 
 /* Phones: no scaling; the bar stays one centred row, the tray goes two columns. */
 @media(max-width:700px){.bond-demo::before{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}.bond-demo::after{background:radial-gradient(ellipse 90% 58% at 50% 50%,color-mix(in srgb,var(--v-paper) 58%,transparent) 0%,color-mix(in srgb,var(--v-paper) 36%,transparent) 48%,transparent 100%)}:root[data-mode=dark] .bond-demo::after{background:radial-gradient(ellipse 90% 58% at 50% 50%,#1a1620a6 0%,#1a162070 48%,transparent 100%)}.bond-header{height:90px;padding:0 22px}.bond-brand{font-size:29px}.bond-soon,.bond-clock .launch-label{display:none}.bond-clock .countdown{gap:4px}.bond-clock .time-unit{width:22px}.bond-clock .time-number{font-size:16px}.bond-clock .time-label{font-size:6px;margin-top:3px}.bond-clock .time-separator{font-size:12px}.bond-bottom{height:100px;padding:0 16px;gap:8px}.bond-bottom .replay-button.v-btn[data-slot]{padding:0 10px}.bond-footer-trigger.v-btn[data-slot]{padding:0 16px;font-size:12px}:root .bond-bottom .v-btn.v-theme-toggle[data-slot][data-label]{width:40px;min-width:40px;padding:0;gap:0}.bond-bottom .v-theme-toggle__label{display:none}.bond-tray.future-tray.v-drawer[data-slot=drawer-content]{--inset:10px;--pad:18px;max-height:70dvh;border-radius:24px}.bond-tray .tray-scroll{padding:30px var(--pad) 22px;gap:16px}.tray-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tray-feature{padding:14px;gap:8px}.tray-feature:last-child{grid-column:span 2}.bond-tray .tray-close.v-btn[data-slot]{top:12px}}

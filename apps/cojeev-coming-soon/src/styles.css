@@ -12,6 +12,8 @@
 @import "../../../registry/cojeev/styles/icon.css";
 @import "../../../registry/cojeev/styles/animated-icon.css";
 @import "../../../registry/cojeev/styles/theme-toggle.css";
+@import "../../../registry/cojeev/styles/text-reveal.css";
+@import "../../../registry/cojeev/styles/variable-proximity.css";
 :root:not([data-mode=dark]){color-scheme:light;font-synthesis:none;--v-canvas:#FBF4E6;--v-paper:#FBF4E6;--v-text:#242126;--v-ink:#242126;--v-on-ink:#FBF4E6;--v-on-accent:#242126;--v-text-2:#62575c;--v-brand:#9C3E6E;--v-pink:#F0A4CC;--v-olive:#A8BC75;--v-blue:#95BAE8;--v-yellow:#F1D369}
 *{box-sizing:border-box}html,body,#root{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{background:var(--v-canvas);color:var(--v-text);font-family:var(--font-text)}a{color:inherit;text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer;font-family:inherit}a:focus-visible,button:focus-visible{outline:2px solid var(--v-brand);outline-offset:5px}.v-btn{display:inline-flex;position:relative;align-items:center;justify-content:center;text-decoration:none;line-height:1.2}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .skip-link{position:fixed;top:-100px;left:24px;z-index:70;padding:12px 20px;background:var(--v-ink);color:var(--v-paper)}.skip-link:focus{top:16px}.cojeev-page{position:relative;isolation:isolate;width:100%;height:100dvh;overflow:hidden;touch-action:pan-x}

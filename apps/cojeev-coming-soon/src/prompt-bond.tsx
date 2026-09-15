@@ -5,6 +5,8 @@ import {InputControl} from '@/registry/cojeev/ui/input';
 import {AnimatedIcon} from '@/registry/cojeev/ui/animated-icon';
 import {BubbleContent} from '@/registry/cojeev/ui/bubble';
 import {Membrane, type MembraneHandle} from '@/registry/cojeev/ui/membrane';
+import {TextReveal} from '@/registry/cojeev/ui/text-reveal';
+import {VariableProximity} from '@/registry/cojeev/ui/variable-proximity';
 import type {MembraneCell, MembraneStrand} from '@/registry/cojeev/lib/membrane-field';
 import './prompt-bond.css';
 
@@ -186,7 +188,9 @@ function measure(stage:HTMLElement,form:HTMLElement,panel:HTMLElement,rowEls:(HT
  // a tendril leaves the panel from the edge nearest the thing
  const rims=slots.map(sl=>sl.x<left||sl.x>right?{x:sl.x<left?left+6:right-6,y:cl(sl.y,top+24*k,bottom-24*k)}:{x:cl(sl.x,left+24*k,right-24*k),y:sl.y<pcy?top+6:bottom-6});
  // where a held file is kept: close against the body, just below the heads
- const holds=[{x:left-(roomy?18:12)*k,y:top+78*k},{x:right+(roomy?18:12)*k,y:top+78*k},{x:left-(roomy?18:12)*k,y:top+150*k},{x:right+(roomy?18:12)*k,y:top+150*k}];
+ // on a phone a held thing straddles the rim (a little inside the body) so the free column outside it keeps its own lane
+ const hx=roomy?18*k:-4;
+ const holds=[{x:left-hx,y:top+78*k},{x:right+hx,y:top+78*k},{x:left-hx,y:top+150*k},{x:right+hx,y:top+150*k}];
  return {W,H,k,field:{cx,cy,hw,hh},panel:{cx:pcx,cy:pcy,hw:phw,hh:phh,left,right,top,bottom},composerDy,
   endL,endR,bounds,
   docks:[endL,endR,{x:cx-hw*.35,y:cy-hh+3},{x:cx+hw*.3,y:cy-hh+3},{x:cx-hw*.05,y:cy+hh-3},{x:cx+hw*.5,y:cy+hh-3}],
@@ -201,13 +205,17 @@ function scatter(W:number,H:number,k:number,panel:{left:number;right:number},roo
  // a labelled thing needs 150k beside it and a row of 62k (its 50k body plus the 6k it drifts up and down); a bare blob on a phone
  // is 32 px tall, drifts less, and takes a row of 44
  const labelW=roomy?150*k:0,rowH=roomy?62*k:44,per=SLOTS/2;
- const bands=roomy?[{x0:34*k+labelW,x1:panel.left-74*k},{x0:panel.right+74*k,x1:W-34*k-labelW}]:[{x0:38*k,x1:panel.left-18*k},{x0:panel.right+18*k,x1:W-38*k}];
+ // On a phone the gutter carries two lanes: the things the body holds hug the rim, and the free ones float in a column further
+ // out. A free blob is 32 wide and drifts ±3, so its lane ends 44 short of the panel: that keeps it clear of both the rim and the
+ // held things, which is what "they are covering the holded blobs" was.
+ const bands=roomy?[{x0:34*k+labelW,x1:panel.left-74*k},{x0:panel.right+74*k,x1:W-34*k-labelW}]:[{x0:24,x1:Math.max(24,panel.left-44)},{x0:Math.min(W-24,panel.right+44),x1:W-24}];
  const y0=roomy?108*k:92,y1=H-(roomy?134*k:124);
  // on a short stage the rows are squeezed: things may then touch, but never stack
  const rows=Math.max(per,Math.floor((y1-y0)/rowH)),step=(y1-y0)/rows,slack=Math.max(0,step-rowH);
  const pick=()=>{const idx=Array.from({length:rows},(_,i)=>i);for(let i=idx.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}return idx.slice(0,per);};
  const chosen=[pick(),pick()],pts:Point[]=[];
- for(let i=0;i<SLOTS;i++){const b=bands[i%2],row=chosen[i%2][i>>1];pts.push({x:Math.min(W-30*k,Math.max(30*k,b.x0+rnd()*(b.x1-b.x0))),y:y0+row*step+rowH/2+rnd()*slack});}
+ const edge=roomy?30*k:22;
+ for(let i=0;i<SLOTS;i++){const b=bands[i%2],row=chosen[i%2][i>>1];pts.push({x:Math.min(W-edge,Math.max(edge,b.x0+rnd()*(b.x1-b.x0))),y:y0+row*step+rowH/2+rnd()*slack});}
  return pts;
 }
 const at=(p:Point)=>({px:p.x,py:p.y});
@@ -636,7 +644,7 @@ function buildBeat(beat:number,w:World,L:Layout,run:number,sizes:Size[],again:bo
 
 type Fold={prompt:string;kept:string};
 
-export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;quiet:boolean;clock?:React.ReactNode}){
+export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:boolean}){
  const [beat,setBeat]=React.useState(0);
  const [prompt,setPrompt]=React.useState('');
  const [sent,setSent]=React.useState('');
@@ -740,7 +748,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   const gazeTo=(from:Point)=>{let tx:number,ty:number;if(w.gaze.w>.5){tx=w.gaze.px;ty=w.gaze.py;}else if(p){tx=p.x;ty=p.y;}else{tx=L.field.cx;ty=L.field.cy;}const dx=tx-from.x,dy=ty-from.y,d=Math.hypot(dx,dy)||1,a=Math.min(1,d/80)*3.5*k;return {x:dx/d*a,y:dy/d*a};};
   w.eyes.forEach((e,i)=>{const el=eyeRefs.current[i];if(!el)return;const g=gazeTo(pos[i]);el.style.transform=`translate(${(pos[i].x+g.x).toFixed(1)}px,${(pos[i].y+g.y-2*k).toFixed(1)}px)`;el.style.opacity=String(e.o);el.style.setProperty('--lid',e.lid.toFixed(3));});
   // things drift on their own while free; a held thing sits exactly where the tendril has it
-  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const side=L.slots[i].x<L.W/2?'left':'right';if(el.dataset.side!==side){el.dataset.side=side;const g=el.querySelector<HTMLElement>('.thing-shape');if(g){const gx=g.offsetLeft+g.offsetWidth/2;el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}}const d=(still?0:n.free)*(L.roomy?1:.6),ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d,oy=(Math.cos(t*.38+i*.9)*4+Math.cos(t*.17+i)*2)*k*d,rot=Math.sin(t*.3+i)*4*d;
+  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const side=L.slots[i].x<L.W/2?'left':'right';if(el.dataset.side!==side){el.dataset.side=side;const g=el.querySelector<HTMLElement>('.thing-shape');if(g){const gx=g.offsetLeft+g.offsetWidth/2;el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}}const d=(still?0:n.free)*(L.roomy?1:.6),ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d*(L.roomy?1:.35),oy=(Math.cos(t*.38+i*.9)*4+Math.cos(t*.17+i)*2)*k*d,rot=Math.sin(t*.3+i)*4*d;
    el.style.transform=`translate(${(n.px+ox).toFixed(1)}px,${(n.py+oy).toFixed(1)}px) translate(${-(el.dataset.gx??0)}px,-50%) rotate(${rot.toFixed(2)}deg) scale(${n.s.toFixed(3)})`;el.style.opacity=String(n.o);
    const st=el.style;st.setProperty('--t',n.t.toFixed(3));st.setProperty('--rip',n.rip.toFixed(3));st.setProperty('--flash',n.flash.toFixed(3));st.setProperty('--busy',n.busy.toFixed(3));st.setProperty('--free',n.free.toFixed(2));});
   if(state.current.beat===2&&w.rows[0].o>.05&&state.current.prompt)setPrompt('');
@@ -771,6 +779,12 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   if(b===0)restPose(w,L,roam.current,ev);else if(b===1)bondedPose(w,L,roam.current,ev);else panelPose(w,L,roam.current,b===LAST&&st?reached.current:b,folded,ev,storyAt(state.current.run));
   if(first||b>0)setReady(v=>v+1);
  },[]);
+ /* The caption sits under the theatre in a centred column: if its height changes (a state the fixed height did not foresee, a
+  * font arriving late), the theatre moves and the membrane must follow. */
+ React.useEffect(()=>{
+  const cap=stage.current?.querySelector('.prompt-caption');if(!cap||typeof ResizeObserver==='undefined')return;
+  let h=cap.getBoundingClientRect().height;const ro=new ResizeObserver(()=>{const n=cap.getBoundingClientRect().height;if(Math.abs(n-h)<.5)return;h=n;relayout();});ro.observe(cap);return()=>ro.disconnect();
+ },[relayout]);
  /* A folded thread shifts the rows; re-measure them without touching the pose. */
  React.useLayoutEffect(()=>{
   if(!folds.length||!stage.current||!form.current||!panel.current)return;
@@ -872,6 +886,7 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
  const pick=(text:string)=>{typing.current=null;typed.current=false;setPicked(text);typeThenStart(text,true);};
  const onPointer=(e:React.PointerEvent)=>{const s=stage.current?.getBoundingClientRect();if(!s)return;pointer.current={x:e.clientX-s.left,y:e.clientY-s.top};};
  const rows=rowsFor(story);
+ const ui=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui'))||1;
  const cue=beat===8&&noted?'Noted. It will be there next time.':beat===LAST&&stopped?'Stopped. Whenever you’re ready.':beats[beat].cue;
  const composing=beat===0||beat===LAST,working=bonded&&!composing;
  const suggestions=beat===0?stories.slice(0,3).map(s=>s.prompt):beat===LAST?[storyAt(run+1).prompt]:[];
@@ -888,7 +903,10 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
     <span className="thing-label"><em>{KIND_TITLE[kind]}</em><b>{th?.title??''}</b><small>{th?.sub??''}</small></span>
    </span>;})}
   </div>
-  <div className="prompt-title">{clock&&<div className="prompt-clock">{clock}</div>}<h1>Every prompt.<br/>A little more alive.</h1></div>
+  <div className="prompt-title"><div className="prompt-headline" role="heading" aria-level={1}>
+   <VariableProximity className="headline-part headline-one" text="Every prompt." variant="weight" radius={Math.round(160*ui)} fromWeight={620} toWeight={800} paused={!moving}/>
+   <VariableProximity className="headline-part headline-two" text="A little more alive." variant="weight" radius={Math.round(160*ui)} fromWeight={340} toWeight={700} paused={!moving}/>
+  </div></div>
   <div className="prompt-theatre" role="group" aria-label="An illustrative prompt lifecycle">
    <div className="chat-panel" ref={panel} data-open="false" inert>
     {lastFold&&<div className="chat-fold" ref={foldEl}><span className="chat-fold-prompt">› {lastFold.prompt}</span>{lastFold.kept&&<span className="chat-fold-kept"><AnimatedIcon name="bookmark" size="sm"/>{lastFold.kept}</span>}{folds.length>1&&<span className="chat-fold-more">+{folds.length-1} earlier</span>}</div>}
@@ -912,11 +930,11 @@ export function PromptBond({moving,quiet,clock}:{moving:boolean;active?:boolean;
   </div>
   <div className="prompt-caption">
    {suggestions.length>0&&<div className="prompt-thoughts" role="group" aria-label="Thoughts to try"><span className="thoughts-label">{beat===0?'or pick a thought':'next'}</span>{suggestions.map((s,i)=><Button key={s} variant="ghost" className="thought" style={{'--i':i} as React.CSSProperties} data-picked={picked===s} onClick={()=>pick(s)}><i className="thought-tail" aria-hidden="true"><b/><b/></i>{s}</Button>)}</div>}
-   <p aria-live="polite" aria-atomic="true">{cue}</p>
+   <TextReveal as="p" text={cue} variant="soften" split="word" stagger={24} duration={440} aria-live="polite" aria-atomic="true"/>
    {beat===0?<Button className="enter-invitation" variant="ghost" onClick={start}>Press <kbd>Enter ↵</kbd></Button>
    :beat===LAST?<p className="again-hint">Type another thought and press <kbd>Enter ↵</kbd></p>
    :<div className="lifecycle-progress" aria-label={`Prompt lifecycle: ${beats[beat].label}`}>{beats.slice(1,LAST).map((b,i)=><span key={b.label} data-complete={beat>i+1} data-current={beat===i+1} title={b.label}/>)}</div>}
+   {bonded&&beat<LAST&&<div className="lifecycle-steps"><Button variant="ghost" className="lifecycle-step" onClick={back} disabled={beat<=1} aria-label="Previous lifecycle step"><span aria-hidden="true">←</span> Back</Button><Button variant="ghost" className="lifecycle-step" onClick={next} aria-label="Next lifecycle step">Next <span aria-hidden="true">→</span></Button></div>}
   </div>
-  {bonded&&beat<LAST&&<div className="lifecycle-steps"><Button variant="ghost" className="lifecycle-step" onClick={back} disabled={beat<=1} aria-label="Previous lifecycle step"><span aria-hidden="true">←</span> Back</Button><Button variant="ghost" className="lifecycle-step" onClick={next} aria-label="Next lifecycle step">Next <span aria-hidden="true">→</span></Button></div>}
  </main>;
 }
