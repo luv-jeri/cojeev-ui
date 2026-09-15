@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-09-15T11:19:41.012287+00:00",
+  "url": "https://cojeev.com/",
+  "workerVersion": "e913c05b-9a14-4296-8308-f273208d9c2e",
+  "checks": [
+    {
+      "path": "index.html",
+      "matchesBuild": true,
+      "headers": "HTTP/2 200 \ndate: Tue, 15 Sep 2026 11:19:38 GMT\ncontent-type: text/html\ncf-cache-status: HIT\ncache-control: public, max-age=0, must-revalidate\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=6Rf1EV1MnJDVb8ZbLDB9vf3xx1a4yGfkkvoSSNm0Bjic0UU8XMmN3%2Fs5DwuZk34NNNL4WkT1etiZSGq4d54WRf8YaddozAUysq7FPBJdnlmOiCyilc%2BRB79%2FFRuS\"}]}\ncontent-encoding: gzip\nserver: cloudflare\ncf-ray: a3b73cd3b9d0e88a-HKG\nalt-svc: h3=\":443\"; ma=86400\n\n",
+      "sha256": "39be2c52d4ed1f14f7d8275796dbf88694f0dbc5fe84c9092d688a74c526289f"
+    },
+    {
+      "path": "launch.json",
+      "matchesBuild": true,
+      "headers": "HTTP/2 200 \ndate: Tue, 15 Sep 2026 11:19:39 GMT\ncontent-type: application/json\ncontent-length: 42\ncf-cache-status: HIT\ncache-control: no-store\netag: \"2551a8c4fe4d8cbe317153491acdd812\"\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=f3U3ybVwV3gAwnbTOXDsmXJiHNrkB7v5kzp2f9iSSFl2vLVKsYy4CvHHeyNdubp5j3j1dFxQqI8%2B91EBEp%2FOEmqgl5OAGiCoh7Zuook5Szv4hFBT0VPNnlaz24wk\"}]}\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nserver: cloudflare\ncf-ray: a3b73cd64a003cd2-MRS\nalt-svc: h3=\":443\"; ma=86400\n\n",
+      "sha256": "763a6d725da4f11a760e0783a22d7591bfd2b32978ec9d8ec1efde6410c6c156",
+      "manifest": {
+        "startedAt": "2026-09-15T11:17:38Z"
+      }
+    },
+    {
+      "path": "assets/main-BrgNuY5y.js",
+      "matchesBuild": true,
+      "headers": "HTTP/2 200 \ndate: Tue, 15 Sep 2026 11:19:39 GMT\ncontent-type: text/javascript\ncf-cache-status: HIT\ncache-control: public, max-age=31536000, immutable\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=mSVV12V4x6CqXW6Dryl%2BUmqzZGJm1ou6nuiSWJt6rd1ZKXHfiCP5MnhJpyZXJkX8lwmQm8Dy1%2BA6DETCoPxfgjGfPk80MslbtBaJjGCLqRr%2FQq5q7%2Fn%2BWCE9NXWl\"}]}\netag: W/\"c5543178d59d557a84f4e0dd7d4dbbf1\"\ncontent-encoding: gzip\nserver: cloudflare\ncf-ray: a3b73cd8ef3e57f8-MRS\nalt-svc: h3=\":443\"; ma=86400\n\n",
+      "sha256": "bb4c53e9f5f2d5998b1a1aeb7036d43a49745e42746db19b234067982bd8f0d6"
+    },
+    {
+      "path": "assets/dm-sans-common-C5CnKcxX.woff2",
+      "matchesBuild": true,
+      "headers": "HTTP/2 200 \ndate: Tue, 15 Sep 2026 11:19:40 GMT\ncontent-type: font/woff2\ncontent-length: 44620\ncf-cache-status: HIT\ncache-control: public, max-age=31536000, immutable\netag: \"5e4bdc98b3784eb455a03cbe24d6f9d9\"\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=2nplVnSwIX9%2FAfZePwH70HMSF2mOM12l7C7Cr9IvSzHwH5ITg5IPCntUZ5s2M%2BBAy9ZYUmZSK6jr8Gf0lmlp02zjJ7u99FtRDkfQIa6Aw4%2BRNrBTF7xPH8zCgYch\"}]}\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nserver: cloudflare\ncf-ray: a3b73cdb8f833f09-MRS\nalt-svc: h3=\":443\"; ma=86400\n\n",
+      "sha256": "6bccfa4ec192702cd271d228af04ea4f1440e160f398676441b129bb031bc5ee"
+    },
+    {
+      "path": "assets/shader-background.worker-2MBTGjOF.js",
+      "matchesBuild": true,
+      "headers": "HTTP/2 200 \ndate: Tue, 15 Sep 2026 11:19:40 GMT\ncontent-type: text/javascript\ncf-cache-status: HIT\ncache-control: public, max-age=31536000, immutable\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=H7wfWFTr%2BTYP4Gcrv1dKVZ3THwt9twbgwBwZCRqkzQNma0%2BjfLuW8s%2Fj%2BR09Q5erzh6Bei2wncrbktc59oEwNYoGrcOjmCTfO7LpPx9vOs3yPW%2B%2BX7gLovb4Rq03\"}]}\netag: W/\"f0d1bf8cc4a2226c6bb87c816b214760\"\ncontent-encoding: gzip\nserver: cloudflare\ncf-ray: a3b73cde5a19e21c-MRS\nalt-svc: h3=\":443\"; ma=86400\n\n",
+      "sha256": "595d153be6b187a4bb2877ba482b93ddc45a55d549fc63576dda2d491c6e4af3"
+    }
+  ]
+}

@@ -10,5 +10,10 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
-  "routes": [{ "pattern": "cojeev.com", "custom_domain": true }]
+  "routes": [
+    {
+      "pattern": "cojeev.com/*",
+      "zone_name": "cojeev.com"
+    }
+  ]
 }

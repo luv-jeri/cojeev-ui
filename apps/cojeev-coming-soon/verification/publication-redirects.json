@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-09-15T11:29:54.048136+00:00",
+  "ruleId": "baa1fa3044404e7091241abfe98deb18",
+  "expression": "(http.host eq \"www.cojeev.com\") or (http.host eq \"cojeev.com\" and not ssl)",
+  "target": "concat(\"https://cojeev.com\", http.request.uri.path)",
+  "preserveQueryString": true,
+  "initialChecks": [
+    {
+      "url": "http://cojeev.com/path?source=launch",
+      "exit_code": 0,
+      "headers": "HTTP/1.1 200 OK\ncontent-type: text/html\ndate: Tue, 15 Sep 2026 11:29:53 GMT\ncontent-length: 128\n\n",
+      "error": ""
+    },
+    {
+      "url": "http://www.cojeev.com/path?source=launch",
+      "exit_code": 0,
+      "headers": "HTTP/1.1 301 Moved Permanently\nDate: Tue, 15 Sep 2026 11:29:53 GMT\nContent-Type: text/html; charset=UTF-8\nTransfer-Encoding: chunked\nConnection: keep-alive\nLocation: https://cojeev.com/path?source=launch\nReport-To: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=wm7w88jGIo27YuLfn2%2FVzMuEw8onIvdR%2BKBqw8WKkU%2Bk5NK14VU%2BM8lxTbafqariWUJzJiIGl1t4fZAyc0Su6YpDWxWa0GX1kKu9szjKc043J0kToaLzFNbtgTwhK2%2BBiA%3D%3D\"}]}\nNel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nServer: cloudflare\nCF-RAY: a3b74bd4cc32ff91-SIN\n\n",
+      "error": ""
+    },
+    {
+      "url": "https://www.cojeev.com/path?source=launch",
+      "exit_code": 0,
+      "headers": "HTTP/2 301 \ndate: Tue, 15 Sep 2026 11:29:53 GMT\ncontent-type: text/html; charset=UTF-8\nlocation: https://cojeev.com/path?source=launch\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=xOQS9y%2BxUl6QMm9k8IKSJYtN%2FsxXPXdu74ztFHVWjAj8Dwyw3TxNtdFJQauMgaVufx1TTl7scl%2FpaTX5PmxJQqbMbsURaOKyIYs3Ul76pkJI6mJIPYJsTo5DRTDDZPkc8g%3D%3D\"}]}\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nserver: cloudflare\ncf-ray: a3b74bd7de0fe288-MRS\n\n",
+      "error": ""
+    },
+    {
+      "url": "https://cojeev.com/",
+      "exit_code": 0,
+      "headers": "HTTP/1.1 200 OK\nContent-Type: text/html\nDate: Tue, 15 Sep 2026 11:29:54 GMT\nContent-Length: 114\n\n",
+      "error": ""
+    }
+  ],
+  "verifiedChecks": [
+    {
+      "url": "http://cojeev.com/path?source=launch",
+      "exit_code": 0,
+      "headers": "HTTP/1.1 301 Moved Permanently\nDate: Tue, 15 Sep 2026 11:31:16 GMT\nContent-Type: text/html; charset=UTF-8\nTransfer-Encoding: chunked\nConnection: keep-alive\nLocation: https://cojeev.com/path?source=launch\nReport-To: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=ZTOG0UwjpSPsMQcL6ANCiHvoV1aHqtri58vQbw8%2FGMMCFL4BmxVmywkWrHfaRMPWUCLkP3RPRz2EVEXwG%2FqyrlYTUMy2ZRg1RjW43QMbfbgNHZiYrV4s5OOn6LTN\"}]}\nNel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nServer: cloudflare\nCF-RAY: a3b74ddafbe1fe87-SIN\n\n",
+      "error": ""
+    },
+    {
+      "url": "http://www.cojeev.com/path?source=launch",
+      "exit_code": 0,
+      "headers": "HTTP/1.1 301 Moved Permanently\nDate: Tue, 15 Sep 2026 11:31:16 GMT\nContent-Type: text/html; charset=UTF-8\nTransfer-Encoding: chunked\nConnection: keep-alive\nLocation: https://cojeev.com/path?source=launch\nReport-To: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=XTAf4YhtNKsQaD9pQkGNixT6WTlJuFCF66X6owF7PptDDIYjc9AM2egcpThLkdd5tWFdFAv%2BlTaDR6a0j9qZxf8eZZbMcNVASuEBreEQ2hTJF9iKJE2h6DGnRcuabubyWA%3D%3D\"}]}\nNel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nServer: cloudflare\nCF-RAY: a3b74ddccf9a5e3f-MRS\n\n",
+      "error": ""
+    },
+    {
+      "url": "https://www.cojeev.com/path?source=launch",
+      "exit_code": 0,
+      "headers": "HTTP/2 301 \ndate: Tue, 15 Sep 2026 11:31:16 GMT\ncontent-type: text/html; charset=UTF-8\nlocation: https://cojeev.com/path?source=launch\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=opA4rtt6FOqS8Oocc7tVe2roxJ4%2BepTxY745xAdthynnj%2Fj0wCBcIyM1wQR%2B1pyxCRbDP5k%2BuqpOcfh2J6N0SSt%2FEvE0eRzBOAuQSU8o%2FjEL%2Fgv7xBEglo6UfrLhM84jzg%3D%3D\"}]}\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nserver: cloudflare\ncf-ray: a3b74dde8e31f8ef-SIN\n\n",
+      "error": ""
+    },
+    {
+      "url": "https://cojeev.com/",
+      "exit_code": 0,
+      "headers": "HTTP/2 200 \ndate: Tue, 15 Sep 2026 11:31:17 GMT\ncontent-type: text/html\ncf-cache-status: HIT\ncache-control: public, max-age=0, must-revalidate\nnel: {\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}\nreport-to: {\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=98VIdWN2ouPXyBdCv1gta20zdMk1IMWoZ%2B2HviXOtqun1pjYZWG459wcU0AmxaqATP06Xd48w3lTDShJvGNbJkoexd2owofFyYxtkL00QWA%2BZPwUsy1Js5ar2VZ1\"}]}\ncontent-encoding: gzip\nserver: cloudflare\ncf-ray: a3b74de04d49d47b-SIN\nalt-svc: h3=\":443\"; ma=86400\n\n",
+      "error": ""
+    }
+  ],
+  "apexVerification": "Apex checks pin the currently advertised Cloudflare edge IP via --resolve, retaining hostname and TLS verification. An initial system-resolver request intermittently reached the old parking origin while DNS propagated. www checks use ordinary DNS."
+}
