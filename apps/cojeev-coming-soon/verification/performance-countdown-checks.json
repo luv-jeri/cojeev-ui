@@ -1,0 +1,53 @@
+{
+  "ran": "2026-09-15T10:44:04.883Z",
+  "passed": 9,
+  "total": 9,
+  "errors": [],
+  "results": [
+    {
+      "name": "the countdown runs as a preview clock while no launch date is published (seconds tick, launch.json still null)",
+      "pass": true,
+      "detail": "29:23:59:59 → 29:23:59:58, startedAt=null"
+    },
+    {
+      "name": "each digit rolls in inside a clipped, tabular slot",
+      "pass": true,
+      "detail": "{\"clipped\":true,\"anim\":\"time-roll\",\"tabular\":\"tabular-nums\"}"
+    },
+    {
+      "name": "a frosted layer (32 px backdrop blur with a paper tint) and a clearing (a radial pool of paper) sit between the shader and the page",
+      "pass": true,
+      "detail": "{\"blur\":\"blur(32px) saturate(1.04)\",\"z\":\"-1\",\"bg\":\"color(srgb 0.984314 0.956863 0.901961 / 0.34)\",\"clearing\":\"radial-gradient(66% 62%, color(srgb 0.984314 0.956863 0.901961 / 0.58) 0%, color(srgb 0.984314 0.956863 0.901961 / 0.36) 48%, rgba(0, 0, 0, 0) 100%)\",\"cz\":\"-1\"}"
+    },
+    {
+      "name": "the bar is three zones: Replay and Pause on the left margin, What’s coming centred, theme on the right margin",
+      "pass": true,
+      "detail": "{\"left\":64.796875,\"pauseAfter\":true,\"centre\":0.0078125,\"right\":64.796875,\"brandLeft\":64.796875}"
+    },
+    {
+      "name": "paused: the digits stop rolling",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "phone: the frosted layer is lighter (16 px) and the clock still fits in the header",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "dark: the satellite, the presence dot and the recall ring are light colours",
+      "pass": true,
+      "detail": "{\"mode\":\"dark\",\"satellite\":\"rgb(246, 239, 226)\",\"presence\":\"rgb(168, 188, 117)\",\"ring\":\"rgb(168, 188, 117)\",\"label\":\"rgb(246, 239, 226)\",\"clock\":\"rgb(246, 239, 226)\",\"cue\":\"rgba(246, 239, 226, 0.79)\"}"
+    },
+    {
+      "name": "dark: labels, cue and clock are paper",
+      "pass": true,
+      "detail": "rgb(246, 239, 226) / rgb(246, 239, 226) / rgba(246, 239, 226, 0.79)"
+    },
+    {
+      "name": "quiet: the clock still runs but its digits do not roll",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

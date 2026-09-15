@@ -17,14 +17,14 @@ export const sourcePresets={
 // lilac), so the field breathes behind the words instead of competing with
 // them. Measured on the home page, dark: motion per two seconds 25 → 12 and
 // the 1–99% luminance band 52–165 → 54–117.
-const sceneOverrides={light:{zoomOut:false,positionY:0,cDistance:1.5,enableTransition:false,uSpeed:0.1,uStrength:2.2},dark:{color1:"#4a4364",color2:"#8E80BC",color3:"#2b2836",cDistance:2.4,grain:"off",brightness:0.9,uSpeed:0.1,uStrength:1.1}} as const;
-function FramePolicy({moving,mode}:{moving:boolean;mode:string}){
+export const sceneOverrides={light:{zoomOut:false,positionY:0,cDistance:1.5,enableTransition:false,uSpeed:0.1,uStrength:2.2},dark:{color1:"#4a4364",color2:"#8E80BC",color3:"#2b2836",cDistance:2.4,grain:"off",brightness:0.9,uSpeed:0.1,uStrength:1.1}} as const;
+export function FramePolicy({moving,mode}:{moving:boolean;mode:string}){
  const setFrameloop=useThree(s=>s.setFrameloop),invalidate=useThree(s=>s.invalidate);
  React.useEffect(()=>{setFrameloop(moving?"always":"demand");invalidate();},[moving,mode,setFrameloop,invalidate]);
  return null;
 }
 export default function ShaderScene({mode,moving,envBasePath,original}:{mode:"light"|"dark";moving:boolean;envBasePath?:string;original:boolean}){
- return <ShaderGradientCanvas style={{position:"absolute",inset:0}} pixelDensity={1} fov={45} pointerEvents="none" lazyLoad={false} envBasePath={envBasePath}>
+ return <ShaderGradientCanvas style={{position:"absolute",inset:0}} pixelDensity={1} fov={45} pointerEvents="none" powerPreference="low-power" lazyLoad={false} envBasePath={envBasePath}>
   <ShaderGradient {...sourcePresets[mode]} {...(original?{}:sceneOverrides[mode])} animate="on" />
   <FramePolicy moving={moving} mode={mode}/>
  </ShaderGradientCanvas>;

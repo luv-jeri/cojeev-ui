@@ -9,6 +9,7 @@ import {TextReveal} from '@/registry/cojeev/ui/text-reveal';
 import {VariableProximity} from '@/registry/cojeev/ui/variable-proximity';
 import type {MembraneCell, MembraneStrand} from '@/registry/cojeev/lib/membrane-field';
 import './prompt-bond.css';
+import {startup} from './startup';
 
 /* ── Story ─────────────────────────────────────────────────────────── */
 
@@ -666,6 +667,9 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const controls=React.useRef<AnimationPlaybackControls|null>(null),generation=React.useRef(0);
  const clock_=React.useRef(0),pointer=React.useRef<Point|null>(null),checkRef=React.useRef(false);
  const typing=React.useRef<{text:string;at:number;fast:boolean;n:number}|null>(null),typed=React.useRef(false),idle=React.useRef<number|null>(null);
+ React.useLayoutEffect(()=>{
+  if(startup.prompt!==null){typed.current=true;setPrompt(startup.prompt);}
+ },[]);
  const scene=React.useRef({cells:Array.from({length:17},():MembraneCell=>({x:0,y:0,hw:0,hh:0,r:0,tone:0,rot:0,w:1})),strands:Array.from({length:8},():MembraneStrand=>({ax:0,ay:0,bx:0,by:0,r:0,tone:0,taper:0,w:1}))});
  const bonded=beat>0;
  const story=storyAt(run),lastFold=folds[folds.length-1];
@@ -748,7 +752,20 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
   const gazeTo=(from:Point)=>{let tx:number,ty:number;if(w.gaze.w>.5){tx=w.gaze.px;ty=w.gaze.py;}else if(p){tx=p.x;ty=p.y;}else{tx=L.field.cx;ty=L.field.cy;}const dx=tx-from.x,dy=ty-from.y,d=Math.hypot(dx,dy)||1,a=Math.min(1,d/80)*3.5*k;return {x:dx/d*a,y:dy/d*a};};
   w.eyes.forEach((e,i)=>{const el=eyeRefs.current[i];if(!el)return;const g=gazeTo(pos[i]);el.style.transform=`translate(${(pos[i].x+g.x).toFixed(1)}px,${(pos[i].y+g.y-2*k).toFixed(1)}px)`;el.style.opacity=String(e.o);el.style.setProperty('--lid',e.lid.toFixed(3));});
   // things drift on their own while free; a held thing sits exactly where the tendril has it
-  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const side=L.slots[i].x<L.W/2?'left':'right';if(el.dataset.side!==side){el.dataset.side=side;const g=el.querySelector<HTMLElement>('.thing-shape');if(g){const gx=g.offsetLeft+g.offsetWidth/2;el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}}const d=(still?0:n.free)*(L.roomy?1:.6),ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d*(L.roomy?1:.35),oy=(Math.cos(t*.38+i*.9)*4+Math.cos(t*.17+i)*2)*k*d,rot=Math.sin(t*.3+i)*4*d;
+  // Set every changed lane before measuring any shape: a side change reverses
+  // the label layout. Reading between those writes forced one layout per thing.
+  const changedSides=nodeRefs.current.map((el,i)=>{
+   if(!el)return null;
+   const side=L.slots[i].x<L.W/2?'left':'right';
+   if(el.dataset.side===side)return null;
+   el.dataset.side=side;return el;
+  });
+  const origins=changedSides.map(el=>{
+   const g=el?.querySelector<HTMLElement>('.thing-shape');
+   return g?g.offsetLeft+g.offsetWidth/2:null;
+  });
+  changedSides.forEach((el,i)=>{const gx=origins[i];if(el&&gx!==null){el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}});
+  w.nodes.forEach((n,i)=>{const el=nodeRefs.current[i];if(!el)return;const d=(still?0:n.free)*(L.roomy?1:.6),ox=(Math.sin(t*.5+i*1.3)*13+Math.sin(t*.21+i*.7)*7)*k*d*(L.roomy?1:.35),oy=(Math.cos(t*.38+i*.9)*4+Math.cos(t*.17+i)*2)*k*d,rot=Math.sin(t*.3+i)*4*d;
    el.style.transform=`translate(${(n.px+ox).toFixed(1)}px,${(n.py+oy).toFixed(1)}px) translate(${-(el.dataset.gx??0)}px,-50%) rotate(${rot.toFixed(2)}deg) scale(${n.s.toFixed(3)})`;el.style.opacity=String(n.o);
    const st=el.style;st.setProperty('--t',n.t.toFixed(3));st.setProperty('--rip',n.rip.toFixed(3));st.setProperty('--flash',n.flash.toFixed(3));st.setProperty('--busy',n.busy.toFixed(3));st.setProperty('--free',n.free.toFixed(2));});
   if(state.current.beat===2&&w.rows[0].o>.05&&state.current.prompt)setPrompt('');
@@ -803,10 +820,13 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
    if(quiet||!moving)roam.current.forEach((r,i)=>{r.x=L.docks[i].x;r.y=L.docks[i].y;r.vx=r.vy=0;});
   } else capture.current=null;
   // measure each thing's shape, and remember where it sits so the thing scales and folds around it
-  const sizes=nodeRefs.current.map((el):Size=>{
-   if(!el)return {w:30,h:30};
-   const g=el.querySelector<HTMLElement>('.thing-shape'),w=g?.offsetWidth??30,h=g?.offsetHeight??30,gx=g?g.offsetLeft+w/2:w/2;
-   el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;
+  const dimensions=nodeRefs.current.map(el=>{
+   const g=el?.querySelector<HTMLElement>('.thing-shape'),w=g?.offsetWidth??30,h=g?.offsetHeight??30;
+   return {w,h,gx:g?g.offsetLeft+w/2:w/2};
+  });
+  const sizes=dimensions.map(({w,h,gx},i):Size=>{
+   const el=nodeRefs.current[i];
+   if(el){el.dataset.gx=gx.toFixed(1);el.style.transformOrigin=`${gx.toFixed(1)}px 50%`;}
    return {w,h};
   });
   // a slot whose thing changed since the last beat: hidden if this beat surfaces it, otherwise simply there
@@ -886,7 +906,7 @@ export function PromptBond({moving,quiet}:{moving:boolean;active?:boolean;quiet:
  const pick=(text:string)=>{typing.current=null;typed.current=false;setPicked(text);typeThenStart(text,true);};
  const onPointer=(e:React.PointerEvent)=>{const s=stage.current?.getBoundingClientRect();if(!s)return;pointer.current={x:e.clientX-s.left,y:e.clientY-s.top};};
  const rows=rowsFor(story);
- const ui=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui'))||1;
+ const ui=typeof document==='undefined'?1:parseFloat(document.documentElement.style.getPropertyValue('--ui'))||1;
  const cue=beat===8&&noted?'Noted. It will be there next time.':beat===LAST&&stopped?'Stopped. Whenever you’re ready.':beats[beat].cue;
  const composing=beat===0||beat===LAST,working=bonded&&!composing;
  const suggestions=beat===0?stories.slice(0,3).map(s=>s.prompt):beat===LAST?[storyAt(run+1).prompt]:[];

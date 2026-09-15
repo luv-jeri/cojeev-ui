@@ -1,0 +1,7 @@
+src/countdown-display.tsx(2,27): error TS7016: Could not find a declaration file for module './countdown.mjs'. '/Users/sanjaykumar/Developer/cojeev-coming-soon-preview/apps/cojeev-coming-soon/src/countdown.mjs' implicitly has an 'any' type.
+../../registry/cojeev/ui/bubble.tsx(14,132): error TS2322: Type 'string' is not assignable to type 'never'.
+../../registry/cojeev/ui/bubble.tsx(18,143): error TS2322: Type 'string' is not assignable to type 'never'.
+../../registry/cojeev/ui/bubble.tsx(23,15): error TS2322: Type '(node: HTMLDivElement | null) => () => void' is not assignable to type 'never'.
+../../registry/cojeev/ui/bubble.tsx(23,82): error TS2322: Type 'string' is not assignable to type 'never'.
+../../registry/cojeev/ui/bubble.tsx(27,141): error TS2322: Type 'string' is not assignable to type 'never'.
+../../registry/cojeev/ui/bubble.tsx(31,145): error TS2322: Type 'string' is not assignable to type 'never'.

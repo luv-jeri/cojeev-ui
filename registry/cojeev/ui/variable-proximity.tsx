@@ -14,9 +14,15 @@ export function VariableProximity({text,variant="weight",size="default",paused=f
   const frame=React.useRef(0), point=React.useRef<{x:number;y:number}|null>(null);
   const from=bounded(fromWeight,200,800,350),to=bounded(toWeight,200,800,800);
   const paint=React.useCallback(() => {
-    hostRef.current?.querySelectorAll<HTMLElement>("[data-proximity-letter]").forEach(letter=>{
+    const letters=Array.from(hostRef.current?.querySelectorAll<HTMLElement>("[data-proximity-letter]")??[]);
+    // Read all positions before changing font metrics. At rest no geometry is needed.
+    const distances=letters.map(letter=>{
+      if(!point.current||!running)return Infinity;
       const rect=letter.getBoundingClientRect();
-      const distance=point.current&&running?Math.hypot(point.current.x-rect.x-rect.width/2,point.current.y-rect.y-rect.height/2):Infinity;
+      return Math.hypot(point.current.x-rect.x-rect.width/2,point.current.y-rect.y-rect.height/2);
+    });
+    letters.forEach((letter,index)=>{
+      const distance=distances[index];
       const weight=proximityWeight(distance,radius,from,to);
       const width=variant==="pressure"?proximityWeight(distance,radius,75,100):100;
       letter.style.fontVariationSettings=`"wght" ${weight}, "wdth" ${width}`;

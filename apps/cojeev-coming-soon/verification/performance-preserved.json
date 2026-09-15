@@ -1,0 +1,42 @@
+[
+  {
+    "file": "apps/cojeev-coming-soon/src/bond-demo.css",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "ed2b6bc683f86f933ca9b36bd849340c9830c7cc45065db7c3dc618f0bff2753"
+  },
+  {
+    "file": "apps/cojeev-coming-soon/src/prompt-bond.css",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "028f20d06f81eeeeb8c251039fd2eddcf46e2ac753cae4d98f091c269bb245d4"
+  },
+  {
+    "file": "apps/cojeev-coming-soon/src/countdown-display.tsx",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "95e987f1daeebab87a6448a28ddc5e7e0a36c990cf733cd408020d35ce7366a7"
+  },
+  {
+    "file": "apps/cojeev-coming-soon/src/countdown.mjs",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "5bad7f440b85f978c95a331b2201b9898ea8cc61ac73a297f48a21f127aaf904"
+  },
+  {
+    "file": "apps/cojeev-coming-soon/public/launch.json",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "eecb62940e27c7f0ba5002098c300f960b7c73bce30119be7fbe15907a2a96e4"
+  },
+  {
+    "file": "registry/cojeev/lib/membrane-field.ts",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "9545af2e0ceec200fa3fc68427f5e16cc95dd2359de338211de4cb1433e6d41c"
+  },
+  {
+    "file": "registry/cojeev/ui/bubble.tsx",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "0de9302da4c12a00385437f5b83b12c4778fe1078f2c03c2c0bf33fc3406199c"
+  },
+  {
+    "file": "registry/cojeev/styles/fonts.css",
+    "unchangedFrom": "3a80781fcb0dece6cb589c90eb1fc9a726e7249f",
+    "sha256": "9e2d0a6fa917e082fb7d7da9f992f3e202d87109902e31e66aac77b997a3b430"
+  }
+]

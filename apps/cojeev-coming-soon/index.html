@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <script>try{const saved=localStorage.getItem("cojeev-coming-soon-theme");document.documentElement.dataset.mode=saved==="dark"||(!saved&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}catch{}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>document.documentElement.style.setProperty('--ui',(innerWidth<=700?1:Math.min(1.8,Math.max(innerWidth<=1024?.9:.8,Math.min(innerWidth/1440,innerHeight/900)))).toFixed(3));</script>
+    <link rel="preload" href="/src/fonts/bricolage-grotesque-common.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/fonts/dm-sans-common.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#FBF4E6" />
     <meta name="description" content="Cojeev connects your coding agents, shared memory, and way of working. Coming soon." />
     <meta property="og:title" content="Cojeev — Coming together." />
@@ -16,6 +19,6 @@
     <!-- The Bond: a living prompt that grows into a conversation. One fixed viewport, shared launch clock, 40dvh footer lifted by gesture. -->
     <div id="root"></div>
     <noscript>Cojeev is coming soon. One agentic operating system for your coding AI harnesses, with shared team memory, custom hooks, one identity, and automatic subagents. Enable JavaScript to explore the page and see the launch countdown.</noscript>
-    <script type="module" src="/src/bond-demo.tsx"></script>
+    <script type="module" src="/src/bootstrap.ts"></script>
   </body>
 </html>

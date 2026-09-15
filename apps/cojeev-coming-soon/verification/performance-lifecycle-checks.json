@@ -1,0 +1,113 @@
+{
+ "ran": "2026-09-15T10:42:19.819Z",
+ "passed": 21,
+ "total": 21,
+ "errors": [],
+ "results": [
+  {
+   "name": "home page serves the Bond",
+   "pass": true,
+   "detail": "Cojeev — Coming together."
+  },
+  {
+   "name": "built output has no bond.html and keeps the three entries",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "header is the wordmark and a quiet Coming soon; no demo switcher",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "countdown sits in the header corner, right of the wordmark, and the title has no eyebrow",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "launch.json still has no start",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "webgl membrane",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "theme toggle flips the mode and the membrane night palette",
+   "pass": true,
+   "detail": "light(0) → dark(.34)"
+  },
+  {
+   "name": "dark headline and cue stay readable (light ink on dark)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "Enter on the empty composer types the thought and starts the bond",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "launch",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pause holds the story",
+   "pass": true,
+   "detail": "2→2"
+  },
+  {
+   "name": "resume continues to recall",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "hidden page pauses the story",
+   "pass": true,
+   "detail": "3→3"
+  },
+  {
+   "name": "visible again resumes",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "settle",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "replay returns to the rest state",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "bottom bar with replay, drawer, theme and pause is on screen",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "the what-is-coming drawer opens",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "drawer closes on Escape",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "resident.html still loads",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "mind.html still loads",
+   "pass": true,
+   "detail": ""
+  }
+ ]
+}

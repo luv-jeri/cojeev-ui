@@ -1,0 +1,19 @@
+{
+  "smoke": {
+    "seconds": 289.01,
+    "exitCode": 0
+  },
+  "lifecycle": {
+    "seconds": 47.96,
+    "exitCode": 0
+  },
+  "countdown": {
+    "seconds": 7.43,
+    "exitCode": 0
+  },
+  "typecheck": {
+    "seconds": 5.23,
+    "exitCode": 2,
+    "note": "Seven diagnostics in unchanged countdown-display.tsx and bubble.tsx; no diagnostics in changed files."
+  }
+}
