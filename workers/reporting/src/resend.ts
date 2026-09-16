@@ -1,8 +1,14 @@
+import { isUUID } from '../../../lib/reporting/contracts';
 import { boundedBody, equalSecret, HttpError } from './security';
 import { now, type Env, type Delivery } from './types';
 import { DeliveryFailure } from './delivery';
 
 const DAY=86400000;
+// Resend tag values accept ASCII letters, digits, underscores and dashes only, so the
+// outbox job ID (which contains a colon) is carried as its report UUID plus job kind.
+const TAG=/^[A-Za-z0-9_-]{1,256}$/;
+export const environmentTag=(env:Env)=>TAG.test(env.ENVIRONMENT??'')?env.ENVIRONMENT!:'unconfigured';
+export const messageTags=(env:Env,job:Delivery)=>[{name:'environment',value:environmentTag(env)},{name:'report',value:job.report_id},{name:'kind',value:job.kind}];
 const ceiling=(value:string|undefined,max:number)=>value===undefined?max:/^\d+$/.test(value)?Math.min(max,Number(value)):0;
 export function emailLimits(env:Env) {return {daily:ceiling(env.EMAIL_DAILY_LIMIT,env.ENVIRONMENT==='beta'?5:100),monthly:ceiling(env.EMAIL_MONTHLY_LIMIT,3000)};}
 export function testerAllowed(env:Env,email:string) {return env.ENVIRONMENT!=='beta'||(env.BETA_TESTER_EMAILS??'unread.fyi@gmail.com').split(',').map(v=>v.trim().toLowerCase()).includes(email.toLowerCase());}
@@ -45,6 +51,32 @@ export async function reconcileEmail(env:Env,providerId:string) {
     WHERE provider_id=? AND kind LIKE 'email_%' AND EXISTS(SELECT 1 FROM email_events WHERE provider_id=?)`).bind(providerId,providerId,providerId).run();
 }
 
+// A shared provider account delivers team-wide events: other applications' messages and the
+// other environment's messages arrive here correctly signed. Signature proves the sender, not
+// ownership, so an event is persisted only when this deployment can show the message is its
+// own — either the provider ID is already recorded against a local email job, or the event's
+// own correlation tags name this environment and a local email job that has actually begun
+// sending. Everything else is acknowledged and dropped without being stored.
+async function ownsMessage(env:Env,providerId:string,tags:unknown) {
+  const known=await env.DB.prepare("SELECT id FROM outbox WHERE provider_id=? AND kind LIKE 'email_%'").bind(providerId).first();
+  if(known) return true;
+  if(!tags||typeof tags!=='object'||Array.isArray(tags)) return false;
+  const {environment,report,kind}=tags as Record<string,unknown>;
+  if(environment!==environmentTag(env)||!isUUID(report)||typeof kind!=='string'||!kind.startsWith('email_')||!TAG.test(kind)) return false;
+  const local=await env.DB.prepare("SELECT payload_json,provider_id,first_attempt_at FROM outbox WHERE report_id=? AND kind=?").bind(report,kind).first<Delivery>();
+  // A merely queued job has contacted no provider and owns no event; and a job already bound
+  // to one provider message cannot also own a different one, so a matching tag never adopts
+  // a second identity for it.
+  if(!local||local.first_attempt_at===null||!local.payload_json||(local.provider_id&&local.provider_id!==providerId)) return false;
+  // The claim is checked against the tags actually present in the stored, already-sent body,
+  // not merely against a body existing: a job attempted by an earlier release carries no tags
+  // and therefore cannot be adopted through a tag it never sent.
+  let sent:unknown;
+  try {sent=(JSON.parse(local.payload_json) as {tags?:unknown}).tags;} catch {return false;}
+  if(!Array.isArray(sent)) return false;
+  const value=(name:string)=>(sent as {name?:unknown;value?:unknown}[]).find(tag=>tag?.name===name)?.value;
+  return value('environment')===environment&&value('report')===report&&value('kind')===kind;
+}
 export async function resendWebhook(request:Request,env:Env) {
   const invalid=()=>new HttpError(401,'Webhook not accepted.');
   const raw=new TextDecoder().decode(await boundedBody(request,262144));
@@ -58,12 +90,15 @@ export async function resendWebhook(request:Request,env:Env) {
     for(const signature of signatures.split(' ')) if(signature.startsWith('v1,')&&await equalSecret(signature.slice(3),expected)) verified=true;
   } catch {throw invalid();}
   if(!verified) throw invalid();
-  let body:{type?:string;created_at?:string;data?:{email_id?:string}};
+  let body:{type?:string;created_at?:string;data?:{email_id?:string;tags?:unknown}};
   try {body=JSON.parse(raw);if(!body||typeof body!=='object'||Array.isArray(body)) throw new Error();} catch {throw new HttpError(400,'Webhook not accepted.');}
   const statuses:Record<string,string>={'email.sent':'accepted','email.delivered':'delivered','email.bounced':'bounced','email.failed':'failed','email.complained':'failed','email.suppressed':'failed'};
   const status=statuses[body.type??''],providerId=body.data?.email_id,eventAt=Date.parse(body.created_at??'');
   if(!status) return {ok:true};
   if(typeof providerId!=='string'||!providerId||providerId.length>200||!Number.isFinite(eventAt)) throw new HttpError(400,'Webhook not accepted.');
+  // Acknowledge an unrelated or wrong-environment message exactly like an accepted one: the
+  // sender learns nothing about this deployment, and nothing about it is retained here.
+  if(!await ownsMessage(env,providerId,body.data?.tags)) return {ok:true};
   await env.DB.prepare('INSERT OR IGNORE INTO email_events(id,provider_id,status,event_at,received_at) VALUES(?,?,?,?,?)').bind(id,providerId,status,eventAt,now()).run();
   await reconcileEmail(env,providerId);
   return {ok:true};

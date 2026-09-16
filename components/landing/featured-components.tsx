@@ -112,7 +112,7 @@ export function FeaturedComponents() {
         <MotionDrawer title={`Add ${title}`} description="Copy the command into your React project. The source becomes yours to edit." variant="floating" triggerLabel={`Get ${title}`} trigger={<Button variant="secondary" size="sm">Get component <AnimatedIcon name="plus" size="sm" /></Button>}>
           <div className="launch-install-details"><InstallCommand command={installCommand(id)} componentId={id} /><p>First time here? <Link href="/getting-started/">Start with the setup guide.</Link></p><Link href={`/docs/${id}/`}>See the example and API →</Link></div>
         </MotionDrawer>
-        <Button asChild variant="ghost" size="sm"><Link href={`/docs/${id}/`} aria-label={`View ${title} documentation`}>View docs <AnimatedIcon name="arrow-up-right" size="sm" /></Link></Button>
+        <Button asChild variant="ghost" size="sm"><Link href={`/docs/${id}/`}>View docs<span className="sr-only"> for {title}</span> <AnimatedIcon name="arrow-up-right" size="sm" /></Link></Button>
       </footer>
     </article>)}
   </section>;

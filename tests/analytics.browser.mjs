@@ -74,11 +74,28 @@ async function waitFor(captures, predicate, label, timeout = 6_000) {
     if (found) return found.payload;
     await delay(40);
   }
-  assert.fail(`Timed out waiting for analytics event: ${label}. Saw: ${captures.map(({ payload }) => payload.event).join(", ")}`);
+  assert.fail(`Timed out waiting for analytics event: ${label}. Saw: ${captures.map(({ payload }) => `${payload.event}${payload.properties?.component_id ? `(${payload.properties.component_id})` : ""}`).join(", ")}`);
 }
 
 function events(captures, name) {
   return captures.filter(({ payload }) => payload.event === name).map(({ payload }) => payload);
+}
+
+async function exposeLandingSpecimen(page, captures) {
+  const specimen = page.locator('[data-featured-component="motion-drawer"] [data-analytics-preview="motion-drawer"]');
+  await specimen.waitFor();
+  // Static HTML can satisfy the locator before the observer's effect is mounted.
+  // Use the real provider event as the readiness boundary, then start exposure.
+  await waitFor(captures, payload => payload.event === "page_viewed" && payload.properties.route === "/", "landing analytics hydration", 30_000);
+  await specimen.scrollIntoViewIfNeeded();
+  const visibleRatio = await specimen.evaluate(element => {
+    const rect = element.getBoundingClientRect();
+    const width = Math.max(0, Math.min(rect.right, innerWidth) - Math.max(rect.left, 0));
+    const height = Math.max(0, Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0));
+    return rect.width && rect.height ? width * height / (rect.width * rect.height) : 0;
+  });
+  assert(visibleRatio >= 0.5, `landing exposure starts with at least half the specimen in the viewport; saw ${visibleRatio}`);
+  return specimen;
 }
 
 function assertSafeCaptures(captures) {
@@ -250,18 +267,45 @@ try {
     await context.close();
   }
 
-  {
+  for (const holdHydration of [false, true]) {
     const { context, captures } = await analyticsContext(browser);
     const page = await context.newPage();
+    let releaseScripts;
+    if (holdHydration) {
+      const released = new Promise(resolve => { releaseScripts = resolve; });
+      await context.route('**/*.js', async route => { await released; await route.continue(); });
+    }
     await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
-    const specimen = page.locator('[data-featured-component="motion-drawer"] [data-analytics-preview="motion-drawer"]');
-    await specimen.waitFor();
-    await specimen.scrollIntoViewIfNeeded();
+    const exposure = exposeLandingSpecimen(page, captures);
+    let earlyScroll = null;
+    if (holdHydration) {
+      await delay(300);
+      earlyScroll = await page.evaluate(() => scrollY);
+      releaseScripts();
+    }
+    const specimen = await exposure;
+    if (holdHydration) assert.equal(earlyScroll, 0, "exposure setup must not scroll server HTML before analytics hydrates");
+    const visibilitySnapshot = () => specimen.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        bounds: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        viewport: { width: innerWidth, height: innerHeight },
+        scroll: { x: scrollX, y: scrollY },
+        visibility: document.visibilityState,
+        ready: document.readyState,
+        fonts: document.fonts.status,
+        htmlClass: document.documentElement.className,
+      };
+    });
+    const exposureStart = await visibilitySnapshot();
     const impression = await waitFor(
       captures,
       (payload) => payload.event === "component_impression" && payload.properties.component_id === "motion-drawer",
       "50 percent visible for one second",
-    );
+    ).catch(async (error) => {
+      console.error("Landing impression visibility:", JSON.stringify({ start: exposureStart, end: await visibilitySnapshot() }));
+      throw error;
+    });
     assert.deepEqual(impression.properties, {
       component_id: "motion-drawer",
       placement: "landing",

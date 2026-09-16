@@ -4,6 +4,7 @@ import postcss from "postcss";
 import { execFileSync } from "node:child_process";
 import { componentAPIs } from "./component-api.mjs";
 import { sourceImport, rewriteInstalledImports } from "./registry-imports.mjs";
+import { noticeText } from "./registry-notices.mjs";
 
 const baseURL=process.env.COJEEV_REGISTRY_URL??"https://luv-jeri.github.io/cojeev-ui";
 const source="registry/cojeev";
@@ -67,8 +68,17 @@ base.cssVars={theme};
 base.files.push(...fs.readdirSync(`${source}/lib`).filter(name=>name.endsWith(".ts")&&name!=="utils.ts").map(name=>({path:`${source}/lib/${name}`,type:"registry:lib",target:`lib/cojeev/${name}`})));
 base.files.push(...fs.readdirSync(`${source}/motion`).filter(name=>/\.tsx?$/.test(name)).map(name=>({path:`${source}/motion/${name}`,type:"registry:lib",target:`lib/cojeev-motion/${name}`})));
 base.files.push({path:`${source}/styles/fonts.css`,type:"registry:file",target:"styles/cojeev-fonts.css"});
+// Binary assets cannot be registry files: shadcn reads file contents as UTF-8.
+// This inert helper keeps the default self-contained CSS and only materializes
+// the verified bytes when a consumer explicitly invokes it after installation.
+base.files.push({path:`${source}/scripts/materialize-fonts.mjs`,type:"registry:file",target:"scripts/cojeev-materialize-fonts.mjs"});
 base.files.push(...foundationStyles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`})));
 base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({path:`reference/cojeev-handoff-v4/fonts/${name}`,type:"registry:file",target:`styles/fonts/${name}`})));
+// Every entry installs this base, so one notices file reaches every consumer.
+// It has to be a file: the installer re-prints the TypeScript it copies and
+// drops the comment a source opens with, notice included.
+fs.writeFileSync(`${source}/NOTICES.txt`,noticeText(fs.readFileSync("LICENCE","utf8"),["lib","motion","ui"].flatMap(folder=>fs.readdirSync(`${source}/${folder}`).sort().filter(name=>/\.tsx?$/.test(name)).map(name=>[`${source}/${folder}/${name}`,fs.readFileSync(`${source}/${folder}/${name}`,"utf8")]))));
+base.files.push({path:`${source}/NOTICES.txt`,type:"registry:file",target:"lib/cojeev/NOTICES.txt"});
 const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"cojeev",homepage:baseURL,items};
 fs.writeFileSync("registry.json",JSON.stringify(registry,null,2)+"\n");
 // Refresh the live documentation catalogue without producing distributable

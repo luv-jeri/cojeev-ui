@@ -11,6 +11,7 @@ import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
 import { armOpacityObservation } from "./docs-transient-paint.mjs";
 import { docsHarnessFiles, docsHarnessFingerprint } from "./docs-harness-fingerprint.mjs";
+import { docsEntrySummary } from "./lib/docs-summary.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -247,11 +248,25 @@ const tests = {
     await text(root,"Demo interruption. Your request is saved");
     assert(await resetControl.evaluate(el=>el===document.activeElement),"Completion must preserve focus when it is outside Stop");
     await key(root.getByRole("button",{name:"Retry",exact:true}),"Enter");
-    await allow();
-    await root.getByRole("button",{name:"Stop generation",exact:true}).focus();
-    await text(root,"Your sample brief is ready.");
-    await text(root,"Ready to review");
-    await eventually(()=>draft.evaluate(el=>el===document.activeElement),"Completion returns focus from Stop to the draft");
+    await root.getByRole("button",{name:"Allow once",exact:true}).waitFor();
+    // Permission is stable. Hold the upcoming completion timer until native
+    // focus has crossed the driver boundary, then exercise the real transition.
+    const completionInstant = new Date();
+    await page.clock.setFixedTime(completionInstant);
+    await page.clock.pauseAt(completionInstant);
+    try {
+      await allow();
+      const stopControl = root.getByRole("button",{name:"Stop generation",exact:true});
+      await stopControl.focus();
+      assert(await stopControl.evaluate(el=>el===document.activeElement),"Stop must hold native focus before completion");
+      await page.clock.runFor(2000);
+      await text(root,"Your sample brief is ready.");
+      await text(root,"Ready to review");
+      await eventually(()=>draft.evaluate(el=>el===document.activeElement),"Completion returns focus from Stop to the draft");
+    } finally {
+      try { await page.clock.setSystemTime(new Date()); }
+      finally { await page.clock.resume(); }
+    }
     return "Keyboard send; explicit deny; Stop cancels timers; attach/remove; error and retry reach a sample result; completion restores focused Stop without stealing outside focus";
   },
   accordion: async ({ root }) => {
@@ -1144,6 +1159,23 @@ const tests = {
     await text(root, "4 things to read");
     return "Pointer tab and arrow-key tab activate matching content";
   },
+  tree: async ({ root }) => {
+    const status = root.getByRole("status");
+    await root.getByRole("button", { name: "Expand chapters", exact: true }).click();
+    await text(status, "Expanded chapters.");
+    await root.getByRole("button", { name: "01-small-beginnings.md", exact: true }).click();
+    await text(status, "Selected chapter-one.");
+    await attribute(root.getByRole("button", { name: "01-small-beginnings.md", exact: true }), "aria-current", "true");
+    await key(root.getByRole("button", { name: "Collapse chapters", exact: true }), "Enter");
+    await text(status, "Collapsed chapters.");
+    await key(root.getByRole("button", { name: "morning-walk.md", exact: true }), "Enter");
+    await text(status, "Selected morning.");
+    await root.getByRole("button", { name: "More actions for the branch ledger note", exact: true }).click();
+    await text(status, "The note action stayed separate from selection.");
+    await attribute(root.getByRole("button", { name: "morning-walk.md", exact: true }), "aria-current", "true");
+    assert.equal(await root.getByRole("button", { name: "Locked record", exact: true }).isDisabled(), true);
+    return "Pointer expand and select, keyboard collapse and select, trailing action stays separate from selection, locked row disabled; branch states covered by tests/tree.browser.mjs";
+  },
   textarea: async ({ root }) => {
     const input = root.getByRole("textbox");
     await input.click();
@@ -1387,22 +1419,26 @@ async function measurementPage(context, errors) {
   });
   return page;
 }
+async function docsContext(width, theme) {
+  const context = await browser.newContext({
+    viewport: { width, height: 1000 },
+    colorScheme: theme,
+    permissions: ["clipboard-read", "clipboard-write"],
+    acceptDownloads: true,
+  });
+  await context.addInitScript(
+    ({ theme }) => {
+      if (!/^https?:$/.test(location.protocol)) return;
+      localStorage.setItem("cojeev-docs-theme", theme);
+    },
+    { theme },
+  );
+  return context;
+}
 try {
   for (const width of widths)
     for (const theme of themes) {
-      const context = await browser.newContext({
-        viewport: { width, height: 1000 },
-        colorScheme: theme,
-        permissions: ["clipboard-read", "clipboard-write"],
-        acceptDownloads: true,
-      });
-      await context.addInitScript(
-        ({ theme }) => {
-          if (!/^https?:$/.test(location.protocol)) return;
-          localStorage.setItem("cojeev-docs-theme", theme);
-        },
-        { theme },
-      );
+      const context = await docsContext(width, theme);
       const errors = [];
       const page = await measurementPage(context, errors);
       contexts.push({ context, page, width, theme, errors });
@@ -1627,18 +1663,19 @@ try {
       path.join(output, "results.json"),
       JSON.stringify(run, null, 2),
     );
-    console.log(
-      JSON.stringify({
-        id: entry.name,
-        layouts: record.layouts.map((l) => `${l.width}/${l.theme}:${l.status}`),
-        preview: record.preview.status,
-        behavior: record.behavior.status,
-        detail: record.behavior.detail,
-      }),
-    );
+    console.log(JSON.stringify(docsEntrySummary(record)));
     // The primary behavior page can keep animated examples and modal state
-    // alive while the next entry's other five layouts run. Retire it too.
+    // alive while the next entry's other five layouts run. Retire the whole
+    // context, not only the page: `page.clock` is the browser context's clock,
+    // every clock call is kept as a context init script and replayed into each
+    // page opened afterwards, and the client API has no uninstall. A case that
+    // installs a clock would otherwise leave fake Date, setTimeout and
+    // requestAnimationFrame on every later entry in this worker, where exit
+    // animations no longer finish against Playwright's real deadline. One fresh
+    // context per entry also isolates storage, permissions and service state.
     await page.close();
+    await primary.context.close();
+    primary.context = await docsContext(primary.width, primary.theme);
     primary.page = await measurementPage(primary.context, primary.errors);
   }
   for (const surface of contexts) {

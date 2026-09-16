@@ -4,7 +4,7 @@
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
 @import "lenis/dist/lenis.css";
-@import "../registry/cojeev/styles/fonts.css";
+@import "./fonts.css";
 @import "../registry/cojeev/styles/semantic-bloom.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/tokens.css";
 @import "../registry/cojeev/styles/theme.css";
@@ -119,6 +119,7 @@
 @import "../registry/cojeev/styles/toggle-group.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/toggle.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/tooltip.css" layer(cojeev-states);
+@import "../registry/cojeev/styles/tree.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/typography.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/animated-number.css" layer(cojeev-states);
 @import "../registry/cojeev/styles/word-relay.css" layer(cojeev-states);

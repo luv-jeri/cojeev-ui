@@ -46,7 +46,7 @@ export function MarketingHeader() {
     <DocsThemeSync />
     <a className="story-skip" href="#story-main">Skip to content</a>
     <header className="story-header">
-      <Link className="story-brand" href="/" aria-label="000h by Cojeev home"><span className="launch-wordmark" aria-hidden="true"><BrandMark className="launch-wordmark__seed" /><span>00h</span></span><span className="story-brand-ui" aria-hidden="true">by Cojeev</span></Link>
+      <Link className="story-brand" href="/"><span className="sr-only">000h by Cojeev, home</span><span className="launch-wordmark" aria-hidden="true"><BrandMark className="launch-wordmark__seed" /><span>00h</span></span><span className="story-brand-ui" aria-hidden="true">by Cojeev</span></Link>
       <BetaStamp />
       <nav className="story-nav" aria-label="Main navigation">
         <MarketingLink href="/docs/">Components</MarketingLink>

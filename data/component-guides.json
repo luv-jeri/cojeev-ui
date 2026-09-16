@@ -1377,6 +1377,26 @@
       "preview"
     ]
   },
+  "tree": {
+    "description": "A controlled branch ledger for supplied hierarchical data, with separate disclosure, selection and trailing actions.",
+    "category": "Data display",
+    "usage": [
+      "Pass stable TreeNode ids, nodes, expandedIds and selectedId. The caller owns fetching, caching, permissions, pagination limits and every state update.",
+      "A folder with children undefined has not been supplied yet; an empty children array is a loaded empty branch. Use status and message for branch-local loading or error feedback, truncated for a supplied limit, and onRetry to route a retry back to the caller.",
+      "Expansion emits onExpandedChange(id, expanded) without selecting the row. Selection emits onSelectionChange(id) without opening the branch. trailing content remains a sibling control.",
+      "Stable ids preserve caller-owned selection and cached data across collapse and reopen. Tree does not provide editing, drag and drop, previews, IDE behavior or filesystem and Git access."
+    ],
+    "accessibility": [
+      "Give Tree an accessible name. It uses native nested lists and labelled disclosure buttons with aria-expanded and aria-controls; it intentionally does not implement the ARIA treegrid arrow-key pattern.",
+      "Tab normally between expansion, selection and trailing controls; Enter and Space use each native button action. Collapsing a controlled ancestor returns focus from its hidden descendant to that ancestor's disclosure button.",
+      "Long labels remain complete in accessible text while visual text truncates. Reduced motion, Motion Off and Flow Off keep the same controls and state changes without transition."
+    ],
+    "related": [
+      "item",
+      "collapsible",
+      "icon"
+    ]
+  },
   "textarea": {
     "description": "Collects multiline text and offers composer and character-count parts for longer input.",
     "category": "Forms",

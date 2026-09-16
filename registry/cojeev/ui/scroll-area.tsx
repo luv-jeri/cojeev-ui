@@ -59,6 +59,55 @@ function ScrollThumbPaint({feedback,orientation="vertical"}:{feedback:ReturnType
   return <><svg className="v-scroll__contour" viewBox={orientation==="vertical"?"0 0 20 100":"0 0 100 20"} preserveAspectRatio="none" aria-hidden="true" focusable="false"><motion.path d={feedback.contour} transform={orientation==="horizontal"?"matrix(0 1 1 0 0 0)":undefined}/></svg><motion.span className="v-scroll__grip" aria-hidden="true" style={orientation==="vertical"?{y:feedback.gripOffset}:{x:feedback.gripOffset}}><i/><i/><i/></motion.span></>;
 }
 
+/** Radix positions its thumb from a `requestAnimationFrame` loop it invokes immediately.
+ *  Production minifiers read that IIFE's `@__PURE__` callee as a pure call and delete the
+ *  loop, leaving the thumb written only on a gesture's first frame. Repeat Radix's own
+ *  geometry from the live DOM so the paint survives any build, in any bundle a consumer
+ *  makes of this file. The follow loop is armed by a scroll event and releases itself as
+ *  soon as the position settles, so an idle scrollport costs nothing. */
+function useThumbTracking(scrollbar: HTMLDivElement | null, orientation: "vertical" | "horizontal") {
+  React.useEffect(() => {
+    const viewport = scrollbar?.closest('[data-slot="scroll-area"]')?.querySelector<HTMLElement>("[data-radix-scroll-area-viewport]");
+    if (!scrollbar || !viewport) return;
+    const vertical = orientation === "vertical";
+    const rail = getComputedStyle(scrollbar);
+    let frame = 0, previous = NaN;
+    const sync = () => {
+      const position = vertical ? viewport.scrollTop : viewport.scrollLeft;
+      const moved = position !== previous;
+      previous = position;
+      const thumb = scrollbar.querySelector<HTMLElement>('[data-slot="scroll-area-thumb"]');
+      if (!thumb) return moved;
+      const padding = vertical
+        ? parseFloat(rail.paddingTop) + parseFloat(rail.paddingBottom)
+        : parseFloat(rail.paddingLeft) + parseFloat(rail.paddingRight);
+      const travel = Math.max(0, (vertical ? scrollbar.clientHeight : scrollbar.clientWidth) - padding - (vertical ? thumb.offsetHeight : thumb.offsetWidth));
+      const maxScroll = Math.max(0, vertical ? viewport.scrollHeight - viewport.offsetHeight : viewport.scrollWidth - viewport.offsetWidth);
+      // A right-to-left scrollport counts left from zero, so its thumb travels negative.
+      const reversed = !vertical && rail.direction === "rtl";
+      const clamped = reversed ? Math.min(0, Math.max(-maxScroll, position)) : Math.min(maxScroll, Math.max(0, position));
+      const offset = maxScroll > 0 ? clamped / maxScroll * travel : 0;
+      thumb.style.transform = vertical ? `translate3d(0, ${offset}px, 0)` : `translate3d(${offset}px, 0, 0)`;
+      return moved;
+    };
+    // Smooth, keyboard and inertial scrolling all keep moving after their last scroll
+    // event, so follow the position until it stops changing rather than trusting events.
+    const follow = () => { frame = sync() ? requestAnimationFrame(follow) : 0; };
+    const onScroll = () => { sync(); if (!frame) frame = requestAnimationFrame(follow); };
+    sync();
+    viewport.addEventListener("scroll", onScroll, { passive: true });
+    // An expanded or collapsed group changes the range without any scrolling of its own.
+    const resize = new ResizeObserver(() => { previous = NaN; sync(); });
+    resize.observe(viewport);
+    if (viewport.firstElementChild) resize.observe(viewport.firstElementChild);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      resize.disconnect();
+      viewport.removeEventListener("scroll", onScroll);
+    };
+  }, [scrollbar, orientation]);
+}
+
 export const scrollAreaVariants = cva("v-scroll", {
   variants: { variant: { default: "", ink: "-ink", plain: "-plain" } },
   defaultVariants: { variant: "default" },
@@ -205,6 +254,7 @@ export function ScrollBar({
   }, [ref]);
   const feedback=useScrollFeedback(host,mountedElement,orientation);
   const {active,dragging}=feedback;
+  useThumbTracking(mountedElement,orientation);
   return (
     <Primitive.Scrollbar
       ref={hostRef}

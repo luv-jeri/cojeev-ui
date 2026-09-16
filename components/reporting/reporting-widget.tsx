@@ -45,7 +45,12 @@ import {
   type ReportFile,
   type ReportingConfig,
 } from "@/lib/reporting/client";
-import { capturePage } from "@/lib/reporting/capture";
+import {
+  capturePage,
+  CaptureCancelled,
+  type CaptureArea,
+  type CaptureProgress,
+} from "@/lib/reporting/capture";
 import { emailReceiptLabel, issueReceiptLabel } from "@/lib/reporting/receipt-labels";
 import { siteFlags } from "@/lib/site-config";
 import {
@@ -60,6 +65,7 @@ import {
   type ReportingDraftWorkspace,
 } from "@/lib/reporting/draft";
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
+import { AreaPicker, CaptureStatus } from "./area-picker";
 import { Turnstile } from "./turnstile";
 import "./reporting.css";
 
@@ -127,9 +133,11 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     [configError, setConfigError] = useState("");
   const [topics, setTopics] = useState<RequestTopic[]>([]),
     [topicError, setTopicError] = useState("");
-  const [picking, setPicking] = useState(false),
+  const [picking, setPicking] = useState<false | "pins" | "area">(false),
     [capture, setCapture] = useState<File | null>(null),
     [dragging, setDragging] = useState(false);
+  const [progress, setProgress] = useState<CaptureProgress | null>(null);
+  const captureRun = useRef<AbortController | null>(null);
   const [turnstileToken, setTurnstileToken] = useState(""),
     [verificationAttempt, setVerificationAttempt] = useState(0);
   const fileInput = useRef<HTMLInputElement>(null),
@@ -141,6 +149,14 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   useEffect(() => {
     draftRef.current = draft;
   }, [draft]);
+  useEffect(
+    () => () => {
+      // An unmounting panel must not have a capture still running into its state.
+      captureRun.current?.abort();
+      captureRun.current = null;
+    },
+    [],
+  );
   const update = (changes: Partial<ReportingDraft>) =>
     setDraft((value) => ({ ...value, ...changes }));
   const persist = useCallback(async (value: ReportingDraft) => {
@@ -167,7 +183,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       let next = draftsRef.current[kind] ?? {
         ...emptyDraft(),
         kind,
-        diagnostics: kind === "bug" ? snapshotDiagnostics() : null,
       };
       if (topic && !next.attempted)
         next = { ...next, topicId: topic.id, title: topic.title, frozen: null };
@@ -514,15 +529,44 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       );
     }
   }
-  async function screenshot(mode: "viewport" | "page") {
+  function stopCapture() {
+    captureRun.current?.abort();
+    // Clearing the handle makes the aborted run stale, so its own cleanup cannot
+    // reopen the drawer or clear status that a newer interaction now owns.
+    captureRun.current = null;
+    setProgress(null);
+    setBusy("");
+    setOpen(true);
+  }
+  async function screenshot(mode: "viewport" | "page", area?: CaptureArea) {
+    captureRun.current?.abort();
+    const run = new AbortController();
+    captureRun.current = run;
+    const stale = () => captureRun.current !== run;
+    setProgress({ phase: "preparing" });
     setBusy("Capturing the page…");
     setError("");
     try {
-      setCapture(await capturePage(mode));
+      const file = await capturePage(mode, {
+        area,
+        signal: run.signal,
+        onProgress: (value) => {
+          if (!stale()) setProgress(value);
+        },
+      });
+      // A late result from a cancelled or superseded run must never become an attachment.
+      if (stale() || run.signal.aborted) return;
+      setCapture(file);
     } catch (cause) {
+      if (stale() || cause instanceof CaptureCancelled) return;
       setError(`${message(cause)} You can attach an image or video instead.`);
     } finally {
-      setBusy("");
+      if (!stale()) {
+        captureRun.current = null;
+        setProgress(null);
+        setBusy("");
+        setOpen(true);
+      }
     }
   }
   const receipt = draft.receipt;
@@ -777,7 +821,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                       <Button
                         variant="outline"
                         disabled={!!busy}
-                        onClick={() => setPicking(true)}
+                        onClick={() => setPicking("pins")}
                       >
                         <PinIcon size={16} />
                         Pin elements
@@ -785,15 +829,25 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                       <Button
                         variant="outline"
                         disabled={!!busy || draft.files.length >= LIMITS.files}
-                        onClick={() => screenshot("viewport")}
+                        onClick={() => {
+                          // The drawer must be shut before the rectangle is drawn
+                          // and stay shut until the capture is reviewed.
+                          setOpen(false);
+                          setPicking("area");
+                        }}
                       >
                         <Camera size={16} />
-                        This view
+                        Select area
                       </Button>
                       <Button
                         variant="outline"
                         disabled={!!busy || draft.files.length >= LIMITS.files}
-                        onClick={() => screenshot("page")}
+                        onClick={() => {
+                          // Radix dismisses the drawer on an outside pointer press, so the
+                          // capture toolbar would otherwise close it and lose the reopen.
+                          setOpen(false);
+                          void screenshot("page");
+                        }}
                       >
                         Full page
                       </Button>
@@ -807,7 +861,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 </p>
                 <p className="report-help">
                   PNG, JPEG, WebP, MP4 or WebM. Up to six files, 10 MiB each, 30
-                  MiB total. Screenshots are captured only when you ask.
+                  MiB total. Screenshots are captured only when you ask, and you
+                  review every one before it is attached.
                 </p>
                 {!!draft.files.length && (
                   <div className="report-attachments">
@@ -1210,8 +1265,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
             type="button"
             className="report-launcher"
             disabled={!loaded}
-            data-hidden={open || picking || undefined}
-            aria-label="Request a feature or report a bug"
+            data-hidden={open || picking || !!progress || undefined}
           >
             <span className="report-launcher-shape" aria-hidden="true">
               <Sparkles size={21} />
@@ -1241,7 +1295,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           },
         ]}
       />
-      {picking && (
+      {picking === "pins" && (
         <PinPicker
           initial={draft.pins}
           onDone={(pins) => {
@@ -1250,6 +1304,20 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
             setOpen(true);
           }}
         />
+      )}
+      {picking === "area" && (
+        <AreaPicker
+          onDone={(area) => {
+            // Capture before the drawer reopens: reopening would move the page
+            // under the rectangle the user just drew. The run itself reopens it.
+            setPicking(false);
+            if (area) void screenshot("viewport", area);
+            else setOpen(true);
+          }}
+        />
+      )}
+      {progress && (
+        <CaptureStatus progress={progress} onCancel={stopCapture} />
       )}
     </>
   );

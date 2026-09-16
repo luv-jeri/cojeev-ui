@@ -28,7 +28,7 @@ export function useGalleryTransition(active: boolean, duration = 1100, paused = 
  },[target,canMove,boundedDuration]);
  return {host,progress:canMove ? progress : target,canMove};
 }
-export function useGalleryRef<T>(hostRef: React.RefObject<T | null>, forwardedRef: React.Ref<T> | undefined) {
+export function useGalleryRef<T>(hostRef: React.RefObject<T | null>, forwardedRef: React.Ref<T> | undefined): React.RefCallback<T> {
  // eslint-disable-next-line react-hooks/immutability -- A React callback ref assigns caller and internal ref objects during commit, never during render.
  return React.useCallback((node:T|null)=> {hostRef.current=node;if(typeof forwardedRef==="function")return forwardedRef(node);if(forwardedRef)forwardedRef.current=node;},[hostRef,forwardedRef]);
 }

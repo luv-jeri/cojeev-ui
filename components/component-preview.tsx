@@ -20,6 +20,10 @@ import {
   controlRadiusStyle,
   type ControlRadius,
 } from "@/registry/cojeev/lib/control-appearance";
+import {
+  SelectorGlyph,
+  type SelectorShape,
+} from "@/registry/cojeev/lib/selector";
 import type { ExampleProps } from "@/components/examples/types";
 const fieldGuidance: Record<string, [string, string]> = {
   contour: [
@@ -250,6 +254,8 @@ export function ComponentPreview({
     value: string,
     values: string[],
     change: (value: string) => void,
+    adorn?: (value: string) => React.ReactElement,
+    showIndicator = false,
   ) => (
     <label className="docs-workbench-choice">
       <span>{name}</span>
@@ -274,7 +280,12 @@ export function ComponentPreview({
         </SelectTrigger>
         <SelectContent>
           {values.map((item) => (
-            <SelectItem key={item} value={item}>
+            <SelectItem
+              key={item}
+              value={item}
+              adornment={adorn?.(item)}
+              showIndicator={showIndicator}
+            >
               {label(item)}
             </SelectItem>
           ))}
@@ -433,6 +444,15 @@ export function ComponentPreview({
               ["organic", "circle", "rounded", "pebble", "leaf", "flower"],
               (value) =>
                 setGlyphShape(value as NonNullable<ExampleProps["shape"]>),
+              // Name the silhouette with the silhouette itself, not a stand-in icon.
+              // The row keeps the pointer; the drawing is decoration only.
+              (value) => (
+                <span style={{ display: "inline-grid", pointerEvents: "none" }}>
+                  <SelectorGlyph shape={value as SelectorShape} state={false} />
+                </span>
+              ),
+              // Silhouettes carry no resting fill, so the row needs the mark.
+              true,
             )}
           {choiceControl &&
             choice(

@@ -2,6 +2,8 @@
 
 Status: **Measured baseline recorded. No optimization has been applied. No budget below is approved, and G01 is not closed.**
 
+Integration note — 17 September 2026: this historical baseline and its measurement script were reconciled onto `main` at `93f20ca`. The retained numbers still describe the 13 September export identified below; they were not rerun and must not be read as current performance evidence.
+
 This is the "before" measurement for loading work: a repeatable, bounded set of numbers taken from the existing production export under one explicitly stated device and network condition, so that a later change can be shown to help or hurt. It measures loading, plus one small scripted interaction. It is not a full catalogue sweep, not a Lighthouse score, and not an accessibility or visual review.
 
 Every number below came from the run recorded in this document. Where a metric could not be measured it is marked unavailable rather than estimated. Figures computed outside the measurement script are labelled as such, with the command that produced them.

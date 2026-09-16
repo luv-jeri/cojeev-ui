@@ -766,7 +766,9 @@
   cursor: pointer;
 }
 .v-acc[data-appearance] [data-slot="accordion-trigger"]:focus-visible {
-  outline: 2px solid var(--v-focus);
+  /* --v-focus is not a defined token; without the fallback the whole shorthand
+     is invalid and the keyboard ring disappears. */
+  outline: 2px solid var(--v-focus, var(--ring));
   outline-offset: -3px;
 }
 .v-acc[data-appearance] [data-slot="accordion-trigger"]:disabled {
@@ -833,6 +835,12 @@
 .v-acc[data-appearance="faq"] {
   gap: 12px;
 }
+/* A resting question carries a trace of its own accent, so the list separates
+   without a rule between items. The open accent below still wins. */
+.v-acc[data-appearance="faq"] > [data-slot="accordion-item"] {
+  --mfill: color-mix(in oklab, var(--card) 93%, var(--acc-accent));
+  background: var(--mfill);
+}
 .v-acc[data-appearance="faq"]
   > [data-slot="accordion-item"][data-state="open"] {
   --mfill: var(--acc-accent);
@@ -867,6 +875,11 @@
   transform: scaleY(0);
 }
 .v-acc[data-appearance="chapters"] {
+  /* One reading column: the trigger inset, the numbered spine and the answer
+     indent are all derived from these three measurements. */
+  --acc-inset: 16px;
+  --acc-index: 42px;
+  --acc-gap: 20px;
   padding: 10px;
   gap: 4px;
   border-radius: 20px;
@@ -884,8 +897,8 @@
   background: var(--v-canvas);
 }
 .v-acc[data-appearance="chapters"] [data-slot="accordion-trigger"] {
-  padding: 18px 16px;
-  gap: 20px;
+  padding: 18px var(--acc-inset);
+  gap: var(--acc-gap);
 }
 .v-acc__index {
   flex: none;
@@ -897,7 +910,7 @@
 .v-acc[data-appearance="chapters"] .v-acc__index {
   display: grid;
   place-items: center;
-  width: 42px;
+  width: var(--acc-index);
   height: 48px;
   font-family: var(--font-display);
   font-size: 22px;
@@ -910,8 +923,9 @@
   border-radius: 42% 46% 40% 48%;
 }
 .v-acc[data-appearance="chapters"] [data-slot="accordion-content-inner"] {
-  margin-inline-start: 37px;
-  padding: 0 24px 28px 42px;
+  /* Spine through the centre of the number; answer on the summary's own start. */
+  margin-inline-start: calc(var(--acc-inset) + var(--acc-index) / 2);
+  padding: 0 24px 28px calc(var(--acc-index) / 2 + var(--acc-gap) - 1px);
   border-inline-start: 1px dashed var(--v-border);
 }
 .v-acc[data-appearance="chapters"] [data-slot="accordion-indicator"] {
@@ -955,8 +969,11 @@
   font-weight: 500;
 }
 .v-acc[data-appearance="editorial"] [data-slot="accordion-content-inner"] {
+  /* A supporting motif accompanies the answer; it never competes for width. */
+  --acc-art: 96px;
   display: grid;
-  grid-template-columns: minmax(130px, 0.8fr) minmax(0, 1.3fr);
+  grid-template-columns: var(--acc-art) minmax(0, 1fr);
+  align-items: start;
   gap: 28px;
   padding: 0 28px 30px;
 }
@@ -964,9 +981,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  grid-template: minmax(120px, 1fr) auto / minmax(0, 1fr);
-  min-height: 180px;
-  padding: 8px 0 0;
+  grid-template: var(--acc-art, 150px) auto / minmax(0, 1fr);
   color: var(--v-on-accent);
   pointer-events: none;
 }
@@ -976,26 +991,30 @@
 }
 .v-acc__preview-shape,
 .v-acc__preview-echo {
-  width: min(100%, 150px);
-  height: 150px;
+  width: min(100%, var(--acc-art, 150px));
+  height: var(--acc-art, 150px);
   color: var(--acc-companion);
   transform: rotate(-12deg);
   transition: transform var(--t-element) var(--enter);
 }
 .v-acc__preview-echo {
-  transform: translate(7px, -4px) rotate(8deg);
+  transform: translate(
+      calc(var(--acc-art, 150px) * 0.047),
+      calc(var(--acc-art, 150px) * -0.027)
+    )
+    rotate(8deg);
   color: currentColor;
   opacity: 0.45;
 }
 .v-acc__preview-letter {
   z-index: 1;
   font-family: var(--font-display);
-  font-size: 48px;
+  font-size: calc(var(--acc-art, 150px) * 0.32);
   letter-spacing: -0.03em;
 }
 .v-acc__preview-letter > .v-icon {
-  width: 40px;
-  height: 40px;
+  width: calc(var(--acc-art, 150px) * 0.27);
+  height: calc(var(--acc-art, 150px) * 0.27);
   stroke-width: 1.5;
 }
 .v-acc__preview-caption {
@@ -1033,8 +1052,8 @@
     padding: 0 18px 22px;
   }
   .v-acc[data-appearance="editorial"] [data-slot="accordion-content-inner"] {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
+    --acc-art: 56px;
+    gap: 16px;
     padding: 0 18px 20px;
   }
   .v-acc[data-appearance="editorial"] [data-slot="accordion-trigger"] {
@@ -1044,25 +1063,24 @@
   .v-acc[data-appearance="editorial"] .v-acc__index {
     font-size: 24px;
   }
-  .v-acc__preview {
-    min-height: 124px;
-    grid-template-rows: 112px auto;
-  }
-  .v-acc__preview-shape,
-  .v-acc__preview-echo {
-    width: 112px;
-    height: 112px;
+  .v-acc__preview-caption {
+    display: none;
   }
   .v-acc[data-appearance="chapters"] {
+    --acc-inset: 18px;
+    --acc-index: 32px;
+    --acc-gap: 12px;
     padding: 6px;
   }
   .v-acc[data-appearance="chapters"] .v-acc__index {
-    width: 32px;
     height: 40px;
     font-size: 18px;
   }
+  .v-acc[data-appearance="chapters"] [data-slot="accordion-trigger"] {
+    padding: 18px var(--acc-inset);
+    gap: var(--acc-gap);
+  }
   .v-acc[data-appearance="chapters"] [data-slot="accordion-content-inner"] {
-    margin-inline-start: 33px;
-    padding-inline-start: 26px;
+    padding-inline-start: calc(var(--acc-index) / 2 + var(--acc-gap) - 1px);
   }
 }

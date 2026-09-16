@@ -338,6 +338,11 @@
           "target": "styles/cojeev-fonts.css"
         },
         {
+          "path": "registry/cojeev/scripts/materialize-fonts.mjs",
+          "type": "registry:file",
+          "target": "scripts/cojeev-materialize-fonts.mjs"
+        },
+        {
           "path": "registry/cojeev/styles/tokens.css",
           "type": "registry:file",
           "target": "styles/cojeev/tokens.css"
@@ -371,6 +376,11 @@
           "path": "reference/cojeev-handoff-v4/fonts/BricolageGrotesque-OFL.txt",
           "type": "registry:file",
           "target": "styles/fonts/BricolageGrotesque-OFL.txt"
+        },
+        {
+          "path": "registry/cojeev/NOTICES.txt",
+          "type": "registry:file",
+          "target": "lib/cojeev/NOTICES.txt"
         }
       ],
       "css": {
@@ -20281,6 +20291,168 @@
         "category": "Data display",
         "fidelity": "refined-design-family",
         "baseComponent": true
+      }
+    },
+    {
+      "name": "tree",
+      "type": "registry:ui",
+      "title": "Tree",
+      "description": "A controlled branch ledger for supplied hierarchical data, with separate disclosure, selection and trailing actions.",
+      "registryDependencies": [
+        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
+        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/cojeev/ui/tree.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/styles/tree.css",
+          "type": "registry:file",
+          "target": "styles/cojeev/tree.css"
+        }
+      ],
+      "css": {
+        "@import \"@/styles/cojeev/tree.css\"": {}
+      },
+      "meta": {
+        "source": {
+          "name": "Tree",
+          "variants": [
+            "branch-ledger",
+            "loading-branch",
+            "empty-branch",
+            "failed-branch"
+          ],
+          "sizes": [
+            "default"
+          ],
+          "states": [
+            "selected",
+            "collapsed",
+            "loading",
+            "empty",
+            "error",
+            "truncated",
+            "disabled",
+            "reduced-motion"
+          ],
+          "reviewOnly": false
+        },
+        "api": [
+          {
+            "name": "TreeNode",
+            "props": [
+              {
+                "name": "id",
+                "type": "string",
+                "required": true,
+                "description": "Stable, unique identity owned by the caller."
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "kind",
+                "type": "\"file\" | \"folder\"",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "children",
+                "type": "readonly TreeNode[]",
+                "required": false,
+                "description": "Undefined means not supplied; an empty array means loaded and empty."
+              },
+              {
+                "name": "icon",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "status",
+                "type": "\"idle\" | \"loading\" | \"error\"",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "message",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "truncated",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "trailing",
+                "type": "React.ReactNode",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "disabled",
+                "type": "boolean",
+                "required": false,
+                "description": ""
+              }
+            ]
+          },
+          {
+            "name": "TreeProps",
+            "props": [
+              {
+                "name": "nodes",
+                "type": "readonly TreeNode[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "expandedIds",
+                "type": "readonly string[]",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "selectedId",
+                "type": "string",
+                "required": false,
+                "description": ""
+              },
+              {
+                "name": "onExpandedChange",
+                "type": "(id: string, expanded: boolean) => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "onSelectionChange",
+                "type": "(id: string) => void",
+                "required": true,
+                "description": ""
+              },
+              {
+                "name": "onRetry",
+                "type": "(id: string) => void",
+                "required": false,
+                "description": ""
+              }
+            ]
+          }
+        ],
+        "category": "Data display",
+        "fidelity": "refined-design-family",
+        "baseComponent": false
       }
     },
     {

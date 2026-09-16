@@ -26,7 +26,7 @@ export function ContinueAction() {
 }
 ```
 
-The added stylesheet carries both light and dark token values. Choose one with `document.documentElement.dataset.mode = "dark"`. [Installation details](INSTALLATION.md) cover the `@cojeev` registry configuration, theming and the fresh-install check.
+The added stylesheet carries both light and dark token values. Choose one with `document.documentElement.dataset.mode = "dark"`. [Installation details](docs/guides/INSTALLATION.md) cover the `@cojeev` registry configuration, theming and the fresh-install check.
 
 ## Four to start with
 
@@ -64,6 +64,14 @@ npm run gate             # the built catalogue at three widths, both themes
 Pull requests, and pushes to `main`, run lint, typecheck, the unit and worker test suites, then build a matched beta and production pair from the same commit, check each against its hosting content-security policy, run the browser gates, and verify a fresh consumer installation from each artifact. On `main`, beta deploys first and production promotes that same verified artifact after environment approval.
 
 [CONTRIBUTING.md](CONTRIBUTING.md) describes what a new component needs.
+
+Repository map: `registry/cojeev/` holds the installable component source, `app/` and
+`components/` the documentation site, `scripts/` and `apps/gate/` the verification
+commands, `tests/` their tests, and `reference/` the supplied design system and
+upstream research captures. Extended documentation lives under `docs/` —
+[docs/README.md](docs/README.md) is the map, including the archive of historical
+plans and evidence. The root keeps the essentials: this file, `CONTRIBUTING.md`,
+`AGENTS.md`, `LICENCE` and `FONT-NOTICES.md`.
 
 </details>
 

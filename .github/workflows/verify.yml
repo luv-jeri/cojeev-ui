@@ -26,9 +26,13 @@ jobs:
       omitted: ${{ steps.select.outputs.omitted }}
       run_prose: ${{ steps.select.outputs.run_prose }}
       run_quick: ${{ steps.select.outputs.run_quick }}
+      run_registry: ${{ steps.select.outputs.run_registry }}
+      run_reporting: ${{ steps.select.outputs.run_reporting }}
       run_analytics: ${{ steps.select.outputs.run_analytics }}
       run_transient: ${{ steps.select.outputs.run_transient }}
       run_install: ${{ steps.select.outputs.run_install }}
+      run_polish: ${{ steps.select.outputs.run_polish }}
+      run_maintenance: ${{ steps.select.outputs.run_maintenance }}
       run_npm: ${{ steps.select.outputs.run_npm }}
       run_build: ${{ steps.select.outputs.run_build }}
     steps:
@@ -99,8 +103,34 @@ jobs:
         run: npm run reporting:test
       - if: needs.scope.outputs.run_quick == 'true'
         run: npm run registry-host:test
-      - if: needs.scope.outputs.run_build == 'true'
+      # The committed registry payloads and the generated notices file must still
+      # be exactly what their generator produces from the sources in this commit.
+      # `npm run build` regenerates them too, so this runs first: afterwards a
+      # stale committed payload would already have been quietly overwritten.
+      - name: Confirm the committed registry output still matches its generator
+        if: needs.scope.outputs.run_registry == 'true'
+        run: |
+          node scripts/build-registry.mjs
+          git diff --exit-code -- registry.json public/registry.json public/r registry/cojeev/NOTICES.txt
+      # Reporting builds its own disposable fixture below. Only build twice
+      # when an earlier install or transient journey also needs the plain site.
+      - if: needs.scope.outputs.run_build == 'true' && (needs.scope.outputs.run_reporting != 'true' || needs.scope.outputs.run_transient == 'true' || needs.scope.outputs.run_install == 'true' || needs.scope.outputs.run_polish == 'true' || needs.scope.outputs.run_maintenance == 'true')
         run: npm run build
+      - name: Check choice, disclosure, workbench and compact navigation journeys
+        if: needs.scope.outputs.run_polish == 'true'
+        run: node scripts/run-component-polish.mjs
+      # The journeys that actually consume the named maintenance paths: the two
+      # marketing routes and, because components/landing/landing.css is shared,
+      # the three further routes that import it. Never the catalogue.
+      - name: Check the marketing routes that share these landing styles
+        if: needs.scope.outputs.run_maintenance == 'true'
+        run: npm run gate:marketing
+      - name: Check the guide and maker routes that share these landing styles
+        if: needs.scope.outputs.run_maintenance == 'true'
+        run: node scripts/check-landing-guides.mjs --serve
+      - name: Confirm draft storage still migrates, saves and clears each kind
+        if: needs.scope.outputs.run_maintenance == 'true'
+        run: node tests/reporting-drafts.browser.mjs
       # The affected components only, not the catalogue: the B02-2 harness and
       # its negative control, which must still fail on unrepaired transient paint.
       - name: Exercise the transient paint harness and its negative control
@@ -108,11 +138,38 @@ jobs:
         run: |
           node tests/docs-transient-timing.browser.mjs
           node tests/docs-transient-timing.browser.mjs --negative
+      # The clock a behavior case installs belongs to the browser context, not to
+      # its page, so it outlived every later entry in the same worker. The
+      # negative control restores that lifetime and must still reject the three
+      # cases whose exit animations it broke.
+      - name: Exercise the clock-isolation harness and its negative control
+        if: needs.scope.outputs.run_transient == 'true'
+        run: |
+          node tests/docs-clock-isolation.browser.mjs --probe
+          node tests/docs-clock-isolation.browser.mjs
+          node tests/docs-clock-isolation.browser.mjs --negative
       - name: Install into a fresh consumer project from the locally served registry
         if: needs.scope.outputs.run_install == 'true'
         run: node scripts/run-install-verification.mjs
-      # The same three analytics configurations the release job runs. The plain
-      # build above sets no analytics variables, so it is the unset case.
+      # The same disposable loopback fixture and journey the release job runs, in
+      # the same order: the consent check is never the only reporting evidence.
+      - name: Build the disposable local reporting fixture
+        if: needs.scope.outputs.run_reporting == 'true'
+        run: npm run build
+        env:
+          NEXT_PUBLIC_REPORTING_API_URL: http://127.0.0.1:8787
+      - name: Exercise receipt, attachment and maintainer journeys without live services
+        if: needs.scope.outputs.run_reporting == 'true'
+        run: node scripts/run-reporting-browser.mjs
+      - name: Confirm a new bug draft attaches no browser details until asked
+        if: needs.scope.outputs.run_reporting == 'true'
+        run: node scripts/check-reporting-consent.mjs
+      # The same three analytics configurations the release job runs. The unset
+      # case reuses whichever analytics-free build ran last: the reporting
+      # fixture above when reporting is selected, exactly as the release job
+      # does, and otherwise the plain build. Neither sets an analytics value, and
+      # a test locks that order so silence can never be measured on a configured
+      # build.
       - name: Confirm silence when analytics is unconfigured
         if: needs.scope.outputs.run_analytics == 'true'
         run: node tests/analytics.browser.mjs --expect-silent
@@ -150,7 +207,15 @@ jobs:
           path: |
             output/playwright/transient-delayed/
             output/playwright/transient-negative/
+            output/playwright/clock-isolation/
+            output/playwright/clock-isolation-negative/
             artifacts/analytics/
+            output/playwright/refinement-marketing/
+            output/playwright/landing-guides/
+            output/playwright/choice-recovery/
+            output/playwright/disclosure-recovery/
+            output/playwright/overhaul-workbench/
+            output/playwright/docs-compact-navigation/
           if-no-files-found: ignore
           retention-days: 14
           include-hidden-files: false
@@ -201,7 +266,9 @@ jobs:
       || (needs.scope.outputs.scope != 'docs'
       && needs.scope.outputs.scope != 'checkpoint'))
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # A complete catalogue pass took 82 minutes on the shared runner. Reserve
+    # time for the remaining mobile, reporting, analytics and install checks.
+    timeout-minutes: 120
     concurrency:
       group: verify-${{ github.ref }}
       # Supersede an outdated pull request check, never a main release run.
@@ -209,23 +276,84 @@ jobs:
     outputs:
       beta_digest: ${{ steps.release.outputs.beta_digest }}
       production_digest: ${{ steps.release.outputs.production_digest }}
+      run_release: ${{ steps.depth.outputs.run_release }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          # The release depth step below reads the diff of this change.
+          fetch-depth: 0
           persist-credentials: false
+      # Owner-approved launch exception, B02-6. It applies only to an explicitly
+      # recorded source tree, never to arbitrary later commits or fork PRs.
+      - name: Record exact-source owner test deferral
+        id: launch_policy
+        shell: bash
+        env:
+          APPROVED_TREE: ${{ vars.OWNER_DEFER_TESTS_TREE }}
+          TRUSTED_SOURCE: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          actual_tree=$(git rev-parse 'HEAD^{tree}')
+          deferred=false
+          if [[ "$TRUSTED_SOURCE" == true && "$APPROVED_TREE" =~ ^[a-f0-9]{40}$ && "$actual_tree" == "$APPROVED_TREE" ]]; then
+            deferred=true
+          fi
+          echo "deferred=$deferred" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Release verification policy"
+            echo "Source tree: $actual_tree"
+            if [[ "$deferred" == true ]]; then
+              echo "Owner-approved expedited launch (B02-6, 14 September 2026)."
+              echo "Automated test, lint, standalone typecheck, example, browser, motion, CSP-browser and consumer-install suites are NOT RUN, not passing."
+              echo "Clean-source builds, artifact identity/environment validation, D1 recovery bookmark, protected deployment approval and live health checks remain required."
+            else
+              echo "No matching owner exception: full verification remains required."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22.22.0
           cache: npm
+      # How much of this job the change actually requires. Decided inside the
+      # release job itself rather than read from another job, so release
+      # acceptance never depends on a separate job having succeeded. The
+      # classifier defaults to the complete run for an unknown path, an empty or
+      # unreadable diff, a manual dispatch and any error, and the pull-request
+      # guard on this job is unchanged. Only pull request and push values are
+      # passed, as environment variables, never interpolated into a shell
+      # command; no secret is available to or used by this step.
+      - name: Select release verification depth
+        id: depth
+        run: node scripts/ci-scope.mjs
+        env:
+          CI_SCOPE_MODE: release
+          CI_SCOPE_EVENT: ${{ github.event_name }}
+          CI_SCOPE_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          CI_SCOPE_HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      # A documentation-only change installs nothing, builds nothing, publishes
+      # no release artifact and deploys nothing: the diff is the whole check.
+      - name: Check documentation whitespace and conflict markers
+        if: steps.depth.outputs.run_checks != 'true'
+        run: git diff --check "$BASE_SHA...$HEAD_SHA"
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
       - run: npm ci
+        if: steps.depth.outputs.run_checks == 'true'
       - run: npx playwright install --with-deps chromium webkit
+        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true')
       - run: npm run lint
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npx next typegen && npm run typecheck
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npm test
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npm run reporting:test
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npm run registry-host:test
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
       - name: Prepare both environments from this clean commit
         id: release
+        if: steps.depth.outputs.run_release == 'true'
         run: node scripts/release.mjs build-pair "$GITHUB_SHA" artifacts/release
         env:
           BETA_POSTHOG_PROJECT_TOKEN: ${{ vars.BETA_POSTHOG_PROJECT_TOKEN }}
@@ -234,23 +362,44 @@ jobs:
           PRODUCTION_ANALYTICS_ENABLED: ${{ vars.PRODUCTION_ANALYTICS_ENABLED || 'false' }}
           PUBLIC_CONTACT_ENABLED: ${{ vars.PUBLIC_CONTACT_ENABLED || 'false' }}
       - name: Check the hosting CSP against each packaged artifact
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_release == 'true'
         run: |
           node scripts/release-csp.mjs beta artifacts/release/beta
           node scripts/release-csp.mjs production artifacts/release/production
       - name: Build manual Pages compatibility fixture for existing browser gates
+        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true')
         run: npm run build
       - run: npm run check:examples
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+      # The bounded harness the transient-paint and clock-isolation paths own,
+      # with its negative controls. Selected only when the catalogue is not
+      # running, which already renders these cases: a change to those files gets
+      # reduced browser evidence, never no browser evidence.
+      - name: Exercise the transient paint and clock isolation harnesses
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_transient == 'true' && steps.depth.outputs.run_catalogue != 'true'
+        run: |
+          node tests/docs-transient-timing.browser.mjs
+          node tests/docs-transient-timing.browser.mjs --negative
+          node tests/docs-clock-isolation.browser.mjs --probe
+          node tests/docs-clock-isolation.browser.mjs
+          node tests/docs-clock-isolation.browser.mjs --negative
       - run: npm run gate
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         env:
           COJEEV_DOCS_SHARDS: '3'
       - run: npm run gate:mobile
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
       - run: npm run gate:marketing
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
       - run: npm run gate:smooth-scroll
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
       - name: Build the disposable local reporting fixture
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_REPORTING_API_URL: http://127.0.0.1:8787
       - name: Exercise receipt, attachment and maintainer journeys without live services
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         run: node scripts/run-reporting-browser.mjs
       # Analytics gate, three cases. The gate serves out/ itself on an ephemeral port
       # when ANALYTICS_URL is unset. Every provider request is intercepted in the
@@ -261,9 +410,11 @@ jobs:
       # 1. Unset: reuse the local reporting fixture above, which sets no analytics
       #    variables at all. Its disposable API is now stopped.
       - run: node tests/analytics.browser.mjs --expect-silent
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
       # 2. Explicitly disabled: the same dummy token and host, refused by the flag
       #    alone, so silence cannot be an artefact of a missing token.
       - name: Rebuild the Pages fixture with analytics explicitly disabled
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'false'
@@ -272,8 +423,10 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: node tests/analytics.browser.mjs --expect-silent
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
       # 3. Enabled: explicit events only, asserted against the fixture's own stamps.
       - name: Rebuild the Pages fixture with analytics capture enabled
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'true'
@@ -282,10 +435,12 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: npm run analytics:browser
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         env:
           ANALYTICS_TEST_ENVIRONMENT: beta
           ANALYTICS_TEST_RELEASE: '0000000000000000000000000000000000000000'
       - name: Verify fresh consumer installation from each verified environment artifact
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_release == 'true'
         run: |
           node scripts/release-install.mjs beta "$GITHUB_SHA" artifacts/release/beta "$BETA_DIGEST"
           node scripts/release-install.mjs production "$GITHUB_SHA" artifacts/release/production "$PRODUCTION_DIGEST"
@@ -293,6 +448,7 @@ jobs:
           BETA_DIGEST: ${{ steps.release.outputs.beta_digest }}
           PRODUCTION_DIGEST: ${{ steps.release.outputs.production_digest }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: steps.depth.outputs.run_release == 'true'
         with:
           name: release-${{ github.sha }}
           path: artifacts/release/
@@ -317,12 +473,44 @@ jobs:
             output/playwright/refinement-marketing/
             output/playwright/homepage-gallery/
             GATE.md
+            docs/gates/GATE.md
+            docs/gates/GATE-MOTION.md
           if-no-files-found: ignore
           retention-days: 14
           include-hidden-files: false
+      - name: Report the selected release depth
+        if: always()
+        run: |
+          {
+            echo "## Release verification depth"
+            echo
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Depth | $DEPTH |"
+            echo "| Reason | $REASON |"
+            echo "| Suites, build and artifact | $RELEASE |"
+            echo "| Component catalogue | $CATALOGUE |"
+            echo "| Bounded transient/clock harness | $TRANSIENT |"
+            echo
+            if [[ "$DEPTH" != full ]]; then
+              echo "A reduced depth is **not** a pass for what it omitted: every gate not listed"
+              echo "as run above was **not run** and is not reported as passing. Packaging,"
+              echo "artifact integrity, consumer installation, the production environment"
+              echo "approval and live health are never reduced, and a documentation-only change"
+              echo "publishes no release artifact and deploys nothing."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          DEPTH: ${{ steps.depth.outputs.depth }}
+          REASON: ${{ steps.depth.outputs.depth_reason }}
+          RELEASE: ${{ steps.depth.outputs.run_release }}
+          CATALOGUE: ${{ steps.depth.outputs.run_catalogue }}
+          TRANSIENT: ${{ steps.depth.outputs.run_transient }}
 
   beta:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # A documentation-only main push packages no release artifact and deploys
+    # nothing; `run_release` is the release job's own answer, not an inference.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.verify.outputs.run_release == 'true'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -354,13 +542,14 @@ jobs:
         with:
           name: release-${{ github.sha }}
           path: artifacts/release
-      - name: Verify, privately back up, migrate, and deploy beta
+      - name: Record D1 recovery point, migrate, and deploy beta
         run: node scripts/release.mjs deploy beta "$GITHUB_SHA" artifacts/release/beta "$DIGEST"
         env:
           DIGEST: ${{ needs.verify.outputs.beta_digest }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
           REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
       - run: node scripts/release.mjs live beta "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
@@ -373,7 +562,9 @@ jobs:
           OPERATIONS_FAILURE: deployment-failed
 
   production:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # A documentation-only main push packages no release artifact and deploys
+    # nothing; `run_release` is the release job's own answer, not an inference.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.verify.outputs.run_release == 'true'
     needs: [verify, beta]
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -412,6 +603,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
           REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
       - run: node scripts/release.mjs live production "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}

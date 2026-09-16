@@ -75,6 +75,13 @@ try {
     );
     await triggers.nth(1).focus();
     await triggers.nth(1).press("ArrowDown");
+    assert.notEqual(
+      await page.evaluate(
+        () => getComputedStyle(document.activeElement).outlineStyle,
+      ),
+      "none",
+      "keyboard focus keeps a visible ring",
+    );
     await page.waitForFunction(
       () =>
         document.activeElement ===
@@ -188,9 +195,83 @@ try {
     stable.width,
     "pressing paint never resizes the native target",
   );
+  // Reading columns. The answer must start on the summary's own column, and a
+  // narrow screen must carry the Editorial artwork beside the answer rather
+  // than as a full-width block ahead of it.
+  await page.mouse.move(0, 0);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const approach = async (mode) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await preview.getByRole("combobox", { name: "Example approach" }).click();
+    await page.getByRole("option", { name: mode, exact: true }).click();
+    await page.waitForFunction(
+      (value) =>
+        document.querySelector(
+          '[data-example-role="interactive"] [data-slot="accordion"]',
+        )?.dataset.appearance === value,
+      mode.toLowerCase(),
+    );
+    if ((await triggers.first().getAttribute("aria-expanded")) !== "true")
+      await triggers.first().click();
+    await page.waitForFunction(
+      () =>
+        document
+          .querySelectorAll(
+            '[data-example-role="interactive"] [data-slot="accordion-trigger"]',
+          )[0]
+          .getAttribute("aria-expanded") === "true",
+    );
+    return accordion.locator('[data-slot="accordion-item"]').first();
+  };
+  const chapter = await approach("Chapters");
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await example.scrollIntoViewIfNeeded();
+    const summary = await chapter.locator(".v-acc__summary").boundingBox();
+    const answer = await chapter.locator(".v-acc__detail").boundingBox();
+    assert.ok(summary && answer);
+    assert.ok(
+      Math.abs(summary.x - answer.x) <= 1,
+      `chapters answer shares the summary reading column at ${width}px (summary ${summary.x}, answer ${answer.x})`,
+    );
+  }
+  const feature = await approach("Editorial");
+  const wide = {
+    art: await feature.locator(".v-acc__preview").boundingBox(),
+    answer: await feature.locator(".v-acc__detail").boundingBox(),
+  };
+  assert.ok(wide.art && wide.answer);
+  assert.ok(
+    wide.art.width <= wide.answer.width / 2,
+    `desktop artwork stays subordinate to the answer (art ${wide.art.width}, answer ${wide.answer.width})`,
+  );
+  await page.setViewportSize({ width: 390, height: 1000 });
+  await example.scrollIntoViewIfNeeded();
+  const art = await feature.locator(".v-acc__preview").boundingBox();
+  const detail = await feature.locator(".v-acc__detail").boundingBox();
+  assert.ok(art && detail);
+  assert.ok(art.width <= 80, `mobile artwork is a small motif (${art.width})`);
+  assert.ok(
+    Math.abs(art.y - detail.y) <= 8,
+    `answer starts alongside the motif (art ${art.y}, answer ${detail.y})`,
+  );
+  assert.ok(
+    await feature.evaluate((item) => {
+      const inner = item.querySelector(
+        '[data-slot="accordion-content-inner"]',
+      );
+      const answer = item.querySelector(".v-acc__detail p");
+      return (
+        inner.scrollWidth <= inner.clientWidth + 1 &&
+        answer.scrollHeight <= answer.clientHeight + 1
+      );
+    }),
+    "the narrow answer keeps every line, uncropped",
+  );
+  await page.setViewportSize({ width: 1440, height: 1000 });
   assert.deepEqual(errors, []);
   console.log(
-    "PASS accordion recovery: three distinct visible approaches, retained open state, keyboard, reversal, real height motion and 12 light/dark responsive captures",
+    "PASS accordion recovery: three distinct visible approaches, retained open state, keyboard, reversal, real height motion, aligned reading columns, a subordinate Editorial motif and 12 light/dark responsive captures",
   );
 } finally {
   await browser.close();

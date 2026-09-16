@@ -33,6 +33,7 @@ export function CheckboxExample({
   variant,
   size,
   radius,
+  compact = false,
   shape = "organic",
   indicator = "auto",
   showIndicator = true,
@@ -41,11 +42,18 @@ export function CheckboxExample({
   const [selected, setSelected] = React.useState(["notes"]);
   return (
     <section className="v-choice-example" data-choice-example="checkbox">
-      <header>
-        <strong>Pack your project notebook</strong>
-        <p>Choose any tools you want to bring.</p>
-      </header>
-      <div className="v-choice-options" data-approach={appearance}>
+      {!compact && (
+        <header>
+          <strong>Pack your project notebook</strong>
+          <p>Choose any tools you want to bring.</p>
+        </header>
+      )}
+      <div
+        className="v-choice-options"
+        data-approach={appearance}
+        role="group"
+        aria-label="Project notebook tools"
+      >
         {choices.map((choice) => (
           <Checkbox
             key={choice.id}
@@ -86,6 +94,7 @@ export function RadioGroupExample({
   variant,
   size,
   radius,
+  compact = false,
   shape = "organic",
   indicator = "auto",
   showIndicator = true,
@@ -94,10 +103,12 @@ export function RadioGroupExample({
   const [selected, setSelected] = React.useState("notes");
   return (
     <section className="v-choice-example" data-choice-example="radio-group">
-      <header>
-        <strong>Choose a starting point</strong>
-        <p>Choose one way to open your next project.</p>
-      </header>
+      {!compact && (
+        <header>
+          <strong>Choose a starting point</strong>
+          <p>Choose one way to open your next project.</p>
+        </header>
+      )}
       <RadioGroup
         className="v-choice-options"
         data-approach={appearance}

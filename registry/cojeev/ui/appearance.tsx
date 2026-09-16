@@ -108,7 +108,7 @@ export function AppearanceControls({ value, onValueChange, className, ...props }
 
 export type AppearanceMenuProps = { compact?: boolean; responsive?: boolean; className?: string };
 export function AppearanceMenu({ compact = false, responsive = false, className }: AppearanceMenuProps) {
-  return <TooltipProvider><Popover><Tooltip><TooltipTrigger asChild><PopoverTrigger asChild><Button variant="ghost" size="sm" className={cn("v-appearance-trigger", className)} aria-label="Colour and contrast" title="Colour and contrast" data-compact={compact} data-responsive={responsive} data-morph="both" data-tier="pill" data-lobes="3" data-depth=".008" data-asym=".05">
+  return <TooltipProvider><Popover><Tooltip><TooltipTrigger asChild><PopoverTrigger asChild><Button variant="ghost" size="sm" className={cn("v-appearance-trigger", className)} aria-label="Colours and contrast" title="Colour and contrast" data-compact={compact} data-responsive={responsive} data-morph="both" data-tier="pill" data-lobes="3" data-depth=".008" data-asym=".05">
     <svg data-slot="appearance-palette-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true" focusable="false">
       <path d="M12 3C6.8 3 3 6.7 3 11.5C3 16.7 6.7 21 11.8 21C13.4 21 14.3 20.2 14.3 19C14.3 18.1 13.5 17.6 13.5 16.7C13.5 15.7 14.3 15 15.4 15H17C19.6 15 21 13.4 21 11.2C21 6.6 17.1 3 12 3Z" stroke="currentColor" strokeWidth="1.65" strokeLinejoin="round" />
       <circle cx="7.2" cy="10.5" r="1.35" fill="currentColor" /><circle cx="10.2" cy="6.9" r="1.35" fill="currentColor" /><circle cx="15" cy="7.3" r="1.35" fill="currentColor" /><circle cx="17.6" cy="10.7" r="1.35" fill="currentColor" />

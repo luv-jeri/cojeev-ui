@@ -11,7 +11,7 @@ import {instrumentMotion,checkBehavior} from './gate-motion-behavior.mjs'
 import {probeSourceCancellation} from './gate-motion-source-probe.mjs'
 import {writeMotionReport} from './gate-motion-report.mjs'
 
-const port=Number(process.env.MOTION_GATE_PORT||4325),base=`http://127.0.0.1:${port}`,output=process.env.MOTION_GATE_OUTPUT||'artifacts/gate-motion',report=process.env.MOTION_GATE_REPORT||'GATE-MOTION.md'
+const port=Number(process.env.MOTION_GATE_PORT||4325),base=`http://127.0.0.1:${port}`,output=process.env.MOTION_GATE_OUTPUT||'artifacts/gate-motion',report=process.env.MOTION_GATE_REPORT||'docs/gates/GATE-MOTION.md'
 const requested=(process.env.MOTION_CASES||'').split(',').filter(Boolean),widths=(process.env.MOTION_WIDTHS||'360,390,768,1024,1440,1920').split(',').map(Number),modes=(process.env.MOTION_MODES||'light,dark').split(',')
 let fixtures
 const referenceRoot='/reference/cojeev-handoff-v4'

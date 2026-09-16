@@ -45,6 +45,11 @@
 .v-choice-options[data-approach="card"] [data-slot$="-body"] {
   gap: 8px;
 }
+/* The summary below already closes the list; a second adjacent rule reads as a seam. */
+.v-choice-options[data-approach="row"]
+  > :is([data-slot="checkbox"], [data-slot="radio-group-item"]):last-child {
+  border-bottom: none;
+}
 .v-choice-result {
   padding-top: 12px;
   border-top: 1px solid var(--v-border);
