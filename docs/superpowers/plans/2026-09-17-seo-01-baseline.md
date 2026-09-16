@@ -57,8 +57,8 @@
 - [ ] Search Console ownership, report availability and indexing baseline verified, or explicitly pending with observed blocker.
 - [ ] Bing ownership/submission and report availability verified, or explicitly pending with observed blocker.
 - [ ] Live analytics page/copy receipt verified, or explicitly pending with observed blocker.
-- [ ] Sol review covers specification and evidence quality; controller verifies claims and final diff.
-- [ ] Scoped SEO-01 PR created with evidence, limitations and rollback. Keep checkpoint acceptance open if account-dependent work is unfinished.
+- [x] Sol review covers specification and evidence quality; controller verifies claims and final diff. Evidence revision `1746b1e` passed after two scoped corrections.
+- [x] Scoped SEO-01 [draft PR #72](https://github.com/luv-jeri/cojeev-ui/pull/72) created with evidence, limitations and rollback. Account-dependent checkpoint acceptance remains open.
 
 ## Execution record
 
