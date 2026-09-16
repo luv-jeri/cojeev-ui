@@ -70,7 +70,7 @@ try {
     const descriptor = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "srcdoc");
     Object.defineProperty(HTMLIFrameElement.prototype, "srcdoc", {
       ...descriptor,
-      set(value) {
+      set() {
         navigated.push(this.id);
         // The state a committing srcdoc navigation leaves behind: a document with no body.
         const sandboxDocument = this.contentDocument;
