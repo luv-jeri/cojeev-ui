@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "collected_at": "2026-09-16T19:10:57.119811Z",
+  "collection_timezone": "UTC",
+  "origin": "https://000h.cojeev.com",
+  "source_base": "a06b7be682010d73085122e968a30b4caa904bd9",
+  "observed_live_release": {
+    "health_url": "https://000h.cojeev.com/health",
+    "release_url": "https://000h.cojeev.com/release.json",
+    "status": 200,
+    "environment": "production",
+    "release": "7908a61b2bdb519d9069066ba5028696b9cc9a5a",
+    "meaning": "Public artifact identity only; it is not evidence that every route maps to this source revision."
+  },
+  "public_resources": [
+    { "url": "https://000h.cojeev.com/robots.txt", "status": 200, "content_type": "text/plain", "observation": "Allows all user agents and advertises the sitemap." },
+    { "url": "https://000h.cojeev.com/sitemap.xml", "status": 200, "content_type": "application/xml", "url_count": 179, "observation": "Five non-docs URLs, the /docs/ index, and 173 component documentation URLs." },
+    { "url": "https://000h.cojeev.com/r/registry.json", "status": 200, "content_type": "application/json", "registry_name": "cojeev", "record_count": 174, "record_types": { "registry:base": 1, "registry:ui": 173 }, "observation": "Public registry index; availability is not installation proof." },
+    { "url": "https://000h.cojeev.com/docs-search.json", "status": 200, "content_type": "application/json", "document_count": 171, "observation": "Distinct /docs/ URLs in the Fumadocs index; source combines data-table into table and aspect-ratio into bento-grid." }
+  ],
+  "sampled_pages": [
+    { "path": "/", "status": 200, "title": "000h by Cojeev", "canonical": "https://000h.cojeev.com/", "meta_robots": null, "in_sitemap": true },
+    { "path": "/docs/", "status": 200, "title": "Components · 000h by Cojeev", "canonical": "https://000h.cojeev.com/docs/", "meta_robots": null, "in_sitemap": true },
+    { "path": "/getting-started/", "status": 200, "title": "Get started · 000h by Cojeev", "canonical": "https://000h.cojeev.com/getting-started/", "meta_robots": null, "in_sitemap": true },
+    { "path": "/docs/bento-grid/", "status": 200, "title": "Bento Grid · 000h by Cojeev", "canonical": "https://000h.cojeev.com/docs/bento-grid/", "meta_robots": null, "in_sitemap": true },
+    { "path": "/docs/motion-drawer/", "status": 200, "title": "Motion Drawer · 000h by Cojeev", "canonical": "https://000h.cojeev.com/docs/motion-drawer/", "meta_robots": null, "in_sitemap": true },
+    { "path": "/docs/animated-icon/", "status": 200, "title": "Animated icon · 000h by Cojeev", "canonical": "https://000h.cojeev.com/docs/animated-icon/", "meta_robots": null, "in_sitemap": true },
+    { "path": "/docs/button/", "status": 200, "title": "Button · 000h by Cojeev", "canonical": "https://000h.cojeev.com/docs/button/", "meta_robots": null, "in_sitemap": true },
+    { "path": "/docs/dialog/", "status": 200, "title": "Dialog · 000h by Cojeev", "canonical": "https://000h.cojeev.com/docs/dialog/", "meta_robots": null, "in_sitemap": true }
+  ],
+  "official_directory": {
+    "url": "https://ui.shadcn.com/r/registries.json",
+    "observed_namespace": "@000h-cojeev",
+    "homepage": "https://000h.cojeev.com",
+    "registry_template": "https://000h.cojeev.com/r/{name}.json",
+    "health_status": "observing",
+    "health_note": "The directory was collecting baseline checks; this is not a consumer-install result.",
+    "live_registry_namespace": "@cojeev",
+    "namespace_discrepancy": "The official directory listing and live registry configuration do not use the same namespace; both can be valid aliases, so this is a documentation/configuration clarity issue rather than a proven install failure."
+  },
+  "reconciliation": {
+    "sitemap_component_docs": 173,
+    "registry_ui_records": 173,
+    "docs_search_documents": 171,
+    "resolved": ["Sitemap component-doc count equals registry UI-record count.", "Docs-search names equal registry UI names after the deliberate data-table to table and aspect-ratio to bento-grid guide folds."],
+    "unresolved": []
+  },
+  "limits": [
+    "This is a bounded public HTTP sample, not a complete crawl.",
+    "HTTP status, canonical markup and sitemap inclusion do not prove crawl, index, rank, or directory installation success.",
+    "No private account data, credentials, visitor records, rankings, volumes, or traffic counts are included."
+  ]
+}

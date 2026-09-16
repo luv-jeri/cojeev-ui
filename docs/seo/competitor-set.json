@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-09-17",
+  "purpose": "A fixed comparison set for qualitative page and search-result review. It contains no traffic, adoption, ranking, backlink, or market-share estimates.",
+  "competitors": [
+    { "name": "shadcn/ui", "canonical_url": "https://ui.shadcn.com/", "relevance": "Primary comparison for source-owned React components and registry distribution." },
+    { "name": "Magic UI", "canonical_url": "https://magicui.design/", "relevance": "Animated React component documentation and install-oriented examples." },
+    { "name": "Aceternity UI", "canonical_url": "https://ui.aceternity.com/", "relevance": "React and Tailwind component library with visual-effect component pages." },
+    { "name": "React Bits", "canonical_url": "https://reactbits.dev/", "relevance": "Animated and interactive React UI components." },
+    { "name": "Animate UI", "canonical_url": "https://animate-ui.com/", "relevance": "Motion-oriented React component discovery." },
+    { "name": "21st.dev", "canonical_url": "https://21st.dev/", "relevance": "Developer component discovery and registry ecosystem." },
+    { "name": "daisyUI", "canonical_url": "https://daisyui.com/", "relevance": "Broad Tailwind CSS component-library comparison." }
+  ],
+  "review_method": "For each priority target, inspect one canonical competitor page and the bounded search sample; record content/task fit and visible installation or documentation pattern without inferring private strategy."
+}
