@@ -30,30 +30,30 @@
 
 **Outputs:** readable baseline, reproducible collection instructions, machine-readable public inventory, 20 explicitly provisional search targets, bounded reporting rules, account actions/status and an honest acceptance ledger.
 
-- [ ] Inspect release source, deployment configuration and available deployment records. Record current source base and observed live artifact identity separately; do not equate latest main with deployed code unless proven.
-- [ ] Fetch robots, sitemap, registry index and catalogue/search index where advertised by source/site. Build public inventory from actual entries, not hardcoded previous counts. Record source URLs/status/timestamps and reconcile all count differences with named exclusions or unresolved discrepancies.
-- [ ] Check homepage, `/docs/`, `/getting-started/`, and Bento Grid, Motion Drawer, Animated Icon, Button and Dialog pages. Record HTTP status, title, canonical, sitemap inclusion and index directives using actual returned HTML. Do not perform a full crawl or claim indexing from these responses.
-- [ ] Inspect shadcn directory entry/current namespace and full registry URL from the authoritative source. Record accepted namespace and an installation example as observed documentation, not a fresh installation test.
-- [ ] Inspect existing analytics event contract and source. Record available campaign attribution, identifier lifetime, privacy suppression, copy success semantics, and limitations of organic attribution. Propose any missing instrumentation for later work; do not change runtime code in this stage.
-- [ ] Incorporate controller account observations: Search Console property/access/verification, Bing status, submitted sitemap result if permitted, available query/index export summaries, AI-report availability, and one live page/copy event checked in analytics if access permits. Record every inaccessible metric as unavailable with a concrete unblock step.
-- [ ] Create a 20-row keyword CSV with columns `query,cluster,intent,target_url,page_status,priority,evidence_type,evidence_date,volume,notes`. Use real existing destinations or explicitly planned guide/hub URLs; one primary destination per query. No fabricated volumes, rank positions or difficulty. Review a bounded sample of actual search results and link sources in notes; distinguish observations from strategic hypotheses.
-- [ ] Write competitor JSON for shadcn/ui, Magic UI, Aceternity UI, React Bits, Animate UI, 21st.dev and daisyUI with canonical URLs and relevance; no estimated traffic/adoption counts.
-- [ ] Define a baseline reporting window using complete days and recorded timezone; use available 28-day data or unavailable if no access/history. Distinguish normal Google search clicks/CTR from generative-AI impressions-only fields. Include feedback-driven prioritization for sparse data.
-- [ ] Write actionable account setup/export instructions using current official pages and controller findings. Reuse verified properties; do not duplicate them. No secret values or broader account permission grants.
-- [ ] Validate JSON/CSV parsing, exactly 20 unique queries, required fields, known priority-page URLs, source links, local document links and whitespace. Review that public files contain no private data or unsupported completion claims. Report check-running time separately.
-- [ ] Self-review and commit explicit scoped paths with `Checkpoint: SEO-01` in the commit body; include the four reviewed reference documents copied by the controller and this plan. Do not push or open PR yourself; controller handles that after review.
+- [x] Inspect release source, deployment configuration and available deployment records. Record current source base and observed live artifact identity separately; do not equate latest main with deployed code unless proven.
+- [x] Fetch robots, sitemap, registry index and catalogue/search index where advertised by source/site. Build public inventory from actual entries, not hardcoded previous counts. Record source URLs/status/timestamps and reconcile all count differences with named exclusions or unresolved discrepancies.
+- [x] Check homepage, `/docs/`, `/getting-started/`, and Bento Grid, Motion Drawer, Animated Icon, Button and Dialog pages. Record HTTP status, title, canonical, sitemap inclusion and index directives using actual returned HTML. Do not perform a full crawl or claim indexing from these responses.
+- [x] Inspect shadcn directory entry/current namespace and full registry URL from the authoritative source. Record accepted namespace and an installation example as observed documentation, not a fresh installation test.
+- [x] Inspect existing analytics event contract and source. Record available campaign attribution, identifier lifetime, privacy suppression, copy success semantics, and limitations of organic attribution. Propose any missing instrumentation for later work; do not change runtime code in this stage.
+- [x] Incorporate controller account observations: Search Console property/access/verification, Bing status, submitted sitemap result if permitted, available query/index export summaries, AI-report availability, and one live page/copy event checked in analytics if access permits. Record every inaccessible metric as unavailable with a concrete unblock step.
+- [x] Create a 20-row keyword CSV with columns `query,cluster,intent,target_url,page_status,priority,evidence_type,evidence_date,volume,notes`. Use real existing destinations or explicitly planned guide/hub URLs; one primary destination per query. No fabricated volumes, rank positions or difficulty. Review a bounded sample of actual search results and link sources in notes; distinguish observations from strategic hypotheses.
+- [x] Write competitor JSON for shadcn/ui, Magic UI, Aceternity UI, React Bits, Animate UI, 21st.dev and daisyUI with canonical URLs and relevance; no estimated traffic/adoption counts.
+- [x] Define a baseline reporting window using complete days and recorded timezone; use available 28-day data or unavailable if no access/history. Distinguish normal Google search clicks/CTR from generative-AI impressions-only fields. Include feedback-driven prioritization for sparse data.
+- [x] Write actionable account setup/export instructions using current official pages and controller findings. Reuse verified properties; do not duplicate them. No secret values or broader account permission grants.
+- [x] Validate JSON/CSV parsing, exactly 20 unique queries, required fields, known priority-page URLs, source links, local document links and whitespace. Review that public files contain no private data or unsupported completion claims. Report check-running time separately.
+- [x] Self-review and commit explicit scoped paths with `Checkpoint: SEO-01` in the commit body; include the four reviewed reference documents copied by the controller and this plan. Do not push or open PR yourself; controller handles that after review.
 
 ## Controller account work
 
-- [ ] Inspect available browser account sessions without exposing private data.
+- [x] Inspect available browser account sessions without exposing private data.
 - [ ] Reuse existing Search Console/Bing properties where present; inspect ownership, sitemap and actual report data. Complete narrow verification/submission steps authorized by Stage 1 where access and existing settings allow it; preserve DNS/mail settings.
-- [ ] If sign-in or ownership proof is required, ask the user for the specific action while continuing independent public work.
-- [ ] Inspect the existing analytics project and verify the intended live event if access permits; exclude the deliberate test from interpretation. Never call API ingestion success proof of dashboard receipt.
-- [ ] Save only sanitized observations for the implementer; provide an exact list of still-required user actions if any.
+- [x] If sign-in or ownership proof is required, ask the user for the specific action while continuing independent public work.
+- [x] Inspect the existing analytics project and verify the intended live event if access permits; exclude the deliberate test from interpretation. Never call API ingestion success proof of dashboard receipt.
+- [x] Save only sanitized observations for the implementer; provide an exact list of still-required user actions if any.
 
 ## Acceptance and delivery
 
-- [ ] Public baseline, inventory, keyword map, competitor set and measurement contract reviewed.
+- [x] Public baseline, inventory, keyword map, competitor set and measurement contract reviewed.
 - [ ] Search Console ownership, report availability and indexing baseline verified, or explicitly pending with observed blocker.
 - [ ] Bing ownership/submission and report availability verified, or explicitly pending with observed blocker.
 - [ ] Live analytics page/copy receipt verified, or explicitly pending with observed blocker.
