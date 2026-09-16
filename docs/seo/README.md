@@ -13,7 +13,7 @@ The public collection was limited to the production origin, its advertised files
 
 ## Reproduce the public-set checks
 
-Run this from the repository root at the recorded source base. It uses only the Python standard library, reads the saved inventory, refetches the three public machine-readable resources, and compares their sorted sets to the retained snapshot. A changed live set is a new observation: create a new dated inventory rather than replacing this one.
+Run this from the repository root of the SEO-01 evidence branch. Its application source matches `a06b7be682010d73085122e968a30b4caa904bd9`; the inventory and these instructions were added by the SEO-01 commits. It uses only the Python standard library, reads the saved inventory, refetches the three public machine-readable resources, and compares their sorted sets to the retained snapshot. A changed live set is a new observation: create a new dated inventory rather than replacing this one.
 
 ```sh
 rtk proxy python3 - <<'PY'
