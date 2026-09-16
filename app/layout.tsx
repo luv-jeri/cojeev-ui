@@ -9,6 +9,7 @@ import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import { absoluteSiteUrl, site, siteFlags } from "@/lib/site-config";
 import { catalog } from "@/lib/catalog";
 import "./globals.css";
+import "@/components/analytics/analytics-consent.css";
 export const metadata: Metadata = {
   title: { default: site.title, template: `%s · ${site.title}` },
   description: site.description,

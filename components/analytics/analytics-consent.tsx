@@ -5,7 +5,6 @@ import { getAnalyticsClient } from "@/lib/analytics/client";
 import { Button } from "@/registry/cojeev/ui/button";
 import { BodySecondary, Title } from "@/registry/cojeev/ui/typography";
 import { useAnalyticsStatus } from "./use-analytics-status";
-import "./analytics-consent.css";
 
 export function AnalyticsConsent({ route }: { route: string | null }) {
   const status = useAnalyticsStatus();
