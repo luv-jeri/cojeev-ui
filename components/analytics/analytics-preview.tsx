@@ -24,7 +24,7 @@ export function AnalyticsPreview({
   React.useEffect(() => {
     const host = container.current;
     const target = className ? host : host?.querySelector('[data-example-role="interactive"]') ?? host?.firstElementChild;
-    if (!host || !target || !analytics.route || typeof IntersectionObserver === "undefined") return;
+    if (!host || !target || !analytics.route || !analytics.captureAllowed || typeof IntersectionObserver === "undefined") return;
     let timer: ReturnType<typeof setTimeout> | null = null;
     let halfVisible = false;
     const cancel = () => {
@@ -68,7 +68,7 @@ export function AnalyticsPreview({
 
   React.useEffect(() => {
     const host = container.current;
-    if (!host || !analytics.route) return;
+    if (!host || !analytics.route || !analytics.captureAllowed) return;
     const timers = new Map<Element, ReturnType<typeof setTimeout>>();
     const emitVariant = (element: Element) => {
       const variantId = element.getAttribute("data-analytics-variant-id");
@@ -130,7 +130,7 @@ export function AnalyticsPreview({
       host.removeEventListener("change", handleChange);
       for (const timer of timers.values()) clearTimeout(timer);
     };
-  }, [analytics.route, componentId, placement]);
+  }, [analytics.captureAllowed, analytics.route, componentId, placement]);
 
   return (
     <div

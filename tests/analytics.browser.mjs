@@ -8,7 +8,7 @@ import { preview as previewServer } from "vite";
 const expectSilent = process.argv.includes("--expect-silent");
 const server = process.env.ANALYTICS_URL
   ? null
-  : await previewServer({ configFile: false, base: "/cojeev-ui/", build: { outDir: "out" }, preview: { host: "127.0.0.1", port: 0, strictPort: true } });
+  : await previewServer({ configFile: false, base: "/cojeev-ui/", build: { outDir: process.env.ANALYTICS_TEST_OUT_DIR ?? "out" }, preview: { host: "127.0.0.1", port: 0, strictPort: true } });
 const base = (process.env.ANALYTICS_URL ?? `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`).replace(/\/$/, "");
 const testToken = process.env.ANALYTICS_TEST_TOKEN ?? "phc_public_test_token";
 // A stamped fixture build inlines these; the gate is told the same values so every
@@ -35,17 +35,26 @@ const allowedProperties = {
   outbound_clicked: ["destination_category"],
 };
 const privacyProperties = ["$process_person_profile", "$geoip_disable", "environment", "release_sha"];
+const consentKey = "000h.analytics-consent.v1";
 
-async function analyticsContext(browser, init) {
+async function analyticsContext(browser, init, consent = "allowed") {
   const context = await browser.newContext({
     viewport: { width: 1280, height: 900 },
     reducedMotion: "reduce",
     permissions: ["clipboard-read", "clipboard-write"],
+    // Initial state only: unlike an init script, this does not overwrite a
+    // visitor's later decline/withdrawal on every navigation or reload.
+    storageState: { cookies: [], origins: [{
+      origin: new URL(base).origin,
+      localStorage: consent === null ? [] : [{ name: consentKey, value: consent }],
+    }] },
   });
   const captures = [];
+  const attempts = [];
   if (init) await context.addInitScript(init);
   const intercept = async (route) => {
     const request = route.request();
+    attempts.push(request.url());
     if (!/\/i\/v0\/e\/?$/.test(new URL(request.url()).pathname)) {
       await route.abort();
       return;
@@ -64,7 +73,17 @@ async function analyticsContext(browser, init) {
     });
   };
   for (const pattern of captureHosts) await context.route(pattern, intercept);
-  return { context, captures };
+  return { context, captures, attempts };
+}
+
+async function copyInstallCommand(page) {
+  // The custom select's client-only label proves docs hydration without relying
+  // on analytics itself as a readiness signal in silent contexts.
+  await page.getByRole("combobox", { name: "Example approach", exact: true }).filter({ hasText: "Accent" }).waitFor();
+  await page.bringToFront();
+  const install = page.locator('.docs-command [data-slot="copy-control"]').first();
+  await install.getByRole("button", { name: "Copy command", exact: true }).click();
+  await install.locator('[data-copy-state="copied"]').waitFor();
 }
 
 async function waitFor(captures, predicate, label, timeout = 6_000) {
@@ -133,10 +152,12 @@ function assertSafeCaptures(captures) {
 if (expectSilent) {
   const browser = await chromium.launch();
   try {
-    const { context, captures } = await analyticsContext(browser);
+    for (const consent of [null, "allowed"]) {
+    const { context, captures, attempts } = await analyticsContext(browser, undefined, consent);
     const page = await context.newPage();
     await page.goto(`${base}/privacy/?utm_source=shadcn`, { waitUntil: "domcontentloaded" });
     await page.getByText("Analytics is not connected on this site.", { exact: false }).waitFor();
+    assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 0);
     for (const route of ["/", "/docs/", "/docs/button/", "/getting-started/"]) {
       await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
       await page.mouse.wheel(0, 2_000);
@@ -144,12 +165,12 @@ if (expectSilent) {
     }
     // The strongest capture path in the product: a real successful copy.
     await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
-    const install = page.locator('.docs-command [data-slot="copy-control"]').first();
-    await install.getByRole("button", { name: "Copy command", exact: true }).click();
-    await install.locator('[data-copy-state="copied"]').waitFor();
+    await copyInstallCommand(page);
     await delay(1_200);
     assert.equal(captures.length, 0, `a build without NEXT_PUBLIC_ANALYTICS_ENABLED=true sent ${captures.length} event(s)`);
+    assert.equal(attempts.length, 0, "disabled configuration makes no PostHog requests even with stored consent");
     await context.close();
+    }
   } finally {
     await browser.close();
     await server?.close();
@@ -160,6 +181,124 @@ if (expectSilent) {
 
 const browser = await chromium.launch();
 try {
+  // The actual exported application's visitor choice, not a test-only client.
+  {
+    const { context, captures, attempts } = await analyticsContext(browser, undefined, null);
+    const page = await context.newPage();
+    await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
+    await copyInstallCommand(page);
+    await delay(1_200);
+    assert.equal(attempts.length, 0, "first visit, preview and copy stay silent before choice");
+    await page.getByRole("button", { name: "No thanks", exact: true }).click();
+    assert.equal(await page.evaluate(key => localStorage.getItem(key), consentKey), "declined");
+    await page.reload();
+    await copyInstallCommand(page);
+    await delay(1_200);
+    assert.equal(attempts.length, 0, "decline persists across reload and copy");
+    assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 0, "declined visitors are not prompted again");
+
+    await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Allow analytics", exact: true }).click();
+    await page.getByRole("button", { name: "Turn analytics off", exact: true }).waitFor();
+    assert.equal(await page.evaluate(key => localStorage.getItem(key), consentKey), "allowed");
+    await delay(300);
+    assert.equal(attempts.length, 0, "Allow does not replay suppressed page/copy events");
+    await page.getByRole("link", { name: "Get started", exact: true }).first().click();
+    await page.waitForURL(/\/getting-started\/?$/);
+    await waitFor(captures, p => p.event === "page_viewed" && p.properties.route === "/getting-started/", "first future page after Allow");
+    await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+    await copyInstallCommand(page);
+    await waitFor(captures, p => p.event === "install_command_copied", "future command copy after Allow");
+
+    // Withdrawal in another tab must stop the already-open docs tab too.
+    const preferences = await context.newPage();
+    await preferences.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
+    await preferences.getByRole("button", { name: "Turn analytics off", exact: true }).click();
+    await preferences.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
+    await delay(300); // let already-dispatched pre-withdrawal requests settle
+    const withdrawnCount = attempts.length;
+    await copyInstallCommand(page);
+    await delay(1_200);
+    assert.equal(attempts.length, withdrawnCount, "cross-tab withdrawal stops later copy and exposure requests");
+    await page.reload();
+    await copyInstallCommand(page);
+    await delay(1_200);
+    assert.equal(attempts.length, withdrawnCount, "withdrawal survives reload");
+    assertSafeCaptures(captures);
+    await context.close();
+  }
+
+  // A failed withdrawal write must still stop already-open peer tabs.
+  {
+    const { context, captures, attempts } = await analyticsContext(browser);
+    const page = await context.newPage();
+    await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+    await waitFor(captures, p => p.event === "page_viewed", "allowed peer is hydrated");
+    const preferences = await context.newPage();
+    await preferences.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
+    await preferences.getByRole("button", { name: "Turn analytics off", exact: true }).waitFor();
+    await preferences.evaluate(key => {
+      const original = Storage.prototype.setItem;
+      Storage.prototype.setItem = function (name, value) {
+        if (name === key) throw new Error("Withdrawal write blocked by test");
+        return original.call(this, name, value);
+      };
+    }, consentKey);
+    await preferences.getByRole("button", { name: "Turn analytics off", exact: true }).click();
+    await preferences.getByRole("status").filter({ hasText: /could not/i }).waitFor();
+    await delay(300);
+    await page.evaluate(key => {
+      window.dispatchEvent(new StorageEvent("storage", { key, newValue: "allowed" }));
+      window.dispatchEvent(new StorageEvent("storage", { key: null }));
+    }, consentKey);
+    const withdrawnCount = attempts.length;
+    await copyInstallCommand(page);
+    await delay(1_200);
+    assert.equal(attempts.length, withdrawnCount, "failed persistence still withdraws capture in open peer tabs");
+    assertSafeCaptures(captures);
+    await context.close();
+  }
+
+  // Neither missing storage nor a failed preference write may enable capture.
+  for (const storageMethod of ["getItem", "setItem"]) {
+    const { context, attempts } = await analyticsContext(browser, undefined, null);
+    await context.addInitScript(({ method, key }) => {
+      const original = Storage.prototype[method];
+      Storage.prototype[method] = function (...args) {
+        if (args[0] === key || args[0] === "000h.analytics-opt-out") throw new Error("Storage blocked by test");
+        return original.apply(this, args);
+      };
+    }, { method: storageMethod, key: consentKey });
+    const page = await context.newPage();
+    await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
+    if (storageMethod === "setItem") await page.getByRole("button", { name: "Allow analytics", exact: true }).click();
+    await page.getByRole("status").filter({ hasText: /could not/i }).waitFor();
+    await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+    await copyInstallCommand(page);
+    await delay(1_200);
+    assert.equal(attempts.length, 0, `failed storage ${storageMethod} stays silent`);
+    await context.close();
+  }
+
+  {
+    const { context, captures, attempts } = await analyticsContext(browser, undefined, null);
+    const page = await context.newPage();
+    await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
+    const specimen = page.locator('[data-featured-component="motion-drawer"] [data-analytics-preview="motion-drawer"]');
+    await specimen.scrollIntoViewIfNeeded();
+    await delay(1_200);
+    assert.equal(attempts.length, 0, "pre-consent component exposure sends nothing");
+    await page.getByRole("button", { name: "Allow analytics", exact: true }).click();
+    await delay(400);
+    assert.equal(events(captures, "component_impression").length, 0, "pre-consent exposure time does not carry into the impression timer");
+    assert.equal(events(captures, "page_viewed").length, 0, "Allow does not replay the initial page view");
+    await waitFor(captures, p => p.event === "component_impression" && p.properties.component_id === "motion-drawer", "new full exposure after consent");
+    assertSafeCaptures(captures);
+    await context.close();
+  }
+
   {
     const { context, captures } = await analyticsContext(browser);
     const page = await context.newPage();
@@ -331,25 +470,26 @@ try {
     ["Do Not Track", () => Object.defineProperty(Navigator.prototype, "doNotTrack", { configurable: true, get: () => "1" })],
     ["Global Privacy Control", () => Object.defineProperty(Navigator.prototype, "globalPrivacyControl", { configurable: true, get: () => true })],
   ]) {
-    const { context, captures } = await analyticsContext(browser, init);
+    const { context, captures, attempts } = await analyticsContext(browser, init);
     const page = await context.newPage();
     await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
     await page.getByText("Your browser privacy signal is preventing analytics.", { exact: false }).waitFor();
     await delay(400);
     assert.equal(captures.length, 0, `${name} suppresses every event`);
+    assert.equal(attempts.length, 0, `${name} overrides stored allowance without PostHog requests`);
     await context.close();
   }
 
   {
     const { context, captures } = await analyticsContext(browser, () => {
       localStorage.setItem("000h.analytics-opt-out", "true");
-    });
+    }, null);
     const page = await context.newPage();
     await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
     await page.getByText("Analytics is off in this browser.", { exact: false }).waitFor();
     assert.equal(captures.length, 0);
-    await page.getByRole("button", { name: "Allow anonymous analytics", exact: true }).click();
-    await page.getByText("Anonymous website analytics is on.", { exact: false }).waitFor();
+    await page.getByRole("button", { name: "Allow analytics", exact: true }).click();
+    await page.getByRole("button", { name: "Turn analytics off", exact: true }).waitFor();
     await delay(300);
     assert.equal(captures.length, 0, "opting in does not flush suppressed history");
     await page.getByRole("link", { name: "Get started", exact: true }).first().click();
@@ -364,16 +504,20 @@ try {
     await context.close();
   }
 
-  {
-    const { context, captures } = await analyticsContext(browser);
+  for (const consent of [null, "allowed"]) {
+    const { context, captures, attempts } = await analyticsContext(browser, undefined, consent);
     const page = await context.newPage();
-    await page.goto(`${base}/workspace/?draft=private`, { waitUntil: "domcontentloaded" });
-    await delay(500);
-    assert.equal(captures.length, 0, "private workspace routes emit no events");
+    for (const route of ["/workspace/", "/feedback-admin/"]) {
+      await page.goto(`${base}${route}?draft=private`, { waitUntil: "domcontentloaded" });
+      await delay(500);
+      assert.equal(captures.length, 0, `${route} emits no events`);
+      assert.equal(attempts.length, 0);
+      assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 0, "private routes do not show an analytics prompt");
+    }
     await context.close();
   }
 
-  console.log("PASS: bounded analytics capture, copy truth, privacy signals, route deduplication, impressions and demo intent.");
+  console.log("PASS: prior opt-in, persistent decline/withdrawal, cross-tab suppression, storage failure, bounded capture, copy truth, privacy signals, route deduplication, impressions and demo intent.");
 } finally {
   await browser.close();
   await server?.close();

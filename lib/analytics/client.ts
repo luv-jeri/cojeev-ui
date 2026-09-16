@@ -1,6 +1,8 @@
 import { readSiteFlags, type DeploymentEnvironment } from "../site-config";
 
+export const ANALYTICS_CONSENT_KEY = "000h.analytics-consent.v1";
 export const ANALYTICS_OPT_OUT_KEY = "000h.analytics-opt-out";
+export type AnalyticsConsent = "unset" | "allowed" | "declined";
 
 export const analyticsPlacements = [
   "landing",
@@ -55,7 +57,9 @@ export type AnalyticsStatus =
   | "active"
   | "not_configured"
   | "browser_privacy"
-  | "opted_out";
+  | "awaiting_choice"
+  | "declined"
+  | "storage_unavailable";
 
 type PublicEnvironment = Partial<Record<
   | "NEXT_PUBLIC_ANALYTICS_ENABLED"
@@ -80,6 +84,9 @@ export type AnalyticsRuntime = {
   getPrivacySignal: () => boolean;
   getStorage: () => Pick<Storage, "getItem" | "setItem">;
   randomId: () => string;
+  subscribeStorage?: (listener: (key: string | null, value: string | null) => void) => () => void;
+  publishConsent?: (consent: Exclude<AnalyticsConsent, "unset">) => void;
+  subscribeConsent?: (listener: (consent: Exclude<AnalyticsConsent, "unset">) => void) => () => void;
 };
 
 export type Campaign = Pick<AnalyticsEventMap["page_viewed"],
@@ -256,22 +263,72 @@ function normalizeProperties(
 }
 
 export function createAnalyticsClient(config: AnalyticsConfig, runtime: AnalyticsRuntime) {
-  let optedOut = false;
+  let forcedDecline = false;
+  let storageUnavailable = false;
+  let distinctId: string | null = null;
   const listeners = new Set<() => void>();
-  try {
-    const stored = runtime.getStorage().getItem(ANALYTICS_OPT_OUT_KEY);
-    optedOut = stored === "true";
-  } catch {
-    // Storage can be unavailable in hardened browsers; the in-memory choice still works.
-  }
-  const distinctId = runtime.randomId().slice(0, 200);
+
+  const readConsent = (): AnalyticsConsent => {
+    if (forcedDecline) return "declined";
+    if (storageUnavailable) return "unset";
+    try {
+      const storage = runtime.getStorage();
+      const stored = storage.getItem(ANALYTICS_CONSENT_KEY);
+      storageUnavailable = false;
+      if (stored === "allowed" || stored === "declined") return stored;
+      if (storage.getItem(ANALYTICS_OPT_OUT_KEY) === "true") return "declined";
+      return "unset";
+    } catch {
+      storageUnavailable = true;
+      return "unset";
+    }
+  };
 
   const status = (): AnalyticsStatus => {
     if (!config.enabled || !config.host || !config.projectToken) return "not_configured";
     if (runtime.getPrivacySignal()) return "browser_privacy";
-    if (optedOut) return "opted_out";
-    return "active";
+    const consent = readConsent();
+    if (storageUnavailable) return "storage_unavailable";
+    if (consent === "allowed") return "active";
+    if (consent === "declined") return "declined";
+    return "awaiting_choice";
   };
+
+  const notify = () => {
+    for (const listener of listeners) listener();
+  };
+  const publishConsent = (consent: Exclude<AnalyticsConsent, "unset">) => {
+    try {
+      runtime.publishConsent?.(consent);
+    } catch {
+      // A closed or unavailable cross-tab channel cannot weaken the local choice.
+    }
+  };
+
+  runtime.subscribeStorage?.((key, value) => {
+    if (key === null || key === ANALYTICS_CONSENT_KEY || key === ANALYTICS_OPT_OUT_KEY) {
+      if ((key === ANALYTICS_CONSENT_KEY && value === "declined") || (key === ANALYTICS_OPT_OUT_KEY && value === "true")) {
+        forcedDecline = true;
+        storageUnavailable = false;
+      }
+      notify();
+    }
+  });
+  runtime.subscribeConsent?.((consent) => {
+    if (consent === "declined") {
+      forcedDecline = true;
+    } else {
+      try {
+        if (runtime.getStorage().getItem(ANALYTICS_CONSENT_KEY) === "allowed") {
+          forcedDecline = false;
+          storageUnavailable = false;
+        }
+      } catch {
+        storageUnavailable = true;
+      }
+    }
+    notify();
+  });
 
   return {
     status,
@@ -281,19 +338,27 @@ export function createAnalyticsClient(config: AnalyticsConfig, runtime: Analytic
         listeners.delete(listener);
       };
     },
-    setOptOut(value: boolean) {
-      optedOut = value;
+    setConsent(value: Exclude<AnalyticsConsent, "unset">) {
+      forcedDecline = true;
+      storageUnavailable = false;
+      if (value === "declined") publishConsent(value);
       try {
-        runtime.getStorage().setItem(ANALYTICS_OPT_OUT_KEY, JSON.stringify(value));
+        const storage = runtime.getStorage();
+        storage.setItem(ANALYTICS_CONSENT_KEY, value);
+        if (storage.getItem(ANALYTICS_CONSENT_KEY) === value) {
+          forcedDecline = false;
+          if (value === "allowed") publishConsent(value);
+        }
       } catch {
-        // The preference remains effective for this page load.
+        storageUnavailable = true;
       }
-      for (const listener of listeners) listener();
+      notify();
     },
     track(event: AnalyticsEvent, properties: AnalyticsEventMap[AnalyticsEvent]): boolean {
       if (status() !== "active") return false;
       const normalized = normalizeProperties(event, properties);
       if (!normalized) return false;
+      distinctId ??= runtime.randomId().slice(0, 200);
       const body = JSON.stringify({
         api_key: config.projectToken,
         distinct_id: distinctId,
@@ -324,6 +389,14 @@ export function createAnalyticsClient(config: AnalyticsConfig, runtime: Analytic
 }
 
 function browserRuntime(): AnalyticsRuntime {
+  let consentChannel: BroadcastChannel | null = null;
+  try {
+    consentChannel = typeof BroadcastChannel === "function"
+      ? new BroadcastChannel("000h.analytics-consent.v1")
+      : null;
+  } catch {
+    // Storage events still cover persisted choices when this API is unavailable.
+  }
   return {
     fetch: (input, init) => window.fetch(input, init),
     getPrivacySignal: () => {
@@ -335,6 +408,20 @@ function browserRuntime(): AnalyticsRuntime {
       if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
       const bytes = crypto.getRandomValues(new Uint8Array(16));
       return `anonymous-${Array.from(bytes, (value) => value.toString(16).padStart(2, "0")).join("")}`;
+    },
+    subscribeStorage: (listener) => {
+      const handleStorage = (event: StorageEvent) => listener(event.key, event.newValue);
+      window.addEventListener("storage", handleStorage);
+      return () => window.removeEventListener("storage", handleStorage);
+    },
+    publishConsent: (consent) => consentChannel?.postMessage(consent),
+    subscribeConsent: (listener) => {
+      if (!consentChannel) return () => undefined;
+      const handleMessage = (event: MessageEvent<unknown>) => {
+        if (event.data === "allowed" || event.data === "declined") listener(event.data);
+      };
+      consentChannel.addEventListener("message", handleMessage);
+      return () => consentChannel.removeEventListener("message", handleMessage);
     },
   };
 }
