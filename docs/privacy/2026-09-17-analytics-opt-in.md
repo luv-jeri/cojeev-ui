@@ -12,7 +12,7 @@ Read/write failure blocks this page. A failed withdrawal is broadcast to open pe
 
 ## Verification
 
-Source base: main `a06b7be682010d73085122e968a30b4caa904bd9`, branch `feat/e03-2-analytics-opt-in`. Node 22.22.0. Test capture uses a dummy token and intercepts PostHog requests; it does not add dashboard events.
+Source base: main `a06b7be682010d73085122e968a30b4caa904bd9`, branch `feat/e03-2-analytics-opt-in`. Source commit `27d4201`; [PR #73](https://github.com/luv-jeri/cojeev-ui/pull/73) open, required CI/merge pending. Node 22.22.0. Test capture uses a dummy token and intercepts PostHog requests; it does not add dashboard events.
 
 - Focused units: 18 passing, including pre-consent silence, persisted choices, failed storage, stale cross-tab events, DNT/GPC and bounded payloads. Final controller run: 0.19 seconds wall time.
 - Targeted analytics/Privacy lint: passed, 1.91 seconds. TypeScript: passed (implementer); timing not separately recorded.

@@ -54,4 +54,6 @@ rtk proxy env PATH=/Users/sanjaykumar/.local/share/fnm/node-versions/v22.22.0/in
 - [x] Review the complete implementation independently and resolve findings.
 - [x] Inspect the running built UI once in Chrome: desktop/mobile and light/dark consent surface, keyboard reachability, decline/allow and Privacy withdrawal. A local preview is not a deployment.
 - [x] Record owner approval, implementation behavior and sanitized test evidence in `docs/privacy/2026-09-17-analytics-opt-in.md`; add E03-2 beneath E03 in the master checklist. Leave overall E03/E04 open for exact-artifact/live acceptance and any remaining policy work.
-- [ ] Create a scoped E03-2 commit and PR with evidence/rollback. Follow normal CI/review/merge protections. Record exact remaining activation and production-approval actions; never enable an older artifact by flipping a flag prematurely.
+- [x] Create a scoped E03-2 commit and PR with evidence/rollback. Follow normal CI/review/merge protections. Record exact remaining activation and production-approval actions; never enable an older artifact by flipping a flag prematurely.
+
+Delivery: source commit `27d4201`, [PR #73](https://github.com/luv-jeri/cojeev-ui/pull/73). Required CI/merge and protected production approval remain pending. [Evidence and activation sequence](../../privacy/2026-09-17-analytics-opt-in.md).
