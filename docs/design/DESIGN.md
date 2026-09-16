@@ -160,7 +160,7 @@ Cojeev pairs warm paper surfaces and precise ink typography with soft pink, oliv
 
 The interface has two complementary modes: calm reading surfaces for documentation and tactile operating surfaces for actions. Motion for React provides shared springs, selection travel and reusable presence; bespoke SVG geometry supplies fluid edges and expressive fields. Chromatic gradients, masks and restrained spatial depth are part of this vocabulary where the component implements them.
 
-This is a record of the implemented reusable system. The frontmatter records light defaults and explicitly named dark primitives; the runtime CSS variables remain the live source for mode changes. The [sidecar](../../.impeccable/design.json) holds motion, elevation, responsive metadata and self-contained visual samples. It is not a completion claim for every requested motion lifecycle or every possible consumer composition. No approved-comp, FORM seed or QUALITY BAR provenance is asserted here.
+This is a record of the implemented reusable system. The frontmatter records light defaults and explicitly named dark primitives; the runtime CSS variables remain the live source for mode changes.
 
 **Key Characteristics:**
 
@@ -310,7 +310,7 @@ Menus, dialogs, sheets and popovers pair their own surfaces and foregrounds, pre
 
 ### Scrolling
 
-[ScrollbarProvider and the scroll primitives](../../registry/cojeev/ui/scroll-area.tsx) centralize appearance without taking scroll semantics away from the browser. The application mounts one root policy at 4px in [the root layout](../../app/layout.tsx); a standalone provider keeps the compatible 6px default. ScrollArea and PageScrollbar render the organic thumb contour. Unmanaged native overflow receives only the slim, theme-coloured CSS fallback documented in the [coverage audit](../quality/global-scrollbar-audit.md), so browser and operating-system paint, forced-colors behavior and third-party ownership remain honest limits.
+[ScrollbarProvider and the scroll primitives](../../registry/cojeev/ui/scroll-area.tsx) centralize appearance without taking scroll semantics away from the browser. The application mounts one root policy at 4px in [the root layout](../../app/layout.tsx); a standalone provider keeps the compatible 6px default. ScrollArea and PageScrollbar render the organic thumb contour. Unmanaged native overflow receives only the slim, theme-coloured CSS fallback, so browser and operating-system paint, forced-colors behavior and third-party ownership remain honest limits.
 
 **The Honest Scrollbar Rule.** Call a scrollbar organic only when ScrollArea or PageScrollbar renders the contour; native fallback is slim and theme-coloured but remains platform paint.
 

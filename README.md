@@ -68,10 +68,8 @@ Pull requests, and pushes to `main`, run lint, typecheck, the unit and worker te
 Repository map: `registry/cojeev/` holds the installable component source, `app/` and
 `components/` the documentation site, `scripts/` and `apps/gate/` the verification
 commands, `tests/` their tests, and `reference/` the supplied design system and
-upstream research captures. Extended documentation lives under `docs/` —
-[docs/README.md](docs/README.md) is the map, including the archive of historical
-plans and evidence. The root keeps the essentials: this file, `CONTRIBUTING.md`,
-`AGENTS.md`, `LICENCE` and `FONT-NOTICES.md`.
+upstream references. [Additional guides](docs/README.md) cover installation,
+fonts, strict TypeScript integration and the design system.
 
 </details>
 

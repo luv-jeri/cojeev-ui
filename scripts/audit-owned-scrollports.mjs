@@ -1,10 +1,59 @@
 import { chromium } from "playwright";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/cojeev-ui";
-const intake = await readFile(
-  "docs/quality/2026-09-10-library-overhaul-intake.md",
-  "utf8",
-);
+const recoveryComponents = [
+  "calendar",
+  "date-picker",
+  "input",
+  "field",
+  "input-group",
+  "label",
+  "multi-select",
+  "native-select",
+  "number-input",
+  "select",
+  "textarea",
+  "checkbox",
+  "radio-group",
+  "questionnaire",
+  "option-wheel",
+  "slider",
+  "switch",
+  "breadcrumb",
+  "carousel",
+  "navigation-menu",
+  "pagination",
+  "reading-trail",
+  "sidebar",
+  "stepper",
+  "tabs",
+  "toggle",
+  "alert",
+  "progress",
+  "skeleton",
+  "toast",
+  "activity-feed",
+  "chart",
+  "area-chart",
+  "bar-chart",
+  "line-chart",
+  "pie-chart",
+  "radar-chart",
+  "radial-chart",
+  "chart-tooltip",
+  "avatar",
+  "badge",
+  "hover-card",
+  "item",
+  "milestone-path",
+  "tooltip",
+  "accordion",
+  "aspect-ratio",
+  "card",
+  "collapsible",
+  "dialog",
+  "linear-modal"
+];
 const ids = [
   ...new Set(
     process.argv.includes("--all")
@@ -12,7 +61,7 @@ const ids = [
           .items.filter((item) => item.type === "registry:ui")
           .map((item) => item.name)
       : [
-          ...[...intake.matchAll(/^\| `([^`]+)` \|/gm)].map((m) => m[1]),
+          ...recoveryComponents,
           "spinner",
           "icon",
           "animated-icon",
