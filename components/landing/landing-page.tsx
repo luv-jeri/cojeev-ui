@@ -52,7 +52,9 @@ export function LandingPage({ componentCount }: { componentCount: number }) {
           </div>
           <div className="launch-whisper"><LittleCompanion /><p>Go on. Pull it apart.<br /><span>See what comes together.</span></p></div>
         </div>
-        <FloatLayer depth={-18} drift={0} revealDistance={16} className="launch-assembly-scene">
+        {/* The heading both names this group and keeps the outline at h1 -> h2 before the demo's own card headings. */}
+        <FloatLayer depth={-18} drift={0} revealDistance={16} className="launch-assembly-scene" role="group" aria-labelledby="hero-demo-title">
+          <h2 id="hero-demo-title" className="sr-only">A working interface, assembled from real parts</h2>
           <AnalyticsPreview componentId="organism-assembly" placement="landing" className="launch-hero-assembly">
             <div data-example="organism-assembly">
               <OrganismAssembly value={composition} defaultValue="focus" autoAssemble compositions={heroCompositions} onValueChange={value => {

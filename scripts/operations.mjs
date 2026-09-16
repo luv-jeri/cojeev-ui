@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './release-config.mjs';
+import {deploymentDiagnostic,recordDeploymentEvent} from './deployment-diagnostics.mjs';
 
 const maxBytes=25*1024*1024;
 const ALLOWED_SECRETS=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
@@ -47,12 +48,25 @@ export function wrangler(args,input) {
   if(!executable||!path.isAbsolute(executable)) throw new Error('Canonical external WRANGLER_BIN required');
   const canonical=realpathSync(executable),root=realpathSync(process.cwd());
   if(canonical.startsWith(`${root}${path.sep}`)||JSON.parse(readFileSync(path.resolve(canonical,'../../package.json'),'utf8')).version!=='4.131.1') throw new Error('External Wrangler 4.131.1 required');
-  // Secrets stay in the stdin pipe and protected environment, never a file,
-  // argument, artifact or emitted subprocess diagnostic.
+  // Secret values stay out of arguments, artifacts and emitted diagnostics.
+  // release.mjs uses an owner-only temporary secrets file for Wrangler on Linux,
+  // removed in finally; input is also available to the diagnostic redactor.
   const logs=mkdtempSync(path.join(os.tmpdir(),'cojeev-log-sink-'));
   const sink=path.join(logs,'discard.log');symlinkSync('/dev/null',sink);
-  try {return execFileSync(process.execPath,[canonical,...args],{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false',WRANGLER_LOG:'error',WRANGLER_LOG_PATH:sink,WRANGLER_LOG_SANITIZE:'true'}});}
-  catch {throw new Error(`Cloudflare operation failed (${args[0]}); private output suppressed`);}
+  // Wrangler emits --json results through its normal log channel. Capture that
+  // channel for machine-readable commands; never forward raw stdout/stderr.
+  const operation=args.slice(0,args[0]==='deploy'?1:2).join(' ');
+  recordDeploymentEvent({operation,status:'started'});
+  try {
+    const result=execFileSync(process.execPath,[canonical,...args],{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false',WRANGLER_LOG:args.includes('--json')?'log':'error',WRANGLER_LOG_PATH:sink,WRANGLER_LOG_SANITIZE:'true'}});
+    recordDeploymentEvent({operation,status:'succeeded'});
+    return result;
+  }
+  catch(error) {
+    const diagnostic=deploymentDiagnostic(error,args,input);
+    recordDeploymentEvent(diagnostic);
+    throw new Error(`Cloudflare operation failed (${operation}): ${diagnostic.explanation}`);
+  }
   finally {rmSync(logs,{recursive:true,force:true});}
 }
 export async function cloudflare(endpoint) {
@@ -131,6 +145,19 @@ export async function backup(environment,configPath,{run=wrangler,cf=cloudflare,
     if(digest(await fs.readFile(downloaded))!==receipt.sha256) throw new Error('Private backup readback mismatch');
     return receipt;
   } finally {await fs.rm(temp,{recursive:true,force:true});}
+}
+// D1 already keeps automatic point-in-time recovery. Record its pre-migration
+// bookmark instead of making every deployment export an extra copy through R2.
+// Keep backup()/restore() for explicitly requested external snapshot operations.
+export async function prepareDatabaseRecovery(environment,configPath,{run=wrangler}={}) {
+  const target=environmentConfig(environment);
+  const config=JSON.parse(await fs.readFile(configPath,'utf8'));
+  validateDeploymentConfig(environment,config,'api');
+  const result=JSON.parse(run(['d1','time-travel','info',target.database,'--config',configPath,'--json']));
+  if(typeof result.bookmark!=='string'||!/^[a-f0-9-]{16,128}$/i.test(result.bookmark)) throw new Error('D1 recovery bookmark unavailable');
+  // A bookmark is recovery metadata, not report contents or an access token.
+  console.log(JSON.stringify({environment,recovery:'d1-time-travel',bookmark:result.bookmark}));
+  return {environment,bookmark:result.bookmark};
 }
 export async function restore(environment,key,{run=wrangler,cf=cloudflare}={}) {
   environmentConfig(environment);

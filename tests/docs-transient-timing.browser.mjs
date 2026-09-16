@@ -8,13 +8,13 @@ const negative = process.argv.includes("--negative");
 function requireInterventions(observed, isNegative) {
   const expected = isNegative
     ? ["retain-cancelled-timer", "enabled-pending", "hide-ring", "opaque-reveal"]
-    : ["clock-setup", "add-note", "stop-generation", "next-moment", "replay-reveal"];
+    : ["clock-setup", "add-note", "stop-generation", "completion-focus", "next-moment", "replay-reveal"];
   assert.deepEqual([...new Set(observed)].sort(), expected.sort(), "Every expected intervention must run");
 }
 if (process.argv.includes("--check-intervention-guard")) {
   let rejected = 0;
   for (const [mode, ids] of [
-    [false, ["clock-setup", "add-note", "stop-generation", "next-moment", "replay-reveal"]],
+    [false, ["clock-setup", "add-note", "stop-generation", "completion-focus", "next-moment", "replay-reveal"]],
     [true, ["retain-cancelled-timer", "enabled-pending", "hide-ring", "opaque-reveal"]],
   ]) {
     requireInterventions(ids, mode);
@@ -38,6 +38,7 @@ const locatorPrototype = Object.getPrototypeOf(probePage.locator("body"));
 const pagePrototype = Object.getPrototypeOf(probePage);
 const clockPrototype = Object.getPrototypeOf(probePage.clock);
 const realClick = locatorPrototype.click;
+const realFocus = locatorPrototype.focus;
 const realGoto = pagePrototype.goto;
 const realPauseAt = clockPrototype.pauseAt;
 await probeBrowser.close();
@@ -48,6 +49,13 @@ const delayedAfterClick = { "Replay reveal": "replay-reveal", "Next moment": "ne
 clockPrototype.pauseAt = async function (...args) {
   if (!negative) { injected.push("clock-setup"); await delay(2500); }
   return realPauseAt.apply(this, args);
+};
+locatorPrototype.focus = async function (...args) {
+  if (!negative && this.toString().includes("name: 'Stop generation'")) {
+    injected.push("completion-focus");
+    await delay(2500);
+  }
+  return realFocus.apply(this, args);
 };
 locatorPrototype.click = async function (options) {
   const description = this.toString();
@@ -104,6 +112,7 @@ try {
   await import("../scripts/check-docs.mjs");
 } finally {
   locatorPrototype.click = realClick;
+  locatorPrototype.focus = realFocus;
   pagePrototype.goto = realGoto;
   clockPrototype.pauseAt = realPauseAt;
 }

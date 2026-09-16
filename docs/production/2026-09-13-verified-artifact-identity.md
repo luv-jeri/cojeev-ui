@@ -2,6 +2,8 @@
 
 13 September 2026. This records successful combined verification and the identity of its saved packages. It is not a deployment, live-service acceptance or production approval.
 
+Integration note — 17 September 2026: this historical artifact record was reconciled onto `main` at `93f20ca`. It still identifies only the 13 September packages and test-merge revision below; no check was rerun and no current release or deployment claim is made.
+
 ## The verified source
 
 [Run 34748534759](https://github.com/luv-jeri/cojeev-ui/actions/runs/34748534759), attempt 1, completed successfully. The Verify release job ran from 08:49:47 to 10:17:00 UTC: **87 minutes 13 seconds**, within its 90-minute limit but with little remaining margin. All required verification stages passed; no failing stage was bypassed. Beta and production deployment jobs were intentionally skipped because this was a pull-request verification.
@@ -52,13 +54,13 @@ Lint, type checking, unit/reporting/hosting tests, both environment builds and p
 
 The full catalogue/motion stage took 73m30s. This is evidence for the combined candidate, not a reason to restore catalogue runs on small checkpoints. The scoped checks remain in place.
 
-## What this does not close
+## Outstanding at the time of the 13 September verification
 
-- PR #15 is still unmerged; beta prerequisites and owner release decisions remain open.
+- PR #15 had not yet merged; beta prerequisites and owner release decisions were then open. PR #15 has since merged; this historical record is not current release status.
 - The packages were tested locally in CI. Actual domains, Turnstile, private/public reporting, inbox receipt, recovery and production promotion remain separate acceptance tasks.
 - Local consumer verification serves packaged dependencies through a temporary local registry; it does not prove live domain routing.
 - Business/privacy facts, restored-homepage acceptance, credential setup and protected production approval are not inferred from green CI.
 - Shadcn submission identity is approved as `@cojeev` with the existing 000h mark, but no upstream submission has been made. Verify the actual published payload first.
 - If main receives a different commit, its artifact must retain that actual identity. These test-merge packages cannot be silently promoted as different-source bytes.
 
-Keep this evidence PR separate from the frozen release candidate until its planned integration point; do not restart the full suite solely to append this record.
+This record may remain in repository history without re-running the full suite; any later candidate needs evidence for its own exact revision.

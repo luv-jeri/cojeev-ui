@@ -246,7 +246,6 @@ export function ShapeStudio({
           <Button
             variant="ghost"
             onClick={randomize}
-            aria-label="Randomize silhouette"
           >
             <Icon name="shuffle" />
             Another silhouette

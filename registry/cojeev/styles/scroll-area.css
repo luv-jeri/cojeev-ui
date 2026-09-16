@@ -118,11 +118,20 @@ html[data-scrollbar-policy="cojeev"] {
 }
 [data-slot="scroll-area-scrollbar"][data-motion="off"] { transition: none; }
 
-/* Document scrolling stays native; this attribute exists only while mounted. */
+/* Document scrolling stays native; the mounted attribute exists only while the overlay
+   owns the paint, and the pending attribute only inside the head bootstrap's bounded
+   window. The effect that writes "mounted" cannot run before hydration, so the pending
+   marker is what keeps the native bar from painting and then being swapped. Neither
+   attribute exists without scripting, and the bootstrap drops the pending one after its
+   timeout, so a bundle that never arrives leaves the native scrollbar in place. */
 html[data-page-scrollbar="mounted"],
-html[data-page-scrollbar="mounted"] body { scrollbar-width: none; }
+html[data-page-scrollbar-pending],
+html[data-page-scrollbar="mounted"] body,
+html[data-page-scrollbar-pending] body { scrollbar-width: none; }
 html[data-page-scrollbar="mounted"]::-webkit-scrollbar,
-html[data-page-scrollbar="mounted"] body::-webkit-scrollbar { width: 0; height: 0; }
+html[data-page-scrollbar-pending]::-webkit-scrollbar,
+html[data-page-scrollbar="mounted"] body::-webkit-scrollbar,
+html[data-page-scrollbar-pending] body::-webkit-scrollbar { width: 0; height: 0; }
 .v-page-scrollbar {
   position: fixed;
   right: 2px;

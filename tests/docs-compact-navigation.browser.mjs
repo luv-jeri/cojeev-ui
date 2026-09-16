@@ -26,11 +26,11 @@ try {
       await page.waitForFunction(next => document.documentElement.dataset.mode === next && !document.documentElement.hasAttribute('data-theme-reveal'), next);
       assert.equal(await theme.getAttribute('aria-checked'), String(next === 'dark'));
     }
-    const colours = sidebar.getByRole('button', { name: 'Colour and contrast', exact: true });
+    const colours = sidebar.getByRole('button', { name: 'Colours and contrast', exact: true });
     await colours.click();
     await page.getByText('Make it comfortable.', { exact: true }).waitFor();
     await page.keyboard.press('Escape');
-    await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'Colour and contrast');
+    await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'Colours and contrast');
     const motion = sidebar.getByRole('button', { name: 'Motion settings', exact: true });
     const iconColours = await motion.evaluate(el => ({ ink: getComputedStyle(el).color, icon: getComputedStyle(el.querySelector('[data-slot="icon"]')).color }));
     assert.equal(iconColours.icon, iconColours.ink, 'The motion glyph keeps its button ink, including on a blue dark-mode face');

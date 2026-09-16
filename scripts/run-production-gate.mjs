@@ -47,7 +47,8 @@ const lines = [
   `Motion presets: ${motion?.rows.filter(r => r.pass).length ?? 0}/${motion?.rows.length ?? 0}. Additional checks: ${motion?.checks.filter(c => c.pass).length ?? 0}/${motion?.checks.length ?? 0}.`, "",
   ...(motion?.rows ?? []).map(r => `- ${r.id}: ${r.pass ? "PASS" : "FAIL"}`),
   ...(motion?.checks ?? []).map(c => `- ${c.name}: ${c.pass ? "PASS" : "FAIL"}`), "",
-  `Raw JSON, screenshots and frame samples are written under \`${docsOutput}/\` and \`artifacts/production-motion/\`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](BASELINE-STATUS.md).`,
+  `Raw JSON, screenshots and frame samples are written under \`${docsOutput}/\` and \`artifacts/production-motion/\`. CI uploads both folders. Historical reference differences are recorded separately in [BASELINE-STATUS.md](../archive/status/BASELINE-STATUS.md).`,
 ];
-fs.writeFileSync("GATE.md", lines.join("\n") + "\n");
+fs.mkdirSync("docs/gates", { recursive: true });
+fs.writeFileSync("docs/gates/GATE.md", lines.join("\n") + "\n");
 if (!passed) process.exitCode = 1;

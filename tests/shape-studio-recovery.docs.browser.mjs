@@ -59,7 +59,7 @@ try {
     assert.match(code, /tone=\{"blue"\}/);
     assert.match(code, /shadow=\{false\}/);
     await studio
-      .getByRole("button", { name: "Randomize silhouette", exact: true })
+      .getByRole("button", { name: "Another silhouette", exact: true })
       .click();
     assert.notEqual(await art.getAttribute("data-shape"), "cushion");
     assert.equal(await art.getAttribute("data-tone"), "blue");

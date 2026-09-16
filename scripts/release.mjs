@@ -7,7 +7,7 @@ import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 import {buildEnvironment,environmentConfig} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
-import {backup,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
+import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
@@ -62,10 +62,17 @@ export async function readArtifact(directory,environment,commit,digest) {
   if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');
   return manifest;
 }
-export async function deployRelease(directory,environment,commit,digest,{rollback=false,run=wrangler,backupDatabase=backup,cf=cloudflare}={}) {
+export function deploymentSecrets(environment,env=process.env) {
+  const bundles=composeSecretBundles(env.REPORTING_SECRETS_JSON,env.REPORTING_ADDITIONAL_SECRETS_JSON);
+  // Provision webhook signing separately without rewriting either protected
+  // bundle. Refuse overlaps so rotation is explicit, never a silent overwrite.
+  const webhook=env.RESEND_WEBHOOK_SECRET ? JSON.stringify({RESEND_WEBHOOK_SECRET:env.RESEND_WEBHOOK_SECRET}) : undefined;
+  return validateSecrets(composeSecretBundles(bundles,webhook),environment);
+}
+export async function deployRelease(directory,environment,commit,digest,{rollback=false,run=wrangler,backupDatabase=prepareDatabaseRecovery,cf=cloudflare}={}) {
   const manifest=await readArtifact(directory,environment,commit,digest);
   const target=environmentConfig(environment);
-  const secrets=validateSecrets(composeSecretBundles(process.env.REPORTING_SECRETS_JSON,process.env.REPORTING_ADDITIONAL_SECRETS_JSON),environment);
+  const secrets=deploymentSecrets(environment);
   const config=path.join(directory,'api/wrangler.jsonc');
   if(environment==='production') {
     const existing=await cf(`workers/scripts/${target.worker}/secrets`);
@@ -79,9 +86,99 @@ export async function deployRelease(directory,environment,commit,digest,{rollbac
     await backupDatabase(environment,config);
     run(['d1','migrations','apply',target.database,'--remote','--config',config]);
   }
-  run(['deploy','--config',config,'--no-bundle','--secrets-file','/dev/stdin'],JSON.stringify(secrets));
+  // Wrangler opens --secrets-file by pathname. Node subprocess stdin is a socket
+  // on Linux, so /dev/stdin fails with ENXIO even though it works on macOS.
+  // Use the supported file interface outside the immutable artifact/workspace.
+  const secretDirectory=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-deploy-secrets-'));
+  try {
+    await fs.chmod(secretDirectory,0o700);
+    const secretsFile=path.join(secretDirectory,'secrets.json');
+    const serializedSecrets=JSON.stringify(secrets);
+    await fs.writeFile(secretsFile,serializedSecrets,{mode:0o600,flag:'wx'});
+    // Keep the in-memory bundle available to the wrapper's error redactor too.
+    // No secret value is placed in argv or in the packaged release.
+    run(['deploy','--config',config,'--no-bundle','--secrets-file',secretsFile],serializedSecrets);
+  } finally {
+    await fs.rm(secretDirectory,{recursive:true,force:true});
+  }
   run(['deploy','--config',path.join(directory,'website/wrangler.jsonc'),'--no-bundle']);
   return {environment,commit,manifestDigest:digest,rollback};
+}
+// Cloudflare acknowledges a deploy before every edge serves the new Worker and
+// asset version, so the first live read can legitimately still answer with the
+// previous release. Retry only the codes a later read can resolve. A missing
+// health token, a stalled or failed delivery queue, email quota, an unconfigured
+// provider and a broken header/404 contract are real defects that no amount of
+// further waiting repairs, so they fail on the first attempt; a run that carries
+// any one of them never retries, even alongside a propagation code.
+export const TRANSIENT_LIVE_PROBLEMS=new Set(['http-health','release-mismatch','site-unreachable','site-release-mismatch']);
+export const LIVE_RETRY_WAITS=[4000,8000,12000,16000];
+// One real wall-clock budget for the whole check, reads included. Every request
+// is aborted at the deadline and every wait is truncated to what is left, so the
+// deploy job cannot be held open by slow reads rather than by sleeping.
+export const LIVE_BUDGET_MS=60000;
+const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
+  const remaining=deadline-clock();
+  if(remaining<=0) throw new Error('Live check budget exhausted');
+  const signals=[options.signal,AbortSignal.timeout(remaining)].filter(Boolean);
+  return fetcher(url,{...options,signal:AbortSignal.any(signals)});
+};
+/** Sanitized fixed codes for one live read of the deployed site and API. */
+export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,fetcher=fetch}={}) {
+  let problems=await checkHealth(environment,{token,commit,fetcher}).then(result=>result.problems);
+  // checkHealth reports a missing token and an admin endpoint that did not answer
+  // usefully under one code. A token was supplied here, and the public endpoints
+  // are unreachable too, so that is one outage rather than a second, permanent
+  // configuration defect. If the outage clears while the admin answer is still
+  // unusable, the code reappears on the next read and stops the run at once.
+  if(token&&problems.includes('http-health')) problems=problems.filter(code=>code!=='invalid-delivery-health');
+  // Public health gates the route contract. Until it confirms this release on
+  // this environment, whatever the site is serving belongs to the PREVIOUS
+  // release, or to nothing at all: its headers, its status codes and its 404
+  // behaviour are that release's, not this one's. Judging them here turned an
+  // ordinary propagation window — every endpoint answering 503 or 404 mid-deploy
+  // — into a permanent `site-contract` failure that stopped after one read.
+  // The routes are checked, and stay fully authoritative, from the first read
+  // that reports this release ready; a broken header then is still permanent.
+  // No extra code is reported for the skip. The read already carries `http-health`
+  // or `release-mismatch`, which is both why success is impossible here and why
+  // the run retries, so an unready read can never be mistaken for a clean one.
+  if(problems.includes('http-health')||problems.includes('release-mismatch')) return [...new Set(problems)].sort();
+  const target=environmentConfig(environment);
+  for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
+    let response;
+    try {response=await fetcher(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});}
+    catch {problems.push('site-unreachable');continue;}
+    if(response.status!==status||response.headers.get('x-content-type-options')!=='nosniff'||environment==='beta'&&!response.headers.get('x-robots-tag')?.includes('noindex')) {problems.push('site-contract');continue;}
+    if(route!=='/release.json') continue;
+    let value;
+    try {value=await response.json();} catch {problems.push('site-contract');continue;}
+    if(value.release!==commit||value.environment!==environment) problems.push('site-release-mismatch');
+  }
+  return [...new Set(problems)].sort();
+}
+/** Bounded propagation retries: at most five reads inside one wall-clock budget. */
+export async function checkLiveRelease(environment,commit,{
+  waits=LIVE_RETRY_WAITS,budgetMs=LIVE_BUDGET_MS,clock=Date.now,
+  sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),log=console.log,fetcher=fetch,...options
+}={}) {
+  const deadline=clock()+budgetMs;
+  const bounded=boundedFetcher(fetcher,deadline,clock);
+  for(let attempt=0;;attempt++) {
+    const problems=await liveProblems(environment,commit,{...options,fetcher:bounded});
+    if(!problems.length) return problems;
+    const transient=problems.every(code=>TRANSIENT_LIVE_PROBLEMS.has(code));
+    // Another attempt must be permitted, and must still fit in the budget.
+    const remaining=deadline-clock();
+    const wait=Math.min(waits[attempt]??-1,remaining);
+    if(!transient||wait<=0) {
+      const limit=transient?` within the ${budgetMs/1000}s propagation budget`:'';
+      throw new Error(`Live checks failed after ${attempt+1} attempt${attempt?'s':''}${limit}: ${problems.join(', ')}`);
+    }
+    // Fixed codes only. No response body, header, credential or URL is printed.
+    log(`Live checks attempt ${attempt+1}/${waits.length+1}: ${problems.join(', ')}; retrying in ${Math.round(wait/1000)}s`);
+    await sleep(wait);
+  }
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
   try {
@@ -101,16 +198,7 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
       }
     } else if(command==='verify') {await readArtifact(path.resolve(directory),environment,commit,digest);console.log('Artifact verified');}
     else if(command==='deploy'||command==='rollback') console.log(JSON.stringify(await deployRelease(path.resolve(directory),environment,commit,digest,{rollback:command==='rollback'})));
-    else if(command==='live') {
-      const result=await checkHealth(environment,{token:process.env.HEALTH_TOKEN,commit});
-      if(result.problems.length) throw new Error(`Live checks failed: ${result.problems.join(', ')}`);
-      const target=environmentConfig(environment);
-      for(const [route,status] of [['/release.json',200],['/r/button.json',200],['/__cojeev_missing_release_probe__/',404]]) {
-        const response=await fetch(`${target.site}${route}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{'x-cojeev-probe':'1'}});
-        if(response.status!==status||response.headers.get('x-content-type-options')!=='nosniff'||environment==='beta'&&!response.headers.get('x-robots-tag')?.includes('noindex')) throw new Error('Live website contract failed');
-        if(route==='/release.json') {const value=await response.json();if(value.release!==commit||value.environment!==environment) throw new Error('Live artifact identity failed');}
-      }
-      console.log('Live release checks passed');
-    } else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
+    else if(command==='live') {await checkLiveRelease(environment,commit);console.log('Live release checks passed');}
+    else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }
