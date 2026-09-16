@@ -1,0 +1,1262 @@
+{
+  "candidate": {
+    "installer": "shadcn@4.21.0",
+    "sequence": [
+      "fresh consumer",
+      "Button profile",
+      "Projects profile"
+    ],
+    "projectsComponents": [
+      "button",
+      "icon",
+      "input",
+      "tabs",
+      "item",
+      "activity-feed",
+      "tree"
+    ],
+    "registryOverride": "loopback candidate (not the published registry)",
+    "installedHelperPath": "src/scripts/cojeev-materialize-fonts.mjs"
+  },
+  "commands": [
+    {
+      "label": "npm-install",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 22.66,
+      "log": "delivery-logs/01-npm-install.log"
+    },
+    {
+      "label": "shadcn-init",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 47.93,
+      "log": "delivery-logs/02-shadcn-init.log"
+    },
+    {
+      "label": "shadcn-add-button",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 9.71,
+      "log": "delivery-logs/03-shadcn-add-button.log"
+    },
+    {
+      "label": "materialize-fonts",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 0.03,
+      "log": "delivery-logs/04-materialize-fonts.log"
+    },
+    {
+      "label": "button-build",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 5.06,
+      "log": "delivery-logs/05-button-build.log"
+    },
+    {
+      "label": "shadcn-add-projects",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 6.16,
+      "log": "delivery-logs/06-shadcn-add-projects.log"
+    },
+    {
+      "label": "rematerialize-fonts",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 0.03,
+      "log": "delivery-logs/07-rematerialize-fonts.log"
+    },
+    {
+      "label": "projects-build",
+      "exit": 0,
+      "timeout": false,
+      "seconds": 3.59,
+      "log": "delivery-logs/08-projects-build.log"
+    }
+  ],
+  "installedRegistryJson": {
+    "files": {
+      "button": {
+        "rawBytes": 24278,
+        "gzipBytes": 5402,
+        "sha256": "91b667ac8ae876348b69bc492e0dc80ad00041c83baaeaa70ca1387ef60ede57"
+      },
+      "icon": {
+        "rawBytes": 59609,
+        "gzipBytes": 16165,
+        "sha256": "2863aab9539a42226f35795a1cd82c1a8e8c48feeb61322dbef258ed3346d0a9"
+      },
+      "input": {
+        "rawBytes": 23462,
+        "gzipBytes": 5124,
+        "sha256": "452561890ec5adf2209cb067299c6538abf5c03484ee2ffe0d084e7ddb589ee0"
+      },
+      "tabs": {
+        "rawBytes": 17109,
+        "gzipBytes": 3827,
+        "sha256": "7588bea52fe81f4a28e15c6410a540c17f286facf526953229dcfab6014e110f"
+      },
+      "item": {
+        "rawBytes": 27818,
+        "gzipBytes": 5433,
+        "sha256": "0865f9c2f13ab22974299f64b4786407ec0f0136e836b47e698c42c7ea4d401d"
+      },
+      "activity-feed": {
+        "rawBytes": 16963,
+        "gzipBytes": 4400,
+        "sha256": "3994ab16ed1badd1c7d4098167087b25a175f9845dccc3fa48aba88bcbc27a63"
+      },
+      "tree": {
+        "rawBytes": 22263,
+        "gzipBytes": 5009,
+        "sha256": "d46099f0b501e9686cff61d8f63aecddfbacd9d318ea8364480105b856b8e84e"
+      },
+      "cojeev": {
+        "rawBytes": 1287241,
+        "gzipBytes": 509773,
+        "sha256": "289001a4775a299306d1987de13459e88af036a4868eb3876936cbcffab4bf37"
+      }
+    },
+    "totals": {
+      "rawBytes": 1478743,
+      "gzipBytes": 555133
+    }
+  },
+  "profiles": {
+    "button": {
+      "profile": "button",
+      "components": [
+        "button"
+      ],
+      "emitted": [
+        {
+          "kind": "woff2",
+          "file": "assets/bricolage-grotesque-variable-mz7uTvdV.woff2",
+          "rawBytes": 212152,
+          "gzipBytes": 212232,
+          "sha256": "732d894c80980fc12f0c5dd955f5e917a6ffefb666553a7cee25a00b058b6368",
+          "ownership": "cojeev-library",
+          "family": "Bricolage Grotesque"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/dm-sans-variable-C6Y9vXDn.woff2",
+          "rawBytes": 95480,
+          "gzipBytes": 95266,
+          "sha256": "511199053bc63da8002f95cebf6d8254c0838d7c3515db9a6d92a579ac81eef8",
+          "ownership": "cojeev-library",
+          "family": "DM Sans"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-cyrillic-ext-wght-normal-DjL33-gN.woff2",
+          "rawBytes": 7420,
+          "gzipBytes": 7443,
+          "sha256": "2317fa4bb293c9c0b110e18315d529235c47a0ddd3338cea3d8c7955e927899e",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-cyrillic-wght-normal-BEAKL7Jp.woff2",
+          "rawBytes": 15084,
+          "gzipBytes": 15107,
+          "sha256": "6894439694946a589d157ece003086960a6a4013d74a813dab7602efdb3d8c09",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-latin-ext-wght-normal-DC-KSUi6.woff2",
+          "rawBytes": 16512,
+          "gzipBytes": 16540,
+          "sha256": "824f485b5d26e2f2da3c2b236132ece1bc8e4e43373452950bb0e40548b4313f",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-latin-wght-normal-BgDaEnEv.woff2",
+          "rawBytes": 29400,
+          "gzipBytes": 29428,
+          "sha256": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-vietnamese-wght-normal-6IgcOCM7.woff2",
+          "rawBytes": 8004,
+          "gzipBytes": 8027,
+          "sha256": "8fa40e5d248247735eb97a0bd593b8852440430600d6ba01364c31fe0abc1fe1",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "css",
+          "file": "assets/index-C6k_ALd8.css",
+          "rawBytes": 82749,
+          "gzipBytes": 15799
+        },
+        {
+          "kind": "js",
+          "file": "assets/index-n3Oo3dhh.js",
+          "rawBytes": 448120,
+          "gzipBytes": 145907
+        }
+      ],
+      "totals": {
+        "js": {
+          "rawBytes": 448120,
+          "gzipBytes": 145907
+        },
+        "css": {
+          "rawBytes": 82749,
+          "gzipBytes": 15799
+        },
+        "woff2": {
+          "rawBytes": 384052,
+          "gzipBytes": 384043
+        }
+      },
+      "fontTotals": {
+        "cojeevLibrary": {
+          "rawBytes": 307632,
+          "gzipBytes": 307498
+        },
+        "consumerPresetAndOther": {
+          "rawBytes": 76420,
+          "gzipBytes": 76545
+        }
+      },
+      "importCostGraph": {
+        "copiedSource": [
+          {
+            "module": "consumer/src/App.tsx",
+            "renderedJsBytes": 487,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "consumer/src/components/ui/button.tsx"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/button.tsx",
+            "renderedJsBytes": 4239,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "npm/@radix-ui/react-slot/dist/index.mjs",
+              "consumer/src/components/ui/spinner.tsx",
+              "consumer/src/components/ui/presence.tsx",
+              "consumer/src/lib/cojeev-motion/flow-press.ts",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/lib/cojeev/control-appearance.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/presence.tsx",
+            "renderedJsBytes": 3774,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/motion/dist/es/react.mjs",
+              "npm/@radix-ui/react-slot/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/lib/cojeev-motion/choreography.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/spinner.tsx",
+            "renderedJsBytes": 7114,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/class-variance-authority/dist/index.mjs",
+              "npm/motion/dist/es/react.mjs",
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/cojeev-motion/use-motion-visibility.ts",
+              "consumer/src/lib/cojeev-motion/refs.ts",
+              "consumer/src/lib/utils.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/index.css",
+            "renderedJsBytes": 0,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/body.ts",
+            "renderedJsBytes": 6086,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/geometry.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/category.ts",
+            "renderedJsBytes": 6277,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/choreography.ts",
+            "renderedJsBytes": 2811,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/motion/dist/es/index.mjs",
+              "consumer/src/lib/cojeev-motion/clock.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts",
+              "consumer/src/lib/cojeev-motion/use-reduced-motion.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/clock.ts",
+            "renderedJsBytes": 314,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/flow-motion.ts",
+            "renderedJsBytes": 0,
+            "chunks": [],
+            "imports": [
+              "npm/motion/dist/es/index.mjs",
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/flow-press.ts",
+            "renderedJsBytes": 4021,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/flow.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/flow.ts",
+            "renderedJsBytes": 2898,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/cojeev-motion/flow-motion.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts",
+              "consumer/src/lib/cojeev-motion/clock.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/geometry.ts",
+            "renderedJsBytes": 2469,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/morph-paint.ts",
+            "renderedJsBytes": 2959,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/geometry.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/refs.ts",
+            "renderedJsBytes": 298,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/settings.ts",
+            "renderedJsBytes": 9693,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/shapes.ts",
+            "renderedJsBytes": 4692,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev/signature-shapes.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-morph.ts",
+            "renderedJsBytes": 22711,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/geometry.ts",
+              "consumer/src/lib/cojeev-motion/shapes.ts",
+              "consumer/src/lib/cojeev-motion/body.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts",
+              "consumer/src/lib/cojeev-motion/category.ts",
+              "consumer/src/lib/cojeev-motion/morph-paint.ts",
+              "consumer/src/lib/cojeev-motion/clock.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-motion-visibility.ts",
+            "renderedJsBytes": 1287,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-reduced-motion.ts",
+            "renderedJsBytes": 756,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev/control-appearance.ts",
+            "renderedJsBytes": 174,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev/signature-shapes.ts",
+            "renderedJsBytes": 1724,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/utils.ts",
+            "renderedJsBytes": 58,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "npm/clsx/dist/clsx.mjs",
+              "npm/tailwind-merge/dist/bundle-mjs.mjs"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/main.tsx",
+            "renderedJsBytes": 113,
+            "chunks": [
+              "assets/index-n3Oo3dhh.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react-dom/client.js?commonjs-es-import",
+              "consumer/src/App.tsx",
+              "consumer/src/index.css"
+            ],
+            "dynamicImports": []
+          }
+        ],
+        "dependencyRenderedJsBytes": {
+          "react-dom": 653543,
+          "motion-dom": 322766,
+          "framer-motion": 123567,
+          "tailwind-merge": 102703,
+          "react": 20912,
+          "scheduler": 11360,
+          "motion-utils": 7452,
+          "@radix-ui/react-slot": 6055,
+          "class-variance-authority": 2365,
+          "@radix-ui/react-compose-refs": 1117,
+          "motion": 607,
+          "clsx": 362
+        },
+        "note": "Rendered JS bytes are Rollup module contributions before gzip; emitted file gzip totals are measured separately."
+      }
+    },
+    "projects": {
+      "profile": "projects",
+      "components": [
+        "button",
+        "icon",
+        "input",
+        "tabs",
+        "item",
+        "activity-feed",
+        "tree"
+      ],
+      "emitted": [
+        {
+          "kind": "woff2",
+          "file": "assets/bricolage-grotesque-variable-mz7uTvdV.woff2",
+          "rawBytes": 212152,
+          "gzipBytes": 212232,
+          "sha256": "732d894c80980fc12f0c5dd955f5e917a6ffefb666553a7cee25a00b058b6368",
+          "ownership": "cojeev-library",
+          "family": "Bricolage Grotesque"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/dm-sans-variable-C6Y9vXDn.woff2",
+          "rawBytes": 95480,
+          "gzipBytes": 95266,
+          "sha256": "511199053bc63da8002f95cebf6d8254c0838d7c3515db9a6d92a579ac81eef8",
+          "ownership": "cojeev-library",
+          "family": "DM Sans"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-cyrillic-ext-wght-normal-DjL33-gN.woff2",
+          "rawBytes": 7420,
+          "gzipBytes": 7443,
+          "sha256": "2317fa4bb293c9c0b110e18315d529235c47a0ddd3338cea3d8c7955e927899e",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-cyrillic-wght-normal-BEAKL7Jp.woff2",
+          "rawBytes": 15084,
+          "gzipBytes": 15107,
+          "sha256": "6894439694946a589d157ece003086960a6a4013d74a813dab7602efdb3d8c09",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-latin-ext-wght-normal-DC-KSUi6.woff2",
+          "rawBytes": 16512,
+          "gzipBytes": 16540,
+          "sha256": "824f485b5d26e2f2da3c2b236132ece1bc8e4e43373452950bb0e40548b4313f",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-latin-wght-normal-BgDaEnEv.woff2",
+          "rawBytes": 29400,
+          "gzipBytes": 29428,
+          "sha256": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "woff2",
+          "file": "assets/geist-vietnamese-wght-normal-6IgcOCM7.woff2",
+          "rawBytes": 8004,
+          "gzipBytes": 8027,
+          "sha256": "8fa40e5d248247735eb97a0bd593b8852440430600d6ba01364c31fe0abc1fe1",
+          "ownership": "consumer-preset"
+        },
+        {
+          "kind": "css",
+          "file": "assets/index-my3g9d4x.css",
+          "rawBytes": 166865,
+          "gzipBytes": 29586
+        },
+        {
+          "kind": "js",
+          "file": "assets/index-pvuMk-HA.js",
+          "rawBytes": 923806,
+          "gzipBytes": 259028
+        }
+      ],
+      "totals": {
+        "js": {
+          "rawBytes": 923806,
+          "gzipBytes": 259028
+        },
+        "css": {
+          "rawBytes": 166865,
+          "gzipBytes": 29586
+        },
+        "woff2": {
+          "rawBytes": 384052,
+          "gzipBytes": 384043
+        }
+      },
+      "fontTotals": {
+        "cojeevLibrary": {
+          "rawBytes": 307632,
+          "gzipBytes": 307498
+        },
+        "consumerPresetAndOther": {
+          "rawBytes": 76420,
+          "gzipBytes": 76545
+        }
+      },
+      "importCostGraph": {
+        "copiedSource": [
+          {
+            "module": "consumer/src/App.tsx",
+            "renderedJsBytes": 1603,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/components/ui/button.tsx",
+              "consumer/src/components/ui/icon.tsx",
+              "consumer/src/components/ui/input.tsx",
+              "consumer/src/components/ui/tabs.tsx",
+              "consumer/src/components/ui/item.tsx",
+              "consumer/src/components/ui/activity-feed.tsx",
+              "consumer/src/components/ui/tree.tsx"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/activity-feed.tsx",
+            "renderedJsBytes": 8316,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/components/ui/animated-icon.tsx",
+              "consumer/src/components/ui/avatar.tsx",
+              "consumer/src/components/ui/badge.tsx",
+              "consumer/src/components/ui/button.tsx",
+              "consumer/src/components/ui/empty.tsx",
+              "consumer/src/components/ui/item.tsx",
+              "consumer/src/components/ui/presence.tsx",
+              "consumer/src/components/ui/typography.tsx"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/animated-icon.tsx",
+            "renderedJsBytes": 7651,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/motion/dist/es/react.mjs",
+              "consumer/src/components/ui/icon.tsx",
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/cojeev-motion/use-motion-visibility.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/avatar.tsx",
+            "renderedJsBytes": 2064,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "npm/@radix-ui/react-avatar/dist/index.mjs",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/components/ui/button.tsx"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/badge.tsx",
+            "renderedJsBytes": 4232,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/lib/cojeev/control-appearance.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/button.tsx",
+            "renderedJsBytes": 4239,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "npm/@radix-ui/react-slot/dist/index.mjs",
+              "consumer/src/components/ui/spinner.tsx",
+              "consumer/src/components/ui/presence.tsx",
+              "consumer/src/lib/cojeev-motion/flow-press.ts",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/lib/cojeev/control-appearance.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/card.tsx",
+            "renderedJsBytes": 1675,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "consumer/src/lib/cojeev-motion/use-depth.ts",
+              "consumer/src/lib/cojeev-motion/refs.ts",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/components/ui/button.tsx",
+              "consumer/src/lib/cojeev-motion/choreography.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/empty.tsx",
+            "renderedJsBytes": 1727,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/components/ui/card.tsx"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/icon.tsx",
+            "renderedJsBytes": 39878,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/lib/cojeev/icon-data.ts",
+              "consumer/src/lib/cojeev/lucide-icon-data.ts",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "consumer/src/lib/cojeev-motion/flow-press.ts",
+              "consumer/src/lib/cojeev-motion/refs.ts",
+              "consumer/src/lib/cojeev-motion/choreography.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/input.tsx",
+            "renderedJsBytes": 1192,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/components/ui/icon.tsx",
+              "consumer/src/components/ui/button.tsx",
+              "consumer/src/lib/cojeev/control-appearance.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/item.tsx",
+            "renderedJsBytes": 3256,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/cojeev-motion/use-flow.ts",
+              "consumer/src/lib/cojeev-motion/flow-press.ts",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/lib/cojeev/control-appearance.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/presence.tsx",
+            "renderedJsBytes": 3774,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/motion/dist/es/react.mjs",
+              "npm/@radix-ui/react-slot/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/lib/cojeev-motion/choreography.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/spinner.tsx",
+            "renderedJsBytes": 7114,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/class-variance-authority/dist/index.mjs",
+              "npm/motion/dist/es/react.mjs",
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/cojeev-motion/use-motion-visibility.ts",
+              "consumer/src/lib/cojeev-motion/refs.ts",
+              "consumer/src/lib/utils.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/tabs.tsx",
+            "renderedJsBytes": 3030,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/use-morph.ts",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts",
+              "npm/@radix-ui/react-tabs/dist/index.mjs",
+              "consumer/src/lib/cojeev-motion/use-flow.ts",
+              "consumer/src/components/ui/presence.tsx"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/tree.tsx",
+            "renderedJsBytes": 7855,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/utils.ts",
+              "consumer/src/components/ui/icon.tsx"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/components/ui/typography.tsx",
+            "renderedJsBytes": 1544,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "npm/class-variance-authority/dist/index.mjs",
+              "consumer/src/lib/utils.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/index.css",
+            "renderedJsBytes": 0,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/body.ts",
+            "renderedJsBytes": 6086,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/geometry.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/category.ts",
+            "renderedJsBytes": 6277,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/choreography.ts",
+            "renderedJsBytes": 2824,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/motion/dist/es/index.mjs",
+              "consumer/src/lib/cojeev-motion/clock.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts",
+              "consumer/src/lib/cojeev-motion/use-reduced-motion.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/clock.ts",
+            "renderedJsBytes": 935,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/flow-motion.ts",
+            "renderedJsBytes": 5135,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "npm/motion/dist/es/index.mjs",
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/flow-press.ts",
+            "renderedJsBytes": 4021,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/flow.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/flow.ts",
+            "renderedJsBytes": 19786,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/choreography.ts",
+              "consumer/src/lib/cojeev-motion/flow-motion.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts",
+              "consumer/src/lib/cojeev-motion/clock.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/geometry.ts",
+            "renderedJsBytes": 2469,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/morph-paint.ts",
+            "renderedJsBytes": 2959,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev-motion/geometry.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/refs.ts",
+            "renderedJsBytes": 298,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/settings.ts",
+            "renderedJsBytes": 9693,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/shapes.ts",
+            "renderedJsBytes": 4692,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "consumer/src/lib/cojeev/signature-shapes.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-depth.ts",
+            "renderedJsBytes": 0,
+            "chunks": [],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "npm/motion/dist/es/react.mjs",
+              "consumer/src/lib/cojeev-motion/choreography.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-flow.ts",
+            "renderedJsBytes": 480,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/refs.ts",
+              "consumer/src/lib/cojeev-motion/flow.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-morph.ts",
+            "renderedJsBytes": 22711,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/geometry.ts",
+              "consumer/src/lib/cojeev-motion/shapes.ts",
+              "consumer/src/lib/cojeev-motion/body.ts",
+              "consumer/src/lib/cojeev-motion/settings.ts",
+              "consumer/src/lib/cojeev-motion/category.ts",
+              "consumer/src/lib/cojeev-motion/morph-paint.ts",
+              "consumer/src/lib/cojeev-motion/clock.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-motion-visibility.ts",
+            "renderedJsBytes": 1287,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import",
+              "consumer/src/lib/cojeev-motion/settings.ts"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev-motion/use-reduced-motion.ts",
+            "renderedJsBytes": 760,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/index.js?commonjs-es-import"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev/control-appearance.ts",
+            "renderedJsBytes": 174,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev/icon-data.ts",
+            "renderedJsBytes": 40778,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev/lucide-icon-data.ts",
+            "renderedJsBytes": 416769,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/cojeev/signature-shapes.ts",
+            "renderedJsBytes": 1724,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/lib/utils.ts",
+            "renderedJsBytes": 58,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "npm/clsx/dist/clsx.mjs",
+              "npm/tailwind-merge/dist/bundle-mjs.mjs"
+            ],
+            "dynamicImports": []
+          },
+          {
+            "module": "consumer/src/main.tsx",
+            "renderedJsBytes": 113,
+            "chunks": [
+              "assets/index-pvuMk-HA.js"
+            ],
+            "imports": [
+              "virtual:npm/react/jsx-runtime.js?commonjs-es-import",
+              "virtual:npm/react-dom/client.js?commonjs-es-import",
+              "consumer/src/App.tsx",
+              "consumer/src/index.css"
+            ],
+            "dynamicImports": []
+          }
+        ],
+        "dependencyRenderedJsBytes": {
+          "react-dom": 653543,
+          "motion-dom": 322766,
+          "framer-motion": 123579,
+          "tailwind-merge": 102703,
+          "react": 20912,
+          "@radix-ui/react-collection": 17688,
+          "scheduler": 11360,
+          "@radix-ui/react-roving-focus": 9605,
+          "motion-utils": 7452,
+          "@radix-ui/react-presence": 6436,
+          "@radix-ui/react-tabs": 6345,
+          "@radix-ui/react-slot": 6090,
+          "@radix-ui/react-avatar": 4708,
+          "@radix-ui/react-context": 4220,
+          "@radix-ui/react-use-controllable-state": 3506,
+          "class-variance-authority": 2365,
+          "@radix-ui/primitive": 1862,
+          "@radix-ui/react-compose-refs": 1117,
+          "@radix-ui/react-primitive": 1051,
+          "@radix-ui/react-use-is-hydrated": 929,
+          "@radix-ui/react-use-effect-event": 874,
+          "motion": 607,
+          "@radix-ui/react-id": 527,
+          "@radix-ui/react-use-callback-ref": 432,
+          "@radix-ui/react-direction": 373,
+          "clsx": 362,
+          "@radix-ui/react-use-layout-effect": 116
+        },
+        "note": "Rendered JS bytes are Rollup module contributions before gzip; emitted file gzip totals are measured separately."
+      }
+    }
+  },
+  "fontCsp": {
+    "policy": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; connect-src 'none'; img-src 'self'",
+    "requests": [
+      "/assets/bricolage-grotesque-variable-mz7uTvdV.woff2",
+      "/assets/dm-sans-variable-C6Y9vXDn.woff2"
+    ],
+    "loaded": {
+      "dmSans": true,
+      "bricolageGrotesque": true
+    },
+    "externalRequests": []
+  },
+  "sourceQualification": {
+    "baseCommit": "c61049f1ea47a15be80636733b32235a7b0b350a",
+    "files": {
+      "registry/cojeev/scripts/materialize-fonts.mjs": "3e99f39495cc3451eebc2a0dd51740c324a5fd24d83c5347556a3f0944a514de",
+      "registry/cojeev/styles/fonts.css": "9e2d0a6fa917e082fb7d7da9f992f3e202d87109902e31e66aac77b997a3b430",
+      "app/fonts/dm-sans-variable.woff2": "511199053bc63da8002f95cebf6d8254c0838d7c3515db9a6d92a579ac81eef8",
+      "app/fonts/bricolage-grotesque-variable.woff2": "732d894c80980fc12f0c5dd955f5e917a6ffefb666553a7cee25a00b058b6368"
+    },
+    "canonicalFontSha256": {
+      "DM Sans": "511199053bc63da8002f95cebf6d8254c0838d7c3515db9a6d92a579ac81eef8",
+      "Bricolage Grotesque": "732d894c80980fc12f0c5dd955f5e917a6ffefb666553a7cee25a00b058b6368"
+    }
+  },
+  "limits": [
+    "Installed registry JSON bytes are reported separately from emitted bundle bytes.",
+    "Cojeev font bytes are identified by canonical SHA-256; preset Geist files are excluded from Cojeev font totals.",
+    "The Projects JS chunk exceeds Vite's 500 kB warning threshold; the threshold was not changed.",
+    "No startup-time or performance-score claim is made; I-04 remains measured and open for owner-led optimization."
+  ]
+}

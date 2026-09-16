@@ -68,6 +68,10 @@ base.cssVars={theme};
 base.files.push(...fs.readdirSync(`${source}/lib`).filter(name=>name.endsWith(".ts")&&name!=="utils.ts").map(name=>({path:`${source}/lib/${name}`,type:"registry:lib",target:`lib/cojeev/${name}`})));
 base.files.push(...fs.readdirSync(`${source}/motion`).filter(name=>/\.tsx?$/.test(name)).map(name=>({path:`${source}/motion/${name}`,type:"registry:lib",target:`lib/cojeev-motion/${name}`})));
 base.files.push({path:`${source}/styles/fonts.css`,type:"registry:file",target:"styles/cojeev-fonts.css"});
+// Binary assets cannot be registry files: shadcn reads file contents as UTF-8.
+// This inert helper keeps the default self-contained CSS and only materializes
+// the verified bytes when a consumer explicitly invokes it after installation.
+base.files.push({path:`${source}/scripts/materialize-fonts.mjs`,type:"registry:file",target:"scripts/cojeev-materialize-fonts.mjs"});
 base.files.push(...foundationStyles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`})));
 base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({path:`reference/cojeev-handoff-v4/fonts/${name}`,type:"registry:file",target:`styles/fonts/${name}`})));
 // Every entry installs this base, so one notices file reaches every consumer.

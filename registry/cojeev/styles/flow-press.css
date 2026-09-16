@@ -67,11 +67,19 @@
 [data-flow-owned].v-glide > .v-glide__trail > i {
   background: var(--glide-bg);
 }
+/* A group may hand the travelling surface an edge (--glide-ring) and its
+   pointer preview a paint (--glide-hover-bg) from its own stylesheet. */
+[data-flow-owned].v-glide > .v-glide__pill > i {
+  box-shadow: var(--glide-ring, none);
+}
 [data-flow-owned].v-glide > .v-glide__trail > i {
   opacity: 0.3;
 }
 [data-flow-owned].v-glide > .v-glide__hover > i {
-  background: color-mix(in oklab, var(--v-ink) 8%, transparent);
+  background: var(
+    --glide-hover-bg,
+    color-mix(in oklab, var(--v-ink) 8%, transparent)
+  );
 }
 [data-flow-owned].v-glide [data-glide-active] {
   background: transparent;
@@ -92,10 +100,8 @@
 [data-flow-owned].v-glide.-underline [data-glide-active] {
   color: var(--v-text);
 }
-.v-tabs[data-flow-owned].v-glide:is(.-notebook, .-rail) {
-  --glide-bg: var(--v-accent-ink);
-  --glide-fg: var(--v-text);
-}
+/* Notebook and rail paint their travelling surface from tabs.css (paper sheet
+   and soft index line); their selected label stays in reading ink. */
 .v-tabs[data-flow-owned].v-glide:is(.-notebook, .-rail)
   .v-tab[data-glide-active] {
   color: var(--v-text);
@@ -135,11 +141,7 @@
   background: transparent;
 }
 :root[data-mode="dark"] .v-seg[data-flow-owned].v-glide > .v-glide__pill > i,
-:root[data-mode="dark"] .v-pager[data-flow-owned].v-glide > .v-glide__pill > i,
-:root[data-mode="dark"]
-  .v-tabs.-pills[data-flow-owned].v-glide
-  > .v-glide__pill
-  > i {
+:root[data-mode="dark"] .v-pager[data-flow-owned].v-glide > .v-glide__pill > i {
   background: var(--v-pink);
 }
 :root[data-mode="dark"]
@@ -147,11 +149,13 @@
   [data-glide-active],
 :root[data-mode="dark"]
   .v-pager:where([data-slot], [data-slot] *)
-  [data-glide-active],
-:root[data-mode="dark"]
-  .v-tabs:where([data-slot], [data-slot] *).-pills
   [data-glide-active] {
   color: var(--v-on-accent);
+}
+:root[data-mode="dark"]
+  .v-tabs[data-flow-owned].v-glide:is(.-pills, .-lenses) {
+  --glide-bg: var(--v-pink);
+  --glide-fg: var(--v-on-accent);
 }
 .v-weekdays[data-flow-owned].v-glide > .v-glide__pill > i,
 .v-iradios[data-flow-owned].v-glide > .v-glide__pill > i,

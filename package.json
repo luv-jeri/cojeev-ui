@@ -2,6 +2,13 @@
   "name": "cojeev-ui",
   "version": "0.2.0",
   "private": true,
+  "browserslist": [
+    "chrome >= 120",
+    "edge >= 120",
+    "firefox >= 129",
+    "safari >= 17.5",
+    "ios_saf >= 17.5"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "npm run registry:build && next build",
