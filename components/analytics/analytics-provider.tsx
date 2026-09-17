@@ -3,30 +3,35 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import { categorizeOutboundUrl, parseCampaign, sanitizeRoute, track, type Campaign } from "@/lib/analytics/client";
+import { AnalyticsConsent } from "./analytics-consent";
+import { useAnalyticsStatus } from "./use-analytics-status";
 
 type AnalyticsContextValue = {
   route: string | null;
+  captureAllowed: boolean;
   claimImpression: (key: string) => boolean;
 };
-export const AnalyticsContext = React.createContext<AnalyticsContextValue>({ route: null, claimImpression: () => false });
+export const AnalyticsContext = React.createContext<AnalyticsContextValue>({ route: null, captureAllowed: false, claimImpression: () => false });
 
 /** Page events and exposure claims belong to a completed route, not a render. */
 export function AnalyticsProvider({ children }: { children: React.ReactNode | null }) {
   const pathname = usePathname();
   const route = pathname ? sanitizeRoute(pathname) : null;
+  const captureAllowed = useAnalyticsStatus() === "active";
   const campaign = React.useRef<Campaign>({});
   const lastTrackedRoute = React.useRef<string | null>(null);
   const context = React.useMemo<AnalyticsContextValue>(() => {
     const impressions = new Set<string>();
     return {
       route,
+      captureAllowed,
       claimImpression(key) {
         if (impressions.has(key)) return false;
         impressions.add(key);
         return true;
       },
     };
-  }, [route]);
+  }, [captureAllowed, route]);
 
   React.useEffect(() => {
     if (lastTrackedRoute.current === route) return;
@@ -49,5 +54,5 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode | nu
     return () => document.removeEventListener("click", handleClick);
   }, []);
 
-  return <AnalyticsContext.Provider value={context}>{children}</AnalyticsContext.Provider>;
+  return <AnalyticsContext.Provider value={context}>{children}<AnalyticsConsent route={route} /></AnalyticsContext.Provider>;
 }
