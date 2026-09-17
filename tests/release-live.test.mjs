@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
+import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,releaseMetadata,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
 
 const commit='a'.repeat(40),token='t'.repeat(40);
 const site='https://beta.000h.cojeev.com',api='https://feedback-beta.cojeev.com';
@@ -10,12 +10,12 @@ const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex, nofol
 const delivery={queue:[],usage:{daily:0,monthly:0},limits:{daily:95,monthly:2850},providers:{email:true,github:true,resendWebhook:true,ownerNotification:true},activationCutoff:1,deploymentIntent:'active'};
 
 /** One simulated edge. `release` is what this edge currently serves. */
-function edge({release=commit,unreachable=false,contract=false,stalled=false,health=delivery}={}) {
+function edge({release=commit,analyticsEnabled=false,unreachable=false,contract=false,stalled=false,health=delivery}={}) {
   return async url=>{
     if(unreachable) throw new Error('connect ECONNREFUSED 127.0.0.1:443');
     if(url===`${site}/health`||url===`${api}/health`) return Response.json({status:'ok',environment:'beta',release},{headers});
     if(url===`${api}/v1/admin/health`) return Response.json(stalled?{...health,queue:[{state:'pending',count:4,oldestAgeMs:3600000}]}:health,{headers});
-    if(url===`${site}/release.json`) return Response.json({environment:'beta',release},{headers:contract?{}:headers});
+    if(url===`${site}/release.json`) return Response.json({environment:'beta',release,analyticsEnabled},{headers:contract?{}:headers});
     if(url===`${site}/r/button.json`) return Response.json({name:'button'},{headers});
     if(url===`${site}/__cojeev_missing_release_probe__/`) return new Response('not found',{status:404,headers});
     throw new Error(`unexpected live request: ${url}`);
@@ -62,6 +62,19 @@ test('a fully propagated release passes on the first read with no waiting',async
   const problems=await checkLiveRelease('beta',commit,{token,fetcher:edge(),sleep:async ms=>waited.push(ms),log:()=>{}});
   assert.deepEqual(problems,[]);
   assert.deepEqual(waited,[]);
+});
+
+test('release metadata and the live check prove the deployed analytics intent',async()=>{
+  assert.deepEqual(releaseMetadata('beta',commit,{
+    NEXT_PUBLIC_ANALYTICS_ENABLED:'true',
+    NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN:'phc_public_test_token',
+  }),{environment:'beta',release:commit,analyticsEnabled:true});
+  assert.equal(releaseMetadata('beta',commit,{NEXT_PUBLIC_ANALYTICS_ENABLED:'true'}).analyticsEnabled,false);
+  assert.deepEqual(await liveProblems('beta',commit,{token,expectedAnalyticsEnabled:true,fetcher:edge({analyticsEnabled:true})}),[]);
+  assert.deepEqual(await liveProblems('beta',commit,{token,expectedAnalyticsEnabled:true,fetcher:edge()}),['analytics-config-mismatch']);
+  // A same-SHA redeploy can briefly serve the previous artifact, so the
+  // mismatch gets the bounded propagation budget before it fails the release.
+  assert.ok(TRANSIENT_LIVE_PROBLEMS.has('analytics-config-mismatch'));
 });
 
 test('propagation lag is retried within the bounded window and passes once the edge catches up',async()=>{
@@ -165,7 +178,7 @@ test('a permanent code alongside a propagation code stops immediately',async()=>
 });
 
 test('the transient set stays narrow and every site probe code is accounted for',async()=>{
-  assert.deepEqual([...TRANSIENT_LIVE_PROBLEMS].sort(),['http-health','release-mismatch','site-release-mismatch','site-unreachable']);
+  assert.deepEqual([...TRANSIENT_LIVE_PROBLEMS].sort(),['analytics-config-mismatch','http-health','release-mismatch','site-release-mismatch','site-unreachable']);
   assert.ok(!TRANSIENT_LIVE_PROBLEMS.has('site-contract'));
   assert.deepEqual(await liveProblems('beta',commit,{token,fetcher:edge()}),[]);
   assert.deepEqual(await liveProblems('beta',commit,{token,fetcher:edge({contract:true})}),['site-contract']);
