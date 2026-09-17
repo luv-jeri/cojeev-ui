@@ -1,7 +1,9 @@
 import { pageMetadata } from "@/lib/site-config";
+import { componentIndexStructuredData } from "@/lib/seo/structured-data";
 import Link from "next/link";
 import { DocsPage } from "fumadocs-ui/page";
-import { catalog, publicURL } from "@/lib/catalog";
+import { catalog, documentationCatalog, publicURL } from "@/lib/catalog";
+import { JsonLd } from "@/components/seo/json-ld";
 import { InstallCommand } from "@/components/install-command";
 import { DocsIntroArtwork } from "@/components/docs-atmosphere";
 import { Badge } from "@/registry/cojeev/ui/badge";
@@ -23,7 +25,9 @@ export const metadata = pageMetadata(
 
 export default function Documentation() {
   return (
-    <DocsPage
+    <>
+      <JsonLd data={componentIndexStructuredData(documentationCatalog())} />
+      <DocsPage
       full
       breadcrumb={{ enabled: false }}
       footer={{ enabled: false }}
@@ -263,6 +267,7 @@ export default function Documentation() {
           </Button>
         </nav>
       </article>
-    </DocsPage>
+      </DocsPage>
+    </>
   );
 }

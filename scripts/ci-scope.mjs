@@ -292,6 +292,18 @@ const FOCUSED_BROWSER = new Map([
     "tests/analytics.browser.mjs",
     "tests/analytics.test.ts",
   ].map(file => [file, "analytics-browser"]),
+  // J01 structured data changes only non-visual JSON-LD script payloads. The
+  // clean production artifact is parsed below so the site, catalogue and one
+  // representative component must contain valid JSON with the expected types.
+  ...[
+    "app/page.tsx",
+    "app/docs/page.tsx",
+    "app/docs/[component]/page.tsx",
+    "components/seo/json-ld.tsx",
+    "lib/seo/structured-data.ts",
+    "tests/structured-data.test.ts",
+    "scripts/check-structured-data.mjs",
+  ].map(file => [file, "seo-structured-data"]),
 ]);
 
 // Files that MUST keep full catalogue verification for any real change, but whose
@@ -443,6 +455,7 @@ export function releaseOutputs(decision) {
     // for the few paths that own one, never zero browser evidence for them.
     run_transient: String(decision.depth === "full" || (decision.suites ?? []).includes("transient-timing")),
     run_analytics: String(decision.depth === "full" || (decision.suites ?? []).includes("analytics-browser")),
+    run_seo: String(decision.depth === "full" || (decision.suites ?? []).includes("seo-structured-data")),
   };
 }
 

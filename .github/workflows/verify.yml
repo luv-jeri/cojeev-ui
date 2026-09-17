@@ -366,6 +366,9 @@ jobs:
         run: |
           node scripts/release-csp.mjs beta artifacts/release/beta
           node scripts/release-csp.mjs production artifacts/release/production
+      - name: Validate rendered structured data
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_seo == 'true'
+        run: node scripts/check-structured-data.mjs --dir artifacts/release/production/site
       - name: Build manual Pages compatibility fixture for existing browser gates
         if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
         run: npm run build
