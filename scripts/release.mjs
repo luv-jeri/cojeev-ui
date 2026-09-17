@@ -11,6 +11,13 @@ import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeployme
 import {checkHealth} from './operations-health.mjs';
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
+export function releaseMetadata(environment,commit,publicEnv) {
+  return {
+    environment,
+    release:commit,
+    analyticsEnabled:publicEnv.NEXT_PUBLIC_ANALYTICS_ENABLED==='true'&&Boolean(publicEnv.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN?.trim()),
+  };
+}
 export async function buildRelease(root,environment,commit,destination,settings={}) {
   if(process.versions.node!=='22.22.0') throw new Error('Release build requires Node 22.22.0');
   assertCleanSource(root,commit);
@@ -29,7 +36,7 @@ export async function buildRelease(root,environment,commit,destination,settings=
     // Refuse to merge into an older release directory.
     await fs.mkdir(destination,{recursive:false});
     await fs.cp(path.join(scratch,'out'),path.join(destination,'site'),{recursive:true});
-    await fs.writeFile(path.join(destination,'site/release.json'),JSON.stringify({environment,release:commit})+'\n');
+    await fs.writeFile(path.join(destination,'site/release.json'),JSON.stringify(releaseMetadata(environment,commit,publicEnv))+'\n');
     for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
       const directory=path.join(destination,kind);await fs.mkdir(directory);
       const source=await json(path.join(scratch,`workers/${worker}/wrangler.jsonc`));
@@ -111,7 +118,7 @@ export async function deployRelease(directory,environment,commit,digest,{rollbac
 // provider and a broken header/404 contract are real defects that no amount of
 // further waiting repairs, so they fail on the first attempt; a run that carries
 // any one of them never retries, even alongside a propagation code.
-export const TRANSIENT_LIVE_PROBLEMS=new Set(['http-health','release-mismatch','site-unreachable','site-release-mismatch']);
+export const TRANSIENT_LIVE_PROBLEMS=new Set(['analytics-config-mismatch','http-health','release-mismatch','site-unreachable','site-release-mismatch']);
 export const LIVE_RETRY_WAITS=[4000,8000,12000,16000];
 // One real wall-clock budget for the whole check, reads included. Every request
 // is aborted at the deadline and every wait is truncated to what is left, so the
@@ -124,7 +131,7 @@ const boundedFetcher=(fetcher,deadline,clock)=>async(url,options={})=>{
   return fetcher(url,{...options,signal:AbortSignal.any(signals)});
 };
 /** Sanitized fixed codes for one live read of the deployed site and API. */
-export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,fetcher=fetch}={}) {
+export async function liveProblems(environment,commit,{token=process.env.HEALTH_TOKEN,expectedAnalyticsEnabled,fetcher=fetch}={}) {
   let problems=await checkHealth(environment,{token,commit,fetcher}).then(result=>result.problems);
   // checkHealth reports a missing token and an admin endpoint that did not answer
   // usefully under one code. A token was supplied here, and the public endpoints
@@ -154,6 +161,7 @@ export async function liveProblems(environment,commit,{token=process.env.HEALTH_
     let value;
     try {value=await response.json();} catch {problems.push('site-contract');continue;}
     if(value.release!==commit||value.environment!==environment) problems.push('site-release-mismatch');
+    else if(expectedAnalyticsEnabled!==undefined&&value.analyticsEnabled!==expectedAnalyticsEnabled) problems.push('analytics-config-mismatch');
   }
   return [...new Set(problems)].sort();
 }
@@ -198,7 +206,12 @@ if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href) {
       }
     } else if(command==='verify') {await readArtifact(path.resolve(directory),environment,commit,digest);console.log('Artifact verified');}
     else if(command==='deploy'||command==='rollback') console.log(JSON.stringify(await deployRelease(path.resolve(directory),environment,commit,digest,{rollback:command==='rollback'})));
-    else if(command==='live') {await checkLiveRelease(environment,commit);console.log('Live release checks passed');}
+    else if(command==='live') {
+      const expected=process.env.EXPECTED_ANALYTICS_ENABLED;
+      if(expected!==undefined&&!['true','false'].includes(expected)) throw new Error('Invalid expected analytics setting');
+      await checkLiveRelease(environment,commit,{expectedAnalyticsEnabled:expected===undefined?undefined:expected==='true'});
+      console.log('Live release checks passed');
+    }
     else throw new Error('Use build-pair SHA DIRECTORY | verify/deploy/rollback ENV SHA DIRECTORY DIGEST | live ENV SHA');
   } catch(error) {console.error(error.message);process.exitCode=1;}
 }

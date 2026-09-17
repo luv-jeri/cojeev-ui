@@ -382,6 +382,18 @@ test('the workflow keeps release acceptance independent of the classifier', () =
   assert.doesNotMatch(checkpointIf, /scope != 'full'/);
 });
 
+test('live deployment checks compare the published analytics state with the current environment intent', () => {
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  for (const [jobName, variable] of [
+    ['beta', 'BETA_ANALYTICS_ENABLED'],
+    ['production', 'PRODUCTION_ANALYTICS_ENABLED'],
+  ]) {
+    const live = workflow.jobs[jobName].steps.find(step => /release\.mjs live/.test(String(step.run ?? '')));
+    assert.ok(live, `${jobName} must keep its live release check`);
+    assert.equal(live.env?.EXPECTED_ANALYTICS_ENABLED, `\${{ vars.${variable} || 'false' }}`);
+  }
+});
+
 test('the scoped job is bounded and never publishes release evidence', () => {
   const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
   const checkpoint = workflow.jobs.checkpoint;

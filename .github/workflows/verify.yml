@@ -553,6 +553,7 @@ jobs:
       - run: node scripts/release.mjs live beta "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
+          EXPECTED_ANALYTICS_ENABLED: ${{ vars.BETA_ANALYTICS_ENABLED || 'false' }}
       - name: Independent failure notification
         if: failure()
         run: node scripts/operations-health.mjs beta
@@ -607,6 +608,7 @@ jobs:
       - run: node scripts/release.mjs live production "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
+          EXPECTED_ANALYTICS_ENABLED: ${{ vars.PRODUCTION_ANALYTICS_ENABLED || 'false' }}
       - name: Independent failure notification
         if: failure()
         run: node scripts/operations-health.mjs production
