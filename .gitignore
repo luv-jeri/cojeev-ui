@@ -66,3 +66,23 @@ node_modules/
 .next-analytics/
 
 !.env.example
+
+# Local agent configuration and internal working notes
+/AGENTS.md
+/CLAUDE.md
+/.impeccable/
+/docs/archive/
+/docs/checkpoint-workflow.md
+/docs/gates/
+/docs/launch/
+/docs/marketing/
+/docs/privacy/
+/docs/production/
+/docs/quality/
+/docs/research/
+/docs/seo/
+/docs/superpowers/
+/verification/*-results.json
+/verification/default-visual-review.json
+/verification/reference-regressions.json
+/PUBLIC-SNAPSHOT.json

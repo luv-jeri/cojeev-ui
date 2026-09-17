@@ -2579,7 +2579,7 @@
       "Tune physics: particleCount (8–100), radius (6–28), speed (0–2), wander (0–1), damping (0.8–0.98), pointerAttraction (0–3), pointerRadius (0–600), textAttraction (0–3), textRadius (0–400), connectionDistance (0–240). Distances are CSS pixels. Invalid numeric values fall back to safe defaults.",
       "Tune size (0.55–1.6), opacity (0–1, artwork only), softness (0–20), edgeTexture (0–40), and connectionWidth (0–8). Zero connection width removes links. Very small particles with a large blur can dissolve; reduce softness to expose individual particles.",
       "Pass controlsRef for gather(), scatter() and reset(); connect these to native buttons or real application events. seed provides a repeatable initial arrangement. onWordActive reports decorative proximity only, not semantic analysis.",
-      "Source-based adaptation of ThreeUI Semantic Bloom (MIT, copyright 2026 Meng To). Original force defaults and liquid filter retained; native container coordinates, fixed 60Hz simulation, palette and lifecycle replace the iframe. See docs/semantic-bloom.md and reference/semantic-bloom for attribution and a runnable baseline."
+      "Source-based adaptation of ThreeUI Semantic Bloom (MIT, copyright 2026 Meng To). Original force defaults and liquid filter retained; native container coordinates, fixed 60Hz simulation, palette and lifecycle replace the iframe. See reference/semantic-bloom for attribution and a runnable baseline."
     ],
     "accessibility": [
       "The complete wordmark is selectable, wrapping DOM text. The canvas/filter/fallback are decorative and hidden from assistive technology. Essential meaning must not depend on particles or onWordActive.",

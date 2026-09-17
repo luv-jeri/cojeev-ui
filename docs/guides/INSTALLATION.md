@@ -1,6 +1,6 @@
 # Installation
 
-Cojeev UI is distributed through a public shadcn registry. See [RELEASE-0.2.0.md](../archive/release/RELEASE-0.2.0.md) for current verification and publication status.
+Cojeev UI is distributed through a public shadcn registry.
 
 Cojeev UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme, fonts and shared motion code; it does not require the private Cojeev application.
 
@@ -77,7 +77,7 @@ This renders only the base typography and canvas. Its separate timestamped recei
 node scripts/audit-registry-consumer.mjs
 ```
 
-This creates an isolated registry copy and a fresh consumer outside the repository. It installs all 124 UI entries, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory. See [the refinement report](../archive/refinement/REFINEMENT-REPORT.md) for the current tested scope.
+This creates an isolated registry copy and a fresh consumer outside the repository. It installs the UI entries in the registry snapshot, checks import and dependency closure, compares installed styles, typechecks and builds, and runs selected rendered interactions. It writes a receipt and screenshots in the printed temporary directory.
 
 To retest a successfully installed consumer after changing library source, use `node scripts/audit-registry-consumer.mjs <existing-audit-directory> --resume --refresh`. This preserves the original receipt, regenerates the registry snapshot and updates the consumer through the real shadcn CLI. `--resume` alone reruns build/runtime checks against the original installed snapshot.
 
