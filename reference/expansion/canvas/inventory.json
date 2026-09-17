@@ -301,8 +301,7 @@
         "remaining": [
           "Measured glyph-template matching: native contour gradients and density ramp are a simpler method",
           "Full source studio/material, camera and format options; renderer and exact visual parity"
-        ],
-        "evidence": "object-treatments-result.md"
+        ]
       }
     },
     {
@@ -1560,8 +1559,7 @@
         "implementedCore": "Original lit 3D triangle geometry to ordered / halftone / diffusion / stipple print, bounded local asset intake, orbit/zoom and native fallback.",
         "remaining": [
           "Full source studio/material, camera and format options; renderer and exact visual parity"
-        ],
-        "evidence": "object-treatments-result.md"
+        ]
       }
     },
     {
@@ -2453,8 +2451,7 @@
         "remaining": [
           "Arbitrary DOM or video/photo backdrop refraction is not supported; the scene uses its own procedural studio.",
           "Full source material/studio/lighting controls, asset formats, WebGPU backend and exact visual/API parity are not implemented."
-        ],
-        "evidence": "material-sculptures-result.md"
+        ]
       }
     },
     {
@@ -3090,8 +3087,7 @@
         "implementedCore": "Original lit 3D triangle geometry to hatch / crosshatch / depth contours with line spacing, angle, density and relief, bounded local asset intake, orbit/zoom and native fallback.",
         "remaining": [
           "Full source studio/material, camera and format options; renderer and exact visual parity"
-        ],
-        "evidence": "object-treatments-result.md"
+        ]
       }
     },
     {
@@ -3610,8 +3606,7 @@
         "remaining": [
           "Native point count is bounded to 300\u20138,000; source variable-size/drift/material/studio breadth and WebGPU backend are not replicated.",
           "Full source asset formats, textures/material preservation and exact visual/API parity remain outside the implementation."
-        ],
-        "evidence": "material-sculptures-result.md"
+        ]
       }
     },
     {
@@ -4503,8 +4498,7 @@
         "remaining": [
           "The original dissipative field is not a full Navier-Stokes solver; no source ripples, splashes, grain, lighting/studio breadth or geometric wobble parity.",
           "No arbitrary HTML capture, source renderer/WebGPU parity or unrestricted model formats."
-        ],
-        "evidence": "material-sculptures-result.md"
+        ]
       }
     },
     {

@@ -11104,7 +11104,6 @@
           "Full source studio/material, camera and format options; renderer and exact visual parity"
         ],
         "evidence": [
-          "reference/expansion/canvas/object-treatments-result.md",
           "reference/expansion/canvas/receipts/object-treatments-handoff.json",
           "output/playwright/expansion/objects/results.json",
           "output/playwright/expansion/objects/touch-native-results.json",
@@ -11342,7 +11341,6 @@
           "Full source studio/material, camera and format options; renderer and exact visual parity"
         ],
         "evidence": [
-          "reference/expansion/canvas/object-treatments-result.md",
           "reference/expansion/canvas/receipts/object-treatments-handoff.json",
           "output/playwright/expansion/objects/results.json",
           "output/playwright/expansion/objects/touch-native-results.json",
@@ -11511,7 +11509,6 @@
           "Full source material/studio/lighting controls, asset formats, WebGPU backend and exact visual/API parity are not implemented."
         ],
         "evidence": [
-          "reference/expansion/canvas/material-sculptures-result.md",
           "REVIEW-EXPANSION-BATCH-04.md"
         ],
         "verificationScope": "original-useful-core"
@@ -11632,7 +11629,6 @@
           "Full source studio/material, camera and format options; renderer and exact visual parity"
         ],
         "evidence": [
-          "reference/expansion/canvas/object-treatments-result.md",
           "reference/expansion/canvas/receipts/object-treatments-handoff.json",
           "output/playwright/expansion/objects/results.json",
           "output/playwright/expansion/objects/touch-native-results.json",
@@ -11732,7 +11728,6 @@
           "Full source asset formats, textures/material preservation and exact visual/API parity remain outside the implementation."
         ],
         "evidence": [
-          "reference/expansion/canvas/material-sculptures-result.md",
           "REVIEW-EXPANSION-BATCH-04.md"
         ],
         "verificationScope": "original-useful-core"
@@ -11899,7 +11894,6 @@
           "No arbitrary HTML capture, source renderer/WebGPU parity or unrestricted model formats."
         ],
         "evidence": [
-          "reference/expansion/canvas/material-sculptures-result.md",
           "REVIEW-EXPANSION-BATCH-04.md"
         ],
         "verificationScope": "original-useful-core"

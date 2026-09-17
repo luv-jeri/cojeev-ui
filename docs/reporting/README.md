@@ -1,7 +1,5 @@
 # Reporting
 
-Production/beta operations, the Resend adapter, safe activation, and migration instructions are in [OPERATIONS.md](./OPERATIONS.md). Apply that runbook before connecting provider credentials; legacy provisioning examples below are not an activation checklist.
-
 The floating **Make it better** button opens component requests and bug reports. `/requests/` is the public demand board. `/feedback-admin/` is a private maintainer view protected by the Worker, not by the static page. All three use the library's existing design primitives.
 
 ## Run locally

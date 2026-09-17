@@ -8,6 +8,8 @@ Components live under `registry/cojeev/ui/`, with scoped CSS sidecars under `reg
 
 Before submitting a change, run `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, and the relevant production behavior checks. `npm run gate` checks the built docs and shared motion. Add meaningful behavior cases for new interactive entries in `scripts/check-docs.mjs`; static entries must be explicitly identified. Test pointer and keyboard separately, open/close and focus return, disabled/error states, light/dark themes and mobile layout.
 
-Use focused logic tests for hand-written behavior. Preserve source-comparison evidence; do not weaken a comparison or edit the reference to conceal a difference. The refinement brief permits intentional improvements to confirmed source defects, with the benefit and evidence recorded in REFINEMENTS.md and the release report.
+Use focused logic tests for hand-written behavior. Preserve source-comparison evidence; do not weaken a comparison or edit the reference to conceal a difference. Explain intentional differences and relevant validation in the pull request.
+
+Keep pull requests focused on useful code, tests and public documentation. Keep internal plans, agent notes, audit reports, screenshots from test runs and generated logs outside version control.
 
 Do not commit credentials, machine-specific paths or private application code. Font licences remain separate from the MIT licence. Contributions use the repository's MIT licence.
