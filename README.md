@@ -6,7 +6,7 @@
 
 Expressive React components with organic shapes, purposeful motion, and source you can make your own.
 
-**172 installable components**, MIT licensed and shadcn-compatible, with no dependency on the private Cojeev application. You add one entry at a time and the source lands in your project, where it is yours to change.
+**173 installable components**, MIT licensed and shadcn-compatible, with no dependency on the private Cojeev application. You add one entry at a time and the source lands in your project, where it is yours to change.
 
 [Website](https://000h.cojeev.com/) · [Browse components](https://000h.cojeev.com/docs/) · [Work with Sanjay](https://000h.cojeev.com/work-with-me/)
 
