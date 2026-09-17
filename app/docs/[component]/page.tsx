@@ -1,9 +1,11 @@
 import { pageMetadata } from "@/lib/site-config";
+import { componentStructuredData } from "@/lib/seo/structured-data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { DocsPage } from "fumadocs-ui/page";
 import { catalog, documentationCatalog, componentGuide, publicURL } from "@/lib/catalog";
 import { ComponentPreview } from "@/components/component-preview";
+import { JsonLd } from "@/components/seo/json-ld";
 import { InstallCommand } from "@/components/install-command";
 import { DocsIntroArtwork } from "@/components/docs-atmosphere";
 import { exampleManifest, type ExampleId } from "@/components/examples/manifest";
@@ -65,7 +67,9 @@ export default async function Page({
     ),
   ];
   return (
-    <DocsPage
+    <>
+      {!entry.meta.source.reviewOnly && <JsonLd data={componentStructuredData(entry)} />}
+      <DocsPage
       full
       breadcrumb={{ enabled: false }}
       footer={{ enabled: false }}
@@ -246,6 +250,7 @@ export default async function Page({
           ]} offset={64} />
         </aside>
       </div>
-    </DocsPage>
+      </DocsPage>
+    </>
   );
 }

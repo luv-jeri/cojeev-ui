@@ -908,14 +908,41 @@ test('the analytics consent surface selects its own browser journey instead of t
   assert.equal(releaseDepth(['app/layout.tsx', 'components/ui/button.tsx']).depth, 'full');
 });
 
+test('structured data pages select rendered SEO validation instead of the component catalogue', () => {
+  const paths = [
+    'app/page.tsx',
+    'app/docs/page.tsx',
+    'app/docs/[component]/page.tsx',
+    'components/seo/json-ld.tsx',
+    'lib/seo/structured-data.ts',
+    'tests/structured-data.test.ts',
+    'scripts/check-structured-data.mjs',
+  ];
+  const decision = releaseDepth(paths);
+  assert.equal(decision.depth, 'affected');
+  assert.deepEqual(decision.suites, ['seo-structured-data']);
+  const outputs = releaseOutputs(decision);
+  assert.equal(outputs.run_catalogue, 'false');
+  assert.equal(outputs.run_seo, 'true');
+  assert.equal(outputs.run_checks, 'true');
+  assert.equal(outputs.run_release, 'true');
+
+  const workflow = parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8'));
+  const validation = workflow.jobs.verify.steps.find(step => step.run === 'node scripts/check-structured-data.mjs --dir artifacts/release/production/site');
+  assert.ok(validation, 'the release job must inspect the packaged production HTML');
+  assert.match(validation.if, /run_seo == 'true'/);
+
+  assert.equal(releaseDepth([...paths, 'components/seo/unknown.tsx']).depth, 'full');
+});
+
 test('release outputs are complete, explicit and fail safe for every depth', () => {
   const docs = releaseOutputs(releaseDepth(['docs/note.md']));
   assert.deepEqual(docs, {
     depth: 'docs', depth_reason: '1 changed path, all documentation',
-    run_checks: 'false', run_release: 'false', run_catalogue: 'false', run_transient: 'false', run_analytics: 'false',
+    run_checks: 'false', run_release: 'false', run_catalogue: 'false', run_transient: 'false', run_analytics: 'false', run_seo: 'false',
   });
   const full = releaseOutputs(releaseDepth(['components/ui/button.tsx']));
-  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics']) assert.equal(full[flag], 'true', flag);
+  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics', 'run_seo']) assert.equal(full[flag], 'true', flag);
   assert.equal(full.depth, 'full');
   assert.ok(full.depth_reason.includes('components/ui/button.tsx'));
   // Every published value is a single line, so no reason can forge another output.
