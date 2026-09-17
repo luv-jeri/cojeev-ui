@@ -869,14 +869,41 @@ test('paths that own a bounded browser harness select it instead of the catalogu
   assert.equal(outputs.run_release, 'true');
 });
 
+test('the analytics consent surface selects its own browser journey instead of the catalogue', () => {
+  const paths = [
+    'app/layout.tsx',
+    'app/privacy/page.tsx',
+    'components/analytics/analytics-consent.css',
+    'components/analytics/analytics-consent.tsx',
+    'components/analytics/analytics-preferences.tsx',
+    'components/analytics/analytics-preview.tsx',
+    'components/analytics/analytics-provider.tsx',
+    'components/analytics/use-analytics-status.ts',
+    'lib/analytics/client.ts',
+    'tests/analytics.browser.mjs',
+    'tests/analytics.test.ts',
+  ];
+  const decision = releaseDepth(paths);
+  assert.equal(decision.depth, 'affected');
+  assert.deepEqual(decision.suites, ['analytics-browser']);
+  const outputs = releaseOutputs(decision);
+  assert.equal(outputs.run_catalogue, 'false');
+  assert.equal(outputs.run_analytics, 'true', 'consent still needs its disabled and accepted browser journeys');
+  assert.equal(outputs.run_checks, 'true');
+  assert.equal(outputs.run_release, 'true');
+
+  assert.equal(releaseDepth([...paths, 'components/analytics/unknown.tsx']).depth, 'full');
+  assert.equal(releaseDepth(['app/layout.tsx', 'components/ui/button.tsx']).depth, 'full');
+});
+
 test('release outputs are complete, explicit and fail safe for every depth', () => {
   const docs = releaseOutputs(releaseDepth(['docs/note.md']));
   assert.deepEqual(docs, {
     depth: 'docs', depth_reason: '1 changed path, all documentation',
-    run_checks: 'false', run_release: 'false', run_catalogue: 'false', run_transient: 'false',
+    run_checks: 'false', run_release: 'false', run_catalogue: 'false', run_transient: 'false', run_analytics: 'false',
   });
   const full = releaseOutputs(releaseDepth(['components/ui/button.tsx']));
-  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient']) assert.equal(full[flag], 'true', flag);
+  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics']) assert.equal(full[flag], 'true', flag);
   assert.equal(full.depth, 'full');
   assert.ok(full.depth_reason.includes('components/ui/button.tsx'));
   // Every published value is a single line, so no reason can forge another output.
@@ -940,7 +967,7 @@ test('the release command reads a real diff and publishes one of the three known
   assert.equal(result.status, 0, result.stderr);
   assert.equal(published.depth, 'full', 'an unreadable range is a complete run, never a blank one');
   assert.ok(['docs', 'affected', 'full'].includes(published.depth));
-  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient']) {
+  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics']) {
     assert.ok(['true', 'false'].includes(published[flag]), `${flag}=${published[flag]}`);
   }
 });
@@ -975,7 +1002,7 @@ test('a reduced depth switches off the catalogue only, never packaging or integr
   const verify = releaseJob().jobs.verify;
   // Browser catalogue gates: reducible.
   for (const gate of ['npm run gate', 'npm run gate:mobile', 'npm run gate:marketing', 'npm run gate:smooth-scroll',
-    'run-reporting-browser.mjs', 'npm run analytics:browser', 'tests/analytics.browser.mjs']) {
+    'run-reporting-browser.mjs']) {
     const step = findStep(verify, gate);
     assert.ok(step, gate);
     assert.match(String(step.if), /steps\.depth\.outputs\.run_catalogue == 'true'/, gate);
@@ -998,6 +1025,24 @@ test('paths with their own harness still run real browser evidence at a reduced 
   assert.match(String(step.if), /run_transient == 'true'/);
   assert.match(String(step.if), /run_catalogue != 'true'/, 'the catalogue already renders these cases');
   for (const control of ['--negative', '--probe']) assert.ok(step.run.includes(control), control);
+});
+
+test('focused analytics installs Chromium, builds a fixture and runs only its browser journey', () => {
+  const verify = releaseJob().jobs.verify;
+  const install = findStep(verify, 'playwright install');
+  const fixture = findStep(verify, 'Build manual Pages compatibility fixture');
+  assert.match(String(install.if), /run_analytics == 'true'/);
+  assert.match(String(fixture.if), /run_analytics == 'true'/);
+
+  for (const gate of ['npm run analytics:browser', 'tests/analytics.browser.mjs']) {
+    const step = findStep(verify, gate);
+    assert.ok(step, gate);
+    assert.match(String(step.if), /run_analytics == 'true'/, gate);
+  }
+  for (const gate of ['npm run gate', 'npm run gate:mobile', 'npm run gate:marketing', 'npm run gate:smooth-scroll']) {
+    const step = findStep(verify, gate);
+    assert.doesNotMatch(String(step.if), /run_analytics/, gate);
+  }
 });
 
 test('a documentation-only release run installs, builds and deploys nothing', () => {

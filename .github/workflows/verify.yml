@@ -340,7 +340,7 @@ jobs:
       - run: npm ci
         if: steps.depth.outputs.run_checks == 'true'
       - run: npx playwright install --with-deps chromium webkit
-        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true')
+        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
       - run: npm run lint
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npx next typegen && npm run typecheck
@@ -367,7 +367,7 @@ jobs:
           node scripts/release-csp.mjs beta artifacts/release/beta
           node scripts/release-csp.mjs production artifacts/release/production
       - name: Build manual Pages compatibility fixture for existing browser gates
-        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true')
+        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
         run: npm run build
       - run: npm run check:examples
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
@@ -410,11 +410,11 @@ jobs:
       # 1. Unset: reuse the local reporting fixture above, which sets no analytics
       #    variables at all. Its disposable API is now stopped.
       - run: node tests/analytics.browser.mjs --expect-silent
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
       # 2. Explicitly disabled: the same dummy token and host, refused by the flag
       #    alone, so silence cannot be an artefact of a missing token.
       - name: Rebuild the Pages fixture with analytics explicitly disabled
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'false'
@@ -423,10 +423,10 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: node tests/analytics.browser.mjs --expect-silent
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
       # 3. Enabled: explicit events only, asserted against the fixture's own stamps.
       - name: Rebuild the Pages fixture with analytics capture enabled
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'true'
@@ -435,7 +435,7 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: npm run analytics:browser
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
         env:
           ANALYTICS_TEST_ENVIRONMENT: beta
           ANALYTICS_TEST_RELEASE: '0000000000000000000000000000000000000000'

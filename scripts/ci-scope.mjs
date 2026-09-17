@@ -275,6 +275,23 @@ const FOCUSED_BROWSER = new Map([
   ["tests/docs-clock-isolation.browser.mjs", "transient-timing"],
   ["scripts/lib/docs-summary.mjs", "transient-timing"],
   ["tests/docs-summary.test.mjs", "transient-timing"],
+  // E03-2 analytics consent. These files only own analytics loading, consent,
+  // preferences and the privacy-page control. Their three analytics browser
+  // journeys cover unconfigured, explicitly disabled and accepted capture.
+  // Exact paths keep neighbouring application and component changes on full.
+  ...[
+    "app/layout.tsx",
+    "app/privacy/page.tsx",
+    "components/analytics/analytics-consent.css",
+    "components/analytics/analytics-consent.tsx",
+    "components/analytics/analytics-preferences.tsx",
+    "components/analytics/analytics-preview.tsx",
+    "components/analytics/analytics-provider.tsx",
+    "components/analytics/use-analytics-status.ts",
+    "lib/analytics/client.ts",
+    "tests/analytics.browser.mjs",
+    "tests/analytics.test.ts",
+  ].map(file => [file, "analytics-browser"]),
 ]);
 
 // Files that MUST keep full catalogue verification for any real change, but whose
@@ -425,6 +442,7 @@ export function releaseOutputs(decision) {
     // A bounded browser harness instead of the catalogue: real browser evidence
     // for the few paths that own one, never zero browser evidence for them.
     run_transient: String(decision.depth === "full" || (decision.suites ?? []).includes("transient-timing")),
+    run_analytics: String(decision.depth === "full" || (decision.suites ?? []).includes("analytics-browser")),
   };
 }
 
