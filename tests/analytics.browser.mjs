@@ -186,6 +186,7 @@ try {
     const { context, captures, attempts } = await analyticsContext(browser, undefined, null);
     const page = await context.newPage();
     await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Analytics choices", exact: true }).click();
     await page.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
     await copyInstallCommand(page);
     await delay(1_200);
@@ -285,6 +286,7 @@ try {
     const { context, captures, attempts } = await analyticsContext(browser, undefined, null);
     const page = await context.newPage();
     await page.goto(`${base}/`, { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "Analytics choices", exact: true }).click();
     await page.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
     const specimen = page.locator('[data-featured-component="motion-drawer"] [data-analytics-preview="motion-drawer"]');
     await specimen.scrollIntoViewIfNeeded();
