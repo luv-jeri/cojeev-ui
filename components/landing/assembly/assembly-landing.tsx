@@ -572,46 +572,28 @@ export function AssemblyLanding({
         The page still never enables sound on its own: this switch is the gesture
         the browser requires, and nothing is generated before it.
       */}
-      <details className="asm-controls">
-        <summary>Sound</summary>
-        <SoundControls
-          supported={audioSupported}
-          onEnable={enableSound}
-          onDisable={disableSound}
-          onVolume={setVolume}
-          onMusic={setMusic}
-        />
-      </details>
-
       <header className="asm-header">
         <Link href="/" className="asm-brand">
           000h<span>by Cojeev</span>
         </Link>
-        <nav aria-label="Main">
-          <Link href="/docs/">Components</Link>
-          <Link href="/docs/installation/">Get started</Link>
-          <a href={site.sourceUrl}>GitHub ↗</a>
-        </nav>
+        <div className="asm-header__end">
+          <nav aria-label="Main">
+            <Link href="/docs/">Components</Link>
+            <Link href="/docs/installation/">Get started</Link>
+            <a href={site.sourceUrl}>GitHub ↗</a>
+          </nav>
+          <details className="asm-controls">
+            <summary>Sound</summary>
+            <SoundControls
+              supported={audioSupported}
+              onEnable={enableSound}
+              onDisable={disableSound}
+              onVolume={setVolume}
+              onMusic={setMusic}
+            />
+          </details>
+        </div>
       </header>
-      <details className="asm-chapters">
-        <summary>
-          Chapters <span>＋</span>
-        </summary>
-        <nav aria-label="Hero chapters">
-          {CHAPTER_IDS.map((id, index) => (
-            <a
-              key={id}
-              href={`#${id}`}
-              onClick={(event) =>
-                event.currentTarget.closest("details")?.removeAttribute("open")
-              }
-            >
-              {String(index + 1).padStart(2, "0")}{" "}
-              <span>{CHAPTER_RAIL[index]}</span>
-            </a>
-          ))}
-        </nav>
-      </details>
 
       <nav className="asm-rail" aria-label="Chapters">
         <ol>
@@ -667,7 +649,7 @@ export function AssemblyLanding({
             <p className="asm-lead">
               {componentCount} expressive React components.
               <br />
-              Motion, shape, and source you can make your own.
+              Motion, shape, and source you own.
             </p>
             <div className="asm-actions">
               <Link className="asm-action asm-action--solid" href="/docs/">
@@ -677,9 +659,6 @@ export function AssemblyLanding({
                 Get started
               </Link>
             </div>
-            <p className="asm-play-hint">
-              A little curiosity goes a long way. Press, pull, open.
-            </p>
           </div>
           <p className="asm-hero-foot">
             React <span>·</span> TypeScript <span>·</span> Tailwind{" "}

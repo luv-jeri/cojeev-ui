@@ -839,9 +839,8 @@
  * share one line and an unbalanced wrap is what made the strip 110px tall.
  */
 @media (max-width: 899px) {
-  .asm-controls {
-    left: 0;
-    border-bottom-left-radius: 0;
+  .asm .asm-controls {
+    padding-left: 20px;
   }
 
   .asm-sound {
@@ -1097,6 +1096,11 @@
   letter-spacing: 0;
   color: #bcb6ae;
 }
+.asm-header__end {
+  display: flex;
+  align-items: flex-start;
+  gap: 34px;
+}
 .asm-header nav {
   display: flex;
   gap: 34px;
@@ -1109,60 +1113,48 @@
   font-size: 15px;
   text-decoration: none;
 }
-.asm-chapters {
-  position: absolute;
-  top: 105px;
-  right: 3.4vw;
-  z-index: 8;
-  color: var(--asm-cream);
-}
-.asm-chapters summary,
 .asm-controls > summary {
   min-height: 44px;
   display: flex;
   align-items: center;
-  gap: 20px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 15px;
   list-style: none;
-}
-.asm-chapters nav {
-  padding: 12px 20px;
-  border: 1px solid #5c574f;
-  background: #171614;
-  border-radius: 16px;
-}
-.asm-chapters nav a {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  min-height: 44px;
-  font-size: 14px;
-  text-decoration: none;
-}
-.asm:not([data-chapter="hero"]) .asm-chapters {
-  display: none;
 }
 .asm[data-chapter="hero"] .asm-rail {
   display: none;
 }
+/*
+ * Sound now sits in the header, where the artboard's own navigation is, instead
+ * of floating over the object at the bottom of the frame. The summary keeps the
+ * nav's metrics so the row reads as one line of links; the strip is a panel that
+ * drops below it.
+ */
 .asm .asm-controls {
-  top: auto;
-  bottom: 20px;
-  right: 3.4vw;
+  position: relative;
+  top: 0;
+  right: 0;
   left: auto;
-  padding: 0 16px;
-  border: 1px solid #68635b;
-  border-radius: 24px;
-  background: #171614;
+  padding: 0 0 0 34px;
+  border: 0;
+  border-radius: 0;
+  background: none;
   color: var(--asm-cream);
 }
 .asm .asm-controls[open] {
-  padding-bottom: 16px;
   max-width: calc(100vw - 40px);
 }
-.asm-controls > summary::-webkit-details-marker,
-.asm-chapters summary::-webkit-details-marker {
+.asm .asm-sound {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 9;
+  padding: 16px;
+  border: 1px solid #5c574f;
+  background: #171614;
+  border-radius: 16px;
+}
+.asm-controls > summary::-webkit-details-marker {
   display: none;
 }
 .asm-section--hero {
@@ -1221,11 +1213,6 @@
   border-color: var(--asm-pink);
   font-weight: 600;
 }
-.asm-play-hint {
-  font-size: 13px;
-  color: #c9bfb5;
-  margin-top: 26px;
-}
 .asm-hero-foot {
   position: absolute;
   bottom: 38px;
@@ -1265,10 +1252,6 @@
   .asm-header nav a:nth-child(2) {
     display: none;
   }
-  .asm-chapters {
-    top: 87px;
-    right: 24px;
-  }
   .asm-section--hero {
     padding: 160px 24px 80px;
     min-height: 0;
@@ -1298,10 +1281,6 @@
     font-size: 14px;
     padding: 0 20px;
     min-height: 50px;
-  }
-  .asm-play-hint {
-    font-size: 12px;
-    margin-top: 20px;
   }
   .asm-hero-space {
     display: block;
