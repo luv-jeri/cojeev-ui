@@ -186,7 +186,9 @@ color-scheme:light;
 --status-pending-bg:#242019;--status-pending-ink:#CFC7B8;
 --switch-knob:#F6EFE2;--switch-knob-on:#171512;color-scheme:dark;
 --v-canvas:#171512;--v-beige:#221F1B;--v-beige-2:#2A2621;--v-cream-pill:#2F2B25;--v-ink:#FBF4E6;--v-ink-soft:#E4DCCB;--v-on-ink:#111111;
---v-text:#F6EFE2;--v-text-2:#B5AC9E;--v-text-3:#6E675E;--v-border:#3A352E;--v-scrim:rgba(0,0,0,.62);--v-disabled-fill:#3A352E;
+/* Intentional accessibility deviation from the frozen handoff: muted text
+   clears AA on dark canvas and beige; keep appearance-tokens.ts in sync. */
+--v-text:#F6EFE2;--v-text-2:#B5AC9E;--v-text-3:#90897F;--v-border:#3A352E;--v-scrim:rgba(0,0,0,.62);--v-disabled-fill:#3A352E;
 --sidebar:var(--v-structure);--shadow-float:0 12px 32px -12px rgba(0,0,0,.6)}
 @media (prefers-reduced-motion:reduce){:root{
 --t-micro:0ms;/* @kind other */

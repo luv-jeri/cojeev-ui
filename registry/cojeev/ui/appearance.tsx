@@ -97,10 +97,10 @@ export function AppearanceControls({ value, onValueChange, className, ...props }
       <div className="v-appearance__swatches" aria-hidden="true">{palette.accents.map((color, i) => <Shape key={i} name={["pebble-soft", "clover-soft", "scalloped-square", "petal-7"][i]} style={{ color, "--c": color } as React.CSSProperties} />)}</div>
       <p className="v-appearance__description">{palette.description}</p>
     </div>
-    <div className="v-appearance__field"><div className="v-appearance__label"><Label id={`${id}-contrast`}>Contrast</Label><output>{Math.round(settings.contrast)}%</output></div>
+    {palette.tokens ? <p className="v-appearance__description">Paper uses a fixed contrast. Choose another palette to adjust it.</p> : <div className="v-appearance__field"><div className="v-appearance__label"><Label id={`${id}-contrast`}>Contrast</Label><output>{Math.round(settings.contrast)}%</output></div>
       <Slider aria-labelledby={`${id}-contrast`} thumbLabel="Contrast" min={0} max={100} step={5} value={[settings.contrast]} onValueChange={([contrast]) => update({ ...settings, contrast })} />
       <div className="v-appearance__ends"><span>Comfortable</span><span>Strong</span></div>
-    </div>
+    </div>}
     <div className="v-appearance__sample"><strong>A little colour. A clear thought.</strong><p>Readable labels, distinct panels, and room to focus.</p><span>Selected item</span></div>
     <Button variant="secondary" size="sm" onClick={() => update(defaultAppearance)}><AnimatedIcon name="refresh-cw" />Reset appearance</Button>
   </div>;

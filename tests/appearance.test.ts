@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
+import postcss from "postcss";
 import { appearanceTokens, contrastRatio, normalizeAppearance, palettes, type PaletteName } from "../registry/cojeev/lib/appearance-tokens";
 
 /* `paper` reproduces the supplied design system, so it ships literal handoff
@@ -19,6 +20,22 @@ import { appearanceTokens, contrastRatio, normalizeAppearance, palettes, type Pa
  */
 const isLiteral = (palette: (typeof palettes)[number]) => Boolean(palette.tokens);
 
+test("Paper's literal runtime tokens match CSS before hydration in both modes", () => {
+  const css = postcss.parse(readFileSync("registry/cojeev/styles/tokens.css", "utf8"));
+  const paper = palettes.find(p => p.id === "paper")!;
+  for (const mode of ["light", "dark"] as const) {
+    const values = new Map<string, string>();
+    css.walkRules(rule => {
+      if (rule.parent?.type !== "root") return;
+      if (rule.selector !== ":root" && !(mode === "dark" && rule.selector === ':root[data-mode="dark"]')) return;
+      rule.walkDecls(decl => { values.set(decl.prop, decl.value); });
+    });
+    for (const [token, value] of Object.entries(paper.tokens![mode])) {
+      assert.equal(values.get(token), value, `${mode} ${token}: CSS must match runtime`);
+    }
+  }
+});
+
 /** Surfaces each ink is actually read on: the mode's own surfaces, plus the
  * light `paper`/`cream` surfaces only where the mode's ink is dark. */
 function readableSurfaces(palette: (typeof palettes)[number], mode: "light" | "dark") {
@@ -33,8 +50,7 @@ test("all palettes retain readable role pairs at every contrast level in both mo
     const surfaces = readableSurfaces(palette, mode);
     for (const [, bg] of surfaces) {
       for (const ink of ["--v-text", "--v-text-2"]) assert.ok(contrastRatio(t[ink], bg) >= 4.5, `${palette.id}/${mode}/${contrast} ${ink} on ${bg}`);
-      // The third ink is the muted one; its floor is declared per palette and is
-      // 3 for the handoff, whose dark muted ink is 3.27:1 on canvas.
+      // Muted ink must clear the palette's declared contrast floor.
       assert.ok(contrastRatio(t["--v-text-3"], bg) >= palette.mutedInkContrast, `${palette.id}/${mode}/${contrast} --v-text-3 on ${bg}`);
       assert.ok(contrastRatio(t["--v-edge"], bg) >= 3, `${palette.id}/${mode} control edge on ${bg}`);
     }

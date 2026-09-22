@@ -36,13 +36,13 @@ export const palettes: readonly Palette[] = [
         "--sel-bg": "#F5DCEA", "--sel-ink": "#0E0B0B", "--sel-edge": "#C2739B",
         "--switch-knob": "#FBF4E6", "--switch-knob-on": "#FBF4E6", "--v-structure": "#111111",
         "--on-structure": "#FBF4E6", "--structure-text": "#E4DDCD",
-        "--structure-quiet": "#FBF4E617", "--structure-line": "#FBF4E629",
+        "--structure-quiet": "rgba(251,244,230,.09)", "--structure-line": "rgba(251,244,230,.16)",
         "--sidebar-muted": "#8B8474", "--surface-quiet": "#F7F1E2", "--surface-work": "#EFF2F7",
         "--surface-automation": "#F9F2DC", "--surface-memory": "#F0F2E4",
         "--surface-library": "#F9EEF3", "--surface-ai": "#EDF1F6", "--surface-alert": "#F9EDE9",
         "--v-danger": "#E1443E", "--v-danger-fill": "#C9332D", "--v-danger-ink": "#A8302B",
         "--v-danger-soft": "color-mix(in oklab,var(--v-danger) 14%,var(--v-canvas))",
-        "--v-scrim": "#2E2A2475", "--glide-bg": "#1A1714", "--glide-fg": "#F6EFE2",
+        "--v-scrim": "rgba(46,42,36,.46)", "--glide-bg": "#1A1714", "--glide-fg": "#F6EFE2",
         "--card": "var(--v-beige)", "--popover": "var(--v-canvas)",
         "--accent-foreground": "var(--v-text)", "--destructive": "var(--v-danger)",
         "--v-pink": "#F5B8DB", "--v-pink-deep": "#E09CC1",
@@ -76,14 +76,8 @@ export const palettes: readonly Palette[] = [
          * here because a silent correction of the design system would be worse than
          * the deviation itself. Handoff value retained in `reference/`, untouched.
          *
-         * LIMITATION: `registry/cojeev/styles/tokens.css` still supplies the original
-         * `#6E675E` for first paint, and this corrected value is applied by
-         * `AppearanceProvider`'s post-mount effect. CSS-only consumers and pre-hydration
-         * paint therefore still receive the sub-AA value. This is a regression of the
-         * exact property B-018 established. Left in place only because tokens.css is the
-         * handoff's byte-level baseline, so changing a token there is a design-system
-         * deviation requiring the owner's agreement. Aligning it to `#90897F` would
-         * remove the mismatch. */
+         * CSS uses the same accessible value before hydration. The frozen
+         * reference retains its original value; this deviation is intentional. */
         "--v-canvas": "#171512", "--v-paper": "#FBF4E6", "--v-beige": "#221F1B",
         "--v-beige-2": "#2A2621", "--v-cream-pill": "#2F2B25", "--v-text": "#F6EFE2",
         "--v-text-2": "#B5AC9E", "--v-text-3": "#90897F", "--v-ink": "#FBF4E6",
@@ -97,13 +91,13 @@ export const palettes: readonly Palette[] = [
         "--sel-bg": "#3A2430", "--sel-ink": "#F6EFE2", "--sel-edge": "#C2739B",
         "--switch-knob": "#F6EFE2", "--switch-knob-on": "#171512", "--v-structure": "#0C0B0A",
         "--on-structure": "#F6EFE2", "--structure-text": "#DED6C6",
-        "--structure-quiet": "#F6EFE214", "--structure-line": "#F6EFE224",
+        "--structure-quiet": "rgba(246,239,226,.08)", "--structure-line": "rgba(246,239,226,.14)",
         "--sidebar-muted": "#8B8474", "--surface-quiet": "#201D19", "--surface-work": "#1B1F26",
         "--surface-automation": "#241F14", "--surface-memory": "#1D2118",
         "--surface-library": "#241A1F", "--surface-ai": "#1A1F26", "--surface-alert": "#251A17",
         "--v-danger": "#E1443E", "--v-danger-fill": "#C9332D", "--v-danger-ink": "#F0A99C",
         "--v-danger-soft": "color-mix(in oklab,var(--v-danger) 14%,var(--v-canvas))",
-        "--v-scrim": "#0000009E", "--glide-bg": "#0C0B0A", "--glide-fg": "#F6EFE2",
+        "--v-scrim": "rgba(0,0,0,.62)", "--glide-bg": "#0C0B0A", "--glide-fg": "#F6EFE2",
         "--card": "var(--v-beige)", "--popover": "var(--v-canvas)",
         "--accent-foreground": "var(--v-text)", "--destructive": "var(--v-danger)",
         "--v-pink": "#F5B8DB", "--v-pink-deep": "#E09CC1",
@@ -232,10 +226,5 @@ export function appearanceTokens(settings: AppearanceSettings, mode: "light" | "
   // A palette carrying literal handoff tokens overrides everything derived above,
   // so first paint and post-hydration values are identical by construction.
   if (!palette.tokens) return tokens;
-  /* No fallback is attempted for the one token that lands below WCAG AA: a single
-   * ink cannot clear both the dark surfaces and the cream `--v-paper` (white is
-   * 18.22:1 on canvas but 1.09:1 on paper), so any substitute trade would be a
-   * silent redesign. The palette's `mutedInkContrast` states the real figure and
-   * `tests/appearance.test.ts` asserts against it. */
   return { ...tokens, ...palette.tokens[mode] };
 }
