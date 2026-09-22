@@ -149,8 +149,21 @@ export const CHAPTERS: readonly Chapter[] = [
     stage: 0,
     closing: 0,
     spread: 0,
-    instrument: { position: HOME_INSTRUMENT.position, rotation: HOME_INSTRUMENT.rotation, scale: 1 },
-    parts: front({ ...FRONT_FACE, sourcePlate: { position: [0.02, -0.62, -0.15], opacity: 1 }, drawers: { position: [.66, .07, -.12], opacity: 1 } }),
+    /* The artboard's panel sits inside the aperture's opening: its face spans
+     * x 915-1311 and y 195-603 of 1536x1024, and the blue drawers end at 1455.
+     * The panel is an instrument-local 1.0 x 1.05, so the frame that puts it
+     * there is this one — the group is scaled to 0.86 and moved up and right of
+     * the home pose, which had it 15% too large, 65 px low and overlapping the
+     * band's left leg. Measured off the v14 and v16 captures, not chosen by eye:
+     * 441 px per world unit across and 388 up, so 0.98 with the group at
+     * [0.47, 0.22] puts the face at 920-1311 x 195-603 and the drawers' right
+     * edge at 1471 — the artboard's own numbers. */
+    instrument: { position: [0.47, 0.22, 0] as Vec3, rotation: HOME_INSTRUMENT.rotation, scale: 0.98 },
+    /* The artboard's drawer stack centres on y 413 of the frame; the shared
+     * drawer pose puts it at 361. Only the part's position is overridden — the
+     * tabs keep the size the geometry draws, because scaling the group would
+     * move the tabs without their HTML labels, which anchor to the part. */
+    parts: front({ ...FRONT_FACE, sourcePlate: { position: [0.02, -0.62, -0.15], opacity: 1 }, drawers: { position: [.66, -0.064, -.12], opacity: 1 } }),
   },
   {
     id: "catalogue",

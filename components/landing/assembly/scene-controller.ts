@@ -568,6 +568,18 @@ export function createSceneController(
     }
 
     assembly.setHeroPresentation(heroWeight);
+    /* The chapter frame's instrument position and scale were dead: the group was
+     * posed once at build time from `INSTRUMENT.home`, and the frame's own values
+     * were read only to aim the phone camera. The artboard needs the hero's panel
+     * smaller and further up-right than the home pose, so they are applied here.
+     * The rotation stays authored below, not read from the frame, because the
+     * hero weight animates it. */
+    assembly.instrument.position.set(
+      sceneFrame.instrument.position[0],
+      sceneFrame.instrument.position[1],
+      sceneFrame.instrument.position[2],
+    );
+    assembly.instrument.scale.setScalar(sceneFrame.instrument.scale);
     assembly.instrument.rotation.set(
       0.05,
       0.28 - 0.6 * heroWeight,
