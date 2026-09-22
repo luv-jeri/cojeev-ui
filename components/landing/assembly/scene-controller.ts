@@ -262,6 +262,12 @@ export function createSceneController(
   const pointerWorld = new THREE.Vector3();
   const planeNormal = new THREE.Vector3();
   const warmHeroLight = new THREE.Color(0xffdca0);
+  /* The artboard's floor is a warm brown, brighter than the field behind it —
+   * the object is standing on a lit surface, not floating over a void. The
+   * chapter frame only carries one backdrop, so the hero's floor is lifted
+   * toward its own colour by the hero weight rather than by a second field.
+   * Sampled from the reference at 400,950 and 1150,1000. */
+  const warmHeroFloor = new THREE.Color(0x3b2f28);
   const backdrop = new THREE.Color();
   const floorColor = new THREE.Color();
   const start = new THREE.Vector3();
@@ -502,6 +508,7 @@ export function createSceneController(
     backdrop.setStyle(sceneFrame.backdrop, THREE.SRGBColorSpace);
     (scene.background as THREE.Color).copy(backdrop);
     floorColor.copy(backdrop).multiplyScalar(0.86);
+    floorColor.lerp(warmHeroFloor, heroWeight * 0.55);
     key.color.setHex(0xfff4e2).lerp(warmHeroLight, heroWeight * 0.45);
     key.intensity = sceneFrame.lights.key;
     fill.intensity = sceneFrame.lights.fill;
@@ -533,6 +540,9 @@ export function createSceneController(
     }
     assembly.aperture.rotation.set(0, -0.12 * heroWeight, -0.11 * heroWeight);
     applyOpacity(assembly.aperture, sceneFrame.aperture.opacity);
+    assembly.apertureMirror.position.copy(assembly.aperture.position);
+    assembly.apertureMirror.rotation.copy(assembly.aperture.rotation);
+    assembly.apertureMirror.scale.copy(assembly.aperture.scale);
 
     (assembly.floor.material as THREE.MeshStandardMaterial).color.copy(
       floorColor,

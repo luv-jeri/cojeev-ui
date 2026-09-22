@@ -295,6 +295,8 @@ function speciesAmount(id: string) {
 export type AssemblyScene = {
   root: THREE.Group;
   aperture: THREE.Group;
+  /** The band mirrored about the floor plane; follows `aperture` every frame. */
+  apertureMirror: THREE.Mesh;
   floor: THREE.Mesh;
   field: THREE.Group;
   stage: THREE.Group;
@@ -378,6 +380,41 @@ export function buildAssemblyScene(): AssemblyScene {
   grain.minFilter = THREE.LinearMipmapLinearFilter;
   grain.magFilter = THREE.LinearFilter;
   grain.needsUpdate = true;
+  /* The artboard's floor is a warm pool that fades into the field, not a lit
+   * slab with a visible horizon: sampled at 200,800 the reference floor is
+   * #2b2723 and at 400,950 it is #4c3b36, while the field above it is #13110f.
+   * A plane lit by a directional light is uniformly bright, so the falloff has
+   * to be in the map. It rides `setHeroPresentation` with the grain, so no
+   * other chapter's floor gains a texture. */
+  const floorFalloffData = new Uint8Array(64 * 64 * 4);
+  for (let y = 0; y < 64; y++) {
+    for (let x = 0; x < 64; x++) {
+      const dx = (x + 0.5) / 64 - 0.5;
+      const dy = (y + 0.5) / 64 - 0.5;
+      /* The plane is 26 units across but the frame only ever sees the middle
+       * few, so the ramp has to finish well inside it: bright within about two
+       * units of the object, dark by six. Measured off the v9 capture, whose
+       * whole visible floor was still on the plateau. */
+      const r = Math.min(1, Math.hypot(dx, dy) / 0.5);
+      const t = Math.min(1, Math.max(0, (r - 0.02) / 0.22));
+      const eased = t * t * (3 - 2 * t);
+      const value = Math.round(255 * (1 - 0.78 * eased));
+      floorFalloffData.set([value, value, value, 255], (y * 64 + x) * 4);
+    }
+  }
+  const floorFalloff = new THREE.DataTexture(
+    floorFalloffData,
+    64,
+    64,
+    THREE.RGBAFormat,
+  );
+  floorFalloff.wrapS = floorFalloff.wrapT = THREE.ClampToEdgeWrapping;
+  /* Linear, not sRGB: this is a multiplier on the floor colour, not a picture. */
+  floorFalloff.minFilter = THREE.LinearMipmapLinearFilter;
+  floorFalloff.magFilter = THREE.LinearFilter;
+  floorFalloff.generateMipmaps = true;
+  floorFalloff.needsUpdate = true;
+
   const root = new THREE.Group();
   const shadowed = (object: THREE.Object3D, cast = true, receive = true) => {
     object.traverse((child) => {
@@ -421,10 +458,30 @@ export function buildAssemblyScene(): AssemblyScene {
   aperture.add(apertureFrame);
   root.add(aperture);
 
+  /* The artboard's floor holds a soft reflection of the band, and the cheapest
+   * honest version of that here is the real mesh, mirrored about the floor
+   * plane. The hero's floor is deliberately translucent (see the chapter
+   * frame's `floor`), so this is seen through it at the remainder — about a
+   * fifth — which is the reference's order of magnitude. `DoubleSide` is
+   * required: the negative scale reverses the winding, so a single-sided
+   * material would render the inside of the band. */
+  const mirrorMaterial = own(kit.cream);
+  mirrorMaterial.side = THREE.DoubleSide;
+  const apertureMirror = new THREE.Mesh(apertureFrame.geometry, mirrorMaterial);
+  const reflection = new THREE.Group();
+  reflection.scale.y = -1;
+  reflection.position.y = 2 * INSTRUMENT.floor.y;
+  reflection.add(apertureMirror);
+  reflection.visible = false;
+  root.add(reflection);
+
   /* ------------------------------------------------------------------- floor */
+  /* `own()` clones, so the material the mesh actually renders with is this
+   * one — toggling `kit.floor.map` would have changed nothing at all. */
+  const floorMaterial = own(kit.floor);
   const floor = new THREE.Mesh(
     geo(new THREE.PlaneGeometry(INSTRUMENT.floor.size, INSTRUMENT.floor.size)),
-    own(kit.floor),
+    floorMaterial,
   );
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = INSTRUMENT.floor.y;
@@ -1003,6 +1060,7 @@ export function buildAssemblyScene(): AssemblyScene {
   return {
     root,
     aperture,
+    apertureMirror,
     floor,
     field,
     stage,
@@ -1024,6 +1082,14 @@ export function buildAssemblyScene(): AssemblyScene {
         if (material.map !== map) {
           material.map = map;
           material.needsUpdate = true;
+        }
+      }
+      {
+        reflection.visible = weight > 0.5;
+        const map = weight > 0 ? floorFalloff : null;
+        if (floorMaterial.map !== map) {
+          floorMaterial.map = map;
+          floorMaterial.needsUpdate = true;
         }
       }
       for (const { mesh, original, sculpted } of heroMorphs) {

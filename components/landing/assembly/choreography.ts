@@ -138,11 +138,13 @@ export const CHAPTERS: readonly Chapter[] = [
     id: "hero",
     marker: "000h / the living assembly",
     tone: "dark",
-    backdrop: "#0b0b0c",
+    backdrop: "#141110",
     camera: { position: [0.55, 0.26, 4.2], target: [-0.42, -0.06, 0], fov: 35, roll: 0 },
     lights: { key: .8, fill: 0.65, rim: 0.8 },
     aperture: { opacity: 1, position: [0.85, 0.52, -0.7], scale: 1.62 },
-    floor: 1,
+    /* Below 0.985 `applyOpacity` also stops the floor writing depth, which is
+     * what lets the mirrored band underneath show through. */
+    floor: 0.82,
     field: 0,
     stage: 0,
     closing: 0,
