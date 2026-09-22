@@ -13,6 +13,7 @@
  * disposed on unmount so a later visit cannot inherit a stale press or drag.
  */
 import * as React from "react";
+import type { HeroControlId, HeroPhase, DrawerId } from "./hero-interaction";
 import type { SpecimenFilterId } from "./canonical";
 import { isContourPreset, type ContourPreset } from "./contour-export";
 import { PALETTE } from "./canonical";
@@ -23,6 +24,9 @@ export type LayerId = "ui" | "style" | "source";
 export type WebglStatus = "pending" | "ready" | "failed" | "unavailable";
 
 export type ExperienceState = {
+  heroControl: HeroControlId | null;
+  heroPhase: HeroPhase;
+  heroDrawer: DrawerId | null;
   /** Create press. Direct, immediate, never spring-integrated. */
   pressed: boolean;
   /**
@@ -81,6 +85,7 @@ export type AssemblyEvent =
   | { type: "arrive"; to: string };
 
 const INITIAL: ExperienceState = {
+  heroControl: null, heroPhase: "idle", heroDrawer: null,
   pressed: false,
   tension: 46,
   tryMode: false,

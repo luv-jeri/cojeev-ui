@@ -22,8 +22,18 @@ import {
   type PartId,
 } from "./choreography";
 import { blendContour, type ContourPreset } from "./contour-export";
-import { applyOpacity, buildAssemblyScene, type AssemblyScene } from "./scene-geometry";
-import { projectSeam, seamMatrices } from "./seam-projection";
+import {
+  applyOpacity,
+  buildAssemblyScene,
+  type AssemblyScene,
+} from "./scene-geometry";
+import { projectSeam, projectFace, seamMatrices } from "./seam-projection";
+import {
+  heroInteraction,
+  heroPointer,
+  cameraStep,
+  cameraEase,
+} from "./hero-interaction";
 import { experience, sceneAnimates } from "./experience-store";
 
 export type SeamRect = {
@@ -33,9 +43,14 @@ export type SeamRect = {
   height: number;
   /** Screen-space rotation of the sculpted control, in radians. */
   angle: number;
+  corners?: { x: number; y: number }[];
+  matrix?: number[];
 };
 
-export type SeamSample = { create: SeamRect | null };
+export type SeamSample = {
+  create: SeamRect | null;
+  faces: Record<string, SeamRect | null>;
+};
 
 export type SceneStatus = "pending" | "ready" | "lost" | "unavailable";
 
@@ -60,24 +75,35 @@ export type SceneController = {
 
 type Spring = { value: number; velocity: number; target: number };
 
-const createSpring = (value: number): Spring => ({ value, velocity: 0, target: value });
+const createSpring = (value: number): Spring => ({
+  value,
+  velocity: 0,
+  target: value,
+});
 
 /**
  * Semi-implicit Euler on fixed 1/120 s substeps. Independent of frame rate, and
  * a backgrounded tab cannot accumulate elapsed time because `dt` is clamped.
  */
-function stepSpring(spring: Spring, stiffness: number, damping: number, dt: number) {
+function stepSpring(
+  spring: Spring,
+  stiffness: number,
+  damping: number,
+  dt: number,
+) {
   const substeps = Math.max(1, Math.min(8, Math.ceil(dt / (1 / 120))));
   const step = dt / substeps;
   for (let index = 0; index < substeps; index++) {
-    const force = (spring.target - spring.value) * stiffness - spring.velocity * damping;
+    const force =
+      (spring.target - spring.value) * stiffness - spring.velocity * damping;
     spring.velocity += force * step;
     spring.value += spring.velocity * step;
   }
 }
 
 const settled = (spring: Spring, epsilon = 2e-4) =>
-  Math.abs(spring.value - spring.target) < epsilon && Math.abs(spring.velocity) < epsilon;
+  Math.abs(spring.value - spring.target) < epsilon &&
+  Math.abs(spring.velocity) < epsilon;
 
 /** Press: 6–8% compression, settling inside the 220–320 ms contract. */
 const PRESS = { stiffness: 380, damping: 30 };
@@ -128,7 +154,7 @@ export function createSceneController(
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.02;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0b0b0c);
@@ -139,7 +165,9 @@ export function createSceneController(
 
   /* ------------------------------------------------------------------ lights */
   const key = new THREE.DirectionalLight(0xfff4e2, LIGHT_RIG.key.intensity);
-  key.position.set(...(LIGHT_RIG.key.position as unknown as [number, number, number]));
+  key.position.set(
+    ...(LIGHT_RIG.key.position as unknown as [number, number, number]),
+  );
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
   key.shadow.camera.left = -3.2;
@@ -153,14 +181,22 @@ export function createSceneController(
   scene.add(key, key.target);
 
   const fill = new THREE.DirectionalLight(0xdfe8ff, LIGHT_RIG.fill.intensity);
-  fill.position.set(...(LIGHT_RIG.fill.position as unknown as [number, number, number]));
+  fill.position.set(
+    ...(LIGHT_RIG.fill.position as unknown as [number, number, number]),
+  );
   scene.add(fill);
 
   const rim = new THREE.DirectionalLight(0xffe9d6, LIGHT_RIG.rim.intensity);
-  rim.position.set(...(LIGHT_RIG.rim.position as unknown as [number, number, number]));
+  rim.position.set(
+    ...(LIGHT_RIG.rim.position as unknown as [number, number, number]),
+  );
   scene.add(rim);
 
-  const ambient = new THREE.HemisphereLight(0xffffff, 0x1a1a1c, LIGHT_RIG.ambient);
+  const ambient = new THREE.HemisphereLight(
+    0xffffff,
+    0x1a1a1c,
+    LIGHT_RIG.ambient,
+  );
   scene.add(ambient);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -199,12 +235,33 @@ export function createSceneController(
    * large object could disagree indefinitely while both looked plausible. An
    * explicit record of what was actually applied cannot have that failure mode.
    */
-  let contourApplied: { preset: ContourPreset; amount: number; colour: string } | null = null;
+  let contourApplied: {
+    preset: ContourPreset;
+    amount: number;
+    colour: string;
+  } | null = null;
 
   const compression = createSpring(0);
   const spread = createSpring(0);
   const echo = createSpring(0);
 
+  let cameraMix = 0;
+  let releaseBeat = 0;
+  let previousPhase = "idle";
+  let cameraControl: string | null = null;
+  const cameraFocusPoint = new THREE.Vector3();
+  const focusStart = new THREE.Vector3();
+  const focusEnd = new THREE.Vector3();
+  let focusMix = 1;
+  let hidden = false;
+  let contextLost = false;
+  let mobileStageTop = 0;
+  let mobileStageHeight = 0;
+  const pointerRay = new THREE.Raycaster();
+  const ribbonPlane = new THREE.Plane();
+  const pointerWorld = new THREE.Vector3();
+  const planeNormal = new THREE.Vector3();
+  const warmHeroLight = new THREE.Color(0xffdca0);
   const backdrop = new THREE.Color();
   const floorColor = new THREE.Color();
   const start = new THREE.Vector3();
@@ -265,9 +322,23 @@ export function createSceneController(
     const nextKey = rect
       ? `${rect.x.toFixed(1)}:${rect.y.toFixed(1)}:${rect.width.toFixed(1)}:${rect.angle.toFixed(3)}`
       : "hidden";
-    if (nextKey === lastSeamKey) return;
+    if (nextKey === lastSeamKey && experience.get().heroPhase === "idle")
+      return;
     lastSeamKey = nextKey;
-    onSeam({ create: rect });
+    const faces: Record<string, SeamRect | null> = {};
+    const { projection, view } = seamMatrices(camera);
+    for (const [id, face] of Object.entries(assembly.heroFaces)) {
+      face.object.updateWorldMatrix(true, false);
+      faces[id] = projectFace(
+        face.probe,
+        face.object.matrixWorld.elements,
+        projection,
+        view,
+        canvas.clientWidth,
+        canvas.clientHeight,
+      );
+    }
+    onSeam({ create: rect, faces });
   }
 
   /**
@@ -280,7 +351,7 @@ export function createSceneController(
     return Math.min(1.75, Math.max(1, 1.1 / (width / height)));
   }
 
-  function applyFrame(dt: number) {
+  function applyFrame(dt: number, cameraDt = dt) {
     const state = experience.get();
     /* One predicate for both silencers. The visitor's system preference is a
      * standing instruction and the site's own switch is the other; either one
@@ -316,7 +387,9 @@ export function createSceneController(
     const sceneFrame = animates ? frame : restingFrame(frame.progress);
     const pose = sceneFrame.pose;
 
-    camera.position.set(...(pose.position as unknown as [number, number, number]));
+    camera.position.set(
+      ...(pose.position as unknown as [number, number, number]),
+    );
     camera.fov = pose.fov;
     cameraTarget.set(...(pose.target as unknown as [number, number, number]));
     // Portrait framing. A 35 degree vertical field on a 390x844 screen is a
@@ -324,16 +397,103 @@ export function createSceneController(
     // the width with the instrument and leaves nothing for the text. Pull back
     // along the same sight line and aim below the subject, which lifts it into
     // the upper half where the document is not.
+    const heroWeight = sceneFrame.weights[0];
     const fit = portraitFit(canvas.clientWidth, canvas.clientHeight);
     if (fit > 1) {
-      // Pull straight back along the authored sight line, then re-aim at the
-      // instrument itself rather than at its chapter framing: a narrow screen
-      // has no room for an off-centre subject and a text column.
       const k = Math.min(1, (fit - 1) / 0.75);
       camera.position.sub(cameraTarget).multiplyScalar(fit).add(cameraTarget);
       const [instrumentX, instrumentY] = sceneFrame.instrument.position;
       cameraTarget.x += (instrumentX - cameraTarget.x) * k;
       cameraTarget.y += (instrumentY - 1.15 - cameraTarget.y) * k;
+    }
+    // A mobile hero owns an actual document-space stage below its actions. The
+    // canvas stays fixed; setViewOffset registers the object to that stage as
+    // native scroll moves it, without pinning the document or intercepting input.
+    camera.clearViewOffset();
+    canvas.style.clipPath = "";
+    if (canvas.clientWidth < 900 && heroWeight > 0) {
+      const width = canvas.clientWidth;
+      const stageHeight = mobileStageHeight || width * 1.12;
+      const mobilePosition = new THREE.Vector3(0.75, 0.23, 3.4);
+      const mobileTarget = new THREE.Vector3(0.42, -0.08, 0);
+      camera.position.lerp(mobilePosition, heroWeight);
+      cameraTarget.lerp(mobileTarget, heroWeight);
+      const fullHeight = width * 1.18;
+      const top = mobileStageTop - scrollY + (stageHeight - fullHeight) / 2;
+      canvas.style.clipPath = `inset(${Math.max(0, mobileStageTop - scrollY) * heroWeight}px 0 ${Math.max(0, canvas.clientHeight - (mobileStageTop - scrollY + stageHeight)) * heroWeight}px)`;
+      camera.setViewOffset(
+        width,
+        fullHeight,
+        0,
+        -top * heroWeight,
+        width,
+        canvas.clientHeight,
+      );
+    }
+    if (
+      state.heroControl !== cameraControl ||
+      (previousPhase === "idle" && state.heroPhase === "approach")
+    ) {
+      cameraControl = state.heroControl;
+      if (cameraControl) {
+        focusStart.copy(cameraFocusPoint);
+        assembly.heroFaces[cameraControl]?.object.getWorldPosition(focusEnd);
+        focusMix = cameraMix > 0 && animates ? 0 : 1;
+      }
+    }
+    if (!heroPointer.frozen) focusMix = Math.min(1, focusMix + cameraDt / 0.42);
+    cameraFocusPoint.lerpVectors(focusStart, focusEnd, cameraEase(focusMix));
+    if (!animates) releaseBeat = 0;
+    if (state.heroPhase !== previousPhase) {
+      if (state.heroPhase === "return") releaseBeat = animates ? 0.09 : 0;
+      previousPhase = state.heroPhase;
+    }
+    if (!animates || state.heroPhase === "idle" || heroWeight < 0.999)
+      cameraMix = 0;
+    else if (!heroPointer.frozen) {
+      releaseBeat = Math.max(0, releaseBeat - cameraDt);
+      if (state.heroPhase !== "return" || releaseBeat === 0)
+        cameraMix = cameraStep(
+          cameraMix,
+          state.heroPhase === "return" ? 0 : 1,
+          cameraDt,
+        );
+    }
+    if (cameraMix === 1 && state.heroPhase === "approach")
+      experience.set({
+        heroPhase: state.heroControl === "switch" ? "return" : "interact",
+      });
+    if (cameraMix === 0 && state.heroPhase === "return" && releaseBeat === 0)
+      experience.set({ heroPhase: "idle", heroControl: null });
+    const approach = cameraEase(cameraMix);
+    const compositionZoom =
+      canvas.clientWidth < 900
+        ? 1
+        : 1 +
+          Math.min(
+            0.14,
+            Math.max(0, canvas.clientWidth / canvas.clientHeight - 1.5) * 0.5,
+          ) *
+            heroWeight;
+    const zoom =
+      compositionZoom *
+      (1 + approach * (canvas.clientWidth < 900 ? 0.12 : 0.28));
+    const restingCameraPosition = camera.position.clone();
+    camera.fov = THREE.MathUtils.radToDeg(
+      2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / zoom),
+    );
+    // Keep the selected face at its resting screen location as we approach.
+    // This also leaves the exit and preview outside the moving surface.
+    if (approach > 0 && state.heroControl) {
+      const face = assembly.heroFaces[state.heroControl];
+      if (face) {
+        const shift = cameraFocusPoint
+          .clone()
+          .sub(cameraTarget)
+          .multiplyScalar(1 - 1 / zoom);
+        camera.position.add(shift);
+        cameraTarget.add(shift);
+      }
     }
     camera.lookAt(cameraTarget);
     camera.rotation.z = pose.roll;
@@ -342,6 +502,7 @@ export function createSceneController(
     backdrop.setStyle(sceneFrame.backdrop, THREE.SRGBColorSpace);
     (scene.background as THREE.Color).copy(backdrop);
     floorColor.copy(backdrop).multiplyScalar(0.86);
+    key.color.setHex(0xfff4e2).lerp(warmHeroLight, heroWeight * 0.45);
     key.intensity = sceneFrame.lights.key;
     fill.intensity = sceneFrame.lights.fill;
     rim.intensity = sceneFrame.lights.rim;
@@ -355,10 +516,27 @@ export function createSceneController(
     assembly.aperture.position.set(
       ...(sceneFrame.aperture.position as unknown as [number, number, number]),
     );
-    assembly.aperture.scale.setScalar(sceneFrame.aperture.scale);
+    assembly.aperture.scale.setScalar(sceneFrame.aperture.scale / zoom);
+    if (zoom > 1) {
+      // Preserve depth while counter-scaling in the camera plane. Scaling the
+      // depth as well would magnify the frame and move it in front of the source.
+      const forward = cameraTarget.clone().sub(camera.position).normalize();
+      const depth = assembly.aperture.position
+        .clone()
+        .sub(restingCameraPosition)
+        .dot(forward);
+      assembly.aperture.position
+        .sub(restingCameraPosition)
+        .divideScalar(zoom)
+        .add(camera.position)
+        .addScaledVector(forward, depth * (1 - 1 / zoom));
+    }
+    assembly.aperture.rotation.set(0, -0.12 * heroWeight, -0.11 * heroWeight);
     applyOpacity(assembly.aperture, sceneFrame.aperture.opacity);
 
-    (assembly.floor.material as THREE.MeshStandardMaterial).color.copy(floorColor);
+    (assembly.floor.material as THREE.MeshStandardMaterial).color.copy(
+      floorColor,
+    );
     applyOpacity(assembly.floor, sceneFrame.floor);
     applyOpacity(assembly.field, sceneFrame.field);
     applyOpacity(assembly.stage, sceneFrame.stage);
@@ -379,6 +557,17 @@ export function createSceneController(
       applyOpacity(object, pose.opacity);
     }
 
+    assembly.setHeroPresentation(heroWeight);
+    assembly.instrument.rotation.set(
+      0.05,
+      0.28 - 0.6 * heroWeight,
+      0.04 * heroWeight,
+    );
+    assembly.parts.switchThumb.rotation.x += (Math.PI / 2) * heroWeight;
+    assembly.parts.sliderThumb.rotation.x += (Math.PI / 2) * heroWeight;
+    assembly.parts.switchThumb.position.z += 0.04 * heroWeight;
+    assembly.parts.sliderThumb.position.z += 0.06 * heroWeight;
+    renderer.toneMappingExposure = 1.02;
     // Direct control state, applied on top of the chapter pose.
     assembly.parts.switchThumb.position.x += state.motionOn
       ? INSTRUMENT.switch.thumbTravel
@@ -390,9 +579,9 @@ export function createSceneController(
 
     const trackPose = sceneFrame.parts.sliderTrack;
     assembly.sliderBand.mesh.position.set(
-      trackPose.position[0],
-      trackPose.position[1],
-      trackPose.position[2],
+      trackPose.position[0] * (1 - heroWeight),
+      trackPose.position[1] * (1 - heroWeight),
+      trackPose.position[2] * (1 - heroWeight),
     );
     assembly.sliderBand.setSpine(
       start.set(
@@ -410,7 +599,11 @@ export function createSceneController(
     );
     applyOpacity(
       assembly.sliderBand.mesh,
-      Math.min(sceneFrame.parts.sliderTrack.opacity, sceneFrame.parts.sliderThumb.opacity),
+      Math.min(
+        sceneFrame.parts.sliderTrack.opacity,
+        sceneFrame.parts.sliderThumb.opacity,
+      ) *
+        (1 - heroWeight),
     );
 
     // Press deformation on the sculpted face; the group keeps the chapter pose.
@@ -420,7 +613,8 @@ export function createSceneController(
       1 - squash * INSTRUMENT.create.pressCompression,
       1 - squash * 0.05,
     );
-    assembly.createMesh.position.z = -squash * INSTRUMENT.create.thickness * 0.45;
+    assembly.createMesh.position.z =
+      -squash * INSTRUMENT.create.thickness * 0.45;
 
     const createPose = sceneFrame.parts.create;
     assembly.ribbon.setSpine(
@@ -430,13 +624,41 @@ export function createSceneController(
         createPose.position[2] + 0.06,
       ),
       end.set(
-        createPose.position[0] - 0.42 - 1.24 * tension,
-        createPose.position[1] + 0.02 - 0.5 * tension,
+        createPose.position[0] - 0.42 - 1.24 * tension - 0.65 * heroWeight,
+        createPose.position[1] +
+          0.02 -
+          0.5 * tension -
+          (canvas.clientWidth >= 900 && canvas.clientHeight < 800
+            ? 0.85
+            : 0.45) *
+            heroWeight,
         createPose.position[2] + 0.12,
       ),
-      0.24 + 0.2 * (1 - tension),
+      (0.24 + 0.2 * (1 - tension)) * (1 - 0.75 * heroWeight),
       0.017 * (1 - 0.15 * tension),
     );
+    if (heroPointer.active && animates && heroWeight > 0.999) {
+      camera.updateMatrixWorld(true);
+      assembly.instrument.updateWorldMatrix(true, false);
+      pointerRay.setFromCamera(
+        new THREE.Vector2(
+          (heroPointer.x / canvas.clientWidth) * 2 - 1,
+          1 - (heroPointer.y / canvas.clientHeight) * 2,
+        ),
+        camera,
+      );
+      planeNormal
+        .set(0, 0, 1)
+        .transformDirection(assembly.instrument.matrixWorld);
+      pointerWorld
+        .set(0, 0, createPose.position[2] + 0.12)
+        .applyMatrix4(assembly.instrument.matrixWorld);
+      ribbonPlane.setFromNormalAndCoplanarPoint(planeNormal, pointerWorld);
+      if (pointerRay.ray.intersectPlane(ribbonPlane, pointerWorld)) {
+        assembly.instrument.worldToLocal(pointerWorld);
+        assembly.ribbon.setSpine(start, pointerWorld, 0.12, 0.012);
+      }
+    }
     applyOpacity(assembly.ribbon.mesh, sceneFrame.weights[0]);
 
     // The contour itself is direct: the exported path and the sculpted face read
@@ -458,7 +680,9 @@ export function createSceneController(
       );
     }
     const flowerPose = sceneFrame.parts.flower;
-    assembly.parts.flower.scale.setScalar(flowerPose.scale * (1 + 0.03 * echo.value));
+    assembly.parts.flower.scale.setScalar(
+      flowerPose.scale * (1 + 0.03 * echo.value),
+    );
 
     scene.updateMatrixWorld(true);
     /* `measureSeam` refreshes the camera's own matrices immediately before it
@@ -473,20 +697,28 @@ export function createSceneController(
   }
 
   const active = () =>
-    !settled(compression) || !settled(spread) || !settled(echo);
+    !settled(compression) ||
+    !settled(spread) ||
+    !settled(echo) ||
+    (sceneAnimates(experience.get()) &&
+      !heroPointer.frozen &&
+      (experience.get().heroPhase === "approach" ||
+        experience.get().heroPhase === "return" ||
+        (focusMix < 1 && experience.get().heroPhase !== "idle")));
 
   function tick(time: number) {
     scheduled = 0;
-    if (disposed) return;
-    const dt = previousTime === 0 ? 1 / 60 : Math.min(0.064, (time - previousTime) / 1000);
+    if (disposed || hidden || contextLost) return;
+    const elapsed =
+      previousTime === 0 ? 1 / 60 : Math.min(0.5, (time - previousTime) / 1000);
     previousTime = time;
-    applyFrame(dt);
+    applyFrame(Math.min(0.064, elapsed), elapsed);
     renderer.render(scene, camera);
     if (active()) schedule();
   }
 
   function schedule() {
-    if (disposed || scheduled) return;
+    if (disposed || scheduled || hidden || contextLost) return;
     scheduled = requestAnimationFrame(tick);
   }
 
@@ -494,11 +726,26 @@ export function createSceneController(
     const tops = sectionTops();
     if (!tops.length) return;
     frame = evaluate(
-      scrollProgress(focusFromScroll(scrollY, viewportHeight), tops, viewportHeight),
+      scrollProgress(
+        focusFromScroll(scrollY, viewportHeight),
+        tops,
+        viewportHeight,
+      ),
     );
   }
 
   function resize() {
+    const stage = document
+      .querySelector(".asm-hero-space")
+      ?.getBoundingClientRect();
+    mobileStageTop = (stage?.top ?? 0) + window.scrollY;
+    mobileStageHeight = stage?.height ?? 0;
+    const shell = document.querySelector<HTMLElement>(".asm");
+    shell?.style.setProperty("--hero-stage-top", `${mobileStageTop}px`);
+    shell?.style.setProperty(
+      "--hero-preview-top",
+      `${mobileStageTop + mobileStageHeight}px`,
+    );
     const width = Math.max(1, canvas.clientWidth || window.innerWidth);
     const height = Math.max(1, canvas.clientHeight || window.innerHeight);
     const dpr = Math.min(
@@ -522,15 +769,29 @@ export function createSceneController(
 
   const onLost = (event: Event) => {
     event.preventDefault();
+    contextLost = true;
+    heroInteraction.cancel();
     onStatus("lost");
   };
   const onRestored = () => {
+    contextLost = false;
+    lastSeamKey = "";
     onStatus("ready");
     schedule();
   };
   canvas.addEventListener("webglcontextlost", onLost as EventListener, false);
   canvas.addEventListener("webglcontextrestored", onRestored, false);
 
+  const onVisibility = () => {
+    hidden = document.hidden;
+    if (hidden && scheduled) {
+      cancelAnimationFrame(scheduled);
+      scheduled = 0;
+    }
+    previousTime = 0;
+    if (!hidden) schedule();
+  };
+  document.addEventListener("visibilitychange", onVisibility);
   const unsubscribe = experience.subscribe(() => schedule());
 
   updateProgress();
@@ -551,7 +812,8 @@ export function createSceneController(
   return {
     setScroll(nextScrollY, nextViewportHeight) {
       scrollY = nextScrollY;
-      const viewportChanged = Math.abs(nextViewportHeight - viewportHeight) > 0.5;
+      const viewportChanged =
+        Math.abs(nextViewportHeight - viewportHeight) > 0.5;
       viewportHeight = nextViewportHeight;
       updateProgress();
       if (viewportChanged) resize();
@@ -580,6 +842,7 @@ export function createSceneController(
       if (scheduled) cancelAnimationFrame(scheduled);
       scheduled = 0;
       unsubscribe();
+      document.removeEventListener("visibilitychange", onVisibility);
       canvas.removeEventListener("webglcontextlost", onLost as EventListener);
       canvas.removeEventListener("webglcontextrestored", onRestored);
       assembly.dispose();

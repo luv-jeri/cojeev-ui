@@ -59,7 +59,7 @@ import {
 import { MotionControls } from "@/registry/cojeev/ui/adjuster";
 import { Slider } from "@/registry/cojeev/ui/slider";
 import { Switch } from "@/registry/cojeev/ui/switch";
-import { installCommand } from "@/lib/site-config";
+import { installCommand, site } from "@/lib/site-config";
 
 const CHAPTER_TITLE = [
   "An interface you can put your hand on",
@@ -106,26 +106,6 @@ const CHAPTER_LEAD = [
   "You have seen it work. The install command is one line, and nothing on this page is required in order to use it.",
 ] as const;
 
-/**
- * The hero's second sentence, which is not the same sentence for every visitor.
- *
- * The object it describes is drawn by WebGL. When that fails or is unavailable
- * the chapter still shows a flat, still equivalent (see `HeroFallback`), so the
- * claim has to change with it: "a working assembly, not a picture of one" is
- * simply false on a page that is showing a picture. The two variants are
- * selected by CSS on `data-webgl`, and neither is shown while that attribute is
- * `pending` — the server-rendered "not known yet" value — so the page never
- * flashes a statement about a renderer whose result has not arrived.
- */
-const HERO_CLAIM_LIVE =
-  "It is a working assembly, not a picture of one: the pink control is the shipped Button.";
-/* Deliberately not "this browser is drawing it as a still": in this branch the
- * browser is not drawing anything. Saying what is actually true — the 3D view is
- * unavailable and a flat stand-in is shown instead — is the difference between an
- * honest fallback and a claim the visitor can see is false. */
-const HERO_CLAIM_STILL =
-  "This browser cannot draw the 3D view, so the instrument is shown here as a flat still. The pink control is still the shipped Button.";
-
 function useMotionSettings() {
   return React.useSyncExternalStore(
     subscribeSettings,
@@ -166,7 +146,8 @@ function TensionControl() {
         appearance="rubber"
       />
       <p className="asm-field__value">
-        {Math.round(tension)} — the ribbon stretches; the control itself does not move
+        {Math.round(tension)} — the ribbon stretches; the control itself does
+        not move
       </p>
     </div>
   );
@@ -185,7 +166,9 @@ function MotionCommitWatcher() {
     if (previous.current === settings.flow.variant) return;
     previous.current = settings.flow.variant;
     experience.emit({ type: "shapeCommit" });
-    experience.announce(`${FLOW_CHARACTERS[settings.flow.variant].label} motion character applied`);
+    experience.announce(
+      `${FLOW_CHARACTERS[settings.flow.variant].label} motion character applied`,
+    );
   }, [settings.flow.variant]);
   return null;
 }
@@ -276,153 +259,133 @@ function AssemblyOpenToggle() {
   );
 }
 
-/**
- * The hero's flat twin.
- *
- * The Invitation chapter's copy describes a large, sculpted object. When WebGL
- * is unavailable, or the deferred renderer chunk fails to load, that object
- * cannot be drawn at all — and the chapter used to collapse to a text column
- * that promised something the browser was not showing.
- *
- * This is the static equivalent: the same instrument — panel, switch, flower,
- * Create face, slider, drawers and ribbon — drawn as SVG from the authored
- * `PALETTE`, in the server-rendered HTML, so it is there with scripts disabled
- * and with no GPU. It is presentation only: `aria-hidden`, no pointer events,
- * and no label of its own, so no control, label or explanation moves out of the
- * document. CSS shows it for every `data-webgl` value except `ready`, so the
- * flat object and the live canvas never both show.
- *
- * The one slow drift is what keeps "the living assembly" from reading as a lie
- * on a browser that cannot animate it in 3D. It is switched off entirely under
- * `prefers-reduced-motion`.
- */
+/** Server-rendered still, with semantic controls registered over the same layout. */
 function HeroFallback() {
   return (
     <svg
       className="asm-hero-fallback"
-      viewBox="0 0 640 560"
-      role="presentation"
+      viewBox="0 0 640 640"
       aria-hidden="true"
       focusable="false"
     >
-      {/* The architectural aperture, cropped by the frame like the live one. */}
-      <rect
-        x="-90"
-        y="-150"
-        width="660"
-        height="780"
-        rx="250"
+      <defs>
+        <linearGradient id="asm-cream" x2="1" y2="1">
+          <stop stopColor="#fbf4e6" />
+          <stop offset="1" stopColor="#c9beaa" />
+        </linearGradient>
+        <linearGradient id="asm-pink" x2="0" y2="1">
+          <stop stopColor="#f5b8db" />
+          <stop offset="1" stopColor="#d594b7" />
+        </linearGradient>
+        <filter id="asm-shadow">
+          <feDropShadow dx="5" dy="10" stdDeviation="8" floodOpacity=".25" />
+        </filter>
+      </defs>
+      <path
+        d="M40 620C15 410 15 30 170-90M20 590Q400 670 665 585L710 70"
         fill="none"
-        stroke={PALETTE.cream}
-        strokeWidth="26"
-        opacity="0.16"
+        stroke="url(#asm-cream)"
+        strokeWidth="62"
       />
-      <ellipse cx="250" cy="512" rx="236" ry="26" fill={PALETTE.ink} opacity="0.55" />
-      <g className="asm-hero-fallback__object">
-        {/* The drawers, standing behind the panel to the right. */}
-        {[196, 274, 352].map((y) => (
-          <g key={y}>
-            <rect x="378" y={y} width="194" height="58" rx="20" fill={PALETTE.blue} />
-            <rect
-              x="430"
-              y={y + 22}
-              width="92"
-              height="13"
-              rx="6.5"
-              fill={PALETTE.cream}
-              opacity="0.9"
-            />
-          </g>
+      <g filter="url(#asm-shadow)">
+        {[198, 276, 354].map((y) => (
+          <rect
+            key={y}
+            x="420"
+            y={y}
+            width="208"
+            height="66"
+            rx="18"
+            fill={PALETTE.blue}
+          />
         ))}
-        {/* The ribbon, emerging from behind the panel and sweeping down-left. */}
-        <path
-          d="M170 296 C 66 356, 26 462, 128 508"
-          fill="none"
-          stroke={PALETTE.pink}
-          strokeWidth="13"
-          strokeLinecap="round"
-          opacity="0.9"
-        />
-        <rect x="56" y="76" width="400" height="400" rx="56" fill={PALETTE.ink} opacity="0.5" />
-        <rect x="40" y="56" width="400" height="400" rx="56" fill={PALETTE.cream} />
+        <rect x="104" y="470" width="334" height="124" rx="28" fill="#24211f" />
         <rect
-          x="41"
-          y="57"
-          width="398"
-          height="398"
-          rx="55"
-          fill="none"
-          stroke={PALETTE.ink}
-          strokeOpacity="0.08"
-          strokeWidth="2"
+          x="54"
+          y="88"
+          width="394"
+          height="416"
+          rx="46"
+          fill="url(#asm-cream)"
         />
-        {/* Switch. */}
-        <rect x="86" y="124" width="112" height="52" rx="26" fill={PALETTE.olive} />
-        <circle cx="172" cy="150" r="19" fill={PALETTE.cream} />
-        {/* Flower. */}
+        <rect
+          x="70"
+          y="125"
+          width="140"
+          height="64"
+          rx="32"
+          fill={PALETTE.olive}
+        />
+        <circle cx="173" cy="157" r="26" fill={PALETTE.cream} />
         {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
           <ellipse
             key={angle}
-            cx="352"
-            cy="148"
-            rx="21"
-            ry="45"
+            cx="358"
+            cy="160"
+            rx="17"
+            ry="64"
+            transform={`rotate(${angle} 358 160)`}
             fill={PALETTE.yellow}
-            transform={`rotate(${angle} 352 148)`}
           />
         ))}
-        <circle cx="352" cy="148" r="30" fill={PALETTE.yellow} />
-        <circle
-          cx="352"
-          cy="148"
-          r="30"
+        <path
+          d="M112 295C-30 308 68 490-70 495"
           fill="none"
-          stroke={PALETTE.ink}
-          strokeOpacity="0.12"
-          strokeWidth="2"
+          stroke={PALETTE.pink}
+          strokeWidth="9"
         />
-        {/* The Create face. In the live scene the real, labelled Button sits on
-            this pink moulding; here it is drawn with no text baked in, so the
-            label stays in the document where the real control carries it. */}
-        <rect x="92" y="228" width="296" height="92" rx="46" fill={PALETTE.pink} />
         <rect
-          x="104"
-          y="238"
-          width="272"
-          height="30"
-          rx="15"
-          fill={PALETTE.cream}
-          opacity="0.34"
+          x="80"
+          y="270"
+          width="360"
+          height="108"
+          rx="54"
+          fill="url(#asm-pink)"
         />
-        {/* Slider. */}
-        <rect x="104" y="378" width="272" height="34" rx="17" fill={PALETTE.cream} />
         <rect
-          x="222"
-          y="360"
-          width="88"
-          height="70"
-          rx="22"
-          fill={PALETTE.cream}
-          stroke={PALETTE.ink}
-          strokeOpacity="0.1"
-          strokeWidth="2"
+          x="95"
+          y="439"
+          width="310"
+          height="22"
+          rx="11"
+          fill={PALETTE.pink}
         />
-        {/* Source plate. */}
-        <rect x="120" y="434" width="240" height="38" rx="16" fill={PALETTE.ink} opacity="0.85" />
       </g>
+      <text
+        x="170"
+        y="546"
+        fill={PALETTE.blue}
+        fontFamily="monospace"
+        fontSize="19"
+      >
+        &lt;Button&gt;
+      </text>
+      <text
+        x="193"
+        y="570"
+        fill={PALETTE.pink}
+        fontFamily="monospace"
+        fontSize="19"
+      >
+        Create
+      </text>
     </svg>
   );
 }
 
-export function AssemblyLanding() {
+export function AssemblyLanding({
+  componentCount,
+}: {
+  componentCount: number;
+}) {
   const announcement = useExperienceValue((value) => value.announcement);
   const reducedMotion = usePrefersReducedMotion();
 
   const audio = React.useRef<AudioEngine | null>(null);
   const [chapter, setChapter] = React.useState(0);
-  const [webgl, setWebgl] = React.useState<"pending" | "ready" | "failed" | "unavailable">(
-    "pending",
-  );
+  const [webgl, setWebgl] = React.useState<
+    "pending" | "ready" | "failed" | "unavailable"
+  >("pending");
 
   /* ------------------------------------------------------------- contour boot */
   React.useEffect(() => {
@@ -609,7 +572,8 @@ export function AssemblyLanding() {
         The page still never enables sound on its own: this switch is the gesture
         the browser requires, and nothing is generated before it.
       */}
-      <div className="asm-controls">
+      <details className="asm-controls">
+        <summary>Sound</summary>
         <SoundControls
           supported={audioSupported}
           onEnable={enableSound}
@@ -617,7 +581,37 @@ export function AssemblyLanding() {
           onVolume={setVolume}
           onMusic={setMusic}
         />
-      </div>
+      </details>
+
+      <header className="asm-header">
+        <Link href="/" className="asm-brand">
+          000h<span>by Cojeev</span>
+        </Link>
+        <nav aria-label="Main">
+          <Link href="/docs/">Components</Link>
+          <Link href="/docs/installation/">Get started</Link>
+          <a href={site.sourceUrl}>GitHub ↗</a>
+        </nav>
+      </header>
+      <details className="asm-chapters">
+        <summary>
+          Chapters <span>＋</span>
+        </summary>
+        <nav aria-label="Hero chapters">
+          {CHAPTER_IDS.map((id, index) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              onClick={(event) =>
+                event.currentTarget.closest("details")?.removeAttribute("open")
+              }
+            >
+              {String(index + 1).padStart(2, "0")}{" "}
+              <span>{CHAPTER_RAIL[index]}</span>
+            </a>
+          ))}
+        </nav>
+      </details>
 
       <nav className="asm-rail" aria-label="Chapters">
         <ol>
@@ -628,7 +622,9 @@ export function AssemblyLanding() {
                 aria-current={index === chapter ? "true" : undefined}
                 aria-label={`Chapter ${index + 1}: ${CHAPTER_RAIL[index]}`}
               >
-                <span className="asm-rail__index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="asm-rail__index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <span className="asm-rail__label asm-rail__label--wide">
                   {CHAPTER_RAIL[index]}
                 </span>
@@ -661,29 +657,35 @@ export function AssemblyLanding() {
           aria-labelledby="asm-hero-title"
         >
           <div className="asm-section__body">
-            <p className="asm-marker">{CHAPTER_MARKER[0]}</p>
             <h1 id="asm-hero-title" className="asm-title">
-              {CHAPTER_TITLE[0]}
+              <span>Small parts.</span>
+              <span>
+                Extraordinary
+                <br className="asm-title-break" /> possibilities.
+              </span>
             </h1>
             <p className="asm-lead">
-              {CHAPTER_LEAD[0]}{" "}
-              <span className="asm-hero-claim asm-hero-claim--live">{HERO_CLAIM_LIVE}</span>
-              <span className="asm-hero-claim asm-hero-claim--still">{HERO_CLAIM_STILL}</span>
+              {componentCount} expressive React components.
+              <br />
+              Motion, shape, and source you can make your own.
             </p>
-            <p className="asm-note">
-              The pink control is a real <code>Button</code> from the registry, drawn
-              over its sculpted twin. Drag it sideways, or use the arrow keys, to pull
-              the ribbon.
+            <div className="asm-actions">
+              <Link className="asm-action asm-action--solid" href="/docs/">
+                Explore components <span aria-hidden="true">↗</span>
+              </Link>
+              <Link className="asm-action" href="/docs/installation/">
+                Get started
+              </Link>
+            </div>
+            <p className="asm-play-hint">
+              A little curiosity goes a long way. Press, pull, open.
             </p>
-            <ul className="asm-facts">
-              <li>{SPECIMEN_TRAYS.length} specimens on the bench</li>
-              <li>One mesh set, one material set, six chapters</li>
-              <li>No smooth-scroll library — this is your browser&rsquo;s own scroll</li>
-            </ul>
           </div>
-          <p className="asm-scrollcue" aria-hidden="true">
-            Scroll
+          <p className="asm-hero-foot">
+            React <span>·</span> TypeScript <span>·</span> Tailwind{" "}
+            <span>·</span> shadcn <span>·</span> MIT
           </p>
+          <div className="asm-hero-space" aria-hidden="true" />
         </section>
 
         {/* 02 — Daylight --------------------------------------------------- */}
@@ -725,13 +727,23 @@ export function AssemblyLanding() {
                     className="asm-specimen"
                     aria-pressed={tray.id === specimen}
                     onClick={() => pickSpecimen(tray.id)}
-                    onMouseEnter={() => experience.emit({ type: "specimenLift", id: tray.id })}
-                    onMouseLeave={() => experience.emit({ type: "specimenDock", id: tray.id })}
-                    onFocus={() => experience.emit({ type: "specimenLift", id: tray.id })}
-                    onBlur={() => experience.emit({ type: "specimenDock", id: tray.id })}
+                    onMouseEnter={() =>
+                      experience.emit({ type: "specimenLift", id: tray.id })
+                    }
+                    onMouseLeave={() =>
+                      experience.emit({ type: "specimenDock", id: tray.id })
+                    }
+                    onFocus={() =>
+                      experience.emit({ type: "specimenLift", id: tray.id })
+                    }
+                    onBlur={() =>
+                      experience.emit({ type: "specimenDock", id: tray.id })
+                    }
                   >
                     <span className="asm-specimen__label">{tray.label}</span>
-                    <span className="asm-specimen__category">{tray.category}</span>
+                    <span className="asm-specimen__category">
+                      {tray.category}
+                    </span>
                   </button>
                 </li>
               ))}
@@ -752,7 +764,9 @@ export function AssemblyLanding() {
                   experience.set({ exampleOpen: next });
                 }}
               >
-                {exampleOpen ? "Close live example" : "Mount a live React example"}
+                {exampleOpen
+                  ? "Close live example"
+                  : "Mount a live React example"}
               </button>
             </div>
 
@@ -790,10 +804,10 @@ export function AssemblyLanding() {
             <AssemblyOpenToggle />
 
             <p className="asm-note">
-              Press and tension are direct values: they are applied on the frame they
-              change and are never spring-integrated. Only the material response — the
-              7% compression, the layer separation — is integrated, on fixed 1/120 s
-              substeps.
+              Press and tension are direct values: they are applied on the frame
+              they change and are never spring-integrated. Only the material
+              response — the 7% compression, the layer separation — is
+              integrated, on fixed 1/120 s substeps.
             </p>
           </div>
         </section>
@@ -822,18 +836,22 @@ export function AssemblyLanding() {
               real API.
             */}
             <details className="asm-sound__detail asm-site-tool" open>
-              <summary>Site contour tool source — this site&rsquo;s own, not the registry</summary>
+              <summary>
+                Site contour tool source — this site&rsquo;s own, not the
+                registry
+              </summary>
               <p className="asm-field__note">
                 The press above belongs to this site. It is not an installable
                 component and adds nothing to the catalogue; this is the React
-                component its Export button writes, with the current blend applied.
+                component its Export button writes, with the current blend
+                applied.
               </p>
               <ContourSource />
             </details>
             <p className="asm-note">
-              A silhouette changing identity is one authored event, not a hover state.
-              The sculpted face is extruded from this exact path, so the preview and the
-              object cannot disagree.
+              A silhouette changing identity is one authored event, not a hover
+              state. The sculpted face is extruded from this exact path, so the
+              preview and the object cannot disagree.
             </p>
           </div>
         </section>
@@ -865,16 +883,20 @@ export function AssemblyLanding() {
             <p className="asm-field__label" id="asm-install-label">
               Install
             </p>
-            <pre className="asm-command" aria-labelledby="asm-install-label" tabIndex={0}>
+            <pre
+              className="asm-command"
+              aria-labelledby="asm-install-label"
+              tabIndex={0}
+            >
               <code>{installCommand(featured.id)}</code>
             </pre>
 
             <SpecimenApi specimen={featured} />
 
             <p className="asm-note">
-              The dark plate in the 3D layer carries a summary of this component, never
-              the component itself. The API above is read from the same file the
-              install command writes.
+              The dark plate in the 3D layer carries a summary of this
+              component, never the component itself. The API above is read from
+              the same file the install command writes.
             </p>
           </div>
         </section>
@@ -898,7 +920,10 @@ export function AssemblyLanding() {
             </pre>
 
             <div className="asm-actions">
-              <Link className="asm-action asm-action--solid" href="/getting-started/">
+              <Link
+                className="asm-action asm-action--solid"
+                href="/getting-started/"
+              >
                 Get started
               </Link>
               <Link className="asm-action" href="/docs/">
@@ -909,15 +934,20 @@ export function AssemblyLanding() {
             <SoundNotes />
 
             <p className="asm-note">
-              Every control on this page is a component from the registry, running here
-              before it runs in your project. The staged page is at its own address; the
-              home page is unchanged.
+              Every control on this page is a component from the registry,
+              running here before it runs in your project. The staged page is at
+              its own address; the home page is unchanged.
             </p>
           </div>
         </section>
       </main>
 
-      <p className="asm-visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+      <p
+        className="asm-visually-hidden"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {announcement?.text ?? ""}
       </p>
     </div>

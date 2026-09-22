@@ -52,3 +52,43 @@ export function paintSeam(plate: HTMLElement, rect: SeamRect | null) {
   plate.style.height = `${height.toFixed(2)}px`;
   plate.dataset.measured = "true";
 }
+
+const faces = new Map<string, SeamWriter>();
+const latestFaces = new Map<string, SeamRect | null>();
+export function registerFace(id: string, writer: SeamWriter | null) {
+  if (writer) {
+    faces.set(id, writer);
+    writer(latestFaces.get(id) ?? null);
+  } else faces.delete(id);
+}
+export function writeFaces(next: Record<string, SeamRect | null>) {
+  for (const [id, rect] of Object.entries(next)) {
+    latestFaces.set(id, rect);
+    faces.get(id)?.(rect);
+  }
+}
+export function faceRect(id: string) {
+  return latestFaces.get(id) ?? null;
+}
+export function paintFace(node: HTMLElement, rect: SeamRect | null) {
+  if (!rect?.matrix) {
+    node.dataset.measured = "false";
+    node.style.cssText = "";
+    return;
+  }
+  node.dataset.measured = "true";
+  const matrix = [...rect.matrix];
+  if (window.innerWidth < 900) {
+    matrix[1] += window.scrollY * matrix[3];
+    matrix[5] += window.scrollY * matrix[7];
+    matrix[13] += window.scrollY;
+  }
+  node.style.transform = `matrix3d(${matrix.join(",")})`;
+  node.style.width = `${rect.width}px`;
+  node.style.height = `${rect.height}px`;
+  node.style.setProperty(
+    "--touch-y",
+    `${Math.max(0, (48 - rect.height) / 2)}px`,
+  );
+  node.style.setProperty("--face-font", `${Math.min(30, rect.height * 0.3)}px`);
+}

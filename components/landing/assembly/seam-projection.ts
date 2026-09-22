@@ -37,13 +37,17 @@ export type CreateSeamProbe = {
 };
 
 /** Builds the standard probe for a control of the given local size. */
-export function createSeamProbe(width: number, height: number): CreateSeamProbe {
+export function createSeamProbe(
+  width: number,
+  height: number,
+  z = 0,
+): CreateSeamProbe {
   return {
-    centre: [0, 0, 0],
-    left: [-width / 2, 0, 0],
-    right: [width / 2, 0, 0],
-    top: [0, height / 2, 0],
-    bottom: [0, -height / 2, 0],
+    centre: [0, 0, z],
+    left: [-width / 2, 0, z],
+    right: [width / 2, 0, z],
+    top: [0, height / 2, z],
+    bottom: [0, -height / 2, z],
   };
 }
 
@@ -129,7 +133,11 @@ export function projectSeam(
   /* A point at or behind the eye plane has a non-positive w after the perspective
    * divide, which mirrors it to the wrong side of the screen. */
   if (centre[3] <= 0) return null;
-  const centreNdc = [centre[0] / centre[3], centre[1] / centre[3], centre[2] / centre[3]];
+  const centreNdc = [
+    centre[0] / centre[3],
+    centre[1] / centre[3],
+    centre[2] / centre[3],
+  ];
   if (centreNdc[2] > 1) return null;
 
   const edges = {
@@ -153,10 +161,18 @@ export function projectSeam(
    * the full projected width. Treating it as a half-size doubled the plate: the
    * centre and the look stayed correct while the DOM hit area reached a whole
    * control's width past the sculpted face in every direction. */
-  const width = (Math.abs(ndcX(edges.right) - ndcX(edges.left)) / 2) * viewWidth;
-  const height = (Math.abs(ndcY(edges.top) - ndcY(edges.bottom)) / 2) * viewHeight;
-  if (!Number.isFinite(width) || !Number.isFinite(height) || width < 1) return null;
-  if (x < -width || x > viewWidth + width || y < -height || y > viewHeight + height)
+  const width =
+    (Math.abs(ndcX(edges.right) - ndcX(edges.left)) / 2) * viewWidth;
+  const height =
+    (Math.abs(ndcY(edges.top) - ndcY(edges.bottom)) / 2) * viewHeight;
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width < 1)
+    return null;
+  if (
+    x < -width ||
+    x > viewWidth + width ||
+    y < -height ||
+    y > viewHeight + height
+  )
     return null;
 
   const spanX = (ndcX(edges.right) - ndcX(edges.left)) * 0.5 * viewWidth;
@@ -178,4 +194,68 @@ export function projectSeam(
 /** The centre of a projected rect in CSS pixels, for alignment assertions. */
 export function seamCentre(rect: SeamRect): { x: number; y: number } {
   return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+}
+
+/** Four corners, including depth, mapped by a planar homography. */
+export function projectFace(
+  probe: CreateSeamProbe,
+  world: Matrix4Like,
+  projection: Matrix4Like,
+  view: Matrix4Like,
+  width: number,
+  height: number,
+): SeamRect | null {
+  const rect = projectSeam(probe, world, projection, view, width, height);
+  if (!rect) return null;
+  const corners = [
+    [probe.left[0], probe.top[1]],
+    [probe.right[0], probe.top[1]],
+    [probe.right[0], probe.bottom[1]],
+    [probe.left[0], probe.bottom[1]],
+  ].map(([x, y]) => {
+    const w = transform(world, x, y, probe.centre[2]);
+    const e = transform(view, w[0], w[1], w[2]);
+    const c = transform(projection, e[0], e[1], e[2]);
+    return {
+      x: ((c[0] / c[3] + 1) * width) / 2,
+      y: ((1 - c[1] / c[3]) * height) / 2,
+    };
+  });
+  const [p0, p1, p2, p3] = corners;
+  const dx1 = p1.x - p2.x,
+    dx2 = p3.x - p2.x,
+    dx3 = p0.x - p1.x + p2.x - p3.x;
+  const dy1 = p1.y - p2.y,
+    dy2 = p3.y - p2.y,
+    dy3 = p0.y - p1.y + p2.y - p3.y;
+  const determinant = dx1 * dy2 - dx2 * dy1;
+  if (Math.abs(determinant) < 1e-8) return null;
+  const g = (dx3 * dy2 - dx2 * dy3) / determinant;
+  const h = (dx1 * dy3 - dx3 * dy1) / determinant;
+  const a = p1.x - p0.x + g * p1.x,
+    b = p3.x - p0.x + h * p3.x;
+  const d = p1.y - p0.y + g * p1.y,
+    e = p3.y - p0.y + h * p3.y;
+  return {
+    ...rect,
+    corners,
+    matrix: [
+      a / rect.width,
+      d / rect.width,
+      0,
+      g / rect.width,
+      b / rect.height,
+      e / rect.height,
+      0,
+      h / rect.height,
+      0,
+      0,
+      1,
+      0,
+      p0.x,
+      p0.y,
+      0,
+      1,
+    ],
+  };
 }

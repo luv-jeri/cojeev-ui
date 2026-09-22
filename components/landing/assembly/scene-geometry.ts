@@ -34,7 +34,8 @@ import {
 import type { PartId } from "./choreography";
 import { createSeamProbe, type CreateSeamProbe } from "./seam-projection";
 
-const srgb = (hex: string) => new THREE.Color().setStyle(hex, THREE.SRGBColorSpace);
+const srgb = (hex: string) =>
+  new THREE.Color().setStyle(hex, THREE.SRGBColorSpace);
 
 /** Fadable by design: opacity and depth writing are per-frame render state only. */
 function standard(hex: string, roughness: number) {
@@ -150,12 +151,21 @@ export function contourGeometry(
 export type Ribbon = {
   mesh: THREE.Mesh;
   /** Updates the existing buffers; never allocates a new geometry. */
-  setSpine(start: THREE.Vector3, end: THREE.Vector3, sag: number, radius: number): void;
+  setSpine(
+    start: THREE.Vector3,
+    end: THREE.Vector3,
+    sag: number,
+    radius: number,
+  ): void;
 };
 
 const RIBBON_UP = new THREE.Vector3(0, 1, 0);
 
-function createRibbon(segments: number, radial: number, material: THREE.Material): Ribbon {
+function createRibbon(
+  segments: number,
+  radial: number,
+  material: THREE.Material,
+): Ribbon {
   const positions = new Float32Array((segments + 1) * radial * 3);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -219,7 +229,10 @@ function createRibbon(segments: number, radial: number, material: THREE.Material
           vertex
             .copy(spine)
             .addScaledVector(binormal, Math.cos(angle) * ribbonRadius * taper)
-            .addScaledVector(normal, Math.sin(angle) * ribbonRadius * taper * 0.68);
+            .addScaledVector(
+              normal,
+              Math.sin(angle) * ribbonRadius * taper * 0.68,
+            );
           positions[at] = vertex.x;
           positions[at + 1] = vertex.y;
           positions[at + 2] = vertex.z;
@@ -247,10 +260,10 @@ function sourceSummaryTexture() {
   const context = canvas.getContext("2d");
   if (context) {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.font = '500 22px ui-monospace, SFMono-Regular, Menlo, monospace';
+    context.font = "500 22px ui-monospace, SFMono-Regular, Menlo, monospace";
     context.fillStyle = "#7A7A83";
     context.fillText("ui/button.tsx", 34, 48);
-    context.font = '600 42px ui-monospace, SFMono-Regular, Menlo, monospace';
+    context.font = "600 42px ui-monospace, SFMono-Regular, Menlo, monospace";
     context.fillStyle = "#9EC5F2";
     context.fillText("<Button>", 34, 122);
     context.fillStyle = "#F5B8DB";
@@ -290,6 +303,8 @@ export type AssemblyScene = {
   createSeam: { object: THREE.Mesh; probe: CreateSeamProbe };
   /** The sculpted face the press deforms; the group around it carries the pose. */
   createMesh: THREE.Mesh;
+  heroFaces: Record<string, { object: THREE.Object3D; probe: CreateSeamProbe }>;
+  setHeroPresentation(weight: number): void;
   ribbon: Ribbon;
   sliderBand: Ribbon;
   /**
@@ -315,7 +330,9 @@ export function applyOpacity(object: THREE.Object3D, value: number) {
   if (!object.visible) return;
   object.traverse((child) => {
     const mesh = child as THREE.Mesh;
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    const materials = Array.isArray(mesh.material)
+      ? mesh.material
+      : [mesh.material];
     for (const material of materials) {
       if (!material) continue;
       material.opacity = opacity;
@@ -339,6 +356,21 @@ export function buildAssemblyScene(): AssemblyScene {
     return geometry;
   };
 
+  const grainData = new Uint8Array(64 * 64 * 4);
+  let grainSeed = 73;
+  for (let i = 0; i < grainData.length; i += 4) {
+    grainSeed = (grainSeed * 1664525 + 1013904223) >>> 0;
+    const value = 248 + (grainSeed % 8);
+    grainData.set([value, value, value, 255], i);
+  }
+  const grain = new THREE.DataTexture(grainData, 64, 64, THREE.RGBAFormat);
+  grain.wrapS = grain.wrapT = THREE.RepeatWrapping;
+  grain.repeat.set(16, 16);
+  grain.colorSpace = THREE.SRGBColorSpace;
+  grain.generateMipmaps = true;
+  grain.minFilter = THREE.LinearMipmapLinearFilter;
+  grain.magFilter = THREE.LinearFilter;
+  grain.needsUpdate = true;
   const root = new THREE.Group();
   const shadowed = (object: THREE.Object3D, cast = true, receive = true) => {
     object.traverse((child) => {
@@ -356,10 +388,18 @@ export function buildAssemblyScene(): AssemblyScene {
   const apertureFrame = new THREE.Mesh(
     geo(
       extruded(
-        superellipse(apertureSpec.outer[0], apertureSpec.outer[1], apertureSpec.outerExponent),
+        superellipse(
+          apertureSpec.outer[0],
+          apertureSpec.outer[1],
+          apertureSpec.outerExponent,
+        ),
         apertureSpec.thickness,
         apertureSpec.bevel,
-        superellipse(apertureSpec.inner[0], apertureSpec.inner[1], apertureSpec.innerExponent),
+        superellipse(
+          apertureSpec.inner[0],
+          apertureSpec.inner[1],
+          apertureSpec.innerExponent,
+        ),
       ),
     ),
     own(kit.cream),
@@ -539,9 +579,7 @@ export function buildAssemblyScene(): AssemblyScene {
   stagePlane.position.set(0.5, 0.05, -1.15);
   const stageBlob = shadowed(
     new THREE.Mesh(
-      geo(
-        extruded(superellipse(0.98, 0.66, 2.6, 96), 0.14, 0.03),
-      ),
+      geo(extruded(superellipse(0.98, 0.66, 2.6, 96), 0.14, 0.03)),
       own(kit.pink),
     ),
   );
@@ -575,8 +613,12 @@ export function buildAssemblyScene(): AssemblyScene {
 
   /* -------------------------------------------------------------- instrument */
   const instrument = new THREE.Group();
-  instrument.position.set(...(INSTRUMENT.home.position as unknown as [number, number, number]));
-  instrument.rotation.set(...(INSTRUMENT.home.rotation as unknown as [number, number, number]));
+  instrument.position.set(
+    ...(INSTRUMENT.home.position as unknown as [number, number, number]),
+  );
+  instrument.rotation.set(
+    ...(INSTRUMENT.home.rotation as unknown as [number, number, number]),
+  );
   root.add(instrument);
 
   const panel = new THREE.Mesh(
@@ -610,7 +652,9 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   createMesh.castShadow = true;
   createMesh.receiveShadow = true;
-  create.position.set(...(INSTRUMENT.create.local as unknown as [number, number, number]));
+  create.position.set(
+    ...(INSTRUMENT.create.local as unknown as [number, number, number]),
+  );
   create.add(createMesh);
   instrument.add(create);
 
@@ -629,18 +673,29 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   switchPlate.castShadow = true;
   switchBase.add(switchPlate);
-  switchBase.position.set(...(INSTRUMENT.switch.local as unknown as [number, number, number]));
+  switchBase.position.set(
+    ...(INSTRUMENT.switch.local as unknown as [number, number, number]),
+  );
   instrument.add(switchBase);
 
   // The thumb is its own top-level part so the scene controller remains the only
   // writer of its transform: pose here, on/off offset applied on top.
   const switchThumb = new THREE.Mesh(
-    geo(new THREE.CylinderGeometry(INSTRUMENT.switch.thumb, INSTRUMENT.switch.thumb, 0.062, 36)),
+    geo(
+      new THREE.CylinderGeometry(
+        INSTRUMENT.switch.thumb,
+        INSTRUMENT.switch.thumb,
+        0.062,
+        36,
+      ),
+    ),
     own(kit.cream),
   );
   switchThumb.rotation.x = Math.PI / 2;
   switchThumb.castShadow = true;
-  switchThumb.position.set(...(INSTRUMENT.switch.local as unknown as [number, number, number]));
+  switchThumb.position.set(
+    ...(INSTRUMENT.switch.local as unknown as [number, number, number]),
+  );
   instrument.add(switchThumb);
 
   const sliderTrack = new THREE.Group();
@@ -658,7 +713,9 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   sliderRail.castShadow = true;
   sliderTrack.add(sliderRail);
-  sliderTrack.position.set(...(INSTRUMENT.slider.local as unknown as [number, number, number]));
+  sliderTrack.position.set(
+    ...(INSTRUMENT.slider.local as unknown as [number, number, number]),
+  );
   instrument.add(sliderTrack);
 
   const sliderBand = createRibbon(12, 8, own(kit.pink));
@@ -666,7 +723,14 @@ export function buildAssemblyScene(): AssemblyScene {
   instrument.add(sliderBand.mesh);
 
   const sliderThumb = new THREE.Mesh(
-    geo(new THREE.CylinderGeometry(INSTRUMENT.slider.thumb, INSTRUMENT.slider.thumb, 0.075, 40)),
+    geo(
+      new THREE.CylinderGeometry(
+        INSTRUMENT.slider.thumb,
+        INSTRUMENT.slider.thumb,
+        0.075,
+        40,
+      ),
+    ),
     own(kit.cream),
   );
   sliderThumb.rotation.x = Math.PI / 2;
@@ -690,7 +754,9 @@ export function buildAssemblyScene(): AssemblyScene {
     ),
     flowerMaterial,
   );
-  flower.position.set(...(INSTRUMENT.flower.local as unknown as [number, number, number]));
+  flower.position.set(
+    ...(INSTRUMENT.flower.local as unknown as [number, number, number]),
+  );
   flower.castShadow = true;
   flower.receiveShadow = true;
   instrument.add(flower);
@@ -733,7 +799,9 @@ export function buildAssemblyScene(): AssemblyScene {
     plate.rotation.y = INSTRUMENT.drawers.yaw;
     drawers.add(plate);
   }
-  drawers.position.set(...(INSTRUMENT.drawers.local as unknown as [number, number, number]));
+  drawers.position.set(
+    ...(INSTRUMENT.drawers.local as unknown as [number, number, number]),
+  );
   instrument.add(drawers);
 
   const stylePlate = new THREE.Group();
@@ -765,7 +833,9 @@ export function buildAssemblyScene(): AssemblyScene {
     );
     stylePlate.add(swatch);
   });
-  stylePlate.position.set(...(INSTRUMENT.stylePlate.local as unknown as [number, number, number]));
+  stylePlate.position.set(
+    ...(INSTRUMENT.stylePlate.local as unknown as [number, number, number]),
+  );
   instrument.add(stylePlate);
 
   const sourcePlate = new THREE.Group();
@@ -795,7 +865,9 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   summary.position.set(0, -0.17, INSTRUMENT.sourcePlate.thickness / 2 + 0.006);
   sourcePlate.add(sourceBody, summary);
-  sourcePlate.position.set(...(INSTRUMENT.sourcePlate.local as unknown as [number, number, number]));
+  sourcePlate.position.set(
+    ...(INSTRUMENT.sourcePlate.local as unknown as [number, number, number]),
+  );
   instrument.add(sourcePlate);
 
   /* ------------------------------------------------------------------ ribbon */
@@ -828,6 +900,111 @@ export function buildAssemblyScene(): AssemblyScene {
     sourcePlate: new THREE.Vector3(0, 0, -0.58),
   };
 
+  // Route-local morph targets keep the exact original meshes at Collection.
+  // RoundedBox clamps its radius to depth/2: a thin panel therefore needs an
+  // independent XY silhouette, rather than a bigger 3D box radius.
+  const heroMorphs: {
+    mesh: THREE.Mesh;
+    original: THREE.BufferGeometry;
+    sculpted: THREE.BufferGeometry;
+  }[] = [];
+  function softenFace(
+    mesh: THREE.Mesh,
+    width: number,
+    height: number,
+    radius: number,
+  ) {
+    const original = mesh.geometry;
+    const depth =
+      (original.boundingBox ??
+        (original.computeBoundingBox(), original.boundingBox))!.max.z * 2;
+    function outline(r: number) {
+      const shape = new THREE.Shape();
+      const centres = [
+        [width / 2 - r, height / 2 - r],
+        [-width / 2 + r, height / 2 - r],
+        [-width / 2 + r, -height / 2 + r],
+        [width / 2 - r, -height / 2 + r],
+      ];
+      for (let corner = 0; corner < 4; corner++)
+        for (let j = 0; j <= 12; j++) {
+          const theta = ((corner + j / 12) * Math.PI) / 2;
+          const x = centres[corner][0] + r * Math.cos(theta);
+          const y = centres[corner][1] + r * Math.sin(theta);
+          if (corner === 0 && j === 0) shape.moveTo(x, y);
+          else shape.lineTo(x, y);
+        }
+      shape.closePath();
+      return shape;
+    }
+    const sculpted = geo(
+      extruded(outline(radius), Math.max(0.005, depth - 0.012), 0.006),
+    );
+    const square = extruded(
+      outline(Math.min(0.012, radius)),
+      Math.max(0.005, depth - 0.012),
+      0.006,
+    );
+    if (
+      square.getAttribute("position").count ===
+      sculpted.getAttribute("position").count
+    ) {
+      sculpted.morphAttributes.position = [
+        square.getAttribute("position").clone(),
+      ];
+      sculpted.morphAttributes.normal = [square.getAttribute("normal").clone()];
+    }
+    square.dispose();
+    heroMorphs.push({ mesh, original, sculpted });
+  }
+  softenFace(panel, 1, 1.05, 0.085);
+  softenFace(createMesh, 0.78, 0.236, 0.11);
+  softenFace(switchPlate, 0.25, 0.12, 0.06);
+  softenFace(sliderRail, 0.72, 0.075, 0.037);
+  softenFace(sourceBody, 0.86, 0.98, 0.06);
+  for (const plate of drawers.children)
+    softenFace(plate.children[0] as THREE.Mesh, 0.44, 0.15, 0.032);
+  const textured = [
+    panel.material,
+    createMesh.material,
+    switchPlate.material,
+    drawerBody,
+    flowerMaterial,
+    apertureFrame.material,
+  ] as THREE.MeshStandardMaterial[];
+  // Subtle baked albedo variation; no derivative-heavy bump shader.
+  const originalAperture = apertureFrame.geometry;
+  const heroAperture = geo(
+    extruded(
+      superellipse(0.92, 1.18, 2.7),
+      0.17,
+      0.035,
+      superellipse(0.69, 0.95, 2.6),
+    ),
+  );
+  if (
+    heroAperture.getAttribute("position").count ===
+    originalAperture.getAttribute("position").count
+  ) {
+    heroAperture.morphAttributes.position = [
+      originalAperture.getAttribute("position").clone(),
+    ];
+    heroAperture.morphAttributes.normal = [
+      originalAperture.getAttribute("normal").clone(),
+    ];
+  }
+  const heroFaces: AssemblyScene["heroFaces"] = {
+    create: { object: createMesh, probe: createSeamProbe(0.78, 0.236, 0.024) },
+    switch: { object: switchPlate, probe: createSeamProbe(0.25, 0.12, 0.065) },
+    slider: { object: sliderRail, probe: createSeamProbe(0.76, 0.15, 0.08) },
+  };
+  for (const [index, name] of ["actions", "content", "layout"].entries()) {
+    heroFaces[name] = {
+      object: drawers.children[index].children[0],
+      probe: createSeamProbe(0.44, 0.15, 0.025),
+    };
+  }
+
   return {
     root,
     aperture,
@@ -845,6 +1022,42 @@ export function buildAssemblyScene(): AssemblyScene {
     ribbon,
     sliderBand,
     createMesh,
+    heroFaces,
+    setHeroPresentation(weight) {
+      for (const material of textured) {
+        const map = weight > 0 ? grain : null;
+        if (material.map !== map) {
+          material.map = map;
+          material.needsUpdate = true;
+        }
+      }
+      const apertureGeometry = weight > 0 ? heroAperture : originalAperture;
+      if (apertureFrame.geometry !== apertureGeometry) {
+        apertureFrame.geometry = apertureGeometry;
+        apertureFrame.updateMorphTargets();
+      }
+      if (apertureFrame.morphTargetInfluences)
+        apertureFrame.morphTargetInfluences[0] = 1 - weight;
+      for (const { mesh, original, sculpted } of heroMorphs) {
+        const geometry = weight > 0 ? sculpted : original;
+        if (mesh.geometry !== geometry) {
+          mesh.geometry = geometry;
+          mesh.updateMorphTargets();
+        }
+        if (mesh.morphTargetInfluences)
+          mesh.morphTargetInfluences[0] = 1 - weight;
+      }
+      for (const plate of drawers.children)
+        plate.children[1].scale.setScalar(1 - weight);
+      sourceBody.scale.y = 1 - weight * 0.59;
+      summary.position.y = -0.17 + weight * 0.14;
+      summary.scale.setScalar(1 - weight * 0.25);
+      sliderRail.material.color.lerpColors(
+        kit.cream.color,
+        kit.pink.color,
+        weight,
+      );
+    },
     setFlowerContour(values, colour) {
       /* Rebuild the face from the exported blend, dispose the previous geometry
        * immediately, and hand the new one to the same owned list so `dispose()`
@@ -879,6 +1092,7 @@ export function buildAssemblyScene(): AssemblyScene {
       for (const geometry of ownedGeometries) geometry.dispose();
       summaryMaterial.dispose();
       summaryTexture.dispose();
+      grain.dispose();
       ribbon.mesh.geometry.dispose();
       sliderBand.mesh.geometry.dispose();
       root.clear();

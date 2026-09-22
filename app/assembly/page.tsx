@@ -1,3 +1,4 @@
+import registry from "@/registry.json";
 import type { Metadata } from "next";
 import { AssemblyLanding } from "@/components/landing/assembly/assembly-landing";
 import { pageMetadata } from "@/lib/site-config";
@@ -15,12 +16,12 @@ import "@/components/landing/assembly/assembly.css";
 export const metadata: Metadata = {
   ...pageMetadata(
     "The assembly",
-    "One editable assembly, six chapters, and the components it is built from — every control on it is a component from the registry.",
+    "Expressive React components. Explore a playful assembly, try real components, and make their source your own.",
     "/assembly/",
   ),
   robots: { index: false, follow: false },
 };
 
 export default function AssemblyPage() {
-  return <AssemblyLanding />;
+  return <AssemblyLanding componentCount={registry.items.filter((entry) => entry.type === "registry:ui").length} />;
 }

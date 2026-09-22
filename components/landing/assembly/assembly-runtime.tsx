@@ -14,7 +14,7 @@
  */
 import * as React from "react";
 import { CHAPTER_IDS, useScrollSample } from "./anchors";
-import { writeSeam } from "./seam-bus";
+import { writeSeam, writeFaces } from "./seam-bus";
 import type { SceneController } from "./scene-controller";
 import { experience, useExperienceValue, type WebglStatus } from "./experience-store";
 
@@ -94,7 +94,7 @@ export function AssemblyStage({ onChapter, onArrive, onStatus }: Props) {
         instance = createSceneController({
           canvas,
           sectionTops: () => tops.current ?? [],
-          onSeam: (sample) => writeSeam(sample.create),
+          onSeam: (sample) => { writeSeam(sample.create); writeFaces(sample.faces); },
           onChapter: (index) => {
             chapter.current = index;
             handlers.current.onChapter(index);
@@ -108,6 +108,7 @@ export function AssemblyStage({ onChapter, onArrive, onStatus }: Props) {
                   : status === "ready"
                     ? "ready"
                     : "pending";
+            if (mapped !== "ready") writeFaces(Object.fromEntries(["create", "switch", "slider", "layout", "content", "actions"].map(id => [id, null])));
             experience.set({ webgl: mapped });
             handlers.current.onStatus(mapped);
           },
