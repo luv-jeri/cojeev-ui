@@ -1248,7 +1248,12 @@
   }
   .asm-header nav a {
     font-size: 13px;
+    white-space: nowrap;
   }
+  /* The nav and the sound control share one row with the brand, so at phone
+   * widths the header keeps a single action plus the audio control. "Get
+   * started" is already hidden here; "Components" goes too, because the hero's
+   * own "Explore components" button is the same destination and is on screen. */
   .asm-header nav a:nth-child(2) {
     display: none;
   }
@@ -1651,4 +1656,19 @@ body:has(.asm[data-chapter="hero"]) .report-launcher {
   [role="switch"][aria-checked="true"]::before {
   left: auto;
   right: 6%;
+}
+
+@media (max-width: 640px) {
+  .asm-header {
+    gap: 12px;
+  }
+  .asm-header__end {
+    gap: 16px;
+  }
+  .asm-header nav a:first-child {
+    display: none;
+  }
+  .asm-controls > summary {
+    white-space: nowrap;
+  }
 }
