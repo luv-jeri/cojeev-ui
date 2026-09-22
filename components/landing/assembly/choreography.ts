@@ -140,7 +140,11 @@ export const CHAPTERS: readonly Chapter[] = [
     tone: "dark",
     backdrop: "#141110",
     camera: { position: [0.55, 0.26, 4.2], target: [-0.42, -0.06, 0], fov: 35, roll: 0 },
-    lights: { key: .8, fill: 0.65, rim: 0.8 },
+    /* Measured off the artboard: its outer leg is #e7d7c5 and its inner edge
+     * #af9c89, so the key carries the form and the shadow stays warm. The rig
+     * this started from — key .8 against a cool .65 fill and a .42 environment —
+     * rendered the band #e8e5df, a neutral white. */
+    lights: { key: 2.45, fill: 0.05, rim: 0.5 },
     aperture: { opacity: 1, position: [0.85, 0.52, -0.7], scale: 1.62 },
     /* Below 0.985 `applyOpacity` also stops the floor writing depth, which is
      * what lets the mirrored band underneath show through. */

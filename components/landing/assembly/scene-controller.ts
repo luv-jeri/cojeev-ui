@@ -262,12 +262,24 @@ export function createSceneController(
   const pointerWorld = new THREE.Vector3();
   const planeNormal = new THREE.Vector3();
   const warmHeroLight = new THREE.Color(0xffdca0);
+  /* The fill is authored cool (0xdfe8ff) for the catalogue's daylight look; in
+   * the hero its bounce lands on cream and desaturates it, so the hero warms it
+   * too, and the room environment steps back so the directional rig keeps the
+   * modelling. */
+  const warmHeroBounce = new THREE.Color(0xffdcb4);
+  /* The artboard's shadow side and the underside of the band are warm, not dark:
+   * 175,157,138 on the inner edge and 150,133,119 along the lower sweep, which is
+   * light coming back off the floor. The rig's hemisphere is a white sky over a
+   * near-black ground, so the hero warms both halves and leans on the ground
+   * more. */
+  const warmHeroSky = new THREE.Color(0xffe0bd);
+  const warmHeroGround = new THREE.Color(0x655749);
   /* The artboard's floor is a warm brown, brighter than the field behind it —
    * the object is standing on a lit surface, not floating over a void. The
    * chapter frame only carries one backdrop, so the hero's floor is lifted
    * toward its own colour by the hero weight rather than by a second field.
    * Sampled from the reference at 400,950 and 1150,1000. */
-  const warmHeroFloor = new THREE.Color(0x3b2f28);
+  const warmHeroFloor = new THREE.Color(0x6a6058);
   const backdrop = new THREE.Color();
   const floorColor = new THREE.Color();
   const start = new THREE.Vector3();
@@ -508,11 +520,16 @@ export function createSceneController(
     backdrop.setStyle(sceneFrame.backdrop, THREE.SRGBColorSpace);
     (scene.background as THREE.Color).copy(backdrop);
     floorColor.copy(backdrop).multiplyScalar(0.86);
-    floorColor.lerp(warmHeroFloor, heroWeight * 0.55);
+    floorColor.lerp(warmHeroFloor, heroWeight * 0.85);
     key.color.setHex(0xfff4e2).lerp(warmHeroLight, heroWeight * 0.45);
+    fill.color.setHex(0xdfe8ff).lerp(warmHeroBounce, heroWeight * 0.85);
+    ambient.color.setHex(0xffffff).lerp(warmHeroSky, heroWeight);
+    ambient.groundColor.setHex(0x1a1a1c).lerp(warmHeroGround, heroWeight);
+    ambient.intensity = LIGHT_RIG.ambient + 0.14 * heroWeight;
     key.intensity = sceneFrame.lights.key;
     fill.intensity = sceneFrame.lights.fill;
     rim.intensity = sceneFrame.lights.rim;
+    scene.environmentIntensity = 0.42 - 0.32 * heroWeight;
 
     // The key light keeps its authored upper-left direction relative to the
     // subject and follows the subject, so the shadow camera stays framed.
@@ -589,7 +606,12 @@ export function createSceneController(
     assembly.parts.sliderThumb.rotation.x += (Math.PI / 2) * heroWeight;
     assembly.parts.switchThumb.position.z += 0.04 * heroWeight;
     assembly.parts.sliderThumb.position.z += 0.06 * heroWeight;
-    renderer.toneMappingExposure = 1.02;
+    /* ACES desaturates as it compresses, and the hero was sitting at the top of
+     * its curve — the band rendered as a flat #e8e5df whatever the key did. The
+     * artboard is bright where the key lands (251,237,220) and warm in shadow
+     * (175,157,138), so the hero keeps less indirect light and a lower exposure
+     * than the catalogue chapters. */
+    renderer.toneMappingExposure = 1.02 - 0.24 * heroWeight;
     // Direct control state, applied on top of the chapter pose.
     assembly.parts.switchThumb.position.x += state.motionOn
       ? INSTRUMENT.switch.thumbTravel

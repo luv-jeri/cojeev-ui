@@ -396,9 +396,18 @@ export function buildAssemblyScene(): AssemblyScene {
        * units of the object, dark by six. Measured off the v9 capture, whose
        * whole visible floor was still on the plateau. */
       const r = Math.min(1, Math.hypot(dx, dy) / 0.5);
-      const t = Math.min(1, Math.max(0, (r - 0.02) / 0.22));
+      /* The plane is 26 units across but the frame sees about seven, so a ramp
+       * expressed against the plane never reached its dark end on screen and the
+       * pool read as a slab. This one is in frame units: 1.2 world units of
+       * plateau around the object, fully dark by 2.6. Measured off the v27
+       * capture, which held 46 of 99 from the frame's edge to its brightest
+       * streak where the artboard holds 30 of 159. */
+      const t = Math.min(1, Math.max(0, (r - 0.075) / 0.075));
       const eased = t * t * (3 - 2 * t);
-      const value = Math.round(255 * (1 - 0.78 * eased));
+      /* 0.92 crushed the far field to 9 where the artboard keeps 30: the
+       * reference pool sits on a base level rather than falling to black, so the
+       * map bottoms out at 30% instead of 8%. */
+      const value = Math.round(255 * (1 - 0.7 * eased));
       floorFalloffData.set([value, value, value, 255], (y * 64 + x) * 4);
     }
   }
@@ -467,6 +476,10 @@ export function buildAssemblyScene(): AssemblyScene {
    * material would render the inside of the band. */
   const mirrorMaterial = own(kit.cream);
   mirrorMaterial.side = THREE.DoubleSide;
+  /* The floor is drawn at 0.82 over the mirror, so a straight copy of the band's
+   * material came back at a fifth of the artboard's reflected streak (99 against
+   * 159 at the brightest point). The reflection is lifted to match. */
+  mirrorMaterial.color.multiplyScalar(1.9);
   const apertureMirror = new THREE.Mesh(apertureFrame.geometry, mirrorMaterial);
   const reflection = new THREE.Group();
   reflection.scale.y = -1;
