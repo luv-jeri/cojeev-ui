@@ -82,6 +82,7 @@ node_modules/
 /docs/research/
 /docs/seo/
 /docs/superpowers/
+/docs/workspace/
 /verification/*-results.json
 /verification/default-visual-review.json
 /verification/reference-regressions.json
