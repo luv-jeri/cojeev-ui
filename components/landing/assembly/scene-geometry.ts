@@ -168,10 +168,36 @@ export type Ribbon = {
 
 const RIBBON_UP = new THREE.Vector3(0, 1, 0);
 
+/**
+ * The pointer that holds the free end of the ribbon.
+ *
+ * The artboard draws the visitor's cursor there — the pink thread runs from the
+ * Create control to a white arrow — so the cursor belongs at the spine's end
+ * rather than the ribbon simply stopping. Flat in the instrument's own plane,
+ * like the ribbon, and anchored at the hotspot so it sits where the pointer is.
+ */
+function pointerShape() {
+  const shape = new THREE.Shape();
+  shape.moveTo(0, 0);
+  shape.lineTo(0.004, -0.116);
+  shape.lineTo(0.034, -0.086);
+  shape.lineTo(0.058, -0.128);
+  shape.lineTo(0.079, -0.117);
+  shape.lineTo(0.054, -0.075);
+  shape.lineTo(0.093, -0.073);
+  shape.closePath();
+  return new THREE.ExtrudeGeometry(shape, {
+    depth: 0.012,
+    bevelEnabled: false,
+  });
+}
+
 function createRibbon(
   segments: number,
   radial: number,
   material: THREE.Material,
+  /** Tapers to a point at both ends rather than closing on a blunt ring. */
+  pointed = false,
 ): Ribbon {
   const positions = new Float32Array((segments + 1) * radial * 3);
   const geometry = new THREE.BufferGeometry();
@@ -229,7 +255,9 @@ function createRibbon(
         binormal.normalize();
         normal.crossVectors(binormal, tangent).normalize();
         // A lens: thin where the ribbon is gripped, fullest in the middle.
-        const taper = 0.5 + 0.5 * Math.sin(Math.PI * t);
+        const taper = pointed
+          ? Math.sin(Math.PI * t)
+          : 0.5 + 0.5 * Math.sin(Math.PI * t);
         for (let spoke = 0; spoke < radial; spoke++) {
           const angle = (spoke / radial) * Math.PI * 2;
           const at = (ring * radial + spoke) * 3;
@@ -315,6 +343,8 @@ export type AssemblyScene = {
   heroFaces: Record<string, { object: THREE.Object3D; probe: CreateSeamProbe }>;
   setHeroPresentation(weight: number): void;
   ribbon: Ribbon;
+  /** The pointer at the ribbon's free end; follows the spine every frame. */
+  cursor: THREE.Mesh;
   sliderBand: Ribbon;
   /**
    * Rebuilds the sculpted face from the same blended contour the SVG press
@@ -953,8 +983,13 @@ export function buildAssemblyScene(): AssemblyScene {
   instrument.add(sourcePlate);
 
   /* ------------------------------------------------------------------ ribbon */
-  const ribbon = createRibbon(56, 10, own(kit.pink));
+  const ribbon = createRibbon(56, 10, own(kit.pink), true);
   instrument.add(ribbon.mesh);
+
+  const cursor = new THREE.Mesh(geo(pointerShape()), own(kit.cream));
+  cursor.rotation.z = 0.42;
+  cursor.scale.setScalar(1.5);
+  instrument.add(cursor);
 
   const parts: Record<PartId, THREE.Object3D> = {
     panel,
@@ -1086,6 +1121,7 @@ export function buildAssemblyScene(): AssemblyScene {
       probe: createSeamProbe(INSTRUMENT.create.width, INSTRUMENT.create.height),
     },
     ribbon,
+    cursor,
     sliderBand,
     createMesh,
     heroFaces,

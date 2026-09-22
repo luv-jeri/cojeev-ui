@@ -284,6 +284,7 @@ export function createSceneController(
   const floorColor = new THREE.Color();
   const start = new THREE.Vector3();
   const end = new THREE.Vector3();
+  const cursorAt = new THREE.Vector3();
   const cameraTarget = new THREE.Vector3();
   const keyOffset = new THREE.Vector3(
     LIGHT_RIG.key.position[0],
@@ -668,19 +669,24 @@ export function createSceneController(
         createPose.position[2] + 0.06,
       ),
       end.set(
-        createPose.position[0] - 0.42 - 1.24 * tension - 0.65 * heroWeight,
+        createPose.position[0] - 0.42 - 1.24 * tension - 1.7 * heroWeight,
         createPose.position[1] +
           0.02 -
           0.5 * tension -
           (canvas.clientWidth >= 900 && canvas.clientHeight < 800
-            ? 0.85
-            : 0.45) *
+            ? 1.13
+            : 0.59) *
             heroWeight,
         createPose.position[2] + 0.12,
       ),
       (0.24 + 0.2 * (1 - tension)) * (1 - 0.75 * heroWeight),
-      0.017 * (1 - 0.15 * tension),
+      /* The artboard's thread is a tapering band 13 px wide where it leaves the
+       * plate, not the 4 px cord the original radius drew. */
+      (0.017 + 0.034 * heroWeight) * (1 - 0.15 * tension),
     );
+    /* The cursor rides the spine's free end, so when the pointer pulls the
+     * thread the arrow is under it. */
+    cursorAt.copy(end);
     if (heroPointer.active && animates && heroWeight > 0.999) {
       camera.updateMatrixWorld(true);
       assembly.instrument.updateWorldMatrix(true, false);
@@ -701,8 +707,11 @@ export function createSceneController(
       if (pointerRay.ray.intersectPlane(ribbonPlane, pointerWorld)) {
         assembly.instrument.worldToLocal(pointerWorld);
         assembly.ribbon.setSpine(start, pointerWorld, 0.12, 0.012);
+        cursorAt.copy(pointerWorld);
       }
     }
+    assembly.cursor.position.copy(cursorAt);
+    applyOpacity(assembly.cursor, sceneFrame.weights[0]);
     applyOpacity(assembly.ribbon.mesh, sceneFrame.weights[0]);
 
     // The contour itself is direct: the exported path and the sculpted face read
