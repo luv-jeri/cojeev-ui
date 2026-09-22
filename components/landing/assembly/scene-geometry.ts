@@ -17,6 +17,13 @@
  */
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import { buildApertureGeometry } from "./aperture-geometry";
+import {
+  APERTURE_CLOSED,
+  APERTURE_DEPTH,
+  APERTURE_INNER,
+  APERTURE_OUTER,
+} from "./aperture-profile";
 import {
   INSTRUMENT,
   MATERIAL_ROUGHNESS,
@@ -383,23 +390,28 @@ export function buildAssemblyScene(): AssemblyScene {
   };
 
   /* ---------------------------------------------------------------- aperture */
+  /**
+   * The hero aperture is a closed band, not an extruded ring. The artboard's
+   * opening is a horseshoe whose crown leaves the frame, whose legs run down the
+   * left and right of the frame, and whose base joins them beneath the source
+   * plate — so an outer contour with a concentric hole cannot describe it. The
+   * profile is authored in this group's local space through the real hero
+   * camera and closes into a ring, so the group keeps the transform
+   * `scene-controller.ts` gives it and the sweep has no end caps — see
+   * `aperture-geometry.ts` and `aperture-profile.ts`.
+   */
   const aperture = new THREE.Group();
   const apertureSpec = INSTRUMENT.aperture;
   const apertureFrame = new THREE.Mesh(
     geo(
-      extruded(
-        superellipse(
-          apertureSpec.outer[0],
-          apertureSpec.outer[1],
-          apertureSpec.outerExponent,
-        ),
-        apertureSpec.thickness,
-        apertureSpec.bevel,
-        superellipse(
-          apertureSpec.inner[0],
-          apertureSpec.inner[1],
-          apertureSpec.innerExponent,
-        ),
+      buildApertureGeometry(
+        {
+          outer: APERTURE_OUTER,
+          inner: APERTURE_INNER,
+          depth: APERTURE_DEPTH,
+          closed: APERTURE_CLOSED,
+        },
+        { halfDepth: apertureSpec.thickness / 2, bevel: apertureSpec.bevel },
       ),
     ),
     own(kit.cream),
@@ -973,26 +985,9 @@ export function buildAssemblyScene(): AssemblyScene {
     apertureFrame.material,
   ] as THREE.MeshStandardMaterial[];
   // Subtle baked albedo variation; no derivative-heavy bump shader.
-  const originalAperture = apertureFrame.geometry;
-  const heroAperture = geo(
-    extruded(
-      superellipse(0.92, 1.18, 2.7),
-      0.17,
-      0.035,
-      superellipse(0.69, 0.95, 2.6),
-    ),
-  );
-  if (
-    heroAperture.getAttribute("position").count ===
-    originalAperture.getAttribute("position").count
-  ) {
-    heroAperture.morphAttributes.position = [
-      originalAperture.getAttribute("position").clone(),
-    ];
-    heroAperture.morphAttributes.normal = [
-      originalAperture.getAttribute("normal").clone(),
-    ];
-  }
+  // The aperture deliberately has no second silhouette: the hero and the
+  // catalogue share one solid, so scrolling between them cannot pop. The
+  // earlier superellipse ring was a different object standing in for this one.
   const heroFaces: AssemblyScene["heroFaces"] = {
     create: { object: createMesh, probe: createSeamProbe(0.78, 0.236, 0.024) },
     switch: { object: switchPlate, probe: createSeamProbe(0.25, 0.12, 0.065) },
@@ -1031,13 +1026,6 @@ export function buildAssemblyScene(): AssemblyScene {
           material.needsUpdate = true;
         }
       }
-      const apertureGeometry = weight > 0 ? heroAperture : originalAperture;
-      if (apertureFrame.geometry !== apertureGeometry) {
-        apertureFrame.geometry = apertureGeometry;
-        apertureFrame.updateMorphTargets();
-      }
-      if (apertureFrame.morphTargetInfluences)
-        apertureFrame.morphTargetInfluences[0] = 1 - weight;
       for (const { mesh, original, sculpted } of heroMorphs) {
         const geometry = weight > 0 ? sculpted : original;
         if (mesh.geometry !== geometry) {
