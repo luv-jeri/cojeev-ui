@@ -141,11 +141,25 @@ for (let y = 416; y <= 832; y += 32) {
   INNER_PX.push([atY(RIGHT_INNER, y), y]);
   KIND.push({ part: 'rightLeg', y });
 }
-for (const [x, y] of [...HOLE_BOTTOM].reverse())
-  if (x < 1300 && x >= 1000) {
-    INNER_PX.push([x, y]);
-    KIND.push({ part: 'base', y });
-  }
+/**
+ * The opening's bottom, walked right to left back to the left foot.
+ *
+ * Two cuts here, and both of them cost the band its feet:
+ *   - the measured corner `(1300, 842)` used to be dropped by `x < 1300`, and
+ *   - `(1319, 832)` is the right leg's own last inner point, so it is skipped to
+ *     avoid a zero-length segment.
+ * Without `(1300, 842)` the walk chained `(1319, 832)` straight to `(1280, 849)`
+ * and turned about 90 degrees in a single station, which folds the swept surface
+ * through itself. `x >= 1000` stays: below that the opening's left wall is
+ * already carried by `LEFT_INNER`, and re-adding it would double it back.
+ */
+const HOLE_BOTTOM_FROM = 1000;
+for (const [x, y] of [...HOLE_BOTTOM].reverse()) {
+  if (x < HOLE_BOTTOM_FROM) continue;
+  if (x === 1319 && y === 832) continue;
+  INNER_PX.push([x, y]);
+  KIND.push({ part: 'base', y });
+}
 
 /**
  * How much of the cross-section direction comes from the band's centreline
@@ -180,8 +194,15 @@ function horizontalDirection({ part }, index) {
  * and (through the hits) as the outer control points themselves.
  */
 const OUTER_PX = [];
+/**
+ * Every measured point of the left leg's outer edge, including `(750, 832)`.
+ *
+ * Cutting at `y > 800` dropped that point and left the walk chaining the base's
+ * left end `(760, 823)` directly to `(754, 800)` — a 23 px step that turns about
+ * 90 degrees in one station. `(750, 832)` is the measured corner itself, and it
+ * is the only traced outer point between the leg and the base's left end.
+ */
 for (const [x, y] of [...LEFT_OUTER].sort((a, b) => b[1] - a[1])) {
-  if (y > 800) continue;
   OUTER_PX.push([x, y]);
 }
 {
@@ -215,11 +236,66 @@ for (const [x, y] of CROWN.slice(CROWN_HORIZONTAL_FROM)) OUTER_PX.push([x + 240,
 for (let y = 416; y <= 800; y += 32) OUTER_PX.push([atY(RIGHT_INNER, y) + 240, y]);
 /**
  * Off-frame turn where the right leg's outer edge meets the base's lower edge,
- * then the measured lower edge itself, walked right to left. `BASE_LOWER`
- * enters the frame at (1536, 980); everything here bulges past x = 1536 so the
- * turn happens out of sight.
+ * then the measured lower edge itself, walked right to left.
+ *
+ * The turn was three hand-placed points, which put a V exactly where the contour
+ * meets the frame edge at `(1536, 980)`: the base's lower edge leaves that point
+ * up-and-left while the leg's outer edge arrived from above, so the centreline
+ * turned about 46 degrees in one station. A band ~135 px wide cannot turn on a
+ * corner that tight, and the sweep folded through itself there.
+ *
+ * It is a circular arc tangent to both measured edges instead, which is what the
+ * band does out of sight. The arc stays at x >= 1536, so none of it is visible;
+ * what it fixes is the ruling of the visible base just inside the frame edge.
  */
-OUTER_PX.push([1604, 860], [1596, 920], [1560, 965]);
+function tangentArc(from, to, startTangent, samples) {
+  const chordLength = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const chord = [(to[0] - from[0]) / chordLength, (to[1] - from[1]) / chordLength];
+  /* the chord bisects the turn, so the total turn is twice its angle to the tangent */
+  const turn = 2 * Math.atan2(
+    startTangent[0] * chord[1] - startTangent[1] * chord[0],
+    startTangent[0] * chord[0] + startTangent[1] * chord[1],
+  );
+  const radius = chordLength / (2 * Math.sin(Math.abs(turn) / 2));
+  /* the half-plane the centre falls in and the direction the spoke turns are two
+   * independent sign choices; only one pair lands on `to`, so try them all */
+  for (const side of [1, -1]) {
+    for (const spin of [1, -1]) {
+      const centre = [
+        from[0] + -startTangent[1] * side * radius,
+        from[1] + startTangent[0] * side * radius,
+      ];
+      const spoke = [from[0] - centre[0], from[1] - centre[1]];
+      const at = (angle) => {
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        return [
+          centre[0] + spoke[0] * cos - spoke[1] * sin,
+          centre[1] + spoke[0] * sin + spoke[1] * cos,
+        ];
+      };
+      /* the end point itself is not emitted: the walk's next control point is
+       * already there, and duplicating it would make a zero-length segment */
+      const end = at(turn * spin);
+      if (Math.hypot(end[0] - to[0], end[1] - to[1]) >= 1) continue;
+      const arc = [];
+      for (let i = 1; i < samples; i++) arc.push(at((turn * spin * i) / samples));
+      return arc;
+    }
+  }
+  throw new Error('tangentArc produced no arc that reaches its end point');
+}
+{
+  const legEnd = [atY(RIGHT_INNER, 800) + 240, 800];
+  const legBefore = [atY(RIGHT_INNER, 768) + 240, 768];
+  const legLength = Math.hypot(legEnd[0] - legBefore[0], legEnd[1] - legBefore[1]);
+  const startTangent = [
+    (legEnd[0] - legBefore[0]) / legLength,
+    (legEnd[1] - legBefore[1]) / legLength,
+  ];
+  /* BASE_LOWER's lowest measured point, which is also where it enters the frame */
+  OUTER_PX.push(...tangentArc(legEnd, BASE_LOWER[BASE_LOWER.length - 1], startTangent, 12));
+}
 for (const [x, y] of [...BASE_LOWER].reverse()) OUTER_PX.push([x, y]);
 
 /* --------------------------------------------- pair by perpendicular onto it */
@@ -419,18 +495,80 @@ if (misses.length) {
   }
 }
 
+/**
+ * Fill the gaps between cast hits from the traced outer polyline.
+ *
+ * The mesh's outer silhouette is not the traced contour: it is the curve through
+ * the *hits*, one per inner control point. Casts are sparse exactly where the
+ * contour turns hardest — at the right foot three hits spanned the whole corner,
+ * so the base's last 130 px of traced lower edge, from x = 1400 out to the frame
+ * edge, were chorded straight past and the base visibly ended short. Sampling the
+ * dense polyline inside each gap puts the traced edge back in the silhouette.
+ * The station count does not change: the stations resample this curve by arc
+ * length either way.
+ */
+function outerIndexAtArc(target) {
+  let low = 0;
+  let high = DENSE;
+  while (high - low > 1) {
+    const mid = (low + high) >> 1;
+    if (outerArc[mid] <= target) low = mid;
+    else high = mid;
+  }
+  return low;
+}
+/** angle turned per pixel of contour, averaged over a window that wide */
+function outerTurnRate(index, window) {
+  const a = outerDense[(index - window + DENSE) % DENSE];
+  const b = outerDense[index];
+  const c = outerDense[(index + window) % DENSE];
+  const ux = b.x - a.x;
+  const uy = b.y - a.y;
+  const vx = c.x - b.x;
+  const vy = c.y - b.y;
+  const lu = Math.hypot(ux, uy);
+  const lv = Math.hypot(vx, vy);
+  if (lu < 1e-9 || lv < 1e-9) return 0;
+  const turned = Math.abs(Math.atan2(ux * vy - uy * vx, ux * vx + uy * vy));
+  return turned / ((lu + lv) / 2);
+}
+const outerControlPoints = [];
+{
+  const mostPerGap = 24;
+  const smallestGapWorthFilling = 16;
+  for (let i = 0; i < hits.length; i++) {
+    outerControlPoints.push(hits[i].point);
+    let span = hits[(i + 1) % hits.length].arc - hits[i].arc;
+    if (span <= 0) span += OUTER_LENGTH;
+    const inserts = Math.min(mostPerGap, Math.floor(span / smallestGapWorthFilling));
+    /* A band of half-width h folds if the centreline's radius drops below h, so
+     * the traced edge can only be followed where its curvature radius stays
+     * above the section's half-width. At the left foot's outer corner it does
+     * not — the measured corner spans about 25 px while the band is 135 px wide
+     * — and following it there is what folds the sweep through itself. Skipping
+     * those points leaves the chord, which is the closest a solid this wide can
+     * come to the reference's rounded corner. */
+    const halfWidth = Math.max(hits[i].width, hits[(i + 1) % hits.length].width) / 2;
+    const window = Math.max(2, Math.round(halfWidth));
+    for (let k = 1; k <= inserts; k++) {
+      const at = (hits[i].arc + (span * k) / (inserts + 1)) % OUTER_LENGTH;
+      const index = outerIndexAtArc(at);
+      if (outerTurnRate(index, window) * halfWidth > 1) continue;
+      outerControlPoints.push([outerDense[index].x, outerDense[index].y]);
+    }
+  }
+}
+
 /* Resample both contours together. Both curves take the same control points in
  * the same order, so sampling them at the same parameter keeps the pairing. */
 const STATIONS = 240;
 const innerCurve = closedCurve(INNER_PX);
-const hitCurve = closedCurve(hits.map((hit) => hit.point));
+const hitCurve = closedCurve(outerControlPoints);
 const stationsScreen = [];
 for (let i = 0; i < STATIONS; i++) {
   const t = i / STATIONS;
-  /* getPoint, NOT getPointAt: arc-length sampling would pair the two contours
-   * against different arc positions and skew every cross-section */
-  const a = innerCurve.getPoint(t);
-  const b = hitCurve.getPoint(t);
+  const a = innerCurve.getPointAt(t);
+  const b = hitCurve.getPointAt(t);
   stationsScreen.push({
     inner: [a.x, a.y],
     outer: [b.x, b.y],
@@ -683,7 +821,7 @@ fs.writeFileSync(
         baseLower: BASE_LOWER,
       },
       innerControl: INNER_PX,
-      outerControl: hits.map((hit) => hit.point),
+      outerControl: outerControlPoints,
       stations: stations.length,
       screen: stationsScreen,
       local: stations,

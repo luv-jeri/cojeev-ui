@@ -64,6 +64,44 @@ silhouette stays pixel-exact and the ground contact lands in the floor plane,
 where a contact shadow can find it. Stations already above the floor get depth 0
 and are untouched.
 
+## The two feet, and why they still cross
+
+The band is a constant-width sweep, about 135 px wide at the feet, and the
+reference's own outer corners there turn inside 25 px (left foot) and 40 px
+(right foot). A sweep folds wherever its centreline radius drops below its
+half-width, so a solid this wide cannot follow both traced edges through those
+corners and stay embedded. Three changes did most of the work, and each is
+pinned by a test:
+
+1. **The station walk samples both contours by arc length** (`getPointAt`). It
+   used to sample both by curve parameter, which advanced the two contours at
+   different speeds: one station turned 121 degrees at a foot, against 74 now.
+2. **The measured corner points are all in the walk.** Two cuts in the generator
+   silently dropped them — `x < 1300` dropped `(1300, 842)` and `(1319, 832)`,
+   `y > 800` dropped the outer corner `(750, 832)`.
+3. **Per-station trace depth**, which is also what puts the ground contact in the
+   floor plane (below). Flattening it reintroduces crossings on its own, so the
+   test asserts that it stays load-bearing.
+
+What survives is 22 non-adjacent crossing pairs out of 15 278 tested, all inside
+the two foot windows — 5 at the left foot and 17 at the right. Following those
+corners is what puts the base's last 60 px of traced lower edge back on screen,
+so the trade is deliberate and the count is asserted, not hidden.
+
+## The base, and why the depth is per station
+
+Traced on one plane, the base's outer edge lands 0.16 to 0.31 *below* the hero
+floor plane (`INSTRUMENT.floor.y = -1.02`) and the opaque floor then renders in
+front of it: the whole lower base disappears and the band appears to end in two
+separate feet. That was the visible defect, and it was not a missing surface.
+
+A traced pixel cannot be moved on screen by sliding it along its own view ray, so
+each station is instead traced on the plane where its outer edge reaches the
+floor, and `APERTURE_DEPTH` carries that per-station offset into the mesh. The
+silhouette stays pixel-exact and the ground contact lands in the floor plane,
+where a contact shadow can find it. Stations already above the floor get depth 0
+and are untouched.
+
 ## Known defects — do not describe this as clean
 
 1. **The band crosses itself at both feet.** The corrected triangle-triangle
@@ -86,10 +124,33 @@ and are untouched.
    of the measured table — where the measurement itself may be reading the
    floor's reflection rather than the band.
 
+## Known defects — do not describe this as clean
+
+1. **22 crossing pairs at the two feet**, as above. Everywhere else the mesh is
+   clean, and the fixtures in `../aperture-intersections.test.ts` prove the
+   predicate can fail, so the count is trustworthy in a way the previous
+   verifier's "0 crossings" was not.
+2. **The traced edges sit about 13 px outside the rendered bevel.** The trace is
+   taken at the section's extreme (`z = ±halfDepth`) while the rounded edge
+   reaches the silhouette one bevel radius inside it. It is a systematic offset on
+   every edge, it is why the base measures 3-5 px high rather than 0, and it is
+   left alone deliberately: correcting it moves every surface that currently
+   passes. Where the traced contour runs nearly parallel to the frame edge — the
+   last ~30 px of the base's right end — the same offset costs up to 48 px
+   vertically, which is the largest remaining silhouette error.
+3. **The outer silhouette is the curve through the cast hits, not the traced
+   contour.** The hits are one per inner control point, and casts are sparse
+   where the section swings fastest, so the generator now fills each gap from the
+   dense traced polyline — but only where the contour's curvature radius stays
+   above the section's half-width, because following it where it does not is
+   exactly what folds the sweep.
+
 ## Verified
 
-- Closed manifold, consistent winding, Euler characteristic 0 (`npm run test:aperture`).
+- Closed manifold, consistent winding, Euler characteristic 0 (`npm run test:aperture`), 11 tests.
 - No degenerate triangles; finite, non-degenerate per-station UVs.
-- Base's lower edge within 3-5 px of the reference across x 880-1320, with the
-  floor present, measured from a real 1536x1024 capture.
-- 78 stations resting on the floor plane; nothing below it.
+- Base's lower edge within 3-6 px of the reference from x 770 to x 1490, with the
+  floor present, measured from a real 1536x1024 capture with the chrome masked
+  and the edge detected as the sharp fall into shadow.
+- 56 stations resting on the floor plane; the generator refuses to write a
+  profile whose outer edge dips below it.
