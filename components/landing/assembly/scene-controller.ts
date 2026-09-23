@@ -24,6 +24,7 @@ import {
 import { blendContour } from "./contour-export";
 import type { SignatureShapeName } from "../../../registry/cojeev/lib/signature-shapes";
 import {
+  MIRROR_TAP_OFFSETS,
   applyOpacity,
   buildAssemblyScene,
   type AssemblyScene,
@@ -288,7 +289,12 @@ export function createSceneController(
    * field — which is what has to stay dark for the plane's edge to disappear —
    * is the albedo. The shadow band's own median was 84.9 against the artboard's
    * 111.2, so this closes both gaps at once. */
-  const warmHeroFloor = new THREE.Color(0x988b81);
+  /* Neutralised from 0x988b81: over the floor's own 790-1020 band the artboard
+   * reads mean r-minus-b 19.2 and this read 28.2. The floor's albedo is drawn
+   * 85% from this colour over the backdrop, so the cast is set here; 0x968b86
+   * is the same luminance with an r-minus-b of 15.5, which the warm key scales
+   * back up to the artboard's 19. */
+  const warmHeroFloor = new THREE.Color(0x968b86);
   const backdrop = new THREE.Color();
   const floorColor = new THREE.Color();
   const start = new THREE.Vector3();
@@ -596,9 +602,16 @@ export function createSceneController(
     }
     assembly.aperture.rotation.set(0, -0.12 * heroWeight, -0.11 * heroWeight);
     applyOpacity(assembly.aperture, sceneFrame.aperture.opacity);
-    assembly.apertureMirror.position.copy(assembly.aperture.position);
-    assembly.apertureMirror.rotation.copy(assembly.aperture.rotation);
-    assembly.apertureMirror.scale.copy(assembly.aperture.scale);
+    /* Every tap is a copy of the band at the aperture's own pose, displaced
+     * along the mirror axis. Posing only the first - which is what this did -
+     * left the rest at the origin. */
+    for (let tap = 0; tap < assembly.apertureMirrors.length; tap++) {
+      const mirror = assembly.apertureMirrors[tap];
+      mirror.position.copy(assembly.aperture.position);
+      mirror.position.y += MIRROR_TAP_OFFSETS[tap];
+      mirror.rotation.copy(assembly.aperture.rotation);
+      mirror.scale.copy(assembly.aperture.scale);
+    }
 
     (assembly.floor.material as THREE.MeshStandardMaterial).color.copy(
       floorColor,

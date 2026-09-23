@@ -74,6 +74,13 @@ function matte(hex: string) {
   });
 }
 
+/**
+ * Where each reflection tap sits along the mirror axis, in world units. The
+ * controller poses every tap from the aperture, so this is shared: leaving it
+ * inside the builder is what let the second tap sit unposed at the origin.
+ */
+export const MIRROR_TAP_OFFSETS = [-0.16, -0.08, 0, 0.08, 0.16] as const;
+
 export type MaterialKit = ReturnType<typeof createMaterialKit>;
 
 function createMaterialKit() {
@@ -369,7 +376,8 @@ export type AssemblyScene = {
   root: THREE.Group;
   aperture: THREE.Group;
   /** The band mirrored about the floor plane; follows `aperture` every frame. */
-  apertureMirror: THREE.Mesh;
+  /** Every mirror tap, so the controller can pose all of them from the aperture. */
+  apertureMirrors: THREE.Mesh[];
   floor: THREE.Mesh;
   field: THREE.Group;
   stage: THREE.Group;
@@ -632,11 +640,32 @@ export function buildAssemblyScene(): AssemblyScene {
    * a warm pool with no shape in it, and the floor's own map now carries that
    * brightness (see `floorFalloff`), so the mirror's job is only to keep the
    * reflection from being perfectly flat. Two faint taps, one offset a third of
-   * the band's own depth, do that; anything more legible is a second object. */
-  const MIRROR_TAPS = [
-    { offset: 0.0, opacity: 0.15 },
-    { offset: 0.13, opacity: 0.07 },
-  ] as const;
+   * the band's own depth, do that; anything more legible is a second object.
+   *
+   * The opacities are also the floor's doing rather than the mirror's: the floor
+   * is drawn over these taps, so at its old 0.82 only 18% of the band's
+   * reflection reached the camera and the artboard's bright halo under the band
+   * came back 22 levels dark. Lowering the floor to 0.70 lets 30% through, and
+   * this set is what was solved jointly against the artboard alongside it.
+   *
+   * Offset 0.13 as a second tap was a bug, not a blur. Every tap is positioned
+   * from the aperture each frame, but only `apertureMirror` - the first - was
+   * ever written; the second kept its authored `position.y` of 0.13 and sat at
+   * the world origin at unit scale, scale 1 against the aperture's 1.62. So the
+   * "two-tap blur" was one real tap plus a stray band, and widening the second
+   * tap's offset could only ever have measured worse. All five are synced now.
+   *
+   * Five taps over +/-0.16 rather than two over 0.13: at this size a 0.13-unit
+   * step is a ghosted edge, not a blur, which is why the single real tap read as
+   * a second object lying under the first. The weights are triangular and scaled
+   * so the composite is 0.65, matching the strength the floor solve chose; a
+   * symmetric spread blurs toward the object as well as away from it. */
+  const MIRROR_TAP_GAIN = 0.28;
+  const MIRROR_TAP_WEIGHTS = [0.35, 0.8, 1, 0.8, 0.35] as const;
+  const MIRROR_TAPS = MIRROR_TAP_OFFSETS.map((offset, index) => ({
+    offset,
+    opacity: MIRROR_TAP_WEIGHTS[index] * MIRROR_TAP_GAIN,
+  }));
 
   const reflection = new THREE.Group();
   reflection.scale.y = -1;
@@ -648,7 +677,7 @@ export function buildAssemblyScene(): AssemblyScene {
    * colour is lifted because the floor is drawn at 0.82 over it — a straight
    * copy of the band's own material came back at a fifth of the artboard's
    * reflected streak (99 against 159 at the brightest point). */
-  const mirrorTaps = MIRROR_TAPS.map(({ offset, opacity }) => {
+  const mirrorTaps = MIRROR_TAPS.map(({ opacity }) => {
     const material = own(kit.cream);
     material.side = THREE.DoubleSide;
     material.color.multiplyScalar(1.15);
@@ -658,11 +687,10 @@ export function buildAssemblyScene(): AssemblyScene {
      * stipple; the floor is opaque enough to sort them on its own. */
     material.depthWrite = false;
     const band = new THREE.Mesh(apertureFrame.geometry, material);
-    band.position.y = offset;
     reflection.add(band);
     return band;
   });
-  const apertureMirror = mirrorTaps[0];
+  const apertureMirrors = mirrorTaps;
 
   /* The pink thread is the brightest thing the artboard's floor catches, and it
    * is the one part of the reflection a viewer actually notices. Its geometry is
@@ -679,6 +707,13 @@ export function buildAssemblyScene(): AssemblyScene {
   /* ------------------------------------------------------------------- floor */
   /* `own()` clones, so the material the mesh actually renders with is this
    * one — toggling `kit.floor.map` would have changed nothing at all. */
+  /* Same noise, its own repeat: see the bump assignment in
+   * `setHeroPresentation`. A clone shares the image, so this costs no texture
+   * memory, and `repeat` is per-texture rather than per-image. */
+  const floorGrain = grain.clone();
+  floorGrain.repeat.set(110, 110);
+  floorGrain.needsUpdate = true;
+
   const floorMaterial = own(kit.floor);
   const floor = new THREE.Mesh(
     geo(new THREE.PlaneGeometry(INSTRUMENT.floor.size, INSTRUMENT.floor.size)),
@@ -1293,7 +1328,7 @@ export function buildAssemblyScene(): AssemblyScene {
   return {
     root,
     aperture,
-    apertureMirror,
+    apertureMirrors,
     floor,
     field,
     stage,
@@ -1342,10 +1377,21 @@ export function buildAssemblyScene(): AssemblyScene {
          * is the key light catching that texture, and perturbing the normal is
          * how the light comes by it. Weighted like the map, so the catalogue's
          * floor stays the flat one. */
-        const bump = weight > 0 ? grain : null;
+        /* The artboard's ground carries fine grain and this had none: measured
+         * in 41x41 windows over nine clean floor points, its texture energy was
+         * 8.8 against the artboard's 13.3, and 0.8 bumpScale was the reason.
+         * 0.8 is right for a control face filling 300 px; the floor is a single
+         * 26-unit plane seen at a grazing angle, where the same perturbation
+         * barely bends a normal. Swept against the artboard, 12 lands at 10.5
+         * energy for +0.25 on the floor-pool mean and +0.08 on the frame - the
+         * visible grain the artboard has, bought as cheaply as it can be.
+         * `floorGrain` is the same noise at its own repeat; that turned out to
+         * be nearly neutral on its own (8.80 -> 8.82) and is kept only because
+         * it is what 12 was measured with. */
+        const bump = weight > 0 ? floorGrain : null;
         if (floorMaterial.bumpMap !== bump) {
           floorMaterial.bumpMap = bump;
-          floorMaterial.bumpScale = 0.8;
+          floorMaterial.bumpScale = 12;
           floorMaterial.needsUpdate = true;
         }
       }

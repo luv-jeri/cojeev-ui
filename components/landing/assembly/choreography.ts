@@ -147,8 +147,18 @@ export const CHAPTERS: readonly Chapter[] = [
     lights: { key: 2.45, fill: 0.05, rim: 0.5 },
     aperture: { opacity: 1, position: [0.85, 0.52, -0.7], scale: 1.62 },
     /* Below 0.985 `applyOpacity` also stops the floor writing depth, which is
-     * what lets the mirrored band underneath show through. */
-    floor: 0.82,
+     * what lets the mirrored band underneath show through.
+     *
+     * 0.70 rather than 0.82, solved against the artboard. The floor is drawn
+     * *over* the mirror, so its opacity is what decides how much reflection
+     * survives: at 0.82 only 18% of the mirrored band reached the camera and the
+     * ground read as a flat warm wash (its own diffuse) with a ghost in it.
+     * Swept jointly with the mirror's strength over the 1536x1024 still, against
+     * three regions traced from the reference - the halo just under the band,
+     * the far ground right of the object, and the left floor. This pair is the
+     * best aggregate whose three regions all land inside 10 levels; see
+     * HERO-ARTBOARD-FINDINGS.md. */
+    floor: 0.70,
     field: 0,
     stage: 0,
     closing: 0,
