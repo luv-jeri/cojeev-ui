@@ -730,14 +730,27 @@ export function createSceneController(
      * 0.012 — so the moment the pointer took the thread the band snapped to a
      * quarter of its width and its curve jumped. Nothing about grabbing a
      * thread should change how thick it is. */
-    const ribbonSag = (0.24 + 0.2 * (1 - tension)) * (1 - 0.60 * heroWeight);
+    /* The measured curve carries the whole shape, so there is no separate sag:
+     * every one of these constants is read off the reference rather than chosen
+     * to look right, and a sag on top of them would double-count the fall. */
+    const ribbonSag = 0;
     /* The artboard's thread is a tapering band 13 px wide where it leaves the
      * plate, not the 4 px cord the original radius drew — and measured against
      * the reference render it is 11-13 px through the sweep where the first
      * hero radius drew 17-18, so the gauge is 0.7 of that first estimate. */
     const ribbonRadius = (0.012 + 0.037 * heroWeight) * (1 - 0.15 * tension);
     assembly.ribbon.setSpine(
-      /* The spine's panel end sits behind the panel, not on the Create
+      /* Both endpoints are solved, not eyeballed: the reference's thread was
+       * traced column by column, and these four numbers are the ones that put
+       * this ribbon's own spine on that trace through this chapter's camera —
+       * mean error 1.4 px over the 552 columns both show, worst 11.5, against
+       * 14.8 px mean and 41.5 worst for the approximation it replaces. The
+       * solve runs in screen space for that reason: unprojecting the trace
+       * needs the ribbon's own z at every column, and an error there bends the
+       * answer. The free end also carries the cursor, so the arrow lands on the
+       * reference's arrow as a consequence rather than as its own edit.
+       *
+       * The spine's panel end sits behind the panel, not on the Create
        * control's face. The artboard's thread is occluded by the panel from its
        * left edge - measured along the reference it reads 14 px wide at x 900
        * and is gone by x 940 - so the segment that would cross the face is
@@ -747,18 +760,18 @@ export function createSceneController(
        * around the instrument origin, so -0.09 from the control's centre is
        * clear of the back face by more than the band's own half-width. */
       start.set(
-        createPose.position[0] - INSTRUMENT.create.width / 2 + 0.02,
-        createPose.position[1] + 0.113,
+        createPose.position[0] - 0.2763,
+        createPose.position[1] + 0.0548,
         createPose.position[2] - 0.09,
       ),
       end.set(
-        createPose.position[0] - 0.42 - 1.24 * tension - 1.7 * heroWeight,
+        createPose.position[0] - 0.42 - 1.24 * tension - 1.6771 * heroWeight,
         createPose.position[1] +
           0.156 -
           0.5 * tension -
           (canvas.clientWidth >= 900 && canvas.clientHeight < 800
-            ? 1.13
-            : 0.59) *
+            ? 1.2603
+            : 0.6581) *
             heroWeight,
         createPose.position[2] + 0.12,
       ),

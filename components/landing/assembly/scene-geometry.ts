@@ -221,17 +221,122 @@ type RibbonTaper = "lens" | "grip" | "thread";
  * `linear` spends height evenly, so the band is steepest where it is held and
  * level in the middle: a hanging cord. `smooth` eases in and out, so the band
  * leaves level, steepens through the middle and levels again at the far end.
+ * `thread` is the artboard's own measured curve, described below.
  *
- * The artboard's thread is the second. Traced across the reference its fall per
- * 40 px of span runs 13, 10, 6, 6, 11, 19, 35, 49, 35, 24, 14, 9, 4 from the
- * cursor to the panel - steepest at the middle and level at both ends, which a
- * linear spine cannot produce at any sag.
+ * The artboard's thread is neither of the first two. Traced across the reference
+ * its fall per 40 px of span runs 13, 10, 6, 6, 11, 19, 35, 49, 35, 24, 14, 9, 4
+ * from the cursor to the panel — level at the cursor, sharply steepest from 55%
+ * to 75% of the span, then level again for the last quarter into the panel. No
+ * two-term `ease(t)` reproduces that: `smooth` puts its steepest section at 50%
+ * and still gives away height at both ends, which is why this band floated ~27 px
+ * below the reference through the middle and met the panel arriving steeply when
+ * the reference arrives flat.
  */
-type RibbonEase = "linear" | "smooth";
+type RibbonEase = "linear" | "smooth" | "thread";
+
+/**
+ * `thread`'s profile: how much of the spine's height has been spent by each
+ * fraction of the way from the free end (0) to the panel end (1). The reference
+ * was traced column by column, unprojected into the plane the ribbon itself
+ * lives in — at the z each column's own position along the spine implies, since
+ * the thread runs from 0.045 behind the panel's front face to 0.12 in front of
+ * it — and normalised against the total fall so the curve survives the free end
+ * moving.
+ *
+ * The last point is past where the panel cuts the thread off: the spine has to
+ * start behind the panel for the panel to occlude it, so it is extended one
+ * tail-segment along its own end tangent and the measured part is rescaled into
+ * what remains. `0.8889` is where the visible thread ends.
+ */
+const THREAD_FALL: readonly (readonly [number, number])[] = [
+  [0, 0],
+  [0.1111, 0.027],
+  [0.2222, 0.0784],
+  [0.3333, 0.2179],
+  [0.4444, 0.47],
+  [0.5556, 0.6746],
+  [0.6667, 0.7704],
+  [0.7778, 0.8171],
+  [0.8889, 0.8899],
+  [1, 1],
+];
+
+function makeHermite(points: readonly (readonly [number, number])[]) {
+  const secants = points.slice(1).map((point, i) => {
+    const [x0, y0] = points[i];
+    const [x1, y1] = point;
+    return (y1 - y0) / (x1 - x0);
+  });
+  const tangents = points.map((point, i) => {
+    if (i === 0) return secants[0];
+    if (i === secants.length) return secants[secants.length - 1];
+    const before = secants[i - 1];
+    const after = secants[i];
+    if (before * after <= 0) return 0;
+    const spanBefore = point[0] - points[i - 1][0];
+    const spanAfter = points[i + 1][0] - point[0];
+    return (2 * (spanBefore + spanAfter)) / (spanBefore / before + spanAfter / after);
+  });
+  const last = points.length - 1;
+  return (t: number) => {
+    const x = t < 0 ? 0 : t > 1 ? 1 : t;
+    let i = 1;
+    while (i < last && x > points[i][0]) i += 1;
+    const [x0, y0] = points[i - 1];
+    const [x1, y1] = points[i];
+    const h = x1 - x0;
+    const s = (x - x0) / h;
+    const s2 = s * s;
+    const s3 = s2 * s;
+    return (
+      (2 * s3 - 3 * s2 + 1) * y0 +
+      (s3 - 2 * s2 + s) * h * tangents[i - 1] +
+      (-2 * s3 + 3 * s2) * y1 +
+      (s3 - s2) * h * tangents[i]
+    );
+  };
+}
+
+/* The secant of each measured segment, and the tangent at each measured point
+ * as the Fritsch-Carlson harmonic mean of its two neighbouring secants — which
+ * is zero wherever they disagree in sign, so the interpolant can never step
+ * backwards. A central difference, the obvious thing to write, overshoots on
+ * both sides of the shoulder at 0.67 where the fall rises from 0.30 to 0.80 in a
+ * fifth of the span, and shows up as a kink in the band. */
+const threadEase = makeHermite(THREAD_FALL);
+
+/**
+ * `thread`'s span: the same measurement again, as the fraction of the spine's
+ * WIDTH that has been covered. The thread does not walk evenly from its free end
+ * to the panel — it runs almost straight for the first half and then turns up
+ * into the plate — so interpolating x linearly in `t` bunches the bend in the
+ * wrong place. With the height alone measured, reaching the reference's tail
+ * meant stretching the whole band sideways and losing the middle, which is
+ * exactly the compromise the previous fit kept making.
+ */
+const THREAD_SPAN: readonly (readonly [number, number])[] = [
+  [0, 0],
+  [0.1111, 0.1924],
+  [0.2222, 0.2761],
+  [0.3333, 0.3655],
+  [0.4444, 0.4622],
+  [0.5556, 0.5626],
+  [0.6667, 0.6645],
+  [0.7778, 0.7698],
+  [0.8889, 0.8813],
+  [1, 1],
+];
 
 const RIBBON_EASES: Record<RibbonEase, (t: number) => number> = {
   linear: (t) => t,
   smooth: (t) => t * t * (3 - 2 * t),
+  thread: threadEase,
+};
+
+const RIBBON_SPANS: Record<RibbonEase, ((t: number) => number) | null> = {
+  linear: null,
+  smooth: null,
+  thread: makeHermite(THREAD_SPAN),
 };
 
 const RIBBON_TAPERS: Record<RibbonTaper, (t: number) => number> = {
@@ -274,20 +379,24 @@ function createRibbon(
   const normal = new THREE.Vector3();
   const vertex = new THREE.Vector3();
 
-  /* Only the height is eased. Easing x as well would move where the thread
-   * crosses the panel's edge, and the crossing is what the panel occludes. */
+  /* The height and the span are eased independently; a ribbon that names only
+   * an ease keeps the old behaviour, with x and z even in `t`. `z` follows the
+   * span rather than `t` because the thread's depth was measured as it crossed
+   * the plate, so it belongs to the position along the band and not to the
+   * ring's index. */
   const spineAt = (
     t: number,
     start: THREE.Vector3,
     end: THREE.Vector3,
     sag: number,
     ease: (value: number) => number,
+    span: (value: number) => number,
     out: THREE.Vector3,
   ) =>
     out.set(
-      THREE.MathUtils.lerp(start.x, end.x, t),
+      THREE.MathUtils.lerp(start.x, end.x, span(t)),
       THREE.MathUtils.lerp(start.y, end.y, ease(t)) - Math.sin(Math.PI * t) * sag,
-      THREE.MathUtils.lerp(start.z, end.z, t),
+      THREE.MathUtils.lerp(start.z, end.z, span(t)),
     );
 
   return {
@@ -295,11 +404,12 @@ function createRibbon(
     setSpine(start, end, sag, ribbonRadius) {
       const taperAt = RIBBON_TAPERS[taperName];
       const ease = RIBBON_EASES[easeName];
+      const span = RIBBON_SPANS[easeName] ?? ((value: number) => value);
       for (let ring = 0; ring <= segments; ring++) {
         const t = ring / segments;
-        spineAt(t, start, end, sag, ease, spine);
-        spineAt(Math.min(1, t + 0.01), start, end, sag, ease, ahead);
-        spineAt(Math.max(0, t - 0.01), start, end, sag, ease, behind);
+        spineAt(t, start, end, sag, ease, span, spine);
+        spineAt(Math.min(1, t + 0.01), start, end, sag, ease, span, ahead);
+        spineAt(Math.max(0, t - 0.01), start, end, sag, ease, span, behind);
         tangent.copy(ahead).sub(behind);
         if (tangent.lengthSq() < 1e-10) tangent.set(1, 0, 0);
         tangent.normalize();
@@ -1191,7 +1301,7 @@ export function buildAssemblyScene(): AssemblyScene {
     10,
     own(kit.pink, HERO_ALBEDO.pink),
     "thread",
-    "smooth",
+    "thread",
   );
   instrument.add(ribbon.mesh);
 
