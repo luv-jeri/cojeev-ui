@@ -473,7 +473,12 @@ export function buildAssemblyScene(): AssemblyScene {
    * not centred on the plane, and it is steep: the reference holds 145 at world
    * (-0.22, 0.95), 62 a metre to its left, 38 at 2.5 units, and 13 by 3.4 — and
    * 13 is *below* the backdrop's own 17.6, so the plane's far edge is very
-   * slightly darker than the field and draws no line either way. */
+   * slightly darker than the field and draws no line either way. A first fit at
+   * a 4.2-unit radius with a 1.6 exponent measured 101 where the artboard holds
+   * 62: it was a broad wash rather than a pool, and the whole lower-left of the
+   * frame came up 40 levels. 3.7 and 2.1 pull the metre ring to 93 and the 2.5
+   * ring to 30, which brackets the reference on both sides instead of erring one
+   * way across the whole pool. */
   const poolX = -0.3;
   const poolZ = 0.9;
   const floorFalloffData = new Uint8Array(64 * 64 * 4);
@@ -492,7 +497,7 @@ export function buildAssemblyScene(): AssemblyScene {
        * 25.4, still 8 clear of the backdrop; 7.5% measures 19, which is what the
        * reference holds at that row. */
       const value = Math.round(
-        255 * (0.075 + 0.925 * Math.pow(1 - Math.min(1, distance / 4.2), 1.6)),
+        255 * (0.07 + 0.93 * Math.pow(1 - Math.min(1, distance / 3.2), 2.8)),
       );
       floorFalloffData.set([value, value, value, 255], (y * 64 + x) * 4);
     }

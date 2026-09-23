@@ -287,7 +287,7 @@ export function createSceneController(
    * field — which is what has to stay dark for the plane's edge to disappear —
    * is the albedo. The shadow band's own median was 84.9 against the artboard's
    * 111.2, so this closes both gaps at once. */
-  const warmHeroFloor = new THREE.Color(0x8d8178);
+  const warmHeroFloor = new THREE.Color(0x988b81);
   const backdrop = new THREE.Color();
   const floorColor = new THREE.Color();
   const start = new THREE.Vector3();
