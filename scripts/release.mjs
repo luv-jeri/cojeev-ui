@@ -9,6 +9,7 @@ import {buildEnvironment,environmentConfig} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
 import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
+import {assertWranglerVersion} from './wrangler-version.mjs';
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
 export function releaseMetadata(environment,commit,publicEnv) {
@@ -22,7 +23,7 @@ export async function buildRelease(root,environment,commit,destination,settings=
   if(process.versions.node!=='22.22.0') throw new Error('Release build requires Node 22.22.0');
   assertCleanSource(root,commit);
   const publicEnv=buildEnvironment(environment,commit,settings);
-  if(JSON.parse(await fs.readFile(path.join(root,'node_modules/wrangler/package.json'),'utf8')).version!=='4.130.0') throw new Error('Locked Wrangler 4.130.0 required');
+  assertWranglerVersion(path.join(root,'node_modules/wrangler'),path.join(root,'package.json'),'Locked Wrangler');
   // Verify each tracked file's Git blob identity without hydrating archived Git
   // objects from a potentially cloud-backed .git directory.
   const scratch=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-release-source-'));
