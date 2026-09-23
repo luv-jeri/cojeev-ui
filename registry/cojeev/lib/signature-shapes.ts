@@ -13,10 +13,32 @@ export function shapeContour(sample: (angle: number) => Point) {
   }
   return path + "Z";
 }
+/* The hero flower is a round disc with seven grooves, not a cosine rosette:
+ * measured off the reference frame its outline holds one radius right through to
+ * the groove, and each groove is deep but narrow, so the petal count and the
+ * groove width have to be set independently. `a + b*cos 7t` ties the two
+ * together and cannot draw it — it is either a smooth pebble (small b) or a
+ * seven-pointed star (large b). Here `grooveDepth7` is how far a groove cuts
+ * and `grooveSigma7` how wide it is.
+ * The distance is taken to the *nearest* petal centre by rounding the angle to
+ * the closest multiple of the period. Folding a modulo instead does not work:
+ * the modulo of a negative angle is negative in JavaScript, and `min` over the
+ * seven wrapped distances collapses to zero at every angle, which subtracts the
+ * groove everywhere and turns the flower inside out. */
+const grooveBase7 = 46, grooveDepth7 = 20, grooveSigma7 = 0.44;
+const petal7 = (angle: number) => {
+  const period = tau / 7;
+  const nearest = Math.round(angle / period) * period;
+  const offset = angle - nearest;
+  const groove = (value: number) =>
+    grooveDepth7 * Math.exp(-(value * value) / (2 * grooveSigma7 * grooveSigma7));
+  return grooveBase7 - groove(offset) - 0.06 * (groove(offset - period) + groove(offset + period));
+};
+
 const radial = (radius: (angle: number) => number, sx = 1, sy = 1) => shapeContour(t => [50 + radius(t) * Math.cos(t) * sx, 50 + radius(t) * Math.sin(t) * sy]);
 export const signatureShapePaths = {
   "daisy-12": radial(t => 35 + 10 * Math.cos(12 * t)),
-  "petal-7": radial(t => 32 + 14 * Math.cos(7 * t)),
+  "petal-7": radial(petal7),
   "aster-9": radial(t => 29 + 16 * Math.pow((1 + Math.cos(9 * t)) / 2, 1.6)),
   "sunburst-24": radial(t => 39 + 7 * Math.cos(24 * t)),
   "clover-soft": radial(t => 35 + 10 * Math.cos(4 * t)),

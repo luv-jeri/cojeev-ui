@@ -181,7 +181,47 @@ export const CHAPTERS: readonly Chapter[] = [
  * the three lines below the size the eye can resolve at the hero's depth. The
  * scale is the hero's alone — the Source chapter separates the same mesh at its
  * authored size, where the plate is the subject and already fills its frame. */
-parts: front({ ...FRONT_FACE, sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 }, drawers: { position: [.66, -0.064, -.12], opacity: 1 } }),
+    /* The front furniture stands down the panel face. Read off `01-hero.png`
+     * through the face's own top and bottom edges, the artboard puts the
+     * switch's track at 0.298 of that height, Create at 0.853 and the slider at
+     * 0.910; this pose was drawing them at 0.283 / 0.111 / 0.795 — the switch
+     * nearly right, Create a quarter of the panel too high, and the pitch
+     * between the three short. The local values below are the ones that project
+     * the controls onto the artboard's measured screen centres through this
+     * chapter's own camera, and they were arrived at by measuring the rendered
+     * frame back rather than by scaling the face: at a fixed x the mapping from
+     * a control's local y to its screen y is very nearly linear (the switch
+     * -376 px/unit, Create -394, the slider -383) but it is not the same line for
+     * each control, so a single conversion factor moves one of them correctly
+     * and the other two wrong. Verified after the change: the switch's centre
+     * reads 306 against the artboard's 306; Create's height bands at x 1030 read
+     * 416 / 445 / 474 against 420 / 448 / 478; the slider's filled band reads 552
+     * against 552. Only the part positions are overridden: the panel, the
+     * drawers, the plates, the labels and the projected hit areas all pose from
+     * the same instrument group, so they follow without a second edit. */
+    /* `front()` first and the overrides after it: `FRONT_FACE` carries the
+     * shared face's own control poses, and spreading it *over* this object's
+     * keys silently overrode the Create control — the part kept the canonical
+     * y of -0.104 while the switch and the slider moved, which is exactly how
+     * the first capture of this change read. The motion chapter keeps
+     * `front(FRONT_FACE)` and is therefore unaffected either way. */
+    parts: front({
+      sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 },
+      drawers: { position: [0.66, -0.064, -0.12], opacity: 1 },
+      switchBase: { position: [-0.3, 0.2645, 0.028] },
+      switchThumb: { position: [-0.3, 0.2645, 0.028] },
+      create: { position: [0, -0.1034, 0.045] },
+      sliderTrack: { position: [0, -0.3858, 0.016] },
+      sliderThumb: { position: [0, -0.3858, 0.016] },
+      /* The flower's centre sits 41 px lower on the artboard than the shared
+       * pose draws it, and its disc is larger: `1.2` reproduces the artboard's
+       * own outer radius once `petal-7` carries the artboard's petal width. The
+       * scale is the hero's alone — the Shape press and the specimen trays draw
+       * the same mesh at its authored size — and `sourcePlate` above is the
+       * same kind of override. */
+      flower: { position: [0.3, 0.2487, 0.03], scale: 1.2 },
+      ...FRONT_FACE,
+    }),
   },
   {
     id: "catalogue",

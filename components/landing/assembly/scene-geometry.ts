@@ -1054,8 +1054,11 @@ export function buildAssemblyScene(): AssemblyScene {
    * 105, 151, 195, 257, 305, 345, gaps averaging 51.4 degrees - and the same
    * measurement on this object found twelve. `daisy-12` is `35 + 10 cos 12t`, a
    * shallow scallop, which is why the hero drew a sunburst where the artboard
-   * has petals; `petal-7` is `32 + 14 cos 7t`, the same seven lobes at the same
-   * pitch, and it is the silhouette the artboard actually shows. */
+   * has petals; `petal-7` is the same seven lobes at the same pitch, and it is
+   * the silhouette the artboard actually shows. The preset itself now cuts those
+   * lobes as grooves in a disc rather than as cosine lobes, because the
+   * artboard's petals are wide with narrow valleys between them; see
+   * `registry/cojeev/lib/signature-shapes.ts`. */
   const flower = new THREE.Mesh(
     geo(
       contourGeometry(
