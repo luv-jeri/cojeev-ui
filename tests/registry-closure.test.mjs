@@ -432,6 +432,34 @@ test("the payload loader and the registry index describe the same item set", () 
 });
 
 /**
+ * Q07.09 scores the metadata that a directory entry is matched and grouped by, so
+ * the claim "every item carries author and categories" is asserted rather than
+ * sampled: the geometry item shipped without either for the whole of the split
+ * work, and a one-off check would not have noticed it coming back. Both fields are
+ * compared against the index for every item, not only the one that regressed.
+ */
+test("every item carries the author and category metadata the directory reads", () => {
+  const index = JSON.parse(fs.readFileSync("registry.json", "utf8"));
+  const missing = [];
+  for (const item of index.items) {
+    if (!item.author) missing.push(`${item.name} has no author`);
+    if (!Array.isArray(item.categories) || item.categories.length === 0) missing.push(`${item.name} has no categories`);
+  }
+  assert.deepEqual(missing, [], "an item is installable but cannot be attributed or grouped");
+  // The payloads are what a consumer actually fetches, so the same two fields must
+  // survive generation rather than existing only in the hand-edited index.
+  const payloadMissing = [];
+  // `loadPayloads` returns a Map, and `Object.entries(Map)` is always empty — the
+  // first version of this assertion iterated zero times and passed on a payload
+  // that had lost both fields, so the mutation control is what found it.
+  for (const [name, item] of loadPayloads("public/r")) {
+    if (!item.author) payloadMissing.push(`${name} has no author`);
+    if (!Array.isArray(item.categories) || item.categories.length === 0) payloadMissing.push(`${name} has no categories`);
+  }
+  assert.deepEqual(payloadMissing, [], "the index carries metadata the generated payloads drop");
+});
+
+/**
  * The source budgets above are recomputed from the payloads on every run. Emitted
  * browser bytes cannot be: they need a bundler, so they are measured once by
  * `scripts/qualify-library-delivery.mjs` and recorded in the budget file. This
