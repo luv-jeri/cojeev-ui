@@ -21,7 +21,15 @@ import { fileURLToPath } from "node:url";
 const getArg = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baseURL = (getArg("url") ?? "http://127.0.0.1:4319").replace(/\/$/, "");
-const receiptFile = path.resolve(getArg("receipt") ?? path.join(root, "artifacts/w02/install-next.json"));
+/* The control and the verified run must not share a receipt path: `--css=keep`
+ * used to overwrite `install-next.json`, so the evidence directory held the
+ * control's EXPECTED FAILURE under the name of the run it was controlling and the
+ * real PASS record was gone. Both modes now name their own file. */
+const cssMode = getArg("css") ?? "normalize";
+const receiptFile = path.resolve(getArg("receipt") ?? path.join(
+  root,
+  `artifacts/w02/install-next${cssMode === "keep" ? "-css-keep" : ""}.json`,
+));
 const ids = (getArg("components") ?? "button").split(",").map(value => value.trim()).filter(Boolean);
 
 const installer = "shadcn@4.21.0";
