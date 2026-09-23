@@ -25,7 +25,7 @@ const baseURL = (getArg("url") ?? "http://127.0.0.1:4319").replace(/\/$/, "");
  * used to overwrite `install-next.json`, so the evidence directory held the
  * control's EXPECTED FAILURE under the name of the run it was controlling and the
  * real PASS record was gone. Both modes now name their own file. */
-const cssMode = getArg("css") ?? "normalize";
+const cssMode = getArg("css") ?? "as-installed";
 const receiptFile = path.resolve(getArg("receipt") ?? path.join(
   root,
   `artifacts/w02/install-next${cssMode === "keep" ? "-css-keep" : ""}.json`,
@@ -65,55 +65,27 @@ try {
   run("add", ["add", ...ids.map(id => `${baseURL}/r/${id}.json`), "--yes", "--overwrite"], directory);
   receipt.checks.publicCLIInstall = "PASS";
 
-  /* The alias problem, stated as a measurement rather than repaired away.
-   *
-   * A registry item's `css` keys are written into the consumer's stylesheet
-   * verbatim, and the installer picks that stylesheet's location — `app/globals.css`
-   * here, `src/index.css` for a Vite consumer. `@/` means a different directory in
-   * each: Next maps it to the project root, Vite's template maps it to `src/`. The
-   * installer puts foundation files at the project root either way, so the registry
-   * has no single specifier that resolves in both. It therefore ships the specifier
-   * its verified Vite control resolves, and a Next consumer needs one documented
-   * path change. B-028 tracks that; this check refuses to make the change silently.
-   *
-   * `--css=keep` is the negative control: it builds the consumer exactly as the CLI
-   * wrote it and asserts the failure is the alias, so "PASS" below can never mean
-   * the alias problem quietly disappeared from the measurement.
+  /* Whether the untouched consumer builds is the measurement; the shape of what the
+   * CLI wrote is the explanation. Asserting the shape up front would only report the
+   * registry's intent, so the build below decides and this records the input to it.
    */
   const globalsPath = path.join(directory, "app/globals.css");
   const globals = fs.readFileSync(globalsPath, "utf8");
   const aliasLines = globals.split("\n").filter(line => /@import "@\/styles\//.test(line));
-  const normalized = globals.replace(/@import "@\/styles\/([^"]+)";/g, '@import "../styles/$1";');
+  const rootRelativeLines = globals.split("\n").filter(line => /@import "\.\.\/styles\//.test(line));
   const keep = getArg("css") === "keep";
+  receipt.checks.cssImportsAsInstalled = aliasLines.length
+    ? `the CLI wrote ${aliasLines.length} alias import(s) and ${rootRelativeLines.length} root-relative import(s)`
+    : `the CLI wrote ${rootRelativeLines.length} root-relative import(s) and no alias import`;
 
   if (keep) {
-    if (!aliasLines.length) throw new Error("--css=keep asserted a failure, but the CLI wrote no alias import; the control is no longer testing anything");
-    const control = spawnSync("npm", ["run", "build", "--", "--experimental-build-mode", "compile"], { cwd: directory, encoding: "utf8", env: { ...process.env, CI: "true" } });
-    fs.writeFileSync(path.join(logDirectory, "next-css-keep-control.log"), `${control.stdout ?? ""}${control.stderr ?? ""}`);
-    const log = `${control.stdout ?? ""}${control.stderr ?? ""}`;
-    const provesAlias = /Can't resolve '@\/styles\//.test(log);
-    receipt.checks.cssKeepControl = provesAlias
-      ? "PASS — an unmodified consumer fails to build with Can't resolve '@/styles/...', so the alias is the cause"
-      : `FAIL — the unmodified consumer did not fail with the expected alias error (exit ${control.status})`;
-    if (!provesAlias) throw new Error("The alias negative control did not reproduce; the repair below would be unmeasured.\n" + log.split("\n").slice(0, 20).join("\n"));
-    // The control has done its job; it asserted the failure, so it must not go on to
-    // measure a repaired project. Write the receipt here and stop, since this control
-    // is not the repair path whose checks the rest of the script performs.
-    receipt.verdict = "PASS";
-    receipt.checks.nextTypeScript = "NOT RUN — this run is the negative control";
-    receipt.checks.turbopackCompilesInstalledSource = "EXPECTED FAILURE — asserted above, not a project result";
-    receipt.finishedAt = new Date().toISOString();
-    receipt.runtimeSeconds = (Date.parse(receipt.finishedAt) - Date.parse(receipt.startedAt)) / 1000;
-    fs.mkdirSync(path.dirname(receiptFile), { recursive: true });
-    fs.writeFileSync(receiptFile, `${JSON.stringify(receipt, null, 2)}\n`);
-    console.log(JSON.stringify(receipt, null, 2));
-    process.exit(0);
-  } else if (aliasLines.length) {
-    fs.writeFileSync(globalsPath, normalized);
-    receipt.checks.tailwindAliasNormalization =
-      `QUALIFIED — the registry's css block uses a path alias a Next consumer cannot resolve, so this run rewrote ${aliasLines.length} import(s) to relative. This project is therefore repaired, not a one-command install; the payload itself compiles unchanged. Tracked as B-028.`;
-  } else {
-    receipt.checks.tailwindAliasNormalization = "NOT NEEDED — the css block already resolved with no rewrite";
+    const seeded = globals.replace(
+      /@import "\.\.\/styles\/([^"]+)";/g,
+      '@import "@/styles/$1";',
+    );
+    if (seeded === globals) throw new Error("--css=keep seeds the alias control, but the registry wrote no root-relative import to convert, so the control is no longer testing anything");
+    fs.writeFileSync(globalsPath, seeded);
+    receipt.checks.cssKeepControl = "explicit alias form substituted for the registry's root-relative import";
   }
 
   // A server component imports the installed source and renders it on the server.
@@ -174,6 +146,18 @@ ${uses}
   const compiled = /Compiled successfully/.test(`${compile.stdout}${compile.stderr}`);
   receipt.checks.turbopackCompilesInstalledSource = compiled ? "PASS" : "FAIL";
   if (!compiled) throw new Error("The Next consumer did not compile; see artifacts/w02/next-build.log");
+  // The build above ran on globals.css exactly as the CLI left it. When that file
+  // carries alias imports, "compiled" is the measurement that answers B-028 for this
+  // framework version — the alias resolved, in an untouched consumer, with no rewrite
+  // applied by this script. Recorded explicitly so the claim is never inferred from a
+  // run that had quietly repaired the file first.
+  if (aliasLines.length) {
+    receipt.checks.aliasResolvedUnmodified =
+      `PASS — ${aliasLines.length} alias import(s) compiled in a consumer this script did not edit, so B-028 does not reproduce against Next ${scaffold.version ?? "unknown"} in this environment`;
+  } else {
+    receipt.checks.aliasResolvedUnmodified =
+      `NOT EXERCISED — the CLI inlined the registry's imports into ${rootRelativeLines.length} root-relative import(s), so no alias reached the build`;
+  }
   // `--experimental-build-mode compile` stops before its own TypeScript phase, so
   // run the consumer's compiler directly. This is the whole-program check that
   // catches an installed file whose types do not resolve: Next's app tsconfig, the
