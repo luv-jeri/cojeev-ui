@@ -68,6 +68,12 @@ export type ApertureProfile = {
 export type ApertureOptions = {
   /** Half the band's depth, i.e. thickness / 2. */
   halfDepth: number;
+  /**
+   * How much darker the deepest part of the opening's inner wall is drawn than
+   * its front rim, as a fraction of its albedo. The reference holds a gradient
+   * 90 px long there; this is what makes it a gradient rather than the 25 px
+   * step the bevel alone gives. */
+  occlusionDepth?: number;
   /** Edge radius. Clamped per station so a thin section cannot invert. */
   bevel: number;
   /** Sub-segments per rounded corner. */
@@ -153,6 +159,7 @@ export function buildApertureGeometry(
   options: ApertureOptions,
 ) {
   const { halfDepth, bevel } = options;
+  const occlusionDepth = options.occlusionDepth ?? 0.4;
   const arcSegments = options.arcSegments ?? 3;
   const edgeSegments = options.edgeSegments ?? 2;
   const closed = profile.closed === true;
@@ -172,6 +179,12 @@ export function buildApertureGeometry(
   const stationDepth = (station: number) => depth?.[station] ?? 0;
 
   const positions: number[] = [];
+  /* How much of an occluded niche each vertex is looking into: 0 on the faces
+   * the camera sees straight on, 1 at the deepest part of the opening's wall.
+   * Carried per vertex because the alternative - geometry that is actually
+   * darker in there - means moving the silhouette, and the silhouette is already
+   * within 2-4 px of the reference at every row. */
+  const occlusion: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
   const rings: number[][] = [];
@@ -239,6 +252,14 @@ export function buildApertureGeometry(
         z + b,
       );
       uvs.push(u, parameters[spoke]);
+      /* `a` runs outward across the band and `b` through its depth, so the
+       * niche's wall is the ring of vertices at the inner edge, and how far
+       * into the opening a vertex sits is `b` measured from the front rim. The
+       * strength is scaled by how far in from the outer edge it is, which
+       * leaves the outer wall, the bevels and both faces untouched. */
+      const inward = Math.max(0, -a / halfWidth);
+      const intoNiche = (b + halfDepth) / (2 * halfDepth);
+      occlusion.push(1 - occlusionDepth * inward * intoNiche * intoNiche);
     }
     rings.push(
       Array.from({ length: ring.length }, (_, index) => base + index),
@@ -276,6 +297,7 @@ export function buildApertureGeometry(
       const hub = positions.length / 3;
       positions.push(cx, cy, cz);
       uvs.push(u, 0);
+      occlusion.push(1);
       for (let spoke = 0; spoke < radial; spoke++) {
         const next = (spoke + 1) % radial;
         /* The wall quads traverse the first station's rim spoke[n] -> spoke[s]
@@ -294,6 +316,10 @@ export function buildApertureGeometry(
     new THREE.Float32BufferAttribute(positions, 3),
   );
   geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setAttribute(
+    "occlusion",
+    new THREE.Float32BufferAttribute(occlusion, 1),
+  );
   geometry.setIndex(indices);
 
   /* Orient the whole surface outward. The signed volume of a closed mesh is

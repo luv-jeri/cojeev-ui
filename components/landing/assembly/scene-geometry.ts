@@ -727,6 +727,45 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   apertureFrame.castShadow = true;
   apertureFrame.receiveShadow = true;
+  /* The band occludes its own opening. The reference holds a gradient about
+   * 90 px long from the opening's front rim into its deepest part, darkening the
+   * wall from 235 to 140; the bevel alone gives 25 px, because a bevel is an
+   * edge treatment and this is ambient occlusion. Carrying it as a vertex
+   * attribute keeps it silhouette-neutral — nothing moves, only the albedo —
+   * which matters because the silhouette is already within 2-4 px of the
+   * reference at every row.
+   *
+   * Hero-scoped through a uniform rather than by changing the material: other
+   * chapters share this geometry builder, and the niche is only lit this way in
+   * the hero. */
+  const apertureOcclusion = { value: 1 };
+  apertureFrame.material.onBeforeCompile = (shader) => {
+    shader.uniforms.heroOcclusion = apertureOcclusion;
+    shader.vertexShader = shader.vertexShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+attribute float occlusion;
+varying float vOcclusion;`,
+      )
+      .replace(
+        "#include <begin_vertex>",
+        `#include <begin_vertex>
+vOcclusion = occlusion;`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+uniform float heroOcclusion;
+varying float vOcclusion;`,
+      )
+      .replace(
+        "#include <color_fragment>",
+        `#include <color_fragment>
+diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion);`,
+      );
+  };
   aperture.add(apertureFrame);
   root.add(aperture);
 
@@ -1464,6 +1503,7 @@ export function buildAssemblyScene(): AssemblyScene {
       for (const tint of heroTints) {
         tint.material.color.copy(tint.base).lerp(tint.hero, weight);
       }
+      apertureOcclusion.value = Math.max(0, Math.min(1, weight));
       for (const material of textured) {
         const map = weight > 0 ? grain : null;
         if (material.map !== map) {
