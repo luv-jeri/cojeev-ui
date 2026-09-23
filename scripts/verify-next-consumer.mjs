@@ -12,6 +12,7 @@
  * serves the payloads; this script is the `--framework=next` consumer.
  */
 import { spawn, spawnSync } from "node:child_process";
+import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -115,22 +116,42 @@ try {
   // happened, and it is a defect in this fixture rather than in the payload. So
   // the page renders exactly the entries this run installs, and the accent
   // variant is asserted only when `button` is among them.
+  // Only the entries this run actually installs may be imported. `Separator` used
+  // to be hard-coded here while the default request list is `button` alone, so the
+  // fixture compiled against a module nobody had installed and the run failed with
+  // `Can't resolve '@/components/ui/separator'` — the same class of fixture defect
+  // as the stock-button one above, and it hid behind a stale receipt until the
+  // verification was re-run on the frozen candidate.
   const rendersButton = ids.includes("button");
-  const buttonImport = rendersButton ? `import { Button } from "@/components/ui/button";\n` : "";
-  const buttonUse = rendersButton ? `      <Button variant="accent">Server rendered</Button>\n` : "";
-  fs.writeFileSync(path.join(directory, "app/page.tsx"), `${buttonImport}import { Separator } from "@/components/ui/separator";
+  const rendersSeparator = ids.includes("separator");
+  const imports = [
+    rendersButton ? `import { Button } from "@/components/ui/button";` : null,
+    rendersSeparator ? `import { Separator } from "@/components/ui/separator";` : null,
+  ].filter(Boolean).join("\n");
+  const uses = [
+    rendersButton ? `      <Button variant="accent">Server rendered</Button>` : null,
+    rendersSeparator ? `      <Separator />` : null,
+  ].filter(Boolean).join("\n");
+  assert.ok(ids.length, "the run must install at least one entry");
+  fs.writeFileSync(path.join(directory, "app/page.tsx"), `${imports}
 
 export default function Page() {
   return (
     <main data-installed="true">
-${buttonUse}      <Separator />
+${uses}
     </main>
   );
 }
 `);
-  receipt.checks.fixtureUsesInstalledEntries = rendersButton
-    ? "PASS — renders the button this run installed, accent variant included"
-    : "PASS — rendered no button; the nova preset seeds a stock one during init, so the request list excludes it. Run with --components=...,button for the accent-variant check.";
+  const rendered = [rendersButton ? "button" : null, rendersSeparator ? "separator" : null].filter(Boolean);
+  const unrendered = ids.filter(id => !rendered.includes(id));
+  receipt.checks.fixtureUsesInstalledEntries = [
+    `PASS — rendered every entry this run installs (${rendered.join(", ")})`,
+    rendersButton
+      ? "including the accent variant only Cojeev's button has"
+      : "no button, so the nova preset's stock one is never in scope",
+    unrendered.length ? `${unrendered.join(", ")} installed but not rendered by this fixture` : null,
+  ].filter(Boolean).join("; ");
 
   // `next build`'s prerender phase is broken in this environment — a pristine
   // `shadcn init -t next` scaffold fails identically with "Expected workStore to
