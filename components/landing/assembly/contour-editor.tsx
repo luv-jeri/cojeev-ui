@@ -20,6 +20,7 @@ import {
 } from "./experience-store";
 import {
   CONTOUR_LABELS,
+  contourLabel,
   CONTOUR_PRESETS,
   blendContour,
   contourFileName,
@@ -97,7 +98,7 @@ export function ContourEditor() {
   return (
     <div className="asm-contour">
       <div className="asm-contour__preview">
-        <svg viewBox="0 0 100 100" role="img" aria-label={`Contour preview: ${CONTOUR_LABELS[preset]}, ${Math.round(amount)} percent blended`}>
+        <svg viewBox="0 0 100 100" role="img" aria-label={`Contour preview: ${contourLabel(preset)}, ${Math.round(amount)} percent blended`}>
           <path d={path} fill={fill} />
         </svg>
       </div>

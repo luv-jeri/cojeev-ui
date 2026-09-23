@@ -21,7 +21,8 @@ import {
   type EvaluatedFrame,
   type PartId,
 } from "./choreography";
-import { blendContour, type ContourPreset } from "./contour-export";
+import { blendContour } from "./contour-export";
+import type { SignatureShapeName } from "../../../registry/cojeev/lib/signature-shapes";
 import {
   applyOpacity,
   buildAssemblyScene,
@@ -68,7 +69,7 @@ export type SceneController = {
   /** Re-measures and redraws after a resize or orientation change. */
   resize(): void;
   /** 0–100 contour amount for the sculpted face. */
-  setContour(preset: ContourPreset, amount: number, colour: string): void;
+  setContour(preset: SignatureShapeName, amount: number, colour: string): void;
   invalidate(): void;
   dispose(): void;
 };
@@ -220,7 +221,7 @@ export function createSceneController(
   let scheduled = 0;
   let previousTime = 0;
   let lastSeamKey = "";
-  let contourPreset: ContourPreset = "daisy-12";
+  let contourPreset: SignatureShapeName = "petal-7";
   let directContour = 0;
   let contourColour: string = PALETTE.yellow;
   /**
@@ -236,7 +237,7 @@ export function createSceneController(
    * explicit record of what was actually applied cannot have that failure mode.
    */
   let contourApplied: {
-    preset: ContourPreset;
+    preset: SignatureShapeName;
     amount: number;
     colour: string;
   } | null = null;
@@ -683,13 +684,19 @@ export function createSceneController(
       0,
       0.026,
     );
+    /* The band's opacity is the furniture's own, with no `(1 - heroWeight)`
+     * factor. That factor belongs to the two lines above it, which scale the
+     * band's *position* out as the hero takes the slider over — but the hero
+     * shows the slider at full opacity, so fading the fill with the same weight
+     * hid it exactly when it was on screen. Measured on the hero, the track
+     * rendered (233, 200, 203) where the artboard holds (221, 141, 172): the
+     * cream rail with a tenth of a pink band over it, not a filled slider. */
     applyOpacity(
       assembly.sliderBand.mesh,
       Math.min(
         sceneFrame.parts.sliderTrack.opacity,
         sceneFrame.parts.sliderThumb.opacity,
-      ) *
-        (1 - heroWeight),
+      ),
     );
 
     // Press deformation on the sculpted face; the group keeps the chapter pose.

@@ -48,6 +48,21 @@ export function isContourPreset(value: unknown): value is ContourPreset {
 }
 
 /**
+ * Accepts any silhouette in the shape table, not only the three the press
+ * offers. The hero's flower opens on `petal-7`, so a session that saved it would
+ * otherwise fail `isContourPreset` and silently discard the visitor's own
+ * amount and tone along with it.
+ */
+export function isShapeName(value: unknown): value is SignatureShapeName {
+  return typeof value === "string" && value in signatureShapePaths;
+}
+
+/** The press's label for a shape, or a neutral one for a shape it does not offer. */
+export function contourLabel(preset: SignatureShapeName): string {
+  return (CONTOUR_LABELS as Record<string, string | undefined>)[preset] ?? "Custom";
+}
+
+/**
  * Flattens a canonical 96-segment silhouette into its 578 numbers: the move
  * point followed by six control/end numbers per cubic segment.
  */

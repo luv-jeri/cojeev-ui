@@ -54,7 +54,7 @@ export const INSTRUMENT = {
     bevel: 0.012,
   },
   create: {
-    local: [0, 0.045, 0.045] as Vec3,
+    local: [0, -0.104, 0.045] as Vec3,
     width: 0.78,
     height: 0.236,
     thickness: 0.045,
@@ -63,7 +63,13 @@ export const INSTRUMENT = {
     pressCompression: 0.07,
   },
   switch: {
-    local: [-0.3, 0.34, 0.028] as Vec3,
+    /* Measured off the artboard through the panel's own face rather than the
+     * frame: its face spans y 212-602, and the switch's track sits at 0.272 of
+     * that, Create at 0.610, the slider at 0.869. This stack was at 0.195 /
+     * 0.468 / 0.704 — every control high, and the two gaps short by 0.065 and
+     * 0.023 of the face as well, so it is a respacing and not a translation.
+     * The local values below are those fractions inverted. */
+    local: [-0.3, 0.259, 0.028] as Vec3,
     width: 0.25,
     height: 0.12,
     thickness: 0.055,
@@ -76,7 +82,7 @@ export const INSTRUMENT = {
     depth: 0.055,
   },
   slider: {
-    local: [0, -0.235, 0.016] as Vec3,
+    local: [0, -0.408, 0.016] as Vec3,
     travel: 0.68,
     track: { width: 0.72, height: 0.075, thickness: 0.03 },
     thumb: 0.075,

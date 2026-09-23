@@ -971,10 +971,17 @@ export function buildAssemblyScene(): AssemblyScene {
    * yellow so the hero and Motion chapters are unchanged until the visitor picks
    * a different tone. */
   const flowerMaterial = own(kit.yellow, HERO_ALBEDO.yellow);
+  /* `petal-7`, not `daisy-12`. Counting the artboard's flower by sampling its
+   * silhouette's radius around its own centroid finds seven lobes - angles 49,
+   * 105, 151, 195, 257, 305, 345, gaps averaging 51.4 degrees - and the same
+   * measurement on this object found twelve. `daisy-12` is `35 + 10 cos 12t`, a
+   * shallow scallop, which is why the hero drew a sunburst where the artboard
+   * has petals; `petal-7` is `32 + 14 cos 7t`, the same seven lobes at the same
+   * pitch, and it is the silhouette the artboard actually shows. */
   const flower = new THREE.Mesh(
     geo(
       contourGeometry(
-        blendContour("daisy-12", 0),
+        blendContour("petal-7", 0),
         INSTRUMENT.flower.diameter,
         INSTRUMENT.flower.depth,
       ),

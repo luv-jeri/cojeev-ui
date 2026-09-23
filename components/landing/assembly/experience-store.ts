@@ -15,7 +15,8 @@
 import * as React from "react";
 import type { HeroControlId, HeroPhase, DrawerId } from "./hero-interaction";
 import type { SpecimenFilterId } from "./canonical";
-import { isContourPreset, type ContourPreset } from "./contour-export";
+import { isShapeName } from "./contour-export";
+import type { SignatureShapeName } from "../../../registry/cojeev/lib/signature-shapes";
 import { PALETTE } from "./canonical";
 
 export type ContourColor = keyof typeof PALETTE;
@@ -43,8 +44,16 @@ export type ExperienceState = {
   filter: SpecimenFilterId;
   specimen: string;
   exampleOpen: boolean;
-  /** Contour press. Site-only: no installable API is involved. */
-  contourPreset: ContourPreset;
+  /**
+   * Contour press. Site-only: no installable API is involved.
+   *
+   * Typed to the whole shape table rather than to `ContourPreset`: the press
+   * offers three silhouettes, but the hero's own flower opens on `petal-7`
+   * because that is the flower the artboard draws (see the geometry note in
+   * `scene-geometry.ts`). Starting on a shape the press does not offer leaves
+   * its three buttons unselected until the visitor presses one.
+   */
+  contourPreset: SignatureShapeName;
   contourAmount: number;
   contourColor: ContourColor;
   /** Presentation. */
@@ -94,7 +103,7 @@ const INITIAL: ExperienceState = {
   filter: "essentials",
   specimen: "button",
   exampleOpen: false,
-  contourPreset: "daisy-12",
+  contourPreset: "petal-7",
   contourAmount: 0,
   contourColor: "yellow",
   soundEnabled: false,
@@ -208,7 +217,7 @@ export function useExperienceValue<T>(select: (value: ExperienceState) => T): T 
 }
 
 export function readStoredContour(): {
-  preset: ContourPreset;
+  preset: SignatureShapeName;
   amount: number;
   color: ContourColor;
 } | null {
@@ -220,7 +229,7 @@ export function readStoredContour(): {
     if (!parsed || typeof parsed !== "object") return null;
     const record = parsed as { preset?: unknown; amount?: unknown; color?: unknown };
     const amount = Number(record.amount);
-    if (!isContourPreset(record.preset) || !Number.isFinite(amount)) return null;
+    if (!isShapeName(record.preset) || !Number.isFinite(amount)) return null;
     /* The tone was not persisted, so choosing one and reloading silently reverted
      * it — the preview, the sculpted face and the export all went back to yellow
      * while the swatch the visitor had pressed was no longer the pressed one.
@@ -236,7 +245,7 @@ export function readStoredContour(): {
 }
 
 export function storeContour(
-  preset: ContourPreset,
+  preset: SignatureShapeName,
   amount: number,
   color: ContourColor = "yellow",
 ) {
