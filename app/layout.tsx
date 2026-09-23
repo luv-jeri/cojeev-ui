@@ -4,12 +4,30 @@ import displayFont from "./fonts/bricolage-grotesque-variable.woff2";
 import { PageScrollBar, ScrollbarProvider } from "@/registry/cojeev/ui/scroll-area";
 import { pageScrollbarBootstrap } from "@/registry/cojeev/motion/scroll-thumb";
 import { AppearanceProvider } from "@/registry/cojeev/ui/appearance";
+import { appearanceBootstrapScript, prepaintCssRules } from "@/app/prepaint/appearance";
 import { ReportingWidget } from "@/components/reporting/reporting-widget";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import { absoluteSiteUrl, site, siteFlags } from "@/lib/site-config";
 import { catalog } from "@/lib/catalog";
 import "./globals.css";
 import "@/components/analytics/analytics-consent.css";
+
+/* Every palette at the default contrast, plus a rule per contrast slider stop, keyed
+ * by the attributes the bootstrap below sets. `AppearanceProvider` computes the same
+ * values in JavaScript, which cannot run before first paint, so without this a saved
+ * palette — and a saved contrast — only appeared once React hydrated. Generated from
+ * the palette definitions by `npm run appearance:prepaint`; a unit test asserts the
+ * two agree. The runtime's inline tokens still win once it mounts, so live contrast
+ * changes are unaffected. */
+const prepaintCss = prepaintCssRules;
+
+/* Reads `cojeev-docs-theme` and `cojeev-appearance` and writes `data-mode`,
+ * `data-palette` and `data-contrast` before the first paint. Its normalization is
+ * the same contract `AppearanceProvider` uses (`appearanceState` in the generated
+ * module, asserted against `normalizeAppearance()` by the unit test), so a
+ * malformed stored value cannot be painted one way and mounted another. */
+const appearanceBootstrap = appearanceBootstrapScript;
+
 export const metadata: Metadata = {
   title: { default: site.title, template: `%s · ${site.title}` },
   description: site.description,
@@ -30,8 +48,12 @@ export default function RootLayout({
   return (
     <html lang="en" data-mode="light" data-scrollbar-policy="cojeev" suppressHydrationWarning>
       <head>
+        {/* Every palette and every contrast stop, before any bundle: the first frame
+            is already the stored one, so a saved palette or contrast no longer flashes
+            the handoff canvas. */}
+        <style dangerouslySetInnerHTML={{ __html: prepaintCss }} />
         {/* Resolve before first paint, without waiting for React or a network script. */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var mode;try{mode=localStorage.getItem("cojeev-docs-theme")}catch(e){}if(mode!=="light"&&mode!=="dark")mode=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.mode=mode})()` }} />
+        <script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} />
         {/* Claim the scrollbar paint before first paint, and hand it back if the bundle
             never mounts the overlay. Both halves live in the component's own helper. */}
         <script dangerouslySetInnerHTML={{ __html: pageScrollbarBootstrap }} />

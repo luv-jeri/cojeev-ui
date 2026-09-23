@@ -11,7 +11,15 @@ try {
     }, mode);
     const page = await context.newPage();
     await page.goto(`${(process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4320/cojeev-ui").replace(/\/$/, "")}/docs/appearance/`);
-    await page.waitForFunction(() => document.documentElement.dataset.palette === "paper");
+    /* `data-palette` is no longer a hydration signal: the layout's pre-paint
+     * stylesheet and the theme bootstrap set it before any bundle runs, which is
+     * exactly the W01 fix. `--v-text-3` stopped being one too, for the same reason —
+     * the bootstrap now writes the runtime's own inline tokens before first paint, so
+     * waiting on it returned while the page was still un-hydrated and the controls were
+     * not yet interactive. `data-appearance="mounted"` is written only by the
+     * provider's layout effect, so it is the marker that means "the app is live". */
+    await page.waitForFunction(() => document.documentElement.dataset.appearance === "mounted");
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.palette), "paper");
     assert.equal(await page.evaluate(() => document.documentElement.dataset.mode), mode);
     const ink = await page.evaluate(() => {
       const root = document.documentElement;

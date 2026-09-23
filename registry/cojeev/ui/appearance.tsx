@@ -43,7 +43,11 @@ export function useAppearance() {
 
 /** Mount once above the application. Shared tokens also reach portalled controls. */
 export function AppearanceProvider({ children }: { children: React.ReactNode }) {
-  React.useEffect(() => {
+  /* Layout effect, not passive: a saved non-Paper palette must be painted in the
+   * same commit that mounts the provider. As a passive effect it landed one or
+   * more frames later, so every reload of a saved palette showed the handoff
+   * canvas first and then swapped (measured ~700ms after `load` in dev). */
+  React.useLayoutEffect(() => {
     const root = document.documentElement;
     let frame = 0;
     const previous = new Map<string, string>();
@@ -57,6 +61,11 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
       }
       root.dataset.palette = settings.palette;
       root.dataset.contrast = String(settings.contrast);
+      /* Proof for tests that the mounted provider — not the pre-paint bootstrap,
+       * which sets the same three attributes — is the writer of the inline tokens
+       * above. A browser gate that waits on `data-palette` alone can pass with the
+       * client bundles replaced by empty JavaScript; this marker cannot. */
+      root.dataset.appearance = "mounted";
       window.dispatchEvent(new Event("v-palette"));
       window.dispatchEvent(new Event("cojeev:appearancechange"));
     };
@@ -67,10 +76,17 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
     const observer = new MutationObserver(apply);
     observer.observe(root, { attributes: true, attributeFilter: ["data-mode"] });
     apply();
+    /* The layout bootstrap is the pre-paint writer and the only cross-tab writer until
+     * this commit. Release it now that `subscribe()` above and the docs theme
+     * subscription own both storage keys: its listener can only re-read storage, so
+     * after a failed persist it would overwrite the in-memory theme the control still
+     * shows (`data-mode="light"` under a checked dark switch). */
+    const prepaint = window as unknown as { __cojeevPrepaintRelease?: () => void };
+    prepaint.__cojeevPrepaintRelease?.();
     return () => {
       stop(); observer.disconnect(); cancelAnimationFrame(frame);
       for (const [name, value] of previous) { if (value) root.style.setProperty(name, value); else root.style.removeProperty(name); }
-      delete root.dataset.palette; delete root.dataset.contrast;
+      delete root.dataset.palette; delete root.dataset.contrast; delete root.dataset.appearance;
       window.dispatchEvent(new Event("v-palette"));
     };
   }, []);
