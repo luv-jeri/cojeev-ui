@@ -716,22 +716,31 @@ export function createSceneController(
      * 0.012 — so the moment the pointer took the thread the band snapped to a
      * quarter of its width and its curve jumped. Nothing about grabbing a
      * thread should change how thick it is. */
-    const ribbonSag = (0.24 + 0.2 * (1 - tension)) * (1 - 0.75 * heroWeight);
+    const ribbonSag = (0.24 + 0.2 * (1 - tension)) * (1 - 0.60 * heroWeight);
     /* The artboard's thread is a tapering band 13 px wide where it leaves the
      * plate, not the 4 px cord the original radius drew — and measured against
      * the reference render it is 11-13 px through the sweep where the first
      * hero radius drew 17-18, so the gauge is 0.7 of that first estimate. */
-    const ribbonRadius = (0.012 + 0.023 * heroWeight) * (1 - 0.15 * tension);
+    const ribbonRadius = (0.012 + 0.037 * heroWeight) * (1 - 0.15 * tension);
     assembly.ribbon.setSpine(
+      /* The spine's panel end sits behind the panel, not on the Create
+       * control's face. The artboard's thread is occluded by the panel from its
+       * left edge - measured along the reference it reads 14 px wide at x 900
+       * and is gone by x 940 - so the segment that would cross the face is
+       * hidden and the thread appears to come out from behind the panel. Drawn
+       * at the control's own depth it instead ran across the face for 40 px,
+       * which is what the closeup showed. The panel spans z -0.0225..+0.0225
+       * around the instrument origin, so -0.09 from the control's centre is
+       * clear of the back face by more than the band's own half-width. */
       start.set(
         createPose.position[0] - INSTRUMENT.create.width / 2 + 0.02,
-        createPose.position[1] + 0.02,
-        createPose.position[2] + 0.06,
+        createPose.position[1] + 0.113,
+        createPose.position[2] - 0.09,
       ),
       end.set(
         createPose.position[0] - 0.42 - 1.24 * tension - 1.7 * heroWeight,
         createPose.position[1] +
-          0.02 -
+          0.156 -
           0.5 * tension -
           (canvas.clientWidth >= 900 && canvas.clientHeight < 800
             ? 1.13

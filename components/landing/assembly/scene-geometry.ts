@@ -192,12 +192,53 @@ function pointerShape() {
   });
 }
 
+/**
+ * How the band's half-width varies along the spine.
+ *
+ * - `lens` is blunt at both ends and fullest in the middle: the slider's fill.
+ * - `grip` comes to a point at both ends: a band pinched where it is held.
+ * - `thread` is fullest where it leaves the panel and narrows toward the free
+ *   end, which is what the artboard's thread does and what a lens cannot do.
+ *
+ * Measured along the artboard's thread against its own width at the panel, the
+ * profile is 0.79 at 15% of the span, 0.64 at 46%, 0.43 at 77% and 0.14 at the
+ * cursor; `1 - 0.86t` reproduces that inside 0.08 everywhere. A `grip` lens,
+ * which is what this drew, is 1.00 / 0.71 / 0.36 / 0.00 at those points and 0.00
+ * at the panel, so it pinched to nothing exactly where the artboard is widest.
+ */
+type RibbonTaper = "lens" | "grip" | "thread";
+
+/**
+ * How the spine's height is distributed along its length.
+ *
+ * `linear` spends height evenly, so the band is steepest where it is held and
+ * level in the middle: a hanging cord. `smooth` eases in and out, so the band
+ * leaves level, steepens through the middle and levels again at the far end.
+ *
+ * The artboard's thread is the second. Traced across the reference its fall per
+ * 40 px of span runs 13, 10, 6, 6, 11, 19, 35, 49, 35, 24, 14, 9, 4 from the
+ * cursor to the panel - steepest at the middle and level at both ends, which a
+ * linear spine cannot produce at any sag.
+ */
+type RibbonEase = "linear" | "smooth";
+
+const RIBBON_EASES: Record<RibbonEase, (t: number) => number> = {
+  linear: (t) => t,
+  smooth: (t) => t * t * (3 - 2 * t),
+};
+
+const RIBBON_TAPERS: Record<RibbonTaper, (t: number) => number> = {
+  lens: (t) => 0.5 + 0.5 * Math.sin(Math.PI * t),
+  grip: (t) => Math.sin(Math.PI * t),
+  thread: (t) => 1 - 0.86 * t,
+};
+
 function createRibbon(
   segments: number,
   radial: number,
   material: THREE.Material,
-  /** Tapers to a point at both ends rather than closing on a blunt ring. */
-  pointed = false,
+  taperName: RibbonTaper = "lens",
+  easeName: RibbonEase = "linear",
 ): Ribbon {
   const positions = new Float32Array((segments + 1) * radial * 3);
   const geometry = new THREE.BufferGeometry();
@@ -226,27 +267,32 @@ function createRibbon(
   const normal = new THREE.Vector3();
   const vertex = new THREE.Vector3();
 
+  /* Only the height is eased. Easing x as well would move where the thread
+   * crosses the panel's edge, and the crossing is what the panel occludes. */
   const spineAt = (
     t: number,
     start: THREE.Vector3,
     end: THREE.Vector3,
     sag: number,
+    ease: (value: number) => number,
     out: THREE.Vector3,
   ) =>
     out.set(
       THREE.MathUtils.lerp(start.x, end.x, t),
-      THREE.MathUtils.lerp(start.y, end.y, t) - Math.sin(Math.PI * t) * sag,
+      THREE.MathUtils.lerp(start.y, end.y, ease(t)) - Math.sin(Math.PI * t) * sag,
       THREE.MathUtils.lerp(start.z, end.z, t),
     );
 
   return {
     mesh,
     setSpine(start, end, sag, ribbonRadius) {
+      const taperAt = RIBBON_TAPERS[taperName];
+      const ease = RIBBON_EASES[easeName];
       for (let ring = 0; ring <= segments; ring++) {
         const t = ring / segments;
-        spineAt(t, start, end, sag, spine);
-        spineAt(Math.min(1, t + 0.01), start, end, sag, ahead);
-        spineAt(Math.max(0, t - 0.01), start, end, sag, behind);
+        spineAt(t, start, end, sag, ease, spine);
+        spineAt(Math.min(1, t + 0.01), start, end, sag, ease, ahead);
+        spineAt(Math.max(0, t - 0.01), start, end, sag, ease, behind);
         tangent.copy(ahead).sub(behind);
         if (tangent.lengthSq() < 1e-10) tangent.set(1, 0, 0);
         tangent.normalize();
@@ -254,10 +300,7 @@ function createRibbon(
         if (binormal.lengthSq() < 1e-8) binormal.set(0, 0, 1);
         binormal.normalize();
         normal.crossVectors(binormal, tangent).normalize();
-        // A lens: thin where the ribbon is gripped, fullest in the middle.
-        const taper = pointed
-          ? Math.sin(Math.PI * t)
-          : 0.5 + 0.5 * Math.sin(Math.PI * t);
+        const taper = taperAt(t);
         for (let spoke = 0; spoke < radial; spoke++) {
           const angle = (spoke / radial) * Math.PI * 2;
           const at = (ring * radial + spoke) * 3;
@@ -1105,7 +1148,13 @@ export function buildAssemblyScene(): AssemblyScene {
   instrument.add(sourcePlate);
 
   /* ------------------------------------------------------------------ ribbon */
-  const ribbon = createRibbon(56, 10, own(kit.pink, HERO_ALBEDO.pink), true);
+  const ribbon = createRibbon(
+    56,
+    10,
+    own(kit.pink, HERO_ALBEDO.pink),
+    "thread",
+    "smooth",
+  );
   instrument.add(ribbon.mesh);
 
   /* The thread's reflection, sharing the ribbon's own buffer so it tracks every
