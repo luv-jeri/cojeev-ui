@@ -87,6 +87,42 @@ foundation stylesheet. For explicit Tailwind font utilities, use
 remains its own choice. See [Optional local font files](local-fonts.md) to move
 the same bytes into sibling `.woff2` files.
 
+## Icon geometry and deep imports
+
+The generated Lucide geometry (`lib/cojeev/lucide-icon-data.ts` and
+`lib/cojeev/icon-data.ts`) ships as its own optional item,
+`cojeev-icon-geometry`, so an install that renders no icon does not pay for it.
+Every entry that reaches the icon — `icon`, `animated-icon`, and the 58 other
+entries that render an icon internally — declares that item, so installing any of
+them installs the geometry automatically. `@/components/ui/icon` needs no second
+command and no extra setup.
+
+What changes is the **deep import**. After any fresh install whose entries do not
+reach the icon — `button` and `text-reveal` included, not only the foundation on
+its own — `@/lib/cojeev/lucide-icon-data` and `@/lib/cojeev/icon-data` are not
+present. If you import those modules directly, install the geometry item once:
+
+```sh
+npx shadcn@latest add https://000h.cojeev.com/r/cojeev-icon-geometry.json
+```
+
+With the namespace configured (see [Two ways to name the same
+registry](#two-ways-to-name-the-same-registry)) the equivalent shorthand is
+`npx shadcn@latest add @cojeev/cojeev-icon-geometry`.
+
+The item writes the same two target paths every earlier release used
+(`lib/cojeev/icon-data.ts`, `lib/cojeev/lucide-icon-data.ts`), so no import
+specifier changes and no component edit is needed. Verified end to end: an
+icon-free `button` install does not contain either file, and the command above
+restores both, after which a deep-importing app typechecks, builds and reads
+`getLucideIcon("wind")`.
+
+> The item ships with the release that carries the split. Until that release is
+> deployed, the live endpoint returns 404, exactly as it does for any item that
+> exists only in the candidate payloads; local verification uses
+> `COJEEV_REGISTRY_URL` as described under [Reproduce the stranger
+> installation](#reproduce-the-stranger-installation).
+
 
 You can then use `npx shadcn@latest add @cojeev/button`. The namespace entry is an explicit consumer configuration step; installing a component URL does not automatically add it.
 

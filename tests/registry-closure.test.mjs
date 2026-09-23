@@ -302,9 +302,9 @@ test("each entry installs exactly the stylesheets its own files name, so nothing
       const stylesheet = path.basename(file.path);
       if (!onDisk.has(stylesheet) || stylesheet === `${name}.css`) continue;
       if (foundationStyles.has(stylesheet) || sharedSheets.has(stylesheet)) continue;
-      const module = stylesheet.replace(/\.css$/, "");
-      if (basenames.has(`${module}.ts`) || basenames.has(`${module}.tsx`)) continue;
-      dead.push(`${name} installs ${stylesheet} but not ${module}.ts`);
+      const owner = stylesheet.replace(/\.css$/, "");
+      if (basenames.has(`${owner}.ts`) || basenames.has(`${owner}.tsx`)) continue;
+      dead.push(`${name} installs ${stylesheet} but not ${owner}.ts`);
     }
   }
   assert.deepEqual(dead, [], "an entry installs paint for a module it does not ship");

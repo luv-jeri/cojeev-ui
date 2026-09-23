@@ -11,7 +11,7 @@
  * Usage: node scripts/run-install-verification.mjs --components=... already
  * serves the payloads; this script is the `--framework=next` consumer.
  */
-import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
