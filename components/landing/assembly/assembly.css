@@ -1,0 +1,1746 @@
+/*
+ * The assembly route.
+ *
+ * Scoped entirely under `.asm`. Nothing here is a registry style, nothing here
+ * is importable by a consumer, and nothing here can reach another route: the
+ * selectors are page-local by construction and the custom properties are
+ * declared on `.asm` rather than on `:root`.
+ *
+ * Two rules drive most of the layout:
+ * 1. The canvas is a fixed backdrop. The document scrolls natively over it and
+ *    is never clipped, translated or pinned by script.
+ * 2. Colour follows the chapter the scene is showing, which arrives as
+ *    `data-tone`. Each tone re-declares the same four surface variables, so no
+ *    component needs a dark-mode variant of its own.
+ */
+
+.asm {
+  --asm-cream: #fbf4e6;
+  --asm-ink: #111111;
+  --asm-pink: #f5b8db;
+  --asm-blue: #b6caeb;
+  --asm-olive: #9aab63;
+  --asm-yellow: #f5d867;
+  --asm-display: var(
+    --font-display,
+    "Bricolage Grotesque",
+    ui-sans-serif,
+    system-ui
+  );
+  --asm-body: var(--font-body, "DM Sans", ui-sans-serif, system-ui);
+  --asm-measure: 34rem;
+  --asm-gutter: clamp(1.25rem, 5vw, 6rem);
+  --asm-rail: 8.5rem;
+
+  /* Surfaces, re-declared per tone below. */
+  --asm-hairline: rgb(0 0 0 / 14%);
+  --asm-surface: rgb(255 255 255 / 34%);
+  --asm-surface-strong: rgb(255 255 255 / 62%);
+  --asm-strong: var(--asm-ink);
+  --asm-on-strong: var(--asm-cream);
+  --asm-page: var(--asm-cream);
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
+  font-family: var(--asm-body);
+  color: var(--asm-ink);
+  background: var(--asm-page);
+}
+
+.asm[data-tone="dark"] {
+  color: var(--asm-cream);
+  --asm-page: #0b0b0c;
+  --asm-hairline: rgb(251 244 230 / 22%);
+  --asm-surface: rgb(251 244 230 / 8%);
+  --asm-surface-strong: rgb(251 244 230 / 16%);
+  --asm-strong: var(--asm-cream);
+  --asm-on-strong: var(--asm-ink);
+}
+
+.asm[data-tone="cream"] {
+  --asm-page: var(--asm-cream);
+}
+
+.asm[data-tone="blue"] {
+  --asm-page: var(--asm-blue);
+}
+
+.asm[data-tone="yellow"] {
+  --asm-page: var(--asm-yellow);
+}
+
+/* The canvas paints the backdrop, so once it is running the document itself is
+   transparent. The tone colour survives as the no-WebGL fallback, and as the
+   colour of the last frame if a context is lost mid-visit. */
+.asm[data-webgl="ready"] {
+  background: transparent;
+}
+
+.asm *,
+.asm *::before,
+.asm *::after {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------- canvas layer */
+
+.asm-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.asm[data-webgl="unavailable"] .asm-canvas,
+.asm[data-webgl="failed"] .asm-canvas {
+  display: none;
+}
+
+/* ------------------------------------------------- hero static fallback */
+
+/*
+ * The flat twin of the hero object, shown whenever the canvas is not drawing.
+ *
+ * `data-webgl` is the root's own status: `pending` is the server's "not known
+ * yet", `ready` means the canvas is drawing, `failed`/`unavailable` mean it
+ * never will. The flat object is shown for everything except `ready`, and only
+ * in the hero chapter, so it is on screen while `data-webgl` is still `pending`
+ * — which is exactly the value a visitor with scripts disabled keeps forever —
+ * and is removed the moment the live scene becomes `ready`. The two are
+ * therefore never both showing.
+ */
+.asm-hero-fallback {
+  position: fixed;
+  top: 50%;
+  right: clamp(1.25rem, 6vw, 7rem);
+  z-index: 0;
+  display: block;
+  width: min(46vw, 33rem);
+  aspect-ratio: 640 / 560;
+  height: auto;
+  transform: translateY(-50%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.asm[data-webgl="ready"] .asm-hero-fallback,
+.asm:not([data-chapter="hero"]) .asm-hero-fallback {
+  display: none;
+}
+
+/* A slow drift, never a loop that reads as data: it keeps "the living
+   assembly" from being a promise the page does not keep on a browser that
+   cannot move anything in 3D. */
+.asm-hero-fallback__object {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: asm-hero-drift 9s ease-in-out infinite;
+}
+
+@keyframes asm-hero-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-0.7rem);
+  }
+}
+
+/*
+ * The hero's second sentence is chosen by the renderer's status, never by
+ * script. `pending` shows neither variant: the server-rendered value is not an
+ * answer, and showing one would state something about the renderer before it
+ * has reported.
+ */
+.asm-hero-claim {
+  display: none;
+}
+
+.asm[data-webgl="ready"] .asm-hero-claim--live {
+  display: inline;
+}
+
+.asm[data-webgl="failed"] .asm-hero-claim--still,
+.asm[data-webgl="unavailable"] .asm-hero-claim--still {
+  display: inline;
+}
+
+@media (max-width: 899px) {
+  /* The hero text owns the lower two-thirds of a phone chapter, so the flat
+     object moves into the free band at the top instead of sitting behind it. */
+  .asm-hero-fallback {
+    top: 12vh;
+    right: 50%;
+    bottom: auto;
+    width: min(82vw, 24rem);
+    transform: translateX(50%);
+  }
+
+  /*
+   * On a phone the authored bottom-left fallback sits on the hero note and the
+   * first fact, so the control is placed on the flat object's pink Create face
+   * instead — the same relationship it has in the live scene, and the same
+   * target size. The coefficients read the fallback's own geometry: the object
+   * is 560/640 as tall as it is wide, and the Create rect (92,228,296,92) in the
+   * 640x560 viewBox puts the face's centre 0.375 of the object's width in from
+   * its left and 0.489 of its height down from its top. `.asm` prefixes the
+   * selector so it wins over the base fallback rule regardless of order.
+   */
+  .asm .asm-seam__plate[data-measured="false"] {
+    top: calc(12vh + 0.428 * min(82vw, 24rem) - 1.5rem);
+    right: calc(50vw - 3rem + 0.125 * min(82vw, 24rem));
+    bottom: auto;
+    left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asm-hero-fallback__object {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------- the rail */
+
+.asm-rail {
+  position: fixed;
+  top: 50%;
+  left: var(--asm-gutter);
+  z-index: 3;
+  width: var(--asm-rail);
+  transform: translateY(-50%);
+}
+
+.asm-rail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.asm-rail a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  /* A 44px floor for the same reason the phone targets have one: the rail is a
+   * navigation control, and a 22px text-height hit area is uncomfortable with a
+   * mouse and unusable with a thumb on a touch laptop. */
+  min-height: 44px;
+  padding: 0.2rem 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.75;
+}
+
+.asm-rail__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Only one form of the label is laid out at a time. `display: none` also takes
+ * the hidden one out of the accessible name, so the link is announced once. */
+.asm-rail__label--short {
+  display: none;
+}
+
+.asm-rail a[aria-current="true"],
+.asm-rail a:hover,
+.asm-rail a:focus-visible {
+  opacity: 1;
+}
+
+.asm-rail__index {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----------------------------------------------------------------- content */
+
+.asm-document {
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+
+.asm-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: clamp(4rem, 12vh, 9rem) var(--asm-gutter);
+  padding-left: calc(var(--asm-gutter) + var(--asm-rail));
+}
+
+.asm-section__body {
+  width: min(100%, var(--asm-measure));
+}
+
+.asm-section--catalogue .asm-section__body,
+.asm-section--closing .asm-section__body {
+  width: min(100%, 40rem);
+}
+
+.asm-marker {
+  margin: 0 0 1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.84;
+}
+
+.asm-title {
+  margin: 0 0 1rem;
+  font-family: var(--asm-display);
+  font-size: clamp(2.1rem, 5.4vw, 4.1rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.asm-lead {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1rem, 1.15vw, 1.15rem);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.asm-note {
+  margin: 1.5rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  opacity: 0.84;
+}
+
+.asm-facts {
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  opacity: 0.84;
+}
+
+.asm-facts li::before {
+  content: "—";
+  margin-right: 0.5rem;
+  opacity: 0.5;
+}
+
+.asm-scrollcue {
+  position: absolute;
+  bottom: 2.2rem;
+  left: calc(var(--asm-gutter) + var(--asm-rail));
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.84;
+}
+
+/* ---------------------------------------------------------------- the seam */
+
+.asm-seam {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.asm-seam[data-active="false"] {
+  display: none;
+}
+
+.asm-seam__plate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  will-change: transform;
+  pointer-events: auto;
+}
+
+/* The plate is the sculpted pill's exact projected box, so the real control is
+   clamped to it: a control taller than the face it is drawn on spills past the
+   pill on a narrow screen, where the projection shrinks but the control's own
+   size tokens do not. */
+.asm-seam__plate > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Before the first measurement lands, place the control where the hero column
+   reads without the canvas. It is never positioned by guesswork once a
+   measurement exists. */
+.asm-seam__plate[data-measured="false"] {
+  top: auto;
+  bottom: clamp(3rem, 12vh, 7rem);
+  left: calc(var(--asm-gutter) + var(--asm-rail));
+  transform: none;
+  width: auto;
+  min-height: 44px;
+}
+
+.asm-seam__button {
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+
+.asm-seam[data-dragging="true"] .asm-seam__button {
+  cursor: grabbing;
+}
+
+/* ----------------------------------------------------------------- controls */
+
+.asm-field {
+  margin: 1.75rem 0;
+  padding: 0;
+  border: 0;
+}
+
+.asm-field__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.84;
+}
+
+.asm-field__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.asm-field__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1.75rem 0 0;
+}
+
+.asm-field__note {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  opacity: 0.86;
+  max-width: 30rem;
+}
+
+.asm-field__value {
+  display: block;
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  opacity: 0.86;
+  font-variant-numeric: tabular-nums;
+}
+
+.asm-control {
+  margin: 1.75rem 0;
+}
+
+.asm-chip {
+  padding: 0.42rem 0.85rem;
+  border: 1px solid var(--asm-hairline);
+  border-radius: 999px;
+  background: var(--asm-surface);
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.asm-chip:hover,
+.asm-chip:focus-visible {
+  border-color: currentColor;
+}
+
+.asm-chip[aria-pressed="true"] {
+  background: var(--asm-strong);
+  border-color: var(--asm-strong);
+  color: var(--asm-on-strong);
+}
+
+.asm-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.88rem;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.asm-link:hover,
+.asm-link:focus-visible {
+  opacity: 1;
+}
+
+.asm-range {
+  width: min(100%, 18rem);
+  accent-color: var(--asm-strong);
+}
+
+.asm-swatch {
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--asm-hairline);
+  border-radius: 0.45rem;
+  cursor: pointer;
+}
+
+.asm-swatch[aria-pressed="true"] {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------- catalogue */
+
+.asm-specimens {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.4rem;
+}
+
+.asm-specimen {
+  display: grid;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--asm-hairline);
+  border-radius: 0.6rem;
+  background: var(--asm-surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.asm-specimen[aria-pressed="true"] {
+  border-color: currentColor;
+  background: var(--asm-surface-strong);
+}
+
+.asm-specimen__label {
+  font-size: 0.92rem;
+}
+
+.asm-specimen__category {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.asm-bench {
+  margin: 1.75rem 0 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--asm-hairline);
+  border-radius: 0.75rem;
+  background: var(--asm-surface);
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+}
+
+.asm-bench__name {
+  margin: 0;
+  font-family: var(--asm-display);
+  font-size: 1.35rem;
+}
+
+.asm-bench__meta {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+/* ------------------------------------------------------------- live example */
+
+.asm-live {
+  margin: 1.25rem 0 0;
+  padding: 1.1rem;
+  border: 1px solid var(--asm-hairline);
+  border-radius: 0.9rem;
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+}
+
+.asm-live__stage {
+  width: 100%;
+  padding: 1.1rem;
+  border-radius: 0.6rem;
+  background: var(--asm-cream);
+  color: var(--asm-ink);
+  overflow-x: auto;
+}
+
+.asm-live__caption {
+  margin: 0;
+  font-size: 0.86rem;
+  opacity: 0.88;
+}
+
+.asm-live__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.asm-live__command,
+.asm-command {
+  width: 100%;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.6rem;
+  background: rgb(0 0 0 / 84%);
+  color: var(--asm-cream);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.asm-example__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.asm-example__column {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.asm-example__frame {
+  position: relative;
+  width: 100%;
+  height: 9rem;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.asm-example__text {
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------- contour */
+
+.asm-contour {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+  margin: 1.75rem 0 0;
+}
+
+.asm-contour__preview {
+  width: min(100%, 15rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  border: 1px solid var(--asm-hairline);
+  border-radius: 1rem;
+  background: var(--asm-surface);
+}
+
+.asm-contour__preview svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.asm-contour__controls {
+  min-width: 0;
+}
+
+.asm-source {
+  margin: 0.75rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.asm-source__code {
+  width: 100%;
+  max-height: 16rem;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--asm-hairline);
+  border-radius: 0.6rem;
+  background: var(--asm-surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* The site's own tooling, kept visually distinct from the selected component's
+ * API: a hairline rule and an explicit label, so a reader cannot mistake the
+ * contour export for registry source. */
+.asm-site-tool {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--asm-hairline);
+}
+
+/* ------------------------------------------------------------- public API */
+
+.asm-api {
+  margin: 1.75rem 0 0;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.asm-api__title {
+  margin: 0;
+  font-family: var(--asm-display);
+  font-size: 1.2rem;
+}
+
+.asm-api__source {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  opacity: 0.86;
+}
+
+.asm-api__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.asm-api__table caption {
+  padding-bottom: 0.4rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  opacity: 0.82;
+}
+
+.asm-api__table th,
+.asm-api__table td {
+  padding: 0.5rem 0.6rem;
+  border-top: 1px solid var(--asm-hairline);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.asm-api__table thead th {
+  border-top: 0;
+  border-bottom: 1px solid var(--asm-hairline);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.82;
+}
+
+.asm-api__table code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  white-space: normal;
+}
+
+/* -------------------------------------------------------------------- sound */
+
+/*
+ * The sound strip.
+ *
+ * Persistent, because sound is a page-level setting rather than a chapter's, and
+ * deliberately small: the page is about the components, so these controls sit in a
+ * low-contrast strip out of the reading path. It is one line of controls and
+ * nothing else — the cue descriptions live in the document (`SoundNotes`), since
+ * eleven of them inside a fixed panel made the strip 189px tall and covered the
+ * object it floated above.
+ *
+ * `flex-wrap` keeps it usable at 360px, where the switch, its label, the volume
+ * range and the bed switch cannot share one line.
+ */
+.asm-controls {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 5;
+  max-width: 100%;
+  padding: 0.5rem var(--asm-gutter);
+  background: color-mix(in srgb, canvas 72%, transparent);
+  backdrop-filter: blur(0.4rem);
+  border-bottom-left-radius: 0.6rem;
+}
+
+.asm-sound {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+}
+
+.asm-sound__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* The volume group is the only one that may squeeze, so it is the one given a
+ * bounded range rather than letting the label and readout push the row wide. */
+.asm-sound__row--volume .asm-range {
+  width: clamp(5rem, 14vw, 9rem);
+}
+
+.asm-sound__row--stacked {
+  flex-wrap: wrap;
+}
+
+.asm-sound__label {
+  font-size: 0.8rem;
+  opacity: 0.86;
+  white-space: nowrap;
+}
+
+/*
+ * Below the phone breakpoint the strip becomes two tidy rows rather than three
+ * ragged ones: the bed switch keeps its own word on a column of its own, and the
+ * volume group is allowed to shrink, because at 360px the four elements cannot
+ * share one line and an unbalanced wrap is what made the strip 110px tall.
+ */
+@media (max-width: 899px) {
+  .asm .asm-controls {
+    padding-left: 20px;
+  }
+
+  .asm-sound {
+    gap: 0.35rem 0.6rem;
+  }
+
+  /* A fixed, narrow range rather than a growing one: a growing volume group fills
+   * the line and pushes the bed onto a second row, which is how the strip reached
+   * 110px. At phone widths 4rem is enough travel to set a listening level, and the
+   * readout next to it gives the exact value. */
+  .asm-sound__row--volume {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  .asm-sound__row--volume .asm-range {
+    flex: 0 0 auto;
+    width: 4rem;
+  }
+
+  /* The bed switch keeps its accessible name through `aria-label`, so the visible
+   * word is what goes: it is the widest label in the strip and the one whose
+   * control is self-evident, and dropping it is what lets all three groups share a
+   * single line at 390px rather than wrapping to a second. */
+  .asm-sound__row--bed .asm-sound__label {
+    display: none;
+  }
+}
+
+.asm-sound__detail {
+  flex-basis: 100%;
+}
+
+.asm-sound__detail {
+  margin-top: 0.6rem;
+  max-width: 38rem;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  opacity: 0.82;
+}
+
+.asm-sound__detail summary {
+  cursor: pointer;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.86;
+}
+
+.asm-sound__cues {
+  margin: 0.85rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.asm-sound__cues div {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.asm-sound__cues dt {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+}
+
+.asm-sound__cues dd {
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.88;
+}
+
+/* ------------------------------------------------------------------ actions */
+
+.asm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.75rem 0 0;
+}
+
+.asm-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.9rem;
+  padding: 0 1.5rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.asm-action--solid {
+  background: var(--asm-strong);
+  border-color: var(--asm-strong);
+  color: var(--asm-on-strong);
+}
+
+/* ------------------------------------------------------------------- focus */
+
+.asm a:focus-visible,
+.asm button:focus-visible,
+.asm [tabindex]:focus-visible,
+.asm summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------- viewport */
+
+@media (min-width: 900px) {
+  .asm-contour {
+    grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 899px) {
+  .asm {
+    --asm-rail: 0rem;
+  }
+
+  /*
+   * The rail becomes a full-width bottom bar, and it has to say so.
+   *
+   * `left: 0; right: 0` does not stretch a fixed-position shrink-to-fit box on
+   * its own: with no width specified the box resolved to its content — 40px — and
+   * the six links overflowed out of it along the bottom-left, each about
+   * 15×22px. Naming the width explicitly, and putting the bar on a grid with one
+   * equal column per chapter, is what makes every target the same size and
+   * reachable rather than a sliver in the corner.
+   */
+  .asm-rail {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    padding: 0.5rem var(--asm-gutter)
+      calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    transform: none;
+    background: linear-gradient(
+      to top,
+      rgb(0 0 0 / 42%),
+      rgb(0 0 0 / 22%) 60%,
+      transparent
+    );
+    color: var(--asm-cream);
+  }
+
+  .asm-rail ol {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    gap: 0;
+  }
+
+  /* Every chapter stays named. Hiding the labels left the links with accessible
+   * names of "01" through "06", which is not a name a screen-reader user can
+   * navigate by, and the index alone did not tell a sighted visitor where the
+   * link went either. The index goes instead: the label is the useful half. */
+  .asm-rail__label--wide {
+    display: none;
+  }
+
+  .asm-rail__label--short {
+    display: block;
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    overflow: visible;
+  }
+
+  .asm-rail__index {
+    display: none;
+  }
+
+  /* Padding, not a fixed height, so the target grows with the text and still
+   * clears the 44px comfortable-target floor at every supported width. */
+  .asm-rail a {
+    min-height: 44px;
+    padding: 0.55rem 0.15rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.15;
+  }
+
+  /* Taller than the viewport on purpose: the canvas is fixed, so the 3D stays
+     in the top third of the screen while a chapter's text scrolls past it.
+     Without the extra height the two would share the same band. */
+  .asm-section {
+    align-items: flex-end;
+    min-height: 118svh;
+    /* The rail is a bar along the bottom here, not a column on the left, so the
+     * left gutter it reserved on desktop is dead space on a phone. */
+    padding-left: var(--asm-gutter);
+    padding-bottom: calc(
+      clamp(6rem, 20vh, 11rem) + env(safe-area-inset-bottom, 0px)
+    );
+    /* A direct `#chapter` anchor must not land under the fixed bar. */
+    scroll-margin-bottom: 5rem;
+  }
+
+  .asm-specimens {
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  }
+
+  .asm-contour {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asm-seam__plate {
+    will-change: auto;
+  }
+}
+
+/* ---------------------------------------------------------------- utilities */
+
+.asm-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Hero art direction. The other five chapters retain their authored layout. */
+.asm-header {
+  position: absolute;
+  inset: 28px 3.4vw auto;
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  color: var(--asm-cream);
+}
+.asm-brand {
+  font-family: var(--asm-display);
+  font-size: 46px;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  text-decoration: none;
+}
+.asm-brand span {
+  display: block;
+  font: 14px/2 var(--asm-body);
+  letter-spacing: 0;
+  color: #bcb6ae;
+}
+.asm-header__end {
+  display: flex;
+  align-items: flex-start;
+  gap: 34px;
+}
+.asm-header nav {
+  display: flex;
+  gap: 34px;
+  align-items: center;
+}
+.asm-header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+  text-decoration: none;
+}
+.asm-controls > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 15px;
+  list-style: none;
+}
+.asm[data-chapter="hero"] .asm-rail {
+  display: none;
+}
+/*
+ * Sound now sits in the header, where the artboard's own navigation is, instead
+ * of floating over the object at the bottom of the frame. The summary keeps the
+ * nav's metrics so the row reads as one line of links; the strip is a panel that
+ * drops below it.
+ */
+.asm .asm-controls {
+  position: relative;
+  top: 0;
+  right: 0;
+  left: auto;
+  padding: 0 0 0 34px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--asm-cream);
+}
+.asm .asm-controls[open] {
+  max-width: calc(100vw - 40px);
+}
+.asm .asm-sound {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 9;
+  padding: 16px;
+  border: 1px solid #5c574f;
+  background: #171614;
+  border-radius: 16px;
+}
+.asm-controls > summary::-webkit-details-marker {
+  display: none;
+}
+/*
+ * The same disclosure, pinned, for every chapter after Hero.
+ *
+ * The header is `absolute`, so it leaves with the hero and takes the only sound
+ * control with it: in Collection the nearest one measured a thousand pixels above
+ * the fold. Sound is a page-wide setting, so its control has to outlive the hero.
+ * This is that control parked in the corner the header occupied, on a translucent
+ * chip so it stays legible over the type, the floor and the object. It is
+ * deliberately the quietest thing at that corner — the object is the subject, and
+ * a setting like this should be findable rather than prominent.
+ */
+.asm .asm-controls--sticky {
+  position: fixed;
+  top: 24px;
+  right: 3.4vw;
+  left: auto;
+  z-index: 7;
+  padding: 0 14px;
+  border: 1px solid #3a3630;
+  border-radius: 999px;
+  background: color-mix(in srgb, #171614 82%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--asm-cream);
+}
+.asm .asm-controls--sticky > summary {
+  min-height: 40px;
+  font-size: 14px;
+}
+.asm .asm-controls--sticky .asm-sound {
+  top: calc(100% + 8px);
+  right: 0;
+}
+@media (max-width: 899px) {
+  /* Phone keeps the top-right corner the header used, and does not move to the
+     bottom: the bottom-right is where the catalogue's own drawer control lives,
+     and a chip parked there is covered by it — measured, the drawer intercepted
+     every click on the sound summary. */
+  .asm .asm-controls--sticky {
+    top: 18px;
+    right: 16px;
+  }
+  .asm .asm-controls--sticky .asm-sound {
+    top: calc(100% + 8px);
+    bottom: auto;
+    right: 0;
+  }
+}
+.asm-section--hero {
+  /* 17.5vh put the title's first glyph 13 px below the artboard's (196 against
+   * 183 at 1024 tall); 16.23vh is that offset removed. The band after the lead
+   * also lands on the artboard's once the three spacing errors below are gone,
+   * which is the check that this is an offset and not a different line box. */
+  padding: 16.23vh 3.4vw 100px;
+  min-height: max(720px, 100svh);
+  align-items: flex-start;
+  flex-direction: column;
+  color: var(--asm-cream);
+}
+.asm-section--hero .asm-section__body {
+  width: 51%;
+  position: relative;
+  z-index: 1;
+}
+.asm-section--hero .asm-title {
+  /* Sized from the artboard, not chosen. Traced over the 1536-wide reference,
+   * "Small parts." runs x 53-364 - 312 px - where 8.1vw rendered 289 over
+   * x 56-344. 312/289 = 1.0796, and 124.4 x 1.0796 = 134.3 px, so 8.74vw with
+   * the ceiling raised to match. The ratio is exact rather than approximate,
+   * which is the evidence that this is one font at two sizes and not two
+   * fonts: the same factor reproduces the second line and the lead as well. */
+  /* The tracking and weight set here are dead: an unscoped `.asm-title` rule
+   * further down this file (search `font-stretch: normal`) restates both at the
+   * same specificity and wins. Swept through the real harness, its -0.045em is
+   * already the optimum - -0.038, -0.030 and -0.022 all score worse (31.80,
+   * 33.93, 35.42 against 28.44) - so it is left alone and the duplicates below
+   * are left in place rather than tidied, to keep this change scoped. */
+  font-size: clamp(72px, 8.74vw, 138px);
+  line-height: 0.98;
+  font-weight: 750;
+  letter-spacing: -0.065em;
+  margin: 0;
+}
+.asm-section--hero .asm-title > span {
+  display: block;
+  white-space: nowrap;
+}
+.asm-section--hero .asm-title > span + span {
+  /* Was 14px, which was right while line 1 was 124 px. The corrected line 1 is
+   * 126.2 px, whose 0.98 line box is 123.7 - 7.9 px shorter than the 131.6 that
+   * -12 was tuned against - so -4 puts line 2 back on the artboard's y 303
+   * without touching the 0.98 line-height its own line spacing matches. */
+  margin-top: -12px;
+  /* 3.86vw rendered "Extraordinary possibilities." 656 px wide; the artboard's
+   * is 726. 726/656 = 1.107, so 59.3 x 1.107 = 65.6 px. */
+  font-size: clamp(35px, 4.27vw, 69px);
+  line-height: 1.03;
+  letter-spacing: -0.055em;
+}
+.asm-title-break {
+  display: none;
+}
+.asm-section--hero .asm-lead {
+  /* The artboard's lead line is 412 px over x 55-466 and 1.48vw rendered 364;
+   * 412/364 = 1.132, so 22.7 x 1.132 = 25.7 px. */
+  font-size: clamp(18px, 1.68vw, 27px);
+  line-height: 1.45;
+  color: #bcb6ae;
+  /* 38 was 10 px more than the artboard's line-2-to-lead gap of 97. */
+  margin-top: 28px;
+  max-width: 560px;
+}
+.asm-section--hero .asm-actions {
+  margin-top: 36px;
+  gap: 20px;
+}
+.asm-section--hero .asm-action {
+  min-height: 62px;
+  font-size: 18px;
+  padding: 0 42px;
+  border-color: #999188;
+  gap: 14px;
+}
+.asm-section--hero .asm-action--solid {
+  background: var(--asm-pink);
+  color: var(--asm-ink);
+  border-color: var(--asm-pink);
+  font-weight: 600;
+}
+.asm-hero-foot {
+  position: absolute;
+  bottom: 38px;
+  left: 3.4vw;
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  margin: 0;
+}
+.asm-hero-space {
+  display: none;
+}
+.asm-hero-fallback__object {
+  animation: none;
+}
+@media (max-width: 1100px) and (min-width: 900px) {
+  .asm-title-break {
+    display: block;
+  }
+  .asm-section--hero .asm-action {
+    padding: 0 24px;
+  }
+}
+@media (max-width: 899px) {
+  .asm-header {
+    inset: 24px 24px auto;
+  }
+  .asm-brand {
+    font-size: 38px;
+  }
+  .asm-header nav {
+    gap: 18px;
+  }
+  .asm-header nav a {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  /* The nav and the sound control share one row with the brand, so at phone
+   * widths the header keeps a single action plus the audio control. "Get
+   * started" is already hidden here; "Components" goes too, because the hero's
+   * own "Explore components" button is the same destination and is on screen. */
+  .asm-header nav a:nth-child(2) {
+    display: none;
+  }
+  .asm-section--hero {
+    padding: 160px 24px 80px;
+    min-height: 0;
+  }
+  .asm-section--hero .asm-section__body {
+    width: 100%;
+  }
+  .asm-section--hero .asm-title {
+    font-size: clamp(52px, 10.5vw, 80px);
+  }
+  .asm-section--hero .asm-title > span + span {
+    font-size: clamp(32px, 6.4vw, 48px);
+    line-height: 1.06;
+  }
+  .asm-title-break {
+    display: block;
+  }
+  .asm-section--hero .asm-lead {
+    font-size: 17px;
+    margin-top: 24px;
+  }
+  .asm-section--hero .asm-actions {
+    margin-top: 24px;
+    gap: 10px;
+  }
+  .asm-section--hero .asm-action {
+    font-size: 14px;
+    padding: 0 20px;
+    min-height: 50px;
+  }
+  .asm-hero-space {
+    display: block;
+    width: 100%;
+    height: min(112vw, 680px);
+    margin-top: 20px;
+  }
+  .asm-hero-foot {
+    left: 24px;
+    bottom: 26px;
+    font-size: 11px;
+    gap: 10px;
+  }
+}
+.asm .asm-header a {
+  color: var(--asm-cream);
+}
+.asm-section--hero .asm-title {
+  letter-spacing: -0.045em;
+  font-stretch: normal;
+  font-weight: 700;
+}
+.asm-section--hero .asm-title > span + span {
+  letter-spacing: -0.045em;
+}
+.asm .asm-seam__button {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  box-shadow: none;
+  color: #24211f;
+  font-size: 30px;
+  border: 0;
+  transform: none;
+}
+body:has(.asm[data-chapter="hero"]) .report-launcher {
+  bottom: 22px;
+  right: 154px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  overflow: hidden;
+  font-size: 0;
+  gap: 0;
+}
+.asm-hero-controls {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.asm-hero-controls[data-active="false"] {
+  display: none;
+}
+.asm-hero-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  pointer-events: auto;
+}
+.asm-hero-face > button,
+.asm-hero-face > input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  color: #24211f;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+  font-family: var(--asm-body);
+}
+.asm-hero-face > button {
+  gap: 12px;
+  font-size: var(--face-font, 16px);
+  padding: 0 12px;
+}
+.asm-hero-face > button::after {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((100% - 44px) / 2));
+}
+.asm-hero-face--create > button {
+  font-size: calc(var(--face-font, 24px) * 1.2);
+  gap: 45px;
+  cursor: grab;
+}
+.asm-hero-face--create > button:active {
+  cursor: grabbing;
+}
+.asm-hero-face--create:hover {
+  filter: drop-shadow(0 0 8px #f5b8db55);
+}
+.asm-hero-face--switch > button {
+  justify-content: flex-start;
+  overflow: visible;
+}
+.asm-switch-label {
+  position: absolute;
+  left: 118%;
+  font-size: 17px;
+  white-space: nowrap;
+}
+.asm-hero-face svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.asm-hero-face--layout > button,
+.asm-hero-face--content > button,
+.asm-hero-face--actions > button {
+  justify-content: space-between;
+  font-size: calc(var(--face-font, 17px) * 0.86);
+}
+.asm-hero-face--slider input {
+  appearance: none;
+  margin: 0;
+  outline-offset: 2px;
+}
+.asm-hero-face--slider input::-webkit-slider-thumb {
+  appearance: none;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+}
+.asm-hero-face--slider input::-moz-range-thumb {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 0;
+}
+.asm-slider-value {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  color: #24211f;
+  font: 12px var(--asm-body);
+}
+.asm-hero-face--slider:focus-within .asm-slider-value {
+  display: block;
+}
+.asm .asm-hero-face :focus-visible {
+  outline: 2px solid #24211f;
+  outline-offset: 5px;
+  border-radius: 12px;
+}
+.asm-drawer-preview {
+  pointer-events: auto;
+  position: absolute;
+  top: 64%;
+  right: 6%;
+  width: 390px;
+  padding: 24px;
+  border-radius: 24px;
+  background: #fbf4e6;
+  color: #24211f;
+  border: 1px solid #d0c6b4;
+  box-shadow: 0 20px 60px #0005;
+}
+.asm-drawer-preview header {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+.asm-drawer-preview header p {
+  margin: 0 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+}
+.asm-drawer-preview h2 {
+  font: 600 23px/1.1 var(--asm-display);
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+.asm-drawer-preview header button {
+  background: none;
+  border: 1px solid #c5baaa;
+  border-radius: 50%;
+  min-width: 44px;
+  height: 44px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.asm-drawer-demo {
+  padding: 24px 0;
+}
+.asm-drawer-preview > a {
+  color: #24211f;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+  border-top: 1px solid #d0c6b4;
+  padding-top: 14px;
+}
+.asm-badge-demo,
+.asm-button-demo {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.asm-button-demo > span {
+  width: 100%;
+  font-size: 12px;
+}
+.asm-drawer-demo [data-slot="card"] {
+  max-width: 100%;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-faces {
+  position: absolute;
+  width: min(46vw, 640px);
+  height: min(46vw, 640px);
+  top: 20vh;
+  right: 4vw;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face {
+  transform: none;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--create {
+  left: 12%;
+  top: 43%;
+  width: 57%;
+  height: 16%;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--switch {
+  left: 11%;
+  top: 20%;
+  width: 22%;
+  height: 10%;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--slider {
+  left: 14%;
+  top: 68%;
+  width: 50%;
+  height: 44px;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--slider input {
+  appearance: auto;
+  accent-color: #9aab63;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--layout,
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--content,
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--actions {
+  left: 70%;
+  width: 30%;
+  height: 44px;
+  background: #b6caeb;
+  border-radius: 12px;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--layout {
+  top: 31%;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--content {
+  top: 43%;
+}
+.asm-hero-controls[data-fallback="true"] .asm-hero-face--actions {
+  top: 55%;
+}
+@media (max-width: 899px) {
+  .asm-hero-controls {
+    position: absolute;
+  }
+  .asm-hero-face svg {
+    width: 14px;
+    height: 14px;
+  }
+  .asm-hero-face > button {
+    gap: 6px;
+    padding: 0 6px;
+  }
+  .asm-switch-label {
+    font-size: 12px;
+    left: 114%;
+  }
+  .asm-drawer-preview {
+    top: var(--hero-preview-top, 1020px);
+    left: 24px;
+    right: 24px;
+    width: auto;
+    z-index: 5;
+  }
+  .asm:has(.asm-drawer-preview) .asm-hero-space {
+    margin-bottom: 350px;
+  }
+  .asm-hero-controls[data-fallback="true"] .asm-hero-faces {
+    width: calc(100vw - 48px);
+    height: calc(100vw - 48px);
+    right: 24px;
+    top: var(--hero-stage-top, 570px);
+  }
+}
+.asm .asm-hero-fallback {
+  top: 20vh;
+  right: 4vw;
+  width: min(46vw, 640px);
+  aspect-ratio: 1;
+  transform: none;
+}
+@media (max-width: 899px) {
+  .asm .asm-hero-fallback {
+    position: absolute;
+    top: var(--hero-stage-top, 570px);
+    right: 24px;
+    width: calc(100vw - 48px);
+  }
+}
+.asm .asm-hero-face--create > .asm-seam__button {
+  font-size: calc(var(--face-font, 24px) * 1.2);
+}
+.asm-hero-face--layout > button,
+.asm-hero-face--content > button,
+.asm-hero-face--actions > button {
+  padding-left: 14%;
+}
+@media (max-width: 899px) {
+  .asm-hero-face--layout > button,
+  .asm-hero-face--content > button,
+  .asm-hero-face--actions > button {
+    font-size: 12px;
+    padding-left: 9%;
+  }
+}
+.asm[data-webgl="ready"][data-chapter="hero"] {
+  background: #0b0b0c;
+}
+@media (max-height: 800px) and (min-width: 900px) {
+  .asm-drawer-preview {
+    top: auto;
+    bottom: 88px;
+    right: 3.4vw;
+  }
+}
+.asm {
+  overflow-x: clip;
+}
+.asm-hero-face > button::after {
+  inset: calc(-1 * var(--touch-y, 0px)) -2px;
+}
+@media (min-width: 1400px) {
+  .asm-section--hero .asm-title > span:first-child {
+    font-size: 1.07em;
+  }
+}
+.asm-hero-controls[data-fallback="true"] [role="switch"] {
+  background: #9aab63;
+  border-radius: 999px;
+}
+.asm-hero-controls[data-fallback="true"] [role="switch"]::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  top: 10%;
+  height: 80%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fbf4e6;
+  box-shadow: 2px 3px 5px #0003;
+}
+.asm-hero-controls[data-fallback="true"]
+  [role="switch"][aria-checked="true"]::before {
+  left: auto;
+  right: 6%;
+}
+
+@media (max-width: 640px) {
+  .asm-header {
+    gap: 12px;
+  }
+  .asm-header__end {
+    gap: 16px;
+  }
+  .asm-header nav a:first-child {
+    display: none;
+  }
+  .asm-controls > summary {
+    white-space: nowrap;
+  }
+}

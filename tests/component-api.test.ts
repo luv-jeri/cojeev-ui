@@ -6,6 +6,8 @@ import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { execFileSync } from "node:child_process";
 import { componentAPIs } from "../scripts/component-api.mjs";
+import { SPECIMEN_API } from "../components/landing/assembly/specimen-api.generated";
+import { SPECIMEN_TRAYS } from "../components/landing/assembly/canonical";
 
 function fixture(files: Record<string, string>, ids: string[]) {
   const root = mkdtempSync(join(tmpdir(), "cojeev-component-api-"));
@@ -37,6 +39,11 @@ geometry: Geometry; turn?: number; hidden?: boolean }
     assert.deepEqual(props[0], { name: "geometry", type: "Geometry", required: false, description: "Source geometry." });
     assert.equal(props[2].required, true);
     assert.deepEqual(rows.find((row: { name: string }) => row.name === "ExtendedProps")!.props.map((prop: { name: string }) => prop.name).sort(), ["extra", "geometry", "hidden", "turn"]);
+});
+
+test("the assembly's generated specimen API matches its component sources", () => {
+  const ids = SPECIMEN_TRAYS.map((tray) => tray.id);
+  assert.deepEqual(SPECIMEN_API, componentAPIs(ids), "specimen-api.generated.ts is stale; run npm run specimens:api");
 });
 
 test("unresolved and cyclic local imports retain known authored props without recursing indefinitely", () => {
