@@ -2,12 +2,13 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "typography",
   "title": "Typography",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Provides text roles for headings, body copy, metadata, values, and identifiers.",
   "dependencies": [
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://000h.cojeev.com/r/cojeev.json"
   ],
   "files": [
     {
@@ -355,5 +356,8 @@
     "fidelity": "refined-design-family",
     "baseComponent": true
   },
+  "categories": [
+    "Typography"
+  ],
   "type": "registry:ui"
 }

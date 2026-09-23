@@ -2,12 +2,13 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "marker",
   "title": "Marker",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Separates or annotates a sequence with a short event, status, or time label.",
   "dependencies": [
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://000h.cojeev.com/r/cojeev.json"
   ],
   "files": [
     {
@@ -84,5 +85,8 @@
     "fidelity": "refined-design-family",
     "baseComponent": true
   },
+  "categories": [
+    "Conversation"
+  ],
   "type": "registry:ui"
 }

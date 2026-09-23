@@ -2,12 +2,13 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "message",
   "title": "Message",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Structures a conversational or activity entry with a main content area and supporting description.",
   "dependencies": [
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://000h.cojeev.com/r/cojeev.json"
   ],
   "files": [
     {
@@ -129,5 +130,8 @@
     "fidelity": "refined-design-family",
     "baseComponent": true
   },
+  "categories": [
+    "Conversation"
+  ],
   "type": "registry:ui"
 }

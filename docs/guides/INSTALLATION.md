@@ -2,14 +2,20 @@
 
 Cojeev UI is distributed through a public shadcn registry.
 
-Cojeev UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme, fonts and shared motion code; it does not require the private Cojeev application.
+Cojeev UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme and fonts; it does not require the private Cojeev application.
 
 For the checked compiler baseline, declaration boundary and the separate route
 for stricter TypeScript flags, see [Strict TypeScript integration](strict-typescript-integration.md).
 For the default embedded font delivery and the optional verified file-backed
 conversion, see [Optional local font files](local-fonts.md).
+If an install does not behave as this page describes, start with
+[Install troubleshooting](install-troubleshooting.md).
 
-For a Vite project with Tailwind and the alias configured, initialize shadcn and add a component:
+## Install in a fresh project
+
+`npx shadcn@latest init` scaffolds the project and the shadcn conventions this
+registry expects. Choose the framework when prompted; the commands below are the
+same for Next.js and Vite.
 
 ```sh
 npx shadcn@latest init
@@ -24,15 +30,19 @@ export function Example() {
 }
 ```
 
-The added stylesheet includes both light and dark token values. Set the mode on the document:
+The install needs network access to `000h.cojeev.com` and to your package
+registry. It writes source only: there is no runtime dependency on the Cojeev
+website, and installed components contain no analytics.
 
-```ts
-document.documentElement.dataset.mode = "dark"; // or "light"
-```
+## Two ways to name the same registry
 
-The foundation also merges its semantic colors after an initialized shadcn starter theme, so direct component installs use the same canvas and text colors as these docs. Body and display typography use the bundled fonts. For explicit Tailwind font utilities, use `font-cojeev-text` and `font-cojeev-display`; an existing app's `font-sans` remains its own choice.
+Both forms install identical source. The URL form needs no setup and is what the
+copy buttons on this site produce; the namespace form is shorter once configured.
 
-For namespace commands, add this entry to your application's `components.json`:
+| Form | Command | Setup |
+| --- | --- | --- |
+| URL | `npx shadcn@latest add https://000h.cojeev.com/r/button.json` | none |
+| Namespace | `npx shadcn@latest add @cojeev/button` | `components.json` entry below |
 
 ```json
 {
@@ -41,6 +51,42 @@ For namespace commands, add this entry to your application's `components.json`:
   }
 }
 ```
+
+Keep your existing `components.json` fields when you add `registries`. The
+namespace is a local alias for the URL: **the registry's own name is `cojeev`,
+and its homepage is `https://000h.cojeev.com`.** The shadcn directory lists the
+project as `@000h-cojeev`; that is the directory's own label for the listing, not
+a namespace defined by this registry, and it is not a value to copy into
+`components.json`.
+
+## Light and dark
+
+The foundation stylesheet carries both modes as `data-mode` token values. Set the
+mode on the document element, once, before or after hydration:
+
+```ts
+document.documentElement.dataset.mode = "dark"; // or "light"
+```
+
+An unset `data-mode` renders the light palette. To follow the operating system
+and stay in step with later changes, write the attribute from a media query
+listener rather than reading the preference once at mount.
+
+The library's own mode is independent of a class-based `dark` variant of your
+own. A shadcn starter theme's `dark` class keeps working for your other
+components, and Cojeev components read `data-mode`, so the two do not fight.
+The foundation also merges its semantic colors after an initialized shadcn
+starter theme, so direct component installs use the same canvas and text colors
+as these docs.
+
+## Fonts
+
+Body and display typography use the bundled fonts, installed inline in the
+foundation stylesheet. For explicit Tailwind font utilities, use
+`font-cojeev-text` and `font-cojeev-display`; an existing app's `font-sans`
+remains its own choice. See [Optional local font files](local-fonts.md) to move
+the same bytes into sibling `.woff2` files.
+
 
 You can then use `npx shadcn@latest add @cojeev/button`. The namespace entry is an explicit consumer configuration step; installing a component URL does not automatically add it.
 

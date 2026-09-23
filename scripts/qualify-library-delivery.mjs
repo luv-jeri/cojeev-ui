@@ -147,8 +147,15 @@ export default defineConfig({plugins:[react(),tailwindcss(),measuredModuleGraph(
   write(consumer, "src/index.css", '@import "tailwindcss";\n');
 
   await run("npm-install", "npm", ["install"], consumer);
-  await run("shadcn-init", "npx", ["--yes", "shadcn@4.21.0", "init", "--template", "vite", "--base", "radix", "--preset", "nova", "--no-monorepo", "--yes"], consumer);
-  await run("shadcn-add-button", "npx", ["--yes", "shadcn@4.21.0", "add", `${origin}/r/button.json`, "--yes", "--overwrite"], consumer);
+  // `npx shadcn@4.21.0` cannot run in this environment (`sh: shadcn@4.21.0: command
+  // not found`), so the pinned local CLI is invoked directly. Same version, and the
+  // version is asserted below rather than assumed.
+  const pinnedInstaller = path.join(root, "node_modules/shadcn/dist/index.js");
+  if (!fs.existsSync(pinnedInstaller)) throw new Error(`The pinned installer is not installed at ${pinnedInstaller}`);
+  const installedVersion = JSON.parse(fs.readFileSync(path.join(root, "node_modules/shadcn/package.json"), "utf8")).version;
+  if (installedVersion !== "4.21.0") throw new Error(`Expected the pinned shadcn@4.21.0, found ${installedVersion}`);
+  await run("shadcn-init", process.execPath, [pinnedInstaller, "init", "--template", "vite", "--base", "radix", "--preset", "nova", "--no-monorepo", "--yes"], consumer);
+  await run("shadcn-add-button", process.execPath, [pinnedInstaller, "add", `${origin}/r/button.json`, "--yes", "--overwrite"], consumer);
   await run("materialize-fonts", process.execPath, ["src/scripts/cojeev-materialize-fonts.mjs", "--css", "src/styles/cojeev-fonts.css"], consumer);
   fs.appendFileSync(path.join(consumer, "src/index.css"), '@import "./styles/cojeev-fonts.css";\n');
   write(consumer, "src/App.tsx", `import {Button} from "@/components/ui/button";
@@ -158,7 +165,7 @@ export default function App(){return <main style={{padding:24}}><Button>Save</Bu
   const profiles = { button: measureProfile(consumer, "button", buttonNames) };
 
   const remainingNames = projectsNames.filter(name => name !== "button");
-  await run("shadcn-add-projects", "npx", ["--yes", "shadcn@4.21.0", "add", ...remainingNames.map(name => `${origin}/r/${name}.json`), "--yes", "--overwrite"], consumer);
+  await run("shadcn-add-projects", process.execPath, [pinnedInstaller, "add", ...remainingNames.map(name => `${origin}/r/${name}.json`), "--yes", "--overwrite"], consumer);
   // The later registry add refreshes the active foundation stylesheet back to
   // its default embedded form. Exercise the opt-in again on that final copy.
   await run("rematerialize-fonts", process.execPath, ["src/scripts/cojeev-materialize-fonts.mjs", "--css", "src/styles/cojeev-fonts.css"], consumer);
@@ -218,7 +225,8 @@ export default function App(){const [expanded,setExpanded]=React.useState(["fold
   ];
   const evidence = {
     candidate: {
-      installer: "shadcn@4.21.0",
+      installer: `node node_modules/shadcn/dist/index.js (shadcn@4.21.0)`,
+      installerInvocations: "npx is unavailable in this environment; the pinned local CLI is used and its version asserted before any install",
       sequence: ["fresh consumer", "Button profile", "Projects profile"],
       projectsComponents: projectsNames,
       registryOverride: "loopback candidate (not the published registry)",

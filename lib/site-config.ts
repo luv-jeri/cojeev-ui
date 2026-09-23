@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
 
+/**
+ * The registry's public origin. `000h.cojeev.com` is what the shadcn directory
+ * lists and what every published payload resolves dependencies against, so it is
+ * the default here too. Building without an explicit environment would otherwise
+ * hand consumers install commands and dependency URLs for the legacy mirror,
+ * which release validation treats as a cross-environment leak.
+ */
+export const canonicalRegistryUrl = "https://000h.cojeev.com";
+
 export const site = {
   name: "000h",
   title: "000h by Cojeev",
   description: "Expressive React components with organic shapes, purposeful motion, and source you can make your own.",
-  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://luv-jeri.github.io/cojeev-ui").replace(/\/+$/, ""),
-  registryUrl: (process.env.NEXT_PUBLIC_REGISTRY_URL || process.env.COJEEV_REGISTRY_URL || "https://luv-jeri.github.io/cojeev-ui").replace(/\/+$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL || canonicalRegistryUrl).replace(/\/+$/, ""),
+  registryUrl: (process.env.NEXT_PUBLIC_REGISTRY_URL || process.env.COJEEV_REGISTRY_URL || canonicalRegistryUrl).replace(/\/+$/, ""),
   sourceUrl: "https://github.com/luv-jeri/cojeev-ui",
   creatorUrl: "https://github.com/luv-jeri",
   author: "Sanjay Kumar",

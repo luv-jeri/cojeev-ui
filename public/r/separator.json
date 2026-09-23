@@ -2,12 +2,13 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "separator",
   "title": "Separator",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Divides adjacent content with a horizontal or vertical rule.",
   "dependencies": [
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://000h.cojeev.com/r/cojeev.json"
   ],
   "files": [
     {
@@ -87,5 +88,8 @@
     "fidelity": "refined-design-family",
     "baseComponent": true
   },
+  "categories": [
+    "Layout"
+  ],
   "type": "registry:ui"
 }

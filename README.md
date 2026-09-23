@@ -26,7 +26,11 @@ export function ContinueAction() {
 }
 ```
 
-The added stylesheet carries both light and dark token values. Choose one with `document.documentElement.dataset.mode = "dark"`. [Installation details](docs/guides/INSTALLATION.md) cover the `@cojeev` registry configuration, theming and the fresh-install check.
+The added stylesheet carries both light and dark token values. Choose one with `document.documentElement.dataset.mode = "dark"`. [Installation details](docs/guides/INSTALLATION.md) cover the `@cojeev` registry configuration, theming and the fresh-install check; if an install does not take, [install troubleshooting](docs/guides/install-troubleshooting.md) walks the symptoms we have actually seen.
+
+Two names appear in these docs and they are not interchangeable. **`@000h-cojeev`** is the directory's own listing label — it is how the registry is found in a registry list, and it is not something you put in your `components.json`. **`@cojeev`** is the alias inside the payloads, so it is the one to configure locally.
+
+Adding an entry costs about **450 KiB for a layout-only component** and **1.0 MiB for `Icon`**, whose glyph catalogue is the largest thing in the library. Those figures, and the per-scenario ceilings that keep them from creeping back up, are measured by `npm run registry:footprint`.
 
 ## Four to start with
 

@@ -3,7 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 
 const base = (process.env.LAUNCH_TEST_URL || "http://127.0.0.1:4335/cojeev-ui").replace(/\/$/, "");
-const expectedSite = (process.env.LAUNCH_EXPECTED_SITE_URL || "https://luv-jeri.github.io/cojeev-ui").replace(/\/$/, "");
+const expectedSite = (process.env.LAUNCH_EXPECTED_SITE_URL || "https://000h.cojeev.com").replace(/\/$/, "");
 const output = "output/playwright/000h-launch";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
