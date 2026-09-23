@@ -5,6 +5,8 @@ import {
   dragTension,
   heroInteraction,
   heroPointer,
+  registerHeroInvalidator,
+  requestHeroFrame,
 } from "./hero-interaction";
 import { experience } from "./experience-store";
 import { createSeamProbe, projectFace } from "./seam-projection";
@@ -86,8 +88,23 @@ test("perspective matrix maps all four corners, including rolled close-ups", () 
   }
 });
 
-test("Motion Off and reduced motion release straight to idle", () => {
-  for (const patch of [{ motionOn: false }, { reducedMotion: true }]) {
+/* The scene renders on demand, and a drag sample mutates `heroPointer` without
+ * touching React - so the loop cannot tell a moving pointer from a still one.
+ * Measured in the browser before this hook existed: a six-step drag drew 14,
+ * 14, 2, 0, 0, 0 frames and the cursor froze after the third move. */
+test("a pointer sample asks the on-demand renderer for a frame", () => {
+  let frames = 0;
+  const off = registerHeroInvalidator(() => {
+    frames++;
+  });
+  requestHeroFrame();
+  requestHeroFrame();
+  assert.equal(frames, 2);
+  off();
+  requestHeroFrame();
+  assert.equal(frames, 2, "an unregistered scheduler is never called");
+});
+test("Motion Off and reduced motion release straight to idle", () => {  for (const patch of [{ motionOn: false }, { reducedMotion: true }]) {
     experience.reset();
     experience.set(patch);
     heroInteraction.activate("create");

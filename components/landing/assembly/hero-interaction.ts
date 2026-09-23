@@ -17,6 +17,23 @@ export const heroPointer = {
   frozen: false,
   revealY: null as number | null,
 };
+/* The scene renders on demand. A drag sample mutates `heroPointer` and nothing
+ * else - no React state changes - so once the loop has gone idle the pointer
+ * keeps arriving while the ribbon and cursor stand still. Measured: after the
+ * third move of a six-step drag the renderer drew zero frames for the rest of
+ * the gesture. The controller registers its scheduler here and every sample
+ * pokes it, which coalesces to one frame per animation frame. */
+const invalidators = new Set<() => void>();
+/** Ask for one frame. Safe to call on every pointer sample. */
+export function requestHeroFrame() {
+  for (const invalidate of invalidators) invalidate();
+}
+export function registerHeroInvalidator(invalidate: () => void) {
+  invalidators.add(invalidate);
+  return () => {
+    invalidators.delete(invalidate);
+  };
+}
 const cleanups = new Set<() => void>();
 export const heroInteraction = {
   activate(id: HeroControlId) {

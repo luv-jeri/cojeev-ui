@@ -14,6 +14,7 @@ import {
   HERO_DRAG_THRESHOLD,
   heroInteraction,
   heroPointer,
+  requestHeroFrame,
   type DrawerId,
   type HeroControlId,
 } from "./hero-interaction";
@@ -235,6 +236,9 @@ export function CreateSeam({ active }: { active: boolean }) {
     heroPointer.x = event.clientX;
     heroPointer.y = event.clientY;
     heroPointer.active = g.id === "create";
+    /* Nothing above changes React state, so the on-demand loop has to be told
+     * a frame is owed or the drag stops drawing the moment it settles. */
+    requestHeroFrame();
     const value = dragTension(g.value, dx, dy, g.axis);
     experience.set({ tension: value });
     experience.emit({ type: "tension", intensity: value / 100 });

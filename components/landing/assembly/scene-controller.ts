@@ -35,6 +35,7 @@ import {
   heroPointer,
   cameraStep,
   cameraEase,
+  registerHeroInvalidator,
 } from "./hero-interaction";
 import { experience, sceneAnimates } from "./experience-store";
 
@@ -854,6 +855,9 @@ export function createSceneController(
     if (disposed || scheduled || hidden || contextLost) return;
     scheduled = requestAnimationFrame(tick);
   }
+  /* A drag is the one gesture that changes nothing React can see, so the loop
+   * cannot notice it by itself. See `requestHeroFrame`. */
+  const unregisterInvalidator = registerHeroInvalidator(schedule);
 
   function updateProgress() {
     const tops = sectionTops();
@@ -972,6 +976,7 @@ export function createSceneController(
     invalidate: schedule,
     dispose() {
       disposed = true;
+      unregisterInvalidator();
       if (scheduled) cancelAnimationFrame(scheduled);
       scheduled = 0;
       unsubscribe();
