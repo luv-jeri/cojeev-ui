@@ -479,8 +479,19 @@ export function buildAssemblyScene(): AssemblyScene {
    * frame came up 40 levels. 3.7 and 2.1 pull the metre ring to 93 and the 2.5
    * ring to 30, which brackets the reference on both sides instead of erring one
    * way across the whole pool. */
-  const poolX = -0.3;
-  const poolZ = 0.9;
+  /* Solved from the artboard rather than tuned. `.work/fix-f8c3aa9/solve-floor.py`
+   * projects a grid of screen pixels back onto this plane through the production
+   * camera, inverts the artboard's own luminance through the calibrated
+   * map-to-luminance relation (14.95 + 141.57 x map, residual 5.3 levels), and
+   * fits centre and shape jointly against every clean-floor sample. It puts the
+   * pool at world (+0.10, +0.70) with a 4.5-unit radius on a 4.6 exponent; the
+   * earlier hand-tuned map was centred 0.4 m left and 0.2 m deep of that and
+   * predicted the artboard's own row scan at 39.5 mean levels against this one's
+   * 24.1. The mask is floor that is unambiguously floor, because binning the
+   * whole lower frame let the band's cream base and the panel's shadow into the
+   * near rings and the first fit tracked them instead. */
+  const poolX = 0.1;
+  const poolZ = 0.7;
   const floorFalloffData = new Uint8Array(64 * 64 * 4);
   for (let y = 0; y < 64; y++) {
     for (let x = 0; x < 64; x++) {
@@ -497,7 +508,7 @@ export function buildAssemblyScene(): AssemblyScene {
        * 25.4, still 8 clear of the backdrop; 7.5% measures 19, which is what the
        * reference holds at that row. */
       const value = Math.round(
-        255 * (0.07 + 0.93 * Math.pow(1 - Math.min(1, distance / 3.2), 2.8)),
+        255 * (0.063 + 0.937 * Math.pow(1 - Math.min(1, distance / 4.5), 4.6)),
       );
       floorFalloffData.set([value, value, value, 255], (y * 64 + x) * 4);
     }
