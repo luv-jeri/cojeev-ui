@@ -56,37 +56,81 @@ try {
   run("add", ["add", ...ids.map(id => `${baseURL}/r/${id}.json`), "--yes", "--overwrite"], directory);
   receipt.checks.publicCLIInstall = "PASS";
 
-  // The CLI's Next template writes the foundation as `@import "@/styles/…"` in
-  // `app/globals.css`. Tailwind v4's PostCSS resolver does not read tsconfig
-  // `paths`, so Turbopack cannot resolve those specifiers and the build fails
-  // before it ever reaches installed source. That is the installer's CSS output,
-  // not the payload: rewrite it to the equivalent relative specifier so this
-  // check measures the registry and not the CLI's alias handling.
+  /* The alias problem, stated as a measurement rather than repaired away.
+   *
+   * A registry item's `css` keys are written into the consumer's stylesheet
+   * verbatim, and the installer picks that stylesheet's location — `app/globals.css`
+   * here, `src/index.css` for a Vite consumer. `@/` means a different directory in
+   * each: Next maps it to the project root, Vite's template maps it to `src/`. The
+   * installer puts foundation files at the project root either way, so the registry
+   * has no single specifier that resolves in both. It therefore ships the specifier
+   * its verified Vite control resolves, and a Next consumer needs one documented
+   * path change. B-028 tracks that; this check refuses to make the change silently.
+   *
+   * `--css=keep` is the negative control: it builds the consumer exactly as the CLI
+   * wrote it and asserts the failure is the alias, so "PASS" below can never mean
+   * the alias problem quietly disappeared from the measurement.
+   */
   const globalsPath = path.join(directory, "app/globals.css");
   const globals = fs.readFileSync(globalsPath, "utf8");
+  const aliasLines = globals.split("\n").filter(line => /@import "@\/styles\//.test(line));
   const normalized = globals.replace(/@import "@\/styles\/([^"]+)";/g, '@import "../styles/$1";');
-  if (normalized === globals && globals.includes("@/styles/")) throw new Error("The Next template's foundation import could not be normalized");
-  if (normalized !== globals) {
+  const keep = getArg("css") === "keep";
+
+  if (keep) {
+    if (!aliasLines.length) throw new Error("--css=keep asserted a failure, but the CLI wrote no alias import; the control is no longer testing anything");
+    const control = spawnSync("npm", ["run", "build", "--", "--experimental-build-mode", "compile"], { cwd: directory, encoding: "utf8", env: { ...process.env, CI: "true" } });
+    fs.writeFileSync(path.join(logDirectory, "next-css-keep-control.log"), `${control.stdout ?? ""}${control.stderr ?? ""}`);
+    const log = `${control.stdout ?? ""}${control.stderr ?? ""}`;
+    const provesAlias = /Can't resolve '@\/styles\//.test(log);
+    receipt.checks.cssKeepControl = provesAlias
+      ? "PASS — an unmodified consumer fails to build with Can't resolve '@/styles/...', so the alias is the cause"
+      : `FAIL — the unmodified consumer did not fail with the expected alias error (exit ${control.status})`;
+    if (!provesAlias) throw new Error("The alias negative control did not reproduce; the repair below would be unmeasured.\n" + log.split("\n").slice(0, 20).join("\n"));
+    // The control has done its job; it asserted the failure, so it must not go on to
+    // measure a repaired project. Write the receipt here and stop, since this control
+    // is not the repair path whose checks the rest of the script performs.
+    receipt.verdict = "PASS";
+    receipt.checks.nextTypeScript = "NOT RUN — this run is the negative control";
+    receipt.checks.turbopackCompilesInstalledSource = "EXPECTED FAILURE — asserted above, not a project result";
+    receipt.finishedAt = new Date().toISOString();
+    receipt.runtimeSeconds = (Date.parse(receipt.finishedAt) - Date.parse(receipt.startedAt)) / 1000;
+    fs.mkdirSync(path.dirname(receiptFile), { recursive: true });
+    fs.writeFileSync(receiptFile, `${JSON.stringify(receipt, null, 2)}\n`);
+    console.log(JSON.stringify(receipt, null, 2));
+    process.exit(0);
+  } else if (aliasLines.length) {
     fs.writeFileSync(globalsPath, normalized);
-    receipt.checks.tailwindAliasNormalization = "REWRITTEN — the CLI's Next template emits @/ CSS imports Tailwind v4 cannot resolve";
+    receipt.checks.tailwindAliasNormalization =
+      `QUALIFIED — the registry's css block uses a path alias a Next consumer cannot resolve, so this run rewrote ${aliasLines.length} import(s) to relative. This project is therefore repaired, not a one-command install; the payload itself compiles unchanged. Tracked as B-028.`;
   } else {
-    receipt.checks.tailwindAliasNormalization = "NOT NEEDED";
+    receipt.checks.tailwindAliasNormalization = "NOT NEEDED — the css block already resolved with no rewrite";
   }
 
   // A server component imports the installed source and renders it on the server.
   // An installed file that reaches browser-only APIs at module scope fails here.
-  fs.writeFileSync(path.join(directory, "app/page.tsx"), `import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+  // `shadcn init --preset nova` seeds a *stock* button into components/ui before
+  // any registry item is added. A fixture that renders a variant only Cojeev's
+  // button has therefore fails to typecheck against shadcn's — which is what
+  // happened, and it is a defect in this fixture rather than in the payload. So
+  // the page renders exactly the entries this run installs, and the accent
+  // variant is asserted only when `button` is among them.
+  const rendersButton = ids.includes("button");
+  const buttonImport = rendersButton ? `import { Button } from "@/components/ui/button";\n` : "";
+  const buttonUse = rendersButton ? `      <Button variant="accent">Server rendered</Button>\n` : "";
+  fs.writeFileSync(path.join(directory, "app/page.tsx"), `${buttonImport}import { Separator } from "@/components/ui/separator";
 
 export default function Page() {
   return (
     <main data-installed="true">
-      <Button variant="accent">Server rendered</Button>
-      <Separator />
+${buttonUse}      <Separator />
     </main>
   );
 }
 `);
+  receipt.checks.fixtureUsesInstalledEntries = rendersButton
+    ? "PASS — renders the button this run installed, accent variant included"
+    : "PASS — rendered no button; the nova preset seeds a stock one during init, so the request list excludes it. Run with --components=...,button for the accent-variant check.";
 
   // `next build`'s prerender phase is broken in this environment — a pristine
   // `shadcn init -t next` scaffold fails identically with "Expected workStore to

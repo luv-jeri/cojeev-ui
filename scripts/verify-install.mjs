@@ -55,7 +55,9 @@ if (temporaryRoot === root || temporaryRoot.startsWith(`${root}${path.sep}`)) th
 fs.mkdirSync(temporaryRoot, { recursive: true });
 const directory = fs.mkdtempSync(path.join(temporaryRoot, "cojeev-ui-stranger-"));
 const receiptFile = path.resolve(getArg("receipt") || path.join(root, "artifacts/stranger", `${foundationOnly ? "foundation" : "install"}-${Date.now()}.json`));
-const receipt = { directory, baseURL, components: ids, foundationOnly, installer, node: process.version, startedAt: new Date().toISOString(), build: "PENDING", freshDirectory: true, screenshotVerification: "not-run", checks: {} };
+// `framework` and `verdict` are stated here so this receipt reads like the Next one.
+// The template is Vite's: this script scaffolds with `shadcn init --template vite`.
+const receipt = { directory, baseURL, components: ids, framework: "vite", foundationOnly, installer, node: process.version, startedAt: new Date().toISOString(), verdict: "PENDING", build: "PENDING", freshDirectory: true, screenshotVerification: "not-run", checks: {} };
 const write = (file, contents) => { const target = path.join(directory, file); fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, contents); };
 function run(command, args) { return execFileSync(command, args, { cwd: directory, stdio: "inherit", env: { ...process.env, PATH: `${path.dirname(process.execPath)}:${process.env.PATH}`, CI: "true" } }); }
 /** Keep the consumer's own output next to the receipt: a failed build must be readable after the temp directory is gone. */
@@ -132,10 +134,12 @@ ${ids.filter(id => specimens[id]).map(id => `<section data-specimen="${id}" styl
   receipt.checks.optionalMotionDependency = "PASS";
   runCaptured("install-consumer-build", "npm", ["run", "build"]);
   receipt.build = "PASS";
+  receipt.verdict = "PASS";
   receipt.checks.typecheckAndBuild = "PASS";
   receipt.replacedGeneratedScaffold = true;
 } catch (error) {
   receipt.build = "FAIL";
+  receipt.verdict = "FAIL";
   receipt.error = error.stack;
   process.exitCode = 1;
   console.error(error.message);

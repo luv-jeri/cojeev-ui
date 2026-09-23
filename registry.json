@@ -87,6 +87,7 @@
         "@import \"@/styles/cojeev/theme.css\"": {},
         "@import \"@/styles/cojeev/base.css\"": {},
         "@import \"@/styles/cojeev/morph.css\"": {},
+        "@custom-variant dark (&:where([data-mode=\"dark\"], [data-mode=\"dark\"] *))": {},
         ":root, :root[data-mode]": {
           "--background": "var(--v-canvas)",
           "--foreground": "var(--v-text)",
@@ -119,8 +120,7 @@
           "--sidebar-primary": "var(--v-pink)",
           "--muted-foreground-ink": "#2E2A24",
           "--muted-foreground-tinted": "#4A443C"
-        },
-        "@custom-variant dark (&:where([data-mode=\"dark\"], [data-mode=\"dark\"] *))": {}
+        }
       },
       "cssVars": {
         "theme": {

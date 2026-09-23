@@ -309,3 +309,55 @@ test("each entry installs exactly the stylesheets its own files name, so nothing
   }
   assert.deepEqual(dead, [], "an entry installs paint for a module it does not ship");
 });
+
+test("a css import a consumer receives is alias-based, layer-safe and framework-honest", () => {
+  // A registry item's `css` keys are written into the consumer's stylesheet verbatim.
+  // Measured against shadcn 4.21.0, Tailwind 4.1.16 and both documented scaffolds:
+  //
+  //   `@/styles/...`   resolves in Vite (@ -> src/, where the installer puts styles/)
+  //                    and FAILS in Next (@ -> the project root, no alias in Tailwind's
+  //                    PostCSS resolver). This is what the registry ships.
+  //   `../styles/...`  fixes Next and FAILS in Vite. `~/`, bare and absolute all fail.
+  //
+  // The installer writes foundation targets to the project root for *both* frameworks,
+  // so no specifier reaches them in both and the registry cannot fix this by choosing
+  // differently. It ships the specifier its verified Vite control resolves; a Next
+  // consumer needs one documented path change, tracked as B-028 and reported by
+  // `npm run delivery:verify:next` as a QUALIFICATION rather than repaired in silence.
+  //
+  // What this test protects is that the block stays *shaped* so that repair is one
+  // find-and-replace, and that nothing here breaks a consumer in a way the alias
+  // question would hide: `@custom-variant` must be top level (the installer renders
+  // declarations inside `@layer base`, a layer cannot contain it, and a payload that
+  // nested it failed every Next build with "`@custom-variant` cannot be nested").
+  const alias = [];
+  const imports = [];
+  const declarations = [];
+  const misplaced = [];
+  for (const name of names) {
+    const item = payload(name);
+    for (const rule of Object.keys(item.css ?? {})) {
+      if (rule.startsWith("@custom-variant ")) continue;
+      // Anything else is a selector whose body the installer renders as a layer.
+      if (!rule.startsWith("@import ")) { declarations.push(rule); continue; }
+      const specifier = rule.replace(/^@import\s+"?/, "").replace(/"?;?$/, "");
+      imports.push(specifier);
+      if (specifier.startsWith("@/styles/")) alias.push(specifier);
+      else if (!specifier.startsWith("http")) misplaced.push(`${name} imports ${specifier}`);
+    }
+  }
+  assert.ok(imports.length > 0, "the registry declares css imports at all");
+  assert.deepEqual(misplaced, [], "an import is neither the verified alias nor a URL, so the documented rewrite would not cover it");
+  assert.ok(declarations.length > 0, "the css block still carries the declarations the installer layers");
+  // Every import must resolve in the framework the registry has verified.
+  assert.equal(alias.length, imports.length, "every css import uses the verified alias form, so one documented rewrite covers all of them");
+
+  // `@custom-variant` must precede the declarations, because declarations are layered.
+  for (const name of names) {
+    const keys = Object.keys(payload(name).css ?? {});
+    const firstDeclaration = keys.findIndex(key => !key.startsWith("@import ") && !key.startsWith("@custom-variant "));
+    const firstVariant = keys.findIndex(key => key.startsWith("@custom-variant "));
+    if (firstVariant === -1 || firstDeclaration === -1) continue;
+    assert.ok(firstVariant < firstDeclaration, `${name} places its @custom-variant before the layered declarations, where Tailwind accepts it`);
+  }
+});

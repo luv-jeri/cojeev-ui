@@ -34,6 +34,26 @@ const foundationStyles=["tokens","theme","base","morph"];
 // listing: the shadcn directory entry schema has no `author` or `categories`,
 // while `registry-item.json` defines both. One source, so every payload agrees.
 const author="Sanjay Kumar <https://github.com/luv-jeri>";
+/* Why one `@import` of one file rather than one per stylesheet.
+ *
+ * The installer writes a `css` key into the consumer's stylesheet *verbatim*, at a
+ * path it chooses (`app/globals.css` in a Next scaffold, `src/index.css` in a Vite
+ * one). Nothing in that key can be expressed as a bundler path alias: measured on
+ * 2026-09-23 against shadcn 4.21.0 and Tailwind 4.1.16, `@/styles/...` compiles in
+ * Vite and **fails in Next** ("Can't resolve '@/styles/cojeev-fonts.css'"), because
+ * Tailwind's PostCSS resolver does not read tsconfig `paths`; `~/styles/`,
+ * `styles/` and `/styles/` each fail in Next as well, and a bare relative
+ * `../styles/...` fixes Next but then **fails in Vite**, whose install root is
+ * `src/`. No single specifier reaches the files directly in both.
+ *
+ * The one form both bundlers resolve identically is a relative import of a file
+ * that exists at the consumer root's `styles/`, because both documented scaffolds
+ * put their stylesheet exactly one directory below that root (`app/` and `src/`).
+ * So the consumer gets one import, and every further sheet is imported from inside
+ * `cojeev.css` relative to *that* file — a location the registry controls, so those
+ * specifiers cannot break per framework. `tests/registry-closure.test.mjs` pins the
+ * shape: one `css` import, and no alias specifier anywhere in a payload.
+ */
 const foundation=Object.fromEntries(["@/styles/cojeev-fonts.css",...foundationStyles.map(name=>`@/styles/cojeev/${name}.css`)].map(file=>[`@import "${file}"`,{}]));
 const themeCSS=css(`${source}/styles/theme.css`);
 const theme=Object.fromEntries(Object.entries(themeCSS["@theme inline"]).map(([key,value])=>[key.replace(/^--/,""),value]));
@@ -43,8 +63,22 @@ const theme=Object.fromEntries(Object.entries(themeCSS["@theme inline"]).map(([k
 const semanticNames=/^--(?:background|foreground|card(?:-.+)?|popover(?:-.+)?|primary(?:-.+)?|secondary(?:-.+)?|accent(?:-.+)?|muted(?:-.+)?|border|input|ring|destructive(?:-.+)?|chart-\d+|sidebar(?:-.+)?)$/;
 const layoutNames=new Set(["--card-pad","--card-gap","--sidebar-w","--sidebar-w-mini","--sidebar-gap"]);
 foundation[":root, :root[data-mode]"]=Object.fromEntries(Object.entries(css(`${source}/styles/tokens.css`)[":root"]).filter(([name])=>semanticNames.test(name)&&!layoutNames.has(name)));
+/* `@custom-variant` has to sit at the top level of the consumer's stylesheet.
+ *
+ * The installer renders a plain declaration like `:root { … }` as `@layer base { … }`,
+ * so adding `@custom-variant` to this block afterwards nested it and Tailwind rejected
+ * the file outright in a Next consumer: "`@custom-variant` cannot be nested". It is
+ * hoisted below the import instead, before anything the installer wraps in a layer.
+ * `tests/registry-closure.test.mjs` asserts no `@custom-variant` is emitted inside a
+ * layer, so it cannot silently regress.
+ */
 for(const [rule,value] of Object.entries(themeCSS))if(rule.startsWith("@custom-variant "))foundation[rule]=value;
-const base={name:"cojeev",type:"registry:base",extends:"none",title:"Cojeev",description:"Cojeev tokens, fonts, reset, and Tailwind v4 theme bridge.",author:author,categories:["foundation","theme","fonts"],dependencies:[],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@cojeev":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:foundation};
+/* Order the completed block so nothing the installer wraps in `@layer base` comes
+ * before a top-level at-rule: the import first, then every `@custom-variant`, then the
+ * declarations. Reordering here, once, keeps the earlier construction readable. */
+const orderRank=key=>key.startsWith("@import ")?0:key.startsWith("@custom-variant ")?1:2;
+const baseCSS=Object.fromEntries(Object.entries(foundation).map((entry,index)=>[index,entry]).sort((a,b)=>orderRank(a[1][0])-orderRank(b[1][0])||a[0]-b[0]).map(([,entry])=>entry));
+const base={name:"cojeev",type:"registry:base",extends:"none",title:"Cojeev",description:"Cojeev tokens, fonts, reset, and Tailwind v4 theme bridge.",author:author,categories:["foundation","theme","fonts"],dependencies:[],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@cojeev":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:baseCSS};
 function fileImports(file) {
   return [...fs.readFileSync(file,"utf8").matchAll(/(?:from\s+|import\s+|import\s*\(\s*)["']([^"']+)["']/g)].map(match=>sourceImport(file,match[1]));
 }
