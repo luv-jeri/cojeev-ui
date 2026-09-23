@@ -101,25 +101,90 @@ try {
       .click();
     assert.equal(await table.locator("tbody tr").count(), 3);
   }
+  // Sorting has to order the WHOLE dataset before pagination slices it, and it has to
+  // leave exactly one column marked as the sort key. Asserting only the first row id
+  // would pass even if the sort never reached past the rendered page.
+  const pageIds = () =>
+    table
+      .locator("tbody tr[data-row-id]")
+      .evaluateAll((rows) => rows.map((node) => node.getAttribute("data-row-id")));
+  const ariaSort = (name) =>
+    table.getByRole("columnheader", { name }).getAttribute("aria-sort");
+  const sortKeys = async () =>
+    (
+      await table.getByRole("columnheader").evaluateAll((heads) =>
+        heads.map((head) => ({
+          header: (head.textContent ?? "").trim(),
+          sort: head.getAttribute("aria-sort"),
+        })),
+      )
+    ).filter((entry) => entry.sort && entry.sort !== "none");
+
+  // 8 records, pageSize 3: page 1 of a global ascending sort is 0,1,2.
   await table
     .getByRole("button", { name: "Sort Value ascending", exact: true })
     .click();
-  assert.equal(
-    await table
-      .getByRole("columnheader", { name: /Value/ })
-      .getAttribute("aria-sort"),
-    "ascending",
+  assert.equal(await ariaSort(/Value/), "ascending");
+  assert.deepEqual(
+    await pageIds(),
+    ["0", "1", "2"],
+    "ascending must order the whole dataset, not only the rendered page",
   );
+
   await table
     .getByRole("button", { name: "Sort Value descending", exact: true })
     .click();
-  assert.equal(
-    await table.locator("tbody tr").first().getAttribute("data-row-id"),
-    "7",
+  assert.equal(await ariaSort(/Value/), "descending");
+  assert.deepEqual(
+    await pageIds(),
+    ["7", "6", "5"],
+    "descending must order the whole dataset before pagination slices it",
+  );
+  assert.deepEqual(
+    await sortKeys(),
+    [{ header: "Value", sort: "descending" }],
+    "exactly one column may carry the sort key in each direction",
+  );
+
+  // A second, non-numeric column must sort on its own accessor and take the key over.
+  await table
+    .getByRole("button", { name: "Sort Name ascending", exact: true })
+    .click();
+  assert.equal(await ariaSort(/Name/), "ascending");
+  assert.deepEqual(await pageIds(), ["0", "1", "2"], "name ascending");
+  assert.deepEqual(
+    await sortKeys(),
+    [{ header: "Name", sort: "ascending" }],
+    "sorting a second column must release the first one's key",
+  );
+  await table
+    .getByRole("button", { name: "Sort Name descending", exact: true })
+    .click();
+  assert.deepEqual(await pageIds(), ["7", "6", "5"], "name descending");
+
+  // Sorting must not detach a row from its own identity or its nested actions.
+  await table
+    .locator('tbody tr[data-row-id="7"]')
+    .getByRole("button", { name: "Pin Record 7", exact: true })
+    .click();
+  assert.deepEqual(
+    await page.evaluate(() => window.actions),
+    ["0", "7"],
+    "a sorted row must still carry its own identity into nested actions",
+  );
+
+  // Round-trip: returning to the original key restores the original order.
+  await table
+    .getByRole("button", { name: "Sort Value ascending", exact: true })
+    .click();
+  assert.deepEqual(
+    await pageIds(),
+    ["0", "1", "2"],
+    "re-sorting by the original key must restore the original order",
   );
   assert.deepEqual(errors, []);
   console.log(
-    "PASS native Tables: stable IDs, row keyboard/focus, nested actions, controlled page/filter refusal/ref, empty recovery, sorting, Motion Off and Flow Off",
+    "PASS native Tables: stable IDs, row keyboard/focus, nested actions, controlled page/filter refusal/ref, empty recovery, whole-dataset sorting across two columns, Motion Off and Flow Off",
   );
 } finally {
   await browser.close();
