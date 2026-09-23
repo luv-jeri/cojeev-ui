@@ -167,7 +167,11 @@ export const CHAPTERS: readonly Chapter[] = [
      * drawer pose puts it at 361. Only the part's position is overridden — the
      * tabs keep the size the geometry draws, because scaling the group would
      * move the tabs without their HTML labels, which anchor to the part. */
-    parts: front({ ...FRONT_FACE, sourcePlate: { position: [0.02, -0.62, -0.15], opacity: 1 }, drawers: { position: [.66, -0.064, -.12], opacity: 1 } }),
+    /* The artboard's plate reads at 400 px across; this pose drew 300, which put
+ * the three lines below the size the eye can resolve at the hero's depth. The
+ * scale is the hero's alone — the Source chapter separates the same mesh at its
+ * authored size, where the plate is the subject and already fills its frame. */
+parts: front({ ...FRONT_FACE, sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 }, drawers: { position: [.66, -0.064, -.12], opacity: 1 } }),
   },
   {
     id: "catalogue",

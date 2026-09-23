@@ -295,16 +295,18 @@ function sourceSummaryTexture() {
   const context = canvas.getContext("2d");
   if (context) {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.font = "500 22px ui-monospace, SFMono-Regular, Menlo, monospace";
-    context.fillStyle = "#7A7A83";
-    context.fillText("ui/button.tsx", 34, 48);
+    /* Three lines, centred. A fourth `ui/button.tsx` header used to sit above
+     * them, and at the hero's depth the plate's own top edge cut it in half
+     * across the glyphs — the artboard shows the three lines and nothing above
+     * them, so the header is gone and the block is centred in the canvas rather
+     * than pushed to the bottom. */
     context.font = "600 42px ui-monospace, SFMono-Regular, Menlo, monospace";
     context.fillStyle = "#9EC5F2";
-    context.fillText("<Button>", 34, 122);
+    context.fillText("<Button>", 34, 88);
     context.fillStyle = "#F5B8DB";
-    context.fillText("Create", 82, 176);
+    context.fillText("Create", 82, 142);
     context.fillStyle = "#9EC5F2";
-    context.fillText("</Button>", 34, 230);
+    context.fillText("</Button>", 34, 196);
   }
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -342,6 +344,12 @@ export type AssemblyScene = {
   createMesh: THREE.Mesh;
   heroFaces: Record<string, { object: THREE.Object3D; probe: CreateSeamProbe }>;
   setHeroPresentation(weight: number): void;
+  /**
+   * Tracks the floor's reflection to the instrument's current pose. Must be
+   * called after the caller has positioned `instrument`, since the reflected
+   * thread is a child of `root` and cannot inherit the instrument's transform.
+   */
+  syncReflection(): void;
   ribbon: Ribbon;
   /** The pointer at the ribbon's free end; follows the spine every frame. */
   cursor: THREE.Mesh;
@@ -382,11 +390,45 @@ export function applyOpacity(object: THREE.Object3D, value: number) {
 
 export function buildAssemblyScene(): AssemblyScene {
   const kit = createMaterialKit();
+  /**
+   * The hero's albedo profile.
+   *
+   * The hero lights the rig roughly 2.4x harder than any other chapter
+   * (`lights.key` 2.45 against the collection's 1.05), because its band has to
+   * read as cream against the artboard's own #e7d7c5. That is right for the
+   * band, whose albedo is nearly white, and wrong for everything coloured: a
+   * pass through the tone curve at that level takes the drawer blue from
+   * #b6caeb to a measured #d0d2d2 — visually grey. The artboard holds the
+   * drawers at #8591a9, the switch at #848354 and the flower at #f4d078, so the
+   * saturated parts are pre-compensated by darkening their albedo until the lit
+   * result lands on the reference, and the correction is weighted so it is only
+   * ever applied inside the hero. These are the base colours divided by the
+   * measured over-brightening, not eyeballed adjustments to the palette.
+   */
+  const HERO_ALBEDO = {
+    pink: "#f79ad0",
+    blue: "#687ca9",
+    olive: "#6d784b",
+    yellow: "#ffd25b",
+  } as const;
+  const heroTints: {
+    material: THREE.MeshStandardMaterial;
+    base: THREE.Color;
+    hero: THREE.Color;
+  }[] = [];
   /** Every material handed to a mesh is owned here and disposed exactly once. */
   const ownedMaterials: THREE.Material[] = [];
   const ownedGeometries: THREE.BufferGeometry[] = [];
-  const own = <T extends THREE.Material>(template: T): T => {
+  const own = <T extends THREE.Material>(template: T, hero?: string): T => {
     const clone = template.clone();
+    if (hero && "color" in clone) {
+      const tinted = clone as unknown as THREE.MeshStandardMaterial;
+      heroTints.push({
+        material: tinted,
+        base: tinted.color.clone(),
+        hero: new THREE.Color(hero),
+      });
+    }
     ownedMaterials.push(clone);
     return clone;
   };
@@ -395,11 +437,15 @@ export function buildAssemblyScene(): AssemblyScene {
     return geometry;
   };
 
+  /* 250-255 rather than 248-255: at 16 repeats over a panel that is only about
+   * 300 px wide on screen, a 2.7% range resolved into a visible stipple and the
+   * control faces read as noisy rather than matte. 1.9% is texture the eye only
+   * finds on the large floor, which is where it was wanted. */
   const grainData = new Uint8Array(64 * 64 * 4);
   let grainSeed = 73;
   for (let i = 0; i < grainData.length; i += 4) {
     grainSeed = (grainSeed * 1664525 + 1013904223) >>> 0;
-    const value = 248 + (grainSeed % 8);
+    const value = 250 + (grainSeed % 6);
     grainData.set([value, value, value, 255], i);
   }
   const grain = new THREE.DataTexture(grainData, 64, 64, THREE.RGBAFormat);
@@ -409,35 +455,45 @@ export function buildAssemblyScene(): AssemblyScene {
   grain.generateMipmaps = true;
   grain.minFilter = THREE.LinearMipmapLinearFilter;
   grain.magFilter = THREE.LinearFilter;
+  /* The floor now uses this as a bump map, which puts it under the hero camera
+   * at a grazing angle across thirty units of nearly edge-on ground. At the
+   * default anisotropy of 1 that reads as a diagonal moire: mipmaps pick one
+   * level for the whole footprint, and the bump derivative is not filtered by
+   * them at all. eight samples along the footprint is what turns it back into
+   * grain. Clamped by the renderer to whatever the device supports. */
+  grain.anisotropy = 8;
   grain.needsUpdate = true;
   /* The artboard's floor is a warm pool that fades into the field, not a lit
-   * slab with a visible horizon: sampled at 200,800 the reference floor is
-   * #2b2723 and at 400,950 it is #4c3b36, while the field above it is #13110f.
-   * A plane lit by a directional light is uniformly bright, so the falloff has
-   * to be in the map. It rides `setHeroPresentation` with the grain, so no
-   * other chapter's floor gains a texture. */
+   * slab with a visible horizon. A plane under a directional light is uniformly
+   * bright, so the falloff has to be in the map. It rides `setHeroPresentation`
+   * with the grain, so no other chapter's floor gains a texture.
+   *
+   * Two things about its *shape* were measured off the reference rather than
+   * guessed, by projecting screen points back onto the floor plane. The pool is
+   * not centred on the plane, and it is steep: the reference holds 145 at world
+   * (-0.22, 0.95), 62 a metre to its left, 38 at 2.5 units, and 13 by 3.4 — and
+   * 13 is *below* the backdrop's own 17.6, so the plane's far edge is very
+   * slightly darker than the field and draws no line either way. */
+  const poolX = -0.3;
+  const poolZ = 0.9;
   const floorFalloffData = new Uint8Array(64 * 64 * 4);
   for (let y = 0; y < 64; y++) {
     for (let x = 0; x < 64; x++) {
-      const dx = (x + 0.5) / 64 - 0.5;
-      const dy = (y + 0.5) / 64 - 0.5;
-      /* The plane is 26 units across but the frame only ever sees the middle
-       * few, so the ramp has to finish well inside it: bright within about two
-       * units of the object, dark by six. Measured off the v9 capture, whose
-       * whole visible floor was still on the plateau. */
-      const r = Math.min(1, Math.hypot(dx, dy) / 0.5);
-      /* The plane is 26 units across but the frame sees about seven, so a ramp
-       * expressed against the plane never reached its dark end on screen and the
-       * pool read as a slab. This one is in frame units: 1.2 world units of
-       * plateau around the object, fully dark by 2.6. Measured off the v27
-       * capture, which held 46 of 99 from the frame's edge to its brightest
-       * streak where the artboard holds 30 of 159. */
-      const t = Math.min(1, Math.max(0, (r - 0.075) / 0.075));
-      const eased = t * t * (3 - 2 * t);
-      /* 0.92 crushed the far field to 9 where the artboard keeps 30: the
-       * reference pool sits on a base level rather than falling to black, so the
-       * map bottoms out at 30% instead of 8%. */
-      const value = Math.round(255 * (1 - 0.7 * eased));
+      /* Plane-local UV to world XZ. The plane is rotated -90 degrees about X, so
+       * its +V runs down world -Z. */
+      const u = (x + 0.5) / 64;
+      const v = (y + 0.5) / 64;
+      const wx = (u - 0.5) * INSTRUMENT.floor.size;
+      const wz = -(v - 0.5) * INSTRUMENT.floor.size;
+      const distance = Math.hypot(wx - poolX, wz - poolZ);
+      /* The far field is 11% rather than 0. At 0 the plane rendered at 3.2
+       * against a backdrop of 17.6, which is the same hard edge as before with
+       * the sign flipped — a dark line instead of a brown one. 11% landed it at
+       * 25.4, still 8 clear of the backdrop; 7.5% measures 19, which is what the
+       * reference holds at that row. */
+      const value = Math.round(
+        255 * (0.075 + 0.925 * Math.pow(1 - Math.min(1, distance / 4.2), 1.6)),
+      );
       floorFalloffData.set([value, value, value, 255], (y * 64 + x) * 4);
     }
   }
@@ -497,26 +553,69 @@ export function buildAssemblyScene(): AssemblyScene {
   aperture.add(apertureFrame);
   root.add(aperture);
 
-  /* The artboard's floor holds a soft reflection of the band, and the cheapest
-   * honest version of that here is the real mesh, mirrored about the floor
-   * plane. The hero's floor is deliberately translucent (see the chapter
-   * frame's `floor`), so this is seen through it at the remainder — about a
-   * fifth — which is the reference's order of magnitude. `DoubleSide` is
-   * required: the negative scale reverses the winding, so a single-sided
-   * material would render the inside of the band. */
-  const mirrorMaterial = own(kit.cream);
-  mirrorMaterial.side = THREE.DoubleSide;
-  /* The floor is drawn at 0.82 over the mirror, so a straight copy of the band's
-   * material came back at a fifth of the artboard's reflected streak (99 against
-   * 159 at the brightest point). The reflection is lifted to match. */
-  mirrorMaterial.color.multiplyScalar(1.9);
-  const apertureMirror = new THREE.Mesh(apertureFrame.geometry, mirrorMaterial);
+  /* The artboard's floor holds a *soft* reflection: the band's cream reads as a
+   * glow under it, and the pink thread smears into a faint warm streak. The
+   * previous version was the real mesh mirrored about the floor plane, once, at
+   * full sharpness — which is a physically tidy answer and the wrong picture. A
+   * perfect mirror under a nearly-clear floor reads as a second object lying
+   * under the first, not as the ground catching light. `DoubleSide` is required:
+   * the negative scale reverses the winding, so a single-sided material would
+   * render the inside of the band.
+   *
+   * The blur is two taps along the mirror axis rather than a render target. A
+   * planar reflection pass would be the honest general answer, but it needs a
+   * projective sampler patched into the floor's shader to be worth anything at
+   * all, and the only thing a floor reflection has to lose is vertical detail —
+   * which is exactly the axis a tap offset moves along. The first attempt kept
+   * the band's own brightness and spread four taps over 8 cm, and the result was
+   * still a legible second band lying under the real one: at this size a 0.1
+   * unit smear is not a blur. What the artboard actually holds under the band is
+   * a warm pool with no shape in it, and the floor's own map now carries that
+   * brightness (see `floorFalloff`), so the mirror's job is only to keep the
+   * reflection from being perfectly flat. Two faint taps, one offset a third of
+   * the band's own depth, do that; anything more legible is a second object. */
+  const MIRROR_TAPS = [
+    { offset: 0.0, opacity: 0.15 },
+    { offset: 0.13, opacity: 0.07 },
+  ] as const;
+
   const reflection = new THREE.Group();
   reflection.scale.y = -1;
   reflection.position.y = 2 * INSTRUMENT.floor.y;
-  reflection.add(apertureMirror);
   reflection.visible = false;
   root.add(reflection);
+
+  /* Each tap gets its own material, since opacity is per material. The band's
+   * colour is lifted because the floor is drawn at 0.82 over it — a straight
+   * copy of the band's own material came back at a fifth of the artboard's
+   * reflected streak (99 against 159 at the brightest point). */
+  const mirrorTaps = MIRROR_TAPS.map(({ offset, opacity }) => {
+    const material = own(kit.cream);
+    material.side = THREE.DoubleSide;
+    material.color.multiplyScalar(1.15);
+    material.transparent = true;
+    material.opacity = opacity;
+    /* Overlapping taps must not write depth or they z-fight each other into a
+     * stipple; the floor is opaque enough to sort them on its own. */
+    material.depthWrite = false;
+    const band = new THREE.Mesh(apertureFrame.geometry, material);
+    band.position.y = offset;
+    reflection.add(band);
+    return band;
+  });
+  const apertureMirror = mirrorTaps[0];
+
+  /* The pink thread is the brightest thing the artboard's floor catches, and it
+   * is the one part of the reflection a viewer actually notices. Its geometry is
+   * rewritten every frame by the ribbon's own solver, so its mirror shares that
+   * buffer rather than copying it, and follows `instrument`'s transform through
+   * this pivot — the reflection group is a child of `root`, where the mirror
+   * transform lives, and the ribbon is a child of `instrument`, so the mirror
+   * cannot simply be parented to it. `syncReflection` below copies the matrix;
+   * see the controller, which calls it after it has posed the instrument. */
+  const mirrorPivot = new THREE.Group();
+  mirrorPivot.matrixAutoUpdate = false;
+  reflection.add(mirrorPivot);
 
   /* ------------------------------------------------------------------- floor */
   /* `own()` clones, so the material the mesh actually renders with is this
@@ -760,7 +859,7 @@ export function buildAssemblyScene(): AssemblyScene {
         INSTRUMENT.create.radius,
       ),
     ),
-    own(kit.pink),
+    own(kit.pink, HERO_ALBEDO.pink),
   );
   createMesh.castShadow = true;
   createMesh.receiveShadow = true;
@@ -781,7 +880,7 @@ export function buildAssemblyScene(): AssemblyScene {
         INSTRUMENT.switch.height / 2,
       ),
     ),
-    own(kit.olive),
+    own(kit.olive, HERO_ALBEDO.olive),
   );
   switchPlate.castShadow = true;
   switchBase.add(switchPlate);
@@ -830,7 +929,7 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   instrument.add(sliderTrack);
 
-  const sliderBand = createRibbon(12, 8, own(kit.pink));
+  const sliderBand = createRibbon(12, 8, own(kit.pink, HERO_ALBEDO.pink));
   sliderBand.mesh.position.copy(sliderTrack.position);
   instrument.add(sliderBand.mesh);
 
@@ -855,7 +954,7 @@ export function buildAssemblyScene(): AssemblyScene {
    * every yellow part on the panel with it. The base colour is the authored
    * yellow so the hero and Motion chapters are unchanged until the visitor picks
    * a different tone. */
-  const flowerMaterial = own(kit.yellow);
+  const flowerMaterial = own(kit.yellow, HERO_ALBEDO.yellow);
   const flower = new THREE.Mesh(
     geo(
       contourGeometry(
@@ -874,7 +973,7 @@ export function buildAssemblyScene(): AssemblyScene {
   instrument.add(flower);
 
   const drawers = new THREE.Group();
-  const drawerBody = own(kit.blue);
+  const drawerBody = own(kit.blue, HERO_ALBEDO.blue);
   const drawerStrap = own(kit.cream);
   for (let index = 0; index < INSTRUMENT.drawers.count; index++) {
     const plate = new THREE.Group();
@@ -983,8 +1082,22 @@ export function buildAssemblyScene(): AssemblyScene {
   instrument.add(sourcePlate);
 
   /* ------------------------------------------------------------------ ribbon */
-  const ribbon = createRibbon(56, 10, own(kit.pink), true);
+  const ribbon = createRibbon(56, 10, own(kit.pink, HERO_ALBEDO.pink), true);
   instrument.add(ribbon.mesh);
+
+  /* The thread's reflection, sharing the ribbon's own buffer so it tracks every
+   * rewrite of the spine for free. Its material is the pink lifted a little,
+   * since the floor is drawn over it, and only the base tap: a thin tube smears
+   * under its own weight and four copies of a 1mm thread would cost three
+   * passes to say the same thing. */
+  const ribbonMirrorMaterial = own(kit.pink);
+  ribbonMirrorMaterial.side = THREE.DoubleSide;
+  ribbonMirrorMaterial.transparent = true;
+  ribbonMirrorMaterial.opacity = 0.34;
+  ribbonMirrorMaterial.depthWrite = false;
+  const ribbonMirror = new THREE.Mesh(ribbon.mesh.geometry, ribbonMirrorMaterial);
+  ribbonMirror.matrixAutoUpdate = false;
+  mirrorPivot.add(ribbonMirror);
 
   const cursor = new THREE.Mesh(geo(pointerShape()), own(kit.cream));
   cursor.rotation.z = 0.42;
@@ -1126,6 +1239,11 @@ export function buildAssemblyScene(): AssemblyScene {
     createMesh,
     heroFaces,
     setHeroPresentation(weight) {
+      /* Lerped from the authored colour every frame rather than accumulated, so
+       * scrubbing back and forth across the boundary is exactly reversible. */
+      for (const tint of heroTints) {
+        tint.material.color.copy(tint.base).lerp(tint.hero, weight);
+      }
       for (const material of textured) {
         const map = weight > 0 ? grain : null;
         if (material.map !== map) {
@@ -1135,9 +1253,27 @@ export function buildAssemblyScene(): AssemblyScene {
       }
       {
         reflection.visible = weight > 0.5;
+        /* The thread's mirror is only worth drawing where the floor is, and the
+         * floor is translucent enough that a faint thread under it still reads.
+         * Below the threshold the instrument is elsewhere in the chapter and the
+         * ribbon's spine is somewhere the floor never sees. */
+        ribbonMirror.visible = weight > 0.5;
         const map = weight > 0 ? floorFalloff : null;
         if (floorMaterial.map !== map) {
           floorMaterial.map = map;
+          floorMaterial.needsUpdate = true;
+        }
+        /* The artboard's ground is textured, and the falloff leaves it a flat
+         * wash: a 26-unit plane with one soft gradient across it has no detail
+         * anywhere. The grain is already loaded for the instrument, and bump is
+         * the right slot for it — the floor's thin film of sheen in the reference
+         * is the key light catching that texture, and perturbing the normal is
+         * how the light comes by it. Weighted like the map, so the catalogue's
+         * floor stays the flat one. */
+        const bump = weight > 0 ? grain : null;
+        if (floorMaterial.bumpMap !== bump) {
+          floorMaterial.bumpMap = bump;
+          floorMaterial.bumpScale = 0.8;
           floorMaterial.needsUpdate = true;
         }
       }
@@ -1160,6 +1296,17 @@ export function buildAssemblyScene(): AssemblyScene {
         kit.pink.color,
         weight,
       );
+    },
+    syncReflection() {
+      /* `instrument.matrix` is the instrument's own pose, which is what the
+       * reflection group needs: it is applied under a group that already carries
+       * the mirror transform, so using the world matrix would mirror the mirror.
+       * The controls and the flower are children of the instrument and inherit
+       * this, so their mirrored forms follow without being listed. */
+      mirrorPivot.matrix.copy(instrument.matrix);
+      mirrorPivot.matrixWorldNeedsUpdate = true;
+      ribbonMirror.matrix.copy(ribbon.mesh.matrix);
+      ribbonMirror.matrixWorldNeedsUpdate = true;
     },
     setFlowerContour(values, colour) {
       /* Rebuild the face from the exported blend, dispose the previous geometry

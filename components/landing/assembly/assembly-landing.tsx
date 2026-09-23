@@ -387,6 +387,33 @@ export function AssemblyLanding({
     "pending" | "ready" | "failed" | "unavailable"
   >("pending");
 
+  /**
+   * Whether the header — and with it the only sound control — has left the
+   * viewport.
+   *
+   * The header is `absolute`, so it belongs to the hero and scrolls away with it.
+   * Every chapter below Hero then had no way to mute, change the volume or stop
+   * the ambient bed short of scrolling back to the top: in Collection the nearest
+   * control measured at y = -996, a thousand pixels above the fold. Sound is a
+   * page-wide setting, so its control has to outlive the hero.
+   *
+   * The observer is on the header rather than on scroll position so the swap
+   * happens exactly when the header's own pixels leave, at any viewport height
+   * and without reading layout on every scroll event.
+   */
+  const headerRef = React.useRef<HTMLElement | null>(null);
+  const [headerAway, setHeaderAway] = React.useState(false);
+  React.useEffect(() => {
+    const node = headerRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHeaderAway(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   /* ------------------------------------------------------------- contour boot */
   React.useEffect(() => {
     const stored = readStoredContour();
@@ -572,7 +599,7 @@ export function AssemblyLanding({
         The page still never enables sound on its own: this switch is the gesture
         the browser requires, and nothing is generated before it.
       */}
-      <header className="asm-header">
+      <header className="asm-header" ref={headerRef}>
         <Link href="/" className="asm-brand">
           000h<span>by Cojeev</span>
         </Link>
@@ -594,6 +621,27 @@ export function AssemblyLanding({
           </details>
         </div>
       </header>
+
+      {/*
+        The header's sound control, kept within reach once the header is gone.
+        Mounted only while the header is off screen, so the page never carries two
+        sound controls at once and a screen reader never meets the same switch
+        twice. Same disclosure, same label, parked in the same corner — it reads
+        as the header's control following the reader rather than as a new one.
+      */}
+      {headerAway ? (
+        <details className="asm-controls asm-controls--sticky">
+          <summary>Sound</summary>
+          <SoundControls
+            idPrefix="asm-sticky"
+            supported={audioSupported}
+            onEnable={enableSound}
+            onDisable={disableSound}
+            onVolume={setVolume}
+            onMusic={setMusic}
+          />
+        </details>
+      ) : null}
 
       <nav className="asm-rail" aria-label="Chapters">
         <ol>

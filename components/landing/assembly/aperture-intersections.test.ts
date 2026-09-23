@@ -15,10 +15,12 @@ import test from "node:test";
 
 import { buildApertureGeometry } from "./aperture-geometry";
 import {
+  contactChord,
   findTriangleCrossings,
   sharesVertex,
   trianglesIntersect,
   type Triangle,
+  type Vec3,
 } from "./aperture-intersections";
 import {
   APERTURE_CLOSED,
@@ -88,6 +90,70 @@ test("coplanar overlap and coplanar separation are told apart", () => {
   assert.equal(trianglesIntersect(FLAT, overlapping), true);
   assert.equal(trianglesIntersect(FLAT, contained), true);
   assert.equal(trianglesIntersect(FLAT, apart), false);
+});
+
+/*
+ * The coplanar branch is only tested above in the plane z = 0, so it used to
+ * pick the projection axis from the *world* x/y pair while the coplanar test
+ * picked it from the triangle normal. Whenever the normal was not z-dominant
+ * those two disagreed, and the collinear-overlap helper compared the coordinate
+ * the projection had thrown away — so in a YZ plane every pair matched and
+ * separated triangles were reported as intersecting. The same fixture is
+ * therefore rotated into all three planes: a predicate that only works in one
+ * plane is the bug, not a detail of it.
+ */
+test("the plane-independent branches work in every rotation", () => {
+  /* the same three shapes as above, written in the YZ plane and permuted in */
+  const inPlane = (plane: 0 | 1 | 2, t: Triangle): Triangle =>
+    t.map((p) => {
+      const [x, y, z] = p;
+      return (plane === 0 ? [z, x, y] : plane === 1 ? [y, z, x] : [x, y, z]) as unknown as Vec3;
+    }) as unknown as Triangle;
+
+  for (const plane of [0, 1, 2] as const) {
+    const name = plane === 0 ? "XY" : plane === 1 ? "XZ" : "YZ";
+
+    /* a separated pair: three units apart along the axis the plane varies in */
+    const separated: Triangle = [
+      [0, 0, 3],
+      [0, 1, 3],
+      [0, 0, 4],
+    ];
+    const base: Triangle = [
+      [0, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1],
+    ];
+    assert.equal(
+      trianglesIntersect(inPlane(plane, base), inPlane(plane, separated)),
+      false,
+      `${name}: separated triangles reported as intersecting`,
+    );
+
+    /* the same pair overlapping for real, so the plane is not simply rejecting all */
+    const overlapping: Triangle = [
+      [0, 0.2, 0.2],
+      [0, 0.8, 0.2],
+      [0, 0.2, 0.8],
+    ];
+    assert.equal(
+      trianglesIntersect(inPlane(plane, base), inPlane(plane, overlapping)),
+      true,
+      `${name}: coplanar overlap not detected`,
+    );
+
+    /* and a shared edge, which is a contact and must still count */
+    const neighbour: Triangle = [
+      [0, 1, 0],
+      [0, 0, 1],
+      [0, 1, 1],
+    ];
+    assert.equal(
+      trianglesIntersect(inPlane(plane, base), inPlane(plane, neighbour)),
+      true,
+      `${name}: coplanar edge contact not detected`,
+    );
+  }
 });
 
 test("contact along an edge counts, and adjacency is what suppresses it", () => {
@@ -163,29 +229,71 @@ test("the delivered band crosses itself only at the two feet", () => {
 });
 
 /**
- * The two feet used to fold. Three changes fixed it, and each is a knife-edge:
- * put any one of them back and the mesh crosses itself again, so they are pinned
- * here rather than left to the generator's own printout.
+ * The feet used to fold.
+ *
+ * A pair count cannot express that. The sweep is closed, so its own neighbours
+ * touch by construction, and after the predicate was corrected the delivered
+ * mesh reported 22 pairs that a bare count read as self-intersection. Measuring
+ * the chord where each pair meets separates the two: thirteen of those pairs met
+ * at a point — contacts — and the rest met along chords up to 0.037 long, which
+ * is 37% of the band's own thickness and what the crease at the right foot
+ * actually was.
+ *
+ * So the pin is on the chord, not the count. The generator spreads the base's
+ * rise so the ruling can follow it (see `RAMP_SLOPE` in `generate-profile.mjs`);
+ * put the per-station solve's raw steps back and the deepest chord returns to
+ * 0.037.
  */
-test("the feet stay fixed: corner points, arc-length pairing, and depth", () => {
-  /* 1. the depth solve is load-bearing: traced flat, the band folds again */
-  const flat = buildApertureGeometry(
-    { ...PROFILE, depth: new Array(APERTURE_DEPTH.length).fill(0) },
-    OPTIONS,
-  );
-  const flatPositions = Array.from(flat.getAttribute("position").array);
-  const flatIndices = Array.from(flat.getIndex()!.array);
+test("the feet stay fixed: no pair interpenetrates, and the base still reaches the floor", () => {
+  /* 1. the delivered band touches itself but never passes through itself */
+  const band = buildApertureGeometry(PROFILE, OPTIONS);
+  const bandPositions = Array.from(band.getAttribute("position").array);
+  const bandIndices = Array.from(band.getIndex()!.array);
+  const report = findTriangleCrossings(bandPositions, bandIndices, {
+    adjacent: (a, b) => sharesVertex(bandIndices, a, b),
+    maxExamples: 4000,
+  });
+  const vertex = (k: number): Vec3 => {
+    const v = bandIndices[k] * 3;
+    return [bandPositions[v], bandPositions[v + 1], bandPositions[v + 2]];
+  };
+  const triangle = (t: number): Triangle => [
+    vertex(t * 3),
+    vertex(t * 3 + 1),
+    vertex(t * 3 + 2),
+  ];
+  const chords = report.examples
+    .map(([a, b]) => contactChord(triangle(a), triangle(b)))
+    .sort((x, y) => y - x);
+  /**
+   * 0.004 local units is roughly a tenth of a pixel at the hero camera, where
+   * the band's 0.1 thickness covers about sixty. Anything under it cannot be
+   * seen; the fold this replaced was nine times larger.
+   */
   assert.ok(
-    findTriangleCrossings(flatPositions, flatIndices, {
-      adjacent: (a, b) => sharesVertex(flatIndices, a, b),
-    }).crossingPairs > 0,
-    "flat depths are clean now, so the depth solve is no longer load-bearing",
+    (chords[0] ?? 0) < 0.004,
+    `the band interpenetrates itself: deepest chord ${(chords[0] ?? 0).toFixed(4)} over ${chords.filter((c) => c >= 0.004).length} pairs`,
+  );
+  /* the count is still worth bounding, as a detector for a wrecked sweep */
+  assert.ok(
+    report.crossingPairs < 60,
+    `${report.crossingPairs} touching pairs is more than the two corners explain`,
   );
 
   /* 2. the base is continuous and reaches the floor across many stations */
   const lifted = APERTURE_DEPTH.filter((d) => d > 0);
   assert.ok(lifted.length > 20, `only ${lifted.length} stations are lifted into the base`);
   assert.ok(Math.max(...APERTURE_DEPTH) > 0.4, "the base never reaches the floor plane");
+  /* 3. and the rise into it stays inside what the ruling can follow */
+  let steepest = 0;
+  for (let i = 0; i < APERTURE_DEPTH.length; i++) {
+    const next = APERTURE_DEPTH[(i + 1) % APERTURE_DEPTH.length];
+    steepest = Math.max(steepest, Math.abs(next - APERTURE_DEPTH[i]));
+  }
+  assert.ok(
+    steepest <= 0.0301,
+    `the base rises ${steepest.toFixed(3)} local units in one station, which folds the sweep`,
+  );
 
   /* 3. stations are paired by arc length along each contour. Sampling both
    * curves at the same curve parameter instead put a 121-degree turn into one

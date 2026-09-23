@@ -86,9 +86,19 @@ const orientation = (a: Vec3, b: Vec3, c: Vec3, axis: number) => {
 
 const sign = (value: number) => (value > EPS ? 1 : value < -EPS ? -1 : 0);
 
-/** Do two collinear segments overlap? Their endpoints are already on one line. */
-const collinearOverlap = (a0: Vec3, a1: Vec3, b0: Vec3, b1: Vec3) => {
-  const axis = Math.abs(a1[0] - a0[0]) >= Math.abs(a1[1] - a0[1]) ? 0 : 1;
+/**
+ * Do two collinear segments overlap? Their endpoints are already on one line.
+ *
+ * `dropped` is the axis the coplanar test projected away, so the segments have to
+ * be measured along the two axes that survive. Picking between world x and y
+ * instead — which is what this did — compares the *discarded* coordinate in a YZ
+ * plane, where every pair shares it by construction and the answer is always yes.
+ * Two triangles three units apart in z were reported as touching for that reason.
+ */
+const collinearOverlap = (a0: Vec3, a1: Vec3, b0: Vec3, b1: Vec3, dropped: number) => {
+  const u = dropped === 0 ? 1 : 0;
+  const v = dropped === 2 ? 1 : 2;
+  const axis = Math.abs(a1[u] - a0[u]) >= Math.abs(a1[v] - a0[v]) ? u : v;
   const lo = Math.min(a0[axis], a1[axis]);
   const hi = Math.max(a0[axis], a1[axis]);
   const otherLo = Math.min(b0[axis], b1[axis]);
@@ -104,8 +114,8 @@ const crosses2d = (a0: Vec3, a1: Vec3, b0: Vec3, b1: Vec3, axis: number) => {
   const o4 = sign(orientation(b0, b1, a1, axis));
   if (o1 * o2 < 0 && o3 * o4 < 0) return true;
   /* collinear: touching means the spans actually overlap, not merely share a line */
-  if (o1 === 0 && o2 === 0 && collinearOverlap(a0, a1, b0, b1)) return true;
-  if (o3 === 0 && o4 === 0 && collinearOverlap(b0, b1, a0, a1)) return true;
+  if (o1 === 0 && o2 === 0 && collinearOverlap(a0, a1, b0, b1, axis)) return true;
+  if (o3 === 0 && o4 === 0 && collinearOverlap(b0, b1, a0, a1, axis)) return true;
   return false;
 };
 
@@ -151,6 +161,77 @@ export function trianglesIntersect(a: Triangle, b: Triangle): boolean {
   const intervalB = planeInterval(b, sideA.distances, direction);
   if (!intervalA || !intervalB) return false;
   return intervalA[0] <= intervalB[1] + EPS && intervalB[0] <= intervalA[1] + EPS;
+}
+
+/** Points of `triangle` that lie on `plane`'s plane and inside `within`. */
+function planeSection(
+  triangle: Triangle,
+  plane: Triangle,
+  within: (p: Vec3) => boolean,
+): Vec3[] {
+  const normal = cross(sub(plane[1], plane[0]), sub(plane[2], plane[0]));
+  const offset = -dot(normal, plane[0]);
+  const distances = triangle.map((p) => dot(normal, p) + offset) as [
+    number,
+    number,
+    number,
+  ];
+  const out: Vec3[] = [];
+  for (let i = 0; i < 3; i++) {
+    const j = (i + 1) % 3;
+    if (Math.abs(distances[i]) <= EPS) out.push(triangle[i]);
+    else if (distances[i] * distances[j] < 0) {
+      const t = distances[i] / (distances[i] - distances[j]);
+      out.push([
+        triangle[i][0] + (triangle[j][0] - triangle[i][0]) * t,
+        triangle[i][1] + (triangle[j][1] - triangle[i][1]) * t,
+        triangle[i][2] + (triangle[j][2] - triangle[i][2]) * t,
+      ]);
+    }
+  }
+  return out.filter(within);
+}
+
+/**
+ * Length of the chord where two triangles meet, or 0 when they do not.
+ *
+ * `trianglesIntersect` answers a yes/no question, and for a sweep that is not
+ * enough: a manifold surface is full of *contacts*, pairs that touch at a point
+ * or along a shared edge without either surface passing through the other. Both
+ * answer "yes" to the predicate, but only one is a fold you can see. The chord
+ * separates them. Two surfaces grazing meet at a point and score 0; two surfaces
+ * that pass through each other meet along a segment whose length is how far the
+ * overlap reaches, which is the quantity a viewer reads as a crease.
+ *
+ * Coplanar pairs — where the intersection is an area rather than a chord — are
+ * reported as 0 here; `trianglesIntersect` is the predicate for those.
+ */
+export function contactChord(a: Triangle, b: Triangle): number {
+  const normalA = cross(sub(a[1], a[0]), sub(a[2], a[0]));
+  const normalB = cross(sub(b[1], b[0]), sub(b[2], b[0]));
+  const area = cross(normalA, normalB);
+  if (Math.hypot(area[0], area[1], area[2]) < EPS) return 0;
+  const inside = (t: Triangle, normal: Vec3) => (p: Vec3) => {
+    for (let i = 0; i < 3; i++) {
+      const j = (i + 1) % 3;
+      if (dot(cross(sub(t[j], t[i]), sub(p, t[i])), normal) < -EPS) return false;
+    }
+    return true;
+  };
+  const points = [
+    ...planeSection(a, b, inside(b, normalB)),
+    ...planeSection(b, a, inside(a, normalA)),
+  ];
+  let longest = 0;
+  for (let i = 0; i < points.length; i++) {
+    for (let j = i + 1; j < points.length; j++) {
+      const dx = points[i][0] - points[j][0];
+      const dy = points[i][1] - points[j][1];
+      const dz = points[i][2] - points[j][2];
+      longest = Math.max(longest, Math.hypot(dx, dy, dz));
+    }
+  }
+  return longest;
 }
 
 export type CrossingReport = {

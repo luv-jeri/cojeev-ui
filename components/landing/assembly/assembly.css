@@ -1157,6 +1157,53 @@
 .asm-controls > summary::-webkit-details-marker {
   display: none;
 }
+/*
+ * The same disclosure, pinned, for every chapter after Hero.
+ *
+ * The header is `absolute`, so it leaves with the hero and takes the only sound
+ * control with it: in Collection the nearest one measured a thousand pixels above
+ * the fold. Sound is a page-wide setting, so its control has to outlive the hero.
+ * This is that control parked in the corner the header occupied, on a translucent
+ * chip so it stays legible over the type, the floor and the object. It is
+ * deliberately the quietest thing at that corner — the object is the subject, and
+ * a setting like this should be findable rather than prominent.
+ */
+.asm .asm-controls--sticky {
+  position: fixed;
+  top: 24px;
+  right: 3.4vw;
+  left: auto;
+  z-index: 7;
+  padding: 0 14px;
+  border: 1px solid #3a3630;
+  border-radius: 999px;
+  background: color-mix(in srgb, #171614 82%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--asm-cream);
+}
+.asm .asm-controls--sticky > summary {
+  min-height: 40px;
+  font-size: 14px;
+}
+.asm .asm-controls--sticky .asm-sound {
+  top: calc(100% + 8px);
+  right: 0;
+}
+@media (max-width: 899px) {
+  /* Phone keeps the top-right corner the header used, and does not move to the
+     bottom: the bottom-right is where the catalogue's own drawer control lives,
+     and a chip parked there is covered by it — measured, the drawer intercepted
+     every click on the sound summary. */
+  .asm .asm-controls--sticky {
+    top: 18px;
+    right: 16px;
+  }
+  .asm .asm-controls--sticky .asm-sound {
+    top: calc(100% + 8px);
+    bottom: auto;
+    right: 0;
+  }
+}
 .asm-section--hero {
   padding: 17.5vh 3.4vw 100px;
   min-height: max(720px, 100svh);

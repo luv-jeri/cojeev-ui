@@ -634,7 +634,45 @@ function stationDepths(stationsScreen, object, camera) {
   });
 }
 
-const depths = stationDepths(stationsScreen, aperture, camera);
+/**
+ * Fastest the depth may rise, in local units per station.
+ *
+ * The solve is a *lower* bound, not a curve: at the right foot the outer edge
+ * crosses the floor over nine stations and the bisection lifts it 0.65 local
+ * units across that run, in steps of 0.08 to 0.11. A sweep cannot follow a rise
+ * that fast when it runs through the cross-section's own plane. Each station's
+ * centre moves further along that plane than the section is deep, so neighbours
+ * overlap, the strip between them stops being a ruling and the surface folds
+ * through itself -- the crease at the right foot of the hero.
+ *
+ * Nothing forces the solve's exact values. World y is monotone in local z, so a
+ * *deeper* station also clears the floor; the freedom only runs one way, which
+ * is why this is a cone filter and not a blur. `limitRamp` returns the smallest
+ * profile that still dominates the solve and never rises faster than the limit,
+ * so the ground contact stays exactly where it was and only the approach to it
+ * is spread.
+ */
+const RAMP_SLOPE = 0.03;
+
+function limitRamp(values, slope) {
+  const out = [...values];
+  const n = out.length;
+  /* the profile is a closed ring, so run the cone both ways until it settles */
+  for (let pass = 0; pass < 6; pass++) {
+    for (let i = 0; i < n; i++) {
+      const previous = out[(i - 1 + n) % n];
+      if (previous - slope > out[i]) out[i] = previous - slope;
+    }
+    for (let i = n - 1; i >= 0; i--) {
+      const next = out[(i + 1) % n];
+      if (next - slope > out[i]) out[i] = next - slope;
+    }
+  }
+  return out;
+}
+
+const solved = stationDepths(stationsScreen, aperture, camera);
+const depths = limitRamp(solved, RAMP_SLOPE);
 const stations = stationsScreen.map((s, index) => {
   const centreZ = depths[index];
   const outer = pixelToLocal(aperture, camera, s.outer[0], s.outer[1], centreZ + q);

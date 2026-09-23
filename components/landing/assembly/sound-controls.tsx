@@ -19,6 +19,7 @@ export function SoundControls({
   onVolume,
   onMusic,
   supported,
+  idPrefix = "asm",
 }: {
   onEnable: () => void;
   onDisable: () => void;
@@ -30,7 +31,15 @@ export function SoundControls({
    * unknown as unsupported would disable it for every visitor for one frame.
    */
   supported: boolean | null;
+  /**
+   * Namespace for the volume range's `id`. The same controls are mounted twice —
+   * once in the header and once in the strip that follows the reader down the
+   * page — and a duplicated `id` would point both labels at whichever input the
+   * document reached first, leaving one of them labelling the wrong control.
+   */
+  idPrefix?: string;
 }) {
+  const volumeId = `${idPrefix}-volume`;
   const soundEnabled = React.useSyncExternalStore(
     experience.subscribe,
     () => experience.get().soundEnabled,
@@ -66,11 +75,11 @@ export function SoundControls({
       </div>
 
       <div className="asm-sound__row asm-sound__row--volume">
-        <label className="asm-sound__label" htmlFor="asm-volume">
+        <label className="asm-sound__label" htmlFor={volumeId}>
           Volume
         </label>
         <input
-          id="asm-volume"
+          id={volumeId}
           className="asm-range"
           type="range"
           min={0}
@@ -84,7 +93,7 @@ export function SoundControls({
             onVolume(next);
           }}
         />
-        <output className="asm-field__value" htmlFor="asm-volume">
+        <output className="asm-field__value" htmlFor={volumeId}>
           {Math.round(volume * 100)}%
         </output>
       </div>

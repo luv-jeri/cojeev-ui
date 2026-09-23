@@ -278,8 +278,16 @@ export function createSceneController(
    * the object is standing on a lit surface, not floating over a void. The
    * chapter frame only carries one backdrop, so the hero's floor is lifted
    * toward its own colour by the hero weight rather than by a second field.
-   * Sampled from the reference at 400,950 and 1150,1000. */
-  const warmHeroFloor = new THREE.Color(0x6a6058);
+   * Sampled from the reference at 400,950 and 1150,1000.
+   *
+   * Raised from 0x6a6058 once the falloff map stopped reaching its dark end: the
+   * pool under the object measured 84.7 where the artboard keeps 136.8, and the
+   * artboard holds that lit ground against a far field of 19. Since the pool is
+   * the map's bright end, the only way to move it without also lifting the far
+   * field — which is what has to stay dark for the plane's edge to disappear —
+   * is the albedo. The shadow band's own median was 84.9 against the artboard's
+   * 111.2, so this closes both gaps at once. */
+  const warmHeroFloor = new THREE.Color(0x8d8178);
   const backdrop = new THREE.Color();
   const floorColor = new THREE.Color();
   const start = new THREE.Vector3();
@@ -526,11 +534,40 @@ export function createSceneController(
     fill.color.setHex(0xdfe8ff).lerp(warmHeroBounce, heroWeight * 0.85);
     ambient.color.setHex(0xffffff).lerp(warmHeroSky, heroWeight);
     ambient.groundColor.setHex(0x1a1a1c).lerp(warmHeroGround, heroWeight);
-    ambient.intensity = LIGHT_RIG.ambient + 0.14 * heroWeight;
+    /* The hero leans on the key and lets its shadows go deep: the artboard's
+     * darkest ground in the object's own shadow band is 34 where the rig's
+     * hemisphere alone held it at 57, and the fill is already down at 0.05 of
+     * its authored strength. The catalogue keeps the rig it was tuned with. */
+    ambient.intensity = LIGHT_RIG.ambient + 0.02 * heroWeight;
     key.intensity = sceneFrame.lights.key;
     fill.intensity = sceneFrame.lights.fill;
     rim.intensity = sceneFrame.lights.rim;
     scene.environmentIntensity = 0.42 - 0.32 * heroWeight;
+
+    /*
+     * The hero's shadows were hard-edged wedges. `radius` was left at its
+     * default of 1, which over this 6.4-unit shadow camera is a 6 mm penumbra on
+     * a two-metre object — and the artboard's ground shades across tens of
+     * centimetres. `radius` is in texels: the PCF here is a five-sample Vogel
+     * disk rotated per pixel by interleaved gradient noise, so a large radius
+     * reads as a smooth falloff rather than a stepped one, which is what makes
+     * the cheap version of this viable at all.
+     *
+     * Scaled with the map, because the map shrinks to 512 on a phone and the
+     * same texel radius would then be half the blur in world units; scaled by
+     * `heroWeight` so no other chapter's shadows move.
+     */
+    {
+      const texelsPerUnit = key.shadow.mapSize.x / 6.4;
+      key.shadow.radius = (1 + 11 * heroWeight) * (texelsPerUnit / 160);
+      /* The controls stand 0.023 off the panel, and `normalBias` was 0.022 —
+       * within a thousandth of the protrusion, so the key found no occluder
+       * under any of them and the buttons sat on the face with no contact at
+       * all. The artboard has a shadow under each. Eased in the hero only,
+       * because the bias is what keeps the catalogue's larger shadow camera
+       * free of acne and it is tuned for that. */
+      key.shadow.normalBias = 0.022 - 0.017 * heroWeight;
+    }
 
     // The key light keeps its authored upper-left direction relative to the
     // subject and follows the subject, so the shadow camera stays framed.
@@ -605,6 +642,10 @@ export function createSceneController(
     );
     assembly.parts.switchThumb.rotation.x += (Math.PI / 2) * heroWeight;
     assembly.parts.sliderThumb.rotation.x += (Math.PI / 2) * heroWeight;
+    /* After the pose above, never before: the reflected thread is parented at the
+     * root and copies the instrument's matrix, so it has to read the one just
+     * written. */
+    assembly.syncReflection();
     assembly.parts.switchThumb.position.z += 0.04 * heroWeight;
     assembly.parts.sliderThumb.position.z += 0.06 * heroWeight;
     /* ACES desaturates as it compresses, and the hero was sitting at the top of
@@ -662,6 +703,18 @@ export function createSceneController(
       -squash * INSTRUMENT.create.thickness * 0.45;
 
     const createPose = sceneFrame.parts.create;
+    /* The thread's sag and gauge are computed once and used by both the resting
+     * spine and the pointer-driven one below. They were written out twice, and
+     * the second copy had drifted to a hard-coded sag of 0.12 and a radius of
+     * 0.012 — so the moment the pointer took the thread the band snapped to a
+     * quarter of its width and its curve jumped. Nothing about grabbing a
+     * thread should change how thick it is. */
+    const ribbonSag = (0.24 + 0.2 * (1 - tension)) * (1 - 0.75 * heroWeight);
+    /* The artboard's thread is a tapering band 13 px wide where it leaves the
+     * plate, not the 4 px cord the original radius drew — and measured against
+     * the reference render it is 11-13 px through the sweep where the first
+     * hero radius drew 17-18, so the gauge is 0.7 of that first estimate. */
+    const ribbonRadius = (0.012 + 0.023 * heroWeight) * (1 - 0.15 * tension);
     assembly.ribbon.setSpine(
       start.set(
         createPose.position[0] - INSTRUMENT.create.width / 2 + 0.02,
@@ -679,10 +732,8 @@ export function createSceneController(
             heroWeight,
         createPose.position[2] + 0.12,
       ),
-      (0.24 + 0.2 * (1 - tension)) * (1 - 0.75 * heroWeight),
-      /* The artboard's thread is a tapering band 13 px wide where it leaves the
-       * plate, not the 4 px cord the original radius drew. */
-      (0.017 + 0.034 * heroWeight) * (1 - 0.15 * tension),
+      ribbonSag,
+      ribbonRadius,
     );
     /* The cursor rides the spine's free end, so when the pointer pulls the
      * thread the arrow is under it. */
@@ -706,7 +757,7 @@ export function createSceneController(
       ribbonPlane.setFromNormalAndCoplanarPoint(planeNormal, pointerWorld);
       if (pointerRay.ray.intersectPlane(ribbonPlane, pointerWorld)) {
         assembly.instrument.worldToLocal(pointerWorld);
-        assembly.ribbon.setSpine(start, pointerWorld, 0.12, 0.012);
+        assembly.ribbon.setSpine(start, pointerWorld, ribbonSag, ribbonRadius);
         cursorAt.copy(pointerWorld);
       }
     }

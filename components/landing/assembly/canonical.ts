@@ -84,9 +84,15 @@ export const INSTRUMENT = {
   drawers: {
     local: [0.6, 0.07, -0.06] as Vec3,
     yaw: -0.24,
-    gap: 0.19,
+    gap: 0.235,
     count: 3,
-    plate: { width: 0.44, height: 0.15, thickness: 0.045 },
+    /* Measured against the artboard: its three drawers project 82-93 px each
+     * with 12-15 px between them, where this stack drew 59-70 px with 20 px
+     * gaps. Both numbers scale by the same 1.3, so the stack keeps its internal
+     * proportions and stays centred on the middle plate, which is what the
+     * hero's override positions. The label faces and their hit areas project
+     * from the same pose, so they follow the plate without a second edit. */
+    plate: { width: 0.44, height: 0.195, thickness: 0.045 },
     strap: { width: 0.2, height: 0.03, thickness: 0.012 },
   },
   stylePlate: {
