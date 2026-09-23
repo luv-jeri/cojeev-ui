@@ -354,6 +354,11 @@
       "type": "registry:lib",
       "title": "Cojeev icon geometry",
       "description": "Generated Lucide icon geometry and the authored Cojeev icon sprite. Installed automatically by the Cojeev icon components.",
+      "author": "Sanjay Kumar <https://github.com/luv-jeri>",
+      "categories": [
+        "foundation",
+        "icons"
+      ],
       "registryDependencies": [
         "https://000h.cojeev.com/r/cojeev.json"
       ],

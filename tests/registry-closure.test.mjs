@@ -16,7 +16,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { budgetViolations, footprintReport, scenarioFootprint } from "../scripts/registry-footprint-lib.mjs";
+import { budgetViolations, emittedBudgetViolations, footprintReport, installedSourceDigest, scenarioFootprint } from "../scripts/registry-footprint-lib.mjs";
+import { loadPayloads } from "../scripts/registry-payloads.mjs";
 
 const directory = "public/r";
 const payload = name => JSON.parse(fs.readFileSync(path.join(directory, `${name}.json`), "utf8"));
@@ -288,6 +289,25 @@ test("each entry installs exactly the stylesheets its own files name, so nothing
   }
   assert.deepEqual(omitted, [], "an entry ships a component without the stylesheet that paints it");
 
+  // The same relation read forward, which is the direction that was missing: a
+  // private module whose paint exists on disk must arrive with that paint. The
+  // inverse check below only requires paint to have an owner, so dropping
+  // `flow-press.css` from an entry that still ships `flow-press.ts` satisfied
+  // both existing directions. Any helper with a matching stylesheet is covered,
+  // not a hand-listed set, so a new styled helper is protected automatically.
+  const paintless = [];
+  for (const name of names) {
+    const basenames = new Set((payload(name).files ?? []).map(file => path.basename(file.path)));
+    for (const basename of basenames) {
+      if (basename === `${name}.ts` || basename === `${name}.tsx`) continue;
+      const owner = basename.replace(/\.tsx?$/, "");
+      const stylesheet = `${owner}.css`;
+      if (!onDisk.has(stylesheet) || basenames.has(stylesheet) || foundationStyles.has(stylesheet)) continue;
+      paintless.push(`${name} ships ${basename} without ${stylesheet}`);
+    }
+  }
+  assert.deepEqual(paintless, [], "an entry ships a styled helper without the stylesheet that paints it");
+
   // The inverse: nothing an entry installs may paint a module it does not ship.
   // Two documented exceptions exist and are named here rather than pattern-matched
   // away — `choice-foundations.css` is a shared example composition the generator
@@ -359,5 +379,89 @@ test("a css import a consumer receives is alias-based, layer-safe and framework-
     const firstVariant = keys.findIndex(key => key.startsWith("@custom-variant "));
     if (firstVariant === -1 || firstDeclaration === -1) continue;
     assert.ok(firstVariant < firstDeclaration, `${name} places its @custom-variant before the layered declarations, where Tailwind accepts it`);
+  }
+});
+
+test("every declared registry address points at the canonical origin", () => {
+  // The closure check above only reads the `/r/<name>.json` suffix, so a mirror
+  // that serves the same names satisfies it. Enforcing the origin is what turns
+  // "the canonical URLs are currently correct" into "a non-canonical origin
+  // cannot return silently" — two different claims that were previously merged.
+  const canonical = "https://000h.cojeev.com";
+  const failures = [];
+  // The catalogue's own address is the one every consumer starts from, and no
+  // payload carries `homepage` today, so checking only the items would leave the
+  // strongest address in the file unasserted.
+  if (index.homepage && !index.homepage.startsWith(canonical)) failures.push(`the registry declares homepage ${index.homepage}, which is not on ${canonical}`);
+  for (const name of names) {
+    const item = payload(name);
+    for (const value of item.registryDependencies ?? []) {
+      const match = value.match(/^([a-z][a-z0-9+.-]*:\/\/[^/]+)\/r\/([a-z0-9-]+)\.json$/);
+      if (!match) {
+        failures.push(`${name} declares a dependency that is not a plain registry URL: ${value}`);
+        continue;
+      }
+      if (match[1] !== canonical) failures.push(`${name} depends on ${value}, which is not on ${canonical}`);
+    }
+    const alias = item.config?.registries?.["@cojeev"];
+    if (alias && !alias.startsWith(`${canonical}/r/`)) failures.push(`${name} declares the @cojeev alias as ${alias}, which is not on ${canonical}`);
+    if (item.homepage && !item.homepage.startsWith(canonical)) failures.push(`${name} declares homepage ${item.homepage}, which is not on ${canonical}`);
+  }
+  assert.deepEqual(failures, [], "a payload points consumers at a non-canonical origin");
+});
+
+/**
+ * The emitted budget is keyed to a payload digest, so every caller has to agree on
+ * what "the payloads" means. This pins the two ways this suite can build that set —
+ * the shared loader and the registry index — to each other. They diverged once (the
+ * qualifier digested the index as if it were an item), which made the recorded
+ * measurement permanently stale no matter how often it was re-taken.
+ */
+test("the payload loader and the registry index describe the same item set", () => {
+  const loaded = loadPayloads(directory);
+  assert.deepEqual(
+    [...loaded.keys()].sort(),
+    [...names].sort(),
+    "public/r holds an item the index does not list, or the index lists one it does not hold",
+  );
+  assert.equal(
+    installedSourceDigest(loaded),
+    installedSourceDigest(allItems),
+    "the payload digest depends on how the payloads were loaded; the index must never be digested as an item",
+  );
+});
+
+/**
+ * The source budgets above are recomputed from the payloads on every run. Emitted
+ * browser bytes cannot be: they need a bundler, so they are measured once by
+ * `scripts/qualify-library-delivery.mjs` and recorded in the budget file. This
+ * test is what keeps that recording honest in both directions — the payload digest
+ * proves it was taken on these payloads, the ceilings prove the numbers are
+ * acceptable, and when the machine-produced artifact is present it must agree with
+ * the recorded values to the byte.
+ */
+test("the recorded emitted-size budget is current, honest and not exceeded", () => {
+  const budgets = JSON.parse(fs.readFileSync("data/delivery-budgets.json", "utf8"));
+  assert.ok(budgets.emitted, "the milestone requires emitted-size enforcement, not only source budgets");
+  const measurement = {
+    payloadDigest: installedSourceDigest(allItems),
+    profiles: Object.fromEntries(Object.entries(budgets.emitted.profiles ?? {}).map(([profile, declared]) => [profile, declared.measured ?? {}])),
+  };
+  assert.deepEqual(emittedBudgetViolations(measurement, budgets.emitted), []);
+
+  // The artifact is the machine-produced measurement this block was copied from.
+  // It is not committed (artifacts/ is ignored), so this cross-check runs when the
+  // qualifier has been run in this checkout and is silent otherwise — the digest
+  // and ceiling checks above never depend on it.
+  const artifactPath = budgets.emitted.artifact;
+  if (artifactPath && fs.existsSync(artifactPath)) {
+    const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf8"));
+    for (const [profile, declared] of Object.entries(budgets.emitted.profiles)) {
+      const measured = artifact.profiles?.[profile]?.totals;
+      assert.ok(measured, `${profile} is declared in the emitted budget but absent from ${artifactPath}`);
+      for (const [kind, value] of Object.entries(declared.measured ?? {})) {
+        assert.equal(measured[kind]?.rawBytes, value, `${profile} recorded ${kind} bytes do not match ${artifactPath}; the budget was edited instead of re-measured`);
+      }
+    }
   }
 });

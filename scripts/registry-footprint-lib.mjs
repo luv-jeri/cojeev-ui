@@ -15,6 +15,8 @@
  * Pure. No filesystem access, no network.
  */
 
+import { createHash } from "node:crypto";
+
 /** Resolve an entry name from any registry address shape used by the payloads. */
 export function itemName(address) {
   if (typeof address !== "string") return null;
@@ -124,6 +126,76 @@ export function budgetViolations(report, budgets) {
     }
     for (const required of budget.requiredPackages ?? []) {
       if (!measured.packages.includes(required)) violations.push({ scenario: name, rule: "requiredPackages", detail: `${name} lost required package ${required}` });
+    }
+  }
+  return violations;
+}
+
+/**
+ * A digest of everything a consumer installs: per item, the targets and the bytes
+ * written to them, plus the registry and npm dependencies that decide which items
+ * are reached at all.
+ *
+ * Emitted browser bytes cannot be computed here — they need a real bundler — so
+ * they are measured once by `scripts/qualify-library-delivery.mjs` and recorded in
+ * `data/delivery-budgets.json`. This digest is what stops that recording from
+ * outliving the payloads it describes: any change to installed source, targets or
+ * dependency edges changes the digest and invalidates the measurement until the
+ * qualifier is re-run. Item metadata (`title`, `author`, `categories`) is
+ * deliberately outside the digest, because none of it reaches a bundle.
+ */
+export function installedSourceDigest(items) {
+  const registry = items instanceof Map ? items : new Map((Array.isArray(items) ? items : Object.values(items)).map(item => [item.name, item]));
+  const digest = createHash("sha256");
+  for (const name of [...registry.keys()].sort()) {
+    const item = registry.get(name);
+    digest.update(`item ${name}\n`);
+    for (const value of [...(item.registryDependencies ?? [])].sort()) digest.update(`registry ${value}\n`);
+    for (const value of [...(item.dependencies ?? [])].sort()) digest.update(`package ${value}\n`);
+    for (const value of [...(item.devDependencies ?? [])].sort()) digest.update(`devPackage ${value}\n`);
+    const files = [...(item.files ?? [])].sort((a, b) => String(a.target ?? a.path).localeCompare(String(b.target ?? b.path)));
+    for (const file of files) {
+      const contents = createHash("sha256").update(file.content ?? "").digest("hex");
+      digest.update(`file ${file.target ?? file.path} ${contents}\n`);
+    }
+  }
+  return digest.digest("hex");
+}
+
+/**
+ * Compare a recorded emitted-size measurement against the emitted budgets.
+ *
+ * `measurement` is `{ payloadDigest, profiles: { <profile>: { js, css, woff2 } } }`
+ * and `budget` is the `emitted` block of `data/delivery-budgets.json`. Two things
+ * are enforced, and they fail for different reasons: the digest proves the numbers
+ * were measured on the payloads being checked, and the ceilings prove the numbers
+ * are acceptable. Either one alone can be satisfied while the other is stale.
+ */
+export function emittedBudgetViolations(measurement, budget) {
+  const violations = [];
+  if (!budget) return violations;
+  if (budget.payloadDigest !== measurement.payloadDigest) {
+    violations.push({
+      scenario: "emitted",
+      rule: "payloadDigest",
+      detail: `the recorded emitted measurement is stale: it was taken on payloads ${String(budget.payloadDigest).slice(0, 12)} but the payloads are now ${measurement.payloadDigest.slice(0, 12)} — re-run scripts/qualify-library-delivery.mjs and update data/delivery-budgets.json`,
+    });
+  }
+  for (const [profile, declared] of Object.entries(budget.profiles ?? {})) {
+    const measured = measurement.profiles?.[profile];
+    if (!measured) {
+      violations.push({ scenario: `emitted:${profile}`, rule: "present", detail: `no emitted measurement is recorded for ${profile}` });
+      continue;
+    }
+    for (const [kind, limit] of Object.entries(declared.maxEmittedBytes ?? {})) {
+      const value = measured[kind];
+      if (typeof value !== "number") {
+        violations.push({ scenario: `emitted:${profile}`, rule: "present", detail: `no emitted ${kind} measurement for ${profile}` });
+        continue;
+      }
+      if (value > limit) {
+        violations.push({ scenario: `emitted:${profile}`, rule: "maxEmittedBytes", limit, measured: value, detail: `${profile} emits ${value} ${kind} bytes, above the ${limit} ceiling` });
+      }
     }
   }
   return violations;

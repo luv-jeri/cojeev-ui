@@ -143,7 +143,10 @@ const geometryFiles=[
 const geometryPaths=new Set(geometryFiles.map(file=>file.path));
 const geometrySpecifiers=new Set(geometryFiles.map(file=>`@/${file.path.replace(/\.ts$/,"")}`));
 
-const geometryItem={name:"cojeev-icon-geometry",type:"registry:lib",title:"Cojeev icon geometry",description:"Generated Lucide icon geometry and the authored Cojeev icon sprite. Installed automatically by the Cojeev icon components.",registryDependencies:[`${baseURL}/r/cojeev.json`],files:geometryFiles};
+// Metadata is not decoration: the directory entry schema and every consumer that
+// groups the catalogue read `author`/`categories`. The geometry item used to ship
+// without either, so the "metadata on every item" claim was true for 174 of 175.
+const geometryItem={name:"cojeev-icon-geometry",type:"registry:lib",title:"Cojeev icon geometry",description:"Generated Lucide icon geometry and the authored Cojeev icon sprite. Installed automatically by the Cojeev icon components.",author:author,categories:["foundation","icons"],registryDependencies:[`${baseURL}/r/cojeev.json`],files:geometryFiles};
 const extras=additions;
 // Private helpers (`lib/*.ts`, `motion/*.ts`) are assigned from the real import
 // graph, not from a list: each entry owns everything its closure reaches, and the

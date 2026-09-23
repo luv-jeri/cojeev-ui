@@ -2,6 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "cojeev-icon-geometry",
   "title": "Cojeev icon geometry",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Generated Lucide icon geometry and the authored Cojeev icon sprite. Installed automatically by the Cojeev icon components.",
   "registryDependencies": [
     "https://000h.cojeev.com/r/cojeev.json"
@@ -19,6 +20,10 @@
       "type": "registry:lib",
       "target": "lib/cojeev/lucide-icon-data.ts"
     }
+  ],
+  "categories": [
+    "foundation",
+    "icons"
   ],
   "type": "registry:lib"
 }

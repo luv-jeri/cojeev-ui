@@ -12,6 +12,8 @@ import os from "node:os";
 import path from "node:path";
 import { chromium } from "playwright";
 import { gzipSync } from "node:zlib";
+import { installedSourceDigest } from "./registry-footprint-lib.mjs";
+import { loadPayloads } from "./registry-payloads.mjs";
 
 const getArgument = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const output = path.resolve(getArgument("output") ?? "artifacts/library-integration/delivery-qualification.json");
@@ -254,7 +256,30 @@ export default function App(){const [expanded,setExpanded]=React.useState(["fold
     ],
   };
   fs.mkdirSync(path.dirname(output), { recursive: true });
+  // Emitted bytes can only be measured here, so this is the one place the emitted
+  // ceilings can actually bite. A profile over its ceiling fails the qualification
+  // run instead of being written out for someone to notice later, and the payload
+  // digest is recorded so the budget file can be updated with the exact
+  // measurement these numbers belong to.
+  const budgets = JSON.parse(fs.readFileSync(path.join(root, "data/delivery-budgets.json"), "utf8"));
+  const overBudget = [];
+  for (const [name, declared] of Object.entries(budgets.emitted?.profiles ?? {})) {
+    const totals = profiles[name]?.totals;
+    if (!totals) { overBudget.push(`${name}: no measurement was taken`); continue; }
+    for (const [kind, limit] of Object.entries(declared.maxEmittedBytes ?? {})) {
+      const measured = totals[kind]?.rawBytes;
+      if (typeof measured !== "number") { overBudget.push(`${name}: no emitted ${kind} measurement`); continue; }
+      if (measured > limit) overBudget.push(`${name}: ${measured} ${kind} bytes, above the ${limit} ceiling`);
+    }
+  }
+  // The digest must come from the shared payload loader, not from this file's own
+  // serving map: that map also holds the index (it is served like any other file),
+  // and counting it as an item produces a digest no other caller can ever match.
+  evidence.emittedBudgets = { payloadDigest: installedSourceDigest(loadPayloads(path.join(root, "public/r"))), checked: Object.keys(budgets.emitted?.profiles ?? {}), violations: overBudget };
+  if (overBudget.length) throw new Error(`Emitted-size budget exceeded: ${overBudget.join("; ")}`);
+
   fs.writeFileSync(output, JSON.stringify(evidence, null, 2) + "\n");
+  console.log(`Payload digest for data/delivery-budgets.json: ${evidence.emittedBudgets.payloadDigest}`);
   qualified = true;
   console.log(`Qualified local consumer delivery: ${output}`);
 } finally {

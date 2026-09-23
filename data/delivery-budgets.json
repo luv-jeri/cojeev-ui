@@ -1,5 +1,5 @@
 {
-  "$comment": "Delivery budgets for the supported install scenarios, measured by scripts/registry-footprint-report.mjs against the committed payloads in public/r. Every ceiling is the measured value plus roughly 15 percent headroom, never a round number, so a regression has to be real before it trips. `measured` beside each scenario records the value the ceiling was set from. The baseline block records the pre-change measurement the ceilings were lowered from: it is evidence, not a rule.",
+  "$comment": "Delivery budgets for the supported install scenarios, measured by scripts/registry-footprint-report.mjs against the committed payloads in public/r. Every source, file and package ceiling is the measured value plus roughly 15 percent headroom, never a round number, so a regression has to be real before it trips; the live measurement is recomputed on every check rather than stored here. The baseline block records the pre-change measurement the ceilings were lowered from: it is evidence, not a rule. The emitted block below records the one measurement that cannot be recomputed without a bundler, together with the payload digest it was taken on.",
   "measuredAt": "2026-09-23",
   "scenarios": {
     "foundation": {
@@ -99,7 +99,7 @@
     }
   },
   "baseline": {
-    "$comment": "Before the foundation, icon-geometry, shared-helper and shared-paint-sheet split: one entry installed the whole private library. Reproducible by re-running this suite's script and the same scenario definitions over the committed pre-change payloads (`git archive HEAD public/r`), which is what `artifacts/w02/footprint-B0-pre-icon.json` recorded. Corrected 2026-09-23 during the frozen-candidate verification: the `button` row had been recorded as a copy of `static` (73 / 1,196,057), understating the real pre-change button install (78 / 1,226,736), and `foundation`, `icon`, `motion` and `mixed` had drifted from the artifact they cite. Every row below now re-measures exactly from `HEAD`.",
+    "$comment": "Before the foundation, icon-geometry, shared-helper and shared-paint-sheet split: one entry installed the whole private library. Reproducible by re-running this suite's script and the same scenario definitions over the committed pre-change payloads (`git archive HEAD public/r`), which is what `artifacts/w02/footprint-B0-pre-icon.json` recorded. Corrected 2026-09-23 during the frozen-candidate verification: the `button` row had been recorded as a copy of `static` (73 / 1,196,057), understating the real pre-change button install (78 / 1,226,736), and `foundation`, `icon`, `motion` and `mixed` had drifted from the artifact they cite. Every row below now re-measures exactly from `HEAD`. Ceilings alone do not bound this block: the motion and mixed source ceilings sit above their recorded baselines, so the regression guard for a scenario losing its reduction is the baseline assertion in tests/registry-closure.test.mjs, not the ceiling.",
     "measuredAt": "2026-09-23",
     "artifact": "artifacts/w02/footprint-B0-pre-icon.json",
     "foundation": {
@@ -132,6 +132,50 @@
     "mixed": {
       "files": 86,
       "sourceBytes": 1358621
+    }
+  },
+  "emitted": {
+    "$comment": "Emitted browser bytes: what a fresh consumer actually ships after `vite build`, which no payload inspection can derive. Measured by `node scripts/qualify-library-delivery.mjs` (npm run qualify:delivery) and recorded here; `payloadDigest` is the digest of everything a consumer installs, so when it stops matching the payloads these numbers are stale and scripts/registry-footprint-report.mjs --check fails until the qualifier is re-run. Metadata changes (title, author, categories) do not affect the digest because they cannot reach a bundle. A local cross-check in tests/registry-closure.test.mjs also asserts these numbers still equal the machine-produced artifacts/library-integration/delivery-qualification.json when that artifact is present.",
+    "measuredAt": "2026-09-23",
+    "artifact": "artifacts/library-integration/delivery-qualification.json",
+    "payloadDigest": "60b824c349cd3c3233a04b98d3d680ee3390674c96de9f86a9a9bb40d2cd1132",
+    "profiles": {
+      "button": {
+        "entries": [
+          "button"
+        ],
+        "measured": {
+          "js": 448134,
+          "css": 76532,
+          "woff2": 384052
+        },
+        "maxEmittedBytes": {
+          "js": 515354,
+          "css": 88012,
+          "woff2": 441660
+        }
+      },
+      "projects": {
+        "entries": [
+          "button",
+          "icon",
+          "input",
+          "tabs",
+          "item",
+          "activity-feed",
+          "tree"
+        ],
+        "measured": {
+          "js": 924393,
+          "css": 168295,
+          "woff2": 384052
+        },
+        "maxEmittedBytes": {
+          "js": 1063052,
+          "css": 192592,
+          "woff2": 441660
+        }
+      }
     }
   }
 }

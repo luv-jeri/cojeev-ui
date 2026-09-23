@@ -11,19 +11,14 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { budgetViolations, footprintReport } from "./registry-footprint-lib.mjs";
+import { budgetViolations, emittedBudgetViolations, footprintReport, installedSourceDigest } from "./registry-footprint-lib.mjs";
+import { loadPayloads } from "./registry-payloads.mjs";
 
 const argument = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const registryDirectory = argument("registry") ?? "public/r";
 const budgetFile = argument("budgets") ?? "data/delivery-budgets.json";
 
-const payloads = new Map();
-for (const file of fs.readdirSync(registryDirectory).sort()) {
-  if (!/^[a-z0-9][a-z0-9-]*\.json$/.test(file)) continue;
-  const item = JSON.parse(fs.readFileSync(path.join(registryDirectory, file), "utf8"));
-  if (Array.isArray(item.items)) continue;
-  payloads.set(file.slice(0, -5), item);
-}
+const payloads = loadPayloads(registryDirectory);
 
 const budgets = JSON.parse(fs.readFileSync(budgetFile, "utf8"));
 const report = footprintReport(payloads, Object.fromEntries(Object.entries(budgets.scenarios).map(([name, budget]) => [name, budget.entries])));
@@ -49,6 +44,24 @@ if (process.argv.includes("--details")) {
   }
 }
 
+// The emitted block cannot be recomputed here: it needs a bundler. What is checked
+// is that the recorded measurement was taken on these payloads (the digest) and
+// that it is inside its ceiling, so a payload change cannot silently inherit a
+// stale number.
+let emittedMeasurement = null;
+if (budgets.emitted) {
+  emittedMeasurement = {
+    payloadDigest: installedSourceDigest(payloads),
+    profiles: Object.fromEntries(Object.entries(budgets.emitted.profiles ?? {}).map(([profile, declared]) => [profile, declared.measured ?? {}])),
+  };
+  const stale = budgets.emitted.payloadDigest === emittedMeasurement.payloadDigest ? "current" : "STALE — re-run the qualifier";
+  console.log(`\nEmitted browser bytes (measured ${budgets.emitted.measuredAt} by scripts/qualify-library-delivery.mjs; payload digest ${emittedMeasurement.payloadDigest.slice(0, 12)}, ${stale}):`);
+  for (const [profile, declared] of Object.entries(budgets.emitted.profiles ?? {})) {
+    const parts = Object.entries(declared.maxEmittedBytes ?? {}).map(([kind, limit]) => `${kind} ${(declared.measured?.[kind] ?? 0).toLocaleString("en-US")}/${limit.toLocaleString("en-US")}`);
+    console.log(`  ${profile.padEnd(10)} ${parts.join("   ")}`);
+  }
+}
+
 const jsonOut = argument("json");
 if (jsonOut) {
   fs.mkdirSync(path.dirname(path.resolve(jsonOut)), { recursive: true });
@@ -57,12 +70,13 @@ if (jsonOut) {
 }
 
 if (process.argv.includes("--check")) {
-  const violations = budgetViolations(report, budgets);
+  const violations = [...budgetViolations(report, budgets), ...(emittedMeasurement ? emittedBudgetViolations(emittedMeasurement, budgets.emitted) : [])];
   if (violations.length) {
     console.error(`\nDelivery budget violations: ${violations.length}`);
     for (const violation of violations) console.error(`  ${violation.scenario} [${violation.rule}] ${violation.detail}`);
     process.exitCode = 1;
   } else {
-    console.log(`\nDelivery budgets: PASS (${Object.keys(budgets.scenarios).length} scenarios)`);
+    const emitted = emittedMeasurement ? `, ${Object.keys(budgets.emitted.profiles).length} emitted profiles` : "";
+    console.log(`\nDelivery budgets: PASS (${Object.keys(budgets.scenarios).length} scenarios${emitted})`);
   }
 }
