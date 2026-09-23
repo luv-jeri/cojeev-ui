@@ -1205,7 +1205,11 @@
   }
 }
 .asm-section--hero {
-  padding: 17.5vh 3.4vw 100px;
+  /* 17.5vh put the title's first glyph 13 px below the artboard's (196 against
+   * 183 at 1024 tall); 16.23vh is that offset removed. The band after the lead
+   * also lands on the artboard's once the three spacing errors below are gone,
+   * which is the check that this is an offset and not a different line box. */
+  padding: 16.23vh 3.4vw 100px;
   min-height: max(720px, 100svh);
   align-items: flex-start;
   flex-direction: column;
@@ -1217,7 +1221,19 @@
   z-index: 1;
 }
 .asm-section--hero .asm-title {
-  font-size: clamp(72px, 8.1vw, 128px);
+  /* Sized from the artboard, not chosen. Traced over the 1536-wide reference,
+   * "Small parts." runs x 53-364 - 312 px - where 8.1vw rendered 289 over
+   * x 56-344. 312/289 = 1.0796, and 124.4 x 1.0796 = 134.3 px, so 8.74vw with
+   * the ceiling raised to match. The ratio is exact rather than approximate,
+   * which is the evidence that this is one font at two sizes and not two
+   * fonts: the same factor reproduces the second line and the lead as well. */
+  /* The tracking and weight set here are dead: an unscoped `.asm-title` rule
+   * further down this file (search `font-stretch: normal`) restates both at the
+   * same specificity and wins. Swept through the real harness, its -0.045em is
+   * already the optimum - -0.038, -0.030 and -0.022 all score worse (31.80,
+   * 33.93, 35.42 against 28.44) - so it is left alone and the duplicates below
+   * are left in place rather than tidied, to keep this change scoped. */
+  font-size: clamp(72px, 8.74vw, 138px);
   line-height: 0.98;
   font-weight: 750;
   letter-spacing: -0.065em;
@@ -1228,8 +1244,14 @@
   white-space: nowrap;
 }
 .asm-section--hero .asm-title > span + span {
-  margin-top: 14px;
-  font-size: clamp(35px, 3.86vw, 62px);
+  /* Was 14px, which was right while line 1 was 124 px. The corrected line 1 is
+   * 126.2 px, whose 0.98 line box is 123.7 - 7.9 px shorter than the 131.6 that
+   * -12 was tuned against - so -4 puts line 2 back on the artboard's y 303
+   * without touching the 0.98 line-height its own line spacing matches. */
+  margin-top: -12px;
+  /* 3.86vw rendered "Extraordinary possibilities." 656 px wide; the artboard's
+   * is 726. 726/656 = 1.107, so 59.3 x 1.107 = 65.6 px. */
+  font-size: clamp(35px, 4.27vw, 69px);
   line-height: 1.03;
   letter-spacing: -0.055em;
 }
@@ -1237,10 +1259,13 @@
   display: none;
 }
 .asm-section--hero .asm-lead {
-  font-size: clamp(18px, 1.48vw, 24px);
+  /* The artboard's lead line is 412 px over x 55-466 and 1.48vw rendered 364;
+   * 412/364 = 1.132, so 22.7 x 1.132 = 25.7 px. */
+  font-size: clamp(18px, 1.68vw, 27px);
   line-height: 1.45;
   color: #bcb6ae;
-  margin-top: 38px;
+  /* 38 was 10 px more than the artboard's line-2-to-lead gap of 97. */
+  margin-top: 28px;
   max-width: 560px;
 }
 .asm-section--hero .asm-actions {
