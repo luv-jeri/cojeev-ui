@@ -685,8 +685,12 @@ export function createSceneController(
       trackPose.position[2] * (1 - heroWeight),
     );
     assembly.sliderBand.setSpine(
+      /* The fill starts at the rail's own left cap rather than short of it. The
+       * artboard's bar is one continuous pink from that cap to the thumb, so a
+       * fill that began 0.04 inside the track left a cream notch at the end of
+       * the control that the artboard does not have. */
       start.set(
-        trackPose.position[0] - INSTRUMENT.slider.travel / 2 + 0.04,
+        trackPose.position[0] - INSTRUMENT.slider.track.width / 2 + 0.012,
         trackPose.position[1],
         trackPose.position[2] + 0.016,
       ),
@@ -698,19 +702,26 @@ export function createSceneController(
       0,
       0.026,
     );
-    /* The band's opacity is the furniture's own, with no `(1 - heroWeight)`
-     * factor. That factor belongs to the two lines above it, which scale the
-     * band's *position* out as the hero takes the slider over — but the hero
-     * shows the slider at full opacity, so fading the fill with the same weight
-     * hid it exactly when it was on screen. Measured on the hero, the track
-     * rendered (233, 200, 203) where the artboard holds (221, 141, 172): the
-     * cream rail with a tenth of a pink band over it, not a filled slider. */
+    /* The fill is faded out with the hero weight, which is the opposite of what
+     * this did before. The earlier reading was that the band was what made the
+     * slider pink, because the track rendered (233, 200, 203) against an artboard
+     * (221, 141, 172) - but the cause was the rail's own albedo, not a missing
+     * fill: `PALETTE.pink` renders that pale under the hero's key. With the rail's
+     * albedo solved the rail alone lands on the artboard's colour, and the band
+     * can only subtract from it.
+     *
+     * It has to, because a fill has nowhere flat to sit. The rail is a 0.03-thick
+     * plate and the band is a 0.026 tube whose spine lies on the plate's face, so
+     * it stands proud as a ridge with a shaded crevice down the length of the
+     * control. The artboard's slider is one flat bar - #da8dab held from end to
+     * end - with no ridge in it. The band stays for the chapters that draw a cream
+     * rail, where it is the only thing that makes the fill visible at all. */
     applyOpacity(
       assembly.sliderBand.mesh,
       Math.min(
         sceneFrame.parts.sliderTrack.opacity,
         sceneFrame.parts.sliderThumb.opacity,
-      ),
+      ) * (1 - heroWeight),
     );
 
     // Press deformation on the sculpted face; the group keeps the chapter pose.

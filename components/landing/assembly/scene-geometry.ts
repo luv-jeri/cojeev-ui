@@ -585,6 +585,14 @@ export function buildAssemblyScene(): AssemblyScene {
    */
   const HERO_ALBEDO = {
     pink: "#f79ad0",
+    /* The slider rail needs a darker pink than the Create control and the band,
+     * and a separate entry rather than a shared one for the same reason the
+     * flower owns its material: they sit on the same panel and one is not the
+     * other. Solved rather than scaled - the red channel is already near the tone
+     * curve's shoulder, so dividing the albedo by the measured difference cannot
+     * land on it. At #f5b8db the rail rendered (233, 200, 203) where the artboard
+     * holds (218, 141, 171); at this it renders (235, 142, 177). */
+    sliderRail: "#e070b4",
     blue: "#687ca9",
     olive: "#6d784b",
     yellow: "#ffd25b",
@@ -1402,7 +1410,16 @@ varying vec4 vReflectionUv;`,
   );
   instrument.add(sliderTrack);
 
-  const sliderBand = createRibbon(12, 8, own(kit.pink, HERO_ALBEDO.pink));
+  /* The fill takes the rail's own pink rather than the Create control's. The
+   * artboard draws the slider as one uniform bar - measured along it, the
+   * midpoint holds #da8dab for its whole length - so a lighter fill laid over the
+   * rail reads as a stray stripe on top of the control instead of as its fill.
+   * Same colour, same bar; only the end of the fill is visible, which is what the
+   * artboard shows. */
+  const railPink = new THREE.Color(HERO_ALBEDO.sliderRail);
+  const bandMaterial = own(kit.pink);
+  bandMaterial.color.copy(railPink);
+  const sliderBand = createRibbon(12, 8, bandMaterial);
   sliderBand.mesh.position.copy(sliderTrack.position);
   instrument.add(sliderBand.mesh);
 
@@ -1800,7 +1817,7 @@ varying vec4 vReflectionUv;`,
       summary.scale.setScalar(1 - weight * 0.25);
       sliderRail.material.color.lerpColors(
         kit.cream.color,
-        kit.pink.color,
+        railPink,
         weight,
       );
     },
