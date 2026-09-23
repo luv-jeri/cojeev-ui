@@ -860,6 +860,11 @@ export function createSceneController(
       previousTime === 0 ? 1 / 60 : Math.min(0.5, (time - previousTime) / 1000);
     previousTime = time;
     applyFrame(Math.min(0.064, elapsed), elapsed);
+    /* The reflection is drawn from the same frame's pose, immediately before the
+     * frame that samples it, so it is never a frame behind its own reflection —
+     * and it is only drawn at all inside `floorReflection.render`, which is what
+     * keeps a settled renderer free of a second full scene pass. */
+    assembly.floorReflection.render(renderer, scene, camera);
     renderer.render(scene, camera);
     if (active()) schedule();
   }
@@ -904,6 +909,7 @@ export function createSceneController(
     );
     renderer.setPixelRatio(dpr);
     renderer.setSize(width, height, false);
+    assembly.floorReflection.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     const shadowSize = width < 900 || dpr > 1.5 ? 512 : 1024;
@@ -926,6 +932,14 @@ export function createSceneController(
   const onRestored = () => {
     contextLost = false;
     lastSeamKey = "";
+    /* Every render target's storage died with the context. Recreate rather than
+     * resize: the dead target's GPU-side allocation is gone and `setSize` would
+     * compare against dimensions that no longer describe anything. */
+    assembly.floorReflection.reset();
+    assembly.floorReflection.setSize(
+      Math.max(1, canvas.clientWidth || window.innerWidth),
+      Math.max(1, canvas.clientHeight || window.innerHeight),
+    );
     onStatus("ready");
     schedule();
   };
