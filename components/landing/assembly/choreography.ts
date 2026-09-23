@@ -213,13 +213,14 @@ export const CHAPTERS: readonly Chapter[] = [
       create: { position: [0, -0.1034, 0.045] },
       sliderTrack: { position: [0, -0.3858, 0.016] },
       sliderThumb: { position: [0, -0.3858, 0.016] },
-      /* The flower's centre sits 41 px lower on the artboard than the shared
-       * pose draws it, and its disc is larger: `1.2` reproduces the artboard's
-       * own outer radius once `petal-7` carries the artboard's petal width. The
-       * scale is the hero's alone — the Shape press and the specimen trays draw
-       * the same mesh at its authored size — and `sourcePlate` above is the
-       * same kind of override. */
-      flower: { position: [0.3, 0.2487, 0.03], scale: 1.2 },
+      /* The hero's flower is placed from the artboard rather than from the shared
+       * pose. Both numbers were solved against the projection rather than
+       * hand-tuned: the flower was scaled and shifted until its own projected
+       * footprint measured the artboard's tip radius of 80 px about a centre of
+       * (1215, 296). The scale is the hero's alone — the Shape press and the
+       * specimen trays draw the same mesh at its authored size — and
+       * `sourcePlate` above is the same kind of override. */
+      flower: { position: [0.28548, 0.2474, 0.03], scale: 1.15368 },
       ...FRONT_FACE,
     }),
   },
