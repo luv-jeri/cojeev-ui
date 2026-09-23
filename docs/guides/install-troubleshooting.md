@@ -67,6 +67,35 @@ Then confirm the foundation arrived: `src/styles/cojeev/tokens.css` and
 watch for a network error. A component installed without its foundation looks
 unstyled rather than broken, which is the usual way this is noticed.
 
+### Next.js: the build cannot resolve `@/styles/...`
+
+A Next.js consumer needs one change after installing, because the registry's
+`css` block reaches your stylesheet verbatim and `@/` means a different directory
+in each scaffold — the project root in Next, `src/` in Vite — while the installer
+writes the foundation to the project root in both. Next therefore fails at compile
+time with:
+
+```
+Error: Can't resolve '@/styles/cojeev-fonts.css' in '…/app'
+```
+
+Rewrite the foundation imports in `app/globals.css` from the alias to the relative
+path, which is what a Next consumer resolves:
+
+```css
+@import "../styles/cojeev-fonts.css";
+@import "../styles/cojeev/tokens.css";
+@import "../styles/cojeev/theme.css";
+@import "../styles/cojeev/base.css";
+@import "../styles/cojeev/morph.css";
+```
+
+An entry that owns its own paint adds its own imports in the same form
+(`@import "../styles/cojeev/<entry>.css"`), so apply the same rewrite to those.
+This is a known limitation, tracked as B-028, not a mistake in your project; Vite
+is unaffected. Nothing else about the install changes: the files are in the right
+place, and only the specifier differs.
+
 ## Dark mode does not apply
 
 Cojeev components read `data-mode` on the document element, not a `dark` class:
