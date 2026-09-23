@@ -1,8 +1,13 @@
 # Install troubleshooting
 
-Every entry below was reproduced against a real install from
-`https://000h.cojeev.com`, most recently in a Vite + React 19 + Tailwind v4
-project scaffolded by shadcn 4.21.0. If a symptom is missing here, the
+Every entry below was reproduced against a real install of this repository's
+candidate payloads — served on loopback and installed by the pinned
+`shadcn@4.21.0` CLI into fresh Vite + React 19 + Tailwind v4 projects. The
+published site at `https://000h.cojeev.com` was checked separately for
+availability only: it serves the previous release until the current candidate is
+deployed, so anything that depends on a new payload (the geometry recovery
+command below, for example) is documented from the candidate and will 404 from
+the live domain until that deploy. If a symptom is missing here, the
 [installation guide](INSTALLATION.md) covers the intended path.
 
 ## Nothing happens when I run the install
@@ -28,6 +33,23 @@ The registry installs private helpers beside your `components/ui/` files, at
 
 If you moved the alias after installing, re-run the `add` command so the
 payloads are written for the current configuration.
+
+If the missing module is specifically `@/lib/cojeev/lucide-icon-data` or
+`@/lib/cojeev/icon-data`, the project is importing the optional icon geometry
+directly but has no entry that reaches the icon. Since the geometry split, an
+icon-free install — `button` on its own included — does not write those two
+files. Install the item once and the imports resolve unchanged:
+
+```sh
+npx shadcn@latest add https://000h.cojeev.com/r/cojeev-icon-geometry.json
+```
+
+That command is verified end to end against the candidate payloads. The published
+endpoint does not serve the geometry item yet — it 404s until the release that
+contains it is deployed — so from the live domain today, install the item from a
+build of this checkout (`npm run registry:build`) or wait for that deploy.
+
+See [Icon geometry and deep imports](INSTALLATION.md#icon-geometry-and-deep-imports).
 
 ## Tailwind reports an unknown utility, or nothing is styled
 

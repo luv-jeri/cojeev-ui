@@ -1,7 +1,5 @@
 [data-slot="data-table-filter-button"] {
   box-shadow: inset 0 0 0 1px var(--v-edge);
-  min-height: 44px;
-  gap: 8px;
 }
 [data-slot="data-table-filter-button"] > span:not(.v-btn__content) {
   font-size: 11px;
@@ -10,7 +8,7 @@
 [data-slot="data-table-filters"] {
   flex-wrap: wrap;
   overflow: visible;
-  padding: 4px;
+  padding: 0;
 }
 [data-slot="data-table"] .v-data-table__sort {
   min-height: 44px;

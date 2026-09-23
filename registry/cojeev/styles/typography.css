@@ -27,14 +27,13 @@
 :is(.v-hero,.v-display,.v-section,.v-title,.v-lead,.v-body,.v-body-2,.v-prose)[data-slot] {
   min-width:0;
   max-width:100%;
-  overflow-wrap:anywhere;
 }
-.v-hero[data-slot] { white-space:normal; text-wrap:balance; }
+.v-hero[data-slot] { white-space:nowrap; text-wrap:nowrap; }
 .v-prose[data-slot] { max-width:70ch; gap:var(--s-4); }
 .v-prose[data-slot] :is(h2,h3):not(:first-child) { margin-block-start:var(--s-5); }
-.v-prose[data-slot] :is(p,li) { line-height:1.65; }
+.v-prose[data-slot] :is(p,li) { line-height:var(--lh-body); }
 .v-prose[data-slot] :is(pre,table) { max-width:100%; overflow-x:auto; }
-@media (max-width:640px) {
-  .v-hero[data-slot] { font-size:3rem; line-height:1.05; }
-  .v-display[data-slot] { font-size:2.25rem; line-height:1.1; }
-}
+/* The handoff sets the display sizes from tokens (--fs-hero/--fs-display) at every
+   width and never swaps in rem values; the 640px step-down was candidate-only. */
+.v-body-2[data-slot] { line-height:var(--lh-body); }
+.v-meta[data-slot] { font-size:var(--fs-meta); line-height:1.45; }

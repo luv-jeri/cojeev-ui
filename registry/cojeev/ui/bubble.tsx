@@ -9,7 +9,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/registry/cojeev/lib/utils"
 
-const BubbleVariants=cva("v-chat [display:grid] [gap:4px] [padding:18px_20px_16px] [border-radius:24px] [background:var(--v-beige)] [--bubble-surface:var(--v-beige)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const BubbleVariants=cva("v-chat [display:grid] [gap:4px] [padding:18px_20px_16px] [border-radius:24px] [background:var(--v-ink)] [--bubble-surface:var(--v-ink)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BubbleProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleVariants> & { as?:React.ElementType }
 export function Bubble({as:Tag="div",className,variant,size,...props}:BubbleProps){return <Tag data-slot="bubble" data-part="root" className={cn(BubbleVariants({variant,size}),className)} {...props}/>}
 
@@ -26,7 +26,7 @@ const BubbleGapVariants=cva("v-chat__gap [height:10px]",{variants:{variant:{"def
 export type BubbleGapProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleGapVariants> & { as?:React.ElementType }
 export function BubbleGap({as:Tag="div",className,variant,size,...props}:BubbleGapProps){return <Tag data-slot="bubble-gap" data-part="gap" className={cn(BubbleGapVariants({variant,size}),className)} {...props}/>}
 
-const BubbleTimeVariants=cva("v-chat__time [font-size:11px] [color:var(--v-text-2)] [padding:6px_0_2px_38px] [font-variant-numeric:tabular-nums]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const BubbleTimeVariants=cva("v-chat__time [font-size:11px] [color:var(--structure-text)] [opacity:0.7] [padding:6px_0_2px_38px] [font-variant-numeric:tabular-nums]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BubbleTimeProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleTimeVariants> & { as?:React.ElementType }
 export function BubbleTime({as:Tag="div",className,variant,size,...props}:BubbleTimeProps){return <Tag data-slot="bubble-time" data-part="time" className={cn(BubbleTimeVariants({variant,size}),className)} {...props}/>}
 

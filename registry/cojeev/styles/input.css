@@ -184,6 +184,10 @@
 
 [data-slot="input-control"][type="time"] { padding: 0 0 0 1px; }
 
-/* Clear is a real shared button; the tiny icon is not its hit rectangle. */
-.v-input:has([data-slot="input-clear"]) { min-height:44px; padding-inline-end:4px; }
-.v-input [data-slot="input-clear"].v-btn { width:44px; height:44px; min-width:44px; padding:0; margin:0; border-radius:50%; }
+/* Clear is a real shared button, but the handoff sizes it as a 26px inline glyph with
+   a -8px optical margin — not a standalone 44px control. Forcing the field taller to
+   host one moved the field's own box, which the reference does not do. */
+.v-input:has([data-slot="input-clear"]) { padding-inline-end:4px; }
+.v-clear { display:grid; place-items:center; flex:none; width:26px; height:26px; min-width:26px; min-height:26px; padding:0; border-radius:50%; color:var(--v-text-2); font-family:inherit; font-size:var(--fs-body); font-weight:var(--fw-body); line-height:var(--lh-body); gap:normal; }
+.v-clear:hover { background:var(--v-canvas); color:var(--v-text); }
+.v-clear > .v-icon { width:14px; height:14px; }

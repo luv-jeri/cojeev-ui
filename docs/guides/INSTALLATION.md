@@ -22,6 +22,12 @@ npx shadcn@latest init
 npx shadcn@latest add https://000h.cojeev.com/r/button.json
 ```
 
+**Next.js only, until B-028 is fixed:** the registry's `css` block writes
+`@import "@/styles/…"` into `app/globals.css`, and Tailwind v4's PostCSS resolver in Next does not read
+tsconfig `paths`, so the install will not compile until those five imports are rewritten to relative
+paths. Vite is unaffected. See
+[Install troubleshooting](install-troubleshooting.md#tailwind-reports-an-unknown-utility-or-nothing-is-styled).
+
 ```tsx
 import { Button } from "@/components/ui/button";
 
