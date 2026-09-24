@@ -151,6 +151,17 @@ function perimeterParameters(ring: readonly [number, number][]) {
 }
 
 /**
+ * The arch's vertical falloff, as a multiplier on its albedo. The window is the
+ * part of the arch the frame actually shows — local y -0.8328 (screen y 700 at
+ * x 800) to -0.0009 (screen y 260) — and `shade` clamps outside it, so the
+ * geometry's off-screen top cannot run away. Solved against `01-hero.png`'s own
+ * column at x 800; see the `shade` attribute below for how.
+ */
+export const APERTURE_SHADE_WINDOW: readonly [number, number] = [-0.8328, -0.0009];
+export const APERTURE_SHADE_BOTTOM = 0.6107;
+export const APERTURE_SHADE_TOP = 1.6257;
+
+/**
  * Builds the band. Returns a geometry whose vertex order is deterministic for a
  * given profile, so a test can assert exact counts.
  */
@@ -320,6 +331,47 @@ export function buildApertureGeometry(
     "occlusion",
     new THREE.Float32BufferAttribute(occlusion, 1),
   );
+  /* The vertical falloff across the arch's own face.
+   *
+   * `01-hero.png` darkens its arch from 240.6 to 217.1 down the face at x 800;
+   * ours barely moved — 229.3 to 222.6 before this, and flat below screen y 500.
+   * The scene's key light is near enough horizontal that the face reads almost
+   * evenly, and moving that light is not available because the panel, the floor
+   * and the flower are all lit by it. So the gradient is carried as another
+   * vertex attribute, like the niche's occlusion above: it changes the albedo
+   * and moves nothing, which matters because the silhouette is already within
+   * 2-4 px of the reference at every row.
+   *
+   * Solved, not swept. The albedo-to-pixel transfer is compressive — the
+   * standard material plus tone mapping turns a x1.3 albedo into about x1.04 of
+   * pixel — so the multiplier cannot be read straight off the luminance ratio.
+   * `.work/hero-stage4/shade-curve.mjs` renders the frame at nine flat albedo
+   * multipliers, and the requirement at each row is interpolated off that
+   * measured curve rather than assumed. Over the 22 rows where the arch's face
+   * is actually visible the least-squares line is
+   * `shade = 0.6107 + 1.0150 * u'`, rms 0.09 against a 0.16 worst row. */
+  const [windowLow, windowHigh] = APERTURE_SHADE_WINDOW;
+  const shade = new Float32Array(positions.length / 3);
+  for (let i = 0; i < shade.length; i++) {
+    const t = Math.min(
+      1,
+      Math.max(0, (positions[i * 3 + 1] - windowLow) / (windowHigh - windowLow)),
+    );
+    const ramp = APERTURE_SHADE_BOTTOM +
+      (APERTURE_SHADE_TOP - APERTURE_SHADE_BOTTOM) * t;
+    /* The ramp is a property of the lit outer face. Inside the opening the
+     * occlusion above already governs, and multiplying the two together cancels
+     * it — a x1.63 at the top against a x0.6 in the niche is x0.98, which reads
+     * as "no occlusion at all" and put 206 where the artboard has 118 along the
+     * opening's top rim. So the ramp is faded out by exactly the occlusion's own
+     * mask: `occlusion` is `1 - occlusionDepth * m`, so `m` inverts straight
+     * back out of it and no second attribute is needed. */
+    const niche = occlusionDepth > 0
+      ? Math.min(1, Math.max(0, (1 - occlusion[i]) / occlusionDepth))
+      : 0;
+    shade[i] = 1 + (ramp - 1) * (1 - niche);
+  }
+  geometry.setAttribute("shade", new THREE.Float32BufferAttribute(shade, 1));
   geometry.setIndex(indices);
 
   /* Orient the whole surface outward. The signed volume of a closed mesh is

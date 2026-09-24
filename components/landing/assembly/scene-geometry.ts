@@ -826,24 +826,28 @@ export function buildAssemblyScene(): AssemblyScene {
         "#include <common>",
         `#include <common>
 attribute float occlusion;
-varying float vOcclusion;`,
+attribute float shade;
+varying float vOcclusion;
+varying float vShade;`,
       )
       .replace(
         "#include <begin_vertex>",
         `#include <begin_vertex>
-vOcclusion = occlusion;`,
+vOcclusion = occlusion;
+vShade = shade;`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace(
         "#include <common>",
         `#include <common>
 uniform float heroOcclusion;
-varying float vOcclusion;`,
+varying float vOcclusion;
+varying float vShade;`,
       )
       .replace(
         "#include <color_fragment>",
         `#include <color_fragment>
-diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion);`,
+diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion) * vShade;`,
       );
   };
   aperture.add(apertureFrame);
