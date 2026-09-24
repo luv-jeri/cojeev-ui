@@ -34,25 +34,41 @@ const foundationStyles=["tokens","theme","base","morph"];
 // listing: the shadcn directory entry schema has no `author` or `categories`,
 // while `registry-item.json` defines both. One source, so every payload agrees.
 const author="Sanjay Kumar <https://github.com/luv-jeri>";
-/* Why one `@import` of one file rather than one per stylesheet.
+/* Why the `css` block names the consumer's own alias, and what it costs.
  *
- * The installer writes a `css` key into the consumer's stylesheet *verbatim*, at a
- * path it chooses (`app/globals.css` in a Next scaffold, `src/index.css` in a Vite
- * one). Nothing in that key can be expressed as a bundler path alias: measured on
- * 2026-09-23 against shadcn 4.21.0 and Tailwind 4.1.16, `@/styles/...` compiles in
- * Vite and **fails in Next** ("Can't resolve '@/styles/cojeev-fonts.css'"), because
- * Tailwind's PostCSS resolver does not read tsconfig `paths`; `~/styles/`,
- * `styles/` and `/styles/` each fail in Next as well, and a bare relative
- * `../styles/...` fixes Next but then **fails in Vite**, whose install root is
- * `src/`. No single specifier reaches the files directly in both.
+ * The installer writes a `css` key into the consumer's stylesheet *verbatim* and
+ * installs the stylesheets themselves under that scaffold's source root — which the
+ * two documented scaffolds do not agree on. Measured 2026-09-24 with shadcn 4.21.0
+ * on a pristine `create-next-app` and on the Vite template:
  *
- * The one form both bundlers resolve identically is a relative import of a file
- * that exists at the consumer root's `styles/`, because both documented scaffolds
- * put their stylesheet exactly one directory below that root (`app/` and `src/`).
- * So the consumer gets one import, and every further sheet is imported from inside
- * `cojeev.css` relative to *that* file — a location the registry controls, so those
- * specifiers cannot break per framework. `tests/registry-closure.test.mjs` pins the
- * shape: one `css` import, and no alias specifier anywhere in a payload.
+ *   scaffold                  stylesheet          foundation installed at
+ *   Next (`create-next-app`)  `app/globals.css`   `cojeev-next-consumer/styles/`
+ *   Vite (shadcn template)    `src/index.css`     `src/styles/`
+ *
+ * `@/styles/...` is therefore the only specifier that means the right directory in
+ * both: `@` is the project root in a Next scaffold and `src/` in a Vite one. Every
+ * delivery run re-measures it.
+ *
+ * The cost is real and is tracked as B-028: Tailwind v4's CSS resolver in a Next
+ * consumer does not read tsconfig `paths`, so `@/styles/cojeev-fonts.css` fails to
+ * resolve there (`Can't resolve '@/styles/cojeev-fonts.css' in '.../app'`) and the
+ * consumer needs one documented find-and-replace in `app/globals.css`. The
+ * alternatives each trade one scaffold for the other, also measured 2026-09-24:
+ *
+ *   - `../styles/...` fixes Next outright — the pristine consumer then typechecks
+ *     and compiles with `tailwindAliasNormalization: NOT NEEDED` — and breaks Vite,
+ *     which resolves it against `<root>/styles/`, a directory its installer never
+ *     writes (`Can't resolve '../styles/cojeev-fonts.css' in '.../src'`).
+ *   - `~/styles/...`, a bare `styles/...` and an absolute `/styles/...` do not
+ *     resolve in Next either.
+ *
+ * A single root-relative prelude (`@import "../styles/cojeev.css"`) was implemented
+ * and reverted before that: shadcn 4.21.0 inlines the nested file and rewrites its
+ * own imports to the alias, so the nesting never reaches the bundler. No
+ * registry-side specifier resolves in both scaffolds; `docs/workspace/BUGS.md`
+ * B-028 carries the evidence, and `tests/registry-closure.test.mjs` pins the shape
+ * actually shipped — every `css` import uses the verified alias, so the one
+ * documented rewrite covers all of them.
  */
 const foundation=Object.fromEntries(["@/styles/cojeev-fonts.css",...foundationStyles.map(name=>`@/styles/cojeev/${name}.css`)].map(file=>[`@import "${file}"`,{}]));
 const themeCSS=css(`${source}/styles/theme.css`);

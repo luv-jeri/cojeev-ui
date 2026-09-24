@@ -69,18 +69,33 @@ unstyled rather than broken, which is the usual way this is noticed.
 
 ### Next.js: the build cannot resolve `@/styles/...`
 
-A Next.js consumer needs one change after installing, because the registry's
-`css` block reaches your stylesheet verbatim and `@/` means a different directory
-in each scaffold — the project root in Next, `src/` in Vite — while the installer
-writes the foundation to the project root in both. Next therefore fails at compile
-time with:
+A Next.js consumer needs one change after installing, because the registry's `css`
+block reaches your stylesheet verbatim while the installer writes the foundation
+stylesheets under each scaffold's own source root — `styles/` in a Next project,
+`src/styles/` in a Vite one. The `@/` alias is the only specifier that means the
+right directory in both (`@` is the project root in Next, `src/` in Vite). Tailwind
+v4's CSS resolver in a Next consumer does not read the `paths` in `tsconfig.json`,
+so Next fails at compile time with:
 
 ```
 Error: Can't resolve '@/styles/cojeev-fonts.css' in '…/app'
 ```
 
-Rewrite the foundation imports in `app/globals.css` from the alias to the relative
-path, which is what a Next consumer resolves:
+Rewrite every foundation import in `app/globals.css` from the alias to the relative
+path. One command does the whole file, however many entries you installed:
+
+```sh
+node -e "const f='app/globals.css',fs=require('fs');fs.writeFileSync(f,fs.readFileSync(f,'utf8').replaceAll('@import \"@/styles/','@import \"../styles/'))"
+```
+
+Then confirm the project is clean:
+
+```sh
+npm run build
+```
+
+The file should now open with the relative form, plus one import per entry that
+owns its own paint:
 
 ```css
 @import "../styles/cojeev-fonts.css";
@@ -88,13 +103,17 @@ path, which is what a Next consumer resolves:
 @import "../styles/cojeev/theme.css";
 @import "../styles/cojeev/base.css";
 @import "../styles/cojeev/morph.css";
+@import "../styles/cojeev/button.css"; /* one per installed entry, same rewrite */
 ```
 
-An entry that owns its own paint adds its own imports in the same form
-(`@import "../styles/cojeev/<entry>.css"`), so apply the same rewrite to those.
-This is a known limitation, tracked as B-028, not a mistake in your project; Vite
-is unaffected. Nothing else about the install changes: the files are in the right
-place, and only the specifier differs.
+This is a known limitation in the installer, tracked as B-028, not a mistake in your
+project; Vite is unaffected. Nothing else about the install changes: the foundation
+files are in the right place for Tailwind's `@import` to reach them once the
+specifier is relative, and no other repair is needed — a pristine Next consumer with
+this one rewrite typechecks, compiles and renders every installed entry. (`../styles/`
+is not a portable substitute in the other direction: the same registry builds in a
+Vite consumer only with the alias form, so do not carry this rewrite back into a Vite
+project.)
 
 ## Dark mode does not apply
 
