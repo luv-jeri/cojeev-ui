@@ -136,17 +136,17 @@
   },
   "emitted": {
     "$comment": "Emitted browser bytes: what a fresh consumer actually ships after `vite build`, which no payload inspection can derive. Measured by `node scripts/qualify-library-delivery.mjs` (npm run qualify:delivery) and recorded here; `payloadDigest` is the digest of everything a consumer installs, so when it stops matching the payloads these numbers are stale and scripts/registry-footprint-report.mjs --check fails until the qualifier is re-run. Metadata changes (title, author, categories) do not affect the digest because they cannot reach a bundle. A local cross-check in tests/registry-closure.test.mjs also asserts these numbers still equal the machine-produced artifacts/library-integration/delivery-qualification.json when that artifact is present.",
-    "measuredAt": "2026-09-23",
+    "measuredAt": "2026-09-24",
     "artifact": "artifacts/library-integration/delivery-qualification.json",
-    "payloadDigest": "60b824c349cd3c3233a04b98d3d680ee3390674c96de9f86a9a9bb40d2cd1132",
+    "payloadDigest": "eae67d72f4ec9d44ef965744e38b19b7ae5139d9fc81cf61d5b4628f89d86506",
     "profiles": {
       "button": {
         "entries": [
           "button"
         ],
         "measured": {
-          "js": 448134,
-          "css": 76532,
+          "js": 448205,
+          "css": 76668,
           "woff2": 384052
         },
         "maxEmittedBytes": {
@@ -166,8 +166,8 @@
           "tree"
         ],
         "measured": {
-          "js": 924393,
-          "css": 168295,
+          "js": 924464,
+          "css": 168302,
           "woff2": 384052
         },
         "maxEmittedBytes": {
