@@ -776,21 +776,26 @@ export function createSceneController(
      * thread to whatever value the slider happened to rest at, so moving the
      * thumb to the artboard's own position dragged the thread 0.57 further out
      * with it. The fix is not to rescale the thread but to anchor it: both
-     * endpoints the curve was fitted with are kept exactly, and only the rate
-     * changes, because the same 0.5704 of travel now has to cover the whole
-     * 0..100 instead of the 46 the control used to rest at.
+     * endpoints are pinned and only the rate changes.
      *
-     *   tension 1 -> 0.42 + 0.5704 = 0.9904, the reach fitted to the artboard's
-     *                trace at the hero (mean error 1.4 px over 552 columns)
+     *   tension 1 -> 0.7506, the reach whose free end projects onto the
+     *                artboard's own thread end, at (348, 678)
      *   tension 0 -> 0.42, the relaxed end the old curve also had at 0
      *
-     * So the resting thread is bit-for-bit where stage 3 left it, the thumb is
-     * where the artboard draws it, and the drag still moves the free end
-     * monotonically across the entire range. */
-    const threadReach = 0.42 + 0.5704 * tension;
-    /* The same re-anchor in y: 0.5 per unit was fitted as 0.23 at the old rest,
-     * and 0.23 per unit is what reaches it again at 1. */
-    const threadDrop = 0.23 * tension;
+     * 0.7506 is not stage 3's 0.9904, and the reason is the panel. The thread is
+     * instrument-local, so correcting the slab's pitch by 0.36 rad carried its
+     * free end - 2.7 units out on a 0.98-scaled group - 121 px left and 37 px
+     * down, and the old reach then left the thread hanging short of the arrow
+     * the artboard draws it into. Both constants are solved, not swept:
+     * `.work/hero-stage4/solve-end.mjs` projects the spine's end through the
+     * live camera and Newton-solves reach and drop onto the artboard's own
+     * (348, 678) in three steps. They move together because a shorter reach
+     * shortens the curve in x while the drop sets where in y it lands. */
+    const threadReach = 0.42 + 0.3306 * tension;
+    /* The same solve in y. The drop is what carries the curve down out of the
+     * panel; at 0.1125 the fitted trace is within 7 px of the artboard's over
+     * x 400..800, and 0 is the flat line it relaxes to. */
+    const threadDrop = 0.1125 * tension;
     /* The artboard's thread is a tapering band 13 px wide where it leaves the
      * plate, not the 4 px cord the original radius drew — and measured against
      * the reference render it is 11-13 px through the sweep where the first
@@ -828,7 +833,11 @@ export function createSceneController(
         createPose.position[2] - 0.09,
       ),
       end.set(
-        createPose.position[0] - threadReach,
+        /* The 1.6771 is the panel's own half-span at the hero: the thread leaves
+         * from behind the plate, so its free end is measured from the far edge
+         * rather than the origin, and both the solve above and the artboard's
+         * trace are in those terms. */
+        createPose.position[0] - threadReach - 1.6771 * heroWeight,
         createPose.position[1] +
           0.156 -
           threadDrop -
@@ -867,7 +876,17 @@ export function createSceneController(
         cursorAt.copy(pointerWorld);
       }
     }
-    assembly.cursor.position.copy(cursorAt);
+    /* The artboard's arrow is not centred on the thread's end: its tip stands
+     * 20 px up and to the left of the point the thread dies at, so the thread
+     * meets the arrow's inner shoulder rather than its point. Both numbers are
+     * the artboard's own offset, projected: the live camera moves a point
+     * 222 px per instrument unit in x and 315 in y at this depth, measured
+     * against the spine's own end. */
+    assembly.cursor.position.set(
+      cursorAt.x - 0.090,
+      cursorAt.y + 0.0476,
+      cursorAt.z,
+    );
     applyOpacity(assembly.cursor, sceneFrame.weights[0]);
     applyOpacity(assembly.ribbon.mesh, sceneFrame.weights[0]);
 

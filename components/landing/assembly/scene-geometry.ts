@@ -212,14 +212,30 @@ const RIBBON_UP = new THREE.Vector3(0, 1, 0);
  * like the ribbon, and anchored at the hotspot so it sits where the pointer is.
  */
 function pointerShape() {
+  /* The artboard's pointer is a solid arrowhead with one concave bite out of
+   * its back edge - four points, no tail. This used to be a mouse-cursor: a
+   * long spike with a separate tail wedge off its lower right, which at the
+   * same size read as a different icon, and the 0.42 it was turned by squared
+   * its box off to 40x49 where the artboard's is 34x47.
+   *
+   * The vertices are the artboard's own, in pixels off its tip, read at 4x:
+   * the tip, the point at the bottom left (7.5, -46), the notch that cuts back
+   * in (21, -33.5) and the outer corner (35, -27). Divided by 248 - the pixels
+   * one shape unit covers at this mesh's 1.13 scale - and with y flipped,
+   * because a shape's y runs up and the artboard's runs down.
+   *
+   * The y values carry a second correction the x values do not. The arrow lies
+   * in the instrument's own plane, which this chapter pitches 0.31 rad away
+   * from the camera, and that plane's projection at this depth is not isotropic:
+   * the artboard's own pixels come out 1.6x further apart vertically than
+   * horizontally, so a shape whose vertices were taken straight off it drew 74
+   * px tall where the artboard draws 47. The y values are divided by that 1.6
+   * to put them back. */
   const shape = new THREE.Shape();
   shape.moveTo(0, 0);
-  shape.lineTo(0.004, -0.116);
-  shape.lineTo(0.034, -0.086);
-  shape.lineTo(0.058, -0.128);
-  shape.lineTo(0.079, -0.117);
-  shape.lineTo(0.054, -0.075);
-  shape.lineTo(0.093, -0.073);
+  shape.lineTo(0.0302, -0.1334);
+  shape.lineTo(0.0847, -0.0971);
+  shape.lineTo(0.1411, -0.0783);
   shape.closePath();
   return new THREE.ExtrudeGeometry(shape, {
     depth: 0.012,
@@ -612,7 +628,17 @@ export function buildAssemblyScene(): AssemblyScene {
    * measured over-brightening, not eyeballed adjustments to the palette.
    */
   const HERO_ALBEDO = {
-    pink: "#f79ad0",
+    /* The Create control. Re-solved against the artboard's own pill, which holds
+     * (232, 157, 187): at this the render lands on it, where #f79ad0 rendered
+     * (243, 208, 215) - the same over-brightening of the green and blue channels
+     * the block above describes, still 50 counts out in green. */
+    pink: "#df5fa5",
+    /* The thread needs the opposite correction to the pill it leaves: brighter
+     * and pinker, not darker. The artboard's thread cores at (253, 181, 214)
+     * where the shared albedo rendered (240, 188, 201) - a grey-pink cord rather
+     * than the artboard's saturated one. Its own entry, because one material
+     * cannot be pre-compensated in two directions. */
+    thread: "#ff91e4",
     /* The slider's fill needs a darker pink than the Create control, and a
      * separate entry rather than a shared one for the same reason the flower
      * owns its material: they sit on the same panel and one is not the other.
@@ -1634,7 +1660,7 @@ varying vec4 vReflectionUv;`,
   const ribbon = createRibbon(
     56,
     10,
-    own(kit.pink, HERO_ALBEDO.pink),
+    own(kit.pink, HERO_ALBEDO.thread),
     "thread",
     "thread",
   );
@@ -1654,9 +1680,15 @@ varying vec4 vReflectionUv;`,
   ribbonMirror.matrixAutoUpdate = false;
   mirrorPivot.add(ribbonMirror);
 
+  /* 1.1, not 1.5: the artboard's arrow is 36 px across and 1.5 drew 49. The
+   * hotspot rides the thread's free end, so an oversized arrow does not just
+   * read large - it hangs its own tip past the thread that is supposed to be
+   * holding it. */
   const cursor = new THREE.Mesh(geo(pointerShape()), own(kit.cream));
-  cursor.rotation.z = 0.42;
-  cursor.scale.setScalar(1.5);
+  /* The artboard's arrow stands upright: its box is 34x47, which is this
+   * shape's own 0.723 aspect, so nothing is turned. */
+  cursor.rotation.z = 0;
+  cursor.scale.setScalar(1.13);
   instrument.add(cursor);
 
   const parts: Record<PartId, THREE.Object3D> = {
@@ -1829,11 +1861,25 @@ varying vec4 vReflectionUv;`,
          * visible grain the artboard has, bought as cheaply as it can be.
          * `floorGrain` is the same noise at its own repeat; that turned out to
          * be nearly neutral on its own (8.80 -> 8.82) and is kept only because
-         * it is what 12 was measured with. */
+         * it is what 12 was measured with.
+         *
+         * That 12 was wrong, and the statistic it was fitted with is why: a
+         * 41x41 window's energy on nine hand-picked points measures contrast,
+         * not frequency, and the floor's grain is 1.5 px across - the window
+         * averages most of it away and reports the rest as texture. Measured as
+         * high-frequency energy instead - mean |pixel - its four neighbours| on
+         * the green channel, which is what a sub-2-px stipple actually is - the
+         * floor reads 4.02 against the artboard's 0.76, and the bump is the
+         * whole of it: with the map removed the same window reads 0.28. The
+         * grain was never too weak, it was too fine to be grain; at 12 it is a
+         * dot screen lying over the reflection. 2 keeps the texture the
+         * artboard's ground has (0.90, 0.59 and 1.35 across the same three
+         * windows, against the artboard's 0.76, 1.20 and 1.20) without the
+         * screen. */
         const bump = weight > 0 ? floorGrain : null;
         if (floorMaterial.bumpMap !== bump) {
           floorMaterial.bumpMap = bump;
-          floorMaterial.bumpScale = 12;
+          floorMaterial.bumpScale = 2;
           floorMaterial.needsUpdate = true;
         }
       }
