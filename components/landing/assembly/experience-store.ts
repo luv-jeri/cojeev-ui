@@ -96,14 +96,14 @@ export type AssemblyEvent =
 const INITIAL: ExperienceState = {
   heroControl: null, heroPhase: "idle", heroDrawer: null,
   pressed: false,
-  /* Authored off the artboard's thread, not its slider. The same value also sets
-   * where the slider's thumb rests, and the two disagree on the artboard: its
-   * thread leaves the panel at the reach this gives, while its thumb sits at the
-   * track's right-hand end, which this puts at 40% of the travel. Moving this to
-   * 92 fixes the thumb and drags the thread's free end 0.57 further out, so the
-   * two have to be separated before either can be matched. See the slider note in
-   * docs/workspace/HERO-ARTBOARD-FINDINGS.md. */
-  tension: 46,
+  /* The artboard's own value. Its slider is drawn at the top of its travel —
+   * rail 969-1244 with the thumb on 1188-1244, its right edge flush with the
+   * rail's cap — so the hero rests at 100 and the visitor's first drag relaxes
+   * the ribbon from there. Stage 3 rested at 46 and could not move the thumb
+   * without dragging the thread with it; the two are separated now
+   * (`scene-controller.ts` anchors the thread's reach at this value rather than
+   * deriving it from it), so the value itself is free to be the artboard's. */
+  tension: 100,
   tryMode: false,
   layersOpen: false,
   activeLayer: "ui",

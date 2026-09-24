@@ -17,6 +17,7 @@ import {
   SPECIMEN_TRAYS,
   type Vec3,
 } from "./canonical";
+import { HERO_INSTRUMENT_POSITION } from "./hero-pose";
 
 export type ChapterId =
   | "hero"
@@ -172,7 +173,7 @@ export const CHAPTERS: readonly Chapter[] = [
      * 441 px per world unit across and 388 up, so 0.98 with the group at
      * [0.47, 0.22] puts the face at 920-1311 x 195-603 and the drawers' right
      * edge at 1471 — the artboard's own numbers. */
-    instrument: { position: [0.47, 0.22, 0] as Vec3, rotation: HOME_INSTRUMENT.rotation, scale: 0.98 },
+    instrument: { position: [...HERO_INSTRUMENT_POSITION] as Vec3, rotation: HOME_INSTRUMENT.rotation, scale: 0.98 },
     /* The artboard's drawer stack centres on y 413 of the frame; the shared
      * drawer pose puts it at 361. Only the part's position is overridden — the
      * tabs keep the size the geometry draws, because scaling the group would
@@ -208,11 +209,18 @@ export const CHAPTERS: readonly Chapter[] = [
     parts: front({
       sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 },
       drawers: { position: [0.66, -0.064, -0.12], opacity: 1 },
-      switchBase: { position: [-0.3, 0.2645, 0.028] },
-      switchThumb: { position: [-0.3, 0.2645, 0.028] },
+      switchBase: { position: [-0.3, 0.2585, 0.028] },
+      switchThumb: { position: [-0.3, 0.2585, 0.028] },
       create: { position: [0, -0.1034, 0.045] },
-      sliderTrack: { position: [0, -0.3858, 0.016] },
-      sliderThumb: { position: [0, -0.3858, 0.016] },
+      /* Re-read off `01-hero.png` after the panel's pose was re-solved. The old
+       * pose's screen positions no longer hold: the stack came out 6-9 px high of
+       * the artboard's, and the slider 9 px left of it. The slider also picks up
+       * `INSTRUMENT.slider.local`'s own x so the hero and the other chapters
+       * cannot drift apart again. */
+      sliderTrack: { position: [0.018, -0.4018, 0.016] },
+      /* The thumb is drawn higher on the plate than the rail it runs in: re-measured
+       * on `01-hero.png`, its disc centres on y 539 against the bar's 550. */
+      sliderThumb: { position: [0.018, -0.3925, 0.016] },
       /* The hero's flower is placed from the artboard rather than from the shared
        * pose. Both numbers were solved against the projection rather than
        * hand-tuned: the flower was scaled and shifted until its own projected

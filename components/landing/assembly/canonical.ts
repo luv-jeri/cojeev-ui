@@ -82,10 +82,19 @@ export const INSTRUMENT = {
     depth: 0.055,
   },
   slider: {
-    local: [0, -0.408, 0.016] as Vec3,
-    travel: 0.68,
-    track: { width: 0.72, height: 0.075, thickness: 0.03 },
-    thumb: 0.075,
+    /* Measured off the artboard's own slider rather than centred on the panel.
+     * Its rail runs 969-1244 and the panel's face runs 914-1305 at the same
+     * height, so the rail's centre is 3 px left of the face's, not 12. */
+    local: [0.018, -0.408, 0.016] as Vec3,
+    /* The travel is the rail less a thumb at each end, so at either limit the
+     * thumb's outer edge is flush with the rail's cap. The artboard draws its
+     * thumb at the top of that travel: rail 969-1244 with the thumb on
+     * 1188-1244, its right edge on the cap and its left edge - which is where
+     * the pink ends, at 1187 - 0.5628 of the rail in from the other end. */
+    travel: 0.563,
+    /* 0.705 projects to the artboard's 275 px rail; 0.071 to its 56 px thumb. */
+    track: { width: 0.705, height: 0.063, thickness: 0.03 },
+    thumb: 0.071,
   },
   drawers: {
     local: [0.6, 0.07, -0.06] as Vec3,

@@ -134,6 +134,34 @@ function extruded(
 }
 
 /**
+ * The rounded rectangle the panel's controls are cut from: a stadium when the
+ * radius is half the height, which is what the slider's rail and its fill both
+ * are. Extruded rather than built as a `RoundedBoxGeometry`, because that rounds
+ * all three axes at once — at a radius of half the height its cross-section is a
+ * drum, and the bar shades as a gradient instead of the flat face the artboard
+ * draws.
+ */
+function roundedOutline(width: number, height: number, r: number) {
+  const shape = new THREE.Shape();
+  const centres = [
+    [width / 2 - r, height / 2 - r],
+    [-width / 2 + r, height / 2 - r],
+    [-width / 2 + r, -height / 2 + r],
+    [width / 2 - r, -height / 2 + r],
+  ];
+  for (let corner = 0; corner < 4; corner++)
+    for (let j = 0; j <= 12; j++) {
+      const theta = ((corner + j / 12) * Math.PI) / 2;
+      const x = centres[corner][0] + r * Math.cos(theta);
+      const y = centres[corner][1] + r * Math.sin(theta);
+      if (corner === 0 && j === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    }
+  shape.closePath();
+  return shape;
+}
+
+/**
  * Extrudes a canonical contour into the flower face.
  *
  * The contour arrives in the 100-unit viewBox and is normalised so the sculpted
@@ -531,7 +559,7 @@ export type AssemblyScene = {
   ribbon: Ribbon;
   /** The pointer at the ribbon's free end; follows the spine every frame. */
   cursor: THREE.Mesh;
-  sliderBand: Ribbon;
+  sliderFill: THREE.Mesh;
   /**
    * Rebuilds the sculpted face from the same blended contour the SVG press
    * previews and exports, and re-tints it to the selected tone. One call, one
@@ -585,14 +613,15 @@ export function buildAssemblyScene(): AssemblyScene {
    */
   const HERO_ALBEDO = {
     pink: "#f79ad0",
-    /* The slider rail needs a darker pink than the Create control and the band,
-     * and a separate entry rather than a shared one for the same reason the
-     * flower owns its material: they sit on the same panel and one is not the
-     * other. Solved rather than scaled - the red channel is already near the tone
+    /* The slider's fill needs a darker pink than the Create control, and a
+     * separate entry rather than a shared one for the same reason the flower
+     * owns its material: they sit on the same panel and one is not the other.
+     * Solved rather than scaled - the red channel is already near the tone
      * curve's shoulder, so dividing the albedo by the measured difference cannot
-     * land on it. At #f5b8db the rail rendered (233, 200, 203) where the artboard
-     * holds (218, 141, 171); at this it renders (235, 142, 177). */
-    sliderRail: "#e070b4",
+     * land on it. At #f5b8db the fill rendered (233, 200, 203) where the artboard
+     * holds (220, 142, 173) along the whole bar; at this it renders (235, 142,
+     * 177). */
+    sliderFill: "#b15a96",
     blue: "#687ca9",
     olive: "#6d784b",
     yellow: "#ffd25b",
@@ -1410,18 +1439,38 @@ varying vec4 vReflectionUv;`,
   );
   instrument.add(sliderTrack);
 
-  /* The fill takes the rail's own pink rather than the Create control's. The
-   * artboard draws the slider as one uniform bar - measured along it, the
-   * midpoint holds #da8dab for its whole length - so a lighter fill laid over the
-   * rail reads as a stray stripe on top of the control instead of as its fill.
-   * Same colour, same bar; only the end of the fill is visible, which is what the
-   * artboard shows. */
-  const railPink = new THREE.Color(HERO_ALBEDO.sliderRail);
-  const bandMaterial = own(kit.pink);
-  bandMaterial.color.copy(railPink);
-  const sliderBand = createRibbon(12, 8, bandMaterial);
-  sliderBand.mesh.position.copy(sliderTrack.position);
-  instrument.add(sliderBand.mesh);
+  /* The fill carries the pink and the rail under it stays cream, which is what
+   * the artboard draws. Stage 3 read the artboard's pink bar as the rail and
+   * repainted the whole 276 px track, so the pink ran past the thumb to the
+   * rail's far cap where the artboard's stops dead at the thumb's left edge. The
+   * pink is the fill; the rail is the cream track it runs in, and past the thumb
+   * the track is cream on cream and therefore invisible.
+   *
+   * The fill is the rail's own shape, drawn short. It began as a ribbon, which
+   * cannot be it: `lens` tapers to half width at both ends and its 0.68 section
+   * makes the band deeper than it is tall, so the only way to keep it in front of
+   * the rail was to stand it 0.008 proud as a ridge. The artboard's bar is a
+   * constant 27 px from cap to cap, and a rounded box is that shape exactly. Only
+   * its length changes, so it is scaled in x and its left cap is placed on the
+   * rail's; because the box is centred, the position compensates for the scale. */
+  const sliderFill = new THREE.Mesh(
+    geo(
+      extruded(
+        roundedOutline(
+          INSTRUMENT.slider.track.width,
+          INSTRUMENT.slider.track.height,
+          INSTRUMENT.slider.track.height / 2,
+        ),
+        INSTRUMENT.slider.track.thickness - 0.012,
+        0.006,
+      ),
+    ),
+    own(kit.cream, HERO_ALBEDO.sliderFill),
+  );
+  sliderFill.castShadow = false;
+  sliderFill.receiveShadow = true;
+  sliderFill.position.copy(sliderTrack.position);
+  instrument.add(sliderFill);
 
   const sliderThumb = new THREE.Mesh(
     geo(
@@ -1654,25 +1703,7 @@ varying vec4 vReflectionUv;`,
     const depth =
       (original.boundingBox ??
         (original.computeBoundingBox(), original.boundingBox))!.max.z * 2;
-    function outline(r: number) {
-      const shape = new THREE.Shape();
-      const centres = [
-        [width / 2 - r, height / 2 - r],
-        [-width / 2 + r, height / 2 - r],
-        [-width / 2 + r, -height / 2 + r],
-        [width / 2 - r, -height / 2 + r],
-      ];
-      for (let corner = 0; corner < 4; corner++)
-        for (let j = 0; j <= 12; j++) {
-          const theta = ((corner + j / 12) * Math.PI) / 2;
-          const x = centres[corner][0] + r * Math.cos(theta);
-          const y = centres[corner][1] + r * Math.sin(theta);
-          if (corner === 0 && j === 0) shape.moveTo(x, y);
-          else shape.lineTo(x, y);
-        }
-      shape.closePath();
-      return shape;
-    }
+    const outline = (r: number) => roundedOutline(width, height, r);
     const sculpted = geo(
       extruded(outline(radius), Math.max(0.005, depth - 0.012), 0.006),
     );
@@ -1696,7 +1727,12 @@ varying vec4 vReflectionUv;`,
   softenFace(panel, 1, 1.05, 0.085);
   softenFace(createMesh, 0.78, 0.236, 0.11);
   softenFace(switchPlate, 0.25, 0.12, 0.06);
-  softenFace(sliderRail, 0.72, 0.075, 0.037);
+  softenFace(
+    sliderRail,
+    INSTRUMENT.slider.track.width,
+    INSTRUMENT.slider.track.height,
+    INSTRUMENT.slider.track.height / 2,
+  );
   softenFace(sourceBody, 0.86, 0.98, 0.06);
   for (const plate of drawers.children)
     softenFace(plate.children[0] as THREE.Mesh, 0.44, 0.15, 0.032);
@@ -1741,7 +1777,7 @@ varying vec4 vReflectionUv;`,
     },
     ribbon,
     cursor,
-    sliderBand,
+    sliderFill,
     createMesh,
     heroFaces,
     floorReflection,
@@ -1815,11 +1851,6 @@ varying vec4 vReflectionUv;`,
       sourceBody.scale.y = 1 - weight * 0.59;
       summary.position.y = -0.17 + weight * 0.14;
       summary.scale.setScalar(1 - weight * 0.25);
-      sliderRail.material.color.lerpColors(
-        kit.cream.color,
-        railPink,
-        weight,
-      );
     },
     syncReflection() {
       /* `instrument.matrix` is the instrument's own pose, which is what the
@@ -1868,7 +1899,7 @@ varying vec4 vReflectionUv;`,
       summaryTexture.dispose();
       grain.dispose();
       ribbon.mesh.geometry.dispose();
-      sliderBand.mesh.geometry.dispose();
+      sliderFill.geometry.dispose();
       floorReflection.dispose();
       root.clear();
     },

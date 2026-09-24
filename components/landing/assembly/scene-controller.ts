@@ -14,6 +14,10 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { INSTRUMENT, LIGHT_RIG, PALETTE } from "./canonical";
 import {
+  HERO_INSTRUMENT_ROTATION,
+  HOME_INSTRUMENT_ROTATION,
+} from "./hero-pose";
+import {
   evaluate,
   focusFromScroll,
   restingFrame,
@@ -650,10 +654,21 @@ export function createSceneController(
       sceneFrame.instrument.position[2],
     );
     assembly.instrument.scale.setScalar(sceneFrame.instrument.scale);
+    /* The hero's own rotation, solved against the artboard rather than authored
+     * by hand. The previous triple (0.05, 0.28 - 0.6w, 0.04w) put the panel's top
+     * edge at -0.09 dy/dx where the artboard's is -0.23, and left its side edges
+     * leaning the wrong way, so the slab read as a flat card. `.work/hero-stage4/
+     * fit-panel2.mjs` rasterises the panel's own projected silhouette and solves
+     * pitch, yaw, roll, x, y and scale against eight landmarks measured off
+     * `01-hero.png`; this is that solution, 3.8 px RMS. It interpolates from the
+     * home pose so the other five chapters are unchanged. */
     assembly.instrument.rotation.set(
-      0.05,
-      0.28 - 0.6 * heroWeight,
-      0.04 * heroWeight,
+      HOME_INSTRUMENT_ROTATION[0] +
+        (HERO_INSTRUMENT_ROTATION[0] - HOME_INSTRUMENT_ROTATION[0]) * heroWeight,
+      HOME_INSTRUMENT_ROTATION[1] +
+        (HERO_INSTRUMENT_ROTATION[1] - HOME_INSTRUMENT_ROTATION[1]) * heroWeight,
+      HOME_INSTRUMENT_ROTATION[2] +
+        (HERO_INSTRUMENT_ROTATION[2] - HOME_INSTRUMENT_ROTATION[2]) * heroWeight,
     );
     assembly.parts.switchThumb.rotation.x += (Math.PI / 2) * heroWeight;
     assembly.parts.sliderThumb.rotation.x += (Math.PI / 2) * heroWeight;
@@ -662,7 +677,10 @@ export function createSceneController(
      * written. */
     assembly.syncReflection();
     assembly.parts.switchThumb.position.z += 0.04 * heroWeight;
-    assembly.parts.sliderThumb.position.z += 0.06 * heroWeight;
+    /* 0.06 stood the thumb so far off the plate that its silhouette spread to
+     * 69x66 px against the artboard's 57x55 and its projection slid 22 px left of
+     * the knob's position there; the artboard's knob barely clears the bar. */
+    assembly.parts.sliderThumb.position.z += 0.02 * heroWeight;
     /* ACES desaturates as it compresses, and the hero was sitting at the top of
      * its curve — the band rendered as a flat #e8e5df whatever the key did. The
      * artboard is bright where the key lands (251,237,220) and warm in shadow
@@ -675,53 +693,61 @@ export function createSceneController(
       : -INSTRUMENT.switch.thumbTravel;
 
     const tension = Math.max(0, Math.min(1, state.tension / 100));
+    /* The travel is the rail less a thumb at each end, so this simple linear map
+     * puts the thumb's outer edge flush with the rail's cap at 0 and at 1 — no
+     * clamp, no dead zone, and the same step of the value moves the thumb the
+     * same distance anywhere in the range. The artboard draws the control at the
+     * top of it: rail 969-1244 with the thumb on 1188-1244. That is where the
+     * rest value puts it, which is why `experience-store.ts` rests at 100. */
     const sliderX = (tension - 0.5) * INSTRUMENT.slider.travel;
     assembly.parts.sliderThumb.position.x += sliderX;
 
     const trackPose = sceneFrame.parts.sliderTrack;
-    assembly.sliderBand.mesh.position.set(
-      trackPose.position[0] * (1 - heroWeight),
-      trackPose.position[1] * (1 - heroWeight),
-      trackPose.position[2] * (1 - heroWeight),
-    );
-    assembly.sliderBand.setSpine(
-      /* The fill starts at the rail's own left cap rather than short of it. The
-       * artboard's bar is one continuous pink from that cap to the thumb, so a
-       * fill that began 0.04 inside the track left a cream notch at the end of
-       * the control that the artboard does not have. */
-      start.set(
-        trackPose.position[0] - INSTRUMENT.slider.track.width / 2 + 0.012,
-        trackPose.position[1],
-        trackPose.position[2] + 0.016,
-      ),
-      end.set(
-        trackPose.position[0] + sliderX - 0.02,
-        trackPose.position[1],
-        trackPose.position[2] + 0.016,
-      ),
-      0,
-      0.026,
-    );
-    /* The fill is faded out with the hero weight, which is the opposite of what
-     * this did before. The earlier reading was that the band was what made the
-     * slider pink, because the track rendered (233, 200, 203) against an artboard
-     * (221, 141, 172) - but the cause was the rail's own albedo, not a missing
-     * fill: `PALETTE.pink` renders that pale under the hero's key. With the rail's
-     * albedo solved the rail alone lands on the artboard's colour, and the band
-     * can only subtract from it.
+    /* The fill runs from the rail's left cap to the thumb's left edge and stops
+     * there: past the thumb the artboard shows cream, so there is nothing to
+     * draw. Both ends are read off the control rather than offset by hand, which
+     * is what let the old fill begin 0.04 inside the cap — a cream notch the
+     * artboard does not have — and, once the rail had been painted pink, run to
+     * the rail's far cap as well.
      *
-     * It has to, because a fill has nowhere flat to sit. The rail is a 0.03-thick
-     * plate and the band is a 0.026 tube whose spine lies on the plate's face, so
-     * it stands proud as a ridge with a shaded crevice down the length of the
-     * control. The artboard's slider is one flat bar - #da8dab held from end to
-     * end - with no ridge in it. The band stays for the chapters that draw a cream
-     * rail, where it is the only thing that makes the fill visible at all. */
+     * The rail is 0.03 thick and the fill is the same box, so it has to clear the
+     * rail's front face or it is simply inside it; 0.003 is the least that does,
+     * measured by stepping the offset and reading the framebuffer back
+     * (`.work/hero-stage4/band-diag4.mjs`). It surfaces the fill by 1.2 px, which
+     * is a shadow line rather than the 0.008 ridge the ribbon stood at. */
+    const fillLength =
+      INSTRUMENT.slider.track.width / 2 +
+      sliderX -
+      INSTRUMENT.slider.thumb +
+      /* The thumb is drawn 0.06 toward the camera at the hero, so in projection
+       * its left edge falls about 0.037 left of where its geometry is and the
+       * fill's own rounded cap would show past it as a pink sliver in the gap
+       * under the disc. Running the fill on past the thumb's edge keeps its end
+       * behind the thumb, where the artboard's is. */
+      INSTRUMENT.slider.thumb * 0.25;
+    const fillScale =
+      Math.max(0, fillLength) / INSTRUMENT.slider.track.width;
+    assembly.sliderFill.scale.x = fillScale;
+    assembly.sliderFill.position.set(
+      /* The box is centred, so placing its left cap on the rail's means half its
+       * scaled width to the right of it. */
+      trackPose.position[0] -
+        INSTRUMENT.slider.track.width / 2 +
+        (INSTRUMENT.slider.track.width * fillScale) / 2,
+      trackPose.position[1],
+      trackPose.position[2] + 0.003,
+    );
+    /* The fill no longer fades out with the hero weight. It used to, because the
+     * rail itself was pink at the hero and the band could only subtract from it;
+     * with the pink back on the fill, the fill is the only thing that makes the
+     * slider read at all, in the hero and in the five chapters that draw the same
+     * cream rail. */
     applyOpacity(
-      assembly.sliderBand.mesh,
+      assembly.sliderFill,
       Math.min(
         sceneFrame.parts.sliderTrack.opacity,
         sceneFrame.parts.sliderThumb.opacity,
-      ) * (1 - heroWeight),
+      ),
     );
 
     // Press deformation on the sculpted face; the group keeps the chapter pose.
@@ -745,11 +771,37 @@ export function createSceneController(
      * every one of these constants is read off the reference rather than chosen
      * to look right, and a sag on top of them would double-count the fall. */
     const ribbonSag = 0;
+    /* The thread's reach, separated from the control's rest value. It used to be
+     * one line — `- 0.42 - 1.24 * tension` — which tied the artboard's fitted
+     * thread to whatever value the slider happened to rest at, so moving the
+     * thumb to the artboard's own position dragged the thread 0.57 further out
+     * with it. The fix is not to rescale the thread but to anchor it: both
+     * endpoints the curve was fitted with are kept exactly, and only the rate
+     * changes, because the same 0.5704 of travel now has to cover the whole
+     * 0..100 instead of the 46 the control used to rest at.
+     *
+     *   tension 1 -> 0.42 + 0.5704 = 0.9904, the reach fitted to the artboard's
+     *                trace at the hero (mean error 1.4 px over 552 columns)
+     *   tension 0 -> 0.42, the relaxed end the old curve also had at 0
+     *
+     * So the resting thread is bit-for-bit where stage 3 left it, the thumb is
+     * where the artboard draws it, and the drag still moves the free end
+     * monotonically across the entire range. */
+    const threadReach = 0.42 + 0.5704 * tension;
+    /* The same re-anchor in y: 0.5 per unit was fitted as 0.23 at the old rest,
+     * and 0.23 per unit is what reaches it again at 1. */
+    const threadDrop = 0.23 * tension;
     /* The artboard's thread is a tapering band 13 px wide where it leaves the
      * plate, not the 4 px cord the original radius drew — and measured against
      * the reference render it is 11-13 px through the sweep where the first
-     * hero radius drew 17-18, so the gauge is 0.7 of that first estimate. */
-    const ribbonRadius = (0.012 + 0.037 * heroWeight) * (1 - 0.15 * tension);
+     * hero radius drew 17-18, so the gauge is 0.7 of that first estimate.
+     *
+     * The base was fitted with the control resting at 46, where the gauge term
+     * below is 0.931; it now rests at 100, where the term is 0.85. The base is
+     * scaled by 0.931/0.85 so that moving the thumb to the artboard's own
+     * position leaves the resting thread exactly the width stage 3 measured
+     * rather than quietly thinning it by 9%. */
+    const ribbonRadius = (0.0131 + 0.0405 * heroWeight) * (1 - 0.15 * tension);
     assembly.ribbon.setSpine(
       /* Both endpoints are solved, not eyeballed: the reference's thread was
        * traced column by column, and these four numbers are the ones that put
@@ -776,10 +828,10 @@ export function createSceneController(
         createPose.position[2] - 0.09,
       ),
       end.set(
-        createPose.position[0] - 0.42 - 1.24 * tension - 1.6771 * heroWeight,
+        createPose.position[0] - threadReach,
         createPose.position[1] +
           0.156 -
-          0.5 * tension -
+          threadDrop -
           (canvas.clientWidth >= 900 && canvas.clientHeight < 800
             ? 1.2603
             : 0.6581) *
