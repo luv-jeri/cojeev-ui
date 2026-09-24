@@ -25,10 +25,12 @@ import {
   APERTURE_OUTER,
 } from "./aperture-profile";
 import {
+  FEATURED_SPECIMEN,
   INSTRUMENT,
   MATERIAL_ROUGHNESS,
   PALETTE,
   SPECIMEN_TRAYS,
+  sourceSummaryLines,
   type SpecimenArchetype,
   type Vec3,
 } from "./canonical";
@@ -337,31 +339,48 @@ function createRibbon(
  * source lives in a stable DOM panel, and no essential code exists only as a
  * texture.
  */
-function sourceSummaryTexture() {
-  if (typeof document === "undefined") return new THREE.Texture();
+function paintSourceSummary(
+  canvas: HTMLCanvasElement,
+  lines: readonly [string, string, string],
+) {
+  const context = canvas.getContext("2d");
+  if (!context) return;
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  /* Three lines, centred. A fourth `ui/button.tsx` header used to sit above
+   * them, and at the hero's depth the plate's own top edge cut it in half
+   * across the glyphs — the artboard shows the three lines and nothing above
+   * them, so the header is gone and the block is centred in the canvas rather
+   * than pushed to the bottom. */
+  context.font = "600 42px ui-monospace, SFMono-Regular, Menlo, monospace";
+  const ink = ["#9EC5F2", "#F5B8DB", "#9EC5F2"] as const;
+  const left = [34, 82, 34] as const;
+  const baseline = [88, 142, 196] as const;
+  lines.forEach((line, index) => {
+    context.fillStyle = ink[index];
+    context.fillText(line, left[index], baseline[index]);
+  });
+}
+
+/**
+ * The summary texture, and the canvas behind it.
+ *
+ * The canvas is handed back so the summary can be repainted **in place** when
+ * the bench selection changes. `setSourceSummary` redraws this canvas and flips
+ * `needsUpdate`, so a switch costs one `fillText` block rather than a new GPU
+ * texture per specimen — the same reason the ribbon and slider band update
+ * their existing buffers instead of being rebuilt.
+ */
+function sourceSummaryTexture(lines: readonly [string, string, string]) {
+  if (typeof document === "undefined")
+    return { canvas: null, texture: new THREE.Texture() };
   const canvas = document.createElement("canvas");
   canvas.width = 512;
   canvas.height = 256;
-  const context = canvas.getContext("2d");
-  if (context) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    /* Three lines, centred. A fourth `ui/button.tsx` header used to sit above
-     * them, and at the hero's depth the plate's own top edge cut it in half
-     * across the glyphs — the artboard shows the three lines and nothing above
-     * them, so the header is gone and the block is centred in the canvas rather
-     * than pushed to the bottom. */
-    context.font = "600 42px ui-monospace, SFMono-Regular, Menlo, monospace";
-    context.fillStyle = "#9EC5F2";
-    context.fillText("<Button>", 34, 88);
-    context.fillStyle = "#F5B8DB";
-    context.fillText("Create", 82, 142);
-    context.fillStyle = "#9EC5F2";
-    context.fillText("</Button>", 34, 196);
-  }
+  paintSourceSummary(canvas, lines);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 4;
-  return texture;
+  return { canvas, texture };
 }
 
 /** Deterministic per-specimen contour variation: the field never repeats exactly. */
@@ -412,6 +431,14 @@ export type AssemblyScene = {
    * long shaping session cannot accumulate dead CPU-side buffers.
    */
   setFlowerContour(values: readonly number[], colour: string): void;
+  /**
+   * Repaints the source plate's summary for a specimen id, in place.
+   *
+   * The plate carries a summary, not the specimen's source — the real, selectable
+   * code lives in the DOM panel in the source chapter. Driving it from the
+   * selection is what stops the two from disagreeing.
+   */
+  setSourceSummary(id: string): void;
   dispose(): void;
 };
 
@@ -1165,9 +1192,9 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   sourceBody.castShadow = true;
   sourceBody.receiveShadow = true;
-  const summaryTexture = sourceSummaryTexture();
+  const summarySource = sourceSummaryTexture(sourceSummaryLines(FEATURED_SPECIMEN));
   const summaryMaterial = new THREE.MeshBasicMaterial({
-    map: summaryTexture,
+    map: summarySource.texture,
     transparent: true,
     toneMapped: false,
   });
@@ -1345,6 +1372,13 @@ export function buildAssemblyScene(): AssemblyScene {
     sliderBand,
     createMesh,
     heroFaces,
+    setSourceSummary(id: string) {
+      /* Repaint in place. The texture is reused rather than rebuilt, so switching
+       * specimens costs no GPU allocation and cannot leak one texture per press. */
+      if (!summarySource.canvas) return;
+      paintSourceSummary(summarySource.canvas, sourceSummaryLines(id));
+      summarySource.texture.needsUpdate = true;
+    },
     setHeroPresentation(weight) {
       /* Lerped from the authored colour every frame rather than accumulated, so
        * scrubbing back and forth across the boundary is exactly reversible. */
@@ -1459,7 +1493,7 @@ export function buildAssemblyScene(): AssemblyScene {
       for (const material of Object.values(kit)) material.dispose();
       for (const geometry of ownedGeometries) geometry.dispose();
       summaryMaterial.dispose();
-      summaryTexture.dispose();
+      summarySource.texture.dispose();
       grain.dispose();
       ribbon.mesh.geometry.dispose();
       sliderBand.mesh.geometry.dispose();

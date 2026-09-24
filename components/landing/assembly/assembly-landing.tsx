@@ -563,6 +563,10 @@ export function AssemblyLanding({
 
   const pickSpecimen = React.useCallback((id: string) => {
     setSpecimen(id);
+    /* The store is the only bridge from React to the scene, and the 3D source
+     * plate repaints from it. Without this write the plate kept drawing the
+     * featured specimen while the bench showed another — R10. */
+    experience.set({ specimen: id });
     experience.emit({ type: "specimenLift", id });
     experience.announce(`${id} selected`);
   }, []);

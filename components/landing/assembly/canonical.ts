@@ -11,6 +11,8 @@
  * brightness; no registry token is recoloured to compensate for rendering.
  */
 
+import { SPECIMEN_API } from "./specimen-api.generated";
+
 export type Vec3 = readonly [number, number, number];
 
 export const PALETTE = {
@@ -211,3 +213,33 @@ export const RESPONSE_CHARACTERS = [
   "rubber",
   "pebble",
 ] as const;
+
+/** `Pattern Background` → `PatternBackground`; a tag may not contain a space. */
+function componentTag(label: string) {
+  const joined = label.replace(/[^A-Za-z0-9]+([A-Za-z0-9])?/g, (_, next: string | undefined) =>
+    next ? next.toUpperCase() : "",
+  );
+  if (!joined) return "Component";
+  /* A catalogue label is already PascalCase, but an unknown id is kebab-case and
+   * would otherwise yield `<someComponent>` — not a usable tag. */
+  return joined[0].toUpperCase() + joined.slice(1);
+}
+
+/**
+ * The three lines the source plate's summary texture carries for a specimen.
+ *
+ * The plate is a **summary**, not the specimen's source: the real, selectable
+ * code lives in the DOM panel in the source chapter, and no essential code is
+ * ever texture-only. It is driven from the selection so the plate and the bench
+ * cannot disagree — the reviewer's R10 finding was exactly that disagreement.
+ *
+ * The tag is the specimen's own catalogue label and the body is the first prop
+ * `registry/cojeev/ui/<id>.tsx` actually declares, so every glyph on the plate
+ * traces back to the registry rather than to copy invented here.
+ */
+export function sourceSummaryLines(id: string): readonly [string, string, string] {
+  const specimen = SPECIMEN_TRAYS.find((entry) => entry.id === id);
+  const tag = componentTag(specimen?.label ?? id);
+  const body = SPECIMEN_API[id]?.[0]?.props?.[0]?.name ?? specimen?.category ?? tag;
+  return [`<${tag}>`, body, `</${tag}>`];
+}

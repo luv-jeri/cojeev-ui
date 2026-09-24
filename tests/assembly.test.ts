@@ -41,7 +41,9 @@ import {
   SPECIMEN_TRAYS,
   specimenFilter,
   specimenMatchesFilter,
+  sourceSummaryLines,
 } from "../components/landing/assembly/canonical";
+import { SPECIMEN_API } from "../components/landing/assembly/specimen-api.generated";
 import {
   CUES,
   CUE_IDS,
@@ -559,4 +561,50 @@ test("a chapter that overrides an opacity blends toward that override, never pas
   assert.equal(hidden, 0);
   const midpoint = evaluate(hero + 0.5).parts.panel.opacity;
   assert.ok(Math.abs(midpoint - 0.5) < 1e-9, `panel midpoint opacity ${midpoint}`);
+});
+
+test("the plate summary is driven by the selection, not a fixed snippet", () => {
+  /* R10. The plate used to draw `<Button>Create</Button>` for every selection —
+   * measured at 0 px of change in the plate region while the bench showed Slider.
+   * The tag must now be the specimen's own label, and the body a prop that
+   * `registry/cojeev/ui/<id>.tsx` really declares. */
+  const button = sourceSummaryLines("button");
+  const slider = sourceSummaryLines("slider");
+
+  assert.deepEqual(button, ["<Button>", "variant", "</Button>"]);
+  assert.deepEqual(slider, ["<Slider>", "variant", "</Slider>"]);
+
+  /* The whole point of the fix: two selections may not render the same plate. */
+  assert.notDeepEqual(button, slider);
+  assert.notEqual(button[0], slider[0]);
+
+  /* The body is the first prop the registry ships, not copy invented here. */
+  for (const [id, lines] of [
+    ["button", button],
+    ["slider", slider],
+  ] as const) {
+    const declared = SPECIMEN_API[id]?.[0]?.props?.[0]?.name;
+    assert.ok(declared, `${id} declares no props to summarise`);
+    assert.equal(lines[1], declared);
+  }
+
+  /* Every specimen on the bench must produce a distinct, renderable tag. A tag
+   * with a space in it is not JSX, and a duplicate means the plate cannot tell
+   * two selections apart. */
+  const tags = SPECIMEN_TRAYS.map((specimen) => sourceSummaryLines(specimen.id)[0]);
+  assert.equal(new Set(tags).size, tags.length, `duplicate plate tags: ${tags.join(", ")}`);
+  for (const tag of tags) {
+    assert.match(tag, /^<[A-Za-z][A-Za-z0-9]*>$/, `"${tag}" is not a usable tag`);
+  }
+
+  /* A multiword catalogue label must survive as one PascalCase identifier. */
+  const pattern = sourceSummaryLines("pattern-background");
+  assert.equal(pattern[0], "<PatternBackground>");
+  assert.equal(pattern[2], "</PatternBackground>");
+
+  /* An id the catalogue does not know still yields three usable lines rather
+   * than throwing or emitting `undefined` into the texture. */
+  const unknown = sourceSummaryLines("definitely-not-a-specimen");
+  assert.equal(unknown[0], "<DefinitelyNotASpecimen>");
+  for (const line of unknown) assert.ok(line.length > 0 && !line.includes("undefined"));
 });

@@ -247,6 +247,9 @@ export function createSceneController(
   const compression = createSpring(0);
   const spread = createSpring(0);
   const echo = createSpring(0);
+  /* The plate summary follows the bench selection. Tracked rather than repainted
+   * every frame, so the canvas is redrawn only when the id actually changes. */
+  let summarisedSpecimen: string | null = null;
 
   let cameraMix = 0;
   let releaseBeat = 0;
@@ -388,6 +391,10 @@ export function createSceneController(
 
   function applyFrame(dt: number, cameraDt = dt) {
     const state = experience.get();
+    if (state.specimen !== summarisedSpecimen) {
+      summarisedSpecimen = state.specimen;
+      assembly.setSourceSummary(state.specimen);
+    }
     /* One predicate for both silencers. The visitor's system preference is a
      * standing instruction and the site's own switch is the other; either one
      * means the scene changes state directly instead of travelling. */
