@@ -30,10 +30,14 @@
 }
 .v-hero[data-slot] { white-space:nowrap; text-wrap:nowrap; }
 .v-prose[data-slot] { max-width:70ch; gap:var(--s-4); }
-.v-prose[data-slot] :is(h2,h3):not(:first-child) { margin-block-start:var(--s-5); }
+/* The handoff's prose rhythm is the `gap` alone: `components-2.css:75` declares no
+   heading margin, and a `margin-block-start` here added 2 x --s-5 = 40px to every
+   prose block (measured as an exact +40.000px container height on typography). */
 .v-prose[data-slot] :is(p,li) { line-height:var(--lh-body); }
 .v-prose[data-slot] :is(pre,table) { max-width:100%; overflow-x:auto; }
 /* The handoff sets the display sizes from tokens (--fs-hero/--fs-display) at every
    width and never swaps in rem values; the 640px step-down was candidate-only. */
-.v-body-2[data-slot] { line-height:var(--lh-body); }
+/* `components-2.css:269` re-declares `.v-body-2` after `base.css:20`, so the
+   handoff's effective secondary-body line-height is 1.5, not `--lh-body` (1.45).
+   The shared `base.css` rule already carries that value; do not override it here. */
 .v-meta[data-slot] { font-size:var(--fs-meta); line-height:1.45; }

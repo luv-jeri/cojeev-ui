@@ -19,7 +19,7 @@ const buttonVariants = cva(
         accent:
           "-accent bg-[var(--v-pink)] text-[color:var(--v-on-accent)] hover:bg-[var(--v-pink-deep)]",
         secondary:
-          "-secondary bg-[var(--v-blue)] text-[color:var(--v-on-accent)]",
+          "-secondary bg-[var(--v-beige)] text-[color:var(--v-text)]",
         ghost:
           "-ghost bg-transparent text-[color:var(--v-text)] hover:bg-[var(--v-beige)]",
         outline:

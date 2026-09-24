@@ -87,6 +87,8 @@
 [data-slot="sheet-footer"] { flex-wrap:wrap; }
 [data-slot="sheet-content"] { --sheet-edge:var(--shell-inset); inset-inline-end:var(--sheet-edge); }
 [data-slot="sheet-content"][data-side="start"] { inset-inline-start:var(--sheet-edge); inset-inline-end:auto; }
-/* The reference keeps the sheet on the shell inset at every width; a drawer-style
-   full-bleed override at 640px was not in the handoff and moved both edges. */
-@media (max-width:640px) { [data-slot="sheet-content"] { padding:var(--s-5); } }
+/* The reference keeps the sheet on the shell inset AND on its authored padding at
+   every width: `components.css:169` declares `.v-sheet{… padding:var(--s-6)}` with
+   no width step-down, and the measured 360/390 rows wanted 24px, not --s-5 (20px).
+   A drawer-style full-bleed override here was not in the handoff; it moved the
+   edges and the padding together. Only the padding survived the first pass. */
