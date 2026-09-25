@@ -196,6 +196,11 @@ export function buildApertureGeometry(
    * darker in there - means moving the silhouette, and the silhouette is already
    * within 2-4 px of the reference at every row. */
   const occlusion: number[] = [];
+  /** how far in from the outer edge each vertex sits, 0..1, for the rim shadow */
+  const rim: number[] = [];
+  /** how far behind the front rim a vertex sits, 0..1, so the fragment stage can
+   * tell the face in front of the opening from the wall inside it */
+  const face: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
   const rings: number[][] = [];
@@ -271,6 +276,23 @@ export function buildApertureGeometry(
       const inward = Math.max(0, -a / halfWidth);
       const intoNiche = (b + halfDepth) / (2 * halfDepth);
       occlusion.push(1 - occlusionDepth * inward * intoNiche * intoNiche);
+      /* The rim's own shadow is the same `inward`, handed to the fragment stage
+       * with the plinth faded out. It cannot be resolved here: the cross-section
+       * carries two `edgeSegments`, so the face in front of the opening has
+       * exactly two vertex columns and anything baked per vertex is a straight
+       * line between them. The artboard's terminator is 10 px of a 92 px face —
+       * a step, not a line — and a step needs a value that survives
+       * interpolation. The fade cannot be left to the fragment stage either: it
+       * is a property of the station, not of the point across the band.
+       *
+       * The fade is the opening's own extent. It ends where the band meets the
+       * ground, and below that the same `inward` describes the plinth's outer
+       * edge, which the artboard paints in the ground's light: 197 under the
+       * arch against 110 on the rim 100 px above it. Read off the same rows as
+       * the rest of this file, local y -0.58 is plinth and -0.26 is rim. */
+      const plinth = Math.min(1, Math.max(0, (centre.y + 0.58) / 0.32));
+      rim.push(inward * plinth * plinth * (3 - 2 * plinth));
+      face.push(intoNiche);
     }
     rings.push(
       Array.from({ length: ring.length }, (_, index) => base + index),
@@ -372,6 +394,8 @@ export function buildApertureGeometry(
     shade[i] = 1 + (ramp - 1) * (1 - niche);
   }
   geometry.setAttribute("shade", new THREE.Float32BufferAttribute(shade, 1));
+  geometry.setAttribute("rim", new THREE.Float32BufferAttribute(rim, 1));
+  geometry.setAttribute("face", new THREE.Float32BufferAttribute(face, 1));
   geometry.setIndex(indices);
 
   /* Orient the whole surface outward. The signed volume of a closed mesh is

@@ -361,6 +361,18 @@
   position: relative;
 }
 
+/*
+ * The ground bleeds past the copy so that it spreads rather than the text moving
+ * onto it — but on the right that bleed is the one place it does harm. At the
+ * hero's authored pose the aperture's left leg runs from x=773 and the plate
+ * ended at x=806, so 33 px of the band came back black at 1536x1024 and the
+ * traced outer edge, which the geometry holds to within 4 px, read as 36 px
+ * short. The bleed is padding, not protection: every glyph sits inside the
+ * copy's own box (the widest is `possibilities.` at x=774 against a box edge at
+ * x=782), so the right bleed fades out instead of ending in a plate edge. Under
+ * the text the ground is untouched; past it there is nothing left to draw a
+ * straight boundary across the specimen.
+ */
 .asm-section__body::before {
   content: "";
   position: absolute;
@@ -369,6 +381,11 @@
   border-radius: 1.4rem;
   background: color-mix(in srgb, var(--asm-copy-surface) 88%, transparent);
   backdrop-filter: blur(0.5rem);
+  mask-image: linear-gradient(
+    to right,
+    #000 calc(100% - var(--asm-copy-ground)),
+    transparent 100%
+  );
 }
 
 .asm-section--catalogue .asm-section__body,

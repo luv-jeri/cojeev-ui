@@ -829,35 +829,76 @@ export function buildAssemblyScene(): AssemblyScene {
    * chapters share this geometry builder, and the niche is only lit this way in
    * the hero. */
   const apertureOcclusion = { value: 1 };
+  /* The rim's own shadow, and why it is in the shader rather than in the vertex
+   * attribute above. The band's cross-section carries two `edgeSegments`, so the
+   * face in front of the opening has exactly two vertex columns: `a` at the
+   * section's centre and `a` at the inner corner. Anything the vertex stage
+   * writes there is a straight line between those two numbers, and the
+   * artboard's terminator is a step — at 1536x1024 the face runs 226-230 to
+   * x=830 and then falls to 140 by x=838, against a face 92 px wide. So the
+   * vertex stage hands over `inward` (0 at the outer edge, 1 at the inner) and
+   * the step is taken here, per fragment, where the interpolated value still
+   * carries the position across that face.
+   *
+   * Solved against `01-hero.png` on the rows the `shade` ramp was solved on, by
+   * sweeping the three uniforms and reading the mean absolute error over the
+   * rim field x 820-900, y 280-640, which falls from 61.3 to 36.5 against the
+   * unmodified band. `start` is 0 because the artboard's terminator falls at the
+   * middle of the band, which is the first place `inward` leaves zero. */
+  const apertureRim = {
+    start: { value: 0 },
+    width: { value: 0.16 },
+    depth: { value: 0.75 },
+  };
   apertureFrame.material.onBeforeCompile = (shader) => {
     shader.uniforms.heroOcclusion = apertureOcclusion;
+    shader.uniforms.heroRimStart = apertureRim.start;
+    shader.uniforms.heroRimWidth = apertureRim.width;
+    shader.uniforms.heroRimDepth = apertureRim.depth;
     shader.vertexShader = shader.vertexShader
       .replace(
         "#include <common>",
         `#include <common>
 attribute float occlusion;
 attribute float shade;
+attribute float rim;
+attribute float face;
 varying float vOcclusion;
-varying float vShade;`,
+varying float vShade;
+varying float vRim;
+varying float vFace;`,
       )
       .replace(
         "#include <begin_vertex>",
         `#include <begin_vertex>
 vOcclusion = occlusion;
-vShade = shade;`,
+vShade = shade;
+vRim = rim;
+vFace = face;`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace(
         "#include <common>",
         `#include <common>
 uniform float heroOcclusion;
+uniform float heroRimStart;
+uniform float heroRimWidth;
+uniform float heroRimDepth;
 varying float vOcclusion;
-varying float vShade;`,
+varying float vShade;
+varying float vRim;
+varying float vFace;`,
       )
       .replace(
         "#include <color_fragment>",
         `#include <color_fragment>
-diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion) * vShade;`,
+/* The face attribute is how far behind the front rim a vertex sits, so the
+ * lit face is at the top of its range and the wall inside the opening at the
+ * bottom. Without the gate the wall takes this shadow on top of the occlusion
+ * attribute and lands at 46 where the artboard holds 110. */
+float vRimMask = smoothstep(0.4, 0.65, vFace);
+float vRimShadow = 1.0 - heroRimDepth * vRimMask * smoothstep(heroRimStart, heroRimStart + heroRimWidth, vRim);
+diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion) * vShade * mix(1.0, vRimShadow, heroOcclusion);`,
       );
   };
   aperture.add(apertureFrame);
