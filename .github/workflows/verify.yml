@@ -374,6 +374,9 @@ jobs:
         run: npm run build
       - run: npm run check:examples
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+      - name: Verify the Assembly landing route
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        run: npm run gate:assembly-route
       # The bounded harness the transient-paint and clock-isolation paths own,
       # with its negative controls. Selected only when the catalogue is not
       # running, which already renders these cases: a change to those files gets

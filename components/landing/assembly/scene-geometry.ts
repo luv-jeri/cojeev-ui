@@ -565,6 +565,16 @@ export type AssemblyScene = {
   /** The sculpted face the press deforms; the group around it carries the pose. */
   createMesh: THREE.Mesh;
   heroFaces: Record<string, { object: THREE.Object3D; probe: CreateSeamProbe }>;
+  /**
+   * The sculpted panel's own front face.
+   *
+   * Published with the seam sample so a layout check can measure the geometry a
+   * visitor is actually looking at rather than inferring it from CSS. The panel
+   * is the largest pale surface on the page, which is what makes it the one
+   * worth measuring: chapter copy that crosses it turns cream-on-cream and stops
+   * being readable, and that is a screen-space fact no stylesheet states.
+   */
+  panelFace: { object: THREE.Object3D; probe: CreateSeamProbe };
   setHeroPresentation(weight: number): void;
   /**
    * Tracks the floor's reflection to the instrument's current pose. Must be
@@ -1584,8 +1594,17 @@ varying vec4 vReflectionUv;`,
     );
     strap.position.z = INSTRUMENT.drawers.plate.thickness / 2;
     plate.add(body, strap);
-    plate.position.y =
+    /* The drawers group carries the bank, so a plate's own offset is
+     * pre-rotated by the inverse roll: without it the roll swings each plate
+     * sideways as well as tilting it, and the three end up on a diagonal
+     * instead of stacked one above the other. */
+    const along =
       (index - (INSTRUMENT.drawers.count - 1) / 2) * INSTRUMENT.drawers.gap;
+    plate.position.set(
+      along * Math.sin(INSTRUMENT.drawers.roll),
+      along * Math.cos(INSTRUMENT.drawers.roll),
+      0,
+    );
     plate.rotation.y = INSTRUMENT.drawers.yaw;
     drawers.add(plate);
   }
@@ -1771,7 +1790,12 @@ varying vec4 vReflectionUv;`,
   );
   softenFace(sourceBody, 0.86, 0.98, 0.06);
   for (const plate of drawers.children)
-    softenFace(plate.children[0] as THREE.Mesh, 0.44, 0.15, 0.032);
+    softenFace(
+      plate.children[0] as THREE.Mesh,
+      INSTRUMENT.drawers.plate.width,
+      INSTRUMENT.drawers.plate.height,
+      0.032,
+    );
   const textured = [
     panel.material,
     createMesh.material,
@@ -1792,7 +1816,11 @@ varying vec4 vReflectionUv;`,
   for (const [index, name] of ["actions", "content", "layout"].entries()) {
     heroFaces[name] = {
       object: drawers.children[index].children[0],
-      probe: createSeamProbe(0.44, 0.15, 0.025),
+      probe: createSeamProbe(
+        INSTRUMENT.drawers.plate.width,
+        INSTRUMENT.drawers.plate.height,
+        0.025,
+      ),
     };
   }
 
@@ -1816,6 +1844,10 @@ varying vec4 vReflectionUv;`,
     sliderFill,
     createMesh,
     heroFaces,
+    panelFace: {
+      object: panel,
+      probe: createSeamProbe(INSTRUMENT.panel.width, INSTRUMENT.panel.height, 0),
+    },
     floorReflection,
     setHeroPresentation(weight) {
       /* Lerped from the authored colour every frame rather than accumulated, so

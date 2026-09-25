@@ -99,15 +99,34 @@ export const INSTRUMENT = {
   drawers: {
     local: [0.6, 0.07, -0.06] as Vec3,
     yaw: -0.24,
-    gap: 0.235,
+    /* The stack is fanned and banked away from the panel instead of hanging
+     * flat beside it. The artboard's three plates are one contiguous band whose
+     * top edges descend 0.338 px per px to the right, each plate about 88 px
+     * tall at a fixed column with 101 px between successive tops; the flat stack
+     * drew the fan at -0.180 — pointing the wrong way — at 62 px with 95 px
+     * between tops.
+     *
+     * `tilt` pitches the stack back about the instrument's X axis and `roll`
+     * banks it about Z. The tick is small enough that the fan reads as one
+     * gesture, and the pitch is what makes the plates step back through the
+     * scene instead of sitting on one plane.
+     *
+     * These numbers come from matching the artboard's own column runs against
+     * the plates' projected outlines. Two earlier attempts are worth not
+     * repeating: a luminance mask cannot separate the plates once they are
+     * banked (one face blows out, another falls into shadow) and they merge into
+     * a single blob once they touch, and an overlap score is happy to leave the
+     * fan inverted because an inverted fan still overlaps. */
+    tilt: 0.4,
+    roll: -0.546,
+    gap: 0.238,
     count: 3,
-    /* Measured against the artboard: its three drawers project 82-93 px each
-     * with 12-15 px between them, where this stack drew 59-70 px with 20 px
-     * gaps. Both numbers scale by the same 1.3, so the stack keeps its internal
-     * proportions and stays centred on the middle plate, which is what the
-     * hero's override positions. The label faces and their hit areas project
-     * from the same pose, so they follow the plate without a second edit. */
-    plate: { width: 0.44, height: 0.195, thickness: 0.045 },
+    /* Read off the artboard's three plate silhouettes: each is 159 px wide and
+     * 121-142 px tall with its top edge descending 0.262-0.415, which works back
+     * to a plate about 135 px by 92 px banked roughly 22 degrees. The label
+     * faces and their hit areas project from the same pose, so they follow the
+     * plate without a second edit. */
+    plate: { width: 0.368, height: 0.2203, thickness: 0.045 },
     strap: { width: 0.2, height: 0.03, thickness: 0.012 },
   },
   stylePlate: {

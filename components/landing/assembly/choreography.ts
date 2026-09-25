@@ -27,6 +27,35 @@ export type ChapterId =
   | "source"
   | "closing";
 
+export type GroundTone = "dark" | "light";
+
+/** Pick the foreground family with the stronger WCAG contrast on a scene colour. */
+export function groundToneForBackdrop(value: string): GroundTone {
+  const match = value.match(/^#?([\da-f]{6})$/i);
+  if (!match) throw new Error(`Expected a six-digit sRGB colour, received: ${value}`);
+  const rgb = (hex: string): [number, number, number] => [
+    Number.parseInt(hex.slice(0, 2), 16),
+    Number.parseInt(hex.slice(2, 4), 16),
+    Number.parseInt(hex.slice(4, 6), 16),
+  ];
+  const luminance = ([red, green, blue]: [number, number, number]) => {
+    const linear = [red, green, blue].map((byte) => {
+      const channel = byte / 255;
+      return channel <= 0.04045
+        ? channel / 12.92
+        : ((channel + 0.055) / 1.055) ** 2.4;
+    });
+    return (linear[0] ?? 0) * 0.2126 + (linear[1] ?? 0) * 0.7152 + (linear[2] ?? 0) * 0.0722;
+  };
+  const backdrop = luminance(rgb(match[1]));
+  const cream = luminance([251, 244, 230]);
+  const ink = luminance([17, 17, 17]);
+  const contrast = (foreground: number) =>
+    (Math.max(backdrop, foreground) + 0.05) /
+    (Math.min(backdrop, foreground) + 0.05);
+  return contrast(cream) >= contrast(ink) ? "dark" : "light";
+}
+
 export type PartId =
   | "panel"
   | "create"
@@ -83,7 +112,12 @@ export const HOME_PARTS: Record<PartId, PartPose> = {
   sliderTrack: { position: INSTRUMENT.slider.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
   sliderThumb: { position: INSTRUMENT.slider.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
   flower: { position: INSTRUMENT.flower.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
-  drawers: { position: INSTRUMENT.drawers.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
+  drawers: {
+    position: INSTRUMENT.drawers.local,
+    rotation: [INSTRUMENT.drawers.tilt, 0, INSTRUMENT.drawers.roll],
+    scale: 1,
+    opacity: 1,
+  },
   stylePlate: { position: INSTRUMENT.stylePlate.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
   sourcePlate: { position: INSTRUMENT.sourcePlate.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
 };
@@ -208,7 +242,11 @@ export const CHAPTERS: readonly Chapter[] = [
      * `front(FRONT_FACE)` and is therefore unaffected either way. */
     parts: front({
       sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 },
-      drawers: { position: [0.66, -0.064, -0.12], opacity: 1 },
+      drawers: {
+        position: [0.732, -0.092, -0.1135],
+        rotation: [INSTRUMENT.drawers.tilt, 0, INSTRUMENT.drawers.roll],
+        opacity: 1,
+      },
       switchBase: { position: [-0.3, 0.2585, 0.028] },
       switchThumb: { position: [-0.3, 0.2585, 0.028] },
       create: { position: [0, -0.1034, 0.045] },

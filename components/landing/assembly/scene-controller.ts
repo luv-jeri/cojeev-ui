@@ -22,6 +22,8 @@ import {
   focusFromScroll,
   restingFrame,
   scrollProgress,
+  groundToneForBackdrop,
+  type GroundTone,
   type EvaluatedFrame,
   type PartId,
 } from "./choreography";
@@ -57,6 +59,11 @@ export type SeamRect = {
 export type SeamSample = {
   create: SeamRect | null;
   faces: Record<string, SeamRect | null>;
+  /**
+   * The sculpted panel's projected outline, published alongside the controls so
+   * the page's own layout can be measured against the geometry on screen.
+   */
+  panel: SeamRect | null;
 };
 
 export type SceneStatus = "pending" | "ready" | "lost" | "unavailable";
@@ -66,6 +73,7 @@ export type SceneControllerOptions = {
   sectionTops: () => number[];
   onSeam: (sample: SeamSample) => void;
   onChapter: (index: number) => void;
+  onGroundTone: (tone: GroundTone) => void;
   onStatus: (status: SceneStatus) => void;
 };
 
@@ -120,6 +128,8 @@ const SPREAD = { stiffness: 150, damping: 24.5 };
 const ECHO = { stiffness: 300, damping: 20 };
 
 const MAX_DPR_DESKTOP = 1.75;
+/** Space kept between the drawer fan's right edge and the frame's, in CSS px. */
+const FAN_MARGIN = 14;
 const MAX_DPR_MOBILE = 1.5;
 
 export function isWebglAvailable() {
@@ -139,7 +149,7 @@ export function isWebglAvailable() {
 export function createSceneController(
   options: SceneControllerOptions,
 ): SceneController | null {
-  const { canvas, sectionTops, onSeam, onChapter, onStatus } = options;
+  const { canvas, sectionTops, onSeam, onChapter, onGroundTone, onStatus } = options;
   if (!isWebglAvailable()) {
     onStatus("unavailable");
     return null;
@@ -223,10 +233,12 @@ export function createSceneController(
   let viewportHeight = typeof window === "undefined" ? 1 : window.innerHeight;
   let frame: EvaluatedFrame = evaluate(0);
   let lastChapter = -1;
+  let lastGroundTone: GroundTone | null = null;
   let disposed = false;
   let scheduled = 0;
   let previousTime = 0;
   let lastSeamKey = "";
+  let lastPanelKey = "";
   let contourPreset: SignatureShapeName = "petal-7";
   let directContour = 0;
   let contourColour: string = PALETTE.yellow;
@@ -259,6 +271,7 @@ export function createSceneController(
   const cameraFocusPoint = new THREE.Vector3();
   const focusStart = new THREE.Vector3();
   const focusEnd = new THREE.Vector3();
+  const fanCorner = new THREE.Vector3();
   let focusMix = 1;
   let hidden = false;
   let contextLost = false;
@@ -358,14 +371,37 @@ export function createSceneController(
 
   function publishSeam() {
     const rect = measureSeam();
+    const { projection, view } = seamMatrices(camera);
+    /* The panel is measured on the same pass and in the same units as the
+     * controls, so a caller comparing chapter copy against it is comparing
+     * against the frame that is about to be drawn rather than the one before. */
+    const panelFace = assembly.panelFace;
+    panelFace.object.updateWorldMatrix(true, false);
+    const panel = projectFace(
+      panelFace.probe,
+      panelFace.object.matrixWorld.elements,
+      projection,
+      view,
+      canvas.clientWidth,
+      canvas.clientHeight,
+    );
     const nextKey = rect
       ? `${rect.x.toFixed(1)}:${rect.y.toFixed(1)}:${rect.width.toFixed(1)}:${rect.angle.toFixed(3)}`
       : "hidden";
-    if (nextKey === lastSeamKey && experience.get().heroPhase === "idle")
+    const panelKey = panel
+      ? panel.corners
+          ?.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`)
+          .join(":") ?? `${panel.x.toFixed(1)}:${panel.y.toFixed(1)}`
+      : "hidden";
+    if (
+      nextKey === lastSeamKey &&
+      panelKey === lastPanelKey &&
+      experience.get().heroPhase === "idle"
+    )
       return;
     lastSeamKey = nextKey;
+    lastPanelKey = panelKey;
     const faces: Record<string, SeamRect | null> = {};
-    const { projection, view } = seamMatrices(camera);
     for (const [id, face] of Object.entries(assembly.heroFaces)) {
       face.object.updateWorldMatrix(true, false);
       faces[id] = projectFace(
@@ -377,7 +413,7 @@ export function createSceneController(
         canvas.clientHeight,
       );
     }
-    onSeam({ create: rect, faces });
+    onSeam({ create: rect, faces, panel });
   }
 
   /**
@@ -538,7 +574,75 @@ export function createSceneController(
     camera.rotation.z = pose.roll;
     camera.updateProjectionMatrix();
 
+    /* The drawer fan is the widest part of the hero presentation and it leaves
+     * the frame long before the instrument does: the rightmost plate ended at
+     * 413 on a 390 wide screen and at 1072 on a 1024 wide one, with its label
+     * cut mid-word and its chevron off the plate entirely. The correction is
+     * measured rather than tabulated — project the fan's own right edge and move
+     * the composition by exactly the overflow, so a frame that already fits is
+     * not touched at all. Moving the eye and the target together along the
+     * frame's horizontal axis is a pan: it changes where the composition sits
+     * and nothing about its perspective. */
+    if (heroWeight > 0.01) {
+      const fan = assembly.heroFaces.actions;
+      if (fan) {
+        fan.object.updateWorldMatrix(true, false);
+        const { projection, view } = seamMatrices(camera);
+        const fanRect = projectFace(
+          fan.probe,
+          fan.object.matrixWorld.elements,
+          projection,
+          view,
+          canvas.clientWidth,
+          canvas.clientHeight,
+        );
+        const corners = fanRect?.corners;
+        if (corners && corners.length >= 4) {
+          const right = Math.max(...corners.map((point) => point.x));
+          const overflow = right - (canvas.clientWidth - FAN_MARGIN);
+          if (overflow > 0) {
+            const forward = cameraTarget.clone().sub(camera.position).normalize();
+            /* The frame's own horizontal axis, taken after the chapter's roll
+             * rather than from the world up vector: `forward × up` is the
+             * unrolled axis, and a pan along it leaves a rolled frame short of
+             * the overflow it was asked to clear — 8px at 1024 wide, where the
+             * composition roll is largest. */
+            const axis = new THREE.Vector3()
+              .setFromMatrixColumn(camera.matrixWorld, 0)
+              .normalize();
+            /* The pan is converted at the fan's own right corner rather than at
+             * the plate's centre: the fan tilts each plate away from the
+             * camera, so the edge that overflows is the deepest point of the
+             * control, and a pan priced at the centre moves it by less than the
+             * overflow it was meant to clear. */
+            fanCorner
+              .set(fan.probe.right[0], fan.probe.top[1], fan.probe.centre[2])
+              .applyMatrix4(fan.object.matrixWorld);
+            const depth = Math.max(
+              0.001,
+              fanCorner.sub(camera.position).dot(forward),
+            );
+            /* Pixels per world unit at that depth, read from the projection
+             * matrix rather than from `camera.fov`. The mobile hero runs under
+             * `setViewOffset` — the canvas shows an 844px window into a 460px
+             * tall view — and the offset leaves `fov` at its authored 35 while
+             * the matrix carries the effective 60 degrees. Pricing the pan from
+             * `fov` therefore corrected 19 of the 35 pixels of overflow. */
+            const focal = 0.5 * canvas.clientHeight * projection[5];
+            const pan = (overflow * depth) / Math.max(1, focal);
+            camera.position.addScaledVector(axis, pan);
+            cameraTarget.addScaledVector(axis, pan);
+          }
+        }
+      }
+    }
+
     backdrop.setStyle(sceneFrame.backdrop, THREE.SRGBColorSpace);
+    const groundTone = groundToneForBackdrop(sceneFrame.backdrop);
+    if (groundTone !== lastGroundTone) {
+      lastGroundTone = groundTone;
+      onGroundTone(groundTone);
+    }
     (scene.background as THREE.Color).copy(backdrop);
     floorColor.copy(backdrop).multiplyScalar(0.86);
     floorColor.lerp(warmHeroFloor, heroWeight * 0.85);
@@ -1014,6 +1118,7 @@ export function createSceneController(
   const onRestored = () => {
     contextLost = false;
     lastSeamKey = "";
+    lastPanelKey = "";
     /* Every render target's storage died with the context. Recreate rather than
      * resize: the dead target's GPU-side allocation is gone and `setSize` would
      * compare against dimensions that no longer describe anything. */

@@ -40,6 +40,17 @@
   --asm-on-strong: var(--asm-cream);
   --asm-page: var(--asm-cream);
 
+  /* The registry's own text tokens, read once here and captured before any
+   * chapter bridge below re-points them. A surface that brings its own card
+   * needs the registry's light/dark pairing rather than the chapter's, and
+   * re-reading `var(--v-text)` inside a bridged subtree returns the bridged
+   * value — that is what inheritance means. Resolving the pair here, on the
+   * page root and above every bridge, is what keeps foreground and background
+   * together in both global themes. */
+  --asm-v-text: var(--v-text);
+  --asm-v-text-2: var(--v-text-2);
+  --asm-v-muted: var(--muted-foreground);
+
   position: relative;
   isolation: isolate;
   min-height: 100%;
@@ -60,6 +71,48 @@
 
 .asm[data-tone="cream"] {
   --asm-page: var(--asm-cream);
+}
+
+/* Copy and embedded controls follow the rendered scene's contrast family. The
+   backdrop blends continuously between chapters, so the nearest chapter label
+   (`data-tone`) can lag the actual ground. `data-ground-tone` comes from the
+   same evaluated backdrop the renderer paints. These local surfaces keep a
+   stable high-contrast ground through the short midpoint where neither raw scene
+   colour alone is strong enough for the chosen ink. */
+.asm[data-ground-tone="dark"] {
+  color: var(--asm-cream);
+  --asm-copy-surface: #0b0b0c;
+}
+
+.asm[data-ground-tone="light"] {
+  color: var(--asm-ink);
+  --asm-copy-surface: var(--asm-cream);
+}
+
+.asm[data-ground-tone="dark"] .v-motion-controls {
+  --v-text: var(--asm-cream);
+  --v-text-2: rgb(251 244 230 / 72%);
+  --muted-foreground: var(--v-text-2);
+}
+
+.asm[data-ground-tone="light"] .v-motion-controls {
+  --v-text: var(--asm-ink);
+  --v-text-2: #514b41;
+  --muted-foreground: #514b41;
+}
+
+/* The preview block is the one part of the panel that brings its own card, so
+   it restores the registry's own pairing rather than the chapter's. Pinning a
+   literal near-black here instead — which is what an earlier version of this
+   file did — is correct on the light card and broken on the dark one: the
+   global dark theme paints that card `#292f37`, so `#0e0b0b` copy measured
+   1.45:1 and its `#5f5b55` meta line 2.00:1. Re-asserting the captured pair
+   keeps both themes honest, because the token that colours the card and the
+   token that colours the words now come from the same theme. */
+.asm[data-ground-tone] .v-motion-controls__preview {
+  --v-text: var(--asm-v-text);
+  --v-text-2: var(--asm-v-text-2);
+  --muted-foreground: var(--asm-v-muted);
 }
 
 .asm[data-tone="blue"] {
@@ -286,6 +339,38 @@
   width: min(100%, var(--asm-measure));
 }
 
+/*
+ * Below the width at which the object has a side of the frame to itself, the
+ * copy and the specimen share every column: at 1024 the panel's drawers reached
+ * x=1072, and the motion chapter's own heading measured 1.05:1 where it crossed
+ * the pale plate at 390 wide. The copy therefore carries a ground of its own at
+ * these widths — the translucency and blur the sound strip already uses, tinted
+ * with the chapter's page colour so it follows `data-tone` in both themes and in
+ * both global themes. It is a pseudo-element, so no glyph moves: the ground
+ * spreads past the text rather than the text moving onto the ground.
+ *
+ * It is not scoped to the narrow widths. At every authored rest pose from 1440
+ * up the object already clears the copy — but the page is read while scrolling,
+ * not at rest, and a desktop stop mid-transition measured the chapter marker at
+ * 1.75:1 and the registry's own meta text at 1.06:1 against the same pale
+ * geometry. Where the scene agrees with the tone the ground is the page colour
+ * and there is nothing to see; where it disagrees, that is the defect.
+ */
+.asm-section__body {
+  --asm-copy-ground: clamp(0.9rem, 3.5vw, 1.5rem);
+  position: relative;
+}
+
+.asm-section__body::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--asm-copy-ground));
+  z-index: -1;
+  border-radius: 1.4rem;
+  background: color-mix(in srgb, var(--asm-copy-surface) 88%, transparent);
+  backdrop-filter: blur(0.5rem);
+}
+
 .asm-section--catalogue .asm-section__body,
 .asm-section--closing .asm-section__body {
   width: min(100%, 40rem);
@@ -320,7 +405,7 @@
   margin: 1.5rem 0 0;
   font-size: 0.86rem;
   line-height: 1.6;
-  opacity: 0.84;
+  opacity: 1;
 }
 
 .asm-facts {
@@ -833,6 +918,19 @@
 }
 
 /*
+ * One label in the strip is a sentence rather than a word. `nowrap` is right for
+ * "Volume" and "Music bed", which must not fold into two lines beside their
+ * switch, but it took this one 96px past the right edge of a 390px viewport —
+ * the description of the motion switch was cut mid-word on every phone. It
+ * wraps instead, and is the only member of the row allowed to give ground.
+ */
+.asm-sound__row > #asm-motion-mode-hint {
+  flex: 1 1 12rem;
+  min-width: 0;
+  white-space: normal;
+}
+
+/*
  * Below the phone breakpoint the strip becomes two tidy rows rather than three
  * ragged ones: the bed switch keeps its own word on a column of its own, and the
  * volume group is allowed to shrink, because at 360px the four elements cannot
@@ -976,16 +1074,24 @@
   .asm-rail {
     top: auto;
     right: 0;
-    bottom: 0;
+    /*
+     * The report launcher is fixed to this same corner — 50px tall on a phone,
+     * 56px at tablet — and it sat on top of the last chapters: "Compose",
+     * "Source" and "Start" were not painted at all, and the three labels that
+     * were painted measured 1.63:1 against the specimen showing through the
+     * strip. The bar lifts clear of the launcher, and the scrim it already had
+     * is deepened until a cream label over the brightest thing the scene can put
+     * behind it — the white face of the instrument, 240 — clears 4.5:1.
+     */
+    bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
     left: 0;
     width: auto;
-    padding: 0.5rem var(--asm-gutter)
-      calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.5rem var(--asm-gutter);
     transform: none;
     background: linear-gradient(
       to top,
-      rgb(0 0 0 / 42%),
-      rgb(0 0 0 / 22%) 60%,
+      rgb(0 0 0 / 76%),
+      rgb(0 0 0 / 62%) 60%,
       transparent
     );
     color: var(--asm-cream);
@@ -1018,7 +1124,9 @@
   }
 
   /* Padding, not a fixed height, so the target grows with the text and still
-   * clears the 44px comfortable-target floor at every supported width. */
+   * clears the 44px comfortable-target floor at every supported width. The
+   * label is legible on the bar's own scrim, so it no longer has to carry a
+   * second, unmeasured dimming of its own. */
   .asm-rail a {
     min-height: 44px;
     padding: 0.55rem 0.15rem;
@@ -1026,6 +1134,23 @@
     justify-content: center;
     text-align: center;
     line-height: 1.15;
+    opacity: 0.86;
+  }
+
+  /* The rail hides immediately during scroll and remains hidden while visible
+     document copy or controls cross its fixed bar. It is also inert in that
+     state, so a transparent overlap cannot steal a tap or keyboard focus. */
+  .asm-rail[data-obscured="true"] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: none;
+  }
+
+  .asm-rail {
+    transition:
+      opacity 120ms ease,
+      visibility 0s linear;
   }
 
   /* Taller than the viewport on purpose: the canvas is fixed, so the 3D stays
@@ -1057,6 +1182,12 @@
   .asm-seam__plate {
     will-change: auto;
   }
+
+  /* Rail visibility changes without animation for reduced-motion readers. */
+  .asm-rail,
+  .asm-rail[data-obscured="true"] {
+    transition: none;
+  }
 }
 
 /* ---------------------------------------------------------------- utilities */
@@ -1082,6 +1213,29 @@
   justify-content: space-between;
   align-items: flex-start;
   color: var(--asm-cream);
+}
+/*
+ * The header is cream at every chapter, because the wordmark is the hero's, and
+ * the hero's ground is dark. The scene does not always agree: at 1024x768 the
+ * pale instrument rises to the top of the frame and the nav read 1.00:1 and
+ * 1.16:1 against it. This is that chapter's own page colour and nothing else, so
+ * it is invisible wherever the scene already agrees with the tone — which is
+ * everywhere the header is legible today — and it settles the disagreement where
+ * it does not. It sits at z-index -1 inside the header's own stacking context,
+ * so it covers the canvas and nothing covers it.
+ */
+.asm-header::before {
+  content: "";
+  position: absolute;
+  inset: -28px calc(-1 * 3.4vw) -3rem;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--asm-page) 94%, transparent),
+    color-mix(in srgb, var(--asm-page) 72%, transparent) 55%,
+    transparent
+  );
 }
 .asm-brand {
   font-family: var(--asm-display);
@@ -1293,6 +1447,15 @@
   gap: 20px;
   font-size: 14px;
   margin: 0;
+  /* The spec line is the last thing the hero leaves on screen: by the time the
+   * scene has turned pale behind it, "React · TypeScript · Tailwind · shadcn ·
+   * MIT" is cream on cream and measured 1.09:1 in both themes. It belongs to the
+   * Invitation chapter, so it goes when that chapter does — and comes back with
+   * it on the way up. */
+  transition: opacity 240ms ease;
+}
+.asm:not([data-chapter="hero"]) .asm-hero-foot {
+  opacity: 0;
 }
 .asm-hero-space {
   display: none;
@@ -1427,7 +1590,7 @@ body:has(.asm[data-chapter="hero"]) .report-launcher {
   width: 100%;
   height: 100%;
   min-height: 0;
-  color: #24211f;
+  color: #171513;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -1474,7 +1637,20 @@ body:has(.asm[data-chapter="hero"]) .report-launcher {
 .asm-hero-face--content > button,
 .asm-hero-face--actions > button {
   justify-content: space-between;
-  font-size: calc(var(--face-font, 17px) * 0.86);
+  gap: 6px;
+  font-size: calc(var(--face-font, 17px) * 0.68);
+}
+.asm-hero-face--layout > button > svg,
+.asm-hero-face--layout > button > span,
+.asm-hero-face--content > button > svg,
+.asm-hero-face--content > button > span,
+.asm-hero-face--actions > button > svg,
+.asm-hero-face--actions > button > span {
+  /* The artboard banks the plates at about 22 degrees but keeps the labels,
+     icon strokes and chevron close to a 10-degree reading angle. Correct from
+     the projected face angle at each viewport rather than using one screen
+     rotation that drifts when camera fit changes. */
+  transform: rotate(calc(0.18rad - var(--face-angle, 0rad)));
 }
 .asm-hero-face--slider input {
   appearance: none;
@@ -1636,9 +1812,12 @@ body:has(.asm[data-chapter="hero"]) .report-launcher {
     gap: 6px;
     padding: 0 6px;
   }
+  /* The knob is sculpted geometry and reaches further than the switch's own
+   * projected plate, so a label tucked in at 114% had its first letters over the
+   * knob's dark olive: 1.52:1 at 390 and 1.16:1 at 768. 124% clears it. */
   .asm-switch-label {
     font-size: 12px;
-    left: 114%;
+    left: 124%;
   }
   .asm-drawer-preview {
     top: var(--hero-preview-top, 1020px);
@@ -1675,17 +1854,61 @@ body:has(.asm[data-chapter="hero"]) .report-launcher {
 .asm .asm-hero-face--create > .asm-seam__button {
   font-size: calc(var(--face-font, 24px) * 1.2);
 }
+/*
+ * The three drawer plates are the narrowest faces on the object — 91px wide at
+ * 390 — and they carry three things, not one: a glyph, a word and an arrow. The
+ * inset is a percentage of the plate rather than a pixel count, so icon, label
+ * and chevron scale with the plate they are painted on and stay on it. The
+ * right inset is what keeps the chevron off the plate's corner: flushed to the
+ * box edge it measured 1.12:1 against the room behind the plate, because the
+ * projected face is a trapezoid and its corners are not its paint.
+ */
 .asm-hero-face--layout > button,
 .asm-hero-face--content > button,
 .asm-hero-face--actions > button {
   padding-left: 14%;
+  padding-right: 9%;
 }
-@media (max-width: 899px) {
+/*
+ * The row is centred, so a word that is wider than the plate it is painted on
+ * spills off BOTH edges — and the chevron, which is the last thing in the row,
+ * is the part that lands on the room behind the plate: 1.10:1 at 1920, 1.12:1 at
+ * 1440, 1.17:1 at 1024. Letting the label shrink keeps the whole row inside the
+ * plate at every width, and the insets above decide how much of the plate the
+ * word may use. Nothing changes where the word already fits.
+ */
+.asm-hero-face--layout > button > span:not([aria-hidden="true"]),
+.asm-hero-face--content > button > span:not([aria-hidden="true"]),
+.asm-hero-face--actions > button > span:not([aria-hidden="true"]) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Below the width at which the plate can hold a 30px word, the drawer label is
+ * sized from the plate it is painted on rather than from its height: the three
+ * faces carry a glyph, a word and an arrow, and at 1024 a 25.8px label pushed
+ * the chevron 8px past the plate's edge. From 1280 up the plates are wide
+ * enough for the height-derived size and this does not apply. */
+@media (max-width: 1279px) {
   .asm-hero-face--layout > button,
   .asm-hero-face--content > button,
   .asm-hero-face--actions > button {
-    font-size: 12px;
-    padding-left: 9%;
+    font-size: clamp(11px, calc(var(--face-width, 8rem) * 0.108), 20px);
+  }
+}
+@media (max-width: 899px) {
+  /* At 390 the plate is 89px wide and the label shares it with an icon and a
+     chevron. 11px with 7% of padding truncated three of the three labels to
+     "Layo…", "Cont…", "Acti…" — inside the frame, but no longer words. The
+     frame is not the only thing the label has to survive. */
+  .asm-hero-face--layout > button,
+  .asm-hero-face--content > button,
+  .asm-hero-face--actions > button {
+    font-size: 10px;
+    gap: 3px;
+    padding-left: 5%;
+    padding-right: 5%;
   }
 }
 .asm[data-webgl="ready"][data-chapter="hero"] {
