@@ -292,6 +292,14 @@
 .v-card[data-slot]:is(.-pink, .-yellow, .-olive, .-blue) {
   --card-secondary-ink: var(--muted-foreground-ink);
 }
+/* The accent cards need the same dark restatement `-cream` already carries above.
+   `--muted-foreground-ink` is a light-mode value with no dark counterpart, so
+   without this the accent cards painted #2E2A24 secondary text on their own dark
+   surfaces — 1.06:1, effectively invisible. The handoff resolves the identical
+   case at `components-2.css:206` by falling back to `--v-text-2`. */
+:root[data-mode="dark"] .v-card[data-slot]:is(.-pink, .-yellow, .-olive, .-blue) {
+  --card-secondary-ink: var(--v-text-2);
+}
 .v-card[data-slot].-ink {
   --card-secondary-ink: var(--v-on-ink);
 }
