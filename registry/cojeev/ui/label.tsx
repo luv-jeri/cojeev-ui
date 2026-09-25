@@ -3,7 +3,13 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/registry/cojeev/lib/utils"
 
-const LabelVariants=cva("v-label [font-size:var(--fs-control)] [font-weight:600] [line-height:1.5] [box-shadow:none] [border:0] [background:none]",{variants:{variant:{"default":""},size:{"default":"","sm":"-sm [font-size:13px]"}},defaultVariants:{variant:"default",size:"default"}})
+/* Label type scale is the handoff's, not a step lower. `components.css:98`
+   declares `.v-label{font-size:var(--fs-lead);font-weight:600;line-height:1.2}`
+   with `.v-label.-sm{font-size:var(--fs-control)}` — 17px/1.2, and 14px for the
+   small size. The candidate ran 14px/1.5 and 13px, so every label was a size
+   small and half a line tall. `-sm` now takes its size from the authored class
+   in label.css rather than restating a literal here. */
+const LabelVariants=cva("v-label [font-size:var(--fs-lead)] [font-weight:600] [line-height:1.2] [box-shadow:none] [border:0] [background:none]",{variants:{variant:{"default":""},size:{"default":"","sm":"-sm"}},defaultVariants:{variant:"default",size:"default"}})
 export type LabelProps=React.ComponentProps<"label"> & VariantProps<typeof LabelVariants> & { as?:React.ElementType }
 export function Label({as:Tag="label",className,variant,size,...props}:LabelProps){return <Tag data-slot="label" data-part="root" className={cn(LabelVariants({variant,size}),className)} {...props}/>}
 

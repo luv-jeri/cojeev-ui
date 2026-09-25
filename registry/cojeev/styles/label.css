@@ -1,6 +1,8 @@
 /* Orthogonal authored class modifiers remain composable with CVA axes. */
 .v-stat[data-slot].-ul{padding-bottom:8px;border-bottom:2px solid var(--wm,var(--v-text))}
-.v-label[data-slot].-sm{font-size:13px}
+/* `components.css:98` `.v-label.-sm{font-size:var(--fs-control)}` — 14px, the
+   control size, not the 13px literal that had no token behind it. */
+.v-label[data-slot].-sm{font-size:var(--fs-control)}
 
 /* Authored contextual and pseudo-element rules, scoped to component-owned roots. */
 .v-stats[data-slot]+.v-bars{margin-top:22px}

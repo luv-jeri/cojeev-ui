@@ -27,7 +27,10 @@
 
 [data-slot="field"].-invalid .v-input { border: 1.5px solid var(--v-danger); }
 [data-slot="field"], [data-slot="field-group"] { min-width:0; }
-[data-slot="field-description"] { overflow-wrap:anywhere; line-height:1.5; }
+/* `.v-help` declares no line-height in the handoff (`components.css:98`), so it
+   inherits the body rhythm — measured at 17.4px for the 12px meta size. The
+   explicit 1.5 here was a registry-only value and rendered 18px. */
+[data-slot="field-description"] { overflow-wrap:anywhere; line-height:var(--lh-body); }
 
 /* Composition is independent of the control's surface. Existing omissions
    retain the original vertical field; labels remain native and visible. */
