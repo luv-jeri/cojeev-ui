@@ -4,7 +4,8 @@
    top sheet of a notebook, or a soft line in a rail index. */
 .v-tab:where(
     [data-slot="tabs"],
-    [data-slot^="tabs-"]
+    [data-slot^="tabs-"],
+    [data-filters]
   )[aria-selected="true"][data-morph] {
   --mfill: var(--v-ink);
 }
@@ -30,7 +31,7 @@
 }
 /* A leading icon carries its own visual weight: pull it in by a hair so the
    pill reads balanced instead of icon-heavy on the leading side. */
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]):is(.-pills, .-lenses)
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]):is(.-pills, .-lenses)
   .v-tab:has(> .v-icon:first-child) {
   padding-inline-start: 12px;
 }
@@ -51,10 +52,10 @@
 }
 
 /* Pills and Default: quiet beige pills, one ink lozenge. */
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-pills {
   gap: var(--s-2);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills .v-tab {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-pills .v-tab {
   height: var(--ctl-sm);
   padding: 0 14px;
   border-radius: var(--r-pill);
@@ -63,38 +64,38 @@
   font-size: 13px;
   font-weight: 500;
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-pills
   .v-tab:not([aria-selected="true"]) {
   box-shadow: inset 0 0 0 1px var(--v-edge);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-pills
   .v-tab:not([aria-selected="true"]):not([data-disabled]):hover {
   background: var(--v-beige-2);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-pills
   .v-tab[aria-selected="true"] {
   background: var(--v-ink);
   color: var(--v-on-ink);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-default .v-tab {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-default .v-tab {
   height: var(--ctl-md);
   padding-inline: var(--s-4);
   font-size: var(--fs-control);
 }
 @media (pointer: coarse) {
-  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-default .v-tab {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-default .v-tab {
     min-height: var(--ctl-lg);
   }
 }
 
 /* Lenses: quiet labels, one beige lens with a real edge. */
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-lenses {
   gap: var(--s-2);
   --glide-bg: var(--v-beige);
   --glide-fg: var(--v-text);
   --glide-ring: inset 0 0 0 1px var(--v-edge);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses .v-tab {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-lenses .v-tab {
   height: var(--ctl-md);
   padding: 0 var(--s-4);
   border-radius: var(--r-pill);
@@ -102,11 +103,11 @@
   font-weight: 500;
   color: var(--v-text-2);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-lenses
   .v-tab:not([aria-selected="true"]):not([data-disabled]):hover {
   color: var(--v-text);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-lenses
   .v-tab[aria-selected="true"] {
   background: var(--v-beige);
   color: var(--v-text);
@@ -114,42 +115,42 @@
 }
 
 /* Underline: reading-size labels on one ruled line; a pink marker rides it. */
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-underline {
   gap: var(--s-6);
   box-shadow: inset 0 -1px 0 var(--v-border);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline .v-tab {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-underline .v-tab {
   padding: 8px 2px 10px;
   font-size: var(--fs-lead);
   font-weight: 500;
   color: var(--v-text-2);
   border-bottom: 2px solid transparent;
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-underline
   .v-tab:not([aria-selected="true"]):not([data-disabled]):hover {
   color: var(--v-text);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-underline
   .v-tab[aria-selected="true"] {
   color: var(--v-text);
   border-color: var(--v-pink);
 }
 /* While the flow layer travels, the stationary border would sit on top of
    its marker; hand the line to the layer and keep the quiet fallback pink. */
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline.v-glide
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-underline.v-glide
   .v-tab[data-glide-active] {
   border-color: transparent;
 }
 
 @media (max-width: 640px) {
-  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]) {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]) {
     overflow-x: auto;
     padding-bottom: 2px;
   }
-  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])::-webkit-scrollbar {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])::-webkit-scrollbar {
     display: none;
   }
-  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]) .v-tab {
+  .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]) .v-tab {
     flex: none;
   }
 }
@@ -163,7 +164,7 @@
   color: var(--v-on-accent);
   box-shadow: none;
 }
-[data-mode="dark"] .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses {
+[data-mode="dark"] .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-lenses {
   --glide-ring: none;
 }
 [data-mode="dark"] .-pills .v-tab:not([aria-selected="true"]) {
@@ -171,29 +172,29 @@
 }
 
 /* Consumer ink overrides keep their original contract. */
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])
   .v-tab[data-ink="light"],
-.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"])[data-ink="light"] {
+.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])[data-ink="light"] {
   color: var(--cream-fixed);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]) .v-tab[data-ink="dark"],
-.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"])[data-ink="dark"] {
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]) .v-tab[data-ink="dark"],
+.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])[data-ink="dark"] {
   color: var(--v-text-2);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])
   .v-tab[data-ink="dark"]:hover,
-.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"])[data-ink="dark"]:hover {
+.v-tab:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])[data-ink="dark"]:hover {
   color: var(--v-text);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])
   .v-tab[data-ink="light"][aria-selected="true"],
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])
   .v-tab[data-ink="light"][aria-pressed="true"] {
   color: var(--cream-fixed);
 }
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])
   .v-tab[data-ink="dark"][aria-selected="true"],
-.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"])
+.v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters])
   .v-tab[data-ink="dark"][aria-pressed="true"] {
   color: var(--v-on-accent);
 }
@@ -420,4 +421,17 @@
   .v-tabs-root[data-tabs-appearance="rail"] .v-tabs__story h3 {
     font-size: 20px;
   }
+}
+
+/* The tab itself does not set a line box: the reference lets the inherited
+   --lh-body (1.45 -> 18.85px at 13px) govern, so text is not cramped to the
+   font size. `gap` is likewise the reference's initial value, not a utility. */
+.v-tabs:where(
+    [data-slot="tabs"],
+    [data-slot^="tabs-"],
+    [data-filters]
+  )
+  .v-tab:where([data-slot], [data-slot] *) {
+  gap: normal;
+  line-height: var(--lh-body);
 }

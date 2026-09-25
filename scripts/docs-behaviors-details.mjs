@@ -48,8 +48,18 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
         assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("cojeev-appearance")).palette), "tide");
       } finally { await reset.click(); }
       await text(root, "Warm paper, crisp ink");
-      await attribute(root.getByRole("slider", { name: "Contrast", exact: true }), "aria-valuenow", "60");
-      return "Palette updates actual theme tokens, keyboard contrast persists, and reset restores Paper at 60%";
+      /* Paper carries fixed tokens, so the component deliberately replaces the
+       * Contrast slider with a "fixed contrast" note — a slider here would be a
+       * control that changes nothing. Assert the restored value where it is
+       * actually observable: the provider attribute and the persisted setting.
+       * (The original assertion re-queried the slider and timed out, which was a
+       * defect in this spec, not in the component.) */
+      await text(root, "Paper uses a fixed contrast");
+      assert.equal(await root.getByRole("slider", { name: "Contrast", exact: true }).count(), 0);
+      await eventually(() => page.evaluate(() => document.documentElement.dataset.contrast === "60"), "Reset restores the default contrast on the provider");
+      assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("cojeev-appearance")).contrast), 60);
+      assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("cojeev-appearance")).palette), "paper");
+      return "Palette updates actual theme tokens, keyboard contrast persists, and reset restores Paper at its fixed 60%";
     },
     "guided-pointer": async ({ page, root }) => {
       const pointer = root.locator('[data-slot="guided-pointer"]');

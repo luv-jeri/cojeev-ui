@@ -63,8 +63,23 @@ try{
       await root.getByRole("button",{name:label,exact:true}).click();
       dialog=page.getByRole("dialog");await settled(page);
       assert.equal(await page.evaluate(()=>document.documentElement.dataset.mode),mode,"theme persists when reduced motion changes");
-      const background=await dialog.locator(variant === "stack" ? '.v-motion-drawer__stack-card[data-active=true] .v-motion-drawer__stack-card-surface' : '.v-motion-drawer__surface').evaluate(n=>getComputedStyle(n).backgroundColor);
-      assert.equal(Number(background.match(/\d+/)[0])<100,mode==="dark","panel paint actually matches the requested theme");
+      // The stack variant paints a notched SHAPE, not a box: its surface is
+      // deliberately transparent and the colour lives in the SVG outline path's
+      // `fill` (--stack-card-paint). Every other variant paints a box on
+      // `background-color`, and its `fill` is the SVG default black — so the two
+      // variants must be read from different properties. Measured: the path fills
+      // rgb(251,244,230) light / rgb(23,21,18) dark, matching the surfaces.
+      const paint=variant === "stack"
+        ? await dialog.locator('.v-motion-drawer__stack-card[data-active=true] .v-motion-drawer__stack-outline path').evaluate(n=>getComputedStyle(n).fill)
+        : await dialog.locator(".v-motion-drawer__surface").evaluate(n=>getComputedStyle(n).backgroundColor);
+      // "isDark" must be true exactly when the mode is dark. The defect here was the
+      // ELEMENT and PROPERTY, not the comparison: this read `background-color` on
+      // `.v-motion-drawer__surface`, which is deliberately transparent, so it measured
+      // rgba(0,0,0,0) in every theme and could never pass. `stack` paints a notched
+      // shape via an SVG path's `fill` instead. An earlier comment claimed the original
+      // assertion was inverted; that was wrong -- the equality below is unchanged.
+      const isDark=Number(paint.match(/\d+/)[0])<100;
+      assert.equal(isDark,mode==="dark",`panel paint actually matches the requested theme (${variant}, ${mode}: ${paint})`);
       const r=await dialog.boundingBox();
       assert.ok(r.x>=0&&r.y>=0&&r.x+r.width<=width+1&&r.y+r.height<=901,`${variant} stays inside viewport`);
       assert.ok(await dialog.locator('.v-motion-drawer__body').evaluate(n=>n.scrollWidth<=n.clientWidth+1),`${variant} content has no horizontal overflow (stack backplates intentionally extend)`);

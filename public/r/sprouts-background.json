@@ -2,17 +2,24 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "sprouts-background",
   "title": "Sprouts background",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Small paired leaves and seed-like marks with plenty of open space.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+    "https://000h.cojeev.com/r/cojeev.json",
+    "https://000h.cojeev.com/r/pattern-background.json"
   ],
   "files": [
     {
       "path": "registry/cojeev/ui/sprouts-background.tsx",
       "content": "import { PatternBackground, type PatternBackgroundProps } from \"@/components/ui/pattern-background\";\n\nexport type SproutsBackgroundProps = Omit<PatternBackgroundProps, \"variant\">;\n\nexport function SproutsBackground(props: SproutsBackgroundProps) {\n  return <PatternBackground {...props} variant=\"sprouts\" />;\n}\n",
       "type": "registry:ui"
+    },
+    {
+      "path": "registry/cojeev/lib/subtle-backgrounds.ts",
+      "content": "export type PatternBackgroundVariant = \"dots\" | \"grid\" | \"contours\" | \"weave\" | \"pebbles\" | \"sunwash\" | \"folds\" | \"sprouts\" | \"none\";\n\nexport const subtleBackgrounds: Array<{ value: Exclude<PatternBackgroundVariant, \"none\">; label: string; description: string }> = [\n  { value: \"dots\", label: \"Dots\", description: \"A quiet field of points.\" },\n  { value: \"grid\", label: \"Grid\", description: \"Light rules for gentle structure.\" },\n  { value: \"contours\", label: \"Contours\", description: \"Nested organic linework.\" },\n  { value: \"weave\", label: \"Weave\", description: \"Short interlaced strokes.\" },\n  { value: \"pebbles\", label: \"Pebbles\", description: \"Sparse hand-drawn outlines.\" },\n  { value: \"sunwash\", label: \"Sunwash\", description: \"A broad, soft paper wash.\" },\n  { value: \"folds\", label: \"Folds\", description: \"Low-contrast faceted paper.\" },\n  { value: \"sprouts\", label: \"Sprouts\", description: \"Paired seed leaves in open space.\" },\n];\n",
+      "type": "registry:lib",
+      "target": "lib/cojeev/subtle-backgrounds.ts"
     }
   ],
   "meta": {
@@ -57,5 +64,8 @@
     "fidelity": "refined-design-family",
     "baseComponent": false
   },
+  "categories": [
+    "Subtle backgrounds"
+  ],
   "type": "registry:ui"
 }

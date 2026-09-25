@@ -12,6 +12,8 @@ import os from "node:os";
 import path from "node:path";
 import { chromium } from "playwright";
 import { gzipSync } from "node:zlib";
+import { installedSourceDigest } from "./registry-footprint-lib.mjs";
+import { loadPayloads } from "./registry-payloads.mjs";
 
 const getArgument = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const output = path.resolve(getArgument("output") ?? "artifacts/library-integration/delivery-qualification.json");
@@ -147,8 +149,15 @@ export default defineConfig({plugins:[react(),tailwindcss(),measuredModuleGraph(
   write(consumer, "src/index.css", '@import "tailwindcss";\n');
 
   await run("npm-install", "npm", ["install"], consumer);
-  await run("shadcn-init", "npx", ["--yes", "shadcn@4.21.0", "init", "--template", "vite", "--base", "radix", "--preset", "nova", "--no-monorepo", "--yes"], consumer);
-  await run("shadcn-add-button", "npx", ["--yes", "shadcn@4.21.0", "add", `${origin}/r/button.json`, "--yes", "--overwrite"], consumer);
+  // `npx shadcn@4.21.0` cannot run in this environment (`sh: shadcn@4.21.0: command
+  // not found`), so the pinned local CLI is invoked directly. Same version, and the
+  // version is asserted below rather than assumed.
+  const pinnedInstaller = path.join(root, "node_modules/shadcn/dist/index.js");
+  if (!fs.existsSync(pinnedInstaller)) throw new Error(`The pinned installer is not installed at ${pinnedInstaller}`);
+  const installedVersion = JSON.parse(fs.readFileSync(path.join(root, "node_modules/shadcn/package.json"), "utf8")).version;
+  if (installedVersion !== "4.21.0") throw new Error(`Expected the pinned shadcn@4.21.0, found ${installedVersion}`);
+  await run("shadcn-init", process.execPath, [pinnedInstaller, "init", "--template", "vite", "--base", "radix", "--preset", "nova", "--no-monorepo", "--yes"], consumer);
+  await run("shadcn-add-button", process.execPath, [pinnedInstaller, "add", `${origin}/r/button.json`, "--yes", "--overwrite"], consumer);
   await run("materialize-fonts", process.execPath, ["src/scripts/cojeev-materialize-fonts.mjs", "--css", "src/styles/cojeev-fonts.css"], consumer);
   fs.appendFileSync(path.join(consumer, "src/index.css"), '@import "./styles/cojeev-fonts.css";\n');
   write(consumer, "src/App.tsx", `import {Button} from "@/components/ui/button";
@@ -158,7 +167,7 @@ export default function App(){return <main style={{padding:24}}><Button>Save</Bu
   const profiles = { button: measureProfile(consumer, "button", buttonNames) };
 
   const remainingNames = projectsNames.filter(name => name !== "button");
-  await run("shadcn-add-projects", "npx", ["--yes", "shadcn@4.21.0", "add", ...remainingNames.map(name => `${origin}/r/${name}.json`), "--yes", "--overwrite"], consumer);
+  await run("shadcn-add-projects", process.execPath, [pinnedInstaller, "add", ...remainingNames.map(name => `${origin}/r/${name}.json`), "--yes", "--overwrite"], consumer);
   // The later registry add refreshes the active foundation stylesheet back to
   // its default embedded form. Exercise the opt-in again on that final copy.
   await run("rematerialize-fonts", process.execPath, ["src/scripts/cojeev-materialize-fonts.mjs", "--css", "src/styles/cojeev-fonts.css"], consumer);
@@ -218,7 +227,8 @@ export default function App(){const [expanded,setExpanded]=React.useState(["fold
   ];
   const evidence = {
     candidate: {
-      installer: "shadcn@4.21.0",
+      installer: `node node_modules/shadcn/dist/index.js (shadcn@4.21.0)`,
+      installerInvocations: "npx is unavailable in this environment; the pinned local CLI is used and its version asserted before any install",
       sequence: ["fresh consumer", "Button profile", "Projects profile"],
       projectsComponents: projectsNames,
       registryOverride: "loopback candidate (not the published registry)",
@@ -246,7 +256,30 @@ export default function App(){const [expanded,setExpanded]=React.useState(["fold
     ],
   };
   fs.mkdirSync(path.dirname(output), { recursive: true });
+  // Emitted bytes can only be measured here, so this is the one place the emitted
+  // ceilings can actually bite. A profile over its ceiling fails the qualification
+  // run instead of being written out for someone to notice later, and the payload
+  // digest is recorded so the budget file can be updated with the exact
+  // measurement these numbers belong to.
+  const budgets = JSON.parse(fs.readFileSync(path.join(root, "data/delivery-budgets.json"), "utf8"));
+  const overBudget = [];
+  for (const [name, declared] of Object.entries(budgets.emitted?.profiles ?? {})) {
+    const totals = profiles[name]?.totals;
+    if (!totals) { overBudget.push(`${name}: no measurement was taken`); continue; }
+    for (const [kind, limit] of Object.entries(declared.maxEmittedBytes ?? {})) {
+      const measured = totals[kind]?.rawBytes;
+      if (typeof measured !== "number") { overBudget.push(`${name}: no emitted ${kind} measurement`); continue; }
+      if (measured > limit) overBudget.push(`${name}: ${measured} ${kind} bytes, above the ${limit} ceiling`);
+    }
+  }
+  // The digest must come from the shared payload loader, not from this file's own
+  // serving map: that map also holds the index (it is served like any other file),
+  // and counting it as an item produces a digest no other caller can ever match.
+  evidence.emittedBudgets = { payloadDigest: installedSourceDigest(loadPayloads(path.join(root, "public/r"))), checked: Object.keys(budgets.emitted?.profiles ?? {}), violations: overBudget };
+  if (overBudget.length) throw new Error(`Emitted-size budget exceeded: ${overBudget.join("; ")}`);
+
   fs.writeFileSync(output, JSON.stringify(evidence, null, 2) + "\n");
+  console.log(`Payload digest for data/delivery-budgets.json: ${evidence.emittedBudgets.payloadDigest}`);
   qualified = true;
   console.log(`Qualified local consumer delivery: ${output}`);
 } finally {

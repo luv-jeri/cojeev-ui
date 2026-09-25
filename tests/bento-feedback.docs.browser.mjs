@@ -12,7 +12,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(
     process.env.BENTO_DOCS_URL ??
-      "http://127.0.0.1:4321/cojeev-ui/docs/bento-grid/",
+      `${(process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4321/cojeev-ui").replace(/\/$/, "")}/docs/bento-grid/`,
     { waitUntil: "domcontentloaded" },
   );
   await page.waitForFunction(
@@ -22,7 +22,7 @@ try {
     '[data-example-role="interactive"] [data-slot="bento-builder"]',
   );
   const feedback = page.locator('[data-slot="bento-edit-feedback"]');
-  await mkdir("output/playwright/bento", { recursive: true });
+  await mkdir(".work/playwright/bento", { recursive: true });
   for (const mode of ["Classic", "Interlock"]) {
     await page
       .getByRole("button", { name: "Reset example", exact: true })
@@ -68,7 +68,7 @@ try {
     );
     assert.match(await feedback.innerText(), /one cell/i);
     await page.screenshot({
-      path: `output/playwright/bento/docs-blocked-${mode.toLowerCase()}.png`,
+      path: `.work/playwright/bento/docs-blocked-${mode.toLowerCase()}.png`,
     });
     await page.keyboard.press("Escape");
     assert.equal(await feedback.count(), 0);

@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import {readFileSync,realpathSync,mkdtempSync,symlinkSync,rmSync} from 'node:fs';
+import {realpathSync,mkdtempSync,symlinkSync,rmSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -7,6 +7,7 @@ import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './release-config.mjs';
 import {deploymentDiagnostic,recordDeploymentEvent} from './deployment-diagnostics.mjs';
+import {assertWranglerVersion} from './wrangler-version.mjs';
 
 const maxBytes=25*1024*1024;
 const ALLOWED_SECRETS=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
@@ -47,7 +48,8 @@ export function wrangler(args,input) {
   const executable=process.env.WRANGLER_BIN;
   if(!executable||!path.isAbsolute(executable)) throw new Error('Canonical external WRANGLER_BIN required');
   const canonical=realpathSync(executable),root=realpathSync(process.cwd());
-  if(canonical.startsWith(`${root}${path.sep}`)||JSON.parse(readFileSync(path.resolve(canonical,'../../package.json'),'utf8')).version!=='4.131.1') throw new Error('External Wrangler 4.131.1 required');
+  if(canonical.startsWith(`${root}${path.sep}`)) throw new Error('External Wrangler required outside the project root');
+  assertWranglerVersion(path.resolve(canonical,'../..'),path.join(root,'package.json'),'External Wrangler');
   // Secret values stay out of arguments, artifacts and emitted diagnostics.
   // release.mjs uses an owner-only temporary secrets file for Wrangler on Linux,
   // removed in finally; input is also available to the diagnostic redactor.

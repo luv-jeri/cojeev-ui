@@ -31,8 +31,13 @@ try {
     });
     if (item.config?.registries?.['@cojeev']) item.config.registries['@cojeev'] = `${origin}/r/{name}.json`;
   }
+  const forwarded = process.argv.slice(2).filter(value => !value.startsWith('--framework='));
+  // `--framework=next` is a second, genuinely different consumer contract: RSC
+  // boundaries, Next's own alias resolution and a PostCSS pipeline rather than a
+  // Vite plugin. It needs its own harness, served from this same candidate.
+  const target = process.argv.includes('--framework=next') ? 'scripts/verify-next-consumer.mjs' : 'scripts/verify-install.mjs';
   const code = await new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, ['scripts/verify-install.mjs', `--url=${origin}`, ...process.argv.slice(2)], { stdio: 'inherit' });
+    const child = spawn(process.execPath, [target, `--url=${origin}`, ...forwarded], { stdio: 'inherit' });
     child.once('error', reject);
     child.once('exit', value => resolve(value ?? 1));
   });

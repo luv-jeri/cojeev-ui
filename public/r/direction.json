@@ -2,12 +2,13 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "direction",
   "title": "Direction",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Sets a text direction for a subtree and shares it with direction-aware primitives.",
   "dependencies": [
     "@radix-ui/react-direction"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://000h.cojeev.com/r/cojeev.json"
   ],
   "files": [
     {
@@ -73,5 +74,8 @@
     "fidelity": "refined-design-family",
     "baseComponent": true
   },
+  "categories": [
+    "Layout"
+  ],
   "type": "registry:ui"
 }

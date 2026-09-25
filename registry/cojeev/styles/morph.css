@@ -6,5 +6,11 @@
 [data-slot].v-morph-host > svg.v-morph > [data-morph-body][stroke] { stroke: var(--mstroke, transparent); }
 [data-slot].v-morph-host[data-morph="stroke"] > svg.v-morph > [data-morph-body] { fill: none; }
 [data-slot].v-morph-host > svg.v-morph > [data-morph-echo] { fill: none; }
+/* A live stroke body owns the ring, so the authored border retires. The exception is
+   the dashed ring: `components-2.css` `.v-ibtn.-dashed{border-color:var(--v-edge)}`
+   keeps it, and the handoff's own injected morph rule (`js/morph.js:373`) clears only
+   `box-shadow`. Retiring it here erased the ring entirely — the handoff measures
+   `rgb(135,128,111)` where the candidate measured `rgba(0,0,0,0)`. */
 [data-slot].v-morph-live[data-morph="stroke"], [data-slot].v-morph-live[data-morph="both"] { border-color: transparent; box-shadow: none; }
+[data-slot].v-ibtn.-dashed.v-morph-live { border-color: var(--v-edge); }
 [data-slot=badge].v-badge.-dashed.v-morph-live, [data-slot=badge].v-badge.-test.v-morph-live { border-color: transparent; }

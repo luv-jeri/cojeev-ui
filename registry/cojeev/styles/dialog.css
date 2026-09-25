@@ -83,8 +83,7 @@
 }
 @media (max-width: 640px) {
   [data-slot="dialog-content"] {
-    width: calc(100% - 24px);
-    padding: var(--s-6);
+    padding: var(--s-8);
   }
 }
 

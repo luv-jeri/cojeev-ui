@@ -1,0 +1,181 @@
+{
+  "$comment": "Delivery budgets for the supported install scenarios, measured by scripts/registry-footprint-report.mjs against the committed payloads in public/r. Every source, file and package ceiling is the measured value plus roughly 15 percent headroom, never a round number, so a regression has to be real before it trips; the live measurement is recomputed on every check rather than stored here. The baseline block records the pre-change measurement the ceilings were lowered from: it is evidence, not a rule. The emitted block below records the one measurement that cannot be recomputed without a bundler, together with the payload digest it was taken on.",
+  "measuredAt": "2026-09-23",
+  "scenarios": {
+    "foundation": {
+      "$comment": "The base item alone: what every consumer pays before choosing anything, and the denominator every other scenario is a multiple of.",
+      "entries": [
+        "cojeev"
+      ],
+      "maxFiles": 12,
+      "maxSourceBytes": 484000,
+      "maxPackages": 3,
+      "requiredPackages": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "forbiddenPackages": [
+        "motion",
+        "tw-animate-css",
+        "three"
+      ]
+    },
+    "static": {
+      "$comment": "A layout-only entry. It must stay a small multiple of the foundation it shares, and must resolve no animation or 3D runtime at all.",
+      "entries": [
+        "separator"
+      ],
+      "maxFiles": 14,
+      "maxSourceBytes": 531000,
+      "maxPackages": 4,
+      "maxRatioTo": {
+        "scenario": "foundation",
+        "ratio": 1.05
+      },
+      "forbiddenPackages": [
+        "motion",
+        "tw-animate-css",
+        "three"
+      ]
+    },
+    "button": {
+      "$comment": "The catalogue's most-installed entry, and until now the one scenario with no budget at all. It genuinely imports the press-motion helpers, so it legitimately pays for them; what it must never do again is drag in the glyph catalogue, the 3D runtime or the other 170 components' paint.",
+      "entries": [
+        "button"
+      ],
+      "maxFiles": 41,
+      "maxSourceBytes": 711000,
+      "maxPackages": 6,
+      "requiredPackages": [
+        "class-variance-authority",
+        "motion"
+      ],
+      "forbiddenPackages": [
+        "tw-animate-css",
+        "three"
+      ],
+      "maxRatioTo": {
+        "scenario": "foundation",
+        "ratio": 1.6
+      }
+    },
+    "icon": {
+      "$comment": "The optional icon entry. This is the only scenario that installs the shared glyph geometry, so it is the one that must pay for it.",
+      "entries": [
+        "icon"
+      ],
+      "maxFiles": 35,
+      "maxSourceBytes": 1226000,
+      "maxPackages": 5,
+      "requiredPackages": [
+        "motion"
+      ]
+    },
+    "motion": {
+      "$comment": "An animated entry. It must declare the animation runtime rather than inherit it by accident.",
+      "entries": [
+        "motion-drawer"
+      ],
+      "maxFiles": 52,
+      "maxSourceBytes": 1362000,
+      "maxPackages": 10,
+      "requiredPackages": [
+        "motion"
+      ]
+    },
+    "mixed": {
+      "$comment": "Everything at once. It must not exceed the most expensive single scenario by more than the shared foundation, which is what proves the payloads really do overlap rather than add up.",
+      "entries": [
+        "separator",
+        "icon",
+        "motion-drawer"
+      ],
+      "maxFiles": 55,
+      "maxSourceBytes": 1364000,
+      "maxPackages": 10,
+      "requiredPackages": [
+        "motion"
+      ]
+    }
+  },
+  "baseline": {
+    "$comment": "Before the foundation, icon-geometry, shared-helper and shared-paint-sheet split: one entry installed the whole private library. Reproducible by re-running this suite's script and the same scenario definitions over the committed pre-change payloads (`git archive HEAD public/r`), which is what `artifacts/w02/footprint-B0-pre-icon.json` recorded. Corrected 2026-09-23 during the frozen-candidate verification: the `button` row had been recorded as a copy of `static` (73 / 1,196,057), understating the real pre-change button install (78 / 1,226,736), and `foundation`, `icon`, `motion` and `mixed` had drifted from the artifact they cite. Every row below now re-measures exactly from `HEAD`. Ceilings alone do not bound this block: the motion and mixed source ceilings sit above their recorded baselines, so the regression guard for a scenario losing its reduction is the baseline assertion in tests/registry-closure.test.mjs, not the ceiling.",
+    "measuredAt": "2026-09-23",
+    "artifact": "artifacts/w02/footprint-B0-pre-icon.json",
+    "foundation": {
+      "files": 71,
+      "sourceBytes": 1194754,
+      "packages": [
+        "class-variance-authority",
+        "clsx",
+        "motion",
+        "tailwind-merge",
+        "tw-animate-css"
+      ]
+    },
+    "static": {
+      "files": 73,
+      "sourceBytes": 1196057
+    },
+    "button": {
+      "files": 78,
+      "sourceBytes": 1226736
+    },
+    "icon": {
+      "files": 73,
+      "sourceBytes": 1247343
+    },
+    "motion": {
+      "files": 84,
+      "sourceBytes": 1357318
+    },
+    "mixed": {
+      "files": 86,
+      "sourceBytes": 1358621
+    }
+  },
+  "emitted": {
+    "$comment": "Emitted browser bytes: what a fresh consumer actually ships after `vite build`, which no payload inspection can derive. Measured by `node scripts/qualify-library-delivery.mjs` (npm run qualify:delivery) and recorded here; `payloadDigest` is the digest of everything a consumer installs, so when it stops matching the payloads these numbers are stale and scripts/registry-footprint-report.mjs --check fails until the qualifier is re-run. Metadata changes (title, author, categories) do not affect the digest because they cannot reach a bundle. A local cross-check in tests/registry-closure.test.mjs also asserts these numbers still equal the machine-produced artifacts/library-integration/delivery-qualification.json when that artifact is present.",
+    "measuredAt": "2026-09-24",
+    "artifact": "artifacts/library-integration/delivery-qualification.json",
+    "payloadDigest": "eae67d72f4ec9d44ef965744e38b19b7ae5139d9fc81cf61d5b4628f89d86506",
+    "profiles": {
+      "button": {
+        "entries": [
+          "button"
+        ],
+        "measured": {
+          "js": 448205,
+          "css": 76668,
+          "woff2": 384052
+        },
+        "maxEmittedBytes": {
+          "js": 515354,
+          "css": 88012,
+          "woff2": 441660
+        }
+      },
+      "projects": {
+        "entries": [
+          "button",
+          "icon",
+          "input",
+          "tabs",
+          "item",
+          "activity-feed",
+          "tree"
+        ],
+        "measured": {
+          "js": 924464,
+          "css": 168302,
+          "woff2": 384052
+        },
+        "maxEmittedBytes": {
+          "js": 1063052,
+          "css": 192592,
+          "woff2": 441660
+        }
+      }
+    }
+  }
+}

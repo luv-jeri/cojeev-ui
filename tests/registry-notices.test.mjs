@@ -72,10 +72,14 @@ async function consumer(items, names) {
 test('a component installed by the real CLI carries the project licence and the upstream notices its sources lose', async () => {
   const items = await payloads();
   const { origin, close } = await serve(items);
-  const directory = await consumer(items, closure(items, 'motion-drawer'));
+  // Three entries: `semantic-bloom` and `icon` install the two private files whose
+  // upstream notices the installer strips, and `motion-drawer` carries a notice of
+  // its own after the directive prologue, which the rewrite must leave in place.
+  const specimenEntries = ['semantic-bloom', 'icon', 'motion-drawer'];
+  const directory = await consumer(items, specimenEntries.flatMap(name => [...closure(items, name)]));
   try {
     const result = await new Promise((resolve, reject) => {
-      const child = spawn(process.execPath, [installer, 'add', `${origin}/r/motion-drawer.json`, '--yes', '--overwrite', '--silent', '--cwd', directory], { stdio: ['ignore', 'pipe', 'pipe'] });
+      const child = spawn(process.execPath, [installer, 'add', ...specimenEntries.map(name => `${origin}/r/${name}.json`), '--yes', '--overwrite', '--silent', '--cwd', directory], { stdio: ['ignore', 'pipe', 'pipe'] });
       let output = '';
       child.stdout.on('data', data => { output += data; });
       child.stderr.on('data', data => { output += data; });
@@ -88,14 +92,28 @@ test('a component installed by the real CLI carries the project licence and the 
     assert.ok(installed.includes((await fs.readFile('LICENCE', 'utf8')).trim()), 'the project MIT licence must be installed verbatim');
 
     // The installer really does drop these: each holder opens a file it copies,
-    // and after installation only the notices file still carries it.
-    for (const [source, target, holder] of [
-      ['registry/cojeev/lib/bloom-engine.ts', 'src/lib/cojeev/bloom-engine.ts', 'Copyright (c) 2026 Meng To'],
-      ['registry/cojeev/lib/lucide-icon-data.ts', 'src/lib/cojeev/lucide-icon-data.ts', 'Copyright (c) 2013-2026 Cole Bemis'],
+    // and after installation only the notices file still carries it. Which entry
+    // installs a given private helper is part of the payload contract now, so the
+    // check follows an entry the committed payloads say installs that file rather
+    // than assuming every entry does.
+    for (const holder of [
+      { source: 'registry/cojeev/lib/bloom-engine.ts', holder: 'Copyright (c) 2026 Meng To' },
+      { source: 'registry/cojeev/lib/lucide-icon-data.ts', holder: 'Copyright (c) 2013-2026 Cole Bemis' },
     ]) {
-      assert.ok((await fs.readFile(source, 'utf8')).includes(holder), `${source} no longer carries ${holder}`);
-      assert.ok(!(await fs.readFile(path.join(directory, target), 'utf8')).includes(holder), `${target} kept its own notice; the notices file no longer has to repeat it`);
-      assert.ok(installed.includes(holder), `installed notices omit ${holder} from ${source}`);
+      assert.ok((await fs.readFile(holder.source, 'utf8')).includes(holder.holder), `${holder.source} no longer carries ${holder.holder}`);
+      assert.ok(installed.includes(holder.holder), `installed notices omit ${holder.holder} from ${holder.source}`);
+
+      const owner = [...items.values()].find(item => (item.files ?? []).some(file => file.path === holder.source));
+      assert.ok(owner, `no entry installs ${holder.source}, so its notice is never delivered`);
+      assert.ok(specimenEntries.some(name => closure(items, name).has(owner.name)), `no specimen entry reaches ${owner.name}`);
+
+      // The consumer's `@/` alias decides whether a project-root target lands
+      // under `src/`; both layouts are valid, so find the file rather than assume.
+      const target = (owner.files ?? []).find(file => file.path === holder.source).target.replace(/^~\//, '');
+      const candidates = [path.join(directory, target), path.join(directory, 'src', target)];
+      const address = (await Promise.all(candidates.map(async candidate => await fs.access(candidate).then(() => candidate, () => null)))).find(Boolean);
+      assert.ok(address, `${target} was not installed by the real CLI`);
+      assert.ok(!(await fs.readFile(address, 'utf8')).includes(holder.holder), `${target} kept its own notice; the notices file no longer has to repeat it`);
     }
 
     // A notice after the directive prologue survives the rewrite in place.

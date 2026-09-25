@@ -10,15 +10,26 @@
     "ios_saf >= 17.5"
   ],
   "scripts": {
+    "pretest": "npm run registry:check",
     "dev": "next dev",
     "build": "npm run registry:build && next build",
     "start": "vite preview --outDir out --base /cojeev-ui/ --host 127.0.0.1 --port 3000",
     "typecheck": "tsc --noEmit",
     "registry:build": "node scripts/build-registry.mjs",
+    "registry:check": "node scripts/check-registry-generated.mjs",
+    "specimens:api": "node --import tsx scripts/generate-specimen-api.mjs",
+    "appearance:prepaint": "node --import tsx scripts/build-appearance-prepaint.mjs",
     "gate": "node scripts/run-production-gate.mjs",
     "gate:spike": "node apps/gate/run.mjs --components=button,badge,card",
+    "gate:census": "node apps/gate/run.mjs --fail-fast=false --out=artifacts/gate-base",
+    "gate:census:report": "node scripts/census-report.mjs",
+    "gate:browser": "node scripts/run-browser-gates.mjs",
+    "inventory": "node scripts/component-inventory.mjs",
+    "acceptance": "node scripts/acceptance-requirements.mjs",
     "gate:dev": "vite --config apps/gate/vite.config.ts --host 127.0.0.1",
     "test": "node --import tsx --test tests/*.test.ts tests/*.test.mjs",
+    "test:aperture": "node --import tsx --test components/landing/assembly/aperture-geometry.test.ts components/landing/assembly/aperture-intersections.test.ts",
+    "test:hero": "node --import tsx --test components/landing/assembly/hero-interaction.test.ts",
     "lint": "node scripts/lint.mjs",
     "gate:static": "node apps/gate/run.mjs",
     "gate:interactions": "node scripts/gate-interactions.mjs",
@@ -43,6 +54,10 @@
     "registry-host:test": "node --test workers/registry-host/test/*.test.mjs",
     "registry-host:types": "wrangler types workers/registry-host/worker-configuration.d.ts --config workers/registry-host/wrangler.jsonc --env-interface RegistryHostEnv --include-runtime false",
     "registry-host:check": "wrangler deploy --dry-run --config workers/registry-host/wrangler.jsonc",
+    "registry:footprint": "node scripts/registry-footprint-report.mjs --check",
+    "qualify:delivery": "node scripts/qualify-library-delivery.mjs",
+    "delivery:verify": "node scripts/run-install-verification.mjs",
+    "delivery:verify:next": "node scripts/run-install-verification.mjs --framework=next",
     "launch:browser": "node scripts/check-launch-browser.mjs"
   },
   "dependencies": {
@@ -109,7 +124,7 @@
     "esbuild": "^0.28.2",
     "eslint": "^9.32.0",
     "eslint-config-next": "16.3.4",
-    "miniflare": "^5.20260908.0-alpha",
+    "miniflare": "^5.20260921.0-alpha",
     "pixelmatch": "^7.1.0",
     "playwright": "^1.58.0",
     "pngjs": "^7.0.0",
@@ -119,7 +134,7 @@
     "ttf2woff2": "^8.0.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.0",
-    "wrangler": "^4.130.0"
+    "wrangler": "^4.136.3"
   },
   "license": "MIT",
   "engines": {

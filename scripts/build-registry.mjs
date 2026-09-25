@@ -6,7 +6,11 @@ import { componentAPIs } from "./component-api.mjs";
 import { sourceImport, rewriteInstalledImports } from "./registry-imports.mjs";
 import { noticeText } from "./registry-notices.mjs";
 
-const baseURL=process.env.COJEEV_REGISTRY_URL??"https://luv-jeri.github.io/cojeev-ui";
+// The canonical origin the shadcn directory lists and the one the release
+// pipeline injects. A payload built with no environment now resolves its
+// dependencies against the same origin that serves it, instead of sending
+// consumers to the legacy GitHub Pages mirror.
+const baseURL=process.env.COJEEV_REGISTRY_URL??"https://000h.cojeev.com";
 const source="registry/cojeev";
 const ids=fs.readdirSync(`${source}/ui`).filter(file=>file.endsWith(".tsx")).map(file=>file.slice(0,-4)).sort();
 // The shadcn installer resolves registered modules by basename. A helper with
@@ -22,7 +26,50 @@ function declarations(nodes){const out={};for(const node of nodes??[]){if(node.t
 function css(file){return declarations(postcss.parse(fs.readFileSync(file,"utf8")).nodes);}
 // CSS is delivered verbatim. Registry JSON objects cannot preserve repeated
 // selectors or the ordering of shorthand and longhand declarations.
-const foundationStyles=["tokens","theme","base","morph","flow-press"];
+// The foundation stylesheet every consumer needs: layer order, tokens, the
+// Tailwind theme bridge and the reset. Component and shared paint sheets are
+// assigned from the import graph below, so they are deliberately absent here.
+const foundationStyles=["tokens","theme","base","morph"];
+// Attribution and discovery fields live on the items, not on the directory
+// listing: the shadcn directory entry schema has no `author` or `categories`,
+// while `registry-item.json` defines both. One source, so every payload agrees.
+const author="Sanjay Kumar <https://github.com/luv-jeri>";
+/* Why the `css` block names the consumer's own alias, and what it costs.
+ *
+ * The installer writes a `css` key into the consumer's stylesheet *verbatim* and
+ * installs the stylesheets themselves under that scaffold's source root — which the
+ * two documented scaffolds do not agree on. Measured 2026-09-24 with shadcn 4.21.0
+ * on a pristine `create-next-app` and on the Vite template:
+ *
+ *   scaffold                  stylesheet          foundation installed at
+ *   Next (`create-next-app`)  `app/globals.css`   `cojeev-next-consumer/styles/`
+ *   Vite (shadcn template)    `src/index.css`     `src/styles/`
+ *
+ * `@/styles/...` is therefore the only specifier that means the right directory in
+ * both: `@` is the project root in a Next scaffold and `src/` in a Vite one. Every
+ * delivery run re-measures it.
+ *
+ * The cost is real and is tracked as B-028: Tailwind v4's CSS resolver in a Next
+ * consumer does not read tsconfig `paths`, so `@/styles/cojeev-fonts.css` fails to
+ * resolve there (`Can't resolve '@/styles/cojeev-fonts.css' in '.../app'`) and the
+ * consumer needs one documented find-and-replace in `app/globals.css`. The
+ * alternatives each trade one scaffold for the other, also measured 2026-09-24:
+ *
+ *   - `../styles/...` fixes Next outright — the pristine consumer then typechecks
+ *     and compiles with `tailwindAliasNormalization: NOT NEEDED` — and breaks Vite,
+ *     which resolves it against `<root>/styles/`, a directory its installer never
+ *     writes (`Can't resolve '../styles/cojeev-fonts.css' in '.../src'`).
+ *   - `~/styles/...`, a bare `styles/...` and an absolute `/styles/...` do not
+ *     resolve in Next either.
+ *
+ * A single root-relative prelude (`@import "../styles/cojeev.css"`) was implemented
+ * and reverted before that: shadcn 4.21.0 inlines the nested file and rewrites its
+ * own imports to the alias, so the nesting never reaches the bundler. No
+ * registry-side specifier resolves in both scaffolds; `docs/workspace/BUGS.md`
+ * B-028 carries the evidence, and `tests/registry-closure.test.mjs` pins the shape
+ * actually shipped — every `css` import uses the verified alias, so the one
+ * documented rewrite covers all of them.
+ */
 const foundation=Object.fromEntries(["@/styles/cojeev-fonts.css",...foundationStyles.map(name=>`@/styles/cojeev/${name}.css`)].map(file=>[`@import "${file}"`,{}]));
 const themeCSS=css(`${source}/styles/theme.css`);
 const theme=Object.fromEntries(Object.entries(themeCSS["@theme inline"]).map(([key,value])=>[key.replace(/^--/,""),value]));
@@ -32,8 +79,22 @@ const theme=Object.fromEntries(Object.entries(themeCSS["@theme inline"]).map(([k
 const semanticNames=/^--(?:background|foreground|card(?:-.+)?|popover(?:-.+)?|primary(?:-.+)?|secondary(?:-.+)?|accent(?:-.+)?|muted(?:-.+)?|border|input|ring|destructive(?:-.+)?|chart-\d+|sidebar(?:-.+)?)$/;
 const layoutNames=new Set(["--card-pad","--card-gap","--sidebar-w","--sidebar-w-mini","--sidebar-gap"]);
 foundation[":root, :root[data-mode]"]=Object.fromEntries(Object.entries(css(`${source}/styles/tokens.css`)[":root"]).filter(([name])=>semanticNames.test(name)&&!layoutNames.has(name)));
+/* `@custom-variant` has to sit at the top level of the consumer's stylesheet.
+ *
+ * The installer renders a plain declaration like `:root { … }` as `@layer base { … }`,
+ * so adding `@custom-variant` to this block afterwards nested it and Tailwind rejected
+ * the file outright in a Next consumer: "`@custom-variant` cannot be nested". It is
+ * hoisted below the import instead, before anything the installer wraps in a layer.
+ * `tests/registry-closure.test.mjs` asserts no `@custom-variant` is emitted inside a
+ * layer, so it cannot silently regress.
+ */
 for(const [rule,value] of Object.entries(themeCSS))if(rule.startsWith("@custom-variant "))foundation[rule]=value;
-const base={name:"cojeev",type:"registry:base",extends:"none",title:"Cojeev",description:"Cojeev tokens, fonts, reset, and Tailwind v4 theme bridge.",dependencies:["class-variance-authority","clsx","tailwind-merge","tw-animate-css","motion"],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@cojeev":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:foundation};
+/* Order the completed block so nothing the installer wraps in `@layer base` comes
+ * before a top-level at-rule: the import first, then every `@custom-variant`, then the
+ * declarations. Reordering here, once, keeps the earlier construction readable. */
+const orderRank=key=>key.startsWith("@import ")?0:key.startsWith("@custom-variant ")?1:2;
+const baseCSS=Object.fromEntries(Object.entries(foundation).map((entry,index)=>[index,entry]).sort((a,b)=>orderRank(a[1][0])-orderRank(b[1][0])||a[0]-b[0]).map(([,entry])=>entry));
+const base={name:"cojeev",type:"registry:base",extends:"none",title:"Cojeev",description:"Cojeev tokens, fonts, reset, and Tailwind v4 theme bridge.",author:author,categories:["foundation","theme","fonts"],dependencies:[],config:{style:"new-york",iconLibrary:"lucide",tailwind:{baseColor:"neutral"},registries:{"@cojeev":`${baseURL}/r/{name}.json`}},files:[{path:`${source}/lib/utils.ts`,type:"registry:lib",target:"lib/utils.ts"}],css:baseCSS};
 function fileImports(file) {
   return [...fs.readFileSync(file,"utf8").matchAll(/(?:from\s+|import\s+|import\s*\(\s*)["']([^"']+)["']/g)].map(match=>sourceImport(file,match[1]));
 }
@@ -52,27 +113,127 @@ function componentImports(id) {
   return { imported: [...imported], helpers: [...helpers] };
 }
 function npmPackage(value){return value.startsWith("@")?value.split("/").slice(0,2).join("/"):value.split("/")[0];}
+// One module graph for private helpers. Registry JSON cannot express "install
+// the closure of what this file imports", so the generator has to: walk the real
+// import graph from each UI entry and assign every reachable helper to the entry
+// that reaches it. Nothing optional is hand-listed, so a helper that becomes
+// unreachable, or a component that grows a heavy import, changes the install set
+// by itself. `--ts`/`.tsx` are tried before the extensionless spelling the
+// sources use, so only a real file is ever returned.
+function resolveModule(fromFile,specifier){
+  const target=specifier.startsWith("@/")?specifier.slice(2):specifier.startsWith(".")?path.posix.normalize(path.posix.join(path.posix.dirname(fromFile),specifier)):null;
+  if(!target)return null;
+  for(const extension of [".ts",".tsx",""]){
+    const candidate=`${target}${extension}`;
+    if(fs.existsSync(candidate)&&fs.statSync(candidate).isFile())return candidate;
+  }
+  return null;
+}
+function moduleGraph(root){
+  const graph=new Map();
+  const walk=file=>{
+    if(graph.has(file))return graph.get(file);
+    const dependencies=[];
+    graph.set(file,dependencies);
+    for(const value of fileImports(file)){
+      const resolved=resolveModule(file,value);
+      if(resolved){dependencies.push(resolved);walk(resolved);}
+    }
+    return dependencies;
+  };
+  walk(root);
+  return graph;
+}
+function reachableModules(root){
+  const graph=moduleGraph(root);
+  return [...graph.keys()];
+}
+// Icon geometry is pure generated data that only some entries import. Publish it
+// as its own optional item so a component that never draws an icon does not
+// install it, and let the entries that need it declare the dependency instead.
+// Targets are unchanged, so every installed import path stays identical.
+const geometryFiles=[
+  {path:`${source}/lib/icon-data.ts`,type:"registry:lib",target:"lib/cojeev/icon-data.ts"},
+  {path:`${source}/lib/lucide-icon-data.ts`,type:"registry:lib",target:"lib/cojeev/lucide-icon-data.ts"},
+];
+const geometryPaths=new Set(geometryFiles.map(file=>file.path));
+const geometrySpecifiers=new Set(geometryFiles.map(file=>`@/${file.path.replace(/\.ts$/,"")}`));
+
+// Metadata is not decoration: the directory entry schema and every consumer that
+// groups the catalogue read `author`/`categories`. The geometry item used to ship
+// without either, so the "metadata on every item" claim was true for 174 of 175.
+const geometryItem={name:"cojeev-icon-geometry",type:"registry:lib",title:"Cojeev icon geometry",description:"Generated Lucide icon geometry and the authored Cojeev icon sprite. Installed automatically by the Cojeev icon components.",author:author,categories:["foundation","icons"],registryDependencies:[`${baseURL}/r/cojeev.json`],files:geometryFiles};
 const extras=additions;
-const items=[base,...ids.map(id=>{
+// Private helpers (`lib/*.ts`, `motion/*.ts`) are assigned from the real import
+// graph, not from a list: each entry owns everything its closure reaches, and the
+// foundation keeps only what no entry reaches. That is what stops a component
+// that never draws an icon or animates anything from installing either.
+const entryPlans=ids.map(id=>{
   const entry=reference[id] ? {...reference[id],...extras[id]} : extras[id];
   if(!entry)throw new Error(`Undeclared registry helper: ${id}`);
-  const {imported,helpers}=componentImports(id);
+  const {imported}=componentImports(id);
+  const reachable=reachableModules(`${source}/ui/${id}.tsx`);
   const siblings=[...new Set(imported.filter(value=>value.startsWith("@/registry/cojeev/ui/")).map(value=>value.split("/").at(-1)))];
   for(const sibling of siblings)if(!ids.includes(sibling))throw new Error(`Missing dependency ${sibling} of ${id}`);
-  const dependencies=[...new Set(imported.filter(value=>!value.startsWith(".")&&!value.startsWith("@/")&&value!=="react").map(npmPackage))].map(name=>(entry.dependencies??[]).find(value=>value===name||value.startsWith(`${name}@`))??name);
-  const style=`${source}/styles/${id}.css`;
-  const styles=[...(fs.existsSync(style)?[id]:[]),...(imported.includes(`@/${source}/lib/control-appearance`)?["control-appearance"]:[]),...(["checkbox","radio-group","switch"].includes(id)?["choice-foundations"]:[])];
-  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with Cojeev styling.`,registryDependencies:[`${baseURL}/r/cojeev.json`,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,...(entry.devDependencies?{devDependencies:entry.devDependencies}:{}),files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...helpers.map(file=>({path:file,type:"registry:lib",target:`lib/cojeev/${path.basename(file)}`})),...styles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`}))],...(styles.length?{css:Object.fromEntries(styles.map(name=>[`@import "@/styles/cojeev/${name}.css"`,{}]))}:{}),meta:{source:entry,api:apis[id],category:guides[id]?.category??"Tools",fidelity:"refined-design-family",baseComponent:reference[id]?.tier==="base"}};
+  // UI files are siblings, not helpers: a sibling arrives through its own
+  // registryDependencies entry, so it is never copied into this one's file list.
+  // The foundation already ships `utils.ts` at shadcn's own `lib/utils.ts`, so a
+  // second copy under `lib/cojeev/` would only install the same source twice.
+  const owned=reachable.filter(file=>!geometryPaths.has(file)&&file!==`${source}/lib/utils.ts`&&!file.startsWith(`${source}/ui/`)&&!file.startsWith(`${source}/styles/`));
+  const geometry=reachable.some(file=>geometryPaths.has(file))||imported.some(value=>geometrySpecifiers.has(value))?[`${baseURL}/r/cojeev-icon-geometry.json`]:[];
+  const targetFor=file=>`${file.startsWith(`${source}/motion/`)?`lib/cojeev-motion/`:`lib/cojeev/`}${path.basename(file)}`;
+  // Stylesheet ownership follows the same closure as modules. `tokens`, `theme`
+  // and `base` are the foundation every entry needs; anything else is a component
+  // stylesheet or a shared paint sheet, and only entries that reach it get it.
+  const styleFor=file=>`${source}/styles/${path.basename(file).replace(/\.tsx?$/,"")}.css`;
+  const styles=[...(fs.existsSync(styleFor(`${source}/ui/${id}.tsx`))?[id]:[]),...owned.map(styleFor).filter(file=>fs.existsSync(file)).map(file=>path.basename(file,".css")),...(["checkbox","radio-group","switch"].includes(id)?["choice-foundations"]:[])];
+  return {id,entry,reachable,owned,targetFor,geometry,siblings,styles};
+});
+// A private module reached by more than one entry is declared by each of them.
+// The installer resolves a target once, so the consumer still receives one file;
+// duplicating the declaration is what makes every entry self-sufficient.
+const ownership=new Map();
+for(const plan of entryPlans)for(const file of plan.owned){const target=plan.targetFor(file);if(!ownership.has(target))ownership.set(target,new Set());ownership.get(target).add(plan.id);}
+const styleOwnership=new Set(entryPlans.flatMap(plan=>plan.styles.map(name=>`${source}/styles/${name}.css`)));
+// The foundation's own sources decide the foundation's packages. Every consumer
+// resolves them, so a package may only appear there because base code imports it.
+const basePaths=new Set(base.files.map(file=>file.path));
+const foundationPackages=new Set([...basePaths].flatMap(file=>fileImports(file)).filter(value=>!value.startsWith(".")&&!value.startsWith("@/")&&value!=="react").map(npmPackage));
+const items=[base,geometryItem,...entryPlans.map(({id,entry,reachable,owned,targetFor,geometry,siblings,styles})=>{
+  // Package dependencies follow the same closure. A package the foundation
+  // already declares is resolved once for everyone and is not repeated here.
+  const importedPackages=[...new Set(reachable.flatMap(file=>fileImports(file)).filter(value=>!value.startsWith(".")&&!value.startsWith("@/")&&value!=="react").map(npmPackage))];
+  const dependencies=importedPackages.filter(name=>!foundationPackages.has(name)).map(name=>(entry.dependencies??[]).find(value=>value===name||value.startsWith(`${name}@`))??name);
+  const category=guides[id]?.category??"Tools";
+  return {name:id,type:"registry:ui",title:entry.name,description:guides[id]?.description??`${entry.name} with Cojeev styling.`,author:author,categories:[category],registryDependencies:[`${baseURL}/r/cojeev.json`,...geometry,...siblings.map(name=>`${baseURL}/r/${name}.json`)],dependencies,...(entry.devDependencies?{devDependencies:entry.devDependencies}:{}),files:[{path:`${source}/ui/${id}.tsx`,type:"registry:ui"},...owned.map(file=>({path:file,type:"registry:lib",target:targetFor(file)})),...styles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`}))],...(styles.length?{css:Object.fromEntries(styles.map(name=>[`@import "@/styles/cojeev/${name}.css"`,{}]))}:{}),meta:{source:entry,api:apis[id],category,fidelity:"refined-design-family",baseComponent:reference[id]?.tier==="base"}};
 })];
 base.cssVars={theme};
-base.files.push(...fs.readdirSync(`${source}/lib`).filter(name=>name.endsWith(".ts")&&name!=="utils.ts").map(name=>({path:`${source}/lib/${name}`,type:"registry:lib",target:`lib/cojeev/${name}`})));
-base.files.push(...fs.readdirSync(`${source}/motion`).filter(name=>/\.tsx?$/.test(name)).map(name=>({path:`${source}/motion/${name}`,type:"registry:lib",target:`lib/cojeev-motion/${name}`})));
+// The foundation keeps exactly the private modules no entry reaches, plus
+// `utils`, which every entry imports and which therefore belongs to the layer
+// everyone installs. A module no entry reaches and no foundation file imports is
+// dead code: it fails the build rather than shipping to every consumer silently.
+const keepInFoundation=(directory,extension)=>fs.readdirSync(`${source}/${directory}`).filter(name=>extension.test(name)).filter(name=>name!=="utils.ts").filter(name=>!geometryPaths.has(`${source}/${directory}/${name}`)).filter(name=>!ownership.has(`${directory==="motion"?"lib/cojeev-motion/":"lib/cojeev/"}${name}`)).map(name=>({path:`${source}/${directory}/${name}`,type:"registry:lib",target:`${directory==="motion"?"lib/cojeev-motion/":"lib/cojeev/"}${name}`}));
+base.files.push(...keepInFoundation("lib",/\.ts$/),...keepInFoundation("motion",/\.tsx?$/));
+// Every private module has to land somewhere. Without this check a module that
+// no entry reaches would silently ship inside the foundation, installed by
+// everyone, which is exactly the defect this assignment removes.
+for(const directory of ["lib","motion"]){
+  const target=directory==="motion"?"lib/cojeev-motion/":"lib/cojeev/";
+  for(const name of fs.readdirSync(`${source}/${directory}`))if(/\.tsx?$/.test(name)&&!geometryPaths.has(`${source}/${directory}/${name}`)&&!basePaths.has(`${source}/${directory}/${name}`)&&!ownership.has(`${target}${name}`))throw new Error(`Private module ${directory}/${name} reaches no entry and no foundation file`);
+}
+// The foundation declares exactly the packages its own sources import. A package
+// that only entries import stays off this list, which is what makes a static
+// install resolve without motion at all.
+base.dependencies=[...foundationPackages].sort();
 base.files.push({path:`${source}/styles/fonts.css`,type:"registry:file",target:"styles/cojeev-fonts.css"});
 // Binary assets cannot be registry files: shadcn reads file contents as UTF-8.
 // This inert helper keeps the default self-contained CSS and only materializes
 // the verified bytes when a consumer explicitly invokes it after installation.
 base.files.push({path:`${source}/scripts/materialize-fonts.mjs`,type:"registry:file",target:"scripts/cojeev-materialize-fonts.mjs"});
-base.files.push(...foundationStyles.map(name=>({path:`${source}/styles/${name}.css`,type:"registry:file",target:`styles/cojeev/${name}.css`})));
+// The foundation keeps the stylesheets every entry needs. A shared paint sheet
+// only some entries reach belongs to those entries, so an unused one is not
+// installed into every project in the registry.
+base.files.push(...fs.readdirSync(`${source}/styles`).filter(name=>name.endsWith(".css")&&name!=="fonts.css"&&!styleOwnership.has(`${source}/styles/${name}`)).map(name=>({path:`${source}/styles/${name}`,type:"registry:file",target:`styles/cojeev/${name}`})));
 base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({path:`reference/cojeev-handoff-v4/fonts/${name}`,type:"registry:file",target:`styles/fonts/${name}`})));
 // Every entry installs this base, so one notices file reaches every consumer.
 // It has to be a file: the installer re-prints the TypeScript it copies and

@@ -2,12 +2,13 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "label",
   "title": "Label",
+  "author": "Sanjay Kumar <https://github.com/luv-jeri>",
   "description": "Provides a native form label plus compact stat-label primitives for named values.",
   "dependencies": [
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://000h.cojeev.com/r/cojeev.json"
   ],
   "files": [
     {
@@ -131,5 +132,8 @@
     "fidelity": "refined-design-family",
     "baseComponent": true
   },
+  "categories": [
+    "Forms"
+  ],
   "type": "registry:ui"
 }
