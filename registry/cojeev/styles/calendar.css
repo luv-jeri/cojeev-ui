@@ -7,10 +7,13 @@
 [data-slot="calendar-caption"] b { font-size:26px; font-weight:600; line-height:1.1; letter-spacing:-.025em; }
 [data-slot="calendar-caption"] > span { font-family:var(--font-text); font-size:13px; font-weight:500; line-height:1.5; color:var(--v-text-2); }
 [data-slot="calendar-nav"] { display:inline-flex; gap:6px; }
-[data-slot="calendar-nav"] .v-ibtn { width:36px; height:36px; color:var(--v-text); background:var(--v-beige); box-shadow:none; }
+/* Nav buttons are transparent inside the handoff's nav pill: `alive.css`
+   `.v-cal__nav .v-ibtn{...background:transparent;box-shadow:none!important;...}`. */
+[data-slot="calendar-nav"] .v-ibtn { width:36px; height:36px; color:var(--v-text); background:transparent; box-shadow:none; }
 [data-slot="calendar-nav"] .v-ibtn:not(:disabled):hover { background:var(--v-blue); color:var(--v-on-accent); }
 [data-slot="calendar-nav"] .v-icon { width:17px; height:17px; }
-[data-slot="calendar-grid"] { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); align-items:center; justify-items:center; gap:5px 2px; width:100%; border-collapse:collapse; }
+/* Row gap is 4px: `alive.css` `.v-cal__grid{...gap:4px 2px;...}`. */
+[data-slot="calendar-grid"] { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); align-items:center; justify-items:center; gap:4px 2px; width:100%; border-collapse:collapse; }
 [data-slot="calendar-grid"]:has(.v-cal__wk) { grid-template-columns:24px repeat(7,minmax(0,1fr)); }
 [data-slot="calendar-grid"] :is(thead,tbody,tr) { display:contents; }
 [data-slot="calendar-grid"] td { display:grid; place-items:center; position:relative; width:100%; min-width:0; height:42px; padding:0; }
@@ -18,15 +21,26 @@
 [data-slot="calendar-week-number-header"] { font-size:9px; letter-spacing:.02em; }
 [data-slot="calendar-week-number"] { display:grid; place-items:center; width:20px; height:26px; font-size:10px; font-weight:400; color:var(--v-text-2); padding:0; background:transparent; }
 [data-slot="calendar-week-number"].-on { color:var(--v-text); font-weight:600; }
-[data-slot="calendar-day"] { position:relative; isolation:isolate; display:grid; place-items:center; width:40px; max-width:100%; height:40px; margin:0; padding:0; border:0; border-radius:43% 57% 48% 52% / 55% 44% 56% 45%; background:transparent; color:var(--v-text); font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; cursor:pointer; }
+/* Day cells are circles, not the avatar/activity-feed authored blob. The handoff
+   states `border-radius:50%` for `.v-cal__d` twice — `alive.css:402` and the rule
+   at `alive.css:602` this declaration is otherwise copied from — so the organic
+   radius was carried in from the avatar motif, not chosen here. */
+[data-slot="calendar-day"] { position:relative; isolation:isolate; display:grid; place-items:center; width:40px; max-width:100%; height:40px; margin:0; padding:0; border:0; border-radius:50%; background:transparent; color:var(--v-text); font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; cursor:pointer; }
 [data-slot="calendar-day"] > span { position:relative; z-index:1; }
 [data-slot="calendar-day"]:not(:disabled):not([aria-pressed="true"]):hover { background:var(--v-beige); }
+/* `-off` marks weekend cells — the handoff's own builder sets it that way at
+   `js/ui.js:226` (`const we=dt.getDay()===0||dt.getDay()===6`). The class was
+   applied but never styled, so weekends kept the weekday ink and weight. Value
+   and order follow `alive.css:609`, before the selected rule below. */
+[data-slot="calendar-day"].-off { color:var(--v-text-2); font-weight:400; }
 [data-slot="calendar-day"][aria-pressed="true"] { background:transparent; color:var(--v-on-accent); font-weight:700; }
-[data-slot="calendar-day"][data-today]:not([aria-pressed="true"]) { box-shadow:inset 0 0 0 1.5px var(--v-blue); font-weight:700; }
+/* Today's weight is 600, not 700: `alive.css:608`
+   `.v-cal__d.-today:not([aria-selected="true"]){...font-weight:600}`. */
+[data-slot="calendar-day"][data-today]:not([aria-pressed="true"]) { box-shadow:inset 0 0 0 1.5px var(--v-blue); font-weight:600; }
 [data-slot="calendar-day"][data-today]::after { content:""; position:absolute; width:3px; height:3px; bottom:4px; border-radius:50%; background:currentColor; }
 [data-slot="calendar-day"][data-range-middle] { border-radius:0; color:var(--v-text); }
 [data-slot="calendar-day"]:is([data-range-start],[data-range-end]) { color:var(--v-on-accent); }
-[data-slot="calendar-day"] > [data-slot="calendar-selection"] { position:absolute; inset:0; z-index:0; pointer-events:none; border-radius:43% 57% 48% 52% / 55% 44% 56% 45%; background:var(--v-pink); }
+[data-slot="calendar-day"] > [data-slot="calendar-selection"] { position:absolute; inset:0; z-index:0; pointer-events:none; border-radius:50%; background:var(--v-pink); }
 [data-selection-mode="range"] [data-slot="calendar-grid"] td:has([data-range-middle],[data-range-start],[data-range-end])::before { content:""; position:absolute; inset:3px -1px; background:color-mix(in oklab,var(--v-pink) 23%,var(--v-canvas)); pointer-events:none; }
 [data-selection-mode="range"] [data-slot="calendar-grid"] td:has([data-range-start])::before { inset-inline-start:50%; }
 [data-selection-mode="range"] [data-slot="calendar-grid"] td:has([data-range-end])::before { inset-inline-end:50%; }
