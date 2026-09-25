@@ -840,11 +840,20 @@ export function buildAssemblyScene(): AssemblyScene {
    * the step is taken here, per fragment, where the interpolated value still
    * carries the position across that face.
    *
-   * Solved against `01-hero.png` on the rows the `shade` ramp was solved on, by
-   * sweeping the three uniforms and reading the mean absolute error over the
-   * rim field x 820-900, y 280-640, which falls from 61.3 to 36.5 against the
-   * unmodified band. `start` is 0 because the artboard's terminator falls at the
-   * middle of the band, which is the first place `inward` leaves zero. */
+   * Fitted, not derived, and the fit is thin: `start`, `width` and `depth` are
+   * three numbers chosen against one artboard, plus the two thresholds inside
+   * the fragment stage. They were solved by sweeping each and reading the mean
+   * absolute error over the rim field x 820-900, y 280-640, which falls from
+   * 61.23 to 47.90 against the unmodified band. `start` is 0 because the
+   * artboard's terminator falls at the middle of the band, which is the first
+   * place `inward` leaves zero.
+   *
+   * Known cost: the pale surface at the frame's right edge, x 1408-1536, moves
+   * from 25.82 to 27.24 mean absolute error. It is the frame's worst region
+   * already — the artboard holds it at 203 where the lighting gives 103 — and
+   * the `open` gate cannot release it without also releasing the lower half of
+   * the left leg, which the artboard does shade. One height threshold cannot
+   * separate those two, and no other per-station signal was found that does. */
   const apertureRim = {
     start: { value: 0 },
     width: { value: 0.16 },
@@ -863,10 +872,12 @@ attribute float occlusion;
 attribute float shade;
 attribute float rim;
 attribute float face;
+attribute float open;
 varying float vOcclusion;
 varying float vShade;
 varying float vRim;
-varying float vFace;`,
+varying float vFace;
+varying float vOpen;`,
       )
       .replace(
         "#include <begin_vertex>",
@@ -874,7 +885,8 @@ varying float vFace;`,
 vOcclusion = occlusion;
 vShade = shade;
 vRim = rim;
-vFace = face;`,
+vFace = face;
+vOpen = open;`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace(
@@ -887,17 +899,23 @@ uniform float heroRimDepth;
 varying float vOcclusion;
 varying float vShade;
 varying float vRim;
-varying float vFace;`,
+varying float vFace;
+varying float vOpen;`,
       )
       .replace(
         "#include <color_fragment>",
         `#include <color_fragment>
-/* The face attribute is how far behind the front rim a vertex sits, so the
- * lit face is at the top of its range and the wall inside the opening at the
- * bottom. Without the gate the wall takes this shadow on top of the occlusion
- * attribute and lands at 46 where the artboard holds 110. */
-float vRimMask = smoothstep(0.4, 0.65, vFace);
-float vRimShadow = 1.0 - heroRimDepth * vRimMask * smoothstep(heroRimStart, heroRimStart + heroRimWidth, vRim);
+/* Two gates, both multiplying the shadow's amount rather than the coordinate
+ * it is measured against, so that neither can slide the terminator.
+ *
+ * vFace picks out the band's lit face; the narrow run of the band that turns
+ * away into the opening is already handled by the occlusion attribute above,
+ * and taking this shadow there too puts 46 where the artboard holds 110.
+ * vOpen releases the plinth, whose shadow the artboard does not draw. */
+float vRimAmount = heroRimDepth
+  * smoothstep(0.8, 0.95, vFace)
+  * vOpen;
+float vRimShadow = 1.0 - vRimAmount * smoothstep(heroRimStart, heroRimStart + heroRimWidth, vRim);
 diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion) * vShade * mix(1.0, vRimShadow, heroOcclusion);`,
       );
   };

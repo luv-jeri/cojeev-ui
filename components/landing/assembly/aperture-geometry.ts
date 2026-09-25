@@ -196,11 +196,16 @@ export function buildApertureGeometry(
    * darker in there - means moving the silhouette, and the silhouette is already
    * within 2-4 px of the reference at every row. */
   const occlusion: number[] = [];
-  /** how far in from the outer edge each vertex sits, 0..1, for the rim shadow */
+  /** across the band, 0 at the outer edge and 1 at the inner one */
   const rim: number[] = [];
-  /** how far behind the front rim a vertex sits, 0..1, so the fragment stage can
-   * tell the face in front of the opening from the wall inside it */
+  /** through the band's thickness, 0 at one face and 1 at the other. Which of
+   * the two faces the camera sees was read off the render rather than assumed:
+   * the lit face measures 1 here. */
   const face: number[] = [];
+  /** how much of the opening a station belongs to, 0 on the plinth below it.
+   * Kept separate from `rim` so that fading it changes the shadow's strength
+   * without moving where the terminator falls. */
+  const open: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
   const rings: number[][] = [];
@@ -276,23 +281,32 @@ export function buildApertureGeometry(
       const inward = Math.max(0, -a / halfWidth);
       const intoNiche = (b + halfDepth) / (2 * halfDepth);
       occlusion.push(1 - occlusionDepth * inward * intoNiche * intoNiche);
-      /* The rim's own shadow is the same `inward`, handed to the fragment stage
-       * with the plinth faded out. It cannot be resolved here: the cross-section
-       * carries two `edgeSegments`, so the face in front of the opening has
-       * exactly two vertex columns and anything baked per vertex is a straight
-       * line between them. The artboard's terminator is 10 px of a 92 px face —
-       * a step, not a line — and a step needs a value that survives
-       * interpolation. The fade cannot be left to the fragment stage either: it
-       * is a property of the station, not of the point across the band.
+      /* Three coordinates, each handed to the fragment stage separately so that
+       * the shader can gate them independently. Multiplying any two of them
+       * together here would make one gate move the other's threshold — a fade
+       * applied to `inward` slides the terminator inward instead of only
+       * weakening it, which is not what a fade is for.
        *
-       * The fade is the opening's own extent. It ends where the band meets the
-       * ground, and below that the same `inward` describes the plinth's outer
-       * edge, which the artboard paints in the ground's light: 197 under the
-       * arch against 110 on the rim 100 px above it. Read off the same rows as
-       * the rest of this file, local y -0.58 is plinth and -0.26 is rim. */
+       * They are resolved per fragment rather than here because the
+       * cross-section carries two `edgeSegments`: the band's lit face has
+       * exactly two vertex columns, so a per-vertex ramp across it is a straight
+       * line between them. The artboard's terminator is a step, and a step needs
+       * a value that survives interpolation.
+       *
+       *   inward  across the band, 0 at the outer edge and 1 at the inner one.
+       *   thick   through the band's thickness, 0 at one face and 1 at the
+       *           other. Which of the two the camera sees was measured off the
+       *           render, not assumed: the lit face reads 1.
+       *   open    how much this station belongs to the opening rather than to
+       *           the plinth it stands on. The artboard lights the plinth like
+       *           the ground it rests on — 197 under the arch against 110 on the
+       *           rim 100 px above it — while the same `inward` still runs to 1
+       *           across it. Read off the same rows as the rest of this file,
+       *           local y -0.58 is plinth and -0.26 is opening. */
       const plinth = Math.min(1, Math.max(0, (centre.y + 0.58) / 0.32));
-      rim.push(inward * plinth * plinth * (3 - 2 * plinth));
+      rim.push(inward);
       face.push(intoNiche);
+      open.push(plinth * plinth * (3 - 2 * plinth));
     }
     rings.push(
       Array.from({ length: ring.length }, (_, index) => base + index),
@@ -331,6 +345,11 @@ export function buildApertureGeometry(
       positions.push(cx, cy, cz);
       uvs.push(u, 0);
       occlusion.push(1);
+      /* The hub sits at the section's centroid, so it is on no particular side
+       * of the band: no terminator crosses it and no shadow falls on the fan. */
+      rim.push(0);
+      face.push(0.5);
+      open.push(0);
       for (let spoke = 0; spoke < radial; spoke++) {
         const next = (spoke + 1) % radial;
         /* The wall quads traverse the first station's rim spoke[n] -> spoke[s]
@@ -396,6 +415,7 @@ export function buildApertureGeometry(
   geometry.setAttribute("shade", new THREE.Float32BufferAttribute(shade, 1));
   geometry.setAttribute("rim", new THREE.Float32BufferAttribute(rim, 1));
   geometry.setAttribute("face", new THREE.Float32BufferAttribute(face, 1));
+  geometry.setAttribute("open", new THREE.Float32BufferAttribute(open, 1));
   geometry.setIndex(indices);
 
   /* Orient the whole surface outward. The signed volume of a closed mesh is

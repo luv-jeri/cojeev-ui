@@ -372,6 +372,13 @@
  * x=782), so the right bleed fades out instead of ending in a plate edge. Under
  * the text the ground is untouched; past it there is nothing left to draw a
  * straight boundary across the specimen.
+ *
+ * The reasoning is the copy box's, not the hero's, so it is not scoped to the
+ * hero: every chapter's body draws the same ground at the same bleed, and the
+ * property it relies on — that every glyph sits inside the copy's own box — is
+ * the box's own. The route gate re-measures contrast against the painted pixels
+ * at all sixty viewport, theme and chapter stops, which is what would catch it
+ * if that stopped holding somewhere.
  */
 .asm-section__body::before {
   content: "";
