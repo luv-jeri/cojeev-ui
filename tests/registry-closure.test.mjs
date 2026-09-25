@@ -493,3 +493,13 @@ test("the recorded emitted-size budget is current, honest and not exceeded", () 
     }
   }
 });
+
+test("an emitted-size record rejects a payload digest from an older install", () => {
+  const budgets = JSON.parse(fs.readFileSync("data/delivery-budgets.json", "utf8"));
+  const measurement = {
+    payloadDigest: `${budgets.emitted.payloadDigest}:stale`,
+    profiles: Object.fromEntries(Object.entries(budgets.emitted.profiles ?? {}).map(([profile, declared]) => [profile, declared.measured ?? {}])),
+  };
+  const violations = emittedBudgetViolations(measurement, budgets.emitted);
+  assert.deepEqual(violations.map(violation => violation.rule), ["payloadDigest"]);
+});
