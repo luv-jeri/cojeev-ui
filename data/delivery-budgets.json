@@ -136,9 +136,9 @@
   },
   "emitted": {
     "$comment": "Emitted browser bytes: what a fresh consumer actually ships after `vite build`, which no payload inspection can derive. Measured by `node scripts/qualify-library-delivery.mjs` (npm run qualify:delivery) and recorded here; `payloadDigest` is the digest of everything a consumer installs, so when it stops matching the payloads these numbers are stale and scripts/registry-footprint-report.mjs --check fails until the qualifier is re-run. Metadata changes (title, author, categories) do not affect the digest because they cannot reach a bundle. A local cross-check in tests/registry-closure.test.mjs also asserts these numbers still equal the machine-produced artifacts/library-integration/delivery-qualification.json when that artifact is present.",
-    "measuredAt": "2026-09-25",
+    "measuredAt": "2026-09-26",
     "artifact": "artifacts/library-integration/delivery-qualification.json",
-    "payloadDigest": "e0e1247aa1b86743836418cc55facc9079ab296d2dd481d6a19294d1695f643f",
+    "payloadDigest": "fe0bf5b6958df17263c0c5b1fdf7247315626363d88aa532550730747b00c029",
     "profiles": {
       "button": {
         "entries": [
