@@ -15,6 +15,27 @@ const reference="reference/cojeev-handoff-v4";
 const registry=JSON.parse(fs.readFileSync(`${reference}/data/registry.json`,"utf8")).entries;
 const portMap=JSON.parse(fs.readFileSync(`${reference}/data/port-map.json`,"utf8")).entries;
 const semantics=JSON.parse(fs.readFileSync("apps/gate/fixture-semantic-map.json","utf8")).entries;
+// Owner-approved intentional visual differences. See data/visual-exceptions.json for the approval
+// record. Matching is by component + property + the exact reference/candidate value pair, and each
+// exception names the fixture keys it was approved against; a fixtured exception only matches the
+// keys it names, so a new fixture never inherits an approval it was not granted.
+const exceptionFile="data/visual-exceptions.json";
+const exceptionSet=fs.existsSync(exceptionFile)?JSON.parse(fs.readFileSync(exceptionFile,"utf8")):null;
+if(!exceptionSet)console.error(`No ${exceptionFile}: no intentional differences are approved. Every difference counts as unapproved.`);
+const exceptions=exceptionSet?.exceptions??[];
+const exceptionHits=new Map(exceptions.map(e=>[e.id,0]));
+function approvedDifferences(id,file,differences){
+  const approved=[],unapproved=[],ids=new Set();
+  const key=`${id}/${file}`;
+  for(const d of differences){
+    const hit=exceptions.find(e=>e.components.includes(id)
+      &&(!e.fixtures||e.fixtures.includes(key))
+      &&e.property===d.property&&e.reference===d.reference&&e.candidate===d.candidate);
+    if(hit){approved.push(d);ids.add(hit.id);exceptionHits.set(hit.id,(exceptionHits.get(hit.id)??0)+1);}
+    else unapproved.push(d);
+  }
+  return {approved:approved.length,unapproved:unapproved.length,ids:[...ids]};
+}
 const ids=requestedIds?requestedIds.split(","):Object.keys(registry).filter(id=>registry[id].tier==="base");
 const port=Number(arg("port")??4317);
 const properties=["background-color","color","font-family","font-size","font-weight","line-height","letter-spacing","padding-top","padding-right","padding-bottom","padding-left","width","height","min-height","border-top-width","border-top-style","border-top-color","border-radius","box-shadow","outline","outline-offset","gap","opacity","transform","transition-duration","transition-timing-function"];
@@ -225,12 +246,18 @@ try{
       const candidateByteStable=hash(b.pixels)===hash(b2.pixels);
       const candidateStable=pixels(b.pixels,b2.pixels).count===0&&!styleDiff(b.styles,b2.styles).length;
       const differences=styleDiff(a.styles,b.styles);const delta=pixels(a.pixels,b.pixels);
+      // Owner-approved intentional differences. A matching exception NEVER changes the verdict and
+      // NEVER removes a difference from `differences` — the raw FAIL outcome is preserved, exactly
+      // as the reviewer required. It only labels each difference as approved, so catalogue-fidelity
+      // reporting can tell a deliberate accessibility decision apart from a defect. An exception
+      // that matched nothing is reported as stale rather than silently ignored.
+      const approved=approvedDifferences(id,file,differences);
       const verdict=!oracleStable||!candidateStable?"HARNESS_UNSTABLE":differences.length||delta.ratio>0.001?"FAIL":"PASS";
       if(verdict!=="PASS")process.exitCode=1;
       const name=`${id}-${file.replace(".html","")}-${width}`;
       if(verdict!=="PASS"){for(const [suffix,bytes]of[["reference",a.pixels],["candidate",b.pixels],["diff",delta.diff]])fs.writeFileSync(`${out}/${name}-${suffix}.png`,bytes);}
       const unavailableStyles=Object.entries(a.styles).filter(([,value])=>value.__computedStyleUnavailable).map(([part,value])=>({part,reason:value.__computedStyleUnavailable}));
-      results.push({id,file,width,verdict,oracleStable,candidateStable,oracleByteStable,candidateByteStable,pixelDifference:delta.ratio,differences,oracleAdapters:a.oracleAdapters,unavailableStyles,...(scenario.action?{statePreparation:{sourceFile:scenario.sourceFile,...scenario.action}}:{})});
+      results.push({id,file,width,verdict,oracleStable,candidateStable,oracleByteStable,candidateByteStable,pixelDifference:delta.ratio,differences,approvedDifferences:approved.approved,unapprovedDifferences:approved.unapproved,approvedExceptionIds:approved.ids,oracleAdapters:a.oracleAdapters,unavailableStyles,...(scenario.action?{statePreparation:{sourceFile:scenario.sourceFile,...scenario.action}}:{})});
       fs.writeFileSync(`${out}/results.json`,JSON.stringify(results,null,2));
       console.log(`${verdict} ${name}: ${differences.length} style differences, ${(100*delta.ratio).toFixed(4)}% pixels`);
       // Default fail-fast for fixes; a diagnostic wave can collect independent failures.
@@ -256,6 +283,19 @@ finally{
   // same value the gate already prints, computed by the gate, beside the gate's own results.
   const gitInfo=(()=>{try{return {head:execFileSync("git",["rev-parse","HEAD"],{encoding:"utf8"}).trim(),dirty:execFileSync("git",["status","--porcelain","--","registry/cojeev","apps/gate"],{encoding:"utf8"}).trim().length>0};}catch{return {head:null,dirty:null};}})();
   const expectedRows=ids.reduce((total,id)=>total+inScope(id),0);
+  // Owner-approved intentional differences, reported separately and never folded into the verdict.
+  // `rowsWithOnlyApprovedDifferences` is the honest headline: those rows are the ones whose every
+  // remaining difference is an approved decision. `stale` exceptions matched nothing in this run.
+  const approvedTotal=results.reduce((n,r)=>n+(r.approvedDifferences??0),0);
+  const exceptionSummary={
+    approvedBy:exceptionSet?.approvedBy??null,
+    approval:exceptionSet?.approval??null,
+    approvedDifferenceCount:approvedTotal,
+    totalDifferenceCount:results.reduce((n,r)=>n+r.differences.length,0),
+    rowsWithOnlyApprovedDifferences:results.filter(r=>r.verdict==="FAIL"&&r.differences.length&&r.unapprovedDifferences===0).length,
+    rowsWithAnyApprovedDifference:results.filter(r=>(r.approvedDifferences??0)>0).length,
+    exceptions:exceptions.map(e=>({id:e.id,property:e.property,candidate:e.candidate,reference:e.reference,matchedDifferences:exceptionHits.get(e.id)??0,stale:(exceptionHits.get(e.id)??0)===0})),
+  };
   const provenance={
     gate:"apps/gate/run.mjs",
     gateStartedAt,gateFinishedAt:new Date().toISOString(),
@@ -265,12 +305,14 @@ finally{
     ...gitInfo,
     components:ids,widths,expectedRows,measuredRows:results.length,complete,
     oracleCrossStart,
+    intentionalDifferences:exceptionSummary,
     evidenceUsable:unchanged&&oracleCrossStart?.agreement===true,
     evidenceUsableReason:!unchanged?"candidate source changed during the run":oracleCrossStart?.agreement===true?"cross-start oracle agreement verified":`oracle cross-start was not verified (${oracleCrossStart?.reason??"not compared"})`,
   };
   fs.writeFileSync(`${out}/provenance.json`,JSON.stringify(provenance,null,2));
   const text=["# Fidelity gate","",`Scope: ${ids.join(", ")}. ${results.length} measured comparisons. Full six-width isolation coverage: ${complete?"yes":"NO"}.`,"","Oracle: handoff v4. Fonts ready + 1800ms settle; sequential independent reloads; rewind then step; no re-seeding. Static frames use reduced motion. Self agreement requires exact visible computed state and zero decoded-pixel differences using pixelmatch threshold 0.1 with anti-alias pixels included; raw PNG hash agreement is retained separately. Demonstrably hidden source content may correspond to unmounted Radix content; visible absence always fails. Motion and keyboard coverage are separate reports.","","| Component | Isolation variant / size / state / mode | Width | Verdict | Style differences | Pixel difference |","| --- | --- | ---: | --- | ---: | ---: |",...results.map(r=>`| ${r.id} | ${r.file} | ${r.width} | ${r.verdict} | ${r.differences.length} | ${(100*r.pixelDifference).toFixed(4)}% |`),""];
   text.splice(2,0,`Candidate source SHA-256: ${candidateRevision}. Unchanged during run: ${unchanged?"yes":"NO"}.`,"");
+  if(exceptions.length)text.splice(3,0,`Owner-approved intentional differences: **${exceptionSummary.approvedDifferenceCount}** of ${exceptionSummary.totalDifferenceCount} style differences across ${exceptionSummary.rowsWithAnyApprovedDifference} rows, of which **${exceptionSummary.rowsWithOnlyApprovedDifferences} FAIL rows have no unapproved difference at all**. Approved by ${exceptionSummary.approvedBy}. Verdicts are unchanged: an approved difference still fails its fixture.${exceptionSummary.exceptions.some(e=>e.stale)?` STALE (matched nothing): ${exceptionSummary.exceptions.filter(e=>e.stale).map(e=>e.id).join(", ")}.`:""}`,"");
   text.splice(3,0,`Provenance: \`${out}/provenance.json\` — candidate source SHA-256 \`${candidateRevision}\`, unchanged during run: ${unchanged?"yes":"NO"}, cross-start oracle agreement: ${oracleCrossStart?.agreement===true?"verified":oracleCrossStart?.compared?"NOT VERIFIED":"not checked"}. Evidence usable: ${provenance.evidenceUsable?"yes":"NO"}.`,"");
   if(arg("demo-only")==="true")text.push("This supplementary run compares each original entries/<component>/demo.html, including parts omitted by the generated isolation cases. The same authored markup is rendered in both initial themes; no documentation example or newly designed fixture replaces it.","");
   const adapters=[...new Set(results.flatMap(row=>row.oracleAdapters??[]))];
