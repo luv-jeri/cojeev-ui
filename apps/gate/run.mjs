@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { chromium } from "playwright";
 import { createServer } from "vite";
 import pixelmatch from "pixelmatch";
@@ -139,16 +140,63 @@ function styleDiff(a,b){const diff=[];for(const key of new Set([...Object.keys(a
  }return diff;}
 
 function pixels(a,b){const x=PNG.sync.read(a),y=PNG.sync.read(b),d=new PNG({width:x.width,height:x.height});const count=pixelmatch(x.data,y.data,d.data,x.width,x.height,{threshold:0.1,includeAA:true});return {count,ratio:count/(x.width*x.height),diff:PNG.sync.write(d)};}
+const gateStartedAt=new Date().toISOString();
+const oracleUrl=(id,file,atPort=port)=>file.startsWith("demo")?`http://127.0.0.1:${atPort}/${reference}/${registry[id].demo}?mode=${file.includes("dark")?"dark":"light"}`:`http://127.0.0.1:${atPort}/${reference}/isolation/${id}/${file}`;
+async function warm(target){
+  await page.goto(target,{waitUntil:"load"});
+  await page.waitForFunction(()=>document.documentElement.dataset.ready==="1",{},{timeout:120000});
+  await page.evaluate(()=>document.fonts.ready);
+  await page.waitForTimeout(1800);
+}
+let oracleCrossStart=null;
 try{
-  // Candidate HTML is served by middleware, so Vite does not discover it as an
-  // HTML entry. Warm its complete import graph before any evidence is sampled.
+  // B-044. The FIRST run after a source or config edit can read a reference oracle whose
+  // dependency graph is still being re-optimised, so a fixture's cascade is served in a
+  // different import order for that run. The in-run guard cannot see it: both samples of a
+  // contaminated run agree with each other. Two mechanisms below.
   const warmId=ids[0];
   const warmFile=registry[warmId].isolation.find(file=>!arg("file")||file.includes(arg("file")));
   if(warmFile){
-    await page.goto(`http://127.0.0.1:${port}/candidate?id=${warmId}&file=${warmFile}`,{waitUntil:"load"});
-    await page.waitForFunction(()=>document.documentElement.dataset.ready==="1",{},{timeout:120000});
-    await page.evaluate(()=>document.fonts.ready);
-    await page.waitForTimeout(1800);
+    const warmScenario=fixtureScenario(warmId,warmFile);
+    // Candidate HTML is served by middleware, so Vite does not discover it as an HTML entry.
+    await warm(`http://127.0.0.1:${port}/candidate?id=${warmId}&file=${warmScenario.sourceFile}`);
+    // Mechanism 1: the reference fixture loads ONE sheet that @imports eleven others into a
+    // single layer, so import order decides its cascade — exactly what a re-optimising graph
+    // can serve differently for one run. Until this fix the reference side was never warmed
+    // while the candidate side was. Warm it twice: the first load absorbs the re-optimisation.
+    await warm(oracleUrl(warmId,warmScenario.sourceFile));
+    await warm(oracleUrl(warmId,warmScenario.sourceFile));
+    // Mechanism 2: prove independent-start reproducibility. A second, consecutively started
+    // server reuses the now-settled optimiser cache, so if this run's oracle disagrees with
+    // it, this run's oracle is the unsettled one and none of its measurements are evidence.
+    if(arg("skip-oracle-cross-start")!=="true"){
+      const probePort=port+1;
+      const probeServer=await createServer({configFile:path.resolve("apps/gate/vite.config.ts"),server:{port:probePort,strictPort:true}});
+      try{
+        await probeServer.listen();
+        let agreement=false,attempts=0,detail=null;
+        for(attempts=1;attempts<=3&&!agreement;attempts++){
+          await warm(oracleUrl(warmId,warmScenario.sourceFile,probePort));
+          const p=await sample(oracleUrl(warmId,warmScenario.sourceFile),warmId,warmScenario.action);
+          const q=await sample(oracleUrl(warmId,warmScenario.sourceFile,probePort),warmId,warmScenario.action);
+          const styleDifferences=widths.flatMap(width=>styleDiff(p[width].styles,q[width].styles).map(diff=>({width,...diff})));
+          const pixelDifferentWidths=widths.filter(width=>pixels(p[width].pixels,q[width].pixels).count>0);
+          agreement=!styleDifferences.length&&!pixelDifferentWidths.length;
+          detail={attempts,styleDifferences:styleDifferences.slice(0,8),pixelDifferentWidths};
+        }
+        oracleCrossStart={compared:true,agreement,attempts,...detail};
+        if(!agreement){
+          process.exitCode=1;
+          throw new Error(`B-044: the oracle is not independently reproducible across two server starts, so this run is not evidence — ${JSON.stringify(detail).slice(0,600)}`);
+        }
+        console.log(`oracle cross-start agreement: yes (${attempts-1} attempt(s), ${warmId}/${warmScenario.sourceFile})`);
+      } finally {
+        await probeServer.close();
+      }
+    } else {
+      oracleCrossStart={compared:false,agreement:null,reason:"--skip-oracle-cross-start=true: the oracle was NOT checked against a second server start, so this run must not be cited as evidence"};
+      console.log("oracle cross-start agreement: NOT CHECKED (--skip-oracle-cross-start=true)");
+    }
   }
   for(const id of ids){
     if(registry[id]?.tier!=="base")throw new Error(`Not a base component: ${id}`);
@@ -160,7 +208,7 @@ try{
         fs.writeFileSync(`${out}/skipped-exact-cases.json`,JSON.stringify(skipped,null,2));
         continue;
       }
-      const oracle=file.startsWith("demo")?`http://127.0.0.1:${port}/${reference}/${registry[id].demo}?mode=${file.includes("dark")?"dark":"light"}`:`http://127.0.0.1:${port}/${reference}/isolation/${id}/${scenario.sourceFile}`;
+      const oracle=oracleUrl(id,scenario.sourceFile);
       const candidate=`http://127.0.0.1:${port}/candidate?id=${id}&file=${scenario.sourceFile}`;
       let A,A2,B,B2;
       try {A=await sample(oracle,id,scenario.action);A2=await sample(oracle,id,scenario.action);B=await sample(candidate,id,scenario.action);B2=await sample(candidate,id,scenario.action);}
@@ -195,8 +243,28 @@ finally{
   const unchanged=candidateHash()===candidateRevision;
   if(!unchanged){console.error("Candidate source changed during the run; results are not release evidence.");process.exitCode=1;}
   const complete=arg("demo-only")!=="true"&&ids.every(id=>results.filter(r=>r.id===id).length===registry[id].isolation.length*widths.length)&&widths.length===6;
+  // Bind the artefact to the tree. Until this was written, a census result carried no SHA at
+  // all, so its provenance could only be INFERRED from sibling files and timestamps — which is
+  // why the W04 census had to be marked UNKNOWN and could not support a score. The hash is the
+  // same value the gate already prints, computed by the gate, beside the gate's own results.
+  const gitInfo=(()=>{try{return {head:execFileSync("git",["rev-parse","HEAD"],{encoding:"utf8"}).trim(),dirty:execFileSync("git",["status","--porcelain","--","registry/cojeev","apps/gate"],{encoding:"utf8"}).trim().length>0};}catch{return {head:null,dirty:null};}})();
+  const expectedRows=ids.reduce((total,id)=>total+(arg("demo-only")==="true"?2:registry[id].isolation.length)*widths.length,0);
+  const provenance={
+    gate:"apps/gate/run.mjs",
+    gateStartedAt,gateFinishedAt:new Date().toISOString(),
+    candidateSourceHash:candidateRevision,
+    candidateSourceHashAlgorithm:"sha256 of sorted `path\\ncontent` over registry/cojeev + apps/gate (identical to apps/gate/run.mjs candidateHash())",
+    unchangedDuringRun:unchanged,
+    ...gitInfo,
+    components:ids,widths,expectedRows,measuredRows:results.length,complete,
+    oracleCrossStart,
+    evidenceUsable:unchanged&&oracleCrossStart?.agreement===true,
+    evidenceUsableReason:!unchanged?"candidate source changed during the run":oracleCrossStart?.agreement===true?"cross-start oracle agreement verified":`oracle cross-start was not verified (${oracleCrossStart?.reason??"not compared"})`,
+  };
+  fs.writeFileSync(`${out}/provenance.json`,JSON.stringify(provenance,null,2));
   const text=["# Fidelity gate","",`Scope: ${ids.join(", ")}. ${results.length} measured comparisons. Full six-width isolation coverage: ${complete?"yes":"NO"}.`,"","Oracle: handoff v4. Fonts ready + 1800ms settle; sequential independent reloads; rewind then step; no re-seeding. Static frames use reduced motion. Self agreement requires exact visible computed state and zero decoded-pixel differences using pixelmatch threshold 0.1 with anti-alias pixels included; raw PNG hash agreement is retained separately. Demonstrably hidden source content may correspond to unmounted Radix content; visible absence always fails. Motion and keyboard coverage are separate reports.","","| Component | Isolation variant / size / state / mode | Width | Verdict | Style differences | Pixel difference |","| --- | --- | ---: | --- | ---: | ---: |",...results.map(r=>`| ${r.id} | ${r.file} | ${r.width} | ${r.verdict} | ${r.differences.length} | ${(100*r.pixelDifference).toFixed(4)}% |`),""];
   text.splice(2,0,`Candidate source SHA-256: ${candidateRevision}. Unchanged during run: ${unchanged?"yes":"NO"}.`,"");
+  text.splice(3,0,`Provenance: \`${out}/provenance.json\` — candidate source SHA-256 \`${candidateRevision}\`, unchanged during run: ${unchanged?"yes":"NO"}, cross-start oracle agreement: ${oracleCrossStart?.agreement===true?"verified":oracleCrossStart?.compared?"NOT VERIFIED":"not checked"}. Evidence usable: ${provenance.evidenceUsable?"yes":"NO"}.`,"");
   if(arg("demo-only")==="true")text.push("This supplementary run compares each original entries/<component>/demo.html, including parts omitted by the generated isolation cases. The same authored markup is rendered in both initial themes; no documentation example or newly designed fixture replaces it.","");
   const adapters=[...new Set(results.flatMap(row=>row.oracleAdapters??[]))];
   const unavailable=[...new Set(results.flatMap(row=>(row.unavailableStyles??[]).map(part=>`${row.id} / ${part.part}: ${part.reason}`)))];
