@@ -757,9 +757,35 @@ export function buildAssemblyScene(): AssemblyScene {
        * against a backdrop of 17.6, which is the same hard edge as before with
        * the sign flipped — a dark line instead of a brown one. 11% landed it at
        * 25.4, still 8 clear of the backdrop; 7.5% measures 19, which is what the
-       * reference holds at that row. */
+       * reference holds at that row.
+       *
+       * It is not constant, and that is the correction. Read across the frame at
+       * y=670, where the plane fills the background behind and beside the
+       * specimen, our far field is flat — 17.2, 17.1, 17.1, 17.0, 17.0, 17.0,
+       * 17.1 at x 40, 140, 240, 440, 540, 640, 740 — while the artboard climbs
+       * steadily through the same columns: 7.6, 9.6, 10.9, 13.1, 13.8, 16.2,
+       * 17.4, and on to 30.6 at x 1240. One number cannot match a field that
+       * spans 8 to 30, and no value of it can: the uniform sweep is stuck for
+       * exactly this reason. The rows left of the specimen say the same thing
+       * from the other side — art 11.9 / 11.3 / 9.9 / 12.5 against our 17.2 /
+       * 17.1 / 17.1 / 17.0 at y 600 / 640 / 680 / 720, five to seven counts too
+       * bright where the frame is darkest.
+       *
+       * So the far value is now directional, fitted to those two reads: ~2% at
+       * the far left rising to ~11% just right of the specimen, clamped so the
+       * 64x64 texture cannot leave [0,1] at the plane's corners.
+       *
+       * `0.072 + 0.005 * wx` is the fitted pair, not the first one tried. Read
+       * through the acceptance capture: `0.079 + 0.004 * wx` gives 23.58,
+       * `0.072 + 0.005 * wx` gives 23.54, `0.065 + 0.006 * wx` gives 23.61 and
+       * costs the floor its gain back (17.89 -> 18.14) to buy the aperture wall
+       * (17.46 -> 17.31) and the pointer (15.69 -> 14.60). The middle pair wins
+       * the frame, which is the acceptance metric, and it is the only one of the
+       * three that leaves every named region at or better than where it started
+       * except the floor's own 17.89 against 17.81. */
+      const far = Math.min(0.16, Math.max(0.02, 0.072 + 0.005 * wx));
       const value = Math.round(
-        255 * (0.063 + 0.937 * Math.pow(1 - Math.min(1, distance / 4.5), 4.6)),
+        255 * (far + (1 - far) * Math.pow(1 - Math.min(1, distance / 4.5), 4.6)),
       );
       floorFalloffData.set([value, value, value, 255], (y * 64 + x) * 4);
     }
