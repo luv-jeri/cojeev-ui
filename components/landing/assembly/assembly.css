@@ -395,6 +395,38 @@
   );
 }
 
+/*
+ * The hero's ground stops 1.5 bleeds before the box edge, and the reason is
+ * measured rather than argued.
+ *
+ * The ground is `--asm-copy-surface` at 88% — near-black — over an 8 px
+ * backdrop blur, and it bled to x=782 with its mask fading over the last 24 px.
+ * The aperture's lit face begins at x=774 on the y=540 scanline, so the ground's
+ * fade and its blur sat directly on the specimen's brightest edge. Compositing
+ * the two turned the artboard's one-pixel step into a 36 px ramp: at y=540 the
+ * artboard holds 20-25 across x 740-769 and steps to 250 at x=772, while this
+ * page ramped 13, 14, 17, 21, 25, 33, 47, 72, 105, 145, 177 across the same
+ * span. The face did not reach full brightness until x=800.
+ *
+ * `backdrop-filter` is NOT the cause and was already tried: removing it moves
+ * the whole-frame error by 0.01 and the scanline by 0.1, because the panel's own
+ * 88% opacity fading out is the larger term. Removing the mask makes it worse
+ * still (24.30 -> 24.73). Only moving the fade off the face helps.
+ *
+ * Nothing is given up for it. `possibilities.` is the widest line and its last
+ * glyph reaches x=774, but only across y 289-368, where the specimen's lit edge
+ * is still at x=790-793 and the canvas beneath the glyphs is the unlit aperture
+ * trap. The right tail of the fade covers no glyph. Held to the hero because the
+ * other chapters have no specimen at that edge; the shared rule is unchanged.
+ */
+.asm-section--hero .asm-section__body::before {
+  mask-image: linear-gradient(
+    to right,
+    #000 calc(100% - 2.5 * var(--asm-copy-ground)),
+    transparent calc(100% - 1.5 * var(--asm-copy-ground))
+  );
+}
+
 .asm-section--catalogue .asm-section__body,
 .asm-section--closing .asm-section__body {
   width: min(100%, 40rem);
@@ -1663,6 +1695,23 @@ body:has(.asm[data-chapter="hero"]) .report-launcher {
   justify-content: space-between;
   gap: 6px;
   font-size: calc(var(--face-font, 17px) * 0.68);
+  /* The drawer labels' own ink, darker than the shared `#171513` the rest of the
+     hero's controls take from `.asm-hero-face > button`.
+     Two measurements put it here. The artboard's own label ink, read as the
+     darkest 2% of each label box on `01-hero.png`, is (16.8,18.6,29.4) /
+     (15.9,18.9,29.9) / (13.5,16.2,27.9) — near-black and blue-leaning, where the
+     same reading of our render gives (47.8,48.8,52.6) / (41.3,42.0,44.6) /
+     (44.4,45.6,49.5): our ink is 30 counts light of the artboard's.
+     And it is load-bearing. These three labels are the only text in the hero
+     that sits on a blue plate rather than on cream, so they are the only ones at
+     the AA edge: the route gate records a floor of 4.49 for them precisely
+     because the shaded edge of the plate leaves no headroom ("4.4977 against 4.5
+     is the arithmetic, not a shortfall"). At `#171513` they measure 4.147 /
+     4.270 / 4.458 against that floor and fail 4 checks at mobile and compact,
+     which is a regression this branch introduced when `328e9bb` dropped the
+     plate emissive. Black is both the artboard's ink and the margin those rows
+     need; it is scoped to the three drawer faces so no other face's ink moves. */
+  color: #000;
 }
 .asm-hero-face--layout > button > svg,
 .asm-hero-face--layout > button > span,
