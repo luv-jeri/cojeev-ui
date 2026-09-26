@@ -1,31 +1,105 @@
 /* An open date grid: type carries the hierarchy; colour carries the date state. */
 [data-slot="calendar"] { min-width:0; max-width:100%; color:var(--v-text); }
 [data-slot="calendar"] .v-cal__months { display:flex; flex-wrap:wrap; gap:28px; min-width:0; max-width:100%; }
-[data-slot="calendar"] .v-cal__month-wrap { display:grid; gap:20px; flex:0 1 360px; width:100%; min-width:0; max-width:360px; }
-[data-slot="calendar-header"] { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:44px; }
-[data-slot="calendar-caption"] { display:grid; gap:1px; font-family:var(--font-display); background:transparent; color:var(--v-text); }
-[data-slot="calendar-caption"] b { font-size:26px; font-weight:600; line-height:1.1; letter-spacing:-.025em; }
-[data-slot="calendar-caption"] > span { font-family:var(--font-text); font-size:13px; font-weight:500; line-height:1.5; color:var(--v-text-2); }
-[data-slot="calendar-nav"] { display:inline-flex; gap:6px; }
-/* Nav buttons are transparent inside the handoff's nav pill: `alive.css`
-   `.v-cal__nav .v-ibtn{...background:transparent;box-shadow:none!important;...}`. */
-[data-slot="calendar-nav"] .v-ibtn { width:36px; height:36px; color:var(--v-text); background:transparent; box-shadow:none; }
+/* The oracle's calendar root is a flat two-child grid — `.v-cal__head` then
+   `.v-cal__grid`, separated by the root's own 14 px gap, total 298 px at 768 px.
+   The candidate adds a `.v-cal__months`/`.v-cal__month-wrap` pair whose 20 px gap
+   lands *on top of* that 14 px and makes the root 304 px. The wrapper is kept for
+   the multi-month API (it is what `data-month-count` lays out), so the grid gap is
+   neutralised at one month and restored for two or more. */
+[data-slot="calendar"] .v-cal__month-wrap { display:grid; gap:0; flex:0 1 360px; width:100%; min-width:0; max-width:360px; }
+[data-slot="calendar"] .v-cal__months { gap:0; }
+[data-slot="calendar"] .v-cal__month-wrap + .v-cal__month-wrap { gap:20px; }
+[data-slot="calendar"]:has(.v-cal__month-wrap + .v-cal__month-wrap) .v-cal__months { gap:14px; }
+/* 12 px gap, no 44 px floor: `alive.css:587` `.v-cal__head{gap:12px}` and the
+   oracle renders `.v-cal__head` at 38 x 324 with `gap:12px` and `min-height:auto`
+   (the 38 px is the 32 px nav pill plus its own 3 px padding). The `min-height:44px`
+   forced the header 11 px taller than the reference and is not in the handoff. */
+[data-slot="calendar-header"] { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+[data-slot="calendar-caption"] { display:inline-flex; align-items:baseline; gap:8px; padding:0 2px; font-family:var(--font-display); background:transparent; color:var(--v-text); }
+/* 22px at weight 900. `alive.css:588` states `font-weight:600` for the
+   `.v-cal__month` container, but the oracle computes 900 on the `<b>` inside it
+   (45.89 px wide against the candidate's 44.48 at 600) — the handoff's own
+   `b` element rule is the winning declaration for the month name, so 900 is what
+   the reference renders and what this matches. The container keeps 600 for the
+   year `<span>`. Oracle on `.v-cal__month`: 22px / 31.9px line box / gap 8px /
+   padding 0 2px, all matched below. */
+[data-slot="calendar-caption"] b { font-size:22px; font-weight:900; line-height:1.45; letter-spacing:-.015em; }
+/* 14px: `alive.css:589` `.v-cal__month>span{font-family:var(--font-text);
+   font-size:14px;font-weight:500;color:var(--v-text-2);letter-spacing:0}`. */
+[data-slot="calendar-caption"] > span { font-family:var(--font-text); font-size:14px; font-weight:500; line-height:1.45; letter-spacing:0; color:var(--v-text-2); }
+/* The handoff nav is a pill: `alive.css:590` `.v-cal__nav{display:inline-flex;
+   gap:2px;background:var(--card);box-shadow:none;border-radius:999px;padding:3px}`.
+   Oracle: `.v-cal__nav` 72 x 38, `padding:3px`, `gap:2px`. */
+[data-slot="calendar-nav"] { display:inline-flex; gap:2px; padding:3px; border-radius:999px; background:var(--card); }
+/* 32 px, not 36: `alive.css:591` `.v-cal__nav .v-ibtn,.v-cal__nav .v-ibtn.-sm,
+   .v-cal__head .v-cal__nav .v-ibtn{width:32px;height:32px;background:transparent;
+   box-shadow:none!important;...}`. The oracle measures `32px` on
+   `.v-cal__head .v-ibtn`. The `.-sm` suffix is required rather than decorative:
+   `icon.css:68` `.v-ibtn:where([data-slot]).-sm` carries the surface the nav must
+   not paint, and the handoff reaches past it with `!important` while
+   `scripts/lint.mjs:17` forbids `!important` in production CSS. Matching the
+   component's own modifier class settles it at equal-and-later specificity
+   instead — measured `background-color: rgb(238, 231, 218)` against the
+   reference's `rgba(0, 0, 0, 0)` on `part:trigger:0/1` before this. */
+[data-slot="calendar-nav"] .v-ibtn,
+[data-slot="calendar-nav"] .v-ibtn:where([data-slot]).-sm { width:32px; height:32px; color:var(--v-text); background:transparent; box-shadow:none; }
 [data-slot="calendar-nav"] .v-ibtn:not(:disabled):hover { background:var(--v-blue); color:var(--v-on-accent); }
-[data-slot="calendar-nav"] .v-icon { width:17px; height:17px; }
-/* Row gap is 4px: `alive.css` `.v-cal__grid{...gap:4px 2px;...}`. */
+/* `.v-cal__nav .v-ibtn .v-icon{width:16px;height:16px;stroke-width:2.2}`
+   (`alive.css:594`). Oracle: the nav glyph box is 16 x 16. */
+[data-slot="calendar-nav"] .v-icon { width:16px; height:16px; }
+/* Row gap is 4px: `alive.css:595`
+   `.v-cal__grid{grid-template-columns:30px repeat(7,minmax(0,1fr));gap:4px 2px;...}`.
+   Confirmed against the rendered oracle, not the stylesheet alone: five
+   independent fresh-server renders of
+   `isolation/calendar/default-default-rest-480x480.html` at 360 px report
+   `gap: 4px 2px` with no run-to-run variation (`.work/w05/oracle-stability.mjs`).
+   `patterns.css:97` declares `gap:6px 2px` for the same selector but is imported
+   before `alive.css` inside the same `vriksha` layer, so `alive.css` wins. */
 [data-slot="calendar-grid"] { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); align-items:center; justify-items:center; gap:4px 2px; width:100%; border-collapse:collapse; }
-[data-slot="calendar-grid"]:has(.v-cal__wk) { grid-template-columns:24px repeat(7,minmax(0,1fr)); }
+[data-slot="calendar-grid"]:has(.v-cal__wk) { grid-template-columns:30px repeat(7,minmax(0,1fr)); }
 [data-slot="calendar-grid"] :is(thead,tbody,tr) { display:contents; }
-[data-slot="calendar-grid"] td { display:grid; place-items:center; position:relative; width:100%; min-width:0; height:42px; padding:0; }
-[data-slot="calendar-weekday"], [data-slot="calendar-week-number-header"] { display:grid; place-items:center; width:100%; height:28px; padding:0; font-size:11px; font-weight:600; color:var(--v-text-2); background:transparent; text-align:center; }
-[data-slot="calendar-week-number-header"] { font-size:9px; letter-spacing:.02em; }
-[data-slot="calendar-week-number"] { display:grid; place-items:center; width:20px; height:26px; font-size:10px; font-weight:400; color:var(--v-text-2); padding:0; background:transparent; }
-[data-slot="calendar-week-number"].-on { color:var(--v-text); font-weight:600; }
+/* 40 px, matching the row the oracle renders: `.v-cal__d` is 40 x 40 and the
+   reference grid resolves `grid-template-rows: 26px 40px 40px 40px 40px 40px`
+   (spans are grid children there; here the same 40 px belongs on the cell).
+   At 42 px the candidate grid was 256 px tall against the reference 246 px. */
+[data-slot="calendar-grid"] td { display:grid; place-items:center; position:relative; width:100%; min-width:0; height:40px; padding:0; }
+/* Header and week-number rhythm now carry the handoff's own values, each one
+   confirmed twice — once in `alive.css` and once in the rendered oracle:
+   `alive.css:598` `.v-cal__wd{height:26px;font-size:10.5px;letter-spacing:.1em;
+   font-weight:600;color:var(--v-text-2)}`, `alive.css:599`
+   `.v-cal__wd.-wk{font-size:9.5px;color:var(--v-text-3);justify-self:start;
+   padding-left:4px}`, `alive.css:600` `.v-cal__wk{justify-self:start;
+   min-width:26px;height:22px;padding:0 6px;font-size:10.5px;color:var(--v-text-3);
+   letter-spacing:.02em}`. `patterns.css:97` supplies the same elements a
+   `height:28px;border-radius:var(--r-pill);background:var(--v-cream-pill);
+   font-size:12px;font-weight:500` face but is imported earlier in the layer, so
+   the `alive.css` block is the one the oracle renders — verified as
+   `10.5px / 26px / rgb(247, 245, 235) / 999px` on `.v-cal__wd` across five fresh
+   server renders. The candidate had been copying `patterns.css` instead. */
+[data-slot="calendar-weekday"], [data-slot="calendar-week-number-header"] { display:grid; place-items:center; width:100%; height:26px; padding:0; font-size:10.5px; font-weight:600; letter-spacing:.1em; color:var(--v-text-2); background:var(--v-cream-pill); border-radius:var(--r-pill); text-align:center; }
+/* `alive.css:599` sets no `letter-spacing` for `.v-cal__wd.-wk`, so it inherits
+   the `.1em` above and the oracle resolves `0.95px` at 9.5 px. `.02em` was
+   copied from the week-number *cell* rule and made the header 0.19 px. */
+[data-slot="calendar-week-number-header"] { justify-self:start; padding-left:4px; font-size:9.5px; color:var(--v-text-3); }
+/* The handoff gives the cell its own transition (`alive.css:600` tail:
+   `transition:background var(--t-micro),color var(--t-micro)`), which the oracle
+   resolves to two `ease` entries. Without it the cell inherited the single
+   `ease` the gate measures as `ease, ease` on the reference side. */
+[data-slot="calendar-week-number"] { display:inline-grid; place-items:center; justify-self:start; min-width:26px; height:22px; padding:0 6px; border-radius:999px; font-size:10.5px; font-weight:400; font-variant-numeric:tabular-nums; letter-spacing:.02em; color:var(--v-text-3); background:transparent; transition:background var(--t-micro), color var(--t-micro); }
+/* The `-on` pill keeps the cell's own `0 6px`: `patterns.css:99`
+   `.v-cal__wk.-on{...padding:6px 6px;...}` sits in an earlier layer and
+   `alive.css:601` restates `-on` without a padding, so the oracle still computes
+   `0px 6px`. Confirmed: the reference's `.v-cal__wk.-on` measures `pad=0px 6px`. */
+[data-slot="calendar-week-number"].-on { color:var(--v-on-accent); background:var(--v-pink-soft); font-weight:600; padding:6px; }
 /* Day cells are circles, not the avatar/activity-feed authored blob. The handoff
    states `border-radius:50%` for `.v-cal__d` twice — `alive.css:402` and the rule
    at `alive.css:602` this declaration is otherwise copied from — so the organic
    radius was carried in from the avatar motif, not chosen here. */
-[data-slot="calendar-day"] { position:relative; isolation:isolate; display:grid; place-items:center; width:40px; max-width:100%; height:40px; margin:0; padding:0; border:0; border-radius:50%; background:transparent; color:var(--v-text); font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; cursor:pointer; }
+/* Day type is 14.5px, not 14px: `alive.css:602` `.v-cal__d{...font-size:14.5px;
+   font-weight:500;color:var(--v-text);background:transparent}`. Oracle: 14.5px at
+   480 px, 13.5px under the 420 px media query below. */
+[data-slot="calendar-day"] { position:relative; isolation:isolate; display:grid; place-items:center; width:40px; max-width:100%; height:40px; margin:0; padding:0; border:0; border-radius:50%; background:transparent; color:var(--v-text); font-size:14.5px; font-weight:500; font-variant-numeric:tabular-nums; cursor:pointer; }
 [data-slot="calendar-day"] > span { position:relative; z-index:1; }
 [data-slot="calendar-day"]:not(:disabled):not([aria-pressed="true"]):hover { background:var(--v-beige); }
 /* `-off` marks weekend cells — the handoff's own builder sets it that way at
@@ -33,7 +107,11 @@
    applied but never styled, so weekends kept the weekday ink and weight. Value
    and order follow `alive.css:609`, before the selected rule below. */
 [data-slot="calendar-day"].-off { color:var(--v-text-2); font-weight:400; }
-[data-slot="calendar-day"][aria-pressed="true"] { background:transparent; color:var(--v-on-accent); font-weight:700; }
+/* Selected weight is 600, not 700: `alive.css:610`
+   `.v-cal__d[aria-selected="true"]{color:var(--v-on-accent);font-weight:600}` and
+   the oracle computes 600 on `.v-cal__d[aria-selected="true"]`. The sibling
+   `-today` rule was corrected to 600 in `3816d33`; this one was missed. */
+[data-slot="calendar-day"][aria-pressed="true"] { background:transparent; color:var(--v-on-accent); font-weight:600; }
 /* Today's weight is 600, not 700: `alive.css:608`
    `.v-cal__d.-today:not([aria-selected="true"]){...font-weight:600}`. */
 [data-slot="calendar-day"][data-today]:not([aria-pressed="true"]) { box-shadow:inset 0 0 0 1.5px var(--v-blue); font-weight:600; }
@@ -53,7 +131,19 @@
 [data-slot="calendar-mark"].-yellow { background:var(--v-yellow-deep); }
 [data-slot="calendar-mark"].-ink { background:var(--v-text); }
 [data-slot="calendar-day"][aria-pressed="true"] [data-slot="calendar-mark"] { background:var(--v-on-accent); }
-@media(max-width:420px) { [data-slot="calendar-day"] { width:36px; height:38px; font-size:13px; } [data-slot="calendar-grid"] td { height:40px; } [data-slot="calendar"] .v-cal__month-wrap { gap:16px; } }
+/* Dark nav pill. `alive.css:617` `:root[data-mode="dark"] .v-cal__nav
+   {background:var(--v-beige-2);box-shadow:none}`; the oracle renders
+   `rgb(42, 38, 33)` there while the candidate fell through to the page. */
+:root[data-mode="dark"] [data-slot="calendar-nav"] { background:var(--v-beige-2); }
+/* Dark selected week pill. `alive.css:490` `:root[data-mode="dark"]
+   .v-cal__wk.-on{background:color-mix(in oklab,var(--v-pink) 30%,var(--v-canvas))}`;
+   oracle `oklab(0.39236 0.0249276 -0.00243087)` against the light `--v-pink-soft`. */
+:root[data-mode="dark"] [data-slot="calendar-week-number"].-on { background:color-mix(in oklab, var(--v-pink) 30%, var(--v-canvas)); color:var(--v-text); }
+/* 36x36 at 13.5px: `alive.css:620`
+   `@media (max-width:420px){.v-cal__d{width:36px;height:36px;font-size:13.5px}}`.
+   Oracle at 360 px: 36px x 36px, 13.5px. The `td` follows the cell so the row
+   keeps the day's height rather than adding 2 px of slack. */
+@media(max-width:420px) { [data-slot="calendar-day"] { width:36px; height:36px; font-size:13.5px; } [data-slot="calendar-grid"] td { height:36px; } [data-slot="calendar"] .v-cal__month-wrap { gap:16px; } }
 @media(prefers-reduced-motion:reduce) { [data-slot="calendar"] *, [data-slot="calendar"] *::before, [data-slot="calendar"] *::after { animation-duration:0s; transition-duration:0s; } }
 
 /* DayPicker owns retained month snapshots; shared timing keeps both sides finite. */
