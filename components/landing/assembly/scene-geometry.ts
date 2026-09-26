@@ -666,11 +666,18 @@ export function buildAssemblyScene(): AssemblyScene {
     material: THREE.MeshStandardMaterial;
     base: THREE.Color;
     hero: THREE.Color;
+    /** Optional hero-only emissive, for parts the hero rig cannot reach. */
+    emissiveBase?: THREE.Color;
+    emissiveHero?: THREE.Color;
   }[] = [];
   /** Every material handed to a mesh is owned here and disposed exactly once. */
   const ownedMaterials: THREE.Material[] = [];
   const ownedGeometries: THREE.BufferGeometry[] = [];
-  const own = <T extends THREE.Material>(template: T, hero?: string): T => {
+  const own = <T extends THREE.Material>(
+    template: T,
+    hero?: string,
+    heroEmissive?: string,
+  ): T => {
     const clone = template.clone();
     if (hero && "color" in clone) {
       const tinted = clone as unknown as THREE.MeshStandardMaterial;
@@ -678,6 +685,17 @@ export function buildAssemblyScene(): AssemblyScene {
         material: tinted,
         base: tinted.color.clone(),
         hero: new THREE.Color(hero),
+        /* The rig alone cannot light every part the artboard draws lit. The hero
+         * drives one key hard from the upper left, so a surface whose normal
+         * turns away from it receives almost nothing and no amount of colour
+         * tint can reach it. An emissive target is optional and separate, so a
+         * part can still take the colour tint without it. */
+        ...(heroEmissive && tinted.emissive
+          ? {
+              emissiveBase: tinted.emissive.clone(),
+              emissiveHero: new THREE.Color(heroEmissive),
+            }
+          : {}),
       });
     }
     ownedMaterials.push(clone);
@@ -1621,10 +1639,41 @@ varying vec4 vReflectionUv;`,
   instrument.add(flower);
 
   const drawers = new THREE.Group();
-  const drawerBody = own(kit.blue, HERO_ALBEDO.blue);
+  /* Three plates, one bank. They are banked and fanned, so each turns a
+   * different face to the key: read at x 1440 on `01-hero.png` the artboard holds
+   * 81,86,96 at the top plate, 138,150,174 at the middle and 116,128,152 at the
+   * lowest, while the rig gave 85,87,96 / 77,78,86 / 31,34,43. The top plate was
+   * already right and the lower two were 60-120 counts dark, because their
+   * normals turn away from the hero's one hard key, not because their albedo is
+   * wrong. An emissive on the bank is that missing light and nothing else, and it
+   * rides the hero's own weight so no other chapter's drawers move.
+   *
+   * The lift is per plate because one value cannot serve all three. Measured at
+   * the three probes with a shared #1a1813: the top plate lands 5,2,0 out, the
+   * middle 0,-4,-9 and the lowest -38,-49,-65. Emissive is linear and the two
+   * upper plates are already on their references, so only the lowest gets its
+   * own target.
+   *
+   * The lowest plate's residual is reported rather than smoothed over: #5a6490
+   * takes it from 78,79,87 to 90,91,103 against the artboard's 116,128,152,
+   * i.e. still 26,37,49 short and bluer than it was. Every larger lift tried
+   * scores worse on both the region and the frame — #b0a888 gives 109,106,102
+   * (drawer region 51.83, frame 25.03) and #e8dcb4 gives 118,114,109 (53.81,
+   * 25.14) — because emissive raises all three channels together and the plate's
+   * red is already within 7 of the artboard's before the blue is half way. The
+   * artboard's own plate is a blue-grey (#7480a0 at its face); the bank's shared
+   * albedo is a full blue that the hero's warm key drives towards grey, and the
+   * missing blue is a lighting response an emissive cannot supply selectively. */
+  const drawerBody = own(kit.blue, HERO_ALBEDO.blue, "#1a1813");
+  const drawerBodyLow = own(kit.blue, HERO_ALBEDO.blue, "#5a6490");
   const drawerStrap = own(kit.cream);
   for (let index = 0; index < INSTRUMENT.drawers.count; index++) {
     const plate = new THREE.Group();
+    /* The bank is built from the bottom up: index 0 sits at the *lowest* local y
+     * and projects to the lowest screen band, and the last index is the top
+     * plate. Checked by projecting each plate's own mesh rather than assumed —
+     * the first version of this took the last index for the lowest plate, which
+     * put the lift on the top one and the probes showed it at once. */
     const body = new THREE.Mesh(
       geo(
         new RoundedBoxGeometry(
@@ -1635,7 +1684,7 @@ varying vec4 vReflectionUv;`,
           0.032,
         ),
       ),
-      drawerBody,
+      index === 0 ? drawerBodyLow : drawerBody,
     );
     body.castShadow = true;
     body.receiveShadow = true;
@@ -1913,6 +1962,10 @@ varying vec4 vReflectionUv;`,
        * scrubbing back and forth across the boundary is exactly reversible. */
       for (const tint of heroTints) {
         tint.material.color.copy(tint.base).lerp(tint.hero, weight);
+        if (tint.emissiveBase && tint.emissiveHero)
+          tint.material.emissive
+            .copy(tint.emissiveBase)
+            .lerp(tint.emissiveHero, weight);
       }
       apertureOcclusion.value = Math.max(0, Math.min(1, weight));
       reflectWeight = weight;
