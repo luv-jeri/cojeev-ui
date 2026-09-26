@@ -119,14 +119,14 @@ export const INSTRUMENT = {
      * fan inverted because an inverted fan still overlaps. */
     tilt: 0.4,
     roll: -0.546,
-    gap: 0.238,
+    gap: 0.228,
     count: 3,
     /* Read off the artboard's three plate silhouettes: each is 159 px wide and
      * 121-142 px tall with its top edge descending 0.262-0.415, which works back
      * to a plate about 135 px by 92 px banked roughly 22 degrees. The label
      * faces and their hit areas project from the same pose, so they follow the
      * plate without a second edit. */
-    plate: { width: 0.368, height: 0.2203, thickness: 0.045 },
+    plate: { width: 0.4141, height: 0.145, thickness: 0.045 },
     strap: { width: 0.2, height: 0.03, thickness: 0.012 },
   },
   stylePlate: {
