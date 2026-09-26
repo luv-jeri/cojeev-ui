@@ -243,7 +243,7 @@ export const CHAPTERS: readonly Chapter[] = [
     parts: front({
       sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 },
       drawers: {
-        position: [0.732, -0.092, -0.1135],
+        position: [0.6908, -0.112, -0.0704],
         rotation: [INSTRUMENT.drawers.tilt, 0, INSTRUMENT.drawers.roll],
         opacity: 1,
       },

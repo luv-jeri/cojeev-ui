@@ -98,36 +98,33 @@ export const INSTRUMENT = {
   },
   drawers: {
     local: [0.6, 0.07, -0.06] as Vec3,
-    yaw: -0.24,
-    /* The stack is fanned and banked away from the panel instead of hanging
-     * flat beside it. The artboard's three plates are one contiguous band whose
-     * top edges descend 0.338 px per px to the right, each plate about 88 px
-     * tall at a fixed column with 101 px between successive tops; the flat stack
-     * drew the fan at -0.180 — pointing the wrong way — at 62 px with 95 px
-     * between tops.
-     *
-     * `tilt` pitches the stack back about the instrument's X axis and `roll`
-     * banks it about Z. The tick is small enough that the fan reads as one
-     * gesture, and the pitch is what makes the plates step back through the
-     * scene instead of sitting on one plane.
-     *
-     * These numbers come from matching the artboard's own column runs against
-     * the plates' projected outlines. Two earlier attempts are worth not
-     * repeating: a luminance mask cannot separate the plates once they are
-     * banked (one face blows out, another falls into shadow) and they merge into
-     * a single blob once they touch, and an overlap score is happy to leave the
-     * fan inverted because an inverted fan still overlaps. */
-    tilt: 0.4,
-    roll: -0.546,
-    gap: 0.228,
+    /* Re-solved against the artboard's own three plate top edges rather than
+     * against a row-wide luminance threshold, which cannot separate a plate from
+     * the plinth behind it. Fitted over x 1350-1466 the artboard's top edges
+     * descend at 0.4135, 0.3340 and 0.2604 — 22.47, 18.47 and 14.59 degrees,
+     * i.e. a fan that opens by 3.9 degrees per plate. The previous stack gave
+     * every plate the same `yaw` and the same `roll`, so it was parallel, and
+     * its 25-degree bank was ten degrees off the lowest plate. The fan is not a
+     * single tick: three plates on one bank cannot be fitted by a shared roll
+     * plus a linear spread, which is why `bank` is per plate. */
+    yaw: -0.1606,
+    /* `tilt` pitches the stack back about the instrument's X axis and `roll`
+     * banks it about Z. `stack` is the direction the plates are offset along and
+     * is deliberately not `roll`: the solved stack leans 5 degrees off the
+     * bank's own normal, and tying the two together costs ~2 degrees of bank
+     * across the whole fan. */
+    tilt: 0.265,
+    roll: -0.5241,
+    stack: -0.4367,
+    /* Index 0 is the lowest plate — the one the hero labels "Actions". */
+    bank: [0.1906, 0.0881, -0.0155] as Vec3,
+    gap: 0.2292,
     count: 3,
-    /* Read off the artboard's three plate silhouettes: each is 159 px wide and
-     * 121-142 px tall with its top edge descending 0.262-0.415, which works back
-     * to a plate about 135 px by 92 px banked roughly 22 degrees. The label
-     * faces and their hit areas project from the same pose, so they follow the
-     * plate without a second edit. */
-    plate: { width: 0.4141, height: 0.145, thickness: 0.045 },
-    strap: { width: 0.2, height: 0.03, thickness: 0.012 },
+    /* Solved, not read off a bounding box: 0.4141 x 0.145 was 25 px too long
+     * and 10 px too narrow perpendicular. The label faces and their hit areas
+     * project from the same constants, so they follow without a second edit. */
+    plate: { width: 0.3806, height: 0.1776, thickness: 0.045 },
+    strap: { width: 0.1838, height: 0.03, thickness: 0.012 },
   },
   stylePlate: {
     local: [0, 0, -0.36] as Vec3,
