@@ -242,13 +242,20 @@ try{
 finally{
   const unchanged=candidateHash()===candidateRevision;
   if(!unchanged){console.error("Candidate source changed during the run; results are not release evidence.");process.exitCode=1;}
-  const complete=arg("demo-only")!=="true"&&ids.every(id=>results.filter(r=>r.id===id).length===registry[id].isolation.length*widths.length)&&widths.length===6;
+  // The scope the run was actually ASKED for. It must apply the same --file and --limit filters as
+  // the measurement loop (line 203-204); otherwise a deliberately scoped run reports
+  // `complete: false` and its own provenance record calls a finished scope incomplete — the same
+  // class of untrustworthy artefact this block exists to prevent.
+  const inScope=(id)=>((arg("demo-only")==="true"?["demo.html","demo-dark.html"]:registry[id].isolation)
+    .filter(file=>!arg("file")||file.includes(arg("file")))
+    .slice(0,Number(arg("limit")??Infinity)).length)*widths.length;
+  const complete=arg("demo-only")!=="true"&&widths.length===6&&ids.every(id=>results.filter(r=>r.id===id).length===inScope(id));
   // Bind the artefact to the tree. Until this was written, a census result carried no SHA at
   // all, so its provenance could only be INFERRED from sibling files and timestamps — which is
   // why the W04 census had to be marked UNKNOWN and could not support a score. The hash is the
   // same value the gate already prints, computed by the gate, beside the gate's own results.
   const gitInfo=(()=>{try{return {head:execFileSync("git",["rev-parse","HEAD"],{encoding:"utf8"}).trim(),dirty:execFileSync("git",["status","--porcelain","--","registry/cojeev","apps/gate"],{encoding:"utf8"}).trim().length>0};}catch{return {head:null,dirty:null};}})();
-  const expectedRows=ids.reduce((total,id)=>total+(arg("demo-only")==="true"?2:registry[id].isolation.length)*widths.length,0);
+  const expectedRows=ids.reduce((total,id)=>total+inScope(id),0);
   const provenance={
     gate:"apps/gate/run.mjs",
     gateStartedAt,gateFinishedAt:new Date().toISOString(),
