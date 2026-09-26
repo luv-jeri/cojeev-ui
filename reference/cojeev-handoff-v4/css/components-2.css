@@ -195,7 +195,7 @@ input:disabled,textarea:disabled{cursor:not-allowed}
 .v-switch::after{background:var(--switch-knob);box-shadow:0 1px 2px rgba(0,0,0,.25)}
 .v-switch[aria-checked="true"]::after,.v-switch:has(input:checked)::after{background:var(--switch-knob-on)}
 :root[data-mode="dark"] .v-tab[aria-selected="true"],:root[data-mode="dark"] .v-toggle[aria-pressed="true"],:root[data-mode="dark"] .v-seg .v-btn[aria-pressed="true"]{background:var(--v-pink);color:var(--v-on-accent);border-color:var(--v-pink)}
-:root[data-mode="dark"] .v-btn:not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):not(:disabled):not([aria-disabled="true"]){background:var(--v-pink);color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-btn:not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):where(:not(:disabled):not([aria-disabled="true"])){background:var(--v-pink);color:var(--v-on-accent)}
 :root[data-mode="dark"] .v-check input:checked,:root[data-mode="dark"] .ap-sw input:checked{background:var(--v-pink);border-color:var(--v-pink)}
 :root[data-mode="dark"] .v-check input:checked::after,:root[data-mode="dark"] .ap-sw input:checked::after{border-color:var(--ink-fixed)}
 
@@ -215,12 +215,12 @@ input:disabled,textarea:disabled{cursor:not-allowed}
 :root[data-mode="dark"] .v-badge.-pink-soft,:root[data-mode="dark"] .v-badge.-yellow-soft,
 :root[data-mode="dark"] .v-badge.-olive-soft,:root[data-mode="dark"] .v-badge.-blue-soft,
 :root[data-mode="dark"] .v-badge.-danger-soft{color:var(--v-text)}
-:root[data-mode="dark"] .v-btn.-secondary:not(:disabled):not([aria-disabled="true"]),:root[data-mode="dark"] .v-btn.-ghost:not(:disabled):not([aria-disabled="true"]),:root[data-mode="dark"] .v-btn.-outline:not(:disabled):not([aria-disabled="true"]),
+:root[data-mode="dark"] .v-btn.-secondary:where(:not(:disabled):not([aria-disabled="true"])),:root[data-mode="dark"] .v-btn.-ghost:where(:not(:disabled):not([aria-disabled="true"])),:root[data-mode="dark"] .v-btn.-outline:where(:not(:disabled):not([aria-disabled="true"])),
 :root[data-mode="dark"] .v-ibtn,:root[data-mode="dark"] .v-select:not(.-ink),:root[data-mode="dark"] .v-native:not(.-ink),
 :root[data-mode="dark"] .v-toggle:not([aria-pressed="true"]),:root[data-mode="dark"] .v-tab:not([aria-selected="true"]),
 :root[data-mode="dark"] .v-pager button:not([aria-current]),:root[data-mode="dark"] .v-kbd{color:var(--v-text)}
 /* a primary button inverts explicitly rather than relying on --v-on-ink, which flips with the theme */
-:root[data-mode="dark"] .v-btn:not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):not(.-accent):not(:disabled):not([aria-disabled="true"]),
+:root[data-mode="dark"] .v-btn:not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):not(.-accent):where(:not(:disabled):not([aria-disabled="true"])),
 :root[data-mode="dark"] .v-select.-ink,:root[data-mode="dark"] .v-native.-ink{background:var(--v-pink);color:var(--v-on-accent)}
 :root[data-mode="dark"] .v-table td.-num,:root[data-mode="dark"] .v-table th{color:var(--v-text)}
 :root[data-mode="dark"] .v-meta,:root[data-mode="dark"] .v-body-2,:root[data-mode="dark"] .v-caps{color:var(--v-text-2)}
