@@ -37,8 +37,8 @@
  },
  "files": {
   "CHANGELOG.md": {
-   "bytes": 9452,
-   "sha256": "0352732bffdc96408e72c1e1059aa8453fb48007a6069e08872fdfe30891aa61"
+   "bytes": 10799,
+   "sha256": "e20ac9795169e52d84f6464aef8039ef60f03d1112b5fb8b6ce3b1e99f0de2bb"
   },
   "LINT.md": {
    "bytes": 16389,
@@ -145,8 +145,8 @@
    "sha256": "6928c0f428139d8fc5ca1d34474316dfd3a2c7b20fd41cfa0a04f55279be3246"
   },
   "css/components-2.css": {
-   "bytes": 134252,
-   "sha256": "8a9b4c2ec6cf8a28d705643cb5252485f1968b529f5af63a36a65b9519b82cab"
+   "bytes": 134466,
+   "sha256": "7012f6afbfaa61a58352d0ba3d58c26176a9521496fd2b88dcb807081866ae69"
   },
   "css/components.css": {
    "bytes": 35211,
@@ -3732,5 +3732,17 @@
    "bytes": 15072,
    "sha256": "336d0ca6af5a67cabe4da025555697b24a784433765d7c4e3293c8952d3548c8"
   }
- }
+ },
+ "corrections": [
+  {
+   "date": "2026-09-27",
+   "authorisation": "OWNER (Abhay) — explicit approval in session, 2026-09-27, choosing \"Correct the reference bundle\" over \"re-baseline as named exceptions\".",
+   "file": "css/components-2.css",
+   "change": "Added :not(:disabled):not([aria-disabled=\"true\"]) to the three dark-mode .v-btn variant rules (the default/primary pink rule, the -secondary/-ghost/-outline colour rule, and the duplicate primary rule).",
+   "reason": "Those rules outranked the file s own .v-btn:disabled rule (components-2.css, .v-btn:disabled at specificity 0-2-0 against 0-8-0 for the dark default rule), so a dark DISABLED button was painted with the enabled accent (--v-pink) instead of the handoff s own dark disabled tokens. entries/button/contract.md:28 documents disabled as a quiet state using --v-disabled-face / --v-disabled-edge / --v-disabled-ink, so the compiled bundle contradicted the contract it ships with. This is the B-017/B-032 defect.",
+   "affectedFixtures": "The 21 button `-disabled-dark` isolation fixtures (default/accent/secondary/ghost/outline/danger/block x default/sm/lg), 126 gate rows at six widths; the gate previously reported 144 failing `*-dark` button rows.",
+   "notChanged": "No fixture, token, entry demo or class name was altered. Only the cascade order of an existing rule was narrowed, so enabled buttons render exactly as before.",
+   "integrity": "MANIFEST.json files[\"css/components-2.css\"].bytes/sha256 re-recorded for the edited file."
+  }
+ ]
 }

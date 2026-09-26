@@ -3,6 +3,23 @@
 Every rename, removed modifier or changed token between handoffs is recorded here. The `.v-*` class API is frozen from v1 on:
 same root classes, same modifier names, same state attributes. Additions are listed; nothing was renamed or removed in v1.
 
+## Correction — 2026-09-27 (owner-authorised; not a new handoff)
+
+**A dark *disabled* Button was painted with the enabled accent.** Three dark-mode `.v-btn` rules
+(`css/components-2.css`) outrank this file set s own `.v-btn:disabled` rule — 0-8-0 against 0-2-0,
+the dark default rule being `:root[data-mode="dark"] .v-btn:not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger)`.
+A disabled control therefore rendered identically to its enabled counterpart, removing the only
+affordance that says it cannot be pressed.
+
+`entries/button/contract.md:28` documents disabled as a quiet state using `--v-disabled-face` /
+`--v-disabled-edge` / `--v-disabled-ink`, so the compiled bundle contradicted the contract it ships
+with. The correction narrows the three dark variant rules with `:not(:disabled):not([aria-disabled="true"])`
+so the existing `:disabled` rule applies. **No fixture, token, entry demo or class name changed**, and
+enabled buttons render exactly as before — only the cascade order of an existing rule was narrowed.
+
+Approved explicitly by the owner on 2026-09-27 (the alternative, recording the 21 `-disabled-dark`
+button fixtures as named intentional exceptions, was declined because the bundle, not the fixture, was wrong).
+`MANIFEST.json` records the change under `corrections` and re-records the file s hash.
 ## v4 — 2026-09-07 (seed made independent of engine-injected nodes)
 
 Against v3 the engine change is one function in `js/morph.js`; `docs/MOTION.md` §5 is the only doc change. Nothing in css/, tokens or the class API.
