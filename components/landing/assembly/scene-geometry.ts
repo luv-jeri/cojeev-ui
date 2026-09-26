@@ -504,7 +504,7 @@ function sourceSummaryTexture() {
      * across the glyphs — the artboard shows the three lines and nothing above
      * them, so the header is gone and the block is centred in the canvas rather
      * than pushed to the bottom. */
-    context.font = "600 42px ui-monospace, SFMono-Regular, Menlo, monospace";
+    context.font = "400 42px ui-monospace, SFMono-Regular, Menlo, monospace";
     context.fillStyle = "#9EC5F2";
     context.fillText("<Button>", 34, 88);
     context.fillStyle = "#F5B8DB";
@@ -666,11 +666,17 @@ export function buildAssemblyScene(): AssemblyScene {
     material: THREE.MeshStandardMaterial;
     base: THREE.Color;
     hero: THREE.Color;
+    baseEmissive: THREE.Color | null;
+    heroEmissive: THREE.Color | null;
   }[] = [];
   /** Every material handed to a mesh is owned here and disposed exactly once. */
   const ownedMaterials: THREE.Material[] = [];
   const ownedGeometries: THREE.BufferGeometry[] = [];
-  const own = <T extends THREE.Material>(template: T, hero?: string): T => {
+  const own = <T extends THREE.Material>(
+    template: T,
+    hero?: string,
+    heroEmissive?: string,
+  ): T => {
     const clone = template.clone();
     if (hero && "color" in clone) {
       const tinted = clone as unknown as THREE.MeshStandardMaterial;
@@ -678,6 +684,8 @@ export function buildAssemblyScene(): AssemblyScene {
         material: tinted,
         base: tinted.color.clone(),
         hero: new THREE.Color(hero),
+        baseEmissive: tinted.emissive ? tinted.emissive.clone() : null,
+        heroEmissive: heroEmissive ? new THREE.Color(heroEmissive) : null,
       });
     }
     ownedMaterials.push(clone);
@@ -1769,17 +1777,44 @@ varying vec4 vReflectionUv;`,
   instrument.add(stylePlate);
 
   const sourcePlate = new THREE.Group();
+  /* `INSTRUMENT.sourcePlate`'s own width and height, not the style plate's. The
+   * body was built from `stylePlate`'s 0.86 x 0.98 — a tall card — while the
+   * source plate's 0.80 x 0.32 were referenced nowhere in the repository. The
+   * 0.98 height is why the face ran to y 756 when `01-hero.png` ends it at 736:
+   * band 2 of the face (y 718-750) is plate in ours and floor in the artboard,
+   * which is the whole of its 78.5-against-25.8 error.
+   *
+   * The material is a private clone, so the three hero terms below touch no
+   * other part and no other chapter:
+   *   - albedo `#000000`, because the hero's key runs at 6.7375 and `#111111`
+   *     renders 72-105 on this face where the artboard holds 21-31;
+   *   - `roughness` driven 0.44 -> 1 by hero weight (in `setHeroPresentation`),
+   *     because the residual is the key's *specular lobe*, not the environment —
+   *     `platechildren.mjs` showed `envMapIntensity` 0.55 and 0 doing nothing at
+   *     all, while roughness 0.44 -> 1 took the face from 36.6/83.3 to 6.6/23.2.
+   *     Weight-driven rather than a build-time constant so that weight 0 is the
+   *     canonical `MATERIAL_ROUGHNESS.ink`, for the Source chapter and the
+   *     catalogue;
+   *   - a hero emissive, because what is left after that is still a 20-count
+   *     lit gradient where the artboard's face is flat within 6 counts. An
+   *     emissive term is light-independent, which is the only way a face in this
+   *     rig renders flat. `#292929` is the swept value; the base emissive is
+   *     `#000000`, so the catalogue and the Source chapter are untouched.
+   *
+   * All three are scoped by hero weight, which is the rule for this clone: at
+   * weight 0 it is byte-identical to `kit.ink`. */
+  const sourceBodyMaterial = own(kit.ink, "#000000", "#292929");
   const sourceBody = new THREE.Mesh(
     geo(
       new RoundedBoxGeometry(
-        INSTRUMENT.stylePlate.width,
-        INSTRUMENT.stylePlate.height,
+        INSTRUMENT.sourcePlate.width,
+        INSTRUMENT.sourcePlate.height,
         INSTRUMENT.sourcePlate.thickness,
         5,
         0.05,
       ),
     ),
-    own(kit.ink),
+    sourceBodyMaterial,
   );
   sourceBody.castShadow = true;
   sourceBody.receiveShadow = true;
@@ -1975,6 +2010,9 @@ varying vec4 vReflectionUv;`,
        * scrubbing back and forth across the boundary is exactly reversible. */
       for (const tint of heroTints) {
         tint.material.color.copy(tint.base).lerp(tint.hero, weight);
+        if (tint.baseEmissive && tint.heroEmissive) {
+          tint.material.emissive.copy(tint.baseEmissive).lerp(tint.heroEmissive, weight);
+        }
       }
       apertureOcclusion.value = Math.max(0, Math.min(1, weight));
       reflectWeight = weight;
@@ -2052,8 +2090,42 @@ varying vec4 vReflectionUv;`,
       for (const plate of drawers.children)
         plate.children[1].scale.setScalar(1 - weight);
       sourceBody.scale.y = 1 - weight * 0.59;
-      summary.position.y = -0.17 + weight * 0.14;
-      summary.scale.setScalar(1 - weight * 0.25);
+      /* Roughness is a hero term like the albedo and the emissive above it, not a
+       * build-time constant: setting it to 1 on the shared clone would have
+       * changed the Source chapter and the catalogue too, which the comment here
+       * used to claim it did not. At weight 0 this is the canonical
+       * `MATERIAL_ROUGHNESS.ink` exactly. */
+      sourceBodyMaterial.roughness = MATERIAL_ROUGHNESS.ink + weight * (1 - MATERIAL_ROUGHNESS.ink);
+      /* The plate's pose and the text's pose are separate problems and were
+       * solved separately, both against `01-hero.png`.
+       *
+       * The body is `sourcePlate`'s own 0.80 x 0.32, squashed to 41% here. At
+       * the authored `[0.02, -0.66, -0.15]` at scale 1.28 that left the face at
+       * y 686-758 with the glyph rows at 644-650 / 674-680 / 698-704 spilling
+       * *above* the plate, where the artboard's face is 604-736 with its lines
+       * at 627-643 / 659-676 / 689-708 safely inside. `.work/measure/
+       * platepose.mjs` solved that on the plate box alone and got it wrong a
+       * second way: scale 1.9 won the box (15.26 -> 12.53) and lost the frame
+       * (23.58 -> 24.89), because a plate that size crosses the panel and the
+       * drawer bank — the change spread over x 835-1477, y 432-759. The box is
+       * not the metric; the frame is. `.work/measure/plateposedescend.mjs` then
+       * descended the same five axes on the whole frame, and the pose that came
+       * out (`choreography.ts`) improves *both*: frame 23.54 -> 23.35 and the
+       * code-plate region 16.12 -> 12.87, with the aperture rim, drawer bank and
+       * floor unmoved. These two lines carry the text within that pose.
+       *
+       * The plate's cast shadow was tested here as a separate knob —
+       * `sourceBody.castShadow = weight < 0.5`, hero-only — because the
+       * oversized pose from `platepose.mjs` threw a shadow across the rim and
+       * the drawer bank. It was worth 24.89 -> 24.31 on its own and did *not*
+       * account for those regressions, which were occlusion. At the pose that
+       * actually landed the plate is small enough that the shadow is a gain
+       * rather than a cost — forcing it back on measures 23.35, better than
+       * the 23.38 the toggle gave — so the toggle is gone and the canonical
+       * `castShadow` stands. It was also a hard switch in a continuous
+       * transition, which is a pop at partial stops for no remaining benefit. */
+      summary.position.y = -0.17 + weight * 0.1;
+      summary.scale.setScalar(1 - weight * 0.16);
     },
     syncReflection() {
       /* `instrument.matrix` is the instrument's own pose, which is what the

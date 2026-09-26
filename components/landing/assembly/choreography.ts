@@ -234,14 +234,25 @@ export const CHAPTERS: readonly Chapter[] = [
      * against 552. Only the part positions are overridden: the panel, the
      * drawers, the plates, the labels and the projected hit areas all pose from
      * the same instrument group, so they follow without a second edit. */
-    /* `front()` first and the overrides after it: `FRONT_FACE` carries the
-     * shared face's own control poses, and spreading it *over* this object's
-     * keys silently overrode the Create control — the part kept the canonical
-     * y of -0.104 while the switch and the slider moved, which is exactly how
-     * the first capture of this change read. The motion chapter keeps
-     * `front(FRONT_FACE)` and is therefore unaffected either way. */
     parts: front({
-      sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 },
+      /* `FRONT_FACE` first and the overrides after it — the fix the note above
+       * describes but the code never applied. `front(extra)` returns
+       * `{ ...shown, ...extra }`, so spreading `...FRONT_FACE` *last* lets it
+       * silently overwrite every hero pose declared above it. It was doing
+       * exactly that to `sourcePlate`: the hero's own
+       * `[0.02, -0.66, -0.15]` at scale 1.28 was replaced by `FRONT_FACE`'s
+       * `[0.02, -0.2, -0.3]` at scale 1, and the probe read back the wrong one.
+       * `stylePlate: { opacity: 0 }` still comes from `FRONT_FACE` because
+       * nothing here overrides it.
+       *
+       * The values below are solved, not authored: `.work/measure/
+       * plateposedescend.mjs` descends y, z, scale and the two text terms on the
+       * acceptance frame and this pose improves both the frame (23.54 -> 23.35)
+       * and the code-plate region (16.12 -> 12.87) against `01-hero.png`, whose
+       * plate face is x 945-1337, y 604-736. The motion chapter keeps `front(FRONT_FACE)`
+       * and is therefore unaffected either way. */
+      ...FRONT_FACE,
+      sourcePlate: { position: [0.02, -0.6, -0.15], scale: 1.2, opacity: 1 },
       drawers: {
         position: [0.6908, -0.112, -0.0704],
         rotation: [INSTRUMENT.drawers.tilt, 0, INSTRUMENT.drawers.roll],
@@ -267,7 +278,6 @@ export const CHAPTERS: readonly Chapter[] = [
        * specimen trays draw the same mesh at its authored size — and
        * `sourcePlate` above is the same kind of override. */
       flower: { position: [0.28548, 0.2474, 0.03], scale: 1.15368 },
-      ...FRONT_FACE,
     }),
   },
   {
