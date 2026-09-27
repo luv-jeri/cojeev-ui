@@ -749,6 +749,13 @@ export function buildAssemblyScene(): AssemblyScene {
    * 24.1. The mask is floor that is unambiguously floor, because binning the
    * whole lower frame let the band's cream base and the panel's shadow into the
    * near rings and the first fit tracked them instead. */
+  /* Fitted, not chosen: coordinate descent against the contact dip and its
+   * recovery, with the surrounding floor as a hard constraint on every
+   * candidate. Hero-scoped - at weight 0 this multiplies to nothing, so the
+   * other five chapters see exactly the floor they saw before. */
+  const CONTACT_SHADOW_STRENGTH = 0.65;
+  const COOL_SHEEN_STRENGTH = 1;
+  const FLOOR_LIFT_STRENGTH = 0.12;
   const poolX = 0.1;
   const poolZ = 0.7;
   const floorFalloffData = new Uint8Array(64 * 64 * 4);
@@ -1138,19 +1145,61 @@ diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion) * vShade * mix(1.0, vRim
     uReflectionWarm: { value: reflectionTint.warm },
     uReflectionCool: { value: reflectionTint.cool },
   };
+  /* Contact shading, as shader uniforms rather than baked into `floorFalloff`.
+   * The artboard's contact wedge is a soft dark dip about 130 px wide at screen
+   * x 900-1030, which at that row is 0.33 world units - one texel of the 64x64
+   * falloff map, whose texels are 158 px apart there. That map cannot express
+   * the feature at any value, which is why this is a separate term and why no
+   * sweep of the map could ever have found it. */
+  const contactUniforms = {
+    uContactCentre: { value: new THREE.Vector2(0.05, 0.48) },
+    /* Per-axis radii, not one scalar. World x and world z do not project to
+     * screen at the same scale - measured, 354 px per unit of x against 130 px
+     * per unit of z at this row - so a round blob on the ground is a 284x104 px
+     * ellipse on screen while the artboard's contact region is about 200x120.
+     * An isotropic lobe cannot be both narrow enough and tall enough. */
+    uContactRadii: { value: new THREE.Vector2(0.28, 0.76) },
+    uContactStrength: { value: 0 },
+    /* Bounded cool sheen. A mix on outgoingLight, NOT a boost to the reflection:
+     * the floor's projective footprint is u 0.01-0.35, v 0.004-0.32 of the
+     * reflection target and the content there is [2,1,1] - the target is 95.2%
+     * black - so a term that multiplied `reflected` could contribute nothing at
+     * any strength. */
+    uCoolCentre: { value: new THREE.Vector2(0.316, 0.85) },
+    uCoolRadii: { value: new THREE.Vector2(0.45, 0.54) },
+    uCoolStrength: { value: 0 },
+    /* Bounded lift for the near-right floor. Region B is NOT a tint problem: at
+     * x 1440-1560, y 950 the artboard is (199,183,166) against our (154,139,113),
+     * a broad uniform darkness. Note this only reaches part of B - measured, the
+     * floor is what is drawn at (1400,950), (1520,950) and (1520,980), but NOT at
+     * (1440,950), (1500,950) or (1520,930), which are the cream apron and its
+     * dark edge. Those need geometry, not shading. */
+    uLiftCentre: { value: new THREE.Vector2(1.37, 0.45) },
+    uLiftRadii: { value: new THREE.Vector2(0.3, 0.52) },
+    uLiftStrength: { value: 0 },
+  };
+  floorMaterial.userData.contactUniforms = contactUniforms;
   floorMaterial.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, reflectionUniforms);
+    Object.assign(shader.uniforms, contactUniforms);
     shader.vertexShader = shader.vertexShader
       .replace(
         "#include <common>",
         `#include <common>
 uniform mat4 uReflectionMatrix;
-varying vec4 vReflectionUv;`,
+varying vec4 vReflectionUv;
+varying vec2 vFloorWorld;`,
       )
       .replace(
         "#include <begin_vertex>",
         `#include <begin_vertex>
-vReflectionUv = uReflectionMatrix * modelMatrix * vec4( transformed, 1.0 );`,
+vReflectionUv = uReflectionMatrix * modelMatrix * vec4( transformed, 1.0 );
+/* World XZ, straight from the model matrix rather than the map's UV. three does
+ * not declare vUv in this material at all - the map's varying is vMapUv, and
+ * vUv is emitted only under USE_UV, which this floor never sets - so an earlier
+ * version of this term was a fragment compile error and the floor rendered
+ * without it. World position needs no UV convention. */
+vFloorWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xz;`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace(
@@ -1161,7 +1210,17 @@ uniform float uReflectionStrength;
 uniform float uReflectionLod;
 uniform vec3 uReflectionWarm;
 uniform vec3 uReflectionCool;
-varying vec4 vReflectionUv;`,
+uniform vec2 uContactCentre;
+uniform vec2 uContactRadii;
+uniform float uContactStrength;
+uniform vec2 uCoolCentre;
+uniform vec2 uCoolRadii;
+uniform float uCoolStrength;
+uniform vec2 uLiftCentre;
+uniform vec2 uLiftRadii;
+uniform float uLiftStrength;
+varying vec4 vReflectionUv;
+varying vec2 vFloorWorld;`,
       )
       /* `opaque_fragment` rather than `aomap_fragment`: in `meshphong_frag` the
        * ambient-occlusion chunk comes *before* `outgoingLight` is declared, so
@@ -1179,6 +1238,18 @@ varying vec4 vReflectionUv;`,
   float grazing = pow( 1.0 - clamp( abs( dot( normalize( vNormal ), normalize( vViewPosition ) ) ), 0.0, 1.0 ), 3.0 );
   outgoingLight += reflected * mix( uReflectionWarm, uReflectionCool, grazing ) *
     uReflectionStrength * ( 0.22 + 1.05 * grazing );
+  /* Spatially bounded contact shading. Keyed to world XZ, so the blob is round
+   * on the ground rather than stretched by the grazing view, and it travels
+   * with the floor under camera motion instead of sticking to the screen. */
+  float contactD = length( ( vFloorWorld - uContactCentre ) / uContactRadii );
+  outgoingLight *= 1.0 - uContactStrength * ( 1.0 - smoothstep( 0.35, 1.0, contactD ) );
+  float coolD = length( ( vFloorWorld - uCoolCentre ) / uCoolRadii );
+  float coolMask = 1.0 - smoothstep( 0.35, 1.0, coolD );
+  outgoingLight = mix( outgoingLight, outgoingLight * vec3( 0.72, 1.02, 1.62 ),
+    uCoolStrength * coolMask );
+  float liftD = length( ( vFloorWorld - uLiftCentre ) / uLiftRadii );
+  float liftMask = 1.0 - smoothstep( 0.35, 1.0, liftD );
+  outgoingLight += uLiftStrength * liftMask * vec3( 0.95, 0.88, 0.80 );
 }
 #include <opaque_fragment>`,
       );
@@ -2095,6 +2166,9 @@ varying vec4 vReflectionUv;`,
        * changed the Source chapter and the catalogue too, which the comment here
        * used to claim it did not. At weight 0 this is the canonical
        * `MATERIAL_ROUGHNESS.ink` exactly. */
+      contactUniforms.uCoolStrength.value = COOL_SHEEN_STRENGTH * weight;
+      contactUniforms.uLiftStrength.value = FLOOR_LIFT_STRENGTH * weight;
+      contactUniforms.uContactStrength.value = CONTACT_SHADOW_STRENGTH * weight;
       sourceBodyMaterial.roughness = MATERIAL_ROUGHNESS.ink + weight * (1 - MATERIAL_ROUGHNESS.ink);
       /* The plate's pose and the text's pose are separate problems and were
        * solved separately, both against `01-hero.png`.
