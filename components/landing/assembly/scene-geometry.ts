@@ -1095,8 +1095,16 @@ outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95
    * step is a ghosted edge, not a blur, which is why the single real tap read as
    * a second object lying under the first. The weights are triangular and scaled
    * so the composite is 0.65, matching the strength the floor solve chose; a
-   * symmetric spread blurs toward the object as well as away from it. */
-  const MIRROR_TAP_GAIN = 0.28;
+   * symmetric spread blurs toward the object as well as away from it.
+   *
+   * 0.28 -> 0.18 in 20.11: the discrete copies were *attenuated*, not removed,
+   * and only once the continuous reflection was measured to carry the far floor
+   * better without them. Removing them outright is the larger win on the arcs -
+   * the band-passed structure on the strip left of the button falls 4.676 to
+   * 1.444 - but it costs the near-aperture halo they still hold, and the frame
+   * with it (22.73 -> 22.90). At 0.18 both hold. Going further was measured and
+   * rejected at 0.07/LOD 7.0. */
+  const MIRROR_TAP_GAIN = 0.18;
   const MIRROR_TAP_WEIGHTS = [0.35, 0.8, 1, 0.8, 0.35] as const;
   const MIRROR_TAPS = MIRROR_TAP_OFFSETS.map((offset, index) => ({
     offset,
@@ -1191,11 +1199,15 @@ outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95
    * already have is left alone.
    */
   const REFLECTION_MAX = 1024;
-  /* Solved, not chosen: 0.10, 0.20 and 0.32 were rendered and measured against
-   * the reference. 0.32 costs the floor pool 0.4 and the frame 0.19 against
-   * 0.10, and 0.20 sits between them, so the reflection is a lift in the right
-   * places rather than a wash. */
-  const REFLECTION_STRENGTH = 0.1;
+  /* Re-solved in 20.11, jointly with MIRROR_TAP_GAIN and uReflectionLod.
+   *
+   * The first solve found 0.10 best and 0.32 costing the frame 0.19 - but that
+   * was measured with the taps at full gain, so raising this was a double count
+   * of light the taps were already carrying. Attenuating the taps to 0.18 frees
+   * the same knob: 0.25 against LOD 6.5 is the best point found, and it is a
+   * paired solve - 0.5 with the taps left at 0.28 over-brightens the floor pool
+   * to a mean of 117 where the artboard holds 100, and costs the frame 0.24. */
+  const REFLECTION_STRENGTH = 0.25;
   const REFLECTION_MOBILE_MIN = 900;
   const reflectionTint = {
     warm: new THREE.Color(1.06, 1.0, 0.9),
@@ -1234,7 +1246,12 @@ outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95
     uReflectionMap: { value: reflectTarget.texture as THREE.Texture | null },
     uReflectionMatrix: { value: reflectTextureMatrix },
     uReflectionStrength: { value: 0 },
-    uReflectionLod: { value: 3.4 },
+    /* The mip the floor samples, and so the blur. 3.4 is mip 3 of the 768x512
+     * target - a soft copy of the band that still has its silhouette, which is
+     * what the arcs are. 6.5 is 12x8 texels: a pool with no shape left in it,
+     * which is what the artboard holds under the object. It is also the cheaper
+     * fetch, and the render cost is unchanged - the target is drawn either way. */
+    uReflectionLod: { value: 6.5 },
     uReflectionWarm: { value: reflectionTint.warm },
     uReflectionCool: { value: reflectionTint.cool },
   };
@@ -1272,6 +1289,7 @@ outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95
     uLiftStrength: { value: 0 },
   };
   floorMaterial.userData.contactUniforms = contactUniforms;
+  floorMaterial.userData.reflectionUniforms = reflectionUniforms;
   floorMaterial.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, reflectionUniforms);
     Object.assign(shader.uniforms, contactUniforms);
@@ -1329,12 +1347,12 @@ varying vec2 vFloorWorld;`,
    * colour coming back. This is where the reference's 3.9% of cool floor pixels
    * comes from — there is no cool light anywhere in the hero to reflect. */
   float grazing = pow( 1.0 - clamp( abs( dot( normalize( vNormal ), normalize( vViewPosition ) ) ), 0.0, 1.0 ), 3.0 );
-  outgoingLight += reflected * mix( uReflectionWarm, uReflectionCool, grazing ) *
-    uReflectionStrength * ( 0.22 + 1.05 * grazing );
   /* Spatially bounded contact shading. Keyed to world XZ, so the blob is round
    * on the ground rather than stretched by the grazing view, and it travels
    * with the floor under camera motion instead of sticking to the screen. */
   float contactD = length( ( vFloorWorld - uContactCentre ) / uContactRadii );
+  outgoingLight += reflected * mix( uReflectionWarm, uReflectionCool, grazing ) *
+    uReflectionStrength * ( 0.22 + 1.05 * grazing );
   outgoingLight *= 1.0 - uContactStrength * ( 1.0 - smoothstep( 0.35, 1.0, contactD ) );
   float coolD = length( ( vFloorWorld - uCoolCentre ) / uCoolRadii );
   float coolMask = 1.0 - smoothstep( 0.35, 1.0, coolD );
