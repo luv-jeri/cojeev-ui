@@ -212,7 +212,7 @@
    warmth intact, because only the text changed. */
 .v-badge.-pink-soft,.v-badge.-olive-soft,.v-badge.-blue-soft,.v-badge.-yellow-soft{color:var(--v-text)}
 :root[data-mode="dark"] .v-badge.-pink-soft,:root[data-mode="dark"] .v-badge.-olive-soft,
-:root[data-mode="dark"] .v-badge.-blue-soft,:root[data-mode="dark"] .v-badge.-yellow-soft{color:var(--v-on-accent)}
+:root[data-mode="dark"] .v-badge.-blue-soft,:root[data-mode="dark"] .v-badge.-yellow-soft{color:var(--v-text)}
 
 /* ---- Tabs join the ink guard ----
    .v-tabs.-pills is drawn for an ink surface, so its unselected tab is cream — which put cream text on the

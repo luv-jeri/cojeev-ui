@@ -34,6 +34,8 @@ color-scheme:light;
 --v-olive-soft:color-mix(in oklab,var(--v-olive) 45%,var(--v-canvas));
 --v-blue-soft:color-mix(in oklab,var(--v-blue) 55%,var(--v-canvas));
 --v-yellow-soft:color-mix(in oklab,var(--v-yellow) 55%,var(--v-canvas));
+
+
 --v-danger-soft:color-mix(in oklab,var(--v-danger) 14%,var(--v-canvas));
 /* semantic roles (shadcn-style names) */
 --background:var(--v-canvas);--foreground:var(--v-text);
@@ -175,7 +177,7 @@ color-scheme:light;
 --t-tooltip:220ms;/* @kind other */--t-hovercard:300ms;/* @kind other */--t-toast:5000ms;/* @kind other */--t-focus-settle:120ms;/* @kind other */
 }
 /* dark — derived extension, no source evidence */
-:root[data-mode="dark"]{--glide-bg:#0C0B0A;--v-accent-ink:#EDA9C8;--v-skel-face:#4A4238;--v-skel-sheen:#5C5346;--v-skel-edge:#7A7263;--v-disabled-ink:#A79E90;--v-disabled-face:#242019;--v-disabled-edge:#7E7565;--v-danger-ink:#F0A99C;--v-structure:#0C0B0A;--on-structure:#F6EFE2;--structure-quiet:rgba(246,239,226,.08);--structure-line:rgba(246,239,226,.14);--structure-text:#DED6C6;
+:root[data-mode="dark"]{--v-pink-soft:color-mix(in oklab,var(--v-pink) 52%,var(--v-canvas));--v-yellow-soft:color-mix(in oklab,var(--v-yellow) 48%,var(--v-canvas));--v-blue-soft:color-mix(in oklab,var(--v-blue) 52%,var(--v-canvas));--glide-bg:#0C0B0A;--v-accent-ink:#EDA9C8;--v-skel-face:#4A4238;--v-skel-sheen:#5C5346;--v-skel-edge:#7A7263;--v-disabled-ink:#A79E90;--v-disabled-face:#242019;--v-disabled-edge:#7E7565;--v-danger-ink:#F0A99C;--v-structure:#0C0B0A;--on-structure:#F6EFE2;--structure-quiet:rgba(246,239,226,.08);--structure-line:rgba(246,239,226,.14);--structure-text:#DED6C6;
 /* dark semantic surfaces: the same identity hues as warm washes over the dark canvas, so a tinted region
    keeps its meaning and its text contrast instead of staying light while the ink flips (measured 11–14:1) */
 --surface-quiet:#201D19;--surface-work:#1B1F26;--surface-automation:#241F14;--surface-memory:#1D2118;

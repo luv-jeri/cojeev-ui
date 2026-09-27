@@ -29,7 +29,6 @@
     .-blue-soft
   ) {
   color: var(--v-text);
-  background: color-mix(in oklab, var(--badge-tint) 20%, var(--v-canvas));
 }
 :root[data-mode="dark"] [data-slot="badge"].-pink-soft {
   --badge-tint: var(--v-pink);
