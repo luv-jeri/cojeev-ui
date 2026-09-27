@@ -757,6 +757,7 @@ export function buildAssemblyScene(): AssemblyScene {
   const COOL_SHEEN_STRENGTH = 1;
   const FLOOR_LIFT_STRENGTH = 0.12;
   const PLINTH_LIFT_STRENGTH = 0.12;
+  const PLINTH_LOW_LIFT_STRENGTH = 0.45;
   const poolX = 0.1;
   const poolZ = 0.7;
   const floorFalloffData = new Uint8Array(64 * 64 * 4);
@@ -920,6 +921,26 @@ export function buildAssemblyScene(): AssemblyScene {
     radii: { value: new THREE.Vector2(0.3, 0.3) },
     strength: { value: PLINTH_LIFT_STRENGTH },
   };
+  /* A second, separately-bounded lobe for the plinth's lower-left curve. The same
+   * mesh paints it and `open` is 0 there too, so the gate is already right, but
+   * the world position is a third of a unit away and shares no edge with the
+   * near-right base - which is why this is a second lobe rather than a wider
+   * first one. Widening the first was tried and lost: the bright ridge at world
+   * (1.249, 0.48) sits 0.07 from that lobe's centre and is already 12 levels over
+   * the artboard, so every candidate broad enough to reach here overshot it.
+   *
+   * The darkness is mechanical, not stylistic. `diffuseColor` is multiplied by
+   * `mix(1.0, vOcclusion, heroOcclusion) * vShade`, and on this curve those fall
+   * together: shade 0.611 with occlusion 1 at the base, shade 0.895 with
+   * occlusion 0.707 further round, so the two factors compound to about 0.43 and
+   * 0.63 of the plinth's own colour where the artboard holds a flat 219, 203, 185.
+   * Measured deficit reaches 66 levels at (1220,900). Centres below are raycast
+   * from the band itself. */
+  const aperturePlinthLow = {
+    centre: { value: new THREE.Vector2(0.75, 0.2) },
+    radii: { value: new THREE.Vector2(0.3, 0.25) },
+    strength: { value: PLINTH_LOW_LIFT_STRENGTH },
+  };
   apertureFrame.material.onBeforeCompile = (shader) => {
     shader.uniforms.heroOcclusion = apertureOcclusion;
     shader.uniforms.heroRimStart = apertureRim.start;
@@ -928,6 +949,9 @@ export function buildAssemblyScene(): AssemblyScene {
     shader.uniforms.heroPlinthCentre = aperturePlinth.centre;
     shader.uniforms.heroPlinthRadii = aperturePlinth.radii;
     shader.uniforms.heroPlinthStrength = aperturePlinth.strength;
+    shader.uniforms.heroPlinthLowCentre = aperturePlinthLow.centre;
+    shader.uniforms.heroPlinthLowRadii = aperturePlinthLow.radii;
+    shader.uniforms.heroPlinthLowStrength = aperturePlinthLow.strength;
     shader.vertexShader = shader.vertexShader
       .replace(
         "#include <common>",
@@ -966,6 +990,9 @@ uniform float heroRimDepth;
 uniform vec2 heroPlinthCentre;
 uniform vec2 heroPlinthRadii;
 uniform float heroPlinthStrength;
+uniform vec2 heroPlinthLowCentre;
+uniform vec2 heroPlinthLowRadii;
+uniform float heroPlinthLowStrength;
 varying float vOcclusion;
 varying vec3 vApertureWorld;
 varying float vShade;
@@ -1007,6 +1034,12 @@ float plinthFall = 1.0 - smoothstep(
   length( ( vApertureWorld.xz - heroPlinthCentre ) / heroPlinthRadii )
 );
 outgoingLight += heroPlinthStrength * plinthMask * plinthFall * vec3( 0.95, 0.88, 0.80 );
+float plinthLowFall = 1.0 - smoothstep(
+  0.35,
+  1.0,
+  length( ( vApertureWorld.xz - heroPlinthLowCentre ) / heroPlinthLowRadii )
+);
+outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95, 0.88, 0.80 );
 #include <opaque_fragment>`,
       );
   /* Guard the injection the way the floor's terms are guarded: a silent no-op
@@ -1018,6 +1051,7 @@ outgoingLight += heroPlinthStrength * plinthMask * plinthFall * vec3( 0.95, 0.88
     vertexHasWorld: shader.vertexShader.includes("vApertureWorld"),
   };
   apertureFrame.material.userData.aperturePlinth = aperturePlinth;
+  apertureFrame.material.userData.aperturePlinthLow = aperturePlinthLow;
   };
   aperture.add(apertureFrame);
   root.add(aperture);
