@@ -756,6 +756,7 @@ export function buildAssemblyScene(): AssemblyScene {
   const CONTACT_SHADOW_STRENGTH = 0.65;
   const COOL_SHEEN_STRENGTH = 1;
   const FLOOR_LIFT_STRENGTH = 0.12;
+  const PLINTH_LIFT_STRENGTH = 0.12;
   const poolX = 0.1;
   const poolZ = 0.7;
   const floorFalloffData = new Uint8Array(64 * 64 * 4);
@@ -900,11 +901,33 @@ export function buildAssemblyScene(): AssemblyScene {
     width: { value: 0.16 },
     depth: { value: 0.75 },
   };
+  /* The artboard lights the hero plinth evenly: 197 under the arch against 110 on
+   * the rim 100 px above it. This band's outer face carries a lighting gradient
+   * instead, and at the near-right base it falls to 154 where the artboard holds
+   * 199. Object-ID isolation puts that pixel on this mesh, not on the floor and
+   * not on the reflection taps, and its per-vertex attributes there are IDENTICAL
+   * to a neighbouring pixel that already matches - rim 0, face 1, open 0, shade
+   * 0.611, occlusion 1 - so the attributes cannot express the difference. It is
+   * the shading gradient, and the correction is a bounded tone lift on the plinth.
+   *
+   * vOpen is 0 on the plinth and 1 in the opening, so it gates the term off the
+   * arch without a second spatial mask. The world radius keeps it on the
+   * near-right base and leaves the rest of the band, whose tone is already solved,
+   * untouched. The centre is measured, not chosen: a raycast of this mesh puts
+   * screen (1440,950) at world (1.194, 0.44). */
+  const aperturePlinth = {
+    centre: { value: new THREE.Vector2(1.19, 0.44) },
+    radii: { value: new THREE.Vector2(0.3, 0.3) },
+    strength: { value: PLINTH_LIFT_STRENGTH },
+  };
   apertureFrame.material.onBeforeCompile = (shader) => {
     shader.uniforms.heroOcclusion = apertureOcclusion;
     shader.uniforms.heroRimStart = apertureRim.start;
     shader.uniforms.heroRimWidth = apertureRim.width;
     shader.uniforms.heroRimDepth = apertureRim.depth;
+    shader.uniforms.heroPlinthCentre = aperturePlinth.centre;
+    shader.uniforms.heroPlinthRadii = aperturePlinth.radii;
+    shader.uniforms.heroPlinthStrength = aperturePlinth.strength;
     shader.vertexShader = shader.vertexShader
       .replace(
         "#include <common>",
@@ -915,6 +938,7 @@ attribute float rim;
 attribute float face;
 attribute float open;
 varying float vOcclusion;
+varying vec3 vApertureWorld;
 varying float vShade;
 varying float vRim;
 varying float vFace;
@@ -927,8 +951,10 @@ vOcclusion = occlusion;
 vShade = shade;
 vRim = rim;
 vFace = face;
-vOpen = open;`,
+vOpen = open;
+vApertureWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;`,
       );
+    const fragBefore = shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader
       .replace(
         "#include <common>",
@@ -937,7 +963,11 @@ uniform float heroOcclusion;
 uniform float heroRimStart;
 uniform float heroRimWidth;
 uniform float heroRimDepth;
+uniform vec2 heroPlinthCentre;
+uniform vec2 heroPlinthRadii;
+uniform float heroPlinthStrength;
 varying float vOcclusion;
+varying vec3 vApertureWorld;
 varying float vShade;
 varying float vRim;
 varying float vFace;
@@ -958,7 +988,36 @@ float vRimAmount = heroRimDepth
   * vOpen;
 float vRimShadow = 1.0 - vRimAmount * smoothstep(heroRimStart, heroRimStart + heroRimWidth, vRim);
 diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion) * vShade * mix(1.0, vRimShadow, heroOcclusion);`,
+      )
+      .replace(
+        "#include <opaque_fragment>",
+        `/* Bounded lift for the plinth's near-right base, where the band's own lighting
+ * gradient leaves it 45 levels under the artboard. Gated by vOpen so the arch is
+ * untouched, and by a world radius so the rest of the band is left alone.
+ *
+ * This block must come BEFORE the include, not after it: opaque_fragment is what
+ * assigns gl_FragColor, so a term appended after it is written to outgoingLight
+ * too late to be seen. The first version of this did exactly that - the shader
+ * compiled, the injection guard confirmed the source had changed, and the term
+ * measured exactly zero at ten times its strength on every probe. */
+float plinthMask = 1.0 - smoothstep( 0.25, 0.75, vOpen );
+float plinthFall = 1.0 - smoothstep(
+  0.35,
+  1.0,
+  length( ( vApertureWorld.xz - heroPlinthCentre ) / heroPlinthRadii )
+);
+outgoingLight += heroPlinthStrength * plinthMask * plinthFall * vec3( 0.95, 0.88, 0.80 );
+#include <opaque_fragment>`,
       );
+  /* Guard the injection the way the floor's terms are guarded: a silent no-op
+   * replace has cost this scene twice, and a term that looks fully wired while
+   * being absent is worse than one that fails loudly. */
+  apertureFrame.material.userData.plinthInjection = {
+    hadOpaqueInclude: fragBefore.includes("#include <opaque_fragment>"),
+    fragmentChanged: shader.fragmentShader !== fragBefore,
+    vertexHasWorld: shader.vertexShader.includes("vApertureWorld"),
+  };
+  apertureFrame.material.userData.aperturePlinth = aperturePlinth;
   };
   aperture.add(apertureFrame);
   root.add(aperture);
