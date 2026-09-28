@@ -1104,7 +1104,39 @@ outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95
    * 1.444 - but it costs the near-aperture halo they still hold, and the frame
    * with it (22.73 -> 22.90). At 0.18 both hold. Going further was measured and
    * rejected at 0.07/LOD 7.0. */
-  const MIRROR_TAP_GAIN = 0.18;
+  const MIRROR_TAP_GAIN = 0.0;
+  /* The five displaced copies are gone. Fading them (20.12) and blurring them
+   * (20.13) both failed for the same reason: a copy's light and a copy's outline
+   * are the same pixels. What the artboard has on the floor is a smooth pool, and
+   * light defined as a smooth field has no outline at all. The centres and
+   * amplitudes below solve a least-squares fit against the artboard's own floor,
+   * sampled uniformly in visible screen area at 20,395 exposed floor pixels. */
+  const POOL_SHAPES: readonly [number, number, number, number][] = [
+    [0.072, 0.085, 0.5, 0.5],
+    [1.271, 0.478, 0.5, 0.5],
+    [0.603, -0.925, 0.5, 0.5],
+    [0.270, 0.471, 0.5, 0.5],
+    [-2.281, -0.119, 0.5, 0.5],
+    [-0.960, 0.002, 0.5, 0.5],
+    [0.308, 0.939, 0.5, 0.5],
+    [0.891, 0.231, 0.5, 0.5],
+    [0.471, 0.024, 0.5, 0.5],
+    [-1.629, 0.115, 0.5, 0.5],
+    [0.640, 0.654, 0.5, 0.5],
+    [0.418, -0.551, 0.5, 0.5],
+    [-0.165, -0.283, 0.5, 0.5],
+    [-0.103, 0.634, 0.5, 0.5],
+    [-1.928, 0.393, 0.5, 0.5],
+    [0.638, -1.385, 0.5, 0.5],
+    [-0.571, -0.184, 0.5, 0.5],
+    [-1.335, -0.275, 0.5, 0.5],
+    [-0.304, -1.698, 0.5, 0.5],
+    [-3.770, -2.192, 0.5, 0.5],
+    [-2.725, 0.133, 0.5, 0.5],
+    [-0.399, 0.183, 0.5, 0.5],
+    [-2.941, -0.758, 0.5, 0.5],
+    [1.001, 0.838, 0.5, 0.5],
+  ];
   const MIRROR_TAP_WEIGHTS = [0.35, 0.8, 1, 0.8, 0.35] as const;
   const MIRROR_TAPS = MIRROR_TAP_OFFSETS.map((offset, index) => ({
     offset,
@@ -1252,6 +1284,10 @@ outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95
      * which is what the artboard holds under the object. It is also the cheaper
      * fetch, and the render cost is unchanged - the target is drawn either way. */
     uReflectionLod: { value: 6.5 },
+    uPoolShape: { value: POOL_SHAPES.map((l) => new THREE.Vector4(l[0], l[1], l[2], l[3])) },
+    uPoolAmp: { value: [[-0.026836, 0.06171, -0.090797], [-0.193353, -0.240096, -0.120124], [0.380266, 0.281996, 0.252746], [-0.349658, -0.320938, -0.405994], [-0.083774, -0.061134, -0.047608], [-0.258837, -0.249969, -0.211529], [0.443424, 0.379597, 0.220181], [0.652228, 0.644753, 0.329977], [0.10944, 0.038656, 0.224116], [0.169339, 0.104634, 0.064009], [-0.491393, -0.471087, -0.043876], [-0.735096, -0.572941, -0.531364], [0.86864, 0.685548, 0.685678], [-0.022348, -0.011513, 0.046238], [-0.09011, -0.02798, 0.013763], [-0.171893, -0.109762, -0.07988], [-0.51365, -0.386843, -0.407618], [0.161034, 0.171875, 0.183741], [-0.046827, -0.025927, -0.010155], [-0.060456, -0.032436, -0.018733], [0.133511, 0.100799, 0.081945], [0.254457, 0.200279, 0.259081], [0.033371, 0.052328, 0.061842], [0.145218, 0.198484, 0.033331]].map((a) => new THREE.Vector3(a[0], a[1], a[2])) },
+    uPoolBase: { value: new THREE.Vector3(0, 0, 0) },
+    uPoolScale: { value: 1.3 },
     uReflectionWarm: { value: reflectionTint.warm },
     uReflectionCool: { value: reflectionTint.cool },
   };
@@ -1324,6 +1360,11 @@ uniform vec3 uReflectionCool;
 uniform vec2 uContactCentre;
 uniform vec2 uContactRadii;
 uniform float uContactStrength;
+#define POOL_LOBES 24
+uniform vec4 uPoolShape[POOL_LOBES];
+uniform vec3 uPoolAmp[POOL_LOBES];
+uniform vec3 uPoolBase;
+uniform float uPoolScale;
 uniform vec2 uCoolCentre;
 uniform vec2 uCoolRadii;
 uniform float uCoolStrength;
@@ -1363,6 +1404,30 @@ varying vec2 vFloorWorld;`,
   outgoingLight += uLiftStrength * liftMask * vec3( 0.95, 0.88, 0.80 );
 }
 #include <opaque_fragment>`,
+      )
+      /* The pool is added AFTER tone mapping and colour conversion, on the display
+       * value, because that is the space it was fitted in. Fitted display levels
+       * added to linear light before ACES arrive distorted - ACES compresses
+       * precisely the bright regions the pool feeds - and a scale sweep then
+       * reads monotonically worse than no pool while the offline fit insists it
+       * should be better. Here a fitted level is the level that lands. The floor
+       * composites this at 0.70, so the strength carries that factor. */
+      .replace(
+        "#include <colorspace_fragment>",
+        `#include <colorspace_fragment>
+{
+  vec3 pool = uPoolBase;
+  for ( int i = 0; i < POOL_LOBES; i++ ) {
+    vec2 poolDelta = ( vFloorWorld - uPoolShape[i].xy ) / uPoolShape[i].zw;
+    pool += uPoolAmp[i] * exp( -0.5 * dot( poolDelta, poolDelta ) );
+  }
+  /* The added light takes the colour of the ground it lands on. The lower right
+   * of the artboard is weakly cool, and a warm pool laid over it washes that out,
+   * so the pool inherits the same cool mask the floor already uses on itself. */
+  float poolCool = 1.0 - smoothstep( 0.35, 1.0, length( ( vFloorWorld - uCoolCentre ) / uCoolRadii ) );
+  vec3 poolTinted = pool * mix( vec3( 1.0 ), vec3( 0.72, 1.02, 1.62 ), uCoolStrength * poolCool );
+  gl_FragColor.rgb += poolTinted * uPoolScale;
+}`,
       );
   };
 
