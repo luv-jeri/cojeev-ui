@@ -39,7 +39,7 @@ const selectionContours = [
   "48% 52% 41% 59% / 59% 45% 55% 41%",
   "58% 42% 53% 47% / 47% 59% 41% 53%",
 ];
-export const calendarVariants = cva("v-cal [display:grid] [gap:14px]");
+export const calendarVariants = cva("v-cal [display:grid] [gap:var(--s-4)]");
 type CalendarBaseProps = Omit<
   PropsBase,
   "mode" | "onSelect" | "selected" | "disabled" | "required"

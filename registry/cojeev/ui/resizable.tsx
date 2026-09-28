@@ -7,7 +7,7 @@ import { cn } from "@/registry/cojeev/lib/utils";
 import * as Primitive from "react-resizable-panels";
 import { ScrollArea, ScrollBar } from "./scroll-area";
 export const resizableVariants = cva(
-  "v-resizable [height:var(--h,240px)] [background:var(--card)] [border-radius:22px] [overflow:hidden] [box-shadow:inset_0_0_0_1px_var(--v-border)] [isolation:isolate] flex",
+  "v-resizable [height:var(--h,240px)] [background:var(--card)] [border-radius:var(--r-panel)] [overflow:hidden] [box-shadow:inset_0_0_0_1px_var(--v-border)] [isolation:isolate] flex",
   {
     variants: { variant: { default: "", v: "-v" } },
     defaultVariants: { variant: "default" },

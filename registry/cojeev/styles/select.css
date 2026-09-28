@@ -13,12 +13,12 @@
   width: 100%;
   height: var(--ctl-lg);
   font-size: var(--fs-body);
-  font-weight: 400;
+  font-weight: var(--fw-regular);
 }
 .v-select:where([data-slot="select"], [data-slot^="select-"]).-sm {
   height: var(--ctl-sm);
-  font-size: 13px;
-  padding: 0 12px 0 14px;
+  font-size: var(--fs-small);
+  padding: 0 var(--s-3) 0 var(--s-4);
 }
 .v-select:where([data-slot="select"], [data-slot^="select-"]) .v-icon {
   width: 14px;
@@ -60,14 +60,14 @@
 .v-menu__sep:where([data-slot="select"], [data-slot^="select-"]) {
   height: 1px;
   background: var(--v-border);
-  margin: 4px 0;
+  margin: var(--s-1) 0;
 }
 .v-menu__group:where([data-slot="select"], [data-slot^="select-"]) {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted-foreground);
-  padding: 8px 12px 4px;
+  padding: var(--s-2) var(--s-3) var(--s-1);
 }
 .v-listbox:where([data-slot="select"], [data-slot^="select-"]) {
   min-width: max(100%, 200px);
@@ -103,14 +103,14 @@
     [data-slot^="select-"]
   )::-webkit-scrollbar-track {
   background: transparent;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .v-menu:where(
     [data-slot="select"],
     [data-slot^="select-"]
   )::-webkit-scrollbar-thumb {
   background: color-mix(in oklab, var(--v-ink) 34%, transparent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   border: 4px solid transparent;
   background-clip: content-box;
   min-height: 36px;
@@ -181,10 +181,10 @@
 }
 .v-select:where([data-slot="select"], [data-slot^="select-"]).-block {
   width: 100%;
-  height: 52px;
-  padding: 0 8px 0 8px;
+  height: var(--ctl-lg);
+  padding: 0 var(--s-2) 0 var(--s-2);
   font-size: var(--fs-body);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   background: var(--input);
   box-shadow: inset 0 0 0 1px var(--v-edge);
 }
@@ -192,7 +192,7 @@
   > span:first-child {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--s-3);
   min-width: 0;
   flex: 1;
 }
@@ -223,7 +223,7 @@
   > .v-icon:last-child {
   width: 28px;
   height: 28px;
-  padding: 7px;
+  padding: var(--s-2);
   border-radius: 50%;
   background: var(--v-canvas);
   box-shadow: inset 0 0 0 1px var(--v-border);
@@ -251,16 +251,16 @@
 }
 .v-select:where([data-slot="select"], [data-slot^="select-"]).-sm {
   height: 32px;
-  padding: 0 10px 0 14px;
-  font-size: 13px;
+  padding: 0 var(--s-3) 0 var(--s-4);
+  font-size: var(--fs-small);
 }
 .v-select:where([data-slot="select"], [data-slot^="select-"]):focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 .v-listbox:where([data-slot="select"], [data-slot^="select-"]) {
-  padding: 6px;
-  border-radius: 18px;
+  padding: var(--s-2);
+  border-radius: var(--r-card);
   box-shadow:
     var(--shadow-float),
     inset 0 0 0 1px var(--v-border);
@@ -272,17 +272,17 @@
 .v-listbox:where([data-slot="select"], [data-slot^="select-"]) .v-menu__item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 10px;
+  gap: var(--s-3);
   align-items: center;
-  min-height: 42px;
-  padding: 0 10px 0 8px;
-  border-radius: 12px;
-  font-size: 14.5px;
+  min-height: var(--hit-min);
+  padding: 0 var(--s-3) 0 var(--s-2);
+  border-radius: var(--r-md);
+  font-size: var(--fs-control);
 }
 .v-listbox:where([data-slot="select"], [data-slot^="select-"])
   .v-menu__item:not(:has(.v-disk,.v-item-adornment)) {
   grid-template-columns: minmax(0, 1fr) auto;
-  padding-left: 12px;
+  padding-left: var(--s-3);
 }
 .v-listbox:where([data-slot="select"], [data-slot^="select-"])
   .v-menu__item
@@ -393,16 +393,16 @@
 [data-slot="select-trigger"] > .v-state-chevron { margin-inline-start:auto; }
 [data-slot="select-trigger"]:active:not(:disabled) { background:var(--v-pink-soft); color:var(--v-text); }
 
-[data-slot="select-item"] > .v-select__indicator { margin-inline-start: auto; display: inline-flex; flex: none; padding-inline-start: 8px; }
+[data-slot="select-item"] > .v-select__indicator { margin-inline-start: auto; display: inline-flex; flex: none; padding-inline-start: var(--s-2); }
 [data-slot="select-item"] > .v-select__indicator .v-icon { width: 16px; height: 16px; }
 .v-select__rich { display:grid; gap:3px; min-width:0; white-space:normal; }
-.v-select__description { color:var(--v-text-2); font-size:12px; line-height:1.45; font-weight:400; }
+.v-select__description { color:var(--v-text-2); font-size:var(--fs-meta); line-height:1.45; font-weight:var(--fw-regular); }
 [data-slot="select-item"]:has(.v-select__rich) { min-height:64px; align-items:center; }
 .v-form-example [data-slot="select"] { display:block; width:100%; min-width:0; }
 .v-form-example [data-slot="select-trigger"] { width:100%; min-height:48px; }
-.v-form-example__selection-action { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:end; }
+.v-form-example__selection-action { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:var(--s-3); align-items:end; }
 .v-form-example__selection-action > .v-btn { min-height:48px; }
-.v-form-example__selection-caption { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--v-text-2); }
+.v-form-example__selection-caption { display:flex; align-items:center; gap:var(--s-2); font-size:var(--fs-small); color:var(--v-text-2); }
 /* Hand paint to the mounted contour, not a second opaque field on top of it.
    Without the SVG (SSR, disabled motion, native fallback), ordinary CSS stays. */
 :root [data-slot="select-trigger"].v-select:has(> svg.v-morph) { background:transparent; box-shadow:none; }

@@ -23,14 +23,14 @@ const buttonVariants = cva(
         ghost:
           "-ghost bg-transparent text-[color:var(--v-text)] hover:bg-[var(--v-beige)]",
         outline:
-          "-outline bg-transparent text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-border)] hover:bg-[var(--v-beige-2)]",
+          "-outline bg-transparent text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] hover:bg-[var(--v-beige-2)]",
         danger:
           "-danger bg-[var(--v-danger-fill)] text-[color:var(--destructive-foreground)]",
         block: "-block w-full",
       },
       size: {
         default: "",
-        sm: "-sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px]",
+        sm: "-sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[length:var(--fs-small)]",
         lg: "-lg h-[var(--ctl-lg)] px-[var(--s-6)] text-[length:var(--fs-body)]",
       },
       shape: { pill: "", card: "-card" },

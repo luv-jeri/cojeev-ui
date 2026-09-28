@@ -21,9 +21,9 @@
   align-items: start;
 }
 .v-dialog__head:where([data-slot="sheet"], [data-slot^="sheet-"]) .v-section {
-  font-size: 24px;
+  font-size: var(--fs-section);
   line-height: 1.15;
-  padding-top: 6px;
+  padding-top: var(--s-2);
 }
 .v-dialog__actions:where([data-slot="sheet"], [data-slot^="sheet-"]) {
   margin-top: var(--s-2);
@@ -41,14 +41,14 @@
     [data-slot^="sheet-"]
   )::-webkit-scrollbar-track {
   background: transparent;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .v-sheet:where(
     [data-slot="sheet"],
     [data-slot^="sheet-"]
   )::-webkit-scrollbar-thumb {
   background: color-mix(in oklab, var(--v-ink) 34%, transparent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   border: 4px solid transparent;
   background-clip: content-box;
   min-height: 36px;

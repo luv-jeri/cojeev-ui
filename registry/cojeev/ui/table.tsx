@@ -4,7 +4,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { ScrollArea, ScrollBar } from "@/registry/cojeev/ui/scroll-area";
 import { assignMotionRef } from "@/registry/cojeev/motion/refs";
-export const tableVariants = cva("v-table w-full border-collapse text-[13px]");
+export const tableVariants = cva("v-table w-full border-collapse text-[length:var(--fs-small)]");
 export type TableContainerProps = React.ComponentProps<"div">;
 export function TableContainer({
   ref,
@@ -119,7 +119,7 @@ export function TableHead({ className, numeric, ...props }: TableHeadProps) {
       data-slot="table-head"
       scope="col"
       className={cn(
-        "h-[44px] px-[12px] py-0 text-left text-[11px] font-semibold tracking-[.07em] uppercase text-[color:var(--v-text-2)] whitespace-nowrap",
+        "h-[44px] px-[var(--s-3)] py-0 text-left text-[length:var(--fs-caps)] font-semibold tracking-[.07em] uppercase text-[color:var(--v-text-2)] whitespace-nowrap",
         numeric && "-num text-right tabular-nums",
         className,
       )}
@@ -133,7 +133,7 @@ export function TableCell({ className, numeric, ...props }: TableCellProps) {
     <td
       data-slot="table-cell"
       className={cn(
-        "h-[60px] px-[12px] py-0 align-middle text-[14px] whitespace-nowrap",
+        "h-[60px] px-[var(--s-3)] py-0 align-middle text-[length:var(--fs-control)] whitespace-nowrap",
         numeric && "-num text-right tabular-nums font-semibold",
         className,
       )}

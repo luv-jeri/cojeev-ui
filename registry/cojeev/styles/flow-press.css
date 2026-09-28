@@ -95,7 +95,7 @@
   background: var(--v-pink);
 }
 [data-flow-owned].v-glide.-underline > .v-glide__hover {
-  border-radius: 10px;
+  border-radius: var(--r-md);
 }
 [data-flow-owned].v-glide.-underline [data-glide-active] {
   color: var(--v-text);
@@ -127,7 +127,7 @@
   transition: background-color var(--t-flow-hover) ease;
 }
 .v-seg[data-flow-owned].v-glide > .v-glide__pill {
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .v-seg.-pink[data-flow-owned].v-glide > .v-glide__pill > i,
 .v-seg.-pink[data-flow-owned].v-glide > .v-glide__trail > i {
@@ -276,7 +276,7 @@
   display: none;
 }
 [data-flow-owned].v-glide[data-flow-kind="bar"] > .v-glide__hover {
-  border-radius: 10px;
+  border-radius: var(--r-md);
 }
 :root[data-flow-hover="off"] [data-flow-owned].v-glide > .v-glide__hover,
 [data-flow-owned].v-glide[data-flow-hover="off"] > .v-glide__hover {

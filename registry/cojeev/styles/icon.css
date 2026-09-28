@@ -156,17 +156,17 @@
 /* The documentation typecase: one proofing stage, then a bounded tray of signs. */
 .v-icon-studio {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   min-width: 0;
-  padding: 18px;
+  padding: var(--s-5);
   container-type: inline-size;
 }
 .v-icon-studio__heading {
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-icon-studio__eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.1em;
   color: var(--v-text-2);
 }
@@ -177,7 +177,7 @@
 }
 .v-icon-studio__heading p {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.6;
   color: var(--v-text-2);
 }
@@ -185,7 +185,7 @@
   display: grid;
   grid-template-columns: minmax(150px, 0.7fr) minmax(0, 1.3fr);
   border: 1px solid var(--v-border);
-  border-radius: 24px;
+  border-radius: var(--r-panel);
   background: var(--v-paper);
   min-width: 0;
 }
@@ -194,10 +194,10 @@
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: 24px;
+  gap: var(--s-6);
   min-height: 240px;
-  padding: 28px 16px;
-  border-radius: 23px 0 0 23px;
+  padding: var(--s-7) var(--s-4);
+  border-radius: var(--r-panel) 0 0 var(--r-panel);
   background:
     radial-gradient(ellipse at 40% 30%, var(--v-blue-soft), transparent 70%),
     var(--v-paper);
@@ -226,33 +226,33 @@
 .v-icon-studio__proof .v-icon-studio__replay {
   width: 116px;
   height: 116px;
-  padding: 16px;
+  padding: var(--s-4);
   background: transparent;
   box-shadow: none;
 }
 .v-icon-studio__proof-label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 11px;
+  gap: var(--s-2);
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
 }
 .v-icon-studio__details {
   display: grid;
   align-content: start;
-  gap: 20px;
+  gap: var(--s-5);
   min-width: 0;
-  padding: 24px;
+  padding: var(--s-6);
   border-left: 1px solid var(--v-border);
 }
 .v-icon-studio__name {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-icon-studio__name code {
-  font-size: 18px;
+  font-size: var(--fs-lead);
   min-width: 0;
   flex: 1 1 100px;
   overflow: hidden;
@@ -266,48 +266,48 @@
 .v-icon-studio__details [data-icon-description] {
   min-height: 3.2em;
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.6;
   color: var(--v-text-2);
 }
 .v-icon-studio__control {
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
   min-width: 0;
 }
 .v-icon-studio__control-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-semibold);
   letter-spacing: 0.02em;
 }
 .v-icon-studio__control small {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   line-height: 1.6;
   color: var(--v-text-2);
 }
 .v-icon-studio__choices {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--s-1);
 }
 .v-icon-studio__choices .v-btn {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   min-height: 44px;
-  padding-inline: 12px;
+  padding-inline: var(--s-3);
 }
 .v-icon-studio__tones {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 4px;
+  gap: var(--s-1);
 }
 .v-icon-studio__tones .v-btn {
   height: auto;
   min-height: 56px;
   min-width: 44px;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px 4px;
-  font-size: 11px;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-1);
+  font-size: var(--fs-caps);
 }
 .v-icon-studio__tones .v-btn > span {
   width: 16px;
@@ -322,25 +322,25 @@
 .v-icon-studio__timing {
   min-width: 0;
   border-bottom: 1px solid var(--v-border);
-  padding-bottom: 16px;
+  padding-bottom: var(--s-4);
 }
 .v-icon-studio__timing-controls {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) 42px;
   align-items: center;
-  gap: 16px;
-  padding: 18px;
+  gap: var(--s-4);
+  padding: var(--s-5);
 }
 .v-icon-studio__timing-controls > .v-icon-studio__choices {
   grid-column: 2 / -1;
 }
 .v-icon-studio__timing-controls output {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   font-variant-numeric: tabular-nums;
 }
 .v-icon-studio__search {
   display: grid;
-  gap: 10px;
+  gap: var(--s-3);
   min-width: 0;
 }
 .v-icon-studio__search .v-igroup {
@@ -356,7 +356,7 @@
   padding: 0;
 }
 .v-icon-studio__status {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   min-height: 3.2em;
   margin: 0;
@@ -365,16 +365,16 @@
 .v-icon-studio__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-  gap: 10px;
-  padding: 12px;
+  gap: var(--s-3);
+  padding: var(--s-3);
 }
 .v-icon-studio__grid .v-btn {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--s-3);
   height: 108px;
-  padding: 12px 8px;
-  font-size: 11px;
+  padding: var(--s-3) var(--s-2);
+  font-size: var(--fs-caps);
   line-height: 1.35;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -388,28 +388,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-2);
   flex-wrap: wrap;
-  padding: 12px;
+  padding: var(--s-3);
 }
 .v-icon-studio__pages > span {
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 .v-icon-studio__pages > .v-btn {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   min-height: 44px;
 }
 .v-icon-studio__credit {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-text-2);
   margin: 0;
 }
 .v-icon-studio__compact {
   display: flex;
-  gap: 16px;
+  gap: var(--s-4);
   flex-wrap: wrap;
-  padding: 12px;
+  padding: var(--s-3);
 }
 @container (max-width:520px) {
   .v-icon-studio__inspector {
@@ -417,11 +417,11 @@
   }
   .v-icon-studio__proof {
     min-height: 220px;
-    border-radius: 23px 23px 0 0;
-    gap: 12px;
+    border-radius: var(--r-panel) var(--r-panel) 0 0;
+    gap: var(--s-3);
   }
   .v-icon-studio__details {
-    padding: 20px;
+    padding: var(--s-5);
     border-left: 0;
     border-top: 1px solid var(--v-border);
   }

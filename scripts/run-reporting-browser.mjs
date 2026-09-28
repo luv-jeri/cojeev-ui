@@ -28,6 +28,15 @@ try {
     child.once('exit', code => resolve(code ?? 1));
   });
   if (code) throw new Error(`Reporting browser journey failed (${code}).`);
+  // The widget mounts after the page is idle; a request made before then must still open it, once.
+  const early = await new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, ['--test', 'tests/reporting-early-request.browser.mjs'], {
+      stdio: 'inherit', env: { ...process.env, POLISH_URL: `${origin}/cojeev-ui` },
+    });
+    child.once('error', reject);
+    child.once('exit', code => resolve(code ?? 1));
+  });
+  if (early) throw new Error(`Early reporting request check failed (${early}).`);
 } finally {
   await fixture?.close();
   if (site?.httpServer.listening) await new Promise(resolve => site.httpServer.close(resolve));

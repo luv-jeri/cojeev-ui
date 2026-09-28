@@ -24,7 +24,7 @@ import {
   controlRadiusStyle,
   type ControlRadius,
 } from "../lib/control-appearance";
-export const questionnaireVariants = cva("v-quest grid gap-[28px]");
+export const questionnaireVariants = cva("v-quest grid gap-[var(--s-7)]");
 export type QuestionnaireProps = React.ComponentProps<"div"> & {
   presentation?: "stacked" | "journey" | "worksheet";
   radius?: ControlRadius;
@@ -69,7 +69,7 @@ export function QuestionnaireProgress({
     <div
       data-slot="questionnaire-progress"
       className={cn(
-        "v-quest__progress flex items-center gap-[12px] text-[13px] text-[color:var(--v-text-2)]",
+        "v-quest__progress flex items-center gap-[var(--s-3)] text-[length:var(--fs-small)] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}
@@ -97,7 +97,7 @@ export function QuestionnaireQuestion({
     <fieldset
       data-slot="questionnaire-question"
       className={cn(
-        "v-quest__q grid min-w-0 gap-[12px] [border:0] p-0 bg-transparent [box-shadow:none]",
+        "v-quest__q grid min-w-0 gap-[var(--s-3)] [border:0] p-0 bg-transparent [box-shadow:none]",
         className,
       )}
       {...props}
@@ -112,7 +112,7 @@ export function QuestionnaireLabel({
   return (
     <Label
       data-slot="questionnaire-label"
-      className={cn("[font-size:17px] [font-weight:600]", className)}
+      className={cn("[font-size:var(--fs-lead)] [font-weight:var(--fw-semibold)]", className)}
       {...props}
     />
   );
@@ -216,7 +216,7 @@ export function QuestionnaireOptions({
       <div
         ref={attach}
         data-slot="questionnaire-options"
-        className={cn("v-quest__opts grid gap-[8px]", className)}
+        className={cn("v-quest__opts grid gap-[var(--s-2)]", className)}
         role="radiogroup"
         {...props}
       >
@@ -265,7 +265,7 @@ export function QuestionnaireOption({
       data-slot="questionnaire-option"
       data-state={context.value === value ? "checked" : "unchecked"}
       className={cn(
-        "v-quest__opt grid grid-cols-[36px_minmax(0,1fr)_28px] items-center gap-[14px] min-h-[64px] pt-[14px] pr-[16px] pb-[14px] pl-[14px] rounded-[20px] bg-[var(--v-canvas)] cursor-pointer",
+        "v-quest__opt grid grid-cols-[36px_minmax(0,1fr)_28px] items-center gap-[var(--s-4)] min-h-[64px] pt-[var(--s-4)] pr-[var(--s-4)] pb-[var(--s-4)] pl-[var(--s-4)] rounded-[var(--r-card)] bg-[var(--v-canvas)] cursor-pointer",
         className,
       )}
       {...props}
@@ -326,7 +326,7 @@ export function QuestionnaireWeekdays({
     <div
       ref={flowRef}
       data-slot="questionnaire-weekdays"
-      className={cn("v-weekdays flex gap-[6px]", className)}
+      className={cn("v-weekdays flex gap-[var(--s-2)]", className)}
       {...props}
     />
   );
@@ -340,7 +340,7 @@ export function QuestionnaireWeekday({
     <label
       data-slot="questionnaire-weekday"
       className={cn(
-        "relative grid place-items-center size-[40px] [border-radius:50%] text-[11.5px] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer",
+        "relative grid place-items-center size-[40px] [border-radius:50%] text-[length:var(--fs-caps)] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer",
         className,
       )}
       {...props}

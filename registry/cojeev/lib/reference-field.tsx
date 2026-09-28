@@ -107,7 +107,7 @@ export function ReferenceField({ kind, paused = false, tone = "pink", speed = 1,
 
   return <div {...props} ref={React.useCallback((node: HTMLDivElement | null) => { host.current = node; if (typeof ref === "function") return ref(node); if (ref) ref.current = node; }, [ref])}
     className={cn(`v-${kind}`, className)} data-slot={kind} data-running={running ? "true" : "false"} data-tone={tone}
-    style={{ position: "relative", isolation: "isolate", overflow: "hidden", minWidth: 0, width: "100%", height: boundedNumber(height, 320, 120, 1000), borderRadius: "var(--v-r-panel, 24px)", color: "var(--v-text)", background: "var(--v-beige)", ...style }}>
+    style={{ position: "relative", isolation: "isolate", overflow: "hidden", minWidth: 0, width: "100%", height: boundedNumber(height, 320, 120, 1000), borderRadius: "var(--r-panel)", color: "var(--v-text)", background: "var(--v-beige)", ...style }}>
     <canvas ref={canvas} aria-hidden="true" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
     {children && <div style={{ position: "relative", zIndex: 1, minHeight: "100%", display: "grid", placeItems: "center", padding: 24, pointerEvents: "none" }}><div style={{ pointerEvents: "auto", maxWidth: "100%" }}>{children}</div></div>}
   </div>;

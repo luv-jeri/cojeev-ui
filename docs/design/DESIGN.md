@@ -2,27 +2,27 @@
 name: "Cojeev UI"
 description: "Warm paper, precise ink, and living contours for agent interfaces."
 colors:
-  pink: "#F5B8DB"
-  olive: "#9AAB63"
-  blue: "#B6CAEB"
-  yellow: "#F5D867"
-  paper: "#FBF4E6"
-  beige: "#EEE7DA"
-  beige-raised: "#F3ECDF"
-  ink: "#111111"
-  text: "#0E0B0B"
-  text-secondary: "#5F5B55"
-  dark-canvas: "#171512"
-  dark-beige: "#221F1B"
-  dark-raised: "#2A2621"
-  dark-text: "#F6EFE2"
-  dark-text-secondary: "#B5AC9E"
-  border: "#D9D2C4"
-  control-edge: "#87806F"
-  dark-border: "#3A352E"
-  focus-mulberry: "#9C3E6E"
-  danger-fill: "#C9332D"
-  danger-ink: "#A8302B"
+  pink: "#F0A4CC"
+  olive: "#A8BC75"
+  blue: "#95BAE8"
+  yellow: "#F1D369"
+  paper: "#F8F6F1"
+  beige: "#EEE9E1"
+  beige-raised: "#F3EFE8"
+  ink: "#26282D"
+  text: "#26282D"
+  text-secondary: "#464951"
+  dark-canvas: "#15171A"
+  dark-beige: "#292F37"
+  dark-raised: "#20242A"
+  dark-text: "#F3F4F4"
+  dark-text-secondary: "#BDC1C5"
+  border: "#B4B0AB"
+  control-edge: "#706E6D"
+  dark-border: "#4E5359"
+  focus-mulberry: "#845C73"
+  danger-fill: "#B92D28"
+  danger-ink: "#B2433B"
 typography:
   hero:
     fontFamily: "Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif"
@@ -57,6 +57,11 @@ typography:
     fontSize: "14px"
     fontWeight: 500
     lineHeight: 1.2
+  small:
+    fontFamily: "DM Sans, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.4
   meta:
     fontFamily: "DM Sans, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "12px"
@@ -70,6 +75,7 @@ rounded:
   card: "20px"
   panel: "24px"
   sheet: "28px"
+  frame: "40px"
   pill: "999px"
 spacing:
   s-1: "4px"
@@ -78,8 +84,11 @@ spacing:
   s-4: "16px"
   s-5: "20px"
   s-6: "24px"
+  s-7: "28px"
   s-8: "32px"
+  s-10: "40px"
   s-12: "48px"
+  s-16: "64px"
 components:
   button-default:
     backgroundColor: "{colors.ink}"
@@ -216,13 +225,15 @@ Dark soft badges use deep component tints with pale foregrounds; their visual tr
 
 **Code Font:** the existing platform monospace stack for code, identifiers and terminal-like text.
 
-The display face gives headings a human, sculptural edge; the body face keeps controls and dense information direct. The ramp is role-based rather than a fixed mathematical ratio. [Typography primitives](../../registry/cojeev/ui/typography.tsx), [responsive type rules](../../registry/cojeev/styles/typography.css) and [base typography](../../registry/cojeev/styles/base.css) define the applied roles.
+The display face gives headings a human, sculptural edge; the body face keeps controls and dense information direct. The ramp is role-based rather than a fixed mathematical ratio.
+
+**The One Scale Rule.** Every interface font size is a `--fs-*` step and every weight one of four `--fw-*` steps (regular 400, medium 500, semibold 600, bold 700). Nothing sits between steps: caps 11, meta 12, small 13, control 14, body 15, reading 16, lead 17, title 21, section 26, display 44, hero 72 (px). A size between steps moves to the nearest one and a tie rounds up: 19px (a tie between 17 and 21) becomes 21, and so does 23px. 11px is the floor for any text; a size that must stay relative to its parent keeps it with `max(var(--fs-caps), …em)`. Library TSX uses the typed `length:` form of a token, not Tailwind's named sizes. `tests/type-scale.test.mjs` rejects raw sizes up to 28px (px, rem, em or %, including in the `font` shorthand), raw weights and undefined `--fs-*`/`--fw-*`/`--lh-*` tokens in the library; display sizes above 28px and fluid `clamp()` sizes are still set per component until the display scale is designed. [Typography primitives](../../registry/cojeev/ui/typography.tsx), [responsive type rules](../../registry/cojeev/styles/typography.css) and [base typography](../../registry/cojeev/styles/base.css) define the applied roles.
 
 ### Hierarchy
 
 - **Hero / Display:** use the frontmatter roles for large product statements and expressive numeric artifacts. At the component small-screen breakpoint, Hero becomes 3rem and Display 2.25rem.
 - **Headline:** the display family marks section starts with compact leading.
-- **Title:** compact component titles use the reading family; the Title primitive is 20px with 1.25 leading, while CardTitle is 16px with 1.2 leading. These are component contracts, not a replacement global scale.
+- **Title:** compact component titles use the reading family; the Title primitive is 21px with 1.25 leading, while CardTitle is 16px with 1.2 leading. These are component contracts, not a replacement global scale.
 - **Body / Reading:** base application text and the Body primitive are recorded separately because their size and leading differ in source. Prose paragraphs and list items use more open 1.65 leading and a bounded reading measure.
 - **Label / Meta:** controls and supporting information stay subordinate to headings. Numeric values and identifiers use tabular figures where alignment matters.
 
@@ -230,7 +241,7 @@ The display face gives headings a human, sculptural edge; the body face keeps co
 
 ## Layout
 
-The shared spacing tokens follow a 4px grid. Reused gaps and padding are recorded above; the source also contains component-specific dimensions that should remain local. Most controls use the shared small/default/large heights (32/40/48px), while Input defaults to 48px and has its own 40px small size. Long-form, permission and task controls use explicit minimums with content-driven heights.
+The shared spacing tokens follow a 4px grid. Reused gaps and padding are recorded above; the source also contains component-specific dimensions that should remain local. Controls use four heights: `--ctl-sm` 32, `--ctl-md` 40 (buttons), `--ctl-lg` 48 (fields, triggers and inputs) and `--ctl-xl` 56 (large fields); list options and icon targets keep the 44px `--hit-min`. Padding, margin and gap use the `--s-*` steps (4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 64); only 1–3px optical nudges stay raw. Long-form, permission and task controls use explicit minimums with content-driven heights.
 
 Reading surfaces use a quiet index, a clear heading and description, a generous specimen, then installation and usage guidance. In the [documentation layout](../../app/docs/docs.css), the main region is bounded at 1280px and the article at 920px; prose uses roughly 70–72ch. A 232px index rail becomes mobile navigation at 900px, and a local contents column appears from 1280px. Specimen controls remain adjacent to their example and wrap on small screens.
 
@@ -258,7 +269,7 @@ Exact values and the ordered sticky/dock/sheet/dialog/popover/toast/tooltip leve
 
 ## Shapes
 
-Pill controls, small rounded affordances and broader card/panel/sheet corners establish the reusable form language. The recorded radius scale maps to the existing CSS tokens. Explicit variant geometry remains meaningful: square Avatar uses a rounded square, while default Avatar is circular.
+Pill controls, small rounded affordances and broader card/panel/sheet corners establish the reusable form language. Every corner is an `--r-*` step (4, 8, 12, 16, 20, 24, 28, 40, pill); circles use 50%, and organic silhouettes use their authored multi-value radii. Explicit variant geometry remains meaningful: square Avatar uses a rounded square, while default Avatar is circular.
 
 [Shared mathematical silhouettes](../../registry/cojeev/lib/signature-shapes.ts) include daisy, petal, aster, sunburst, clover, cloud, pebble, ribbon, scalloped square, cushion and seed-wing families. [Shape](../../registry/cojeev/ui/shape.tsx) and the existing masks make these reusable across components. Card watermarks stay behind content; agent fields combine several paths and chromatic layers. These implemented motifs provide vocabulary without proving that every catalog entry already has a unique signature.
 

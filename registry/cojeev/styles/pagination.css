@@ -2,24 +2,24 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-2);
   min-width: 0;
   color: var(--v-text);
 }
 [data-slot="pagination"][data-composed] {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 44px;
-  column-gap: 12px;
-  row-gap: 12px;
+  column-gap: var(--s-3);
+  row-gap: var(--s-3);
   max-width: 560px;
   width: 100%;
   box-sizing: border-box;
-  padding: 12px;
+  padding: var(--s-3);
 }
 .v-pager__pages {
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: var(--s-1);
   min-width: 0;
 }
 .v-pager__pages [data-slot="pagination-ellipsis"] {
@@ -42,26 +42,26 @@
 .v-pager__chapter {
   display: grid;
   justify-items: center;
-  gap: 6px;
-  padding: 12px 16px;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
   background: var(--v-canvas);
   border: 1px solid var(--v-edge);
-  border-radius: 16px;
+  border-radius: var(--r-card-sm);
 }
 .v-pager__chapter > span:first-child {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--v-text-2);
 }
 .v-pager__chapter strong {
-  font-size: 28px;
+  font-size: var(--fs-section);
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 .v-pager__chapter small {
-  font-size: 14px;
-  font-weight: 400;
+  font-size: var(--fs-control);
+  font-weight: var(--fw-regular);
   color: var(--v-text-2);
 }
 .v-pager__track {
@@ -69,7 +69,7 @@
   height: 3px;
   width: 100%;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: var(--r-xs);
   background: var(--v-edge);
 }
 .v-pager__track > span {
@@ -81,18 +81,18 @@
 }
 .v-pager__jump {
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
   min-width: 0;
 }
 .v-pager__jump label {
   font-size: var(--fs-meta);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 .v-pager__entry {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-pager__entry [data-slot="input"] {
   width: 80px;
@@ -109,31 +109,31 @@
   color: var(--v-text-2);
 }
 .v-pager__hint {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   min-height: 18px;
   color: var(--v-text-2);
 }
 .v-pager__example {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   min-width: 0;
 }
 .v-pager__specimen {
   background: var(--v-canvas);
   border: 1px solid var(--v-edge);
-  border-radius: 20px;
-  padding: 24px;
+  border-radius: var(--r-card);
+  padding: var(--s-6);
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-pager__specimen > small {
   color: var(--v-accent-ink);
   letter-spacing: 0.12em;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   text-transform: uppercase;
 }
 .v-pager__specimen h3 {
-  font-size: var(--fs-title-sm, 24px);
+  font-size: var(--fs-section);
   margin: 0;
 }
 .v-pager__specimen p {
@@ -166,10 +166,10 @@
     grid-column: 2;
   }
   [data-slot="pagination"][data-appearance="jump"] {
-    column-gap: 8px;
+    column-gap: var(--s-2);
   }
   .v-pager__entry {
-    gap: 6px;
+    gap: var(--s-2);
     flex-wrap: wrap;
   }
 }

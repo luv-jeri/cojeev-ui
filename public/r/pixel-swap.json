@@ -17,7 +17,7 @@
     },
     {
       "path": "registry/cojeev/styles/pixel-swap.css",
-      "content": "@layer cojeev-states {\n.v-pixel-swap { position:relative; display:grid; width:100%; min-width:0; overflow:hidden; border-radius:24px; }\n.v-pixel-swap__layer { grid-area:1/1; min-width:0; }\n.v-pixel-swap__incoming { z-index:1; }\n\n}\n",
+      "content": "@layer cojeev-states {\n.v-pixel-swap { position:relative; display:grid; width:100%; min-width:0; overflow:hidden; border-radius:var(--r-panel); }\n.v-pixel-swap__layer { grid-area:1/1; min-width:0; }\n.v-pixel-swap__incoming { z-index:1; }\n\n}\n",
       "type": "registry:file",
       "target": "styles/cojeev/pixel-swap.css"
     }

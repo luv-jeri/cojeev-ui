@@ -55,8 +55,8 @@
   min-width: 40px;
   padding: 0;
   border-radius: 50%;
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-semibold);
 }
 .v-toggle[data-slot="toggle"]:focus-visible {
   outline: 2px solid var(--ring);
@@ -74,8 +74,8 @@
 .v-togglewell[data-slot] {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px;
+  gap: var(--s-1);
+  padding: var(--s-1);
   border-radius: var(--r-pill);
   background: var(--card);
 }
@@ -87,17 +87,17 @@
   min-height: 44px;
   min-width: 44px;
   border-radius: var(--v-control-radius, 14px);
-  padding: 10px 14px;
-  gap: 12px;
+  padding: var(--s-3) var(--s-4);
+  gap: var(--s-3);
   text-align: left;
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.4;
   max-width: 100%;
 }
 .v-toggle[data-slot="toggle"][data-appearance="bookmark"] {
   --toggle-face: var(--v-yellow-soft);
   border-radius: var(--v-control-radius, 12px);
-  padding: 18px 14px 16px;
+  padding: var(--s-5) var(--s-4) var(--s-4);
   width: 154px;
   display: grid;
   justify-items: center;
@@ -113,7 +113,7 @@
   grid-template-columns: 40px minmax(0, 1fr) auto;
   justify-content: start;
   justify-items: stretch;
-  padding: 20px;
+  padding: var(--s-5);
   width: 100%;
   border-radius: var(--v-control-radius, 20px);
 }
@@ -123,56 +123,56 @@
   --mstroke: var(--v-blue);
 }
 .v-toggle-example {
-  padding-inline: 12px;
+  padding-inline: var(--s-3);
   width: 100%;
   max-width: 600px;
   margin-inline: auto;
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   color: var(--v-text);
 }
 .v-toggle-example header {
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-toggle-example__eyebrow {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   color: var(--v-text-3);
   text-transform: uppercase;
 }
 .v-toggle-example h3 {
-  font: 500 28px/1.2 var(--font-display);
+  font: var(--fw-medium) var(--fs-section)/1.2 var(--font-display);
   margin: 0;
 }
 .v-toggle-example p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.7;
   color: var(--v-text-2);
 }
 .v-toggle-example__scene {
   display: grid;
-  gap: 22px;
+  gap: var(--s-6);
   justify-items: start;
-  padding: 24px;
+  padding: var(--s-6);
   border: 1px solid var(--v-edge);
-  border-radius: 22px;
+  border-radius: var(--r-panel);
   background: var(--v-paper);
   position: relative;
 }
 .v-toggle-example__scene article {
   display: grid;
-  gap: 12px;
-  padding: 0 0 4px;
+  gap: var(--s-3);
+  padding: 0 0 var(--s-1);
 }
 .v-toggle-example article > span {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   color: var(--v-text-3);
 }
 .v-toggle-example h4 {
-  font: 500 24px/1.3 var(--font-display);
+  font: var(--fw-medium) var(--fs-section)/1.3 var(--font-display);
   margin: 0;
 }
 .v-toggle-example__rule {
@@ -189,24 +189,24 @@
 .v-toggle-example__word {
   min-width: 0;
   display: grid;
-  gap: 5px;
+  gap: var(--s-1);
 }
 .v-toggle-example__word strong {
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .v-toggle-example__word > span {
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-regular);
   opacity: 0.85;
 }
 .v-toggle-example__state {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   white-space: nowrap;
   opacity: 0.8;
 }
 .v-toggle-example [data-appearance="tool"] .v-toggle-example__state {
   border-inline-start: 1px solid currentColor;
-  padding-inline-start: 12px;
+  padding-inline-start: var(--s-3);
 }
 .v-toggle-example [data-appearance="bookmark"] .v-toggle-example__stamp {
   height: 26px;
@@ -215,12 +215,12 @@
   grid-template-columns: minmax(0, 1fr) 154px;
   align-items: start;
   padding-top: 0;
-  gap: 20px;
+  gap: var(--s-5);
 }
 .v-toggle-example[data-appearance="bookmark"] article {
   grid-column: 1;
   grid-row: 1;
-  padding-top: 30px;
+  padding-top: var(--s-8);
 }
 .v-toggle-example [data-appearance="bookmark"] {
   grid-column: 2;
@@ -232,7 +232,7 @@
   border: 0;
 }
 .v-toggle-example[data-appearance="preference"] article {
-  padding: 8px 22px;
+  padding: var(--s-2) var(--s-6);
   border-inline-start: 2px solid var(--v-blue);
 }
 .v-toggle-example [data-appearance="preference"] .v-toggle-example__stamp {
@@ -243,8 +243,8 @@
 }
 .v-toggle-example__legacy {
   border-top: 1px solid var(--v-edge);
-  padding-top: 16px;
-  font-size: 12px;
+  padding-top: var(--s-4);
+  font-size: var(--fs-meta);
 }
 .v-toggle-example__legacy summary {
   min-height: 44px;
@@ -252,26 +252,26 @@
   display: list-item;
 }
 .v-toggle-example__legacy[open] > *:not(summary) {
-  margin-bottom: 12px;
+  margin-bottom: var(--s-3);
 }
 @media (max-width: 540px) {
   .v-toggle-example__scene {
-    padding: 20px;
+    padding: var(--s-5);
   }
   .v-toggle-example[data-appearance="bookmark"] .v-toggle-example__scene {
     grid-template-columns: minmax(0, 1fr) 114px;
-    gap: 14px;
+    gap: var(--s-4);
   }
   .v-toggle-example [data-appearance="bookmark"] {
     width: 114px;
-    padding-inline: 8px;
+    padding-inline: var(--s-2);
   }
   .v-toggle-example[data-appearance="bookmark"] h4 {
-    font-size: 21px;
+    font-size: var(--fs-title);
   }
   .v-toggle[data-appearance="preference"] {
-    padding: 16px;
-    gap: 12px;
+    padding: var(--s-4);
+    gap: var(--s-3);
     grid-template-columns: 32px minmax(0, 1fr);
   }
   .v-toggle-example [data-appearance="preference"] .v-toggle-example__stamp {

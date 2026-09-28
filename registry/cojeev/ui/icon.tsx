@@ -3,7 +3,7 @@ import * as React from "react"
 import {cva,type VariantProps} from "class-variance-authority"
 import {cn} from "@/registry/cojeev/lib/utils"
 import {iconData,type IconNode} from "@/registry/cojeev/lib/icon-data"
-import {getLucideIcon,lucideIconNames} from "@/registry/cojeev/lib/lucide-icon-data"
+import {lucideIconNames} from "@/registry/cojeev/lib/lucide-icon-names"
 import {useMorph} from "@/registry/cojeev/motion/use-morph"
 import {useFlowPress} from "@/registry/cojeev/motion/flow-press"
 import {assignMotionRef} from "@/registry/cojeev/motion/refs"
@@ -60,13 +60,55 @@ const iconAliases: Record<string, string> = {
 const canonicalIcon = (name:string) => iconAliases[name] ?? name;
 // Preserve authored part ordering: existing motion recipes depend on these silhouettes.
 const geometryCache=new Map<string,IconNode[]>();
+// The full Lucide geometry is several hundred kilobytes, so it stays out of every
+// bundle that renders an Icon and loads on first use of a name the authored set lacks.
+// Until it arrives such an icon keeps its fixed footprint with no strokes.
+type LucidePack=typeof import("@/registry/cojeev/lib/lucide-icon-data");
+const lucideNameSet=new Set(lucideIconNames);
+let lucidePack:LucidePack|null=null;
+let lucideLoad:Promise<LucidePack>|null=null;
+const lucideListeners=new Set<()=>void>();
+/**
+ * Resolves once every Lucide name renders synchronously. In a browser, call it any time to fetch the pack
+ * early; icons still hydrate without strokes and fill in right after. On a server, call it only before
+ * markup that is never hydrated (tests, static snapshots): HTML that React hydrates must be rendered
+ * without the pack, or hydration mismatches.
+ */
+export function loadLucideIcons():Promise<LucidePack> {
+  return lucideLoad??=import("@/registry/cojeev/lib/lucide-icon-data").then(pack=>{
+    lucidePack=pack;
+    for(const listener of lucideListeners)listener();
+    return pack;
+  },error=>{
+    // A dropped chunk must not blank these icons for the session: the next request tries again.
+    lucideLoad=null;
+    throw error;
+  });
+}
+function isKnownIcon(name:string){name=canonicalIcon(name);return name in iconData||name in additionalIcons||lucideNameSet.has(name)}
 function iconGeometry(name:string):IconNode[]|undefined {
   name=canonicalIcon(name);
   const known=iconData[name]??additionalIcons[name]??geometryCache.get(name);
-  if(known)return known;
-  const nodes=getLucideIcon(name);
+  if(known||!lucidePack)return known;
+  const nodes=lucidePack.getLucideIcon(name);
   if(nodes)geometryCache.set(name,nodes);
   return nodes;
+}
+const subscribeLucide=(listener:()=>void)=>{lucideListeners.add(listener);return()=>{lucideListeners.delete(listener)}};
+const lucideReady=()=>lucidePack!==null;
+// Hydration must reproduce the server HTML, which a static render produced without the pack. A lazily
+// hydrated boundary can start after another icon has already fetched it, so in the browser the server
+// snapshot is always "not loaded"; outside a browser (server renders, tests) it reports the real state.
+const lucideReadyOnServer=()=>typeof window==="undefined"&&lucidePack!==null;
+function useIconGeometry(name:string):IconNode[]|undefined {
+  const canonical=canonicalIcon(name);
+  const authored=iconData[canonical]??additionalIcons[canonical];
+  const fromPack=!authored&&lucideNameSet.has(canonical);
+  const ready=React.useSyncExternalStore(subscribeLucide,lucideReady,lucideReadyOnServer);
+  // A failed load keeps the footprint; the next icon that asks retries it.
+  React.useEffect(()=>{if(fromPack&&!ready)loadLucideIcons().catch(()=>{})},[fromPack,ready]);
+  if(authored)return authored;
+  return fromPack&&ready?iconGeometry(name):undefined;
 }
 
 /** Direction is geometric, independent of document reading direction. */
@@ -188,7 +230,7 @@ function recipeFrame(recipe:IconRecipe,p:number,amount:number):IconMotionFrame {
   return frame;
 }
 
-function hasIconMotion(name:string) { return !!iconGeometry(name); }
+function hasIconMotion(name:string) { return isKnownIcon(name); }
 type MotionFamily="direction"|"organic"|"communication"|"pulse"|"trace";
 function motionFamily(name:string):MotionFamily {
   if(/^(arrow|chevron|move|corner|undo|redo|send|navigation)/.test(name)&&!/(up-down|left-right)/.test(name))return "direction";
@@ -425,17 +467,20 @@ export function Icon({name,size="default",className,draw,feedback=true,treatment
   const {quiet}=useChoreography();
   const host=React.useRef<SVGSVGElement|null>(null);
   const attach=React.useCallback((node:SVGSVGElement|null)=>{host.current=node;const release=assignMotionRef(ref,node);return()=>{host.current=null;release()}},[ref]);
-  useIconFeedback(host,feedback&&!quiet&&draw===undefined,name,feedbackDuration,feedbackEase);
+  const geometry=useIconGeometry(name);
+  // Motion painters index the drawn parts, so they wait for lazily loaded geometry.
+  const drawn=geometry!==undefined;
+  useIconFeedback(host,feedback&&!quiet&&draw===undefined&&drawn,name,feedbackDuration,feedbackEase);
   React.useEffect(()=>{
-    if(!draw||quiet||!host.current)return;
+    if(!draw||quiet||!drawn||!host.current)return;
     const painter=createIconMotionPainter(host.current,name,1,p=>({glyph:{draw:p}}));
     const lane=createMotionLane(0,painter.paint);
     lane.jump(0);lane.to(1,{duration:.5,ease:[.2,.8,.2,1]},painter.restore);
     return()=>{lane.dispose();painter.restore()};
-  },[draw,quiet,name]);
+  },[draw,quiet,name,drawn]);
   const resolved=canonicalIcon(name);
-  const nodes=iconGeometry(name);
-  if(!nodes)throw new Error(`Unknown Cojeev icon: ${name}`);
+  if(!geometry&&!isKnownIcon(name))throw new Error(`Unknown Cojeev icon: ${name}`);
+  const nodes=geometry??[];
   const accent=tone==="current"?"currentColor":`var(--v-${tone})`;
   return <svg ref={attach} data-slot="icon" data-icon-name={name} data-icon-treatment={treatment} viewBox="0 0 24 24" aria-hidden="true" className={iconClassName(size,className)} style={{...(strokeWidth!==undefined?{strokeWidth}:{}),...style}} {...props}>
     <g data-icon-ink="" style={treatment==="organic"&&tone!=="current"?{color:accent}:undefined}>
@@ -449,7 +494,7 @@ export function Icon({name,size="default",className,draw,feedback=true,treatment
 /** Semantic action inventory for accessible pickers and documentation. */
 export const iconActionDescriptions:Record<string,string>={"check":"The check stroke traces into its complete mark.","check-circle":"The check traces inside a stationary ring.","close":"The cross presses inward and returns.","activity":"The activity line traces across its pulse.","alert":"The warning mark lifts inside its fixed outline.","info":"The information dot lifts inside its fixed circle.","loader":"The loading arc revolves while active.","refresh":"The refresh arrows complete one turn.","search":"The search lens expands inside its handle.","bell":"The bell dome swings against its clapper.","download":"The download arrow moves down into its fixed tray.","upload":"The upload arrow rises out of its fixed tray.","copy":"The front sheet lifts away from the back.","settings":"The gear turns around its fixed hub.","trash":"The lid lifts above its stationary bin.","plus":"The plus makes a quarter turn.","send":"The paper plane travels upward-right.","heart":"The heart gives two restrained beats.","star":"The star expands and returns.","thumbs-up":"The hand lifts above its fixed cuff.",...Object.fromEntries(Object.entries(iconRecipes).map(([name,recipe])=>[name,recipe.description]))};
 export const iconActionNames=Object.keys(iconActionDescriptions);
-export const iconNames=Array.from(new Set([...Object.keys(iconData),...Object.keys(additionalIcons),...Object.keys(iconAliases),...lucideIconNames])).sort();
+export const iconNames=/*#__PURE__*/Array.from(new Set([...Object.keys(iconData),...Object.keys(additionalIcons),...Object.keys(iconAliases),...lucideIconNames])).sort();
 export function getIconMotionDescription(name:string):string {
   const canonical=canonicalIcon(name);
   return iconActionDescriptions[name]??iconActionDescriptions[canonical]??familyRecipe(canonical).description;

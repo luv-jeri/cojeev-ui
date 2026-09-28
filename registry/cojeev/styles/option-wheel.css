@@ -4,7 +4,7 @@
   min-width: 0;
   max-width: 600px;
   margin-inline: auto;
-  border-radius: 28px;
+  border-radius: var(--r-sheet);
   background: var(--v-canvas);
   color: var(--v-text);
   overflow: hidden;
@@ -14,9 +14,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 20px 24px 0;
-  font-size: 12px;
+  gap: var(--s-4);
+  padding: var(--s-5) var(--s-6) 0;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .v-option-wheel__heading > span:last-child {
@@ -36,7 +36,7 @@
 }
 .v-option-wheel__stage > p {
   margin: 0;
-  padding: 100px 24px;
+  padding: 100px var(--s-6);
   text-align: center;
   color: var(--v-text-2);
 }
@@ -107,10 +107,10 @@
   height: 48px;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 var(--s-4);
   cursor: pointer;
-  border-radius: 12px;
-  font: 500 clamp(20px, 3vw, 28px) / 1.15 var(--font-display);
+  border-radius: var(--r-md);
+  font: var(--fw-medium) clamp(20px, 3vw, 28px) / 1.15 var(--font-display);
 }
 .v-option-wheel__option > * {
   pointer-events: none;
@@ -129,7 +129,7 @@
 }
 .v-option-wheel__option[data-distance="-2"],
 .v-option-wheel__option[data-distance="2"] {
-  font-size: 20px;
+  font-size: var(--fs-title);
 }
 .v-option-wheel__option[aria-selected="true"] {
   --mfill: var(--v-pink);
@@ -159,14 +159,14 @@
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 44px;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
   border-top: 1px dashed var(--v-border);
   background: color-mix(in oklab, var(--v-beige) 55%, transparent);
 }
 .v-option-wheel__footer p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
   min-height: 3em;
   display: flex;
@@ -203,7 +203,7 @@
 }
 .v-option-wheel[data-presentation="reel"] .v-option-wheel__stage {
   height: 280px;
-  margin: 20px 20px 0;
+  margin: var(--s-5) var(--s-5) 0;
 }
 .v-option-wheel[data-presentation="reel"] .v-option-wheel__dial {
   inset: 0;
@@ -243,7 +243,7 @@
 .v-option-wheel[data-presentation="reel"]
   .v-option-wheel__option[aria-selected="true"] {
   --mfill: var(--v-blue);
-  border-radius: 12px;
+  border-radius: var(--r-md);
   background: var(--v-blue);
   box-shadow: 0 5px 0 color-mix(in oklab, var(--v-blue) 28%, transparent);
 }
@@ -251,11 +251,11 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 60px;
   background: var(--v-beige);
-  border-radius: 24px;
+  border-radius: var(--r-panel);
 }
 .v-option-wheel[data-presentation="compact"] .v-option-wheel__heading {
   grid-column: 1 / -1;
-  padding: 20px 20px 0;
+  padding: var(--s-5) var(--s-5) 0;
 }
 .v-option-wheel[data-presentation="compact"] .v-option-wheel__stage {
   height: 108px;
@@ -269,7 +269,7 @@
   padding: 0;
   background: transparent;
   color: var(--v-text);
-  font-size: 28px;
+  font-size: var(--fs-section);
   text-align: left;
 }
 .v-option-wheel[data-presentation="compact"] .v-option-wheel__label {
@@ -287,9 +287,9 @@
 .v-option-wheel[data-presentation="compact"] .v-option-wheel__footer p {
   grid-area: 3 / 1 / 4 / -1;
   min-height: 0;
-  margin: 0 20px 20px;
+  margin: 0 var(--s-5) var(--s-5);
   border-top: 1px dashed var(--v-border);
-  padding-top: 12px;
+  padding-top: var(--s-3);
 }
 .v-option-wheel[data-presentation="compact"] .v-option-wheel__control {
   grid-column: 2;
@@ -299,17 +299,17 @@
   .v-option-wheel__control:first-child {
   grid-row: 2;
   align-self: start;
-  margin-top: 10px;
+  margin-top: var(--s-3);
 }
 .v-option-wheel[data-presentation="compact"]
   .v-option-wheel__control:last-child {
   grid-row: 2;
   align-self: end;
-  margin-bottom: 10px;
+  margin-bottom: var(--s-3);
 }
 .v-wheel-example {
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
   width: 100%;
   min-width: 0;
   max-width: 600px;
@@ -318,7 +318,7 @@
 .v-wheel-example > p {
   margin: 0;
   text-align: center;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.5;
   color: var(--v-text-2);
 }
@@ -326,8 +326,8 @@
   .v-option-wheel__option {
     left: 78px;
     right: 16px;
-    padding-inline: 12px;
-    font-size: 20px;
+    padding-inline: var(--s-3);
+    font-size: var(--fs-title);
   }
   .v-option-wheel__dial {
     left: -260px;
@@ -347,8 +347,8 @@
     right: 78px;
   }
   .v-option-wheel__footer {
-    gap: 12px;
-    padding: 16px;
+    gap: var(--s-3);
+    padding: var(--s-4);
   }
 }
 @media (prefers-reduced-motion: reduce) {

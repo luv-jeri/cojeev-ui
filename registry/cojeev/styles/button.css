@@ -8,8 +8,8 @@
 .v-btn[data-slot].-card {
   height:auto;
   min-height:44px;
-  padding:12px;
-  border-radius:12px;
+  padding:var(--s-3);
+  border-radius:var(--r-md);
   white-space:normal;
 }
 .v-btn[data-slot].-secondary { background:var(--v-blue); color:var(--v-on-accent); box-shadow:none; }
@@ -21,7 +21,7 @@
 :root[data-mode="dark"] .v-btn[data-slot]:not(.-accent):not(.-secondary):not(.-ghost):not(.-outline):not(.-danger):not(:disabled):not([aria-disabled="true"]:not([aria-busy="true"])) { background:var(--v-pink); color:var(--v-on-accent); }
 :root[data-mode="dark"] .v-btn[data-slot]:is(.-ghost,.-outline) { color:var(--v-text); }
 .v-btn[data-slot] .v-icon { width:18px; height:18px; }
-.v-btn[data-slot][aria-busy="true"] { position:relative; cursor:progress; gap:10px; }
+.v-btn[data-slot][aria-busy="true"] { position:relative; cursor:progress; gap:var(--s-3); }
 .v-btn__loading[data-slot] { --pulse:20px; display:inline-flex; align-items:center; justify-content:center; flex:none; pointer-events:none; }
 .v-btn[data-slot] [data-slot="button-indicator"] { width:20px; height:20px; }
 .v-btn[data-slot] [data-slot="button-indicator"] svg { width:100%; height:100%; overflow:visible; }

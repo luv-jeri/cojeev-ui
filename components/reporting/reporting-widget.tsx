@@ -65,6 +65,7 @@ import {
   type ReportingDraftWorkspace,
 } from "@/lib/reporting/draft";
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
+import { REPORT_EVENT, STATUS_LABELS, takeRequest } from "./report-request";
 import { AreaPicker, CaptureStatus } from "./area-picker";
 import { Turnstile } from "./turnstile";
 import "./reporting.css";
@@ -96,18 +97,6 @@ function ReportSource({ children }: { children: string }) {
   );
 }
 
-export const STATUS_LABELS = {
-  received: "Received",
-  planned: "Planned",
-  in_progress: "In progress",
-  resolved: "Live",
-  declined: "Not planned",
-} as const;
-export function openRequest(topic?: RequestTopic) {
-  window.dispatchEvent(
-    new CustomEvent("cojeev:report", { detail: { kind: "request", topic } }),
-  );
-}
 const message = (error: unknown) =>
   error instanceof Error
     ? error.message
@@ -245,19 +234,20 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     const save = () => {
       if (loaded) void persist(draftRef.current);
     };
-    const event = (event: Event) => {
-      const { kind, topic } =
-        (event as CustomEvent<{ kind?: ReportKind; topic?: RequestTopic }>)
-          .detail ?? {};
-      if (!loaded || busy || capture) return;
-      selectDraft(kind ?? "request", topic);
+    // Drafts load first; a request made before then, or before this panel mounted, stays pending.
+    const take = () => {
+      if (!loaded) return;
+      const request = takeRequest();
+      if (!request || busy || capture) return;
+      selectDraft(request.kind ?? "request", request.topic);
       setOpen(true);
     };
+    take();
     window.addEventListener("pagehide", save);
-    window.addEventListener("cojeev:report", event);
+    window.addEventListener(REPORT_EVENT, take);
     return () => {
       window.removeEventListener("pagehide", save);
-      window.removeEventListener("cojeev:report", event);
+      window.removeEventListener(REPORT_EVENT, take);
     };
   }, [loaded, persist, selectDraft, busy, capture]);
   const loadConfig = useCallback(() => {

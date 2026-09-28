@@ -138,7 +138,7 @@ export function DataTable<T>({
       data-slot="data-table"
       data-appearance={appearance}
       data-state={filtered.length ? "full" : "filtered-empty"}
-      className={cn("grid gap-[16px]", className)}
+      className={cn("grid gap-[var(--s-4)]", className)}
       {...props}
     >
       {filters.length > 0 && (
@@ -287,7 +287,7 @@ export function DataTable<T>({
           </TableBody>
         </Table>
       </DataTableViewport>
-      <div className="flex items-center justify-between gap-[12px] flex-wrap">
+      <div className="flex items-center justify-between gap-[var(--s-3)] flex-wrap">
         <span className="v-meta" role="status">
           {filtered.length
             ? `${(current - 1) * size + 1}–${Math.min(current * size, filtered.length)} of ${filtered.length}`

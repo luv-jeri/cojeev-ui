@@ -25,7 +25,7 @@
 [data-slot="button-group"] .v-btn:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 1px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 [data-slot="button-group-utility"]
   .v-ibtn:not([class*=" -"]):nth-child(3n + 1) {
@@ -52,18 +52,18 @@
   stroke-width: 1.9;
 }
 [data-slot="button-group-utility"][data-shapes] {
-  border-radius: 17px;
-  padding: 4px;
-  gap: 4px;
+  border-radius: var(--r-card-sm);
+  padding: var(--s-1);
+  gap: var(--s-1);
 }
 [data-slot="button-group-utility"][data-shapes] .v-ibtn:nth-child(3n + 1) {
-  border-radius: 14px 14px 14px 5px;
+  border-radius: var(--r-card-sm) var(--r-card-sm) var(--r-card-sm) var(--r-xs);
 }
 [data-slot="button-group-utility"][data-shapes] .v-ibtn:nth-child(3n + 2) {
   border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
 }
 [data-slot="button-group-utility"][data-shapes] .v-ibtn:nth-child(3n) {
-  border-radius: 14px 5px 14px 14px;
+  border-radius: var(--r-card-sm) var(--r-xs) var(--r-card-sm) var(--r-card-sm);
 }
 :root[data-mode="dark"]
   :is([data-slot="button-group"], [data-slot="button-group-utility"]) {

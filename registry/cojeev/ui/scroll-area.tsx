@@ -169,11 +169,13 @@ export function ScrollbarProvider({ children, scrollbarSize, scrollbarColor, scr
       else root.style.removeProperty("--cojeev-scrollbar-color");
     };
   }, [ownsRootPolicy, appearance.size, appearance.color]);
-  return <ScrollbarAppearanceContext.Provider value={{
+  // A stable value keeps every scroll area under the root provider from re-rendering with it.
+  const value = React.useMemo(() => ({
     scrollbarSize: appearance.size,
     scrollbarColor: appearance.color ?? defaultScrollbarAppearance.scrollbarColor,
     scrollbarVariant: appearance.variant,
-  }}>{children}</ScrollbarAppearanceContext.Provider>;
+  }), [appearance.size, appearance.color, appearance.variant]);
+  return <ScrollbarAppearanceContext.Provider value={value}>{children}</ScrollbarAppearanceContext.Provider>;
 }
 export type ScrollAreaProps = React.ComponentProps<typeof Primitive.Root> &
   VariantProps<typeof scrollAreaVariants> & {
@@ -205,7 +207,8 @@ export function ScrollArea({ className, variant, children, viewportClassName, vi
       className={cn("v-scroll__viewport", viewportClassName, viewportProps?.className)}
     >{children}</ScrollViewport>
   );
-  return <ScrollbarAppearanceContext.Provider value={{ scrollbarSize: appearance.size, scrollbarColor: appearance.color, scrollbarVariant: appearance.variant }}>
+  const value = React.useMemo(() => ({ scrollbarSize: appearance.size, scrollbarColor: appearance.color, scrollbarVariant: appearance.variant }), [appearance.size, appearance.color, appearance.variant]);
+  return <ScrollbarAppearanceContext.Provider value={value}>
     <Primitive.Root data-slot="scroll-area" data-part="root" data-scrollbar-variant={appearance.variant} type={type} className={cn(scrollAreaVariants({ variant }), className)} style={{ ...appearance.style, ...style }} {...props}>
       {viewportWrapper ? viewportWrapper(viewport) : viewport}
       <ScrollBar scrollbarSize={appearance.size} scrollbarColor={appearance.color} scrollbarVariant={appearance.variant} />

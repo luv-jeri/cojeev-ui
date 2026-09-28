@@ -125,7 +125,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
       data-slot="card-title"
       data-part="title"
       className={cn(
-        "v-card__title text-[16px] font-semibold leading-[1.2] tracking-[-.012em]",
+        "v-card__title text-[length:var(--fs-reading)] font-semibold leading-[1.2] tracking-[-.012em]",
         className,
       )}
       {...props}

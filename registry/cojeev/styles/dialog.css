@@ -24,9 +24,9 @@
   align-items: start;
 }
 .v-dialog__head:where([data-slot="dialog"], [data-slot^="dialog-"]) .v-section {
-  font-size: 24px;
+  font-size: var(--fs-section);
   line-height: 1.15;
-  padding-top: 6px;
+  padding-top: var(--s-2);
 }
 .v-dialog:where([data-slot="dialog"], [data-slot^="dialog-"]) > .v-body-2 {
   max-width: 52ch;
@@ -98,11 +98,11 @@
 }
 .v-dialog[data-appearance] {
   width: min(580px, calc(100% - 40px));
-  padding: 28px;
-  gap: 20px;
+  padding: var(--s-7);
+  gap: var(--s-5);
   overflow: visible;
   background: var(--v-paper);
-  border-radius: 28px;
+  border-radius: var(--r-sheet);
   --mfill: var(--v-paper);
   --mstroke: var(--v-border);
   box-shadow: var(--shadow-float);
@@ -112,8 +112,8 @@
 }
 .v-dialog[data-appearance] .v-dialog__head {
   display: grid;
-  padding-right: 48px;
-  gap: 10px;
+  padding-right: var(--s-12);
+  gap: var(--s-3);
 }
 .v-dialog[data-appearance] [data-slot="dialog-title"] {
   margin: 0;
@@ -137,18 +137,18 @@
   > [data-slot="scroll-area-viewport"] {
   height: auto;
   max-height: var(--h);
-  padding: 4px 20px 12px 4px;
+  padding: var(--s-1) var(--s-5) var(--s-3) var(--s-1);
 }
 .v-dialog[data-appearance] .v-dialog__actions {
   border-top: 1px solid var(--v-border);
-  padding-top: 18px;
+  padding-top: var(--s-5);
   margin: 0;
 }
 .v-dialog[data-appearance="confirmation"] {
   width: min(480px, calc(100% - 40px));
   --mfill: var(--v-yellow-soft);
   background: var(--v-yellow-soft);
-  border-radius: 24px;
+  border-radius: var(--r-panel);
 }
 .v-dialog[data-appearance="exhibit"] {
   width: min(800px, calc(100% - 40px));
@@ -158,14 +158,14 @@
   height: 40px;
   display: grid;
   place-items: center;
-  border-radius: 12px;
+  border-radius: var(--r-md);
   background: var(--v-blue);
   color: var(--ink-fixed);
 }
 .v-dialog__exhibit {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
-  gap: 28px;
+  gap: var(--s-7);
   align-items: center;
 }
 .v-dialog__exhibit img {
@@ -173,48 +173,48 @@
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: var(--r-card);
 }
 .v-dialog__exhibit dl {
   display: grid;
-  gap: 8px;
-  margin: 16px 0;
-  font-size: 13px;
+  gap: var(--s-2);
+  margin: var(--s-4) 0;
+  font-size: var(--fs-small);
 }
 .v-dialog__exhibit dd {
-  margin: 0 0 12px;
+  margin: 0 0 var(--s-3);
   color: var(--v-text-2);
 }
 .v-dialog-example {
   display: grid;
-  gap: 20px;
+  gap: var(--s-5);
   justify-items: start;
-  padding: 18px;
+  padding: var(--s-5);
   min-width: 0;
 }
 .v-dialog-example__slip {
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
   width: 100%;
-  padding: 24px;
+  padding: var(--s-6);
   border-left: 3px solid var(--v-brand);
   background: var(--v-paper);
-  border-radius: 0 20px 20px 0;
+  border-radius: 0 var(--r-card) var(--r-card) 0;
 }
 .v-dialog-example p {
   margin: 0;
   line-height: 1.6;
 }
 .v-dialog-example__eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--v-text-2);
 }
 @media (max-width: 540px) {
   .v-dialog[data-appearance] {
-    padding: 22px;
-    gap: 16px;
+    padding: var(--s-6);
+    gap: var(--s-4);
     max-height: calc(100dvh - 40px);
   }
   .v-dialog[data-appearance] .v-dialog__body {
@@ -222,12 +222,12 @@
   }
   .v-dialog__exhibit {
     grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
+    gap: var(--s-5);
   }
   .v-dialog__exhibit img {
     aspect-ratio: 1.7;
   }
   .v-dialog[data-appearance] [data-slot="dialog-title"] {
-    font-size: 23px;
+    font-size: var(--fs-title);
   }
 }

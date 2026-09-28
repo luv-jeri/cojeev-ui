@@ -5,6 +5,7 @@ import { CodeBlock } from "@/registry/cojeev/ui/code-block";
 import { Button } from "@/registry/cojeev/ui/button";
 import { installCommand, pageMetadata, site } from "@/lib/site-config";
 import "@/components/landing/landing.css";
+import "../styles/getting-started.css";
 
 export const metadata = pageMetadata("Get started", "Add your first 000h component to a React project. Install editable source with the shadcn CLI, then make it your own.", "/getting-started/");
 

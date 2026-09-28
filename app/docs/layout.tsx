@@ -2,6 +2,7 @@ import { RootProvider } from "fumadocs-ui/provider/next";
 import { documentationCatalog } from "@/lib/catalog";
 import { DocsShell } from "@/components/docs-shell";
 import "./docs.css";
+import "../styles/docs.css";
 import "@/components/docs-search.css";
 export default function DocsLayout({
   children,
