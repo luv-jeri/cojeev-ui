@@ -52,7 +52,7 @@ Components read spacing, type and control-height tokens that the foundation styl
 npx shadcn@latest add https://000h.cojeev.com/r/cojeev.json --overwrite
 ```
 
-This replaces the foundation stylesheets; reapply any local edits you made to them.
+This replaces every file the foundation installs: its stylesheets, `lib/utils.ts` (the `cn` helper), `lib/cojeev/`, `lib/cojeev-motion/` and the font script. Preview the changes with `--dry-run` first, then reapply any local edits you made to those files.
 
 ## Reproduce the stranger installation
 

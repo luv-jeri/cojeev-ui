@@ -25,6 +25,14 @@ test("component styles load per route, never from the global sheet", () => {
   assert.ok(fs.readFileSync("app/layout.tsx", "utf8").includes('styles/shell.css"'));
 });
 
+test("no component in the route sheets uses !important", () => {
+  // Layer order reverses for important declarations: the lowest tier present would beat docs.css.
+  const docs = fs.readFileSync("app/styles/docs.css", "utf8");
+  for (const [, file] of docs.matchAll(/@import "([^"]+)"/g)) {
+    assert.ok(!fs.readFileSync(path.join("app/styles", file), "utf8").includes("!important"), `${path.basename(file)} uses !important, which inverts the tier order`);
+  }
+});
+
 test("whichever route sheets a navigation leaves, the highest-ranked one holds every rule of the others", () => {
   const sheets = fs.readdirSync("app/styles").filter((file) => file.endsWith(".css")).map((file) => {
     const text = fs.readFileSync(`app/styles/${file}`, "utf8");
