@@ -139,7 +139,7 @@
   padding: var(--s-5);
 }
 .v-linear-modal[data-variant="compact"] .v-linear-modal__summary strong {
-  font-size: var(--fs-section);
+  font-size: var(--fs-title);
 }
 .v-linear-modal__detail[data-variant="centered"] {
   width: min(880px, calc(100% - 40px));

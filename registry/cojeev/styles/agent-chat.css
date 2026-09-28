@@ -20,7 +20,7 @@
 }
 .v-agent-chat__header { display: grid; grid-template-columns: minmax(0, 1fr) auto; flex-shrink: 0; column-gap: var(--s-3); padding: var(--s-5) var(--s-5) var(--s-3); border-bottom: 1px solid var(--v-border); }
 .v-agent-chat__heading { min-width: 0; }
-.v-agent-chat__heading h2 { margin: 0; font: var(--fw-semibold) var(--fs-section)/1.2 var(--font-display); letter-spacing: -.025em; overflow-wrap: anywhere; }
+.v-agent-chat__heading h2 { margin: 0; font: var(--fw-semibold) var(--fs-title)/1.2 var(--font-display); letter-spacing: -.025em; overflow-wrap: anywhere; }
 .v-agent-chat__heading p { margin: var(--s-1) 0 0; color: var(--v-text-2); font-size: var(--fs-meta); }
 .v-agent-chat__header-actions { align-self: start; display: flex; gap: var(--s-2); }
 .v-agent-chat__header [data-slot="agent-state"] { grid-column: 1 / -1; margin: var(--s-1) 0 -4px -8px; }

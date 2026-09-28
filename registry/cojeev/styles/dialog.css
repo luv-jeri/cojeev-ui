@@ -228,6 +228,6 @@
     aspect-ratio: 1.7;
   }
   .v-dialog[data-appearance] [data-slot="dialog-title"] {
-    font-size: var(--fs-section);
+    font-size: var(--fs-title);
   }
 }

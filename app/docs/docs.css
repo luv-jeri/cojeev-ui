@@ -42,7 +42,7 @@
   width: fit-content;
   color: var(--v-text);
   font-family: var(--font-display);
-  font-size: var(--fs-section);
+  font-size: var(--fs-title);
   font-weight: var(--fw-semibold);
   letter-spacing: -.025em;
   line-height: 1.2;
@@ -542,7 +542,7 @@
   .docs-intro > .docs-intro-meta { font-size: var(--fs-meta); }
   .docs-section { gap: var(--s-4); }
   .docs-section:not(.docs-example-section) { padding-top: var(--s-7); }
-  .docs-section > h2, .docs-section-lead > h2 { font-size: var(--fs-section); }
+  .docs-section > h2, .docs-section-lead > h2 { font-size: var(--fs-title); }
   .docs-playground .v-preview__canvas { padding: var(--s-6) var(--s-4); }
   .docs-playground-controls { gap: var(--s-4); }
   .docs-variant-controls { flex-basis: 100%; }
