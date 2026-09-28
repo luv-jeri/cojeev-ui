@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Icon, IconButton } from "@/registry/cojeev/ui/icon";
 export const breadcrumbVariants = cva(
-  "v-crumbs flex flex-wrap items-center gap-[10px] text-[14.5px] text-[color:var(--v-text-2)]",
+  "v-crumbs flex flex-wrap items-center gap-[10px] text-[length:var(--fs-control)] text-[color:var(--v-text-2)]",
 );
 export type BreadcrumbPresentation = "trail" | "pocket" | "directory";
 export type BreadcrumbProps = React.ComponentProps<"nav"> & {

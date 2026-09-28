@@ -49,19 +49,19 @@
   border-radius: 16px;
 }
 .v-pager__chapter > span:first-child {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--v-text-2);
 }
 .v-pager__chapter strong {
-  font-size: 28px;
+  font-size: var(--fs-section);
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 .v-pager__chapter small {
-  font-size: 14px;
-  font-weight: 400;
+  font-size: var(--fs-control);
+  font-weight: var(--fw-regular);
   color: var(--v-text-2);
 }
 .v-pager__track {
@@ -86,7 +86,7 @@
 }
 .v-pager__jump label {
   font-size: var(--fs-meta);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 .v-pager__entry {
   display: flex;
@@ -109,7 +109,7 @@
   color: var(--v-text-2);
 }
 .v-pager__hint {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   min-height: 18px;
   color: var(--v-text-2);
 }
@@ -129,11 +129,11 @@
 .v-pager__specimen > small {
   color: var(--v-accent-ink);
   letter-spacing: 0.12em;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   text-transform: uppercase;
 }
 .v-pager__specimen h3 {
-  font-size: var(--fs-title-sm, 24px);
+  font-size: var(--fs-section);
   margin: 0;
 }
 .v-pager__specimen p {

@@ -50,8 +50,8 @@
 }
 .v-resizable__pane:where([data-slot="resizable-panel"] > *) > b {
   font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 500;
+  font-size: var(--fs-reading);
+  font-weight: var(--fw-medium);
   letter-spacing: -0.01em;
 }
 .v-resizable__pane:where([data-slot="resizable-panel"] > *) .v-caps {

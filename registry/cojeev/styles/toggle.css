@@ -55,8 +55,8 @@
   min-width: 40px;
   padding: 0;
   border-radius: 50%;
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-semibold);
 }
 .v-toggle[data-slot="toggle"]:focus-visible {
   outline: 2px solid var(--ring);
@@ -90,7 +90,7 @@
   padding: 10px 14px;
   gap: 12px;
   text-align: left;
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.4;
   max-width: 100%;
 }
@@ -136,18 +136,18 @@
   gap: 12px;
 }
 .v-toggle-example__eyebrow {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   color: var(--v-text-3);
   text-transform: uppercase;
 }
 .v-toggle-example h3 {
-  font: 500 28px/1.2 var(--font-display);
+  font: var(--fw-medium) var(--fs-section)/1.2 var(--font-display);
   margin: 0;
 }
 .v-toggle-example p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.7;
   color: var(--v-text-2);
 }
@@ -167,12 +167,12 @@
   padding: 0 0 4px;
 }
 .v-toggle-example article > span {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   color: var(--v-text-3);
 }
 .v-toggle-example h4 {
-  font: 500 24px/1.3 var(--font-display);
+  font: var(--fw-medium) var(--fs-section)/1.3 var(--font-display);
   margin: 0;
 }
 .v-toggle-example__rule {
@@ -192,15 +192,15 @@
   gap: 5px;
 }
 .v-toggle-example__word strong {
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .v-toggle-example__word > span {
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-regular);
   opacity: 0.85;
 }
 .v-toggle-example__state {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   white-space: nowrap;
   opacity: 0.8;
 }
@@ -244,7 +244,7 @@
 .v-toggle-example__legacy {
   border-top: 1px solid var(--v-edge);
   padding-top: 16px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 .v-toggle-example__legacy summary {
   min-height: 44px;
@@ -267,7 +267,7 @@
     padding-inline: 8px;
   }
   .v-toggle-example[data-appearance="bookmark"] h4 {
-    font-size: 21px;
+    font-size: var(--fs-title);
   }
   .v-toggle[data-appearance="preference"] {
     padding: 16px;

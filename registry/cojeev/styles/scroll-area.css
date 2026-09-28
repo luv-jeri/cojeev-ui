@@ -58,7 +58,7 @@ html[data-scrollbar-policy="cojeev"] {
   margin: 0;
   padding: 12px 0;
   border-bottom: 1px solid color-mix(in oklab,var(--v-border) 70%,transparent);
-  font-size: var(--fs-body, 14px);
+  font-size: var(--fs-body);
   line-height: 1.6;
 }
 [data-slot="scroll-area-viewport"] > div > :is(p,.v-body):last-child { border-bottom: 0; }

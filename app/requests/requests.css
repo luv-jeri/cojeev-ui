@@ -15,8 +15,8 @@
 }
 .requests-nav > a:first-child {
   font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 600;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semibold);
 }
 .requests-header {
   display: grid;
@@ -26,7 +26,7 @@
   padding: 64px 0 72px;
 }
 .requests-kicker {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--v-text-2);
@@ -35,7 +35,7 @@
 .requests-header h1 {
   font-family: var(--font-display);
   font-size: clamp(42px, 6vw, 72px);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   letter-spacing: -0.045em;
   line-height: 1.04;
   margin: 22px 0;
@@ -49,7 +49,7 @@
 }
 .requests-heading > p {
   max-width: 45ch;
-  font-size: 17px;
+  font-size: var(--fs-lead);
   line-height: 1.7;
   color: var(--v-text-2);
 }
@@ -64,7 +64,7 @@
   flex: 1;
   display: grid;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   padding-right: 12px;
   position: relative;
 }
@@ -85,7 +85,7 @@
   border: 1px solid var(--v-border);
   border-radius: 50%;
   font-variant-numeric: tabular-nums;
-  font-size: 10px;
+  font-size: var(--fs-caps);
 }
 .requests-invitation {
   display: grid;
@@ -109,7 +109,7 @@
   flex-shrink: 0;
 }
 .requests-study > span {
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
   color: var(--v-text-2);
   max-width: 9ch;
@@ -119,11 +119,11 @@
   font-family: var(--font-display);
   font-size: 27px;
   letter-spacing: -0.025em;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   margin: 8px 0 12px;
 }
 .requests-invitation p {
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.7;
   color: var(--v-text-2);
   margin: 0;
@@ -147,7 +147,7 @@
 .requests-list-head h2 {
   font-family: var(--font-display);
   font-size: 30px;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   letter-spacing: -0.02em;
   margin-top: 8px;
 }
@@ -158,7 +158,7 @@
 }
 .requests-loading {
   min-height: 28px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .requests-empty {
@@ -183,14 +183,14 @@
 }
 .requests-empty h3 {
   font-family: var(--font-display);
-  font-size: 25px;
+  font-size: var(--fs-section);
   letter-spacing: -0.02em;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   margin: 6px 0 12px;
 }
 .requests-empty p {
   max-width: 58ch;
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--v-text-2);
   margin: 0 0 22px;
@@ -223,11 +223,11 @@
 .request-demand strong {
   font-family: var(--font-display);
   font-size: 30px;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   line-height: 1.1;
 }
 .request-demand span {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
 }
 .request-details {
@@ -235,14 +235,14 @@
   min-width: 0;
 }
 .request-details h3 {
-  font-size: 19px;
+  font-size: var(--fs-title);
   line-height: 1.45;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   margin-top: 10px;
   overflow-wrap: anywhere;
 }
 .request-details > p {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.5;
   color: var(--v-text-2);
   margin-top: 8px;
@@ -251,7 +251,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   line-height: 1.5;
   color: var(--v-text-2);
 }
@@ -283,7 +283,7 @@
 }
 .requests-footer p {
   max-width: 58ch;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.7;
   color: var(--v-text-2);
 }
@@ -304,7 +304,7 @@
     padding-block: 40px;
   }
   .requests-heading > p {
-    font-size: 16px;
+    font-size: var(--fs-reading);
   }
   .requests-header h1 {
     font-size: 52px;
@@ -346,7 +346,7 @@
     white-space: normal;
   }
   .request-details h3 {
-    font-size: 17px;
+    font-size: var(--fs-lead);
   }
   .request-details > p span {
     display: none;
@@ -357,10 +357,10 @@
     gap: 16px;
   }
   .requests-nav > a:first-child {
-    font-size: 19px;
+    font-size: var(--fs-title);
   }
   .requests-nav > a:last-child {
-    font-size: 12px;
+    font-size: var(--fs-meta);
     padding-inline: 8px;
   }
 }

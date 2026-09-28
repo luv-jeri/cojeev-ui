@@ -176,7 +176,7 @@
   min-width: 0;
 }
 .v-reading-trail__description {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.55;
   color: var(--v-text-2);
   font-weight: var(--fw-body);
@@ -185,7 +185,7 @@
   container-type: inline-size;
 }
 .v-reading-trail[data-presentation] .v-reading-trail__heading {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   letter-spacing: 0.02em;
 }
 .v-reading-trail[data-presentation] .v-reading-trail__list a {
@@ -227,7 +227,7 @@
   color: var(--v-on-accent);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
   font-family: var(--font-mono);
-  font-size: 19px;
+  font-size: var(--fs-title);
 }
 .v-reading-trail__current {
   display: grid;
@@ -235,11 +235,11 @@
   min-width: 0;
 }
 .v-reading-trail__current > span {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
 }
 .v-reading-trail__current strong {
-  font-size: 16px;
+  font-size: var(--fs-reading);
   font-family: var(--font-display);
   font-weight: var(--fw-title);
   line-height: 1.35;
@@ -260,7 +260,7 @@
   justify-content: space-between;
   padding: 0 4px;
   min-height: 44px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   border-top: 1px dashed var(--v-border);
   border-radius: 0;
 }
@@ -289,7 +289,7 @@
   background: var(--v-canvas);
 }
 .v-reading-trail[data-presentation="overview"] .v-reading-trail__number {
-  font-size: 20px;
+  font-size: var(--fs-title);
   color: var(--v-text-2);
 }
 .v-reading-trail[data-presentation="overview"]
@@ -355,12 +355,12 @@
 .v-reading-example__heading h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: var(--fs-section);
   line-height: 1.3;
 }
 .v-reading-example__heading span {
   color: var(--v-text-2);
-  font-size: 11px;
+  font-size: var(--fs-caps);
   white-space: nowrap;
 }
 .v-reading-example__layout {
@@ -401,11 +401,11 @@
   gap: 12px;
   margin-bottom: 28px;
   color: var(--v-text-2);
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.04em;
 }
 .v-reading-example__edition > span:last-child {
-  font-size: 22px;
+  font-size: var(--fs-title);
   font-family: var(--font-mono);
   color: var(--v-text-2);
 }
@@ -418,7 +418,7 @@
   margin: 0 0 22px;
 }
 .v-reading-example__section p {
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.7;
   margin: 0 0 18px;
   max-width: 54ch;
@@ -430,7 +430,7 @@
 }
 .v-reading-example__hint {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
   line-height: 1.55;
 }
@@ -447,6 +447,6 @@
     padding-inline: 20px;
   }
   .v-reading-example__section h4 {
-    font-size: 24px;
+    font-size: var(--fs-section);
   }
 }

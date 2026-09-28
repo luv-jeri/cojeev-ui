@@ -76,7 +76,7 @@ export function CollapsibleContent({
       ref={contentRef}
       data-slot="collapsible-content"
       data-part="content"
-      className={cn("v-collapsible__body text-[13px]", className)}
+      className={cn("v-collapsible__body text-[length:var(--fs-small)]", className)}
       {...props}
     >
       <div data-disclosure-inner>{children}</div>

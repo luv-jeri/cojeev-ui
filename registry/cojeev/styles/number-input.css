@@ -144,7 +144,7 @@
 }
 .v-number-input[data-presentation="scrub"] .v-number-input__field {
   grid-area: 1 / 1;
-  font-size: 24px;
+  font-size: var(--fs-section);
 }
 .v-number-input[data-presentation="scrub"] .v-number-input__control {
   text-align: start;
@@ -197,7 +197,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   pointer-events: none;
 }
 .v-number-input[data-scrubbing="true"] .v-number-input__grip {
@@ -227,23 +227,23 @@
   background: var(--v-yellow);
   color: var(--v-on-accent);
   border-radius: 35% 50% 36% 48%;
-  font: 500 20px/1 var(--font-display);
+  font: var(--fw-medium) var(--fs-title)/1 var(--font-display);
 }
 .v-adjustment-example__heading p {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .v-adjustment-example__heading label {
   display: block;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--fs-reading);
+  font-weight: var(--fw-semibold);
   margin-bottom: 4px;
 }
 .v-adjustment-example__help {
   margin: 0;
   color: var(--v-text-2);
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.6;
 }
 .v-adjustment-example__footer {
@@ -261,6 +261,6 @@
   padding-top: 12px;
   border-top: 1px dashed var(--v-border);
   color: var(--v-text-2);
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.5;
 }

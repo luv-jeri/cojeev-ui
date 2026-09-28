@@ -130,7 +130,7 @@ export function DrawerDescription({
       data-slot="drawer-description"
       data-part="description"
       className={cn(
-        "v-body-2 text-[15px] leading-[1.5] text-[color:var(--v-text-2)]",
+        "v-body-2 text-[length:var(--fs-body)] leading-[1.5] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}

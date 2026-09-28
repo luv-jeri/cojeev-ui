@@ -24,7 +24,7 @@
   align-items: start;
 }
 .v-dialog__head:where([data-slot="dialog"], [data-slot^="dialog-"]) .v-section {
-  font-size: 24px;
+  font-size: var(--fs-section);
   line-height: 1.15;
   padding-top: 6px;
 }
@@ -179,7 +179,7 @@
   display: grid;
   gap: 8px;
   margin: 16px 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
 }
 .v-dialog__exhibit dd {
   margin: 0 0 12px;
@@ -206,7 +206,7 @@
   line-height: 1.6;
 }
 .v-dialog-example__eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--v-text-2);
@@ -228,6 +228,6 @@
     aspect-ratio: 1.7;
   }
   .v-dialog[data-appearance] [data-slot="dialog-title"] {
-    font-size: 23px;
+    font-size: var(--fs-section);
   }
 }

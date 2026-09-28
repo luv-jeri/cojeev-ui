@@ -6,7 +6,7 @@
   max-inline-size: 100%;
   min-inline-size: 0;
   color: var(--v-text);
-  font: 500 13px/1.2 var(--font-body);
+  font: var(--fw-medium) var(--fs-small)/1.2 var(--font-body);
   isolation: isolate;
 }
 .v-dock [data-part="viewport"] {
@@ -126,8 +126,8 @@
   border-radius: 999px;
   background: var(--v-ink);
   color: var(--v-on-ink);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-bold);
   line-height: 1;
   box-sizing: border-box;
 }
@@ -428,7 +428,7 @@
     background: transparent;
     color: var(--v-text);
     box-shadow: none;
-    font-size: 10px;
+    font-size: var(--fs-caps);
     line-height: 1.15;
     opacity: 1;
     overflow: hidden;

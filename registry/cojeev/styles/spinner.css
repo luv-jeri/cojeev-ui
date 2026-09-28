@@ -61,7 +61,7 @@
 }
 .v-loader-example__index {
   grid-column: 1/-1;
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.12em;
   color: var(--v-text-2);
 }
@@ -94,14 +94,14 @@
 }
 .v-loader-example__copy h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--fs-title);
   line-height: 1.25;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.025em;
 }
 .v-loader-example__copy p {
   margin: 10px 0 0;
-  font-size: 14px;
+  font-size: var(--fs-control);
   color: var(--v-text-2);
   line-height: 1.65;
   max-width: 45ch;
@@ -110,7 +110,7 @@
   grid-column: 1/-1;
   border-top: 1px solid var(--v-border);
   padding-top: 14px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .v-loader-example__done[data-slot] {

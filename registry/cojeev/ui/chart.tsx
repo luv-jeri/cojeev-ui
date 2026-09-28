@@ -200,7 +200,7 @@ export function ChartAxis({ className, ...props }: ChartAxisProps) {
       data-slot="chart-axis"
       data-part="label"
       className={cn(
-        "v-axis flex justify-between text-[11px] text-[color:var(--muted-foreground)] mt-[8px] tabular-nums",
+        "v-axis flex justify-between text-[length:var(--fs-caps)] text-[color:var(--muted-foreground)] mt-[8px] tabular-nums",
         className,
       )}
       {...props}
@@ -417,7 +417,7 @@ export function ChartRankedValue({
     <span
       data-slot="chart-ranked-value"
       className={cn(
-        "v-prow__val text-[20px] font-bold tabular-nums whitespace-nowrap",
+        "v-prow__val text-[length:var(--fs-title)] font-bold tabular-nums whitespace-nowrap",
         className,
       )}
       {...props}

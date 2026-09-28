@@ -169,7 +169,7 @@
 .v-carousel-example__intro p {
   margin: 0 0 8px;
   color: var(--v-text-2);
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 .v-carousel-example__intro h3 {
   font: 500 clamp(24px, 3vw, 30px) / 1.25 var(--font-display);
@@ -181,7 +181,7 @@
   font-variant-numeric: tabular-nums;
 }
 .v-carousel-example__intro small {
-  font: 400 12px/1.5 var(--font-mono);
+  font: var(--fw-regular) var(--fs-meta)/1.5 var(--font-mono);
   color: var(--v-text-2);
 }
 .v-carousel-example [data-carousel-item] {
@@ -231,7 +231,7 @@
   position: absolute;
   top: 16px;
   inset-inline-start: 20px;
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.06em;
   color: var(--v-text-2);
 }
@@ -257,20 +257,20 @@
   margin: 0 0 14px;
 }
 .v-carousel-note__body p {
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.6;
   color: var(--v-text-2);
   margin: 0;
 }
 .v-carousel-note__body .v-carousel-note__kicker {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   margin-bottom: 10px;
 }
 .v-carousel-note__body .v-carousel-note__prompt {
   margin-top: 20px;
   padding-top: 16px;
   border-top: 1px dashed var(--v-border);
-  font-size: 13px;
+  font-size: var(--fs-small);
 }
 .v-carousel-note__body .v-btn {
   min-height: 44px;
@@ -306,7 +306,7 @@
 }
 .v-carousel-example__footer p {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-text-2);
 }
@@ -350,7 +350,7 @@
   pointer-events: none;
 }
 .v-carousel-example__thumbnail span {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.4;
 }
 @media (max-width: 640px) {

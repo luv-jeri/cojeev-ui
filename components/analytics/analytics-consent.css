@@ -33,10 +33,10 @@
   justify-self: end;
 }
 
-.analytics-consent [data-slot="title"] { font-size: 20px; }
+.analytics-consent [data-slot="title"] { font-size: var(--fs-title); }
 .analytics-consent [data-slot="body-secondary"] { margin: 0; line-height: 1.55; }
 .analytics-consent__actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.analytics-consent__privacy { width: fit-content; color: var(--v-text-2); font-size: 13px; text-underline-offset: 3px; }
+.analytics-consent__privacy { width: fit-content; color: var(--v-text-2); font-size: var(--fs-small); text-underline-offset: 3px; }
 .analytics-consent__privacy:is(:hover, :focus-visible) { color: var(--v-text); }
 
 @media (max-width: 600px) {

@@ -134,7 +134,7 @@
 }
 .v-item[data-slot][data-appearance] .v-item__sub {
   color: var(--v-text-2);
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.6;
 }
 .v-item[data-slot][data-appearance]:has(> svg.v-morph) {
@@ -172,17 +172,17 @@
   gap: 12px;
 }
 .v-item-example header > span {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   color: var(--v-text-3);
 }
 .v-item-example h3 {
-  font: 500 28px/1.25 var(--font-display);
+  font: var(--fw-medium) var(--fs-section)/1.25 var(--font-display);
   margin: 0;
 }
 .v-item-example p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.65;
   color: var(--v-text-2);
 }
@@ -190,14 +190,14 @@
   gap: 14px;
 }
 .v-item-example__index {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-3);
   font-variant-numeric: tabular-nums;
   align-self: start;
   padding-top: 4px;
 }
 .v-item-example__kind {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   color: var(--v-text-3);
   letter-spacing: 0.03em;
 }
@@ -205,10 +205,10 @@
   gap: 7px;
 }
 .v-item-example .v-item__title {
-  font: 500 20px/1.3 var(--font-display);
+  font: var(--fw-medium) var(--fs-title)/1.3 var(--font-display);
 }
 .v-item-example__count {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-3);
   margin-top: 4px;
 }
@@ -265,7 +265,7 @@
 .v-item-example__legacy {
   border-top: 1px solid var(--v-edge);
   padding-top: 12px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 .v-item-example__legacy summary {
   min-height: 44px;
@@ -292,6 +292,6 @@
     display: none;
   }
   .v-item-example .v-item__title {
-    font-size: 19px;
+    font-size: var(--fs-title);
   }
 }

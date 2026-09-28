@@ -116,10 +116,16 @@
   --text-v-section: var(--fs-section);
   --text-v-title: var(--fs-title);
   --text-v-lead: var(--fs-lead);
+  --text-v-reading: var(--fs-reading);
   --text-v-body: var(--fs-body);
   --text-v-control: var(--fs-control);
+  --text-v-small: var(--fs-small);
   --text-v-meta: var(--fs-meta);
   --text-v-caps: var(--fs-caps);
+  --font-weight-v-regular: var(--fw-regular);
+  --font-weight-v-medium: var(--fw-medium);
+  --font-weight-v-semibold: var(--fw-semibold);
+  --font-weight-v-bold: var(--fw-bold);
   --spacing-s-1: var(--s-1);
   --spacing-s-2: var(--s-2);
   --spacing-s-3: var(--s-3);

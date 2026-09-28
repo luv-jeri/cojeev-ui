@@ -166,7 +166,7 @@
   gap: 12px;
 }
 .v-icon-studio__eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.1em;
   color: var(--v-text-2);
 }
@@ -177,7 +177,7 @@
 }
 .v-icon-studio__heading p {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.6;
   color: var(--v-text-2);
 }
@@ -234,7 +234,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
 }
 .v-icon-studio__details {
@@ -252,7 +252,7 @@
   gap: 8px;
 }
 .v-icon-studio__name code {
-  font-size: 18px;
+  font-size: var(--fs-lead);
   min-width: 0;
   flex: 1 1 100px;
   overflow: hidden;
@@ -266,7 +266,7 @@
 .v-icon-studio__details [data-icon-description] {
   min-height: 3.2em;
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.6;
   color: var(--v-text-2);
 }
@@ -276,12 +276,12 @@
   min-width: 0;
 }
 .v-icon-studio__control-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-semibold);
   letter-spacing: 0.02em;
 }
 .v-icon-studio__control small {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   line-height: 1.6;
   color: var(--v-text-2);
 }
@@ -291,7 +291,7 @@
   gap: 4px;
 }
 .v-icon-studio__choices .v-btn {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   min-height: 44px;
   padding-inline: 12px;
 }
@@ -307,7 +307,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 8px 4px;
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-icon-studio__tones .v-btn > span {
   width: 16px;
@@ -335,7 +335,7 @@
   grid-column: 2 / -1;
 }
 .v-icon-studio__timing-controls output {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   font-variant-numeric: tabular-nums;
 }
 .v-icon-studio__search {
@@ -356,7 +356,7 @@
   padding: 0;
 }
 .v-icon-studio__status {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   min-height: 3.2em;
   margin: 0;
@@ -374,7 +374,7 @@
   gap: 12px;
   height: 108px;
   padding: 12px 8px;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   line-height: 1.35;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -393,14 +393,14 @@
   padding: 12px;
 }
 .v-icon-studio__pages > span {
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 .v-icon-studio__pages > .v-btn {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   min-height: 44px;
 }
 .v-icon-studio__credit {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-text-2);
   margin: 0;

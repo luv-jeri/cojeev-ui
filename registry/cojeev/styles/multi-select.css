@@ -33,7 +33,7 @@
 .v-multi-select[data-appearance="editorial"] .v-multi-select__checklist { border:0; border-radius:0; padding:0; background:transparent; }
 .v-multi-select__trigger > .v-multi-select__value { display:grid; gap:3px; min-width:0; white-space:normal; }
 .v-multi-select__value > span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.v-multi-select__value > small { font-size:12px; color:var(--v-text-2); line-height:1.4; }
+.v-multi-select__value > small { font-size:var(--fs-meta); color:var(--v-text-2); line-height:1.4; }
 .v-multi-select[data-invalid] .v-multi-select__checklist { outline:2px solid var(--v-danger-ink); outline-offset:2px; }
 .v-multi-select__option[data-selected] { background:var(--v-pink-soft); }
 .v-multi-select__unavailable { display:flex; flex-wrap:wrap; gap:8px; min-width:0; }

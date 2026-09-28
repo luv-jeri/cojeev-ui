@@ -20,7 +20,7 @@
   min-height: 56px;
   padding: var(--s-3) var(--s-4);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   font-size: var(--fs-body);
 }
 .v-acc:where(:not([data-appearance])):where(
@@ -83,7 +83,7 @@
   min-height: 60px;
   padding: 12px 16px 12px 12px;
   gap: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   font-size: var(--fs-body);
   line-height: 1.3;
   border-radius: 18px;
@@ -504,7 +504,7 @@
   padding: 12px 14px 12px 12px;
   gap: 14px;
   border-radius: 20px;
-  font-size: 15.5px;
+  font-size: var(--fs-body);
 }
 .v-acc:where(:not([data-appearance])):where(
     [data-slot="accordion"],
@@ -578,7 +578,7 @@
   z-index: 1;
   padding: 2px 18px 20px 66px;
   color: var(--v-on-accent);
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.5;
   max-width: 56ch;
 }
@@ -810,8 +810,8 @@
   text-wrap: balance;
 }
 .v-acc__summary small {
-  font-size: 13px;
-  font-weight: 400;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-regular);
   color: inherit;
   opacity: 0.8;
 }
@@ -823,14 +823,14 @@
 }
 .v-acc__detail p {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.7;
   max-width: 60ch;
 }
 .v-acc__eyebrow {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: inherit;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .v-acc[data-appearance="faq"] {
   gap: 12px;
@@ -903,8 +903,8 @@
 .v-acc__index {
   flex: none;
   font-variant-numeric: tabular-nums;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-medium);
   color: var(--v-text-2);
 }
 .v-acc[data-appearance="chapters"] .v-acc__index {
@@ -913,7 +913,7 @@
   width: var(--acc-index);
   height: 48px;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: var(--fs-title);
   background: var(--acc-accent);
   color: var(--v-on-accent);
   border-radius: 8px 8px 18px 8px;
@@ -959,14 +959,14 @@
 .v-acc[data-appearance="editorial"] .v-acc__index {
   font-family: var(--font-display);
   font-size: 36px;
-  font-weight: 400;
+  font-weight: var(--fw-regular);
   letter-spacing: -0.03em;
   color: inherit;
 }
 .v-acc[data-appearance="editorial"] .v-acc__summary > span {
   font-family: var(--font-display);
   font-size: clamp(20px, 2.5cqi, 26px);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .v-acc[data-appearance="editorial"] [data-slot="accordion-content-inner"] {
   /* A supporting motif accompanies the answer; it never competes for width. */
@@ -1019,7 +1019,7 @@
 }
 .v-acc__preview-caption {
   grid-area: 2 / 1;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   text-align: center;
   line-height: 1.4;
 }
@@ -1061,7 +1061,7 @@
     gap: 10px;
   }
   .v-acc[data-appearance="editorial"] .v-acc__index {
-    font-size: 24px;
+    font-size: var(--fs-section);
   }
   .v-acc__preview-caption {
     display: none;
@@ -1074,7 +1074,7 @@
   }
   .v-acc[data-appearance="chapters"] .v-acc__index {
     height: 40px;
-    font-size: 18px;
+    font-size: var(--fs-lead);
   }
   .v-acc[data-appearance="chapters"] [data-slot="accordion-trigger"] {
     padding: 18px var(--acc-inset);

@@ -69,7 +69,7 @@ export function QuestionnaireProgress({
     <div
       data-slot="questionnaire-progress"
       className={cn(
-        "v-quest__progress flex items-center gap-[12px] text-[13px] text-[color:var(--v-text-2)]",
+        "v-quest__progress flex items-center gap-[12px] text-[length:var(--fs-small)] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}
@@ -112,7 +112,7 @@ export function QuestionnaireLabel({
   return (
     <Label
       data-slot="questionnaire-label"
-      className={cn("[font-size:17px] [font-weight:600]", className)}
+      className={cn("[font-size:var(--fs-lead)] [font-weight:var(--fw-semibold)]", className)}
       {...props}
     />
   );
@@ -340,7 +340,7 @@ export function QuestionnaireWeekday({
     <label
       data-slot="questionnaire-weekday"
       className={cn(
-        "relative grid place-items-center size-[40px] [border-radius:50%] text-[11.5px] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer",
+        "relative grid place-items-center size-[40px] [border-radius:50%] text-[length:var(--fs-caps)] font-semibold bg-[var(--card)] text-[color:var(--v-text-2)] cursor-pointer",
         className,
       )}
       {...props}

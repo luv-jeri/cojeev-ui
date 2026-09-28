@@ -216,7 +216,7 @@ export function Spinner({
 }
 
 const SpinnerLabelVariants = cva(
-  "v-pulse__label [font-weight:500] [color:var(--v-text-2)] [opacity:1] [position:absolute] [inset:auto_auto_-20px_50%] [transform:translateX(-50%)] [font-size:11px] [white-space:nowrap]",
+  "v-pulse__label [font-weight:var(--fw-medium)] [color:var(--v-text-2)] [opacity:1] [position:absolute] [inset:auto_auto_-20px_50%] [transform:translateX(-50%)] [font-size:var(--fs-caps)] [white-space:nowrap]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },

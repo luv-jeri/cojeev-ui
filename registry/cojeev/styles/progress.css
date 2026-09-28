@@ -86,8 +86,8 @@
 }
 .v-progress__value {
   color: var(--v-text);
-  font-size: var(--fs-label);
-  font-weight: 600;
+  font-size: var(--fs-control);
+  font-weight: var(--fw-semibold);
   font-variant-numeric: tabular-nums;
 }
 [data-slot="progress"].-unavail {
@@ -125,7 +125,7 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-size: 10px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
   letter-spacing: 0.03em;
 }
@@ -138,11 +138,11 @@
 .v-progress-example__summary h3 {
   margin: 0 0 6px;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: var(--fs-title);
   line-height: 1.3;
 }
 .v-progress-example__summary p {
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
   color: var(--v-text-2);
   margin: 0;
@@ -179,7 +179,7 @@
 }
 .v-progress-example__hint {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
   line-height: 1.6;
 }
@@ -218,11 +218,11 @@
 }
 .v-progress-example__totals strong {
   font-family: var(--font-mono);
-  font-size: 24px;
+  font-size: var(--fs-section);
   font-weight: var(--fw-body);
 }
 .v-progress-example__totals span {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
 }
 .v-progress-example[data-presentation="milestones"] .v-progress-example__paper {
@@ -253,7 +253,7 @@
   width: 36px;
   height: 36px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
   border: 1px solid var(--v-border);
   border-radius: 12px;
@@ -281,11 +281,11 @@
   gap: 5px;
 }
 .v-progress-example__milestones strong {
-  font-size: 13px;
+  font-size: var(--fs-small);
   font-weight: var(--fw-title);
 }
 .v-progress-example__milestones small {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   line-height: 1.5;
   color: var(--v-text-2);
 }

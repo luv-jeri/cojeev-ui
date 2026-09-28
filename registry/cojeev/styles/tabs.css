@@ -60,8 +60,8 @@
   border-radius: var(--r-pill);
   background: var(--v-beige);
   color: var(--v-text);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
 }
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
   .v-tab:not([aria-selected="true"]) {
@@ -99,7 +99,7 @@
   padding: 0 var(--s-4);
   border-radius: var(--r-pill);
   font-size: var(--fs-control);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   color: var(--v-text-2);
 }
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
@@ -121,7 +121,7 @@
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline .v-tab {
   padding: 8px 2px 10px;
   font-size: var(--fs-lead);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   color: var(--v-text-2);
   border-bottom: 2px solid transparent;
 }
@@ -335,7 +335,7 @@
 [data-slot="tabs-list"] .v-tabs__count {
   margin-inline-start: auto;
   padding-inline-start: 8px;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   font-variant-numeric: tabular-nums;
   color: var(--v-text-3);
 }
@@ -363,11 +363,11 @@
   color: var(--v-accent-ink);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-tabs__story h3 {
   margin: 0;
-  font: 500 24px/1.15 var(--font-display);
+  font: var(--fw-medium) var(--fs-section)/1.15 var(--font-display);
   letter-spacing: -0.01em;
 }
 .v-tabs__story p {
@@ -397,7 +397,7 @@
   [data-slot="tabs-list"].-rail [data-slot="tabs-trigger"] {
     gap: 8px;
     padding-inline: 8px;
-    font-size: 13px;
+    font-size: var(--fs-small);
   }
   [data-slot="tabs-list"].-rail .v-tabs__count {
     display: none;
@@ -418,6 +418,6 @@
     padding: 16px;
   }
   .v-tabs-root[data-tabs-appearance="rail"] .v-tabs__story h3 {
-    font-size: 20px;
+    font-size: var(--fs-title);
   }
 }

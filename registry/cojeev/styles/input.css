@@ -21,7 +21,7 @@
 [data-slot="input"].-lg {
   height: 56px;
   padding: 0 20px;
-  font-size: 16px;
+  font-size: var(--fs-reading);
 }
 [data-slot="input"].-ink {
   background: var(--v-ink);
@@ -80,8 +80,8 @@
   background: var(--v-canvas);
   box-shadow: inset 0 0 0 1px var(--v-border);
   color: var(--v-text);
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-medium);
   display: inline-flex;
   align-items: center;
   margin-right: -8px;

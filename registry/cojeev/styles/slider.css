@@ -20,8 +20,8 @@
 [data-slot="slider"][data-disabled] [data-slot="slider-thumb"] { cursor:not-allowed; }
 :root[data-mode="dark"] [data-slot="slider"]:not([data-disabled]) { --slider-thumb:var(--v-pink); }
 [data-slot="slider-wrapper"] { display:grid; gap:12px; min-width:0; }
-[data-slot="slider-row"] { display:flex; align-items:center; justify-content:space-between; gap:16px; font-size:var(--fs-label); color:var(--v-text); }
-[data-slot="slider-output"] { font-variant-numeric:tabular-nums; font-weight:600; color:var(--v-text); }
+[data-slot="slider-row"] { display:flex; align-items:center; justify-content:space-between; gap:16px; font-size:var(--fs-control); color:var(--v-text); }
+[data-slot="slider-output"] { font-variant-numeric:tabular-nums; font-weight:var(--fw-semibold); color:var(--v-text); }
 
 /* A fine unfilled guide and a value-shaped, full-height elastic strand. */
 [data-slot="slider"].v-slider[data-appearance="rubber"] { height:24px; }

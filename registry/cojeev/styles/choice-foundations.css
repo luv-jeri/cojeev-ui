@@ -12,13 +12,13 @@
   gap: 5px;
 }
 .v-choice-example header strong {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semibold);
 }
 .v-choice-example header p,
 .v-choice-result {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
   color: var(--v-text-2);
 }

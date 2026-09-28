@@ -71,8 +71,8 @@
 .v-activity-feed__group {
   grid-column: 1/-1;
   color: var(--v-text-2);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   background: var(--v-paper);
@@ -83,7 +83,7 @@
 .v-activity-feed__header
   .v-activity-feed__heading
   [data-slot="typography-title"] {
-  font-size: 22px;
+  font-size: var(--fs-title);
   letter-spacing: -0.035em;
 }
 .v-activity-feed__marker {
@@ -110,7 +110,7 @@
   display: block;
   overflow: visible;
   -webkit-line-clamp: unset;
-  font-size: 15.5px;
+  font-size: var(--fs-body);
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
@@ -124,7 +124,7 @@
   line-height: 1.2;
 }
 .v-activity-feed__description[data-slot] {
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.55;
   max-width: 68ch;
   overflow-wrap: anywhere;

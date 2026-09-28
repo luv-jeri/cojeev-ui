@@ -4,7 +4,7 @@
   gap: 8px;
 }
 [data-slot="data-table-filter-button"] > span:not(.v-btn__content) {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   font-variant-numeric: tabular-nums;
 }
 [data-slot="data-table-filters"] {
@@ -31,7 +31,7 @@
   border: 0;
 }
 [data-slot="data-table"] [data-slot="pagination"] {
-  font-size: 13px;
+  font-size: var(--fs-small);
   padding-block: 4px;
 }
 [data-slot="data-table"] [data-slot="pagination"][data-composed] {
@@ -47,7 +47,7 @@
 }
 
 [data-slot="data-table-empty"] .v-state__word {
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   display: flex;
   align-items: center;
   gap: 8px;

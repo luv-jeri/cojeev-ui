@@ -16,12 +16,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs"
 import { BodySecondary, Meta } from "./typography"
 
 const adjusterVariants=cva([
- "v-adjuster @container box-border w-full max-w-[680px] rounded-[var(--r-card)] border border-[var(--v-border)] bg-[var(--v-canvas)] font-[family-name:var(--font-text)] text-[13px] leading-[1.5] text-[var(--v-text)]",
- "[&_h2]:m-0 [&_h2]:font-[family-name:var(--font-display)] [&_h2]:text-[20px] [&_p]:mt-1 [&_p]:mb-3 [&_p]:text-[var(--v-text-2)]",
- "[&_fieldset]:mb-5 [&_fieldset]:min-w-0 [&_fieldset]:rounded-[var(--r-md)] [&_fieldset]:border [&_fieldset]:border-[var(--v-border)] [&_fieldset]:p-4 [&_legend]:px-[5px] [&_legend]:font-[650]",
+ "v-adjuster @container box-border w-full max-w-[680px] rounded-[var(--r-card)] border border-[var(--v-border)] bg-[var(--v-canvas)] font-[family-name:var(--font-text)] text-[length:var(--fs-small)] leading-[1.5] text-[var(--v-text)]",
+ "[&_h2]:m-0 [&_h2]:font-[family-name:var(--font-display)] [&_h2]:text-[length:var(--fs-title)] [&_p]:mt-1 [&_p]:mb-3 [&_p]:text-[var(--v-text-2)]",
+ "[&_fieldset]:mb-5 [&_fieldset]:min-w-0 [&_fieldset]:rounded-[var(--r-md)] [&_fieldset]:border [&_fieldset]:border-[var(--v-border)] [&_fieldset]:p-4 [&_legend]:px-[5px] [&_legend]:font-[number:var(--fw-semibold)]",
  "[&_input]:accent-[var(--v-pink)] [&_textarea]:mt-2 [&_textarea]:resize-y [&_textarea]:font-mono",
  "[&_button]:cursor-pointer [&_button]:rounded-[var(--r-pill)] [&_button]:border [&_button]:border-[var(--v-border)] [&_button]:bg-[var(--v-beige)] [&_button]:px-3 [&_button]:py-2 [&_button]:text-[var(--v-ink)]",
- "[&_details]:mb-5 [&_summary]:cursor-pointer [&_summary]:py-[10px] [&_summary]:font-[650]",
+ "[&_details]:mb-5 [&_summary]:cursor-pointer [&_summary]:py-[10px] [&_summary]:font-[number:var(--fw-semibold)]",
  "[&_input:focus-visible]:outline-2 [&_input:focus-visible]:outline-offset-3 [&_input:focus-visible]:outline-[var(--v-pink)] [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-3 [&_button:focus-visible]:outline-[var(--v-pink)] [&_select:focus-visible]:outline-2 [&_select:focus-visible]:outline-offset-3 [&_select:focus-visible]:outline-[var(--v-pink)] [&_textarea:focus-visible]:outline-2 [&_textarea:focus-visible]:outline-offset-3 [&_textarea:focus-visible]:outline-[var(--v-pink)] [&_summary:focus-visible]:outline-2 [&_summary:focus-visible]:outline-offset-3 [&_summary:focus-visible]:outline-[var(--v-pink)]",
 ])
 const fieldVariants=cva("box-border min-w-0 w-full rounded-[var(--r-sm)] border border-[var(--v-border)] bg-[var(--v-canvas)] px-[9px] py-[7px] text-[var(--v-text)]")

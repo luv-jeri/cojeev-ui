@@ -33,7 +33,7 @@
   color: var(--v-text-2);
 }
 .v-linear-modal__summary .v-linear-modal__edition {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
 }
 .v-linear-modal__summary .v-linear-modal__read {
@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: space-between;
   color: var(--v-text);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   border-top: 1px solid var(--v-border);
   padding-top: 16px;
   margin-top: 4px;
@@ -139,7 +139,7 @@
   padding: 20px;
 }
 .v-linear-modal[data-variant="compact"] .v-linear-modal__summary strong {
-  font-size: 23px;
+  font-size: var(--fs-section);
 }
 .v-linear-modal__detail[data-variant="centered"] {
   width: min(880px, calc(100% - 40px));
@@ -185,7 +185,7 @@
   margin: 0;
   line-height: 1.6;
   color: var(--v-text-2);
-  font-size: 14px;
+  font-size: var(--fs-control);
 }
 .v-linear-example__index {
   width: 100%;
@@ -217,7 +217,7 @@
   height: 190px;
 }
 .v-linear-example__gallery .v-linear-modal__summary strong {
-  font-size: 25px;
+  font-size: var(--fs-section);
   min-height: 2.2em;
 }
 .v-linear-example__gallery [data-slot="carousel-navigation"] {
@@ -226,7 +226,7 @@
 }
 .v-linear-example__gallery [data-slot="carousel-navigation"] > span {
   margin-right: auto;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 @media (max-width: 540px) {

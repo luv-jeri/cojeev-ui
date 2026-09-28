@@ -10,7 +10,7 @@ export type EmptyProps=React.ComponentProps<"div"> & VariantProps<typeof EmptyVa
 export function Empty({ref: externalMorphRef, as:Tag="div",className,variant,size,...props}:EmptyProps){const ownedMorphRef = useMorph<HTMLDivElement>("cards", externalMorphRef);
   return <Tag ref={ownedMorphRef} data-slot="empty" data-part="root" className={cn(className?.split(/\s+/).includes("v-card")&&cardVariants(),EmptyVariants({variant,size}),className)} {...props}/>}
 
-const EmptyTitleVariants=cva("v-empty__title [font-family:var(--font-display)] [font-size:var(--fs-section)] [font-weight:500]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const EmptyTitleVariants=cva("v-empty__title [font-family:var(--font-display)] [font-size:var(--fs-section)] [font-weight:var(--fw-medium)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type EmptyTitleProps=React.ComponentProps<"h3"> & VariantProps<typeof EmptyTitleVariants> & { as?:React.ElementType }
 export function EmptyTitle({as:Tag="h3",className,variant,size,...props}:EmptyTitleProps){return <Tag data-slot="empty-title" data-part="title" className={cn(EmptyTitleVariants({variant,size}),className)} {...props}/>}
 
@@ -23,7 +23,7 @@ export type EmptyStateProps=React.ComponentProps<"div"> & VariantProps<typeof Em
 export function EmptyState({ref: externalMorphRef, as:Tag="div",className,variant,size,...props}:EmptyStateProps){const ownedMorphRef = useMorph<HTMLDivElement>("cards", externalMorphRef);
   return <Tag ref={ownedMorphRef} data-slot="empty-state" data-part="state" className={cn(EmptyStateVariants({variant,size}),className)} {...props}/>}
 
-const EmptyStateTitleVariants=cva("v-state__word [font-weight:600] [display:flex] [align-items:center] [gap:8px]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const EmptyStateTitleVariants=cva("v-state__word [font-weight:var(--fw-semibold)] [display:flex] [align-items:center] [gap:8px]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type EmptyStateTitleProps=React.ComponentProps<"div"> & VariantProps<typeof EmptyStateTitleVariants> & { as?:React.ElementType }
 export function EmptyStateTitle({as:Tag="div",className,variant,size,...props}:EmptyStateTitleProps){return <Tag data-slot="empty-state-title" data-part="state-title" className={cn(EmptyStateTitleVariants({variant,size}),className)} {...props}/>}
 

@@ -41,7 +41,7 @@
 }
 [data-slot="stepper-item"].-on .v-step__t {
   color: var(--v-text);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.005em;
 }
 
@@ -123,7 +123,7 @@
   color: var(--v-text);
 }
 .v-stepper-example__intro > p {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
   margin: 0 0 8px;
 }
@@ -187,14 +187,14 @@
 [data-slot="stepper-provider"][data-presentation] [data-slot="stepper-title"] {
   grid-column: 2;
   grid-row: 1;
-  font-size: 14px;
+  font-size: var(--fs-control);
   text-align: start;
   color: inherit;
 }
 .v-stepper-example__checkpoint-detail {
   grid-column: 2;
   grid-row: 2;
-  font: 400 11px/1.5 var(--font-body);
+  font: var(--fw-regular) var(--fs-caps)/1.5 var(--font-body);
   color: var(--v-text-2);
 }
 [data-slot="stepper-provider"][data-presentation]
@@ -260,7 +260,7 @@
   gap: 16px;
 }
 .v-stepper-example__stage-title p {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
   margin: 0 0 6px;
 }
@@ -283,7 +283,7 @@
   border-radius: 6px 6px 22px 6px;
   background: var(--v-yellow);
   color: var(--v-on-accent);
-  font: 500 22px/1 var(--font-display);
+  font: var(--fw-medium) var(--fs-title)/1 var(--font-display);
   font-variant-numeric: tabular-nums;
 }
 .v-stepper-example__workspace [role="radiogroup"] {
@@ -305,11 +305,11 @@
 }
 .v-stepper-example__summary dt {
   color: var(--v-text-2);
-  font-size: 13px;
+  font-size: var(--fs-small);
 }
 .v-stepper-example__summary dd {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--fs-reading);
   overflow-wrap: anywhere;
 }
 .v-stepper-example__actions {
@@ -329,7 +329,7 @@
 }
 .v-stepper-example__ending p {
   flex: 1 1 180px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-text-2);
   margin: 0;
@@ -414,7 +414,7 @@
   [data-slot="stepper-title"] {
   grid-column: 1;
   grid-row: 1;
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 [data-slot="stepper-provider"][data-presentation="compact"]
   .v-stepper-example__workspace {

@@ -9,8 +9,8 @@
 [data-slot="checkbox"].-block:not([data-disabled]):hover { background:var(--v-beige-2); }
 [data-slot="checkbox"].-block:is([data-state="checked"],[data-state="indeterminate"]) { background:color-mix(in oklab,var(--selector-accent) 16%,var(--v-canvas)); box-shadow:inset 0 0 0 1.5px var(--selector-accent); }
 [data-slot="checkbox-body"] { display:grid; gap:3px; min-width:0; overflow-wrap:anywhere; }
-[data-slot="checkbox-body"] b { font-size:15px; font-weight:600; line-height:1.35; }
-[data-slot="checkbox-body"] small { color:var(--v-text-2); font-size:13px; line-height:1.45; }
+[data-slot="checkbox-body"] b { font-size:var(--fs-body); font-weight:var(--fw-semibold); line-height:1.35; }
+[data-slot="checkbox-body"] small { color:var(--v-text-2); font-size:var(--fs-small); line-height:1.45; }
 [data-slot="checkbox"][data-disabled] [data-slot="checkbox-body"] small { color:var(--v-disabled-ink); }
 [data-slot="checkbox-group"] { display:grid; gap:8px; }
 @media(pointer:coarse) { [data-slot="checkbox"] { min-height:44px; } }

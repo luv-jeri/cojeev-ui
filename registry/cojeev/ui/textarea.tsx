@@ -9,7 +9,7 @@ import {
 import { ElementScrollBar } from "@/registry/cojeev/ui/scroll-area";
 import { assignMotionRef } from "@/registry/cojeev/motion/refs";
 export const textareaVariants = cva(
-  "v-textarea block w-full min-h-[128px] resize-y rounded-[20px] [border:0] bg-[var(--input)] px-[18px] py-[16px] text-[15px] leading-[1.5] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none placeholder:text-[color:var(--v-text-2)]",
+  "v-textarea block w-full min-h-[128px] resize-y rounded-[20px] [border:0] bg-[var(--input)] px-[18px] py-[16px] text-[length:var(--fs-body)] leading-[1.5] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none placeholder:text-[color:var(--v-text-2)]",
 );
 export type TextareaProps = React.ComponentProps<"textarea"> &
   ControlAppearanceProps;
@@ -126,7 +126,7 @@ export function TextareaCount({
     <span
       data-slot="textarea-count"
       className={cn(
-        "v-composer__count text-[12px] text-[color:var(--v-text-2)] tabular-nums",
+        "v-composer__count text-[length:var(--fs-meta)] text-[color:var(--v-text-2)] tabular-nums",
         className,
       )}
       {...props}

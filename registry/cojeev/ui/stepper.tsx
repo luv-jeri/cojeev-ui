@@ -149,7 +149,7 @@ export function StepperIndicator({
       data-slot="stepper-indicator"
       data-part="indicator"
       className={cn(
-        "v-step__n relative z-[1] col-start-1 grid place-items-center size-[38px] [border-radius:50%] text-[14.5px] font-semibold tabular-nums bg-[var(--v-canvas)] text-[color:var(--v-text-2)] [box-shadow:inset_0_0_0_1.5px_var(--v-edge)]",
+        "v-step__n relative z-[1] col-start-1 grid place-items-center size-[38px] [border-radius:50%] text-[length:var(--fs-control)] font-semibold tabular-nums bg-[var(--v-canvas)] text-[color:var(--v-text-2)] [box-shadow:inset_0_0_0_1.5px_var(--v-edge)]",
         className,
       )}
       {...props}
@@ -170,7 +170,7 @@ export function StepperTitle({ className, ...props }: StepperTitleProps) {
       data-slot="stepper-title"
       data-part="label"
       className={cn(
-        "v-step__t col-start-2 text-[15.5px] leading-[1.35] text-[color:var(--v-text-2)]",
+        "v-step__t col-start-2 text-[length:var(--fs-body)] leading-[1.35] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}
@@ -271,7 +271,7 @@ export function StepperStatus({
       data-step-say=""
       role="status"
       className={cn(
-        "v-quiet text-[12.5px] text-[color:var(--v-text-2)]",
+        "v-quiet text-[length:var(--fs-meta)] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}

@@ -16,7 +16,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 20px 24px 0;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .v-option-wheel__heading > span:last-child {
@@ -129,7 +129,7 @@
 }
 .v-option-wheel__option[data-distance="-2"],
 .v-option-wheel__option[data-distance="2"] {
-  font-size: 20px;
+  font-size: var(--fs-title);
 }
 .v-option-wheel__option[aria-selected="true"] {
   --mfill: var(--v-pink);
@@ -166,7 +166,7 @@
 }
 .v-option-wheel__footer p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
   min-height: 3em;
   display: flex;
@@ -269,7 +269,7 @@
   padding: 0;
   background: transparent;
   color: var(--v-text);
-  font-size: 28px;
+  font-size: var(--fs-section);
   text-align: left;
 }
 .v-option-wheel[data-presentation="compact"] .v-option-wheel__label {
@@ -318,7 +318,7 @@
 .v-wheel-example > p {
   margin: 0;
   text-align: center;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.5;
   color: var(--v-text-2);
 }
@@ -327,7 +327,7 @@
     left: 78px;
     right: 16px;
     padding-inline: 12px;
-    font-size: 20px;
+    font-size: var(--fs-title);
   }
   .v-option-wheel__dial {
     left: -260px;

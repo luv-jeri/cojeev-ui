@@ -51,11 +51,11 @@ const badgeVariants = cva(
 const badgeDimensions = cva("", {
   variants: {
     dimension: {
-      default: "h-[26px] px-[11px] py-0 text-[12.5px] font-medium",
-      sm: "h-[20px] px-[8px] py-0 text-[11px] font-semibold",
-      lg: "h-[32px] px-[14px] py-0 text-[13.5px] font-medium",
-      count: "h-[22px] px-[7px] py-0 text-[11px] font-semibold",
-      caps: "h-[26px] px-[11px] py-0 text-[10.5px] font-semibold",
+      default: "h-[26px] px-[11px] py-0 text-[length:var(--fs-meta)] font-medium",
+      sm: "h-[20px] px-[8px] py-0 text-[length:var(--fs-caps)] font-semibold",
+      lg: "h-[32px] px-[14px] py-0 text-[length:var(--fs-small)] font-medium",
+      count: "h-[22px] px-[7px] py-0 text-[length:var(--fs-caps)] font-semibold",
+      caps: "h-[26px] px-[11px] py-0 text-[length:var(--fs-caps)] font-semibold",
     },
   },
 });

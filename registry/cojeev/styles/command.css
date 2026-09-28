@@ -159,7 +159,7 @@
   min-height: 44px;
   padding: 0 10px 0 8px;
   border-radius: 12px;
-  font-size: 14.5px;
+  font-size: var(--fs-control);
   transition: background var(--t-micro);
 }
 .v-cmd:where([data-slot="command"], [data-slot^="command-"])
@@ -188,8 +188,8 @@
 .v-cmd:where([data-slot="command"], [data-slot^="command-"])
   .v-menu__item[aria-selected="true"]::after {
   content: "\21B5";
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-semibold);
   color: var(--v-text-2);
   width: 22px;
   height: 22px;
@@ -207,7 +207,7 @@
 .v-cmd:where([data-slot="command"], [data-slot^="command-"])
   [cmdk-group-heading] {
   padding: 12px 12px 6px;
-  font-size: 10.5px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   color: var(--v-text-2);
 }
@@ -223,7 +223,7 @@
 }
 .v-cmd__empty:where([data-slot="command"], [data-slot^="command-"]) {
   padding: 28px 20px;
-  font-size: 14px;
+  font-size: var(--fs-control);
   color: var(--v-text-2);
 }
 .v-cmd__list:where([data-slot="command"], [data-slot^="command-"]),
@@ -273,7 +273,7 @@
 }
 [data-slot="command-group"] [cmdk-group-heading] {
   padding: 12px 12px 6px;
-  font-size: 10.5px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--v-text-2);

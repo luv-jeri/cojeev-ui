@@ -71,7 +71,7 @@ export function ButtonGroupItem({
       variant="ghost"
       size="sm"
       className={cn(
-        "h-[36px] px-[14px] text-[13.5px] leading-none font-medium [border:0] [box-shadow:none] text-[color:var(--v-text-2)]",
+        "h-[36px] px-[14px] text-[length:var(--fs-small)] leading-none font-medium [border:0] [box-shadow:none] text-[color:var(--v-text-2)]",
         className,
       )}
       onClick={(event) => {

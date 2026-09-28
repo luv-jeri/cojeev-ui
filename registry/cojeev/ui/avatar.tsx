@@ -7,7 +7,7 @@ import { cn } from "@/registry/cojeev/lib/utils";
 import { Button } from "./button";
 
 const AvatarVariants = cva(
-  "v-avatar [width:40px] [height:40px] [border-radius:50%] [object-fit:cover] [background:var(--c,var(--v-beige))] [display:inline-grid] [place-items:center] [font-size:13px] [font-weight:600] [flex:none] [color:var(--v-text)] [box-shadow:0_0_0_2px_var(--v-canvas)] [font-family:var(--font-display)] [letter-spacing:.01em]",
+  "v-avatar [width:40px] [height:40px] [border-radius:50%] [object-fit:cover] [background:var(--c,var(--v-beige))] [display:inline-grid] [place-items:center] [font-size:var(--fs-small)] [font-weight:var(--fw-semibold)] [flex:none] [color:var(--v-text)] [box-shadow:0_0_0_2px_var(--v-canvas)] [font-family:var(--font-display)] [letter-spacing:.01em]",
   {
     variants: {
       variant: {
@@ -18,11 +18,11 @@ const AvatarVariants = cva(
         olive: "-olive [--c:var(--v-olive)] [color:var(--v-on-accent)]",
         blue: "-blue [--c:var(--v-blue)] [color:var(--v-on-accent)]",
         ink: "-ink [--c:var(--v-ink)] [color:var(--v-on-ink)]",
-        sm: "-sm [width:28px] [height:28px] [font-size:10px]",
+        sm: "-sm [width:28px] [height:28px] [font-size:var(--fs-caps)]",
       },
       size: {
         default: "",
-        sm: "-sm [width:28px] [height:28px] [font-size:10px]",
+        sm: "-sm [width:28px] [height:28px] [font-size:var(--fs-caps)]",
         lg: "-lg [width:110px] [height:110px] [font-size:34px] [letter-spacing:-.01em]",
       },
     },
@@ -132,7 +132,7 @@ export function AvatarEdit({
 }
 
 const AvatarHexVariants = cva(
-  "v-hex [width:32px] [height:32px] [display:inline-grid] [place-items:center] [font-size:10px] [font-weight:700] [background:var(--c,var(--v-blue))] [clip-path:polygon(25%_6.7%,75%_6.7%,100%_50%,75%_93.3%,25%_93.3%,0_50%)] [flex:none] [color:var(--v-on-accent)] [filter:drop-shadow(0_0_0_var(--v-canvas))]",
+  "v-hex [width:32px] [height:32px] [display:inline-grid] [place-items:center] [font-size:var(--fs-caps)] [font-weight:var(--fw-bold)] [background:var(--c,var(--v-blue))] [clip-path:polygon(25%_6.7%,75%_6.7%,100%_50%,75%_93.3%,25%_93.3%,0_50%)] [flex:none] [color:var(--v-on-accent)] [filter:drop-shadow(0_0_0_var(--v-canvas))]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },

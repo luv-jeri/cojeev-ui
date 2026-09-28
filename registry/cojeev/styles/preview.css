@@ -36,7 +36,7 @@
     gap: var(--s-2);
     min-height: 40px;
     padding-block: var(--s-2);
-    font-size: 13px;
+    font-size: var(--fs-small);
   }
   .v-preview__panel {
     min-width: 0;
@@ -94,7 +94,7 @@
   display: contents;
 }
 .v-preview__toolbar .v-btn {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   min-height: 40px;
   padding-inline: 12px;
   gap: 7px;
@@ -134,7 +134,7 @@
   .v-preview__toolbar > [data-slot="tabs-list"] > [data-slot="tabs-trigger"] {
     gap: 5px;
     padding-inline: 9px;
-    font-size: 12px;
+    font-size: var(--fs-meta);
   }
   .v-preview__toolbar > [data-slot="copy-control"] .v-btn {
     padding-inline: 8px;
@@ -201,7 +201,7 @@
   margin-bottom: 14px;
 }
 .v-preview-background-picker__heading strong {
-  font: 600 15px/1.4 var(--font-text);
+  font: var(--fw-semibold) var(--fs-body)/1.4 var(--font-text);
 }
 .v-preview-background-picker__heading > span {
   font: 12px/1.5 var(--font-text);
@@ -213,7 +213,7 @@
 .v-preview-background-picker__group-label {
   display: block;
   margin-bottom: 8px;
-  font: 500 12px/1.4 var(--font-text);
+  font: var(--fw-medium) var(--fs-meta)/1.4 var(--font-text);
   color: var(--v-text-2);
 }
 .v-preview-background-picker__choices {

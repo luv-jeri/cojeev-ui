@@ -21,7 +21,7 @@
   align-items: start;
 }
 .v-dialog__head:where([data-slot="sheet"], [data-slot^="sheet-"]) .v-section {
-  font-size: 24px;
+  font-size: var(--fs-section);
   line-height: 1.15;
   padding-top: 6px;
 }

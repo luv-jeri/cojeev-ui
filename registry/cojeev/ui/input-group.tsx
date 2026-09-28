@@ -36,7 +36,7 @@ export function InputGroupAddon({ className, ...props }: InputGroupAddonProps) {
       data-slot="input-group-addon"
       data-part="addon"
       className={cn(
-        "v-addon shrink-0 whitespace-nowrap text-[13px] font-medium text-[color:var(--v-text-2)]",
+        "v-addon shrink-0 whitespace-nowrap text-[length:var(--fs-small)] font-medium text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}
@@ -78,7 +78,7 @@ export function InputGroupText({ className, ...props }: InputGroupTextProps) {
   return (
     <span
       data-slot="input-group-text"
-      className={cn("text-[13px] text-[color:var(--v-text-2)]", className)}
+      className={cn("text-[length:var(--fs-small)] text-[color:var(--v-text-2)]", className)}
       {...props}
     />
   );
@@ -102,7 +102,7 @@ export function InputSearchScope({
     <div
       data-slot="input-search-scope"
       className={cn(
-        "v-scope flex shrink-0 items-center gap-[6px] text-[12.5px] text-[color:var(--v-text-2)] whitespace-nowrap",
+        "v-scope flex shrink-0 items-center gap-[6px] text-[length:var(--fs-meta)] text-[color:var(--v-text-2)] whitespace-nowrap",
         className,
       )}
       {...props}

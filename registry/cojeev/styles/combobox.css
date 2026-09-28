@@ -37,7 +37,7 @@
   margin: 4px 0;
 }
 .v-menu__group:where([data-slot="combobox"], [data-slot^="combobox-"]) {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted-foreground);
@@ -198,7 +198,7 @@
   mark {
   background: transparent;
   color: inherit;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   text-decoration: underline;
   text-decoration-color: var(--v-pink-deep);
   text-decoration-thickness: 2px;

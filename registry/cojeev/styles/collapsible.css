@@ -30,7 +30,7 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-size: 13px;
+  font-size: var(--fs-small);
 }
 .v-collapsible__body > [data-disclosure-inner] {
   padding: var(--s-3) var(--s-4);
@@ -95,7 +95,7 @@
   padding: 12px 0;
   color: inherit;
   text-align: start;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   border-radius: 0;
 }
 .v-collapsible[data-appearance] [data-disclosure-inner] {
@@ -105,7 +105,7 @@
 }
 .v-collapsible[data-appearance] [data-disclosure-inner] p {
   margin: 0 0 12px;
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.7;
   color: var(--v-text-2);
   max-width: 60ch;
@@ -119,8 +119,8 @@
 }
 .v-collapsible__summary small {
   color: var(--v-text-2);
-  font-size: 13px;
-  font-weight: 400;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-regular);
   line-height: 1.4;
 }
 .v-collapsible[data-appearance="checklist"] {
@@ -141,7 +141,7 @@
   gap: 14px;
   align-items: center;
   min-height: 52px;
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.5;
 }
 .v-collapsible__checklist li > span {
@@ -153,7 +153,7 @@
   border-radius: 50% 50% 42% 58%;
   background: var(--v-olive);
   color: var(--v-on-accent);
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-collapsible[data-appearance="inspector"] {
   border-radius: 20px;
@@ -177,7 +177,7 @@
   gap: 20px;
   padding: 14px 0;
   border-bottom: 1px solid var(--v-border);
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
 }
 .v-collapsible__inspector dt {
@@ -193,7 +193,7 @@
   align-items: center;
   gap: 8px;
   color: var(--v-text);
-  font-size: 13px;
+  font-size: var(--fs-small);
   text-underline-offset: 4px;
 }
 .v-collapsible[data-motion-quiet="true"] [data-slot="collapsible-indicator"] {

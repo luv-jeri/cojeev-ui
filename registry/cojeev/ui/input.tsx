@@ -123,7 +123,7 @@ export function InputAffix({ className, ...props }: InputAffixProps) {
     <span
       data-slot="input-affix"
       className={cn(
-        "v-affix shrink-0 whitespace-nowrap text-[13px] text-[color:var(--v-text-2)]",
+        "v-affix shrink-0 whitespace-nowrap text-[length:var(--fs-small)] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}

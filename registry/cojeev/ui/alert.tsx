@@ -81,7 +81,7 @@ export function AlertBody({
 }
 
 const AlertTitleVariants = cva(
-  "v-alert__title [font-weight:600] [font-size:15.5px] [line-height:1.3] [letter-spacing:-.005em]",
+  "v-alert__title [font-weight:var(--fw-semibold)] [font-size:var(--fs-body)] [line-height:1.3] [letter-spacing:-.005em]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -107,7 +107,7 @@ export function AlertTitle({
 }
 
 const AlertDescriptionVariants = cva(
-  "v-alert__text [font-size:13.5px] [color:var(--muted-foreground)] [line-height:1.45]",
+  "v-alert__text [font-size:var(--fs-small)] [color:var(--muted-foreground)] [line-height:1.45]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -133,7 +133,7 @@ export function AlertDescription({
 }
 
 const AlertKickerVariants = cva(
-  "v-alert__kicker [font-size:10.5px] [font-weight:600] [letter-spacing:.08em] [text-transform:uppercase] [color:var(--hue-ink,var(--alert-ink))] [margin-bottom:2px]",
+  "v-alert__kicker [font-size:var(--fs-caps)] [font-weight:var(--fw-semibold)] [letter-spacing:.08em] [text-transform:uppercase] [color:var(--hue-ink,var(--alert-ink))] [margin-bottom:2px]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },

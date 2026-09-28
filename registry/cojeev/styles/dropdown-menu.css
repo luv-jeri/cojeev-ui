@@ -39,7 +39,7 @@
   [data-slot="dropdown-menu"],
   [data-slot^="dropdown-menu-"]
 ) {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted-foreground);

@@ -28,7 +28,7 @@ export function AttachmentType({
       ref={ref}
       data-slot="attachment-type"
       className={cn(
-        "v-disk inline-grid place-items-center shrink-0 [width:40px] [height:40px] [border-radius:50%] [background:var(--v-ink)] [color:var(--v-on-ink)] text-[9px] font-bold tracking-[.04em]",
+        "v-disk inline-grid place-items-center shrink-0 [width:40px] [height:40px] [border-radius:50%] [background:var(--v-ink)] [color:var(--v-on-ink)] text-[length:var(--fs-caps)] font-bold tracking-[.04em]",
         className,
       )}
       {...props}

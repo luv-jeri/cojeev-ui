@@ -34,7 +34,7 @@
 }
 .v-dialog__head:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"])
   .v-section {
-  font-size: 24px;
+  font-size: var(--fs-section);
   line-height: 1.15;
   padding-top: 6px;
 }

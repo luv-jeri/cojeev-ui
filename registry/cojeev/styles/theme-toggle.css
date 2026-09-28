@@ -6,7 +6,7 @@
 :root .v-btn.v-theme-toggle[data-slot][data-label]:is(:hover,:focus-visible) { --mfill:var(--v-beige); --mstroke:var(--v-text-2); }
 :root .v-btn.v-theme-toggle[data-slot][data-label]:has(>svg.v-morph) { background:transparent; box-shadow:none; }
 [data-slot="theme-toggle-icon"] { flex:none; overflow:visible; }
-.v-theme-toggle__label { color:inherit; font:500 13px/1 var(--font-text); }
+.v-theme-toggle__label { color:inherit; font:var(--fw-medium) var(--fs-small)/1 var(--font-text); }
 :root .v-btn.v-theme-toggle[data-slot][data-label="hidden"] { min-width:44px; width:44px; padding:0; }
 :root .v-btn.v-theme-toggle[data-slot][data-label]:is(:disabled,[aria-disabled="true"]:not([aria-busy="true"])) { --mfill:var(--v-disabled-face); --mstroke:var(--v-disabled-edge); color:var(--v-disabled-ink); }
 @media (max-width:640px) {

@@ -24,7 +24,7 @@
   max-width: 440px;
 }
 .v-shape-studio__eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--v-muted);
@@ -32,12 +32,12 @@
 .v-shape-studio__heading h3 {
   font-size: clamp(24px, 5cqi, 34px);
   line-height: 1.12;
-  font-weight: 550;
+  font-weight: var(--fw-medium);
   margin: 14px 0;
   letter-spacing: -0.025em;
 }
 .v-shape-studio__heading > p:last-child {
-  font-size: 14px;
+  font-size: var(--fs-control);
   color: var(--v-muted);
   line-height: 1.6;
 }
@@ -68,7 +68,7 @@
   position: absolute;
   left: 18px;
   top: 12px;
-  font-size: 20px;
+  font-size: var(--fs-title);
   color: var(--v-muted);
   opacity: 0.5;
   pointer-events: none;
@@ -82,11 +82,11 @@
   gap: 14px;
   align-items: baseline;
   margin: 10px 0 18px;
-  font-size: 16px;
+  font-size: var(--fs-reading);
 }
 .v-shape-studio__caption small {
   color: var(--v-muted);
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-shape-studio__controls {
   min-width: 0;
@@ -97,8 +97,8 @@
 }
 .v-shape-studio__label,
 .v-shape-studio__layers legend {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-semibold);
   letter-spacing: 0.035em;
   margin: 0 0 12px;
 }
@@ -123,7 +123,7 @@
 }
 .v-shape-studio__tones small {
   text-transform: capitalize;
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-shape-studio__tones > button[aria-pressed="true"] > span:not([data-slot]) {
   outline: 2px solid var(--v-text);
@@ -154,7 +154,7 @@
   flex-wrap: wrap;
 }
 .v-shape-studio__hint {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-muted);
   margin: 12px 0;
@@ -176,7 +176,7 @@
 }
 .v-shape-studio__tray small,
 .v-shape-studio__masks small {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   overflow-wrap: anywhere;
   line-height: 1.4;
 }
@@ -196,7 +196,7 @@
   margin-bottom: 12px;
 }
 .v-shape-studio__range output {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -209,13 +209,13 @@
   padding-top: 10px;
 }
 .v-shape-studio__export h4 {
-  font-size: 18px;
-  font-weight: 550;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-medium);
   margin: 0 0 8px;
 }
 .v-shape-studio__export p,
 .v-shape-studio__receipt {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-muted);
 }

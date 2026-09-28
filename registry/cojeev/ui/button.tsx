@@ -30,7 +30,7 @@ const buttonVariants = cva(
       },
       size: {
         default: "",
-        sm: "-sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[13px]",
+        sm: "-sm h-[var(--ctl-sm)] px-[var(--s-4)] text-[length:var(--fs-small)]",
         lg: "-lg h-[var(--ctl-lg)] px-[var(--s-6)] text-[length:var(--fs-body)]",
       },
       shape: { pill: "", card: "-card" },
