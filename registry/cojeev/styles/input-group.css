@@ -30,7 +30,7 @@
 }
 [data-slot="input-group"] .v-btn {
   height: 40px;
-  padding: 0 16px;
+  padding: 0 var(--s-4);
   flex: none;
 }
 [data-slot="input-group"] .v-ibtn[data-slot] {
@@ -64,7 +64,7 @@
 [data-slot="input-search-scope"] .v-badge {
   height: 24px;
   font-size: var(--fs-caps);
-  padding: 0 9px;
+  padding: 0 var(--s-2);
 }
 [data-slot="input-search"] [data-slot="input-search-scope"] .v-badge.-dashed {
   height: 26px;
@@ -89,7 +89,7 @@
 [data-slot="input-search-scope"] { font-size: var(--fs-small); color: var(--v-text); min-width: 0; flex-wrap: wrap; }
 [data-slot="input-search"] .v-input input { flex: 1 1 60px; min-width: 0; }
 @media (max-width: 640px) { [data-slot="input-search"] [data-slot="input-search-scope"] { display: none; } }
-[data-slot="input-group"] { min-width:0; min-height:52px; height:auto; padding-block:6px; }
+[data-slot="input-group"] { min-width:0; min-height:var(--ctl-lg); height:auto; padding-block:var(--s-2); }
 [data-slot="input-group"] [data-slot="input-group-input"] { min-height:40px; width:0; flex:1 1 80px; }
 [data-slot="input-group-addon"] { min-width:0; max-width:45%; white-space:normal; overflow-wrap:anywhere; }
 [data-slot="input-group-text"] { min-width:0; max-width:100%; overflow-wrap:anywhere; }

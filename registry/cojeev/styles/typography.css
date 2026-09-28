@@ -8,9 +8,9 @@
 .v-prose[data-slot] h2{font-family:var(--font-display);font-size:var(--fs-section);font-weight:var(--fw-medium);line-height:1.1}
 .v-prose[data-slot] h3{font-size:var(--fs-title);font-weight:var(--fw-semibold)}
 .v-prose[data-slot] p{line-height:var(--lh-body)}
-.v-prose[data-slot] ul{padding-left:1.2em;display:grid;gap:4px}
+.v-prose[data-slot] ul{padding-left:1.2em;display:grid;gap:var(--s-1)}
 .v-prose[data-slot] blockquote{border-left:2px solid var(--v-pink);padding-left:var(--s-4);color:var(--muted-foreground)}
-.v-prose[data-slot] code{background:var(--v-beige);padding:1px 6px;border-radius:4px;font-size:.92em}
+.v-prose[data-slot] code{background:var(--v-beige);padding:1px var(--s-2);border-radius:var(--r-xs);font-size:.92em}
 .v-prose[data-slot] a{text-decoration:underline;text-underline-offset:3px}
 .v-hero[data-slot] .u{color:var(--muted-foreground)}
 .v-display[data-slot] .u{color:var(--muted-foreground)}

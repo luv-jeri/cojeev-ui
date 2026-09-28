@@ -5,7 +5,7 @@
 }
 [data-slot="input-otp-slot"] {
   width: 44px;
-  height: 52px;
+  height: var(--ctl-lg);
   text-align: center;
   font-size: var(--fs-title);
   font-weight: var(--fw-semibold);
@@ -19,7 +19,7 @@
 }
 @media (max-width: 640px) {
   .v-otp:where([data-slot="input-otp"], [data-slot^="input-otp-"]) {
-    gap: 6px;
+    gap: var(--s-2);
   }
 }
 @media (max-width: 640px) {
@@ -37,7 +37,7 @@
   outline-offset: 2px;
 }
 [data-slot="input-otp-slot"]:nth-child(3) {
-  margin-right: 12px;
+  margin-right: var(--s-3);
 }
 [data-slot="input-otp-slot"] {
   transition:

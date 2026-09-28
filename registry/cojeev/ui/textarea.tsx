@@ -9,7 +9,7 @@ import {
 import { ElementScrollBar } from "@/registry/cojeev/ui/scroll-area";
 import { assignMotionRef } from "@/registry/cojeev/motion/refs";
 export const textareaVariants = cva(
-  "v-textarea block w-full min-h-[128px] resize-y rounded-[20px] [border:0] bg-[var(--input)] px-[18px] py-[16px] text-[length:var(--fs-body)] leading-[1.5] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none placeholder:text-[color:var(--v-text-2)]",
+  "v-textarea block w-full min-h-[128px] resize-y rounded-[var(--r-card)] [border:0] bg-[var(--input)] px-[var(--s-5)] py-[var(--s-4)] text-[length:var(--fs-body)] leading-[1.5] text-[color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none placeholder:text-[color:var(--v-text-2)]",
 );
 export type TextareaProps = React.ComponentProps<"textarea"> &
   ControlAppearanceProps;
@@ -88,7 +88,7 @@ export function TextareaComposer({
       style={{ ...style, ...controlRadiusStyle(radius) }}
       data-part="root"
       className={cn(
-        "v-composer grid gap-0 rounded-[22px] bg-[var(--input)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
+        "v-composer grid gap-0 rounded-[var(--r-panel)] bg-[var(--input)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
         className,
       )}
       {...props}
@@ -105,7 +105,7 @@ export function TextareaComposerBar({
       data-slot="textarea-composer-bar"
       data-part="footer"
       className={cn(
-        "v-composer__bar flex items-center gap-[8px] pt-[6px] pr-[8px] pb-[8px] pl-[16px]",
+        "v-composer__bar flex items-center gap-[var(--s-2)] pt-[var(--s-2)] pr-[var(--s-2)] pb-[var(--s-2)] pl-[var(--s-4)]",
         className,
       )}
       {...props}

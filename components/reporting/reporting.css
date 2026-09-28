@@ -5,12 +5,12 @@
   z-index: 45;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 7px 20px 7px 7px;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-5) var(--s-2) var(--s-2);
   min-height: 56px;
   background: var(--v-text);
   color: var(--v-canvas);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   box-shadow: 0 7px 22px #1112;
   font-size: var(--fs-control);
   font-weight: var(--fw-semibold);
@@ -38,7 +38,7 @@
 .report-sheet {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--s-4);
   min-width: 0;
   max-width: 100%;
   color: var(--v-text);
@@ -54,13 +54,13 @@
 .report-receipt {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--s-5);
   min-width: 0;
 }
 .report-target {
   font-size: var(--fs-control);
   line-height: 1.6;
-  padding: 4px 0;
+  padding: var(--s-1) 0;
   color: var(--v-text-2);
 }
 .report-target strong {
@@ -69,7 +69,7 @@
 .report-field {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: var(--s-2);
   font-size: var(--fs-control);
   font-weight: var(--fw-medium);
 }
@@ -88,18 +88,18 @@
 .report-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--s-2);
   align-items: center;
 }
 .report-row .v-btn {
   font-size: var(--fs-small);
-  padding: 0 14px;
+  padding: 0 var(--s-4);
   min-height: 40px;
 }
 .report-notice,
 .report-error {
-  padding: 14px 16px;
-  border-radius: 12px;
+  padding: var(--s-4) var(--s-4);
+  border-radius: var(--r-md);
   font-size: var(--fs-small);
   line-height: 1.55;
 }
@@ -107,19 +107,19 @@
   background: var(--v-beige);
   color: var(--v-text);
   display: grid;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .report-error {
-  background: var(--v-danger-bg, #fbe8e5);
+  background: var(--v-danger-soft);
   color: var(--v-danger-ink, #a8302b);
   overflow-wrap: anywhere;
 }
 .report-suggestions {
   border-block: 1px solid var(--v-border);
-  padding-block: 15px;
+  padding-block: var(--s-4);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--s-1);
 }
 .report-suggestions h3,
 .report-evidence h3,
@@ -127,15 +127,15 @@
 .report-crop h3 {
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
-  margin-bottom: 9px;
+  margin-bottom: var(--s-2);
 }
 .report-suggestions a,
 .report-suggestions button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 10px 0;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
   text-align: left;
   font-size: var(--fs-control);
 }
@@ -156,8 +156,8 @@
 }
 .report-join-label {
   background: var(--v-beige);
-  padding: 7px 12px;
-  border-radius: 999px;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-pill);
   font-size: var(--fs-meta);
   color: var(--v-text);
 }
@@ -165,23 +165,23 @@
 .report-diagnostics {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .report-evidence h3 span,
 .report-diagnostics h3 span {
   font-size: var(--fs-meta);
   font-weight: var(--fw-regular);
   color: var(--v-text-2);
-  margin-left: 8px;
+  margin-left: var(--s-2);
 }
 .report-attachments {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--s-3);
 }
 .report-attachments figure {
   min-width: 0;
-  border-radius: 12px;
+  border-radius: var(--r-md);
   overflow: hidden;
   background: var(--v-beige);
 }
@@ -196,13 +196,13 @@
   height: 130px;
 }
 .report-attachments figcaption {
-  padding: 8px 10px;
+  padding: var(--s-2) var(--s-3);
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: var(--fs-meta);
   overflow-wrap: anywhere;
-  gap: 6px;
+  gap: var(--s-2);
 }
 .report-attachments figcaption span {
   min-width: 0;
@@ -214,17 +214,17 @@
 }
 .report-pins {
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
   list-style: none;
   padding: 0;
 }
 .report-pins li {
   display: flex;
-  gap: 10px;
+  gap: var(--s-3);
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--v-border);
-  padding-block: 8px;
+  padding-block: var(--s-2);
   font-size: var(--fs-small);
 }
 .report-pins li > span {
@@ -240,7 +240,7 @@
 }
 .report-diagnostic-groups {
   border: 1px solid var(--v-border);
-  border-radius: 12px;
+  border-radius: var(--r-md);
   overflow: hidden;
 }
 .report-diagnostic-groups details + details {
@@ -249,7 +249,7 @@
 .report-diagnostic-groups summary,
 .report-json summary {
   cursor: pointer;
-  padding: 14px;
+  padding: var(--s-4);
   font-size: var(--fs-small);
   line-height: 1.45;
 }
@@ -266,31 +266,31 @@
   overflow-wrap: anywhere;
   max-height: 320px;
   overflow: auto;
-  padding: 14px;
+  padding: var(--s-4);
   background: var(--v-beige);
   color: var(--v-text);
 }
 .report-diagnostic-groups .v-btn {
-  margin: 6px;
+  margin: var(--s-2);
 }
 .report-form-footer {
   border-top: 1px solid var(--v-border);
-  padding-top: 16px;
+  padding-top: var(--s-4);
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .report-footer-links {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .report-footer-links a,
 .report-receipt > a {
   font-size: var(--fs-meta);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--s-2);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -313,9 +313,9 @@
 }
 .report-review-summary {
   border-block: 1px solid var(--v-border);
-  padding-block: 18px;
+  padding-block: var(--s-5);
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
   overflow-wrap: anywhere;
 }
 .report-review-summary strong {
@@ -332,12 +332,12 @@
 }
 .report-json {
   border: 1px solid var(--v-border);
-  border-radius: 12px;
+  border-radius: var(--r-md);
   overflow: hidden;
 }
 .report-json > p {
-  padding-inline: 14px;
-  padding-bottom: 12px;
+  padding-inline: var(--s-4);
+  padding-bottom: var(--s-3);
 }
 .report-receipt-seal {
   display: grid;
@@ -347,17 +347,17 @@
   width: 64px;
   height: 64px;
   border-radius: 43% 57% 46% 54%/54% 41% 59% 46%;
-  margin-block: 8px;
+  margin-block: var(--s-2);
 }
 .report-receipt dl {
   border-block: 1px solid var(--v-border);
-  padding-block: 8px;
+  padding-block: var(--s-2);
 }
 .report-receipt dl > div {
   display: flex;
-  gap: 16px;
+  gap: var(--s-4);
   justify-content: space-between;
-  padding-block: 8px;
+  padding-block: var(--s-2);
   font-size: var(--fs-small);
 }
 .report-receipt dt {
@@ -369,7 +369,7 @@
 }
 .report-receipt-id {
   display: grid;
-  gap: 5px;
+  gap: var(--s-1);
   font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
@@ -380,7 +380,7 @@
 }
 .report-crop {
   display: grid;
-  gap: 16px;
+  gap: var(--s-4);
 }
 .report-crop-image {
   position: relative;
@@ -403,15 +403,15 @@
 .report-crop-fields {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+  gap: var(--s-2);
 }
 .report-crop-fields label {
   font-size: var(--fs-meta);
   display: grid;
-  gap: 5px;
+  gap: var(--s-1);
 }
 .report-crop-fields .v-input {
-  padding-inline: 12px;
+  padding-inline: var(--s-3);
 }
 .report-picker {
   position: fixed;
@@ -423,7 +423,7 @@
   position: fixed;
   border: 2px solid var(--v-pink);
   background: #f5b8db25;
-  border-radius: 4px;
+  border-radius: var(--r-xs);
   pointer-events: none;
 }
 .report-area-picker .report-area-surface {
@@ -445,14 +445,14 @@
   bottom: 24px;
   transform: translateX(-50%);
   width: min(520px, calc(100vw - 24px));
-  padding: 18px 20px;
+  padding: var(--s-5) var(--s-5);
   background: var(--v-canvas);
   color: var(--v-text);
-  border-radius: 20px;
+  border-radius: var(--r-card);
   box-shadow: 0 8px 35px #1114;
   pointer-events: auto;
   display: grid;
-  gap: 9px;
+  gap: var(--s-2);
   font-size: var(--fs-control);
 }
 .report-picker-toolbar > p {
@@ -468,7 +468,7 @@
 .report-picker-toolbar:focus-visible,
 .report-sheet a:focus-visible,
 .report-sheet summary:focus-visible {
-  outline: 2px solid var(--v-focus, #9c3e6e);
+  outline: 2px solid var(--ring);
   outline-offset: 4px;
 }
 .report-launcher svg,
@@ -481,7 +481,7 @@
     bottom: max(16px, env(safe-area-inset-bottom));
     font-size: var(--fs-meta);
     min-height: 50px;
-    padding-right: 15px;
+    padding-right: var(--s-4);
   }
   .report-launcher-shape {
     width: 36px;
@@ -491,7 +491,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .report-attachments figcaption {
-    padding: 7px;
+    padding: var(--s-2);
   }
   .report-sheet .v-input,
   .report-sheet .v-textarea {
@@ -521,10 +521,10 @@ html[data-flow="off"]
 .report-drop-hint {
   font-size: var(--fs-meta);
   color: var(--v-text-2);
-  padding: 16px;
+  padding: var(--s-4);
   text-align: center;
   border: 1px dashed var(--v-edge);
-  border-radius: 12px;
+  border-radius: var(--r-md);
 }
 .report-evidence[data-dragging] .report-drop-hint {
   background: var(--v-pink);

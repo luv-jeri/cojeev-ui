@@ -10,7 +10,7 @@ import {
 } from "../lib/control-appearance";
 
 const badgeVariants = cva(
-  "v-badge inline-flex items-center justify-center gap-[6px] rounded-[var(--r-pill)] leading-none whitespace-nowrap bg-[var(--v-beige)] text-[color:var(--v-text)] tracking-[.005em]",
+  "v-badge inline-flex items-center justify-center gap-[var(--s-2)] rounded-[var(--r-pill)] leading-none whitespace-nowrap bg-[var(--v-beige)] text-[color:var(--v-text)] tracking-[.005em]",
   {
     variants: {
       variant: {
@@ -51,11 +51,11 @@ const badgeVariants = cva(
 const badgeDimensions = cva("", {
   variants: {
     dimension: {
-      default: "h-[26px] px-[11px] py-0 text-[length:var(--fs-meta)] font-medium",
-      sm: "h-[20px] px-[8px] py-0 text-[length:var(--fs-caps)] font-semibold",
-      lg: "h-[32px] px-[14px] py-0 text-[length:var(--fs-small)] font-medium",
-      count: "h-[22px] px-[7px] py-0 text-[length:var(--fs-caps)] font-semibold",
-      caps: "h-[26px] px-[11px] py-0 text-[length:var(--fs-caps)] font-semibold",
+      default: "h-[26px] px-[var(--s-3)] py-0 text-[length:var(--fs-meta)] font-medium",
+      sm: "h-[20px] px-[var(--s-2)] py-0 text-[length:var(--fs-caps)] font-semibold",
+      lg: "h-[32px] px-[var(--s-4)] py-0 text-[length:var(--fs-small)] font-medium",
+      count: "h-[22px] px-[var(--s-2)] py-0 text-[length:var(--fs-caps)] font-semibold",
+      caps: "h-[26px] px-[var(--s-3)] py-0 text-[length:var(--fs-caps)] font-semibold",
     },
   },
 });
@@ -118,7 +118,7 @@ function Badge({
       className={cn(
         badgeVariants({ variant, size }),
         badgeDimensions({ dimension }),
-        (variant === "dashed" || variant === "test") && "h-[26px] px-[11px]",
+        (variant === "dashed" || variant === "test") && "h-[26px] px-[var(--s-3)]",
         (variant === "test" || variant === "danger") && "font-semibold",
         "leading-none",
         className,

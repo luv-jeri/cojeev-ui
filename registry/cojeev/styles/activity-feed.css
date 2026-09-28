@@ -3,14 +3,14 @@
   width: 100%;
   color: var(--v-text);
   background: var(--v-paper);
-  padding: 28px;
+  padding: var(--s-7);
   border: 1px solid var(--v-border);
-  border-radius: 24px 24px 6px 24px;
+  border-radius: var(--r-panel) var(--r-panel) var(--r-sm) var(--r-panel);
 }
 .v-activity-feed__header {
   display: grid;
-  gap: 8px;
-  margin-block-end: 18px;
+  gap: var(--s-2);
+  margin-block-end: var(--s-5);
 }
 .v-activity-feed__header :is(h3, p) {
   margin: 0;
@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-activity-feed__list {
   display: grid;
@@ -31,9 +31,9 @@
   position: relative;
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr);
-  gap: 16px;
+  gap: var(--s-4);
   min-width: 0;
-  padding-block: 20px;
+  padding-block: var(--s-5);
   outline-offset: 5px;
 }
 .v-activity-feed__entry::marker {
@@ -78,7 +78,7 @@
   background: var(--v-paper);
   position: relative;
   z-index: 1;
-  padding: 0 0 12px;
+  padding: 0 0 var(--s-3);
 }
 .v-activity-feed__header
   .v-activity-feed__heading
@@ -96,14 +96,14 @@
   color: var(--v-text);
 }
 .v-activity-feed__content[data-slot] {
-  gap: 7px;
+  gap: var(--s-2);
   min-width: 0;
 }
 .v-activity-feed__entry-heading {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 7px 12px;
+  gap: var(--s-2) var(--s-3);
   min-width: 0;
 }
 .v-activity-feed__title[data-slot] {
@@ -139,7 +139,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--s-2);
   color: var(--v-text-2);
   min-width: 0;
 }
@@ -148,8 +148,8 @@
 }
 .v-activity-feed__details {
   display: grid;
-  gap: 8px;
-  margin-block-start: 5px;
+  gap: var(--s-2);
+  margin-block-start: var(--s-1);
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -158,8 +158,8 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  padding-block-start: 16px;
+  gap: var(--s-3);
+  padding-block-start: var(--s-4);
   border-block-start: 1px solid var(--v-edge);
 }
 .v-activity-feed__footer > [data-slot="button"] {
@@ -168,22 +168,22 @@
 }
 @media (max-width: 480px) {
   .v-activity-feed__entry {
-    column-gap: 12px;
-    padding-block: 18px;
+    column-gap: var(--s-3);
+    padding-block: var(--s-5);
   }
   .v-activity-feed__footer {
     justify-content: flex-start;
-    gap: 12px 20px;
+    gap: var(--s-3) var(--s-5);
   }
 }
 @media (max-width: 600px) {
   .v-activity-feed[data-slot] {
-    padding: 20px;
+    padding: var(--s-5);
   }
 }
 .v-activity-example {
   width: 100%;
   min-width: 0;
   display: grid;
-  gap: 22px;
+  gap: var(--s-6);
 }

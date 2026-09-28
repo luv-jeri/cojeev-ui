@@ -10,6 +10,6 @@
 .v-msg__stack[data-slot] { max-width:min(100%,65ch); overflow-wrap:anywhere; }
 .v-msg[data-slot] > :is([data-slot="avatar"],svg) { flex-shrink:0; }
 .v-prov[data-slot] { line-height:1.5; }
-.v-msg__stack[data-slot] .v-bubble{border-radius:18px}
-.v-msg__stack[data-slot] .v-bubble:last-of-type{border-radius:18px 18px 18px 4px}
-.v-msg[data-slot].-me .v-msg__stack .v-bubble:last-of-type{border-radius:18px 18px 4px 18px}
+.v-msg__stack[data-slot] .v-bubble{border-radius:var(--r-card)}
+.v-msg__stack[data-slot] .v-bubble:last-of-type{border-radius:var(--r-card) var(--r-card) var(--r-card) var(--r-xs)}
+.v-msg[data-slot].-me .v-msg__stack .v-bubble:last-of-type{border-radius:var(--r-card) var(--r-card) var(--r-xs) var(--r-card)}

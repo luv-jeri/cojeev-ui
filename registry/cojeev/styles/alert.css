@@ -79,7 +79,7 @@
 .v-alert[data-slot] > .v-icon:first-child {
   width: 32px;
   height: 32px;
-  padding: 7px;
+  padding: var(--s-2);
   border-radius: 50%;
   background: var(--v-canvas);
   color: var(--v-on-accent);
@@ -139,7 +139,7 @@
   z-index: 1;
   width: 40px;
   height: 40px;
-  padding: 10px;
+  padding: var(--s-3);
   border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
   color: var(--v-on-accent);
   background: var(--hue, var(--v-beige));
@@ -152,7 +152,7 @@
   z-index: 1;
   width: 40px;
   height: 40px;
-  padding: 10px;
+  padding: var(--s-3);
   border-radius: 46% 54% 50% 50%/50% 46% 54% 50%;
   color: var(--v-on-accent);
   background: var(--hue, var(--v-beige));
@@ -237,7 +237,7 @@
 }
 .v-alert__actions[data-slot] .v-btn {
   height: 32px;
-  padding: 0 14px;
+  padding: 0 var(--s-4);
   font-size: var(--fs-small);
 }
 .v-alert[data-slot] > .v-alert__close {
@@ -262,7 +262,7 @@
   opacity: 0.55;
 }
 .v-alert[data-slot]:has(.v-alert__close) .v-alert__body {
-  padding-right: 34px;
+  padding-right: var(--s-8);
 }
 .v-alert[data-slot] > .v-alert__close {
   cursor: pointer;
@@ -355,8 +355,8 @@
 .v-alert[data-slot][data-presentation] {
   container-type: inline-size;
   --alert-accent: var(--hue, var(--v-pink));
-  padding: 24px;
-  gap: 16px;
+  padding: var(--s-6);
+  gap: var(--s-4);
   background: var(--v-canvas);
   color: var(--v-text);
   border: 1px solid var(--v-border);
@@ -378,7 +378,7 @@
 }
 .v-alert[data-slot][data-presentation] .v-alert__body {
   padding-top: 0;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-alert[data-slot][data-presentation] .v-alert__kicker {
   color: var(--v-text-2);
@@ -386,13 +386,13 @@
   letter-spacing: 0.04em;
 }
 .v-alert[data-slot][data-presentation] .v-alert__actions {
-  margin-top: 8px;
-  gap: 8px;
+  margin-top: var(--s-2);
+  gap: var(--s-2);
 }
 .v-alert[data-slot] .v-alert__actions .v-btn {
   min-height: 44px;
   height: auto;
-  padding: 8px 16px;
+  padding: var(--s-2) var(--s-4);
 }
 .v-alert[data-slot][data-presentation] > .v-alert__blob {
   --mfill: var(--alert-accent);
@@ -410,23 +410,23 @@
   color: var(--v-text-2);
 }
 .v-alert[data-slot][data-presentation]:has(.v-alert__close) .v-alert__body {
-  padding-inline-end: 30px;
+  padding-inline-end: var(--s-8);
 }
 .v-alert[data-slot][data-presentation="note"] {
   border-inline-start: 4px solid var(--alert-accent);
-  border-radius: 4px min(var(--v-control-radius, 20px), 28px)
-    min(var(--v-control-radius, 20px), 28px) 4px;
+  border-radius: var(--r-xs) min(var(--v-control-radius, 20px), 28px)
+    min(var(--v-control-radius, 20px), 28px) var(--r-xs);
 }
 .v-alert[data-slot][data-presentation="banner"] {
-  border-radius: 12px;
+  border-radius: var(--r-md);
   background: color-mix(in srgb, var(--alert-accent) 10%, var(--v-canvas));
   grid-template-columns: 40px minmax(0, 1fr);
   align-items: center;
-  padding: 16px 20px;
+  padding: var(--s-4) var(--s-5);
 }
 .v-alert[data-slot][data-presentation="banner"] .v-alert__body {
   grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 16px;
+  column-gap: var(--s-4);
   align-items: center;
 }
 .v-alert[data-slot][data-presentation="banner"] .v-alert__title {
@@ -446,8 +446,8 @@
 }
 .v-alert[data-slot][data-presentation="dispatch"] {
   grid-template-columns: minmax(0, 1fr);
-  padding: 24px 28px;
-  border-radius: 4px 24px 24px 24px;
+  padding: var(--s-6) var(--s-7);
+  border-radius: var(--r-xs) var(--r-panel) var(--r-panel) var(--r-panel);
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--alert-accent) 10%, var(--v-canvas)),
@@ -464,8 +464,8 @@
 }
 .v-alert[data-slot][data-presentation="dispatch"] .v-alert__actions {
   border-top: 1px dashed var(--v-border);
-  padding-top: 14px;
-  margin-top: 12px;
+  padding-top: var(--s-4);
+  margin-top: var(--s-3);
 }
 .v-alert[data-slot][data-presentation="dispatch"] .v-alert__body {
   padding-inline-end: 0;
@@ -494,14 +494,14 @@
   .v-alert[data-slot][data-presentation="banner"] .v-alert__actions {
     grid-column: 1;
     grid-row: auto;
-    margin-top: 8px;
+    margin-top: var(--s-2);
   }
 }
 .v-message-example {
   width: 100%;
   min-width: 0;
   display: grid;
-  gap: 16px;
+  gap: var(--s-4);
 }
 .v-message-example__hint {
   margin: 0;
@@ -512,13 +512,13 @@
 .v-message-example__restored {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--s-4);
   justify-content: space-between;
   flex-wrap: wrap;
   min-height: 100px;
-  padding: 20px;
+  padding: var(--s-5);
   border: 1px dashed var(--v-border);
-  border-radius: 16px;
+  border-radius: var(--r-card-sm);
 }
 .v-message-example__restored p {
   margin: 0;
@@ -527,23 +527,23 @@
 }
 .v-message-example__notes {
   border-inline-start: 2px solid var(--v-blue);
-  padding: 4px 0 4px 18px;
+  padding: var(--s-1) 0 var(--s-1) var(--s-5);
 }
 .v-message-example__notes h4 {
   font-size: var(--fs-body);
   font-weight: var(--fw-title);
-  margin: 0 0 8px;
+  margin: 0 0 var(--s-2);
 }
 .v-message-example__notes ul {
   padding: 0;
   margin: 0;
   list-style: none;
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-message-example__notes li {
   display: flex;
-  gap: 12px;
+  gap: var(--s-3);
   align-items: baseline;
   font-size: var(--fs-small);
   color: var(--v-text-2);

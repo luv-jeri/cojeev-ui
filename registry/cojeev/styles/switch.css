@@ -209,10 +209,10 @@
 .v-switchrow:where([data-slot="switch"], [data-slot^="switch-"]) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 16px;
+  gap: 2px var(--s-4);
   align-items: center;
   min-height: 56px;
-  padding: 10px 0;
+  padding: var(--s-3) 0;
   border-bottom: 1px solid color-mix(in oklab, var(--v-border) 70%, transparent);
   cursor: pointer;
 }
@@ -247,8 +247,8 @@
   color: var(--v-disabled-ink);
 }
 .v-switchrow:where([data-slot="switch"], [data-slot^="switch-"]).-card {
-  padding: 12px 16px;
-  border-radius: 18px;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-card);
   background: var(--card);
   border-bottom: 0;
 }

@@ -23,7 +23,7 @@ export type EmptyStateProps=React.ComponentProps<"div"> & VariantProps<typeof Em
 export function EmptyState({ref: externalMorphRef, as:Tag="div",className,variant,size,...props}:EmptyStateProps){const ownedMorphRef = useMorph<HTMLDivElement>("cards", externalMorphRef);
   return <Tag ref={ownedMorphRef} data-slot="empty-state" data-part="state" className={cn(EmptyStateVariants({variant,size}),className)} {...props}/>}
 
-const EmptyStateTitleVariants=cva("v-state__word [font-weight:var(--fw-semibold)] [display:flex] [align-items:center] [gap:8px]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const EmptyStateTitleVariants=cva("v-state__word [font-weight:var(--fw-semibold)] [display:flex] [align-items:center] [gap:var(--s-2)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type EmptyStateTitleProps=React.ComponentProps<"div"> & VariantProps<typeof EmptyStateTitleVariants> & { as?:React.ElementType }
 export function EmptyStateTitle({as:Tag="div",className,variant,size,...props}:EmptyStateTitleProps){return <Tag data-slot="empty-state-title" data-part="state-title" className={cn(EmptyStateTitleVariants({variant,size}),className)} {...props}/>}
 

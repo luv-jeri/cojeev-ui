@@ -104,7 +104,7 @@ export function ChartContainer({ className, ...props }: ChartContainerProps) {
   );
 }
 export const chartVariants = cva(
-  "v-bars flex items-end gap-[8px] h-[var(--h,88px)]",
+  "v-bars flex items-end gap-[var(--s-2)] h-[var(--h,88px)]",
 );
 export type ChartProps = React.ComponentProps<"div"> & {
   data?: ChartDatum[];
@@ -200,7 +200,7 @@ export function ChartAxis({ className, ...props }: ChartAxisProps) {
       data-slot="chart-axis"
       data-part="label"
       className={cn(
-        "v-axis flex justify-between text-[length:var(--fs-caps)] text-[color:var(--muted-foreground)] mt-[8px] tabular-nums",
+        "v-axis flex justify-between text-[length:var(--fs-caps)] text-[color:var(--muted-foreground)] mt-[var(--s-2)] tabular-nums",
         className,
       )}
       {...props}
@@ -403,7 +403,7 @@ export function ChartRankedLabel({
   return (
     <div
       data-slot="chart-ranked-label"
-      className={cn("v-prow__lab flex-1 min-w-0 grid gap-[6px]", className)}
+      className={cn("v-prow__lab flex-1 min-w-0 grid gap-[var(--s-2)]", className)}
       {...props}
     />
   );

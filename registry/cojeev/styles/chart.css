@@ -91,7 +91,7 @@
 .v-chart-frame__header {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 8px;
+  gap: var(--s-2);
   align-items: start;
 }
 .v-chart-frame [data-slot="card-title"] {
@@ -103,16 +103,16 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 8px;
+  gap: var(--s-1) var(--s-2);
   min-width: 0;
 }
 .v-chart-legend__item.v-btn {
-  gap: 7px;
-  padding-inline: 9px;
+  gap: var(--s-2);
+  padding-inline: var(--s-2);
   max-width: 100%;
   height: auto;
   min-height: 32px;
-  padding-block: 6px;
+  padding-block: var(--s-2);
   white-space: normal;
   text-align: start;
   font-weight: var(--fw-medium);
@@ -210,14 +210,14 @@
   pointer-events: none;
 }
 .v-chart-tooltip__card[data-slot="card"] {
-  padding: 12px 14px;
+  padding: var(--s-3) var(--s-4);
   border-radius: var(--r-card-sm);
   background: var(--popover);
   color: var(--popover-foreground);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-float);
   display: grid;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-chart-tooltip__label {
   font-size: var(--fs-small);
@@ -233,7 +233,7 @@
   display: grid;
   grid-template-columns: 10px minmax(0, 1fr) auto;
   align-items: start;
-  gap: 8px;
+  gap: var(--s-2);
   font-size: var(--fs-meta);
   line-height: 1.45;
 }
@@ -265,8 +265,8 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
-  padding-bottom: 12px;
+  gap: var(--s-3);
+  padding-bottom: var(--s-3);
   border-bottom: 1px solid var(--v-edge);
 }
 .v-chart-tooltip__total > span {
@@ -297,7 +297,7 @@
   max-width: 580px;
   margin-inline: auto;
   display: grid;
-  gap: 20px;
+  gap: var(--s-5);
   color: var(--v-text);
 }
 .v-chart-tooltip-example h3 {
@@ -316,17 +316,17 @@
   height: 280px;
   background: var(--v-paper);
   border: 1px solid var(--v-edge);
-  border-radius: 20px;
+  border-radius: var(--r-card);
 }
 .v-chart-tooltip-example__points {
   display: flex;
   justify-content: space-between;
-  gap: 4px;
-  padding: 16px;
+  gap: var(--s-1);
+  padding: var(--s-4);
 }
 .v-chart-tooltip-example__points .v-btn {
   font-size: var(--fs-meta);
-  padding-inline: 10px;
+  padding-inline: var(--s-3);
   min-height: 44px;
 }
 .v-chart-tooltip-example__guide {
@@ -359,7 +359,7 @@
 .v-chart-example,
 .v-chart-introduction {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   min-width: 0;
 }
 .v-chart-example__tools {
@@ -367,18 +367,18 @@
   flex-wrap: wrap;
   align-items: end;
   justify-content: space-between;
-  gap: 12px 24px;
+  gap: var(--s-3) var(--s-6);
 }
 .v-chart-example__tools > [role="status"] {
   font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-text-2);
   max-width: 32ch;
-  padding-bottom: 10px;
+  padding-bottom: var(--s-3);
 }
 .v-chart-control {
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
   min-width: 0;
   width: min(100%, 260px);
 }
@@ -392,8 +392,8 @@
 }
 .v-chart-frame[data-appearance] > div > [data-slot="card"] {
   display: grid;
-  gap: 20px;
-  padding: 24px;
+  gap: var(--s-5);
+  padding: var(--s-6);
   background: var(--v-canvas);
   color: var(--v-text);
   border: 1px solid var(--v-border);
@@ -421,9 +421,9 @@
 .v-chart-summary {
   display: grid;
   align-content: center;
-  gap: 12px;
+  gap: var(--s-3);
   min-width: 0;
-  padding: 28px 20px;
+  padding: var(--s-7) var(--s-5);
   border-inline-start: 3px solid var(--v-pink);
 }
 .v-chart-summary > span:first-child {
@@ -503,7 +503,7 @@
 .v-chart-anatomy {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--s-4);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -511,8 +511,8 @@
 .v-chart-anatomy li {
   display: grid;
   align-content: start;
-  gap: 12px;
-  padding: 20px;
+  gap: var(--s-3);
+  padding: var(--s-5);
   border-top: 2px solid var(--v-blue);
   min-width: 0;
 }
@@ -538,18 +538,18 @@
     > [data-slot="card"] {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "heading" "summary" "plot" "footer" "values";
-    padding: 16px;
+    padding: var(--s-4);
   }
   .v-chart-summary {
-    padding: 12px 16px;
+    padding: var(--s-3) var(--s-4);
   }
   .v-chart-anatomy {
     grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
+    gap: var(--s-2);
   }
   .v-chart-anatomy li {
     grid-template-columns: 24px minmax(0, 1fr);
-    padding: 16px 0;
+    padding: var(--s-4) 0;
   }
   .v-chart-anatomy li > p {
     grid-column: 2;

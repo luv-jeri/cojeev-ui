@@ -7,7 +7,7 @@ const MessageVariants=cva("v-msg [display:flex] [gap:var(--s-3)] [align-items:fl
 export type MessageProps=React.ComponentProps<"div"> & VariantProps<typeof MessageVariants> & { as?:React.ElementType }
 export function Message({as:Tag="div",className,variant,size,...props}:MessageProps){return <Tag data-slot="message" data-part="root" className={cn(MessageVariants({variant,size}),className)} {...props}/>}
 
-const MessageContentVariants=cva("v-msg__stack [display:grid] [gap:6px] [justify-items:start] [min-width:0]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const MessageContentVariants=cva("v-msg__stack [display:grid] [gap:var(--s-2)] [justify-items:start] [min-width:0]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type MessageContentProps=React.ComponentProps<"div"> & VariantProps<typeof MessageContentVariants> & { as?:React.ElementType }
 export function MessageContent({as:Tag="div",className,variant,size,...props}:MessageContentProps){return <Tag data-slot="message-content" data-part="content" className={cn(MessageContentVariants({variant,size}),className)} {...props}/>}
 

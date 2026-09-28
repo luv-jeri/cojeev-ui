@@ -13,15 +13,15 @@ import { useMotionVisibility } from "@/registry/cojeev/motion/use-motion-visibil
 import { assignMotionRef } from "@/registry/cojeev/motion/refs";
 
 const SkeletonVariants = cva(
-  "v-skel [border-radius:999px] [background:var(--v-skel-face)] [background-size:200%_100%] [animation:v-shimmer_1.4s_linear_infinite] [box-shadow:none] [position:relative] [overflow:hidden]",
+  "v-skel [border-radius:var(--r-pill)] [background:var(--v-skel-face)] [background-size:200%_100%] [animation:v-shimmer_1.4s_linear_infinite] [box-shadow:none] [position:relative] [overflow:hidden]",
   {
     variants: {
       variant: {
         default: "",
         pill: "-pill [border-radius:var(--r-pill)]",
-        card: "-card [border-radius:20px]",
+        card: "-card [border-radius:var(--r-card)]",
         disk: "-disk [border-radius:50%]",
-        line: "-line [height:12px] [border-radius:999px]",
+        line: "-line [height:12px] [border-radius:var(--r-pill)]",
         "skel-group": "-skel-group",
       },
       size: { default: "" },
@@ -108,7 +108,7 @@ export function Skeleton({
   );
 }
 
-const SkeletonGroupVariants = cva("v-skel-group [gap:8px] [display:grid]", {
+const SkeletonGroupVariants = cva("v-skel-group [gap:var(--s-2)] [display:grid]", {
   variants: { variant: { default: "" }, size: { default: "" } },
   defaultVariants: { variant: "default", size: "default" },
 });
@@ -136,7 +136,7 @@ export function SkeletonGroup({
 }
 
 const AsyncContentVariants = cva(
-  "v-async [display:grid] [gap:10px] [padding:18px] [border-radius:16px] [background:var(--v-beige)] [justify-items:start]",
+  "v-async [display:grid] [gap:var(--s-3)] [padding:var(--s-5)] [border-radius:var(--r-card-sm)] [background:var(--v-beige)] [justify-items:start]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -249,7 +249,7 @@ function LoadingContent({
 }
 
 const AsyncRowVariants = cva(
-  "v-async__row [display:flex] [align-items:center] [gap:10px] [font-size:var(--fs-control)] [color:var(--v-text-2)]",
+  "v-async__row [display:flex] [align-items:center] [gap:var(--s-3)] [font-size:var(--fs-control)] [color:var(--v-text-2)]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },

@@ -173,7 +173,7 @@ export function ItemDescription({
 }
 
 const ItemTrailingVariants = cva(
-  "v-time [display:inline-flex] [align-items:center] [white-space:nowrap] [flex:none] [height:26px] [padding:0_12px] [border-radius:var(--r-pill)] [font-size:var(--fs-meta)] [font-weight:var(--fw-medium)] [font-variant-numeric:tabular-nums] [background:var(--v-canvas)]",
+  "v-time [display:inline-flex] [align-items:center] [white-space:nowrap] [flex:none] [height:26px] [padding:0_var(--s-3)] [border-radius:var(--r-pill)] [font-size:var(--fs-meta)] [font-weight:var(--fw-medium)] [font-variant-numeric:tabular-nums] [background:var(--v-canvas)]",
   {
     variants: {
       variant: {

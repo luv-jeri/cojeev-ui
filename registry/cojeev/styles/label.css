@@ -1,10 +1,10 @@
 /* Orthogonal authored class modifiers remain composable with CVA axes. */
-.v-stat[data-slot].-ul{padding-bottom:8px;border-bottom:2px solid var(--wm,var(--v-text))}
+.v-stat[data-slot].-ul{padding-bottom:var(--s-2);border-bottom:2px solid var(--wm,var(--v-text))}
 .v-label[data-slot].-sm{font-size:var(--fs-small)}
 
 /* Authored contextual and pseudo-element rules, scoped to component-owned roots. */
-.v-stats[data-slot]+.v-bars{margin-top:22px}
-.v-stats[data-slot]+.v-line{margin-top:22px}
+.v-stats[data-slot]+.v-bars{margin-top:var(--s-6)}
+.v-stats[data-slot]+.v-line{margin-top:var(--s-6)}
 .v-stat[data-slot] span{white-space:normal}
 .v-stat[data-slot] b{font-size:var(--fs-body);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;line-height:1.2}
 .v-stat[data-slot] b .u{font-weight:var(--fw-regular);margin-left:3px}

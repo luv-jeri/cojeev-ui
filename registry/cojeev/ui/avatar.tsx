@@ -12,7 +12,7 @@ const AvatarVariants = cva(
     variants: {
       variant: {
         default: "",
-        square: "-square [border-radius:14px]",
+        square: "-square [border-radius:var(--r-card-sm)]",
         pink: "-pink [--c:var(--v-pink)] [color:var(--v-on-accent)]",
         yellow: "-yellow [--c:var(--v-yellow)] [color:var(--v-on-accent)]",
         olive: "-olive [--c:var(--v-olive)] [color:var(--v-on-accent)]",

@@ -36,7 +36,7 @@
   .v-section {
   font-size: var(--fs-section);
   line-height: 1.15;
-  padding-top: 6px;
+  padding-top: var(--s-2);
 }
 .v-dialog:where([data-slot="alert-dialog"], [data-slot^="alert-dialog-"])
   > .v-body-2 {

@@ -11,6 +11,6 @@ const StatsVariants=cva("v-stats [display:flex] [gap:var(--s-5)_var(--s-5)] [fle
 export type StatsProps=React.ComponentProps<"div"> & VariantProps<typeof StatsVariants> & { as?:React.ElementType }
 export function Stats({as:Tag="div",className,variant,size,...props}:StatsProps){return <Tag data-slot="label-stats" data-part="stats" className={cn(StatsVariants({variant,size}),className)} {...props}/>}
 
-const StatVariants=cva("v-stat [display:grid] [gap:4px] [min-width:0]",{variants:{variant:{"default":"","ul":"-ul [padding-bottom:8px] [border-bottom:2px_solid_var(--wm,var(--v-text))]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const StatVariants=cva("v-stat [display:grid] [gap:var(--s-1)] [min-width:0]",{variants:{variant:{"default":"","ul":"-ul [padding-bottom:var(--s-2)] [border-bottom:2px_solid_var(--wm,var(--v-text))]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type StatProps=React.ComponentProps<"div"> & VariantProps<typeof StatVariants> & { as?:React.ElementType }
 export function Stat({as:Tag="div",className,variant,size,...props}:StatProps){return <Tag data-slot="label-stat" data-part="stat" className={cn(StatVariants({variant,size}),className)} {...props}/>}

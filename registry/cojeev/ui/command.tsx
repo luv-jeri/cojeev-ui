@@ -81,7 +81,7 @@ export function useCommandResultsMotion<T extends HTMLElement>(
   );
 }
 export const commandVariants = cva(
-  "v-cmd [background:var(--popover)] [width:min(520px,100%)] [overflow:hidden] [border:0] [box-shadow:var(--shadow-float),inset_0_0_0_1px_var(--v-border)] [border-radius:22px]",
+  "v-cmd [background:var(--popover)] [width:min(520px,100%)] [overflow:hidden] [border:0] [box-shadow:var(--shadow-float),inset_0_0_0_1px_var(--v-border)] [border-radius:var(--r-panel)]",
 );
 export type CommandProps = React.ComponentProps<typeof Primitive>;
 export function Command({ className, ref, ...props }: CommandProps) {

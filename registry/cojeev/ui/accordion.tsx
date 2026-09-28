@@ -8,7 +8,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Icon } from "@/registry/cojeev/ui/icon";
 import * as Primitive from "@radix-ui/react-accordion";
-export const accordionVariants = cva("v-acc [display:grid] [gap:8px]");
+export const accordionVariants = cva("v-acc [display:grid] [gap:var(--s-2)]");
 export type AccordionAppearance = "faq" | "chapters" | "editorial";
 const AccordionAppearanceContext = React.createContext<
   AccordionAppearance | undefined
@@ -51,7 +51,7 @@ export function AccordionItem({
       data-tier={appearance ? "card" : undefined}
       data-r={appearance === "chapters" ? "12" : appearance ? "18" : undefined}
       className={cn(
-        "overflow-hidden rounded-[18px] bg-[var(--card)]",
+        "overflow-hidden rounded-[var(--r-card)] bg-[var(--card)]",
         className,
       )}
       {...props}
@@ -73,7 +73,7 @@ export function AccordionTrigger({
         data-slot="accordion-trigger"
         data-part="trigger"
         className={cn(
-          "flex w-full items-center text-left min-h-[60px] py-3 pl-3 pr-4 gap-3.5 rounded-[18px] font-semibold text-[length:var(--fs-body)] leading-[1.3]",
+          "flex w-full items-center text-left min-h-[60px] py-3 pl-3 pr-4 gap-3.5 rounded-[var(--r-card)] font-semibold text-[length:var(--fs-body)] leading-[1.3]",
           className,
         )}
         {...props}

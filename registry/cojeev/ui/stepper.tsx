@@ -117,7 +117,7 @@ export function StepperItem({ step, className, ...props }: StepperItemProps) {
             : "inactive"
       }
       className={cn(
-        "v-step relative grid grid-cols-[38px_minmax(0,1fr)] items-center gap-[16px] py-[9px] min-h-[54px] list-none",
+        "v-step relative grid grid-cols-[38px_minmax(0,1fr)] items-center gap-[var(--s-4)] py-[var(--s-2)] min-h-[54px] list-none",
         step < context.value && "-done",
         step === context.value && "-on",
         className,

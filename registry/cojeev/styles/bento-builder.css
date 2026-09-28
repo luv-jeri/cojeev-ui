@@ -2,7 +2,7 @@
   width: 100%;
   min-width: 0;
   display: grid;
-  gap: 20px;
+  gap: var(--s-5);
   color: var(--v-text);
 }
 .v-bento-builder__heading,
@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--s-4);
   flex-wrap: wrap;
 }
 .v-bento-builder__eyebrow {
@@ -23,18 +23,18 @@
   font-size: clamp(24px, 4vw, 36px);
   font-weight: var(--fw-medium);
   letter-spacing: -0.03em;
-  margin: 6px 0 0;
+  margin: var(--s-2) 0 0;
 }
 .v-bento-builder__actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-2);
   flex-wrap: wrap;
 }
 .v-bento-builder__templates {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-bento-builder__templates button {
   min-width: 0;
@@ -57,7 +57,7 @@
   /* The editor's coordinate canvas cannot grow when a neighbor gets shorter.
      Content-derived fractional tracks fed their new height back into snapping. */
   grid-template-rows: repeat(var(--bento-rows), 144px);
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-bento-builder__board .v-bento[data-variant="interlock"] {
   gap: 0;
@@ -80,7 +80,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 14px;
+  gap: var(--s-4);
   text-align: start;
   color: inherit;
   background: transparent;
@@ -88,7 +88,7 @@
   border-radius: inherit;
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: var(--s-5);
   cursor: grab;
   touch-action: pan-x pan-y;
   min-width: 0;
@@ -103,7 +103,7 @@
   outline-offset: -10px;
 }
 .v-bento-builder__tile:focus-visible {
-  outline: 3px solid var(--v-focus);
+  outline: 3px solid var(--ring);
   outline-offset: -6px;
 }
 .v-bento-builder__tile-hint {
@@ -114,7 +114,7 @@
 .v-bento-builder__board
   .v-bento[data-variant="interlock"]
   .v-bento-builder__tile {
-  padding: 24px;
+  padding: var(--s-6);
 }
 .v-bento-builder__board .v-bento__label {
   font-size: clamp(12px, min(12cqi, 18cqb), 27px);
@@ -130,7 +130,7 @@
   width: 44px;
   height: 44px;
   border: 1px solid var(--v-border);
-  border-radius: 16px;
+  border-radius: var(--r-card-sm);
   background: var(--v-canvas);
   color: var(--v-text);
   cursor: ew-resize;
@@ -144,7 +144,7 @@
   cursor: ns-resize;
 }
 .v-bento-builder__seam:focus-visible {
-  outline: 3px solid var(--v-focus);
+  outline: 3px solid var(--ring);
 }
 .v-bento-builder__feedback {
   position: fixed;
@@ -152,11 +152,11 @@
   box-sizing: border-box;
   width: min(256px, calc(100vw - 24px));
   display: grid;
-  gap: 4px;
-  padding: 12px 14px;
+  gap: var(--s-1);
+  padding: var(--s-3) var(--s-4);
   border: 1px solid var(--v-border);
   border-inline-start: 3px solid var(--v-yellow);
-  border-radius: 12px;
+  border-radius: var(--r-md);
   background: var(--v-canvas);
   color: var(--v-text);
   box-shadow: 0 6px 20px #0002;
@@ -172,9 +172,9 @@
 .v-bento-builder__controls {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: var(--s-6);
   border-block: 1px solid var(--v-border);
-  padding-block: 20px;
+  padding-block: var(--s-5);
 }
 .v-bento-builder fieldset {
   min-width: 0;
@@ -184,22 +184,22 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-bento-builder legend {
   font-size: var(--fs-small);
   font-weight: var(--fw-semibold);
-  margin-bottom: 12px;
+  margin-bottom: var(--s-3);
 }
 .v-bento-builder label {
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
   width: 100%;
   font-size: var(--fs-meta);
 }
 .v-bento-builder__fields {
   display: flex;
-  gap: 12px;
+  gap: var(--s-3);
   width: 100%;
 }
 .v-bento-builder p {
@@ -213,12 +213,12 @@
   font-size: var(--fs-small);
 }
 .v-bento-builder__resize p {
-  margin-block: 12px;
+  margin-block: var(--s-3);
 }
 .v-bento-builder__resize .v-bento-builder__actions > div {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--s-2);
 }
 .v-bento-builder__resize .v-bento-builder__actions > div > span {
   font-size: var(--fs-meta);

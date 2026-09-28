@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Icon, IconButton } from "@/registry/cojeev/ui/icon";
 export const breadcrumbVariants = cva(
-  "v-crumbs flex flex-wrap items-center gap-[10px] text-[length:var(--fs-control)] text-[color:var(--v-text-2)]",
+  "v-crumbs flex flex-wrap items-center gap-[var(--s-3)] text-[length:var(--fs-control)] text-[color:var(--v-text-2)]",
 );
 export type BreadcrumbPresentation = "trail" | "pocket" | "directory";
 export type BreadcrumbProps = React.ComponentProps<"nav"> & {
@@ -42,7 +42,7 @@ export function BreadcrumbItem({ className, ...props }: BreadcrumbItemProps) {
   return (
     <li
       data-slot="breadcrumb-item"
-      className={cn("inline-flex items-center gap-[10px]", className)}
+      className={cn("inline-flex items-center gap-[var(--s-3)]", className)}
       {...props}
     />
   );
@@ -62,7 +62,7 @@ export function BreadcrumbLink({
       data-part="item"
       data-stable-hit=""
       className={cn(
-        "inline h-auto p-0 rounded-[4px] bg-transparent [box-shadow:none] text-[color:var(--v-text-2)] font-normal no-underline",
+        "inline h-auto p-0 rounded-[var(--r-xs)] bg-transparent [box-shadow:none] text-[color:var(--v-text-2)] font-normal no-underline",
         className,
       )}
       {...props}
@@ -135,7 +135,7 @@ export function BreadcrumbBack({
       type="button"
       aria-label="Back"
       className={cn(
-        "v-ibtn inline-grid place-items-center shrink-0 [width:44px] [height:44px] mr-[4px] [border-radius:50%] [border:0] [background:var(--v-canvas)] [color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
+        "v-ibtn inline-grid place-items-center shrink-0 [width:44px] [height:44px] mr-[var(--s-1)] [border-radius:50%] [border:0] [background:var(--v-canvas)] [color:var(--v-text)] [box-shadow:inset_0_0_0_1px_var(--v-edge)]",
         className,
       )}
       {...props}
