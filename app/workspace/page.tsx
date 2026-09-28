@@ -4,6 +4,7 @@ import { AgentWorkspaceExample } from "@/components/examples/agent";
 import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbItem } from "@/registry/cojeev/ui/breadcrumb";
 import { ThemeControl } from "@/components/theme-control";
 import "./workspace.css";
+import "../styles/workspace.css";
 
 export const metadata: Metadata = { robots: { index: false, follow: false }, title: "Agent workspace · Cojeev UI", description: "An interactive monitoring workspace built with Cojeev UI components." };
 

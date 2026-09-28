@@ -1,11 +1,11 @@
 .v-number-input {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--s-1);
   inline-size: 100%;
   min-inline-size: 0;
   block-size: 56px;
-  padding: 4px;
+  padding: var(--s-1);
   background: var(--input);
   color: var(--v-text);
   border-radius: var(--r-pill);
@@ -14,7 +14,7 @@
   font-variant-numeric: tabular-nums;
 }
 .v-number-input:focus-within {
-  outline: 2px solid var(--v-accent, var(--v-text));
+  outline: 2px solid var(--ring);
   outline-offset: 3px;
 }
 .v-number-input .v-number-input__step {
@@ -60,7 +60,7 @@
   caret-color: var(--v-text);
   font: inherit;
   text-align: center;
-  padding: 0 6px;
+  padding: 0 var(--s-2);
   box-sizing: border-box;
 }
 .v-number-input__control::placeholder {
@@ -89,7 +89,7 @@
   opacity: 0.5;
 }
 .v-number-input[data-invalid="true"] {
-  box-shadow: inset 0 0 0 2px var(--v-negative, #aa3434);
+  box-shadow: inset 0 0 0 2px var(--v-danger);
 }
 @media (forced-colors: active) {
   .v-number-input {
@@ -116,16 +116,16 @@
   grid-template-rows: 44px 44px;
   grid-template-areas: "field increase" "field decrease";
   height: auto;
-  padding: 8px;
-  gap: 4px 12px;
+  padding: var(--s-2);
+  gap: var(--s-1) var(--s-3);
   border-radius: min(var(--v-control-radius, 24px), 24px);
 }
 .v-number-input[data-presentation="quantity"] .v-number-input__field {
   grid-area: field;
   min-height: 88px;
-  font: 500 clamp(24px, 5vw, 40px) / 1.2 var(--font-display);
+  font: var(--fw-medium) clamp(24px, 5vw, 40px) / 1.2 var(--font-display);
   border-inline-end: 1px dashed var(--v-edge);
-  padding-inline: 8px 12px;
+  padding-inline: var(--s-2) var(--s-3);
 }
 .v-number-input[data-presentation="quantity"] .v-number-input__increase {
   grid-area: increase;
@@ -137,22 +137,22 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 44px 44px;
   grid-template-rows: 52px 56px;
-  gap: 4px;
+  gap: var(--s-1);
   height: auto;
-  padding: 8px;
+  padding: var(--s-2);
   border-radius: min(var(--v-control-radius, 20px), 20px);
 }
 .v-number-input[data-presentation="scrub"] .v-number-input__field {
   grid-area: 1 / 1;
-  font-size: 24px;
+  font-size: var(--fs-section);
 }
 .v-number-input[data-presentation="scrub"] .v-number-input__control {
   text-align: start;
-  padding-inline: 12px;
+  padding-inline: var(--s-3);
 }
 .v-number-input[data-presentation="scrub"] .v-number-input__display {
   justify-content: start;
-  padding-inline: 12px;
+  padding-inline: var(--s-3);
 }
 .v-number-input[data-presentation="scrub"] .v-number-input__decrease {
   grid-area: 1 / 2;
@@ -166,10 +166,10 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
   width: 100%;
-  height: 56px;
-  min-height: 44px;
-  padding: 0 12px;
-  border-radius: 12px;
+  height: var(--ctl-xl);
+  min-height: var(--hit-min);
+  padding: 0 var(--s-3);
+  border-radius: var(--r-md);
   touch-action: none;
   cursor: ew-resize;
   user-select: none;
@@ -196,8 +196,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  font-size: 12px;
+  gap: var(--s-3);
+  font-size: var(--fs-meta);
   pointer-events: none;
 }
 .v-number-input[data-scrubbing="true"] .v-number-input__grip {
@@ -206,8 +206,8 @@
 .v-adjustment-example {
   display: grid;
   box-sizing: border-box;
-  padding-inline: 10px;
-  gap: 20px;
+  padding-inline: var(--s-3);
+  gap: var(--s-5);
   width: 100%;
   max-width: 440px;
   margin-inline: auto;
@@ -217,7 +217,7 @@
   display: grid;
   grid-template-columns: 44px 1fr;
   align-items: center;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-adjustment-example__stamp {
   display: grid;
@@ -227,23 +227,23 @@
   background: var(--v-yellow);
   color: var(--v-on-accent);
   border-radius: 35% 50% 36% 48%;
-  font: 500 20px/1 var(--font-display);
+  font: var(--fw-medium) var(--fs-title)/1 var(--font-display);
 }
 .v-adjustment-example__heading p {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .v-adjustment-example__heading label {
   display: block;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-size: var(--fs-reading);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--s-1);
 }
 .v-adjustment-example__help {
   margin: 0;
   color: var(--v-text-2);
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.6;
 }
 .v-adjustment-example__footer {
@@ -251,16 +251,16 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-adjustment-example__footer .v-btn {
   min-height: 44px;
 }
 .v-adjustment-example__status {
   margin: 0;
-  padding-top: 12px;
+  padding-top: var(--s-3);
   border-top: 1px dashed var(--v-border);
   color: var(--v-text-2);
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.5;
 }

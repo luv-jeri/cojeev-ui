@@ -6,7 +6,7 @@ import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import { Button } from "./button";
 
 const AlertVariants = cva(
-  "v-alert [display:grid] [gap:0_16px] [align-items:start] [padding:16px_20px_17px_16px] [border-radius:20px] [background:var(--v-beige)] [grid-template-columns:40px_minmax(0,1fr)] [position:relative] [overflow:hidden] [isolation:isolate]",
+  "v-alert [display:grid] [gap:0_var(--s-4)] [align-items:start] [padding:var(--s-4)_var(--s-5)_var(--s-4)_var(--s-4)] [border-radius:var(--r-card)] [background:var(--v-beige)] [grid-template-columns:40px_minmax(0,1fr)] [position:relative] [overflow:hidden] [isolation:isolate]",
   {
     variants: {
       variant: {
@@ -55,7 +55,7 @@ export function Alert({
 }
 
 const AlertBodyVariants = cva(
-  "v-alert__body [display:grid] [gap:3px] [flex:1] [padding-top:9px] [min-width:0] [position:relative] [z-index:1]",
+  "v-alert__body [display:grid] [gap:3px] [flex:1] [padding-top:var(--s-2)] [min-width:0] [position:relative] [z-index:1]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -81,7 +81,7 @@ export function AlertBody({
 }
 
 const AlertTitleVariants = cva(
-  "v-alert__title [font-weight:600] [font-size:15.5px] [line-height:1.3] [letter-spacing:-.005em]",
+  "v-alert__title [font-weight:var(--fw-semibold)] [font-size:var(--fs-body)] [line-height:1.3] [letter-spacing:-.005em]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -107,7 +107,7 @@ export function AlertTitle({
 }
 
 const AlertDescriptionVariants = cva(
-  "v-alert__text [font-size:13.5px] [color:var(--muted-foreground)] [line-height:1.45]",
+  "v-alert__text [font-size:var(--fs-small)] [color:var(--muted-foreground)] [line-height:1.45]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -133,7 +133,7 @@ export function AlertDescription({
 }
 
 const AlertKickerVariants = cva(
-  "v-alert__kicker [font-size:10.5px] [font-weight:600] [letter-spacing:.08em] [text-transform:uppercase] [color:var(--hue-ink,var(--alert-ink))] [margin-bottom:2px]",
+  "v-alert__kicker [font-size:var(--fs-caps)] [font-weight:var(--fw-semibold)] [letter-spacing:.08em] [text-transform:uppercase] [color:var(--hue-ink,var(--alert-ink))] [margin-bottom:2px]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -188,7 +188,7 @@ export function AlertIcon({
 }
 
 const AlertActionsVariants = cva(
-  "v-alert__actions [display:flex] [gap:8px] [margin-top:10px] [flex-wrap:wrap]",
+  "v-alert__actions [display:flex] [gap:var(--s-2)] [margin-top:var(--s-3)] [flex-wrap:wrap]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },

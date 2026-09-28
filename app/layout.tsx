@@ -4,11 +4,12 @@ import displayFont from "./fonts/bricolage-grotesque-variable.woff2";
 import { PageScrollBar, ScrollbarProvider } from "@/registry/cojeev/ui/scroll-area";
 import { pageScrollbarBootstrap } from "@/registry/cojeev/motion/scroll-thumb";
 import { AppearanceProvider } from "@/registry/cojeev/ui/appearance";
-import { ReportingWidget } from "@/components/reporting/reporting-widget";
+import { DeferredReportingWidget } from "@/components/reporting/deferred-reporting-widget";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import { absoluteSiteUrl, site, siteFlags } from "@/lib/site-config";
 import { catalog } from "@/lib/catalog";
 import "./globals.css";
+import "./styles/shell.css";
 import "@/components/analytics/analytics-consent.css";
 export const metadata: Metadata = {
   title: { default: site.title, template: `%s · ${site.title}` },
@@ -36,7 +37,7 @@ export default function RootLayout({
             never mounts the overlay. Both halves live in the component's own helper. */}
         <script dangerouslySetInnerHTML={{ __html: pageScrollbarBootstrap }} />
       </head>
-      <body suppressHydrationWarning><AnalyticsProvider><AppearanceProvider><ScrollbarProvider scrollbarSize={4}>{children}<PageScrollBar /><ReportingWidget entries={catalog().map(({name,title,description}) => ({name,title,description}))} /></ScrollbarProvider></AppearanceProvider></AnalyticsProvider></body>
+      <body suppressHydrationWarning><AnalyticsProvider><AppearanceProvider><ScrollbarProvider scrollbarSize={4}>{children}<PageScrollBar /><DeferredReportingWidget entries={catalog().map(({name,title,description}) => ({name,title,description}))} /></ScrollbarProvider></AppearanceProvider></AnalyticsProvider></body>
     </html>
   );
 }

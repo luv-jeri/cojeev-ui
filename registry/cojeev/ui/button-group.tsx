@@ -11,7 +11,7 @@ const ButtonGroupContext = React.createContext<{
   change: (value: string) => void;
 } | null>(null);
 export const buttonGroupVariants = cva(
-  "v-seg inline-flex flex-wrap gap-[2px] p-[3px] [border-radius:999px] bg-[var(--card)] [box-shadow:none]",
+  "v-seg inline-flex flex-wrap gap-[2px] p-[3px] [border-radius:var(--r-pill)] bg-[var(--card)] [box-shadow:none]",
 );
 export type ButtonGroupProps = Omit<
   React.ComponentProps<"div">,
@@ -71,7 +71,7 @@ export function ButtonGroupItem({
       variant="ghost"
       size="sm"
       className={cn(
-        "h-[36px] px-[14px] text-[13.5px] leading-none font-medium [border:0] [box-shadow:none] text-[color:var(--v-text-2)]",
+        "h-[36px] px-[var(--s-4)] text-[length:var(--fs-small)] leading-none font-medium [border:0] [box-shadow:none] text-[color:var(--v-text-2)]",
         className,
       )}
       onClick={(event) => {
@@ -96,7 +96,7 @@ export function ButtonGroupUtility({
       data-shapes={shapes ? "" : undefined}
       role="group"
       className={cn(
-        "v-utility inline-flex gap-[2px] p-[3px] [border-radius:999px] bg-[var(--card)] [box-shadow:none]",
+        "v-utility inline-flex gap-[2px] p-[3px] [border-radius:var(--r-pill)] bg-[var(--card)] [box-shadow:none]",
         className,
       )}
       {...props}

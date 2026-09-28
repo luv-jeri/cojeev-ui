@@ -11,10 +11,11 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "build": "npm run registry:build && next build",
+    "build": "npm run registry:build && npm run styles:build && next build",
     "start": "vite preview --outDir out --base /cojeev-ui/ --host 127.0.0.1 --port 3000",
     "typecheck": "tsc --noEmit",
     "registry:build": "node scripts/build-registry.mjs",
+    "styles:build": "node scripts/build-route-styles.mjs",
     "gate": "node scripts/run-production-gate.mjs",
     "gate:spike": "node apps/gate/run.mjs --components=button,badge,card",
     "gate:dev": "vite --config apps/gate/vite.config.ts --host 127.0.0.1",

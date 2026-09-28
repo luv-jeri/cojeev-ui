@@ -32,7 +32,7 @@
    pill reads balanced instead of icon-heavy on the leading side. */
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]):is(.-pills, .-lenses)
   .v-tab:has(> .v-icon:first-child) {
-  padding-inline-start: 12px;
+  padding-inline-start: var(--s-3);
 }
 [data-slot="tabs-trigger"]:focus-visible {
   outline: 2px solid var(--ring);
@@ -56,12 +56,12 @@
 }
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills .v-tab {
   height: var(--ctl-sm);
-  padding: 0 14px;
+  padding: 0 var(--s-4);
   border-radius: var(--r-pill);
   background: var(--v-beige);
   color: var(--v-text);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
 }
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-pills
   .v-tab:not([aria-selected="true"]) {
@@ -99,7 +99,7 @@
   padding: 0 var(--s-4);
   border-radius: var(--r-pill);
   font-size: var(--fs-control);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   color: var(--v-text-2);
 }
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-lenses
@@ -119,9 +119,9 @@
   box-shadow: inset 0 -1px 0 var(--v-border);
 }
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"]).-underline .v-tab {
-  padding: 8px 2px 10px;
+  padding: var(--s-2) 2px var(--s-3);
   font-size: var(--fs-lead);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   color: var(--v-text-2);
   border-bottom: 2px solid transparent;
 }
@@ -236,8 +236,8 @@
   position: relative;
   z-index: 1;
   isolation: isolate;
-  gap: 4px;
-  padding: 0 12px 1px;
+  gap: var(--s-1);
+  padding: 0 var(--s-3) 1px;
   --glide-bg: var(--v-paper);
   --glide-fg: var(--v-text);
   --glide-ring:
@@ -257,12 +257,12 @@
 [data-slot="tabs-list"].-notebook [data-slot="tabs-trigger"] {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-2);
   flex: 1;
   min-width: 0;
   margin-bottom: -1px;
-  padding: 12px 16px 13px;
-  border-radius: 14px 14px 0 0;
+  padding: var(--s-3) var(--s-4) var(--s-3);
+  border-radius: var(--r-card-sm) var(--r-card-sm) 0 0;
   color: var(--v-text-2);
   background: transparent;
 }
@@ -284,7 +284,7 @@
 .v-tabs-root[data-tabs-appearance="notebook"] > [data-tabs-managed] {
   border: 1px solid var(--v-edge);
   border-top: 0;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 var(--r-card) var(--r-card);
   background: var(--v-paper);
 }
 
@@ -293,7 +293,7 @@
 .v-tabs-root[data-tabs-appearance="rail"] {
   grid-template-columns: minmax(150px, 0.32fr) minmax(0, 1fr);
   align-items: start;
-  gap: 24px;
+  gap: var(--s-6);
 }
 .v-tabs-root[data-tabs-appearance="rail"] > [data-slot="tabs-list"] {
   grid-column: 1;
@@ -305,8 +305,8 @@
 }
 [data-slot="tabs-list"].-rail {
   flex-direction: column;
-  gap: 4px;
-  padding-inline-end: 16px;
+  gap: var(--s-1);
+  padding-inline-end: var(--s-4);
   border-inline-end: 1px solid var(--v-border);
   --glide-bg: var(--v-pink-soft);
   --glide-fg: var(--v-text);
@@ -315,9 +315,9 @@
 [data-slot="tabs-list"].-rail [data-slot="tabs-trigger"] {
   justify-content: flex-start;
   display: flex;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 12px;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--r-md);
   text-align: start;
   color: var(--v-text-2);
 }
@@ -334,8 +334,8 @@
 }
 [data-slot="tabs-list"] .v-tabs__count {
   margin-inline-start: auto;
-  padding-inline-start: 8px;
-  font-size: 11px;
+  padding-inline-start: var(--s-2);
+  font-size: var(--fs-caps);
   font-variant-numeric: tabular-nums;
   color: var(--v-text-3);
 }
@@ -346,12 +346,12 @@
 
 /* Documentation story: the panel is one paper page under the chosen tab. */
 .v-tabs__story {
-  padding: 24px;
+  padding: var(--s-6);
   min-height: 250px;
   display: grid;
   align-content: start;
-  gap: 16px;
-  border-radius: 20px;
+  gap: var(--s-4);
+  border-radius: var(--r-card);
   border: 1px solid var(--v-border);
   background: var(--v-paper);
 }
@@ -363,11 +363,11 @@
   color: var(--v-accent-ink);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-tabs__story h3 {
   margin: 0;
-  font: 500 24px/1.15 var(--font-display);
+  font: var(--fw-medium) var(--fs-section)/1.15 var(--font-display);
   letter-spacing: -0.01em;
 }
 .v-tabs__story p {
@@ -381,43 +381,43 @@
 }
 @media (max-width: 640px) {
   [data-slot="tabs-list"]:is(.-underline, .-lenses) {
-    gap: 12px;
+    gap: var(--s-3);
   }
   [data-slot="tabs-list"]:is(.-underline, .-lenses) [data-slot="tabs-trigger"] {
     font-size: var(--fs-control);
-    padding-inline: 10px;
+    padding-inline: var(--s-3);
   }
   .v-tabs-root[data-tabs-appearance="rail"] {
     grid-template-columns: 112px minmax(0, 1fr);
-    gap: 12px;
+    gap: var(--s-3);
   }
   [data-slot="tabs-list"].-rail {
-    padding-inline-end: 8px;
+    padding-inline-end: var(--s-2);
   }
   [data-slot="tabs-list"].-rail [data-slot="tabs-trigger"] {
-    gap: 8px;
-    padding-inline: 8px;
-    font-size: 13px;
+    gap: var(--s-2);
+    padding-inline: var(--s-2);
+    font-size: var(--fs-small);
   }
   [data-slot="tabs-list"].-rail .v-tabs__count {
     display: none;
   }
   [data-slot="tabs-list"].-notebook {
-    padding-inline: 4px;
+    padding-inline: var(--s-1);
   }
   /* Sheets keep filling the row but never shrink below their label; a longer
      set scrolls the row instead of clipping. Counts step aside like the rail's. */
   [data-slot="tabs-list"].-notebook [data-slot="tabs-trigger"] {
     flex: 1 0 auto;
-    padding-inline: 10px;
+    padding-inline: var(--s-3);
   }
   [data-slot="tabs-list"].-notebook .v-tabs__count {
     display: none;
   }
   .v-tabs-root[data-tabs-appearance="rail"] .v-tabs__story {
-    padding: 16px;
+    padding: var(--s-4);
   }
   .v-tabs-root[data-tabs-appearance="rail"] .v-tabs__story h3 {
-    font-size: 20px;
+    font-size: var(--fs-title);
   }
 }

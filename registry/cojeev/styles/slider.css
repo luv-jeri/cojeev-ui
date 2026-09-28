@@ -1,5 +1,5 @@
 /* Radix owns value positions, hidden form inputs, RTL, inversion and keyboard. */
-[data-slot="slider"].v-slider { position:relative; display:flex; align-items:center; width:100%; height:14px; margin:12px 0; padding:0; border:0; background:none; touch-action:none; user-select:none; cursor:pointer; --slider-fill:var(--v-pink); --slider-thumb:var(--v-ink); }
+[data-slot="slider"].v-slider { position:relative; display:flex; align-items:center; width:100%; height:14px; margin:var(--s-3) 0; padding:0; border:0; background:none; touch-action:none; user-select:none; cursor:pointer; --slider-fill:var(--v-pink); --slider-thumb:var(--v-ink); }
 [data-slot="slider"].-pink { --slider-fill:var(--v-pink); }
 [data-slot="slider"].-ink { --slider-fill:var(--v-ink); }
 [data-slot="slider-track"] { position:relative; flex-grow:1; height:100%; color:var(--v-beige); }
@@ -13,15 +13,15 @@
 .v-slider__thumb-paint path { fill:currentColor; stroke:var(--v-canvas); stroke-width:2.2px; stroke-linejoin:round; }
 [data-slot="slider-thumb"]:focus-visible { outline:2px solid var(--v-brand); }
 [data-slot="slider"][data-pressed="true"] [data-slot="slider-thumb"] { cursor:grabbing; }
-[data-slot="slider"][data-orientation="vertical"] { flex-direction:column; width:14px; height:var(--h,200px); margin:8px 12px; }
+[data-slot="slider"][data-orientation="vertical"] { flex-direction:column; width:14px; height:var(--h,200px); margin:var(--s-2) var(--s-3); }
 [data-slot="slider"][data-orientation="vertical"] [data-slot="slider-track"] { width:100%; height:100%; }
 [data-slot="slider"][data-orientation="vertical"] [data-slot="slider-range"] { width:100%; height:auto; }
 [data-slot="slider"][data-disabled] { --slider-fill:var(--v-disabled-fill); --slider-thumb:var(--v-disabled-fill); cursor:not-allowed; }
 [data-slot="slider"][data-disabled] [data-slot="slider-thumb"] { cursor:not-allowed; }
 :root[data-mode="dark"] [data-slot="slider"]:not([data-disabled]) { --slider-thumb:var(--v-pink); }
-[data-slot="slider-wrapper"] { display:grid; gap:12px; min-width:0; }
-[data-slot="slider-row"] { display:flex; align-items:center; justify-content:space-between; gap:16px; font-size:var(--fs-label); color:var(--v-text); }
-[data-slot="slider-output"] { font-variant-numeric:tabular-nums; font-weight:600; color:var(--v-text); }
+[data-slot="slider-wrapper"] { display:grid; gap:var(--s-3); min-width:0; }
+[data-slot="slider-row"] { display:flex; align-items:center; justify-content:space-between; gap:var(--s-4); font-size:var(--fs-control); color:var(--v-text); }
+[data-slot="slider-output"] { font-variant-numeric:tabular-nums; font-weight:var(--fw-semibold); color:var(--v-text); }
 
 /* A fine unfilled guide and a value-shaped, full-height elastic strand. */
 [data-slot="slider"].v-slider[data-appearance="rubber"] { height:24px; }

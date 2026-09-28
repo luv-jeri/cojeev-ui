@@ -1,25 +1,25 @@
 [data-slot="data-table-filter-button"] {
   box-shadow: inset 0 0 0 1px var(--v-edge);
   min-height: 44px;
-  gap: 8px;
+  gap: var(--s-2);
 }
 [data-slot="data-table-filter-button"] > span:not(.v-btn__content) {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   font-variant-numeric: tabular-nums;
 }
 [data-slot="data-table-filters"] {
   flex-wrap: wrap;
   overflow: visible;
-  padding: 4px;
+  padding: var(--s-1);
 }
 [data-slot="data-table"] .v-data-table__sort {
   min-height: 44px;
-  padding: 8px 6px;
+  padding: var(--s-2) var(--s-2);
   font: inherit;
   letter-spacing: inherit;
   text-transform: inherit;
   color: var(--v-text-2);
-  gap: 8px;
+  gap: var(--s-2);
 }
 [data-slot="data-table"]
   th[aria-sort]:not([aria-sort="none"])
@@ -31,8 +31,8 @@
   border: 0;
 }
 [data-slot="data-table"] [data-slot="pagination"] {
-  font-size: 13px;
-  padding-block: 4px;
+  font-size: var(--fs-small);
+  padding-block: var(--s-1);
 }
 [data-slot="data-table"] [data-slot="pagination"][data-composed] {
   max-width: 360px;
@@ -47,10 +47,10 @@
 }
 
 [data-slot="data-table-empty"] .v-state__word {
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-2);
 }
 [data-slot="data-table-empty"] .v-state__why {
   color: var(--muted-foreground);

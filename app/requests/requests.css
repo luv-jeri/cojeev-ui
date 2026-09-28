@@ -1,32 +1,32 @@
 .requests-page {
   max-width: 1180px;
   margin: auto;
-  padding: 28px 40px 60px;
+  padding: var(--s-7) var(--s-10) 60px;
   color: var(--v-text);
   min-height: 100dvh;
 }
 .requests-nav {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--s-3);
   align-items: center;
-  padding-bottom: 24px;
+  padding-bottom: var(--s-6);
   border-bottom: 1px solid var(--v-border);
 }
 .requests-nav > a:first-child {
   font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 600;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semibold);
 }
 .requests-header {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: 72px;
   align-items: center;
-  padding: 64px 0 72px;
+  padding: var(--s-16) 0 72px;
 }
 .requests-kicker {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--v-text-2);
@@ -35,10 +35,10 @@
 .requests-header h1 {
   font-family: var(--font-display);
   font-size: clamp(42px, 6vw, 72px);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   letter-spacing: -0.045em;
   line-height: 1.04;
-  margin: 22px 0;
+  margin: var(--s-6) 0;
 }
 .requests-header h1 em {
   font-style: normal;
@@ -49,7 +49,7 @@
 }
 .requests-heading > p {
   max-width: 45ch;
-  font-size: 17px;
+  font-size: var(--fs-lead);
   line-height: 1.7;
   color: var(--v-text-2);
 }
@@ -63,9 +63,9 @@
 .requests-process li {
   flex: 1;
   display: grid;
-  gap: 10px;
-  font-size: 12px;
-  padding-right: 12px;
+  gap: var(--s-3);
+  font-size: var(--fs-meta);
+  padding-right: var(--s-3);
   position: relative;
 }
 .requests-process li:not(:last-child):after {
@@ -85,23 +85,23 @@
   border: 1px solid var(--v-border);
   border-radius: 50%;
   font-variant-numeric: tabular-nums;
-  font-size: 10px;
+  font-size: var(--fs-caps);
 }
 .requests-invitation {
   display: grid;
-  gap: 22px;
-  padding: 28px;
+  gap: var(--s-6);
+  padding: var(--s-7);
   border: 1px solid var(--v-border);
-  border-radius: 28px 28px 8px 28px;
+  border-radius: var(--r-sheet) var(--r-sheet) var(--r-sm) var(--r-sheet);
   background: color-mix(in srgb, var(--v-blue) 8%, var(--v-paper));
   box-shadow: 7px 9px 0 color-mix(in srgb, var(--v-pink) 14%, transparent);
 }
 .requests-study {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--s-4);
   border-bottom: 1px solid var(--v-border);
-  padding-bottom: 20px;
+  padding-bottom: var(--s-5);
 }
 .requests-study > svg {
   width: 98px;
@@ -109,7 +109,7 @@
   flex-shrink: 0;
 }
 .requests-study > span {
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
   color: var(--v-text-2);
   max-width: 9ch;
@@ -119,11 +119,11 @@
   font-family: var(--font-display);
   font-size: 27px;
   letter-spacing: -0.025em;
-  font-weight: 500;
-  margin: 8px 0 12px;
+  font-weight: var(--fw-medium);
+  margin: var(--s-2) 0 var(--s-3);
 }
 .requests-invitation p {
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.7;
   color: var(--v-text-2);
   margin: 0;
@@ -135,21 +135,21 @@
 }
 .requests-list {
   border-top: 1px solid var(--v-border);
-  padding-top: 30px;
+  padding-top: var(--s-8);
 }
 .requests-list-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: var(--s-6);
+  margin-bottom: var(--s-6);
 }
 .requests-list-head h2 {
   font-family: var(--font-display);
   font-size: 30px;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   letter-spacing: -0.02em;
-  margin-top: 8px;
+  margin-top: var(--s-2);
 }
 .requests-list-head .requests-search {
   width: 300px;
@@ -158,16 +158,16 @@
 }
 .requests-loading {
   min-height: 28px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .requests-empty {
   display: flex;
   align-items: start;
-  gap: 30px;
+  gap: var(--s-8);
   padding: 38px;
   border: 1px dashed var(--v-border);
-  border-radius: 24px;
+  border-radius: var(--r-panel);
   background: color-mix(in srgb, var(--v-paper) 70%, transparent);
 }
 .requests-empty__number {
@@ -177,23 +177,23 @@
   font-size: 32px;
   width: 62px;
   height: 62px;
-  border-radius: 18px 18px 5px 18px;
+  border-radius: var(--r-card) var(--r-card) var(--r-xs) var(--r-card);
   background: var(--v-olive);
   color: var(--ink-fixed);
 }
 .requests-empty h3 {
   font-family: var(--font-display);
-  font-size: 25px;
+  font-size: var(--fs-section);
   letter-spacing: -0.02em;
-  font-weight: 500;
-  margin: 6px 0 12px;
+  font-weight: var(--fw-medium);
+  margin: var(--s-2) 0 var(--s-3);
 }
 .requests-empty p {
   max-width: 58ch;
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.7;
   color: var(--v-text-2);
-  margin: 0 0 22px;
+  margin: 0 0 var(--s-6);
 }
 .requests-rows {
   list-style: none;
@@ -203,31 +203,31 @@
 .requests-rows > li {
   display: flex;
   align-items: center;
-  gap: 26px;
-  padding: 30px 8px;
+  gap: var(--s-7);
+  padding: var(--s-8) var(--s-2);
   border-bottom: 1px solid var(--v-border);
 }
 .request-demand {
   display: grid;
   text-align: center;
   align-content: center;
-  gap: 4px;
+  gap: var(--s-1);
   width: 70px;
   min-height: 76px;
   flex-shrink: 0;
   color: var(--v-text);
   background: color-mix(in srgb, var(--v-blue) 12%, var(--v-paper));
   border: 1px solid var(--v-border);
-  border-radius: 7px 7px 22px 7px;
+  border-radius: var(--r-sm) var(--r-sm) var(--r-panel) var(--r-sm);
 }
 .request-demand strong {
   font-family: var(--font-display);
   font-size: 30px;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   line-height: 1.1;
 }
 .request-demand span {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-2);
 }
 .request-details {
@@ -235,23 +235,23 @@
   min-width: 0;
 }
 .request-details h3 {
-  font-size: 19px;
+  font-size: var(--fs-title);
   line-height: 1.45;
-  font-weight: 500;
-  margin-top: 10px;
+  font-weight: var(--fw-medium);
+  margin-top: var(--s-3);
   overflow-wrap: anywhere;
 }
 .request-details > p {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.5;
   color: var(--v-text-2);
-  margin-top: 8px;
+  margin-top: var(--s-2);
 }
 .request-status {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
+  gap: var(--s-2);
+  font-size: var(--fs-caps);
   line-height: 1.5;
   color: var(--v-text-2);
 }
@@ -272,18 +272,18 @@
   background: var(--v-blue);
 }
 .requests-more {
-  margin-top: 24px;
+  margin-top: var(--s-6);
 }
 .requests-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 30px;
+  gap: var(--s-8);
   padding-top: 36px;
 }
 .requests-footer p {
   max-width: 58ch;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.7;
   color: var(--v-text-2);
 }
@@ -291,26 +291,27 @@
   flex-shrink: 0;
 }
 .requests-page a:focus-visible {
-  outline: 2px solid var(--v-focus);
+  outline: 2px solid var(--ring);
   outline-offset: 5px;
 }
 @media (max-width: 760px) {
   .requests-page {
-    padding: 20px 22px 90px;
+    padding: var(--s-5) var(--s-6) 90px;
   }
   .requests-header {
     grid-template-columns: 1fr;
     gap: 36px;
-    padding-block: 40px;
+    padding-block: var(--s-10);
   }
   .requests-heading > p {
-    font-size: 16px;
+    font-size: var(--fs-reading);
   }
   .requests-header h1 {
-    font-size: 52px;
+    /* Scales with the column so "What should we" keeps its line on narrow phones. */
+    font-size: clamp(40px, 12vw, 52px);
   }
   .requests-invitation {
-    padding: 24px;
+    padding: var(--s-6);
   }
   .requests-study {
     justify-content: space-between;
@@ -327,14 +328,14 @@
   }
   .requests-empty {
     flex-direction: column;
-    padding: 24px;
-    gap: 18px;
+    padding: var(--s-6);
+    gap: var(--s-5);
   }
   .requests-rows > li {
     display: grid;
     grid-template-columns: 58px minmax(0, 1fr);
-    gap: 16px;
-    padding: 26px 0;
+    gap: var(--s-4);
+    padding: var(--s-7) 0;
   }
   .request-demand {
     width: 58px;
@@ -346,7 +347,7 @@
     white-space: normal;
   }
   .request-details h3 {
-    font-size: 17px;
+    font-size: var(--fs-lead);
   }
   .request-details > p span {
     display: none;
@@ -354,14 +355,14 @@
   .requests-footer {
     flex-direction: column;
     align-items: start;
-    gap: 16px;
+    gap: var(--s-4);
   }
   .requests-nav > a:first-child {
-    font-size: 19px;
+    font-size: var(--fs-title);
   }
   .requests-nav > a:last-child {
-    font-size: 12px;
-    padding-inline: 8px;
+    font-size: var(--fs-meta);
+    padding-inline: var(--s-2);
   }
 }
 .requests-page .v-btn {

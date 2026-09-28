@@ -4,7 +4,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import { Disk, IconButton } from "@/registry/cojeev/ui/icon";
 export const attachmentVariants = cva(
-  "v-attach flex items-center gap-[var(--s-3)] min-h-[56px] pl-[8px] pr-[10px] py-[8px] [border-radius:999px] bg-[var(--card)]",
+  "v-attach flex items-center gap-[var(--s-3)] min-h-[56px] pl-[var(--s-2)] pr-[var(--s-3)] py-[var(--s-2)] [border-radius:var(--r-pill)] bg-[var(--card)]",
 );
 export type AttachmentProps = React.ComponentProps<"div">;
 export function Attachment({ className, ...props }: AttachmentProps) {
@@ -28,7 +28,7 @@ export function AttachmentType({
       ref={ref}
       data-slot="attachment-type"
       className={cn(
-        "v-disk inline-grid place-items-center shrink-0 [width:40px] [height:40px] [border-radius:50%] [background:var(--v-ink)] [color:var(--v-on-ink)] text-[9px] font-bold tracking-[.04em]",
+        "v-disk inline-grid place-items-center shrink-0 [width:40px] [height:40px] [border-radius:50%] [background:var(--v-ink)] [color:var(--v-on-ink)] text-[length:var(--fs-caps)] font-bold tracking-[.04em]",
         className,
       )}
       {...props}

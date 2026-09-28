@@ -37,7 +37,7 @@
 [data-slot="hover-card-content"][data-appearance] {
   --mfill: var(--v-paper);
   --mstroke: var(--v-border);
-  border-radius: 18px;
+  border-radius: var(--r-card);
   width: min(340px, calc(100vw - 24px));
   color: var(--v-text);
   border: 0;
@@ -58,68 +58,68 @@
 }
 .v-hovercard-scroll.v-scroll.-plain[data-slot="scroll-area"]
   > [data-slot="scroll-area-viewport"] {
-  padding: 22px 28px 22px 22px;
+  padding: var(--s-6) var(--s-7) var(--s-6) var(--s-6);
 }
 .v-hovercard-detail {
   display: grid;
-  gap: 15px;
+  gap: var(--s-4);
 }
 .v-hovercard-detail h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: var(--fs-title);
   line-height: 1.25;
 }
 .v-hovercard-detail p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.65;
   color: var(--v-text-2);
 }
 .v-hovercard-detail__top {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--s-4);
 }
 .v-hovercard-detail__meta {
   display: block;
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-3);
   letter-spacing: 0.04em;
 }
 .v-hovercard-detail__excerpt {
   border-left: 3px solid var(--v-pink);
-  padding-left: 13px;
+  padding-left: var(--s-3);
 }
 .v-hovercard-detail__art {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 10px;
+  border-radius: var(--r-md);
 }
 .v-hovercard-detail__footer {
   border-top: 1px solid var(--v-edge);
-  padding-top: 12px;
+  padding-top: var(--s-3);
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-hovercard-example {
   display: grid;
-  gap: 22px;
+  gap: var(--s-6);
   width: 100%;
   max-width: 580px;
   margin-inline: auto;
-  padding: 24px;
+  padding: var(--s-6);
   background: var(--v-paper);
   border: 1px solid var(--v-edge);
-  border-radius: 22px;
+  border-radius: var(--r-panel);
   color: var(--v-text);
 }
 .v-hovercard-example h3 {
   font-family: var(--font-display);
   margin: 0;
-  font-size: 28px;
+  font-size: var(--fs-section);
   line-height: 1.25;
 }
 .v-hovercard-example p {
@@ -134,12 +134,12 @@
   background: transparent;
 }
 .v-hovercard-inline [data-disclosure-inner] {
-  padding: 22px 0 0;
+  padding: var(--s-6) 0 0;
 }
 .v-hovercard-example__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-hovercard-example [data-slot="hover-card-trigger"] {
   min-height: 44px;

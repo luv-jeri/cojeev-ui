@@ -9,7 +9,7 @@ import { InputWrapper, InputControl } from "@/registry/cojeev/ui/input";
 import { REPORTING_API, reportingFetch } from "@/lib/reporting/client";
 import type { RequestTopic } from "@/lib/reporting/contracts";
 import { BetaStamp } from "@/components/brand/beta-stamp";
-import { openRequest, STATUS_LABELS } from "./reporting-widget";
+import { openRequest, STATUS_LABELS } from "./report-request";
 
 export function relativeAge(timestamp: number, now = Date.now()): string {
   const days = Math.max(

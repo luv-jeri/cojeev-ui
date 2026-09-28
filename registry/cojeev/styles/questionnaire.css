@@ -62,12 +62,12 @@
   outline-offset: 2px;
 }
 [data-slot="questionnaire-option-body"] b {
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
   line-height: 1.3;
 }
 [data-slot="questionnaire-option-body"] small {
-  font-size: 13px;
+  font-size: var(--fs-small);
   color: var(--v-text-2);
   line-height: 1.4;
 }
@@ -144,7 +144,7 @@
    by RadioGroup paints its checked state without replacing native behaviour. */
 [data-slot="questionnaire-option"] {
   position: relative;
-  border-radius: 16px;
+  border-radius: var(--r-card-sm);
   grid-template-columns: 36px minmax(0, 1fr) var(--selector-size, 28px);
 }
 [data-slot="questionnaire-option"] [data-slot="questionnaire-option-input"] {
@@ -189,7 +189,7 @@
 }
 
 [data-slot="questionnaire-question"] > legend {
-  margin-bottom: 12px;
+  margin-bottom: var(--s-3);
 }
 
 /* New questionnaire compositions are opt-in; AgentChat keeps the legacy layout. */
@@ -198,26 +198,26 @@
   min-width: 0;
   max-width: 720px;
   margin-inline: auto;
-  padding-inline: 8px;
+  padding-inline: var(--s-2);
   box-sizing: border-box;
 }
 .v-quest[data-presentation] {
-  gap: 24px;
+  gap: var(--s-6);
   color: var(--v-text);
 }
 .v-questionnaire-example__intro {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr);
-  gap: 16px;
+  gap: var(--s-4);
   align-items: center;
 }
 .v-questionnaire-example__intro p {
-  margin: 0 0 5px;
+  margin: 0 0 var(--s-1);
   color: var(--v-text-2);
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 .v-questionnaire-example__intro h3 {
-  font: 500 clamp(22px, 3vw, 28px) / 1.2 var(--font-display);
+  font: var(--fw-medium) clamp(22px, 3vw, 28px) / 1.2 var(--font-display);
   margin: 0;
 }
 .v-questionnaire-example__tab {
@@ -227,21 +227,21 @@
   height: 56px;
   background: var(--v-yellow);
   color: var(--v-on-accent);
-  border-radius: 8px 8px 22px 8px;
+  border-radius: var(--r-sm) var(--r-sm) var(--r-panel) var(--r-sm);
 }
 .v-quest[data-presentation] .v-quest__progress {
   display: grid;
   grid-template-columns: 58px minmax(0, 1fr);
-  gap: 16px;
-  font-size: 12px;
+  gap: var(--s-4);
+  font-size: var(--fs-meta);
 }
 .v-quest[data-presentation] .v-quest__progress > b {
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
 }
 .v-questionnaire-example__questions {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   min-width: 0;
 }
 .v-quest[data-presentation] [data-slot="questionnaire-question"] {
@@ -254,7 +254,7 @@
   position: relative;
   min-width: 0;
   margin: 0;
-  padding: 8px 20px 20px;
+  padding: var(--s-2) var(--s-5) var(--s-5);
   border: 1px solid var(--v-border);
   border-radius: min(var(--v-control-radius, 24px), 24px);
   background: var(--v-canvas);
@@ -264,9 +264,9 @@
 }
 .v-quest[data-presentation] [data-slot="questionnaire-question"] > legend {
   max-width: 100%;
-  padding: 0 8px;
-  margin: 0 0 4px -8px;
-  font: 500 20px/1.4 var(--font-display);
+  padding: 0 var(--s-2);
+  margin: 0 0 var(--s-1) -8px;
+  font: var(--fw-medium) var(--fs-title)/1.4 var(--font-display);
   color: var(--v-text);
 }
 .v-quest[data-presentation]
@@ -279,7 +279,7 @@
   > legend:focus-visible {
   outline: 2px solid var(--v-brand);
   outline-offset: 4px;
-  border-radius: 4px;
+  border-radius: var(--r-xs);
 }
 .v-questionnaire-example__number {
   display: inline-grid;
@@ -287,17 +287,17 @@
   vertical-align: middle;
   width: 36px;
   height: 42px;
-  border-radius: 8px 8px 14px 8px;
+  border-radius: var(--r-sm) var(--r-sm) var(--r-card-sm) var(--r-sm);
   background: var(--v-pink);
   color: var(--v-on-accent);
-  font-size: 16px;
+  font-size: var(--fs-reading);
   font-variant-numeric: tabular-nums;
 }
 .v-questionnaire-example__heading {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-quest[data-presentation]
   [data-slot="questionnaire-question"]:nth-child(2)
@@ -312,18 +312,18 @@
   );
 }
 .v-questionnaire-example__hint {
-  margin: 0 0 4px;
+  margin: 0 0 var(--s-1);
   color: var(--v-text-2);
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
 }
 .v-quest[data-presentation] .v-quest__opts {
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-quest[data-presentation] [data-slot="questionnaire-option"] {
   min-height: 76px;
-  padding: 14px 16px;
-  gap: 12px;
+  padding: var(--s-4) var(--s-4);
+  gap: var(--s-3);
   grid-template-columns: minmax(0, 1fr) var(--selector-size, 28px);
   border-radius: min(var(--v-control-radius, 16px), 16px);
   box-shadow: inset 0 0 0 1px var(--v-border);
@@ -358,7 +358,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-questionnaire-example__footer .v-btn {
   min-height: 44px;
@@ -368,18 +368,18 @@
 }
 .v-questionnaire-example__result {
   margin: 0;
-  padding-top: 16px;
+  padding-top: var(--s-4);
   border-top: 1px dashed var(--v-border);
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.6;
   color: var(--v-text-2);
 }
 .v-quest[data-presentation="journey"] .v-questionnaire-example__questions {
   border-inline-start: 1px solid var(--v-border);
-  padding-inline-start: 20px;
+  padding-inline-start: var(--s-5);
 }
 .v-quest[data-presentation="journey"] [data-slot="questionnaire-question"] {
-  padding-top: 16px;
+  padding-top: var(--s-4);
 }
 .v-quest[data-presentation="journey"] .v-questionnaire-example__number {
   width: 44px;
@@ -389,19 +389,19 @@
 .v-quest[data-presentation="worksheet"] .v-questionnaire-example__questions {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: 20px;
+  gap: var(--s-5);
 }
 .v-quest[data-presentation="worksheet"] [data-slot="questionnaire-question"] {
-  padding-inline: 16px;
+  padding-inline: var(--s-4);
 }
 .v-quest[data-presentation="worksheet"]
   [data-slot="questionnaire-question"]
   > legend {
-  font-size: 18px;
+  font-size: var(--fs-lead);
 }
 .v-quest[data-presentation="worksheet"] [data-slot="questionnaire-option"] {
   min-height: 120px;
-  padding: 16px 12px;
+  padding: var(--s-4) var(--s-3);
 }
 @media (max-width: 640px) {
   .v-quest[data-presentation="worksheet"] .v-questionnaire-example__questions {
@@ -411,17 +411,17 @@
     min-height: 88px;
   }
   .v-quest[data-presentation] [data-slot="questionnaire-question"] {
-    padding-inline: 12px;
+    padding-inline: var(--s-3);
   }
   .v-questionnaire-example__number {
     width: 28px;
     height: 36px;
   }
   .v-quest[data-presentation] [data-slot="questionnaire-question"] > legend {
-    font-size: 18px;
+    font-size: var(--fs-lead);
   }
   .v-quest[data-presentation="journey"] .v-questionnaire-example__questions {
-    padding-inline-start: 10px;
+    padding-inline-start: var(--s-3);
   }
 }
 @media (prefers-reduced-motion: reduce) {

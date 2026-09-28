@@ -19,7 +19,7 @@ const SectionTitleVariants=cva("v-section [font-family:var(--font-display)] [fon
 export type SectionTitleProps=React.ComponentProps<"h2"> & VariantProps<typeof SectionTitleVariants> & { as?:React.ElementType }
 export function SectionTitle({as:Tag="h2",className,variant,size,...props}:SectionTitleProps){return <Tag data-slot="typography-section" data-part="section" className={cn(SectionTitleVariants({variant,size}),className)} {...props}/>}
 
-const TitleVariants=cva("v-title [font-size:20px] [line-height:1.25] [font-weight:var(--fw-title)] [letter-spacing:-.005em]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const TitleVariants=cva("v-title [font-size:var(--fs-title)] [line-height:1.25] [font-weight:var(--fw-title)] [letter-spacing:-.005em]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type TitleProps=React.ComponentProps<"h3"> & VariantProps<typeof TitleVariants> & { as?:React.ElementType }
 export function Title({as:Tag="h3",className,variant,size,...props}:TitleProps){return <Tag data-slot="typography-title" data-part="title" className={cn(TitleVariants({variant,size}),className)} {...props}/>}
 
@@ -27,11 +27,11 @@ const LeadVariants=cva("v-lead [font-size:var(--fs-lead)] [line-height:1.3] [fon
 export type LeadProps=React.ComponentProps<"p"> & VariantProps<typeof LeadVariants> & { as?:React.ElementType }
 export function Lead({as:Tag="p",className,variant,size,...props}:LeadProps){return <Tag data-slot="typography-lead" data-part="lead" className={cn(LeadVariants({variant,size}),className)} {...props}/>}
 
-const BodyVariants=cva("v-body [font-size:16px] [line-height:1.5]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const BodyVariants=cva("v-body [font-size:var(--fs-reading)] [line-height:1.5]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BodyProps=React.ComponentProps<"p"> & VariantProps<typeof BodyVariants> & { as?:React.ElementType }
 export function Body({as:Tag="p",className,variant,size,...props}:BodyProps){return <Tag data-slot="typography-body" data-part="body" className={cn(BodyVariants({variant,size}),className)} {...props}/>}
 
-const BodySecondaryVariants=cva("v-body-2 [font-size:15px] [line-height:1.5] [color:var(--muted-foreground)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const BodySecondaryVariants=cva("v-body-2 [font-size:var(--fs-body)] [line-height:1.5] [color:var(--muted-foreground)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BodySecondaryProps=React.ComponentProps<"p"> & VariantProps<typeof BodySecondaryVariants> & { as?:React.ElementType }
 export function BodySecondary({as:Tag="p",className,variant,size,...props}:BodySecondaryProps){return <Tag data-slot="typography-body-secondary" data-part="body-secondary" className={cn(BodySecondaryVariants({variant,size}),className)} {...props}/>}
 
@@ -43,7 +43,7 @@ const MetaVariants=cva("v-meta [font-size:var(--fs-meta)] [line-height:1.3] [col
 export type MetaProps=React.ComponentProps<"span"> & VariantProps<typeof MetaVariants> & { as?:React.ElementType }
 export function Meta({as:Tag="span",className,variant,size,...props}:MetaProps){return <Tag data-slot="typography-meta" data-part="meta" className={cn(MetaVariants({variant,size}),className)} {...props}/>}
 
-const CapsVariants=cva("v-caps [font-size:11px] [line-height:1.2] [font-weight:500] [letter-spacing:.075em] [text-transform:uppercase] [color:var(--muted-foreground)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const CapsVariants=cva("v-caps [font-size:var(--fs-caps)] [line-height:1.2] [font-weight:var(--fw-medium)] [letter-spacing:.075em] [text-transform:uppercase] [color:var(--muted-foreground)]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type CapsProps=React.ComponentProps<"span"> & VariantProps<typeof CapsVariants> & { as?:React.ElementType }
 export function Caps({as:Tag="span",className,variant,size,...props}:CapsProps){return <Tag data-slot="typography-caps" data-part="caps" className={cn(CapsVariants({variant,size}),className)} {...props}/>}
 

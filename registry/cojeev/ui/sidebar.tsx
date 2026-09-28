@@ -117,7 +117,7 @@ export function SidebarHeader({ className, ...props }: SidebarHeaderProps) {
       data-slot="sidebar-header"
       data-part="header"
       className={cn(
-        "v-brand relative flex items-center justify-center gap-[8px] h-[56px] mb-[var(--s-6)] font-[family-name:var(--font-display)] text-[30px] font-medium tracking-[-.02em] text-[color:var(--sidebar-foreground)]",
+        "v-brand relative flex items-center justify-center gap-[var(--s-2)] h-[56px] mb-[var(--s-6)] font-[family-name:var(--font-display)] text-[30px] font-medium tracking-[-.02em] text-[color:var(--sidebar-foreground)]",
         className,
       )}
       {...props}
@@ -144,7 +144,7 @@ export function SidebarTrigger({
       aria-expanded={sidebar.open}
       aria-label={sidebar.open ? "Collapse the rail" : "Expand the rail"}
       className={cn(
-        "v-collapse relative ml-auto shrink-0 grid place-items-center size-[44px] p-0 [border-radius:50%] text-[13px] font-[family-name:var(--font-text)] font-medium leading-none tracking-normal",
+        "v-collapse relative ml-auto shrink-0 grid place-items-center size-[44px] p-0 [border-radius:50%] text-[length:var(--fs-small)] font-[family-name:var(--font-text)] font-medium leading-none tracking-normal",
         className,
       )}
       onClick={(event) => {
@@ -186,7 +186,7 @@ export function SidebarGroupLabel({
     <div
       data-slot="sidebar-group-label"
       className={cn(
-        "v-nav__group text-[13px] text-[color:var(--sidebar-muted)] pt-[var(--s-4)] px-[var(--s-3)] pb-[var(--s-2)]",
+        "v-nav__group text-[length:var(--fs-small)] text-[color:var(--sidebar-muted)] pt-[var(--s-4)] px-[var(--s-3)] pb-[var(--s-2)]",
         className,
       )}
       {...props}
@@ -263,7 +263,7 @@ export function SidebarMenuBadge({
       ref={ownedMorphRef}
       data-slot="sidebar-menu-badge"
       className={cn(
-        "v-nav__count grid place-items-center min-w-[18px] h-[18px] px-[5px] rounded-[var(--r-pill)] bg-[var(--v-pink)] text-[color:var(--v-on-accent)] text-[10px] font-bold",
+        "v-nav__count grid place-items-center min-w-[18px] h-[18px] px-[var(--s-1)] rounded-[var(--r-pill)] bg-[var(--v-pink)] text-[color:var(--v-on-accent)] text-[length:var(--fs-caps)] font-bold",
         className,
       )}
       {...props}

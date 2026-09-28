@@ -12,7 +12,7 @@
   border-radius: 43% 57% 49% 51% / 55% 44% 56% 45%;
 }
 .v-avatar[data-slot].-square {
-  border-radius: 14px;
+  border-radius: var(--r-card-sm);
 }
 .v-avatar[data-slot].-lg {
   width: 110px;
@@ -43,7 +43,7 @@
 .v-avatar[data-slot].-sm {
   width: 28px;
   height: 28px;
-  font-size: 10px;
+  font-size: var(--fs-caps);
 }
 
 /* Authored contextual and pseudo-element rules, scoped to component-owned roots. */
@@ -52,8 +52,8 @@
   height: var(--hex);
   border-radius: 50%;
   background: var(--v-canvas);
-  font-size: 9px;
-  font-weight: 700;
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-bold);
   display: grid;
   place-items: center;
 }
@@ -99,7 +99,7 @@
 .v-hexgroup[data-slot] .v-more {
   width: 32px;
   height: 32px;
-  font-size: 10px;
+  font-size: var(--fs-caps);
   background: var(--v-ink);
   color: var(--v-on-ink);
   box-shadow: 0 0 0 2px var(--v-canvas);
@@ -137,7 +137,7 @@
   margin-top: -22px;
 }
 .v-avatar[data-slot].-square.-lg {
-  border-radius: 26px;
+  border-radius: var(--r-sheet);
 }
 .v-avatar-stack[data-slot] > .v-avatar {
   transition: transform var(--t-element) var(--enter);
@@ -195,7 +195,7 @@
   max-width: 640px;
   margin-inline: auto;
   display: grid;
-  gap: 22px;
+  gap: var(--s-6);
   color: var(--v-text);
 }
 .v-identity-example p {
@@ -204,7 +204,7 @@
 .v-identity-example .v-identity-example__avatar-medium {
   width: 80px;
   height: 80px;
-  font-size: 26px;
+  font-size: var(--fs-section);
 }
 .v-identity-example .v-avatar-wrap[data-slot][data-edit-placement="badge"] {
   padding-right: 0;
@@ -222,13 +222,13 @@
   min-width: 0;
   background: var(--v-paper);
   border: 1px solid var(--v-edge);
-  border-radius: 24px;
-  padding: 28px;
+  border-radius: var(--r-panel);
+  padding: var(--s-7);
 }
 .v-identity-example__portrait {
   display: grid;
   justify-items: center;
-  gap: 24px;
+  gap: var(--s-6);
   text-align: center;
 }
 .v-identity-example__art {
@@ -236,7 +236,7 @@
   place-items: center;
   min-width: 180px;
   min-height: 180px;
-  padding: 28px;
+  padding: var(--s-7);
   background:
     radial-gradient(ellipse at 30% 15%, var(--v-pink-soft), transparent 70%),
     var(--v-canvas);
@@ -245,7 +245,7 @@
 .v-identity-example__eyebrow {
   display: block;
   color: var(--v-text-3);
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -257,51 +257,51 @@
 }
 .v-identity-example__copy {
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
   min-width: 0;
 }
 .v-identity-example__row {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: var(--s-6);
 }
 .v-identity-example__row .v-identity-example__copy {
   flex: 1;
 }
 .v-identity-example__row .v-avatar-wrap {
   flex: none;
-  margin-right: 12px;
+  margin-right: var(--s-3);
 }
 .v-identity-example__actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-identity-example__controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
+  gap: var(--s-4);
   align-items: end;
-  padding: 12px;
+  padding: var(--s-3);
 }
 .v-identity-example__controls > .v-btn {
   justify-self: start;
 }
 .v-identity-example__detail {
-  padding-top: 20px;
-  margin-top: 22px;
+  padding-top: var(--s-5);
+  margin-top: var(--s-6);
   border-top: 1px solid var(--v-edge);
   line-height: 1.65;
 }
 .v-identity-example__participants {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
 }
 .v-identity-example__participants .v-avatar-stack {
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px 0;
+  gap: var(--s-2);
+  padding: var(--s-2) 0;
 }
 .v-identity-example__participants .v-avatar-stack > .v-avatar + .v-avatar {
   margin-left: -12px;
@@ -315,8 +315,8 @@
 .v-identity-example__roster li {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-block: 12px;
+  gap: var(--s-3);
+  padding-block: var(--s-3);
   border-bottom: 1px solid var(--v-edge);
 }
 .v-identity-example__roster li > span:last-child {
@@ -332,11 +332,11 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: var(--s-4);
 }
 @container (max-width:440px) {
   .v-identity-example__surface {
-    padding: 20px;
+    padding: var(--s-5);
   }
   .v-identity-example__row {
     flex-direction: column;

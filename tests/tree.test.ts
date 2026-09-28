@@ -87,11 +87,11 @@ test("Tree catalogue metadata exposes the supplied-node contract", () => {
 });
 
 test("documentation's component layer includes the Tree stylesheet", async () => {
-  const globals = await readFile("app/globals.css", "utf8");
+  const docsStyles = await readFile("app/styles/docs.css", "utf8");
 
   assert.match(
-    globals,
-    /@import "\.\.\/registry\/cojeev\/styles\/tree\.css" layer\(cojeev-states\);/,
+    docsStyles,
+    /@import "\.\.\/\.\.\/registry\/cojeev\/styles\/tree\.css" layer\(cojeev-states\);/,
     "the docs application must load Tree styles rather than relying on a fixture-only import",
   );
 });
