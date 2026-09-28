@@ -16,7 +16,7 @@ const FieldContext = React.createContext<{
   registerDescription: (id: string) => () => void;
 } | null>(null);
 const fieldVariants = cva(
-  "v-field grid gap-[8px] [border:0] bg-transparent [box-shadow:none]",
+  "v-field grid gap-[var(--s-2)] [border:0] bg-transparent [box-shadow:none]",
   {
     variants: { variant: { default: "", invalid: "-invalid" } },
     defaultVariants: { variant: "default" },

@@ -285,7 +285,7 @@ export function ContextMenuShortcut({
     <span
       data-slot="context-menu-shortcut"
       className={cn(
-        "ml-auto text-[11px] text-[color:var(--muted-foreground)]",
+        "ml-auto text-[length:var(--fs-caps)] text-[color:var(--muted-foreground)]",
         className,
       )}
       {...props}

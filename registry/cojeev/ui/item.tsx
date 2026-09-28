@@ -121,7 +121,7 @@ export function ItemContent({
 }
 
 const ItemTitleVariants = cva(
-  "v-item__title [font-size:16px] [font-weight:600] [line-height:1.25] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [overflow:hidden]",
+  "v-item__title [var(--fs-reading)] [var(--fw-semibold)] [line-height:1.25] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] [overflow:hidden]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -147,7 +147,7 @@ export function ItemTitle({
 }
 
 const ItemDescriptionVariants = cva(
-  "v-item__sub [font-size:var(--fs-meta)] [color:var(--muted-foreground)] [line-height:1.3]",
+  "v-item__sub [var(--fs-meta)] [color:var(--muted-foreground)] [line-height:1.3]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },
@@ -173,7 +173,7 @@ export function ItemDescription({
 }
 
 const ItemTrailingVariants = cva(
-  "v-time [display:inline-flex] [align-items:center] [white-space:nowrap] [flex:none] [height:26px] [padding:0_12px] [border-radius:var(--r-pill)] [font-size:12px] [font-weight:500] [font-variant-numeric:tabular-nums] [background:var(--v-canvas)]",
+  "v-time [display:inline-flex] [align-items:center] [white-space:nowrap] [flex:none] [height:26px] [padding:0_var(--s-3)] [border-radius:var(--r-pill)] [var(--fs-meta)] [var(--fw-medium)] [font-variant-numeric:tabular-nums] [background:var(--v-canvas)]",
   {
     variants: {
       variant: {

@@ -1,5 +1,30 @@
 /* Vriksha tokens. Evidence labels live in research/DESIGN-SPEC.md and TOKENS.md. */
 :root{
+/* Exact authored values retained by the local handoff corrections, plus the
+ * token vocabulary introduced on main. These do not round the reference. */
+--fs-reading:16px;
+--fs-small:13px;
+--fw-regular:400;
+--fw-medium:500;
+--fw-semibold:600;
+--fw-bold:700;
+--s-7:28px;
+--ctl-xl:56px;
+--s-detail-18:18px;
+--s-detail-14:14px;
+--r-detail-18:18px;
+--s-detail-10:10px;
+--fs-detail-25:25px;
+--fs-detail-22:22px;
+--fw-heavy-900:900;
+--fs-detail-10-5:10.5px;
+--fs-detail-9-5:9.5px;
+--s-detail-6:6px;
+--fs-detail-14-5:14.5px;
+--fs-detail-13-5:13.5px;
+--r-detail-14:14px;
+--s-detail-13:13px;
+
 color-scheme:light;
 /* accents [E] I03 */
 --v-pink:#F5B8DB;--v-olive:#9AAB63;--v-blue:#B6CAEB;--v-yellow:#F5D867;

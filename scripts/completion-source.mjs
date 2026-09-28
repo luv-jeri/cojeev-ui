@@ -4,7 +4,7 @@ import path from "node:path";
 
 // The review binds application, tooling, delivery inputs and generated assets as
 // well as the narrower registry/gate scope. Local ledgers and artifacts are excluded.
-export const REVIEW_SOURCE_ROOTS = [".github", "app", "apps", "components", "data", "docs/guides", "lib", "public", "reference", "registry", "scripts", "tests"];
+export const REVIEW_SOURCE_ROOTS = [".github", "app", "apps", "components", "data", "docs/guides", "lib", "public", "reference", "registry", "scripts", "tests", "workers"];
 export const REVIEW_SOURCE_FILES = [".env.example", ".gitignore", "CONTRIBUTING.md", "FONT-NOTICES.md", "INSTALLATION.md", "LICENCE", "README.md", "components.json", "eslint.config.mjs", "next.config.ts", "package-lock.json", "package.json", "postcss.config.mjs", "registry.json", "tsconfig.json"];
 
 export function reviewedCandidateHash(root) {

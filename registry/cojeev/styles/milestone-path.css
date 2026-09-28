@@ -5,8 +5,8 @@
 }
 .v-milestone-path__header {
   display: grid;
-  gap: 8px;
-  margin-block-end: 28px;
+  gap: var(--s-2);
+  margin-block-end: var(--s-7);
 }
 .v-milestone-path__header :is(h3, p) {
   margin: 0;
@@ -22,9 +22,9 @@
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr);
   align-items: start;
-  column-gap: 18px;
+  column-gap: var(--s-5);
   min-width: 0;
-  padding-block: 0 30px;
+  padding-block: 0 var(--s-8);
 }
 .v-milestone-path__item:last-child {
   padding-block-end: 0;
@@ -46,8 +46,8 @@
   background: var(--card);
   box-shadow: inset 0 0 0 1.5px var(--v-edge);
   color: var(--v-text-2);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
   font-variant-numeric: tabular-nums;
 }
 .v-milestone-path[data-slot]
@@ -86,22 +86,22 @@
 .v-milestone-path__content {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: var(--s-2);
   min-width: 0;
-  padding-block-start: 5px;
+  padding-block-start: var(--s-1);
 }
 .v-milestone-path__heading {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: var(--s-2) var(--s-3);
   min-width: 0;
 }
 .v-milestone-path[data-slot] .v-milestone-path__title {
   flex: 1 1 14rem;
   min-width: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--fs-reading);
+  font-weight: var(--fw-semibold);
   line-height: 1.45;
   color: var(--v-text);
   overflow-wrap: anywhere;
@@ -109,9 +109,9 @@
 .v-milestone-path__select[data-slot] {
   min-height: 44px;
   height: auto;
-  padding: 3px 8px;
+  padding: 3px var(--s-2);
   margin-inline-start: -8px;
-  font-size: 16px;
+  font-size: var(--fs-reading);
   line-height: 1.45;
   white-space: normal;
   text-align: start;
@@ -144,11 +144,11 @@
 }
 @media (max-width: 480px) {
   .v-milestone-path[data-slot] .v-milestone-path__item {
-    column-gap: 13px;
-    padding-block-end: 26px;
+    column-gap: var(--s-3);
+    padding-block-end: var(--s-7);
   }
   .v-milestone-path__heading {
-    gap: 7px 10px;
+    gap: var(--s-2) var(--s-3);
   }
 }
 .v-milestone-path[data-slot] .v-milestone-path__item:last-child {
@@ -164,9 +164,9 @@
   background: transparent;
 }
 .v-milestone-path[data-presentation="journey"] .v-milestone-path__content {
-  padding: 14px 18px;
+  padding: var(--s-4) var(--s-5);
   border: 1px solid transparent;
-  border-radius: 4px 20px 20px 20px;
+  border-radius: var(--r-xs) var(--r-card) var(--r-card) var(--r-card);
 }
 .v-milestone-path[data-presentation="journey"]
   .v-milestone-path__item[data-state="current"]
@@ -175,7 +175,7 @@
   background: var(--v-paper);
 }
 .v-milestone-path[data-presentation="journey"] .v-milestone-path__marker {
-  margin-top: 18px;
+  margin-top: var(--s-5);
 }
 .v-milestone-path[data-presentation="journey"] .v-milestone-path__connection {
   top: 42px;
@@ -194,12 +194,12 @@
   grid-auto-columns: 220px;
   width: max-content;
   min-width: 100%;
-  gap: 20px;
-  padding: 8px 4px 28px;
+  gap: var(--s-5);
+  padding: var(--s-2) var(--s-1) var(--s-7);
 }
 .v-milestone-path[data-presentation="sequence"] .v-milestone-path__item {
   grid-template-columns: 1fr;
-  gap: 22px;
+  gap: var(--s-6);
   padding: 0;
   align-content: start;
 }
@@ -213,19 +213,19 @@
 .v-milestone-path[data-presentation="sequence"] .v-milestone-path__content {
   background: var(--v-paper);
   border: 1px solid var(--v-border);
-  border-radius: 18px 18px 4px 18px;
-  padding: 16px;
+  border-radius: var(--r-card) var(--r-card) var(--r-xs) var(--r-card);
+  padding: var(--s-4);
   min-height: 228px;
 }
 .v-milestone-path[data-presentation="sequence"]
   .v-milestone-path__item[data-state="current"]
   .v-milestone-path__content {
   border-top: 3px solid var(--v-pink);
-  padding-top: 14px;
+  padding-top: var(--s-4);
 }
 .v-milestone-path[data-presentation="sequence"] .v-milestone-path__heading {
   display: grid;
-  gap: 12px;
+  gap: var(--s-3);
   justify-items: start;
 }
 .v-milestone-path[data-presentation="sequence"] .v-milestone-path__title {
@@ -236,24 +236,24 @@
   grid-template-rows: 36px minmax(0, 1fr);
 }
 .v-milestone-path__scroll-note[data-slot] {
-  margin-top: 12px;
-  font-size: 12px;
+  margin-top: var(--s-3);
+  font-size: var(--fs-meta);
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__list {
   background: var(--v-paper);
   border: 1px solid var(--v-border);
-  border-radius: 20px;
-  padding: 4px 20px;
+  border-radius: var(--r-card);
+  padding: var(--s-1) var(--s-5);
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__item {
   grid-template-columns: 28px minmax(0, 1fr);
-  padding: 16px 0;
-  gap: 14px;
+  padding: var(--s-4) 0;
+  gap: var(--s-4);
   align-items: center;
 }
 .v-milestone-path[data-presentation="review"]
   .v-milestone-path__item:last-child {
-  padding-block-end: 16px;
+  padding-block-end: var(--s-4);
 }
 .v-milestone-path[data-presentation="review"]
   .v-milestone-path__item
@@ -266,25 +266,25 @@
 .v-milestone-path[data-presentation="review"] .v-milestone-path__marker {
   width: 28px;
   height: 28px;
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__content {
   padding: 0;
-  gap: 4px;
+  gap: var(--s-1);
 }
 .v-milestone-path[data-presentation="review"] .v-milestone-path__description {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.45;
 }
 .v-milestone-example {
   width: 100%;
   min-width: 0;
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
 }
 .v-milestone-example__actions {
   display: flex;
-  gap: 12px;
+  gap: var(--s-3);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -294,17 +294,17 @@
 }
 .v-milestone-example__detail {
   border-left: 2px solid var(--v-blue);
-  padding: 8px 0 8px 18px;
+  padding: var(--s-2) 0 var(--s-2) var(--s-5);
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-milestone-example__detail strong {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
 }
 .v-milestone-example__detail p {
   margin: 0;
   color: var(--v-text-2);
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.6;
 }

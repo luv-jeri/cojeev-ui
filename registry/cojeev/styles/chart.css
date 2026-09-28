@@ -59,12 +59,12 @@
 }
 [data-slot="chart-ranked-label"] b {
   font-size: var(--fs-body);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   line-height: 1.2;
 }
 [data-slot="chart-ranked-value"] .u {
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-regular);
   margin-left: 3px;
   color: var(--muted-foreground);
 }
@@ -91,31 +91,31 @@
 .v-chart-frame__header {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 8px;
+  gap: var(--s-2);
   align-items: start;
 }
 .v-chart-frame [data-slot="card-title"] {
   font-family: var(--font-display);
-  font-size: 21px;
+  font-size: var(--fs-title);
   line-height: 1.2;
 }
 .v-chart-legend {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 8px;
+  gap: var(--s-1) var(--s-2);
   min-width: 0;
 }
 .v-chart-legend__item.v-btn {
-  gap: 7px;
-  padding-inline: 9px;
+  gap: var(--s-2);
+  padding-inline: var(--s-2);
   max-width: 100%;
   height: auto;
   min-height: 32px;
-  padding-block: 6px;
+  padding-block: var(--s-2);
   white-space: normal;
   text-align: start;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .v-chart-legend__item[aria-pressed="false"] {
   opacity: 0.5;
@@ -152,7 +152,7 @@
 }
 .v-chart-grid text,
 .v-chart-axis text {
-  font: 11px var(--font-text);
+  font: var(--fs-caps) var(--font-text);
   fill: var(--muted-foreground);
   font-variant-numeric: tabular-nums;
 }
@@ -163,18 +163,18 @@
   pointer-events: none;
 }
 .v-chart-center text {
-  font: 600 29px var(--font-display);
+  font: var(--fw-semibold) 29px var(--font-display);
   letter-spacing: -0.025em;
   fill: var(--foreground);
 }
 .v-chart-center .v-chart-center__label {
-  font: 12px var(--font-text);
+  font: var(--fs-meta) var(--font-text);
   letter-spacing: 0;
   fill: var(--muted-foreground);
 }
 .v-chart-note {
   fill: var(--muted-foreground);
-  font: 13px var(--font-text);
+  font: var(--fs-small) var(--font-text);
 }
 .v-chart-empty {
   height: 100%;
@@ -194,7 +194,7 @@
   flex-wrap: wrap;
   gap: var(--s-3);
   color: var(--muted-foreground);
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-chart-frame__table {
   padding: 0;
@@ -210,18 +210,18 @@
   pointer-events: none;
 }
 .v-chart-tooltip__card[data-slot="card"] {
-  padding: 12px 14px;
+  padding: var(--s-3) var(--s-4);
   border-radius: var(--r-card-sm);
   background: var(--popover);
   color: var(--popover-foreground);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-float);
   display: grid;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-chart-tooltip__label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
   line-height: 1.4;
   overflow-wrap: anywhere;
   display: -webkit-box;
@@ -233,8 +233,8 @@
   display: grid;
   grid-template-columns: 10px minmax(0, 1fr) auto;
   align-items: start;
-  gap: 8px;
-  font-size: 12px;
+  gap: var(--s-2);
+  font-size: var(--fs-meta);
   line-height: 1.45;
 }
 .v-chart-tooltip__row .v-chart-key {
@@ -249,7 +249,7 @@
   text-overflow: ellipsis;
 }
 .v-chart-tooltip__row strong {
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   font-variant-numeric: tabular-nums;
   max-width: 96px;
   overflow-wrap: anywhere;
@@ -265,31 +265,31 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
-  padding-bottom: 12px;
+  gap: var(--s-3);
+  padding-bottom: var(--s-3);
   border-bottom: 1px solid var(--v-edge);
 }
 .v-chart-tooltip__total > span {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--v-text-3);
 }
 .v-chart-tooltip__total > strong {
   font-family: var(--font-display);
-  font-size: 25px;
+  font-size: var(--fs-section);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .v-chart-tooltip[data-presentation="ranked"] .v-chart-tooltip__row {
   grid-template-columns: 18px 8px minmax(0, 1fr) auto;
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-chart-tooltip__rank {
   font-variant-numeric: tabular-nums;
   color: var(--v-text-3);
-  font-size: 10px;
+  font-size: var(--fs-caps);
 }
 .v-chart-tooltip__empty {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-3);
 }
 .v-chart-tooltip-example {
@@ -297,18 +297,18 @@
   max-width: 580px;
   margin-inline: auto;
   display: grid;
-  gap: 20px;
+  gap: var(--s-5);
   color: var(--v-text);
 }
 .v-chart-tooltip-example h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: var(--fs-section);
 }
 .v-chart-tooltip-example p {
   margin: 0;
   color: var(--v-text-2);
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.6;
 }
 .v-chart-tooltip-example__plot {
@@ -316,17 +316,17 @@
   height: 280px;
   background: var(--v-paper);
   border: 1px solid var(--v-edge);
-  border-radius: 20px;
+  border-radius: var(--r-card);
 }
 .v-chart-tooltip-example__points {
   display: flex;
   justify-content: space-between;
-  gap: 4px;
-  padding: 16px;
+  gap: var(--s-1);
+  padding: var(--s-4);
 }
 .v-chart-tooltip-example__points .v-btn {
-  font-size: 12px;
-  padding-inline: 10px;
+  font-size: var(--fs-meta);
+  padding-inline: var(--s-3);
   min-height: 44px;
 }
 .v-chart-tooltip-example__guide {
@@ -359,7 +359,7 @@
 .v-chart-example,
 .v-chart-introduction {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   min-width: 0;
 }
 .v-chart-example__tools {
@@ -367,18 +367,18 @@
   flex-wrap: wrap;
   align-items: end;
   justify-content: space-between;
-  gap: 12px 24px;
+  gap: var(--s-3) var(--s-6);
 }
 .v-chart-example__tools > [role="status"] {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-text-2);
   max-width: 32ch;
-  padding-bottom: 10px;
+  padding-bottom: var(--s-3);
 }
 .v-chart-control {
   display: grid;
-  gap: 8px;
+  gap: var(--s-2);
   min-width: 0;
   width: min(100%, 260px);
 }
@@ -392,8 +392,8 @@
 }
 .v-chart-frame[data-appearance] > div > [data-slot="card"] {
   display: grid;
-  gap: 20px;
-  padding: 24px;
+  gap: var(--s-5);
+  padding: var(--s-6);
   background: var(--v-canvas);
   color: var(--v-text);
   border: 1px solid var(--v-border);
@@ -404,7 +404,7 @@
 .v-chart-frame[data-appearance]
   .v-chart-frame__header
   [data-slot="card-description"] {
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.65;
   max-width: 65ch;
 }
@@ -421,30 +421,30 @@
 .v-chart-summary {
   display: grid;
   align-content: center;
-  gap: 12px;
+  gap: var(--s-3);
   min-width: 0;
-  padding: 28px 20px;
+  padding: var(--s-7) var(--s-5);
   border-inline-start: 3px solid var(--v-pink);
 }
 .v-chart-summary > span:first-child {
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.5;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 .v-chart-summary > strong {
-  font: 600 clamp(38px, 6cqi, 64px) / 1 var(--font-display);
+  font: var(--fw-semibold) clamp(38px, 6cqi, 64px) / 1 var(--font-display);
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 .v-chart-summary > p {
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.7;
   color: var(--v-text-2);
   margin: 0;
 }
 .v-chart-summary__scope {
-  font-size: 10px;
+  font-size: var(--fs-caps);
   line-height: 1.6;
   color: var(--v-text-2);
 }
@@ -498,12 +498,12 @@
 }
 .v-chart-values [data-slot="chart-data-table"] {
   min-width: 260px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 .v-chart-anatomy {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--s-4);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -511,22 +511,22 @@
 .v-chart-anatomy li {
   display: grid;
   align-content: start;
-  gap: 12px;
-  padding: 20px;
+  gap: var(--s-3);
+  padding: var(--s-5);
   border-top: 2px solid var(--v-blue);
   min-width: 0;
 }
 .v-chart-anatomy li > span {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
   font-variant-numeric: tabular-nums;
 }
 .v-chart-anatomy strong {
-  font-size: 16px;
+  font-size: var(--fs-reading);
   line-height: 1.4;
 }
 .v-chart-anatomy p {
-  font-size: 13px;
+  font-size: var(--fs-small);
   line-height: 1.7;
   margin: 0;
   color: var(--v-text-2);
@@ -538,18 +538,18 @@
     > [data-slot="card"] {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "heading" "summary" "plot" "footer" "values";
-    padding: 16px;
+    padding: var(--s-4);
   }
   .v-chart-summary {
-    padding: 12px 16px;
+    padding: var(--s-3) var(--s-4);
   }
   .v-chart-anatomy {
     grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
+    gap: var(--s-2);
   }
   .v-chart-anatomy li {
     grid-template-columns: 24px minmax(0, 1fr);
-    padding: 16px 0;
+    padding: var(--s-4) 0;
   }
   .v-chart-anatomy li > p {
     grid-column: 2;

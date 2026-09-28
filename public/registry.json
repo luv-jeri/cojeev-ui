@@ -240,16 +240,23 @@
           "text-v-section": "var(--fs-section)",
           "text-v-title": "var(--fs-title)",
           "text-v-lead": "var(--fs-lead)",
+          "text-v-reading": "var(--fs-reading)",
           "text-v-body": "var(--fs-body)",
           "text-v-control": "var(--fs-control)",
+          "text-v-small": "var(--fs-small)",
           "text-v-meta": "var(--fs-meta)",
           "text-v-caps": "var(--fs-caps)",
+          "font-weight-v-regular": "var(--fw-regular)",
+          "font-weight-v-medium": "var(--fw-medium)",
+          "font-weight-v-semibold": "var(--fw-semibold)",
+          "font-weight-v-bold": "var(--fw-bold)",
           "spacing-s-1": "var(--s-1)",
           "spacing-s-2": "var(--s-2)",
           "spacing-s-3": "var(--s-3)",
           "spacing-s-4": "var(--s-4)",
           "spacing-s-5": "var(--s-5)",
           "spacing-s-6": "var(--s-6)",
+          "spacing-s-7": "var(--s-7)",
           "spacing-s-8": "var(--s-8)",
           "spacing-s-10": "var(--s-10)",
           "spacing-s-12": "var(--s-12)",
@@ -282,6 +289,7 @@
           "spacing-ctl-sm": "var(--ctl-sm)",
           "spacing-ctl-md": "var(--ctl-md)",
           "spacing-ctl-lg": "var(--ctl-lg)",
+          "spacing-ctl-xl": "var(--ctl-xl)",
           "color-pulse-c": "var(--pulse-c)",
           "color-c": "var(--c)",
           "color-hue": "var(--hue)",
@@ -458,6 +466,11 @@
           "path": "registry/cojeev/motion/morph-paint.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/morph-paint.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/flow-press.ts",
@@ -795,6 +808,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
@@ -896,6 +914,11 @@
         {
           "path": "registry/cojeev/ui/activity-feed.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -1206,6 +1229,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
@@ -1335,6 +1363,11 @@
         {
           "path": "registry/cojeev/ui/agent-chat.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -2661,6 +2694,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/use-morph.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-morph.ts"
@@ -3117,6 +3155,11 @@
           "target": "lib/cojeev-motion/slider-geometry.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/shape-data.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/shape-data.ts"
@@ -3334,6 +3377,11 @@
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/lib/shape-data.ts",
@@ -3923,6 +3971,11 @@
         {
           "path": "registry/cojeev/ui/attachment.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -4772,6 +4825,11 @@
           "target": "lib/cojeev-motion/scroll-thumb.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/shape-data.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/shape-data.ts"
@@ -4963,6 +5021,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -5158,6 +5221,11 @@
         {
           "path": "registry/cojeev/ui/breadcrumb.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -6127,6 +6195,11 @@
           "target": "lib/cojeev-motion/use-flow.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/styles/button-group.css",
           "type": "registry:file",
           "target": "styles/cojeev/button-group.css"
@@ -6413,6 +6486,11 @@
           "path": "registry/cojeev/motion/clock.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/clock.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/flow-press.ts",
@@ -7137,6 +7215,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/use-morph.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-morph.ts"
@@ -7490,6 +7573,11 @@
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/lib/shape-data.ts",
@@ -8542,6 +8630,11 @@
           "target": "lib/cojeev-motion/scroll-thumb.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/subtle-backgrounds.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/subtle-backgrounds.ts"
@@ -8720,6 +8813,11 @@
           "path": "registry/cojeev/motion/use-disclosure-height.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-disclosure-height.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -8967,6 +9065,11 @@
           "path": "registry/cojeev/motion/morph-paint.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/morph-paint.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/flow-press.ts",
@@ -9297,6 +9400,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/shape-data.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/shape-data.ts"
@@ -9552,6 +9660,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
@@ -9733,6 +9846,11 @@
           "path": "registry/cojeev/motion/flow-motion.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/flow-motion.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/flow-press.ts",
@@ -10159,6 +10277,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
@@ -10346,6 +10469,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-flow.ts",
@@ -10625,6 +10753,11 @@
           "path": "registry/cojeev/motion/clock.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/clock.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/flow-press.ts",
@@ -11463,6 +11596,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -12463,6 +12601,11 @@
           "target": "lib/cojeev-motion/flow-motion.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/flow-press.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/flow-press.ts"
@@ -12687,6 +12830,11 @@
           "path": "registry/cojeev/motion/refs.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/refs.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -14028,6 +14176,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
@@ -14926,6 +15079,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/use-morph.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-morph.ts"
@@ -15507,6 +15665,11 @@
         {
           "path": "registry/cojeev/ui/icon.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -16304,6 +16467,11 @@
           "target": "lib/cojeev-motion/clock.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/flow-press.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/flow-press.ts"
@@ -16621,6 +16789,11 @@
           "path": "registry/cojeev/motion/flow-motion.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/flow-motion.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -17031,6 +17204,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -17458,6 +17636,11 @@
           "path": "registry/cojeev/lib/signature-shapes.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/signature-shapes.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -18019,6 +18202,11 @@
           "target": "lib/cojeev-motion/scroll-thumb.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/shape-data.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/shape-data.ts"
@@ -18203,6 +18391,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -19024,6 +19217,11 @@
           "target": "lib/cojeev-motion/morph-paint.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/flow-press.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/flow-press.ts"
@@ -19695,6 +19893,11 @@
           "target": "lib/cojeev-motion/use-reduced-motion.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/use-morph.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-morph.ts"
@@ -19987,6 +20190,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -20301,6 +20509,11 @@
           "path": "registry/cojeev/lib/selector.tsx",
           "type": "registry:lib",
           "target": "lib/cojeev/selector.tsx"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/lib/shape-data.ts",
@@ -20752,6 +20965,11 @@
           "target": "lib/cojeev-motion/flow-motion.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/flow-press.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/flow-press.ts"
@@ -20938,6 +21156,11 @@
           "path": "registry/cojeev/motion/use-motion-visibility.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-motion-visibility.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -21256,6 +21479,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/reference-gallery-motion.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/reference-gallery-motion.ts"
@@ -21568,6 +21796,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
@@ -21821,6 +22054,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -22218,6 +22456,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/styles/pagination.css",
@@ -22950,6 +23193,11 @@
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/lib/shape-data.ts",
@@ -23791,6 +24039,11 @@
           "target": "lib/cojeev-motion/scroll-thumb.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/subtle-backgrounds.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/subtle-backgrounds.ts"
@@ -24043,6 +24296,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",
@@ -24755,6 +25013,11 @@
           "target": "lib/cojeev-motion/scroll-thumb.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/shape-data.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/shape-data.ts"
@@ -24957,6 +25220,11 @@
           "path": "registry/cojeev/motion/scroll-thumb.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/scroll-thumb.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/lib/shape-data.ts",
@@ -25432,6 +25700,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-disclosure-height.ts",
@@ -26619,6 +26892,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/use-organic-value.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-organic-value.ts"
@@ -26791,6 +27069,11 @@
           "path": "registry/cojeev/lib/signature-shapes.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/signature-shapes.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-morph.ts",
@@ -27982,6 +28265,11 @@
           "target": "lib/cojeev-motion/clock.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/flow-press.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/flow-press.ts"
@@ -29023,6 +29311,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/use-flow.ts",
@@ -31072,6 +31365,11 @@
           "target": "lib/cojeev/control-appearance.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/motion/use-flow.ts",
           "type": "registry:lib",
           "target": "lib/cojeev-motion/use-flow.ts"
@@ -31871,6 +32169,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/styles/tree.css",
@@ -33375,6 +33678,11 @@
           "path": "registry/cojeev/lib/control-appearance.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/control-appearance.ts"
+        },
+        {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
         },
         {
           "path": "registry/cojeev/motion/scroll-thumb.ts",

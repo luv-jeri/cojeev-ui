@@ -297,7 +297,7 @@ export function CarouselContent({
     className: cn(
       scrollbar
         ? "v-carousel__viewport"
-        : "v-carousel__track flex min-w-0 gap-[var(--s-4)] overflow-x-auto overflow-y-hidden [scroll-snap-type:x_mandatory] pt-[2px] px-[2px] pb-[6px] mt-[-2px] mx-[-2px] [scrollbar-width:none] [scroll-padding-inline:2px]",
+        : "v-carousel__track flex min-w-0 gap-[var(--s-4)] overflow-x-auto overflow-y-hidden [scroll-snap-type:x_mandatory] pt-[2px] px-[2px] pb-[var(--s-2)] mt-[-2px] mx-[-2px] [scrollbar-width:none] [scroll-padding-inline:2px]",
       className,
     ),
     onScroll: (event) => {
@@ -390,7 +390,7 @@ export function CarouselNavigation({
     <div
       data-slot="carousel-navigation"
       className={cn(
-        "v-carousel__nav flex items-center justify-between gap-[var(--s-2)] mt-[12px]",
+        "v-carousel__nav flex items-center justify-between gap-[var(--s-2)] mt-[var(--s-3)]",
         className,
       )}
       {...props}
@@ -524,7 +524,7 @@ export function CarouselDeck({ className, ...props }: CarouselDeckProps) {
     <div
       data-slot="carousel-deck"
       className={cn(
-        "v-deck relative isolate h-auto min-h-[180px] pt-[22px] pr-[26px]",
+        "v-deck relative isolate h-auto min-h-[180px] pt-[var(--s-6)] pr-[var(--s-7)]",
         className,
       )}
       {...props}

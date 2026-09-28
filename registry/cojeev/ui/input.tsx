@@ -11,7 +11,7 @@ import {
 } from "../lib/control-appearance";
 
 const inputVariants = cva(
-  "v-input flex w-full items-center gap-[12px] h-[48px] px-[18px] py-0 rounded-[var(--r-pill)] [border:0] bg-[var(--input)] text-[color:var(--v-text)] text-[length:var(--fs-body)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none",
+  "v-input flex w-full items-center gap-[var(--s-3)] h-[var(--ctl-lg)] px-[var(--s-5)] py-0 rounded-[var(--r-pill)] [border:0] bg-[var(--input)] text-[color:var(--v-text)] text-[length:var(--fs-body)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] outline-none",
   {
     variants: {
       variant: {
@@ -21,7 +21,7 @@ const inputVariants = cva(
       },
       size: {
         default: "",
-        sm: "-sm h-[40px] px-[14px] text-[length:var(--fs-control)]",
+        sm: "-sm h-[40px] px-[var(--s-4)] text-[length:var(--fs-control)]",
       },
     },
     defaultVariants: { variant: "default", size: "default" },
@@ -123,7 +123,7 @@ export function InputAffix({ className, ...props }: InputAffixProps) {
     <span
       data-slot="input-affix"
       className={cn(
-        "v-affix shrink-0 whitespace-nowrap text-[13px] text-[color:var(--v-text-2)]",
+        "v-affix shrink-0 whitespace-nowrap text-[length:var(--fs-small)] text-[color:var(--v-text-2)]",
         className,
       )}
       {...props}

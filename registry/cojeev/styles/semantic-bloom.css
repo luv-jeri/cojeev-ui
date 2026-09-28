@@ -4,7 +4,7 @@
   --bloom-connection:var(--v-pink);
   position:relative; isolation:isolate; container-type:inline-size;
   width:100%; min-width:0; min-height:360px; overflow:hidden;
-  display:grid; place-items:center; border-radius:var(--r-panel,24px);
+  display:grid; place-items:center; border-radius:var(--r-panel,var(--r-panel));
   background:var(--v-canvas); color:var(--v-text); touch-action:pan-y;
 }
 .v-semantic-bloom[data-tone="memory"] {
@@ -29,10 +29,10 @@
 }
 .v-semantic-bloom [data-slot="bloom-wordmark"] {
   position:relative; z-index:1; min-width:0; max-width:100%;
-  padding:48px 24px; text-align:center; white-space:pre-wrap; overflow-wrap:anywhere;
+  padding:var(--s-12) var(--s-6); text-align:center; white-space:pre-wrap; overflow-wrap:anywhere;
   font-family:var(--font-display,"Bricolage Grotesque",sans-serif);
   font-size:clamp(2rem,calc(12cqi * var(--bloom-size,1)),8rem);
-  font-weight:500; line-height:1.1; letter-spacing:-.035em;
+  font-weight:var(--fw-medium); line-height:1.1; letter-spacing:-.035em;
   color:var(--v-text);
   text-shadow:0 1px 0 var(--v-canvas),0 -1px 0 var(--v-canvas),1px 0 0 var(--v-canvas),-1px 0 0 var(--v-canvas);
 }

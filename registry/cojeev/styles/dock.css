@@ -6,7 +6,7 @@
   max-inline-size: 100%;
   min-inline-size: 0;
   color: var(--v-text);
-  font: 500 13px/1.2 var(--font-body);
+  font: var(--fw-medium) var(--fs-small)/1.2 var(--font-body);
   isolation: isolate;
 }
 .v-dock [data-part="viewport"] {
@@ -31,7 +31,7 @@
 }
 .v-dock:not([data-variant="rail"]) [data-part="stage"] {
   padding: calc(var(--dock-reserved-lift) + 78px)
-    calc(var(--dock-reserved-lift) + 13px) 18px;
+    calc(var(--dock-reserved-lift) + var(--s-detail-13)) var(--s-5);
 }
 .v-dock [data-part="items"] {
   position: relative;
@@ -60,7 +60,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: 14px;
+  border-radius: var(--r-card-sm);
   background: transparent;
   color: var(--v-text);
   font: inherit;
@@ -75,7 +75,7 @@
   place-items: center;
   inline-size: var(--dock-item-size);
   block-size: var(--dock-item-size);
-  border-radius: 14px;
+  border-radius: var(--r-card-sm);
   background: var(--v-pink);
   color: var(--v-on-accent);
   box-shadow:
@@ -121,13 +121,13 @@
   place-items: center;
   min-inline-size: 20px;
   block-size: 20px;
-  padding-inline: 5px;
+  padding-inline: var(--s-1);
   border: 2px solid color-mix(in srgb, var(--v-paper) 88%, transparent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--v-ink);
   color: var(--v-on-ink);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-bold);
   line-height: 1;
   box-sizing: border-box;
 }
@@ -138,8 +138,8 @@
   inset-inline-start: 50%;
   inline-size: max-content;
   max-inline-size: min(22ch, calc(100vw - 32px));
-  padding: 6px 9px;
-  border-radius: 8px;
+  padding: var(--s-2) var(--s-2);
+  border-radius: var(--r-sm);
   background: var(--v-ink);
   color: var(--v-on-ink);
   box-shadow: 0 8px 18px -9px rgba(17, 17, 17, 0.5);
@@ -191,7 +191,7 @@
   position: absolute;
   inset: -4px;
   border: 2px solid var(--v-brand);
-  border-radius: 18px;
+  border-radius: var(--r-card);
   transform: translateY(calc(-1 * var(--dock-item-lift)))
     scale(var(--dock-item-scale));
   transform-origin: 50% 100%;
@@ -234,7 +234,7 @@
   inset-block-end: 8px;
   block-size: calc(var(--dock-item-size) + 28px);
   border: 1px solid color-mix(in srgb, var(--v-edge) 52%, transparent);
-  border-radius: 20px;
+  border-radius: var(--r-card);
   background: color-mix(in srgb, var(--v-paper) 74%, transparent);
   box-shadow:
     0 16px 36px -25px rgba(17, 17, 17, 0.72),
@@ -246,8 +246,8 @@
   perspective: 520px;
 }
 .v-dock[data-variant="shelf"] [data-part="stage"] {
-  padding-inline: 24px;
-  padding-block-end: 20px;
+  padding-inline: var(--s-6);
+  padding-block-end: var(--s-5);
 }
 .v-dock [data-part="shelf-plane"] {
   position: absolute;
@@ -255,7 +255,7 @@
   inset-inline: 5px;
   inset-block-end: 17px;
   block-size: calc(var(--dock-item-size) * 0.72);
-  border-radius: 14px 14px 5px 5px;
+  border-radius: var(--r-card-sm) var(--r-card-sm) var(--r-xs) var(--r-xs);
   background: linear-gradient(180deg, var(--v-beige-2), var(--v-beige));
   box-shadow: 0 18px 26px -20px rgba(17, 17, 17, 0.75);
   transform: rotateX(57deg);
@@ -267,21 +267,21 @@
   inset-inline: 10px;
   inset-block-end: 9px;
   block-size: 12px;
-  border-radius: 2px 2px 8px 8px;
+  border-radius: 2px 2px var(--r-sm) var(--r-sm);
   background: color-mix(in srgb, var(--v-edge) 35%, var(--v-beige));
   box-shadow: 0 8px 14px -9px rgba(17, 17, 17, 0.65);
 }
 .v-dock[data-variant="shelf"] [data-part="visual"] {
-  border-radius: 12px;
+  border-radius: var(--r-md);
   box-shadow:
     0 9px 14px -9px rgba(17, 17, 17, 0.58),
     inset 0 1px rgba(255, 255, 255, 0.42);
 }
 .v-dock[data-variant="rail"] {
   inline-size: min(100%, 248px);
-  padding: 8px;
+  padding: var(--s-2);
   border: 1px solid var(--v-border);
-  border-radius: 18px;
+  border-radius: var(--r-card);
   background: var(--v-paper);
   box-shadow: 0 14px 30px -24px rgba(17, 17, 17, 0.58);
 }
@@ -297,12 +297,12 @@
   min-inline-size: 0;
 }
 .v-dock[data-variant="rail"] [data-part="stage"] {
-  padding: 4px;
+  padding: var(--s-1);
 }
 .v-dock[data-variant="rail"] [data-part="items"] {
   display: grid;
   align-items: stretch;
-  gap: 5px;
+  gap: var(--s-1);
 }
 .v-dock[data-variant="rail"] [data-part="rail-spine"] {
   position: absolute;
@@ -319,22 +319,22 @@
   inline-size: 100%;
   block-size: auto;
   min-inline-size: 0;
-  padding-block: 4px;
+  padding-block: var(--s-1);
 }
 .v-dock[data-variant="rail"] [data-part="item"] {
   grid-template-columns: var(--dock-item-size) minmax(0, 1fr);
-  gap: 10px;
+  gap: var(--s-3);
   inline-size: 100%;
   block-size: auto;
   min-block-size: var(--dock-item-size);
-  padding-inline-end: 10px;
+  padding-inline-end: var(--s-3);
   text-align: start;
 }
 .v-dock[data-variant="rail"] [data-part="visual"] {
   grid-column: 1;
   grid-row: 1;
   justify-self: start;
-  border-radius: 12px;
+  border-radius: var(--r-md);
   transform: translateX(var(--dock-item-lift)) scale(var(--dock-item-scale));
   transform-origin: 0 50%;
 }
@@ -374,7 +374,7 @@
 .v-dock[data-variant="rail"] [data-part="item"]:focus-visible::after {
   inset: 2px;
   transform: none;
-  border-radius: 12px;
+  border-radius: var(--r-md);
 }
 .v-dock[data-motion="off"] [data-part="visual"],
 .v-dock[data-motion="off"] [data-part="label"],
@@ -404,7 +404,7 @@
 }
 @media (hover: none), (pointer: coarse) {
   .v-dock:not([data-variant="rail"]) [data-part="stage"] {
-    padding-block-start: 12px;
+    padding-block-start: var(--s-3);
   }
   .v-dock:not([data-variant="rail"]) [data-part="lane"] {
     block-size: calc(var(--dock-item-size) + 35px);
@@ -413,7 +413,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 4px;
+    gap: var(--s-1);
     block-size: calc(var(--dock-item-size) + 27px);
   }
   .v-dock:not([data-variant="rail"]) [data-part="visual"] {
@@ -428,7 +428,7 @@
     background: transparent;
     color: var(--v-text);
     box-shadow: none;
-    font-size: 10px;
+    font-size: var(--fs-caps);
     line-height: 1.15;
     opacity: 1;
     overflow: hidden;
@@ -455,13 +455,13 @@
 .v-dock .v-dock__scroll > [data-slot="scroll-area-viewport"] {
   height: auto;
   max-height: none;
-  padding: 0 0 18px;
+  padding: 0 0 var(--s-5);
 }
 .v-dock[data-variant="rail"]
   .v-dock__scroll
   > [data-slot="scroll-area-viewport"] {
   max-height: min(70dvh, 520px);
-  padding: 0 22px 0 0;
+  padding: 0 var(--s-6) 0 0;
 }
 .v-dock .v-dock__scroll > [data-slot="scroll-area-viewport"] > div {
   width: max-content;

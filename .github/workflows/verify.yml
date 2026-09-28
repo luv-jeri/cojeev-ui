@@ -399,6 +399,9 @@ jobs:
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
       - run: npm run gate:smooth-scroll
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+      - name: Confirm route stylesheets resolve as on a hard load after client-side navigation
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        run: node tests/route-styles.browser.mjs --serve
       - name: Build the disposable local reporting fixture
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         run: npm run build

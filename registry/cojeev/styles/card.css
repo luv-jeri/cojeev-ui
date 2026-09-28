@@ -7,16 +7,16 @@
 /* Composition is separate from the original palette, size and lift choices. */
 .v-card[data-appearance] {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   width: 100%;
   max-width: 680px;
-  padding: 24px;
+  padding: var(--s-6);
   border: 1px solid var(--v-border);
   border-radius: min(var(--v-control-radius, var(--r-card)), 32px);
 }
 .v-card[data-appearance] [data-slot="card-content"] {
   align-content: center;
-  gap: 14px;
+  gap: var(--s-4);
 }
 .v-card[data-appearance] [data-slot="card-title"] {
   font-size: clamp(22px, 3cqi, 30px);
@@ -24,17 +24,17 @@
   letter-spacing: -0.025em;
 }
 .v-card[data-appearance] [data-slot="card-description"] {
-  font-size: 14px;
+  font-size: var(--fs-control);
   line-height: 1.7;
   margin: 0;
 }
 .v-card[data-appearance] [data-slot="card-footer"] {
-  margin-top: 8px;
+  margin-top: var(--s-2);
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--s-4);
 }
 .v-card[data-appearance] .v-card__eyebrow {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--card-secondary-ink);
   line-height: 1.5;
 }
@@ -48,7 +48,7 @@
   display: grid;
   place-items: center;
   min-height: 240px;
-  border-radius: 16px;
+  border-radius: var(--r-card-sm);
   background: var(--v-pink);
   color: var(--v-on-accent);
   isolation: isolate;
@@ -62,7 +62,7 @@
   font-size: clamp(24px, 4cqi, 40px);
   line-height: 1;
   letter-spacing: -0.055em;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   transform: rotate(-5deg);
 }
 .v-card__cover-orbit {
@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--s-5);
 }
 .v-card__project-number {
   display: grid;
@@ -96,7 +96,7 @@
   border-radius: 42% 58% 54% 46%;
   background: var(--v-yellow);
   color: var(--v-on-accent);
-  font-size: 20px;
+  font-size: var(--fs-title);
   font-variant-numeric: tabular-nums;
 }
 .v-card__steps {
@@ -109,9 +109,9 @@
 .v-card__steps li {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--s-3);
   min-height: 44px;
-  font-size: 14px;
+  font-size: var(--fs-control);
 }
 .v-card__steps li + li {
   border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent);
@@ -123,7 +123,7 @@
   height: 22px;
   border: 1px solid currentColor;
   border-radius: 50%;
-  font-size: 11px;
+  font-size: var(--fs-caps);
 }
 .v-card__steps [data-complete="true"] > span:first-child {
   background: var(--v-olive);
@@ -143,12 +143,12 @@
   place-items: center;
   width: 150px;
   height: 116px;
-  padding: 24px;
+  padding: var(--s-6);
   background: var(--v-canvas);
   color: var(--v-text);
   border: 1px solid currentColor;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-reading);
   line-height: 1.3;
   letter-spacing: -0.02em;
   transform: rotate(-4deg);
@@ -175,8 +175,8 @@
   transform: translate(-5px, 3px) rotate(-12deg);
 }
 .v-card[data-appearance].-sm {
-  padding: 16px;
-  gap: 16px;
+  padding: var(--s-4);
+  gap: var(--s-4);
 }
 .v-card[data-motion-quiet="true"] .v-card__cover-orbit {
   transform: rotate(30deg);
@@ -192,8 +192,8 @@
 }
 @media (max-width: 600px) {
   .v-card[data-appearance] {
-    padding: 20px;
-    gap: 20px;
+    padding: var(--s-5);
+    gap: var(--s-5);
   }
   .v-card[data-appearance="editorial"] {
     grid-template-columns: minmax(0, 1fr);
@@ -235,7 +235,7 @@
   top: 8%;
 }
 .v-card[data-slot] > .v-body-2 + * {
-  margin-top: 20px;
+  margin-top: var(--s-5);
 }
 .v-card[data-slot]
   :is([data-slot="card-title"], [data-slot="card-description"]) {

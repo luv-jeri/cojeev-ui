@@ -14,7 +14,7 @@ html[data-scrollbar-policy="cojeev"] {
 }
 :where(html[data-scrollbar-policy="cojeev"],html[data-scrollbar-policy="cojeev"] *)::-webkit-scrollbar-track { background:transparent; }
 :where(html[data-scrollbar-policy="cojeev"],html[data-scrollbar-policy="cojeev"] *)::-webkit-scrollbar-thumb {
-  border-radius:999px;
+  border-radius:var(--r-pill);
   background:var(--cojeev-scrollbar-color,var(--v-text-2));
 }
 :where(html[data-scrollbar-policy="cojeev"],html[data-scrollbar-policy="cojeev"] *)::-webkit-scrollbar-thumb:hover {
@@ -27,8 +27,8 @@ html[data-scrollbar-policy="cojeev"] {
   isolation: isolate;
   overflow: hidden;
   max-height: var(--h, 240px);
-  padding: 6px 6px 6px 18px;
-  border-radius: var(--r-card-sm, 20px);
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-5);
+  border-radius: var(--r-card-sm, var(--r-card));
   background: var(--v-canvas);
   color: var(--v-text);
   box-shadow: inset 0 0 0 1px var(--v-border);
@@ -37,7 +37,7 @@ html[data-scrollbar-policy="cojeev"] {
 [data-slot="scroll-area"].-plain { min-width:0; max-width:100%; padding:0; background:transparent; color:inherit; box-shadow:none; border-radius:inherit; }
 /* Leave room for control paint so decorative SVG overhang cannot invent a
    tiny scroll range (and an almost full-height thumb) when content fits. */
-[data-slot="scroll-area"].-plain > [data-slot="scroll-area-viewport"] { height:auto; max-height:var(--h,320px); padding:8px 24px 12px 8px; }
+[data-slot="scroll-area"].-plain > [data-slot="scroll-area-viewport"] { height:auto; max-height:var(--h,320px); padding:var(--s-2) var(--s-6) var(--s-3) var(--s-2); }
 [data-slot="scroll-area"].-plain > [data-slot="scroll-area-viewport"] > div { table-layout:fixed; width:100%; }
 .v-list-scroll { --h:min(320px,60dvh); }
 [data-slot="scroll-area-viewport"] {
@@ -47,7 +47,7 @@ html[data-scrollbar-policy="cojeev"] {
   border-radius: inherit;
   overscroll-behavior: contain;
   scrollbar-width: none;
-  padding-right: 24px;
+  padding-right: var(--s-6);
 }
 [data-slot="scroll-area-viewport"]::-webkit-scrollbar { display:none; width:0; height:0; }
 [data-slot="scroll-area-viewport"]:focus-visible {
@@ -56,9 +56,9 @@ html[data-scrollbar-policy="cojeev"] {
 }
 [data-slot="scroll-area-viewport"] > div > :is(p,.v-body) {
   margin: 0;
-  padding: 12px 0;
+  padding: var(--s-3) 0;
   border-bottom: 1px solid color-mix(in oklab,var(--v-border) 70%,transparent);
-  font-size: var(--fs-body, 14px);
+  font-size: var(--fs-body);
   line-height: 1.6;
 }
 [data-slot="scroll-area-viewport"] > div > :is(p,.v-body):last-child { border-bottom: 0; }
@@ -68,16 +68,16 @@ html[data-scrollbar-policy="cojeev"] {
 [data-slot="scroll-area-scrollbar"] {
   display: flex;
   --scrollbar-size: 6px;
-  padding: 0 calc((24px - var(--scrollbar-size)) / 2);
+  padding: 0 calc((var(--s-6) - var(--scrollbar-size)) / 2);
   touch-action: none;
   user-select: none;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: transparent;
   transition: background-color 160ms ease;
   z-index: 2;
 }
 [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] { width: 24px; }
-[data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] { height: 24px; padding: calc((24px - var(--scrollbar-size)) / 2) 0; flex-direction: column; }
+[data-slot="scroll-area-scrollbar"][data-orientation="horizontal"] { height: 24px; padding: calc((var(--s-6) - var(--scrollbar-size)) / 2) 0; flex-direction: column; }
 [data-slot="scroll-area-scrollbar"]::before {
   content: "";
   position: absolute;
@@ -108,7 +108,7 @@ html[data-scrollbar-policy="cojeev"] {
 [data-slot="scroll-area-scrollbar"][data-dragging="true"] [data-slot="scroll-area-thumb"] { color: var(--scrollbar-color,var(--v-pink)); }
 [data-slot="scroll-area"].-ink [data-slot="scroll-area-thumb"] { color: var(--scrollbar-color,color-mix(in oklab,var(--v-on-ink) 65%,transparent)); }
 [data-slot="scroll-area-scrollbar"][data-scrollbar-variant="rounded"] [data-slot="scroll-area-thumb"]::after,
-[data-slot="scroll-area-scrollbar"][data-scrollbar-variant="minimal"] [data-slot="scroll-area-thumb"]::after { content:""; position:absolute; inset:0; border-radius:999px; background:currentColor; }
+[data-slot="scroll-area-scrollbar"][data-scrollbar-variant="minimal"] [data-slot="scroll-area-thumb"]::after { content:""; position:absolute; inset:0; border-radius:var(--r-pill); background:currentColor; }
 [data-slot="scroll-area-scrollbar"][data-scrollbar-variant="minimal"] [data-slot="scroll-area-thumb"]::after { opacity:.72; }
 [data-slot="scroll-area-scrollbar"][data-scrollbar-variant="minimal"] [data-slot="scroll-area-thumb"]::after { border-radius:0; }
 :root[data-mode="dark"] [data-slot="scroll-area"].-ink { background: var(--v-canvas); color: var(--v-text); }
@@ -138,7 +138,7 @@ html[data-page-scrollbar-pending] body::-webkit-scrollbar { width: 0; height: 0;
   top: var(--page-scrollbar-top,80px);
   bottom: 16px;
   width: 24px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   z-index: 50;
   touch-action: none;
   user-select: none;
@@ -155,7 +155,7 @@ html[data-page-scrollbar-pending] body::-webkit-scrollbar { width: 0; height: 0;
 [data-slot="page-scrollbar-thumb"] { position: absolute; left:calc((24px - var(--scrollbar-size)) / 2); right:calc((24px - var(--scrollbar-size)) / 2); top:0; min-height: 0; }
 [data-slot="page-scrollbar-thumb"] svg { display: block; width: 100%; height: 100%; fill: currentColor; pointer-events: none; }
 .v-page-scrollbar[data-scrollbar-variant="rounded"] [data-slot="page-scrollbar-thumb"]::after,
-.v-page-scrollbar[data-scrollbar-variant="minimal"] [data-slot="page-scrollbar-thumb"]::after { content:""; position:absolute; inset:0; border-radius:999px; background:currentColor; }
+.v-page-scrollbar[data-scrollbar-variant="minimal"] [data-slot="page-scrollbar-thumb"]::after { content:""; position:absolute; inset:0; border-radius:var(--r-pill); background:currentColor; }
 .v-page-scrollbar[data-scrollbar-variant="minimal"] [data-slot="page-scrollbar-thumb"]::after { opacity:.72; }
 .v-page-scrollbar[data-scrollbar-variant="minimal"] [data-slot="page-scrollbar-thumb"]::after { border-radius:0; }
 .v-page-scrollbar[data-motion="off"] { transition: none; }

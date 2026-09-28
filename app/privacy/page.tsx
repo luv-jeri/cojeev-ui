@@ -2,6 +2,7 @@ import { GuideShell } from "@/components/landing/guide-shell";
 import { AnalyticsPreferences } from "@/components/analytics/analytics-preferences";
 import { contactEmail, pageMetadata, site, siteFlags } from "@/lib/site-config";
 import "@/components/landing/landing.css";
+import "../styles/privacy.css";
 
 export const metadata = pageMetadata("Privacy", "How 000h measures website activity, what a bug report or component request carries, and how to choose whether optional analytics is allowed.", "/privacy/");
 

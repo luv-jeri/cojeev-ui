@@ -25,8 +25,8 @@
 }
 .v-toast:where([data-slot="toast"], [data-slot^="toast-"]) .v-btn {
   height: 30px;
-  padding: 0 12px;
-  font-size: 12px;
+  padding: 0 var(--s-3);
+  font-size: var(--fs-meta);
   margin-left: auto;
   background: rgba(251, 244, 230, 0.14);
   color: inherit;
@@ -93,24 +93,24 @@
   grid-template-columns: 36px minmax(0, 1fr) 44px;
   grid-template-areas: "icon title close" "icon description close" ". action .";
   align-items: center;
-  column-gap: 12px;
-  row-gap: 6px;
+  column-gap: var(--s-3);
+  row-gap: var(--s-2);
   width: 100%;
-  padding: 16px;
-  border-radius: 20px;
+  padding: var(--s-4);
+  border-radius: var(--r-card);
   background: var(--card);
   color: var(--v-text);
   border: 1px solid var(--v-border);
 }
 .v-toast[data-appearance] [data-slot="toast-title"] {
   grid-area: title;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
   line-height: 1.35;
 }
 .v-toast[data-appearance] [data-slot="toast-description"] {
   grid-area: description;
-  font-size: 13px;
+  font-size: var(--fs-small);
   color: var(--toast-secondary, var(--v-text-2));
   line-height: 1.6;
 }
@@ -128,12 +128,12 @@
 :root .v-toast[data-appearance] .v-btn[data-slot="toast-action"] {
   grid-area: action;
   justify-self: start;
-  margin: 6px 0 0;
+  margin: var(--s-2) 0 0;
   min-height: 44px;
   background: var(--v-blue);
   color: var(--v-on-accent);
-  padding-inline: 18px;
-  font-size: 13px;
+  padding-inline: var(--s-5);
+  font-size: var(--fs-small);
 }
 :root .v-toast[data-appearance] .v-btn[data-slot="toast-close"] {
   grid-area: close;
@@ -158,45 +158,45 @@
 }
 .v-toast[data-appearance="compact"] {
   grid-template-areas: "icon title close";
-  padding: 10px 12px;
-  border-radius: 999px;
+  padding: var(--s-3) var(--s-3);
+  border-radius: var(--r-pill);
 }
 .v-toast[data-appearance="compact"] [data-slot="toast-indicator"] {
   align-self: center;
 }
 .v-toast[data-appearance="receipt"] {
   grid-template-areas: "icon title close" "icon description close" "receipt receipt receipt";
-  padding: 20px;
-  border-radius: 20px 20px 8px 8px;
+  padding: var(--s-5);
+  border-radius: var(--r-card) var(--r-card) var(--r-sm) var(--r-sm);
 }
 .v-toast__receipt {
   grid-area: receipt;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  padding-top: 16px;
-  margin-top: 12px;
+  gap: var(--s-4);
+  padding-top: var(--s-4);
+  margin-top: var(--s-3);
   border-top: 1px dashed var(--v-border);
-  font-size: 11px;
+  font-size: var(--fs-caps);
   color: var(--toast-secondary, var(--v-text-2));
 }
 .v-toast__receipt > span {
   display: grid;
-  gap: 6px;
+  gap: var(--s-2);
 }
 .v-toast__receipt strong {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-medium);
   color: var(--toast-primary, var(--v-text));
 }
 .v-toast-demo {
   width: 100%;
   display: grid;
   justify-items: start;
-  gap: 16px;
+  gap: var(--s-4);
 }
 .v-toast-demo__status {
-  font-size: 13px;
+  font-size: var(--fs-small);
   color: var(--v-text-2);
 }
 .v-toast-demo .v-toast-demo__viewport {

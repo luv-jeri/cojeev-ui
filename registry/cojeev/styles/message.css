@@ -11,7 +11,7 @@
    cap made the bubble resolve a different percentage and reflowed the message. */
 .v-msg__stack[data-slot] { min-width:0; }
 .v-msg[data-slot] > :is([data-slot="avatar"],svg) { flex-shrink:0; }
-.v-prov[data-slot] { font-size:11px; }
-.v-msg__stack[data-slot] .v-bubble{border-radius:18px}
-.v-msg__stack[data-slot] .v-bubble:last-of-type{border-radius:18px 18px 18px 4px}
-.v-msg[data-slot].-me .v-msg__stack .v-bubble:last-of-type{border-radius:18px 18px 4px 18px}
+.v-prov[data-slot] { font-size:var(--fs-caps); }
+.v-msg__stack[data-slot] .v-bubble{border-radius:var(--r-detail-18)}
+.v-msg__stack[data-slot] .v-bubble:last-of-type{border-radius:var(--r-detail-18) var(--r-detail-18) var(--r-detail-18) var(--r-xs)}
+.v-msg[data-slot].-me .v-msg__stack .v-bubble:last-of-type{border-radius:var(--r-detail-18) var(--r-detail-18) var(--r-xs) var(--r-detail-18)}

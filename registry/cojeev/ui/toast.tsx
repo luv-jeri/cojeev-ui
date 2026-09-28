@@ -9,7 +9,7 @@ import { Icon } from "@/registry/cojeev/ui/icon";
 import * as Primitive from "@radix-ui/react-toast";
 import { useFlowAppearance } from "@/registry/cojeev/motion/use-flow";
 export const toastVariants = cva(
-  "v-toast [display:flex] [align-items:center] [gap:var(--s-3)] [padding:var(--s-3)_var(--s-4)] [border-radius:var(--r-card-sm)] [background:var(--v-ink)] [color:var(--v-on-ink)] [font-size:var(--fs-control)]",
+  "v-toast [display:flex] [align-items:center] [gap:var(--s-3)] [padding:var(--s-3)_var(--s-4)] [border-radius:var(--r-card-sm)] [background:var(--v-ink)] [color:var(--v-on-ink)] [var(--fs-control)]",
   {
     variants: { variant: { default: "", cream: "-cream", danger: "-danger" } },
     defaultVariants: { variant: "default" },

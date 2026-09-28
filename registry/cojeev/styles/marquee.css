@@ -37,7 +37,7 @@
 }
 [data-slot="marquee-stage"] { min-inline-size:0; }
 [data-slot="marquee"][data-presentation="depth"] [data-slot="marquee-viewport"] {
-  padding-block:clamp(32px,5vw,64px);
+  padding-block:clamp(var(--s-8),5vw,64px);
   mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
 }
 [data-slot="marquee"][data-presentation="depth"] [data-slot="marquee-stage"] {

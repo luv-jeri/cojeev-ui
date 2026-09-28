@@ -34,7 +34,7 @@ const bundle = await build({
           path: "link",
           namespace: "fixture",
         }));
-        b.onResolve({ filter: /^\.\/reporting-widget$/ }, () => ({
+        b.onResolve({ filter: /^\.\/report-request$/ }, () => ({
           path: "widget",
           namespace: "fixture",
         }));

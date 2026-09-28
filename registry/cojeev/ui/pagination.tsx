@@ -266,7 +266,7 @@ export function PaginationEllipsis({
       data-slot="pagination-ellipsis"
       aria-hidden="true"
       className={cn(
-        "v-ellipsis px-[4px] text-[color:var(--muted-foreground)]",
+        "v-ellipsis px-[var(--s-1)] text-[color:var(--muted-foreground)]",
         className,
       )}
       {...props}

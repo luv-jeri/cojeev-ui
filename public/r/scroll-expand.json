@@ -34,7 +34,7 @@
     },
     {
       "path": "registry/cojeev/styles/scroll-expand.css",
-      "content": "@layer cojeev-states {\n.v-scroll-expand { width:100%; min-width:0; padding-block:32px; overflow:clip; }\n.v-scroll-expand__surface { width:100%; min-width:0; transform-origin:center; border-radius:16px; background:var(--v-blue); color:var(--v-on-accent); overflow:hidden; }\n@media(prefers-reduced-motion:reduce) { .v-scroll-expand__surface { transform:none; } }\n\n}\n",
+      "content": "@layer cojeev-states {\n.v-scroll-expand { width:100%; min-width:0; padding-block:var(--s-8); overflow:clip; }\n.v-scroll-expand__surface { width:100%; min-width:0; transform-origin:center; border-radius:var(--r-card-sm); background:var(--v-blue); color:var(--v-on-accent); overflow:hidden; }\n@media(prefers-reduced-motion:reduce) { .v-scroll-expand__surface { transform:none; } }\n\n}\n",
       "type": "registry:file",
       "target": "styles/cojeev/scroll-expand.css"
     }

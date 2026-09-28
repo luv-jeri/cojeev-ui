@@ -41,7 +41,7 @@
 }
 [data-slot="stepper-item"].-on .v-step__t {
   color: var(--v-text);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.005em;
 }
 
@@ -57,8 +57,8 @@
   grid-template-rows: 38px auto;
   align-content: start;
   justify-items: center;
-  gap: 10px;
-  padding: 8px 6px;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-2);
   min-width: 0;
 }
 [data-slot="stepper"][data-orientation="horizontal"]
@@ -117,23 +117,23 @@
   max-width: 840px;
   margin-inline: auto;
   display: grid;
-  gap: 24px;
-  padding-inline: 8px;
+  gap: var(--s-6);
+  padding-inline: var(--s-2);
   box-sizing: border-box;
   color: var(--v-text);
 }
 .v-stepper-example__intro > p {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
-  margin: 0 0 8px;
+  margin: 0 0 var(--s-2);
 }
 .v-stepper-example__intro > h3 {
-  margin: 0 0 10px;
-  font: 500 clamp(24px, 3vw, 30px) / 1.25 var(--font-display);
+  margin: 0 0 var(--s-3);
+  font: var(--fw-medium) clamp(24px, 3vw, 30px) / 1.25 var(--font-display);
 }
 .v-stepper-example__layout {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   min-width: 0;
 }
 [data-slot="stepper-provider"][data-presentation] [data-slot="stepper-item"] {
@@ -145,8 +145,8 @@
   [data-slot="stepper-trigger"] {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr);
-  column-gap: 12px;
-  row-gap: 4px;
+  column-gap: var(--s-3);
+  row-gap: var(--s-1);
   align-content: center;
   align-items: center;
   justify-items: start;
@@ -155,8 +155,8 @@
   height: auto;
   white-space: normal;
   text-align: start;
-  padding: 8px;
-  border-radius: 12px;
+  padding: var(--s-2);
+  border-radius: var(--r-md);
   background: transparent;
   box-shadow: none;
   color: var(--v-text-2);
@@ -177,7 +177,7 @@
   grid-row: 1 / 3;
   width: 44px;
   height: 44px;
-  border-radius: 14px 14px 20px 14px;
+  border-radius: var(--r-card-sm) var(--r-card-sm) var(--r-card) var(--r-card-sm);
 }
 [data-slot="stepper-provider"][data-presentation]
   [data-slot="stepper-indicator"]:has(> svg.v-morph) {
@@ -187,14 +187,14 @@
 [data-slot="stepper-provider"][data-presentation] [data-slot="stepper-title"] {
   grid-column: 2;
   grid-row: 1;
-  font-size: 14px;
+  font-size: var(--fs-control);
   text-align: start;
   color: inherit;
 }
 .v-stepper-example__checkpoint-detail {
   grid-column: 2;
   grid-row: 2;
-  font: 400 11px/1.5 var(--font-body);
+  font: var(--fw-regular) var(--fs-caps)/1.5 var(--font-body);
   color: var(--v-text-2);
 }
 [data-slot="stepper-provider"][data-presentation]
@@ -212,8 +212,8 @@
   [data-slot="stepper-trigger"] {
   grid-template-columns: minmax(0, 1fr);
   justify-items: center;
-  gap: 10px;
-  padding: 8px 4px;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-1);
 }
 [data-slot="stepper-provider"][data-presentation="rail"]
   [data-slot="stepper-indicator"] {
@@ -238,16 +238,16 @@
 }
 .v-stepper-example__workspace {
   display: grid;
-  gap: 28px;
+  gap: var(--s-7);
   min-width: 0;
-  padding: clamp(16px, 3vw, 28px);
+  padding: clamp(var(--s-4), 3vw, var(--s-7));
   border: 1px solid var(--v-border);
-  border-radius: min(var(--v-control-radius, 24px), 24px);
+  border-radius: min(var(--v-control-radius, var(--r-panel)), var(--r-panel));
   background: var(--v-canvas);
 }
 .v-stepper-example [data-step-panel] {
   display: grid;
-  gap: 24px;
+  gap: var(--s-6);
   min-width: 0;
 }
 .v-stepper-example [data-step-panel][hidden] {
@@ -257,15 +257,15 @@
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: var(--s-4);
 }
 .v-stepper-example__stage-title p {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
-  margin: 0 0 6px;
+  margin: 0 0 var(--s-2);
 }
 .v-stepper-example__stage-title h4 {
-  font: 500 clamp(20px, 2.2vw, 25px) / 1.3 var(--font-display);
+  font: var(--fw-medium) clamp(20px, 2.2vw, 25px) / 1.3 var(--font-display);
   margin: 0;
 }
 .v-stepper-example__stage-title h4:focus {
@@ -280,16 +280,16 @@
   place-items: center;
   width: 48px;
   height: 60px;
-  border-radius: 6px 6px 22px 6px;
+  border-radius: var(--r-sm) var(--r-sm) var(--r-panel) var(--r-sm);
   background: var(--v-yellow);
   color: var(--v-on-accent);
-  font: 500 22px/1 var(--font-display);
+  font: var(--fw-medium) var(--fs-title)/1 var(--font-display);
   font-variant-numeric: tabular-nums;
 }
 .v-stepper-example__workspace [role="radiogroup"] {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-stepper-example__summary {
   margin: 0;
@@ -299,37 +299,37 @@
 .v-stepper-example__summary > div {
   display: grid;
   grid-template-columns: 100px minmax(0, 1fr);
-  gap: 16px;
-  padding: 16px 0;
+  gap: var(--s-4);
+  padding: var(--s-4) 0;
   border-bottom: 1px dashed var(--v-border);
 }
 .v-stepper-example__summary dt {
   color: var(--v-text-2);
-  font-size: 13px;
+  font-size: var(--fs-small);
 }
 .v-stepper-example__summary dd {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--fs-reading);
   overflow-wrap: anywhere;
 }
 .v-stepper-example__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-stepper-example__actions .v-btn {
   min-height: 44px;
 }
 .v-stepper-example__ending {
   display: flex;
-  gap: 12px;
+  gap: var(--s-3);
   align-items: center;
   flex-wrap: wrap;
 }
 .v-stepper-example__ending p {
   flex: 1 1 180px;
-  font-size: 12px;
+  font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--v-text-2);
   margin: 0;
@@ -337,12 +337,12 @@
 [data-slot="stepper-provider"][data-presentation="ledger"]
   .v-stepper-example__layout {
   grid-template-columns: minmax(170px, 0.7fr) minmax(0, 1.6fr);
-  gap: 20px;
+  gap: var(--s-5);
 }
 [data-slot="stepper-provider"][data-presentation="ledger"]
   [data-slot="stepper"] {
   align-content: start;
-  gap: 20px;
+  gap: var(--s-5);
 }
 [data-slot="stepper-provider"][data-presentation="ledger"]
   [data-slot="stepper-item"]
@@ -353,16 +353,16 @@
 }
 [data-slot="stepper-provider"][data-presentation="ledger"]
   .v-stepper-example__workspace {
-  border-radius: 8px 24px 24px 8px;
+  border-radius: var(--r-sm) var(--r-panel) var(--r-panel) var(--r-sm);
   border-inline-start: 3px solid var(--v-blue);
 }
 [data-slot="stepper-provider"][data-presentation="compact"]
   .v-stepper-example__layout {
-  gap: 12px;
+  gap: var(--s-3);
 }
 [data-slot="stepper-provider"][data-presentation="compact"]
   [data-slot="stepper"] {
-  gap: 8px;
+  gap: var(--s-2);
 }
 [data-slot="stepper-provider"][data-presentation="compact"]
   [data-slot="stepper-item"]::before,
@@ -375,10 +375,10 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 5px;
-  gap: 10px;
+  gap: var(--s-3);
   min-height: 44px;
-  padding: 6px 0;
-  border-radius: 6px;
+  padding: var(--s-2) 0;
+  border-radius: var(--r-sm);
 }
 [data-slot="stepper-progress-mark"] {
   display: none;
@@ -390,7 +390,7 @@
   grid-row: 2;
   width: 100%;
   height: 5px;
-  border-radius: 5px;
+  border-radius: var(--r-xs);
   background: var(--v-border);
   pointer-events: none;
 }
@@ -414,7 +414,7 @@
   [data-slot="stepper-title"] {
   grid-column: 1;
   grid-row: 1;
-  font-size: 12px;
+  font-size: var(--fs-meta);
 }
 [data-slot="stepper-provider"][data-presentation="compact"]
   .v-stepper-example__workspace {
@@ -422,7 +422,7 @@
   border-top: 1px solid var(--v-border);
   border-radius: 0;
   background: transparent;
-  padding: 16px 0 0;
+  padding: var(--s-4) 0 0;
 }
 [data-slot="stepper-provider"][data-motion="off"]
   [data-slot="stepper-indicator"],
@@ -438,7 +438,7 @@
   }
   [data-slot="stepper-provider"][data-presentation="ledger"]
     [data-slot="stepper"] {
-    gap: 8px;
+    gap: var(--s-2);
   }
   [data-slot="stepper-provider"][data-presentation="ledger"]
     [data-slot="stepper-item"]
@@ -451,7 +451,7 @@
   }
   .v-stepper-example__stage-title {
     grid-template-columns: 40px minmax(0, 1fr);
-    gap: 12px;
+    gap: var(--s-3);
   }
   .v-stepper-example__number {
     width: 40px;
@@ -459,6 +459,6 @@
   }
   .v-stepper-example__summary > div {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: var(--s-2);
   }
 }

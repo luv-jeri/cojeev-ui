@@ -14,7 +14,7 @@
   fill: var(--v-on-accent);
 }
 .v-pulse[data-slot]:has([data-slot="spinner-label"]) {
-  margin-bottom: 28px;
+  margin-bottom: var(--s-7);
 }
 .v-pulse__label[data-slot] {
   width: max-content;
@@ -46,22 +46,22 @@
   min-width: 0;
   width: 100%;
   display: grid;
-  gap: 20px;
+  gap: var(--s-5);
 }
 .v-loader-example__stage {
   position: relative;
   display: grid;
   grid-template-columns: 120px minmax(0, 1fr);
-  column-gap: 28px;
-  row-gap: 20px;
-  padding: 28px;
+  column-gap: var(--s-7);
+  row-gap: var(--s-5);
+  padding: var(--s-7);
   border: 1px solid var(--v-border);
-  border-radius: 28px 28px 8px 28px;
+  border-radius: var(--r-sheet) var(--r-sheet) var(--r-sm) var(--r-sheet);
   background: var(--v-paper);
 }
 .v-loader-example__index {
   grid-column: 1/-1;
-  font-size: 10px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.12em;
   color: var(--v-text-2);
 }
@@ -86,7 +86,7 @@
 }
 .v-loader-example[data-appearance="relay"] .v-loader-example__drawing:before {
   background: color-mix(in srgb, var(--v-olive) 12%, transparent);
-  border-radius: 24px 8px 24px 8px;
+  border-radius: var(--r-panel) var(--r-sm) var(--r-panel) var(--r-sm);
 }
 .v-loader-example__copy {
   align-self: center;
@@ -94,14 +94,14 @@
 }
 .v-loader-example__copy h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--fs-title);
   line-height: 1.25;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.025em;
 }
 .v-loader-example__copy p {
-  margin: 10px 0 0;
-  font-size: 14px;
+  margin: var(--s-3) 0 0;
+  font-size: var(--fs-control);
   color: var(--v-text-2);
   line-height: 1.65;
   max-width: 45ch;
@@ -109,8 +109,8 @@
 .v-loader-example__status {
   grid-column: 1/-1;
   border-top: 1px solid var(--v-border);
-  padding-top: 14px;
-  font-size: 12px;
+  padding-top: var(--s-4);
+  font-size: var(--fs-meta);
   color: var(--v-text-2);
 }
 .v-loader-example__done[data-slot] {
@@ -121,7 +121,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .v-loader-example > .v-loading-example__actions > [data-slot="button"] {
   width: auto;
@@ -130,8 +130,8 @@
 @media (max-width: 600px) {
   .v-loader-example__stage {
     grid-template-columns: 1fr;
-    padding: 22px;
-    gap: 20px;
+    padding: var(--s-6);
+    gap: var(--s-5);
   }
   .v-loader-example__drawing {
     justify-self: start;

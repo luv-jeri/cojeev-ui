@@ -4,9 +4,9 @@
 }
 .v-badge[data-slot].-caps {
   height: 26px;
-  padding: 0 11px;
-  font-size: 10.5px;
-  font-weight: 600;
+  padding: 0 var(--s-3);
+  font-size: var(--fs-caps);
+  font-weight: var(--fw-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -57,14 +57,14 @@
   position: relative;
   isolation: isolate;
   border: 0;
-  border-radius: var(--v-control-radius, 8px);
+  border-radius: var(--v-control-radius, var(--r-sm));
   box-shadow: none;
 }
 .v-badge[data-appearance="stamp"] {
   letter-spacing: 0.045em;
 }
 .v-badge[data-appearance="tag"] {
-  border-radius: var(--v-control-radius, 4px 12px 12px 4px);
+  border-radius: var(--v-control-radius, var(--r-xs) var(--r-md) var(--r-md) var(--r-xs));
 }
 .v-badge[data-appearance="tag"]::before {
   content: "";
@@ -100,23 +100,23 @@
   max-width: 620px;
   margin-inline: auto;
   display: grid;
-  gap: 22px;
+  gap: var(--s-6);
   color: var(--v-text);
 }
 .v-badge-example__surface {
   position: relative;
   min-width: 0;
   border: 1px solid var(--v-edge);
-  border-radius: 20px;
+  border-radius: var(--r-card);
   background: var(--v-paper);
-  padding: 28px;
+  padding: var(--s-7);
 }
 .v-badge-example__kicker {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  font-size: 11px;
+  gap: var(--s-3);
+  font-size: var(--fs-caps);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--v-text-3);
@@ -125,7 +125,7 @@
   font-family: var(--font-display);
   font-size: clamp(24px, 4cqi, 34px);
   line-height: 1.18;
-  margin: 22px 0 10px;
+  margin: var(--s-6) 0 var(--s-3);
 }
 .v-badge-example__surface p {
   color: var(--v-text-2);
@@ -133,7 +133,7 @@
   margin: 0;
 }
 .v-badge-example__surface[data-layout="stamp"] {
-  border-radius: 4px 22px 22px 4px;
+  border-radius: var(--r-xs) var(--r-panel) var(--r-panel) var(--r-xs);
   border-left: 5px solid var(--v-pink);
 }
 .v-badge-example__stamp {
@@ -141,10 +141,10 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--s-5);
   border-top: 1px solid var(--v-edge);
-  margin-top: 28px;
-  padding-top: 20px;
+  margin-top: var(--s-7);
+  padding-top: var(--s-5);
 }
 .v-badge-example__stamp .v-badge {
   transform: rotate(-3deg);
@@ -152,17 +152,17 @@
 }
 .v-badge-example__meta {
   display: grid;
-  gap: 6px;
-  font-size: 12px;
+  gap: var(--s-2);
+  font-size: var(--fs-meta);
   color: var(--v-text-3);
 }
 .v-badge-example__meta strong {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--fs-control);
+  font-weight: var(--fw-medium);
   color: var(--v-text);
 }
 .v-badge-example__tags {
-  margin: 26px 0 0;
+  margin: var(--s-7) 0 0;
   display: grid;
   gap: 0;
 }
@@ -171,12 +171,12 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--s-3);
   border-top: 1px solid var(--v-edge);
-  padding: 14px 0;
+  padding: var(--s-4) 0;
 }
 .v-badge-example__tags dt {
-  font-size: 12px;
+  font-size: var(--fs-meta);
   color: var(--v-text-3);
 }
 .v-badge-example__tags dd {
@@ -187,7 +187,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: var(--s-5);
 }
 .v-badge-example__counter h3 {
   margin: 0;
@@ -195,44 +195,44 @@
 .v-badge-example__counter .v-badge {
   --badge-count-size: 52px;
   height: 52px;
-  padding-inline: 15px;
-  font-size: 24px;
+  padding-inline: var(--s-4);
+  font-size: var(--fs-section);
 }
 .v-badge-example__surface[data-layout="counter"] p {
-  margin-block: 14px 24px;
+  margin-block: var(--s-4) var(--s-6);
 }
 .v-badge-example__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-badge-example__treatments {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .v-badge-example__copy {
   display: grid;
-  gap: 10px;
+  gap: var(--s-3);
 }
 .v-badge-example__eyebrow {
   color: var(--v-text-3);
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.05em;
 }
 .v-badge-example__counter .v-badge.-sm {
   --badge-count-size: 40px;
   height: 40px;
-  font-size: 20px;
+  font-size: var(--fs-title);
 }
 .v-badge-example__counter .v-badge.-lg {
   --badge-count-size: 64px;
   height: 64px;
-  font-size: 28px;
+  font-size: var(--fs-section);
 }
 @container (max-width:440px) {
   .v-badge-example__surface {
-    padding: 22px;
+    padding: var(--s-6);
   }
 }

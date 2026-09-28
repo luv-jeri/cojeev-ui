@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { AssemblyLanding } from "@/components/landing/assembly/assembly-landing";
 import { pageMetadata } from "@/lib/site-config";
 import "@/components/landing/assembly/assembly.css";
+import "../styles/assembly.css";
 
 /**
  * The assembly, at its own address.

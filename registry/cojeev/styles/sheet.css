@@ -21,9 +21,9 @@
   align-items: start;
 }
 .v-dialog__head:where([data-slot="sheet"], [data-slot^="sheet-"]) .v-section {
-  font-size: 24px;
+  font-size: var(--fs-section);
   line-height: 1.15;
-  padding-top: 6px;
+  padding-top: var(--s-2);
 }
 .v-dialog__actions:where([data-slot="sheet"], [data-slot^="sheet-"]) {
   margin-top: var(--s-2);
@@ -41,14 +41,14 @@
     [data-slot^="sheet-"]
   )::-webkit-scrollbar-track {
   background: transparent;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .v-sheet:where(
     [data-slot="sheet"],
     [data-slot^="sheet-"]
   )::-webkit-scrollbar-thumb {
   background: color-mix(in oklab, var(--v-ink) 34%, transparent);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   border: 4px solid transparent;
   background-clip: content-box;
   min-height: 36px;
@@ -88,7 +88,7 @@
 [data-slot="sheet-content"] { --sheet-edge:var(--shell-inset); inset-inline-end:var(--sheet-edge); }
 [data-slot="sheet-content"][data-side="start"] { inset-inline-start:var(--sheet-edge); inset-inline-end:auto; }
 /* The reference keeps the sheet on the shell inset AND on its authored padding at
-   every width: `components.css:169` declares `.v-sheet{… padding:var(--s-6)}` with
+   every width: `components.css:169` declares `.v-sheet{… padding var(--s-6)}` with
    no width step-down, and the measured 360/390 rows wanted 24px, not --s-5 (20px).
    A drawer-style full-bleed override here was not in the handoff; it moved the
    edges and the padding together. Only the padding survived the first pass. */

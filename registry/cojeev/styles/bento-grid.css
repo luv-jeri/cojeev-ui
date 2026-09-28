@@ -4,7 +4,7 @@
   display: grid;
   grid-template-columns: repeat(var(--bento-columns), minmax(0, 1fr));
   grid-template-rows: repeat(var(--bento-rows), minmax(88px, 1fr));
-  gap: 10px;
+  gap: var(--s-3);
   width: 100%;
   min-width: 0;
   color: var(--v-on-accent);
@@ -15,11 +15,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 16px;
-  padding: 26px;
+  gap: var(--s-4);
+  padding: var(--s-7);
   min-width: 0;
   overflow-wrap: anywhere;
-  border-radius: 20px;
+  border-radius: var(--r-card);
   background: var(--bento-fill);
   color: var(--v-on-accent);
 }
@@ -48,7 +48,7 @@
   --bento-fill: var(--v-blue);
 }
 .v-bento__number {
-  font-size: 11px;
+  font-size: var(--fs-caps);
   letter-spacing: 0.09em;
   line-height: 1.4;
   opacity: 0.65;
@@ -56,7 +56,7 @@
 .v-bento__label {
   font-family: var(--font-display, inherit);
   font-size: clamp(16px, 12cqi, 30px);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   line-height: 1.15;
   letter-spacing: -0.025em;
   max-width: 18ch;
@@ -82,31 +82,31 @@
 .v-bento[data-variant="interlock"] > .v-bento__tile {
   background: transparent;
   border-radius: 0;
-  padding: 32px;
+  padding: var(--s-8);
 }
 @media (max-width: 600px) {
   .v-bento[data-variant="interlock"] {
-    gap: 12px;
+    gap: var(--s-3);
   }
   .v-bento {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--s-3);
   }
   .v-bento__tile,
   .v-bento[data-variant="interlock"] > .v-bento__tile {
     min-height: 150px;
-    padding: 24px;
+    padding: var(--s-6);
     background: var(--bento-fill);
-    border-radius: 20px;
+    border-radius: var(--r-card);
   }
   .v-bento__paint {
     display: none;
   }
   .v-bento__label {
-    font-size: 26px;
+    font-size: var(--fs-section);
   }
   .v-bento[data-variant="interlock"] > .v-bento__tile {
-    border-radius: 30px 18px 28px 20px;
+    border-radius: var(--r-sheet) var(--r-card) var(--r-sheet) var(--r-card);
   }
 }
