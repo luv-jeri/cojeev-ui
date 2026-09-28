@@ -1,3 +1,5 @@
+import {securityHeaders} from './headers.mjs';
+
 /** @type {import('@cloudflare/workers-types').ExportedHandler<RegistryHostEnv>} */
 const host = {
   async fetch(request, env) {
@@ -8,12 +10,7 @@ const host = {
         ? new Response('Not found',{status:404})
         : await env.ASSETS.fetch(request);
     const secured = new Response(response.body,response);
-    secured.headers.set('x-content-type-options','nosniff');
-    secured.headers.set('referrer-policy','strict-origin-when-cross-origin');
-    secured.headers.set('x-frame-options','DENY');
-    secured.headers.set('permissions-policy','camera=(), microphone=(), geolocation=()');
-    const api=env.ENVIRONMENT === 'beta' ? 'https://feedback-beta.cojeev.com' : 'https://feedback.cojeev.com';
-    secured.headers.set('content-security-policy',`default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://eu-assets.i.posthog.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ${api} https://eu.i.posthog.com https://eu-assets.i.posthog.com; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'`);
+    for (const [name,value] of Object.entries(securityHeaders(env.ENVIRONMENT))) secured.headers.set(name,value);
     if(env.ENVIRONMENT === 'beta' || /^\/(?:admin|feedback-admin)(?:\/|$)/.test(pathname)) secured.headers.set('x-robots-tag','noindex, nofollow, noarchive');
     if(pathname === '/health' || pathname === '/release.json') secured.headers.set('cache-control','no-store');
     else if(response.ok && pathname.startsWith('/_next/static/')) secured.headers.set('cache-control','public, max-age=31536000, immutable');
