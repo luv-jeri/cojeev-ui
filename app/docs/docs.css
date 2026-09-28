@@ -683,7 +683,7 @@
 .docs-library-group > summary small { margin-left:auto; font-size:var(--fs-caps); font-weight:var(--fw-regular); color:var(--v-text-2); font-variant-numeric:tabular-nums; }
 .docs-library-group > summary [data-slot=icon] { width:12px; height:12px; color:var(--v-text-2); pointer-events:none; }
 .docs-library-group:not([open]) > summary [data-slot=icon] { rotate:-90deg; }
-.docs-library-group > summary:focus-visible { outline:2px solid var(--focus); outline-offset:-2px; border-radius:var(--r-sm); }
+.docs-library-group > summary:focus-visible { outline:2px solid var(--v-brand); outline-offset:-2px; border-radius:var(--r-sm); }
 .docs-shell .docs-sidebar .docs-navigation [data-component-link] { padding:var(--s-2) var(--s-3) var(--s-2) var(--s-4); color:var(--v-text); font-size:var(--fs-small); min-height:36px; }
 .docs-shell .docs-sidebar .docs-navigation [data-component-link]:not([aria-current=page]):hover { color:var(--v-text); }
 .docs-shell .docs-sidebar .docs-navigation [data-component-link][aria-current=page] { background:color-mix(in srgb,var(--v-pink) 24%,transparent); color:var(--v-text); font-weight:var(--fw-medium); }
@@ -735,7 +735,7 @@ body:has([data-slot="motion-drawer-content"]) :is(.report-launcher,[data-slot="p
 .docs-workshop__paper-pair { display:flex; gap:var(--s-3); }
 .docs-workshop__paper-pair>span { display:grid; gap:var(--s-2); flex:1; padding:var(--s-5); font-family:var(--font-display); font-size:34px; border:1px solid var(--v-border); border-radius:var(--r-card-sm) var(--r-card-sm) var(--r-xs) var(--r-card-sm); background:#faf5eb; color:#171b1c; }
 .docs-workshop__paper-pair>span+span { background:#20262b; color:#f7efe1; border-radius:var(--r-card-sm) var(--r-card-sm) var(--r-card-sm) var(--r-xs); }
-.docs-workshop__paper-pair small { font-family:var(--font-body); font-size:var(--fs-meta); }
+.docs-workshop__paper-pair small { font-family:var(--font-text); font-size:var(--fs-meta); }
 @media(max-width:1100px) { .docs-workshop__doors { grid-template-columns:1fr; } .docs-workshop .docs-workshop__door { grid-template-columns:52px minmax(0,1fr) auto; align-items:center; padding:var(--s-5); } .docs-workshop__door-art { grid-column:auto; width:48px; height:48px; } .docs-workshop__door-art>svg { width:48px; height:48px; } .docs-workshop [data-setup-step] { grid-template-columns:36px minmax(0,1fr); gap:var(--s-4); } .docs-workshop__step-source { grid-column:2; } }
 @media(max-width:480px) { .docs-workshop__studios { margin-bottom:44px; } .docs-workshop [data-setup-step] { padding-block:var(--s-7); gap:var(--s-3); } .docs-workshop__step-source { grid-column:1/-1; } .docs-workshop .docs-workshop__door { gap:var(--s-3); padding:var(--s-4); } }
 .docs-workshop .v-btn { min-height:44px; }

@@ -328,7 +328,7 @@
   inset: 9px;
   border: 1px dashed var(--hero-ink);
   border-radius: 50%;
-  transition: transform var(--t-panel) var(--enter);
+  transition: transform var(--t-max) var(--enter);
 }
 .v-hero-button[data-hero-appearance="seal"][data-arrow-active="true"]:not(
     [data-motion-quiet="true"]
@@ -353,7 +353,7 @@
   opacity: 0.35;
   transform: scaleX(0.08);
   transform-origin: left;
-  transition: transform var(--t-panel) var(--enter);
+  transition: transform var(--t-max) var(--enter);
 }
 .v-hero-button[data-hero-appearance="ink-sweep"][data-arrow-active="true"]:not(
     [data-motion-quiet="true"]
@@ -376,7 +376,7 @@
   border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
   border-radius: 50%;
   transform: rotate(-35deg) scaleX(0.72);
-  transition: transform var(--t-panel) var(--enter);
+  transition: transform var(--t-max) var(--enter);
 }
 .v-hero-button[data-hero-appearance="orbit"] .v-hero-button__arrow::before {
   content: "";
@@ -388,7 +388,7 @@
   top: -6px;
   left: 18px;
   transform-origin: 4px 30px;
-  transition: transform var(--t-panel) var(--enter);
+  transition: transform var(--t-max) var(--enter);
 }
 .v-hero-button[data-hero-appearance="orbit"][data-arrow-active="true"]:not(
     [data-motion-quiet="true"]

@@ -29,7 +29,7 @@
   max-width: 15ch;
 }
 .v-linear-modal__summary > span {
-  font: var(--fs-control)/1.5 var(--font-body);
+  font: var(--fs-control)/1.5 var(--font-text);
   color: var(--v-text-2);
 }
 .v-linear-modal__summary .v-linear-modal__edition {
@@ -113,7 +113,7 @@
   line-height: 1.6;
 }
 .v-linear-modal__story {
-  font: var(--fs-body)/1.7 var(--font-body);
+  font: var(--fs-body)/1.7 var(--font-text);
   margin-top: var(--s-4);
 }
 .v-linear-modal__story > p + p {
