@@ -1298,6 +1298,9 @@ outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95
     uPoolAmp: { value: [[-0.670994, -0.56246, -0.528046], [0.085802, 0.03978, 0.121428], [0.456797, 0.355913, 0.295124], [-0.751982, -0.670148, -0.416339], [-0.069886, -0.039317, -0.028687], [-0.301282, -0.295431, -0.293405], [0.48837, 0.479903, 0.466588], [0.0981, 0.111352, -0.046574], [0.936357, 0.844694, 0.762396], [0.173509, 0.120078, 0.097871], [0.030498, -0.008485, 0.136259], [-0.947863, -0.78048, -0.659475], [1.079128, 0.884832, 0.793913], [-0.131323, -0.216372, -0.529728], [-0.126984, -0.101093, -0.065774], [-0.187622, -0.124573, -0.086929], [-0.65645, -0.509964, -0.424442], [0.176289, 0.184344, 0.190707], [-0.044077, -0.023638, -0.010121], [-0.060297, -0.031937, -0.018144], [0.128215, 0.105458, 0.092289], [0.6214, 0.551535, 0.519832], [0.030852, 0.044426, 0.052569], [-0.157054, -0.096942, -0.192401], [0.074149, 0.098089, 0.085797], [0.030781, 0.026222, 0.009069], [-0.144631, -0.146069, -0.127638], [-0.010812, 0.009403, 0.055676], [0.325957, 0.324406, 0.312348], [-0.074466, -0.069363, -0.123565], [-0.465049, -0.45473, -0.343725], [0.040658, 0.064037, 0.183749], [0.428843, 0.475257, 0.549165], [-0.007226, -0.008458, 0.035458]].map((a) => new THREE.Vector3(a[0], a[1], a[2])) },
     uPoolBase: { value: new THREE.Vector3(0, 0, 0) },
     uPoolScale: { value: 1.3 },
+    uCornerShape: { value: [new THREE.Vector4(1.022, 0.339, 0.13, 0.13), new THREE.Vector4(1.022, 0.571, 0.13, 0.13), new THREE.Vector4(1.022, 0.802, 0.13, 0.13), new THREE.Vector4(1.146, 0.339, 0.13, 0.13), new THREE.Vector4(1.146, 0.571, 0.13, 0.13), new THREE.Vector4(1.146, 0.802, 0.13, 0.13), new THREE.Vector4(1.27, 0.339, 0.13, 0.13), new THREE.Vector4(1.27, 0.571, 0.13, 0.13), new THREE.Vector4(1.27, 0.802, 0.13, 0.13), new THREE.Vector4(1.394, 0.339, 0.13, 0.13), new THREE.Vector4(1.394, 0.571, 0.13, 0.13), new THREE.Vector4(1.394, 0.802, 0.13, 0.13)] },
+    uCornerAmp: { value: [[0.080097, 0.09171, 0.104292], [0.040894, 0.039487, 0.032519], [-0.011511, -0.025952, -0.042633], [-0.119222, -0.110755, -0.096565], [0.056674, 0.059526, 0.062388], [0.044201, 0.052278, 0.065405], [0.02055, 0.018795, 0.018857], [-0.227163, -0.232795, -0.229136], [0.042583, 0.038157, 0.038322], [0.441181, 0.434523, 0.406663], [0.08275, 0.091796, 0.09074], [-0.003223, -0.01565, -0.028595]].map((a) => new THREE.Vector3(a[0], a[1], a[2])) },
+    uCornerMask: { value: new THREE.Vector4(1.1907442797591477, 0.600006669754516, 0.4275700000000001, 0.53245) },
     uReflectionWarm: { value: reflectionTint.warm },
     uReflectionCool: { value: reflectionTint.cool },
   };
@@ -1371,10 +1374,14 @@ uniform vec2 uContactCentre;
 uniform vec2 uContactRadii;
 uniform float uContactStrength;
 #define POOL_LOBES 34
+#define CORNER_LOBES 12
 uniform vec4 uPoolShape[POOL_LOBES];
 uniform vec3 uPoolAmp[POOL_LOBES];
 uniform vec3 uPoolBase;
 uniform float uPoolScale;
+uniform vec4 uCornerShape[CORNER_LOBES];
+uniform vec3 uCornerAmp[CORNER_LOBES];
+uniform vec4 uCornerMask;
 uniform vec2 uCoolCentre;
 uniform vec2 uCoolRadii;
 uniform float uCoolStrength;
@@ -1431,12 +1438,26 @@ varying vec2 vFloorWorld;`,
     vec2 poolDelta = ( vFloorWorld - uPoolShape[i].xy ) / uPoolShape[i].zw;
     pool += uPoolAmp[i] * exp( -0.5 * dot( poolDelta, poolDelta ) );
   }
+  /* A second, finer basis local to the cool lower-right corner, windowed by a
+   * smooth radial mask that reaches exactly zero beyond its radius: the corner
+   * gains detail the broad lobes cannot express, and nothing outside the mask
+   * moves at all. Fitted only against that corner's samples. */
+  float cornerT = length( ( vFloorWorld - uCornerMask.xy ) / uCornerMask.zw );
+  float cornerW = 1.0 - smoothstep( 0.55, 1.0, cornerT );
+  vec3 corner = vec3( 0.0 );
+  if ( cornerW > 0.0 ) {
+    for ( int i = 0; i < CORNER_LOBES; i++ ) {
+      vec2 cornerDelta = ( vFloorWorld - uCornerShape[i].xy ) / uCornerShape[i].zw;
+      corner += uCornerAmp[i] * exp( -0.5 * dot( cornerDelta, cornerDelta ) );
+    }
+  }
   /* The added light takes the colour of the ground it lands on. The lower right
    * of the artboard is weakly cool, and a warm pool laid over it washes that out,
    * so the pool inherits the same cool mask the floor already uses on itself. */
   float poolCool = 1.0 - smoothstep( 0.35, 1.0, length( ( vFloorWorld - uCoolCentre ) / uCoolRadii ) );
   vec3 poolTinted = pool * mix( vec3( 1.0 ), vec3( 0.72, 1.02, 1.62 ), uCoolStrength * poolCool );
   gl_FragColor.rgb += poolTinted * uPoolScale;
+  gl_FragColor.rgb += corner * cornerW;
 }`,
       );
   };
