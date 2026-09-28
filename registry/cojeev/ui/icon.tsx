@@ -85,17 +85,20 @@ function iconGeometry(name:string):IconNode[]|undefined {
   if(nodes)geometryCache.set(name,nodes);
   return nodes;
 }
+const subscribeLucide=(listener:()=>void)=>{lucideListeners.add(listener);return()=>{lucideListeners.delete(listener)}};
+const lucideReady=()=>lucidePack!==null;
+// Hydration must reproduce the server HTML, which a static render produced without the pack. A lazily
+// hydrated boundary can start after another icon has already fetched it, so in the browser the server
+// snapshot is always "not loaded"; outside a browser (server renders, tests) it reports the real state.
+const lucideReadyOnServer=()=>typeof window==="undefined"&&lucidePack!==null;
 function useIconGeometry(name:string):IconNode[]|undefined {
-  const nodes=iconGeometry(name);
-  const pending=!nodes&&lucideNameSet.has(canonicalIcon(name));
-  const [,loaded]=React.useReducer((count:number)=>count+1,0);
-  React.useEffect(()=>{
-    if(!pending)return;
-    lucideListeners.add(loaded);
-    void loadLucideIcons();
-    return()=>{lucideListeners.delete(loaded)};
-  },[pending]);
-  return nodes;
+  const canonical=canonicalIcon(name);
+  const authored=iconData[canonical]??additionalIcons[canonical];
+  const fromPack=!authored&&lucideNameSet.has(canonical);
+  const ready=React.useSyncExternalStore(subscribeLucide,lucideReady,lucideReadyOnServer);
+  React.useEffect(()=>{if(fromPack&&!ready)void loadLucideIcons()},[fromPack,ready]);
+  if(authored)return authored;
+  return fromPack&&ready?iconGeometry(name):undefined;
 }
 
 /** Direction is geometric, independent of document reading direction. */
