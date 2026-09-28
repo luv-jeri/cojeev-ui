@@ -110,7 +110,7 @@
   padding: 0 var(--s-4);
   cursor: pointer;
   border-radius: var(--r-md);
-  font: 500 clamp(20px, 3vw, 28px) / 1.15 var(--font-display);
+  font: var(--fw-medium) clamp(20px, 3vw, 28px) / 1.15 var(--font-display);
 }
 .v-option-wheel__option > * {
   pointer-events: none;

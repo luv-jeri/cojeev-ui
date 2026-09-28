@@ -217,7 +217,7 @@
   font-size: var(--fs-meta);
 }
 .v-questionnaire-example__intro h3 {
-  font: 500 clamp(22px, 3vw, 28px) / 1.2 var(--font-display);
+  font: var(--fw-medium) clamp(22px, 3vw, 28px) / 1.2 var(--font-display);
   margin: 0;
 }
 .v-questionnaire-example__tab {

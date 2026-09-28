@@ -152,7 +152,7 @@
 }
 .v-chart-grid text,
 .v-chart-axis text {
-  font: 11px var(--font-text);
+  font: var(--fs-caps) var(--font-text);
   fill: var(--muted-foreground);
   font-variant-numeric: tabular-nums;
 }
@@ -163,18 +163,18 @@
   pointer-events: none;
 }
 .v-chart-center text {
-  font: 600 29px var(--font-display);
+  font: var(--fw-semibold) 29px var(--font-display);
   letter-spacing: -0.025em;
   fill: var(--foreground);
 }
 .v-chart-center .v-chart-center__label {
-  font: 12px var(--font-text);
+  font: var(--fs-meta) var(--font-text);
   letter-spacing: 0;
   fill: var(--muted-foreground);
 }
 .v-chart-note {
   fill: var(--muted-foreground);
-  font: 13px var(--font-text);
+  font: var(--fs-small) var(--font-text);
 }
 .v-chart-empty {
   height: 100%;
@@ -432,7 +432,7 @@
   font-weight: var(--fw-medium);
 }
 .v-chart-summary > strong {
-  font: 600 clamp(38px, 6cqi, 64px) / 1 var(--font-display);
+  font: var(--fw-semibold) clamp(38px, 6cqi, 64px) / 1 var(--font-display);
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;

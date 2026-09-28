@@ -85,9 +85,9 @@
   font: inherit;
   color: inherit;
 }
-.v-code-block [data-slot="code-block-caption"] { position:relative; display:flex; align-items:center; justify-content:space-between; gap:var(--s-3); padding:var(--s-4) var(--s-5) var(--s-1); color:var(--v-text-2); font:12px/1.4 var(--font-text); }
+.v-code-block [data-slot="code-block-caption"] { position:relative; display:flex; align-items:center; justify-content:space-between; gap:var(--s-3); padding:var(--s-4) var(--s-5) var(--s-1); color:var(--v-text-2); font:var(--fs-meta)/1.4 var(--font-text); }
 .v-code-block [data-slot="code-block-caption"] > span:first-child { display:flex; align-items:center; gap:var(--s-2); }
-.v-code-block [data-slot="code-block-caption"] > span:first-child > span { padding:2px var(--s-2); border-radius:var(--r-sm); background:var(--v-pink-soft); color:var(--v-accent-ink); font:10px/1.4 var(--font-mono); }
+.v-code-block [data-slot="code-block-caption"] > span:first-child > span { padding:2px var(--s-2); border-radius:var(--r-sm); background:var(--v-pink-soft); color:var(--v-accent-ink); font:var(--fs-caps)/1.4 var(--font-mono); }
 .v-code-block .token:is(.comment,.prolog,.doctype,.cdata) { color:var(--code-comment); font-style:italic; }
 .v-code-block .token:is(.keyword,.operator,.tag) { color:var(--code-keyword); }
 .v-code-block .token:is(.string,.char,.attr-value,.regex) { color:var(--code-string); }

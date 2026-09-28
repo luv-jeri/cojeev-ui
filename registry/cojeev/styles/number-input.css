@@ -123,7 +123,7 @@
 .v-number-input[data-presentation="quantity"] .v-number-input__field {
   grid-area: field;
   min-height: 88px;
-  font: 500 clamp(24px, 5vw, 40px) / 1.2 var(--font-display);
+  font: var(--fw-medium) clamp(24px, 5vw, 40px) / 1.2 var(--font-display);
   border-inline-end: 1px dashed var(--v-edge);
   padding-inline: var(--s-2) var(--s-3);
 }

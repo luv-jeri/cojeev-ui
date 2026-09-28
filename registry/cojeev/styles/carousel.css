@@ -172,12 +172,12 @@
   font-size: var(--fs-meta);
 }
 .v-carousel-example__intro h3 {
-  font: 500 clamp(24px, 3vw, 30px) / 1.25 var(--font-display);
+  font: var(--fw-medium) clamp(24px, 3vw, 30px) / 1.25 var(--font-display);
   margin: 0;
 }
 .v-carousel-example__intro > span {
   display: grid;
-  font: 400 30px/1.2 var(--font-display);
+  font: var(--fw-regular) 30px/1.2 var(--font-display);
   font-variant-numeric: tabular-nums;
 }
 .v-carousel-example__intro small {
@@ -253,7 +253,7 @@
   min-width: 0;
 }
 .v-carousel-note__body h3 {
-  font: 500 clamp(22px, 2.8vw, 28px) / 1.25 var(--font-display);
+  font: var(--fw-medium) clamp(22px, 2.8vw, 28px) / 1.25 var(--font-display);
   margin: 0 0 var(--s-4);
 }
 .v-carousel-note__body p {

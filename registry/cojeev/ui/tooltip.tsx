@@ -33,7 +33,7 @@ export function TooltipPortal(props: TooltipPortalProps) {
   return <Primitive.Portal {...props} />;
 }
 export const tooltipContentVariants = cva(
-  "v-tip -show bg-[var(--v-ink)] text-[color:var(--v-on-ink)] text-xs leading-[1.3] py-1.5 px-2.5 rounded-[var(--r-sm)] max-w-[260px] z-[var(--z-tooltip)]",
+  "v-tip -show bg-[var(--v-ink)] text-[color:var(--v-on-ink)] text-[length:var(--fs-meta)] leading-[1.3] py-1.5 px-2.5 rounded-[var(--r-sm)] max-w-[260px] z-[var(--z-tooltip)]",
 );
 export type TooltipContentProps = React.ComponentProps<
   typeof Primitive.Content

@@ -411,7 +411,7 @@
 }
 .v-reading-example__section h4 {
   font-family: var(--font-display);
-  font-size: 27px;
+  font-size: var(--fs-section);
   line-height: 1.2;
   font-weight: var(--fw-title);
   max-width: 18ch;

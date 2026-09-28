@@ -5,4 +5,4 @@
 .v-typography-vortex {min-block-size:340px;background:var(--v-paper);}
 .v-typography-vortex__field {position:absolute;inset:0;width:100%;height:100%;fill:currentColor;}
 .v-typography-vortex__dust {fill:var(--v-accent-ink);}
-.v-typography-vortex__label {z-index:1;max-inline-size:85%;text-align:center;overflow-wrap:anywhere;font-size:.7em;background:var(--v-paper);padding:.3em .5em;border-radius:.4em;}
+.v-typography-vortex__label {z-index:1;max-inline-size:85%;text-align:center;overflow-wrap:anywhere;font-size:max(var(--fs-caps), .7em);background:var(--v-paper);padding:.3em .5em;border-radius:.4em;}

@@ -121,7 +121,7 @@
 .v-organism__focus-art {display:grid;place-items:center;}
 .v-organism__focus-art [data-slot="shape"] {width:65px;height:65px;--c:var(--v-yellow);rotate:-13deg;}
 .v-organism__clock {display:grid;justify-items:center;align-content:center;gap:var(--s-3);}
-.v-organism[data-kind="focus"] .v-organism__clock [data-slot="typography-meta"][role="timer"] {font:500 clamp(48px,8vw,64px)/1 var(--font-display);letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:var(--v-text);white-space:nowrap;}
+.v-organism[data-kind="focus"] .v-organism__clock [data-slot="typography-meta"][role="timer"] {font:var(--fw-medium) clamp(48px,8vw,64px)/1 var(--font-display);letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:var(--v-text);white-space:nowrap;}
 .v-organism__clock [role="timer"] > span {color:var(--v-text-2);padding-inline:3px;}
 .v-organism__clock > .v-meta:last-child {font-size:var(--fs-caps);color:var(--v-text-2);}
 .v-organism[data-kind="focus"] .v-organism__progress [data-slot="progress"] {height:7px;}

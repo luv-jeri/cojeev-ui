@@ -25,11 +25,11 @@
   padding: var(--s-6);
 }
 .v-linear-modal__summary strong {
-  font: 28px/1.1 var(--font-display);
+  font: var(--fs-section)/1.1 var(--font-display);
   max-width: 15ch;
 }
 .v-linear-modal__summary > span {
-  font: 14px/1.5 var(--font-body);
+  font: var(--fs-control)/1.5 var(--font-body);
   color: var(--v-text-2);
 }
 .v-linear-modal__summary .v-linear-modal__edition {
@@ -113,7 +113,7 @@
   line-height: 1.6;
 }
 .v-linear-modal__story {
-  font: 15px/1.7 var(--font-body);
+  font: var(--fs-body)/1.7 var(--font-body);
   margin-top: var(--s-4);
 }
 .v-linear-modal__story > p + p {
@@ -177,7 +177,7 @@
   gap: var(--s-3);
 }
 .v-linear-example h3 {
-  font: 26px/1.15 var(--font-display);
+  font: var(--fs-section)/1.15 var(--font-display);
   max-width: 22ch;
   margin: 0;
 }

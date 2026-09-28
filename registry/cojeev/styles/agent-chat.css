@@ -38,7 +38,7 @@
 .v-agent-chat__message-body > :first-child { margin-top: 0; }
 .v-agent-chat__message-body > :last-child { margin-bottom: 0; }
 .v-agent-chat__message-body p { margin: 0 0 var(--s-3); white-space: pre-wrap; }
-.v-agent-chat__message-body pre { max-width: 100%; overflow: auto; padding: var(--s-3); border-radius: var(--r-sm); background: var(--v-beige); font: 12px/1.5 var(--font-mono); }
+.v-agent-chat__message-body pre { max-width: 100%; overflow: auto; padding: var(--s-3); border-radius: var(--r-sm); background: var(--v-beige); font: var(--fs-meta)/1.5 var(--font-mono); }
 .v-agent-chat__message-body img, .v-agent-chat__message-body video { max-width: 100%; height: auto; }
 .v-agent-chat__message[data-from="user"] .v-agent-chat__message-content { flex: 0 1 auto; width: fit-content; max-width: calc(100% - 36px); }
 
@@ -101,7 +101,7 @@
 .v-agent-state-demo { width: 100%; display: grid; gap: var(--s-6); justify-items: center; padding-block: var(--s-4); }
 .v-agent-state-demo__controls { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: center; }
 .v-agent-workspace__intro { margin-bottom: var(--s-7); }
-.v-agent-workspace__intro h1 { font: 500 clamp(32px, 3vw, 48px)/1.08 var(--font-display); letter-spacing: -.03em; margin: var(--s-3) 0; max-width: 16ch; }
+.v-agent-workspace__intro h1 { font: var(--fw-medium) clamp(32px, 3vw, 48px)/1.08 var(--font-display); letter-spacing: -.03em; margin: var(--s-3) 0; max-width: 16ch; }
 .v-agent-workspace__intro p { max-width: 52ch; color: var(--v-text-2); font-size: var(--fs-body); line-height: 1.55; margin: 0; }
 .v-agent-workspace__section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); margin: var(--s-7) 0 var(--s-3); }
 .v-agent-workspace__section-heading h2 { font: var(--fw-semibold) var(--fs-lead)/1.3 var(--font-display); margin: 0; }
