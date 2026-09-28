@@ -110,8 +110,10 @@ const results = JSON.parse(fs.readFileSync(path.join(output, "results.json"), "u
 assert.deepEqual(results.revisionEnd, results.revisionStart, "Source provenance must remain stable, including negative runs");
 assert.equal(results.harnessEndSha256, results.harnessSha256, "The gate must not change during verification");
 assert.deepEqual(results.entries.map(entry => entry.id), ids, "Both clock owners must run before the cases that depend on finished exits");
-assert.equal(reusedContexts, negative ? ids.length : 0, "The negative control must reuse one behavior context for every entry");
-assert.equal(suppressedCloses, negative ? ids.length : 0, "The negative control must keep that context open across entries");
+// A failed entry gets one more attempt, and every attempt retires its behavior context.
+const attempts = ids.length + results.entries.filter(entry => entry.firstAttempt).length;
+assert.equal(reusedContexts, negative ? attempts : 0, "The negative control must reuse one behavior context for every attempt");
+assert.equal(suppressedCloses, negative ? attempts : 0, "The negative control must keep that context open across attempts");
 
 // Failing for the wrong reason is not a negative control: name the assertion each
 // leaked clock actually breaks, so an unrelated defect cannot satisfy this.
@@ -126,8 +128,10 @@ for (const entry of results.entries) {
   assert.equal(entry.runtimeErrors.length, 0, `${entry.id} runtime errors`);
   if (!negative || !leakSignature[entry.id]) {
     assert.equal(entry.behavior.status, "pass", `${entry.id}: ${entry.behavior.detail}`);
+    assert.equal(entry.firstAttempt, undefined, `${entry.id} must pass on its first attempt`);
     continue;
   }
+  assert(entry.firstAttempt?.detail.includes(leakSignature[entry.id]), `${entry.id} must fail both attempts for the same reason`);
   assert.equal(entry.behavior.status, "failed", `${entry.id} must reject a leaked context clock`);
   assert(
     entry.behavior.detail.includes(leakSignature[entry.id]),

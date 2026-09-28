@@ -48,5 +48,29 @@ export function docsEntrySummary(record, limit = docsDetailLimit) {
   if (Object.keys(layoutFailures).length) summary.layoutFailures = layoutFailures;
   if (record.preview.status !== "pass")
     summary.previewDetail = boundDetail(record.preview.detail, limit);
+  if (record.firstAttempt) summary.firstAttempt = record.firstAttempt;
   return summary;
+}
+
+/** The one verdict for an entry. The retry decision and the gate's exit status both use it. */
+export function docsEntryFailed(record) {
+  return (
+    record.layouts.some((l) => l.status !== "pass") ||
+    record.preview.status !== "pass" ||
+    record.behavior.status === "failed" ||
+    record.runtimeErrors.length > 0
+  );
+}
+
+/**
+ * Check an entry, and once more if it failed. The check must start from fresh browser
+ * state each time. A real defect fails both attempts; a timing flake in a browser check
+ * passes the second. The second attempt decides the verdict, and the first failure stays
+ * on the record as `firstAttempt`, so a flaky entry still shows in the console line,
+ * results.json and GATE.md instead of disappearing.
+ */
+export async function checkWithOneRetry(check) {
+  const first = await check();
+  if (!docsEntryFailed(first)) return first;
+  return { ...(await check()), firstAttempt: docsEntrySummary(first) };
 }

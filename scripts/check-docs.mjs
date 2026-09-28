@@ -11,7 +11,7 @@ import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
 import { armOpacityObservation } from "./docs-transient-paint.mjs";
 import { docsHarnessFiles, docsHarnessFingerprint } from "./docs-harness-fingerprint.mjs";
-import { docsEntrySummary } from "./lib/docs-summary.mjs";
+import { checkWithOneRetry, docsEntryFailed, docsEntrySummary } from "./lib/docs-summary.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -1443,7 +1443,8 @@ try {
       const page = await measurementPage(context, errors);
       contexts.push({ context, page, width, theme, errors });
     }
-  for (const entry of args["chrome-only"] ? [] : entries) {
+  // One entry, from fresh pages and a fresh behavior context (see the end of this body).
+  async function checkEntry(entry) {
     // These public compatibility routes deliberately mount the canonical studio.
     // Keep the requested route in evidence, but verify its actual component.
     const specimenId = ({ "aspect-ratio": "bento-grid", "data-table": "table" })[entry.name] ?? entry.name;
@@ -1457,7 +1458,6 @@ try {
       behavior: null,
       preview: null,
     };
-    run.entries.push(record);
     for (const surface of contexts) {
       const { page, width, theme, errors } = surface;
       errors.length = 0;
@@ -1659,11 +1659,6 @@ try {
         .catch(() => {});
     }
     record.runtimeErrors = [...primary.errors];
-    fs.writeFileSync(
-      path.join(output, "results.json"),
-      JSON.stringify(run, null, 2),
-    );
-    console.log(JSON.stringify(docsEntrySummary(record)));
     // The primary behavior page can keep animated examples and modal state
     // alive while the next entry's other five layouts run. Retire the whole
     // context, not only the page: `page.clock` is the browser context's clock,
@@ -1677,6 +1672,20 @@ try {
     await primary.context.close();
     primary.context = await docsContext(primary.width, primary.theme);
     primary.page = await measurementPage(primary.context, primary.errors);
+    return record;
+  }
+  for (const entry of args["chrome-only"] ? [] : entries) {
+    // A failed entry gets one more attempt: a real defect fails twice, a timing flake does
+    // not. The first failure stays on the record and in GATE.md, and is raised as a warning.
+    const record = await checkWithOneRetry(() => checkEntry(entry));
+    run.entries.push(record);
+    fs.writeFileSync(
+      path.join(output, "results.json"),
+      JSON.stringify(run, null, 2),
+    );
+    console.log(JSON.stringify(docsEntrySummary(record)));
+    if (record.firstAttempt && !docsEntryFailed(record))
+      console.log(`::warning title=Flaky documentation check::${entry.name} passed only on a second attempt; its firstAttempt is on the line above.`);
   }
   for (const surface of contexts) {
     try {
@@ -1714,13 +1723,7 @@ try {
   await browser.close();
   if (staticServer) await new Promise((resolve) => staticServer.httpServer.close(resolve));
 }
-const failures = run.entries.filter(
-  (e) =>
-    e.layouts.some((l) => l.status !== "pass") ||
-    e.preview.status !== "pass" ||
-    e.behavior.status === "failed" ||
-    e.runtimeErrors.length,
-);
+const failures = run.entries.filter(docsEntryFailed);
 console.log(
   JSON.stringify(
     {

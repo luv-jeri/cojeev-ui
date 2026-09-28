@@ -43,6 +43,10 @@ if (path.basename(process.argv[1]) === 'check-motion.mjs') {
     behavior: { status: 'pass', detail: 'synthetic child boundary' },
     runtimeErrors: [],
   }));
+  if (worker === 1 && scenario === 'retried-entry') entries[0].firstAttempt = {
+    id: entries[0].id, layouts: ['360/light:pass'], preview: 'pass',
+    behavior: 'failed', detail: 'locator.click: Timeout 10000ms exceeded.',
+  };
   if (worker === 2 && scenario === 'duplicate-entry') entries.push(entries[0]);
   if (worker === 2 && scenario === 'missing-entry') entries = entries.slice(1);
   if (!(worker === 2 && ['missing-report', 'stale-report'].includes(scenario))) {
