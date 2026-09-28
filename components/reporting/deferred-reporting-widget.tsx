@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import type { ComponentMatch } from "@/lib/reporting/contracts";
+import { REPORT_EVENT, requestPending } from "./report-request";
 
 // The panel, its drawer and its form controls are a large chunk that no page needs to paint.
 // Fetch it once the browser is idle so it never competes with the page's own first render.
@@ -16,8 +17,9 @@ export function DeferredReportingWidget({ entries }: { entries: ComponentMatch[]
   useEffect(() => {
     const start = () => setReady(true);
     // A request for the panel is reason enough to mount it now; the panel then opens that request.
-    window.addEventListener("cojeev:report", start, { once: true });
-    const stop = () => window.removeEventListener("cojeev:report", start);
+    if (requestPending()) start();
+    window.addEventListener(REPORT_EVENT, start, { once: true });
+    const stop = () => window.removeEventListener(REPORT_EVENT, start);
     if ("requestIdleCallback" in window) {
       const handle = window.requestIdleCallback(start, { timeout: 2500 });
       return () => { stop(); window.cancelIdleCallback(handle); };

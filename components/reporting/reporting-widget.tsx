@@ -65,6 +65,7 @@ import {
   type ReportingDraftWorkspace,
 } from "@/lib/reporting/draft";
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
+import { REPORT_EVENT, STATUS_LABELS, takeRequest } from "./report-request";
 import { AreaPicker, CaptureStatus } from "./area-picker";
 import { Turnstile } from "./turnstile";
 import "./reporting.css";
@@ -96,22 +97,6 @@ function ReportSource({ children }: { children: string }) {
   );
 }
 
-export const STATUS_LABELS = {
-  received: "Received",
-  planned: "Planned",
-  in_progress: "In progress",
-  resolved: "Live",
-  declined: "Not planned",
-} as const;
-type ReportRequest = { kind?: ReportKind; topic?: RequestTopic };
-// The panel mounts after the page is idle and then loads its drafts. A request made before it can
-// listen waits here, and the panel opens it once when it is ready.
-let pendingRequest: ReportRequest | null = null;
-export function openRequest(topic?: RequestTopic) {
-  const detail: ReportRequest = { kind: "request", topic };
-  pendingRequest = detail;
-  window.dispatchEvent(new CustomEvent("cojeev:report", { detail }));
-}
 const message = (error: unknown) =>
   error instanceof Error
     ? error.message
@@ -249,24 +234,20 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     const save = () => {
       if (loaded) void persist(draftRef.current);
     };
+    // Drafts load first; a request made before then, or before this panel mounted, stays pending.
     const take = () => {
-      const request = pendingRequest;
-      if (!request || !loaded) return;
-      pendingRequest = null;
-      if (busy || capture) return;
+      if (!loaded) return;
+      const request = takeRequest();
+      if (!request || busy || capture) return;
       selectDraft(request.kind ?? "request", request.topic);
       setOpen(true);
     };
-    const event = (event: Event) => {
-      pendingRequest = (event as CustomEvent<ReportRequest>).detail ?? {};
-      take();
-    };
     take();
     window.addEventListener("pagehide", save);
-    window.addEventListener("cojeev:report", event);
+    window.addEventListener(REPORT_EVENT, take);
     return () => {
       window.removeEventListener("pagehide", save);
-      window.removeEventListener("cojeev:report", event);
+      window.removeEventListener(REPORT_EVENT, take);
     };
   }, [loaded, persist, selectDraft, busy, capture]);
   const loadConfig = useCallback(() => {
