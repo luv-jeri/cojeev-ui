@@ -16,6 +16,13 @@ for(const file of (await readdir(path.join(root,"dist/esm/icons"))).sort()){
 }
 const target="registry/cojeev/lib/lucide-icon-data.ts";
 const content=`// Generated from lucide-react ${version}; run scripts/sync-lucide-icons.mjs --check to verify.\n/*\n${license.trim()}\n*/\nimport type {IconNode} from "./icon-data";\nconst pack:Record<string,[string,Record<string,string>][]>=${JSON.stringify(icons)};\nexport const lucideIconNames=Object.keys(pack);\n/** Only materialize a requested icon; the full catalogue never mounts at once. */\nexport function getLucideIcon(name:string):IconNode[]|undefined {\n  return pack[name]?.map(([tag,attrs])=>({tag,attrs,children:[]}));\n}\n`;
+// Names ship on their own so a bundle can know every valid name without the geometry.
+const namesTarget="registry/cojeev/lib/lucide-icon-names.ts";
+const namesContent=`// Generated from lucide-react ${version}; run scripts/sync-lucide-icons.mjs --check to verify.\n// Names only: the geometry lives in lucide-icon-data.ts and loads on first use.\nexport const lucideIconNames:readonly string[]=${JSON.stringify(Object.keys(icons))};\n`;
+if((await readFile(namesTarget,"utf8").catch(()=>null))!==namesContent){
+  if(process.argv.includes("--check"))throw new Error("Lucide name list differs from its installed source.");
+  console.error(`Also regenerate ${namesTarget}.`);
+}
 const before=await readFile(target,"utf8").catch(()=>null);
 if(process.argv.includes("--check")){
   if(before!==content)throw new Error("Lucide snapshot differs from its installed source.");

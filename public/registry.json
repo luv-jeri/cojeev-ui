@@ -83,6 +83,11 @@
           "target": "lib/cojeev/lucide-icon-data.ts"
         },
         {
+          "path": "registry/cojeev/lib/lucide-icon-names.ts",
+          "type": "registry:lib",
+          "target": "lib/cojeev/lucide-icon-names.ts"
+        },
+        {
           "path": "registry/cojeev/lib/marquee-motion.ts",
           "type": "registry:lib",
           "target": "lib/cojeev/marquee-motion.ts"

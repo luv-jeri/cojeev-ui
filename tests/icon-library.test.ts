@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import {test} from "node:test";
 import {createElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
-import {Icon,iconNames,getIconMotionFrame} from "../registry/cojeev/ui/icon";
+import {Icon,iconNames,getIconMotionFrame,loadLucideIcons} from "../registry/cojeev/ui/icon";
 
-test("the complete icon library has unique names, real geometry and visible motion targets",()=>{
+test("the complete icon library has unique names, real geometry and visible motion targets",async()=>{
+  await loadLucideIcons();
   assert.ok(iconNames.length>=1703,`Expected complete pack, got ${iconNames.length}`);
   assert.equal(new Set(iconNames).size,iconNames.length);
   for(const name of iconNames){
