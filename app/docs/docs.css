@@ -315,7 +315,7 @@
 .docs-handoff-actions { display:flex; align-items:flex-start; flex-wrap:wrap; gap:var(--s-3); }
 .docs-handoff-scroll { height:min(440px,65svh); margin-block-start:var(--s-5); border-radius:var(--r-card); background:var(--v-beige); }
 .docs-handoff-scroll [data-radix-scroll-area-viewport]:focus-visible { outline:2px solid var(--v-text); outline-offset:-3px; }
-.docs-handoff-source { margin:0; padding:var(--s-6); font:13px/1.7 var(--font-mono); color:var(--v-text); white-space:pre-wrap; overflow-wrap:anywhere; user-select:text; }
+.docs-handoff-source { margin:0; padding:var(--s-6); font:var(--fs-small)/1.7 var(--font-mono); color:var(--v-text); white-space:pre-wrap; overflow-wrap:anywhere; user-select:text; }
 .docs-intro > .docs-intro-meta {
   padding-top: var(--s-1);
   font-size: var(--fs-meta);
