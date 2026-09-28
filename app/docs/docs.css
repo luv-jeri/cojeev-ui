@@ -1,5 +1,9 @@
 /* Read surface: warm paper, a quiet index, and generous working specimens.
    Registry components provide every visible control; these rules own composition. */
+/* Client-side navigation keeps this unlayered sheet after a visitor leaves the docs, and other pages
+   share some of its classes (the theme control, the install command, the motion sheet). Every rule
+   therefore applies only while the docs shell is in the document; :where() adds no specificity. */
+:where(:root:has(.docs-shell)) {
 .docs-shell {
   --docs-rail: 288px;
   position: relative;
@@ -735,3 +739,4 @@ body:has([data-slot="motion-drawer-content"]) :is(.report-launcher,[data-slot="p
 @media(max-width:1100px) { .docs-workshop__doors { grid-template-columns:1fr; } .docs-workshop .docs-workshop__door { grid-template-columns:52px minmax(0,1fr) auto; align-items:center; padding:var(--s-5); } .docs-workshop__door-art { grid-column:auto; width:48px; height:48px; } .docs-workshop__door-art>svg { width:48px; height:48px; } .docs-workshop [data-setup-step] { grid-template-columns:36px minmax(0,1fr); gap:var(--s-4); } .docs-workshop__step-source { grid-column:2; } }
 @media(max-width:480px) { .docs-workshop__studios { margin-bottom:44px; } .docs-workshop [data-setup-step] { padding-block:var(--s-7); gap:var(--s-3); } .docs-workshop__step-source { grid-column:1/-1; } .docs-workshop .docs-workshop__door { gap:var(--s-3); padding:var(--s-4); } }
 .docs-workshop .v-btn { min-height:44px; }
+}

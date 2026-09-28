@@ -16,11 +16,14 @@ const base = (process.env.BASE_URL ?? (staticServer
 const basePath = new URL(base).pathname;
 
 // Route, the route visited in between, and elements that must exist so the case cannot pass empty:
-// each pair once let the visited route's repeated shared rules override the first route's own.
+// each pair once let the visited route's repeated shared rules override the first route's own, or
+// left the docs page sheet restyling the theme control the first route shares with the docs.
 const cases = [
   ["/docs/flow-sculpture/", "/", ['.v-preview__toolbar [data-slot="icon"]', '.v-sculpture-orbit-zoom > [data-slot="slider"]']],
   ["/", "/workspace/", ['[data-slot="sidebar-menu-button"] [data-slot="animated-icon"]']],
   ["/workspace/", "/", ['[data-slot="agent-chat-thread"]']],
+  ["/workspace/", "/docs/button/", ['.docs-theme > [data-slot="label"]', '.docs-theme > .v-appearance-trigger']],
+  ["/", "/docs/button/", ['.docs-theme > [data-slot="label"]']],
 ];
 const props = ["display", "width", "height", "font-size", "font-weight", "line-height", "color", "background-color", "gap",
   "padding-top", "padding-right", "padding-bottom", "padding-left", "margin-top", "margin-right", "margin-bottom", "margin-left",
