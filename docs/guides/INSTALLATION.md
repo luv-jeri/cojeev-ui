@@ -44,6 +44,16 @@ For namespace commands, add this entry to your application's `components.json`:
 
 You can then use `npx shadcn@latest add @cojeev/button`. The namespace entry is an explicit consumer configuration step; installing a component URL does not automatically add it.
 
+## Upgrade an earlier installation
+
+Components read spacing, type and control-height tokens that the foundation stylesheet defines. The shadcn CLI never replaces a file you already have unless you ask, so a project installed before a token was added keeps its old `tokens.css`, and a newly added component can lose its spacing or font. Refresh the foundation when you add components from a newer release:
+
+```sh
+npx shadcn@latest add https://000h.cojeev.com/r/cojeev.json --overwrite
+```
+
+This replaces the foundation stylesheets; reapply any local edits you made to them.
+
 ## Reproduce the stranger installation
 
 This command creates a new directory in the operating system's temporary folder, installs Vite and React, runs the real shadcn CLI, installs five registry components, and builds that app. It prints the directory and writes a timestamped receipt under `artifacts/stranger/`.

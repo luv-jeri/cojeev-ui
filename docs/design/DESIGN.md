@@ -233,7 +233,7 @@ The display face gives headings a human, sculptural edge; the body face keeps co
 
 - **Hero / Display:** use the frontmatter roles for large product statements and expressive numeric artifacts. At the component small-screen breakpoint, Hero becomes 3rem and Display 2.25rem.
 - **Headline:** the display family marks section starts with compact leading.
-- **Title:** compact component titles use the reading family; the Title primitive is 20px with 1.25 leading, while CardTitle is 16px with 1.2 leading. These are component contracts, not a replacement global scale.
+- **Title:** compact component titles use the reading family; the Title primitive is 21px with 1.25 leading, while CardTitle is 16px with 1.2 leading. These are component contracts, not a replacement global scale.
 - **Body / Reading:** base application text and the Body primitive are recorded separately because their size and leading differ in source. Prose paragraphs and list items use more open 1.65 leading and a bounded reading measure.
 - **Label / Meta:** controls and supporting information stay subordinate to headings. Numeric values and identifiers use tabular figures where alignment matters.
 
