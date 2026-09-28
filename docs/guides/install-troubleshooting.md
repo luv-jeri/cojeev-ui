@@ -178,3 +178,13 @@ Include the entry you installed, the `shadcn` version, your framework and
 Tailwind version, and the exact console or terminal output. The registry's own
 source of truth is `https://000h.cojeev.com/r/{name}.json`, which you can fetch
 to confirm what your install was given.
+
+To verify that repair against locally built registry payloads, run:
+
+```sh
+node scripts/run-install-verification.mjs --framework=next --components=button --css=normalize
+```
+
+The receipt records the original CLI imports and the explicit normalization. Omit
+`--css=normalize` to measure the untouched install; a CSS resolution or production
+build error remains a failure in that run.

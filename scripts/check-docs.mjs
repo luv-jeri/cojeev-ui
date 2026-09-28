@@ -123,6 +123,30 @@ async function key(locator, value) {
   await locator.focus();
   await locator.press(value, { delay: 60 });
 }
+/**
+ * Name the element that actually receives a pointer at a control's centre, so a
+ * failed click reports whether something really covers it. A clean reading means
+ * the control was never obscured and the failure was the driver running out of
+ * time, which is a harness condition rather than a defect in the component.
+ */
+async function describePointerBlocker(locator) {
+  try {
+    return await locator.evaluate(element => {
+      const rect = element.getBoundingClientRect();
+      if (!rect.width || !rect.height) return `pointer probe: the control has no box (${rect.width}x${rect.height})`;
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const owner = document.elementFromPoint(x, y);
+      if (!owner) return `pointer probe: no element at the control's centre (${Math.round(x)},${Math.round(y)})`;
+      if (owner === element || element.contains(owner) || owner.contains(element)) return `pointer probe: the control owns its own centre (${Math.round(x)},${Math.round(y)}), so it was not obscured`;
+      const slot = owner.closest("[data-slot]")?.getAttribute("data-slot");
+      const style = getComputedStyle(owner);
+      return `pointer probe: <${owner.tagName.toLowerCase()}${slot ? ` data-slot="${slot}"` : ""}> covers the control's centre (${Math.round(x)},${Math.round(y)}); position=${style.position}, z-index=${style.zIndex}, pointer-events=${style.pointerEvents}`;
+    });
+  } catch (error) {
+    return `pointer probe unavailable: ${error.message}`;
+  }
+}
 const passive = new Set([
   "aspect-ratio",
   "avatar",
@@ -479,7 +503,7 @@ const tests = {
     await eventually(() => heading.evaluate(el => Array.from(el.querySelectorAll('[data-reveal-word]')).every(word => Number(getComputedStyle(word).opacity) >= .999)), "Initial entrance settles before replay observation");
     const before = await heading.boundingBox();
     const replay = root.getByRole("button", { name: "Replay reveal" });
-    const paint = await armOpacityObservation(heading, replay, { units: '[data-reveal-word]', upperBound: .99 });
+    const paint = await armOpacityObservation(heading, { units: '[data-reveal-word]', upperBound: .99 });
     try {
       await replay.click();
       await eventually(paint.seen, "Replay produces a visible intermediate word opacity");
@@ -1322,10 +1346,17 @@ async function sharedPreview(page, id) {
     assert.equal(await copy.locator('[data-icon-name="check"]').count(), 1);
   }
   const p = page.locator('[data-slot="preview"]').first();
-  await p
-    .getByRole("button", { name: "Copy code", exact: true })
-    .first()
-    .click();
+  const copyCode = p.getByRole("button", { name: "Copy code", exact: true }).first();
+  try {
+    await copyCode.click();
+  } catch (error) {
+    /* Playwright reports only that it exhausted its actionability budget, which
+     * cannot distinguish a real occlusion from a driver that ran out of time. Ask
+     * the document which element actually owns the button's centre point and
+     * name it in the failure, so the next reader gets a verdict instead of a
+     * timeout. */
+    throw new Error(`${error.message}\n${await describePointerBlocker(copyCode)}`);
+  }
   await text(p, "Copied to clipboard.");
   const copiedExample = await page.evaluate(() => navigator.clipboard.readText());
   assert(copiedExample.includes("export default function Demo"));

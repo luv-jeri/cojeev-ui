@@ -115,6 +115,13 @@
   --muted-foreground: var(--asm-v-muted);
 }
 
+/* Secondary buttons carry the registry's beige face. Keep their ink paired
+   with that face rather than inheriting the dark chapter's cream copy. */
+.asm[data-ground-tone] .v-motion-controls .v-btn.-secondary {
+  --v-text: var(--asm-v-text);
+  --v-text-2: var(--asm-v-text-2);
+}
+
 .asm[data-tone="blue"] {
   --asm-page: var(--asm-blue);
 }

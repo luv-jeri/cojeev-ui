@@ -53,11 +53,27 @@ function readText(rel) {
 /** Rows look like: | Q01.01 | Distinctive design language | 7 | I | E3 | note | */
 function parseScorecard(text) {
   const rows = new Map();
+  // Parse ONLY the canonical `## Detailed criteria` block. The scorecard also contains
+  // proposal/applied tables further down whose columns are `Was` / `Proposed` / `Reviewed`,
+  // not `Current`. A whole-file scan lets those rows overwrite the real ones (a later
+  // `| Q01.07 | Light-theme polish | 6 | **7** | … |` row used to be read as a score of 6),
+  // which silently corrupts both the rise list and the frozen-score comparison.
+  const start = text.indexOf("\n## Detailed criteria");
+  const end = text.indexOf("\n## Acceptance targets for 10/10");
+  if (start < 0 || end <= start) {
+    console.error("cannot locate the canonical '## Detailed criteria' block — refusing to continue");
+    process.exit(2);
+  }
+  const block = text.slice(start, end);
   const re = /^\|\s*(Q\d{2}\.\d{2})\s*\|([^|]*)\|([^|]*)\|/gm;
   let m;
-  while ((m = re.exec(text))) {
+  while ((m = re.exec(block))) {
     const id = m[1];
     const rawScore = m[3].trim();
+    if (rows.has(id)) {
+      console.error(`duplicate criterion row ${id} in the canonical block — refusing to continue`);
+      process.exit(2);
+    }
     // "U", "U / 10", "7", "6.5" are all accepted.
     const numeric = /^-?\d+(\.\d+)?$/.test(rawScore) ? Number(rawScore) : null;
     rows.set(id, { id, title: m[2].trim(), rawScore, score: numeric });
@@ -159,11 +175,17 @@ for (const [id, row] of current) {
 }
 
 for (const r of raised) {
+  // The review test is anchored on purpose. It used to be /ACCEPT/i, an unanchored substring
+  // match, so a receipt that said "PENDING — must not be read as an acceptance" was counted as
+  // accepted: the word "acceptance" contains "accept". Any honest receipt that explicitly
+  // disclaims acceptance was therefore read as granting it, which is the exact inversion this
+  // guard exists to prevent. Requiring the line to BEGIN with ACCEPT keeps the intended meaning
+  // ("ACCEPT FOR INTEGRATION — independent Codex ...") and fails safe for every other phrasing.
   const covering = receipts.filter(
     (rec) =>
       rec.criterionIds.includes(r.id) &&
       rec.allChecksPassed &&
-      /ACCEPT/i.test(rec.review) &&
+      /^ACCEPT\b/i.test(rec.review.trim()) &&
       !rec.rehearsal,
   );
   if (covering.length === 0) {
@@ -189,9 +211,14 @@ const staleNote = stale.length
   : null;
 
 if (mode === "--report") {
+  const pts = (list) => list.reduce((a, r) => a + (Number(r.to) - Number(r.from)), 0);
   console.log(`${current.size} criteria · frozen ${baseline.frozenAt}`);
   console.log(`tree hash  ${now} · ${staleNote ? `stale receipts: ${staleNote}` : "all receipts current"}`);
-  console.log(`raised ${raised.length} · lowered ${lowered.length} · unearned ${unearned.length}`);
+  console.log(
+    `raised ${raised.length} (+${pts(raised)}) · lowered ${lowered.length} · ` +
+      `unearned ${unearned.length} (+${pts(unearned)}) · ` +
+      `receipt-backed ${raised.length - unearned.length} (+${pts(raised) - pts(unearned)})`,
+  );
   for (const r of raised) {
     const earned = !unearned.some((u) => u.id === r.id);
     console.log(`  ${r.id}  ${r.from} -> ${r.to}  ${earned ? "EARNED" : "UNEARNED"}`);

@@ -307,11 +307,21 @@ test("evaluation is pure: the same progress always yields the same frame", () =>
 test("hero and motion retain the shared face while hero placement stays chapter-local", () => {
   const hero = evaluate(restingProgress(0));
   const motion = evaluate(restingProgress(2));
-  for (const id of PART_IDS.filter((part) => part !== "drawers" && part !== "sourcePlate")) {
-    assert.deepEqual(hero.parts[id], motion.parts[id], id);
+  // The solved hero artboard has local placements for the controls and flower,
+  // as well as the drawers and source plate. Their shared orientation and
+  // visibility must survive; these placements must not leak into Motion.
+  for (const id of PART_IDS) {
+    assert.deepEqual(hero.parts[id].rotation, motion.parts[id].rotation, `${id} orientation`);
+    assert.equal(hero.parts[id].opacity, motion.parts[id].opacity, `${id} visibility`);
+    if (id !== "flower" && id !== "sourcePlate") {
+      assert.equal(hero.parts[id].scale, motion.parts[id].scale, `${id} scale`);
+    }
+  }
+  for (const id of ["create", "switchBase", "switchThumb", "sliderTrack", "sliderThumb", "flower"] as const) {
+    assert.deepEqual(motion.parts[id], HOME_PARTS[id], `${id} keeps its shared Motion pose`);
+    assert.notDeepEqual(hero.parts[id].position, motion.parts[id].position, `${id} is staged for the artboard`);
   }
   for (const id of ["drawers", "sourcePlate"] as const) {
-    assert.equal(hero.parts[id].opacity, motion.parts[id].opacity, `${id} stays visible`);
     assert.notDeepEqual(hero.parts[id].position, motion.parts[id].position, `${id} is staged for the artboard`);
   }
   assert.notDeepEqual(hero.instrument.position, motion.instrument.position);

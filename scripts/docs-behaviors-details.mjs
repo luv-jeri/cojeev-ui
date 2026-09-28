@@ -1,5 +1,5 @@
 /** Existing detail examples: real controls, visible outcomes and quiet fallbacks. */
-import { armOpacityObservation } from "./docs-transient-paint.mjs";
+import { armOpacityObservation, recordOpacitySequence } from "./docs-transient-paint.mjs";
 
 export function createDetailTests({ assert, eventually, text, attribute, key }) {
   const reduced = async (page, run) => {
@@ -70,7 +70,7 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       await pointer.scrollIntoViewIfNeeded();
       await attribute(pointer, "data-state", "still");
       const next = root.getByRole("button", { name: "Next moment", exact: true });
-      const paint = await armOpacityObservation(ring, next);
+      const paint = await armOpacityObservation(ring);
       try {
         await next.click();
         await text(root.getByRole("status"), "Choose a direction · moment 2 of 3");
@@ -271,11 +271,53 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
     },
     "writing-caret": async ({ page, root }) => {
       const caret = root.locator('[data-slot="writing-caret"]');
+      /* Declared out here because the result sentence below reports them. */
+      let paintedValues = [];
+      let blinks = 0;
       await attribute(caret, "aria-hidden", "true");
       assert.equal(await caret.evaluate(el => getComputedStyle(el).opacity), "1");
-      await key(root.getByRole("button", { name: "Replay caret", exact: true }), "Enter");
+      /* The blink is one finite pass: the caret falls to zero and recovers, and
+       * the whole cycle is over well inside eventually()'s own budget. Polling
+       * computed opacity from the driver therefore races the animation — under a
+       * loaded or slower host the polls land only on the recovered value, and the
+       * case fails while the component blinks correctly.
+       *
+       * Record the writes instead of sampling frames, and drive the animation from
+       * a paused clock rather than the host's animation-frame loop. A busy host was
+       * measured delivering 7 frames across a whole 3.5s observation window against
+       * 200 when idle, which is not enough samples for a finite pass to be seen at
+       * all. runFor() advances the animation deterministically, and the write
+       * record is complete whatever the renderer manages to keep up with: the
+       * default three blinks record exactly [1, 0, 1, 0, 1, 0, 1] — the trailing 1 is
+       * the settle that ends the pass. */
+      const replay = root.getByRole("button", { name: "Replay caret", exact: true });
+      const instant = new Date();
+      await page.clock.install({ time: instant });
+      await page.clock.setFixedTime(instant);
+      await page.clock.pauseAt(instant);
+      try {
+        const painted = await recordOpacitySequence(caret);
+        try {
+          await key(replay, "Enter");
+          /* The authored cycle is 3 x 880ms; step past it so the recorded sequence
+           * covers the whole pass and the settle that ends it. */
+          await page.clock.runFor(2800);
+          /* A blink is the mark going *away*, so the pass must reach fully
+           * transparent — not merely dip toward it. */
+          paintedValues = await painted.values();
+          assert.equal(await painted.lowest(), 0, `Replay produces a visible blink (painted ${JSON.stringify(paintedValues)})`);
+          /* One blink can be a single dip; the mark is authored to blink three
+           * times, so the pass must return to transparent more than once. */
+          blinks = paintedValues.filter(value => value === 0).length;
+          assert.ok(blinks >= 2, `Replay blinks repeatedly rather than once (painted ${JSON.stringify(paintedValues)})`);
+        } finally { await painted.dispose(); }
+        const settled = await caret.evaluate(el => [getComputedStyle(el).opacity, el.style.getPropertyValue("--writing-caret-opacity"), el.dataset.animating ?? "-"]);
+        assert.equal(settled[0], "1", `Replay settles back to a visible mark (painted ${JSON.stringify(paintedValues)}; after runFor opacity/var/animating=${JSON.stringify(settled)})`);
+      } finally {
+        try { await page.clock.setSystemTime(new Date()); }
+        finally { await page.clock.resume(); }
+      }
       await text(root.getByRole("status"), "replay 1");
-      await eventually(() => caret.evaluate(el => getComputedStyle(el).opacity === "0"), "Replay produces a visible blink");
       await root.getByRole("button", { name: "Keep it still", exact: true }).click();
       await attribute(caret, "data-animating", "false");
       assert.equal(await caret.evaluate(el => getComputedStyle(el).opacity), "1");
@@ -285,7 +327,7 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
         await attribute(caret, "data-animating", "false");
         assert.equal(await caret.evaluate(el => getComputedStyle(el).opacity), "1");
       });
-      return "Keyboard replay blinks, the still control settles visibly, and reduced motion preserves the decorative mark";
+      return `Keyboard replay blinks ${blinks} times (${JSON.stringify(paintedValues)}), the still control settles visibly, and reduced motion preserves the decorative mark`;
     },
   };
 }

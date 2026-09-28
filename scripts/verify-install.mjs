@@ -1,5 +1,6 @@
 /** Build a fresh public-registry specimen; pass --components=... for optional entries. */
 import fs from "node:fs";
+import { motionDependencyEvidence } from "./install-dependency-contract.mjs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -125,12 +126,8 @@ ${ids.filter(id => specimens[id]).map(id => `<section data-specimen="${id}" styl
   // ships `motion`, so the claim is about attribution, not about presence.
   const addedPackages = [...new Set([...Object.keys(installed.dependencies ?? {}), ...Object.keys(installed.devDependencies ?? {})])].filter(name => !scaffoldPackages.has(name)).sort();
   receipt.registryAddedPackages = addedPackages;
-  const registryAddedMotion = addedPackages.includes("motion");
-  const declaresMotion = ids.some(id => motionEntries.has(id));
-  receipt.motionRuntime = { declaredByPayload: declaresMotion, addedForConsumer: registryAddedMotion };
-  if (registryAddedMotion !== declaresMotion) {
-    throw new Error(`The registry ${registryAddedMotion ? "added" : "did not add"} the motion runtime for an entry set that ${declaresMotion ? "does" : "does not"} declare it`);
-  }
+  const installedPackages = new Set([...Object.keys(installed.dependencies ?? {}), ...Object.keys(installed.devDependencies ?? {})]);
+  receipt.motionRuntime = motionDependencyEvidence(scaffoldPackages, installedPackages, ids.some(id => motionEntries.has(id)));
   receipt.checks.optionalMotionDependency = "PASS";
   runCaptured("install-consumer-build", "npm", ["run", "build"]);
   receipt.build = "PASS";

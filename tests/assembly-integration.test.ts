@@ -20,7 +20,7 @@ import {
   storeContour,
   useExperience,
 } from "../components/landing/assembly/experience-store";
-import { INSTRUMENT } from "../components/landing/assembly/canonical";
+import { FEATURED_SPECIMEN, INSTRUMENT, SPECIMEN_TRAYS, sourceSummaryLines } from "../components/landing/assembly/canonical";
 import { isMotionRunning } from "../components/landing/assembly/assembly-landing";
 import { MIN_TOUCH, paintSeam } from "../components/landing/assembly/seam-bus";
 import { PALETTE } from "../components/landing/assembly/canonical";
@@ -857,4 +857,143 @@ test("no placeholder copy survives on the page", () => {
       );
     }
   }
+});
+
+
+/* -------------------------------------------------- selection → store → plate */
+
+/**
+ * Runs `build` with a stub document that can answer `getContext("2d")`, and
+ * returns everything the plate painted while that document was installed.
+ *
+ * `paintSourceSummary` needs a 2D context and the unit suite has no DOM. A real
+ * canvas element is not what is under test — the *wiring* is — so the stub is the
+ * smallest object that can answer the painter, and it keeps the fill calls. That
+ * is enough to read back what the plate was told to draw, which is the only thing
+ * the visitor sees change.
+ *
+ * The stub stays installed for the whole callback because the canvas it hands out
+ * outlives the build: `setSourceSummary` repaints that same canvas in place, so a
+ * later repaint must still reach the recording context.
+ */
+function recordingDocument<T>(build: (painted: string[]) => T): { result: T; painted: string[] } {
+  const painted: string[] = [];
+  const previous = Object.getOwnPropertyDescriptor(globalThis, "document");
+  Object.defineProperty(globalThis, "document", {
+    configurable: true,
+    writable: true,
+    value: {
+      createElement(tag: string) {
+        if (tag !== "canvas") throw new Error(`unexpected element <${tag}>`);
+        return {
+          width: 0,
+          height: 0,
+          getContext(kind: string) {
+            if (kind !== "2d") return null;
+            return {
+              clearRect() {},
+              set font(_value: string) {},
+              set fillStyle(_value: string) {},
+              fillText(text: string) { painted.push(text); },
+            };
+          },
+        };
+      },
+    },
+  });
+  try {
+    return { result: build(painted), painted };
+  } finally {
+    if (previous) Object.defineProperty(globalThis, "document", previous);
+    else delete (globalThis as { document?: unknown }).document;
+  }
+}
+
+test("selecting a specimen repaints the source plate with that specimen", () => {
+  /* R10, as a chain rather than a unit check.
+   *
+   * The defect was never inside one function: `sourceSummaryLines` returned the
+   * right lines, the store held the right id, and the plate still drew
+   * `<Button>Create</Button>` over a Slider selection, because the two halves were
+   * never connected. `assembly.test.ts` already asserts the lines themselves. This
+   * asserts the wiring, using the real scene, the real painter and the real store:
+   *
+   *   bench selection → `experience.set({ specimen })`   (assembly-landing.tsx)
+   *                   → `experience.get().specimen`      (scene-controller.ts)
+   *                   → `assembly.setSourceSummary(id)`  → the plate canvas
+   *
+   * Both connections are load-bearing, and dropping either makes this fail: without
+   * the store write the scene never learns the selection and the plate paints the
+   * featured specimen; without the repaint the plate is never repainted at all. */
+  experience.reset();
+
+  /* The two connections, read from the page's own source rather than restated
+   * here. A regression test that re-implements the wiring it is meant to protect
+   * passes forever while the real thing rots — verified by deleting each call and
+   * watching a restated version keep passing. */
+  const landing = readFileSync(join(process.cwd(), "components", "landing", "assembly", "assembly-landing.tsx"), "utf8");
+  const controller = readFileSync(join(process.cwd(), "components", "landing", "assembly", "scene-controller.ts"), "utf8");
+
+  const pickSpecimen = /const pickSpecimen = React\.useCallback\([\s\S]*?\n  \);/.exec(landing)?.[0];
+  assert.ok(pickSpecimen, "assembly-landing.tsx must still select via `pickSpecimen`");
+  assert.match(pickSpecimen, /experience\.set\(\{\s*specimen:\s*id\s*\}\)/,
+    "selecting on the bench must write the specimen to the store; without it the scene never learns the selection (R10)");
+
+  const applyFrame = /function applyFrame\(dt: number, cameraDt = dt\) \{[\s\S]*?\n  \}/.exec(controller)?.[0];
+  assert.ok(applyFrame, "scene-controller.ts must still pose the scene in `applyFrame`");
+  assert.match(applyFrame, /experience\.get\(\)/,
+    "`applyFrame` must read the store; it is the scene's only view of the selection");
+  assert.match(applyFrame, /assembly\.setSourceSummary\(state\.specimen\)/,
+    "`applyFrame` must repaint the plate for the specimen the store now holds; reading without repainting leaves the plate stale (R10)");
+
+  const scene = recordingDocument(() => buildAssemblyScene());
+  /* Arriving on the hero paints the featured specimen. */
+  assert.deepEqual(scene.painted, [...sourceSummaryLines(FEATURED_SPECIMEN)],
+    "the plate must summarise the featured specimen on arrival");
+
+  const selected = SPECIMEN_TRAYS.find((specimen) => specimen.id === "slider");
+  assert.ok(selected, "the bench must still offer the slider");
+  assert.notDeepEqual(sourceSummaryLines(selected.id), sourceSummaryLines(FEATURED_SPECIMEN),
+    "this test is only meaningful while the two summaries differ");
+  /* The selected specimen must really be one the page's own picker can select,
+   * so the two connections above are the ones this very selection travels. */
+  assert.ok(SPECIMEN_TRAYS.some((specimen) => specimen.id === experience.get().specimen),
+    "the store must start on a specimen the bench actually offers");
+
+  /* Drive the chain the way the page drives it: the selection the source makes,
+   * then the frame the controller runs. */
+  const summarised = { id: FEATURED_SPECIMEN };
+  const frame = () => {
+    const state = experience.get();
+    if (state.specimen !== summarised.id) {
+      summarised.id = state.specimen;
+      scene.result.setSourceSummary(state.specimen);
+    }
+  };
+
+  scene.painted.length = 0;
+  frame();
+  assert.deepEqual(scene.painted, [],
+    "a frame with no new selection must not repaint the plate");
+
+  scene.painted.length = 0;
+  /* What `pickSpecimen` does, applied to the real store the controller reads. */
+  experience.set({ specimen: selected.id });
+  experience.emit({ type: "specimenLift", id: selected.id });
+  assert.equal(experience.get().specimen, selected.id,
+    "the bench selection must reach the store — without this write the scene cannot see it");
+  frame();
+
+  assert.deepEqual(scene.painted, [...sourceSummaryLines(selected.id)],
+    "the plate must repaint from the selection rather than keep a fixed snippet");
+  assert.notDeepEqual(scene.painted, [...sourceSummaryLines(FEATURED_SPECIMEN)],
+    "the plate must not still be drawing the featured specimen");
+
+  /* A repeat selection is not a new one, and must not repaint. */
+  scene.painted.length = 0;
+  frame();
+  assert.deepEqual(scene.painted, [],
+    "the plate repaints on change, not on every frame");
+
+  experience.reset();
 });
