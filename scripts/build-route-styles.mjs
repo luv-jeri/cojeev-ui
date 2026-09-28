@@ -18,16 +18,10 @@ const companions = { checkbox: ["choice-foundations"], "radio-group": ["choice-f
 
 // The root layout renders on every route; the docs layout shows any component, so it keeps the full set.
 const shell = { name: "shell", entry: "app/layout.tsx", importer: "app/layout.tsx" };
-const routes = [
-  { name: "home", entry: "app/page.tsx" },
-  { name: "about", entry: "app/about/page.tsx" },
-  { name: "getting-started", entry: "app/getting-started/page.tsx" },
-  { name: "privacy", entry: "app/privacy/page.tsx" },
-  { name: "work-with-me", entry: "app/work-with-me/page.tsx" },
-  { name: "requests", entry: "app/requests/page.tsx" },
-  { name: "workspace", entry: "app/workspace/page.tsx" },
-  { name: "feedback-admin", entry: "app/feedback-admin/page.tsx" },
-];
+// Every other page gets a sheet named after its route: app/page.tsx is home, app/a/b/page.tsx is a-b.
+const routes = fs.readdirSync("app", { recursive: true }).map((file) => file.split(path.sep).join("/"))
+  .filter((file) => /(^|\/)page\.tsx$/.test(file) && !file.startsWith("docs/")).sort()
+  .map((file) => ({ name: path.posix.dirname(file).replace(/[()[\]]/g, "").replaceAll("/", "-").replace(/^\.$/, "home"), entry: `app/${file}` }));
 
 function resolve(from, specifier) {
   let base;
