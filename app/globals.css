@@ -13,3 +13,5 @@
 @import "../registry/cojeev/styles/morph.css" layer(cojeev-morph);
 @source "../registry/cojeev";
 @source "../components";
+/* Test messages quote class patterns like text-[length:var(--fs-*)]; scanning them emits invalid CSS. */
+@source not "../tests";
