@@ -90,5 +90,38 @@ export function paintFace(node: HTMLElement, rect: SeamRect | null) {
     "--touch-y",
     `${Math.max(0, (48 - rect.height) / 2)}px`,
   );
+  /* The plate's width, for the faces that carry three things rather than one.
+   * A drawer plate is 89px wide at 390 and 131px at 1024; a label sized from the
+   * height alone overflows those by 8px and takes the chevron off the plate. */
+  node.style.setProperty("--face-width", `${rect.width}px`);
   node.style.setProperty("--face-font", `${Math.min(30, rect.height * 0.3)}px`);
+  node.style.setProperty("--face-angle", `${rect.angle}rad`);
+}
+
+/**
+ * Publishes the sculpted panel's projected outline on the page root.
+ *
+ * The panel has no DOM node of its own — it is WebGL geometry, and the one
+ * thing that decides whether chapter copy over it stays readable is where its
+ * silhouette actually lands on screen. Writing the four projected corners here
+ * makes that measurable from outside the page, in the same units as the text
+ * boxes it has to be compared against, and it is the same kind of published
+ * state as `data-webgl` and `data-chapter` rather than a second source of truth:
+ * the numbers come straight from the controller's own projection.
+ *
+ * Formatted as `x,y x,y x,y x,y`, or removed when the panel has no honest
+ * outline to report (behind the eye plane, or wholly off screen).
+ */
+export function writePanelQuad(rect: SeamRect | null) {
+  const shell = document.querySelector<HTMLElement>(".asm");
+  if (!shell) return;
+  const corners = rect?.corners;
+  if (!corners || corners.length < 4) {
+    if (shell.dataset.panelQuad !== undefined) delete shell.dataset.panelQuad;
+    return;
+  }
+  const next = corners
+    .map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`)
+    .join(" ");
+  if (shell.dataset.panelQuad !== next) shell.dataset.panelQuad = next;
 }

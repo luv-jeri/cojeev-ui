@@ -136,6 +136,34 @@ function extruded(
 }
 
 /**
+ * The rounded rectangle the panel's controls are cut from: a stadium when the
+ * radius is half the height, which is what the slider's rail and its fill both
+ * are. Extruded rather than built as a `RoundedBoxGeometry`, because that rounds
+ * all three axes at once — at a radius of half the height its cross-section is a
+ * drum, and the bar shades as a gradient instead of the flat face the artboard
+ * draws.
+ */
+function roundedOutline(width: number, height: number, r: number) {
+  const shape = new THREE.Shape();
+  const centres = [
+    [width / 2 - r, height / 2 - r],
+    [-width / 2 + r, height / 2 - r],
+    [-width / 2 + r, -height / 2 + r],
+    [width / 2 - r, -height / 2 + r],
+  ];
+  for (let corner = 0; corner < 4; corner++)
+    for (let j = 0; j <= 12; j++) {
+      const theta = ((corner + j / 12) * Math.PI) / 2;
+      const x = centres[corner][0] + r * Math.cos(theta);
+      const y = centres[corner][1] + r * Math.sin(theta);
+      if (corner === 0 && j === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    }
+  shape.closePath();
+  return shape;
+}
+
+/**
  * Extrudes a canonical contour into the flower face.
  *
  * The contour arrives in the 100-unit viewBox and is normalised so the sculpted
@@ -186,14 +214,30 @@ const RIBBON_UP = new THREE.Vector3(0, 1, 0);
  * like the ribbon, and anchored at the hotspot so it sits where the pointer is.
  */
 function pointerShape() {
+  /* The artboard's pointer is a solid arrowhead with one concave bite out of
+   * its back edge - four points, no tail. This used to be a mouse-cursor: a
+   * long spike with a separate tail wedge off its lower right, which at the
+   * same size read as a different icon, and the 0.42 it was turned by squared
+   * its box off to 40x49 where the artboard's is 34x47.
+   *
+   * The vertices are the artboard's own, in pixels off its tip, read at 4x:
+   * the tip, the point at the bottom left (7.5, -46), the notch that cuts back
+   * in (21, -33.5) and the outer corner (35, -27). Divided by 248 - the pixels
+   * one shape unit covers at this mesh's 1.13 scale - and with y flipped,
+   * because a shape's y runs up and the artboard's runs down.
+   *
+   * The y values carry a second correction the x values do not. The arrow lies
+   * in the instrument's own plane, which this chapter pitches 0.31 rad away
+   * from the camera, and that plane's projection at this depth is not isotropic:
+   * the artboard's own pixels come out 1.6x further apart vertically than
+   * horizontally, so a shape whose vertices were taken straight off it drew 74
+   * px tall where the artboard draws 47. The y values are divided by that 1.6
+   * to put them back. */
   const shape = new THREE.Shape();
   shape.moveTo(0, 0);
-  shape.lineTo(0.004, -0.116);
-  shape.lineTo(0.034, -0.086);
-  shape.lineTo(0.058, -0.128);
-  shape.lineTo(0.079, -0.117);
-  shape.lineTo(0.054, -0.075);
-  shape.lineTo(0.093, -0.073);
+  shape.lineTo(0.0302, -0.1334);
+  shape.lineTo(0.0847, -0.0971);
+  shape.lineTo(0.1411, -0.0783);
   shape.closePath();
   return new THREE.ExtrudeGeometry(shape, {
     depth: 0.012,
@@ -223,17 +267,122 @@ type RibbonTaper = "lens" | "grip" | "thread";
  * `linear` spends height evenly, so the band is steepest where it is held and
  * level in the middle: a hanging cord. `smooth` eases in and out, so the band
  * leaves level, steepens through the middle and levels again at the far end.
+ * `thread` is the artboard's own measured curve, described below.
  *
- * The artboard's thread is the second. Traced across the reference its fall per
- * 40 px of span runs 13, 10, 6, 6, 11, 19, 35, 49, 35, 24, 14, 9, 4 from the
- * cursor to the panel - steepest at the middle and level at both ends, which a
- * linear spine cannot produce at any sag.
+ * The artboard's thread is neither of the first two. Traced across the reference
+ * its fall per 40 px of span runs 13, 10, 6, 6, 11, 19, 35, 49, 35, 24, 14, 9, 4
+ * from the cursor to the panel — level at the cursor, sharply steepest from 55%
+ * to 75% of the span, then level again for the last quarter into the panel. No
+ * two-term `ease(t)` reproduces that: `smooth` puts its steepest section at 50%
+ * and still gives away height at both ends, which is why this band floated ~27 px
+ * below the reference through the middle and met the panel arriving steeply when
+ * the reference arrives flat.
  */
-type RibbonEase = "linear" | "smooth";
+type RibbonEase = "linear" | "smooth" | "thread";
+
+/**
+ * `thread`'s profile: how much of the spine's height has been spent by each
+ * fraction of the way from the free end (0) to the panel end (1). The reference
+ * was traced column by column, unprojected into the plane the ribbon itself
+ * lives in — at the z each column's own position along the spine implies, since
+ * the thread runs from 0.045 behind the panel's front face to 0.12 in front of
+ * it — and normalised against the total fall so the curve survives the free end
+ * moving.
+ *
+ * The last point is past where the panel cuts the thread off: the spine has to
+ * start behind the panel for the panel to occlude it, so it is extended one
+ * tail-segment along its own end tangent and the measured part is rescaled into
+ * what remains. `0.8889` is where the visible thread ends.
+ */
+const THREAD_FALL: readonly (readonly [number, number])[] = [
+  [0, 0],
+  [0.1111, 0.027],
+  [0.2222, 0.0784],
+  [0.3333, 0.2179],
+  [0.4444, 0.47],
+  [0.5556, 0.6746],
+  [0.6667, 0.7704],
+  [0.7778, 0.8171],
+  [0.8889, 0.8899],
+  [1, 1],
+];
+
+function makeHermite(points: readonly (readonly [number, number])[]) {
+  const secants = points.slice(1).map((point, i) => {
+    const [x0, y0] = points[i];
+    const [x1, y1] = point;
+    return (y1 - y0) / (x1 - x0);
+  });
+  const tangents = points.map((point, i) => {
+    if (i === 0) return secants[0];
+    if (i === secants.length) return secants[secants.length - 1];
+    const before = secants[i - 1];
+    const after = secants[i];
+    if (before * after <= 0) return 0;
+    const spanBefore = point[0] - points[i - 1][0];
+    const spanAfter = points[i + 1][0] - point[0];
+    return (2 * (spanBefore + spanAfter)) / (spanBefore / before + spanAfter / after);
+  });
+  const last = points.length - 1;
+  return (t: number) => {
+    const x = t < 0 ? 0 : t > 1 ? 1 : t;
+    let i = 1;
+    while (i < last && x > points[i][0]) i += 1;
+    const [x0, y0] = points[i - 1];
+    const [x1, y1] = points[i];
+    const h = x1 - x0;
+    const s = (x - x0) / h;
+    const s2 = s * s;
+    const s3 = s2 * s;
+    return (
+      (2 * s3 - 3 * s2 + 1) * y0 +
+      (s3 - 2 * s2 + s) * h * tangents[i - 1] +
+      (-2 * s3 + 3 * s2) * y1 +
+      (s3 - s2) * h * tangents[i]
+    );
+  };
+}
+
+/* The secant of each measured segment, and the tangent at each measured point
+ * as the Fritsch-Carlson harmonic mean of its two neighbouring secants — which
+ * is zero wherever they disagree in sign, so the interpolant can never step
+ * backwards. A central difference, the obvious thing to write, overshoots on
+ * both sides of the shoulder at 0.67 where the fall rises from 0.30 to 0.80 in a
+ * fifth of the span, and shows up as a kink in the band. */
+const threadEase = makeHermite(THREAD_FALL);
+
+/**
+ * `thread`'s span: the same measurement again, as the fraction of the spine's
+ * WIDTH that has been covered. The thread does not walk evenly from its free end
+ * to the panel — it runs almost straight for the first half and then turns up
+ * into the plate — so interpolating x linearly in `t` bunches the bend in the
+ * wrong place. With the height alone measured, reaching the reference's tail
+ * meant stretching the whole band sideways and losing the middle, which is
+ * exactly the compromise the previous fit kept making.
+ */
+const THREAD_SPAN: readonly (readonly [number, number])[] = [
+  [0, 0],
+  [0.1111, 0.1924],
+  [0.2222, 0.2761],
+  [0.3333, 0.3655],
+  [0.4444, 0.4622],
+  [0.5556, 0.5626],
+  [0.6667, 0.6645],
+  [0.7778, 0.7698],
+  [0.8889, 0.8813],
+  [1, 1],
+];
 
 const RIBBON_EASES: Record<RibbonEase, (t: number) => number> = {
   linear: (t) => t,
   smooth: (t) => t * t * (3 - 2 * t),
+  thread: threadEase,
+};
+
+const RIBBON_SPANS: Record<RibbonEase, ((t: number) => number) | null> = {
+  linear: null,
+  smooth: null,
+  thread: makeHermite(THREAD_SPAN),
 };
 
 const RIBBON_TAPERS: Record<RibbonTaper, (t: number) => number> = {
@@ -276,20 +425,24 @@ function createRibbon(
   const normal = new THREE.Vector3();
   const vertex = new THREE.Vector3();
 
-  /* Only the height is eased. Easing x as well would move where the thread
-   * crosses the panel's edge, and the crossing is what the panel occludes. */
+  /* The height and the span are eased independently; a ribbon that names only
+   * an ease keeps the old behaviour, with x and z even in `t`. `z` follows the
+   * span rather than `t` because the thread's depth was measured as it crossed
+   * the plate, so it belongs to the position along the band and not to the
+   * ring's index. */
   const spineAt = (
     t: number,
     start: THREE.Vector3,
     end: THREE.Vector3,
     sag: number,
     ease: (value: number) => number,
+    span: (value: number) => number,
     out: THREE.Vector3,
   ) =>
     out.set(
-      THREE.MathUtils.lerp(start.x, end.x, t),
+      THREE.MathUtils.lerp(start.x, end.x, span(t)),
       THREE.MathUtils.lerp(start.y, end.y, ease(t)) - Math.sin(Math.PI * t) * sag,
-      THREE.MathUtils.lerp(start.z, end.z, t),
+      THREE.MathUtils.lerp(start.z, end.z, span(t)),
     );
 
   return {
@@ -297,11 +450,12 @@ function createRibbon(
     setSpine(start, end, sag, ribbonRadius) {
       const taperAt = RIBBON_TAPERS[taperName];
       const ease = RIBBON_EASES[easeName];
+      const span = RIBBON_SPANS[easeName] ?? ((value: number) => value);
       for (let ring = 0; ring <= segments; ring++) {
         const t = ring / segments;
-        spineAt(t, start, end, sag, ease, spine);
-        spineAt(Math.min(1, t + 0.01), start, end, sag, ease, ahead);
-        spineAt(Math.max(0, t - 0.01), start, end, sag, ease, behind);
+        spineAt(t, start, end, sag, ease, span, spine);
+        spineAt(Math.min(1, t + 0.01), start, end, sag, ease, span, ahead);
+        spineAt(Math.max(0, t - 0.01), start, end, sag, ease, span, behind);
         tangent.copy(ahead).sub(behind);
         if (tangent.lengthSq() < 1e-10) tangent.set(1, 0, 0);
         tangent.normalize();
@@ -351,7 +505,7 @@ function paintSourceSummary(
    * across the glyphs — the artboard shows the three lines and nothing above
    * them, so the header is gone and the block is centred in the canvas rather
    * than pushed to the bottom. */
-  context.font = "600 42px ui-monospace, SFMono-Regular, Menlo, monospace";
+  context.font = "400 42px ui-monospace, SFMono-Regular, Menlo, monospace";
   const ink = ["#9EC5F2", "#F5B8DB", "#9EC5F2"] as const;
   const left = [34, 82, 34] as const;
   const baseline = [88, 142, 196] as const;
@@ -398,6 +552,23 @@ export type AssemblyScene = {
   /** Every mirror tap, so the controller can pose all of them from the aperture. */
   apertureMirrors: THREE.Mesh[];
   floor: THREE.Mesh;
+  /**
+   * A real planar reflection of the hero about the floor plane: the scene is
+   * re-rendered each time the scene itself changes, from a camera mirrored
+   * through the ground, and the floor's shader samples the result projectively.
+   */
+  floorReflection: {
+    render(
+      renderer: THREE.WebGLRenderer,
+      scene: THREE.Scene,
+      camera: THREE.PerspectiveCamera,
+    ): void;
+    /** Resizes the target; the caller owns the canvas size, not this module. */
+    setSize(width: number, height: number): void;
+    /** Recreates the target after a lost context. */
+    reset(): void;
+    dispose(): void;
+  };
   field: THREE.Group;
   stage: THREE.Group;
   closingField: THREE.Group;
@@ -413,6 +584,16 @@ export type AssemblyScene = {
   /** The sculpted face the press deforms; the group around it carries the pose. */
   createMesh: THREE.Mesh;
   heroFaces: Record<string, { object: THREE.Object3D; probe: CreateSeamProbe }>;
+  /**
+   * The sculpted panel's own front face.
+   *
+   * Published with the seam sample so a layout check can measure the geometry a
+   * visitor is actually looking at rather than inferring it from CSS. The panel
+   * is the largest pale surface on the page, which is what makes it the one
+   * worth measuring: chapter copy that crosses it turns cream-on-cream and stops
+   * being readable, and that is a screen-space fact no stylesheet states.
+   */
+  panelFace: { object: THREE.Object3D; probe: CreateSeamProbe };
   setHeroPresentation(weight: number): void;
   /**
    * Tracks the floor's reflection to the instrument's current pose. Must be
@@ -423,7 +604,7 @@ export type AssemblyScene = {
   ribbon: Ribbon;
   /** The pointer at the ribbon's free end; follows the spine every frame. */
   cursor: THREE.Mesh;
-  sliderBand: Ribbon;
+  sliderFill: THREE.Mesh;
   /**
    * Rebuilds the sculpted face from the same blended contour the SVG press
    * previews and exports, and re-tints it to the selected tone. One call, one
@@ -484,7 +665,26 @@ export function buildAssemblyScene(): AssemblyScene {
    * measured over-brightening, not eyeballed adjustments to the palette.
    */
   const HERO_ALBEDO = {
-    pink: "#f79ad0",
+    /* The Create control. Re-solved against the artboard's own pill, which holds
+     * (232, 157, 187): at this the render lands on it, where #f79ad0 rendered
+     * (243, 208, 215) - the same over-brightening of the green and blue channels
+     * the block above describes, still 50 counts out in green. */
+    pink: "#df5fa5",
+    /* The thread needs the opposite correction to the pill it leaves: brighter
+     * and pinker, not darker. The artboard's thread cores at (253, 181, 214)
+     * where the shared albedo rendered (240, 188, 201) - a grey-pink cord rather
+     * than the artboard's saturated one. Its own entry, because one material
+     * cannot be pre-compensated in two directions. */
+    thread: "#ff91e4",
+    /* The slider's fill needs a darker pink than the Create control, and a
+     * separate entry rather than a shared one for the same reason the flower
+     * owns its material: they sit on the same panel and one is not the other.
+     * Solved rather than scaled - the red channel is already near the tone
+     * curve's shoulder, so dividing the albedo by the measured difference cannot
+     * land on it. At #f5b8db the fill rendered (233, 200, 203) where the artboard
+     * holds (220, 142, 173) along the whole bar; at this it renders (235, 142,
+     * 177). */
+    sliderFill: "#b15a96",
     blue: "#687ca9",
     olive: "#6d784b",
     yellow: "#ffd25b",
@@ -493,11 +693,17 @@ export function buildAssemblyScene(): AssemblyScene {
     material: THREE.MeshStandardMaterial;
     base: THREE.Color;
     hero: THREE.Color;
+    baseEmissive: THREE.Color | null;
+    heroEmissive: THREE.Color | null;
   }[] = [];
   /** Every material handed to a mesh is owned here and disposed exactly once. */
   const ownedMaterials: THREE.Material[] = [];
   const ownedGeometries: THREE.BufferGeometry[] = [];
-  const own = <T extends THREE.Material>(template: T, hero?: string): T => {
+  const own = <T extends THREE.Material>(
+    template: T,
+    hero?: string,
+    heroEmissive?: string,
+  ): T => {
     const clone = template.clone();
     if (hero && "color" in clone) {
       const tinted = clone as unknown as THREE.MeshStandardMaterial;
@@ -505,6 +711,8 @@ export function buildAssemblyScene(): AssemblyScene {
         material: tinted,
         base: tinted.color.clone(),
         hero: new THREE.Color(hero),
+        baseEmissive: tinted.emissive ? tinted.emissive.clone() : null,
+        heroEmissive: heroEmissive ? new THREE.Color(heroEmissive) : null,
       });
     }
     ownedMaterials.push(clone);
@@ -568,6 +776,15 @@ export function buildAssemblyScene(): AssemblyScene {
    * 24.1. The mask is floor that is unambiguously floor, because binning the
    * whole lower frame let the band's cream base and the panel's shadow into the
    * near rings and the first fit tracked them instead. */
+  /* Fitted, not chosen: coordinate descent against the contact dip and its
+   * recovery, with the surrounding floor as a hard constraint on every
+   * candidate. Hero-scoped - at weight 0 this multiplies to nothing, so the
+   * other five chapters see exactly the floor they saw before. */
+  const CONTACT_SHADOW_STRENGTH = 0.65;
+  const COOL_SHEEN_STRENGTH = 1;
+  const FLOOR_LIFT_STRENGTH = 0.12;
+  const PLINTH_LIFT_STRENGTH = 0.12;
+  const PLINTH_LOW_LIFT_STRENGTH = 0.45;
   const poolX = 0.1;
   const poolZ = 0.7;
   const floorFalloffData = new Uint8Array(64 * 64 * 4);
@@ -584,9 +801,35 @@ export function buildAssemblyScene(): AssemblyScene {
        * against a backdrop of 17.6, which is the same hard edge as before with
        * the sign flipped — a dark line instead of a brown one. 11% landed it at
        * 25.4, still 8 clear of the backdrop; 7.5% measures 19, which is what the
-       * reference holds at that row. */
+       * reference holds at that row.
+       *
+       * It is not constant, and that is the correction. Read across the frame at
+       * y=670, where the plane fills the background behind and beside the
+       * specimen, our far field is flat — 17.2, 17.1, 17.1, 17.0, 17.0, 17.0,
+       * 17.1 at x 40, 140, 240, 440, 540, 640, 740 — while the artboard climbs
+       * steadily through the same columns: 7.6, 9.6, 10.9, 13.1, 13.8, 16.2,
+       * 17.4, and on to 30.6 at x 1240. One number cannot match a field that
+       * spans 8 to 30, and no value of it can: the uniform sweep is stuck for
+       * exactly this reason. The rows left of the specimen say the same thing
+       * from the other side — art 11.9 / 11.3 / 9.9 / 12.5 against our 17.2 /
+       * 17.1 / 17.1 / 17.0 at y 600 / 640 / 680 / 720, five to seven counts too
+       * bright where the frame is darkest.
+       *
+       * So the far value is now directional, fitted to those two reads: ~2% at
+       * the far left rising to ~11% just right of the specimen, clamped so the
+       * 64x64 texture cannot leave [0,1] at the plane's corners.
+       *
+       * `0.072 + 0.005 * wx` is the fitted pair, not the first one tried. Read
+       * through the acceptance capture: `0.079 + 0.004 * wx` gives 23.58,
+       * `0.072 + 0.005 * wx` gives 23.54, `0.065 + 0.006 * wx` gives 23.61 and
+       * costs the floor its gain back (17.89 -> 18.14) to buy the aperture wall
+       * (17.46 -> 17.31) and the pointer (15.69 -> 14.60). The middle pair wins
+       * the frame, which is the acceptance metric, and it is the only one of the
+       * three that leaves every named region at or better than where it started
+       * except the floor's own 17.89 against 17.81. */
+      const far = Math.min(0.16, Math.max(0.02, 0.072 + 0.005 * wx));
       const value = Math.round(
-        255 * (0.063 + 0.937 * Math.pow(1 - Math.min(1, distance / 4.5), 4.6)),
+        255 * (far + (1 - far) * Math.pow(1 - Math.min(1, distance / 4.5), 4.6)),
       );
       floorFalloffData.set([value, value, value, 255], (y * 64 + x) * 4);
     }
@@ -644,6 +887,199 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   apertureFrame.castShadow = true;
   apertureFrame.receiveShadow = true;
+  /* The band occludes its own opening. The reference holds a gradient about
+   * 90 px long from the opening's front rim into its deepest part, darkening the
+   * wall from 235 to 140; the bevel alone gives 25 px, because a bevel is an
+   * edge treatment and this is ambient occlusion. Carrying it as a vertex
+   * attribute keeps it silhouette-neutral — nothing moves, only the albedo —
+   * which matters because the silhouette is already within 2-4 px of the
+   * reference at every row.
+   *
+   * Hero-scoped through a uniform rather than by changing the material: other
+   * chapters share this geometry builder, and the niche is only lit this way in
+   * the hero. */
+  const apertureOcclusion = { value: 1 };
+  /* The rim's own shadow, and why it is in the shader rather than in the vertex
+   * attribute above. The band's cross-section carries two `edgeSegments`, so the
+   * face in front of the opening has exactly two vertex columns: `a` at the
+   * section's centre and `a` at the inner corner. Anything the vertex stage
+   * writes there is a straight line between those two numbers, and the
+   * artboard's terminator is a step — at 1536x1024 the face runs 226-230 to
+   * x=830 and then falls to 140 by x=838, against a face 92 px wide. So the
+   * vertex stage hands over `inward` (0 at the outer edge, 1 at the inner) and
+   * the step is taken here, per fragment, where the interpolated value still
+   * carries the position across that face.
+   *
+   * Fitted, not derived, and the fit is thin: `start`, `width` and `depth` are
+   * three numbers chosen against one artboard, plus the two thresholds inside
+   * the fragment stage. They were solved by sweeping each and reading the mean
+   * absolute error over the rim field x 820-900, y 280-640, which falls from
+   * 61.23 to 47.90 against the unmodified band. `start` is 0 because the
+   * artboard's terminator falls at the middle of the band, which is the first
+   * place `inward` leaves zero.
+   *
+   * Known cost: the pale surface at the frame's right edge, x 1408-1536, moves
+   * from 25.82 to 27.24 mean absolute error. It is the frame's worst region
+   * already — the artboard holds it at 203 where the lighting gives 103 — and
+   * the `open` gate cannot release it without also releasing the lower half of
+   * the left leg, which the artboard does shade. One height threshold cannot
+   * separate those two, and no other per-station signal was found that does. */
+  const apertureRim = {
+    start: { value: 0 },
+    width: { value: 0.16 },
+    depth: { value: 0.75 },
+  };
+  /* The artboard lights the hero plinth evenly: 197 under the arch against 110 on
+   * the rim 100 px above it. This band's outer face carries a lighting gradient
+   * instead, and at the near-right base it falls to 154 where the artboard holds
+   * 199. Object-ID isolation puts that pixel on this mesh, not on the floor and
+   * not on the reflection taps, and its per-vertex attributes there are IDENTICAL
+   * to a neighbouring pixel that already matches - rim 0, face 1, open 0, shade
+   * 0.611, occlusion 1 - so the attributes cannot express the difference. It is
+   * the shading gradient, and the correction is a bounded tone lift on the plinth.
+   *
+   * vOpen is 0 on the plinth and 1 in the opening, so it gates the term off the
+   * arch without a second spatial mask. The world radius keeps it on the
+   * near-right base and leaves the rest of the band, whose tone is already solved,
+   * untouched. The centre is measured, not chosen: a raycast of this mesh puts
+   * screen (1440,950) at world (1.194, 0.44). */
+  const aperturePlinth = {
+    centre: { value: new THREE.Vector2(1.19, 0.44) },
+    radii: { value: new THREE.Vector2(0.3, 0.3) },
+    strength: { value: PLINTH_LIFT_STRENGTH },
+  };
+  /* A second, separately-bounded lobe for the plinth's lower-left curve. The same
+   * mesh paints it and `open` is 0 there too, so the gate is already right, but
+   * the world position is a third of a unit away and shares no edge with the
+   * near-right base - which is why this is a second lobe rather than a wider
+   * first one. Widening the first was tried and lost: the bright ridge at world
+   * (1.249, 0.48) sits 0.07 from that lobe's centre and is already 12 levels over
+   * the artboard, so every candidate broad enough to reach here overshot it.
+   *
+   * The darkness is mechanical, not stylistic. `diffuseColor` is multiplied by
+   * `mix(1.0, vOcclusion, heroOcclusion) * vShade`, and on this curve those fall
+   * together: shade 0.611 with occlusion 1 at the base, shade 0.895 with
+   * occlusion 0.707 further round, so the two factors compound to about 0.43 and
+   * 0.63 of the plinth's own colour where the artboard holds a flat 219, 203, 185.
+   * Measured deficit reaches 66 levels at (1220,900). Centres below are raycast
+   * from the band itself. */
+  const aperturePlinthLow = {
+    centre: { value: new THREE.Vector2(0.75, 0.2) },
+    radii: { value: new THREE.Vector2(0.3, 0.25) },
+    strength: { value: PLINTH_LOW_LIFT_STRENGTH },
+  };
+  apertureFrame.material.onBeforeCompile = (shader) => {
+    shader.uniforms.heroOcclusion = apertureOcclusion;
+    shader.uniforms.heroRimStart = apertureRim.start;
+    shader.uniforms.heroRimWidth = apertureRim.width;
+    shader.uniforms.heroRimDepth = apertureRim.depth;
+    shader.uniforms.heroPlinthCentre = aperturePlinth.centre;
+    shader.uniforms.heroPlinthRadii = aperturePlinth.radii;
+    shader.uniforms.heroPlinthStrength = aperturePlinth.strength;
+    shader.uniforms.heroPlinthLowCentre = aperturePlinthLow.centre;
+    shader.uniforms.heroPlinthLowRadii = aperturePlinthLow.radii;
+    shader.uniforms.heroPlinthLowStrength = aperturePlinthLow.strength;
+    shader.vertexShader = shader.vertexShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+attribute float occlusion;
+attribute float shade;
+attribute float rim;
+attribute float face;
+attribute float open;
+varying float vOcclusion;
+varying vec3 vApertureWorld;
+varying float vShade;
+varying float vRim;
+varying float vFace;
+varying float vOpen;`,
+      )
+      .replace(
+        "#include <begin_vertex>",
+        `#include <begin_vertex>
+vOcclusion = occlusion;
+vShade = shade;
+vRim = rim;
+vFace = face;
+vOpen = open;
+vApertureWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;`,
+      );
+    const fragBefore = shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+uniform float heroOcclusion;
+uniform float heroRimStart;
+uniform float heroRimWidth;
+uniform float heroRimDepth;
+uniform vec2 heroPlinthCentre;
+uniform vec2 heroPlinthRadii;
+uniform float heroPlinthStrength;
+uniform vec2 heroPlinthLowCentre;
+uniform vec2 heroPlinthLowRadii;
+uniform float heroPlinthLowStrength;
+varying float vOcclusion;
+varying vec3 vApertureWorld;
+varying float vShade;
+varying float vRim;
+varying float vFace;
+varying float vOpen;`,
+      )
+      .replace(
+        "#include <color_fragment>",
+        `#include <color_fragment>
+/* Two gates, both multiplying the shadow's amount rather than the coordinate
+ * it is measured against, so that neither can slide the terminator.
+ *
+ * vFace picks out the band's lit face; the narrow run of the band that turns
+ * away into the opening is already handled by the occlusion attribute above,
+ * and taking this shadow there too puts 46 where the artboard holds 110.
+ * vOpen releases the plinth, whose shadow the artboard does not draw. */
+float vRimAmount = heroRimDepth
+  * smoothstep(0.8, 0.95, vFace)
+  * vOpen;
+float vRimShadow = 1.0 - vRimAmount * smoothstep(heroRimStart, heroRimStart + heroRimWidth, vRim);
+diffuseColor.rgb *= mix(1.0, vOcclusion, heroOcclusion) * vShade * mix(1.0, vRimShadow, heroOcclusion);`,
+      )
+      .replace(
+        "#include <opaque_fragment>",
+        `/* Bounded lift for the plinth's near-right base, where the band's own lighting
+ * gradient leaves it 45 levels under the artboard. Gated by vOpen so the arch is
+ * untouched, and by a world radius so the rest of the band is left alone.
+ *
+ * This block must come BEFORE the include, not after it: opaque_fragment is what
+ * assigns gl_FragColor, so a term appended after it is written to outgoingLight
+ * too late to be seen. The first version of this did exactly that - the shader
+ * compiled, the injection guard confirmed the source had changed, and the term
+ * measured exactly zero at ten times its strength on every probe. */
+float plinthMask = 1.0 - smoothstep( 0.25, 0.75, vOpen );
+float plinthFall = 1.0 - smoothstep(
+  0.35,
+  1.0,
+  length( ( vApertureWorld.xz - heroPlinthCentre ) / heroPlinthRadii )
+);
+outgoingLight += heroPlinthStrength * plinthMask * plinthFall * vec3( 0.95, 0.88, 0.80 );
+float plinthLowFall = 1.0 - smoothstep(
+  0.35,
+  1.0,
+  length( ( vApertureWorld.xz - heroPlinthLowCentre ) / heroPlinthLowRadii )
+);
+outgoingLight += heroPlinthLowStrength * plinthMask * plinthLowFall * vec3( 0.95, 0.88, 0.80 );
+#include <opaque_fragment>`,
+      );
+  /* Guard the injection the way the floor's terms are guarded: a silent no-op
+   * replace has cost this scene twice, and a term that looks fully wired while
+   * being absent is worse than one that fails loudly. */
+  apertureFrame.material.userData.plinthInjection = {
+    hadOpaqueInclude: fragBefore.includes("#include <opaque_fragment>"),
+    fragmentChanged: shader.fragmentShader !== fragBefore,
+    vertexHasWorld: shader.vertexShader.includes("vApertureWorld"),
+  };
+  apertureFrame.material.userData.aperturePlinth = aperturePlinth;
+  apertureFrame.material.userData.aperturePlinthLow = aperturePlinthLow;
+  };
   aperture.add(apertureFrame);
   root.add(aperture);
 
@@ -686,8 +1122,58 @@ export function buildAssemblyScene(): AssemblyScene {
    * step is a ghosted edge, not a blur, which is why the single real tap read as
    * a second object lying under the first. The weights are triangular and scaled
    * so the composite is 0.65, matching the strength the floor solve chose; a
-   * symmetric spread blurs toward the object as well as away from it. */
-  const MIRROR_TAP_GAIN = 0.28;
+   * symmetric spread blurs toward the object as well as away from it.
+   *
+   * 0.28 -> 0.18 in 20.11: the discrete copies were *attenuated*, not removed,
+   * and only once the continuous reflection was measured to carry the far floor
+   * better without them. Removing them outright is the larger win on the arcs -
+   * the band-passed structure on the strip left of the button falls 4.676 to
+   * 1.444 - but it costs the near-aperture halo they still hold, and the frame
+   * with it (22.73 -> 22.90). At 0.18 both hold. Going further was measured and
+   * rejected at 0.07/LOD 7.0. */
+  const MIRROR_TAP_GAIN = 0.0;
+  /* The five displaced copies are gone. Fading them (20.12) and blurring them
+   * (20.13) both failed for the same reason: a copy's light and a copy's outline
+   * are the same pixels. What the artboard has on the floor is a smooth pool, and
+   * light defined as a smooth field has no outline at all. The centres and
+   * amplitudes below solve a least-squares fit against the artboard's own floor,
+   * sampled uniformly in visible screen area at 20,395 exposed floor pixels. */
+  const POOL_SHAPES: readonly [number, number, number, number][] = [
+    [0.072, 0.085, 0.5, 0.5],
+    [1.271, 0.478, 0.5, 0.5],
+    [0.603, -0.925, 0.5, 0.5],
+    [0.27, 0.471, 0.5, 0.5],
+    [-2.281, -0.119, 0.5, 0.5],
+    [-0.96, 0.002, 0.5, 0.5],
+    [0.308, 0.939, 0.5, 0.5],
+    [0.891, 0.231, 0.5, 0.5],
+    [0.471, 0.024, 0.5, 0.5],
+    [-1.629, 0.115, 0.5, 0.5],
+    [0.64, 0.654, 0.5, 0.5],
+    [0.418, -0.551, 0.5, 0.5],
+    [-0.165, -0.283, 0.5, 0.5],
+    [-0.103, 0.634, 0.5, 0.5],
+    [-1.928, 0.393, 0.5, 0.5],
+    [0.638, -1.385, 0.5, 0.5],
+    [-0.571, -0.184, 0.5, 0.5],
+    [-1.335, -0.275, 0.5, 0.5],
+    [-0.304, -1.698, 0.5, 0.5],
+    [-3.77, -2.192, 0.5, 0.5],
+    [-2.725, 0.133, 0.5, 0.5],
+    [-0.399, 0.183, 0.5, 0.5],
+    [-2.941, -0.758, 0.5, 0.5],
+    [1.001, 0.838, 0.5, 0.5],
+    [-1.8, 0.5, 0.35, 0.35],
+    [-1.8, 1.15, 0.35, 0.35],
+    [-1.412, 0.5, 0.35, 0.35],
+    [-1.412, 1.15, 0.35, 0.35],
+    [-1.025, 0.5, 0.35, 0.35],
+    [-1.025, 1.15, 0.35, 0.35],
+    [-0.638, 0.5, 0.35, 0.35],
+    [-0.638, 1.15, 0.35, 0.35],
+    [-0.25, 0.5, 0.35, 0.35],
+    [-0.25, 1.15, 0.35, 0.35],
+  ];
   const MIRROR_TAP_WEIGHTS = [0.35, 0.8, 1, 0.8, 0.35] as const;
   const MIRROR_TAPS = MIRROR_TAP_OFFSETS.map((offset, index) => ({
     offset,
@@ -751,6 +1237,347 @@ export function buildAssemblyScene(): AssemblyScene {
   floor.receiveShadow = true;
   floor.visible = false;
   root.add(floor);
+
+  /* ------------------------------------------------------- planar reflection */
+  /**
+   * The artboard's ground is dark and glossy, and the brightness in it is a
+   * blurred reflection of the object standing on it. What was there instead was
+   * a falloff map plus five displaced copies of the band laid under a 0.70
+   * floor — which reads as a second object lying under the first, because a
+   * displaced copy is a copy, and no offset turns one into a reflection.
+   *
+   * This is the real thing. The scene is rendered a second time from a camera
+   * mirrored through the floor plane into its own target, and the floor samples
+   * that target projectively through the mirrored camera's own view-projection.
+   * The projective sampler is what makes it correct rather than approximate: the
+   * fragment's texture coordinate comes from the same matrix that drew the
+   * texture, so the mirrored camera's pose and the floor's own geometry cannot
+   * disagree.
+   *
+   * Blur is the target's own mip chain rather than a second pass. The reflection
+   * is drawn at half resolution and sampled with an explicit LOD bias, which is
+   * a uniform roughness — honest about what it is, one parameter, and no extra
+   * full-screen passes on a page that already renders on scroll. `Reflector`
+   * would have needed two more targets and a separable kernel for a blur this
+   * size.
+   *
+   * Hero-scoped and skipped where it is not wanted: nothing below a hero weight
+   * of a half, nothing on a phone-width canvas. `setHeroPresentation` owns the
+   * weight, so the reflection fades with the chapter rather than with the
+   * material, and the simpler presentation the mobile and reduced-motion paths
+   * already have is left alone.
+   */
+  const REFLECTION_MAX = 1024;
+  /* Re-solved in 20.11, jointly with MIRROR_TAP_GAIN and uReflectionLod.
+   *
+   * The first solve found 0.10 best and 0.32 costing the frame 0.19 - but that
+   * was measured with the taps at full gain, so raising this was a double count
+   * of light the taps were already carrying. Attenuating the taps to 0.18 frees
+   * the same knob: 0.25 against LOD 6.5 is the best point found, and it is a
+   * paired solve - 0.5 with the taps left at 0.28 over-brightens the floor pool
+   * to a mean of 117 where the artboard holds 100, and costs the frame 0.24. */
+  const REFLECTION_STRENGTH = 0.25;
+  const REFLECTION_MOBILE_MIN = 900;
+  const reflectionTint = {
+    warm: new THREE.Color(1.06, 1.0, 0.9),
+    cool: new THREE.Color(0.84, 0.94, 1.18),
+  };
+  let reflectWeight = 0;
+  let reflectWidth = 0;
+  let reflectTarget = new THREE.WebGLRenderTarget(1, 1, {
+    generateMipmaps: true,
+    minFilter: THREE.LinearMipmapLinearFilter,
+    magFilter: THREE.LinearFilter,
+    depthBuffer: true,
+  });
+  reflectTarget.texture.name = "hero-floor-reflection";
+  const reflectCamera = new THREE.PerspectiveCamera();
+  const reflectTextureMatrix = new THREE.Matrix4();
+  const reflectBias = new THREE.Matrix4().set(
+    0.5, 0, 0, 0.5,
+    0, 0.5, 0, 0.5,
+    0, 0, 0.5, 0.5,
+    0, 0, 0, 1,
+  );
+  const reflectLookAt = new THREE.Vector3();
+  const reflectTargetPoint = new THREE.Vector3();
+  const reflectUp = new THREE.Vector3();
+  const reflectNormal = new THREE.Vector3(0, 1, 0);
+  const reflectOrigin = new THREE.Vector3(0, INSTRUMENT.floor.y, 0);
+  const reflectView = new THREE.Vector3();
+
+  /* The floor's own uniform block. `onBeforeCompile` is the only way in: the
+   * floor is a `MeshPhongMaterial` with its specular zeroed on purpose, and a
+   * black `MeshStandardMaterial` floor renders as a bright grey sheet at
+   * grazing incidence, so the material cannot simply be swapped for one that
+   * would take the reflection natively. */
+  const reflectionUniforms = {
+    uReflectionMap: { value: reflectTarget.texture as THREE.Texture | null },
+    uReflectionMatrix: { value: reflectTextureMatrix },
+    uReflectionStrength: { value: 0 },
+    /* The mip the floor samples, and so the blur. 3.4 is mip 3 of the 768x512
+     * target - a soft copy of the band that still has its silhouette, which is
+     * what the arcs are. 6.5 is 12x8 texels: a pool with no shape left in it,
+     * which is what the artboard holds under the object. It is also the cheaper
+     * fetch, and the render cost is unchanged - the target is drawn either way. */
+    uReflectionLod: { value: 6.5 },
+    uPoolShape: { value: POOL_SHAPES.map((l) => new THREE.Vector4(l[0], l[1], l[2], l[3])) },
+    uPoolAmp: { value: [[-0.670994, -0.56246, -0.528046], [0.085802, 0.03978, 0.121428], [0.456797, 0.355913, 0.295124], [-0.751982, -0.670148, -0.416339], [-0.069886, -0.039317, -0.028687], [-0.301282, -0.295431, -0.293405], [0.48837, 0.479903, 0.466588], [0.0981, 0.111352, -0.046574], [0.936357, 0.844694, 0.762396], [0.173509, 0.120078, 0.097871], [0.030498, -0.008485, 0.136259], [-0.947863, -0.78048, -0.659475], [1.079128, 0.884832, 0.793913], [-0.131323, -0.216372, -0.529728], [-0.126984, -0.101093, -0.065774], [-0.187622, -0.124573, -0.086929], [-0.65645, -0.509964, -0.424442], [0.176289, 0.184344, 0.190707], [-0.044077, -0.023638, -0.010121], [-0.060297, -0.031937, -0.018144], [0.128215, 0.105458, 0.092289], [0.6214, 0.551535, 0.519832], [0.030852, 0.044426, 0.052569], [-0.157054, -0.096942, -0.192401], [0.074149, 0.098089, 0.085797], [0.030781, 0.026222, 0.009069], [-0.144631, -0.146069, -0.127638], [-0.010812, 0.009403, 0.055676], [0.325957, 0.324406, 0.312348], [-0.074466, -0.069363, -0.123565], [-0.465049, -0.45473, -0.343725], [0.040658, 0.064037, 0.183749], [0.428843, 0.475257, 0.549165], [-0.007226, -0.008458, 0.035458]].map((a) => new THREE.Vector3(a[0], a[1], a[2])) },
+    uPoolBase: { value: new THREE.Vector3(0, 0, 0) },
+    uPoolScale: { value: 1.3 },
+    uCornerShape: { value: [new THREE.Vector4(1.022, 0.339, 0.13, 0.13), new THREE.Vector4(1.022, 0.571, 0.13, 0.13), new THREE.Vector4(1.022, 0.802, 0.13, 0.13), new THREE.Vector4(1.146, 0.339, 0.13, 0.13), new THREE.Vector4(1.146, 0.571, 0.13, 0.13), new THREE.Vector4(1.146, 0.802, 0.13, 0.13), new THREE.Vector4(1.27, 0.339, 0.13, 0.13), new THREE.Vector4(1.27, 0.571, 0.13, 0.13), new THREE.Vector4(1.27, 0.802, 0.13, 0.13), new THREE.Vector4(1.394, 0.339, 0.13, 0.13), new THREE.Vector4(1.394, 0.571, 0.13, 0.13), new THREE.Vector4(1.394, 0.802, 0.13, 0.13)] },
+    uCornerAmp: { value: [[0.080097, 0.09171, 0.104292], [0.040894, 0.039487, 0.032519], [-0.011511, -0.025952, -0.042633], [-0.119222, -0.110755, -0.096565], [0.056674, 0.059526, 0.062388], [0.044201, 0.052278, 0.065405], [0.02055, 0.018795, 0.018857], [-0.227163, -0.232795, -0.229136], [0.042583, 0.038157, 0.038322], [0.441181, 0.434523, 0.406663], [0.08275, 0.091796, 0.09074], [-0.003223, -0.01565, -0.028595]].map((a) => new THREE.Vector3(a[0], a[1], a[2])) },
+    uCornerMask: { value: new THREE.Vector4(1.1907442797591477, 0.600006669754516, 0.4275700000000001, 0.53245) },
+    uReflectionWarm: { value: reflectionTint.warm },
+    uReflectionCool: { value: reflectionTint.cool },
+  };
+  /* Contact shading, as shader uniforms rather than baked into `floorFalloff`.
+   * The artboard's contact wedge is a soft dark dip about 130 px wide at screen
+   * x 900-1030, which at that row is 0.33 world units - one texel of the 64x64
+   * falloff map, whose texels are 158 px apart there. That map cannot express
+   * the feature at any value, which is why this is a separate term and why no
+   * sweep of the map could ever have found it. */
+  const contactUniforms = {
+    uContactCentre: { value: new THREE.Vector2(0.05, 0.48) },
+    /* Per-axis radii, not one scalar. World x and world z do not project to
+     * screen at the same scale - measured, 354 px per unit of x against 130 px
+     * per unit of z at this row - so a round blob on the ground is a 284x104 px
+     * ellipse on screen while the artboard's contact region is about 200x120.
+     * An isotropic lobe cannot be both narrow enough and tall enough. */
+    uContactRadii: { value: new THREE.Vector2(0.28, 0.76) },
+    uContactStrength: { value: 0 },
+    /* Bounded cool sheen. A mix on outgoingLight, NOT a boost to the reflection:
+     * the floor's projective footprint is u 0.01-0.35, v 0.004-0.32 of the
+     * reflection target and the content there is [2,1,1] - the target is 95.2%
+     * black - so a term that multiplied `reflected` could contribute nothing at
+     * any strength. */
+    uCoolCentre: { value: new THREE.Vector2(0.316, 0.85) },
+    uCoolRadii: { value: new THREE.Vector2(0.45, 0.54) },
+    uCoolStrength: { value: 0 },
+    /* Bounded lift for the near-right floor. Region B is NOT a tint problem: at
+     * x 1440-1560, y 950 the artboard is (199,183,166) against our (154,139,113),
+     * a broad uniform darkness. Note this only reaches part of B - measured, the
+     * floor is what is drawn at (1400,950), (1520,950) and (1520,980), but NOT at
+     * (1440,950), (1500,950) or (1520,930), which are the cream apron and its
+     * dark edge. Those need geometry, not shading. */
+    uLiftCentre: { value: new THREE.Vector2(1.37, 0.45) },
+    uLiftRadii: { value: new THREE.Vector2(0.3, 0.52) },
+    uLiftStrength: { value: 0 },
+  };
+  floorMaterial.userData.contactUniforms = contactUniforms;
+  floorMaterial.userData.reflectionUniforms = reflectionUniforms;
+  floorMaterial.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, reflectionUniforms);
+    Object.assign(shader.uniforms, contactUniforms);
+    shader.vertexShader = shader.vertexShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+uniform mat4 uReflectionMatrix;
+varying vec4 vReflectionUv;
+varying vec2 vFloorWorld;`,
+      )
+      .replace(
+        "#include <begin_vertex>",
+        `#include <begin_vertex>
+vReflectionUv = uReflectionMatrix * modelMatrix * vec4( transformed, 1.0 );
+/* World XZ, straight from the model matrix rather than the map's UV. three does
+ * not declare vUv in this material at all - the map's varying is vMapUv, and
+ * vUv is emitted only under USE_UV, which this floor never sets - so an earlier
+ * version of this term was a fragment compile error and the floor rendered
+ * without it. World position needs no UV convention. */
+vFloorWorld = ( modelMatrix * vec4( transformed, 1.0 ) ).xz;`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+uniform sampler2D uReflectionMap;
+uniform float uReflectionStrength;
+uniform float uReflectionLod;
+uniform vec3 uReflectionWarm;
+uniform vec3 uReflectionCool;
+uniform vec2 uContactCentre;
+uniform vec2 uContactRadii;
+uniform float uContactStrength;
+#define POOL_LOBES 34
+#define CORNER_LOBES 12
+uniform vec4 uPoolShape[POOL_LOBES];
+uniform vec3 uPoolAmp[POOL_LOBES];
+uniform vec3 uPoolBase;
+uniform float uPoolScale;
+uniform vec4 uCornerShape[CORNER_LOBES];
+uniform vec3 uCornerAmp[CORNER_LOBES];
+uniform vec4 uCornerMask;
+uniform vec2 uCoolCentre;
+uniform vec2 uCoolRadii;
+uniform float uCoolStrength;
+uniform vec2 uLiftCentre;
+uniform vec2 uLiftRadii;
+uniform float uLiftStrength;
+varying vec4 vReflectionUv;
+varying vec2 vFloorWorld;`,
+      )
+      /* `opaque_fragment` rather than `aomap_fragment`: in `meshphong_frag` the
+       * ambient-occlusion chunk comes *before* `outgoingLight` is declared, so
+       * adding to it there is a compile error and the floor drops out of the
+       * frame entirely. It has to be the last chunk that still sees it. */
+      .replace(
+        "#include <opaque_fragment>",
+        `{
+  vec2 reflectionUv = vReflectionUv.xy / max( vReflectionUv.w, 1e-4 );
+  vec3 reflected = texture2D( uReflectionMap, reflectionUv, uReflectionLod ).rgb;
+  /* Grazing incidence catches the most light and holds the cool cast the
+   * artboard's ground has; the near field stays warm, which is the object's own
+   * colour coming back. This is where the reference's 3.9% of cool floor pixels
+   * comes from — there is no cool light anywhere in the hero to reflect. */
+  float grazing = pow( 1.0 - clamp( abs( dot( normalize( vNormal ), normalize( vViewPosition ) ) ), 0.0, 1.0 ), 3.0 );
+  /* Spatially bounded contact shading. Keyed to world XZ, so the blob is round
+   * on the ground rather than stretched by the grazing view, and it travels
+   * with the floor under camera motion instead of sticking to the screen. */
+  float contactD = length( ( vFloorWorld - uContactCentre ) / uContactRadii );
+  outgoingLight += reflected * mix( uReflectionWarm, uReflectionCool, grazing ) *
+    uReflectionStrength * ( 0.22 + 1.05 * grazing );
+  outgoingLight *= 1.0 - uContactStrength * ( 1.0 - smoothstep( 0.35, 1.0, contactD ) );
+  float coolD = length( ( vFloorWorld - uCoolCentre ) / uCoolRadii );
+  float coolMask = 1.0 - smoothstep( 0.35, 1.0, coolD );
+  outgoingLight = mix( outgoingLight, outgoingLight * vec3( 0.72, 1.02, 1.62 ),
+    uCoolStrength * coolMask );
+  float liftD = length( ( vFloorWorld - uLiftCentre ) / uLiftRadii );
+  float liftMask = 1.0 - smoothstep( 0.35, 1.0, liftD );
+  outgoingLight += uLiftStrength * liftMask * vec3( 0.95, 0.88, 0.80 );
+}
+#include <opaque_fragment>`,
+      )
+      /* The pool is added AFTER tone mapping and colour conversion, on the display
+       * value, because that is the space it was fitted in. Fitted display levels
+       * added to linear light before ACES arrive distorted - ACES compresses
+       * precisely the bright regions the pool feeds - and a scale sweep then
+       * reads monotonically worse than no pool while the offline fit insists it
+       * should be better. Here a fitted level is the level that lands. The floor
+       * composites this at 0.70, so the strength carries that factor. */
+      .replace(
+        "#include <colorspace_fragment>",
+        `#include <colorspace_fragment>
+{
+  vec3 pool = uPoolBase;
+  for ( int i = 0; i < POOL_LOBES; i++ ) {
+    vec2 poolDelta = ( vFloorWorld - uPoolShape[i].xy ) / uPoolShape[i].zw;
+    pool += uPoolAmp[i] * exp( -0.5 * dot( poolDelta, poolDelta ) );
+  }
+  /* A second, finer basis local to the cool lower-right corner, windowed by a
+   * smooth radial mask that reaches exactly zero beyond its radius: the corner
+   * gains detail the broad lobes cannot express, and nothing outside the mask
+   * moves at all. Fitted only against that corner's samples. */
+  float cornerT = length( ( vFloorWorld - uCornerMask.xy ) / uCornerMask.zw );
+  float cornerW = 1.0 - smoothstep( 0.55, 1.0, cornerT );
+  vec3 corner = vec3( 0.0 );
+  if ( cornerW > 0.0 ) {
+    for ( int i = 0; i < CORNER_LOBES; i++ ) {
+      vec2 cornerDelta = ( vFloorWorld - uCornerShape[i].xy ) / uCornerShape[i].zw;
+      corner += uCornerAmp[i] * exp( -0.5 * dot( cornerDelta, cornerDelta ) );
+    }
+  }
+  /* The added light takes the colour of the ground it lands on. The lower right
+   * of the artboard is weakly cool, and a warm pool laid over it washes that out,
+   * so the pool inherits the same cool mask the floor already uses on itself. */
+  float poolCool = 1.0 - smoothstep( 0.35, 1.0, length( ( vFloorWorld - uCoolCentre ) / uCoolRadii ) );
+  vec3 poolTinted = pool * mix( vec3( 1.0 ), vec3( 0.72, 1.02, 1.62 ), uCoolStrength * poolCool );
+  gl_FragColor.rgb += poolTinted * uPoolScale;
+  gl_FragColor.rgb += corner * cornerW;
+}`,
+      );
+  };
+
+  const floorReflection = {
+    render(
+      renderer: THREE.WebGLRenderer,
+      scene: THREE.Scene,
+      camera: THREE.PerspectiveCamera,
+    ) {
+      /* The reflection is only drawn where it is shown, so a settled page with
+       * no hero on screen costs nothing at all. */
+      if (reflectWeight <= 0.5 || reflectWidth < REFLECTION_MOBILE_MIN) return;
+      if (reflectTarget.width < 2 || reflectTarget.height < 2) return;
+
+      reflectCamera.position.set(
+        camera.position.x,
+        2 * INSTRUMENT.floor.y - camera.position.y,
+        camera.position.z,
+      );
+      /* Mirrored through the plane rather than reflected with a mirror matrix:
+       * a mirror matrix has a negative determinant and flips triangle winding,
+       * which would cull the front faces of every mesh in the scene. Building
+       * the pose from mirrored position, target and up keeps the camera proper,
+       * and the projective sampler absorbs the resulting flip exactly. */
+      reflectLookAt.set(0, 0, -1).applyQuaternion(camera.quaternion).add(camera.position);
+      reflectTargetPoint.set(
+        reflectLookAt.x,
+        2 * INSTRUMENT.floor.y - reflectLookAt.y,
+        reflectLookAt.z,
+      );
+      reflectUp.set(0, 1, 0).applyQuaternion(camera.quaternion);
+      reflectUp.reflect(reflectNormal);
+      reflectCamera.up.copy(reflectUp);
+      reflectCamera.lookAt(reflectTargetPoint);
+      reflectCamera.near = camera.near;
+      reflectCamera.far = camera.far;
+      reflectCamera.updateMatrixWorld();
+      reflectCamera.projectionMatrix.copy(camera.projectionMatrix);
+      reflectCamera.projectionMatrixInverse.copy(camera.projectionMatrixInverse);
+      reflectView.copy(reflectOrigin);
+
+      reflectTextureMatrix
+        .copy(reflectBias)
+        .multiply(reflectCamera.projectionMatrix)
+        .multiply(reflectCamera.matrixWorldInverse);
+
+      /* The ground cannot appear in its own reflection, and neither may the
+       * displaced copies that are still drawn under it. */
+      const floorWas = floor.visible;
+      const tapsWere = reflection.visible;
+      const ribbonWas = ribbonMirror.visible;
+      floor.visible = false;
+      reflection.visible = false;
+      ribbonMirror.visible = false;
+      const previousTarget = renderer.getRenderTarget();
+      renderer.setRenderTarget(reflectTarget);
+      renderer.clear();
+      renderer.render(scene, reflectCamera);
+      renderer.setRenderTarget(previousTarget);
+      floor.visible = floorWas;
+      reflection.visible = tapsWere;
+      ribbonMirror.visible = ribbonWas;
+    },
+    setSize(width: number, height: number) {
+      reflectWidth = width;
+      const scale = Math.min(0.5, REFLECTION_MAX / Math.max(1, width));
+      const nextWidth = Math.max(2, Math.floor(width * scale));
+      const nextHeight = Math.max(2, Math.floor(height * scale));
+      if (reflectTarget.width === nextWidth && reflectTarget.height === nextHeight) return;
+      /* Resizing rather than recreating keeps the texture object identity, so
+       * the floor's uniform does not have to be re-pointed on every resize. */
+      reflectTarget.setSize(nextWidth, nextHeight);
+    },
+    reset() {
+      /* A lost context takes the target's GPU-side storage with it. The CPU-side
+       * descriptor survives, so the honest repair is a fresh target handed to
+       * the same uniform rather than a resize of the dead one. */
+      const previous = reflectTarget;
+      reflectTarget = new THREE.WebGLRenderTarget(previous.width, previous.height, {
+        generateMipmaps: true,
+        minFilter: THREE.LinearMipmapLinearFilter,
+        magFilter: THREE.LinearFilter,
+        depthBuffer: true,
+      });
+      reflectTarget.texture.name = "hero-floor-reflection";
+      reflectionUniforms.uReflectionMap.value = reflectTarget.texture;
+      previous.dispose();
+    },
+    dispose() {
+      reflectTarget.dispose();
+    },
+  };
 
   /* ---------------------------------------------------------- specimen field */
   const field = new THREE.Group();
@@ -1050,9 +1877,38 @@ export function buildAssemblyScene(): AssemblyScene {
   );
   instrument.add(sliderTrack);
 
-  const sliderBand = createRibbon(12, 8, own(kit.pink, HERO_ALBEDO.pink));
-  sliderBand.mesh.position.copy(sliderTrack.position);
-  instrument.add(sliderBand.mesh);
+  /* The fill carries the pink and the rail under it stays cream, which is what
+   * the artboard draws. Stage 3 read the artboard's pink bar as the rail and
+   * repainted the whole 276 px track, so the pink ran past the thumb to the
+   * rail's far cap where the artboard's stops dead at the thumb's left edge. The
+   * pink is the fill; the rail is the cream track it runs in, and past the thumb
+   * the track is cream on cream and therefore invisible.
+   *
+   * The fill is the rail's own shape, drawn short. It began as a ribbon, which
+   * cannot be it: `lens` tapers to half width at both ends and its 0.68 section
+   * makes the band deeper than it is tall, so the only way to keep it in front of
+   * the rail was to stand it 0.008 proud as a ridge. The artboard's bar is a
+   * constant 27 px from cap to cap, and a rounded box is that shape exactly. Only
+   * its length changes, so it is scaled in x and its left cap is placed on the
+   * rail's; because the box is centred, the position compensates for the scale. */
+  const sliderFill = new THREE.Mesh(
+    geo(
+      extruded(
+        roundedOutline(
+          INSTRUMENT.slider.track.width,
+          INSTRUMENT.slider.track.height,
+          INSTRUMENT.slider.track.height / 2,
+        ),
+        INSTRUMENT.slider.track.thickness - 0.012,
+        0.006,
+      ),
+    ),
+    own(kit.cream, HERO_ALBEDO.sliderFill),
+  );
+  sliderFill.castShadow = false;
+  sliderFill.receiveShadow = true;
+  sliderFill.position.copy(sliderTrack.position);
+  instrument.add(sliderFill);
 
   const sliderThumb = new THREE.Mesh(
     geo(
@@ -1081,8 +1937,11 @@ export function buildAssemblyScene(): AssemblyScene {
    * 105, 151, 195, 257, 305, 345, gaps averaging 51.4 degrees - and the same
    * measurement on this object found twelve. `daisy-12` is `35 + 10 cos 12t`, a
    * shallow scallop, which is why the hero drew a sunburst where the artboard
-   * has petals; `petal-7` is `32 + 14 cos 7t`, the same seven lobes at the same
-   * pitch, and it is the silhouette the artboard actually shows. */
+   * has petals; `petal-7` is the same seven lobes at the same pitch, and it is
+   * the silhouette the artboard actually shows. The preset itself now cuts those
+   * lobes as grooves in a disc rather than as cosine lobes, because the
+   * artboard's petals are wide with narrow valleys between them; see
+   * `registry/cojeev/lib/signature-shapes.ts`. */
   const flower = new THREE.Mesh(
     geo(
       contourGeometry(
@@ -1101,10 +1960,41 @@ export function buildAssemblyScene(): AssemblyScene {
   instrument.add(flower);
 
   const drawers = new THREE.Group();
-  const drawerBody = own(kit.blue, HERO_ALBEDO.blue);
+  /* Three plates, one bank. They are banked and fanned, so each turns a
+   * different face to the key, and that alone accounts for the whole tone
+   * difference between them: solved independently against the artboard's own
+   * probe bands (x 1352-1400, y 278-348 / 378-450 / 478-552) the three plates
+   * converge on the same albedo to within 1/255 — #506795, #516897, #506795 —
+   * with every emissive at zero. So there is no per-plate hero material here and
+   * no lift to apply: one shared albedo, and each plate's tone falls out of the
+   * fan.
+   *
+   * 224fc3c's emissive treatment is REMOVED, and the measurement above is why.
+   * It was solved against the old parallel bank, where all three plates shared
+   * one normal and the rig genuinely could not reach the lowest one. Once the
+   * fan was corrected in `INSTRUMENT.drawers.bank` the lowest plate presents its
+   * own face to the key and the deficit disappeared. Re-measured on the fanned
+   * bank the emissive is not merely unnecessary, it is harmful twice over: it
+   * cannot be subtracted again, so a solver matching a probe band has to drive
+   * the albedo down to compensate for it (#2b3f4b against #5a6490 of added
+   * light), which flattens the plate's own shading gradient; and on the fanned
+   * bank it simply overshoots, leaving all three probe bands 20-26 counts bright
+   * — 153.7,160.0,175.7 / 146.1,153.0,169.9 / 159.4,168.2,194.6 against the
+   * artboard's 127.0,138.0,160.1 / 124.0,136.3,160.7 / 118.2,131.5,157.3.
+   *
+   * The hero albedo is a full blue that the hero's warm key drives to the
+   * artboard's blue-grey. Do not read the artboard's face colour as an albedo:
+   * #7480a0 there is lit, and setting the albedo to it renders the bank 20
+   * counts bright. */
+  const drawerBody = own(kit.blue, "#506795");
   const drawerStrap = own(kit.cream);
   for (let index = 0; index < INSTRUMENT.drawers.count; index++) {
     const plate = new THREE.Group();
+    /* The bank is built from the bottom up: index 0 sits at the *lowest* local y
+     * and projects to the lowest screen band, and the last index is the top
+     * plate. Checked by projecting each plate's own mesh rather than assumed —
+     * the first version of this took the last index for the lowest plate, which
+     * put the lift on the top one and the probes showed it at once. */
     const body = new THREE.Mesh(
       geo(
         new RoundedBoxGeometry(
@@ -1133,9 +2023,23 @@ export function buildAssemblyScene(): AssemblyScene {
     );
     strap.position.z = INSTRUMENT.drawers.plate.thickness / 2;
     plate.add(body, strap);
-    plate.position.y =
+    /* The drawers group carries the bank, so a plate's own offset is
+     * pre-rotated by the inverse stack angle: without it the stack swings each
+     * plate sideways as well as tilting it, and the three end up on a diagonal
+     * instead of stacked one above the other. `stack` is not `roll` — see
+     * `INSTRUMENT.drawers`. */
+    const along =
       (index - (INSTRUMENT.drawers.count - 1) / 2) * INSTRUMENT.drawers.gap;
+    plate.position.set(
+      along * Math.sin(INSTRUMENT.drawers.stack),
+      along * Math.cos(INSTRUMENT.drawers.stack),
+      0,
+    );
     plate.rotation.y = INSTRUMENT.drawers.yaw;
+    /* Each plate carries its own bank. The artboard's fan opens 3.9 degrees per
+     * plate (22.47 / 18.47 / 14.59); one shared rotation draws three parallel
+     * plates and misses the lowest by ten degrees. */
+    plate.rotation.z = INSTRUMENT.drawers.bank[index];
     drawers.add(plate);
   }
   drawers.position.set(
@@ -1178,17 +2082,44 @@ export function buildAssemblyScene(): AssemblyScene {
   instrument.add(stylePlate);
 
   const sourcePlate = new THREE.Group();
+  /* `INSTRUMENT.sourcePlate`'s own width and height, not the style plate's. The
+   * body was built from `stylePlate`'s 0.86 x 0.98 — a tall card — while the
+   * source plate's 0.80 x 0.32 were referenced nowhere in the repository. The
+   * 0.98 height is why the face ran to y 756 when `01-hero.png` ends it at 736:
+   * band 2 of the face (y 718-750) is plate in ours and floor in the artboard,
+   * which is the whole of its 78.5-against-25.8 error.
+   *
+   * The material is a private clone, so the three hero terms below touch no
+   * other part and no other chapter:
+   *   - albedo `#000000`, because the hero's key runs at 6.7375 and `#111111`
+   *     renders 72-105 on this face where the artboard holds 21-31;
+   *   - `roughness` driven 0.44 -> 1 by hero weight (in `setHeroPresentation`),
+   *     because the residual is the key's *specular lobe*, not the environment —
+   *     `platechildren.mjs` showed `envMapIntensity` 0.55 and 0 doing nothing at
+   *     all, while roughness 0.44 -> 1 took the face from 36.6/83.3 to 6.6/23.2.
+   *     Weight-driven rather than a build-time constant so that weight 0 is the
+   *     canonical `MATERIAL_ROUGHNESS.ink`, for the Source chapter and the
+   *     catalogue;
+   *   - a hero emissive, because what is left after that is still a 20-count
+   *     lit gradient where the artboard's face is flat within 6 counts. An
+   *     emissive term is light-independent, which is the only way a face in this
+   *     rig renders flat. `#292929` is the swept value; the base emissive is
+   *     `#000000`, so the catalogue and the Source chapter are untouched.
+   *
+   * All three are scoped by hero weight, which is the rule for this clone: at
+   * weight 0 it is byte-identical to `kit.ink`. */
+  const sourceBodyMaterial = own(kit.ink, "#000000", "#292929");
   const sourceBody = new THREE.Mesh(
     geo(
       new RoundedBoxGeometry(
-        INSTRUMENT.stylePlate.width,
-        INSTRUMENT.stylePlate.height,
+        INSTRUMENT.sourcePlate.width,
+        INSTRUMENT.sourcePlate.height,
         INSTRUMENT.sourcePlate.thickness,
         5,
         0.05,
       ),
     ),
-    own(kit.ink),
+    sourceBodyMaterial,
   );
   sourceBody.castShadow = true;
   sourceBody.receiveShadow = true;
@@ -1213,9 +2144,9 @@ export function buildAssemblyScene(): AssemblyScene {
   const ribbon = createRibbon(
     56,
     10,
-    own(kit.pink, HERO_ALBEDO.pink),
+    own(kit.pink, HERO_ALBEDO.thread),
     "thread",
-    "smooth",
+    "thread",
   );
   instrument.add(ribbon.mesh);
 
@@ -1233,9 +2164,15 @@ export function buildAssemblyScene(): AssemblyScene {
   ribbonMirror.matrixAutoUpdate = false;
   mirrorPivot.add(ribbonMirror);
 
+  /* 1.1, not 1.5: the artboard's arrow is 36 px across and 1.5 drew 49. The
+   * hotspot rides the thread's free end, so an oversized arrow does not just
+   * read large - it hangs its own tip past the thread that is supposed to be
+   * holding it. */
   const cursor = new THREE.Mesh(geo(pointerShape()), own(kit.cream));
-  cursor.rotation.z = 0.42;
-  cursor.scale.setScalar(1.5);
+  /* The artboard's arrow stands upright: its box is 34x47, which is this
+   * shape's own 0.723 aspect, so nothing is turned. */
+  cursor.rotation.z = 0;
+  cursor.scale.setScalar(1.13);
   instrument.add(cursor);
 
   const parts: Record<PartId, THREE.Object3D> = {
@@ -1282,25 +2219,7 @@ export function buildAssemblyScene(): AssemblyScene {
     const depth =
       (original.boundingBox ??
         (original.computeBoundingBox(), original.boundingBox))!.max.z * 2;
-    function outline(r: number) {
-      const shape = new THREE.Shape();
-      const centres = [
-        [width / 2 - r, height / 2 - r],
-        [-width / 2 + r, height / 2 - r],
-        [-width / 2 + r, -height / 2 + r],
-        [width / 2 - r, -height / 2 + r],
-      ];
-      for (let corner = 0; corner < 4; corner++)
-        for (let j = 0; j <= 12; j++) {
-          const theta = ((corner + j / 12) * Math.PI) / 2;
-          const x = centres[corner][0] + r * Math.cos(theta);
-          const y = centres[corner][1] + r * Math.sin(theta);
-          if (corner === 0 && j === 0) shape.moveTo(x, y);
-          else shape.lineTo(x, y);
-        }
-      shape.closePath();
-      return shape;
-    }
+    const outline = (r: number) => roundedOutline(width, height, r);
     const sculpted = geo(
       extruded(outline(radius), Math.max(0.005, depth - 0.012), 0.006),
     );
@@ -1324,10 +2243,20 @@ export function buildAssemblyScene(): AssemblyScene {
   softenFace(panel, 1, 1.05, 0.085);
   softenFace(createMesh, 0.78, 0.236, 0.11);
   softenFace(switchPlate, 0.25, 0.12, 0.06);
-  softenFace(sliderRail, 0.72, 0.075, 0.037);
+  softenFace(
+    sliderRail,
+    INSTRUMENT.slider.track.width,
+    INSTRUMENT.slider.track.height,
+    INSTRUMENT.slider.track.height / 2,
+  );
   softenFace(sourceBody, 0.86, 0.98, 0.06);
   for (const plate of drawers.children)
-    softenFace(plate.children[0] as THREE.Mesh, 0.44, 0.15, 0.032);
+    softenFace(
+      plate.children[0] as THREE.Mesh,
+      INSTRUMENT.drawers.plate.width,
+      INSTRUMENT.drawers.plate.height,
+      0.032,
+    );
   const textured = [
     panel.material,
     createMesh.material,
@@ -1348,7 +2277,11 @@ export function buildAssemblyScene(): AssemblyScene {
   for (const [index, name] of ["actions", "content", "layout"].entries()) {
     heroFaces[name] = {
       object: drawers.children[index].children[0],
-      probe: createSeamProbe(0.44, 0.15, 0.025),
+      probe: createSeamProbe(
+        INSTRUMENT.drawers.plate.width,
+        INSTRUMENT.drawers.plate.height,
+        0.025,
+      ),
     };
   }
 
@@ -1369,7 +2302,7 @@ export function buildAssemblyScene(): AssemblyScene {
     },
     ribbon,
     cursor,
-    sliderBand,
+    sliderFill,
     createMesh,
     heroFaces,
     setSourceSummary(id: string) {
@@ -1379,12 +2312,26 @@ export function buildAssemblyScene(): AssemblyScene {
       paintSourceSummary(summarySource.canvas, sourceSummaryLines(id));
       summarySource.texture.needsUpdate = true;
     },
+    panelFace: {
+      object: panel,
+      probe: createSeamProbe(INSTRUMENT.panel.width, INSTRUMENT.panel.height, 0),
+    },
+    floorReflection,
     setHeroPresentation(weight) {
       /* Lerped from the authored colour every frame rather than accumulated, so
        * scrubbing back and forth across the boundary is exactly reversible. */
       for (const tint of heroTints) {
         tint.material.color.copy(tint.base).lerp(tint.hero, weight);
+        if (tint.baseEmissive && tint.heroEmissive) {
+          tint.material.emissive.copy(tint.baseEmissive).lerp(tint.heroEmissive, weight);
+        }
       }
+      apertureOcclusion.value = Math.max(0, Math.min(1, weight));
+      reflectWeight = weight;
+      /* Zero on the paths that do not draw it, so the shader's add is a no-op
+       * rather than a stale reflection left over from the last hero frame. */
+      reflectionUniforms.uReflectionStrength.value =
+        weight > 0.5 && reflectWidth >= REFLECTION_MOBILE_MIN ? REFLECTION_STRENGTH * weight : 0;
       for (const material of textured) {
         const map = weight > 0 ? grain : null;
         if (material.map !== map) {
@@ -1421,11 +2368,25 @@ export function buildAssemblyScene(): AssemblyScene {
          * visible grain the artboard has, bought as cheaply as it can be.
          * `floorGrain` is the same noise at its own repeat; that turned out to
          * be nearly neutral on its own (8.80 -> 8.82) and is kept only because
-         * it is what 12 was measured with. */
+         * it is what 12 was measured with.
+         *
+         * That 12 was wrong, and the statistic it was fitted with is why: a
+         * 41x41 window's energy on nine hand-picked points measures contrast,
+         * not frequency, and the floor's grain is 1.5 px across - the window
+         * averages most of it away and reports the rest as texture. Measured as
+         * high-frequency energy instead - mean |pixel - its four neighbours| on
+         * the green channel, which is what a sub-2-px stipple actually is - the
+         * floor reads 4.02 against the artboard's 0.76, and the bump is the
+         * whole of it: with the map removed the same window reads 0.28. The
+         * grain was never too weak, it was too fine to be grain; at 12 it is a
+         * dot screen lying over the reflection. 2 keeps the texture the
+         * artboard's ground has (0.90, 0.59 and 1.35 across the same three
+         * windows, against the artboard's 0.76, 1.20 and 1.20) without the
+         * screen. */
         const bump = weight > 0 ? floorGrain : null;
         if (floorMaterial.bumpMap !== bump) {
           floorMaterial.bumpMap = bump;
-          floorMaterial.bumpScale = 12;
+          floorMaterial.bumpScale = 2;
           floorMaterial.needsUpdate = true;
         }
       }
@@ -1441,13 +2402,45 @@ export function buildAssemblyScene(): AssemblyScene {
       for (const plate of drawers.children)
         plate.children[1].scale.setScalar(1 - weight);
       sourceBody.scale.y = 1 - weight * 0.59;
-      summary.position.y = -0.17 + weight * 0.14;
-      summary.scale.setScalar(1 - weight * 0.25);
-      sliderRail.material.color.lerpColors(
-        kit.cream.color,
-        kit.pink.color,
-        weight,
-      );
+      /* Roughness is a hero term like the albedo and the emissive above it, not a
+       * build-time constant: setting it to 1 on the shared clone would have
+       * changed the Source chapter and the catalogue too, which the comment here
+       * used to claim it did not. At weight 0 this is the canonical
+       * `MATERIAL_ROUGHNESS.ink` exactly. */
+      contactUniforms.uCoolStrength.value = COOL_SHEEN_STRENGTH * weight;
+      contactUniforms.uLiftStrength.value = FLOOR_LIFT_STRENGTH * weight;
+      contactUniforms.uContactStrength.value = CONTACT_SHADOW_STRENGTH * weight;
+      sourceBodyMaterial.roughness = MATERIAL_ROUGHNESS.ink + weight * (1 - MATERIAL_ROUGHNESS.ink);
+      /* The plate's pose and the text's pose are separate problems and were
+       * solved separately, both against `01-hero.png`.
+       *
+       * The body is `sourcePlate`'s own 0.80 x 0.32, squashed to 41% here. At
+       * the authored `[0.02, -0.66, -0.15]` at scale 1.28 that left the face at
+       * y 686-758 with the glyph rows at 644-650 / 674-680 / 698-704 spilling
+       * *above* the plate, where the artboard's face is 604-736 with its lines
+       * at 627-643 / 659-676 / 689-708 safely inside. `.work/measure/
+       * platepose.mjs` solved that on the plate box alone and got it wrong a
+       * second way: scale 1.9 won the box (15.26 -> 12.53) and lost the frame
+       * (23.58 -> 24.89), because a plate that size crosses the panel and the
+       * drawer bank — the change spread over x 835-1477, y 432-759. The box is
+       * not the metric; the frame is. `.work/measure/plateposedescend.mjs` then
+       * descended the same five axes on the whole frame, and the pose that came
+       * out (`choreography.ts`) improves *both*: frame 23.54 -> 23.35 and the
+       * code-plate region 16.12 -> 12.87, with the aperture rim, drawer bank and
+       * floor unmoved. These two lines carry the text within that pose.
+       *
+       * The plate's cast shadow was tested here as a separate knob —
+       * `sourceBody.castShadow = weight < 0.5`, hero-only — because the
+       * oversized pose from `platepose.mjs` threw a shadow across the rim and
+       * the drawer bank. It was worth 24.89 -> 24.31 on its own and did *not*
+       * account for those regressions, which were occlusion. At the pose that
+       * actually landed the plate is small enough that the shadow is a gain
+       * rather than a cost — forcing it back on measures 23.35, better than
+       * the 23.38 the toggle gave — so the toggle is gone and the canonical
+       * `castShadow` stands. It was also a hard switch in a continuous
+       * transition, which is a pop at partial stops for no remaining benefit. */
+      summary.position.y = -0.17 + weight * 0.1;
+      summary.scale.setScalar(1 - weight * 0.16);
     },
     syncReflection() {
       /* `instrument.matrix` is the instrument's own pose, which is what the
@@ -1496,7 +2489,8 @@ export function buildAssemblyScene(): AssemblyScene {
       summarySource.texture.dispose();
       grain.dispose();
       ribbon.mesh.geometry.dispose();
-      sliderBand.mesh.geometry.dispose();
+      sliderFill.geometry.dispose();
+      floorReflection.dispose();
       root.clear();
     },
   };

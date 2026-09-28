@@ -10,11 +10,17 @@
  * Nothing in this file is published to consumers, and no installable component is
  * modified by it. A blended contour is exported as a literal SVG and as a plain
  * React `<svg>` — never as an unsupported `ShapeArtwork` prop.
+ *
+ * One silhouette is site-local: the hero opens on `petal-7`, but the flower the
+ * artboard draws is not the table's `petal-7`. `heroFlowerPresetPath` below
+ * substitutes the hero's own contour for that one name so the sculpted face and
+ * the exported path keep agreeing, and the shared table keeps its own shape.
  */
 import {
   signatureShapePaths,
   type SignatureShapeName,
 } from "@/registry/cojeev/lib/signature-shapes";
+import { HERO_FLOWER_PATH } from "./hero-flower-contour";
 
 export const CONTOUR_VIEWBOX = 100;
 export const CONTOUR_SEGMENTS = 96;
@@ -91,6 +97,16 @@ export function contourPath(values: readonly number[]): string {
 }
 
 /**
+ * The hero's resting silhouette is its own, not the table's `petal-7`. Swapping
+ * it in here rather than in `signature-shapes` is what keeps the substitution
+ * site-only: every consumer of this module — the sculpted face, the SVG export
+ * and the React export — sees one contour, and no install does.
+ */
+export function heroFlowerPresetPath(preset: SignatureShapeName): string {
+  return preset === "petal-7" ? HERO_FLOWER_PATH : signatureShapePaths[preset];
+}
+
+/**
  * Blends a named contour toward the constrained end shape.
  *
  * `amount` is the authored 0–100 contour parameter. 0 is the named preset exactly;
@@ -102,7 +118,7 @@ export function blendContour(
   amount: number,
   target: SignatureShapeName = CONTOUR_TARGET,
 ): number[] {
-  const from = parseContour(signatureShapePaths[preset]);
+  const from = parseContour(heroFlowerPresetPath(preset));
   const to = parseContour(signatureShapePaths[target]);
   const t = Math.min(1, Math.max(0, Number.isFinite(amount) ? amount : 0) / 100);
   return from.map((value, index) => value + (to[index] - value) * t);

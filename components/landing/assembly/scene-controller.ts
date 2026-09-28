@@ -14,10 +14,16 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { INSTRUMENT, LIGHT_RIG, PALETTE } from "./canonical";
 import {
+  HERO_INSTRUMENT_ROTATION,
+  HOME_INSTRUMENT_ROTATION,
+} from "./hero-pose";
+import {
   evaluate,
   focusFromScroll,
   restingFrame,
   scrollProgress,
+  groundToneForBackdrop,
+  type GroundTone,
   type EvaluatedFrame,
   type PartId,
 } from "./choreography";
@@ -53,6 +59,11 @@ export type SeamRect = {
 export type SeamSample = {
   create: SeamRect | null;
   faces: Record<string, SeamRect | null>;
+  /**
+   * The sculpted panel's projected outline, published alongside the controls so
+   * the page's own layout can be measured against the geometry on screen.
+   */
+  panel: SeamRect | null;
 };
 
 export type SceneStatus = "pending" | "ready" | "lost" | "unavailable";
@@ -62,6 +73,7 @@ export type SceneControllerOptions = {
   sectionTops: () => number[];
   onSeam: (sample: SeamSample) => void;
   onChapter: (index: number) => void;
+  onGroundTone: (tone: GroundTone) => void;
   onStatus: (status: SceneStatus) => void;
 };
 
@@ -116,6 +128,8 @@ const SPREAD = { stiffness: 150, damping: 24.5 };
 const ECHO = { stiffness: 300, damping: 20 };
 
 const MAX_DPR_DESKTOP = 1.75;
+/** Space kept between the drawer fan's right edge and the frame's, in CSS px. */
+const FAN_MARGIN = 14;
 const MAX_DPR_MOBILE = 1.5;
 
 export function isWebglAvailable() {
@@ -135,7 +149,7 @@ export function isWebglAvailable() {
 export function createSceneController(
   options: SceneControllerOptions,
 ): SceneController | null {
-  const { canvas, sectionTops, onSeam, onChapter, onStatus } = options;
+  const { canvas, sectionTops, onSeam, onChapter, onGroundTone, onStatus } = options;
   if (!isWebglAvailable()) {
     onStatus("unavailable");
     return null;
@@ -219,10 +233,12 @@ export function createSceneController(
   let viewportHeight = typeof window === "undefined" ? 1 : window.innerHeight;
   let frame: EvaluatedFrame = evaluate(0);
   let lastChapter = -1;
+  let lastGroundTone: GroundTone | null = null;
   let disposed = false;
   let scheduled = 0;
   let previousTime = 0;
   let lastSeamKey = "";
+  let lastPanelKey = "";
   let contourPreset: SignatureShapeName = "petal-7";
   let directContour = 0;
   let contourColour: string = PALETTE.yellow;
@@ -258,6 +274,7 @@ export function createSceneController(
   const cameraFocusPoint = new THREE.Vector3();
   const focusStart = new THREE.Vector3();
   const focusEnd = new THREE.Vector3();
+  const fanCorner = new THREE.Vector3();
   let focusMix = 1;
   let hidden = false;
   let contextLost = false;
@@ -357,14 +374,37 @@ export function createSceneController(
 
   function publishSeam() {
     const rect = measureSeam();
+    const { projection, view } = seamMatrices(camera);
+    /* The panel is measured on the same pass and in the same units as the
+     * controls, so a caller comparing chapter copy against it is comparing
+     * against the frame that is about to be drawn rather than the one before. */
+    const panelFace = assembly.panelFace;
+    panelFace.object.updateWorldMatrix(true, false);
+    const panel = projectFace(
+      panelFace.probe,
+      panelFace.object.matrixWorld.elements,
+      projection,
+      view,
+      canvas.clientWidth,
+      canvas.clientHeight,
+    );
     const nextKey = rect
       ? `${rect.x.toFixed(1)}:${rect.y.toFixed(1)}:${rect.width.toFixed(1)}:${rect.angle.toFixed(3)}`
       : "hidden";
-    if (nextKey === lastSeamKey && experience.get().heroPhase === "idle")
+    const panelKey = panel
+      ? panel.corners
+          ?.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`)
+          .join(":") ?? `${panel.x.toFixed(1)}:${panel.y.toFixed(1)}`
+      : "hidden";
+    if (
+      nextKey === lastSeamKey &&
+      panelKey === lastPanelKey &&
+      experience.get().heroPhase === "idle"
+    )
       return;
     lastSeamKey = nextKey;
+    lastPanelKey = panelKey;
     const faces: Record<string, SeamRect | null> = {};
-    const { projection, view } = seamMatrices(camera);
     for (const [id, face] of Object.entries(assembly.heroFaces)) {
       face.object.updateWorldMatrix(true, false);
       faces[id] = projectFace(
@@ -376,7 +416,7 @@ export function createSceneController(
         canvas.clientHeight,
       );
     }
-    onSeam({ create: rect, faces });
+    onSeam({ create: rect, faces, panel });
   }
 
   /**
@@ -541,7 +581,75 @@ export function createSceneController(
     camera.rotation.z = pose.roll;
     camera.updateProjectionMatrix();
 
+    /* The drawer fan is the widest part of the hero presentation and it leaves
+     * the frame long before the instrument does: the rightmost plate ended at
+     * 413 on a 390 wide screen and at 1072 on a 1024 wide one, with its label
+     * cut mid-word and its chevron off the plate entirely. The correction is
+     * measured rather than tabulated — project the fan's own right edge and move
+     * the composition by exactly the overflow, so a frame that already fits is
+     * not touched at all. Moving the eye and the target together along the
+     * frame's horizontal axis is a pan: it changes where the composition sits
+     * and nothing about its perspective. */
+    if (heroWeight > 0.01) {
+      const fan = assembly.heroFaces.actions;
+      if (fan) {
+        fan.object.updateWorldMatrix(true, false);
+        const { projection, view } = seamMatrices(camera);
+        const fanRect = projectFace(
+          fan.probe,
+          fan.object.matrixWorld.elements,
+          projection,
+          view,
+          canvas.clientWidth,
+          canvas.clientHeight,
+        );
+        const corners = fanRect?.corners;
+        if (corners && corners.length >= 4) {
+          const right = Math.max(...corners.map((point) => point.x));
+          const overflow = right - (canvas.clientWidth - FAN_MARGIN);
+          if (overflow > 0) {
+            const forward = cameraTarget.clone().sub(camera.position).normalize();
+            /* The frame's own horizontal axis, taken after the chapter's roll
+             * rather than from the world up vector: `forward × up` is the
+             * unrolled axis, and a pan along it leaves a rolled frame short of
+             * the overflow it was asked to clear — 8px at 1024 wide, where the
+             * composition roll is largest. */
+            const axis = new THREE.Vector3()
+              .setFromMatrixColumn(camera.matrixWorld, 0)
+              .normalize();
+            /* The pan is converted at the fan's own right corner rather than at
+             * the plate's centre: the fan tilts each plate away from the
+             * camera, so the edge that overflows is the deepest point of the
+             * control, and a pan priced at the centre moves it by less than the
+             * overflow it was meant to clear. */
+            fanCorner
+              .set(fan.probe.right[0], fan.probe.top[1], fan.probe.centre[2])
+              .applyMatrix4(fan.object.matrixWorld);
+            const depth = Math.max(
+              0.001,
+              fanCorner.sub(camera.position).dot(forward),
+            );
+            /* Pixels per world unit at that depth, read from the projection
+             * matrix rather than from `camera.fov`. The mobile hero runs under
+             * `setViewOffset` — the canvas shows an 844px window into a 460px
+             * tall view — and the offset leaves `fov` at its authored 35 while
+             * the matrix carries the effective 60 degrees. Pricing the pan from
+             * `fov` therefore corrected 19 of the 35 pixels of overflow. */
+            const focal = 0.5 * canvas.clientHeight * projection[5];
+            const pan = (overflow * depth) / Math.max(1, focal);
+            camera.position.addScaledVector(axis, pan);
+            cameraTarget.addScaledVector(axis, pan);
+          }
+        }
+      }
+    }
+
     backdrop.setStyle(sceneFrame.backdrop, THREE.SRGBColorSpace);
+    const groundTone = groundToneForBackdrop(sceneFrame.backdrop);
+    if (groundTone !== lastGroundTone) {
+      lastGroundTone = groundTone;
+      onGroundTone(groundTone);
+    }
     (scene.background as THREE.Color).copy(backdrop);
     floorColor.copy(backdrop).multiplyScalar(0.86);
     floorColor.lerp(warmHeroFloor, heroWeight * 0.85);
@@ -657,10 +765,21 @@ export function createSceneController(
       sceneFrame.instrument.position[2],
     );
     assembly.instrument.scale.setScalar(sceneFrame.instrument.scale);
+    /* The hero's own rotation, solved against the artboard rather than authored
+     * by hand. The previous triple (0.05, 0.28 - 0.6w, 0.04w) put the panel's top
+     * edge at -0.09 dy/dx where the artboard's is -0.23, and left its side edges
+     * leaning the wrong way, so the slab read as a flat card. `.work/hero-stage4/
+     * fit-panel2.mjs` rasterises the panel's own projected silhouette and solves
+     * pitch, yaw, roll, x, y and scale against eight landmarks measured off
+     * `01-hero.png`; this is that solution, 3.8 px RMS. It interpolates from the
+     * home pose so the other five chapters are unchanged. */
     assembly.instrument.rotation.set(
-      0.05,
-      0.28 - 0.6 * heroWeight,
-      0.04 * heroWeight,
+      HOME_INSTRUMENT_ROTATION[0] +
+        (HERO_INSTRUMENT_ROTATION[0] - HOME_INSTRUMENT_ROTATION[0]) * heroWeight,
+      HOME_INSTRUMENT_ROTATION[1] +
+        (HERO_INSTRUMENT_ROTATION[1] - HOME_INSTRUMENT_ROTATION[1]) * heroWeight,
+      HOME_INSTRUMENT_ROTATION[2] +
+        (HERO_INSTRUMENT_ROTATION[2] - HOME_INSTRUMENT_ROTATION[2]) * heroWeight,
     );
     assembly.parts.switchThumb.rotation.x += (Math.PI / 2) * heroWeight;
     assembly.parts.sliderThumb.rotation.x += (Math.PI / 2) * heroWeight;
@@ -669,7 +788,10 @@ export function createSceneController(
      * written. */
     assembly.syncReflection();
     assembly.parts.switchThumb.position.z += 0.04 * heroWeight;
-    assembly.parts.sliderThumb.position.z += 0.06 * heroWeight;
+    /* 0.06 stood the thumb so far off the plate that its silhouette spread to
+     * 69x66 px against the artboard's 57x55 and its projection slid 22 px left of
+     * the knob's position there; the artboard's knob barely clears the bar. */
+    assembly.parts.sliderThumb.position.z += 0.02 * heroWeight;
     /* ACES desaturates as it compresses, and the hero was sitting at the top of
      * its curve — the band rendered as a flat #e8e5df whatever the key did. The
      * artboard is bright where the key lands (251,237,220) and warm in shadow
@@ -682,38 +804,57 @@ export function createSceneController(
       : -INSTRUMENT.switch.thumbTravel;
 
     const tension = Math.max(0, Math.min(1, state.tension / 100));
+    /* The travel is the rail less a thumb at each end, so this simple linear map
+     * puts the thumb's outer edge flush with the rail's cap at 0 and at 1 — no
+     * clamp, no dead zone, and the same step of the value moves the thumb the
+     * same distance anywhere in the range. The artboard draws the control at the
+     * top of it: rail 969-1244 with the thumb on 1188-1244. That is where the
+     * rest value puts it, which is why `experience-store.ts` rests at 100. */
     const sliderX = (tension - 0.5) * INSTRUMENT.slider.travel;
     assembly.parts.sliderThumb.position.x += sliderX;
 
     const trackPose = sceneFrame.parts.sliderTrack;
-    assembly.sliderBand.mesh.position.set(
-      trackPose.position[0] * (1 - heroWeight),
-      trackPose.position[1] * (1 - heroWeight),
-      trackPose.position[2] * (1 - heroWeight),
+    /* The fill runs from the rail's left cap to the thumb's left edge and stops
+     * there: past the thumb the artboard shows cream, so there is nothing to
+     * draw. Both ends are read off the control rather than offset by hand, which
+     * is what let the old fill begin 0.04 inside the cap — a cream notch the
+     * artboard does not have — and, once the rail had been painted pink, run to
+     * the rail's far cap as well.
+     *
+     * The rail is 0.03 thick and the fill is the same box, so it has to clear the
+     * rail's front face or it is simply inside it; 0.003 is the least that does,
+     * measured by stepping the offset and reading the framebuffer back
+     * (`.work/hero-stage4/band-diag4.mjs`). It surfaces the fill by 1.2 px, which
+     * is a shadow line rather than the 0.008 ridge the ribbon stood at. */
+    const fillLength =
+      INSTRUMENT.slider.track.width / 2 +
+      sliderX -
+      INSTRUMENT.slider.thumb +
+      /* The thumb is drawn 0.06 toward the camera at the hero, so in projection
+       * its left edge falls about 0.037 left of where its geometry is and the
+       * fill's own rounded cap would show past it as a pink sliver in the gap
+       * under the disc. Running the fill on past the thumb's edge keeps its end
+       * behind the thumb, where the artboard's is. */
+      INSTRUMENT.slider.thumb * 0.25;
+    const fillScale =
+      Math.max(0, fillLength) / INSTRUMENT.slider.track.width;
+    assembly.sliderFill.scale.x = fillScale;
+    assembly.sliderFill.position.set(
+      /* The box is centred, so placing its left cap on the rail's means half its
+       * scaled width to the right of it. */
+      trackPose.position[0] -
+        INSTRUMENT.slider.track.width / 2 +
+        (INSTRUMENT.slider.track.width * fillScale) / 2,
+      trackPose.position[1],
+      trackPose.position[2] + 0.003,
     );
-    assembly.sliderBand.setSpine(
-      start.set(
-        trackPose.position[0] - INSTRUMENT.slider.travel / 2 + 0.04,
-        trackPose.position[1],
-        trackPose.position[2] + 0.016,
-      ),
-      end.set(
-        trackPose.position[0] + sliderX - 0.02,
-        trackPose.position[1],
-        trackPose.position[2] + 0.016,
-      ),
-      0,
-      0.026,
-    );
-    /* The band's opacity is the furniture's own, with no `(1 - heroWeight)`
-     * factor. That factor belongs to the two lines above it, which scale the
-     * band's *position* out as the hero takes the slider over — but the hero
-     * shows the slider at full opacity, so fading the fill with the same weight
-     * hid it exactly when it was on screen. Measured on the hero, the track
-     * rendered (233, 200, 203) where the artboard holds (221, 141, 172): the
-     * cream rail with a tenth of a pink band over it, not a filled slider. */
+    /* The fill no longer fades out with the hero weight. It used to, because the
+     * rail itself was pink at the hero and the band could only subtract from it;
+     * with the pink back on the fill, the fill is the only thing that makes the
+     * slider read at all, in the hero and in the five chapters that draw the same
+     * cream rail. */
     applyOpacity(
-      assembly.sliderBand.mesh,
+      assembly.sliderFill,
       Math.min(
         sceneFrame.parts.sliderTrack.opacity,
         sceneFrame.parts.sliderThumb.opacity,
@@ -737,14 +878,58 @@ export function createSceneController(
      * 0.012 — so the moment the pointer took the thread the band snapped to a
      * quarter of its width and its curve jumped. Nothing about grabbing a
      * thread should change how thick it is. */
-    const ribbonSag = (0.24 + 0.2 * (1 - tension)) * (1 - 0.60 * heroWeight);
+    /* The measured curve carries the whole shape, so there is no separate sag:
+     * every one of these constants is read off the reference rather than chosen
+     * to look right, and a sag on top of them would double-count the fall. */
+    const ribbonSag = 0;
+    /* The thread's reach, separated from the control's rest value. It used to be
+     * one line — `- 0.42 - 1.24 * tension` — which tied the artboard's fitted
+     * thread to whatever value the slider happened to rest at, so moving the
+     * thumb to the artboard's own position dragged the thread 0.57 further out
+     * with it. The fix is not to rescale the thread but to anchor it: both
+     * endpoints are pinned and only the rate changes.
+     *
+     *   tension 1 -> 0.7506, the reach whose free end projects onto the
+     *                artboard's own thread end, at (348, 678)
+     *   tension 0 -> 0.42, the relaxed end the old curve also had at 0
+     *
+     * 0.7506 is not stage 3's 0.9904, and the reason is the panel. The thread is
+     * instrument-local, so correcting the slab's pitch by 0.36 rad carried its
+     * free end - 2.7 units out on a 0.98-scaled group - 121 px left and 37 px
+     * down, and the old reach then left the thread hanging short of the arrow
+     * the artboard draws it into. Both constants are solved, not swept:
+     * `.work/hero-stage4/solve-end.mjs` projects the spine's end through the
+     * live camera and Newton-solves reach and drop onto the artboard's own
+     * (348, 678) in three steps. They move together because a shorter reach
+     * shortens the curve in x while the drop sets where in y it lands. */
+    const threadReach = 0.42 + 0.3306 * tension;
+    /* The same solve in y. The drop is what carries the curve down out of the
+     * panel; at 0.1125 the fitted trace is within 7 px of the artboard's over
+     * x 400..800, and 0 is the flat line it relaxes to. */
+    const threadDrop = 0.1125 * tension;
     /* The artboard's thread is a tapering band 13 px wide where it leaves the
      * plate, not the 4 px cord the original radius drew — and measured against
      * the reference render it is 11-13 px through the sweep where the first
-     * hero radius drew 17-18, so the gauge is 0.7 of that first estimate. */
-    const ribbonRadius = (0.012 + 0.037 * heroWeight) * (1 - 0.15 * tension);
+     * hero radius drew 17-18, so the gauge is 0.7 of that first estimate.
+     *
+     * The base was fitted with the control resting at 46, where the gauge term
+     * below is 0.931; it now rests at 100, where the term is 0.85. The base is
+     * scaled by 0.931/0.85 so that moving the thumb to the artboard's own
+     * position leaves the resting thread exactly the width stage 3 measured
+     * rather than quietly thinning it by 9%. */
+    const ribbonRadius = (0.0131 + 0.0405 * heroWeight) * (1 - 0.15 * tension);
     assembly.ribbon.setSpine(
-      /* The spine's panel end sits behind the panel, not on the Create
+      /* Both endpoints are solved, not eyeballed: the reference's thread was
+       * traced column by column, and these four numbers are the ones that put
+       * this ribbon's own spine on that trace through this chapter's camera —
+       * mean error 1.4 px over the 552 columns both show, worst 11.5, against
+       * 14.8 px mean and 41.5 worst for the approximation it replaces. The
+       * solve runs in screen space for that reason: unprojecting the trace
+       * needs the ribbon's own z at every column, and an error there bends the
+       * answer. The free end also carries the cursor, so the arrow lands on the
+       * reference's arrow as a consequence rather than as its own edit.
+       *
+       * The spine's panel end sits behind the panel, not on the Create
        * control's face. The artboard's thread is occluded by the panel from its
        * left edge - measured along the reference it reads 14 px wide at x 900
        * and is gone by x 940 - so the segment that would cross the face is
@@ -754,18 +939,22 @@ export function createSceneController(
        * around the instrument origin, so -0.09 from the control's centre is
        * clear of the back face by more than the band's own half-width. */
       start.set(
-        createPose.position[0] - INSTRUMENT.create.width / 2 + 0.02,
-        createPose.position[1] + 0.113,
+        createPose.position[0] - 0.2763,
+        createPose.position[1] + 0.0548,
         createPose.position[2] - 0.09,
       ),
       end.set(
-        createPose.position[0] - 0.42 - 1.24 * tension - 1.7 * heroWeight,
+        /* The 1.6771 is the panel's own half-span at the hero: the thread leaves
+         * from behind the plate, so its free end is measured from the far edge
+         * rather than the origin, and both the solve above and the artboard's
+         * trace are in those terms. */
+        createPose.position[0] - threadReach - 1.6771 * heroWeight,
         createPose.position[1] +
           0.156 -
-          0.5 * tension -
+          threadDrop -
           (canvas.clientWidth >= 900 && canvas.clientHeight < 800
-            ? 1.13
-            : 0.59) *
+            ? 1.2603
+            : 0.6581) *
             heroWeight,
         createPose.position[2] + 0.12,
       ),
@@ -798,7 +987,17 @@ export function createSceneController(
         cursorAt.copy(pointerWorld);
       }
     }
-    assembly.cursor.position.copy(cursorAt);
+    /* The artboard's arrow is not centred on the thread's end: its tip stands
+     * 20 px up and to the left of the point the thread dies at, so the thread
+     * meets the arrow's inner shoulder rather than its point. Both numbers are
+     * the artboard's own offset, projected: the live camera moves a point
+     * 222 px per instrument unit in x and 315 in y at this depth, measured
+     * against the spine's own end. */
+    assembly.cursor.position.set(
+      cursorAt.x - 0.090,
+      cursorAt.y + 0.0476,
+      cursorAt.z,
+    );
     applyOpacity(assembly.cursor, sceneFrame.weights[0]);
     applyOpacity(assembly.ribbon.mesh, sceneFrame.weights[0]);
 
@@ -854,6 +1053,11 @@ export function createSceneController(
       previousTime === 0 ? 1 / 60 : Math.min(0.5, (time - previousTime) / 1000);
     previousTime = time;
     applyFrame(Math.min(0.064, elapsed), elapsed);
+    /* The reflection is drawn from the same frame's pose, immediately before the
+     * frame that samples it, so it is never a frame behind its own reflection —
+     * and it is only drawn at all inside `floorReflection.render`, which is what
+     * keeps a settled renderer free of a second full scene pass. */
+    assembly.floorReflection.render(renderer, scene, camera);
     renderer.render(scene, camera);
     if (active()) schedule();
   }
@@ -898,6 +1102,7 @@ export function createSceneController(
     );
     renderer.setPixelRatio(dpr);
     renderer.setSize(width, height, false);
+    assembly.floorReflection.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     const shadowSize = width < 900 || dpr > 1.5 ? 512 : 1024;
@@ -920,6 +1125,15 @@ export function createSceneController(
   const onRestored = () => {
     contextLost = false;
     lastSeamKey = "";
+    lastPanelKey = "";
+    /* Every render target's storage died with the context. Recreate rather than
+     * resize: the dead target's GPU-side allocation is gone and `setSize` would
+     * compare against dimensions that no longer describe anything. */
+    assembly.floorReflection.reset();
+    assembly.floorReflection.setSize(
+      Math.max(1, canvas.clientWidth || window.innerWidth),
+      Math.max(1, canvas.clientHeight || window.innerHeight),
+    );
     onStatus("ready");
     schedule();
   };

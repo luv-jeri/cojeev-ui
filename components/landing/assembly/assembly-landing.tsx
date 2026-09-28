@@ -383,9 +383,146 @@ export function AssemblyLanding({
 
   const audio = React.useRef<AudioEngine | null>(null);
   const [chapter, setChapter] = React.useState(0);
+  const [groundTone, setGroundTone] = React.useState<"dark" | "light">("dark");
   const [webgl, setWebgl] = React.useState<
     "pending" | "ready" | "failed" | "unavailable"
   >("pending");
+
+  /**
+   * The phone rail is fixed over a natively scrolling document. It steps aside
+   * while the page moves and stays aside if a reader stops with visible copy or
+   * a control beneath it. A timeout alone brought the bar back after 420ms even
+   * when a heading, caption or button still crossed its scrim.
+   */
+  const railRef = React.useRef<HTMLElement | null>(null);
+  const [scrolling, setScrolling] = React.useState(false);
+  const [railOverlapsCopy, setRailOverlapsCopy] = React.useState(false);
+  const [compactRail, setCompactRail] = React.useState(false);
+  const railObscured = compactRail && (scrolling || railOverlapsCopy);
+  React.useEffect(() => {
+    const rail = railRef.current;
+    const documentCopy = document.querySelector<HTMLElement>(".asm-document");
+    if (!rail || !documentCopy) return;
+
+    const compact = window.matchMedia("(max-width: 899px)");
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let frame = 0;
+    const intersects = (a: DOMRect, b: DOMRect) =>
+      a.width > 0 && a.height > 0 && a.left < b.right && a.right > b.left &&
+      a.top < b.bottom && a.bottom > b.top;
+    const inspect = () => {
+      frame = 0;
+      if (!compact.matches) {
+        setRailOverlapsCopy(false);
+        return;
+      }
+      const bar = rail.getBoundingClientRect();
+      if (bar.width < 2 || bar.height < 2) {
+        setRailOverlapsCopy(false);
+        return;
+      }
+
+      const walker = document.createTreeWalker(documentCopy, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          if (!node.textContent?.trim()) return NodeFilter.FILTER_REJECT;
+          const parent = node.parentElement;
+          if (
+            !parent ||
+            parent.closest('[aria-hidden="true"], .asm-visually-hidden, script, style')
+          ) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          const style = getComputedStyle(parent);
+          if (
+            style.display === "none" ||
+            style.visibility === "hidden" ||
+            Number(style.opacity) === 0
+          ) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return NodeFilter.FILTER_ACCEPT;
+        },
+      });
+      const range = document.createRange();
+      let covered = false;
+      for (let node = walker.nextNode(); node && !covered; node = walker.nextNode()) {
+        range.selectNodeContents(node);
+        covered = [...range.getClientRects()].some((rect) => intersects(rect, bar));
+      }
+      if (!covered) {
+        for (const control of documentCopy.querySelectorAll<HTMLElement>(
+          'a[href], button, input, select, textarea, summary, [role="button"]',
+        )) {
+          if (control.closest('[aria-hidden="true"], .asm-visually-hidden')) continue;
+          const style = getComputedStyle(control);
+          if (
+            style.display === "none" ||
+            style.visibility === "hidden" ||
+            Number(style.opacity) === 0
+          ) {
+            continue;
+          }
+          if (intersects(control.getBoundingClientRect(), bar)) {
+            covered = true;
+            break;
+          }
+        }
+      }
+      setRailOverlapsCopy(covered);
+    };
+    const scheduleInspect = () => {
+      if (!frame) frame = window.requestAnimationFrame(inspect);
+    };
+    const onScroll = () => {
+      setScrolling(true);
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        setScrolling(false);
+        scheduleInspect();
+      }, 420);
+      scheduleInspect();
+    };
+    const onViewportChange = () => {
+      setCompactRail(compact.matches);
+      scheduleInspect();
+    };
+    setCompactRail(compact.matches);
+    scheduleInspect();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", scheduleInspect, { passive: true });
+    compact.addEventListener("change", onViewportChange);
+    const observer = new MutationObserver(scheduleInspect);
+    observer.observe(documentCopy, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ["class", "style", "hidden", "aria-hidden"],
+    });
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleInspect);
+    resizeObserver?.observe(documentCopy);
+    resizeObserver?.observe(rail);
+    void document.fonts?.ready.then(scheduleInspect);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", scheduleInspect);
+      compact.removeEventListener("change", onViewportChange);
+      observer.disconnect();
+      resizeObserver?.disconnect();
+      if (frame) window.cancelAnimationFrame(frame);
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const activeElement = document.activeElement;
+    if (!railObscured || !activeElement || !railRef.current?.contains(activeElement)) return;
+    const activeLink = activeElement.closest<HTMLAnchorElement>("a[href^='#']");
+    const id = activeLink?.hash.slice(1);
+    const section = id ? document.getElementById(id) : null;
+    section?.focus({ preventScroll: true });
+  }, [railObscured]);
 
   /**
    * Whether the header — and with it the only sound control — has left the
@@ -573,18 +710,26 @@ export function AssemblyLanding({
 
   const featured =
     SPECIMEN_TRAYS.find((tray) => tray.id === specimen) ?? SPECIMEN_TRAYS[0];
+  const activeGroundTone =
+    webgl === "ready"
+      ? groundTone
+      : CHAPTER_TONE[chapter] === "dark"
+        ? "dark"
+        : "light";
 
   return (
     <div
       className="asm"
       data-chapter={CHAPTER_IDS[chapter]}
       data-tone={CHAPTER_TONE[chapter]}
+      data-ground-tone={activeGroundTone}
       data-webgl={webgl}
       data-reduced-motion={reducedMotion ? "true" : "false"}
     >
       <AssemblyStage
         onChapter={setChapter}
         onArrive={onArrive}
+        onGroundTone={setGroundTone}
         onStatus={setWebgl}
       />
 
@@ -647,7 +792,14 @@ export function AssemblyLanding({
         </details>
       ) : null}
 
-      <nav className="asm-rail" aria-label="Chapters">
+      <nav
+        ref={railRef}
+        className="asm-rail"
+        data-obscured={railObscured ? "true" : undefined}
+        aria-hidden={railObscured || undefined}
+        inert={railObscured || undefined}
+        aria-label="Chapters"
+      >
         <ol>
           {CHAPTER_IDS.map((id, index) => (
             <li key={id}>
@@ -687,6 +839,7 @@ export function AssemblyLanding({
         <section
           className="asm-section asm-section--hero"
           id="hero"
+          tabIndex={-1}
           data-assembly-section="hero"
           aria-labelledby="asm-hero-title"
         >
@@ -723,6 +876,7 @@ export function AssemblyLanding({
         <section
           className="asm-section asm-section--catalogue"
           id="catalogue"
+          tabIndex={-1}
           data-assembly-section="catalogue"
           aria-labelledby="asm-catalogue-title"
         >
@@ -815,6 +969,7 @@ export function AssemblyLanding({
         <section
           className="asm-section asm-section--motion"
           id="motion"
+          tabIndex={-1}
           data-assembly-section="motion"
           aria-labelledby="asm-motion-title"
         >
@@ -847,6 +1002,7 @@ export function AssemblyLanding({
         <section
           className="asm-section asm-section--shape"
           id="shape"
+          tabIndex={-1}
           data-assembly-section="shape"
           aria-labelledby="asm-shape-title"
         >
@@ -891,6 +1047,7 @@ export function AssemblyLanding({
         <section
           className="asm-section asm-section--source"
           id="source"
+          tabIndex={-1}
           data-assembly-section="source"
           aria-labelledby="asm-source-title"
         >
@@ -936,6 +1093,7 @@ export function AssemblyLanding({
         <section
           className="asm-section asm-section--closing"
           id="closing"
+          tabIndex={-1}
           data-assembly-section="closing"
           aria-labelledby="asm-closing-title"
         >

@@ -14,23 +14,25 @@
  */
 import * as React from "react";
 import { CHAPTER_IDS, useScrollSample } from "./anchors";
-import { writeSeam, writeFaces } from "./seam-bus";
+import { writeSeam, writeFaces, writePanelQuad } from "./seam-bus";
 import type { SceneController } from "./scene-controller";
+import type { GroundTone } from "./choreography";
 import { experience, useExperienceValue, type WebglStatus } from "./experience-store";
 
 type Props = {
   onChapter: (index: number) => void;
   onArrive: (index: number) => void;
+  onGroundTone: (tone: GroundTone) => void;
   onStatus: (status: WebglStatus) => void;
 };
 
-export function AssemblyStage({ onChapter, onArrive, onStatus }: Props) {
+export function AssemblyStage({ onChapter, onArrive, onGroundTone, onStatus }: Props) {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const controller = React.useRef<SceneController | null>(null);
   const latest = React.useRef<{ scrollY: number; viewportHeight: number } | null>(null);
   const chapter = React.useRef(-1);
   const arrived = React.useRef(-1);
-  const handlers = React.useRef({ onChapter, onArrive, onStatus });
+  const handlers = React.useRef({ onChapter, onArrive, onGroundTone, onStatus });
 
   // Read here rather than in the document: a contour drag then re-renders this
   // component, which draws one canvas, instead of six chapters of DOM.
@@ -53,8 +55,8 @@ export function AssemblyStage({ onChapter, onArrive, onStatus }: Props) {
   // Effects run in declaration order, so the live callbacks are installed before
   // the subscription and the controller below can call them.
   React.useEffect(() => {
-    handlers.current = { onChapter, onArrive, onStatus };
-  }, [onChapter, onArrive, onStatus]);
+    handlers.current = { onChapter, onArrive, onGroundTone, onStatus };
+  }, [onChapter, onArrive, onGroundTone, onStatus]);
 
   const { tops, version } = useScrollSample((sample) => {
     latest.current = { scrollY: sample.scrollY, viewportHeight: sample.viewportHeight };
@@ -94,11 +96,12 @@ export function AssemblyStage({ onChapter, onArrive, onStatus }: Props) {
         instance = createSceneController({
           canvas,
           sectionTops: () => tops.current ?? [],
-          onSeam: (sample) => { writeSeam(sample.create); writeFaces(sample.faces); },
+          onSeam: (sample) => { writeSeam(sample.create); writeFaces(sample.faces); writePanelQuad(sample.panel); },
           onChapter: (index) => {
             chapter.current = index;
             handlers.current.onChapter(index);
           },
+          onGroundTone: (tone) => handlers.current.onGroundTone(tone),
           onStatus: (status) => {
             const mapped: WebglStatus =
               status === "unavailable"
@@ -108,7 +111,12 @@ export function AssemblyStage({ onChapter, onArrive, onStatus }: Props) {
                   : status === "ready"
                     ? "ready"
                     : "pending";
-            if (mapped !== "ready") writeFaces(Object.fromEntries(["create", "switch", "slider", "layout", "content", "actions"].map(id => [id, null])));
+            if (mapped !== "ready") {
+              writeFaces(Object.fromEntries(["create", "switch", "slider", "layout", "content", "actions"].map(id => [id, null])));
+              /* A stale outline outlives the canvas that produced it, and the
+               * static fallback draws the object somewhere else entirely. */
+              writePanelQuad(null);
+            }
             experience.set({ webgl: mapped });
             handlers.current.onStatus(mapped);
           },

@@ -84,24 +84,49 @@ export const INSTRUMENT = {
     depth: 0.055,
   },
   slider: {
-    local: [0, -0.408, 0.016] as Vec3,
-    travel: 0.68,
-    track: { width: 0.72, height: 0.075, thickness: 0.03 },
-    thumb: 0.075,
+    /* Measured off the artboard's own slider rather than centred on the panel.
+     * Its rail runs 969-1244 and the panel's face runs 914-1305 at the same
+     * height, so the rail's centre is 3 px left of the face's, not 12. */
+    local: [0.018, -0.408, 0.016] as Vec3,
+    /* The travel is the rail less a thumb at each end, so at either limit the
+     * thumb's outer edge is flush with the rail's cap. The artboard draws its
+     * thumb at the top of that travel: rail 969-1244 with the thumb on
+     * 1188-1244, its right edge on the cap and its left edge - which is where
+     * the pink ends, at 1187 - 0.5628 of the rail in from the other end. */
+    travel: 0.563,
+    /* 0.705 projects to the artboard's 275 px rail; 0.071 to its 56 px thumb. */
+    track: { width: 0.705, height: 0.063, thickness: 0.03 },
+    thumb: 0.071,
   },
   drawers: {
     local: [0.6, 0.07, -0.06] as Vec3,
-    yaw: -0.24,
-    gap: 0.235,
+    /* Re-solved against the artboard's own three plate top edges rather than
+     * against a row-wide luminance threshold, which cannot separate a plate from
+     * the plinth behind it. Fitted over x 1350-1466 the artboard's top edges
+     * descend at 0.4135, 0.3340 and 0.2604 — 22.47, 18.47 and 14.59 degrees,
+     * i.e. a fan that opens by 3.9 degrees per plate. The previous stack gave
+     * every plate the same `yaw` and the same `roll`, so it was parallel, and
+     * its 25-degree bank was ten degrees off the lowest plate. The fan is not a
+     * single tick: three plates on one bank cannot be fitted by a shared roll
+     * plus a linear spread, which is why `bank` is per plate. */
+    yaw: -0.1606,
+    /* `tilt` pitches the stack back about the instrument's X axis and `roll`
+     * banks it about Z. `stack` is the direction the plates are offset along and
+     * is deliberately not `roll`: the solved stack leans 5 degrees off the
+     * bank's own normal, and tying the two together costs ~2 degrees of bank
+     * across the whole fan. */
+    tilt: 0.265,
+    roll: -0.5241,
+    stack: -0.4367,
+    /* Index 0 is the lowest plate — the one the hero labels "Actions". */
+    bank: [0.1906, 0.0881, -0.0155] as Vec3,
+    gap: 0.2292,
     count: 3,
-    /* Measured against the artboard: its three drawers project 82-93 px each
-     * with 12-15 px between them, where this stack drew 59-70 px with 20 px
-     * gaps. Both numbers scale by the same 1.3, so the stack keeps its internal
-     * proportions and stays centred on the middle plate, which is what the
-     * hero's override positions. The label faces and their hit areas project
-     * from the same pose, so they follow the plate without a second edit. */
-    plate: { width: 0.44, height: 0.195, thickness: 0.045 },
-    strap: { width: 0.2, height: 0.03, thickness: 0.012 },
+    /* Solved, not read off a bounding box: 0.4141 x 0.145 was 25 px too long
+     * and 10 px too narrow perpendicular. The label faces and their hit areas
+     * project from the same constants, so they follow without a second edit. */
+    plate: { width: 0.3806, height: 0.1776, thickness: 0.045 },
+    strap: { width: 0.1838, height: 0.03, thickness: 0.012 },
   },
   stylePlate: {
     local: [0, 0, -0.36] as Vec3,

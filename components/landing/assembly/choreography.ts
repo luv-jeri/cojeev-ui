@@ -17,6 +17,7 @@ import {
   SPECIMEN_TRAYS,
   type Vec3,
 } from "./canonical";
+import { HERO_INSTRUMENT_POSITION } from "./hero-pose";
 
 export type ChapterId =
   | "hero"
@@ -25,6 +26,35 @@ export type ChapterId =
   | "shape"
   | "source"
   | "closing";
+
+export type GroundTone = "dark" | "light";
+
+/** Pick the foreground family with the stronger WCAG contrast on a scene colour. */
+export function groundToneForBackdrop(value: string): GroundTone {
+  const match = value.match(/^#?([\da-f]{6})$/i);
+  if (!match) throw new Error(`Expected a six-digit sRGB colour, received: ${value}`);
+  const rgb = (hex: string): [number, number, number] => [
+    Number.parseInt(hex.slice(0, 2), 16),
+    Number.parseInt(hex.slice(2, 4), 16),
+    Number.parseInt(hex.slice(4, 6), 16),
+  ];
+  const luminance = ([red, green, blue]: [number, number, number]) => {
+    const linear = [red, green, blue].map((byte) => {
+      const channel = byte / 255;
+      return channel <= 0.04045
+        ? channel / 12.92
+        : ((channel + 0.055) / 1.055) ** 2.4;
+    });
+    return (linear[0] ?? 0) * 0.2126 + (linear[1] ?? 0) * 0.7152 + (linear[2] ?? 0) * 0.0722;
+  };
+  const backdrop = luminance(rgb(match[1]));
+  const cream = luminance([251, 244, 230]);
+  const ink = luminance([17, 17, 17]);
+  const contrast = (foreground: number) =>
+    (Math.max(backdrop, foreground) + 0.05) /
+    (Math.min(backdrop, foreground) + 0.05);
+  return contrast(cream) >= contrast(ink) ? "dark" : "light";
+}
 
 export type PartId =
   | "panel"
@@ -82,7 +112,12 @@ export const HOME_PARTS: Record<PartId, PartPose> = {
   sliderTrack: { position: INSTRUMENT.slider.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
   sliderThumb: { position: INSTRUMENT.slider.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
   flower: { position: INSTRUMENT.flower.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
-  drawers: { position: INSTRUMENT.drawers.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
+  drawers: {
+    position: INSTRUMENT.drawers.local,
+    rotation: [INSTRUMENT.drawers.tilt, 0, INSTRUMENT.drawers.roll],
+    scale: 1,
+    opacity: 1,
+  },
   stylePlate: { position: INSTRUMENT.stylePlate.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
   sourcePlate: { position: INSTRUMENT.sourcePlate.local, rotation: [0, 0, 0], scale: 1, opacity: 1 },
 };
@@ -167,7 +202,7 @@ export const CHAPTERS: readonly Chapter[] = [
      * 441 px per world unit across and 388 up, so 0.98 with the group at
      * [0.47, 0.22] puts the face at 920-1311 x 195-603 and the drawers' right
      * edge at 1471 — the artboard's own numbers. */
-    instrument: { position: [0.47, 0.22, 0] as Vec3, rotation: HOME_INSTRUMENT.rotation, scale: 0.98 },
+    instrument: { position: [...HERO_INSTRUMENT_POSITION] as Vec3, rotation: HOME_INSTRUMENT.rotation, scale: 0.98 },
     /* The artboard's drawer stack centres on y 413 of the frame; the shared
      * drawer pose puts it at 361. Only the part's position is overridden — the
      * tabs keep the size the geometry draws, because scaling the group would
@@ -176,7 +211,69 @@ export const CHAPTERS: readonly Chapter[] = [
  * the three lines below the size the eye can resolve at the hero's depth. The
  * scale is the hero's alone — the Source chapter separates the same mesh at its
  * authored size, where the plate is the subject and already fills its frame. */
-parts: front({ ...FRONT_FACE, sourcePlate: { position: [0.02, -0.66, -0.15], scale: 1.28, opacity: 1 }, drawers: { position: [.66, -0.064, -.12], opacity: 1 } }),
+    /* The front furniture stands down the panel face. Read off `01-hero.png`
+     * through the face's own top and bottom edges, the artboard puts the
+     * switch's track at 0.298 of that height, Create at 0.853 and the slider at
+     * 0.910; this pose was drawing them at 0.283 / 0.111 / 0.795 — the switch
+     * nearly right, Create a quarter of the panel too high, and the pitch
+     * between the three short. The local values below are the ones that project
+     * the controls onto the artboard's measured screen centres through this
+     * chapter's own camera, and they were arrived at by measuring the rendered
+     * frame back rather than by scaling the face: at a fixed x the mapping from
+     * a control's local y to its screen y is very nearly linear (the switch
+     * -376 px/unit, Create -394, the slider -383) but it is not the same line for
+     * each control, so a single conversion factor moves one of them correctly
+     * and the other two wrong. Verified after the change: the switch's centre
+     * reads 306 against the artboard's 306; Create's height bands at x 1030 read
+     * 416 / 445 / 474 against 420 / 448 / 478; the slider's filled band reads 552
+     * against 552. Only the part positions are overridden: the panel, the
+     * drawers, the plates, the labels and the projected hit areas all pose from
+     * the same instrument group, so they follow without a second edit. */
+    parts: front({
+      /* `FRONT_FACE` first and the overrides after it — the fix the note above
+       * describes but the code never applied. `front(extra)` returns
+       * `{ ...shown, ...extra }`, so spreading `...FRONT_FACE` *last* lets it
+       * silently overwrite every hero pose declared above it. It was doing
+       * exactly that to `sourcePlate`: the hero's own
+       * `[0.02, -0.66, -0.15]` at scale 1.28 was replaced by `FRONT_FACE`'s
+       * `[0.02, -0.2, -0.3]` at scale 1, and the probe read back the wrong one.
+       * `stylePlate: { opacity: 0 }` still comes from `FRONT_FACE` because
+       * nothing here overrides it.
+       *
+       * The values below are solved, not authored: `.work/measure/
+       * plateposedescend.mjs` descends y, z, scale and the two text terms on the
+       * acceptance frame and this pose improves both the frame (23.54 -> 23.35)
+       * and the code-plate region (16.12 -> 12.87) against `01-hero.png`, whose
+       * plate face is x 945-1337, y 604-736. The motion chapter keeps `front(FRONT_FACE)`
+       * and is therefore unaffected either way. */
+      ...FRONT_FACE,
+      sourcePlate: { position: [0.02, -0.6, -0.15], scale: 1.2, opacity: 1 },
+      drawers: {
+        position: [0.6908, -0.112, -0.0704],
+        rotation: [INSTRUMENT.drawers.tilt, 0, INSTRUMENT.drawers.roll],
+        opacity: 1,
+      },
+      switchBase: { position: [-0.3, 0.2585, 0.028] },
+      switchThumb: { position: [-0.3, 0.2585, 0.028] },
+      create: { position: [0, -0.1034, 0.045] },
+      /* Re-read off `01-hero.png` after the panel's pose was re-solved. The old
+       * pose's screen positions no longer hold: the stack came out 6-9 px high of
+       * the artboard's, and the slider 9 px left of it. The slider also picks up
+       * `INSTRUMENT.slider.local`'s own x so the hero and the other chapters
+       * cannot drift apart again. */
+      sliderTrack: { position: [0.018, -0.4018, 0.016] },
+      /* The thumb is drawn higher on the plate than the rail it runs in: re-measured
+       * on `01-hero.png`, its disc centres on y 539 against the bar's 550. */
+      sliderThumb: { position: [0.018, -0.3925, 0.016] },
+      /* The hero's flower is placed from the artboard rather than from the shared
+       * pose. Both numbers were solved against the projection rather than
+       * hand-tuned: the flower was scaled and shifted until its own projected
+       * footprint measured the artboard's tip radius of 80 px about a centre of
+       * (1215, 296). The scale is the hero's alone — the Shape press and the
+       * specimen trays draw the same mesh at its authored size — and
+       * `sourcePlate` above is the same kind of override. */
+      flower: { position: [0.28548, 0.2474, 0.03], scale: 1.15368 },
+    }),
   },
   {
     id: "catalogue",

@@ -294,7 +294,7 @@ export function CreateSeam({ active }: { active: boolean }) {
                 end();
             }}
           >
-            Create <span aria-hidden="true">↗</span>
+            Create <span aria-hidden="true">→</span>
           </Button>
         </Face>
         <Face id="switch">

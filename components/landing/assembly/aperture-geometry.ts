@@ -68,6 +68,12 @@ export type ApertureProfile = {
 export type ApertureOptions = {
   /** Half the band's depth, i.e. thickness / 2. */
   halfDepth: number;
+  /**
+   * How much darker the deepest part of the opening's inner wall is drawn than
+   * its front rim, as a fraction of its albedo. The reference holds a gradient
+   * 90 px long there; this is what makes it a gradient rather than the 25 px
+   * step the bevel alone gives. */
+  occlusionDepth?: number;
   /** Edge radius. Clamped per station so a thin section cannot invert. */
   bevel: number;
   /** Sub-segments per rounded corner. */
@@ -145,6 +151,17 @@ function perimeterParameters(ring: readonly [number, number][]) {
 }
 
 /**
+ * The arch's vertical falloff, as a multiplier on its albedo. The window is the
+ * part of the arch the frame actually shows — local y -0.8328 (screen y 700 at
+ * x 800) to -0.0009 (screen y 260) — and `shade` clamps outside it, so the
+ * geometry's off-screen top cannot run away. Solved against `01-hero.png`'s own
+ * column at x 800; see the `shade` attribute below for how.
+ */
+export const APERTURE_SHADE_WINDOW: readonly [number, number] = [-0.8328, -0.0009];
+export const APERTURE_SHADE_BOTTOM = 0.6107;
+export const APERTURE_SHADE_TOP = 1.6257;
+
+/**
  * Builds the band. Returns a geometry whose vertex order is deterministic for a
  * given profile, so a test can assert exact counts.
  */
@@ -153,6 +170,7 @@ export function buildApertureGeometry(
   options: ApertureOptions,
 ) {
   const { halfDepth, bevel } = options;
+  const occlusionDepth = options.occlusionDepth ?? 0.4;
   const arcSegments = options.arcSegments ?? 3;
   const edgeSegments = options.edgeSegments ?? 2;
   const closed = profile.closed === true;
@@ -172,6 +190,22 @@ export function buildApertureGeometry(
   const stationDepth = (station: number) => depth?.[station] ?? 0;
 
   const positions: number[] = [];
+  /* How much of an occluded niche each vertex is looking into: 0 on the faces
+   * the camera sees straight on, 1 at the deepest part of the opening's wall.
+   * Carried per vertex because the alternative - geometry that is actually
+   * darker in there - means moving the silhouette, and the silhouette is already
+   * within 2-4 px of the reference at every row. */
+  const occlusion: number[] = [];
+  /** across the band, 0 at the outer edge and 1 at the inner one */
+  const rim: number[] = [];
+  /** through the band's thickness, 0 at one face and 1 at the other. Which of
+   * the two faces the camera sees was read off the render rather than assumed:
+   * the lit face measures 1 here. */
+  const face: number[] = [];
+  /** how much of the opening a station belongs to, 0 on the plinth below it.
+   * Kept separate from `rim` so that fading it changes the shadow's strength
+   * without moving where the terminator falls. */
+  const open: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
   const rings: number[][] = [];
@@ -239,6 +273,40 @@ export function buildApertureGeometry(
         z + b,
       );
       uvs.push(u, parameters[spoke]);
+      /* `a` runs outward across the band and `b` through its depth, so the
+       * niche's wall is the ring of vertices at the inner edge, and how far
+       * into the opening a vertex sits is `b` measured from the front rim. The
+       * strength is scaled by how far in from the outer edge it is, which
+       * leaves the outer wall, the bevels and both faces untouched. */
+      const inward = Math.max(0, -a / halfWidth);
+      const intoNiche = (b + halfDepth) / (2 * halfDepth);
+      occlusion.push(1 - occlusionDepth * inward * intoNiche * intoNiche);
+      /* Three coordinates, each handed to the fragment stage separately so that
+       * the shader can gate them independently. Multiplying any two of them
+       * together here would make one gate move the other's threshold — a fade
+       * applied to `inward` slides the terminator inward instead of only
+       * weakening it, which is not what a fade is for.
+       *
+       * They are resolved per fragment rather than here because the
+       * cross-section carries two `edgeSegments`: the band's lit face has
+       * exactly two vertex columns, so a per-vertex ramp across it is a straight
+       * line between them. The artboard's terminator is a step, and a step needs
+       * a value that survives interpolation.
+       *
+       *   inward  across the band, 0 at the outer edge and 1 at the inner one.
+       *   thick   through the band's thickness, 0 at one face and 1 at the
+       *           other. Which of the two the camera sees was measured off the
+       *           render, not assumed: the lit face reads 1.
+       *   open    how much this station belongs to the opening rather than to
+       *           the plinth it stands on. The artboard lights the plinth like
+       *           the ground it rests on — 197 under the arch against 110 on the
+       *           rim 100 px above it — while the same `inward` still runs to 1
+       *           across it. Read off the same rows as the rest of this file,
+       *           local y -0.58 is plinth and -0.26 is opening. */
+      const plinth = Math.min(1, Math.max(0, (centre.y + 0.58) / 0.32));
+      rim.push(inward);
+      face.push(intoNiche);
+      open.push(plinth * plinth * (3 - 2 * plinth));
     }
     rings.push(
       Array.from({ length: ring.length }, (_, index) => base + index),
@@ -276,6 +344,12 @@ export function buildApertureGeometry(
       const hub = positions.length / 3;
       positions.push(cx, cy, cz);
       uvs.push(u, 0);
+      occlusion.push(1);
+      /* The hub sits at the section's centroid, so it is on no particular side
+       * of the band: no terminator crosses it and no shadow falls on the fan. */
+      rim.push(0);
+      face.push(0.5);
+      open.push(0);
       for (let spoke = 0; spoke < radial; spoke++) {
         const next = (spoke + 1) % radial;
         /* The wall quads traverse the first station's rim spoke[n] -> spoke[s]
@@ -294,6 +368,54 @@ export function buildApertureGeometry(
     new THREE.Float32BufferAttribute(positions, 3),
   );
   geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setAttribute(
+    "occlusion",
+    new THREE.Float32BufferAttribute(occlusion, 1),
+  );
+  /* The vertical falloff across the arch's own face.
+   *
+   * `01-hero.png` darkens its arch from 240.6 to 217.1 down the face at x 800;
+   * ours barely moved — 229.3 to 222.6 before this, and flat below screen y 500.
+   * The scene's key light is near enough horizontal that the face reads almost
+   * evenly, and moving that light is not available because the panel, the floor
+   * and the flower are all lit by it. So the gradient is carried as another
+   * vertex attribute, like the niche's occlusion above: it changes the albedo
+   * and moves nothing, which matters because the silhouette is already within
+   * 2-4 px of the reference at every row.
+   *
+   * Solved, not swept. The albedo-to-pixel transfer is compressive — the
+   * standard material plus tone mapping turns a x1.3 albedo into about x1.04 of
+   * pixel — so the multiplier cannot be read straight off the luminance ratio.
+   * `.work/hero-stage4/shade-curve.mjs` renders the frame at nine flat albedo
+   * multipliers, and the requirement at each row is interpolated off that
+   * measured curve rather than assumed. Over the 22 rows where the arch's face
+   * is actually visible the least-squares line is
+   * `shade = 0.6107 + 1.0150 * u'`, rms 0.09 against a 0.16 worst row. */
+  const [windowLow, windowHigh] = APERTURE_SHADE_WINDOW;
+  const shade = new Float32Array(positions.length / 3);
+  for (let i = 0; i < shade.length; i++) {
+    const t = Math.min(
+      1,
+      Math.max(0, (positions[i * 3 + 1] - windowLow) / (windowHigh - windowLow)),
+    );
+    const ramp = APERTURE_SHADE_BOTTOM +
+      (APERTURE_SHADE_TOP - APERTURE_SHADE_BOTTOM) * t;
+    /* The ramp is a property of the lit outer face. Inside the opening the
+     * occlusion above already governs, and multiplying the two together cancels
+     * it — a x1.63 at the top against a x0.6 in the niche is x0.98, which reads
+     * as "no occlusion at all" and put 206 where the artboard has 118 along the
+     * opening's top rim. So the ramp is faded out by exactly the occlusion's own
+     * mask: `occlusion` is `1 - occlusionDepth * m`, so `m` inverts straight
+     * back out of it and no second attribute is needed. */
+    const niche = occlusionDepth > 0
+      ? Math.min(1, Math.max(0, (1 - occlusion[i]) / occlusionDepth))
+      : 0;
+    shade[i] = 1 + (ramp - 1) * (1 - niche);
+  }
+  geometry.setAttribute("shade", new THREE.Float32BufferAttribute(shade, 1));
+  geometry.setAttribute("rim", new THREE.Float32BufferAttribute(rim, 1));
+  geometry.setAttribute("face", new THREE.Float32BufferAttribute(face, 1));
+  geometry.setAttribute("open", new THREE.Float32BufferAttribute(open, 1));
   geometry.setIndex(indices);
 
   /* Orient the whole surface outward. The signed volume of a closed mesh is
