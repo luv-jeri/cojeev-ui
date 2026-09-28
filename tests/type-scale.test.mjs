@@ -84,3 +84,16 @@ test("every type token in use is defined in tokens.css", () => {
   const missing = [...listed(styles, /\.css$/), ...sources, ...site].flatMap((file) => [...read(file).matchAll(/var\(\s*(--(?:fs|fw|lh)-[\w-]+)/g)].filter(([, name]) => !typeTokens.has(name)).map(([, name]) => `${file}: ${name}`));
   assert.deepEqual(missing, [], "an undefined --fs-*, --fw-* or --lh-* token silently inherits its size");
 });
+
+// A variable token is insufficient if its Tailwind arbitrary property was lost.
+// Compile real source utilities so [var(--fs-...)] cannot silently pass the census.
+test("typography utilities actually emit CSS declarations", async () => {
+  const { compile } = await import("tailwindcss");
+  const classes = new Set(sources.flatMap(file => [...read(file).matchAll(/(?:text-|font-)?\[[^\]]*var\(--(?:fs|fw)-[^\]]+\)[^\]]*\]/g)].map(match => match[0])));
+  assert.ok(classes.size > 20, "inspect the real registry typography utilities");
+  for (const utility of classes) {
+    const compiler = await compile("@tailwind utilities;");
+    const emitted = compiler.build([utility]);
+    assert.match(emitted, /(?:font-size|font-weight|font):\s*[^;]+;/, `${utility} must emit typography CSS`);
+  }
+});

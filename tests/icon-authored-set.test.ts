@@ -8,7 +8,7 @@ import {renderToStaticMarkup} from "react-dom/server";
 import {Icon,iconNames} from "../registry/cojeev/ui/icon";
 
 const known=new Set(iconNames);
-const generated=/lucide-icon-(data|names)\.ts$|icon-data\.ts$/;
+const generated=/lucide-icon-(data|names)\.ts$|icon-data\.ts$|specimen-api\.generated\.ts$/;
 const sources=(directory:string):string[]=>fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry=>{
   const file=path.join(directory,entry.name);
   return entry.isDirectory()?sources(file):/\.tsx?$/.test(entry.name)&&!generated.test(file)?[file]:[];

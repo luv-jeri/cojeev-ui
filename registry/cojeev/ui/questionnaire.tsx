@@ -112,7 +112,7 @@ export function QuestionnaireLabel({
   return (
     <Label
       data-slot="questionnaire-label"
-      className={cn("[var(--fs-lead)] [var(--fw-semibold)]", className)}
+      className={cn("[font-size:var(--fs-lead)] [font-weight:var(--fw-semibold)]", className)}
       {...props}
     />
   );

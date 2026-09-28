@@ -57,7 +57,7 @@
 }
 .v-tabs:where([data-slot="tabs"], [data-slot^="tabs-"], [data-filters]).-pills .v-tab {
   height: var(--ctl-sm);
-  padding: 0 var(--s-4);
+  padding: 0 var(--s-detail-14);
   border-radius: var(--r-pill);
   background: var(--v-beige);
   color: var(--v-text);

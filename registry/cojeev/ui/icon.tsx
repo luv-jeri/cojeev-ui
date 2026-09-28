@@ -63,7 +63,7 @@ const geometryCache=new Map<string,IconNode[]>();
 // The full Lucide geometry is several hundred kilobytes, so it stays out of every
 // bundle that renders an Icon and loads on first use of a name the authored set lacks.
 // Until it arrives such an icon keeps its fixed footprint with no strokes.
-type LucidePack=typeof import("@/registry/cojeev/lib/lucide-icon-data");
+type LucidePack=typeof import("../lib/lucide-icon-data");
 const lucideNameSet=new Set(lucideIconNames);
 let lucidePack:LucidePack|null=null;
 let lucideLoad:Promise<LucidePack>|null=null;
@@ -75,7 +75,7 @@ const lucideListeners=new Set<()=>void>();
  * without the pack, or hydration mismatches.
  */
 export function loadLucideIcons():Promise<LucidePack> {
-  return lucideLoad??=import("@/registry/cojeev/lib/lucide-icon-data").then(pack=>{
+  return lucideLoad??=import("../lib/lucide-icon-data").then(pack=>{
     lucidePack=pack;
     for(const listener of lucideListeners)listener();
     return pack;

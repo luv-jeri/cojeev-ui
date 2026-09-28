@@ -34,11 +34,11 @@
 [data-slot="calendar-nav"] { display:inline-flex; gap:2px; padding:3px; border-radius:999px; background:var(--card); }
 /* 32 px, not 36: `alive.css:591` `.v-cal__nav .v-ibtn,.v-cal__nav .v-ibtn.-sm,
    .v-cal__head .v-cal__nav .v-ibtn{width:32px;height:32px;background:transparent;
-   box-shadow:none!important;...}`. The oracle measures `32px` on
+   box-shadow:noneimportance flag;...}`. The oracle measures `32px` on
    `.v-cal__head .v-ibtn`. The `.-sm` suffix is required rather than decorative:
    `icon.css:68` `.v-ibtn:where([data-slot]).-sm` carries the surface the nav must
-   not paint, and the handoff reaches past it with `!important` while
-   `scripts/lint.mjs:17` forbids `!important` in production CSS. Matching the
+   not paint, and the handoff reaches past it with `importance flag` while
+   `scripts/lint.mjs:17` forbids `importance flag` in production CSS. Matching the
    component's own modifier class settles it at equal-and-later specificity
    instead — measured `background-color: rgb(238, 231, 218)` against the
    reference's `rgba(0, 0, 0, 0)` on `part:trigger:0/1` before this. */

@@ -17,7 +17,7 @@ const BubbleRowVariants=cva("v-chat__row [display:flex] [align-items:flex-end] [
 export type BubbleRowProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleRowVariants> & { as?:React.ElementType }
 export function BubbleRow({as:Tag="div",className,variant,size,...props}:BubbleRowProps){return <Tag data-slot="bubble-item" data-part="item" className={cn(BubbleRowVariants({variant,size}),className)} {...props}/>}
 
-const BubbleContentVariants=cva("v-bubble [display:inline-block] [max-width:min(80%,52ch)] [padding:var(--s-3)_var(--s-4)_var(--s-3)] [border-radius:var(--r-card)_var(--r-card)_var(--r-card)_var(--r-xs)] [background:var(--v-canvas)] [color:var(--v-text)] [var(--fs-control)] [line-height:1.4] [overflow-wrap:anywhere] [position:relative]",{variants:{variant:{"default":"","me":"-me [background:var(--v-pink)] [border-radius:var(--r-card)_var(--r-card)_var(--r-xs)_var(--r-card)] [color:var(--v-on-accent)]","tail":"-tail [border-bottom-left-radius:var(--r-card)]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const BubbleContentVariants=cva("v-bubble [display:inline-block] [max-width:min(80%,52ch)] [padding:var(--s-3)_var(--s-4)_var(--s-3)] [border-radius:var(--r-card)_var(--r-card)_var(--r-card)_var(--r-xs)] [background:var(--v-canvas)] [color:var(--v-text)] [font-size:var(--fs-control)] [line-height:1.4] [overflow-wrap:anywhere] [position:relative]",{variants:{variant:{"default":"","me":"-me [background:var(--v-pink)] [border-radius:var(--r-card)_var(--r-card)_var(--r-xs)_var(--r-card)] [color:var(--v-on-accent)]","tail":"-tail [border-bottom-left-radius:var(--r-card)]"},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BubbleContentProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleContentVariants> & { as?:React.ElementType }
 export function BubbleContent({ref: externalMorphRef, as:Tag="div",className,variant,size,...props}:BubbleContentProps){const ownedMorphRef = useMorph<HTMLDivElement>("pills", externalMorphRef);
   return <Tag ref={ownedMorphRef} data-slot="bubble-content" data-part="content" className={cn(BubbleContentVariants({variant,size}),className)} {...props}/>}
@@ -26,7 +26,7 @@ const BubbleGapVariants=cva("v-chat__gap [height:10px]",{variants:{variant:{"def
 export type BubbleGapProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleGapVariants> & { as?:React.ElementType }
 export function BubbleGap({as:Tag="div",className,variant,size,...props}:BubbleGapProps){return <Tag data-slot="bubble-gap" data-part="gap" className={cn(BubbleGapVariants({variant,size}),className)} {...props}/>}
 
-const BubbleTimeVariants=cva("v-chat__time [var(--fs-caps)] [color:var(--structure-text)] [opacity:0.7] [padding:6px_0_2px_38px] [font-variant-numeric:tabular-nums]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
+const BubbleTimeVariants=cva("v-chat__time [font-size:var(--fs-caps)] [color:var(--structure-text)] [opacity:0.7] [padding:6px_0_2px_38px] [font-variant-numeric:tabular-nums]",{variants:{variant:{"default":""},size:{"default":""}},defaultVariants:{variant:"default",size:"default"}})
 export type BubbleTimeProps=React.ComponentProps<"div"> & VariantProps<typeof BubbleTimeVariants> & { as?:React.ElementType }
 export function BubbleTime({as:Tag="div",className,variant,size,...props}:BubbleTimeProps){return <Tag data-slot="bubble-time" data-part="time" className={cn(BubbleTimeVariants({variant,size}),className)} {...props}/>}
 

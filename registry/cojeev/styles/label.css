@@ -10,7 +10,7 @@
 .v-stat[data-slot] span{white-space:normal}
 .v-stat[data-slot] b{font-size:var(--fs-body);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;line-height:1.2}
 .v-stat[data-slot] b .u{font-weight:var(--fw-regular);margin-left:3px}
-.v-stat[data-slot] span{font-size:var(--fs-caps);letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground)}
+.v-stat[data-slot] span{font-size:var(--fs-detail-10);letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground)}
 .v-stat[data-slot] b{font-size:var(--fs-reading)}
 .v-stat[data-slot].-ul.-dashed{border-bottom-style:dashed}
 @media (max-width:640px){.v-stats[data-slot]{gap:var(--s-4)}}

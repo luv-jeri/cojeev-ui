@@ -126,7 +126,7 @@ export function Select({
   );
 }
 export const selectTriggerVariants = cva(
-  "v-select [display:inline-flex] [align-items:center] [justify-content:space-between] [border-radius:var(--r-pill)] [var(--fs-control)] [white-space:nowrap] [cursor:pointer] [height:40px] [padding:0_var(--s-3)_0_var(--s-4)] [gap:var(--s-3)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] [background:var(--v-canvas)] [color:var(--v-text)] [var(--fw-medium)]",
+  "v-select [display:inline-flex] [align-items:center] [justify-content:space-between] [border-radius:var(--r-pill)] [font-size:var(--fs-control)] [white-space:nowrap] [cursor:pointer] [height:40px] [padding:0_var(--s-3)_0_var(--s-4)] [gap:var(--s-3)] [box-shadow:inset_0_0_0_1px_var(--v-edge)] [background:var(--v-canvas)] [color:var(--v-text)] [font-weight:var(--fw-medium)]",
 );
 export type SelectTriggerProps = React.ComponentProps<
   typeof Primitive.Trigger

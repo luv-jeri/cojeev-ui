@@ -249,7 +249,7 @@ function LoadingContent({
 }
 
 const AsyncRowVariants = cva(
-  "v-async__row [display:flex] [align-items:center] [gap:var(--s-3)] [var(--fs-control)] [color:var(--v-text-2)]",
+  "v-async__row [display:flex] [align-items:center] [gap:var(--s-3)] [font-size:var(--fs-control)] [color:var(--v-text-2)]",
   {
     variants: { variant: { default: "" }, size: { default: "" } },
     defaultVariants: { variant: "default", size: "default" },

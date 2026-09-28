@@ -20,7 +20,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/registry/cojeev/lib/utils";
 import * as Primitive from "@radix-ui/react-checkbox";
 export const checkboxVariants = cva(
-  "v-check [display:inline-flex] [cursor:pointer] [background:none] [gap:var(--s-3)] [align-items:center] [var(--fs-body)] [box-shadow:none] [border:0]",
+  "v-check [display:inline-flex] [cursor:pointer] [background:none] [gap:var(--s-3)] [align-items:center] [font-size:var(--fs-body)] [box-shadow:none] [border:0]",
 );
 export type CheckboxProps = React.ComponentProps<typeof Primitive.Root> & {
   appearance?: "row" | "card" | "chip";

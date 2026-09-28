@@ -9,7 +9,7 @@ import { cn } from "@/registry/cojeev/lib/utils"
    small size. The candidate ran 14px/1.5 and 13px, so every label was a size
    small and half a line tall. `-sm` now takes its size from the authored class
    in label.css rather than restating a literal here. */
-const LabelVariants=cva("v-label [var(--fs-lead)] [var(--fw-title)] [line-height:1.2] [box-shadow:none] [border:0] [background:none]",{variants:{variant:{"default":""},size:{"default":"","sm":"-sm"}},defaultVariants:{variant:"default",size:"default"}})
+const LabelVariants=cva("v-label [font-size:var(--fs-lead)] [font-weight:var(--fw-title)] [line-height:1.2] [box-shadow:none] [border:0] [background:none]",{variants:{variant:{"default":""},size:{"default":"","sm":"-sm"}},defaultVariants:{variant:"default",size:"default"}})
 export type LabelProps=React.ComponentProps<"label"> & VariantProps<typeof LabelVariants> & { as?:React.ElementType }
 export function Label({as:Tag="label",className,variant,size,...props}:LabelProps){return <Tag data-slot="label" data-part="root" className={cn(LabelVariants({variant,size}),className)} {...props}/>}
 
