@@ -103,10 +103,14 @@ export const STATUS_LABELS = {
   resolved: "Live",
   declined: "Not planned",
 } as const;
+type ReportRequest = { kind?: ReportKind; topic?: RequestTopic };
+// The panel mounts after the page is idle and then loads its drafts. A request made before it can
+// listen waits here, and the panel opens it once when it is ready.
+let pendingRequest: ReportRequest | null = null;
 export function openRequest(topic?: RequestTopic) {
-  window.dispatchEvent(
-    new CustomEvent("cojeev:report", { detail: { kind: "request", topic } }),
-  );
+  const detail: ReportRequest = { kind: "request", topic };
+  pendingRequest = detail;
+  window.dispatchEvent(new CustomEvent("cojeev:report", { detail }));
 }
 const message = (error: unknown) =>
   error instanceof Error
@@ -245,14 +249,19 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     const save = () => {
       if (loaded) void persist(draftRef.current);
     };
-    const event = (event: Event) => {
-      const { kind, topic } =
-        (event as CustomEvent<{ kind?: ReportKind; topic?: RequestTopic }>)
-          .detail ?? {};
-      if (!loaded || busy || capture) return;
-      selectDraft(kind ?? "request", topic);
+    const take = () => {
+      const request = pendingRequest;
+      if (!request || !loaded) return;
+      pendingRequest = null;
+      if (busy || capture) return;
+      selectDraft(request.kind ?? "request", request.topic);
       setOpen(true);
     };
+    const event = (event: Event) => {
+      pendingRequest = (event as CustomEvent<ReportRequest>).detail ?? {};
+      take();
+    };
+    take();
     window.addEventListener("pagehide", save);
     window.addEventListener("cojeev:report", event);
     return () => {
