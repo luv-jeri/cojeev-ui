@@ -24,3 +24,27 @@ test("component styles load per route, never from the global sheet", () => {
   assert.ok(fs.readFileSync("app/docs/layout.tsx", "utf8").includes('styles/docs.css"'));
   assert.ok(fs.readFileSync("app/layout.tsx", "utf8").includes('styles/shell.css"'));
 });
+
+test("whichever route sheets a navigation leaves, the highest-ranked one holds every rule of the others", () => {
+  const sheets = fs.readdirSync("app/styles").filter((file) => file.endsWith(".css")).map((file) => {
+    const text = fs.readFileSync(`app/styles/${file}`, "utf8");
+    const imports = [...text.matchAll(/@import "[^"]*\/([a-z0-9-]+)\.css" layer\(([^)]+)\);/g)];
+    return { file, text, ids: imports.map((match) => match[1]), layers: [...new Set(imports.map((match) => match[2]))] };
+  });
+  const docs = sheets.find((sheet) => sheet.file === "docs.css");
+  // Rules directly in cojeev-states outrank every cojeev-states sub-layer.
+  assert.deepEqual(docs.layers, ["cojeev-states"], "docs.css sits directly in cojeev-states");
+  const tiers = sheets.find((sheet) => sheet.file === "shell.css").text.match(/^@layer ([^;{]+);$/m)?.[1].split(", ");
+  assert.ok(tiers?.length && tiers.every((tier) => tier.startsWith("cojeev-states.")), "shell.css declares the tier order");
+  const rank = (sheet) => sheet === docs ? tiers.length : tiers.indexOf(sheet.layers[0]);
+  for (const sheet of sheets) {
+    assert.equal(sheet.layers.length, 1, `${sheet.file} uses one layer`);
+    assert.ok(rank(sheet) >= 0, `${sheet.file} uses a declared tier`);
+    if (sheet !== docs) assert.ok(sheet.text.includes(`@layer ${tiers.join(", ")};`), `${sheet.file} declares the same tier order`);
+    assert.deepEqual(sheet.ids, docs.ids.filter((id) => sheet.ids.includes(id)), `${sheet.file} keeps the historical order`);
+    for (const other of sheets) {
+      if (rank(other) < rank(sheet)) assert.ok(other.ids.every((id) => sheet.ids.includes(id)), `${sheet.file} must hold every component of ${other.file}`);
+      if (rank(other) === rank(sheet)) assert.deepEqual(other.ids, sheet.ids, `${sheet.file} and ${other.file} share a tier, so they must match`);
+    }
+  }
+});
