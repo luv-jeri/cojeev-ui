@@ -68,12 +68,21 @@ const lucideNameSet=new Set(lucideIconNames);
 let lucidePack:LucidePack|null=null;
 let lucideLoad:Promise<LucidePack>|null=null;
 const lucideListeners=new Set<()=>void>();
-/** Resolves once every Lucide name renders synchronously; call before server rendering those names. */
+/**
+ * Resolves once every Lucide name renders synchronously. In a browser, call it any time to fetch the pack
+ * early; icons still hydrate without strokes and fill in right after. On a server, call it only before
+ * markup that is never hydrated (tests, static snapshots): HTML that React hydrates must be rendered
+ * without the pack, or hydration mismatches.
+ */
 export function loadLucideIcons():Promise<LucidePack> {
   return lucideLoad??=import("@/registry/cojeev/lib/lucide-icon-data").then(pack=>{
     lucidePack=pack;
     for(const listener of lucideListeners)listener();
     return pack;
+  },error=>{
+    // A dropped chunk must not blank these icons for the session: the next request tries again.
+    lucideLoad=null;
+    throw error;
   });
 }
 function isKnownIcon(name:string){name=canonicalIcon(name);return name in iconData||name in additionalIcons||lucideNameSet.has(name)}
@@ -96,7 +105,8 @@ function useIconGeometry(name:string):IconNode[]|undefined {
   const authored=iconData[canonical]??additionalIcons[canonical];
   const fromPack=!authored&&lucideNameSet.has(canonical);
   const ready=React.useSyncExternalStore(subscribeLucide,lucideReady,lucideReadyOnServer);
-  React.useEffect(()=>{if(fromPack&&!ready)void loadLucideIcons()},[fromPack,ready]);
+  // A failed load keeps the footprint; the next icon that asks retries it.
+  React.useEffect(()=>{if(fromPack&&!ready)loadLucideIcons().catch(()=>{})},[fromPack,ready]);
   if(authored)return authored;
   return fromPack&&ready?iconGeometry(name):undefined;
 }
