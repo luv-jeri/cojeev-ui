@@ -1,4 +1,4 @@
-.v-material-sculpture{--material-accent:var(--v-blue);position:relative;width:100%;min-width:0;height:clamp(260px,44vw,420px);overflow:hidden;contain:layout paint;background:var(--card);border-radius:var(--radius-card,24px);color:var(--v-text);pointer-events:none;user-select:none}
+.v-material-sculpture{--material-accent:var(--v-blue);position:relative;width:100%;min-width:0;height:clamp(260px,44vw,420px);overflow:hidden;contain:layout paint;background:var(--card);border-radius:var(--r-card,20px);color:var(--v-text);pointer-events:none;user-select:none}
 .v-material-sculpture[data-tone="rose"]{--material-accent:var(--v-pink)}
 .v-material-sculpture[data-tone="moss"]{--material-accent:var(--v-olive)}
 .v-material-sculpture[data-tone="ink"]{--material-accent:var(--v-text)}

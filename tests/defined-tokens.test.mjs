@@ -38,3 +38,13 @@ test("every custom property a component reads without a fallback is defined", ()
     && !(file.endsWith(`${path.sep}theme.css`) && legacy.has(name))).map(([name, file]) => `${name} (${file})`))];
   assert.deepEqual(missing, []);
 });
+
+// Corners come from the --r-* scale (docs/design/DESIGN.md, Shapes). The retired --radius-* names are
+// defined only by a consumer's legacy alias sheet, so a component reading one renders its fallback
+// instead of the scale step. The Tailwind theme's --radius-v-* names serve rounded-v-* utilities;
+// component sheets read the scale directly.
+test("no registry stylesheet reads a --radius-* name instead of the --r-* scale", () => {
+  const reads = files("registry/cojeev", /\.css$/).flatMap((file) =>
+    [...fs.readFileSync(file, "utf8").matchAll(/var\(\s*(--radius-[\w-]+)/g)].map(([, name]) => `${name} (${file})`));
+  assert.deepEqual(reads, []);
+});
