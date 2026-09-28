@@ -15,8 +15,11 @@ export function securityHeaders(environment) {
  * are free to serve, so Cloudflare attaches the same headers the Worker would have added.
  */
 export function siteHeaders(environment) {
-  const all={...securityHeaders(environment),...(environment === 'beta' ? {'x-robots-tag':'noindex, nofollow, noarchive'} : {})};
-  // ponytail: _headers also applies to 404s, so a missing chunk's 404 caches for a year too. Chunk names are
-  // content hashes, so this only bites if a rollback revives a chunk a visitor already missed.
-  return `/*\n${Object.entries(all).map(([name,value])=>`  ${name}: ${value}`).join('\n')}\n\n/_next/static/*\n  cache-control: public, max-age=31536000, immutable\n`;
+  const noindex={'x-robots-tag':'noindex, nofollow, noarchive'};
+  // Beta is never indexed; production hides only its admin pages, as the Worker does. No cache rule:
+  // _headers also applies to 404s, and a year-cached 404 would outlive a rollback that restores the file.
+  const rules=environment === 'beta'
+    ? {'/*':{...securityHeaders(environment),...noindex}}
+    : {'/*':securityHeaders(environment),'/admin/*':noindex,'/feedback-admin/*':noindex};
+  return Object.entries(rules).map(([pattern,headers])=>`${pattern}\n${Object.entries(headers).map(([name,value])=>`  ${name}: ${value}`).join('\n')}\n`).join('\n');
 }

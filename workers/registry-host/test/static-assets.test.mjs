@@ -21,11 +21,14 @@ const rules=text=>text.trim().split(/\n\s*\n/).map(block=>{const [pattern,...lin
 test('files that skip the Worker get exactly the headers the Worker would have added',async()=>{
   for(const environment of ['beta','production']) {
     const file=rules(siteHeaders(environment));
-    for(const [path,type] of [['/_next/static/chunks/app.js','text/javascript'],['/docs/__next._tree.txt','text/plain']]) {
+    for(const [path,type] of [['/_next/static/chunks/app.js','text/javascript'],['/docs/__next._tree.txt','text/plain'],['/feedback-admin/__next._tree.txt','text/plain'],['/admin/index.txt','text/plain']]) {
       const worker=await host.fetch(new Request(`https://example.com${path}`),{ENVIRONMENT:environment,RELEASE:'a'.repeat(40),ASSETS:{fetch:async()=>new Response('asset',{headers:{'content-type':type}})}});
       const applied=file.filter(([pattern])=>pattern.test(path)).flatMap(([,headers])=>headers).sort();
       const expected=[...worker.headers].filter(([name])=>name!=='content-type').sort();
       assert.deepEqual(applied,expected,`${environment} ${path}`);
     }
   }
+});
+test('no missing file is ever cached for long: _headers rules also apply to 404s, and a rollback may revive the file',()=>{
+  for(const environment of ['beta','production']) assert.doesNotMatch(siteHeaders(environment),/cache-control|immutable/i,environment);
 });

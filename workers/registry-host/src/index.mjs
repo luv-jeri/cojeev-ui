@@ -13,7 +13,6 @@ const host = {
     for (const [name,value] of Object.entries(securityHeaders(env.ENVIRONMENT))) secured.headers.set(name,value);
     if(env.ENVIRONMENT === 'beta' || /^\/(?:admin|feedback-admin)(?:\/|$)/.test(pathname)) secured.headers.set('x-robots-tag','noindex, nofollow, noarchive');
     if(pathname === '/health' || pathname === '/release.json') secured.headers.set('cache-control','no-store');
-    else if(response.ok && pathname.startsWith('/_next/static/')) secured.headers.set('cache-control','public, max-age=31536000, immutable');
     else if((response.headers.get('content-type') ?? '').includes('text/html')) secured.headers.set('cache-control','public, max-age=0, must-revalidate');
     const match = pathname.match(/^\/r\/([a-z0-9][a-z0-9-]{0,79})\.json$/);
     if (request.method !== "GET" || !match || !env.REGISTRY_METRICS) return secured;
