@@ -59,12 +59,102 @@ const localOnly = context => context.route(/^https?:\/\//, route => {
   return ["localhost", "127.0.0.1"].includes(url.hostname) ? route.continue() : route.abort();
 });
 
+// Word budget, tab order and target-size helpers (spec 5, 7c). Words and controls are read from the visible sheet only.
+const CONTROLS = "a[href], button, input:not([type=file]):not([type=hidden]), textarea, select";
+const TOUCH = "button, a[href], input:not([type=file]):not([type=hidden]), textarea";
+const measure = (page, selector = CONTROLS, root = ".report-sheet") => page.evaluate(({ selector, root }) => {
+  const shown = node => node.checkVisibility() && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0;
+  const sheet = [...document.querySelectorAll(root)].find(shown);
+  const label = node => node.getAttribute("aria-label") || node.innerText?.trim() || node.getAttribute("name") || node.tagName;
+  const found = [...sheet.querySelectorAll(selector)].filter(shown);
+  const words = sheet.innerText.split(/\s+/).filter(token => /[\p{L}\p{N}]/u.test(token)).length;
+  const small = found.map(node => { const box = node.getBoundingClientRect(); return { name: label(node), w: Math.round(box.width * 10) / 10, h: Math.round(box.height * 10) / 10 }; }).filter(item => item.w < 43.99 || item.h < 43.99);
+  return { words, controls: found.length, small, total: found.length };
+}, { selector, root });
+const kindTabName = kind => kind === "bug" ? "Report a bug" : "Request a feature";
+const switchTab = async (page, kind) => {
+  await panel(page).getByRole("tab", { name: kindTabName(kind), exact: true }).click();
+  await page.getByRole("textbox", { name: kind === "bug" ? "Short summary" : "What component do you want?", exact: true }).waitFor();
+};
+const focusName = async page => (await page.locator(":focus").ariaSnapshot()).match(/"(.*?)"/)?.[1] ?? "(unnamed)";
+const REQUEST_ORDER = ["Request a feature", "Close reporting panel", "Request a feature content", "What component do you want?", "How would you use it?", "Attach files", "How this works", "Your email", "Review request", "More"];
+const BUG_ORDER = ["Report a bug", "Close reporting panel", "Report a bug content", "Short summary", "What happened?", "Attach files", "Pin elements", "Select area", "Full page", "Include browser details", "How this works", "Your email", "Review report", "More"];
+// Records the Tab sequence from the selected tab; the checked stop count is the expected list, then one more Tab must stay inside the dialog.
+const tabOrder = async (page, kind, expected) => {
+  await panel(page).getByRole("tab", { name: kindTabName(kind), exact: true }).focus();
+  const seen = [await focusName(page)];
+  for (let step = 1; step < expected.length; step += 1) { await page.keyboard.press("Tab"); seen.push(await focusName(page)); }
+  assert.deepEqual(seen, expected, `${kind} Tab order`);
+  await page.keyboard.press("Tab");
+  assert.ok(await panel(page).evaluate(node => node.contains(document.activeElement)), `${kind}: Tab after the last stop stays in the dialog`);
+};
+const stubSend = context => context.route(`${api}/v1/reports`, route => {
+  if (route.request().method() !== "POST") return route.continue();
+  const { report, token } = route.request().postDataJSON();
+  return route.fulfill({ status: 201, json: { id: report.id, token, status: "received", topicId: null, email: "pending", issue: "pending", statusKey: "b".repeat(64), attachments: [] } });
+});
+const sendStubbed = async (page, kind, title) => {
+  await fill(page, kind, title);
+  await page.getByRole("button", { name: kind === "bug" ? "Review report" : "Review request", exact: true }).click();
+  await page.getByRole("button", { name: kind === "bug" ? "Send report" : "Send request", exact: true }).click();
+  await sentBanner(page, kind).waitFor();
+};
+const assertTargets = (state, found) => assert.deepEqual(found.small, [], `${state}: targets under 44x44 (of ${found.total})`);
+
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
   await localOnly(context);
   await context.route(`${api}/v1/config`, async route => { const response = await route.fetch(); await route.fulfill({ response, json: { ...(await response.json()), emailEnabled: true } }); });
   const page = await context.newPage(); activePage = page; page.on("pageerror", error => pageErrors.push(error.message)); page.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(page);
+  const budgets = {};
+  {
+    for (const kind of ["request", "bug"]) {
+      await switchTab(page, kind);
+      const found = await measure(page); budgets[`desktop ${kind}`] = { words: found.words, controls: found.controls };
+      assert.ok(found.words <= 60, `${kind}: ${found.words} words`); assert.ok(found.controls <= 12, `${kind}: ${found.controls} controls`);
+    }
+    console.log("rest budget at 1440", JSON.stringify(budgets));
+    await switchTab(page, "request");
+  }
+  {
+    for (const [kind, order] of [["request", REQUEST_ORDER], ["bug", BUG_ORDER]]) { await switchTab(page, kind); await tabOrder(page, kind, order); }
+    await switchTab(page, "request");
+    results.push("Tab order runs tab, close, pane, fields, tools, info, email, Review, More on both tabs and never leaves the dialog");
+  }
+  {
+    for (const [kind, labels] of [["request", ["What component do you want?", "How would you use it?", "Your email"]], ["bug", ["Short summary", "What happened?", "Your email"]]]) {
+      await switchTab(page, kind);
+      const shown = await panel(page).locator(".report-sheet button:visible").count(), named = await panel(page).locator(".report-sheet").getByRole("button", { name: /\S/ }).count();
+      assert.equal(named, shown, `${kind}: every visible button has a name; buttons: ${(await panel(page).locator(".report-sheet button:visible").evaluateAll(nodes => nodes.map(node => `${node.getAttribute("role") ?? "button"}:${node.getAttribute("aria-label") ?? node.innerText.trim()}`))).join(" | ")}`);
+      for (const label of labels) { const field = panel(page).getByLabel(label, { exact: true }); assert.equal(await field.count(), 1, `${kind}: ${label}`); assert.ok(["INPUT", "TEXTAREA"].includes(await field.evaluate(node => node.tagName)), `${kind}: ${label} is a field`); }
+      assert.equal(await panel(page).getByLabel("Your email", { exact: true }).getAttribute("aria-describedby"), "email-help");
+    }
+    await switchTab(page, "request");
+    results.push("Every visible button in the panel has an accessible name; every field resolves by label; the email hint is linked");
+  }
+  {
+    const quiet = async (selector, state) => {
+      await page.locator(selector).first().waitFor({ state: "visible" });
+      const found = await page.locator(selector).first().evaluate(node => ({
+        running: node.getAnimations({ subtree: true }).filter(animation => animation.playState === "running").length,
+        loud: [node, ...node.querySelectorAll("*")].map(item => getComputedStyle(item)).filter(style => style.animationName !== "none" && style.animationDuration !== "0s").length
+      }));
+      assert.deepEqual(found, { running: 0, loud: 0 }, `${state} runs no animation`);
+    };
+    await page.getByRole("button", { name: "Attach files", exact: true }).hover();
+    await quiet('[data-slot="tooltip-content"]', "The tool tooltip");
+    await page.mouse.move(5, 5);
+    await page.getByRole("button", { name: "How this works", exact: true }).click();
+    await quiet('[data-slot="popover-content"]', "The info popover");
+    await page.keyboard.press("Escape"); await page.getByRole("dialog", { name: "How this works", exact: true }).waitFor({ state: "hidden" });
+    results.push("Under reduced motion the info popover and the tool tooltip run no animation");
+  }
+  {
+    const boxes = await page.getByText("Tell us what’s missing or what got in your way.", { exact: true }).evaluateAll(nodes => nodes.map(node => { const box = node.getBoundingClientRect(); return { w: box.width, h: box.height }; }));
+    assert.ok(boxes.every(box => box.w <= 1 && box.h <= 1), `The description is painted: ${JSON.stringify(boxes)}`);
+    results.push("The dialog description is not painted");
+  }
   {
     const more = page.getByRole("button", { name: "More", exact: true });
     const sendTop = () => page.getByRole("button", { name: /^Review (request|report)$/ }).evaluate(node => node.getBoundingClientRect().top);
@@ -532,6 +622,28 @@ try {
   await context.close();
 
   {
+    // One report sent (stubbed, so the Worker's send limit is not spent), then the fresh form with its banner and one collapsed row.
+    const counts = {};
+    for (const kind of ["request", "bug"]) {
+      const sentContext = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
+      await localOnly(sentContext); await stubSend(sentContext);
+      await sentContext.route(`${api}/v1/config`, async route => { const response = await route.fetch(); await route.fulfill({ response, json: { ...(await response.json()), emailEnabled: true } }); });
+      const sentPage = await sentContext.newPage(); activePage = sentPage; sentPage.on("pageerror", error => pageErrors.push(error.message));
+      await sentPage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(sentPage);
+      await sendStubbed(sentPage, kind, `Budget ${kind} ${run}`);
+      assert.equal(await sentCount(sentPage), 1);
+      const found = await measure(sentPage); counts[kind] = { words: found.words, controls: found.controls };
+      assert.ok(found.words <= 60, `${kind} after a send: ${found.words} words`); assert.ok(found.controls <= 14, `${kind} after a send: ${found.controls} controls`);
+      await switchTab(sentPage, kind === "bug" ? "request" : "bug"); await switchTab(sentPage, kind);
+      await sentBanner(sentPage, kind).waitFor({ state: "detached" });
+      await tabOrder(sentPage, kind, [...(kind === "bug" ? BUG_ORDER : REQUEST_ORDER), "Sent from this browser · 1"]);
+      await sentContext.close();
+    }
+    console.log("budget after one send", JSON.stringify(counts));
+    results.push("Words stay within 60 and controls within 14 with the sent banner and one sent row on both tabs");
+    results.push("Tab order with one sent row ends with More then Sent from this browser");
+  }
+  {
     // Stored state from an older build: the list is capped on the way in, and a receipt sitting in a draft is moved.
     const seeded = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
     await localOnly(seeded);
@@ -671,6 +783,17 @@ try {
   const mobilePage = await mobile.newPage(); activePage = mobilePage; mobilePage.on("pageerror", error => pageErrors.push(error.message)); mobilePage.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await mobilePage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await screenshot(mobilePage, "request-board-mobile"); await open(mobilePage);
   {
+    for (const kind of ["request", "bug"]) {
+      await switchTab(mobilePage, kind);
+      const found = await measure(mobilePage); budgets[`phone ${kind}`] = { words: found.words, controls: found.controls };
+      assert.ok(found.words <= 60, `${kind} at 390: ${found.words} words`); assert.ok(found.controls <= 12, `${kind} at 390: ${found.controls} controls`);
+      assertTargets(`${kind} at rest`, await measure(mobilePage, TOUCH));
+    }
+    console.log("rest budget at 390", JSON.stringify(budgets));
+    results.push("Rest state stays within 60 words and 12 controls on both tabs at 1440px and 390px");
+    await switchTab(mobilePage, "request");
+  }
+  {
     await panel(mobilePage).getByRole("tab", { name: "Report a bug", exact: true }).click();
     const info = mobilePage.getByRole("button", { name: "How this works", exact: true }), pop = mobilePage.getByRole("dialog", { name: "How this works", exact: true });
     await info.evaluate(node => node.scrollIntoView({ block: "end" })); await info.tap(); await pop.waitFor();
@@ -693,6 +816,43 @@ try {
   await fill(mobilePage, "request", "A mobile calendar with date ranges"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await assertFits(mobilePage); await screenshot(mobilePage, "request-mobile-light");
   await fill(mobilePage, "bug", "The control is difficult to select on my phone"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await screenshot(mobilePage, "bug-mobile-light");
   await mobilePage.evaluate(() => { document.documentElement.dataset.mode = "dark"; }); await screenshot(mobilePage, "bug-mobile-dark");
+  {
+    // Bug with an attachment and browser details (state 3), then pin mode (5) and capture progress (6).
+    await switchTab(mobilePage, "bug");
+    await mobilePage.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "reference.png", mimeType: "image/png", buffer: imageBytes });
+    await mobilePage.getByAltText("Attachment preview: reference.png").waitFor();
+    await mobilePage.getByRole("button", { name: "Include browser details", exact: true }).click();
+    await mobilePage.getByRole("button", { name: "Review browser details", exact: true }).click();
+    await mobilePage.locator(".report-diagnostic-groups details").first().waitFor();
+    assertTargets("Bug with an attachment and browser details", await measure(mobilePage, TOUCH));
+    await mobilePage.getByRole("button", { name: "Pin elements", exact: true }).tap();
+    const pinDialog = mobilePage.getByRole("dialog", { name: "Pin elements", exact: true }); await pinDialog.waitFor();
+    await pinDialog.focus(); await mobilePage.keyboard.press("ArrowRight"); await mobilePage.keyboard.press("Enter");
+    await mobilePage.getByRole("button", { name: "Remove pin 1", exact: true }).first().waitFor();
+    assertTargets("Pin mode", await measure(mobilePage, TOUCH, ".report-picker-toolbar"));
+    await mobilePage.keyboard.press("Escape"); await panel(mobilePage).waitFor();
+    await mobilePage.route(/t16-image-\d\.png/, async route => { await new Promise(resolve => setTimeout(resolve, 4500)); await route.fulfill({ status: 200, contentType: "image/png", body: imageBytes }).catch(() => {}); });
+    await mobilePage.evaluate(() => { for (let index = 0; index < 4; index += 1) { const image = document.createElement("img"); image.src = `t16-image-${index}.png?n=${Math.random()}`; image.width = 40; image.height = 40; image.alt = ""; image.dataset.t16 = ""; document.body.prepend(image); } });
+    await mobilePage.getByRole("button", { name: "Full page", exact: true }).tap();
+    await mobilePage.locator(".report-capture-card").waitFor({ timeout: 30000 });
+    assertTargets("Capture progress", await measure(mobilePage, TOUCH, ".report-capture-card"));
+    await mobilePage.getByRole("button", { name: "Cancel screenshot", exact: true }).tap();
+    await mobilePage.locator(".report-capture-card").waitFor({ state: "detached" });
+    await mobilePage.unroute(/t16-image-\d\.png/); await mobilePage.evaluate(() => document.querySelectorAll("[data-t16]").forEach(node => node.remove()));
+  }
+  {
+    // Request after a send (state 4): the banner, then an open row with every receipt action.
+    await stubSend(mobile);
+    await switchTab(mobilePage, "request");
+    await sendStubbed(mobilePage, "request", "A mobile calendar with date ranges");
+    assertTargets("Request after a send, banner and collapsed row", await measure(mobilePage, TOUCH));
+    await mobilePage.locator(".report-sent-banner").getByRole("link", { name: "View", exact: true }).tap();
+    await mobilePage.locator(".report-sent-detail").waitFor();
+    for (const name of ["Refresh status", "Download receipt", "Remove from this device"]) await mobilePage.locator(".report-sent-detail").getByRole("button", { name, exact: true }).waitFor();
+    await mobilePage.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }).waitFor();
+    assertTargets("Request after a send, open row", await measure(mobilePage, TOUCH));
+    await switchTab(mobilePage, "bug");
+  }
   await mobilePage.getByRole("button", { name: "More", exact: true }).click(); await mobilePage.getByRole("menuitem", { name: "Clear draft", exact: true }).click();
   await mobile.close(); results.push("Mobile request/bug forms and light/dark layouts fit a 390px viewport");
 } catch (error) { failures.push(error.stack ?? String(error)); if (activePage && !activePage.isClosed()) { await activePage.screenshot({path: `${output}/failure.png`}); await writeFile(`${output}/failure.txt`, await activePage.locator("body").ariaSnapshot()); } }

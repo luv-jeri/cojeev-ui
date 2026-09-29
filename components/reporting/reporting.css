@@ -1194,6 +1194,10 @@ html[data-flow="off"]
   .report-sent-banner a {
     min-height: var(--hit-min);
   }
+  .report-sent-banner a {
+    justify-content: center;
+    min-width: var(--hit-min);
+  }
   .report-sent-row {
     min-height: var(--hit-min);
     padding-inline: var(--s-3);

@@ -1025,6 +1025,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                     accept={MEDIA_TYPES.join(",")}
                     multiple
                     tabIndex={-1}
+                    aria-hidden="true"
                     onChange={(event) => {
                       void addFiles(Array.from(event.target.files ?? []));
                       event.target.value = "";
@@ -1243,6 +1244,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   accept="application/json,.json"
                   className="sr-only"
                   tabIndex={-1}
+                  aria-hidden="true"
                   aria-label="Import a saved receipt"
                   onChange={(event) => {
                     const file = event.target.files?.[0];
