@@ -87,6 +87,15 @@ try {
   assert.equal(await page.getByLabel("What component do you want?", { exact: true }).inputValue(), `Browser request ${run}`);
   await page.getByAltText("Attachment preview: reference.png").waitFor();
   results.push("Draft fields and File survive closing and reloading via IndexedDB");
+  // Bug tab: it holds no files, so this is text alone, closed and reloaded with no wait.
+  await panel(page).getByRole("tab", { name: "Report a bug", exact: true }).click();
+  await page.getByLabel("Short summary", { exact: true }).fill(`Quick close ${run}`);
+  await page.getByRole("button", { name: "Close reporting panel" }).click();
+  await page.reload({ waitUntil: "domcontentloaded" }); await open(page);
+  assert.equal(await page.getByLabel("Short summary", { exact: true }).inputValue(), `Quick close ${run}`);
+  await page.getByLabel("Short summary", { exact: true }).fill("");
+  await panel(page).getByRole("tab", { name: "Request a feature", exact: true }).click();
+  results.push("closing_right_after_typing_keeps_the_draft");
   await page.getByLabel("What component do you want?", { exact: true }).fill("Chart for person@example.com");
   await page.getByRole("button", { name: "Review request", exact: true }).click();
   await page.getByRole("button", { name: "Send request", exact: true }).click();

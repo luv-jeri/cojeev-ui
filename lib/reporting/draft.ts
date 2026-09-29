@@ -9,23 +9,31 @@ export type ReportingDraft = {
 };
 export function emptyDraft(): ReportingDraft { return { kind: "request", title: "", description: "", email: "", pins: [], files: [], diagnostics: null, frozen: null, attempted: false, receipt: null }; }
 const databaseName = "cojeev-reporting-v1";
+// One warm connection for the page's life: a save that has to open the database first can
+// lose the race with a reload that follows a close by a few milliseconds.
+let connection: Promise<IDBDatabase> | null = null;
 function openDatabase(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
+  connection ??= new Promise<IDBDatabase>((resolve, reject) => {
     if (typeof indexedDB === "undefined") { reject(new Error("Local draft storage is unavailable.")); return; }
     const request = indexedDB.open(databaseName, 1);
     request.onupgradeneeded = () => request.result.createObjectStore("drafts");
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => {
+      const db = request.result;
+      db.onversionchange = db.onclose = () => { connection = null; db.close(); };
+      resolve(db);
+    };
     request.onerror = () => reject(request.error ?? new Error("Local draft storage is unavailable."));
     request.onblocked = () => reject(new Error("Local draft storage is blocked by another tab."));
-  });
+  }).catch(cause => { connection = null; throw cause; });
+  return connection;
 }
 async function operation<T>(mode: IDBTransactionMode, action: (store: IDBObjectStore) => IDBRequest<T>): Promise<T> {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction("drafts", mode);
     const request = action(transaction.objectStore("drafts"));
-    transaction.oncomplete = () => { db.close(); resolve(request.result); };
-    transaction.onerror = transaction.onabort = () => { db.close(); reject(transaction.error ?? new Error("Could not save this draft.")); };
+    transaction.oncomplete = () => resolve(request.result);
+    transaction.onerror = transaction.onabort = () => reject(transaction.error ?? new Error("Could not save this draft."));
   });
 }
 export async function loadDraft(): Promise<ReportingDraft | null> { return (await operation("readonly", store => store.get("current"))) ?? null; }

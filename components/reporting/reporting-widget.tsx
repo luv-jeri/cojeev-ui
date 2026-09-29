@@ -234,9 +234,14 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   }, []);
   useEffect(() => {
     if (!loaded) return;
-    saveTimer.current = setTimeout(() => {
-      void persist(draft);
-    }, 300);
+    // Text is small, so it is written at once: a write that starts late can be cut off by a
+    // reload. Files are Blobs and slow to store, so bursts of changes to them wait 300 ms.
+    saveTimer.current = setTimeout(
+      () => {
+        void persist(draft);
+      },
+      draft.files.length ? 300 : 0,
+    );
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
@@ -254,10 +259,15 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       setOpen(true);
     };
     take();
+    const hidden = () => {
+      if (document.visibilityState === "hidden") save();
+    };
     window.addEventListener("pagehide", save);
+    document.addEventListener("visibilitychange", hidden);
     window.addEventListener(REPORT_EVENT, take);
     return () => {
       window.removeEventListener("pagehide", save);
+      document.removeEventListener("visibilitychange", hidden);
       window.removeEventListener(REPORT_EVENT, take);
     };
   }, [loaded, persist, selectDraft, busy, capture]);
@@ -326,6 +336,10 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     try {
       await manifestFiles(next);
       update({ files: next });
+      // A file is written to storage now, not after the debounce: storing a Blob takes long
+      // enough that a reload right after attaching would otherwise cut the write off.
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      void persist({ ...draftRef.current, files: next });
     } catch (cause) {
       setError(message(cause));
     } finally {
@@ -1230,7 +1244,11 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         open={open && !picking}
         onOpenChange={(value) => {
           setOpen(value);
-          if (!value && loaded) void persist(draftRef.current);
+          if (!value && loaded) {
+            // Save now, once: a reload right after closing must not beat the 300 ms debounce.
+            if (saveTimer.current) clearTimeout(saveTimer.current);
+            void persist(draftRef.current);
+          }
         }}
         variant="stack"
         side="end"
