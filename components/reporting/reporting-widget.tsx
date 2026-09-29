@@ -996,9 +996,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                             update({ topicId: topic.id, title: topic.title })
                           }
                         >
+                          <span>{topic.title}</span>{" "}
                           <span>
-                            {topic.title} · {topic.demand}{" "}
-                            {topic.demand === 1 ? "person" : "people"} ·{" "}
+                            · {topic.demand} {topic.demand === 1 ? "person" : "people"} ·{" "}
                             <span className="report-join-label">Join</span>
                           </span>
                         </button>
