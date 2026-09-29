@@ -278,3 +278,35 @@ test('smoke_ids_exist_and_contract_only_output_is_in_registry_order', () => {
   const order = selectGateIdsFromCheckout([]).order;
   assert.deepEqual(real, order.filter(id => real.includes(id)));
 });
+
+// The depth step runs before `npm ci`, so the selector must load without typescript
+// installed and answer full instead of crashing the job (PR #91's first CI run).
+test('selector_without_typescript_runs_full', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ci-affected-ids-'));
+  try {
+    fs.copyFileSync(new URL('../scripts/ci-affected-ids.mjs', import.meta.url), path.join(dir, 'ci-affected-ids.mjs'));
+    const code = `const m = await import(${JSON.stringify(path.join(dir, 'ci-affected-ids.mjs'))});
+      const registry = { items: [{ name: 'alpha', type: 'registry:ui', files: [{ path: 'registry/cojeev/ui/alpha.tsx' }] }] };
+      console.log(JSON.stringify(m.selectGateIds(['registry/cojeev/ui/alpha.tsx'], { registry, read: () => null, appModules: () => [] })));`;
+    const env = { ...process.env }; delete env.NODE_PATH;
+    const out = JSON.parse(execFileSync(process.execPath, ['--input-type=module', '-e', code], { cwd: dir, env, encoding: 'utf8' }));
+    assert.match(out.full ?? '', /typescript/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('depth_step_has_the_import_scanner', () => {
+  const workflow = fs_read('.github/workflows/verify.yml');
+  const install = workflow.indexOf('- name: Install the import scanner for depth selection');
+  const depth = workflow.indexOf('- name: Select release verification depth');
+  assert.ok(install > 0 && install < depth, 'the scanner install runs before the depth step');
+  const installStep = workflow.slice(install, depth);
+  assert.match(installStep, /continue-on-error: true/, 'a failed install falls back to full, never fails the job');
+  assert.match(installStep, /packages\['node_modules\/typescript'\]\.version/, 'the version comes from the lockfile');
+  const depthStep = workflow.slice(depth, workflow.indexOf('- name:', depth + 10));
+  assert.match(depthStep, /NODE_PATH: \$\{\{ runner\.temp \}\}\/ci-scope-typescript\/node_modules/);
+});

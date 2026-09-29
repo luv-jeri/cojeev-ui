@@ -325,10 +325,20 @@ jobs:
       # guard on this job is unchanged. Only pull request and push values are
       # passed, as environment variables, never interpolated into a shell
       # command; no secret is available to or used by this step.
+      # The depth step scans component imports with the TypeScript parser, but it
+      # runs before `npm ci`. Install only the lockfile's typescript (it has no
+      # dependencies) into a temporary prefix. If this fails, the selector cannot
+      # scan and answers full, so the install never needs to fail the job.
+      - name: Install the import scanner for depth selection
+        continue-on-error: true
+        run: |
+          version=$(node -p "require('./package-lock.json').packages['node_modules/typescript'].version")
+          npm install --no-save --no-audit --no-fund --ignore-scripts --prefix "$RUNNER_TEMP/ci-scope-typescript" "typescript@$version"
       - name: Select release verification depth
         id: depth
         run: node scripts/ci-scope.mjs
         env:
+          NODE_PATH: ${{ runner.temp }}/ci-scope-typescript/node_modules
           CI_SCOPE_MODE: release
           CI_SCOPE_EVENT: ${{ github.event_name }}
           CI_SCOPE_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}

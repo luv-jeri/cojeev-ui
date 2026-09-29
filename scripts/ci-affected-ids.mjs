@@ -6,9 +6,19 @@
  * caller then runs every id, exactly as before.
  */
 import fs from "node:fs";
-import { builtinModules } from "node:module";
+import { builtinModules, createRequire } from "node:module";
 import path from "node:path";
-import ts from "typescript";
+
+// The release depth step runs before `npm ci` (a documentation-only change installs
+// nothing), so typescript is loaded on first use, not at import. When it cannot be
+// loaded, every selection is full: the job runs everything instead of crashing.
+let ts;
+function loadTypeScript() {
+  if (ts === undefined) {
+    try { ts = createRequire(import.meta.url)("typescript"); } catch { ts = null; }
+  }
+  return ts;
+}
 
 // A css file listed by more than this many registry items is shared styling.
 export const TARGET_MAX = 3;
@@ -112,6 +122,7 @@ export function selectGateIds(paths, { registry, read, appModules, targetMax = T
   const order = items.filter(item => item.type === "registry:ui").map(item => item.name);
   // No paths: the caller wants only the registry order.
   if (!paths.length) return { ids: [], order };
+  if (!loadTypeScript()) return { full: "typescript is not installed, so imports cannot be scanned" };
   const closure = new Set();
   // A stylesheet is never imported from TypeScript: it reaches pages through the component that owns it.
   // So the scans below look for the owner's module as well as the css itself.
