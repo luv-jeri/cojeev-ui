@@ -51,7 +51,7 @@ async function openPage({ width = 1440, height = 1000 } = {}) {
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" });
   await page.getByRole("button", { name: "Request a feature / Report a bug" }).click();
   await panel(page).waitFor();
-  await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor();
+  await page.getByRole("button", { name: "More", exact: true }).waitFor();
   await panel(page).getByRole("tab", { name: "Report a bug", exact: true }).click();
   await page.evaluate(({ html, secret }) => {
     document.body.insertAdjacentHTML("beforeend", html);

@@ -238,13 +238,6 @@
   display: grid;
   gap: var(--s-3);
 }
-.report-footer-links {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-3);
-}
-.report-footer-links a,
 .report-receipt > a {
   font-size: var(--fs-meta);
   display: flex;
@@ -455,9 +448,6 @@
   .report-sheet .v-btn {
     max-width: 100%;
   }
-  .report-footer-links {
-    flex-wrap: wrap;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .report-launcher:is(:hover, :focus-visible) .report-launcher-shape {
@@ -478,9 +468,6 @@ html[data-flow="off"]
   pointer-events: none;
 }
 
-.report-form-footer > .report-help[role="status"] {
-  min-height: 2lh;
-}
 
 .report-launcher {
   max-width: calc(100vw - 32px);
@@ -708,11 +695,8 @@ html[data-flow="off"]
   gap: var(--s-3);
 }
 .report-footer-row > .report-help {
-  min-height: 0;
+  min-height: 1lh; /* reserved: a status message appearing or clearing moves nothing */
   margin: 0;
-}
-.report-form-footer > .report-help[role="status"] {
-  min-height: 0;
 }
 .report-receipt-status {
   display: flex;

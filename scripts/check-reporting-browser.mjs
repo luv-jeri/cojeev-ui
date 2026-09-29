@@ -17,7 +17,7 @@ const run = Date.now().toString(36);
 const imageBytes = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf3sAAAAASUVORK5CYII=", "base64");
 const screenshot = async (page, name) => { if (await page.locator(".report-launcher").count()) await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false); await page.screenshot({ path: `${output}/${name}.png`, fullPage: false, caret: "initial" }); };
 const panel = page => page.getByRole("dialog", { name: "Request a feature or report a bug", exact: true });
-const open = async page => { await page.getByRole("button", { name: "Request a feature / Report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor(); };
+const open = async page => { await page.getByRole("button", { name: "Request a feature / Report a bug" }).click(); await panel(page).waitFor(); await page.getByRole("button", { name: "More", exact: true }).waitFor(); };
 const fill = async (page, kind, title) => {
   const kindTab = panel(page).getByRole("tab", { name: kind === "bug" ? "Report a bug" : "Request a feature", exact: true });
   await kindTab.click();
@@ -39,6 +39,23 @@ try {
   await context.route(`${api}/v1/config`, async route => { const response = await route.fetch(); await route.fulfill({ response, json: { ...(await response.json()), emailEnabled: true } }); });
   const page = await context.newPage(); activePage = page; page.on("pageerror", error => pageErrors.push(error.message)); page.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(page);
+  {
+    const more = page.getByRole("button", { name: "More", exact: true });
+    const sendTop = () => page.getByRole("button", { name: /^Review (request|report)$/ }).evaluate(node => node.getBoundingClientRect().top);
+    const before = await sendTop();
+    await page.getByRole("textbox", { name: /^(What component do you want\?|Short summary)$/ }).fill(`Footer ${run}`);
+    await panel(page).getByRole("status").filter({ hasText: "Draft saved" }).waitFor();
+    assert.equal(await sendTop(), before, "The Send row does not move when a status message appears");
+    await more.focus(); await page.keyboard.press("Enter");
+    assert.deepEqual(await page.getByRole("menuitem").allInnerTexts(), ["Clear draft", "Request board", "Open a saved receipt"]);
+    await page.waitForFunction(() => document.activeElement?.getAttribute("role") === "menuitem");
+    await page.keyboard.press("Escape");
+    await page.getByRole("menu").waitFor({ state: "hidden" });
+    await page.waitForFunction(() => document.activeElement?.getAttribute("aria-label") === "More");
+    await panel(page).waitFor({ state: "visible" });
+    results.push("More opens by keyboard with Clear draft, Request board and Open a saved receipt; Escape closes only the menu; the footer does not jump");
+    await panel(page).getByRole("textbox", { name: /^(What component do you want\?|Short summary)$/ }).fill("");
+  }
   for (const [tab, text] of [["Request a feature", "We aim to build requests within 36 hours"], ["Report a bug", "Adds device info, recent errors, failed routes and clicks."]]) {
     await panel(page).getByRole("tab", { name: tab, exact: true }).click();
     const info = page.getByRole("button", { name: "How this works", exact: true }), pop = page.getByRole("dialog", { name: "How this works", exact: true });
@@ -193,6 +210,27 @@ try {
   await page.getByText("Tracked as", { exact: false }).waitFor({ state: "detached" });
   results.push("The receipt links the public issue once it exists");
   await screenshot(page, "request-receipt");
+  {
+    const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Download receipt", exact: true }).click()]);
+    await download.saveAs(`${output}/receipt.json`);
+    await page.getByRole("button", { name: "Start another", exact: true }).click();
+    const more = page.getByRole("button", { name: "More", exact: true });
+    await more.focus(); await page.keyboard.press("Enter");
+    await page.getByRole("menuitem", { name: "Clear draft", exact: true }).waitFor();
+    // Radix moves focus one item per press once the menu has settled; wait for each move.
+    await page.waitForFunction(() => document.activeElement?.textContent?.trim() === "Clear draft");
+    for (const next of ["Request board", "Open a saved receipt"]) {
+      await page.keyboard.press("ArrowDown");
+      await page.waitForFunction(text => document.activeElement?.textContent?.trim() === text, next);
+    }
+    const chooser = page.waitForEvent("filechooser");
+    await page.keyboard.press("Enter");
+    await (await chooser).setFiles(`${output}/receipt.json`);
+    await accepted(page);
+    await page.locator(".report-delivery summary", { hasText: "Delivery details" }).click();
+    assert.equal(await page.locator(".report-delivery .report-receipt-id code").innerText(), requestId);
+    results.push("A downloaded receipt reopens through More, Open a saved receipt, by keyboard");
+  }
   await page.getByRole("button", { name: "Start another", exact: true }).click();
   await fill(page, "bug", `Browser bug ${run}`);
   await page.evaluate(() => { document.documentElement.dataset.mode = "dark"; console.warn("Browser test warning Bearer secret-test-value person@example.com"); });
@@ -324,7 +362,7 @@ try {
   await fill(mobilePage, "request", "A mobile calendar with date ranges"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await assertFits(mobilePage); await screenshot(mobilePage, "request-mobile-light");
   await fill(mobilePage, "bug", "The control is difficult to select on my phone"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await screenshot(mobilePage, "bug-mobile-light");
   await mobilePage.evaluate(() => { document.documentElement.dataset.mode = "dark"; }); await screenshot(mobilePage, "bug-mobile-dark");
-  await mobilePage.getByRole("button", { name: "Clear draft", exact: true }).click();
+  await mobilePage.getByRole("button", { name: "More", exact: true }).click(); await mobilePage.getByRole("menuitem", { name: "Clear draft", exact: true }).click();
   await mobile.close(); results.push("Mobile request/bug forms and light/dark layouts fit a 390px viewport");
 } catch (error) { failures.push(error.stack ?? String(error)); if (activePage && !activePage.isClosed()) { await activePage.screenshot({path: `${output}/failure.png`}); await writeFile(`${output}/failure.txt`, await activePage.locator("body").ariaSnapshot()); } }
 finally { await browser.close(); }

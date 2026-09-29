@@ -71,7 +71,7 @@ import {
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
 import { REPORT_EVENT, STATUS_LABELS, takeRequest } from "./report-request";
 import { AreaPicker, CaptureStatus } from "./area-picker";
-import { ReportInfo, ReportTool } from "./report-controls";
+import { MoreMenu, ReportInfo, ReportTool } from "./report-controls";
 import { pinChipText, submittedPins } from "@/lib/reporting/pin-label";
 import { TooltipProvider } from "@/registry/cojeev/ui/tooltip";
 import { Turnstile } from "./turnstile";
@@ -949,25 +949,20 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   : "Private. Used only for updates."}
               </p>
               <div className="report-form-footer">
-                <p className="report-help" role="status">
-                  {busy || storage}
-                </p>
                 <Button type="submit" loading={!!busy} fullWidth>
                   Review {draft.kind === "request" ? "request" : "report"}
                   <ArrowUpRight size={17} />
                 </Button>
-                <div className="report-footer-links">
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                <div className="report-footer-row">
+                  <p className="report-help" role="status">
+                    {busy || storage}
+                  </p>
+                  <MoreMenu
                     disabled={!!busy}
-                    onClick={clear}
-                  >
-                    Clear draft
-                  </Button>
-                  <Link href="/requests" onClick={() => setOpen(false)}>
-                    View request board
-                  </Link>
+                    onClear={clear}
+                    onBoard={() => setOpen(false)}
+                    onOpenReceipt={() => receiptInput.current?.click()}
+                  />
                 </div>
                 <input
                   ref={receiptInput}
@@ -982,14 +977,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                     event.target.value = "";
                   }}
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={!!busy}
-                  onClick={() => receiptInput.current?.click()}
-                >
-                  Check a saved receipt
-                </Button>
               </div>
             </form>
           ) : step === "review" && draft.frozen ? (

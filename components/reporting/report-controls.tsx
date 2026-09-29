@@ -2,6 +2,8 @@
 
 import { AnimatedIcon, type AnimatedIconProps } from "@/registry/cojeev/ui/animated-icon";
 import { Button } from "@/registry/cojeev/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/registry/cojeev/ui/dropdown-menu";
+import Link from "next/link";
 import { Popover, PopoverContent, PopoverTrigger } from "@/registry/cojeev/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/registry/cojeev/ui/tooltip";
 import type { ReactNode } from "react";
@@ -90,5 +92,27 @@ export function ReportInfo({ kind, beta }: { kind: ReportKind; beta: boolean }) 
         {beta && <p>Beta reports are stored separately. Email updates are limited to invited testers during this beta.</p>}
       </PopoverContent>
     </Popover>
+  );
+}
+
+/** Rare actions behind one icon button; the receipt input is clicked inside the menu-select gesture. */
+export function MoreMenu({ disabled, onClear, onBoard, onOpenReceipt }: {
+  disabled: boolean; onClear: () => void; onBoard: () => void; onOpenReceipt: () => void;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button type="button" variant="ghost" size="sm" className="report-more" aria-label="More" disabled={disabled}>
+          {icon("ellipsis")}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onSelect={onClear}>Clear draft</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/requests" onClick={onBoard}>Request board</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onOpenReceipt}>Open a saved receipt</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

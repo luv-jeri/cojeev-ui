@@ -49,7 +49,7 @@ try {
   page.on("pageerror", error => errors.push(error.message));
   const open = async () => {
     await page.getByRole("button", { name: "Request a feature / Report a bug", exact: true }).click();
-    await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor();
+    await page.getByRole("button", { name: "More", exact: true }).waitFor();
   };
   const stored = () => page.evaluate(() => new Promise((resolve, reject) => {
     const request = indexedDB.open("cojeev-reporting-v1", 1);

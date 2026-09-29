@@ -7,6 +7,7 @@
 @import "../../registry/cojeev/styles/button.css" layer(cojeev-states.tier-2);
 @import "../../registry/cojeev/styles/code-block.css" layer(cojeev-states.tier-2);
 @import "../../registry/cojeev/styles/pattern-background.css" layer(cojeev-states.tier-2);
+@import "../../registry/cojeev/styles/dropdown-menu.css" layer(cojeev-states.tier-2);
 @import "../../registry/cojeev/styles/icon.css" layer(cojeev-states.tier-2);
 @import "../../registry/cojeev/styles/input.css" layer(cojeev-states.tier-2);
 @import "../../registry/cojeev/styles/label.css" layer(cojeev-states.tier-2);
