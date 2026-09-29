@@ -37,6 +37,8 @@ try {
     ['Capture progress check', 'tests/reporting-capture-progress.browser.mjs'],
     // Pins: numbered markers, readable labels, toggle and the labels staying on this device.
     ['Pin feedback check', 'tests/reporting-pins.browser.mjs'],
+    // A save React runs late for the pre-send draft must never put the sent receipt back.
+    ['Late save check', 'tests/reporting-late-save.browser.mjs'],
   ];
   for (const [label, script] of followUps) {
     const failed = await new Promise((resolve, reject) => {
