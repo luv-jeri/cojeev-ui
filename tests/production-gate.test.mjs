@@ -26,6 +26,8 @@ function runGate(t, { shards = 3, scenario = 'success', sourceSnapshot = false }
   // Only its expensive browser child programs are replaced; spawn, wait,
   // aggregation, assertions, report formatting and exit propagation stay real.
   fs.copyFileSync(path.join(root, 'scripts/run-production-gate.mjs'), path.join(cwd, 'scripts/run-production-gate.mjs'));
+  fs.mkdirSync(path.join(cwd, 'scripts/lib'));
+  fs.copyFileSync(path.join(root, 'scripts/lib/docs-summary.mjs'), path.join(cwd, 'scripts/lib/docs-summary.mjs'));
   for (const name of ['check-docs.mjs', 'check-motion.mjs']) {
     fs.copyFileSync(new URL('./fixtures/production-gate-child.mjs', import.meta.url), path.join(cwd, 'scripts', name));
   }
@@ -96,6 +98,15 @@ for (const scenario of ['docs-failure', 'motion-failure']) {
     assert.match(run.read('docs/gates/GATE.md'), /Result: \*\*FAIL\*\*/);
   });
 }
+
+test('real gate names every retried entry with its first failure, passed or not', t => {
+  const run = runGate(t, { scenario: 'retried-entries' });
+  assert.equal(run.status, 1, run.stderr);
+  const gate = run.read('docs/gates/GATE.md');
+  assert.match(gate, /Passed only on a second attempt: 1\. Failed both attempts: 1\./);
+  assert(gate.includes('- golf passed on its second attempt. First attempt: behavior failed: locator.click: Timeout 10000ms exceeded.'), gate);
+  assert(gate.includes('- alpha failed both attempts. First attempt: runtime errors (1): pageerror boom'), gate);
+});
 
 for (const [scenario, message] of [
   ['missing-report', /Every worker must produce fresh evidence/],

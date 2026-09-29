@@ -122,11 +122,16 @@ assert.equal(results.harnessEndSha256, results.harnessSha256, "The gate must not
 assert.equal(results.entries.length, 4);
 requireInterventions(injected, negative);
 for (const entry of results.entries) {
-  assert(entry.layouts.every(layout => layout.status === "pass"), `${entry.id} layouts`);
-  assert.equal(entry.preview.status, "pass", `${entry.id} shared preview`);
-  assert.equal(entry.runtimeErrors.length, 0, `${entry.id} runtime errors`);
-  if (!negative) assert.equal(entry.behavior.status, "pass", `${entry.id}: ${entry.behavior.detail}`);
-  else {
+  // A retried entry keeps its complete first record: both attempts must be clean outside behavior.
+  for (const attempt of [entry, entry.firstAttempt].filter(Boolean)) {
+    assert(attempt.layouts.every(layout => layout.status === "pass"), `${entry.id} layouts`);
+    assert.equal(attempt.preview.status, "pass", `${entry.id} shared preview`);
+    assert.equal(attempt.runtimeErrors.length, 0, `${entry.id} runtime errors`);
+  }
+  if (!negative) {
+    assert.equal(entry.behavior.status, "pass", `${entry.id}: ${entry.behavior.detail}`);
+    assert.equal(entry.firstAttempt, undefined, `${entry.id} must pass on its first attempt`);
+  } else {
     const expected = {
       "agent-chat": "Cancelled timer must not reopen permission",
       button: "Pending action must stay busy-disabled while it runs",
@@ -135,6 +140,7 @@ for (const entry of results.entries) {
     };
     assert.equal(entry.behavior.status, "failed", `${entry.id} must reject broken behavior`);
     assert(entry.behavior.detail.includes(expected[entry.id]), `${entry.id} failed for the intended reason: ${entry.behavior.detail}`);
+    assert(entry.firstAttempt?.behavior.detail.includes(expected[entry.id]), `${entry.id} must fail both attempts for the same reason`);
   }
 }
 assert(results.chrome.every(check => check.status === "pass"));

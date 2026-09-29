@@ -8,6 +8,7 @@ export const docsHarnessFiles = [
   "scripts/docs-behaviors-details.mjs",
   "scripts/docs-harness-fingerprint.mjs",
   "scripts/docs-transient-paint.mjs",
+  "scripts/lib/docs-summary.mjs",
 ];
 
 export function docsHarnessFingerprint(root = fileURLToPath(new URL("../", import.meta.url))) {
