@@ -92,7 +92,7 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     const issue=await mirrorIssue(env,row,send);
     if(!issue.number||!issue.node_id||!issue.html_url) throw new DeliveryFailure("GitHub issue receipt incomplete.",true);
     const statements=[env.DB.prepare("UPDATE reports SET issue_number=?,issue_node_id=?,issue_url=? WHERE id=?").bind(issue.number,issue.node_id,issue.html_url,row.id)];
-    if(!row.issue_number) statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_accepted',?,?,?)").bind(`${row.id}:email_accepted`,row.id,now(),now(),now()));
+    statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_accepted',?,?,?)").bind(`${row.id}:email_accepted`,row.id,now(),now(),now()));
     if(env.GITHUB_PROJECT_ID) statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github_project',?,?)").bind(`${row.id}:github_project`,row.id,now(),now()));
     await env.DB.batch(statements); return String(issue.number);
   }

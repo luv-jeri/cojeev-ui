@@ -24,7 +24,7 @@ export async function webhook(request:Request,env:Env) {
   if(!issue?.number || !["closed","labeled","edited"].includes(body.action??"") || issue.state!=="closed" || issue.state_reason!=="completed" || !issue.labels?.some(l=>l.name==="feedback:released")) return {ok:true,ignored:true};
   // Joined reports share one issue, so a release resolves every report holding it.
   const updated=Date.parse(issue.updated_at??"");
-  const rows=(await env.DB.prepare("SELECT * FROM reports WHERE issue_number=?").bind(issue.number).all<ReportRow>()).results
+  const rows=(await env.DB.prepare("SELECT * FROM reports WHERE issue_number=? AND triage_state='approved'").bind(issue.number).all<ReportRow>()).results
     .filter(row=>Number.isFinite(updated)&&updated>=row.updated_at-1000);
   if(!rows.length) return {ok:true,ignored:true};
   let url: string|null=null;
