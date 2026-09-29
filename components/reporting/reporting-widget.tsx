@@ -577,11 +577,21 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     entries: SentEntry[],
     workspace?: ReportingDraftWorkspace,
   ) {
+    await changeSent(
+      () => commitSent(entries, workspace),
+      (list) => mergeSent(list, entries),
+    );
+  }
+  /** Stored change to the sent list; when storage cannot be opened at all, the same change is made to the in-memory list. */
+  async function changeSent(
+    commit: () => Promise<SentEntry[]>,
+    inMemory: (list: SentEntry[]) => SentEntry[],
+  ) {
     try {
-      setSent(await commitSent(entries, workspace));
+      setSent(await commit());
     } catch (cause) {
       if (!(cause instanceof StorageUnavailableError)) throw cause;
-      setSent((list) => mergeSent(list, entries));
+      setSent(inMemory);
       setSentInMemory(true);
     }
   }
@@ -835,7 +845,13 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     }
     try {
       const fresh = await fetchReceipt(id, entry.receipt.token);
-      setSent(await replaceSentReceipt(fresh));
+      await changeSent(
+        () => replaceSentReceipt(fresh),
+        (list) =>
+          list.map((item) =>
+            item.receipt.id === id ? { ...item, receipt: fresh } : item,
+          ),
+      );
     } catch (cause) {
       if (!silent) setError(message(cause));
     } finally {
@@ -844,7 +860,10 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   }
   async function forgetSent(id: string) {
     try {
-      setSent(await removeSent(id));
+      await changeSent(
+        () => removeSent(id),
+        (list) => list.filter((item) => item.receipt.id !== id),
+      );
       setOpenSentId(null);
     } catch (cause) {
       setError(message(cause));

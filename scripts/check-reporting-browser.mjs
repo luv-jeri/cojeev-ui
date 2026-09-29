@@ -704,7 +704,8 @@ try {
     await localOnly(bare); await stubSend(bare);
     await bare.addInitScript(() => Object.defineProperty(window, "indexedDB", { value: undefined, configurable: true }));
     const importedId = "22222222-2222-4222-8222-222222222222", importedToken = "c".repeat(64);
-    await bare.route(`${api}/v1/reports/${importedId}`, route => route.fulfill({ status: 200, json: { id: importedId, token: importedToken, status: "received", kind: "request", topicId: null, email: "pending", issue: "pending", attachments: [] } }));
+    let receiptReads = 0;
+    await bare.route(`${api}/v1/reports/${importedId}`, route => { receiptReads += 1; return route.fulfill({ status: 200, json: { id: importedId, token: importedToken, status: "received", kind: "request", topicId: null, email: "pending", issue: "pending", attachments: [] } }); });
     const barePage = await bare.newPage(); activePage = barePage; barePage.on("pageerror", error => pageErrors.push(error.message));
     await barePage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(barePage);
     await sendStubbed(barePage, "request", `No storage ${run}`);
@@ -718,6 +719,19 @@ try {
     await barePage.waitForFunction(() => /· 2$/.test(document.querySelector(".report-sent-toggle")?.textContent?.trim() ?? ""));
     assert.equal(await panel(barePage).locator("[role=alert]").count(), 0, "No storage error on import");
     assert.ok(await memoryNote.isVisible());
+    // Refresh and Remove work on the in-memory list too (the status read is stubbed).
+    await expandSent(barePage);
+    await openSentRow(barePage, "Imported request");
+    const readsBefore = receiptReads;
+    await barePage.getByRole("button", { name: "Refresh status", exact: true }).click();
+    await barePage.waitForFunction(() => !document.querySelector(".report-sent-detail button[disabled]"));
+    assert.ok(receiptReads > readsBefore, "Refresh asked for the receipt");
+    assert.equal(await panel(barePage).locator("[role=alert]").count(), 0, "No storage error on refresh");
+    await barePage.getByRole("button", { name: "Remove from this device", exact: true }).click();
+    await barePage.waitForFunction(() => /· 1$/.test(document.querySelector(".report-sent-toggle")?.textContent?.trim() ?? ""));
+    assert.equal(await panel(barePage).locator("[role=alert]").count(), 0, "No storage error on remove");
+    assert.equal(await sentRow(barePage, "Imported request").count(), 0, "The imported row is gone");
+    assert.equal(await sentRow(barePage, `No storage ${run}`).count(), 1, "The other row stays");
     await bare.close();
     results.push("without_browser_storage_sending_and_importing_still_work");
   }
