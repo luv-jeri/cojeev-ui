@@ -33,6 +33,8 @@ try {
     // The widget mounts after the page is idle; a request made before then must still open it, once.
     ['Early reporting request check', 'tests/reporting-early-request.browser.mjs'],
     ['Tracking page check', 'tests/reporting-track.browser.mjs'],
+    // The screenshot progress card must dim the page, name each step and stay still under reduced motion.
+    ['Capture progress check', 'tests/reporting-capture-progress.browser.mjs'],
   ];
   for (const [label, script] of followUps) {
     const failed = await new Promise((resolve, reject) => {

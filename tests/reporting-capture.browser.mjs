@@ -121,7 +121,9 @@ try {
   await page.getByRole("button", { name: "Full page", exact: true }).click();
   const status = page.getByRole("dialog", { name: "Capturing a screenshot", exact: true });
   await status.waitFor({ timeout: 30000 });
-  assert.match(await status.innerText(), /elapsed/, "Elapsed seconds are shown beside the capture");
+  // Elapsed time shows only from 3 s, so the capture is held open until then.
+  await status.getByText(/Still working · \d+s/).waitFor({ timeout: 30000 });
+  assert.match(await status.innerText(), /Still working · \d+s/, "Elapsed seconds are shown beside the capture");
   assert.ok(await page.evaluate(() => document.activeElement?.textContent?.includes("Cancel screenshot")), "Cancel screenshot takes focus so it is keyboard reachable");
   await page.screenshot({ path: `${output}/capture-status-desktop-light.png` });
   await page.keyboard.press("Escape");
