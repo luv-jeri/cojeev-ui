@@ -729,3 +729,27 @@ test('a verdict on an expired report returns 410',async()=>{
   const p=await fresh();await db.prepare('UPDATE reports SET private_purged=1 WHERE id=?').bind(p.id).run();
   const r=await put(p.id,ai());assert.equal(r.status,410);assert.equal((await r.json()).error,'This report has expired.');
 });
+test('rejecting one holder of a shared issue only detaches it; the sole holder closes the issue',async()=>{
+  const t=await fresh({kind:'request',title:'Shared issue topic'});await put(t.id,ai('approved'));
+  await db.prepare("UPDATE reports SET issue_number=21,issue_node_id='n21',issue_url='u21' WHERE id=?").bind(t.id).run();
+  const j=await fresh({kind:'request',title:t.title,topicId:t.id,email:'join@example.com'});
+  assert.equal((await triaged(j.id)).issue_number,21);
+  const r=await put(j.id,owner('rejected'));assert.deepEqual(await r.json(),{ok:true,triage_state:'rejected',queued:[]});
+  const row=await triaged(j.id);assert.equal(row.issue_number,null);assert.equal(row.issue_node_id,null);assert.equal(row.issue_url,null);
+  assert.deepEqual((await triageJobs(j.id)).filter(x=>['github_state','email_rejected'].includes(x.kind)),[]);
+  assert.equal((await triageJobs(j.id)).find(x=>x.kind==='email_accepted').state,'cancelled');
+  assert.equal((await triaged(t.id)).issue_number,21);
+  // now the original is the only holder: rejecting it closes the issue
+  const r2=await put(t.id,owner('rejected'));assert.deepEqual((await r2.json()).queued,['github_state']);
+  assert.deepEqual(JSON.parse((await triageJobs(t.id)).find(x=>x.kind==='github_state').payload_json),{state:'closed'});
+  // a detached report re-approved follows the normal paths (no topic issue left: github)
+  assert.deepEqual((await (await put(j.id,owner('approved',{title:'Rejoined',body:'Body'}))).json()).queued,['github']);
+});
+test('an overturned rejection cancels the unsent rejection email',async()=>{
+  const p=await fresh();await put(p.id,ai('rejected'));
+  assert.equal((await triageJobs(p.id)).find(x=>x.kind==='email_rejected').state,'pending');
+  const r=await put(p.id,owner('approved',{title:'Valid after all',body:'Body'}));assert.deepEqual((await r.json()).queued,['github']);
+  const jobs=await triageJobs(p.id);assert.equal(jobs.find(x=>x.kind==='email_rejected').state,'cancelled');assert.equal(jobs.find(x=>x.kind==='github').state,'pending');
+  const q=await fresh({kind:'request',title:'Accepted then rejected',topicId:undefined});await put(q.id,ai('approved'));await put(q.id,owner('rejected'));
+  assert.equal((await triageJobs(q.id)).find(x=>x.kind==='email_accepted')?.state??'cancelled','cancelled');
+});

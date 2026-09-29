@@ -25,22 +25,33 @@ export async function applyVerdict(env: Env, id: string, raw: unknown): Promise<
   const copy = req.decision === "approved" && !row.issue_number && topic;
   const guard = "EXISTS(SELECT 1 FROM reports WHERE id=? AND triage_state=? AND triage_by=? AND triaged_at=?)";
   const guardArgs = [id, req.decision, req.by, t];
-  const jobs: { id: string; kind: string; payload?: string }[] = [];
+  const jobs: { id: string; kind: string; payload?: string; alone?: boolean }[] = [];
   const cancel: string[] = [];
   const revive: string[] = [];
+  // An approved report holding an issue that another approved report also holds must only detach, never close it.
+  const held = cur === "approved" && !!row.issue_number;
+  const shared = held ? !!await db.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved'").bind(row.issue_number, id).first() : false;
   if (req.decision === "rejected") {
-    if (cur === "approved" && row.issue_number) jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"closed"}' });
-    else { if (cur === "approved") cancel.push("github", "email_accepted"); jobs.push({ id: `${id}:email_rejected`, kind: "email_rejected" }); }
-  } else if (cur === "rejected" && row.issue_number) jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"open"}' });
-  else { const kind = copy ? "email_accepted" : "github"; revive.push(kind); jobs.push({ id: `${id}:${kind}`, kind }); }
+    cancel.push("email_accepted");
+    if (held) { if (!shared) jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"closed"}', alone: true }); }
+    else { if (cur === "approved") cancel.push("github"); jobs.push({ id: `${id}:email_rejected`, kind: "email_rejected" }); }
+  } else {
+    cancel.push("email_rejected");
+    if (cur === "rejected" && row.issue_number) jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"open"}' });
+    else { const kind = copy ? "email_accepted" : "github"; revive.push(kind); jobs.push({ id: `${id}:${kind}`, kind }); }
+  }
+  const others = "EXISTS(SELECT 1 FROM reports o WHERE o.issue_number=? AND o.id<>? AND o.triage_state='approved')";
+  const detach = (col: string) => held && req.decision === "rejected" ? `CASE WHEN ${others} THEN NULL ELSE ${col} END` : `COALESCE(?,${col})`;
+  const one = (v: unknown) => held && req.decision === "rejected" ? [row.issue_number, id] : [v ?? null];
+  const issueArgs = [...one(copy ? topic.issue_number : null), ...one(copy ? topic.issue_node_id : null), ...one(copy ? topic.issue_url : null)];
   const statements = [
-    db.prepare(`UPDATE reports SET triage_state=?,triage_by=?,triage_model=COALESCE(?,triage_model),triage_reason=?,triage_title=?,triage_body=?,triaged_at=?,verified_at=?,issue_number=COALESCE(?,issue_number),issue_node_id=COALESCE(?,issue_node_id),issue_url=COALESCE(?,issue_url),updated_at=? WHERE id=? AND triage_state=?`)
-      .bind(req.decision, req.by, req.model ?? null, reason, title, body, t, req.by === "owner" ? t : null, copy ? topic.issue_number : null, copy ? topic.issue_node_id : null, copy ? topic.issue_url : null, t, id, cur)
+    db.prepare(`UPDATE reports SET triage_state=?,triage_by=?,triage_model=COALESCE(?,triage_model),triage_reason=?,triage_title=?,triage_body=?,triaged_at=?,verified_at=?,issue_number=${detach('issue_number')},issue_node_id=${detach('issue_node_id')},issue_url=${detach('issue_url')},updated_at=? WHERE id=? AND triage_state=?`)
+      .bind(req.decision, req.by, req.model ?? null, reason, title, body, t, req.by === "owner" ? t : null, ...issueArgs, t, id, cur)
   ];
   // Jobs are inserted only if this exact update won, so a racing verdict never queues twice.
   for (const kind of cancel) statements.push(db.prepare(`UPDATE outbox SET state='cancelled',last_error='Superseded by an owner verdict.',lease_token=NULL WHERE id=? AND state IN ('pending','held') AND ${guard}`).bind(`${id}:${kind}`, ...guardArgs));
   for (const kind of revive) statements.push(db.prepare(`UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state='cancelled' AND ${guard}`).bind(t, t, `${id}:${kind}`, ...guardArgs));
-  for (const job of jobs) statements.push(db.prepare(`INSERT OR IGNORE INTO outbox(id,report_id,kind,state,due_at,created_at,reviewed_at,payload_json) SELECT ?,?,?,'pending',?,?,?,? WHERE ${guard}`).bind(job.id, id, job.kind, t, t, t, job.payload ?? null, ...guardArgs));
+  for (const job of jobs) statements.push(db.prepare(`INSERT OR IGNORE INTO outbox(id,report_id,kind,state,due_at,created_at,reviewed_at,payload_json) SELECT ?,?,?,'pending',?,?,?,? WHERE ${guard}${job.alone ? ` AND NOT ${others}` : ""}`).bind(job.id, id, job.kind, t, t, t, job.payload ?? null, ...guardArgs, ...(job.alone ? [row.issue_number, id] : [])));
   const [update] = await db.batch(statements);
   if (!update.meta.changes) throw new HttpError(409, "Already decided.");
   return { ok: true, triage_state: req.decision, queued: jobs.map(j => j.kind) };
