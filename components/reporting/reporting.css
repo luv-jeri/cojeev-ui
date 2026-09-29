@@ -660,6 +660,11 @@ html[data-flow="off"]
   flex-shrink: 0;
   cursor: pointer;
 }
+.report-sheet .report-chip-remove,
+.report-sheet .report-chip-action {
+  height: 28px;
+  min-height: 0;
+}
 .report-chip-remove:hover,
 .report-chip-action:hover {
   background: var(--v-beige-2);
@@ -1180,9 +1185,12 @@ html[data-flow="off"]
     padding-block: 0;
   }
   .report-chip-remove,
-  .report-chip-action {
+  .report-chip-action,
+  .report-sheet .report-chip-remove,
+  .report-sheet .report-chip-action {
     min-width: var(--hit-min);
     height: var(--hit-min);
+    min-height: var(--hit-min);
   }
   .report-chip .report-media,
   .report-chips .report-attachments .report-media {
