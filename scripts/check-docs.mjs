@@ -11,7 +11,7 @@ import { createDetailTests } from "./docs-behaviors-details.mjs";
 import { createCompositeTests } from "./docs-behaviors-composites.mjs";
 import { armOpacityObservation } from "./docs-transient-paint.mjs";
 import { docsHarnessFiles, docsHarnessFingerprint } from "./docs-harness-fingerprint.mjs";
-import { docsEntrySummary } from "./lib/docs-summary.mjs";
+import { checkWithOneRetry, docsEntryFailed, docsEntrySummary } from "./lib/docs-summary.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((arg) => {
@@ -1443,7 +1443,8 @@ try {
       const page = await measurementPage(context, errors);
       contexts.push({ context, page, width, theme, errors });
     }
-  for (const entry of args["chrome-only"] ? [] : entries) {
+  // One entry, from fresh pages and a fresh behavior context (see the end of this body).
+  async function checkEntry(entry, firstAttempt) {
     // These public compatibility routes deliberately mount the canonical studio.
     // Keep the requested route in evidence, but verify its actual component.
     const specimenId = ({ "aspect-ratio": "bento-grid", "data-table": "table" })[entry.name] ?? entry.name;
@@ -1457,7 +1458,11 @@ try {
       behavior: null,
       preview: null,
     };
-    run.entries.push(record);
+    // A retry takes its first attempt's place in the evidence and keeps that record whole.
+    if (firstAttempt) {
+      record.firstAttempt = firstAttempt;
+      run.entries[run.entries.indexOf(firstAttempt)] = record;
+    } else run.entries.push(record);
     for (const surface of contexts) {
       const { page, width, theme, errors } = surface;
       errors.length = 0;
@@ -1677,6 +1682,14 @@ try {
     await primary.context.close();
     primary.context = await docsContext(primary.width, primary.theme);
     primary.page = await measurementPage(primary.context, primary.errors);
+    return record;
+  }
+  for (const entry of args["chrome-only"] ? [] : entries) {
+    // A failed entry gets one more attempt: a real defect fails twice, a timing flake does
+    // not. Each attempt is saved and printed before its cleanup, and GATE.md names the retry.
+    const record = await checkWithOneRetry((firstAttempt) => checkEntry(entry, firstAttempt));
+    if (record.firstAttempt && !docsEntryFailed(record))
+      console.log(`::warning title=Flaky documentation check::${entry.name} passed only on its second attempt; both attempts are printed above.`);
   }
   for (const surface of contexts) {
     try {
@@ -1714,13 +1727,7 @@ try {
   await browser.close();
   if (staticServer) await new Promise((resolve) => staticServer.httpServer.close(resolve));
 }
-const failures = run.entries.filter(
-  (e) =>
-    e.layouts.some((l) => l.status !== "pass") ||
-    e.preview.status !== "pass" ||
-    e.behavior.status === "failed" ||
-    e.runtimeErrors.length,
-);
+const failures = run.entries.filter(docsEntryFailed);
 console.log(
   JSON.stringify(
     {

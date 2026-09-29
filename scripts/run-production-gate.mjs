@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { spawn, spawnSync } from "node:child_process";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { boundDetail, docsEntryFailed, docsFailureReasons } from "./lib/docs-summary.mjs";
 
 const started = new Date().toISOString();
 const docsOutput = process.env.COJEEV_DOCS_EVIDENCE ?? "artifacts/production-docs";
@@ -34,6 +35,9 @@ const docs = read(`${docsOutput}/results.json`);
 const motion = read("artifacts/production-motion/results.json");
 const passed = runs.every(run => run.status === 0);
 const escape = (value) => String(value ?? "not run").replaceAll("|", "\\|").replaceAll("\n", " ");
+// check-docs gives a failed entry one more attempt and keeps the first on `firstAttempt`.
+const retried = (docs?.entries ?? []).filter(e => e.firstAttempt);
+const failedTwice = retried.filter(docsEntryFailed);
 const lines = [
   "# Production gate", "",
   `Result: **${passed ? "PASS" : "FAIL"}**. Started ${started}; finished ${new Date().toISOString()}.`, "",
@@ -44,6 +48,8 @@ const lines = [
   "| Component | Layouts | Preview / copy | Behavior | Runtime errors |",
   "| --- | --- | --- | --- | ---: |",
   ...(docs?.entries ?? []).map(e => `| ${e.id} | ${e.layouts.filter(l => l.status === "pass").length}/${e.layouts.length} | ${escape(e.preview.status)} | ${escape(e.behavior.status)}: ${escape(e.behavior.detail)} | ${e.runtimeErrors.length} |`), "",
+  `Passed only on a second attempt: ${retried.length - failedTwice.length}. Failed both attempts: ${failedTwice.length}. A pass on the second attempt is a timing flake or an intermittent defect; investigate rather than ignore.`,
+  ...retried.map(e => `- ${e.id} ${failedTwice.includes(e) ? "failed both attempts" : "passed on its second attempt"}. First attempt: ${escape(boundDetail(docsFailureReasons(e.firstAttempt).join("; ")))}`), "",
   `Motion presets: ${motion?.rows.filter(r => r.pass).length ?? 0}/${motion?.rows.length ?? 0}. Additional checks: ${motion?.checks.filter(c => c.pass).length ?? 0}/${motion?.checks.length ?? 0}.`, "",
   ...(motion?.rows ?? []).map(r => `- ${r.id}: ${r.pass ? "PASS" : "FAIL"}`),
   ...(motion?.checks ?? []).map(c => `- ${c.name}: ${c.pass ? "PASS" : "FAIL"}`), "",
