@@ -7,6 +7,7 @@ import { createHash } from "node:crypto";
 import { webkit, devices } from "playwright";
 import { PNG } from "pngjs";
 import { preview as startPreview } from "vite";
+import { mobileVerdict, selectMobileCases } from "./lib/mobile-gate-select.mjs";
 
 const args = Object.fromEntries(process.argv.slice(2).map(argument => { const [name, ...value] = argument.replace(/^--/, "").split("="); return [name, value.join("=") || "true"]; }));
 const staticServer = args.serve && !args.url ? await startPreview({
@@ -248,9 +249,11 @@ const cases = {
     return { detail: "Touch pause freezes the actual track; resume and repeated pause remain operable", layout: await layout(page) };
   },
 };
+const selection = selectMobileCases({ ids: args.ids, caseIds: Object.keys(cases), registryNames: JSON.parse(fs.readFileSync("registry.json", "utf8")).items.map(item => item.name) });
+if (selection.error) { console.error(selection.error); await browser.close(); await closeStaticServer(); process.exit(1); }
 try {
   for (const [id, test] of Object.entries(cases)) {
-    if (args.ids && !args.ids.split(",").includes(id)) continue;
+    if (!selection.run.includes(id)) continue;
     const context = await browser.newContext({ ...devices["iPhone 13"], viewport: { width: 390, height: 844 }, colorScheme: "light", reducedMotion: "no-preference" });
     await context.addInitScript(() => {
       localStorage.setItem("cojeev-docs-theme", "light");
@@ -289,7 +292,7 @@ try {
 } finally {
   await browser.close(); await closeStaticServer(); report.finishedAt = new Date().toISOString(); report.revisionEnd = revision();
   report.runtimeSeconds = (Date.parse(report.finishedAt) - Date.parse(report.startedAt)) / 1000;
-  report.status = report.cases.length && report.cases.every(record => record.status === "PASS") ? "PASS" : "FAIL";
+  Object.assign(report, mobileVerdict({ selection, records: report.cases }));
   fs.writeFileSync(path.join(output, "results.json"), JSON.stringify(report, null, 2) + "\n");
   console.log(JSON.stringify({ status: report.status, cases: report.cases.length, runtimeSeconds: report.runtimeSeconds, output }));
   if (report.status !== "PASS") process.exitCode = 1;
