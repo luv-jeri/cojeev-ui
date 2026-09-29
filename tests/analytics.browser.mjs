@@ -37,7 +37,7 @@ const allowedProperties = {
 const privacyProperties = ["$process_person_profile", "$geoip_disable", "environment", "release_sha"];
 const consentKey = "000h.analytics-consent.v1";
 
-async function analyticsContext(browser, init, consent = "allowed") {
+async function analyticsContext(browser, init, consent = "allowed", contextOptions = {}) {
   const context = await browser.newContext({
     viewport: { width: 1280, height: 900 },
     reducedMotion: "reduce",
@@ -48,6 +48,7 @@ async function analyticsContext(browser, init, consent = "allowed") {
       origin: new URL(base).origin,
       localStorage: consent === null ? [] : [{ name: consentKey, value: consent }],
     }] },
+    ...contextOptions,
   });
   const captures = [];
   const attempts = [];
@@ -517,6 +518,33 @@ try {
       assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 0, "private routes do not show an analytics prompt");
     }
     await context.close();
+  }
+
+  // A phone: the open consent card must not paint over the reporting drawer's form.
+  {
+    const { context } = await analyticsContext(browser, undefined, null, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const page = await context.newPage();
+    await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
+    const shell = page.locator(".analytics-consent-shell");
+    await page.getByRole("button", { name: "Analytics choices", exact: true }).tap();
+    await shell.getByRole("button", { name: "Allow analytics", exact: true }).waitFor();
+    assert.equal(await shell.isVisible(), true, "The consent card is open before the drawer");
+    await page.getByRole("button", { name: "Request a feature / Report a bug" }).tap();
+    await page.getByRole("dialog", { name: "Request a feature or report a bug" }).waitFor();
+    assert.equal(await shell.isVisible(), false, "The consent shell is hidden while the reporting drawer is open");
+    const covered = await page.evaluate(() => {
+      const input = document.querySelector(".report-sheet input, .report-sheet textarea");
+      if (!input) return "no input";
+      const r = input.getBoundingClientRect();
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return top === input || input.contains(top) ? "" : `covered by ${top?.className || top?.tagName}`;
+    });
+    assert.equal(covered, "", "Nothing covers the form's first input");
+    await page.getByRole("button", { name: "Close reporting panel" }).tap();
+    await shell.waitFor({ state: "visible" });
+    assert.equal(await shell.isVisible(), true, "The consent shell returns when the drawer closes");
+    await context.close();
+    console.log("PASS: on a 390px phone the consent card hides while the reporting drawer is open and returns when it closes.");
   }
 
   console.log("PASS: prior opt-in, persistent decline/withdrawal, cross-tab suppression, storage failure, bounded capture, copy truth, privacy signals, route deduplication, impressions and demo intent.");
