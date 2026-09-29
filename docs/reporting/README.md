@@ -89,6 +89,21 @@ Reporter emails: thank-you (on submit), "We're tracking your report as #N" (issu
 - Diagnostics/media expire after 30 days. Contact, original titles, private details and persisted email payloads expire after 180 days. A cron performs the deletion. Maintainer-approved public titles/status/demand remain. Original free-text request titles are hidden from the public board and new GitHub issue titles.
 - The public delivery target is **36 hours, depending on demand and complexity**. It is not a timer or an unconditional guarantee.
 
+## Triage
+
+`npm run triage` is a local judge for new reports. It pulls untriaged reports from the Worker, asks a tool-less Codex (`codex exec`, read-only, no shell or browser tools, empty working folder) for a JSON verdict on each, and sends the verdict back. The reporter's email is never sent to Codex.
+
+```sh
+npm run triage -- --dry-run          # judge and print, send nothing
+npm run triage                       # production (https://feedback.cojeev.com)
+npm run triage -- --env beta         # beta (https://feedback-beta.cojeev.com)
+npm run triage -- --model <id>       # default gpt-5.6-sol
+```
+
+Each Codex run has a 120 second limit; a run that stalls is killed and counted as failed. A report the owner already decided answers 409 and is counted as skipped. The command exits 1 if any report failed.
+
+The admin token comes from `REPORTING_ADMIN_TOKEN`, else the file `.work/reporting/admin-token-<production|beta>` (one line, mode 0600, trimmed). It is never printed or put in a URL.
+
 ## Checks
 
 ```sh
