@@ -31,7 +31,7 @@
   "assets": {
     "directory": "../../out",
     "binding": "ASSETS",
-    "run_worker_first": true,
+    "run_worker_first": ["/*", "!/_next/*", "!/*.txt"],
     "not_found_handling": "404-page"
   },
   "env": {
@@ -50,7 +50,7 @@
       "assets": {
         "directory": "../../out",
         "binding": "ASSETS",
-        "run_worker_first": true,
+        "run_worker_first": ["/*", "!/_next/*", "!/*.txt"],
         "not_found_handling": "404-page"
       }
     },
@@ -69,7 +69,7 @@
       "assets": {
         "directory": "../../out",
         "binding": "ASSETS",
-        "run_worker_first": true,
+        "run_worker_first": ["/*", "!/_next/*", "!/*.txt"],
         "not_found_handling": "404-page"
       }
     }

@@ -96,6 +96,8 @@ export async function createManifest(root, environment, commit) {
   for(const file of await inventory(root)) {
     if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
     if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
+    // The hosting Worker answers 404 here, but static files (see run_worker_first) never reach it.
+    if(/^site\/(?:media|backups|private|v1)(?:\/|$)/.test(file)) throw new Error(`Reserved website path: ${file}`);
     const bytes=await fs.readFile(path.join(root,file));
     // Scanned: every public `site/**` .html/.js/.css/.json byte served to browsers,
     // plus sitemap.xml, robots.txt and the __next RSC .txt payloads for an

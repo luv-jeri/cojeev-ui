@@ -9,6 +9,7 @@ import {buildEnvironment,environmentConfig} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
 import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
+import {siteHeaders} from '../workers/registry-host/src/headers.mjs';
 
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
 export function releaseMetadata(environment,commit,publicEnv) {
@@ -37,6 +38,7 @@ export async function buildRelease(root,environment,commit,destination,settings=
     await fs.mkdir(destination,{recursive:false});
     await fs.cp(path.join(scratch,'out'),path.join(destination,'site'),{recursive:true});
     await fs.writeFile(path.join(destination,'site/release.json'),JSON.stringify(releaseMetadata(environment,commit,publicEnv))+'\n');
+    await fs.writeFile(path.join(destination,'site/_headers'),siteHeaders(environment));
     for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
       const directory=path.join(destination,kind);await fs.mkdir(directory);
       const source=await json(path.join(scratch,`workers/${worker}/wrangler.jsonc`));
@@ -64,6 +66,8 @@ export async function readArtifact(directory,environment,commit,digest) {
     const config=await json(path.join(directory,kind,'wrangler.jsonc'));
     validateDeploymentConfig(environment,config,kind);
     if(config.vars.RELEASE!==commit||config.main!=='./index.js') throw new Error('Artifact release/config mismatch');
+    // Files that skip the Worker get their security headers only from site/_headers.
+    if(kind==='website'&&config.assets.run_worker_first!==true) await fs.access(path.join(directory,'site/_headers')).catch(()=>{throw new Error('Artifact lets static files skip the Worker without site/_headers');});
   }
   const release=await json(path.join(directory,'site/release.json'));
   if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');

@@ -5,12 +5,12 @@ import path from "node:path";
 import { test } from "node:test";
 import { docsHarnessFingerprint } from "../scripts/docs-harness-fingerprint.mjs";
 
-for (const changedFile of ["scripts/docs-transient-paint.mjs", "scripts/docs-behaviors-details.mjs"]) {
+for (const changedFile of ["scripts/docs-transient-paint.mjs", "scripts/docs-behaviors-details.mjs", "scripts/lib/docs-summary.mjs"]) {
   test(`harness fingerprint detects a mutation of ${changedFile}`, () => {
     const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "cojeev-docs-fingerprint-"));
     try {
-      fs.mkdirSync(path.join(fixture, "scripts"));
-      for (const file of ["scripts/check-docs.mjs", "scripts/docs-transient-paint.mjs", "scripts/docs-behaviors-details.mjs", "scripts/docs-harness-fingerprint.mjs"]) {
+      fs.mkdirSync(path.join(fixture, "scripts/lib"), { recursive: true });
+      for (const file of ["scripts/check-docs.mjs", "scripts/docs-transient-paint.mjs", "scripts/docs-behaviors-details.mjs", "scripts/docs-harness-fingerprint.mjs", "scripts/lib/docs-summary.mjs"]) {
         fs.copyFileSync(new URL(`../${file}`, import.meta.url), path.join(fixture, file));
       }
       const before = docsHarnessFingerprint(fixture);

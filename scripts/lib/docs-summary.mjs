@@ -48,5 +48,40 @@ export function docsEntrySummary(record, limit = docsDetailLimit) {
   if (Object.keys(layoutFailures).length) summary.layoutFailures = layoutFailures;
   if (record.preview.status !== "pass")
     summary.previewDetail = boundDetail(record.preview.detail, limit);
+  if (record.runtimeErrors?.length) summary.runtimeErrors = boundDetail(runtimeErrorText(record.runtimeErrors), limit);
+  if (record.firstAttempt) summary.attempt = 2;
   return summary;
+}
+
+const runtimeErrorText = (errors) => errors.map((e) => `${e.type} ${e.message}`).join(" | ");
+
+/** Why an entry failed, one reason per failing part, unbounded; empty when it passed. */
+export function docsFailureReasons(record) {
+  const errors = record.runtimeErrors;
+  return [
+    ...record.layouts
+      .filter((l) => l.status !== "pass")
+      .map((l) => `layout ${l.width}/${l.theme} ${l.status}${l.error ? `: ${l.error}` : ""}`),
+    ...(record.preview.status !== "pass" ? [`preview ${record.preview.status}: ${record.preview.detail}`] : []),
+    ...(record.behavior.status === "failed" ? [`behavior failed: ${record.behavior.detail}`] : []),
+    ...(errors.length ? [`runtime errors (${errors.length}): ${runtimeErrorText(errors)}`] : []),
+  ];
+}
+
+/** The one verdict for an entry. The retry decision and the gate's exit status both use it. */
+export function docsEntryFailed(record) {
+  return docsFailureReasons(record).length > 0;
+}
+
+/**
+ * Check an entry, and once more if it failed. The check must start from fresh browser
+ * state each time. A real defect fails both attempts; a timing flake in a browser check
+ * passes the second. `check` is called with no argument, then, only after a failure, with
+ * that complete first record, which the second record must keep as `firstAttempt`, so a
+ * flaky entry still shows in results.json and GATE.md instead of disappearing. The second
+ * attempt decides the verdict.
+ */
+export async function checkWithOneRetry(check) {
+  const first = await check();
+  return docsEntryFailed(first) ? check(first) : first;
 }
