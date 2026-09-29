@@ -47,40 +47,41 @@ try {
   await page.goto(dash, { waitUntil: "networkidle" });
   const row = title => page.locator(".tri-row", { hasText: title });
   const pick = title => page.getByRole("button", { name: title, exact: true });
-  const tab = name => page.getByRole("tab", { name, exact: true });
+  // The views live in the sidebar; each button's name is its label plus its count.
+  const view = name => page.getByRole("navigation", { name: "Views" }).getByRole("button", { name: new RegExp(`^${name} \\d+$`) });
   const apiState = async id => (await (await admin(`/reports/${id}`)).json()).report;
 
   await test("counts, tabs and trust badges render from the API", async () => {
     const { counts } = await (await admin("/reports?offset=0")).json();
-    for (const [label, n] of [["Waiting for AI", counts.pending], ["Approved", counts.approved], ["Rejected", counts.rejected], ["Not re-verified", counts.unverified]]) {
-      assert.equal((await page.locator(".tri-counters > *", { hasText: label }).locator(".tri-num").textContent()).trim(), String(n), label);
+    for (const [label, n] of [["Needs your check", counts.unverified], ["Approved", counts.approved], ["Rejected", counts.rejected], ["Waiting for AI", counts.pending], ["All", counts.pending + counts.approved + counts.rejected]]) {
+      assert.equal((await view(label).locator(".v-nav__count").textContent()).trim(), String(n), label);
     }
     await pick(bugTitle).waitFor();
     assert.ok(await row(bugTitle).getByText("AI only — not re-verified").isVisible());
-    await tab("Rejected").click(); await pick(reqTitle).waitFor();
+    await view("Rejected").click(); await pick(reqTitle).waitFor();
     assert.ok(await row(reqTitle).getByText("Rejected", { exact: true }).first().isVisible());
-    await tab("Waiting").click(); await pick(waitTitle).waitFor();
+    await view("Waiting for AI").click(); await pick(waitTitle).waitFor();
     assert.ok(await row(waitTitle).getByText("Waiting for AI").first().isVisible());
-    await tab("Approved").click(); await pick(bugTitle).waitFor();
-    await tab("All").click(); await pick(bugTitle).waitFor(); await pick(reqTitle).waitFor(); await pick(waitTitle).waitFor();
-    await tab("Needs your check").click(); await pick(bugTitle).waitFor();
+    await view("Approved").click(); await pick(bugTitle).waitFor();
+    await view("All").click(); await pick(bugTitle).waitFor(); await pick(reqTitle).waitFor(); await pick(waitTitle).waitFor();
+    await view("Needs your check").click(); await pick(bugTitle).waitFor();
   });
 
   await test("the waiting hint shows npm run triage with the pending count", async () => {
     const { counts } = await (await admin("/reports?offset=0")).json();
     const hint = page.locator("p.tri-hint").first();
     assert.equal((await hint.textContent()).replace(/\s+/g, " ").trim(), `Run npm run triage to process ${counts.pending} waiting ${counts.pending === 1 ? "report" : "reports"}.`);
-    await tab("Waiting").click(); await pick(waitTitle).click();
+    await view("Waiting for AI").click(); await pick(waitTitle).click();
     await page.getByText("Waiting for the AI — run", { exact: false }).waitFor();
     assert.equal(await page.getByRole("button", { name: /Mark verified|Overturn/ }).count(), 0, "pending reports offer no decision buttons");
-    await tab("Needs your check").click();
+    await view("Needs your check").click();
   });
 
   await test("mark verified calls POST verify and flips the badge", async () => {
     await pick(bugTitle).click();
     const posted = page.waitForRequest(r => r.method() === "POST" && r.url().endsWith(`/api/reports/${bug}/verify`));
     await page.getByRole("button", { name: "Mark verified", exact: true }).click(); await posted;
-    await tab("Approved").click(); await pick(bugTitle).waitFor();
+    await view("Approved").click(); await pick(bugTitle).waitFor();
     await row(bugTitle).getByText("Verified by you").waitFor();
     assert.ok((await apiState(bug)).verified_at);
   });
@@ -96,7 +97,7 @@ try {
   });
 
   await test("overturn shows the consequence text before calling PUT with by:owner", async () => {
-    await tab("Rejected").click(); await pick(reqTitle).click();
+    await view("Rejected").click(); await pick(reqTitle).click();
     await page.getByRole("button", { name: "Overturn → Approve", exact: true }).click();
     const dialog = page.getByRole("alertdialog");
     await dialog.getByText("Publishes a GitHub issue (or links the existing one for this request) and emails the reporter.").waitFor();
@@ -110,15 +111,20 @@ try {
 
   await test("tabs and the overturn dialog work by keyboard alone", async () => {
     await page.reload({ waitUntil: "networkidle" });
-    const selected = name => page.getByRole("tab", { name, selected: true, exact: true }).waitFor();
-    await tab("Needs your check").focus();
-    await page.keyboard.press("ArrowRight"); await selected("Approved");
-    await page.keyboard.press("ArrowLeft"); await selected("Needs your check");
-    await page.keyboard.press("End"); await selected("All");
+    const active = name => page.locator('.tri-rail [aria-current="page"]', { hasText: name }).waitFor();
+    await view("Needs your check").focus();
+    await page.keyboard.press("Tab"); await page.keyboard.press("Enter"); await active("Approved");
+    await page.keyboard.press("Shift+Tab"); await page.keyboard.press("Enter"); await active("Needs your check");
+    for (let i = 0; i < 4; i++) await page.keyboard.press("Tab");
+    await page.keyboard.press("Enter"); await active("All");
     await pick(bugTitle).waitFor();
     const onRow = () => page.evaluate(() => document.activeElement?.className === "tri-pick");
-    for (let i = 0; i < 3 && !(await onRow()); i++) await page.keyboard.press("Tab"); // the scrollable table viewport is a stop too
-    assert.ok(await onRow(), "Tab from the tab list reaches a row button");
+    for (let i = 0; i < 5 && !(await onRow()); i++) await page.keyboard.press("Tab"); // theme switch and Refresh come first
+    assert.ok(await onRow(), "Tab from the views reaches a row button");
+    await page.keyboard.press("Home");
+    const first = await page.evaluate(() => document.activeElement?.textContent);
+    await page.keyboard.press("ArrowDown");
+    assert.ok(await page.evaluate(t => document.activeElement?.className === "tri-pick" && document.activeElement.textContent !== t && document.activeElement.getAttribute("aria-current") === "true", first), "ArrowDown moves to and selects the next row");
     await pick(bugTitle).focus(); await page.keyboard.press("Enter");
     const overturn = page.getByRole("button", { name: /^Overturn/ });
     await overturn.waitFor();
@@ -134,6 +140,14 @@ try {
     assert.equal((await apiState(bug)).triage_state, "approved", "the default keyboard action is Cancel");
   });
 
+  // Screenshot before the asset scan: fetching /vite.config.ts makes Vite's dependency optimizer
+  // try to bundle Node packages, which can reload the page mid-step.
+  try {
+    await page.getByRole("navigation", { name: "Views" }).getByRole("button", { name: /^All \d+$/ }).click(); await pick(waitTitle).click();
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path: `${output}/dashboard-live.png` });
+  } catch (e) { failures.push(`screenshot: ${e.stack ?? e}`); }
+
   await test("no page request or served asset contains the admin token", async () => {
     await page.reload({ waitUntil: "networkidle" });
     for (const p of ["/", "/main.tsx", "/dashboard.tsx", "/api.ts", "/proxy.ts", "/vite.config.ts"]) bodies.push([p, await fetch(dash + p).then(r => r.text()).catch(() => "")]);
@@ -144,10 +158,6 @@ try {
     assert.deepEqual(requestSecrets, []);
   });
 
-  await pick(waitTitle).waitFor().catch(() => {});
-  await page.getByRole("tab", { name: "All", exact: true }).click(); await pick(waitTitle).click();
-  await page.waitForTimeout(1000);
-  await page.screenshot({ path: `${output}/dashboard-live.png` });
   if (pageErrors.length) failures.push(`page errors: ${pageErrors.join("; ")}`);
 } catch (e) { failures.push(e.stack ?? String(e)); }
 finally { await browser?.close(); vite.kill(); }

@@ -38,9 +38,9 @@ const descriptions: Record<string, string> = {
   rpt_r2: "Everything feels small. Make it all bigger please.",
 };
 const jobs = (r: TriageListRow): TriageDetail["deliveries"] => {
-  const send = (kind: string, state = "sent") => ({ id: `${r.id}:${kind}`, kind, state, attempts: 1, last_error: null, reviewed_at: null });
+  const send = (kind: string, state = "done") => ({ id: `${r.id}:${kind}`, kind, state, attempts: 1, last_error: null, reviewed_at: null });
   const out = [send("email_received")];
-  if (r.triage_state === "approved") out.push(send("github"), send("email_accepted"));
+  if (r.triage_state === "approved") out.push(...(r.issue_number == null ? [send("github", "pending")] : [send("github"), send("email_accepted")]));
   if (r.triage_state === "rejected") out.push(send("email_rejected"));
   return out;
 };
@@ -54,7 +54,7 @@ const detailOf = (r: TriageListRow): TriageDetail => ({
     triage_body: r.triage_state === "approved" && r.triage_by === "ai" ? `${descriptions[r.id]}${r.id === "rpt_a1" ? "\n\nExpected: the indicator slides from the current tab to the clicked one." : ""}` : null,
   },
   attachments: r.id === "rpt_a1" ? [{ id: "att_1", name: "tabs-jump.mp4", type: "video/mp4", size: 2_400_000, state: "uploaded" }] : [],
-  deliveries: r.triage_state === "pending" ? [{ id: `${r.id}:email_received`, kind: "email_received", state: "sent", attempts: 1, last_error: null, reviewed_at: null }] : jobs(r),
+  deliveries: jobs(r),
 });
 
 const counts = () => ({

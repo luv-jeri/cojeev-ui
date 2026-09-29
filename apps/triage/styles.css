@@ -76,28 +76,114 @@
 @import "../../registry/cojeev/styles/flow-press.css" layer(cojeev-flow);
 @source "../../registry/cojeev";
 
-body{background:var(--v-canvas);color:var(--v-text);margin:0}
-.tri-wrap{max-width:1360px;margin:0 auto;padding:var(--s-8) var(--s-8) var(--s-10,64px);display:grid;gap:var(--s-6)}
-.tri-head{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4)}
-.tri-counters{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-4)}
-.tri-num{font-size:34px;line-height:1;font-weight:600;font-variant-numeric:tabular-nums}
-.tri-label{color:var(--muted-foreground);font-size:var(--fs-small)}
-.tri-split{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--s-6);align-items:start}
-.tri-row{cursor:pointer}
-.tri-row[aria-selected="true"]{background:var(--v-beige)}
-.tri-cell-title{display:grid;gap:var(--s-2);min-width:0}
-.tri-badges{display:flex;flex-wrap:wrap;gap:var(--s-2)}
-.tri-muted{color:var(--muted-foreground);font-size:var(--fs-small)}
-.tri-detail{display:grid;gap:var(--s-5)}
-.tri-detail h3{margin:0 0 var(--s-2);font-size:var(--fs-small);text-transform:uppercase;letter-spacing:.08em;color:var(--muted-foreground)}
-.tri-detail p,.tri-detail pre{margin:0;white-space:pre-wrap;font:inherit;line-height:1.5}
-.tri-detail ul{margin:0;padding-left:var(--s-5);display:grid;gap:var(--s-1)}
-.tri-actions{display:flex;flex-wrap:wrap;gap:var(--s-3)}
-.tri-hint{color:var(--muted-foreground);font-size:var(--fs-small)}
-.tri-error{color:var(--destructive,#b42318);font-size:var(--fs-small)}
-.tri-hint code{background:var(--v-beige);padding:1px 6px;border-radius:6px}
-a.tri-link{color:inherit;text-decoration:underline}
-.tri-head h1{font-size:28px;font-weight:600}
-.tri-panel{position:sticky;top:var(--s-4);max-height:calc(100vh - 2*var(--s-4));overflow:auto}
-.tri-pick{all:unset;cursor:pointer;font-weight:700;border-radius:6px}
-.tri-pick:focus-visible{outline:2px solid var(--v-ink);outline-offset:3px}
+/* ---- Shell: dark rail, list on the canvas, detail sheet. Only badges carry status colour. ---- */
+html,body,#root{height:100%}
+body{margin:0;background:var(--v-canvas);color:var(--v-text);font-family:var(--font-text)}
+.tri-shell{display:grid;grid-template-columns:auto minmax(0,1fr) clamp(380px,33vw,500px);height:100dvh;overflow:hidden}
+.tri-muted{color:var(--v-text-3);font-size:var(--fs-meta);margin:0}
+.tri-badges{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.tri-kind.v-badge{color:var(--v-text-2);box-shadow:inset 0 0 0 1px var(--v-border)}
+.tri-shell code{font-family:var(--font-mono);font-size:var(--fs-meta);padding:2px 6px;border-radius:var(--r-xs);background:var(--v-beige);white-space:nowrap}
+
+/* Rail */
+.tri-rail.v-sidebar{width:236px;margin:var(--s-3);padding:var(--s-5) var(--s-3) var(--s-4);gap:var(--s-1)}
+.tri-rail .tri-brand{justify-content:flex-start;height:auto;margin:0 0 var(--s-6);padding:0 var(--s-2);gap:var(--s-3);font-size:var(--fs-title);line-height:1.1}
+.tri-brand__seal{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:var(--r-md);background:var(--v-pink);color:var(--v-on-accent)}
+.tri-brand__seal svg{width:22px;height:22px}
+.tri-brand__name{display:grid;gap:2px}
+.tri-brand__name small{font:var(--fw-regular) var(--fs-meta)/1.2 var(--font-text);letter-spacing:0;color:var(--sidebar-muted)}
+.tri-rail .v-nav__item{height:44px;padding:0 var(--s-3);gap:var(--s-3);font-size:var(--fs-control);text-align:left}
+.tri-rail .v-nav__item::after{display:none}
+.tri-rail .v-nav__item .v-icon{width:18px;height:18px}
+.tri-rail .v-nav__item[aria-current="page"]{background:var(--rail-sel)}
+.tri-rail .v-nav__count{min-width:24px;height:22px;padding:0 var(--s-2);background:transparent;color:var(--sidebar-muted);font-size:var(--fs-meta);font-weight:var(--fw-medium);font-variant-numeric:tabular-nums}
+.tri-rail .v-nav__count[data-attention]{background:var(--v-pink);color:var(--v-on-accent);font-weight:var(--fw-bold)}
+.tri-foot.v-sidebar__foot{gap:var(--s-3);padding:var(--s-4) var(--s-2) 0;border-top:1px solid var(--structure-line)}
+.tri-target{display:flex;align-items:center;justify-content:space-between;gap:var(--s-2);font-size:var(--fs-meta);color:var(--sidebar-muted)}
+.tri-hint{margin:0;padding:var(--s-3);border-radius:var(--r-md);background:var(--structure-quiet);color:var(--structure-text);font-size:var(--fs-small);line-height:1.55}
+.tri-rail .tri-hint code{background:var(--structure-line);color:var(--on-structure)}
+.tri-rail .tri-theme{justify-self:start;color:var(--structure-text)}
+.tri-rail .tri-theme:hover{background:var(--rail-hover)}
+:root[data-mode="dark"] .tri-rail.v-sidebar{background:var(--v-paper);box-shadow:inset 0 0 0 1px var(--v-beige)}
+:root[data-mode="dark"] .tri-hint{background:var(--v-beige)}
+:root[data-mode="dark"] .tri-foot.v-sidebar__foot{border-top-color:var(--v-beige)}
+
+/* List */
+.tri-main{display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0;min-height:0;padding:var(--s-10) var(--s-8) 0}
+.tri-main__head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--s-2) var(--s-6);padding:0 var(--s-4) var(--s-6)}
+.tri-main__head h1{margin:0;font:var(--fw-medium) var(--fs-section)/var(--lh-title) var(--font-display);letter-spacing:var(--ls-display)}
+.tri-main__head p{grid-column:1/-1;margin:0;max-width:62ch;color:var(--v-text-2);font-size:var(--fs-control);line-height:var(--lh-body)}
+.tri-main__tools{display:flex;align-items:center;gap:var(--s-4);flex:none}
+.tri-keys{display:flex;align-items:center;gap:var(--s-1);color:var(--v-text-3);font-size:var(--fs-meta)}
+.tri-keys kbd{min-width:22px;text-align:center;font-size:var(--fs-meta)}
+.tri-main__scroll{overflow:auto;min-height:0;padding-bottom:var(--s-8)}
+.tri-list{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.tri-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"title date" "badges issue";align-items:center;gap:var(--s-2) var(--s-4);padding:14px var(--s-4);border-radius:var(--r-md);transition:background var(--t-micro)}
+.tri-row:hover{background:var(--v-beige-2)}
+.tri-row[data-selected]{background:var(--sel-bg);box-shadow:inset 3px 0 var(--sel-edge)}
+.tri-row--skel{grid-template-areas:none}
+.tri-pick{grid-area:title;min-width:0;margin:0;padding:0;border:0;background:none;color:inherit;font:var(--fw-semibold) var(--fs-body)/1.35 var(--font-text);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.tri-pick::after{content:"";position:absolute;inset:0;border-radius:var(--r-md)}
+.tri-pick:focus-visible{outline:none}
+.tri-pick:focus-visible::after{outline:2px solid var(--ring);outline-offset:-2px}
+.tri-row__date{grid-area:date;justify-self:end;color:var(--v-text-3);font-size:var(--fs-meta);white-space:nowrap}
+.tri-row .tri-badges{grid-area:badges}
+.tri-row__issue{grid-area:issue;justify-self:end;position:relative;z-index:1;color:var(--v-text-2);font-size:var(--fs-small);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;text-decoration:none}
+a.tri-row__issue:hover{color:var(--v-text);text-decoration:underline}
+.tri-more{margin:var(--s-4) var(--s-4) 0}
+.tri-empty{align-content:center;min-height:100%;box-sizing:border-box;color:var(--v-text-3)}
+.tri-empty .v-empty__title{color:var(--v-text);font-size:var(--fs-title)}
+
+/* Detail sheet */
+.tri-panel{display:grid;grid-template-rows:minmax(0,1fr) auto;min-height:0;margin:var(--s-3) var(--s-3) var(--s-3) 0;border-radius:var(--r-panel);background:var(--v-paper);box-shadow:inset 0 0 0 1px var(--v-beige);overflow:hidden}
+.tri-panel__body{overflow:auto;padding:var(--s-8) var(--s-8) var(--s-6)}
+.tri-panel__head h2{margin:var(--s-4) 0 var(--s-2);text-wrap:balance;font:var(--fw-medium) var(--fs-title)/1.25 var(--font-display);letter-spacing:var(--ls-display);overflow-wrap:anywhere}
+.tri-panel__meta{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-1) var(--s-4);color:var(--v-text-3);font-size:var(--fs-small)}
+.tri-panel__meta a{display:inline-flex;align-items:center;gap:var(--s-1);color:var(--v-text);font-weight:var(--fw-semibold);text-decoration:none}
+.tri-panel__meta a:hover{text-decoration:underline}
+.tri-panel__meta .v-icon{width:14px;height:14px}
+.tri-sec{margin-top:var(--s-8)}
+.tri-sec h3{margin:0 0 var(--s-3);color:var(--v-text-2);font-size:var(--fs-small);font-weight:var(--fw-semibold)}
+.tri-prose{margin:0 0 var(--s-2);font-size:var(--fs-body);line-height:1.6}
+.tri-quote{margin:0;padding:var(--s-4) var(--s-5);border-radius:var(--r-card-sm);background:var(--v-canvas)}
+.tri-quote p{margin:0;font-size:var(--fs-body);line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.tri-quote .tri-quote__title{margin-bottom:var(--s-1);font-weight:var(--fw-semibold)}
+.tri-facts{display:grid;grid-template-columns:56px minmax(0,1fr);gap:var(--s-2) var(--s-4);margin:var(--s-4) 0 0;padding:0 var(--s-1);font-size:var(--fs-control)}
+.tri-facts dt{color:var(--v-text-3)}
+.tri-facts dd{margin:0;overflow-wrap:anywhere}
+.tri-facts ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--s-2)}
+.tri-facts li{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s-2)}
+.tri-facts a{color:var(--v-text);text-decoration:underline;text-decoration-color:var(--v-border);text-underline-offset:3px}
+.tri-facts a:hover{text-decoration-color:currentColor}
+.tri-file{display:inline-flex;align-items:center;gap:var(--s-1)}
+.tri-file .v-icon{width:16px;height:16px;align-self:center}
+.tri-issue{padding:var(--s-4) var(--s-5);border-radius:var(--r-card-sm);box-shadow:inset 0 0 0 1px var(--v-beige)}
+.tri-issue p{margin:0;overflow-wrap:anywhere}
+.tri-issue__title{font-weight:var(--fw-semibold);font-size:var(--fs-body)}
+.tri-issue__body{margin-top:var(--s-2)!important;color:var(--v-text-2);font-size:var(--fs-control);line-height:1.6;white-space:pre-wrap}
+.tri-jobs{list-style:none;margin:0;padding:0}
+.tri-jobs li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--s-1) var(--s-3);padding:10px 0;border-top:1px solid var(--v-beige);font-size:var(--fs-control)}
+.tri-jobs li:first-child{border-top:0;padding-top:0}
+.tri-jobs__note{grid-column:1/-1;margin:0;color:var(--v-text-3);font-size:var(--fs-meta)}
+.tri-jobs__note[data-tone="danger"]{color:var(--v-danger-ink)}
+.tri-actions{display:grid;gap:var(--s-3);padding:var(--s-4) var(--s-8) var(--s-5);border-top:1px solid var(--v-beige);background:var(--v-paper)}
+.tri-actions__row{display:flex;flex-wrap:wrap;gap:var(--s-3)}
+.tri-primary{flex:1}
+.tri-wait{display:flex;align-items:center;gap:var(--s-2);margin:0;min-height:var(--ctl-md);color:var(--v-text-2);font-size:var(--fs-control)}
+.tri-alert{display:flex;align-items:center;gap:var(--s-2);margin:0 0 var(--s-3);padding:var(--s-3) var(--s-4);border-radius:var(--r-md);background:var(--status-danger-bg);color:var(--status-danger-ink);font-size:var(--fs-control)}
+.tri-actions .tri-alert{margin:0}
+.tri-alert > span{flex:1}
+.tri-alert .v-icon{flex:none}
+/* Toasts sit under the list, clear of the panel's action buttons. */
+.tri-toasts.v-toaster{right:auto;left:calc(236px + var(--s-3) * 2 + var(--s-8))}
+.tri-dialog-report{margin:0;padding:var(--s-3) var(--s-4);border-radius:var(--r-md);background:var(--v-paper);font-weight:var(--fw-semibold)}
+
+@media (max-width:1180px){
+  .tri-shell{grid-template-columns:auto minmax(0,1fr) 360px}
+  .tri-rail.v-sidebar{width:212px}
+  .tri-toasts.v-toaster{left:calc(212px + var(--s-3) * 2 + var(--s-4))}
+  .tri-main{padding:var(--s-8) var(--s-4) 0}
+  .tri-keys{display:none}
+  .tri-panel__body{padding:var(--s-6)}
+  .tri-actions{padding:var(--s-4) var(--s-6)}
+}

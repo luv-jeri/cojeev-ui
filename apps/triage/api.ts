@@ -8,6 +8,8 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   try { res = await fetch(`/api${path}`, init); } catch { throw new Error("Could not reach the reporting service. Is the proxy running?"); }
   const body = await res.json().catch(() => null);
   if (!res.ok) throw new Error((body as { error?: string } | null)?.error ?? `The reporting service answered ${res.status}.`);
+  // Every admin route answers JSON; anything else is the dev server itself (no admin token, so no proxy).
+  if (body === null) throw new Error("No reporting data. Start the dashboard with an admin token, or open /?fixtures for sample data.");
   return body as T;
 }
 
