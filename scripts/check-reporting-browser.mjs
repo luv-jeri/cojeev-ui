@@ -69,7 +69,7 @@ const measure = (page, selector = CONTROLS, root = ".report-sheet") => page.eval
   const found = [...sheet.querySelectorAll(selector)].filter(shown);
   const words = sheet.innerText.split(/\s+/).filter(token => /[\p{L}\p{N}]/u.test(token)).length;
   const small = found.map(node => { const box = node.getBoundingClientRect(); return { name: label(node), w: Math.round(box.width * 10) / 10, h: Math.round(box.height * 10) / 10 }; }).filter(item => item.w < 43.99 || item.h < 43.99);
-  return { words, controls: found.length, small, total: found.length };
+  return { words, controls: found.length, small, total: found.length, names: found.map(label) };
 }, { selector, root });
 const kindTabName = kind => kind === "bug" ? "Report a bug" : "Request a feature";
 const switchTab = async (page, kind) => {
@@ -99,7 +99,13 @@ const sendStubbed = async (page, kind, title) => {
   await page.getByRole("button", { name: kind === "bug" ? "Send report" : "Send request", exact: true }).click();
   await sentBanner(page, kind).waitFor();
 };
-const assertTargets = (state, found) => assert.deepEqual(found.small, [], `${state}: targets under 44x44 (of ${found.total})`);
+// A state passes only if it measured something, and the named controls were among what it measured (a name matches by prefix; `min` is a count of names with that prefix).
+const assertTargets = (state, found, expected = [], min = {}) => {
+  assert.ok(found.total > 0, `${state}: nothing was measured`);
+  for (const name of expected) assert.ok(found.names.some(item => item.startsWith(name)), `${state}: ${name} was not measured (measured: ${found.names.join(" | ")})`);
+  for (const [prefix, count] of Object.entries(min)) assert.ok(found.names.filter(item => item.startsWith(prefix)).length >= count, `${state}: fewer than ${count} ${prefix} measured`);
+  assert.deepEqual(found.small, [], `${state}: targets under 44x44 (of ${found.total})`);
+};
 
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
@@ -787,7 +793,7 @@ try {
       await switchTab(mobilePage, kind);
       const found = await measure(mobilePage); budgets[`phone ${kind}`] = { words: found.words, controls: found.controls };
       assert.ok(found.words <= 60, `${kind} at 390: ${found.words} words`); assert.ok(found.controls <= 12, `${kind} at 390: ${found.controls} controls`);
-      assertTargets(`${kind} at rest`, await measure(mobilePage, TOUCH));
+      assertTargets(`${kind} at rest`, await measure(mobilePage, TOUCH), kind === "bug" ? ["Pin elements", "Include browser details", "More"] : ["Attach files", "More"]);
     }
     console.log("rest budget at 390", JSON.stringify(budgets));
     results.push("Rest state stays within 60 words and 12 controls on both tabs at 1440px and 390px");
@@ -824,18 +830,18 @@ try {
     await mobilePage.getByRole("button", { name: "Include browser details", exact: true }).click();
     await mobilePage.getByRole("button", { name: "Review browser details", exact: true }).click();
     await mobilePage.locator(".report-diagnostic-groups details").first().waitFor();
-    assertTargets("Bug with an attachment and browser details", await measure(mobilePage, TOUCH));
+    assertTargets("Bug with an attachment and browser details", await measure(mobilePage, TOUCH), ["Remove reference.png", "Review browser details", "Include browser details"]);
     await mobilePage.getByRole("button", { name: "Pin elements", exact: true }).tap();
     const pinDialog = mobilePage.getByRole("dialog", { name: "Pin elements", exact: true }); await pinDialog.waitFor();
-    await pinDialog.focus(); await mobilePage.keyboard.press("ArrowRight"); await mobilePage.keyboard.press("Enter");
-    await mobilePage.getByRole("button", { name: "Remove pin 1", exact: true }).first().waitFor();
-    assertTargets("Pin mode", await measure(mobilePage, TOUCH, ".report-picker-toolbar"));
+    await pinDialog.focus();
+    for (const n of [1, 2, 3]) { await mobilePage.keyboard.press("ArrowRight"); await mobilePage.keyboard.press("Enter"); await mobilePage.getByRole("button", { name: `Remove pin ${n}`, exact: true }).first().waitFor(); }
+    assertTargets("Pin mode", await measure(mobilePage, TOUCH, ".report-picker-toolbar"), ["Undo pin", "Done"], { "Remove pin ": 3 });
     await mobilePage.keyboard.press("Escape"); await panel(mobilePage).waitFor();
     await mobilePage.route(/t16-image-\d\.png/, async route => { await new Promise(resolve => setTimeout(resolve, 4500)); await route.fulfill({ status: 200, contentType: "image/png", body: imageBytes }).catch(() => {}); });
     await mobilePage.evaluate(() => { for (let index = 0; index < 4; index += 1) { const image = document.createElement("img"); image.src = `t16-image-${index}.png?n=${Math.random()}`; image.width = 40; image.height = 40; image.alt = ""; image.dataset.t16 = ""; document.body.prepend(image); } });
     await mobilePage.getByRole("button", { name: "Full page", exact: true }).tap();
     await mobilePage.locator(".report-capture-card").waitFor({ timeout: 30000 });
-    assertTargets("Capture progress", await measure(mobilePage, TOUCH, ".report-capture-card"));
+    assertTargets("Capture progress", await measure(mobilePage, TOUCH, ".report-capture-card"), ["Cancel screenshot"]);
     await mobilePage.getByRole("button", { name: "Cancel screenshot", exact: true }).tap();
     await mobilePage.locator(".report-capture-card").waitFor({ state: "detached" });
     await mobilePage.unroute(/t16-image-\d\.png/); await mobilePage.evaluate(() => document.querySelectorAll("[data-t16]").forEach(node => node.remove()));
@@ -845,12 +851,12 @@ try {
     await stubSend(mobile);
     await switchTab(mobilePage, "request");
     await sendStubbed(mobilePage, "request", "A mobile calendar with date ranges");
-    assertTargets("Request after a send, banner and collapsed row", await measure(mobilePage, TOUCH));
+    assertTargets("Request after a send, banner and collapsed row", await measure(mobilePage, TOUCH), ["View", "Sent from this browser"]);
     await mobilePage.locator(".report-sent-banner").getByRole("link", { name: "View", exact: true }).tap();
     await mobilePage.locator(".report-sent-detail").waitFor();
     for (const name of ["Refresh status", "Download receipt", "Remove from this device"]) await mobilePage.locator(".report-sent-detail").getByRole("button", { name, exact: true }).waitFor();
     await mobilePage.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }).waitFor();
-    assertTargets("Request after a send, open row", await measure(mobilePage, TOUCH));
+    assertTargets("Request after a send, open row", await measure(mobilePage, TOUCH), ["View", "Sent from this browser", "Refresh status", "Download receipt", "Track this report", "Remove from this device"]);
     await switchTab(mobilePage, "bug");
   }
   await mobilePage.getByRole("button", { name: "More", exact: true }).click(); await mobilePage.getByRole("menuitem", { name: "Clear draft", exact: true }).click();
