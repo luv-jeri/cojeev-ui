@@ -155,6 +155,9 @@ try {
   await page.evaluate(() => { document.documentElement.dataset.mode = "light"; });
   await page.getByRole("button", { name: "Review request", exact: true }).click();
   await page.getByRole("heading", { name: "Ready to send?" }).waitFor();
+  await page.getByText("Private until we approve your title.", { exact: true }).waitFor();
+  assert.equal((await page.locator(".report-json summary").innerText()).trim(), "See exactly what will be sent");
+  await page.getByText("By sending you approve everything shown, including anything visible in your files. Files and technical details are deleted after 30 days; your email and report after 180.", { exact: true }).waitFor();
   const payloads = []; let first = true;
   await page.route(`${api}/v1/reports`, async route => {
     payloads.push(route.request().postDataJSON()); const response = await route.fetch();
@@ -163,16 +166,34 @@ try {
   await page.getByRole("button", { name: "Send request", exact: true }).click();
   await page.getByRole("button", { name: "Retry this exact report", exact: true }).waitFor();
   await page.getByRole("button", { name: "Retry this exact report", exact: true }).click();
-  await accepted(page); await page.getByText("1 of 1 uploaded", { exact: true }).waitFor();
+  await accepted(page); await page.getByText("1 of 1 files uploaded", { exact: true }).waitFor();
   assert.equal(payloads.length, 2); assert.deepEqual(payloads[0].report, payloads[1].report); assert.equal(payloads[0].token, payloads[1].token);
   await page.unroute(`${api}/v1/reports`);
   const requestId = payloads[0].report.id;
   const requestDetail = await fetch(`${api}/v1/admin/reports/${requestId}`, { headers: { Authorization: `Bearer ${adminToken}` } }).then(response => response.json());
   assert.equal(requestDetail.report.title, `Browser request ${run}`); assert.equal(requestDetail.attachments[0].state, "uploaded");
   results.push("Ambiguous accepted response safely retries the exact UUID, token and payload; D1 report and R2 attachment are real");
+  await page.getByText("We’ll email you when we’ve looked at it, and again when it’s live.", { exact: true }).waitFor();
+  await page.getByText("Status: Received", { exact: true }).waitFor();
+  await page.getByText("1 of 1 files uploaded", { exact: true }).waitFor();
+  await page.locator(".report-delivery summary", { hasText: "Delivery details" }).click();
+  {
+    const terms = await page.locator(".report-delivery dt").allInnerTexts();
+    assert.ok(terms.includes("Email receipt") && terms.includes("Issue"), "Delivery details holds the Email receipt and Issue rows");
+    assert.equal(await page.locator(".report-delivery .report-receipt-id code").innerText(), payloads[0].report.id);
+  }
+  results.push("The receipt shows the expectation sentence, one status line, and Delivery details with the Email receipt and Issue rows and the report ID");
+  assert.equal(await page.getByText("Tracked as", { exact: false }).count(), 0, "No issue number, no Tracked as");
+  await page.route(`${api}/v1/reports/${requestId}`, async route => { const response = await route.fetch(); await route.fulfill({ response, json: { ...(await response.json()), issueNumber: 412, issueUrl: "https://github.com/luv-jeri/cojeev-ui/issues/412" } }); });
+  await page.getByRole("button", { name: "Refresh status", exact: true }).click();
+  assert.equal(await page.getByRole("link", { name: "#412", exact: true }).getAttribute("href"), "https://github.com/luv-jeri/cojeev-ui/issues/412");
+  await page.getByText("Tracked as", { exact: false }).first().waitFor();
+  await page.unroute(`${api}/v1/reports/${requestId}`);
   await page.getByRole("button", { name: "Refresh status", exact: true }).click(); await accepted(page);
+  await page.getByText("Tracked as", { exact: false }).waitFor({ state: "detached" });
+  results.push("The receipt links the public issue once it exists");
   await screenshot(page, "request-receipt");
-  await page.getByRole("button", { name: "Clear receipt & start another", exact: true }).click();
+  await page.getByRole("button", { name: "Start another", exact: true }).click();
   await fill(page, "bug", `Browser bug ${run}`);
   await page.evaluate(() => { document.documentElement.dataset.mode = "dark"; console.warn("Browser test warning Bearer secret-test-value person@example.com"); });
   const detailsToggle = page.getByRole("button", { name: "Include browser details", exact: true }), reviewDetails = page.getByRole("button", { name: "Review browser details", exact: true });
@@ -250,11 +271,17 @@ try {
   assert.equal(await page.locator(".report-diagnostic-groups details").count(), 3);
   results.push("One browser-details group can be removed before sending");
   await page.getByRole("button", { name: "Review report", exact: true }).click();
+  await page.getByText("Private. The public issue shows only a reference.", { exact: true }).waitFor();
+  results.push("The review shows the short privacy line, See exactly what will be sent, and the visible consent sentence");
   const bugPayload = await page.locator(".report-json pre").textContent().then(JSON.parse);
   assert.equal(bugPayload.diagnostics.environment.theme, "dark"); assert.ok(bugPayload.diagnostics.console.some(event => event.message.includes("[redacted]"))); assert.ok(!JSON.stringify(bugPayload.diagnostics).includes("secret-test-value"));
   assert.equal(bugPayload.diagnostics.actions, undefined); assert.ok(bugPayload.diagnostics.environment);
   assert.ok(bugPayload.pins.length >= 1); assert.equal(bugPayload.attachments.length, 1);
-  await page.getByRole("button", { name: "Send report", exact: true }).click(); await accepted(page); await page.getByText("1 of 1 uploaded", { exact: true }).waitFor();
+  await page.getByRole("button", { name: "Send report", exact: true }).click(); await accepted(page); await page.getByText("1 of 1 files uploaded", { exact: true }).waitFor();
+  await page.getByText("We’re looking into it. We’ll email you when it’s tracked, and again when it’s fixed.", { exact: true }).waitFor();
+  await page.getByText("Status: Received", { exact: true }).waitFor();
+  await page.locator(".report-delivery summary", { hasText: "Delivery details" }).click();
+  assert.equal(await page.locator(".report-delivery .report-receipt-id code").innerText(), bugPayload.id);
   const bugDetail = await fetch(`${api}/v1/admin/reports/${bugPayload.id}`, { headers: { Authorization: `Bearer ${adminToken}` } }).then(response => response.json());
   assert.equal(bugDetail.report.kind, "bug"); assert.equal(bugDetail.attachments[0].state, "uploaded");
   results.push("Bug diagnostics require explicit inclusion; captured data-mode and reviewed warnings survive reload unchanged, secrets redact, capture and crop upload to the local Worker");

@@ -1,4 +1,4 @@
-import type { Receipt } from "./contracts";
+import type { Receipt, ReportKind } from "./contracts";
 
 // The provider's own vocabulary. `accepted` means Resend took the request and returned an id;
 // only a signed `delivered` event promotes the receipt's `email` field to "sent".
@@ -35,4 +35,12 @@ export function emailReceiptLabel(receipt: Pick<Receipt, "email" | "emailDeliver
   if (receipt.email === "setup_required") return "Email is not connected yet";
   if (receipt.email === "needs_review") return "Delivery needs maintainer review";
   return DELIVERY_LABELS[receipt.emailDelivery ?? ""] ?? "Not delivered yet";
+}
+
+/** What happens next, said only when email is known to be on. Never promises an email otherwise. */
+export function receiptExpectation(kind: ReportKind, emailEnabled: boolean | undefined): string | null {
+  if (emailEnabled !== true) return null;
+  return kind === "request"
+    ? "We’ll email you when we’ve looked at it, and again when it’s live."
+    : "We’re looking into it. We’ll email you when it’s tracked, and again when it’s fixed.";
 }

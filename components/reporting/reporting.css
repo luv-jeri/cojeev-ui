@@ -294,10 +294,6 @@
   border-radius: var(--r-md);
   overflow: hidden;
 }
-.report-json > p {
-  padding-inline: var(--s-4);
-  padding-bottom: var(--s-3);
-}
 .report-receipt-seal {
   display: grid;
   place-items: center;
@@ -740,6 +736,10 @@ html[data-flow="off"]
   padding: var(--s-4);
   font-size: var(--fs-small);
   line-height: 1.45;
+}
+.report-delivery .report-receipt-id {
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--v-border);
 }
 .report-delivery dl {
   margin: 0;

@@ -54,6 +54,7 @@ import {
 import {
   emailReceiptLabel,
   issueReceiptLabel,
+  receiptExpectation,
 } from "@/lib/reporting/receipt-labels";
 import { siteFlags } from "@/lib/site-config";
 import {
@@ -109,6 +110,9 @@ const message = (error: unknown) =>
   error instanceof Error
     ? error.message
     : "Something went wrong. Your draft is still here.";
+const REQUEST_PRIVACY = "Private until we approve your title.";
+// One constant so the owner's copy review can swap it in one place.
+const BUG_PRIVACY = "Private. The public issue shows only a reference.";
 const sentFile = (state: string) => state === "uploaded" || state === "ready";
 
 export function ReportingWidget({ entries }: { entries: ComponentMatch[] }) {
@@ -993,10 +997,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               <h2 tabIndex={-1} ref={reviewTitle}>
                 Ready to send?
               </h2>
-              <p>
-                {draft.kind === "request"
-                  ? "Everything below is private. Your title only reaches the public board if a maintainer approves it."
-                  : "Your report and attachments are private. A public issue with a generic title will point maintainers to it."}
+              <p className="report-privacy-line">
+                {draft.kind === "request" ? REQUEST_PRIVACY : BUG_PRIVACY}
               </p>
               <div className="report-review-summary">
                 <strong>{draft.frozen.report.title}</strong>
@@ -1014,27 +1016,21 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 </div>
               )}
               <details className="report-json">
-                <summary>Inspect exactly what will be sent</summary>
-                <p className="report-help">
-                  These report fields and the files previewed above are
-                  submitted. A secret receipt token and a verification token
-                  authenticate the request.
-                </p>
+                <summary>See exactly what will be sent</summary>
                 <ReportSource>
                   {JSON.stringify(draft.frozen.report, null, 2)}
                 </ReportSource>
               </details>
               <p className="report-help">
-                By sending, you approve the content shown here, including every
-                visible detail in your media. Technical details and media are
-                kept for 30 days; contact and private report details for 180
-                days.
+                By sending you approve everything shown, including anything
+                visible in your files. Files and technical details are deleted
+                after 30 days; your email and report after 180.
               </p>
               {draft.attempted && (
                 <div className="report-notice">
                   <p>
-                    An earlier send was attempted. This exact report is locked
-                    for safe retry.
+                    A send was already tried. Check whether it arrived before
+                    retrying.
                   </p>
                   <Button
                     variant="outline"
@@ -1046,9 +1042,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   <details>
                     <summary>Start over instead</summary>
                     <p className="report-help">
-                      Clearing removes this device’s draft and receipt key. An
-                      already accepted report stays submitted. Check whether it
-                      arrived before creating another.
+                      Starting over deletes this device’s draft and receipt key.
+                      A report already accepted stays sent.
                     </p>
                     <Button
                       variant="ghost"
@@ -1124,36 +1119,71 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 Your {draft.kind === "request" ? "request" : "report"} is
                 received.
               </h2>
-              <p>
-                {remainingFiles
+              {(() => {
+                const line = remainingFiles
                   ? "The text is safely stored. Finish uploading the remaining files below."
-                  : "Thank you for helping shape Cojeev."}
+                  : receiptExpectation(draft.kind, config?.emailEnabled);
+                return line ? <p>{line}</p> : null;
+              })()}
+              <p className="report-receipt-status">
+                <span>
+                  Status:{" "}
+                  {draft.kind === "bug" && receipt.status === "resolved"
+                    ? "Resolved"
+                    : STATUS_LABELS[receipt.status]}
+                </span>
+                {receipt.attachments.length > 0 && (
+                  <span>
+                    {uploadedFiles} of {receipt.attachments.length} files
+                    uploaded
+                  </span>
+                )}
+                {expiredFiles > 0 && <span>{expiredFiles} expired</span>}
+                {receipt.issueNumber && receipt.issueUrl && (
+                  <span>
+                    Tracked as{" "}
+                    <a
+                      href={receipt.issueUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      #{receipt.issueNumber}
+                    </a>
+                  </span>
+                )}
               </p>
-              <dl>
-                <div>
-                  <dt>Status</dt>
-                  <dd>
-                    {draft.kind === "bug" && receipt.status === "resolved"
-                      ? "Resolved"
-                      : STATUS_LABELS[receipt.status]}
-                  </dd>
+              <details className="report-delivery">
+                <summary>Delivery details</summary>
+                <dl>
+                  <div>
+                    <dt>Status</dt>
+                    <dd>
+                      {draft.kind === "bug" && receipt.status === "resolved"
+                        ? "Resolved"
+                        : STATUS_LABELS[receipt.status]}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Email receipt</dt>
+                    <dd>{emailReceiptLabel(receipt)}</dd>
+                  </div>
+                  <div>
+                    <dt>Issue</dt>
+                    <dd>{issueReceiptLabel(receipt)}</dd>
+                  </div>
+                  <div>
+                    <dt>Attachments</dt>
+                    <dd>
+                      {uploadedFiles} of {receipt.attachments.length} uploaded
+                      {expiredFiles ? ` · ${expiredFiles} expired` : ""}
+                    </dd>
+                  </div>
+                </dl>
+                <div className="report-receipt-id">
+                  <span>Report ID</span>
+                  <code>{receipt.id}</code>
                 </div>
-                <div>
-                  <dt>Email receipt</dt>
-                  <dd>{emailReceiptLabel(receipt)}</dd>
-                </div>
-                <div>
-                  <dt>Issue</dt>
-                  <dd>{issueReceiptLabel(receipt)}</dd>
-                </div>
-                <div>
-                  <dt>Attachments</dt>
-                  <dd>
-                    {uploadedFiles} of {receipt.attachments.length} uploaded
-                    {expiredFiles ? ` · ${expiredFiles} expired` : ""}
-                  </dd>
-                </div>
-              </dl>
+              </details>
               {receipt.componentUrl && (
                 <Button asChild fullWidth>
                   <a href={receipt.componentUrl}>
@@ -1161,13 +1191,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   </a>
                 </Button>
               )}
-              <div className="report-receipt-id">
-                <span>Report ID</span>
-                <code>{receipt.id}</code>
-              </div>
               <p className="report-help">
-                This private receipt is saved on this device. Download a copy
-                before clearing it; the secret token lets you check this report.
+                Keep your receipt. It lets you check this report later.
               </p>
               <div className="report-row">
                 <Button
@@ -1209,19 +1234,18 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   </Button>
                 ) : (
                   <p className="report-help">
-                    The original files are not on this device. Reopen the
-                    original draft to finish its uploads. Expired attachments
-                    are no longer available.
+                    The original files aren’t on this device, so they can’t be
+                    re-sent from here.
                   </p>
                 ))}
               <p className="report-help" role="status">
                 {busy || storage}
               </p>
               <Button variant="ghost" disabled={!!busy} onClick={clear}>
-                Clear receipt & start another
+                Start another
               </Button>
               <Link href="/requests" onClick={() => setOpen(false)}>
-                See what’s being requested <ArrowUpRight size={15} />
+                Request board <ArrowUpRight size={15} />
               </Link>
             </section>
           ) : null}

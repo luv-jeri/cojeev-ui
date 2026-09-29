@@ -4,7 +4,7 @@ import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { readSiteFlags } from "../lib/site-config";
 import { robotsFile, robotsRules } from "../app/robots";
-import { emailReceiptLabel, issueReceiptLabel } from "../lib/reporting/receipt-labels";
+import { emailReceiptLabel, issueReceiptLabel, receiptExpectation } from "../lib/reporting/receipt-labels";
 import { releaseIdentifier } from "../lib/reporting/diagnostics";
 import { CreatorPage } from "../components/landing/creator-page";
 
@@ -90,4 +90,13 @@ test("the contact surface publishes only the public address, and GitHub either w
   assert.match(enabled, /href="https:\/\/github\.com\/luv-jeri"/);
   assert.doesNotMatch(disabled, /mailto:/, "an unverified inbox is never published");
   assert.match(disabled, /href="https:\/\/github\.com\/luv-jeri"/);
+});
+
+test("receipt expectation names the next email only when email is on", () => {
+  assert.equal(receiptExpectation("request", true), "We’ll email you when we’ve looked at it, and again when it’s live.");
+  assert.equal(receiptExpectation("bug", true), "We’re looking into it. We’ll email you when it’s tracked, and again when it’s fixed.");
+  for (const kind of ["request", "bug"] as const) {
+    assert.equal(receiptExpectation(kind, false), null);
+    assert.equal(receiptExpectation(kind, undefined), null);
+  }
 });
