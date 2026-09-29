@@ -265,6 +265,10 @@ jobs:
       || needs.scope.result != 'success'
       || (needs.scope.outputs.scope != 'docs'
       && needs.scope.outputs.scope != 'checkpoint'))
+    # actions: read lets the reuse lookup list artifacts and read the run; nothing here can write.
+    permissions:
+      contents: read
+      actions: read
     runs-on: ubuntu-latest
     # A complete catalogue pass took 82 minutes on the shared runner. Reserve
     # time for the remaining mobile, reporting, analytics and install checks.
@@ -329,6 +333,26 @@ jobs:
           CI_SCOPE_EVENT: ${{ github.event_name }}
           CI_SCOPE_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
           CI_SCOPE_HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      # Push to main only: reuse a passing pull_request run for the identical source tree
+      # (strict protection makes the squash tree equal the PR head tree). Reuse removes
+      # only lint, typecheck, tests and browser gates; the release pair, CSP check and
+      # consumer install below always run on this commit. Any doubt or error leaves
+      # reuse unset, which runs every check the depth requires; this step never fails the job.
+      - name: Look for a passing pull request run on this exact source tree
+        id: reuse
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.launch_policy.outputs.deferred != 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          TREE=$(git rev-parse 'HEAD^{tree}') || exit 0
+          export TREE
+          node scripts/ci-reuse-lookup.mjs || echo "reuse=false" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REQUIRED_DEPTH: ${{ steps.depth.outputs.depth }}
+          REPOSITORY: ${{ github.repository }}
+          STRICT_SINCE: '2026-09-29T00:00:00Z'
       # A documentation-only change installs nothing, builds nothing, publishes
       # no release artifact and deploys nothing: the diff is the whole check.
       - name: Check documentation whitespace and conflict markers
@@ -340,17 +364,17 @@ jobs:
       - run: npm ci
         if: steps.depth.outputs.run_checks == 'true'
       - run: npx playwright install --with-deps chromium webkit
-        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true' || steps.depth.outputs.run_reporting == 'true')
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true' || steps.depth.outputs.run_reporting == 'true')
       - run: npm run lint
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npx next typegen && npm run typecheck
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npm test
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npm run reporting:test
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npm run registry-host:test
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       - name: Prepare both environments from this clean commit
         id: release
         if: steps.depth.outputs.run_release == 'true'
@@ -370,16 +394,16 @@ jobs:
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_seo == 'true'
         run: node scripts/check-structured-data.mjs --dir artifacts/release/production/site
       - name: Build manual Pages compatibility fixture for existing browser gates
-        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
         run: npm run build
       - run: npm run check:examples
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       # The bounded harness the transient-paint and clock-isolation paths own,
       # with its negative controls. Selected only when the catalogue is not
       # running, which already renders these cases: a change to those files gets
       # reduced browser evidence, never no browser evidence.
       - name: Exercise the transient paint and clock isolation harnesses
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_transient == 'true' && steps.depth.outputs.run_catalogue != 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_transient == 'true' && steps.depth.outputs.run_catalogue != 'true'
         run: |
           node tests/docs-transient-timing.browser.mjs
           node tests/docs-transient-timing.browser.mjs --negative
@@ -387,29 +411,29 @@ jobs:
           node tests/docs-clock-isolation.browser.mjs
           node tests/docs-clock-isolation.browser.mjs --negative
       - run: npm run gate
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_catalogue == 'true'
         env:
           COJEEV_DOCS_SHARDS: '3'
           # Empty means every component; a component-confined change names its ids.
           COJEEV_GATE_IDS: ${{ steps.depth.outputs.gate_ids }}
       - run: npm run gate:mobile ${GATE_IDS:+-- --ids="$GATE_IDS"}
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_catalogue == 'true'
         env:
           GATE_IDS: ${{ steps.depth.outputs.gate_ids }}
       - run: npm run gate:marketing
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_catalogue == 'true'
       - run: npm run gate:smooth-scroll
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_catalogue == 'true'
       - name: Confirm route stylesheets resolve as on a hard load after client-side navigation
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_catalogue == 'true'
         run: node tests/route-styles.browser.mjs --serve
       - name: Build the disposable local reporting fixture
-        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_reporting == 'true')
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_reporting == 'true')
         run: npm run build
         env:
           NEXT_PUBLIC_REPORTING_API_URL: http://127.0.0.1:8787
       - name: Exercise receipt, attachment and maintainer journeys without live services
-        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_reporting == 'true')
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_reporting == 'true')
         run: node scripts/run-reporting-browser.mjs
       # Analytics gate, three cases. The gate serves out/ itself on an ephemeral port
       # when ANALYTICS_URL is unset. Every provider request is intercepted in the
@@ -420,11 +444,11 @@ jobs:
       # 1. Unset: reuse the local reporting fixture above, which sets no analytics
       #    variables at all. Its disposable API is now stopped.
       - run: node tests/analytics.browser.mjs --expect-silent
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_analytics == 'true'
       # 2. Explicitly disabled: the same dummy token and host, refused by the flag
       #    alone, so silence cannot be an artefact of a missing token.
       - name: Rebuild the Pages fixture with analytics explicitly disabled
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_analytics == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'false'
@@ -433,10 +457,10 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: node tests/analytics.browser.mjs --expect-silent
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_analytics == 'true'
       # 3. Enabled: explicit events only, asserted against the fixture's own stamps.
       - name: Rebuild the Pages fixture with analytics capture enabled
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_analytics == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_ANALYTICS_ENABLED: 'true'
@@ -445,7 +469,7 @@ jobs:
           NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT: beta
           NEXT_PUBLIC_RELEASE_SHA: '0000000000000000000000000000000000000000'
       - run: npm run analytics:browser
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_analytics == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_analytics == 'true'
         env:
           ANALYTICS_TEST_ENVIRONMENT: beta
           ANALYTICS_TEST_RELEASE: '0000000000000000000000000000000000000000'
@@ -488,6 +512,31 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
           include-hidden-files: false
+      # Verification marker for main-push reuse. Written only after every step above
+      # succeeded on a pull request from this repository, and never when the owner test
+      # deferral applied (tests did not run, so nothing was verified).
+      - name: Write the verified-tree marker
+        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.launch_policy.outputs.deferred != 'true'
+        shell: bash
+        run: |
+          tree=$(git rev-parse 'HEAD^{tree}')
+          mkdir -p "$RUNNER_TEMP/marker"
+          printf '{"tree":"%s","depth":"%s","run_id":"%s","head_sha":"%s"}\n' "$tree" "$DEPTH" "$RUN_ID" "$HEAD_SHA" > "$RUNNER_TEMP/marker/marker.json"
+          echo "MARKER_TREE=$tree" >> "$GITHUB_ENV"
+        env:
+          DEPTH: ${{ steps.depth.outputs.depth }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      - name: Upload the verified-tree marker
+        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.launch_policy.outputs.deferred != 'true'
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: verified-tree-${{ env.MARKER_TREE }}
+          path: ${{ runner.temp }}/marker/marker.json
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: true
       - name: Report the selected release depth
         if: always()
         run: |

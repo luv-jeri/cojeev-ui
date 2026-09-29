@@ -13,7 +13,7 @@ const no = (reason) => ({ reuse: false, reason });
 export function decideReuse({ event, headTree, requiredDepth, repository, artifacts, runs, strictSince, now } = {}) {
   if (event !== 'push') return no(`event ${event} never reuses`);
   if (typeof headTree !== 'string' || !TREE.test(headTree)) return no('invalid tree hash');
-  if (!Object.hasOwn(DEPTH, requiredDepth) || typeof repository !== 'string' || !repository) return no('invalid input');
+  if (typeof requiredDepth !== 'string' || !Object.hasOwn(DEPTH, requiredDepth) || typeof repository !== 'string' || !repository) return no('invalid input');
   if (!Array.isArray(artifacts) || !Array.isArray(runs)) return no('lookup failed');
   const nowMs = Date.parse(now);
   const strictMs = Date.parse(strictSince);
@@ -25,7 +25,7 @@ export function decideReuse({ event, headTree, requiredDepth, repository, artifa
   if (artifact.expired !== false) return no('artifact expired');
   const expiresMs = Date.parse(artifact.expires_at);
   if (Number.isNaN(expiresMs) || expiresMs <= nowMs) return no('artifact expired');
-  if (!Object.hasOwn(DEPTH, artifact.depth)) return no('unknown marker depth');
+  if (typeof artifact.depth !== 'string' || !Object.hasOwn(DEPTH, artifact.depth)) return no('unknown marker depth');
   if (DEPTH[artifact.depth] < DEPTH[requiredDepth]) return no(`marker depth ${artifact.depth} below required ${requiredDepth}`);
 
   const runId = artifact.workflow_run?.id;

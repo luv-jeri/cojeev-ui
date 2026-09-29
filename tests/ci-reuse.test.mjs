@@ -58,3 +58,7 @@ test('reuse_still_builds_release_pair and deploy_needs_release_pack_on_pushed_co
     assert.deepEqual(Object.keys(r).filter((k) => !['reuse', 'reason', 'runId'].includes(k)), []);
   }
 });
+test('reuse_rejects_array_depth', () => {
+  assert.equal(decideReuse(input({ requiredDepth: ['docs'] })).reuse, false);
+  assert.equal(decideReuse(input({ artifacts: [art({ depth: ['full'] })] })).reuse, false);
+});
