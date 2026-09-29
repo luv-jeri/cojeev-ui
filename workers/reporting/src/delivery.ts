@@ -129,6 +129,7 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     return sendResend(env,job,emailPayload(env,job,owner,ownerMessage(row,env.SITE_URL)),send);
   }
   if(job.kind==="email_resolved" && row.status!=="resolved") throw new DeliveryFailure("Report was reopened before its release email sent. Review before retrying.",false,true);
+  if(job.kind==="email_resolved"&&row.triage_state!=="approved") throw new DeliveryFailure("Report is no longer approved.",false,true);
   if(job.kind==="email_accepted"&&(row.triage_state!=="approved"||!row.issue_number||!row.issue_url)) throw new DeliveryFailure("Waiting for an approved issue.",false,true);
   if(job.kind==="email_rejected"&&row.triage_state!=="rejected") throw new DeliveryFailure("Report is no longer rejected.",false,true);
   if(!testerAllowed(env,row.email)) throw new DeliveryFailure('Beta recipient requires allowlist review.',false,true);

@@ -19,6 +19,12 @@ test("redacts credential and personal patterns and strips dynamic route values",
   assert.equal(safeRoute("https://site.test/api/person/alice?key=secret"), "/:segment/:segment/:segment");
   assert.equal(safeRoute("https://site.test/cojeev-ui/docs/button/?token=x"), "/cojeev-ui/docs/button/");
 });
+test("package versions survive the email scrub; wrapped addresses do not", () => {
+  for (const v of ["react@18.2.0", "next@15.1.0", "@radix-ui/react-dialog@1.1.2"]) assert.equal(redact(v), v);
+  assert.ok(!redact("_john.smith@gmail.com_").includes("john"));
+  assert.equal(redact("(jane@x.io)"), "([email])");
+  assert.equal(validateReport({ ...valid(), title: "Support react@19.1.0 in the date picker" }).title, "Support react@19.1.0 in the date picker");
+});
 test("redacts quoted JSON credentials and secrets containing spaces", () => {
   const source = String.raw`{"password":"private phrase","api_key":"private-key","cookie":"session=private-cookie","secret":"escaped\"private-value"} token='private token'`;
   const result = redact(source);

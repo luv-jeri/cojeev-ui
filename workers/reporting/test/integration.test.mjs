@@ -906,6 +906,14 @@ test('release emails only the approved reporters of a request topic',async()=>{
   assert.ok((await kindsOf(a.id)).includes('email_resolved'));
   assert.ok(!(await kindsOf(rej.id)).includes('email_resolved'));assert.ok(!(await kindsOf(pen.id)).includes('email_resolved'));
 });
+test('a release email pending when the owner rejects the report is never sent',async()=>{
+  const p=await fresh();await db.prepare("UPDATE reports SET issue_number=9606,triage_state='approved',triage_by='ai',created_at=1000 WHERE id=?").bind(p.id).run();
+  assert.equal((await releaseIssue(9606,'')).status,202);
+  assert.equal((await db.prepare("SELECT state FROM outbox WHERE id=?").bind(`${p.id}:email_resolved`).first()).state,'pending');
+  await db.prepare("UPDATE reports SET triage_state='rejected' WHERE id=?").bind(p.id).run();
+  let sends=0;await backend.drain(ghEnv({DELIVERY_ACTIVATED_AT:new Date(Date.now()-1000).toISOString()}),p.id,async(url)=>{if(url.includes('resend'))sends++;return Response.json({id:'x'});});
+  assert.equal(sends,0);
+});
 test('joining a released topic promises no tracking email, on intake and on approval',async()=>{
   const a=await fresh({kind:'request',title:'Final fix topic two'});
   const early=await fresh({kind:'request',title:a.title,topicId:a.id,email:'early@example.com'});
@@ -920,6 +928,10 @@ test('joining a released topic promises no tracking email, on intake and on appr
 });
 test('redaction removes emails wrapped in underscores or brackets',()=>{
   for(const c of ['_john.smith@gmail.com_','(jane@x.io)']) assert.ok(!/@/.test(backend.scrubPublic(c,100).replace(/@\u200B/g,'')),c);
+});
+test('package versions survive the scrub, and a request naming one is accepted',async()=>{
+  for(const v of ['react@18.2.0','next@15.1.0','@radix-ui/react-dialog@1.1.2']) assert.equal(backend.scrubPublic(v,100),v.replace(/@(?=[A-Za-z0-9_])/g,'@\u200B'),v);
+  const p=payload({kind:'request',title:'Support react@19.1.0 in the date picker'});assert.equal((await submit(p)).status,201);
 });
 test('approving revives a github job the old code left held',async()=>{
   const p=await fresh();

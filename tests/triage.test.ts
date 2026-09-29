@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chmodSync, mkdtempSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { chmodSync, mkdtempSync, readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -9,6 +9,11 @@ import { buildPrompt, codexArgs, judge } from "../scripts/triage/judge";
 import { exitCodeFor, runTriage } from "../scripts/triage/run";
 import { consequence } from "../apps/triage/consequence";
 import { existsSync as exists, lstatSync, mkdirSync, utimesSync } from "node:fs";
+import { spawn } from "node:child_process";
+
+// R38: a test run must never touch the owner's real Codex login or skills.
+const testHome = mkdtempSync(join(tmpdir(), "testhome-"));
+process.env.CODEX_HOME = testHome; process.env.HOME = testHome;
 
 const report = (more: Partial<TriageInput> = {}): TriageInput => ({ id: "aaaaaaaa-1111", kind: "bug", title: "Menu vanishes", description: "Switch to dark mode.", references: [], attachments: [], topicId: null, createdAt: 1, ...more });
 const verdict = (decision: Verdict["decision"] = "approved"): Verdict => ({ decision, reason: "Clear.", title: "Menu vanishes in dark mode", body: "Steps." });
@@ -101,14 +106,73 @@ test("the judge gets a temp CODEX_HOME holding only auth.json, never the owner's
   } finally { if (old === undefined) delete process.env.CODEX_HOME; else process.env.CODEX_HOME = old; }
 });
 
-test("a token Codex refreshed inside the temp home is copied back to the owner's auth.json, even when the run fails", async () => {
-  const home = fakeHome("old");
+const withHome = async (home: string, fn: () => Promise<void>) => {
   const old = process.env.CODEX_HOME; process.env.CODEX_HOME = home;
-  try {
-    const { bin } = stub(`sleep 1\nprintf refreshed > "$CODEX_HOME/auth.json.new" && mv "$CODEX_HOME/auth.json.new" "$CODEX_HOME/auth.json"\nexit 3`);
+  try { await fn(); } finally { if (old === undefined) delete process.env.CODEX_HOME; else process.env.CODEX_HOME = old; }
+};
+const replaceAuth = (content: string) => `sleep 1\nprintf '%s' '${content}' > "$CODEX_HOME/auth.json.new" && mv "$CODEX_HOME/auth.json.new" "$CODEX_HOME/auth.json"\nprintf '%s' "$CODEX_HOME" > "$0.home"`;
+
+test("a valid login Codex replaced in the temp home is written back, even when the run fails; no credential is left behind", async () => {
+  const home = fakeHome("{\"t\":\"old\"}");
+  await withHome(home, async () => {
+    const { bin } = stub(`${replaceAuth('{"t":"refreshed"}')}\nexit 3`);
     await assert.rejects(judge(report(), opts(bin)));
-    assert.equal(readFileSync(join(home, "auth.json"), "utf8"), "refreshed");
-  } finally { if (old === undefined) delete process.env.CODEX_HOME; else process.env.CODEX_HOME = old; }
+    assert.equal(readFileSync(join(home, "auth.json"), "utf8"), '{"t":"refreshed"}');
+    assert.equal(lstatSync(join(home, "auth.json")).mode & 0o777, 0o600);
+    assert.ok(!exists(readFileSync(`${bin}.home`, "utf8")), "temp home removed");
+    assert.deepEqual(readdirSync(home).filter(f => f.endsWith(".tmp")), []);
+  });
+});
+
+test("a half-written login (invalid JSON) is not promoted", async () => {
+  const home = fakeHome('{"t":"old"}');
+  await withHome(home, async () => {
+    const { bin } = stub(`${replaceAuth('{"t":"trunc')}\nexit 3`);
+    await assert.rejects(judge(report(), opts(bin)));
+    assert.equal(readFileSync(join(home, "auth.json"), "utf8"), '{"t":"old"}');
+  });
+});
+
+test("a login changed by the owner during the run is not overwritten", async () => {
+  const home = fakeHome('{"t":"old"}');
+  await withHome(home, async () => {
+    const { bin } = stub(`${replaceAuth('{"t":"codex"}')}\nexit 3`);
+    setTimeout(() => writeFileSync(join(home, "auth.json"), '{"t":"owner-newer"}'), 300);
+    await assert.rejects(judge(report(), opts(bin)));
+    assert.equal(readFileSync(join(home, "auth.json"), "utf8"), '{"t":"owner-newer"}');
+  });
+});
+
+test("Codex sees a symlink to the login and HOME is the temp home; a stub that leaves the link changes nothing", async () => {
+  const home = fakeHome('{"t":"old"}');
+  const past = new Date(Date.now() - 60_000); utimesSync(join(home, "auth.json"), past, past);
+  const before = lstatSync(join(home, "auth.json")).mtimeMs;
+  await withHome(home, async () => {
+    const { bin } = stub(`[ -L "$CODEX_HOME/auth.json" ] && echo link > "$0.link"\n[ "$HOME" = "$CODEX_HOME" ] && echo same > "$0.homeis"\n${writeOut(JSON.stringify(verdict()))}`);
+    await judge(report(), opts(bin));
+    assert.ok(exists(`${bin}.link`)); assert.ok(exists(`${bin}.homeis`));
+    assert.equal(lstatSync(join(home, "auth.json")).mtimeMs, before);
+    assert.equal(readFileSync(join(home, "auth.json"), "utf8"), '{"t":"old"}');
+  });
+});
+
+test("Ctrl-C on the CLI kills Codex and its child, leaves no temp home, and the CLI dies by the signal", async () => {
+  const home = fakeHome('{"t":"old"}'), tmpRoot = mkdtempSync(join(tmpdir(), "sigroot-"));
+  const { bin } = stub(`sleep 60 &\necho $! > "$0.gc"\necho $$ > "$0.pid"\nwait`);
+  const child = spawn("node", ["--import", "tsx", join(import.meta.dirname, "triage-sigint-driver.ts"), bin], { env: { ...process.env, CODEX_HOME: home, HOME: home, TMPDIR: tmpRoot + "/" }, stdio: "inherit" });
+  const exit = new Promise<[number | null, NodeJS.Signals | null]>(r => child.on("exit", (c, s) => r([c, s])));
+  for (let i = 0; i < 200 && !exists(`${bin}.gc`); i++) await new Promise(r => setTimeout(r, 50));
+  assert.ok(exists(`${bin}.gc`), "codex started");
+  child.kill("SIGINT");
+  const [, sig] = await exit;
+  assert.equal(sig, "SIGINT");
+  const gc = Number(readFileSync(`${bin}.gc`, "utf8"));
+  let alive = true;
+  for (let i = 0; i < 40 && alive; i++) { try { process.kill(gc, 0); await new Promise(r => setTimeout(r, 50)); } catch { alive = false; } }
+  if (alive) process.kill(gc, "SIGKILL");
+  assert.equal(alive, false, "grandchild is dead");
+  assert.deepEqual(readdirSync(tmpRoot).filter(f => f.startsWith("triage-")), [], "no temp home left");
+  assert.equal(readFileSync(join(home, "auth.json"), "utf8"), '{"t":"old"}');
 });
 
 test("an untouched auth.json is not rewritten", async () => {

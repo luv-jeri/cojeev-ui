@@ -67,7 +67,7 @@ export function redact(value: string, max = 1000): string {
   return value.replace(/https?:\/\/[^\s)"'<>]+/gi, url => safeRoute(url))
     .replace(/\bBearer\s+[^\s,;"'}]+/gi, "Bearer [redacted]")
     .replace(/\b(?:sk-|gh[pousr]_)[A-Za-z0-9_-]{8,}/g, "[redacted]")
-    .replace(/[A-Z0-9._%+-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)+/gi, "[email]")
+    .replace(/[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,}/gi, "[email]")
     .replace(/((?:token|password|secret|authorization|api[_-]?key|cookie)\s*["']?\s*[=:]\s*)(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;}]+)/gi, "$1[redacted]")
     .replace(/\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g, "[redacted]")
     .replace(/\/(?:Users|home)\/[^\s/:]+/g, "/[user]").slice(0, max);

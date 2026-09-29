@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { lstat, mkdir, mkdtemp, readFile, rename, rm, symlink, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { VERDICT_SCHEMA, validateVerdictRequest, type TriageInput, type Verdict } from "../../lib/reporting/triage-contract";
@@ -43,9 +43,10 @@ function killGroup(pid: number | undefined) {
   if (pid) try { process.kill(-pid, "SIGKILL"); } catch { /* group already gone */ }
 }
 
-function run(bin: string, args: string[], input: string, cwd: string, timeoutMs: number, env: NodeJS.ProcessEnv): Promise<void> {
+function run(bin: string, args: string[], input: string, cwd: string, timeoutMs: number, env: NodeJS.ProcessEnv, track: { pid?: number }): Promise<void> {
   return new Promise((resolve, reject) => {
     const child = spawn(bin, args, { cwd, env, detached: true, stdio: ["pipe", "ignore", "pipe"] });
+    track.pid = child.pid;
     let err = "", done = false;
     const finish = (fn: () => void) => { if (!done) { done = true; clearTimeout(timer); fn(); } };
     const timer = setTimeout(() => { killGroup(child.pid); finish(() => reject(new Error(`Codex timed out after ${timeoutMs} ms.`))); }, timeoutMs);
@@ -57,23 +58,44 @@ function run(bin: string, args: string[], input: string, cwd: string, timeoutMs:
   });
 }
 
+// R33: Codex sees the login through a symlink. Only if it replaced the link with a fresh file is that file
+// returned, and only when it parses, differs, and the real login has not changed since the snapshot.
+async function writeBack(realAuth: string, tempAuth: string, snap: Buffer | null): Promise<void> {
+  const sibling = `${realAuth}.${process.pid}.tmp`;
+  try {
+    if (!(await lstat(tempAuth)).isFile()) return;
+    const now = await readFile(tempAuth);
+    JSON.parse(now.toString("utf8"));
+    if (snap && now.equals(snap)) return;
+    const cur = await readFile(realAuth).catch(() => null);
+    if (snap === null ? cur !== null : !cur?.equals(snap)) return;
+    await writeFile(sibling, now, { mode: 0o600 });
+    await rename(sibling, realAuth);
+  } catch { await rm(sibling, { force: true }).catch(() => {}); }
+}
+
+const SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP"] as const;
+
 export async function judge(report: TriageInput, o: { model: string; codexBin: string; timeoutMs: number }): Promise<Verdict> {
   const tmp = await mkdtemp(join(tmpdir(), "triage-"));
+  const cwd = join(tmp, "cwd"), schemaPath = join(tmp, "schema.json"), outPath = join(tmp, "out.json");
+  // R25: --ignore-user-config still loads $CODEX_HOME/AGENTS.md and memories, so the judge runs with a home holding only the login.
+  // R37: HOME is the temp home too, so ~/.agents/skills never reaches the prompt.
+  const realHome = process.env.CODEX_HOME ?? join(homedir(), ".codex"), home = join(tmp, "codex-home");
+  const realAuth = join(realHome, "auth.json"), tempAuth = join(home, "auth.json");
+  let snap: Buffer | null = null, cleaned: Promise<void> | undefined;
+  const cleanup = () => cleaned ??= (async () => { await writeBack(realAuth, tempAuth, snap); await rm(tmp, { recursive: true, force: true }); })();
+  // R34: Codex is detached, so a terminal Ctrl-C reaches only node. Kill its group, clean up, then die by the same signal.
+  const track: { pid?: number } = {};
+  const handlers = SIGNALS.map(sig => [sig, () => { killGroup(track.pid); void cleanup().finally(() => { off(); process.kill(process.pid, sig); }); }] as const);
+  const off = () => handlers.forEach(([sig, h]) => process.off(sig, h));
+  handlers.forEach(([sig, h]) => process.once(sig, h));
   try {
-    const cwd = join(tmp, "cwd"), schemaPath = join(tmp, "schema.json"), outPath = join(tmp, "out.json");
     await writeFile(schemaPath, JSON.stringify(VERDICT_SCHEMA));
-    await mkdir(cwd);
-    // R25: --ignore-user-config still loads $CODEX_HOME/AGENTS.md and memories, so the judge runs with a home holding only the login.
-    const realHome = process.env.CODEX_HOME ?? join(homedir(), ".codex"), home = join(tmp, "codex-home");
-    const realAuth = join(realHome, "auth.json"), tempAuth = join(home, "auth.json");
-    await mkdir(home);
-    try { await copyFile(realAuth, tempAuth); } catch { /* not logged in: Codex will say so */ }
-    try {
-      await run(o.codexBin, codexArgs({ model: o.model, schemaPath, outPath, cwd }), buildPrompt(report), cwd, o.timeoutMs, { ...process.env, CODEX_HOME: home });
-    } finally {
-      // A refreshed token must survive, so the owner's login never goes stale.
-      try { const now = await readFile(tempAuth); if (!now.equals(await readFile(realAuth).catch(() => Buffer.alloc(0)))) await writeFile(realAuth, now, { mode: 0o600 }); } catch { /* no auth file to return */ }
-    }
+    await mkdir(cwd); await mkdir(home);
+    snap = await readFile(realAuth).catch(() => null);
+    if (snap) await symlink(realAuth, tempAuth);
+    await run(o.codexBin, codexArgs({ model: o.model, schemaPath, outPath, cwd }), buildPrompt(report), cwd, o.timeoutMs, { ...process.env, CODEX_HOME: home, HOME: home }, track);
     let raw: unknown;
     try { raw = JSON.parse(await readFile(outPath, "utf8")); } catch { throw new Error("Codex answer was not valid JSON."); }
     if (!raw || typeof raw !== "object" || "by" in raw || "model" in raw) throw new Error("Codex answer did not match the schema.");
@@ -82,6 +104,7 @@ export async function judge(report: TriageInput, o: { model: string; codexBin: s
       return { decision: v.decision, reason: v.reason!, title: v.title!, body: v.body! };
     } catch (e) { throw new Error(`Codex answer did not match the schema: ${(e as Error).message}`); }
   } finally {
-    await rm(tmp, { recursive: true, force: true });
+    off();
+    await cleanup();
   }
 }
