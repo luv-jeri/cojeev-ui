@@ -78,6 +78,10 @@ After verifying the sender domain with Resend:
 2. Set `EMAIL_FROM` to the verified sender. Complete the activation/cutoff and quota checklist before setting `EMAIL_ENABLED=true`; no Cloudflare `EMAIL` binding is used.
 3. Verify a new report's receipt, provider acceptance, signed delivery event, and real inbox receipt. Historical jobs stay held until individually reviewed.
 
+## Rotated admin token
+
+`REPORTING_ADMIN_TOKEN` is an optional GitHub environment secret read by every release deploy. When set (at least 32 characters), it wins over the `ADMIN_TOKEN` inside `REPORTING_SECRETS_JSON` / `REPORTING_ADDITIONAL_SECRETS_JSON`, for `ADMIN_TOKEN` only; every other key that appears in two places still fails the release. The deploy logs `ADMIN_TOKEN: rotated value from REPORTING_ADMIN_TOKEN` (never the value). The local triage tools read the same value from `.work/reporting/admin-token-<env>`.
+
 Reporter emails: thank-you (on submit), "We're tracking your report as #N" (issue created or joined), "About your report" (declined), and the existing fixed/live notice. The owner alert is unchanged. The templates have plain-text and HTML versions. The sender name is `000h by Cojeev` and reply address is `hello@cojeev.com`. A Resend ID means provider acceptance; only a signed delivered event marks delivery. Unknown outcomes require review; quota failures retain jobs.
 
 ## Reliability and privacy

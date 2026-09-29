@@ -556,6 +556,7 @@ jobs:
           REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
           REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
           RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+          REPORTING_ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
       - run: node scripts/release.mjs live beta "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
@@ -611,6 +612,7 @@ jobs:
           REPORTING_SECRETS_JSON: ${{ secrets.REPORTING_SECRETS_JSON }}
           REPORTING_ADDITIONAL_SECRETS_JSON: ${{ secrets.REPORTING_ADDITIONAL_SECRETS_JSON }}
           RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+          REPORTING_ADMIN_TOKEN: ${{ secrets.REPORTING_ADMIN_TOKEN }}
       - run: node scripts/release.mjs live production "$GITHUB_SHA"
         env:
           HEALTH_TOKEN: ${{ secrets.HEALTH_TOKEN }}
