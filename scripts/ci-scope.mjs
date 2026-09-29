@@ -314,6 +314,11 @@ const CI_CONTRACT = new Set([
   "tests/ci-area-independence.test.mjs",
   "tests/fixtures/pr90-paths.txt",
   "tests/fixtures/ci-affected-pr-paths.txt",
+  // The mobile gate runner: the smoke set's button and tabs both have mobile
+  // cases, so a smoke run exercises an edit to it on real pages.
+  "scripts/check-mobile-webkit.mjs",
+  "scripts/lib/mobile-gate-select.mjs",
+  "tests/mobile-gate-select.test.mjs",
 ]);
 // A fixed list: it never passes through selectGateIds, so a docs-chrome component
 // in it does not make a CI edit full.

@@ -1,10 +1,12 @@
 .github/workflows/rollback.yml
 .github/workflows/verify.yml
 docs/reporting/README.md
+scripts/check-mobile-webkit.mjs
 scripts/ci-affected-ids.mjs
 scripts/ci-reuse-lookup.mjs
 scripts/ci-reuse.mjs
 scripts/ci-scope.mjs
+scripts/lib/mobile-gate-select.mjs
 scripts/release.mjs
 scripts/run-production-gate.mjs
 tests/ci-affected-ids.test.mjs
@@ -14,5 +16,6 @@ tests/ci-reuse.test.mjs
 tests/ci-scope.test.mjs
 tests/fixtures/ci-affected-pr-paths.txt
 tests/fixtures/pr90-paths.txt
+tests/mobile-gate-select.test.mjs
 tests/production-gate.test.mjs
 tests/reporting-webhook-secret.test.mjs
