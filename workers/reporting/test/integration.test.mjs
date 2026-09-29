@@ -916,7 +916,7 @@ test('joining a released topic promises no tracking email, on intake and on appr
   const lateRow=await triaged(late.id);assert.equal(lateRow.issue_number,9602);assert.ok(!(await kindsOf(late.id)).includes('email_accepted'));
   assert.ok((await kindsOf(late.id)).includes('email_received'));
   const r=await put(early.id,ai('approved'));assert.equal(r.status,200);
-  assert.ok(!(await kindsOf(early.id)).includes('email_accepted'));assert.ok(!(await r.json()).queued.includes('email_accepted'));
+  assert.ok(!(await kindsOf(early.id)).includes('email_accepted'));assert.ok(!(await r.json()).queued.includes('email_accepted'));assert.ok((await kindsOf(early.id)).includes('email_resolved'));
 });
 test('redaction removes emails wrapped in underscores or brackets',()=>{
   for(const c of ['_john.smith@gmail.com_','(jane@x.io)']) assert.ok(!/@/.test(backend.scrubPublic(c,100).replace(/@\u200B/g,'')),c);
@@ -948,4 +948,14 @@ test('admin detail says whether another approved report shares the issue',async(
   assert.equal((await (await request(`/v1/admin/reports/${a.id}`,'GET',undefined,admin)).json()).shared,true);
   await db.prepare("UPDATE reports SET triage_state='rejected' WHERE id=?").bind(b.id).run();
   assert.equal((await (await request(`/v1/admin/reports/${a.id}`,'GET',undefined,admin)).json()).shared,false);
+});
+test('approving a pending report into a released topic sends only the it\'s-live email',async()=>{
+  const first=await fresh({kind:'request',title:'Final fix topic four'});
+  const mate=await fresh({kind:'request',title:first.title,topicId:first.id,email:'mate4@example.com'});
+  assert.equal((await triaged(first.id)).triage_state,'pending');
+  await db.prepare("UPDATE reports SET issue_number=9605,issue_node_id='I_9605',issue_url='https://github.com/owner/library/issues/9605',triage_state='approved',triage_by='ai' WHERE id=?").bind(mate.id).run();
+  assert.equal((await releaseIssue(9605)).status,202);
+  const r=await put(first.id,ai('approved'));assert.equal(r.status,200);assert.ok((await r.json()).queued.includes('email_resolved'));
+  const jobs=(await db.prepare("SELECT kind,state,reviewed_at FROM outbox WHERE report_id=? AND kind IN ('email_resolved','email_accepted')").bind(first.id).all()).results;
+  assert.deepEqual(jobs.map(j=>j.kind),['email_resolved']);assert.equal(jobs[0].state,'pending');assert.ok(jobs[0].reviewed_at);
 });

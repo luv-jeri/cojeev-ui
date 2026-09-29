@@ -38,7 +38,7 @@ export async function applyVerdict(env: Env, id: string, raw: unknown): Promise<
   } else {
     cancel.push("email_rejected");
     if (cur === "rejected" && row.issue_number) { revive.push("email_accepted"); jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"open"}' }); }
-    else if (!(copy && row.status === "resolved")) { const kind = copy ? "email_accepted" : "github"; revive.push(kind); jobs.push({ id: `${id}:${kind}`, kind }); }
+    else { const kind = copy ? (row.status === "resolved" ? "email_resolved" : "email_accepted") : "github"; revive.push(kind); jobs.push({ id: `${id}:${kind}`, kind }); }
   }
   const others = "EXISTS(SELECT 1 FROM reports o WHERE o.issue_number=? AND o.id<>? AND o.triage_state='approved')";
   const detach = (col: string) => held && req.decision === "rejected" ? `CASE WHEN ${others} THEN NULL ELSE ${col} END` : `COALESCE(?,${col})`;
