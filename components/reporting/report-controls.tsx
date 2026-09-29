@@ -109,7 +109,7 @@ export function MoreMenu({ disabled, onClear, onBoard, onOpenReceipt }: {
       <DropdownMenuContent align="end">
         <DropdownMenuItem onSelect={onClear}>Clear draft</DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/requests" onClick={onBoard}>Request board</Link>
+          <Link href="/requests" className="report-menu-link" onClick={onBoard}>Request board</Link>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={onOpenReceipt}>Open a saved receipt</DropdownMenuItem>
       </DropdownMenuContent>

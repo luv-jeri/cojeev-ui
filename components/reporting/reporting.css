@@ -1253,3 +1253,8 @@ html[data-motion="off"] .report-pin-marker[data-pulse="true"],
 html[data-flow="off"] .report-pin-marker[data-pulse="true"] {
   animation: none;
 }
+
+.report-menu-link {
+  text-decoration: none;
+  color: inherit;
+}
