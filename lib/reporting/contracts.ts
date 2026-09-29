@@ -7,7 +7,7 @@ export type DiagnosticEvent = { at: string; kind: string; message: string };
 export type Diagnostics = { environment?: Record<string, string | number | boolean>; console?: DiagnosticEvent[]; network?: DiagnosticEvent[]; actions?: DiagnosticEvent[] };
 export type AttachmentManifest = { id: string; name: string; type: string; size: number; sha256: string };
 export type ReportPayload = { id: string; kind: ReportKind; title: string; description: string; email: string; references: string[]; pins: Pin[]; attachments: AttachmentManifest[]; diagnostics: Diagnostics | null; topicId?: string };
-export type Receipt = { id: string; token: string; status: ReportStatus; topicId: string | null; componentUrl?: string; email: "pending" | "sent" | "setup_required" | "needs_review"; emailDelivery?: string; issue: "pending" | "created" | "setup_required" | "needs_review"; issueDelivery?: string; attachments: { id: string; state: string }[] };
+export type Receipt = { id: string; token: string; status: ReportStatus; topicId: string | null; componentUrl?: string; email: "pending" | "sent" | "setup_required" | "needs_review"; emailDelivery?: string; issue: "pending" | "created" | "not_planned" | "setup_required" | "needs_review"; issueDelivery?: string; attachments: { id: string; state: string }[] };
 export type RequestTopic = { id: string; title: string; status: ReportStatus; componentUrl: string | null; createdAt: number; updatedAt: number; demand: number };
 export type ComponentMatch = { name: string; title: string; description: string };
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
@@ -63,14 +63,14 @@ export function validateReport(raw: unknown): ReportPayload {
   if (v.topicId !== undefined && (!isUUID(v.topicId) || v.kind !== "request")) throw new Error("Invalid request reference.");
   return { id: v.id, kind: v.kind, title: text(v.title, "Title", 120, 3), description: text(v.description, "Details", 6000, 1), email, references: list(v.references, "Reference links", 8).map(safeReference), pins, attachments, diagnostics, ...(v.topicId ? { topicId: v.topicId as string } : {}) };
 }
-export function redact(value: string): string {
+export function redact(value: string, max = 1000): string {
   return value.replace(/https?:\/\/[^\s)"'<>]+/gi, url => safeRoute(url))
     .replace(/\bBearer\s+[^\s,;"'}]+/gi, "Bearer [redacted]")
     .replace(/\b(?:sk-|gh[pousr]_)[A-Za-z0-9_-]{8,}/g, "[redacted]")
-    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, "[email]")
+    .replace(/[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,}/gi, "[email]")
     .replace(/((?:token|password|secret|authorization|api[_-]?key|cookie)\s*["']?\s*[=:]\s*)(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;}]+)/gi, "$1[redacted]")
     .replace(/\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g, "[redacted]")
-    .replace(/\/(?:Users|home)\/[^\s/:]+/g, "/[user]").slice(0, 1000);
+    .replace(/\/(?:Users|home)\/[^\s/:]+/g, "/[user]").slice(0, max);
 }
 export function safeRoute(value: string): string {
   try {

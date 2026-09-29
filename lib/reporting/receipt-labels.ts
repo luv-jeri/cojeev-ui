@@ -17,11 +17,13 @@ const ISSUE_LABELS: Record<string, string> = {
   held: "Held pending delivery activation or review",
   pending: "Waiting to be created",
   processing: "Being created now",
+  triage: "Being reviewed",
 };
 
 /** Honest wording for the issue state. Held, unconfigured and unknown jobs are never called queued. */
 export function issueReceiptLabel(receipt: Pick<Receipt, "issue" | "issueDelivery">): string {
   if (receipt.issue === "created") return "Created";
+  if (receipt.issue === "not_planned") return "Reviewed — not something we can act on";
   if (receipt.issue === "setup_required") return "Issue tracker is not connected yet";
   if (receipt.issue === "needs_review") return "Needs maintainer review";
   return ISSUE_LABELS[receipt.issueDelivery ?? ""] ?? "Not created yet";
