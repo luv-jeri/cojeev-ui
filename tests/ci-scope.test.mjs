@@ -1292,3 +1292,56 @@ test('no_prefix_rule_admits_neighbour', () => {
     assert.equal(classify([file]).scope, 'full', `checkpoint: ${file}`);
   }
 });
+
+const releaseSteps = () => parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8')).jobs.verify.steps;
+const stepRunning = (needle) => releaseSteps().find(step => String(step.run ?? '').includes(needle));
+const readsFlag = (step, flag) => new RegExp(`steps\\.depth\\.outputs\\.${flag} == 'true'`).test(String(step?.if));
+
+test('area_table_covers_every_workflow_flag', () => {
+  const text = JSON.stringify(releaseSteps().map(step => step.if ?? ''));
+  const read = [...new Set([...text.matchAll(/steps\.depth\.outputs\.(run_[a-z]+)/g)].map(match => match[1]))];
+  const produced = Object.keys(releaseOutputs(releaseDepth(['components/ui/button.tsx'])));
+  // A flag the workflow reads but no output publishes is silently always off.
+  for (const flag of read) assert.ok(produced.includes(flag), `${flag} is read by verify.yml but never produced by ci-scope`);
+  // A flag with no fixture that turns it on is a rule nothing can reach.
+  const fixtures = [['docs/note.md'], ['scripts/triage.ts'], ['workers/reporting/src/x.ts'], ['components/reporting/reporting-widget.tsx'],
+    ['scripts/check-docs.mjs'], ['tests/analytics.browser.mjs'], ['lib/seo/structured-data.ts'], ['components/ui/button.tsx']];
+  for (const flag of produced.filter(name => name.startsWith('run_'))) {
+    assert.ok(fixtures.some(paths => releaseOutputs(releaseDepth(paths))[flag] === 'true'), `${flag} has no fixture that turns it on`);
+  }
+  // run_catalogue is the only flag that must stay off for every non-full fixture.
+  for (const paths of fixtures.filter(paths => releaseDepth(paths).depth !== 'full')) assert.equal(releaseOutputs(releaseDepth(paths)).run_catalogue, 'false', paths.join());
+});
+
+test('widget_lib_change_runs_reporting_browser_at_release_depth', () => {
+  const steps = [stepRunning('node scripts/run-reporting-browser.mjs'),
+    releaseSteps().find(step => step.name === 'Build the disposable local reporting fixture')];
+  for (const step of steps) {
+    assert.ok(step, 'reporting fixture build and browser journey must exist at release depth');
+    assert.ok(readsFlag(step, 'run_catalogue') && readsFlag(step, 'run_reporting'), step.name ?? step.run);
+  }
+  const install = stepRunning('playwright install');
+  assert.ok(readsFlag(install, 'run_reporting'), 'the journey needs a browser installed');
+  for (const file of ['components/reporting/reporting-form.tsx', 'lib/reporting/capture.ts', 'lib/reporting/client.ts', 'lib/reporting/contracts.ts',
+    'lib/reporting/diagnostics.ts', 'lib/reporting/receipt-labels.ts']) {
+    const decision = releaseDepth([file]);
+    const out = releaseOutputs(decision);
+    if (decision.depth === 'full') continue; // full runs the journey through run_catalogue
+    assert.equal(out.run_reporting, 'true', file);
+    assert.equal(out.run_catalogue, 'false', file);
+  }
+  // Areas that do not touch the widget still skip it.
+  assert.equal(releaseOutputs(releaseDepth(['scripts/triage.ts'])).run_reporting, 'false');
+});
+
+test('quick_depth_keeps_checks_and_skips_the_release_pack', () => {
+  const out = releaseOutputs(releaseDepth(['scripts/triage.ts']));
+  assert.equal(out.depth, 'quick');
+  assert.equal(out.run_checks, 'true');
+  for (const needle of ['npm run lint', 'npm run typecheck', 'npm test', 'npm run reporting:test', 'npm run registry-host:test']) {
+    const step = releaseSteps().find(s => String(s.run ?? '').includes(needle));
+    assert.ok(readsFlag(step, 'run_checks'), needle);
+  }
+  for (const needle of ['release.mjs build-pair', 'release-csp.mjs', 'release-install.mjs']) assert.ok(readsFlag(stepRunning(needle), 'run_release'), needle);
+  assert.equal(out.run_release, 'false');
+});

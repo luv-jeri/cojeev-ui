@@ -340,7 +340,7 @@ jobs:
       - run: npm ci
         if: steps.depth.outputs.run_checks == 'true'
       - run: npx playwright install --with-deps chromium webkit
-        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true')
+        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_transient == 'true' || steps.depth.outputs.run_analytics == 'true' || steps.depth.outputs.run_reporting == 'true')
       - run: npm run lint
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_checks == 'true'
       - run: npx next typegen && npm run typecheck
@@ -400,12 +400,12 @@ jobs:
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         run: node tests/route-styles.browser.mjs --serve
       - name: Build the disposable local reporting fixture
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_reporting == 'true')
         run: npm run build
         env:
           NEXT_PUBLIC_REPORTING_API_URL: http://127.0.0.1:8787
       - name: Exercise receipt, attachment and maintainer journeys without live services
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && (steps.depth.outputs.run_catalogue == 'true' || steps.depth.outputs.run_reporting == 'true')
         run: node scripts/run-reporting-browser.mjs
       # Analytics gate, three cases. The gate serves out/ itself on an ephemeral port
       # when ANALYTICS_URL is unset. Every provider request is intercepted in the
