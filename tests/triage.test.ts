@@ -7,6 +7,8 @@ import { type TriageInput, type Verdict } from "../lib/reporting/triage-contract
 import { resolveConfig } from "../scripts/triage/config";
 import { buildPrompt, codexArgs, judge } from "../scripts/triage/judge";
 import { exitCodeFor, runTriage } from "../scripts/triage/run";
+import { consequence } from "../apps/triage/consequence";
+import { existsSync as exists, lstatSync, mkdirSync, utimesSync } from "node:fs";
 
 const report = (more: Partial<TriageInput> = {}): TriageInput => ({ id: "aaaaaaaa-1111", kind: "bug", title: "Menu vanishes", description: "Switch to dark mode.", references: [], attachments: [], topicId: null, createdAt: 1, ...more });
 const verdict = (decision: Verdict["decision"] = "approved"): Verdict => ({ decision, reason: "Clear.", title: "Menu vanishes in dark mode", body: "Steps." });
@@ -56,18 +58,79 @@ test("a malformed or schema-violating Codex answer skips the report and counts a
   assert.match(logs[0], /^✗ failed aaaaaaaa /);
 });
 
-test("a Codex run past the timeout is killed and counted as failed", async () => {
-  const pidFile = join(mkdtempSync(join(tmpdir(), "pid-")), "pid");
-  const { bin } = stub(`echo $$ > "${pidFile}"\nexec sleep 20`);
+test("a Codex run past the timeout is killed with its whole process group, grandchild included", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "pid-")), pidFile = join(dir, "gc");
+  // Like the npm launcher: forwards nothing on SIGKILL, and a native grandchild keeps running.
+  const { bin } = stub(`sleep 20 &\necho $! > "${pidFile}"\nwait`);
   const t = Date.now();
   await assert.rejects(judge(report(), opts(bin, 2000)), /timed out/);
   assert.ok(Date.now() - t < 4500);
   const pid = Number(readFileSync(pidFile, "utf8"));
   let alive = true;
-  for (let i = 0; i < 20 && alive; i++) {
+  for (let i = 0; i < 40 && alive; i++) {
     try { process.kill(pid, 0); await new Promise(r => setTimeout(r, 50)); } catch (e) { assert.equal((e as NodeJS.ErrnoException).code, "ESRCH"); alive = false; }
   }
-  assert.equal(alive, false, "child process is gone");
+  if (alive) process.kill(pid, "SIGKILL");
+  assert.equal(alive, false, "grandchild process is gone");
+});
+
+const MARKER = "PRIVATE-MARKER-9f3a";
+const fakeHome = (auth = "tok-1") => {
+  const home = mkdtempSync(join(tmpdir(), "fakehome-"));
+  writeFileSync(join(home, "AGENTS.md"), MARKER);
+  mkdirSync(join(home, "memories")); writeFileSync(join(home, "memories", "m.md"), MARKER);
+  writeFileSync(join(home, "auth.json"), auth);
+  return home;
+};
+
+test("the judge gets a temp CODEX_HOME holding only auth.json, never the owner's AGENTS.md or memories", async () => {
+  const home = fakeHome();
+  const old = process.env.CODEX_HOME; process.env.CODEX_HOME = home;
+  try {
+    const { bin } = stub(`printf '%s' "$CODEX_HOME" > "$0.home"\nls -A "$CODEX_HOME" > "$0.ls"\ncat "$CODEX_HOME/auth.json" > "$0.auth"\nprintf '%s\\n' "$@" > "$0.args"\n${writeOut(JSON.stringify(verdict()))}`);
+    await judge(report(), opts(bin));
+    const used = readFileSync(`${bin}.home`, "utf8");
+    assert.notEqual(used, home);
+    assert.equal(readFileSync(`${bin}.ls`, "utf8").trim(), "auth.json");
+    assert.equal(readFileSync(`${bin}.auth`, "utf8"), "tok-1");
+    assert.ok(!exists(used), "temp home is removed afterwards");
+    assert.ok(!readFileSync(`${bin}.args`, "utf8").includes(MARKER));
+    const args = readFileSync(`${bin}.args`, "utf8").trim().split("\n");
+    for (const f of ["memories", "unified_exec", "view_image", "multi_agent"]) assert.equal(args[args.indexOf(f) - 1], "--disable", f);
+    assert.equal(readFileSync(join(home, "AGENTS.md"), "utf8"), MARKER, "owner's files untouched");
+  } finally { if (old === undefined) delete process.env.CODEX_HOME; else process.env.CODEX_HOME = old; }
+});
+
+test("a token Codex refreshed inside the temp home is copied back to the owner's auth.json, even when the run fails", async () => {
+  const home = fakeHome("old");
+  const old = process.env.CODEX_HOME; process.env.CODEX_HOME = home;
+  try {
+    const { bin } = stub(`sleep 1\nprintf refreshed > "$CODEX_HOME/auth.json.new" && mv "$CODEX_HOME/auth.json.new" "$CODEX_HOME/auth.json"\nexit 3`);
+    await assert.rejects(judge(report(), opts(bin)));
+    assert.equal(readFileSync(join(home, "auth.json"), "utf8"), "refreshed");
+  } finally { if (old === undefined) delete process.env.CODEX_HOME; else process.env.CODEX_HOME = old; }
+});
+
+test("an untouched auth.json is not rewritten", async () => {
+  const home = fakeHome("same");
+  const past = new Date(Date.now() - 60_000); utimesSync(join(home, "auth.json"), past, past);
+  const before = lstatSync(join(home, "auth.json")).mtimeMs;
+  const old = process.env.CODEX_HOME; process.env.CODEX_HOME = home;
+  try {
+    const { bin } = stub(writeOut(JSON.stringify(verdict())));
+    await judge(report(), opts(bin));
+    assert.equal(lstatSync(join(home, "auth.json")).mtimeMs, before);
+  } finally { if (old === undefined) delete process.env.CODEX_HOME; else process.env.CODEX_HOME = old; }
+});
+
+test("overturn copy matches what the Worker does in every case", () => {
+  const rep = (issue_number: number | null, shared = false) => ({ issue_number, shared });
+  assert.equal(consequence({ ...rep(null), triage_state: "rejected" }, "approved"), "Publishes a GitHub issue (or links the existing one for this request) and emails the reporter.");
+  assert.equal(consequence({ ...rep(7), triage_state: "rejected" }, "approved"), "Reopens #7. Emails the reporter the tracking link if they never received it.");
+  assert.equal(consequence({ ...rep(7), triage_state: "approved" }, "rejected"), "Closes #7 as not planned. No email.");
+  assert.equal(consequence({ ...rep(7, true), triage_state: "approved" }, "rejected"), "Removes this report from #7. The issue stays open for the other reports. No email.");
+  assert.equal(consequence({ ...rep(null), triage_state: "approved" }, "rejected"), "Cancels the pending issue and emails the reporter that it was declined.");
+  assert.equal(consequence({ issue_number: 7, triage_state: "approved" }, "rejected"), "Closes #7 as not planned. No email.", "missing shared means false");
 });
 
 const fakeWorker = (putStatus = 200) => {

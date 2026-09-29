@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { VERDICT_SCHEMA, validateVerdictRequest, type TriageInput, type Verdict } from "../../lib/reporting/triage-contract";
 
@@ -33,16 +33,22 @@ export function buildPrompt(r: TriageInput): string {
 export function codexArgs(o: { model: string; schemaPath: string; outPath: string; cwd: string }): string[] {
   return ["exec", "-m", o.model, "-s", "read-only",
     "--disable", "shell_tool", "--disable", "browser_use", "--disable", "computer_use", "--disable", "apps", "--disable", "plugins",
+    "--disable", "memories", "--disable", "unified_exec", "--disable", "view_image", "--disable", "multi_agent",
     "--ephemeral", "--ignore-user-config", "--ignore-rules", "--skip-git-repo-check",
     "-C", o.cwd, "--output-schema", o.schemaPath, "-o", o.outPath, "-"];
 }
 
-function run(bin: string, args: string[], input: string, cwd: string, timeoutMs: number): Promise<void> {
+// The npm launcher forwards no SIGKILL to the native binary, so the whole process group goes (R27).
+function killGroup(pid: number | undefined) {
+  if (pid) try { process.kill(-pid, "SIGKILL"); } catch { /* group already gone */ }
+}
+
+function run(bin: string, args: string[], input: string, cwd: string, timeoutMs: number, env: NodeJS.ProcessEnv): Promise<void> {
   return new Promise((resolve, reject) => {
-    const child = spawn(bin, args, { cwd, stdio: ["pipe", "ignore", "pipe"] });
+    const child = spawn(bin, args, { cwd, env, detached: true, stdio: ["pipe", "ignore", "pipe"] });
     let err = "", done = false;
     const finish = (fn: () => void) => { if (!done) { done = true; clearTimeout(timer); fn(); } };
-    const timer = setTimeout(() => { child.kill("SIGKILL"); finish(() => reject(new Error(`Codex timed out after ${timeoutMs} ms.`))); }, timeoutMs);
+    const timer = setTimeout(() => { killGroup(child.pid); finish(() => reject(new Error(`Codex timed out after ${timeoutMs} ms.`))); }, timeoutMs);
     child.stderr.on("data", d => { err = (err + d).slice(-500); });
     child.stdin.on("error", () => {});
     child.on("error", e => finish(() => reject(new Error(`Could not start ${bin}: ${e.message}`))));
@@ -57,7 +63,17 @@ export async function judge(report: TriageInput, o: { model: string; codexBin: s
     const cwd = join(tmp, "cwd"), schemaPath = join(tmp, "schema.json"), outPath = join(tmp, "out.json");
     await writeFile(schemaPath, JSON.stringify(VERDICT_SCHEMA));
     await mkdir(cwd);
-    await run(o.codexBin, codexArgs({ model: o.model, schemaPath, outPath, cwd }), buildPrompt(report), cwd, o.timeoutMs);
+    // R25: --ignore-user-config still loads $CODEX_HOME/AGENTS.md and memories, so the judge runs with a home holding only the login.
+    const realHome = process.env.CODEX_HOME ?? join(homedir(), ".codex"), home = join(tmp, "codex-home");
+    const realAuth = join(realHome, "auth.json"), tempAuth = join(home, "auth.json");
+    await mkdir(home);
+    try { await copyFile(realAuth, tempAuth); } catch { /* not logged in: Codex will say so */ }
+    try {
+      await run(o.codexBin, codexArgs({ model: o.model, schemaPath, outPath, cwd }), buildPrompt(report), cwd, o.timeoutMs, { ...process.env, CODEX_HOME: home });
+    } finally {
+      // A refreshed token must survive, so the owner's login never goes stale.
+      try { const now = await readFile(tempAuth); if (!now.equals(await readFile(realAuth).catch(() => Buffer.alloc(0)))) await writeFile(realAuth, now, { mode: 0o600 }); } catch { /* no auth file to return */ }
+    }
     let raw: unknown;
     try { raw = JSON.parse(await readFile(outPath, "utf8")); } catch { throw new Error("Codex answer was not valid JSON."); }
     if (!raw || typeof raw !== "object" || "by" in raw || "model" in raw) throw new Error("Codex answer did not match the schema.");

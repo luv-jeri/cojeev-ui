@@ -3,6 +3,7 @@ import { BrandMark } from "@/components/brand/brand-mark";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenuBadge, SidebarMenuButton, SidebarMenuLabel } from "@/registry/cojeev/ui/sidebar";
 import { Badge, BadgeIndicator } from "@/registry/cojeev/ui/badge";
 import { Button } from "@/registry/cojeev/ui/button";
+import { consequence } from "./consequence";
 import { Icon } from "@/registry/cojeev/ui/icon";
 import { Kbd } from "@/registry/cojeev/ui/kbd";
 import { Empty, EmptyDescription, EmptyTitle } from "@/registry/cojeev/ui/empty";
@@ -56,12 +57,6 @@ function trust(r: TriageListRow): [string, Tone] | null {
   if (r.triage_by === "owner") return ["Decided by you", "default"];
   if (r.triage_by === "join") return [r.issue_number != null ? `Joined #${r.issue_number}` : "Joined a request", "default"];
   return r.verified_at ? ["Verified by you", "blue"] : ["AI only — not re-verified", "yellow"];
-}
-
-// R6: the exact consequence of an overturn, by current state and whether the report holds an issue.
-function consequence(next: Decision, n: number | null) {
-  if (next === "approved") return n == null ? "Publishes a GitHub issue (or links the existing one for this request) and emails the reporter." : `Reopens #${n}. No email.`;
-  return n == null ? "Cancels the pending issue and emails the reporter that it was declined." : `Closes #${n} as not planned. No email.`;
 }
 
 function Badges({ r }: { r: TriageListRow }) {
@@ -198,7 +193,7 @@ function Detail({ d, busy, error, onVerify, onDecide }: DetailProps) {
                     <AlertDialogTitle>{next === "approved" ? "Approve this report?" : "Reject this report?"}</AlertDialogTitle>
                   </AlertDialogHeader>
                   <p className="tri-dialog-report">{titleOf(r)}</p>
-                  <AlertDialogDescription>{consequence(next, r.issue_number)}</AlertDialogDescription>
+                  <AlertDialogDescription>{consequence({ ...r, shared: d.shared }, next)}</AlertDialogDescription>
                   <AlertDialogFooter>
                     <AlertDialogCancel asChild><Button variant="outline">Cancel</Button></AlertDialogCancel>
                     <AlertDialogAction asChild>

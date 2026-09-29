@@ -54,6 +54,7 @@ const detailOf = (r: TriageListRow): TriageDetail => ({
     triage_body: r.triage_state === "approved" && r.triage_by === "ai" ? `${descriptions[r.id]}${r.id === "rpt_a1" ? "\n\nExpected: the indicator slides from the current tab to the clicked one." : ""}` : null,
   },
   attachments: r.id === "rpt_a1" ? [{ id: "att_1", name: "tabs-jump.mp4", type: "video/mp4", size: 2_400_000, state: "uploaded" }] : [],
+  shared: r.id === "rpt_a2",
   deliveries: jobs(r),
 });
 

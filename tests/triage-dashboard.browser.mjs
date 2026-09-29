@@ -159,6 +159,10 @@ try {
     assert.ok(bodies.length > 8, "response bodies were captured");
     assert.ok(bodies.some(([u]) => u.endsWith(".tsx")) && bodies.some(([u]) => u.includes("/api/reports")));
     assert.deepEqual(bodies.filter(([, b]) => b.includes(token)).map(([u]) => u), []);
+    // R28: the repo root is fs-allowed, so .work must be denied explicitly.
+    const leak = await fetch(`${dash}/@fs${process.cwd()}/.work/reporting/local-admin-token`);
+    assert.ok(!(await leak.text()).includes(token), "/@fs .work token file");
+    assert.notEqual(leak.status, 200);
   });
 
   if (pageErrors.length) failures.push(`page errors: ${pageErrors.join("; ")}`);

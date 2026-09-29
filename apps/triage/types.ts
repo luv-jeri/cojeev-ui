@@ -5,6 +5,8 @@ export type { Decision, TriageBy, TriageCounts, TriageListRow, TriageState } fro
 export type TriageDetail = {
   report: TriageListRow & { description: string; references_json: string; triage_reason: string | null; triage_body: string | null };
   attachments: { id: string; name: string; type: string; size: number; state: string }[];
+  // True when another approved report holds the same issue (added to the Worker response by the reporting lane).
+  shared?: boolean;
   deliveries: { id: string; kind: string; state: string; attempts: number; last_error: string | null; reviewed_at: number | null }[];
 };
 
