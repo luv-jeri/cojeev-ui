@@ -66,6 +66,8 @@ import {
   pullLegacyReceipts,
   removeSent,
   replaceSentReceipt,
+  StorageUnavailableError,
+  mergeSent,
   saveDraftKinds,
   type ReportingDraft,
   type ReportingDraftWorkspace,
@@ -123,6 +125,8 @@ const SENT_BANNER = {
   bug: "Report sent. Check your inbox for a receipt.",
   request: "Request sent. Check your inbox for a receipt.",
 } as const;
+const SENT_MEMORY_NOTE =
+  "This list isn’t kept after you close the page. Download a receipt to keep it.";
 const SENT_SAVE_ERROR =
   "Could not save this report to the sent list. Your receipt is still here.";
 
@@ -154,7 +158,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     [banner, setBanner] = useState<{ kind: ReportKind; id: string } | null>(
       null,
     ),
-    [confirmDiscard, setConfirmDiscard] = useState(false);
+    [confirmDiscard, setConfirmDiscard] = useState(false),
+    [sentInMemory, setSentInMemory] = useState(false);
   // While the sent-list transaction is in flight it is the only writer: a save that started
   // now would queue behind it and put the just-sent draft and its files back.
   // ponytail: the flag is set and cleared inside completeSend's try/finally, so no path can leave it set.
@@ -564,6 +569,22 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       (file) => sentFile(file.state) || file.state === "expired",
     );
   }
+  /**
+   * The one way into the sent list (send, Start another, import). When storage cannot be opened at
+   * all, the list is kept in memory for this page and says so; any other failure throws to the caller.
+   */
+  async function recordSent(
+    entries: SentEntry[],
+    workspace?: ReportingDraftWorkspace,
+  ) {
+    try {
+      setSent(await commitSent(entries, workspace));
+    } catch (cause) {
+      if (!(cause instanceof StorageUnavailableError)) throw cause;
+      setSent((list) => mergeSent(list, entries));
+      setSentInMemory(true);
+    }
+  }
   /** Steps 3 and 4 of a send: one transaction clears the draft and adds the receipt to the list; only then does the form change. */
   async function completeSend(withBanner: boolean) {
     const current = draftRef.current,
@@ -578,7 +599,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     committing.current = true;
     setBusy("Saving to the sent list…");
     try {
-      const list = await commitSent(
+      await recordSent(
         [
           {
             kind,
@@ -604,7 +625,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       setBanner(withBanner ? { kind, id: accepted.id } : null);
       setConfirmDiscard(false);
       setError("");
-      setSent(list);
     } catch {
       if (dropped) pending.current = { ...pending.current, [kind]: dropped };
       setError(SENT_SAVE_ERROR);
@@ -720,16 +740,14 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       const receipt = await fetchReceipt(imported.id, imported.token);
       // Only the list changes: the form and both drafts stay exactly as they are.
       const kind = receipt.kind ?? draftRef.current.kind;
-      setSent(
-        await commitSent([
-          {
-            kind,
-            title: importedTitle(kind),
-            sentAt: Date.now(),
-            receipt,
-          },
-        ]),
-      );
+      await recordSent([
+        {
+          kind,
+          title: importedTitle(kind),
+          sentAt: Date.now(),
+          receipt,
+        },
+      ]);
       setSentExpanded(true);
       setOpenSentId(receipt.id);
     } catch (cause) {
@@ -1230,6 +1248,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   openId={openSentId}
                   emailEnabled={config?.emailEnabled}
                   busy={!!busy}
+                  note={sentInMemory ? SENT_MEMORY_NOTE : ""}
                   onToggle={() => setSentExpanded((value) => !value)}
                   onOpen={(id) => {
                     setOpenSentId(id);

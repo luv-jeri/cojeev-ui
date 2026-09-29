@@ -12,17 +12,21 @@ const databaseName = "cojeev-reporting-v1";
 // One warm connection for the page's life: a save that has to open the database first can
 // lose the race with a reload that follows a close by a few milliseconds.
 let connection: Promise<IDBDatabase> | null = null;
+/** The connection cannot be opened at all (no IndexedDB, blocked by the browser). A transaction failing on an open database is not this. */
+export class StorageUnavailableError extends Error {}
 function openDatabase(): Promise<IDBDatabase> {
   connection ??= new Promise<IDBDatabase>((resolve, reject) => {
-    if (typeof indexedDB === "undefined") { reject(new Error("Local draft storage is unavailable.")); return; }
-    const request = indexedDB.open(databaseName, 1);
+    if (typeof indexedDB === "undefined") { reject(new StorageUnavailableError("Local draft storage is unavailable.")); return; }
+    let request: IDBOpenDBRequest;
+    try { request = indexedDB.open(databaseName, 1); } catch { reject(new StorageUnavailableError("Local draft storage is unavailable.")); return; }
     request.onupgradeneeded = () => request.result.createObjectStore("drafts");
     request.onsuccess = () => {
       const db = request.result;
       db.onversionchange = db.onclose = () => { connection = null; db.close(); };
       resolve(db);
     };
-    request.onerror = () => reject(request.error ?? new Error("Local draft storage is unavailable."));
+    request.onerror = () => reject(new StorageUnavailableError(request.error?.message || "Local draft storage is unavailable."));
+    // Blocked means another tab still holds an older version open: storage exists and works once that tab lets go, so this is transient.
     request.onblocked = () => reject(new Error("Local draft storage is blocked by another tab."));
   }).catch(cause => { connection = null; throw cause; });
   return connection;

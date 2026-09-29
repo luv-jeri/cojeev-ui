@@ -683,6 +683,29 @@ try {
     await seeded.close();
   }
   {
+    // A browser with no IndexedDB (private mode, blocked storage): sending and importing still work, and the list says it is not kept. Sends and the import read are stubbed.
+    const bare = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
+    await localOnly(bare); await stubSend(bare);
+    await bare.addInitScript(() => Object.defineProperty(window, "indexedDB", { value: undefined, configurable: true }));
+    const importedId = "22222222-2222-4222-8222-222222222222", importedToken = "c".repeat(64);
+    await bare.route(`${api}/v1/reports/${importedId}`, route => route.fulfill({ status: 200, json: { id: importedId, token: importedToken, status: "received", kind: "request", topicId: null, email: "pending", issue: "pending", attachments: [] } }));
+    const barePage = await bare.newPage(); activePage = barePage; barePage.on("pageerror", error => pageErrors.push(error.message));
+    await barePage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(barePage);
+    await sendStubbed(barePage, "request", `No storage ${run}`);
+    assert.equal(await barePage.getByRole("textbox", { name: "What component do you want?", exact: true }).inputValue(), "", "Back on a fresh form");
+    assert.equal(await barePage.getByRole("heading", { name: /is received/ }).count(), 0, "Not stuck on the receipt");
+    assert.equal(await sentCount(barePage), 1);
+    const memoryNote = barePage.getByText("This list isn’t kept after you close the page. Download a receipt to keep it.", { exact: true });
+    await memoryNote.waitFor();
+    await barePage.getByRole("button", { name: "More", exact: true }).click(); await barePage.getByRole("menuitem", { name: "Open a saved receipt", exact: true }).click();
+    await barePage.getByLabel("Import a saved receipt", { exact: true }).setInputFiles({ name: "receipt.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify({ id: importedId, token: importedToken })) });
+    await barePage.waitForFunction(() => /· 2$/.test(document.querySelector(".report-sent-toggle")?.textContent?.trim() ?? ""));
+    assert.equal(await barePage.locator("[role=alert]").count(), 0, "No storage error on import");
+    assert.ok(await memoryNote.isVisible());
+    await bare.close();
+    results.push("without_browser_storage_sending_and_importing_still_work");
+  }
+  {
     // Nothing written later may bring a sent report, or its files, back into the form.
     const fresh = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
     await localOnly(fresh);

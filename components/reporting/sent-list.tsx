@@ -9,8 +9,8 @@ import { ReceiptDetail } from "./receipt-detail";
 const shortDate = (at: number) => new Date(at).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 
 /** Reports sent from this browser. Renders nothing when there are none. */
-export function SentList({ entries, expanded, openId, emailEnabled, busy, onToggle, onOpen, onRefresh, onRemove }: {
-  entries: SentEntry[]; expanded: boolean; openId: string | null; emailEnabled: boolean | undefined; busy: boolean;
+export function SentList({ entries, expanded, openId, emailEnabled, busy, note, onToggle, onOpen, onRefresh, onRemove }: {
+  entries: SentEntry[]; expanded: boolean; openId: string | null; emailEnabled: boolean | undefined; busy: boolean; note: string;
   onToggle: () => void; onOpen: (id: string | null) => void; onRefresh: (id: string) => void; onRemove: (id: string) => void;
 }) {
   if (!entries.length) return null;
@@ -20,6 +20,7 @@ export function SentList({ entries, expanded, openId, emailEnabled, busy, onTogg
         <span>Sent from this browser · {entries.length}</span>
         <StateChevron open={expanded} />
       </button>
+      {note && <p className="report-help" role="status">{note}</p>}
       {expanded && (
         <ul className="report-sent-list" id="report-sent-list">
             {entries.map(({ kind, title, sentAt, receipt }) => {
