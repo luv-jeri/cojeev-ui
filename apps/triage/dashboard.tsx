@@ -121,7 +121,7 @@ function Detail({ d, busy, error, onVerify, onDecide }: DetailProps) {
       <div className="tri-panel__body">
         <header className="tri-panel__head">
           <Badges r={r} />
-          <h2>{titleOf(r)}</h2>
+          <h2 tabIndex={-1}>{titleOf(r)}</h2>
           <div className="tri-panel__meta">
             <span>Received {longDate(r.created_at)}</span>
             {r.issue_url && <a href={r.issue_url} target="_blank" rel="noreferrer">Issue #{r.issue_number}<Icon name="external-link" size="sm" /></a>}
@@ -223,28 +223,45 @@ export function TriageDashboard({ source, target }: { source: DataSource; target
   const [sel, setSel] = useState<string | null>(null);
   const [detail, setDetail] = useState<TriageDetail | null>(null);
   const [listError, setListError] = useState<string | null>(null);
-  const [detailError, setDetailError] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
+  // Errors carry the report id, so one report's error never shows over another.
+  const [detailError, setDetailError] = useState<{ id: string; text: string } | null>(null);
+  const [actionError, setActionError] = useState<{ id: string; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ id: number; title: string; text: string } | null>(null);
   const [mode, setMode] = useState<ThemeMode>(document.documentElement.dataset.mode === "dark" ? "dark" : "light");
   const [tick, setTick] = useState(0);
+  const [pages, setPages] = useState(1);
+  const [settled, setSettled] = useState(""); // the view:tick:pages the list last finished loading
   const lastIndex = useRef(0);
+  const refocus = useRef<string | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const reload = () => setTick((n) => n + 1);
   const current = VIEWS.find((v) => v.id === view)!;
+  const listLoading = settled !== `${view}:${tick}:${pages}`;
 
   useEffect(() => {
     let live = true;
-    void source.list(view, 0).then((res) => {
-      if (!live) return;
-      setListError(null);
-      setRows(res.reports); setHasMore(res.hasMore); setCounts(res.counts);
-      // Keep the selection; if it left this view (verified, overturned), take the row that moved into its place.
-      setSel((cur) => (cur && res.reports.some((x) => x.id === cur) ? cur : res.reports[Math.min(lastIndex.current, res.reports.length - 1)]?.id ?? null));
-    }).catch((e: unknown) => { if (live) setListError(message(e)); });
+    const key = `${view}:${tick}:${pages}`;
+    // Every reload fetches all the pages already shown, so rows from "Show more" and a selection on them stay put.
+    // A changed view or a newer reload cancels this one, so stale pages never land.
+    // ponytail: one request per shown page; add a page-size parameter to the admin API if lists grow long.
+    void (async () => {
+      let all: TriageListRow[] = [];
+      for (let p = 0; p < pages; p++) {
+        const res = await source.list(view, all.length);
+        if (!live) return;
+        const seen = new Set(all.map((r) => r.id)); // a report arriving mid-way shifts the offsets
+        all = all.concat(res.reports.filter((r) => !seen.has(r.id)));
+        if (p === pages - 1 || !res.hasMore) {
+          setListError(null); setRows(all); setHasMore(res.hasMore); setCounts(res.counts); setSettled(key);
+          // Keep the selection; if it left this view (verified, overturned), take the row that moved into its place.
+          setSel((cur) => (cur && all.some((x) => x.id === cur) ? cur : all[Math.min(lastIndex.current, all.length - 1)]?.id ?? null));
+          return;
+        }
+      }
+    })().catch((e: unknown) => { if (live) { setListError(message(e)); setSettled(key); } });
     return () => { live = false; };
-  }, [source, view, tick]);
+  }, [source, view, tick, pages]);
   useEffect(() => {
     const i = rows?.findIndex((r) => r.id === sel) ?? -1;
     if (i >= 0) lastIndex.current = i;
@@ -252,22 +269,19 @@ export function TriageDashboard({ source, target }: { source: DataSource; target
   useEffect(() => {
     if (!sel) return;
     let live = true;
-    void source.detail(sel).then((d) => { if (live) { setDetail(d); setDetailError(null); } }).catch((e: unknown) => { if (live) setDetailError(message(e)); });
+    void source.detail(sel).then((d) => { if (live) { setDetail(d); setDetailError(null); } }).catch((e: unknown) => { if (live) setDetailError({ id: sel, text: message(e) }); });
     return () => { live = false; };
   }, [source, sel, tick]);
 
   const changeView = (v: ViewId) => {
     if (v === view) return;
     // A new view starts at its first report.
-    setActionError(null); setListError(null); setRows(null); setHasMore(false); setSel(null);
-    lastIndex.current = 0;
+    setActionError(null); setListError(null); setRows(null); setHasMore(false); setSel(null); setPages(1);
+    lastIndex.current = 0; refocus.current = null;
     setView(v);
   };
-  const select = (id: string) => { if (id !== sel) setActionError(null); setSel(id); };
-  const more = () => {
-    if (!rows) return;
-    void source.list(view, rows.length).then((res) => { setRows([...rows, ...res.reports]); setHasMore(res.hasMore); setCounts(res.counts); }).catch((e: unknown) => setListError(message(e)));
-  };
+  const select = (id: string) => { if (id !== sel) { setActionError(null); setDetailError(null); } setSel(id); };
+  const more = () => setPages((n) => n + 1);
   const onListKey = (e: KeyboardEvent<HTMLUListElement>) => {
     if (!rows?.length) return;
     const i = rows.findIndex((r) => r.id === sel);
@@ -283,12 +297,25 @@ export function TriageDashboard({ source, target }: { source: DataSource; target
     if (!detail) return;
     const { id } = detail.report, title = titleOf(detail.report);
     setBusy(true); setActionError(null);
-    try { await fn(id); setToast({ id: Date.now(), title: done, text: title }); } catch (e) { setActionError(message(e)); }
+    try { await fn(id); setToast({ id: Date.now(), title: done, text: title }); } catch (e) { setActionError({ id, text: message(e) }); }
+    refocus.current = id;
     setBusy(false); reload();
   };
   const changeMode = (m: ThemeMode) => { applyTheme(m); setMode(m); localStorage.setItem("triage-mode", m); };
 
   const shown = sel && detail?.report.id === sel ? detail : null;
+  // After an action the clicked button is gone or disabled, so focus would fall to <body>. Once the list has
+  // reloaded, focus the report's row; if it left this view, the heading of the report now shown.
+  useEffect(() => {
+    const id = refocus.current;
+    if (!id || listLoading) return;
+    const row = listRef.current?.querySelector<HTMLElement>(`[data-id="${CSS.escape(id)}"]`);
+    const target = row ?? document.querySelector<HTMLElement>(".tri-panel__head h2")
+      ?? (sel && detailError?.id !== sel ? null : document.getElementById("tri-view-title"));
+    if (!target) return; // the next report is still loading
+    refocus.current = null;
+    target.focus();
+  }, [listLoading, sel, shown, detailError]);
   const selInRows = !!rows?.some((r) => r.id === sel);
   const [targetLabel, targetTone] = TARGETS[target];
 
@@ -325,7 +352,7 @@ export function TriageDashboard({ source, target }: { source: DataSource; target
 
         <main className="tri-main" aria-labelledby="tri-view-title">
           <header className="tri-main__head">
-            <h1 id="tri-view-title">{current.label}</h1>
+            <h1 id="tri-view-title" tabIndex={-1}>{current.label}</h1>
             <div className="tri-main__tools">
               <span className="tri-keys" aria-hidden="true"><Kbd>↑</Kbd><Kbd>↓</Kbd> to move</span>
               <Button variant="ghost" size="sm" onClick={reload}><Icon name="refresh-cw" size="sm" />Refresh</Button>
@@ -349,17 +376,17 @@ export function TriageDashboard({ source, target }: { source: DataSource; target
                 ))}
               </ul>
             )}
-            {hasMore && <Button variant="outline" size="sm" className="tri-more" onClick={more}>Show more</Button>}
+            {hasMore && <Button variant="outline" size="sm" className="tri-more" loading={listLoading} onClick={more}>Show more</Button>}
           </div>
         </main>
 
         <aside className="tri-panel" aria-label="Report details">
           {shown ? (
-            <Detail d={shown} busy={busy} error={actionError}
+            <Detail d={shown} busy={busy} error={actionError?.id === shown.report.id ? actionError.text : null}
               onVerify={() => void act("Marked verified", source.verify)}
               onDecide={(x) => void act(x === "approved" ? "Approved" : "Rejected", (id) => source.decide(id, x))} />
-          ) : sel && detailError ? (
-            <div className="tri-panel__body"><p role="alert" className="tri-alert"><Icon name="alert-circle" size="sm" /><span>{detailError}</span></p></div>
+          ) : sel && detailError?.id === sel ? (
+            <div className="tri-panel__body"><p role="alert" className="tri-alert"><Icon name="alert-circle" size="sm" /><span>{detailError.text}</span></p></div>
           ) : sel || (rows === null && !listError) ? (
             <div className="tri-panel__body" aria-busy="true" aria-label="Loading the report">
               <Skeleton variant="line" style={{ width: "40%" }} />

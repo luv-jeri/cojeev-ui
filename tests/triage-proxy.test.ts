@@ -19,6 +19,23 @@ test("proxy rewrites /api to /v1/admin and injects the bearer token and allowed 
   assert.equal(headers.get("origin"), "http://localhost:8787");
 });
 
+test("the proxy refuses writes whose Origin is not the dashboard's own, and forwards the rest", () => {
+  const bypass = triageProxy({ api: "http://localhost:8787", token: "s3cret" })["^/api/"].bypass!;
+  const send = (method: string, origin?: string) => {
+    const res = { statusCode: 200, body: "", setHeader: () => {}, end(b: string) { this.body = b; } };
+    const url = "/api/reports/x/verify";
+    const out = bypass({ method, url, headers: origin ? { origin } : {} } as never, res as never, {} as never);
+    return { status: res.statusCode, forwarded: out === undefined, body: res.body };
+  };
+  for (const [method, origin] of [["POST", "http://127.0.0.1:4330"], ["PUT", "http://localhost:4330"], ["POST", undefined], ["GET", "https://evil.example"]] as const) {
+    assert.deepEqual(send(method, origin), { status: 200, forwarded: true, body: "" }, `${method} ${origin}`);
+  }
+  for (const origin of ["https://evil.example", "http://127.0.0.1:4331", "null"]) {
+    const out = send("POST", origin);
+    assert.equal(out.status, 403, origin); assert.equal(out.forwarded, false); assert.match(out.body, /Only the triage dashboard/);
+  }
+});
+
 test("with no admin token the dashboard serves no proxy and warns once instead of throwing", () => {
   const env = (v: Record<string, string>) => v as unknown as NodeJS.ProcessEnv;
   const warnings: string[] = [];

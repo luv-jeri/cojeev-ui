@@ -126,6 +126,8 @@ body{margin:0;background:var(--v-canvas);color:var(--v-text);font-family:var(--f
 .tri-pick::after{content:"";position:absolute;inset:0;border-radius:var(--r-md)}
 .tri-pick:focus-visible{outline:none}
 .tri-pick:focus-visible::after{outline:2px solid var(--ring);outline-offset:-2px}
+/* Headings take focus after an action (the clicked button is gone); give the ring room around the text. */
+.tri-shell :is(h1,h2)[tabindex="-1"]:focus-visible{outline:2px solid var(--ring);outline-offset:6px;border-radius:var(--r-sm)}
 .tri-row__date{grid-area:date;justify-self:end;color:var(--v-text-3);font-size:var(--fs-meta);white-space:nowrap}
 .tri-row .tri-badges{grid-area:badges}
 .tri-row__issue{grid-area:issue;justify-self:end;position:relative;z-index:1;color:var(--v-text-2);font-size:var(--fs-small);font-weight:var(--fw-semibold);font-variant-numeric:tabular-nums;text-decoration:none}

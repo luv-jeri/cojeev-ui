@@ -1,6 +1,9 @@
 import type { ProxyOptions } from "vite";
 import { resolveConfig } from "../../scripts/triage/config";
 
+export const DASHBOARD_PORT = 4330;
+const OWN_ORIGINS = [`http://127.0.0.1:${DASHBOARD_PORT}`, `http://localhost:${DASHBOARD_PORT}`];
+
 // /api/* -> ${api}/v1/admin/*. The token and the allowed Origin are added here, on the Node side only.
 export function triageProxy(cfg: { api: string; token: string }): Record<string, ProxyOptions> {
   return {
@@ -8,6 +11,16 @@ export function triageProxy(cfg: { api: string; token: string }): Record<string,
     "^/api/": {
       target: cfg.api,
       changeOrigin: true,
+      // The proxy adds the token to whatever reaches it, so another website must not be able to post through it.
+      bypass: (req, res) => {
+        const origin = req.headers.origin;
+        if (req.method === "GET" || !origin || OWN_ORIGINS.includes(origin)) return;
+        if (!res) return false;
+        res.statusCode = 403;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ error: "Only the triage dashboard itself may change reports." }));
+        return req.url; // Vite stops here because the response has ended.
+      },
       rewrite: (path) => path.replace(/^\/api/, "/v1/admin"),
       configure: (proxy) => {
         proxy.on("proxyReq", (req) => {

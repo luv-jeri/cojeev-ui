@@ -81,6 +81,8 @@ try {
     await pick(bugTitle).click();
     const posted = page.waitForRequest(r => r.method() === "POST" && r.url().endsWith(`/api/reports/${bug}/verify`));
     await page.getByRole("button", { name: "Mark verified", exact: true }).click(); await posted;
+    // The row leaves this view, so focus goes to the heading of the report that took its place, never <body>.
+    await page.waitForFunction(() => document.activeElement?.matches(".tri-panel__head h2"));
     await view("Approved").click(); await pick(bugTitle).waitFor();
     await row(bugTitle).getByText("Verified by you").waitFor();
     assert.ok((await apiState(bug)).verified_at);
@@ -150,12 +152,13 @@ try {
 
   await test("no page request or served asset contains the admin token", async () => {
     await page.reload({ waitUntil: "networkidle" });
+    // Page checks first: the Node-side fetches of /vite.config.ts and /proxy.ts below can make Vite's optimizer reload the page.
+    assert.ok(!(await page.content()).includes(token), "page.content()");
+    assert.deepEqual(requestSecrets, []);
     for (const p of ["/", "/main.tsx", "/dashboard.tsx", "/api.ts", "/proxy.ts", "/vite.config.ts"]) bodies.push([p, await fetch(dash + p).then(r => r.text()).catch(() => "")]);
     assert.ok(bodies.length > 8, "response bodies were captured");
     assert.ok(bodies.some(([u]) => u.endsWith(".tsx")) && bodies.some(([u]) => u.includes("/api/reports")));
-    assert.ok(!(await page.content()).includes(token), "page.content()");
     assert.deepEqual(bodies.filter(([, b]) => b.includes(token)).map(([u]) => u), []);
-    assert.deepEqual(requestSecrets, []);
   });
 
   if (pageErrors.length) failures.push(`page errors: ${pageErrors.join("; ")}`);
