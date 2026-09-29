@@ -1,4 +1,4 @@
-import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus } from "../../../lib/reporting/contracts";
+import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus, type RequestTopic } from "../../../lib/reporting/contracts";
 import { boundedBody, checkAbuse, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
 import { emailEnabled, githubEnabled, now, ownerNotificationEmail, type Env, type ReportRow, type AttachmentRow, type Delivery } from "./types";
 import { testerAllowed } from './resend';
@@ -17,6 +17,7 @@ export async function receipt(env: Env, row: ReportRow, token: string): Promise<
   const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,state FROM attachments WHERE report_id=?").bind(row.id).all<{id:string;state:string}>(),env.DB.prepare("SELECT kind,state,delivery_status FROM outbox WHERE report_id=?").bind(row.id).all<Delivery>()]);
   const email=jobs.results.find(j=>j.kind==="email_received"); const github=jobs.results.find(j=>j.kind==="github");
   return {id:row.id,token,status:row.status,topicId:row.topic_id,...(row.kind==="request"&&row.status==="resolved"&&row.component_url?{componentUrl:row.component_url}:{}),
+    ...(row.triage_state==='approved'&&row.issue_number!=null&&row.issue_url?{issueNumber:row.issue_number,issueUrl:row.issue_url}:{}),
     emailDelivery:email?.state==='held'?'held':email?.delivery_status??'queued',
     email:email?.delivery_status==='delivered'?"sent":email?.state==="needs_review"||['failed','bounced'].includes(email?.delivery_status??'')?"needs_review":!emailEnabled(env)?"setup_required":"pending",
     issue:row.triage_state==="rejected"?"not_planned":row.issue_number?"created":github?.state==="needs_review"?"needs_review":!githubEnabled(env)?"setup_required":"pending",
@@ -87,11 +88,19 @@ export async function upload(request: Request, env: Env, reportId: string, fileI
   await env.DB.prepare("UPDATE attachments SET state='uploaded' WHERE report_id=? AND id=?").bind(reportId,fileId).run();
   return {ok:true};
 }
+// The earliest maintainer-approved verdict title in a topic; pending and rejected titles never reach the public list.
+const approvedTitle="(SELECT a.triage_title FROM reports a WHERE a.topic_id=t.id AND a.triage_state='approved' AND a.triage_title IS NOT NULL ORDER BY a.created_at,a.id LIMIT 1)";
 export async function listRequests(env: Env, url: URL) {
   const offset=Math.max(0,Math.min(100000,Number.parseInt(url.searchParams.get("offset")??"0")||0));
-  const q=(url.searchParams.get("q")??"").slice(0,120).replace(/[\\%_]/g,"\\$&");
-  const rows=await env.DB.prepare(`SELECT t.id,COALESCE(t.public_title,'Component request '||substr(t.id,1,8)) AS title,t.status,t.component_url AS componentUrl,t.created_at AS createdAt,t.updated_at AS updatedAt,COUNT(DISTINCT r.contact_hash) AS demand FROM topics t LEFT JOIN reports r ON r.topic_id=t.id WHERE COALESCE(t.public_title,'Component request '||substr(t.id,1,8)) LIKE ? ESCAPE '\\' GROUP BY t.id ORDER BY t.created_at DESC,t.id LIMIT 21 OFFSET ?`).bind(`%${q}%`,offset).all();
-  return {requests:rows.results.slice(0,20),hasMore:rows.results.length>20};
+  const search=(url.searchParams.get("q")??"").slice(0,120);
+  const q=search.replace(/[\\%_]/g,"\\$&");
+  const generic="'Component request '||substr(t.id,1,8)";
+  // The SQL match runs on the stored title; redaction happens after, so the filter below closes the probe for redacted text.
+  const rows=await env.DB.prepare(`SELECT t.id,COALESCE(t.public_title,${approvedTitle},${generic}) AS title,(t.public_title IS NOT NULL OR ${approvedTitle} IS NOT NULL) AS approved,t.public_title IS NOT NULL AS hasPublic,t.status,t.component_url AS componentUrl,t.created_at AS createdAt,t.updated_at AS updatedAt,COUNT(DISTINCT r.contact_hash) AS demand FROM topics t LEFT JOIN reports r ON r.topic_id=t.id WHERE COALESCE(t.public_title,${approvedTitle},${generic}) LIKE ? ESCAPE '\\' GROUP BY t.id ORDER BY t.created_at DESC,t.id LIMIT 21 OFFSET ?`).bind(`%${q}%`,offset).all<{id:string;title:string;approved:number;hasPublic:number;status:ReportStatus;componentUrl:string|null;createdAt:number;updatedAt:number;demand:number}>();
+  const needle=search.toLowerCase();
+  const requests:RequestTopic[]=rows.results.slice(0,20).map(({hasPublic,approved,title,...row})=>({...row,title:hasPublic||!approved?title:redact(title,120),approved:approved===1}))
+    .filter(row=>!needle||row.title.toLowerCase().includes(needle));
+  return {requests,hasMore:rows.results.length>20};
 }
 export function componentURL(value: unknown, env: Env): string {
   try {

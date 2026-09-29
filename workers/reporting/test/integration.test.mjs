@@ -618,6 +618,59 @@ const owner = (decision,more={}) => ({decision,by:'owner',...more});
 const triageJobs = id => db.prepare("SELECT id,kind,state,payload_json,reviewed_at FROM outbox WHERE report_id=? AND kind IN ('github','github_state','email_accepted','email_rejected') ORDER BY kind,id").bind(id).all().then(r=>r.results);
 const fresh = async more => {const p=payload(more);assert.equal((await submit(p)).status,201);return p;};
 const triaged = id => db.prepare('SELECT * FROM reports WHERE id=?').bind(id).first();
+const listed = async id => (await (await request('/v1/requests')).json()).requests.find(r=>r.id===id);
+const topicOf = async id => (await triaged(id)).topic_id;
+test('request list shows an approved topic under its AI-cleaned title and marks it approved',async()=>{
+  const p=await fresh({kind:'request',title:'Private working title'});
+  assert.equal((await put(p.id,{decision:'approved',by:'owner',reason:'ok',title:'Calendar range',body:'Verdict body'})).status,200);
+  const response=await request('/v1/requests');const text=await response.text();
+  const tid=await topicOf(p.id);const row=JSON.parse(text).requests.find(r=>r.id===tid);
+  assert.equal(row.title,'Calendar range');assert.strictEqual(row.approved,true);
+  assert.ok(!text.includes('Private working title'));
+});
+test('request list keeps pending and rejected triage titles private and unsearchable',async()=>{
+  const a=await fresh({kind:'request',title:'Pending working title'});
+  await db.prepare("UPDATE reports SET triage_title='Pending secret' WHERE id=?").bind(a.id).run();
+  const b=await fresh({kind:'request',title:'Rejected working title'});
+  assert.equal((await put(b.id,{decision:'rejected',by:'owner',reason:'no',title:'Rejected secret',body:'x'})).status,200);
+  await db.prepare("UPDATE reports SET triage_title='Rejected secret' WHERE id=?").bind(b.id).run();
+  const [ta,tb]=[await topicOf(a.id),await topicOf(b.id)];
+  for(const t of [ta,tb]){const row=await listed(t);assert.equal(row.title,`Component request ${t.slice(0,8)}`);assert.strictEqual(row.approved,false);}
+  const found=(await (await request('/v1/requests?q=secret')).json()).requests.map(r=>r.id);
+  assert.ok(!found.includes(ta)&&!found.includes(tb));
+});
+test('a maintainer public title wins over the triage title',async()=>{
+  const p=await fresh({kind:'request',title:'Another working title'});
+  await put(p.id,{decision:'approved',by:'owner',reason:'ok',title:'Triage wording',body:'Verdict body'});
+  assert.equal((await request(`/v1/admin/reports/${p.id}`,'PATCH',{publicTitle:'Comparison timeline'},admin)).status,200);
+  const row=await listed(await topicOf(p.id));assert.equal(row.title,'Comparison timeline');assert.strictEqual(row.approved,true);
+});
+test('request search never matches text that redaction removed from an approved title',async()=>{
+  const p=await fresh({kind:'request',title:'Chart working title'});
+  await put(p.id,{decision:'approved',by:'owner',reason:'ok',title:'Chart',body:'Verdict body'});
+  await db.prepare("UPDATE reports SET triage_title='Chart for person@example.com' WHERE id=?").bind(p.id).run();
+  const t=await topicOf(p.id);assert.equal((await listed(t)).title,'Chart for [email]');
+  const ids=async q=>(await (await request(`/v1/requests?q=${q}`)).json()).requests.map(r=>r.id);
+  assert.ok(!(await ids('person%40example')).includes(t));assert.ok((await ids('Chart')).includes(t));
+});
+test('joining a listed topic with its listed title is accepted',async()=>{
+  const p=await fresh({kind:'request',title:'Teams working title'});
+  await put(p.id,{decision:'approved',by:'owner',reason:'ok',title:'Calendar range for teams @work',body:'Verdict body'});
+  const row=await listed(await topicOf(p.id));
+  const join=payload({kind:'request',title:row.title,topicId:row.id,email:'joiner@example.com'});
+  const response=await submit(join);assert.equal(response.status,201);assert.equal((await response.json()).id,join.id);
+});
+test('the receipt carries the public issue number only once an approved report has an issue',async()=>{
+  const receiptOf=async p=>(await request(`/v1/reports/${p.id}`,'GET',undefined,token)).json();
+  const p=await fresh({kind:'request',title:'Issue receipt request'});
+  let r=await receiptOf(p);assert.ok(!('issueNumber' in r)&&!('issueUrl' in r));
+  assert.equal((await put(p.id,ai('approved'))).status,200);
+  await backend.drain(ghEnv(),p.id,fakeGitHub([]));
+  r=await receiptOf(p);assert.equal(r.issueNumber,314);assert.equal(r.issueUrl,'https://github.com/owner/library/issues/314');
+  const q=await fresh({kind:'request',title:'Rejected receipt request'});
+  assert.equal((await put(q.id,owner('rejected',{reason:'no'}))).status,200);
+  r=await receiptOf(q);assert.ok(!('issueNumber' in r)&&!('issueUrl' in r));
+});
 test('triage list returns untriaged reports without email and excludes purged reports',async()=>{
   await db.prepare("UPDATE reports SET triage_state='rejected',triage_by='owner' WHERE triage_state='pending'").run();
   const a=await fresh(),b=await fresh();await db.prepare('UPDATE reports SET private_purged=1 WHERE id=?').bind(b.id).run();
