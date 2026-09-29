@@ -156,7 +156,7 @@ if (expectSilent) {
     const { context, captures, attempts } = await analyticsContext(browser, undefined, consent);
     const page = await context.newPage();
     await page.goto(`${base}/privacy/?utm_source=shadcn`, { waitUntil: "domcontentloaded" });
-    await page.getByText("Analytics is not connected on this site.", { exact: false }).waitFor();
+    await page.getByText("PostHog analytics is not connected on this site.", { exact: false }).waitFor();
     assert.equal(await page.getByRole("button", { name: "Allow analytics", exact: true }).count(), 0);
     for (const route of ["/", "/docs/", "/docs/button/", "/getting-started/"]) {
       await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
@@ -475,7 +475,7 @@ try {
     const { context, captures, attempts } = await analyticsContext(browser, init);
     const page = await context.newPage();
     await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
-    await page.getByText("Your browser privacy signal is preventing analytics.", { exact: false }).waitFor();
+    await page.getByText("Your browser privacy signal is preventing PostHog analytics.", { exact: false }).waitFor();
     await delay(400);
     assert.equal(captures.length, 0, `${name} suppresses every event`);
     assert.equal(attempts.length, 0, `${name} overrides stored allowance without PostHog requests`);
