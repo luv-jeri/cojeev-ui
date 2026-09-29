@@ -43,7 +43,7 @@ export function ReceiptDetail({ receipt, kind, busy, onRefresh, onNavigate }: {
         </dl>
         <div className="report-receipt-id"><span>Report ID</span><code>{receipt.id}</code></div>
       </details>
-      {receipt.componentUrl && (
+      {receipt.componentUrl && isHttps(receipt.componentUrl) && (
         <Button asChild fullWidth>
           <a href={receipt.componentUrl}>
             Open component <AnimatedIcon name="arrow-up-right" style={{ width: 17, height: 17 }} />
