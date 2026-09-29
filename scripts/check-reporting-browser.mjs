@@ -38,6 +38,19 @@ try {
   await localOnly(context);
   const page = await context.newPage(); activePage = page; page.on("pageerror", error => pageErrors.push(error.message)); page.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(page);
+  for (const [tab, text] of [["Request a feature", "We aim to build requests within 36 hours"], ["Report a bug", "Adds device info, recent errors, failed routes and clicks."]]) {
+    await panel(page).getByRole("tab", { name: tab, exact: true }).click();
+    const info = page.getByRole("button", { name: "How this works", exact: true }), pop = page.getByRole("dialog", { name: "How this works", exact: true });
+    await info.focus(); await page.keyboard.press("Enter"); await pop.waitFor();
+    assert.ok((await pop.innerText()).includes("PNG, JPEG, WebP, MP4 or WebM. Up to 6 files, 10 MB each, 30 MB total. Screenshots are taken only when you ask, and you check each one first."));
+    assert.ok((await pop.innerText()).includes(text));
+    assert.ok(await pop.evaluate(node => node.contains(document.activeElement)), "Focus moves into the popover");
+    await page.keyboard.press("Escape"); await pop.waitFor({ state: "hidden" });
+    await info.evaluate(node => new Promise(resolve => { const end = Date.now() + 2000; (function poll() { if (node === document.activeElement || Date.now() > end) resolve(); else setTimeout(poll, 25); })(); }));
+    assert.ok(await info.evaluate(node => node === document.activeElement), "Focus returns to How this works");
+    assert.ok(await panel(page).isVisible(), "Escape closes only the popover");
+  }
+  results.push("The info popover opens by keyboard, holds focus, and Escape closes only it and returns focus to How this works");
   await fill(page, "request", `Browser request ${run}`);
   await page.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "reference.png", mimeType: "image/png", buffer: imageBytes });
   await page.getByAltText("Attachment preview: reference.png").waitFor();
@@ -152,6 +165,17 @@ try {
   await localOnly(mobile);
   const mobilePage = await mobile.newPage(); activePage = mobilePage; mobilePage.on("pageerror", error => pageErrors.push(error.message)); mobilePage.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await mobilePage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await screenshot(mobilePage, "request-board-mobile"); await open(mobilePage);
+  {
+    await panel(mobilePage).getByRole("tab", { name: "Report a bug", exact: true }).click();
+    const info = mobilePage.getByRole("button", { name: "How this works", exact: true }), pop = mobilePage.getByRole("dialog", { name: "How this works", exact: true });
+    await info.evaluate(node => node.scrollIntoView({ block: "end" })); await info.tap(); await pop.waitFor();
+    const box = await pop.boundingBox();
+    assert.ok(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= 390 && box.y + box.height <= 844, "Popover stays inside the phone viewport");
+    await pop.evaluate(node => { if (node.scrollHeight > node.clientHeight) assert.ok(getComputedStyle(node).overflowY !== "visible"); });
+    await panel(mobilePage).getByRole("heading", { name: "Report a bug", exact: true }).tap(); await pop.waitFor({ state: "hidden" });
+    assert.ok(await panel(mobilePage).isVisible(), "An outside tap closes only the popover");
+  }
+  results.push("On a 390px phone the info popover opens by tap, stays inside the viewport near the bottom, and an outside tap closes only it");
   await fill(mobilePage, "request", "A mobile calendar with date ranges"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await assertFits(mobilePage); await screenshot(mobilePage, "request-mobile-light");
   await fill(mobilePage, "bug", "The control is difficult to select on my phone"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await screenshot(mobilePage, "bug-mobile-light");
   await mobilePage.evaluate(() => { document.documentElement.dataset.mode = "dark"; }); await screenshot(mobilePage, "bug-mobile-dark");

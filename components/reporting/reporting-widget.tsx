@@ -67,6 +67,7 @@ import {
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
 import { REPORT_EVENT, STATUS_LABELS, takeRequest } from "./report-request";
 import { AreaPicker, CaptureStatus } from "./area-picker";
+import { ReportInfo } from "./report-controls";
 import { Turnstile } from "./turnstile";
 import "./reporting.css";
 
@@ -606,13 +607,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
             />
           ) : step === "edit" ? (
             <form onSubmit={prepare} className="report-form">
-              {draft.kind === "request" && (
-                <p className="report-target">
-                  We aim to build requested components within{" "}
-                  <strong>36 hours</strong>. Timing depends on demand and
-                  complexity.
-                </p>
-              )}
               <label className="report-field">
                 {draft.kind === "request"
                   ? "Component title"
@@ -630,18 +624,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                       ? "e.g. A date range picker"
                       : "e.g. The menu closes before I can choose"
                   }
-                  aria-describedby={
-                    draft.kind === "request" ? "public-title" : undefined
-                  }
                 />
               </label>
-              {draft.kind === "request" && (
-                <p id="public-title" className="report-help">
-                  Your title stays private until a maintainer approves it for the
-                  public board; until then the board shows a generic reference.
-                  Keep personal information out of it either way.
-                </p>
-              )}
               {draft.topicId ? (
                 <div className="report-notice">
                   <p>
@@ -739,6 +723,12 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   />
                 </TextareaScrollArea>
               </label>
+              <div className="report-toolbar">
+                <ReportInfo
+                  kind={draft.kind}
+                  beta={siteFlags.environment === "beta"}
+                />
+              </div>
               <label className="report-field">
                 Your email
                 <Input
@@ -757,7 +747,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               <p id="email-help" className="report-help">
                 For a receipt and progress updates. Never shown on the public
                 board.
-                {siteFlags.environment === "beta" && " Beta reports are stored separately. Email updates are limited to invited testers during this beta."}
               </p>
               <section
                 className="report-evidence"
@@ -849,11 +838,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                     ? "Drop files here"
                     : "Drag images or videos here, or choose files above."}
                 </p>
-                <p className="report-help">
-                  PNG, JPEG, WebP, MP4 or WebM. Up to six files, 10 MiB each, 30
-                  MiB total. Screenshots are captured only when you ask, and you
-                  review every one before it is attached.
-                </p>
                 {!!draft.files.length && (
                   <div className="report-attachments">
                     {draft.files.map((item) => (
@@ -916,12 +900,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   <h3>
                     Browser details <span>You’re in control</span>
                   </h3>
-                  <p className="report-help">
-                    Include device details and recent errors, failed routes, and
-                    structural clicks. No field values, request bodies, headers,
-                    cookies or storage are collected. Review and remove any
-                    group before sending.
-                  </p>
                   <Button
                     variant="outline"
                     onClick={() =>
@@ -942,9 +920,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               )}
               <div className="report-form-footer">
                 <p className="report-help" role="status">
-                  {busy ||
-                    storage ||
-                    "Your draft stays here when you close this panel."}
+                  {busy || storage}
                 </p>
                 <Button type="submit" loading={!!busy} fullWidth>
                   Review {draft.kind === "request" ? "request" : "report"}
