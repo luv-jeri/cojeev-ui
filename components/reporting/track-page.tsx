@@ -73,9 +73,9 @@ function Found({ status }: { status: PublicStatus }) {
   const current = STAGES.indexOf(status.stage);
   return (
     <>
-      <p className="track-fact">Sent {sentDate(status.sentAt)}</p>
+      <div className="track-fact"><span>Sent</span>{" "}<span>{sentDate(status.sentAt)}</span></div>
       {status.stage === "closed"
-        ? <><p><strong>Closed</strong></p><p>We checked your report, but it isn’t something we can act on, so we’ve closed it.</p></>
+        ? <div className="track-closed"><strong>Closed</strong><p>We checked your report, but it isn’t something we can act on, so we’ve closed it.</p></div>
         : <ol className="track-stepper">
             {STAGES.map((stage, index) => (
               <li key={stage} data-state={index < current ? "done" : index === current ? "current" : "todo"} aria-current={index === current ? "step" : undefined}>
@@ -85,7 +85,7 @@ function Found({ status }: { status: PublicStatus }) {
               </li>
             ))}
           </ol>}
-      {status.attachments > 0 && <p className="track-fact">{status.attachments} {status.attachments === 1 ? "file" : "files"} attached</p>}
+      {status.attachments > 0 && <div className="track-fact"><span>{status.attachments} {status.attachments === 1 ? "file" : "files"} attached</span></div>}
     </>
   );
 }
