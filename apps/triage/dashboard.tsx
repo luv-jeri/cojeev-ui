@@ -26,7 +26,7 @@ function Row({ r, selected, onSelect }: { r: TriageListRow; selected: boolean; o
     <TableRow className="tri-row" aria-selected={selected} onClick={onSelect}>
       <TableCell>
         <div className="tri-cell-title">
-          <strong>{r.triage_title ?? r.title}</strong>
+          <button type="button" className="tri-pick" onClick={onSelect}>{r.triage_title ?? r.title}</button>
           <div className="tri-badges">
             <Badge size="sm" variant={r.kind === "bug" ? "pink-soft" : "blue-soft"}>{r.kind === "bug" ? "Bug" : "Request"}</Badge>
             {r.triage_state === "pending"
@@ -49,6 +49,10 @@ function Detail({ d, onVerify, onDecide }: { d: TriageDetail; onVerify: () => vo
   const links: string[] = JSON.parse(r.references_json || "[]");
   const settled = r.triage_state !== "pending";
   const next: Decision = r.triage_state === "approved" ? "rejected" : "approved";
+  const n = r.issue_number;
+  const consequence = next === "approved"
+    ? (n == null ? "Publishes a GitHub issue (or links the existing one for this request) and emails the reporter." : `Reopens #${n}. No email.`)
+    : (n == null ? "Cancels the pending issue and emails the reporter that it was declined." : `Closes #${n} as not planned. No email.`);
   const needsVerify = settled && r.triage_by === "ai" && !r.verified_at;
   return (
     <Card className="tri-panel"><CardContent className="tri-detail">
@@ -61,7 +65,7 @@ function Detail({ d, onVerify, onDecide }: { d: TriageDetail; onVerify: () => vo
               <AlertDialogHeader className="flex-col">
                 <AlertDialogTitle>{next === "approved" ? "Approve this report?" : "Reject this report?"}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  {next === "approved" ? "Creates a public issue and emails the reporter." : `Closes #${r.issue_number}. No email.`}
+                  {consequence}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -130,7 +134,7 @@ export function TriageDashboard({ source }: { source: DataSource }) {
       <section className="tri-counters" aria-label="Totals">
         {cards.map(([label, n]) => <Card key={label}><CardContent><div className="tri-num">{n}</div><div className="tri-label">{label}</div></CardContent></Card>)}
       </section>
-      {counts.pending > 0 && <p className="tri-hint">Run <code>npm run triage</code> to process {counts.pending} waiting reports.</p>}
+      {counts.pending > 0 && <p className="tri-hint">Run <code>npm run triage</code> to process {counts.pending} waiting {counts.pending === 1 ? "report" : "reports"}.</p>}
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>{TABS.map(([v, l]) => <TabsTrigger key={v} value={v}>{l}</TabsTrigger>)}</TabsList>
       </Tabs>

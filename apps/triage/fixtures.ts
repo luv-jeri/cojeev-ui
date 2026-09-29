@@ -11,6 +11,8 @@ const rows: TriageListRow[] = [
   { ...base, ...ai(1), id: "rpt_a1", kind: "bug", title: "tabs jump when i click", email: "sam@example.com", created_at: t0 - day, triage_state: "approved", triage_title: "Tabs indicator jumps on first click", issue_number: 412, issue_url: "https://github.com/example/repo/issues/412" },
   { ...base, ...ai(2), id: "rpt_a2", kind: "request", title: "Date range picker", email: "ines@example.com", created_at: t0 - 2 * day, triage_state: "approved", triage_title: "Add a date range picker", issue_number: 398, issue_url: "https://github.com/example/repo/issues/398", verified_at: t0 - day },
   { ...base, id: "rpt_a3", kind: "request", title: "we need a range calendar", email: "omar@example.com", created_at: t0 - 3 * day, triage_state: "approved", triage_by: "join", triage_title: "Add a date range picker", triaged_at: t0 - 3 * day, issue_number: 398, issue_url: "https://github.com/example/repo/issues/398" },
+  { ...base, ...ai(2.5), id: "rpt_a4", kind: "bug", title: "Modal traps focus after closing", email: "dana@example.com", created_at: t0 - 2.5 * day, triage_state: "approved", triage_title: "Focus is not restored after a modal closes" },
+  { ...base, ...ai(3.5), id: "rpt_r3", kind: "request", title: "Add a confetti button", email: "kim@example.com", created_at: t0 - 3.5 * day, triage_state: "rejected", triage_title: "Add a confetti button", issue_number: 377, issue_url: "https://github.com/example/repo/issues/377" },
   { ...base, ...ai(1.5), id: "rpt_r1", kind: "bug", title: "asdf test test", email: "x@example.com", created_at: t0 - 1.5 * day, triage_state: "rejected", triage_title: "Unclear test message" },
   { ...base, id: "rpt_r2", kind: "request", title: "Make everything bigger", email: "pat@example.com", created_at: t0 - 4 * day, triage_state: "rejected", triage_by: "owner", triage_title: "Enlarge all components", triaged_at: t0 - 3 * day, verified_at: t0 - 3 * day },
 ];
@@ -19,6 +21,8 @@ const reasons: Record<string, string> = {
   rpt_a1: "Clear, reproducible layout bug in a shipped component. Matches no existing issue.",
   rpt_a2: "A concrete, in-scope component request with a described use case.",
   rpt_a3: "Same request as an existing issue, so it joins that issue instead of opening a new one.",
+  rpt_a4: "Clear, reproducible accessibility bug. The issue has not been published yet.",
+  rpt_r3: "Decorative and outside the scope of the component set. The earlier issue was closed.",
   rpt_r1: "No actionable content: the text is placeholder input with no steps or expected behaviour.",
   rpt_r2: "Too broad to act on. It does not name a component or a problem to solve.",
 };
@@ -28,6 +32,8 @@ const descriptions: Record<string, string> = {
   rpt_a1: "When i click a tab the underline jumps to the left and then slides back. Chrome on Mac.",
   rpt_a2: "Booking flows need a start and end date in one calendar.",
   rpt_a3: "Could you add a calendar where I pick a range?",
+  rpt_a4: "After closing a modal with Escape, keyboard focus goes to the top of the page.",
+  rpt_r3: "A button that throws confetti would be fun.",
   rpt_r1: "asdf test test",
   rpt_r2: "Everything feels small. Make it all bigger please.",
 };
@@ -45,7 +51,7 @@ const detailOf = (r: TriageListRow): TriageDetail => ({
     description: descriptions[r.id] ?? "",
     references_json: JSON.stringify(r.id === "rpt_a1" ? ["https://000h.cojeev.com/docs/tabs"] : []),
     triage_reason: reasons[r.id] ?? null,
-    triage_body: r.triage_state === "approved" && r.triage_by === "ai" ? `${descriptions[r.id]}\n\nExpected: the indicator slides from the current tab to the clicked one.` : null,
+    triage_body: r.triage_state === "approved" && r.triage_by === "ai" ? `${descriptions[r.id]}${r.id === "rpt_a1" ? "\n\nExpected: the indicator slides from the current tab to the clicked one." : ""}` : null,
   },
   attachments: r.id === "rpt_a1" ? [{ id: "att_1", name: "tabs-jump.mp4", type: "video/mp4", size: 2_400_000, state: "uploaded" }] : [],
   deliveries: r.triage_state === "pending" ? [{ id: `${r.id}:email_received`, kind: "email_received", state: "sent", attempts: 1, last_error: null, reviewed_at: null }] : jobs(r),
