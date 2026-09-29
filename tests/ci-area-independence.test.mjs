@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { releaseDepth } from '../scripts/ci-scope.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 // Areas ci-scope treats as independent: nothing that ships in the site may import them.
@@ -57,6 +58,23 @@ test('site code never imports an area the classifier treats as independent', () 
       if (!hit) continue;
       const target = hit.file ?? hit.unresolved;
       if (hit.file ? inArea(target) : couldTarget(target)) bad.push(`${file} -> ${spec}`);
+    }
+  }
+  assert.deepEqual(bad, []);
+});
+
+// The other direction: a deployed Worker imports repo files. A file the classifier treats as quick (no release pack)
+// that a Worker imports would ship untested, as lib/reporting/triage-contract.ts once did.
+test('a Worker never imports a file the classifier treats as quick', () => {
+  const files = walk('workers').filter(file => !file.includes('/node_modules/') && !file.includes('/test/') && !/\.test\./.test(file)) // tests are not deployed;
+  assert.ok(files.length > 3, 'the scan must actually find Worker sources');
+  const bad = [];
+  for (const file of files) {
+    for (const spec of specifiers(fs.readFileSync(path.join(root, file), 'utf8'))) {
+      const hit = resolve(file, spec);
+      if (!hit) continue;
+      const target = hit.file ?? hit.unresolved;
+      if (releaseDepth([target], '').depth === 'quick') bad.push(`${file} -> ${spec} (${target})`);
     }
   }
   assert.deepEqual(bad, []);

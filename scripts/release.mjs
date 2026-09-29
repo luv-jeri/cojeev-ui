@@ -83,7 +83,7 @@ export function deploymentSecrets(environment,env=process.env,log=console.error)
   // that the bundles (write-only GitHub secrets) cannot carry. Same rule as validateSecrets.
   const rotated=env.REPORTING_ADMIN_TOKEN;
   if(rotated===undefined||rotated==='') return composed;
-  if(typeof rotated!=='string'||!rotated.trim()||rotated.length<32) throw new Error('REPORTING_ADMIN_TOKEN must be a non-blank value of at least 32 characters');
+  if(typeof rotated!=='string'||!rotated.trim()||/\s/.test(rotated)||rotated.length<32) throw new Error('REPORTING_ADMIN_TOKEN must be a non-blank value of at least 32 characters');
   log('ADMIN_TOKEN: rotated value from REPORTING_ADMIN_TOKEN');
   return {...composed,ADMIN_TOKEN:rotated};
 }

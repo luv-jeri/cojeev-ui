@@ -35,7 +35,7 @@ test('admin_token_override_absent_is_unchanged',()=>{
   assert.deepEqual(lines,[]);
 });
 test('admin_token_override_short_value_fails_without_printing_it',()=>{
-  for(const value of ['short_secret_value','   ']) assert.throws(()=>deploymentSecrets('production',{...adminEnv,REPORTING_ADMIN_TOKEN:value},()=>{}),error=>{
+  for(const value of ['short_secret_value','   ','a'.repeat(20)+' '+'b'.repeat(20),'c'.repeat(40)+'\n','d'.repeat(20)+'\t'+'e'.repeat(20)]) assert.throws(()=>deploymentSecrets('production',{...adminEnv,REPORTING_ADMIN_TOKEN:value},()=>{}),error=>{
     assert.match(error.message,/REPORTING_ADMIN_TOKEN/);
     assert.ok(!error.message.includes(value.trim()||'\0'));
     return true;

@@ -6,7 +6,7 @@ const tree = 'bee043a6eaea1a81d7cc7a4fa52924e44d54722b';
 const repo = 'luv-jeri/cojeev-ui';
 // Field names captured from GET /actions/runs/{id} and /actions/artifacts (2026-09-29).
 const art = (o = {}) => ({ id: 1, name: `verified-tree-${tree}`, expired: false, expires_at: '2026-10-13T10:37:03Z', depth: 'full', workflow_run: { id: 36540645798, head_repository_id: 1360394020, repository_id: 1360394020 }, ...o });
-const run = (o = {}) => ({ id: 36540645798, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo }, ...o });
+const run = (o = {}) => ({ id: 36540645798, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo }, pull_requests: [{ base: { ref: 'main' } }], ...o });
 const input = (o = {}) => ({ event: 'push', headTree: tree, requiredDepth: 'full', repository: repo, artifacts: [art()], runs: [run()], strictSince: '2026-09-01T00:00:00Z', now: '2026-09-29T10:40:00Z', ...o });
 
 test('reuse_accepts_matching_tree', () => {
@@ -61,4 +61,13 @@ test('reuse_still_builds_release_pair and deploy_needs_release_pack_on_pushed_co
 test('reuse_rejects_array_depth', () => {
   assert.equal(decideReuse(input({ requiredDepth: ['docs'] })).reuse, false);
   assert.equal(decideReuse(input({ artifacts: [art({ depth: ['full'] })] })).reuse, false);
+});
+
+test('reuse_rejects_non_main_base', () => {
+  const t = 'bee043a6eaea1a81d7cc7a4fa52924e44d54722b';
+  const input = (pull_requests) => ({ event: 'push', headTree: t, requiredDepth: 'full', repository: repo, strictSince: '2026-09-01T00:00:00Z', now: '2026-09-29T10:40:00Z',
+    artifacts: [{ id: 7, name: `verified-tree-${t}`, expired: false, expires_at: '2026-10-13T10:37:03Z', workflow_run: { id: 36540645798 }, depth: 'full' }],
+    runs: [run({ pull_requests })] });
+  assert.equal(decideReuse(input([{ base: { ref: 'main' } }])).reuse, true);
+  for (const bad of [[{ base: { ref: 'dev' } }], [], undefined, [{}], [{ base: {} }]]) assert.equal(decideReuse(input(bad)).reuse, false, JSON.stringify(bad));
 });

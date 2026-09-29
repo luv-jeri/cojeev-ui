@@ -31,6 +31,7 @@ const files = (over = {}) => {
     'components/examples/helper.tsx': 'import { Epsilon } from "../../registry/cojeev/ui/epsilon";',
     'components/examples/d.tsx': 'import x from "react";',
     'components/examples/e.tsx': 'import x from "react";',
+    'package.json': '{"dependencies":{"react":"1","@scope/pkg":"1"},"devDependencies":{"typescript":"1"}}',
     'registry/cojeev/ui/alpha.tsx': '', 'registry/cojeev/ui/beta.tsx': '', 'registry/cojeev/ui/epsilon.tsx': '',
     'registry/cojeev/ui/gamma.tsx': '', 'registry/cojeev/ui/delta.tsx': '',
     ...over,
@@ -189,4 +190,91 @@ test('ci_pr_own_diff_is_not_full', () => {
   const out = contractOutputs(paths);
   assert.equal(out.depth, 'affected', out.depth_reason);
   assert.ok(out.gate_ids.split(',').includes('button') && out.gate_ids.split(',').includes('tabs'), out.gate_ids);
+});
+
+// Final fix wave ------------------------------------------------------------
+import os from 'node:os';
+import path from 'node:path';
+
+test('component_css_edit_follows_its_owner', () => {
+  // beta's example imports alpha.tsx; alpha.css is owned by alpha, so editing it reaches beta.
+  const css = 'registry/cojeev/styles/alpha.css';
+  const pick = (over = {}) => selectGateIds([css], { registry: registry([]), read: files(over), appModules: () => ['app/page.tsx'] });
+  const quiet = { 'app/page.tsx': 'import x from "react";', 'components/examples/b.tsx': 'import { Alpha } from "@/registry/cojeev/ui/alpha";' };
+  assert.ok(pick(quiet).ids.includes('beta'), JSON.stringify(pick(quiet)));
+  // alpha.tsx reaches site chrome, so its stylesheet does too.
+  assert.match(pick({ ...quiet, 'app/page.tsx': 'import { Alpha } from "@/registry/cojeev/ui/alpha";' }).full, /docs site chrome/);
+  // Real checkout: card.css and tabs.css are full. marquee.css is full too, because app/styles/docs.css imports it.
+  assert.ok(selectGateIdsFromCheckout(['registry/cojeev/styles/card.css']).full);
+  assert.ok(selectGateIdsFromCheckout(['registry/cojeev/styles/tabs.css']).full);
+  assert.match(selectGateIdsFromCheckout(['registry/cojeev/styles/marquee.css']).full, /docs site chrome/);
+});
+
+const chromePick = (page, over = {}, changed = 'registry/cojeev/ui/beta.tsx') =>
+  selectGateIds([changed], { registry: registry([]), read: files({ 'app/page.tsx': page, ...over }), appModules: () => ['app/page.tsx'] });
+
+test('chrome_scan_rejects_unknown_alias', () => {
+  assert.ok(chromePick('import x from "@components/x";').full);
+  assert.ok(chromePick('import x from "~/x";').full);
+  assert.ok(chromePick('import x from "not-a-dependency";').full);
+  for (const ok of ['react', '@scope/pkg', 'react/jsx-runtime', 'node:fs', 'fs', 'fs/promises', 'typescript']) {
+    assert.deepEqual(chromePick(`import x from "${ok}";`).ids, ['beta'], ok);
+  }
+});
+
+test('chrome_scan_rejects_nonliteral_dynamic_import', () => {
+  assert.ok(chromePick('const m = await import(name);').full);
+  assert.ok(chromePick('const m = await import(`./${name}`);').full);
+  // A literal dynamic import is followed like a static one, and a code sample in a string or comment is not an import.
+  assert.deepEqual(chromePick('const m = await import("react");').ids, ['beta']);
+  assert.deepEqual(chromePick('const sample = "await import(name)"; // import(other)\nconst t = `import(x)`;').ids, ['beta']);
+  // The example walk is covered too.
+  assert.ok(chromePick('import x from "react";', { 'components/examples/b.tsx': 'export const load = () => import(pick());' }).full);
+});
+
+test('chrome_css_import_runs_full', () => {
+  const styles = 'registry/cojeev/styles/alpha.css';
+  const css = { 'app/x.css': '/* @import "./nope.css"; */\n@import "../registry/cojeev/styles/alpha.css" layer(a);', 'registry/cojeev/styles/alpha.css': '' };
+  const pick = (page, over) => selectGateIds([styles], { registry: registry([]), read: files({ 'app/page.tsx': page, ...over }), appModules: () => ['app/page.tsx', 'app/x.css'] });
+  assert.match(pick('import x from "react";', css).full, /docs site chrome/);
+  // The same file, reached from a TypeScript import of a stylesheet.
+  const viaTs = selectGateIds([styles], { registry: registry([]), read: files({ 'app/page.tsx': 'import "./x.css";', ...css }), appModules: () => ['app/page.tsx'] });
+  assert.match(viaTs.full, /docs site chrome/);
+  // @/ chains, and a commented-out import is not followed.
+  const chain = selectGateIds([styles], { registry: registry([]), read: files({ 'app/x.css': '@import "@/app/y.css";', 'app/y.css': '@import "../registry/cojeev/styles/alpha.css";', 'registry/cojeev/styles/alpha.css': '' }), appModules: () => ['app/x.css'] });
+  assert.match(chain.full, /docs site chrome/);
+  const commented = selectGateIds([styles], { registry: registry([]), read: files({ 'app/x.css': '/* @import "../registry/cojeev/styles/alpha.css"; */', 'registry/cojeev/styles/alpha.css': '' }), appModules: () => ['app/x.css'] });
+  assert.ok(commented.ids);
+  // An unresolvable or unknown css import fails closed.
+  assert.ok(selectGateIds([styles], { registry: registry([]), read: files({ 'app/x.css': '@import "./missing.css";' }), appModules: () => ['app/x.css'] }).full);
+  assert.ok(selectGateIds([styles], { registry: registry([]), read: files({ 'app/x.css': '@import "unknown-pkg/x.css";' }), appModules: () => ['app/x.css'] }).full);
+});
+
+test('app_file_of_unknown_type_runs_full', () => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'ci-ids-'));
+  try {
+    for (const file of ['registry.json', 'package.json', 'components/examples/index.ts', 'components/examples/manifest.ts']) {
+      fs.mkdirSync(path.dirname(path.join(cwd, file)), { recursive: true });
+      fs.copyFileSync(new URL(`../${file}`, import.meta.url), path.join(cwd, file));
+    }
+    fs.mkdirSync(path.join(cwd, 'app'), { recursive: true });
+    fs.writeFileSync(path.join(cwd, 'app/page.tsx'), 'export default function P() { return null; }');
+    for (const ok of ['a.png', 'b.svg', 'c.woff2', 'd.txt', 'e.json', 'f.css']) fs.writeFileSync(path.join(cwd, 'app', ok), '');
+    const before = selectGateIdsFromCheckout(['registry/cojeev/ui/marquee.tsx'], cwd);
+    assert.ok(!/app\//.test(before.full ?? ''), before.full);
+    fs.writeFileSync(path.join(cwd, 'app/data.yaml'), '');
+    assert.match(selectGateIdsFromCheckout(['registry/cojeev/ui/marquee.tsx'], cwd).full, /app\/data\.yaml/);
+  } finally { fs.rmSync(cwd, { recursive: true, force: true }); }
+});
+
+test('smoke_ids_exist_and_contract_only_output_is_in_registry_order', () => {
+  const ids = new Set(JSON.parse(fs_read('registry.json')).items.map(entry => entry.name));
+  for (const id of CI_SMOKE_IDS) assert.ok(ids.has(id), id);
+  // A resolver whose registry order puts tabs first: the contract-only list follows it, not CI_SMOKE_IDS.
+  const reversed = () => ({ ids: [], order: ['tabs', 'x', 'button'] });
+  assert.equal(releaseOutputs(releaseDepth(['scripts/ci-scope.mjs'], '', { gateIds: reversed })).gate_ids, 'tabs,button');
+  // Real registry order.
+  const real = contractOutputs(['scripts/ci-scope.mjs']).gate_ids.split(',');
+  const order = selectGateIdsFromCheckout([]).order;
+  assert.deepEqual(real, order.filter(id => real.includes(id)));
 });

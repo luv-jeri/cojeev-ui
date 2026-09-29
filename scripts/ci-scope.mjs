@@ -146,7 +146,9 @@ const cleanSegments = file => {
   return segments.some(segment => segment === "" || segment === "." || segment === "..") ? null : segments;
 };
 const inside = (file, directory) => file.startsWith(`${directory}/`) && file.length > directory.length + 1;
-const TRIAGE_FILES = new Set(["scripts/triage.ts", "lib/reporting/triage-contract.ts", "tests/reporting-contract.test.ts"]);
+const TRIAGE_FILES = new Set(["scripts/triage.ts", "tests/reporting-contract.test.ts"]);
+// Imported by workers/reporting/src/triage.ts, so the deployed Worker runs it: same level as the Worker.
+const WORKER_SHARED = new Set(["lib/reporting/triage-contract.ts"]);
 const TRIAGE_TESTS = /^tests\/triage(?:-[a-z-]+)?\.(?:test\.ts|test\.mjs|browser\.mjs|ts)$/;
 // The reporting widget's library, imported by app/layout.tsx through the widget
 // component. draft.ts and reporting-widget.tsx are named above, not here.
@@ -161,7 +163,7 @@ function area(file) {
   if (!cleanSegments(file)) return null;
   if (["apps/triage", "scripts/triage", "docs/reporting"].some(directory => inside(file, directory))
     || TRIAGE_FILES.has(file) || TRIAGE_TESTS.test(file)) return { level: "quick" };
-  if (inside(file, "workers/reporting") || inside(file, "workers/registry-host")) return { level: "pack" };
+  if (inside(file, "workers/reporting") || inside(file, "workers/registry-host") || WORKER_SHARED.has(file)) return { level: "pack" };
   if (file === "components/reporting/reporting-widget.tsx") return null;
   if (WIDGET_LIB.has(file) || inside(file, "components/reporting")) return { level: "pack", suite: "reporting-consent" };
   return null;
@@ -316,6 +318,9 @@ const CI_CONTRACT = new Set([
   "tests/fixtures/ci-affected-pr-paths.txt",
   // The mobile gate runner: the smoke set's button and tabs both have mobile
   // cases, so a smoke run exercises an edit to it on real pages.
+  // Gate machinery, same reasoning as R17: the smoke gate proves the harness boots.
+  "scripts/check-docs.mjs",
+  "scripts/lib/docs-summary.mjs",
   "scripts/check-mobile-webkit.mjs",
   "scripts/lib/mobile-gate-select.mjs",
   "tests/mobile-gate-select.test.mjs",
@@ -516,7 +521,8 @@ export function releaseDepth(paths, diff, context) {
     if (FULL_ALWAYS.has(file)) return { depth: "full", suites: [], reason: oneLine(`${file} always runs complete release verification`) };
     // Before the component and area rules, so a contract file that is also listed
     // elsewhere still gets the smoke gate.
-    if (CI_CONTRACT.has(file)) { contract = true; depth = "affected"; suites.add("reporting-consent"); continue; }
+    // A contract file that also owns a bounded browser harness keeps that harness: the smoke catalogue does not replace it.
+    if (CI_CONTRACT.has(file)) { contract = true; depth = "affected"; suites.add("reporting-consent"); if (FOCUSED_BROWSER.has(file)) suites.add(FOCUSED_BROWSER.get(file)); continue; }
     // A component file narrows the gate only when the caller can prove which ids it touches.
     if (isComponentPath(file) && context?.gateIds) { components.push(file); depth = "affected"; continue; }
     const owned = area(file);
@@ -533,11 +539,14 @@ export function releaseDepth(paths, diff, context) {
     if (!selected?.ids?.length) return { depth: "full", suites: [], reason: oneLine(`component change runs every id: ${selected?.full ?? "no ids selected"}`) };
     gateIds = selected.ids;
     gateOrder = selected.order;
+  } else if (contract && context?.gateIds) {
+    // No component path: an empty list asks the resolver only for the registry order.
+    gateOrder = context.gateIds([])?.order;
   }
   if (contract) {
-    // The union is emitted in registry order when the resolver supplies it.
+    // Registry order, from the same resolver answer the component path uses.
     const wanted = new Set([...(gateIds ?? []), ...CI_SMOKE_IDS]);
-    gateIds = gateOrder ? gateOrder.filter(id => wanted.has(id)) : [...wanted];
+    gateIds = gateOrder ? gateOrder.filter(id => wanted.has(id)) : [...CI_SMOKE_IDS];
   }
   const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;
   if (depth === "docs") return { depth, suites: [], reason: `${count}, all documentation` };

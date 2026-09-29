@@ -15,7 +15,7 @@ const tree = 'bee043a6eaea1a81d7cc7a4fa52924e44d54722b';
 const repo = 'luv-jeri/cojeev-ui';
 const env = { EVENT: 'push', TREE: tree, REQUIRED_DEPTH: 'full', REPOSITORY: repo, STRICT_SINCE: '2026-09-01T00:00:00Z', NOW: '2026-09-29T10:40:00Z' };
 const art = { id: 7, name: `verified-tree-${tree}`, expired: false, expires_at: '2026-10-13T10:37:03Z', workflow_run: { id: 99 } };
-const run = { id: 99, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo } };
+const run = { id: 99, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo }, pull_requests: [{ base: { ref: 'main' } }] };
 const api = (o = {}) => async (p) => {
   if (p.includes('/actions/artifacts')) return o.artifacts ?? { artifacts: [art] };
   if (p.endsWith('/actions/runs/99')) return 'run' in o ? o.run : run;
@@ -54,6 +54,26 @@ test('deferred_run_writes_no_marker', () => {
   assert.ok(steps.indexOf(m) > steps.findIndex((s) => s.name === 'Preserve sanitized browser gate evidence'), 'marker is the last gate step');
   const writer = steps[steps.indexOf(m) - 1];
   assert.equal(writer.if, m.if, 'file writer and upload share one condition');
+});
+test('marker_only_for_main_base', () => {
+  const m = steps.find((s) => s.uses?.startsWith('actions/upload-artifact') && String(s.with?.name).startsWith('verified-tree-'));
+  const writer = steps[steps.indexOf(m) - 1];
+  assert.match(writer.run, /marker\.json/);
+  for (const s of [writer, m]) assert.match(s.if, /github\.base_ref == 'main'/);
+});
+test('transient_harness_runs_under_a_targeted_catalogue', () => {
+  const h = steps.find((s) => String(s.run).includes('docs-transient-timing.browser.mjs'));
+  assert.ok(h);
+  assert.ok(h.if.includes("(steps.depth.outputs.run_catalogue != 'true' || steps.depth.outputs.gate_ids != '')"), h.if);
+  assert.match(h.if, /steps\.depth\.outputs\.run_transient == 'true'/);
+});
+test('depth_summary_reports_gate_ids_and_reuse_through_env', () => {
+  const r = steps.find((s) => s.name === 'Report the selected release depth');
+  assert.match(r.run, /Gate ids \| \$\{GATE_IDS:-all\}/);
+  assert.match(r.run, /Reused verified tree \| \$\{REUSED:-no\}/);
+  assert.equal(r.env.GATE_IDS, '${{ steps.depth.outputs.gate_ids }}');
+  assert.equal(r.env.REUSED, '${{ steps.reuse.outputs.reuse }}');
+  assert.ok(!r.run.includes('${{'));
 });
 test('reuse_never_on_dispatch_or_pr', () => {
   const l = step('reuse');

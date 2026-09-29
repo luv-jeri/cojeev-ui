@@ -35,6 +35,8 @@ export function decideReuse({ event, headTree, requiredDepth, repository, artifa
   if (run.path !== '.github/workflows/verify.yml') return no('not the verify workflow');
   if (run.event !== 'pull_request') return no('run is not a pull_request run');
   if (run.conclusion !== 'success') return no(`run conclusion ${run.conclusion}`);
+  // A marker from a pull request into another branch could carry unreviewed code to main.
+  if (run.pull_requests?.[0]?.base?.ref !== 'main') return no('run is not a pull request into main');
   if (run.head_repository?.full_name !== repository || run.repository?.full_name !== repository) return no('fork or foreign run');
   const createdMs = Date.parse(run.created_at);
   if (Number.isNaN(createdMs) || createdMs < strictMs) return no('run predates strict protection');

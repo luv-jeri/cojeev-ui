@@ -399,11 +399,11 @@ jobs:
       - run: npm run check:examples
         if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_checks == 'true'
       # The bounded harness the transient-paint and clock-isolation paths own,
-      # with its negative controls. Selected only when the catalogue is not
-      # running, which already renders these cases: a change to those files gets
-      # reduced browser evidence, never no browser evidence.
+      # with its negative controls. Selected when the catalogue is not running or
+      # runs only chosen ids (gate_ids set): only the full catalogue renders these
+      # cases, so a change to those files gets reduced browser evidence, never none.
       - name: Exercise the transient paint and clock isolation harnesses
-        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_transient == 'true' && steps.depth.outputs.run_catalogue != 'true'
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_transient == 'true' && (steps.depth.outputs.run_catalogue != 'true' || steps.depth.outputs.gate_ids != '')
         run: |
           node tests/docs-transient-timing.browser.mjs
           node tests/docs-transient-timing.browser.mjs --negative
@@ -513,10 +513,11 @@ jobs:
           retention-days: 14
           include-hidden-files: false
       # Verification marker for main-push reuse. Written only after every step above
-      # succeeded on a pull request from this repository, and never when the owner test
+      # succeeded on a pull request from this repository into main (a marker from a PR into
+      # another branch could launder unreviewed code), and never when the owner test
       # deferral applied (tests did not run, so nothing was verified).
       - name: Write the verified-tree marker
-        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.launch_policy.outputs.deferred != 'true'
+        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.base_ref == 'main' && steps.launch_policy.outputs.deferred != 'true'
         shell: bash
         run: |
           tree=$(git rev-parse 'HEAD^{tree}')
@@ -528,7 +529,7 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       - name: Upload the verified-tree marker
-        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.launch_policy.outputs.deferred != 'true'
+        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.base_ref == 'main' && steps.launch_policy.outputs.deferred != 'true'
         continue-on-error: true
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -550,6 +551,8 @@ jobs:
             echo "| Suites, build and artifact | $RELEASE |"
             echo "| Component catalogue | $CATALOGUE |"
             echo "| Bounded transient/clock harness | $TRANSIENT |"
+            echo "| Gate ids | ${GATE_IDS:-all} |"
+            echo "| Reused verified tree | ${REUSED:-no} |"
             echo
             if [[ "$DEPTH" != full ]]; then
               echo "A reduced depth is **not** a pass for what it omitted: every gate not listed"
@@ -565,6 +568,8 @@ jobs:
           RELEASE: ${{ steps.depth.outputs.run_release }}
           CATALOGUE: ${{ steps.depth.outputs.run_catalogue }}
           TRANSIENT: ${{ steps.depth.outputs.run_transient }}
+          GATE_IDS: ${{ steps.depth.outputs.gate_ids }}
+          REUSED: ${{ steps.reuse.outputs.reuse }}
 
   beta:
     # A documentation-only main push packages no release artifact and deploys

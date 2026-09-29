@@ -852,10 +852,10 @@ test('a relocation is refused when no reviewed substitution touched the removed 
     '-fs.writeFileSync("GATE.md", text);',
     '+fs.writeFileSync("docs/gates/GATE.md", text);',
     '+++failures;',
-  ], 'scripts/run-production-gate.mjs');
+  ], 'scripts/gate-motion-report.mjs');
   assert.equal(relocationOnly(preIncrement), false);
-  // run-production-gate.mjs is a CI-contract file (R12): affected with the smoke gate, never the relocation rule.
-  assert.equal(releaseDepth(['scripts/run-production-gate.mjs'], preIncrement).depth, 'affected');
+  // gate-motion-report.mjs is relocation-sensitive and not CI contract, so a diff that is not a pure relocation is full.
+  assert.equal(releaseDepth(['scripts/gate-motion-report.mjs'], preIncrement).depth, 'full');
   // The real cleanup's own shapes still pass: an indented insertion, an import
   // with no semicolon, and a substitution inside a long JSX line.
   assert.ok(relocationOnly(hunk([
@@ -872,9 +872,7 @@ test('a relocation is refused when no reviewed substitution touched the removed 
 
 test('paths that own a bounded browser harness select it instead of the catalogue, never nothing', () => {
   const decision = releaseDepth([
-    'scripts/check-docs.mjs',
     'tests/docs-transient-timing.browser.mjs',
-    'scripts/lib/docs-summary.mjs',
     'tests/docs-summary.test.mjs',
   ]);
   assert.equal(decision.depth, 'affected');
@@ -884,6 +882,10 @@ test('paths that own a bounded browser harness select it instead of the catalogu
   assert.equal(outputs.run_transient, 'true', 'browser evidence is reduced, never removed');
   assert.equal(outputs.run_checks, 'true');
   assert.equal(outputs.run_release, 'true');
+  // check-docs.mjs and docs-summary.mjs are CI contract (M1): the smoke catalogue runs and the harness still runs with it.
+  const contract = releaseOutputs(releaseDepth(['scripts/check-docs.mjs', 'scripts/lib/docs-summary.mjs']));
+  assert.equal(contract.run_catalogue, 'true');
+  assert.equal(contract.run_transient, 'true');
 });
 
 test('the analytics consent surface selects its own browser journey instead of the catalogue', () => {
@@ -1144,7 +1146,7 @@ const flags = (decision) => releaseOutputs(decision);
 
 test('triage_only_runs_quick', () => {
   const paths = ['apps/triage/api.ts', 'scripts/triage/run.ts', 'scripts/triage.ts', 'tests/triage.test.ts',
-    'tests/triage-proxy.test.ts', 'lib/reporting/triage-contract.ts', 'docs/reporting/notes.png'];
+    'tests/triage-proxy.test.ts', 'docs/reporting/notes.png'];
   const checkpoint = classify(paths);
   assert.deepEqual(checkpoint.suites, ['quick']);
   const scope = outputsFor(checkpoint);
@@ -1202,10 +1204,12 @@ test('widget_lib_change_runs_reporting_consent', () => {
   for (const file of ['lib/reporting/draft.ts', 'components/reporting/reporting-widget.tsx']) assert.equal(releaseDepth([file]).depth, 'full', file);
 });
 
-test('triage_contract_is_not_widget_lib', () => {
+// The deployed reporting Worker imports validateVerdictRequest from this file, so an edit ships it (ruling R18 amended).
+test('triage_contract_edit_ships_the_worker', () => {
   const out = flags(releaseDepth(['lib/reporting/triage-contract.ts']));
+  assert.equal(out.run_release, 'true');
+  assert.equal(out.run_catalogue, 'false');
   assert.equal(out.run_reporting, 'false');
-  assert.equal(out.depth, 'quick');
   assert.ok(!outputsFor(classify(['lib/reporting/triage-contract.ts'])).suites.includes('reporting-consent'));
 });
 
@@ -1306,7 +1310,7 @@ test('area_table_covers_every_workflow_flag', () => {
   for (const flag of read) assert.ok(produced.includes(flag), `${flag} is read by verify.yml but never produced by ci-scope`);
   // A flag with no fixture that turns it on is a rule nothing can reach.
   const fixtures = [['docs/note.md'], ['scripts/triage.ts'], ['workers/reporting/src/x.ts'], ['components/reporting/reporting-widget.tsx'],
-    ['scripts/check-docs.mjs'], ['tests/analytics.browser.mjs'], ['lib/seo/structured-data.ts'], ['components/ui/button.tsx']];
+    ['tests/docs-transient-timing.browser.mjs'], ['tests/analytics.browser.mjs'], ['lib/seo/structured-data.ts'], ['components/ui/button.tsx']];
   for (const flag of produced.filter(name => name.startsWith('run_'))) {
     assert.ok(fixtures.some(paths => releaseOutputs(releaseDepth(paths))[flag] === 'true'), `${flag} has no fixture that turns it on`);
   }
