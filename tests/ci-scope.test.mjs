@@ -1350,3 +1350,13 @@ test('quick_depth_keeps_checks_and_skips_the_release_pack', () => {
   for (const needle of ['release.mjs build-pair', 'release-csp.mjs', 'release-install.mjs']) assert.ok(readsFlag(stepRunning(needle), 'run_release'), needle);
   assert.equal(out.run_release, 'false');
 });
+
+// A CI contract edit must never lose gate ids on the way to the workflow: with no
+// registry order every wanted id is kept, and an order missing one of them runs full.
+test('contract_gate_ids_never_drop_silently', () => {
+  const noOrder = releaseDepth(['.github/workflows/verify.yml', 'registry/cojeev/ui/card.tsx'], '', { gateIds: paths => (paths.length ? { ids: ['card', 'avatar'] } : {}) });
+  assert.equal(noOrder.depth, 'affected');
+  assert.deepEqual([...noOrder.gateIds].sort(), ['avatar', 'button', 'card', 'tabs']);
+  const missing = releaseDepth(['.github/workflows/verify.yml'], '', { gateIds: () => ({ ids: [], order: ['card', 'avatar'] }) });
+  assert.equal(missing.depth, 'full');
+});
