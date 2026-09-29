@@ -23,6 +23,9 @@ export async function receipt(env: Env, row: ReportRow, token: string): Promise<
     // The legacy enum collapses held into pending. Carry the job's own state so the receipt can say which it is; a missing job claims nothing.
     issueDelivery:github?.state,attachments:files.results};
 }
+export async function topicIssue(env: Env, topicId: string) {
+  return env.DB.prepare("SELECT issue_number,issue_node_id,issue_url FROM reports WHERE topic_id=? AND triage_state='approved' AND issue_number IS NOT NULL ORDER BY created_at LIMIT 1").bind(topicId).first<{issue_number:number;issue_node_id:string;issue_url:string}>();
+}
 export async function accept(request: Request, env: Env): Promise<{receipt:Receipt;fresh:boolean}> {
   const raw=await readJSON(request) as {report?:unknown;token?:unknown;turnstileToken?:unknown};
   if(!raw || typeof raw!=="object" || typeof raw.token!=="string" || !/^[a-f0-9]{64}$/.test(raw.token)) throw new HttpError(422,"A valid private receipt token is required.");
@@ -47,16 +50,20 @@ export async function accept(request: Request, env: Env): Promise<{receipt:Recei
       if(!topic) throw new HttpError(422,"That request no longer exists. Start a new request.");topicId=topic.id;
     } else topicKey=report.title.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim();
   }
+  // Joining a topic that already has an issue needs no verdict: it shares that issue.
+  const joinTopic=topicId ?? (topicKey!==null?(await env.DB.prepare("SELECT id FROM topics WHERE title_key=?").bind(topicKey).first<{id:string}>())?.id??null:null);
+  const issue=joinTopic?await topicIssue(env,joinTopic):null;
   const statements=[];
   if(topicKey!==null) statements.push(env.DB.prepare("INSERT OR IGNORE INTO topics(id,title,title_key,created_at,updated_at) VALUES(?,?,?,?,?)").bind(report.id,report.title,topicKey,timestamp,timestamp));
-  statements.push(env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,topic_id,status,component_url,created_at,updated_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,COALESCE(?,(SELECT id FROM topics WHERE title_key=?)),COALESCE((SELECT status FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),'received'),(SELECT component_url FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),?,?)`)
-    .bind(report.id,tokenHash,payloadHash,report.kind,report.title,report.description,report.email,contactHash,JSON.stringify(report.references),report.diagnostics?JSON.stringify(report.diagnostics):null,JSON.stringify(report.pins),topicId,topicKey,topicId,topicKey,topicId,topicKey,timestamp,timestamp));
+  statements.push(env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,topic_id,status,component_url,triage_state,triage_by,triaged_at,issue_number,issue_node_id,issue_url,created_at,updated_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,COALESCE(?,(SELECT id FROM topics WHERE title_key=?)),COALESCE((SELECT status FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),'received'),(SELECT component_url FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),?,?,?,?,?,?,?,?)`)
+    .bind(report.id,tokenHash,payloadHash,report.kind,report.title,report.description,report.email,contactHash,JSON.stringify(report.references),report.diagnostics?JSON.stringify(report.diagnostics):null,JSON.stringify(report.pins),topicId,topicKey,topicId,topicKey,topicId,topicKey,issue?'approved':'pending',issue?'join':null,issue?timestamp:null,issue?.issue_number??null,issue?.issue_node_id??null,issue?.issue_url??null,timestamp,timestamp));
   for(const file of report.attachments) statements.push(env.DB.prepare("INSERT INTO attachments(id,report_id,name,type,size,sha256,object_key) VALUES(?,?,?,?,?,?,?)").bind(file.id,report.id,file.name,file.type,file.size,file.sha256,`${report.id}/${file.id}`));
   // The maintainer alert is queued with the report it belongs to, so configuring an
   // owner address later can never manufacture alerts for the existing backlog.
-  const kinds=["github","email_received",...(ownerNotificationEmail(env)?["email_owner_received"]:[])];
-  for(const kind of kinds) statements.push(env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,?,?,?)").bind(`${report.id}:${kind}`,report.id,kind,timestamp,timestamp));
+  // No GitHub job: a triage verdict decides whether an issue exists.
+  const kinds=["email_received",...(ownerNotificationEmail(env)?["email_owner_received"]:[]),...(issue?["email_accepted"]:[])];
+  for(const kind of kinds) statements.push(env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,?,?,?,?)").bind(`${report.id}:${kind}`,report.id,kind,timestamp,timestamp,kind==="email_accepted"?timestamp:null));
   try { await env.DB.batch(statements); }
   catch(error) {
     // A simultaneous retry may have won the unique ID race. Never manufacture a second record.

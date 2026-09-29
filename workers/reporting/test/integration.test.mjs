@@ -12,6 +12,7 @@ const githubActor={id:101,login:'reporting-maintainer'};
 const hash = value => createHash('sha256').update(value).digest('hex');
 const payload = (more={}) => ({id:randomUUID(),kind:'bug',title:'Dark mode button',description:'Switch to dark mode, then the menu disappears.',email:'person@example.com',references:[],pins:[],attachments:[],diagnostics:null,...more});
 const request = (path, method='GET', body, auth, headers={}) => mf.dispatchFetch(`http://localhost${path}`,{method,headers:{Origin:origin,...(body!==undefined?{'Content-Type':'application/json'}:{}),...(auth?{Authorization:`Bearer ${auth}`} : {}),...headers},...(body!==undefined?{body:typeof body==='string'?body:JSON.stringify(body)}:{})});
+const queueGitHub = id => db.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github',?,?)").bind(`${id}:github`,id,Date.now(),Date.now()).run();
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
@@ -191,7 +192,7 @@ test('GitHub reconciliation binds markers to the report actor and creation windo
   assert.equal(reconciled.number,21);
 });
 test('ambiguous GitHub POST is reconciled before another issue can be created',async()=>{
-  const p=payload();await submit(p);
+  const p=payload();await submit(p);await queueGitHub(p.id);
   const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
   const job=await db.prepare("SELECT * FROM outbox WHERE report_id=? AND kind='github'").bind(p.id).first();
   const env=backendEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
@@ -234,7 +235,7 @@ test('expired processing leases require explicit review instead of resending',as
   assert.equal(sends,0);
 });
 test('disabled email backlog cannot starve a configured GitHub delivery',async()=>{
-  const p=payload();await submit(p);
+  const p=payload();await submit(p);await queueGitHub(p.id);
   await db.prepare('UPDATE reports SET issue_number=77,issue_node_id=?,issue_url=? WHERE id=?').bind('I_existing','https://github.com/owner/library/issues/77',p.id).run();
   await db.batch(Array.from({length:25},(_,index)=>db.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'email_received',0,0)").bind(`${p.id}:old-email-${index}`,p.id)));
   // The persisted GitHub receipt needs no external call when its outbox completion is recovered.
@@ -297,7 +298,7 @@ test('provider activation alone cannot drain historical jobs',async()=>{
   assert.equal((await db.prepare("SELECT state FROM outbox WHERE id=?").bind(`${p.id}:email_received`).first()).state,'held');
 });
 test('the receipt separates a held GitHub job from a queued one and from an unconfigured tracker',async()=>{
-  const p=payload();await submit(p);
+  const p=payload();await submit(p);await queueGitHub(p.id);
   const configured=backendEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
   const read=async env=>await backend.receipt(env,await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first(),token);
   let issued=await read(configured);
@@ -438,6 +439,7 @@ test('migration holds legacy pending/processing jobs without erasing receipts or
     const topic=await db.prepare('SELECT id,title,title_key,status,component_url,created_at,updated_at FROM topics WHERE id=?').bind(p.id).first();
     await old.prepare('INSERT INTO topics VALUES(?,?,?,?,?,?,?)').bind(...Object.values(topic)).run();
     const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at']) delete row[key];
     await old.prepare(`INSERT INTO reports VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
     for(const [kind,state] of [['github','pending'],['email_received','processing'],['email_resolved','done']]) await old.prepare('INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,?,?,0,0)').bind(`${p.id}:${kind}`,p.id,kind,state).run();
     await old.exec((await readFile('workers/reporting/migrations/0002_safe_delivery.sql','utf8')).replace(/\n/g,' '));
@@ -445,6 +447,49 @@ test('migration holds legacy pending/processing jobs without erasing receipts or
     assert.equal((await old.prepare('SELECT public_title FROM topics').first()).public_title,null);
     assert.equal((await old.prepare('SELECT token_hash FROM reports').first()).token_hash,hash(token));
   } finally {await legacy.dispose();}
+});
+
+const legacyDb=async()=>{
+  const legacy=new Miniflare(convertV4MiniflareOptions({modules:true,script:'export default {fetch(){return new Response("ok")}}',compatibilityDate:'2026-09-01',d1Databases:['DB']}));
+  const old=await legacy.getD1Database('DB');
+  for(const name of ['0001_reporting.sql','0002_safe_delivery.sql']) await old.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
+  return {legacy,old};
+};
+test('migration 0003 adds triage columns with pending default and cancels historical held jobs',async()=>{
+  const {legacy,old}=await legacyDb();
+  try {
+    const p=payload();await submit(p);
+    const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at']) delete row[key];
+    await old.prepare(`INSERT INTO reports VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
+    for(const [kind,state] of [['github','held'],['email_received','held'],['email_owner_received','pending'],['email_resolved','done']]) await old.prepare('INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,?,?,0,0)').bind(`${p.id}:${kind}`,p.id,kind,state).run();
+    await old.exec((await readFile('workers/reporting/migrations/0003_triage.sql','utf8')).replace(/\n/g,' '));
+    const report=await old.prepare('SELECT triage_state,triage_by,triaged_at FROM reports').first();
+    assert.deepEqual(report,{triage_state:'pending',triage_by:null,triaged_at:null});
+    const jobs=Object.fromEntries((await old.prepare('SELECT kind,state,last_error FROM outbox').all()).results.map(j=>[j.kind,j]));
+    for(const kind of ['github','email_received','email_owner_received']) assert.deepEqual([jobs[kind].state,jobs[kind].last_error],['cancelled','Superseded by triage V1.']);
+    assert.equal(jobs.email_resolved.state,'done');
+  } finally {await legacy.dispose();}
+});
+test('a new report queues only the received email and owner alert, never a GitHub job',async()=>{
+  const p=payload();
+  await backend.accept(new Request('http://localhost/v1/reports',{method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':p.id},body:JSON.stringify({report:p,token,turnstileToken:''})}),ownerEnv());
+  const kinds=(await db.prepare('SELECT kind FROM outbox WHERE report_id=? ORDER BY kind').bind(p.id).all()).results.map(j=>j.kind);
+  assert.deepEqual(kinds,['email_owner_received','email_received']);
+  assert.equal((await db.prepare('SELECT triage_state FROM reports WHERE id=?').bind(p.id).first()).triage_state,'pending');
+});
+test('joining a request whose topic already has an issue is approved by join and queues one accepted email',async()=>{
+  const a=payload({kind:'request',title:'Kanban lanes'});await submit(a);
+  await db.prepare("UPDATE reports SET triage_state='approved',triage_by='ai',issue_number=55,issue_node_id='I_55',issue_url='https://github.com/owner/library/issues/55' WHERE id=?").bind(a.id).run();
+  const b=payload({kind:'request',title:'Kanban lanes',topicId:a.id,email:'b@example.com'});assert.equal((await submit(b)).status,201);
+  const row=await db.prepare('SELECT triage_state,triage_by,triaged_at,issue_number,issue_node_id,issue_url FROM reports WHERE id=?').bind(b.id).first();
+  assert.equal(row.triage_state,'approved');assert.equal(row.triage_by,'join');assert.ok(row.triaged_at>0);
+  assert.deepEqual([row.issue_number,row.issue_node_id,row.issue_url],[55,'I_55','https://github.com/owner/library/issues/55']);
+  const jobs=(await db.prepare('SELECT id,kind,reviewed_at FROM outbox WHERE report_id=? ORDER BY kind').bind(b.id).all()).results;
+  assert.deepEqual(jobs.map(j=>j.kind),['email_accepted','email_received']);
+  assert.equal(jobs[0].id,`${b.id}:email_accepted`);assert.ok(jobs[0].reviewed_at>0);
+  const c=payload({kind:'request',title:'Kanban lanes',topicId:a.id});await submit(c);
+  assert.equal((await db.prepare("SELECT COUNT(*) AS n FROM outbox WHERE report_id=? AND kind='github'").bind(c.id).first()).n,0);
 });
 
 const ownerEnv=more=>resendEnv({REPORT_NOTIFICATION_EMAIL:'owner@example.com',...more});
@@ -479,7 +524,7 @@ test('the owner alert reaches only the configured owner and carries no private r
 test('a failing owner alert never discards the reporter or GitHub job',async()=>{
   const env=ownerEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
   const p=payload({email:'reporter-two@example.com'});
-  await acceptLocal(env,p);
+  await acceptLocal(env,p);await queueGitHub(p.id);
   await db.prepare('UPDATE reports SET issue_number=55,issue_node_id=?,issue_url=? WHERE id=?').bind('I_owner','https://github.com/owner/library/issues/55',p.id).run();
   await backend.drain(env,p.id,async(url,init)=>url==='https://api.resend.com/emails'&&JSON.parse(init.body).to[0]==='owner@example.com'
     ?Response.json({name:'internal_server_error'},{status:500}):Response.json({id:'reporter-accepted'}));
