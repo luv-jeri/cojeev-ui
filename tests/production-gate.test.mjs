@@ -148,7 +148,7 @@ test('gate_ids_unset_selects_all', t => {
 });
 
 test('gate_ids_subset_passes_ids_to_check_docs', t => {
-  const run = runGate(t, { shards: 3, gateIds: 'bravo,alpha' });
+  const run = runGate(t, { shards: 2, gateIds: 'bravo,alpha' });
   assert.equal(run.status, 0, run.stderr);
   const seen = fs.readdirSync(path.join(run.cwd, 'invocations')).flatMap(f => run.json(`invocations/${f}`).ids);
   assert.deepEqual(seen.sort(), ['alpha', 'bravo']);
