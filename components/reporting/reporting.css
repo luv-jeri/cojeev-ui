@@ -697,6 +697,9 @@ html[data-flow="off"]
   width: 14px;
   height: 14px;
 }
+.report-form {
+  position: relative;
+}
 .report-drop-overlay {
   position: absolute;
   inset: 0;

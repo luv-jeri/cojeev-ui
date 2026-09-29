@@ -166,7 +166,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         activeKind: draftRef.current.kind,
         drafts: draftsRef.current,
       });
-      setStorage("Draft saved on this device.");
+      setStorage("Draft saved");
     } catch {
       setStorage(
         "Draft storage is unavailable. Keep this page open; reloading may lose your report and files.",
@@ -595,12 +595,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               )}
             </div>
           )}
-          {config && !config.emailEnabled && (
-            <p className="report-help">
-              Email updates are not connected yet. Your email stays private;
-              keep your receipt to check progress here.
-            </p>
-          )}
           {error && (
             <div role="alert" className="report-error">
               {error}
@@ -616,11 +610,35 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               }}
             />
           ) : step === "edit" ? (
-            <form onSubmit={prepare} className="report-form">
+            <form
+              onSubmit={prepare}
+              className="report-form"
+              onDragOver={(event) => {
+                if (event.dataTransfer.types.includes("Files")) {
+                  event.preventDefault();
+                  setDragging(true);
+                }
+              }}
+              onDragLeave={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node))
+                  setDragging(false);
+              }}
+              onDrop={(event) => {
+                event.preventDefault();
+                setDragging(false);
+                if (!busy) void addFiles(Array.from(event.dataTransfer.files));
+              }}
+              data-dragging={dragging || undefined}
+            >
+              {dragging && (
+                <div className="report-drop-overlay" aria-hidden="true">
+                  Drop files to attach
+                </div>
+              )}
               <label className="report-field">
                 {draft.kind === "request"
-                  ? "Component title"
-                  : "What went wrong?"}
+                  ? "What component do you want?"
+                  : "Short summary"}
                 <Input
                   name="title"
                   required
@@ -638,17 +656,14 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               </label>
               {draft.topicId ? (
                 <div className="report-notice">
-                  <p>
-                    You’re joining an existing request. Your email counts once
-                    toward its demand.
-                  </p>
-                  <Button
-                    size="sm"
-                    variant="outline"
+                  <p>Joining this request. Your email counts once.</p>
+                  <button
+                    type="button"
+                    className="report-link-button"
                     onClick={() => update({ topicId: undefined })}
                   >
-                    Make a different request
-                  </Button>
+                    Ask for something else
+                  </button>
                 </div>
               ) : (
                 <>
@@ -704,16 +719,16 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 </>
               )}
               <label className="report-field">
-                <span id={descriptionLabel}>
-                  {draft.kind === "request"
-                    ? "Details, inspiration & links"
-                    : "What happened, and what did you expect?"}
-                </span>
-                {draft.topicId && (
-                  <span className="report-help">
-                    Optional additional context
+                <span className="report-label-row">
+                  <span id={descriptionLabel}>
+                    {draft.kind === "request"
+                      ? "How would you use it?"
+                      : "What happened?"}
                   </span>
-                )}
+                  {draft.topicId && (
+                    <span className="report-optional">Optional</span>
+                  )}
+                </span>
                 <TextareaScrollArea>
                   <Textarea
                     name="description"
@@ -727,35 +742,14 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                     }
                     placeholder={
                       draft.kind === "request"
-                        ? "Describe how you’d use it. Add reference links or tell us why it would help."
-                        : "Include the steps that led here and what you expected to happen. You can paste links here too."
+                        ? "Who needs it and why. Links welcome."
+                        : "What you did, what you expected, what you saw."
                     }
                   />
                 </TextareaScrollArea>
               </label>
               <TooltipProvider>
-                <div
-                  className="report-toolbar"
-                  onDragOver={(event) => {
-                    if (event.dataTransfer.types.includes("Files")) {
-                      event.preventDefault();
-                      setDragging(true);
-                    }
-                  }}
-                  onDragLeave={(event) => {
-                    if (
-                      !event.currentTarget.contains(event.relatedTarget as Node)
-                    )
-                      setDragging(false);
-                  }}
-                  onDrop={(event) => {
-                    event.preventDefault();
-                    setDragging(false);
-                    if (!busy)
-                      void addFiles(Array.from(event.dataTransfer.files));
-                  }}
-                  data-dragging={dragging || undefined}
-                >
+                <div className="report-toolbar">
                   <input
                     ref={fileInput}
                     className="sr-only"
@@ -937,8 +931,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 />
               </label>
               <p id="email-help" className="report-help">
-                For a receipt and progress updates. Never shown on the public
-                board.
+                {config?.emailEnabled === false
+                  ? "Private. Email updates are off; save your receipt."
+                  : "Private. Used only for updates."}
               </p>
               <div className="report-form-footer">
                 <p className="report-help" role="status">

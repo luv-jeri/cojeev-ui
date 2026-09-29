@@ -22,8 +22,8 @@ const fill = async (page, kind, title) => {
   const kindTab = panel(page).getByRole("tab", { name: kind === "bug" ? "Report a bug" : "Request a feature", exact: true });
   await kindTab.click();
   assert.equal(await kindTab.getAttribute("aria-selected"), "true");
-  await page.getByRole("textbox", { name: kind === "bug" ? "What went wrong?" : "Component title", exact: true }).fill(title);
-  await page.getByRole("textbox", { name: kind === "bug" ? "What happened, and what did you expect?" : "Details, inspiration & links", exact: true }).fill("Local browser verification. Reference: https://example.com/reference");
+  await page.getByRole("textbox", { name: kind === "bug" ? "Short summary" : "What component do you want?", exact: true }).fill(title);
+  await page.getByRole("textbox", { name: kind === "bug" ? "What happened?" : "How would you use it?", exact: true }).fill("Local browser verification. Reference: https://example.com/reference");
   await page.getByRole("textbox", { name: "Your email", exact: true }).fill(`browser-${run}@example.com`);
 };
 const accepted = async page => page.getByRole("heading", { name: /Your (request|report) is received/ }).waitFor();
@@ -36,6 +36,7 @@ const localOnly = context => context.route(/^https?:\/\//, route => {
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
   await localOnly(context);
+  await context.route(`${api}/v1/config`, async route => { const response = await route.fetch(); await route.fulfill({ response, json: { ...(await response.json()), emailEnabled: true } }); });
   const page = await context.newPage(); activePage = page; page.on("pageerror", error => pageErrors.push(error.message)); page.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(page);
   for (const [tab, text] of [["Request a feature", "We aim to build requests within 36 hours"], ["Report a bug", "Adds device info, recent errors, failed routes and clicks."]]) {
@@ -51,21 +52,48 @@ try {
     assert.ok(await panel(page).isVisible(), "Escape closes only the popover");
   }
   results.push("The info popover opens by keyboard, holds focus, and Escape closes only it and returns focus to How this works");
+  for (const [tab, fields] of [["Request a feature", [["What component do you want?", "e.g. A date range picker"], ["How would you use it?", "Who needs it and why. Links welcome."], ["Your email", "you@example.com"]]], ["Report a bug", [["Short summary", "e.g. The menu closes before I can choose"], ["What happened?", "What you did, what you expected, what you saw."], ["Your email", "you@example.com"]]]]) {
+    await panel(page).getByRole("tab", { name: tab, exact: true }).click();
+    for (const [label, placeholder] of fields) assert.equal(await panel(page).getByLabel(label, { exact: true }).getAttribute("placeholder"), placeholder, `${tab}: ${label}`);
+  }
+  results.push("Both tabs show the new labels and placeholders");
+  for (const tab of ["Request a feature", "Report a bug"]) {
+    await panel(page).getByRole("tab", { name: tab, exact: true }).click();
+    await panel(page).locator("#email-help").getByText("Private. Used only for updates.", { exact: true }).waitFor();
+    assert.equal((await panel(page).locator("#email-help").innerText()).trim(), "Private. Used only for updates.");
+    assert.ok(!(await panel(page).innerText()).includes("not connected"), "The stale email notice is gone");
+  }
+  results.push("Email hint reads Private. Used only for updates. on both tabs when email is on, and the stale notice is gone");
+  await panel(page).getByRole("tab", { name: "Request a feature", exact: true }).click();
+  await page.evaluate(() => {
+    const transfer = new DataTransfer(); transfer.items.add(new File([Uint8Array.from(atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf3sAAAAASUVORK5CYII="), c => c.charCodeAt(0))], "dropped.png", { type: "image/png" }));
+    window.__dropTransfer = transfer;
+    document.querySelector('.report-sheet input[name="email"]').dispatchEvent(new DragEvent("dragover", { bubbles: true, cancelable: true, dataTransfer: transfer }));
+  });
+  await panel(page).getByText("Drop files to attach", { exact: true }).waitFor({ state: "visible" });
+  await screenshot(page, "drop-overlay-desktop");
+  await page.evaluate(() => document.querySelector('.report-sheet input[name="email"]').dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer: window.__dropTransfer })));
+  await panel(page).getByAltText("Attachment preview: dropped.png").waitFor();
+  await panel(page).getByRole("button", { name: "Remove dropped.png", exact: true }).click();
+  await panel(page).getByAltText("Attachment preview: dropped.png").waitFor({ state: "detached" });
+  results.push("Dropping a file anywhere on the form shows Drop files to attach and attaches it");
   await fill(page, "request", `Browser request ${run}`);
+  await panel(page).getByRole("status").getByText("Draft saved", { exact: true }).waitFor();
+  results.push("Typing saves the draft and the status line says Draft saved");
   await page.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "reference.png", mimeType: "image/png", buffer: imageBytes });
   await page.getByAltText("Attachment preview: reference.png").waitFor();
   await page.getByRole("button", { name: "Close reporting panel" }).click();
   await page.reload({ waitUntil: "domcontentloaded" }); await open(page);
-  assert.equal(await page.getByLabel("Component title", { exact: true }).inputValue(), `Browser request ${run}`);
+  assert.equal(await page.getByLabel("What component do you want?", { exact: true }).inputValue(), `Browser request ${run}`);
   await page.getByAltText("Attachment preview: reference.png").waitFor();
   results.push("Draft fields and File survive closing and reloading via IndexedDB");
-  await page.getByLabel("Component title", { exact: true }).fill("Chart for person@example.com");
+  await page.getByLabel("What component do you want?", { exact: true }).fill("Chart for person@example.com");
   await page.getByRole("button", { name: "Review request", exact: true }).click();
   await page.getByRole("button", { name: "Send request", exact: true }).click();
-  await page.getByLabel("Component title", { exact: true }).waitFor();
-  assert.equal(await page.getByLabel("Component title", { exact: true }).inputValue(), "Chart for person@example.com");
+  await page.getByLabel("What component do you want?", { exact: true }).waitFor();
+  assert.equal(await page.getByLabel("What component do you want?", { exact: true }).inputValue(), "Chart for person@example.com");
   await page.getByAltText("Attachment preview: reference.png").waitFor();
-  await page.getByLabel("Component title", { exact: true }).fill(`Browser request ${run}`);
+  await page.getByLabel("What component do you want?", { exact: true }).fill(`Browser request ${run}`);
   results.push("A real public-title 422 returns to an editable draft with fields and files intact");
   await panel(page).evaluate(node => { node.scrollTop = 0; }); await assertFits(page); await screenshot(page, "request-desktop-light");
   await page.evaluate(() => { document.documentElement.dataset.mode = "dark"; }); await screenshot(page, "request-desktop-dark");
@@ -200,10 +228,17 @@ try {
     const scroll = await pop.evaluate(node => ({ scrollHeight: node.scrollHeight, clientHeight: node.clientHeight, overflowY: getComputedStyle(node).overflowY }));
     console.log("popover scroll probe", JSON.stringify(scroll));
     if (scroll.scrollHeight > scroll.clientHeight) assert.ok(["auto", "scroll"].includes(scroll.overflowY), "A popover taller than its box scrolls");
-    await panel(mobilePage).getByRole("heading", { name: "Report a bug", exact: true }).tap(); await pop.waitFor({ state: "hidden" });
+    await panel(mobilePage).locator("#email-help").tap(); await pop.waitFor({ state: "hidden" });
     assert.ok(await panel(mobilePage).isVisible(), "An outside tap closes only the popover");
   }
   results.push("On a 390px phone the info popover opens by tap, stays inside the viewport near the bottom, and an outside tap closes only it");
+  for (const tab of ["Request a feature", "Report a bug"]) {
+    await panel(mobilePage).getByRole("tab", { name: tab, exact: true }).click();
+    await panel(mobilePage).locator("#email-help").getByText("Private. Email updates are off; save your receipt.", { exact: true }).waitFor();
+    assert.equal((await panel(mobilePage).locator("#email-help").innerText()).trim(), "Private. Email updates are off; save your receipt.");
+    assert.ok(!(await panel(mobilePage).innerText()).includes("not connected"), "The stale email notice is gone");
+  }
+  results.push("With email off, both tabs show Private. Email updates are off; save your receipt. in the hint slot");
   await fill(mobilePage, "request", "A mobile calendar with date ranges"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await assertFits(mobilePage); await screenshot(mobilePage, "request-mobile-light");
   await fill(mobilePage, "bug", "The control is difficult to select on my phone"); await panel(mobilePage).evaluate(node => { node.scrollTop = 0; }); await screenshot(mobilePage, "bug-mobile-light");
   await mobilePage.evaluate(() => { document.documentElement.dataset.mode = "dark"; }); await screenshot(mobilePage, "bug-mobile-dark");

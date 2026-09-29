@@ -142,8 +142,8 @@ try {
   assert.equal(await review(page).count(), 0, "A cancelled capture never reaches review");
   assert.equal(await page.locator(".report-attachments figure").count(), attachmentsBefore, "A cancelled capture attaches nothing");
   assert.equal(await sandboxes(page), 0, "Cancelling releases the capture sandbox");
-  await page.getByLabel("What went wrong?", { exact: true }).fill("The form is still usable after cancelling");
-  assert.equal(await page.getByLabel("What went wrong?", { exact: true }).inputValue(), "The form is still usable after cancelling");
+  await page.getByLabel("Short summary", { exact: true }).fill("The form is still usable after cancelling");
+  assert.equal(await page.getByLabel("Short summary", { exact: true }).inputValue(), "The form is still usable after cancelling");
   await page.unroute(holdImages, { behavior: "ignoreErrors" });
   await page.evaluate(() => { document.getElementById("capture-heavy")?.remove(); document.querySelectorAll(".capture-hold").forEach(node => node.remove()); });
   results.push("Full page reports live status with elapsed seconds; keyboard Cancel discards it, attaches nothing and leaves the form usable");
