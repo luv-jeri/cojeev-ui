@@ -40,7 +40,7 @@ function exampleModules(read) {
 const locate = (base, read) => EXTENSIONS.map(extension => base + extension).find(candidate => read(candidate) !== null) ?? null;
 
 /** Every project file reachable by imports from module `start`, or `{ missing }` naming the import that cannot be resolved. */
-function reachable(start, read) {
+function reachable(start, read, skip = new Set()) {
   const seen = new Set();
   const queue = [[locate(start, read), start]];
   while (queue.length) {
@@ -52,7 +52,10 @@ function reachable(start, read) {
     for (const spec of importsOf(read(file))) {
       if (!spec.startsWith(".") && !spec.startsWith("@/")) continue;
       const base = spec.startsWith("@/") ? spec.slice(2) : path.posix.join(path.posix.dirname(file), spec);
-      queue.push([locate(base, read), `${file} imports ${spec}`]);
+      const target = locate(base, read);
+      // A skipped module is deliberately not walked: it is owned by another scan.
+      if (target !== null && skip.has(target)) continue;
+      queue.push([target, `${file} imports ${spec}`]);
     }
   }
   return { seen };
@@ -60,8 +63,10 @@ function reachable(start, read) {
 
 /**
  * `paths` must all satisfy isComponentPath. Returns `{ ids }` (registry order) or `{ full: reason }`.
+ * `appModules()` lists every .ts/.tsx module under app/. Without it the docs site
+ * chrome cannot be scanned, so the answer is full.
  */
-export function selectGateIds(paths, { registry, read, targetMax = TARGET_MAX }) {
+export function selectGateIds(paths, { registry, read, appModules, targetMax = TARGET_MAX }) {
   const items = registry?.items;
   if (!Array.isArray(items) || !paths.length) return { full: "registry or paths unreadable" };
   const closure = new Set();
@@ -81,6 +86,22 @@ export function selectGateIds(paths, { registry, read, targetMax = TARGET_MAX })
   }
   const found = exampleModules(read);
   if (found.full) return found;
+  // Site chrome: app/ and whatever it imports, minus the example modules walked
+  // per id below. app/docs/[component]/page.tsx imports registry components
+  // directly, so editing one of those changes every docs page, not just its own.
+  // Walking through the examples index would make every component chrome.
+  if (typeof appModules !== "function") return { full: "site chrome modules cannot be listed" };
+  // The index lists extensionless specs, so each module is resolved to its real file.
+  const skip = new Set(["components/examples/index.ts", "components/examples/manifest.ts"]);
+  for (const set of found.modules.values()) for (const file of set) skip.add(locate(file, read) ?? file);
+  const chromeSeen = new Set();
+  for (const start of appModules()) {
+    const reach = reachable(start, read, skip);
+    if (reach.missing) return { full: `cannot resolve ${reach.missing}` };
+    reach.seen.forEach(file => chromeSeen.add(file));
+  }
+  const shared = paths.find(changed => chromeSeen.has(changed));
+  if (shared) return { full: `${shared} is imported by the docs site chrome` };
   const chosen = new Set(closure);
   const cache = new Map();
   for (const [id, files] of found.modules) {
@@ -92,12 +113,20 @@ export function selectGateIds(paths, { registry, read, targetMax = TARGET_MAX })
     }
   }
   const ids = items.filter(item => item.type === "registry:ui" && chosen.has(item.name)).map(item => item.name);
-  return ids.length ? { ids } : { full: "no documentation id is affected by these files" };
+  return ids.length ? { ids, order: items.filter(item => item.type === "registry:ui").map(item => item.name) } : { full: "no documentation id is affected by these files" };
 }
 
 /** selectGateIds against the checkout in `cwd`. */
 export function selectGateIdsFromCheckout(paths, cwd = process.cwd()) {
   const read = file => { try { return fs.readFileSync(path.join(cwd, file), "utf8"); } catch { return null; } };
   const text = read("registry.json");
-  return text === null ? { full: "registry.json is unreadable" } : selectGateIds(paths, { registry: JSON.parse(text), read });
+  if (text === null) return { full: "registry.json is unreadable" };
+  const appModules = () => {
+    const walk = dir => fs.readdirSync(path.join(cwd, dir), { withFileTypes: true }).flatMap(entry => {
+      const file = `${dir}/${entry.name}`;
+      return entry.isDirectory() ? walk(file) : /\.tsx?$/.test(entry.name) ? [file] : [];
+    });
+    return walk("app");
+  };
+  return selectGateIds(paths, { registry: JSON.parse(text), read, appModules });
 }

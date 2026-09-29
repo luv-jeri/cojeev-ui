@@ -285,23 +285,43 @@ export function resolveScope({ event, baseRef, paths, readPaths, readPackage }) 
 // checkpoint allowlist's job — and never reduces a manual dispatch, which stays
 // the explicit way to demand a complete run.
 const DOCUMENTATION_SUFFIX = /\.(?:md|txt|png|jpe?g|svg|webp)$/;
-// The CI contract. A selector bug here would silently under-test every later
-// change, so an edit to any of these is always the complete job, even when the
-// same file also appears in a set below. The pinned deployment runtime is a
-// dependency manifest and is full for the same reason as package-lock.json.
+// Files that must always run the complete job. The pinned deployment runtime is
+// a dependency manifest and is full for the same reason as package-lock.json.
+// The CI contract itself is deliberately NOT here any more (owner, 2026-09-29:
+// CI must run only what a change touches, and time matters). A selector bug is
+// guarded by tests/ci-scope.test.mjs and tests/ci-affected-ids.test.mjs, which
+// run for those edits, and the smoke gate below proves the gate machinery boots.
 const FULL_ALWAYS = new Set([
-  ".github/workflows/verify.yml",
-  "scripts/ci-scope.mjs",
-  "tests/ci-scope.test.mjs",
-  "scripts/run-production-gate.mjs",
   ".github/wrangler-runtime/package.json",
   ".github/wrangler-runtime/package-lock.json",
 ]);
+// The CI contract: workflows, classifier, gate runner, selectors and their tests.
+// An edit runs every non-catalogue check plus the catalogue gate on this small
+// set of ids. Both are motion components, so the motion presets check runs too.
+const CI_CONTRACT = new Set([
+  ".github/workflows/verify.yml",
+  ".github/workflows/rollback.yml",
+  "scripts/ci-scope.mjs",
+  "tests/ci-scope.test.mjs",
+  "scripts/run-production-gate.mjs",
+  "tests/production-gate.test.mjs",
+  "scripts/ci-affected-ids.mjs",
+  "tests/ci-affected-ids.test.mjs",
+  "scripts/ci-reuse.mjs",
+  "scripts/ci-reuse-lookup.mjs",
+  "tests/ci-reuse.test.mjs",
+  "tests/ci-reuse-wiring.test.mjs",
+  "tests/ci-area-independence.test.mjs",
+  "tests/fixtures/pr90-paths.txt",
+  "tests/fixtures/ci-affected-pr-paths.txt",
+]);
+// A fixed list: it never passes through selectGateIds, so a docs-chrome component
+// in it does not make a CI edit full.
+export const CI_SMOKE_IDS = ["button", "tabs"];
 const CATALOGUE_EXEMPT = new Set([
   // The other workflows.
   ".github/workflows/health.yml",
   ".github/workflows/recovery.yml",
-  ".github/workflows/rollback.yml",
   // Release packaging, deployment and operations. None of these is imported by
   // the site, a component or the registry build, so no rendered surface can
   // change with them. `scripts/release-config.mjs`, `scripts/release-manifest.mjs`,
@@ -316,6 +336,8 @@ const CATALOGUE_EXEMPT = new Set([
   "scripts/deployment-diagnostics.mjs",
   "tests/release-live.test.mjs",
   "tests/operations.test.mjs",
+  // Unit test of release.mjs's deployment-secret handling; renders nothing.
+  "tests/reporting-webhook-secret.test.mjs",
 ]);
 
 // Root markdown that is NOT prose. `LICENCE`/`LICENSE` carry no extension and
@@ -482,10 +504,14 @@ export function releaseDepth(paths, diff, context) {
   const suites = new Set();
   let depth = "docs";
   const components = [];
+  let contract = false;
   for (const file of paths) {
     if (documentation(file)) continue;
     const bump = next => { if (DEPTH_RANK.indexOf(next) > DEPTH_RANK.indexOf(depth)) depth = next; };
-    if (FULL_ALWAYS.has(file)) return { depth: "full", suites: [], reason: oneLine(`CI contract file always runs complete release verification: ${file}`) };
+    if (FULL_ALWAYS.has(file)) return { depth: "full", suites: [], reason: oneLine(`${file} always runs complete release verification`) };
+    // Before the component and area rules, so a contract file that is also listed
+    // elsewhere still gets the smoke gate.
+    if (CI_CONTRACT.has(file)) { contract = true; depth = "affected"; suites.add("reporting-consent"); continue; }
     // A component file narrows the gate only when the caller can prove which ids it touches.
     if (isComponentPath(file) && context?.gateIds) { components.push(file); depth = "affected"; continue; }
     const owned = area(file);
@@ -496,11 +522,17 @@ export function releaseDepth(paths, diff, context) {
     if (RELOCATION_SENSITIVE.has(file) && relocationOnly(perFile.get(file))) { depth = "affected"; relocation = true; continue; }
     return { depth: "full", suites: [], reason: oneLine(`not exempt from release catalogue verification: ${file}`) };
   }
-  let gateIds;
+  let gateIds, gateOrder;
   if (components.length) {
     const selected = context.gateIds(components);
     if (!selected?.ids?.length) return { depth: "full", suites: [], reason: oneLine(`component change runs every id: ${selected?.full ?? "no ids selected"}`) };
     gateIds = selected.ids;
+    gateOrder = selected.order;
+  }
+  if (contract) {
+    // The union is emitted in registry order when the resolver supplies it.
+    const wanted = new Set([...(gateIds ?? []), ...CI_SMOKE_IDS]);
+    gateIds = gateOrder ? gateOrder.filter(id => wanted.has(id)) : [...wanted];
   }
   const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;
   if (depth === "docs") return { depth, suites: [], reason: `${count}, all documentation` };
@@ -508,7 +540,7 @@ export function releaseDepth(paths, diff, context) {
     depth,
     suites: [...suites],
     gateIds,
-    reason: `${count}, all documentation, independent areas, named release tooling${relocation ? ", verified path relocation" : ""}${gateIds ? `, ${gateIds.length} affected component ids` : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
+    reason: `${count}, all documentation, independent areas, named release tooling${relocation ? ", verified path relocation" : ""}${contract ? `, CI contract edit: smoke gate on ${CI_SMOKE_IDS.join(",")}` : gateIds ? `, ${gateIds.length} affected component ids` : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
   };
 }
 

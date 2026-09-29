@@ -743,14 +743,14 @@ test('release depth reduces only documentation and named tooling, and defaults t
   assert.equal(depthOf(['docs/production/note.md', 'README.md', 'OVERHAUL-PLAN.md']), 'docs');
   assert.equal(depthOf(['docs/quality/evidence/h03-2/after-shape-menu.png']), 'docs');
   assert.equal(depthOf(['scripts/release.mjs', 'tests/release-live.test.mjs']), 'affected');
-  // R4: the CI contract is full at release depth, since a selector bug would under-test every later change.
-  assert.equal(depthOf(['.github/workflows/verify.yml', 'docs/note.md']), 'full');
+  // R12 amends R4: a CI-contract edit runs the smoke gate, not the complete job.
+  assert.equal(depthOf(['.github/workflows/verify.yml', 'docs/note.md']), 'affected');
   // One unknown path anywhere in the change returns the whole run to full.
   assert.equal(depthOf(['docs/note.md', 'components/ui/button.tsx']), 'full');
   assert.equal(depthOf(['registry/cojeev/styles/accordion.css']), 'full');
   assert.equal(depthOf(['package.json']), 'full');
   assert.equal(depthOf(['scripts/release-config.mjs']), 'full');
-  assert.equal(depthOf(['scripts/run-production-gate.mjs']), 'full', 'the catalogue runner is not exempt by path');
+  assert.equal(depthOf(['scripts/run-production-gate.mjs']), 'affected', 'the catalogue runner is a CI-contract file (R12)');
   assert.equal(depthOf([]), 'full', 'an empty diff proves nothing');
 });
 
@@ -804,14 +804,14 @@ test('a relocation reduces only when the rewritten removal reproduces the additi
   assert.equal(relocationOnly(hunk(['-fs.writeFileSync("GATE.md", text);'])), false);
   assert.equal(relocationOnly(''), false);
   assert.equal(relocationOnly(undefined), false);
-  assert.equal(depthOf(['scripts/run-production-gate.mjs'], undefined), 'full');
+  assert.equal(depthOf(['scripts/run-production-gate.mjs'], undefined), 'affected');
   // The allowance never spreads to a file outside the named set.
-  // run-production-gate.mjs is a CI-contract file (R4) and is full even for a clean relocation,
+  // run-production-gate.mjs is a CI-contract file (R12) and never reaches the relocation rule,
   // so the allowance is shown on another relocation-sensitive file.
   const moved = hunk(['-fs.writeFileSync("GATE.md", text);', '+fs.writeFileSync("docs/gates/GATE.md", text);'], 'scripts/gate-motion-report.mjs');
   assert.equal(depthOf(['scripts/gate-motion-report.mjs', 'docs/note.md'], moved), 'affected');
   assert.equal(depthOf(['scripts/gate-motion-report.mjs', 'components/ui/button.tsx'], moved), 'full');
-  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'docs/note.md'], moved.replaceAll('gate-motion-report', 'run-production-gate')), 'full');
+  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'docs/note.md'], moved.replaceAll('gate-motion-report', 'run-production-gate')), 'affected');
   // One file's clean relocation never excuses another's real edit, and the reason
   // names the file that actually needs the complete job.
   const mixed = `${moved}\n${hunk([
@@ -854,7 +854,8 @@ test('a relocation is refused when no reviewed substitution touched the removed 
     '+++failures;',
   ], 'scripts/run-production-gate.mjs');
   assert.equal(relocationOnly(preIncrement), false);
-  assert.equal(releaseDepth(['scripts/run-production-gate.mjs'], preIncrement).depth, 'full');
+  // run-production-gate.mjs is a CI-contract file (R12): affected with the smoke gate, never the relocation rule.
+  assert.equal(releaseDepth(['scripts/run-production-gate.mjs'], preIncrement).depth, 'affected');
   // The real cleanup's own shapes still pass: an indented insertion, an import
   // with no semicolon, and a substitution inside a long JSX line.
   assert.ok(relocationOnly(hunk([
@@ -1234,10 +1235,10 @@ test('lockfile_runs_full', () => {
   }
 });
 
-test('workflow_or_ci_scope_edit_runs_full_on_main', () => {
+test('workflow_or_ci_scope_edit_runs_smoke_on_main', () => {
   for (const file of ['.github/workflows/verify.yml', 'scripts/ci-scope.mjs', 'tests/ci-scope.test.mjs', 'scripts/run-production-gate.mjs']) {
     for (const event of ['push', 'pull_request']) {
-      assert.equal(resolveReleaseDepth({ event, paths: [file, 'docs/note.md'], diff: '' }).depth, 'full', `${event} ${file}`);
+      assert.equal(resolveReleaseDepth({ event, paths: [file, 'docs/note.md'], diff: '' }).depth, 'affected', `${event} ${file}`);
     }
   }
 });
