@@ -638,6 +638,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   setDragging(false);
               }}
               onDrop={(event) => {
+                // Text dragged into a field must reach the field untouched.
+                if (!event.dataTransfer.types.includes("Files")) return;
                 event.preventDefault();
                 setDragging(false);
                 if (!busy) void addFiles(Array.from(event.dataTransfer.files));

@@ -76,8 +76,21 @@ try {
   await panel(page).getByAltText("Attachment preview: dropped.png").waitFor();
   await panel(page).getByRole("button", { name: "Remove dropped.png", exact: true }).click();
   await panel(page).getByAltText("Attachment preview: dropped.png").waitFor({ state: "detached" });
+  const textDrag = await page.evaluate(() => {
+    const transfer = new DataTransfer(); transfer.setData("text/plain", "just text");
+    const event = new DragEvent("dragover", { bubbles: true, cancelable: true, dataTransfer: transfer });
+    document.querySelector('.report-sheet input[name="email"]').dispatchEvent(event);
+    return { prevented: event.defaultPrevented, overlay: !!document.querySelector(".report-drop-overlay") };
+  });
+  assert.deepEqual(textDrag, { prevented: false, overlay: false }, "A text drag is neither cancelled nor shown as a file drop");
   results.push("Dropping a file anywhere on the form shows Drop files to attach and attaches it");
   await fill(page, "request", `Browser request ${run}`);
+  // The status may still read "Draft saved" from the drop step, so prove the typed title reached storage.
+  await page.waitForFunction(title => new Promise(resolve => {
+    const open = indexedDB.open("cojeev-reporting-v1", 1);
+    open.onerror = () => resolve(false);
+    open.onsuccess = () => { const read = open.result.transaction("drafts").objectStore("drafts").get("workspace"); read.onsuccess = () => { open.result.close(); resolve(read.result?.drafts?.request?.title === title); }; read.onerror = () => resolve(false); };
+  }), `Browser request ${run}`);
   await panel(page).getByRole("status").getByText("Draft saved", { exact: true }).waitFor();
   results.push("Typing saves the draft and the status line says Draft saved");
   await page.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "reference.png", mimeType: "image/png", buffer: imageBytes });
