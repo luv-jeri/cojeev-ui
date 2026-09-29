@@ -43,10 +43,14 @@ if (path.basename(process.argv[1]) === 'check-motion.mjs') {
     behavior: { status: 'pass', detail: 'synthetic child boundary' },
     runtimeErrors: [],
   }));
-  if (worker === 1 && scenario === 'retried-entry') entries[0].firstAttempt = {
-    id: entries[0].id, layouts: ['360/light:pass'], preview: 'pass',
-    behavior: 'failed', detail: 'locator.click: Timeout 10000ms exceeded.',
+  // check-docs keeps the complete first record of a retried entry.
+  if (scenario === 'retried-entries' && worker === 1) entries[0].firstAttempt = {
+    ...entries[0], behavior: { status: 'failed', detail: 'locator.click: Timeout 10000ms exceeded.' },
   };
+  if (scenario === 'retried-entries' && worker === 2) {
+    entries[0].behavior = { status: 'failed', detail: 'Pending action must stay busy-disabled' };
+    entries[0].firstAttempt = { ...entries[0], behavior: { status: 'pass', detail: 'x' }, runtimeErrors: [{ type: 'pageerror', message: 'boom' }] };
+  }
   if (worker === 2 && scenario === 'duplicate-entry') entries.push(entries[0]);
   if (worker === 2 && scenario === 'missing-entry') entries = entries.slice(1);
   if (!(worker === 2 && ['missing-report', 'stale-report'].includes(scenario))) {
@@ -55,5 +59,5 @@ if (path.basename(process.argv[1]) === 'check-motion.mjs') {
       chrome: [{ worker, status: 'pass' }],
     });
   }
-  process.exitCode = worker === 2 && scenario === 'docs-failure' ? 7 : 0;
+  process.exitCode = worker === 2 && ['docs-failure', 'retried-entries'].includes(scenario) ? 7 : 0;
 }

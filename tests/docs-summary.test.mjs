@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { boundDetail, checkWithOneRetry, docsDetailLimit, docsEntryFailed, docsEntrySummary } from "../scripts/lib/docs-summary.mjs";
+import { boundDetail, checkWithOneRetry, docsDetailLimit, docsEntryFailed, docsEntrySummary, docsFailureReasons } from "../scripts/lib/docs-summary.mjs";
 
 const layout = (width, theme, extra = {}) => ({ width, theme, status: "pass", ...extra });
 const passing = {
@@ -81,28 +81,58 @@ test("one verdict covers every way an entry can fail, and nothing else", () => {
   assert.equal(docsEntryFailed(recorded({ runtimeErrors: [{ type: "pageerror", message: "boom" }] })), true);
 });
 
-test("a passing entry is checked once and carries no retry record", async () => {
-  let calls = 0;
-  const record = await checkWithOneRetry(async () => (calls++, recorded()));
-  assert.equal(calls, 1);
-  assert.equal("firstAttempt" in record, false);
+test("the failure reasons name every failing part and nothing that passed", () => {
+  assert.deepEqual(docsFailureReasons(recorded()), []);
+  assert.deepEqual(docsFailureReasons(recorded({ behavior: { status: "passive", detail: "No direct action" } })), []);
+  assert.deepEqual(
+    docsFailureReasons(recorded({
+      layouts: [layout(360, "light"), layout(768, "dark", { status: "issue" }), layout(1440, "dark", { status: "failed", error: "no such tab" })],
+      preview: { status: "failed", detail: "Copy code never settled" },
+      behavior: flake,
+      runtimeErrors: [{ type: "pageerror", message: "boom" }, { type: "console", message: "bang" }],
+    })),
+    [
+      "layout 768/dark issue",
+      "layout 1440/dark failed: no such tab",
+      "preview failed: Copy code never settled",
+      `behavior failed: ${flake.detail}`,
+      "runtime errors (2): pageerror boom | console bang",
+    ],
+  );
 });
 
-test("a failed entry is checked once more, and the first failure stays on the record", async () => {
-  const attempts = [recorded({ behavior: flake }), recorded()];
-  let calls = 0;
-  const record = await checkWithOneRetry(async () => attempts[calls++]);
-  assert.equal(calls, 2);
+test("a runtime-only failure is visible on the console line", () => {
+  const summary = docsEntrySummary(recorded({ runtimeErrors: [{ type: "pageerror", message: "boom" }] }));
+  assert.equal(summary.runtimeErrors, "pageerror boom");
+  assert.equal("runtimeErrors" in docsEntrySummary(recorded()), false, "a clean entry keeps its old fields");
+});
+
+test("a passing entry is checked once and carries no retry record", async () => {
+  const received = [];
+  const record = await checkWithOneRetry(async (firstAttempt) => (received.push(firstAttempt), recorded()));
+  assert.deepEqual(received, [undefined]);
+  assert.equal("firstAttempt" in record, false);
+  assert.equal("attempt" in docsEntrySummary(record), false);
+});
+
+test("a failed entry is checked once more, given its complete first record", async () => {
+  // The first failure is runtime-only: every status passes, so a summary would lose it.
+  const first = recorded({ runtimeErrors: [{ type: "pageerror", message: "boom" }] });
+  const received = [];
+  const record = await checkWithOneRetry(async (firstAttempt) => {
+    received.push(firstAttempt);
+    return firstAttempt ? recorded({ firstAttempt }) : first;
+  });
+  assert.deepEqual(received, [undefined, first], "the second check receives the first record itself");
   assert.equal(docsEntryFailed(record), false, "the second attempt decides the verdict");
-  assert.equal(record.firstAttempt.behavior, "failed");
-  assert.equal(record.firstAttempt.detail, flake.detail);
-  assert.equal(docsEntrySummary(record).firstAttempt.detail, flake.detail, "the console line shows the flake");
+  assert.equal(record.firstAttempt, first);
+  assert.equal(docsEntrySummary(record).attempt, 2, "the console line says which attempt it reports");
 });
 
 test("an entry that fails twice stays failed and is never tried a third time", async () => {
   let calls = 0;
-  const record = await checkWithOneRetry(async () => (calls++, recorded({ behavior: flake })));
+  const record = await checkWithOneRetry(async (firstAttempt) => (calls++, recorded({ behavior: flake, ...(firstAttempt && { firstAttempt }) })));
   assert.equal(calls, 2);
   assert.equal(docsEntryFailed(record), true);
-  assert.equal(record.firstAttempt.behavior, "failed");
+  assert.equal(record.firstAttempt.behavior, flake);
 });

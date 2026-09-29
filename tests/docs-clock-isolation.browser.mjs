@@ -123,15 +123,18 @@ const leakSignature = {
   empty: "Your first note",
 };
 for (const entry of results.entries) {
-  assert(entry.layouts.every(layout => layout.status === "pass"), `${entry.id} layouts`);
-  assert.equal(entry.preview.status, "pass", `${entry.id} shared preview`);
-  assert.equal(entry.runtimeErrors.length, 0, `${entry.id} runtime errors`);
+  // A retried entry keeps its complete first record: both attempts must be clean outside behavior.
+  for (const attempt of [entry, entry.firstAttempt].filter(Boolean)) {
+    assert(attempt.layouts.every(layout => layout.status === "pass"), `${entry.id} layouts`);
+    assert.equal(attempt.preview.status, "pass", `${entry.id} shared preview`);
+    assert.equal(attempt.runtimeErrors.length, 0, `${entry.id} runtime errors`);
+  }
   if (!negative || !leakSignature[entry.id]) {
     assert.equal(entry.behavior.status, "pass", `${entry.id}: ${entry.behavior.detail}`);
     assert.equal(entry.firstAttempt, undefined, `${entry.id} must pass on its first attempt`);
     continue;
   }
-  assert(entry.firstAttempt?.detail.includes(leakSignature[entry.id]), `${entry.id} must fail both attempts for the same reason`);
+  assert(entry.firstAttempt?.behavior.detail.includes(leakSignature[entry.id]), `${entry.id} must fail both attempts for the same reason`);
   assert.equal(entry.behavior.status, "failed", `${entry.id} must reject a leaked context clock`);
   assert(
     entry.behavior.detail.includes(leakSignature[entry.id]),

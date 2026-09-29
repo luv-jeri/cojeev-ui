@@ -99,13 +99,13 @@ for (const scenario of ['docs-failure', 'motion-failure']) {
   });
 }
 
-test('real gate passes an entry that passed on its second attempt and names it in the report', t => {
-  const run = runGate(t, { scenario: 'retried-entry' });
-  assert.equal(run.status, 0, run.stderr);
+test('real gate names every retried entry with its first failure, passed or not', t => {
+  const run = runGate(t, { scenario: 'retried-entries' });
+  assert.equal(run.status, 1, run.stderr);
   const gate = run.read('docs/gates/GATE.md');
-  assert.match(gate, /Result: \*\*PASS\*\*/);
-  assert.match(gate, /Passed only on a second attempt: 1\./);
-  assert.match(gate, /- golf: first attempt behavior failed: locator\.click: Timeout 10000ms exceeded\./);
+  assert.match(gate, /Passed only on a second attempt: 1\. Failed both attempts: 1\./);
+  assert(gate.includes('- golf passed on its second attempt. First attempt: behavior failed: locator.click: Timeout 10000ms exceeded.'), gate);
+  assert(gate.includes('- alpha failed both attempts. First attempt: runtime errors (1): pageerror boom'), gate);
 });
 
 for (const [scenario, message] of [
