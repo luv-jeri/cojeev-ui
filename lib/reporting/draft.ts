@@ -51,16 +51,6 @@ export async function loadDraftWorkspace(): Promise<ReportingDraftWorkspace | nu
   return legacy ? { activeKind: legacy.kind, drafts: { [legacy.kind]: legacy } } : null;
 }
 
-export async function saveDraftWorkspace(workspace: ReportingDraftWorkspace): Promise<void> {
-  // Migrate the old single draft atomically: never lose its files or retry key,
-  // and do not leave a second private copy behind after a later clear.
-  await operation("readwrite", store => {
-    const request = store.put(workspace, "workspace");
-    store.delete("current");
-    return request;
-  });
-}
-
 // ---- Reports sent from this browser: the `sent` key of the same store ----
 export type SentEntry = { kind: ReportKind; title: string; sentAt: number; receipt: Receipt };
 export const SENT_LIMIT = 50;
@@ -100,8 +90,11 @@ function patchWorkspace(store: IDBObjectStore, patch: ReportingDraftWorkspace) {
   const stored = store.get("workspace");
   stored.onsuccess = () => {
     const write = (base: ReportingDraftWorkspace | null) => {
-      store.put({ activeKind: patch.activeKind, drafts: { ...(base?.drafts ?? {}), ...patch.drafts } }, "workspace");
-      store.delete("current");
+      // A throw inside a request callback would surface as a page error; abort the transaction instead.
+      try {
+        store.put({ activeKind: patch.activeKind, drafts: { ...(base?.drafts ?? {}), ...patch.drafts } }, "workspace");
+        store.delete("current");
+      } catch { store.transaction.abort(); }
     };
     if (stored.result) return write(stored.result as ReportingDraftWorkspace);
     const legacy = store.get("current");

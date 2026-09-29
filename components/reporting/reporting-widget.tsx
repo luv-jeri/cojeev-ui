@@ -250,8 +250,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       setDragging(false);
       setTurnstileToken("");
       setVerificationAttempt((value) => value + 1);
-      // The switch itself is a change (the active tab); the drafts are written only if pending.
-      void flush();
+      // The switch itself is a change (the active tab); drafts are written only if pending.
+      if (Object.keys(pending.current).length) void flush();
+      else void saveDraftKinds({ activeKind: kind, drafts: {} }).catch(() => {});
     },
     [flush],
   );
@@ -302,7 +303,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         fresh.current = next;
         setDraft(next);
         setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
-      }
+      } else fresh.current = draftRef.current;
     })()
       .catch(() => {
         if (active)
@@ -359,11 +360,16 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       )
         void refreshFromStorage();
     };
+    const focused = () => {
+      if (loaded && document.visibilityState === "visible") hidden();
+    };
     window.addEventListener("pagehide", save);
+    window.addEventListener("focus", focused);
     document.addEventListener("visibilitychange", hidden);
     window.addEventListener(REPORT_EVENT, take);
     return () => {
       window.removeEventListener("pagehide", save);
+      window.removeEventListener("focus", focused);
       document.removeEventListener("visibilitychange", hidden);
       window.removeEventListener(REPORT_EVENT, take);
     };
@@ -371,12 +377,18 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   /** A tab with nothing unsaved shows what other tabs have stored, so it cannot resend a report another tab sent. */
   async function refreshFromStorage() {
     try {
+      const seen = draftRef.current;
       const [workspace, list] = await Promise.all([
         loadDraftWorkspace(),
         loadSent(),
       ]);
-      // Anything typed while this was reading wins: it is not stored yet.
-      if (Object.keys(pending.current).length || committing.current) return;
+      // Anything typed while this was reading wins: it may be mid-write and not stored yet.
+      if (
+        Object.keys(pending.current).length ||
+        committing.current ||
+        draftRef.current !== seen
+      )
+        return;
       setSent(list);
       if (!workspace) return;
       draftsRef.current = workspace.drafts;
@@ -391,6 +403,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       draftRef.current = next;
       fresh.current = next;
       setDraft(next);
+      setError("");
+      setBanner(null);
+      setConfirmDiscard(false);
       setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
     } catch {
       // The tab keeps what it shows.
@@ -573,6 +588,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         ],
         { activeKind: kind, drafts: { [kind]: blank } },
       );
+      // A save deferred while the commit ran holds the pre-send draft: drop it again.
+      pending.current = { ...pending.current };
+      delete pending.current[kind];
       draftsRef.current = { ...draftsRef.current, [kind]: blank };
       draftRef.current = blank;
       fresh.current = blank;
@@ -589,6 +607,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     } finally {
       committing.current = false;
       setBusy("");
+      // Any other kind deferred during the commit is written now.
+      void flush();
     }
   }
   async function send() {

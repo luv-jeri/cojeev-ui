@@ -15,10 +15,10 @@ try {
     await draftStore.saveDraft(legacy);
     const migrated = await draftStore.loadDraftWorkspace();
     const workspace = { ...migrated, activeKind: "request", drafts: { ...migrated.drafts, request: { ...draftStore.emptyDraft(), title: "New request" } } };
-    await draftStore.saveDraftWorkspace(workspace);
+    await draftStore.saveDraftKinds(workspace);
     const restored = await draftStore.loadDraftWorkspace();
     const old = await draftStore.loadDraft();
-    await draftStore.saveDraftWorkspace({ ...restored, drafts: { ...restored.drafts, request: draftStore.emptyDraft() } });
+    await draftStore.saveDraftKinds({ ...restored, drafts: { ...restored.drafts, request: draftStore.emptyDraft() } });
     const cleared = await draftStore.loadDraftWorkspace();
     return { active: migrated.activeKind, title: restored.drafts.request.title, bugTitle: restored.drafts.bug.title, token: restored.drafts.bug.frozen.token, attempted: restored.drafts.bug.attempted, file: await restored.drafts.bug.files[0].file.text(), old, clearedRequest: cleared.drafts.request.title, retainedBug: cleared.drafts.bug.title };
   });

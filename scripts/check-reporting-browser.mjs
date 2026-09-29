@@ -246,21 +246,13 @@ try {
     await page.getByRole("textbox", { name: "What component do you want?", exact: true }).fill(typed);
     const before = await sentCount(page);
     const more = page.getByRole("button", { name: "More", exact: true });
-    await more.focus(); await page.keyboard.press("Enter");
-    await page.getByRole("menuitem", { name: "Clear draft", exact: true }).waitFor();
-    // Radix moves focus one item per press once the menu has settled; wait for each move.
-    await page.waitForFunction(() => document.activeElement?.textContent?.trim() === "Clear draft");
-    for (const next of ["Request board", "Open a saved receipt"]) {
-      await page.keyboard.press("ArrowDown");
-      await page.waitForFunction(text => document.activeElement?.textContent?.trim() === text, next);
-    }
     // Close the list first, so an open row left from earlier cannot pass for the import's own result.
-    await page.keyboard.press("Escape");
     await sentToggle(page).click();
     await page.locator(".report-sent-detail").waitFor({ state: "detached" });
     assert.equal(await sentToggle(page).getAttribute("aria-expanded"), "false");
     await more.focus(); await page.keyboard.press("Enter");
-    await page.getByRole("menuitem", { name: "Open a saved receipt", exact: true }).waitFor();
+    await page.getByRole("menuitem", { name: "Clear draft", exact: true }).waitFor();
+    // Radix moves focus one item per press once the menu has settled; wait for each move.
     await page.waitForFunction(() => document.activeElement?.textContent?.trim() === "Clear draft");
     for (const next of ["Request board", "Open a saved receipt"]) {
       await page.keyboard.press("ArrowDown");
@@ -616,6 +608,15 @@ try {
       return rowsNow;
     };
     const before = (await stored(gone)).sent.length;
+    // These cases test storage in two tabs, not the Worker: answer the send and the upload here, so
+    // the journey keeps to the Worker's limit of 10 reports per 10 minutes for the checks after it.
+    let hold = null;
+    await gone.route(`${api}/v1/reports`, route => {
+      if (route.request().method() !== "POST") return route.continue();
+      const { report, token } = route.request().postDataJSON();
+      return route.fulfill({ status: 201, json: { id: report.id, token, status: "received", topicId: null, email: "pending", issue: "pending", attachments: report.attachments.map(item => ({ id: item.id, state: "pending" })) } });
+    });
+    await gone.route(/\/v1\/reports\/[^/]+\/attachments\//, async route => { if (hold) await hold; await route.fulfill({ status: 200, json: {} }); });
     {
       // S3: tab B loads while A holds a typed request with a file, then A sends.
       await fill(gone, "request", `Two tabs ${run}`);
@@ -644,12 +645,10 @@ try {
     }
     {
       // S3c: tab B loads while A's upload is held; A finishes; B then fires pagehide.
-      const upload = /\/v1\/reports\/[^/]+\/attachments\//;
       await fill(gone, "request", `Mid upload ${run}`);
       await gone.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "mid.png", mimeType: "image/png", buffer: imageBytes });
       await gone.getByAltText("Attachment preview: mid.png").waitFor();
-      let release; const gate = new Promise(resolve => { release = resolve; });
-      await gone.route(upload, async route => { await gate; await route.continue(); });
+      let release; hold = new Promise(resolve => { release = resolve; });
       await gone.getByRole("button", { name: "Review request", exact: true }).click();
       await gone.getByRole("button", { name: "Send request", exact: true }).click();
       await gone.getByText("0 of 1 files uploaded", { exact: true }).waitFor();
@@ -660,10 +659,10 @@ try {
       await sentBanner(gone, "request").waitFor();
       await other.evaluate(() => { window.dispatchEvent(new Event("pagehide")); });
       await other.waitForTimeout(700);
-      await gone.unroute(upload);
       assert.equal(await emptyRequestTab(fresh, "S3c"), before + 2, "S3c: one more sent row");
       await other.close();
     }
+    await gone.unroute(`${api}/v1/reports`); await gone.unroute(/\/v1\/reports\/[^/]+\/attachments\//);
     results.push("a_sent_report_never_comes_back_into_the_form");
     await fresh.close();
   }
