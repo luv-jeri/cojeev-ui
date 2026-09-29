@@ -5,6 +5,8 @@ import { Button } from "@/registry/cojeev/ui/button";
 import { fetchStatus, ReportingError } from "@/lib/reporting/client";
 import type { PublicStage, PublicStatus } from "@/lib/reporting/public-status";
 import { parseTrackFragment } from "@/lib/reporting/track";
+// The .track-* rules live in the widget's sheet, which otherwise arrives only with the idle-loaded widget.
+import "./reporting.css";
 
 type View = { phase: "loading" } | { phase: "missing" } | { phase: "failed" } | { phase: "found"; status: PublicStatus };
 const STAGES: PublicStage[] = ["received", "reviewing", "tracked", "fixed"];
