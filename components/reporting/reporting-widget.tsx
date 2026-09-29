@@ -66,7 +66,7 @@ import {
   pullLegacyReceipts,
   removeSent,
   replaceSentReceipt,
-  saveDraftWorkspace,
+  saveDraftKinds,
   type ReportingDraft,
   type ReportingDraftWorkspace,
   type SentEntry,
@@ -157,8 +157,14 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     [confirmDiscard, setConfirmDiscard] = useState(false);
   // While the sent-list transaction is in flight it is the only writer: a save that started
   // now would queue behind it and put the just-sent draft and its files back.
+  // ponytail: the flag is set and cleared inside completeSend's try/finally, so no path can leave it set.
   const committing = useRef(false),
     focusSent = useRef(false);
+  // Only drafts this tab changed are written, so a tab that merely loaded a draft can never put
+  // an old copy back over what another tab sent or cleared. `fresh` is the draft object that came
+  // from storage (or was just rebuilt from it): the save effect skips it because nothing changed.
+  const pending = useRef<Partial<Record<ReportKind, ReportingDraft>>>({}),
+    fresh = useRef<ReportingDraft | null>(null);
   // Review is a view, not part of the draft: it is open only for the tab and step it was
   // opened in, so a tab switch or leaving the edit step closes it.
   const scope = `${draft.kind}:${step}`,
@@ -189,21 +195,30 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     setBanner(null);
     setDraft((value) => ({ ...value, ...changes }));
   };
-  const persist = useCallback(async (value: ReportingDraft) => {
+  const flush = useCallback(async () => {
     if (committing.current) return;
-    draftsRef.current = { ...draftsRef.current, [value.kind]: value };
+    const drafts = pending.current;
+    if (!Object.keys(drafts).length) return;
+    pending.current = {};
     try {
-      await saveDraftWorkspace({
-        activeKind: draftRef.current.kind,
-        drafts: draftsRef.current,
-      });
+      await saveDraftKinds({ activeKind: draftRef.current.kind, drafts });
       setStorage("Draft saved");
     } catch {
+      // Keep what failed, unless a newer change to the same kind has queued since.
+      pending.current = { ...drafts, ...pending.current };
       setStorage(
         "Draft storage is unavailable. Keep this page open; reloading may lose your report and files.",
       );
     }
   }, []);
+  const persist = useCallback(
+    async (value: ReportingDraft) => {
+      draftsRef.current = { ...draftsRef.current, [value.kind]: value };
+      pending.current = { ...pending.current, [value.kind]: value };
+      await flush();
+    },
+    [flush],
+  );
   const selectDraft = useCallback(
     (kind: ReportKind, topic?: RequestTopic) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
@@ -215,8 +230,12 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         ...emptyDraft(),
         kind,
       };
-      if (topic && !next.attempted)
+      fresh.current = next;
+      if (topic && !next.attempted) {
         next = { ...next, topicId: topic.id, title: topic.title, frozen: null };
+        fresh.current = null;
+        pending.current = { ...pending.current, [kind]: next };
+      }
       draftRef.current = next;
       setDraft(next);
       setBanner(null);
@@ -231,9 +250,10 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       setDragging(false);
       setTurnstileToken("");
       setVerificationAttempt((value) => value + 1);
-      void persist(next);
+      // The switch itself is a change (the active tab); the drafts are written only if pending.
+      void flush();
     },
-    [persist],
+    [flush],
   );
   useEffect(() => startDiagnostics(), []);
   useEffect(() => {
@@ -251,7 +271,16 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         if (pulled.entries.length) {
           try {
             // One transaction: the list gains the receipts and the drafts lose them, or neither.
-            entries = await commitSent(pulled.entries, pulled.workspace);
+            const moved = Object.fromEntries(
+              Object.entries(pulled.workspace.drafts).filter(
+                ([kind, value]) =>
+                  value !== saved.drafts[kind as ReportKind],
+              ),
+            );
+            entries = await commitSent(pulled.entries, {
+              ...pulled.workspace,
+              drafts: moved,
+            });
             workspace = pulled.workspace;
           } catch {
             if (active)
@@ -270,6 +299,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           kind: workspace.activeKind,
         };
         draftRef.current = next;
+        fresh.current = next;
         setDraft(next);
         setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
       }
@@ -289,21 +319,24 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   }, []);
   useEffect(() => {
     if (!loaded) return;
+    if (draft === fresh.current) return;
+    pending.current = { ...pending.current, [draft.kind]: draft };
     // Text is small, so it is written at once: a write that starts late can be cut off by a
     // reload. Files are Blobs and slow to store, so bursts of changes to them wait 300 ms.
     saveTimer.current = setTimeout(
       () => {
-        void persist(draft);
+        void flush();
       },
       draft.files.length ? 300 : 0,
     );
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [draft, loaded, persist]);
+  }, [draft, loaded, flush]);
   useEffect(() => {
+    // An idle tab never writes: only edits not yet stored are flushed.
     const save = () => {
-      if (loaded) void persist(draftRef.current);
+      if (loaded) void flush();
     };
     // Drafts load first; a request made before then, or before this panel mounted, stays pending.
     const take = () => {
@@ -316,6 +349,15 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     take();
     const hidden = () => {
       if (document.visibilityState === "hidden") save();
+      else if (
+        loaded &&
+        !busy &&
+        !capture &&
+        !picking &&
+        !committing.current &&
+        !Object.keys(pending.current).length
+      )
+        void refreshFromStorage();
     };
     window.addEventListener("pagehide", save);
     document.addEventListener("visibilitychange", hidden);
@@ -325,7 +367,35 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       document.removeEventListener("visibilitychange", hidden);
       window.removeEventListener(REPORT_EVENT, take);
     };
-  }, [loaded, persist, selectDraft, busy, capture]);
+  }, [loaded, flush, selectDraft, busy, capture, picking]);
+  /** A tab with nothing unsaved shows what other tabs have stored, so it cannot resend a report another tab sent. */
+  async function refreshFromStorage() {
+    try {
+      const [workspace, list] = await Promise.all([
+        loadDraftWorkspace(),
+        loadSent(),
+      ]);
+      // Anything typed while this was reading wins: it is not stored yet.
+      if (Object.keys(pending.current).length || committing.current) return;
+      setSent(list);
+      if (!workspace) return;
+      draftsRef.current = workspace.drafts;
+      const kind = draftRef.current.kind,
+        next = workspace.drafts[kind] ?? { ...emptyDraft(), kind };
+      const sig = (value: ReportingDraft) =>
+        JSON.stringify({
+          ...value,
+          files: value.files.map((file) => file.id),
+        });
+      if (sig(next) === sig(draftRef.current)) return;
+      draftRef.current = next;
+      fresh.current = next;
+      setDraft(next);
+      setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
+    } catch {
+      // The tab keeps what it shows.
+    }
+  }
   const loadConfig = useCallback(() => {
     if (!REPORTING_API) return;
     setConfigError("");
@@ -481,10 +551,11 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       accepted = current.receipt;
     if (!accepted || committing.current) return;
     const kind = current.kind,
-      fresh = { ...emptyDraft(), kind },
-      drafts = { ...draftsRef.current, [kind]: fresh };
+      blank = { ...emptyDraft(), kind };
     // No timed save may run from here on: it would write the old draft after the commit.
     if (saveTimer.current) clearTimeout(saveTimer.current);
+    const { [kind]: dropped, ...others } = pending.current;
+    pending.current = others;
     committing.current = true;
     setBusy("Saving to the sent list…");
     try {
@@ -500,17 +571,19 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
             receipt: accepted,
           },
         ],
-        { activeKind: kind, drafts },
+        { activeKind: kind, drafts: { [kind]: blank } },
       );
-      draftsRef.current = drafts;
-      draftRef.current = fresh;
-      setDraft(fresh);
+      draftsRef.current = { ...draftsRef.current, [kind]: blank };
+      draftRef.current = blank;
+      fresh.current = blank;
+      setDraft(blank);
       setStep("edit");
       setBanner(withBanner ? { kind, id: accepted.id } : null);
       setConfirmDiscard(false);
       setError("");
       setSent(list);
     } catch {
+      if (dropped) pending.current = { ...pending.current, [kind]: dropped };
       setError(SENT_SAVE_ERROR);
       setStep("receipt");
     } finally {
@@ -650,9 +723,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     setCapture(null);
     draftsRef.current = { ...draftsRef.current, [next.kind]: next };
     try {
-      await saveDraftWorkspace({
+      await saveDraftKinds({
         activeKind: next.kind,
-        drafts: draftsRef.current,
+        drafts: { [next.kind]: next },
       });
       setStorage("This draft was cleared. Your other draft is unchanged.");
     } catch {

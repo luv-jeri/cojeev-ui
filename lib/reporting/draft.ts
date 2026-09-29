@@ -91,8 +91,36 @@ export function pullLegacyReceipts(workspace: ReportingDraftWorkspace, now: numb
   return entries.length ? { workspace: { ...workspace, drafts }, entries } : { workspace, entries };
 }
 
-/** One readwrite transaction over `sent` (and, when `also` is given, other keys): nothing is written unless all of it completes. */
-async function sentTransaction(change: (list: SentEntry[]) => SentEntry[], also?: (store: IDBObjectStore) => void): Promise<SentEntry[]> {
+/**
+ * Puts only the given kinds' drafts (and the active kind) into the stored workspace, inside the
+ * caller's transaction. Other kinds stay exactly as stored, so a tab never writes back what it
+ * merely loaded. A pre-workspace `current` draft is migrated in the same transaction.
+ */
+function patchWorkspace(store: IDBObjectStore, patch: ReportingDraftWorkspace) {
+  const stored = store.get("workspace");
+  stored.onsuccess = () => {
+    const write = (base: ReportingDraftWorkspace | null) => {
+      store.put({ activeKind: patch.activeKind, drafts: { ...(base?.drafts ?? {}), ...patch.drafts } }, "workspace");
+      store.delete("current");
+    };
+    if (stored.result) return write(stored.result as ReportingDraftWorkspace);
+    const legacy = store.get("current");
+    legacy.onsuccess = () => write(legacy.result ? { activeKind: legacy.result.kind, drafts: { [legacy.result.kind]: legacy.result } } : null);
+  };
+}
+/** Saves the drafts a tab changed; everything else in storage is left alone. */
+export async function saveDraftKinds(patch: ReportingDraftWorkspace): Promise<void> {
+  const db = await openDatabase();
+  await new Promise<void>((resolve, reject) => {
+    const transaction = db.transaction("drafts", "readwrite");
+    patchWorkspace(transaction.objectStore("drafts"), patch);
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = transaction.onabort = () => reject(transaction.error ?? new Error("Could not save this draft."));
+  });
+}
+
+/** One readwrite transaction over `sent` (and, when `patch` is given, the workspace): nothing is written unless all of it completes. */
+async function sentTransaction(change: (list: SentEntry[]) => SentEntry[], patch?: ReportingDraftWorkspace): Promise<SentEntry[]> {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
     let next: SentEntry[] = [];
@@ -103,7 +131,7 @@ async function sentTransaction(change: (list: SentEntry[]) => SentEntry[], also?
       try {
         next = change(Array.isArray(read.result) ? read.result : []);
         store.put(next, "sent");
-        also?.(store);
+        if (patch) patchWorkspace(store, patch);
       } catch (cause) { transaction.abort(); reject(cause); }
     };
     transaction.oncomplete = () => resolve(next);
@@ -115,8 +143,9 @@ export async function loadSent(): Promise<SentEntry[]> {
   // Anything beyond the newest 50 (an older build, a hand-edited store) is dropped on the way in.
   return Array.isArray(saved) ? mergeSent([], saved) : [];
 }
+/** `workspace`, when given, carries only the drafts this commit changes; the stored drafts of other kinds are kept. */
 export function commitSent(entries: SentEntry[], workspace?: ReportingDraftWorkspace): Promise<SentEntry[]> {
-  return sentTransaction(list => mergeSent(list, entries), workspace && (store => { store.put(workspace, "workspace"); store.delete("current"); }));
+  return sentTransaction(list => mergeSent(list, entries), workspace);
 }
 export function removeSent(receiptId: string): Promise<SentEntry[]> {
   return sentTransaction(list => list.filter(item => item.receipt.id !== receiptId));

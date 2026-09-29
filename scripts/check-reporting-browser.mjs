@@ -254,10 +254,25 @@ try {
       await page.keyboard.press("ArrowDown");
       await page.waitForFunction(text => document.activeElement?.textContent?.trim() === text, next);
     }
+    // Close the list first, so an open row left from earlier cannot pass for the import's own result.
+    await page.keyboard.press("Escape");
+    await sentToggle(page).click();
+    await page.locator(".report-sent-detail").waitFor({ state: "detached" });
+    assert.equal(await sentToggle(page).getAttribute("aria-expanded"), "false");
+    await more.focus(); await page.keyboard.press("Enter");
+    await page.getByRole("menuitem", { name: "Open a saved receipt", exact: true }).waitFor();
+    await page.waitForFunction(() => document.activeElement?.textContent?.trim() === "Clear draft");
+    for (const next of ["Request board", "Open a saved receipt"]) {
+      await page.keyboard.press("ArrowDown");
+      await page.waitForFunction(text => document.activeElement?.textContent?.trim() === text, next);
+    }
     const chooser = page.waitForEvent("filechooser");
     await page.keyboard.press("Enter");
     await (await chooser).setFiles(`${output}/receipt.json`);
     await page.locator(".report-sent-detail").waitFor();
+    assert.equal(await sentToggle(page).getAttribute("aria-expanded"), "true", "The import expands the list");
+    assert.equal(await sentRow(page, `Browser request ${run}`).getAttribute("aria-expanded"), "true", "The imported entry's row is open");
+    assert.equal(await panel(page).getByRole("alert").count(), 0, "No error after the import");
     // The Delivery details block may still be open from the earlier read, so read its text without toggling it.
     assert.equal(await page.locator(".report-sent-detail .report-receipt-id code").textContent(), requestId);
     assert.equal(await page.getByRole("heading", { name: /is received/ }).count(), 0, "No receipt heading after an import");
@@ -584,6 +599,71 @@ try {
     assert.equal(await gone.locator(".report-sent-row").count(), 1, "One row in the list");
     const kept = await stored(gone);
     assert.equal(kept.request.receipt, null); assert.equal(kept.request.files, 0); assert.equal(kept.sent.length, 1);
+    // Two tabs: one that loaded before the send must not bring the report back.
+    const emptyRequestTab = async (context, label) => {
+      const view = await context.newPage(); view.on("pageerror", error => pageErrors.push(error.message));
+      await view.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(view);
+      await panel(view).getByRole("tab", { name: "Request a feature", exact: true }).click();
+      await view.getByRole("button", { name: "Review request", exact: true }).waitFor();
+      assert.equal(await view.getByLabel("What component do you want?", { exact: true }).inputValue(), "", `${label}: empty form`);
+      assert.equal(await view.getByRole("heading", { name: /is received/ }).count(), 0, `${label}: no receipt screen`);
+      assert.equal(await view.getByAltText(/Attachment preview/).count(), 0, `${label}: no file`);
+      await expandSent(view);
+      const rowsNow = await view.locator(".report-sent-row").count();
+      const kept = await stored(view);
+      assert.equal(kept.request.receipt, null, `${label}: stored receipt`); assert.equal(kept.request.files, 0, `${label}: stored files`);
+      await view.close();
+      return rowsNow;
+    };
+    const before = (await stored(gone)).sent.length;
+    {
+      // S3: tab B loads while A holds a typed request with a file, then A sends.
+      await fill(gone, "request", `Two tabs ${run}`);
+      await gone.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "two-tabs.png", mimeType: "image/png", buffer: imageBytes });
+      await gone.getByAltText("Attachment preview: two-tabs.png").waitFor();
+      await gone.waitForFunction(() => new Promise(resolve => { const open = indexedDB.open("cojeev-reporting-v1", 1); open.onsuccess = () => { const read = open.result.transaction("drafts").objectStore("drafts").get("workspace"); read.onsuccess = () => { open.result.close(); resolve(read.result?.drafts?.request?.files?.length === 1); }; }; }));
+      const other = await fresh.newPage(); other.on("pageerror", error => pageErrors.push(error.message));
+      await other.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(other);
+      await other.getByAltText("Attachment preview: two-tabs.png").waitFor();
+      await gone.bringToFront();
+      await gone.getByRole("button", { name: "Review request", exact: true }).click();
+      await gone.getByRole("button", { name: "Send request", exact: true }).click();
+      await sentBanner(gone, "request").waitFor();
+      // B is idle and shows the old form; it must write nothing when it is hidden or closed.
+      await other.evaluate(() => { window.dispatchEvent(new Event("pagehide")); });
+      await other.waitForTimeout(700);
+      assert.equal(await emptyRequestTab(fresh, "S3"), before + 1, "S3: one sent row");
+      // B, shown again, follows storage: the sent row and an empty form.
+      await other.evaluate(() => { Object.defineProperty(document, "visibilityState", { value: "visible", configurable: true }); document.dispatchEvent(new Event("visibilitychange")); });
+      await other.getByLabel("What component do you want?", { exact: true }).waitFor();
+      await other.waitForFunction(() => document.querySelector('input[name="title"]')?.value === "");
+      assert.equal(await other.getByAltText(/Attachment preview/).count(), 0, "B shows no old file once visible");
+      assert.equal(await sentCount(other), before + 1, "B shows the sent row once visible");
+      results.push("a_second_tab_shows_the_sent_report_once_visible");
+      await other.close();
+    }
+    {
+      // S3c: tab B loads while A's upload is held; A finishes; B then fires pagehide.
+      const upload = /\/v1\/reports\/[^/]+\/attachments\//;
+      await fill(gone, "request", `Mid upload ${run}`);
+      await gone.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "mid.png", mimeType: "image/png", buffer: imageBytes });
+      await gone.getByAltText("Attachment preview: mid.png").waitFor();
+      let release; const gate = new Promise(resolve => { release = resolve; });
+      await gone.route(upload, async route => { await gate; await route.continue(); });
+      await gone.getByRole("button", { name: "Review request", exact: true }).click();
+      await gone.getByRole("button", { name: "Send request", exact: true }).click();
+      await gone.getByText("0 of 1 files uploaded", { exact: true }).waitFor();
+      const other = await fresh.newPage(); other.on("pageerror", error => pageErrors.push(error.message));
+      await other.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await other.getByRole("button", { name: "Request a feature / Report a bug" }).click();
+      await other.getByText("0 of 1 files uploaded", { exact: true }).waitFor();
+      release();
+      await sentBanner(gone, "request").waitFor();
+      await other.evaluate(() => { window.dispatchEvent(new Event("pagehide")); });
+      await other.waitForTimeout(700);
+      await gone.unroute(upload);
+      assert.equal(await emptyRequestTab(fresh, "S3c"), before + 2, "S3c: one more sent row");
+      await other.close();
+    }
     results.push("a_sent_report_never_comes_back_into_the_form");
     await fresh.close();
   }
