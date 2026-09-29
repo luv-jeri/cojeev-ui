@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { validateReport } from "../lib/reporting/contracts";
-import { kindFromTag, pinChipText, submittedPins, type DraftPin } from "../lib/reporting/pin-label";
+import { capLabelText, kindFromTag, pinAnnouncement, pinChipText, submittedPins, type DraftPin } from "../lib/reporting/pin-label";
 
 test("submittedPins drops the label and keeps path, tag, x and y", () => {
   const drafts: DraftPin[] = [
@@ -31,4 +31,19 @@ test("kindFromTag maps every row of the table and falls back to Element", () => 
 test("pinChipText uses the label, else the kind word", () => {
   assert.equal(pinChipText({ path: "a", tag: "p", x: 0, y: 0, label: "Paragraph “Hi”" }, 3), "3 · Paragraph “Hi”");
   assert.equal(pinChipText({ path: "a", tag: "h2", x: 0, y: 0 }, 1), "1 · Heading");
+});
+
+test("capLabelText is at most 60 characters plus an ellipsis", () => {
+  assert.equal(capLabelText("  a \n b  "), "a b");
+  assert.equal(capLabelText("x".repeat(60)), "x".repeat(60));
+  assert.equal(capLabelText("y".repeat(100)), `${"y".repeat(60)}…`);
+  assert.equal(capLabelText(`${"z".repeat(59)} tail`), `${"z".repeat(59)}…`);
+  assert.equal(capLabelText("   "), "");
+});
+
+test("pinAnnouncement words", () => {
+  const pin = { path: "a", tag: "p", x: 0, y: 0, label: "Paragraph “Hi”" };
+  assert.equal(pinAnnouncement("pinned", 3, pin), "Pinned 3 · Paragraph “Hi”");
+  assert.equal(pinAnnouncement("pinned", 1, { path: "a", tag: "h2", x: 0, y: 0 }), "Pinned 1 · Heading");
+  assert.equal(pinAnnouncement("removed", 2), "Removed pin 2");
 });

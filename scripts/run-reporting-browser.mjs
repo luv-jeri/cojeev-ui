@@ -35,6 +35,8 @@ try {
     ['Tracking page check', 'tests/reporting-track.browser.mjs'],
     // The screenshot progress card must dim the page, name each step and stay still under reduced motion.
     ['Capture progress check', 'tests/reporting-capture-progress.browser.mjs'],
+    // Pins: numbered markers, readable labels, toggle and the labels staying on this device.
+    ['Pin feedback check', 'tests/reporting-pins.browser.mjs'],
   ];
   for (const [label, script] of followUps) {
     const failed = await new Promise((resolve, reject) => {
