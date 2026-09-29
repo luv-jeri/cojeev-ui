@@ -171,7 +171,9 @@ try {
     await info.evaluate(node => node.scrollIntoView({ block: "end" })); await info.tap(); await pop.waitFor();
     const box = await pop.boundingBox();
     assert.ok(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= 390 && box.y + box.height <= 844, "Popover stays inside the phone viewport");
-    await pop.evaluate(node => { if (node.scrollHeight > node.clientHeight) assert.ok(getComputedStyle(node).overflowY !== "visible"); });
+    const scroll = await pop.evaluate(node => ({ scrollHeight: node.scrollHeight, clientHeight: node.clientHeight, overflowY: getComputedStyle(node).overflowY }));
+    console.log("popover scroll probe", JSON.stringify(scroll));
+    if (scroll.scrollHeight > scroll.clientHeight) assert.ok(["auto", "scroll"].includes(scroll.overflowY), "A popover taller than its box scrolls");
     await panel(mobilePage).getByRole("heading", { name: "Report a bug", exact: true }).tap(); await pop.waitFor({ state: "hidden" });
     assert.ok(await panel(mobilePage).isVisible(), "An outside tap closes only the popover");
   }
