@@ -737,17 +737,26 @@ try {
     results.push("legacy_receipt_moves_into_the_list");
     await seeded.close();
   }
-  {
+  // Storage that cannot be opened at all, in the three ways a browser does it. Each must give the same result.
+  for (const fault of ["undefined", "open throws", "open request errors"]) {
     // A browser with no IndexedDB (private mode, blocked storage): sending and importing still work, and the list says it is not kept. Sends and the import read are stubbed.
     const bare = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
     await localOnly(bare); await stubSend(bare);
-    await bare.addInitScript(() => Object.defineProperty(window, "indexedDB", { value: undefined, configurable: true }));
+    await bare.addInitScript(fault => {
+      if (fault === "undefined") return Object.defineProperty(window, "indexedDB", { value: undefined, configurable: true });
+      IDBFactory.prototype.open = function () {
+        if (fault === "open throws") throw new DOMException("The operation is insecure.", "SecurityError");
+        const request = { result: null, error: new DOMException("Injected open failure", "UnknownError") };
+        setTimeout(() => request.onerror?.({ target: request }), 5);
+        return request;
+      };
+    }, fault);
     const importedId = "22222222-2222-4222-8222-222222222222", importedToken = "c".repeat(64);
     let receiptReads = 0;
     await bare.route(`${api}/v1/reports/${importedId}`, route => { receiptReads += 1; return route.fulfill({ status: 200, json: { id: importedId, token: importedToken, status: "received", kind: "request", topicId: null, email: "pending", issue: "pending", attachments: [] } }); });
     const barePage = await bare.newPage(); activePage = barePage; barePage.on("pageerror", error => pageErrors.push(error.message));
     await barePage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(barePage);
-    await sendStubbed(barePage, "request", `No storage ${run}`);
+    await sendStubbed(barePage, "request", `No storage ${fault} ${run}`);
     assert.equal(await barePage.getByRole("textbox", { name: "What component do you want?", exact: true }).inputValue(), "", "Back on a fresh form");
     assert.equal(await barePage.getByRole("heading", { name: /is received/ }).count(), 0, "Not stuck on the receipt");
     assert.equal(await sentCount(barePage), 1);
@@ -770,9 +779,39 @@ try {
     await barePage.waitForFunction(() => /· 1$/.test(document.querySelector(".report-sent-toggle")?.textContent?.trim() ?? ""));
     assert.equal(await panel(barePage).locator("[role=alert]").count(), 0, "No storage error on remove");
     assert.equal(await sentRow(barePage, "Imported request").count(), 0, "The imported row is gone");
-    assert.equal(await sentRow(barePage, `No storage ${run}`).count(), 1, "The other row stays");
+    assert.equal(await sentRow(barePage, `No storage ${fault} ${run}`).count(), 1, "The other row stays");
     await bare.close();
-    results.push("without_browser_storage_sending_and_importing_still_work");
+    results.push(`without_browser_storage_sending_and_importing_still_work (${fault})`);
+  }
+  {
+    // Blocked is transient (another tab holds an older version open): the receipt stays, nothing is lost, and Start another works once it clears.
+    const blocked = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
+    await localOnly(blocked); await stubSend(blocked);
+    await blocked.addInitScript(() => {
+      window.__blocked = true;
+      const real = IDBFactory.prototype.open;
+      IDBFactory.prototype.open = function (...args) {
+        if (!window.__blocked) return real.apply(this, args);
+        const request = { result: null, error: null };
+        setTimeout(() => request.onblocked?.({ target: request }), 5);
+        return request;
+      };
+    });
+    const blockedPage = await blocked.newPage(); activePage = blockedPage; blockedPage.on("pageerror", error => pageErrors.push(error.message));
+    await blockedPage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(blockedPage);
+    await fill(blockedPage, "request", `Blocked storage ${run}`);
+    await blockedPage.getByRole("button", { name: "Review request", exact: true }).click();
+    await blockedPage.getByRole("button", { name: "Send request", exact: true }).click();
+    await panel(blockedPage).getByText("Could not save this report to the sent list. Your receipt is still here.", { exact: true }).waitFor();
+    assert.equal(await blockedPage.getByRole("heading", { name: /is received/ }).count(), 1, "Blocked storage keeps the receipt on screen");
+    assert.equal(await blockedPage.getByText("This list isn’t kept after you close the page. Download a receipt to keep it.", { exact: true }).count(), 0, "Blocked is not treated as unavailable");
+    await blockedPage.evaluate(() => { window.__blocked = false; });
+    await blockedPage.getByRole("button", { name: "Start another", exact: true }).click();
+    await blockedPage.getByRole("heading", { name: /is received/ }).waitFor({ state: "detached" });
+    assert.equal(await blockedPage.getByRole("textbox", { name: "What component do you want?", exact: true }).inputValue(), "", "Back on a fresh form once unblocked");
+    assert.equal((await stored(blockedPage)).sent.length, 1, "Once unblocked the report is in the stored list");
+    await blocked.close();
+    results.push("blocked_storage_keeps_the_receipt_until_it_clears");
   }
   {
     // Nothing written later may bring a sent report, or its files, back into the form.
