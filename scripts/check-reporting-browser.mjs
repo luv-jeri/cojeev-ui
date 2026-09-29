@@ -716,7 +716,7 @@ try {
     await barePage.getByRole("button", { name: "More", exact: true }).click(); await barePage.getByRole("menuitem", { name: "Open a saved receipt", exact: true }).click();
     await barePage.getByLabel("Import a saved receipt", { exact: true }).setInputFiles({ name: "receipt.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify({ id: importedId, token: importedToken })) });
     await barePage.waitForFunction(() => /· 2$/.test(document.querySelector(".report-sent-toggle")?.textContent?.trim() ?? ""));
-    assert.equal(await barePage.locator("[role=alert]").count(), 0, "No storage error on import");
+    assert.equal(await panel(barePage).locator("[role=alert]").count(), 0, "No storage error on import");
     assert.ok(await memoryNote.isVisible());
     await bare.close();
     results.push("without_browser_storage_sending_and_importing_still_work");
@@ -902,7 +902,7 @@ try {
     assert.ok(await topAtCentre(mobilePage, "main.track-page h1"), "At 390px the tracking heading is not covered by the drawer");
     await mobilePage.goBack(); await mobilePage.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false);
     if (!(await panel(mobilePage).isVisible())) await open(mobilePage);
-    await expandSent(mobilePage); await mobilePage.locator(".report-sent-row").first().click(); await mobilePage.locator(".report-sent-detail").waitFor();
+    await openSentRow(mobilePage, "A mobile calendar with date ranges");
     assertTargets("Request after a send, open row", await measure(mobilePage, TOUCH), ["View", "Sent from this browser", "Refresh status", "Download receipt", "Track this report", "Remove from this device"]);
     await switchTab(mobilePage, "bug");
   }
