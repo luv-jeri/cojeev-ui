@@ -1249,6 +1249,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   emailEnabled={config?.emailEnabled}
                   busy={!!busy}
                   note={sentInMemory ? SENT_MEMORY_NOTE : ""}
+                  onNavigate={() => setOpen(false)}
                   onToggle={() => setSentExpanded((value) => !value)}
                   onOpen={(id) => {
                     setOpenSentId(id);
@@ -1415,6 +1416,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 emailEnabled={config?.emailEnabled}
                 busy={!!busy}
                 onRefresh={refreshReceipt}
+                onNavigate={() => setOpen(false)}
               />
               {!!remainingFiles &&
                 (draft.files.length ? (

@@ -11,8 +11,8 @@ import { STATUS_LABELS } from "./report-request";
 const sentFile = (state: string) => state === "uploaded" || state === "ready";
 
 /** The receipt as the receipt step and every sent-list row show it, defined once. */
-export function ReceiptDetail({ receipt, kind, busy, onRefresh }: {
-  receipt: Receipt; kind: ReportKind; emailEnabled: boolean | undefined; busy: boolean; onRefresh: () => void;
+export function ReceiptDetail({ receipt, kind, busy, onRefresh, onNavigate }: {
+  receipt: Receipt; kind: ReportKind; emailEnabled: boolean | undefined; busy: boolean; onRefresh: () => void; onNavigate: () => void;
 }) {
   const uploaded = receipt.attachments.filter(file => sentFile(file.state)).length;
   const expired = receipt.attachments.filter(file => file.state === "expired").length;
@@ -68,7 +68,16 @@ export function ReceiptDetail({ receipt, kind, busy, onRefresh }: {
         </Button>
         {receipt.statusKey && (
           <Button asChild variant="outline">
-            <Link href={`/track/#${receipt.id}.${receipt.statusKey}`}>Track this report</Link>
+            <Link
+              href={`/track/#${receipt.id}.${receipt.statusKey}`}
+              onClick={event => {
+                onNavigate();
+                // A client-side push to the same page changes the fragment without a hashchange, so the page would keep showing the old report; setting the hash fires it.
+                if (location.pathname.replace(/\/$/, "").endsWith("/track")) { event.preventDefault(); location.hash = event.currentTarget.hash; }
+              }}
+            >
+              Track this report
+            </Link>
           </Button>
         )}
       </div>

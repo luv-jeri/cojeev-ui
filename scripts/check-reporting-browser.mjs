@@ -53,6 +53,8 @@ const seedStore = (page, values) => page.evaluate(entries => new Promise((resolv
   open.onerror = () => reject(open.error);
   open.onsuccess = () => { const tx = open.result.transaction("drafts", "readwrite"); for (const [key, value] of Object.entries(entries)) tx.objectStore("drafts").put(value, key); tx.oncomplete = () => { open.result.close(); resolve(); }; };
 }), values);
+// True when the element (or a descendant) is what is painted at its own centre, so a drawer or overlay on top of it fails.
+const topAtCentre = (page, selector) => page.evaluate(selector => { const node = document.querySelector(selector), box = node.getBoundingClientRect(), hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2); return !!hit && node.contains(hit); }, selector);
 const assertFits = async page => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && Array.from(document.querySelectorAll(".report-sheet")).every(node => node.scrollWidth <= node.clientWidth + 1)), "No page or panel horizontal overflow");
 const localOnly = context => context.route(/^https?:\/\//, route => {
   const url = new URL(route.request().url());
@@ -504,8 +506,22 @@ try {
     await track.click();
     await page.getByRole("heading", { name: "Your report", exact: true }).waitFor();
     await page.locator("li[aria-current='step']").waitFor();
+    // The link closes the drawer: nothing is left painted over the tracking page.
+    await panel(page).waitFor({ state: "hidden" });
+    assert.ok(await topAtCentre(page, "main.track-page h1"), "The tracking heading is what is painted at its centre");
+    {
+      // Track again from the other row while /track/ is showing: the page must load that report, not keep the old one.
+      const statusCalls = []; page.on("request", request => { if (request.url().includes("/v1/status/")) statusCalls.push(request.url()); });
+      await open(page); await openSentRow(page, "Imported request");
+      await page.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }).click();
+      await page.getByRole("heading", { name: "Your request", exact: true }).waitFor();
+      assert.ok(statusCalls.length >= 1, "A Track click on the same route asks for the new report");
+      await panel(page).waitFor({ state: "hidden" });
+    }
+    results.push("track_link_closes_the_drawer_and_loads_the_clicked_report");
+    await page.goBack(); await page.goBack();
     results.push("sent_list_shows_reports_from_this_browser");
-    await page.goBack(); await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false);
+    await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false);
     // The widget lives in the root layout, so the panel may still be open after a client-side back.
     if (!(await panel(page).isVisible())) await open(page);
     await expandSent(page);
@@ -879,6 +895,14 @@ try {
     await mobilePage.locator(".report-sent-detail").waitFor();
     for (const name of ["Refresh status", "Download receipt", "Remove from this device"]) await mobilePage.locator(".report-sent-detail").getByRole("button", { name, exact: true }).waitFor();
     await mobilePage.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }).waitFor();
+    // On a phone the drawer covers the page, so Track must close it: the heading is what is painted, not the drawer.
+    await mobilePage.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }).tap();
+    await mobilePage.locator("main.track-page h1").waitFor();
+    await panel(mobilePage).waitFor({ state: "hidden" });
+    assert.ok(await topAtCentre(mobilePage, "main.track-page h1"), "At 390px the tracking heading is not covered by the drawer");
+    await mobilePage.goBack(); await mobilePage.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false);
+    if (!(await panel(mobilePage).isVisible())) await open(mobilePage);
+    await expandSent(mobilePage); await mobilePage.locator(".report-sent-row").first().click(); await mobilePage.locator(".report-sent-detail").waitFor();
     assertTargets("Request after a send, open row", await measure(mobilePage, TOUCH), ["View", "Sent from this browser", "Refresh status", "Download receipt", "Track this report", "Remove from this device"]);
     await switchTab(mobilePage, "bug");
   }

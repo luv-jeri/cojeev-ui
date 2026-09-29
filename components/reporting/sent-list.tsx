@@ -9,8 +9,8 @@ import { ReceiptDetail } from "./receipt-detail";
 const shortDate = (at: number) => new Date(at).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 
 /** Reports sent from this browser. Renders nothing when there are none. */
-export function SentList({ entries, expanded, openId, emailEnabled, busy, note, onToggle, onOpen, onRefresh, onRemove }: {
-  entries: SentEntry[]; expanded: boolean; openId: string | null; emailEnabled: boolean | undefined; busy: boolean; note: string;
+export function SentList({ entries, expanded, openId, emailEnabled, busy, note, onNavigate, onToggle, onOpen, onRefresh, onRemove }: {
+  entries: SentEntry[]; expanded: boolean; openId: string | null; emailEnabled: boolean | undefined; busy: boolean; note: string; onNavigate: () => void;
   onToggle: () => void; onOpen: (id: string | null) => void; onRefresh: (id: string) => void; onRemove: (id: string) => void;
 }) {
   if (!entries.length) return null;
@@ -36,7 +36,7 @@ export function SentList({ entries, expanded, openId, emailEnabled, busy, note, 
                   {open && (
                     <div className="report-sent-detail report-receipt" id={`report-sent-${receipt.id}`} role="region" aria-labelledby={`report-sent-h-${receipt.id}`}>
                       <h3 tabIndex={-1} id={`report-sent-h-${receipt.id}`}>{title}</h3>
-                      <ReceiptDetail receipt={receipt} kind={kind} emailEnabled={emailEnabled} busy={busy} onRefresh={() => onRefresh(receipt.id)} />
+                      <ReceiptDetail receipt={receipt} kind={kind} emailEnabled={emailEnabled} busy={busy} onRefresh={() => onRefresh(receipt.id)} onNavigate={onNavigate} />
                       <p className="report-warning">This key is the only way to check this report from here.</p>
                       <Button variant="ghost" size="sm" disabled={busy} onClick={() => onRemove(receipt.id)}>Remove from this device</Button>
                     </div>
