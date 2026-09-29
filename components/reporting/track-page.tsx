@@ -14,9 +14,11 @@ function whitelist(raw: unknown): PublicStatus | null {
   const r = raw as Partial<PublicStatus> | null;
   if (!r || (r.kind !== "bug" && r.kind !== "request") || typeof r.sentAt !== "number") return null;
   if (r.stage !== "closed" && !STAGES.includes(r.stage as PublicStage)) return null;
-  const issue = typeof r.issueNumber === "number" && typeof r.issueUrl === "string" ? { issueNumber: r.issueNumber, issueUrl: r.issueUrl } : {};
+  const issue = typeof r.issueNumber === "number" && typeof r.issueUrl === "string" && isHttps(r.issueUrl) ? { issueNumber: r.issueNumber, issueUrl: r.issueUrl } : {};
   return { kind: r.kind, sentAt: r.sentAt, stage: r.stage as PublicStage, attachments: typeof r.attachments === "number" ? r.attachments : 0, ...issue };
 }
+/** The issue link is a live href on a public page, so only https is kept. */
+function isHttps(url: string): boolean { try { return new URL(url).protocol === "https:"; } catch { return false; } }
 const sentDate = (at: number) => new Date(at < 1e12 ? at * 1000 : at).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
 
 export function TrackPage() {
@@ -36,9 +38,10 @@ export function TrackPage() {
   const parsed = hash === null ? undefined : parseTrackFragment(hash);
   const token = `${attempt}${hash}`;
   useEffect(() => {
-    if (!parsed) return;
+    const target = hash === null ? null : parseTrackFragment(hash);
+    if (!target) return;
     const controller = new AbortController();
-    fetchStatus(parsed.id, parsed.key, controller.signal).then(raw => {
+    fetchStatus(target.id, target.key, controller.signal).then(raw => {
       const status = whitelist(raw);
       setAnswer({ token, view: status ? { phase: "found", status } : { phase: "failed" } });
     }, error => {
@@ -46,9 +49,7 @@ export function TrackPage() {
       setAnswer({ token, view: { phase: error instanceof ReportingError && error.status === 404 ? "missing" : "failed" } });
     });
     return () => controller.abort();
-    // The parsed pair is a pure function of `hash`; `token` covers hash and retries.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [hash, attempt, token]);
   const retry = useCallback(() => setAttempt(n => n + 1), []);
   const view: View = parsed === null ? { phase: "missing" } : answer?.token === token ? answer.view : { phase: "loading" };
 

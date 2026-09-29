@@ -37,6 +37,7 @@ test("track_page_shows_the_stage_from_the_fragment", async () => {
     { name: "received", body: { kind: "request", stage: "received", attachments: 0 }, text: "Received" },
     { name: "reviewing", body: { kind: "bug", stage: "reviewing", attachments: 2 }, text: "Being reviewed" },
     { name: "tracked", body: { kind: "bug", stage: "tracked", issueNumber: 412, issueUrl, attachments: 1 }, link: "Tracked as #412" },
+    { name: "unsafe issue url", body: { kind: "bug", stage: "tracked", issueNumber: 412, issueUrl: "javascript:alert(1)", attachments: 0 }, text: "Tracked", noLink: true },
     { name: "fixed request", body: { kind: "request", stage: "fixed", attachments: 0 }, text: "Live", heading: "Your request" },
     { name: "fixed bug", body: { kind: "bug", stage: "fixed", attachments: 0 }, text: "Fixed", heading: "Your report" },
     { name: "closed", body: { kind: "bug", stage: "closed", attachments: 0 }, closed: true },
@@ -55,6 +56,16 @@ test("track_page_shows_the_stage_from_the_fragment", async () => {
       assert.equal(await link.getAttribute("href"), issueUrl);
       assert.equal(await link.getAttribute("target"), "_blank");
       assert.equal(await link.getAttribute("rel"), "noopener noreferrer");
+    }
+    if (item.noLink) assert.equal(await page.locator("a[href^='javascript:']").count() + await result.getByRole("link").count(), 0, "no live link");
+    if (item.name === "tracked") {
+      assert.equal(await result.locator("li[aria-current='step']").innerText(), "Tracked as #412");
+      assert.deepEqual(await result.locator("ol li").evaluateAll(items => items.map(li => li.dataset.state)), ["done", "done", "current", "todo"]);
+    }
+    if (item.name === "received") {
+      assert.match(await page.locator("meta[name='robots']").getAttribute("content"), /noindex/);
+      assert.match(await page.locator("meta[name='robots']").getAttribute("content"), /nofollow/);
+      assert.equal(await page.locator("meta[name='referrer']").getAttribute("content"), "no-referrer");
     }
     if (item.text) assert.equal(await result.getByText(item.text, { exact: true }).isVisible(), true, item.name);
     if (item.closed) {
