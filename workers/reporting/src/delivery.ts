@@ -8,29 +8,34 @@ export class DeliveryFailure extends Error {
   constructor(public reason: string, public ambiguous = false, public permanent = false, public quota = false) { super(reason); }
 }
 export const escapeHTML = (v:string) => v.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
+type EmailLink={label:string;url:string};
+const EMAIL_STYLE="@media (prefers-color-scheme: dark){.em-bg{background:#1a1714 !important}.em-card{background:#26221e !important}.em-text{color:#f5efe4 !important}.em-muted{color:#b9b2a6 !important}.em-link{color:#f5b8db !important}}";
 export function emailMessage(row: ReportRow, kind: string, site: string) {
   const completed=kind==="email_resolved", request=row.kind==="request", n=row.issue_number;
   const alreadyAvailable=kind==="email_received"&&request&&row.status==="resolved"&&!!row.component_url;
-  let heading:string, message:string, url:string, label:string, link=true;
+  let heading:string, message:string, plain:EmailLink|null=null;
   if(kind==="email_accepted") {
     heading=`We're tracking your ${request?"request":"report"} as #${n}`;
     message=`Thanks for ${request?"your request":"reporting the issue"}. We checked it, and it's now tracked as #${n}. Follow progress here: ${row.issue_url}. We'll email you again when it's ${request?"live":"fixed"}.`;
-    url=row.issue_url??"";label="Follow progress";link=false;
+    plain={label:`Follow on GitHub (#${n})`,url:row.issue_url??""};
   } else if(kind==="email_rejected") {
     // The AI's reason is internal and is never part of this message.
     heading="About your report";
     message="Thanks for taking the time to write to us. We checked your report, but it isn't something we can act on, so we've closed it. If we misunderstood, just reply to this email and tell us more.";
-    url="";label="";link=false;
   } else {
     heading=alreadyAvailable?"Your component is already available":completed?(request?"Your component is live":"The issue you reported is fixed"):(request?"Thanks for your request":"Thanks for reporting this");
     message=alreadyAvailable?"The component you requested is already in the library. You can open it below.":completed?(request?"The component you asked for is now in the library.":"We have released a fix for the issue you reported. Thank you for helping improve the library."):(request?"Thank you for your request. We're looking into it and will let you know.":"Thank you for reporting the issue. We're looking into it and will let you know.");
-    url=(completed||alreadyAvailable) && row.component_url?row.component_url:`${site.replace(/\/$/,"")}/requests/`;
-    label=(completed||alreadyAvailable)&&row.component_url?"Open your component":"View component requests";
   }
+  // Rows from before the status key have none: they get no tracking link.
+  const tracking:EmailLink|null=row.status_key?{label:request?"Track your request":"Track your report",url:`${site.replace(/\/$/,"")}/track/#${row.id}.${row.status_key}`}:null;
+  const component:EmailLink|null=(completed||alreadyAvailable)&&request&&row.component_url?{label:"Open your component",url:row.component_url}:null;
+  const button=component??tracking;
+  const links=[...(button?[button]:[]),...(plain?[plain]:[])];
   const reference=`Reference: ${row.id}`;
-  const text=`${heading}\n\n${message}\n\n${reference}\n${link?`${label}: ${url}\n`:""}\n000h by Cojeev`;
-  const button=url?`<p><a href="${escapeHTML(url)}" style="display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none">${label}</a></p>`:"";
-  const html=`<!doctype html><html><body style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:36px auto;padding:32px"><p style="font-size:13px;letter-spacing:2px">000H BY COJEEV</p><h1 style="font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p>${escapeHTML(message)}</p>${button}<p style="font-size:12px;color:#5f5b55">${reference}</p></main></body></html>`;
+  const text=`${heading}\n\n${message}\n\n${reference}\n${links.map(l=>`${l.label}: ${l.url}\n`).join("")}\n000h by Cojeev`;
+  const buttonHTML=button?`<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0"><tr><td style="background:#f5b8db;border-radius:30px"><a href="${escapeHTML(button.url)}" style="display:inline-block;padding:12px 20px;color:#111;text-decoration:none;font-weight:bold">${escapeHTML(button.label)}</a></td></tr></table>`:"";
+  const plainHTML=plain?`<p style="margin:0 0 16px"><a class="em-link" href="${escapeHTML(plain.url)}" style="color:#111">${escapeHTML(plain.label)}</a></p>`:"";
+  const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><style>${EMAIL_STYLE}</style></head><body class="em-bg" style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><table role="presentation" class="em-bg" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fbf4e6"><tr><td align="center" style="padding:36px 12px"><table role="presentation" class="em-card" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;background:#fff;border-radius:16px"><tr><td class="em-text" style="padding:32px;color:#111"><p style="margin:0 0 16px;font-size:13px;letter-spacing:2px">000H BY COJEEV</p><h1 style="margin:0 0 16px;font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p style="margin:0">${escapeHTML(message)}</p>${buttonHTML}${plainHTML}<p class="em-muted" style="margin:0 0 8px;font-size:12px;color:#5f5b55">${escapeHTML(reference)}</p><p class="em-muted" style="margin:0;font-size:12px;color:#5f5b55">000h by Cojeev · Reply to this email if you need help.</p></td></tr></table></td></tr></table></body></html>`;
   return {subject:`${heading} · 000h by Cojeev`,text,html};
 }
 /** Neutralises @mentions on top of redact(), so a public issue can never notify a stranger. */

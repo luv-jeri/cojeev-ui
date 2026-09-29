@@ -20,7 +20,7 @@ before(async()=>{
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage, ownerMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 after(async()=>{await mf?.dispose();});
@@ -442,7 +442,7 @@ test('migration holds legacy pending/processing jobs without erasing receipts or
     const topic=await db.prepare('SELECT id,title,title_key,status,component_url,created_at,updated_at FROM topics WHERE id=?').bind(p.id).first();
     await old.prepare('INSERT INTO topics VALUES(?,?,?,?,?,?,?)').bind(...Object.values(topic)).run();
     const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
-    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at']) delete row[key];
+    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at','status_key']) delete row[key];
     await old.prepare(`INSERT INTO reports VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
     for(const [kind,state] of [['github','pending'],['email_received','processing'],['email_resolved','done']]) await old.prepare('INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,?,?,0,0)').bind(`${p.id}:${kind}`,p.id,kind,state).run();
     await old.exec((await readFile('workers/reporting/migrations/0002_safe_delivery.sql','utf8')).replace(/\n/g,' '));
@@ -463,7 +463,7 @@ test('migration 0003 adds triage columns with pending default and cancels histor
   try {
     const p=payload();await submit(p);
     const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
-    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at']) delete row[key];
+    for(const key of ['triage_state','triage_by','triage_model','triage_reason','triage_title','triage_body','triaged_at','verified_at','status_key']) delete row[key];
     await old.prepare(`INSERT INTO reports VALUES(${Object.keys(row).map(()=>'?').join(',')})`).bind(...Object.values(row)).run();
     for(const [kind,state] of [['github','held'],['email_received','held'],['email_owner_received','pending'],['email_resolved','done']]) await old.prepare('INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,?,?,0,0)').bind(`${p.id}:${kind}`,p.id,kind,state).run();
     await old.exec((await readFile('workers/reporting/migrations/0003_triage.sql','utf8')).replace(/\n/g,' '));
@@ -1023,4 +1023,89 @@ test('approving a pending report into a released topic sends only the it\'s-live
   const r=await put(first.id,ai('approved'));assert.equal(r.status,200);assert.ok((await r.json()).queued.includes('email_resolved'));
   const jobs=(await db.prepare("SELECT kind,state,reviewed_at FROM outbox WHERE report_id=? AND kind IN ('email_resolved','email_accepted')").bind(first.id).all()).results;
   assert.deepEqual(jobs.map(j=>j.kind),['email_resolved']);assert.equal(jobs[0].state,'pending');assert.ok(jobs[0].reviewed_at);
+});
+// Captured from ownerMessage before this task touched delivery.ts.
+const OWNER_LITERAL={"subject":"New bug report saved · 000h by Cojeev","text":"New bug report saved\n\nOpen the private report to read its details. This alert carries no report content.\n\nReference: rid\nOpen the private report: https://library.example.com/cojeev-ui/feedback-admin/?report=rid\n\n000h by Cojeev","html":"<!doctype html><html><body style=\"margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif\"><main style=\"max-width:560px;margin:36px auto;padding:32px\"><p style=\"font-size:13px;letter-spacing:2px\">000H BY COJEEV</p><h1 style=\"font-size:30px;line-height:1.2\">New bug report saved</h1><p>Open the private report to read its details. This alert carries no report content.</p><p><a href=\"https://library.example.com/cojeev-ui/feedback-admin/?report=rid\" style=\"display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none\">Open the private report</a></p><p style=\"font-size:12px;color:#5f5b55\">Reference: rid</p></main></body></html>"};
+const statusOf=(id,key)=>request(`/v1/status/${id}`,'GET',undefined,key);
+const keyOf=async id=>(await triaged(id)).status_key;
+test('status_key_is_minted_at_insert',async()=>{
+  const p=payload({kind:'request',title:'Mint a key'});const r=await (await submit(p)).json();
+  const stored=(await triaged(p.id)).status_key;
+  assert.match(stored,/^[a-f0-9]{64}$/);assert.equal(r.statusKey,stored);assert.equal(r.kind,'request');
+  const again=await submit(p);assert.equal(again.status,200);assert.equal((await again.json()).statusKey,stored);assert.equal((await triaged(p.id)).status_key,stored);
+  const q=payload();const rq=await (await submit(q)).json();assert.equal(rq.kind,'bug');assert.notEqual(rq.statusKey,stored);
+  await db.prepare('UPDATE reports SET status_key=NULL WHERE id=?').bind(q.id).run();
+  const old=await (await request(`/v1/reports/${q.id}`,'GET',undefined,token)).json();assert.ok(!('statusKey' in old));assert.equal(old.kind,'bug');
+});
+test('status_endpoint_shows_only_public_facts',async()=>{
+  const url='https://github.com/owner/library/issues/7001';
+  const states=[['received',"triage_state='pending'",[]],['reviewing',"triage_state='approved'",[]],
+    ['tracked',`triage_state='approved',issue_number=7001,issue_url='${url}'`,['issueNumber','issueUrl']],
+    ['fixed',`triage_state='approved',status='resolved',issue_number=7001,issue_url='${url}'`,['issueNumber','issueUrl']],
+    ['closed',"triage_state='rejected'",[]],['closed',`triage_state='approved',status='declined',issue_number=7001,issue_url='${url}'`,[]]];
+  const fileId=randomUUID(),bytes=new Uint8Array([137,80,78,71]);
+  for(const [stage,set,extra] of states) {
+    const p=payload({title:'PRIVATE-TITLE-xyz',description:'PRIVATE-DESC-xyz',email:'private-xyz@example.com',attachments:[{id:fileId,name:'a.png',type:'image/png',size:bytes.length,sha256:hash(bytes)}]});
+    const res0=await submit(p);assert.equal(res0.status,201,stage+await res0.clone().text());const r=await res0.json();
+    await db.prepare(`UPDATE reports SET ${set},diagnostics_json='{"note":"PRIVATE-DIAG-xyz"}',triage_reason='PRIVATE-REASON-xyz',triage_model='PRIVATE-MODEL-xyz' WHERE id=?`).bind(p.id).run();
+    const key=await keyOf(p.id),res=await statusOf(p.id,key),raw=await res.text();
+    assert.equal(res.status,200,stage);assert.equal(res.headers.get('Cache-Control'),'no-store');
+    const body=JSON.parse(raw);assert.equal(body.stage,stage);
+    assert.deepEqual(Object.keys(body).sort(),['attachments','kind','sentAt','stage',...extra].sort(),stage+set);
+    assert.equal(body.attachments,1);assert.equal(body.kind,'bug');
+    for(const secret of ['PRIVATE-','private-xyz',r.token,hash(r.token),key]) assert.ok(!raw.includes(secret),`${stage} leaks ${secret}`);
+    if(extra.length) assert.deepEqual([body.issueNumber,body.issueUrl],[7001,url]);
+    await db.prepare('DELETE FROM attachments WHERE report_id=?').bind(p.id).run();
+  }
+});
+test('status_endpoint_rejects_a_wrong_key_like_a_missing_report',async()=>{
+  const p=await fresh(),q=await fresh(),key=await keyOf(p.id);
+  await db.prepare('UPDATE reports SET status_key=NULL WHERE id=?').bind(q.id).run();
+  const shape=async res=>JSON.stringify([res.status,await res.text(),[...res.headers].sort()]);
+  const five=[await statusOf(p.id,'c'.repeat(64)),await statusOf(p.id),await statusOf(randomUUID(),key),await statusOf('not-a-uuid',key),await statusOf(q.id,'0'.repeat(64))];
+  const shapes=await Promise.all(five.map(shape));
+  assert.equal(five[0].status,404);for(const s of shapes) assert.equal(s,shapes[0]);
+  assert.equal(await shape(await statusOf(p.id,token)),shapes[0]);
+  assert.equal(await shape(await request(`/v1/reports/${p.id}`,'GET',undefined,key)),shapes[0]);
+  assert.equal((await statusOf(p.id,key)).status,200);
+});
+test('every_customer_email_links_to_its_tracking_page',()=>{
+  const site='https://library.example.com/cojeev-ui/',key='d'.repeat(64),url=`https://library.example.com/cojeev-ui/track/#rid.${key}`;
+  const comp='https://library.example.com/cojeev-ui/docs/timeline/',gh='https://github.com/o/r/issues/9';
+  const base={id:'rid',status:'received',component_url:null,issue_number:null,issue_url:null,status_key:key};
+  const cases=[
+    [{kind:'bug'},'email_received','Track your report',url,false],
+    [{kind:'request'},'email_received','Track your request',url,false],
+    [{kind:'request',status:'resolved',component_url:comp},'email_received','Open your component',comp,false],
+    [{kind:'bug',issue_number:9,issue_url:gh},'email_accepted','Track your report',url,true],
+    [{kind:'request',issue_number:9,issue_url:gh},'email_accepted','Track your request',url,true],
+    [{kind:'bug'},'email_rejected','Track your report',url,false],
+    [{kind:'bug',status:'resolved'},'email_resolved','Track your report',url,false],
+    [{kind:'request',status:'resolved',component_url:comp},'email_resolved','Open your component',comp,false],
+    [{kind:'request',status:'resolved'},'email_resolved','Track your request',url,false]];
+  for(const [more,kind,label,target,follow] of cases) {
+    const m=backend.emailMessage({...base,...more},kind,site),tag=`${kind} ${label}`;
+    assert.ok(m.html.includes(`href="${target}"`)&&m.html.includes(`>${label}</a>`),tag);
+    assert.ok(m.text.includes(`${label}: ${target}`),tag);
+    assert.equal(m.text.includes('Follow on GitHub (#9)'),follow,tag);assert.equal(m.html.includes('Follow on GitHub (#9)'),follow,tag);
+    assert.ok(m.html.includes('000h by Cojeev · Reply to this email if you need help.')&&m.html.includes('<html lang="en">')&&m.html.includes('prefers-color-scheme: dark'),tag);
+    assert.equal(m.text.includes('/track/'),target===url,tag);
+  }
+  for(const [more,kind] of [[{kind:'bug'},'email_received'],[{kind:'bug'},'email_rejected'],[{kind:'bug'},'email_resolved'],[{kind:'bug',issue_number:9,issue_url:gh},'email_accepted']]) {
+    const m=backend.emailMessage({...base,...more,status_key:null},kind,site);
+    assert.ok(!m.html.includes('/track/')&&!m.text.includes('/track/'),kind);
+    assert.equal(m.html.includes('Follow on GitHub'),kind==='email_accepted');
+  }
+  const noKeyLive=backend.emailMessage({...base,kind:'request',status:'resolved',component_url:comp,status_key:null},'email_resolved',site);assert.ok(noKeyLive.html.includes(`href="${comp}"`));
+  assert.deepEqual(backend.ownerMessage({...base,kind:'bug'},site),OWNER_LITERAL);
+  assert.ok(!JSON.stringify(backend.ownerMessage({...base,kind:'bug'},site)).includes('/track/'));
+});
+test('email_html_escapes_every_value',()=>{
+  const evil='https://x.test/"><script>alert(1)</script>&a=\'b\'',site='https://s.test/"><img src=x>';
+  const m=backend.emailMessage({id:'rid',kind:'request',status:'resolved',component_url:evil,issue_number:9,issue_url:evil,status_key:'e'.repeat(64)},'email_accepted',site);
+  const r=backend.emailMessage({id:'rid',kind:'request',status:'resolved',component_url:evil,issue_number:9,issue_url:evil,status_key:'e'.repeat(64)},'email_resolved',site);
+  const esc=v=>v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  for(const html of [m.html,r.html]) for(const raw of ['<script>','"><img','"><script','&a=\'b\'']) assert.ok(!html.includes(raw),raw);
+  assert.ok(m.html.includes(`href="${esc(evil)}"`)&&m.html.includes(`href="${esc(`${site}/track/#rid.${'e'.repeat(64)}`)}"`));
+  assert.ok(r.html.includes(`href="${esc(evil)}"`));
 });

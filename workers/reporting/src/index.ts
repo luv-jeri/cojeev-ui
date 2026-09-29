@@ -1,4 +1,4 @@
-import { accept, authorizeReceipt, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
+import { accept, authorizeReceipt, authorizeStatus, publicStatus, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
 import { assertBrowserOrigin, equalSecret, HttpError, origins, readJSON, requireAdmin } from "./security";
 import { activationCutoff, emailEnabled, expectedActive, githubEnabled, now, ownerNotificationEmail, type Env, type Delivery } from "./types";
 import { emailLimits, resendWebhook } from './resend';
@@ -24,6 +24,8 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
   if(fileMatch&&request.method==="PUT") { assertBrowserOrigin(request,env);return json(await upload(request,env,fileMatch[1],fileMatch[2])); }
   const reportMatch=path.match(/^\/v1\/reports\/([^/]+)$/);
   if(reportMatch&&request.method==="GET") { const {row,token}=await authorizeReceipt(request,env,reportMatch[1]);return json(await receipt(env,row,token)); }
+  const statusMatch=path.match(/^\/v1\/status\/([^/]+)$/);
+  if(statusMatch&&request.method==="GET") return json(await publicStatus(env,await authorizeStatus(request,env,statusMatch[1])));
   if(path.startsWith("/v1/admin/")) {
     const healthOnly=path==='/v1/admin/health'&&request.method==='GET'&&!!env.HEALTH_TOKEN&&env.HEALTH_TOKEN.length>=32&&await equalSecret(request.headers.get('Authorization')??'',`Bearer ${env.HEALTH_TOKEN}`);
     if(!healthOnly) await requireAdmin(request,env);
