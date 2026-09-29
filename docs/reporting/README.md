@@ -104,6 +104,16 @@ Each Codex run has a 120 second limit; a run that stalls is killed and counted a
 
 The admin token comes from `REPORTING_ADMIN_TOKEN`, else the file `.work/reporting/admin-token-<production|beta>` (one line, mode 0600, trimmed). It is never printed or put in a URL.
 
+## Dashboard
+
+`npm run triage:dashboard` opens the review screen at `http://127.0.0.1:4330` (local only, never built or deployed). It lists reports by verdict, lets you mark an AI verdict as verified, and overturns a decision after showing what that will do. Add `?fixtures` to the URL for sample data.
+
+The browser only calls relative `/api/...` URLs. The Vite dev server rewrites them to `<API>/v1/admin/...` and adds the admin token and the allowed `Origin` on the Node side, so the token never reaches the page. `TRIAGE_ENV=beta` selects the beta API; the token rules are the same as for `npm run triage`. `TRIAGE_API` overrides the API origin and exists only for tests against `npm run reporting:dev`.
+
+A report still waiting for the AI has no Verify or Overturn buttons: run `npm run triage` first. A failed action (409, 410, 422 or no connection) is shown next to the buttons in the Worker's own words, and the list reloads.
+
+Browser check against the local Worker (start `npm run reporting:dev` first): `node tests/triage-dashboard.browser.mjs`.
+
 ## Checks
 
 ```sh

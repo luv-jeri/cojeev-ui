@@ -11,6 +11,7 @@ import {
 import type { DataSource, Decision, TriageCounts, TriageDetail, TriageListRow } from "./types";
 
 const TABS = [["check", "Needs your check"], ["approved", "Approved"], ["rejected", "Rejected"], ["pending", "Waiting"], ["all", "All"]] as const;
+const message = (e: unknown) => (e instanceof Error ? e.message : "Something went wrong.");
 const date = (ms: number) => new Date(ms).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 function trust(r: TriageListRow): string | null {
@@ -44,7 +45,7 @@ function Row({ r, selected, onSelect }: { r: TriageListRow; selected: boolean; o
   );
 }
 
-function Detail({ d, onVerify, onDecide }: { d: TriageDetail; onVerify: () => void; onDecide: (x: Decision) => void }) {
+function Detail({ d, error, onVerify, onDecide }: { d: TriageDetail; error: string | null; onVerify: () => void; onDecide: (x: Decision) => void }) {
   const { report: r } = d;
   const links: string[] = JSON.parse(r.references_json || "[]");
   const settled = r.triage_state !== "pending";
@@ -56,6 +57,8 @@ function Detail({ d, onVerify, onDecide }: { d: TriageDetail; onVerify: () => vo
   const needsVerify = settled && r.triage_by === "ai" && !r.verified_at;
   return (
     <Card className="tri-panel"><CardContent className="tri-detail">
+      {!settled && <p className="tri-hint">Waiting for the AI — run <code>npm run triage</code>.</p>}
+      {error && <p role="alert" className="tri-error">{error}</p>}
       {settled && (
         <div className="tri-actions">
           {needsVerify && <Button variant="accent" onClick={onVerify}>Mark verified</Button>}
@@ -99,6 +102,7 @@ export function TriageDashboard({ source }: { source: DataSource }) {
   const [counts, setCounts] = useState<TriageCounts>({ pending: 0, approved: 0, rejected: 0, unverified: 0 });
   const [sel, setSel] = useState<string | null>(null);
   const [detail, setDetail] = useState<TriageDetail | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState(document.documentElement.dataset.mode ?? "light");
 
   const [tick, setTick] = useState(0);
@@ -111,18 +115,24 @@ export function TriageDashboard({ source }: { source: DataSource }) {
       setRows(res.reports);
       setCounts(res.counts);
       setSel((cur) => (cur && res.reports.some((x) => x.id === cur) ? cur : res.reports[0]?.id ?? null));
-    });
+    }).catch((e: unknown) => live && setError(message(e)));
     return () => { live = false; };
   }, [source, tab, tick]);
   useEffect(() => { document.documentElement.dataset.mode = mode; }, [mode]);
   useEffect(() => {
     if (!sel) return;
     let live = true;
-    void source.detail(sel).then((d) => live && setDetail(d));
+    void source.detail(sel).then((d) => live && setDetail(d)).catch((e: unknown) => live && setError(message(e)));
     return () => { live = false; };
   }, [source, sel, tick]);
 
-  const act = (fn: (id: string) => Promise<void>) => async () => { if (sel) { await fn(sel); reload(); } };
+  // Any failure is shown in words; the list and counts reload either way.
+  const act = (fn: (id: string) => Promise<void>) => async () => {
+    if (!sel) return;
+    setError(null);
+    try { await fn(sel); } catch (e) { reload(); setError(message(e)); return; }
+    reload();
+  };
   const cards: [string, number][] = [["Waiting for AI", counts.pending], ["Approved", counts.approved], ["Rejected", counts.rejected], ["Not re-verified", counts.unverified]];
 
   return (
@@ -135,7 +145,7 @@ export function TriageDashboard({ source }: { source: DataSource }) {
         {cards.map(([label, n]) => <Card key={label}><CardContent><div className="tri-num">{n}</div><div className="tri-label">{label}</div></CardContent></Card>)}
       </section>
       {counts.pending > 0 && <p className="tri-hint">Run <code>npm run triage</code> to process {counts.pending} waiting {counts.pending === 1 ? "report" : "reports"}.</p>}
-      <Tabs value={tab} onValueChange={setTab}>
+      <Tabs value={tab} onValueChange={(v) => { setError(null); setTab(v); }}>
         <TabsList>{TABS.map(([v, l]) => <TabsTrigger key={v} value={v}>{l}</TabsTrigger>)}</TabsList>
       </Tabs>
       <div className="tri-split">
@@ -143,12 +153,12 @@ export function TriageDashboard({ source }: { source: DataSource }) {
           <Table>
             <TableHeader><TableRow><TableHead>Report</TableHead><TableHead>Date</TableHead><TableHead>Issue</TableHead></TableRow></TableHeader>
             <TableBody>
-              {rows.map((r) => <Row key={r.id} r={r} selected={r.id === sel} onSelect={() => setSel(r.id)} />)}
+              {rows.map((r) => <Row key={r.id} r={r} selected={r.id === sel} onSelect={() => { setError(null); setSel(r.id); }} />)}
               {rows.length === 0 && <TableRow><TableCell colSpan={3}>Nothing here.</TableCell></TableRow>}
             </TableBody>
           </Table>
         </TableContainer>
-        {sel && detail?.report.id === sel && <Detail d={detail} onVerify={act(source.verify)} onDecide={(x) => act((id) => source.decide(id, x))()} />}
+        {sel && detail?.report.id === sel && <Detail d={detail} error={error} onVerify={act(source.verify)} onDecide={(x) => act((id) => source.decide(id, x))()} />}
       </div>
     </main>
   );

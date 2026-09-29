@@ -94,6 +94,7 @@ body{background:var(--v-canvas);color:var(--v-text);margin:0}
 .tri-detail ul{margin:0;padding-left:var(--s-5);display:grid;gap:var(--s-1)}
 .tri-actions{display:flex;flex-wrap:wrap;gap:var(--s-3)}
 .tri-hint{color:var(--muted-foreground);font-size:var(--fs-small)}
+.tri-error{color:var(--destructive,#b42318);font-size:var(--fs-small)}
 .tri-hint code{background:var(--v-beige);padding:1px 6px;border-radius:6px}
 a.tri-link{color:inherit;text-decoration:underline}
 .tri-head h1{font-size:28px;font-weight:600}

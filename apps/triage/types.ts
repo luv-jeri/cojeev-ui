@@ -1,9 +1,5 @@
-// Copied from the shared contract; switch these to lib/reporting/triage-contract.ts once it lands.
-export type TriageState = "pending" | "approved" | "rejected";
-export type TriageBy = "ai" | "owner" | "join";
-export type Decision = "approved" | "rejected";
-export type TriageCounts = { pending: number; approved: number; rejected: number; unverified: number };
-export type TriageListRow = { id: string; kind: "bug" | "request"; title: string; email: string; status: string; created_at: number; issue_number: number | null; issue_url: string | null; triage_state: TriageState; triage_by: TriageBy | null; triage_model: string | null; triage_title: string | null; triaged_at: number | null; verified_at: number | null };
+import type { Decision, TriageCounts, TriageListRow } from "@/lib/reporting/triage-contract";
+export type { Decision, TriageBy, TriageCounts, TriageListRow, TriageState } from "@/lib/reporting/triage-contract";
 
 // Shape of GET /v1/admin/reports/:id (privateDetail in workers/reporting/src/reports.ts).
 export type TriageDetail = {
