@@ -1,7 +1,7 @@
 import { redact } from "../../../lib/reporting/contracts";
 import { keyedDigest } from "./security";
 import { activationCutoff, emailEnabled, githubEnabled, now, ownerNotificationEmail, type Delivery, type Env, type ReportRow } from "./types";
-import { getReport } from "./reports";
+import { getReport, topicIssue } from "./reports";
 import { messageTags, sendResend, testerAllowed } from './resend';
 
 export class DeliveryFailure extends Error {
@@ -89,6 +89,14 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
   if(row.private_purged) throw new DeliveryFailure("Private report expired.",false,true);
   if(job.kind==="github") {
     if(row.triage_state!=="approved") throw new DeliveryFailure("Waiting for triage.",false,true);
+    // Another report in the topic may have got its issue since this job was queued: share it.
+    const shared=row.kind==="request"&&row.topic_id&&!row.issue_number?await topicIssue(env,row.topic_id):null;
+    if(shared) {
+      const t=now();
+      await env.DB.batch([env.DB.prepare("UPDATE reports SET issue_number=?,issue_node_id=?,issue_url=? WHERE id=?").bind(shared.issue_number,shared.issue_node_id,shared.issue_url,row.id),
+        ...(row.status==="resolved"?[]:[env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_accepted',?,?,?)").bind(`${row.id}:email_accepted`,row.id,t,t,t)])]);
+      return String(shared.issue_number);
+    }
     const issue=await mirrorIssue(env,row,send);
     if(!issue.number||!issue.node_id||!issue.html_url) throw new DeliveryFailure("GitHub issue receipt incomplete.",true);
     const statements=[env.DB.prepare("UPDATE reports SET issue_number=?,issue_node_id=?,issue_url=? WHERE id=?").bind(issue.number,issue.node_id,issue.html_url,row.id)];

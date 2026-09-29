@@ -53,6 +53,8 @@ export async function accept(request: Request, env: Env): Promise<{receipt:Recei
   // Joining a topic that already has an issue needs no verdict: it shares that issue.
   const joinTopic=topicId ?? (topicKey!==null?(await env.DB.prepare("SELECT id FROM topics WHERE title_key=?").bind(topicKey).first<{id:string}>())?.id??null:null);
   const issue=joinTopic?await topicIssue(env,joinTopic):null;
+  // A released topic will never send the follow-up email that the tracking email promises.
+  const released=joinTopic?(await env.DB.prepare("SELECT status FROM topics WHERE id=?").bind(joinTopic).first<{status:string}>())?.status==="resolved":false;
   const statements=[];
   if(topicKey!==null) statements.push(env.DB.prepare("INSERT OR IGNORE INTO topics(id,title,title_key,created_at,updated_at) VALUES(?,?,?,?,?)").bind(report.id,report.title,topicKey,timestamp,timestamp));
   statements.push(env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,topic_id,status,component_url,triage_state,triage_by,triaged_at,issue_number,issue_node_id,issue_url,created_at,updated_at)
@@ -62,7 +64,7 @@ export async function accept(request: Request, env: Env): Promise<{receipt:Recei
   // The maintainer alert is queued with the report it belongs to, so configuring an
   // owner address later can never manufacture alerts for the existing backlog.
   // No GitHub job: a triage verdict decides whether an issue exists.
-  const kinds=["email_received",...(ownerNotificationEmail(env)?["email_owner_received"]:[]),...(issue?["email_accepted"]:[])];
+  const kinds=["email_received",...(ownerNotificationEmail(env)?["email_owner_received"]:[]),...(issue&&!released?["email_accepted"]:[])];
   for(const kind of kinds) statements.push(env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,?,?,?,?)").bind(`${report.id}:${kind}`,report.id,kind,timestamp,timestamp,kind==="email_accepted"?timestamp:null));
   try { await env.DB.batch(statements); }
   catch(error) {
@@ -110,14 +112,15 @@ export async function setStatus(env: Env, row: ReportRow, status: unknown, link:
   const condition=row.topic_id?"topic_id=?":"id=?";const scope=row.topic_id ?? row.id;
   if(row.topic_id) statements.push(env.DB.prepare("UPDATE topics SET status=?,component_url=?,updated_at=? WHERE id=?").bind(status,url,timestamp,row.topic_id));
   statements.push(env.DB.prepare(`UPDATE reports SET status=?,component_url=?,updated_at=? WHERE ${condition}`).bind(status,url,timestamp,scope));
-  if(resolved) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at) SELECT id||':email_resolved',id,'email_resolved',?,? FROM reports WHERE ${condition} AND email<>''`).bind(timestamp,timestamp,scope));
+  if(resolved) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) SELECT id||':email_resolved',id,'email_resolved',?,?,? FROM reports WHERE ${condition} AND email<>'' AND triage_state='approved'`).bind(timestamp,timestamp,timestamp,scope));
   await env.DB.batch(statements);
 }
 export async function privateDetail(env: Env,id:string) {
   const row=await getReport(env,id);
   const {token_hash: _token, payload_hash:_payload, contact_hash:_contact, ...report}=row; void _token; void _payload; void _contact;
   const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,name,type,size,state FROM attachments WHERE report_id=?").bind(id).all(),env.DB.prepare("SELECT id,kind,state,attempts,last_error,provider_id,delivery_status,first_attempt_at,reviewed_at FROM outbox WHERE report_id=? ORDER BY created_at").bind(id).all()]);
-  return {report,attachments:files.results,deliveries:jobs.results};
+  const shared=!!row.issue_number&&!!await env.DB.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved'").bind(row.issue_number,id).first();
+  return {report,attachments:files.results,deliveries:jobs.results,shared};
 }
 export async function privateAttachment(env: Env,id:string,fileId:string) {
   await getReport(env,id);const file=await env.DB.prepare("SELECT * FROM attachments WHERE report_id=? AND id=? AND state='uploaded'").bind(id,fileId).first<AttachmentRow>();

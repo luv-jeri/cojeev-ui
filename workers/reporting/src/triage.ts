@@ -38,7 +38,7 @@ export async function applyVerdict(env: Env, id: string, raw: unknown): Promise<
   } else {
     cancel.push("email_rejected");
     if (cur === "rejected" && row.issue_number) { revive.push("email_accepted"); jobs.push({ id: `${id}:github_state:${t}`, kind: "github_state", payload: '{"state":"open"}' }); }
-    else { const kind = copy ? "email_accepted" : "github"; revive.push(kind); jobs.push({ id: `${id}:${kind}`, kind }); }
+    else if (!(copy && row.status === "resolved")) { const kind = copy ? "email_accepted" : "github"; revive.push(kind); jobs.push({ id: `${id}:${kind}`, kind }); }
   }
   const others = "EXISTS(SELECT 1 FROM reports o WHERE o.issue_number=? AND o.id<>? AND o.triage_state='approved')";
   const detach = (col: string) => held && req.decision === "rejected" ? `CASE WHEN ${others} THEN NULL ELSE ${col} END` : `COALESCE(?,${col})`;
@@ -50,7 +50,7 @@ export async function applyVerdict(env: Env, id: string, raw: unknown): Promise<
   ];
   // Jobs are inserted only if this exact update won, so a racing verdict never queues twice.
   for (const kind of cancel) statements.push(db.prepare(`UPDATE outbox SET state='cancelled',last_error='Superseded by an owner verdict.',lease_token=NULL WHERE id=? AND state IN ('pending','held') AND ${guard}`).bind(`${id}:${kind}`, ...guardArgs));
-  for (const kind of revive) statements.push(db.prepare(`UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state='cancelled' AND ${guard}`).bind(t, t, `${id}:${kind}`, ...guardArgs));
+  for (const kind of revive) statements.push(db.prepare(`UPDATE outbox SET state='pending',due_at=?,reviewed_at=?,last_error=NULL WHERE id=? AND state IN ('cancelled','held') AND ${guard}`).bind(t, t, `${id}:${kind}`, ...guardArgs));
   for (const job of jobs) statements.push(db.prepare(`INSERT OR IGNORE INTO outbox(id,report_id,kind,state,due_at,created_at,reviewed_at,payload_json) SELECT ?,?,?,'pending',?,?,?,? WHERE ${guard}${job.alone ? ` AND NOT ${others}` : ""}`).bind(job.id, id, job.kind, t, t, t, job.payload ?? null, ...guardArgs, ...(job.alone ? [row.issue_number, id] : [])));
   const [update] = await db.batch(statements);
   if (!update.meta.changes) throw new HttpError(409, "Already decided.");

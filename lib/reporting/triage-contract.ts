@@ -35,3 +35,6 @@ export function validateVerdictRequest(raw: unknown): VerdictRequest {
   if (out.by === "ai" && (out.reason === undefined || out.title === undefined || out.body === undefined)) throw new Error("An AI verdict needs a reason, title and body.");
   return out;
 }
+
+/** Extra field on GET /v1/admin/reports/:id: true when another approved report holds the same issue. */
+export type PrivateDetailShared = { shared: boolean };

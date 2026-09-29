@@ -61,6 +61,7 @@ test('public demand counts distinct email while private details stay out of resp
 test('completion updates all topic subscribers and queues one notification each',async()=>{
   const a=payload({kind:'request',title:'Complete topic'});await submit(a);
   const b=payload({kind:'request',title:a.title,topicId:a.id,email:'second@example.com'});await submit(b);
+  await db.prepare("UPDATE reports SET triage_state='approved' WHERE id IN (?,?)").bind(a.id,b.id).run();
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',{status:'resolved'},admin)).status,422);
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',{status:'resolved',componentUrl:'https://evil.test/docs/button/'},admin)).status,422);
   const update={status:'resolved',componentUrl:'https://library.example.com/cojeev-ui/docs/button/'};
@@ -780,9 +781,9 @@ test('approved report creates a public issue from the scrubbed verdict with the 
   assert.deepEqual(JSON.parse(log2.find(c=>c.method==='POST'&&c.url.endsWith('/issues')).body).labels,['enhancement']);
 });
 test('public scrub removes emails, tokens and user paths and neutralises @mentions',async()=>{
-  const dirty='Mail a.b@example.com with Bearer abcdef123456 and ghp_abcdefgh12345 at /Users/sanjay/secret ping @octocat and @some-team';
+  const dirty='Mail a.b@example.com with _john.smith@gmail.com_ and (jane@x.io) and Bearer abcdef123456 and ghp_abcdefgh12345 at /Users/sanjay/secret ping @octocat and @some-team';
   const clean=backend.scrubPublic(dirty,1000);
-  for(const bad of ['a.b@example.com','abcdef123456','ghp_abcdefgh12345','/Users/sanjay']) assert.ok(!clean.includes(bad),bad);
+  for(const bad of ['john.smith@gmail.com','jane@x.io','a.b@example.com','abcdef123456','ghp_abcdefgh12345','/Users/sanjay']) assert.ok(!clean.includes(bad),bad);
   assert.ok(clean.includes('@\u200Boctocat')&&clean.includes('@\u200Bsome-team'));assert.ok(!/@[a-z]/.test(clean));
   assert.equal(backend.scrubPublic('x'.repeat(500),120).length,120);
   const issue=backend.publicIssue({kind:'bug',triage_title:'Hi @octocat',triage_body:'Body a@b.co'},'<!-- m -->');
@@ -887,4 +888,64 @@ test('re-approving a report with its own issue revives a cancelled accepted emai
     const mails=(await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='email_accepted'").bind(p.id).all()).results;
     assert.deepEqual(mails.map(m=>m.state),[sent?'done':'pending']);
   }
+});
+
+// Final-review fixes (R22-R31).
+const releaseIssue = async (n,body='Component: https://library.example.com/cojeev-ui/docs/final-fix/') => {
+  const raw=JSON.stringify({action:'closed',repository:{full_name:'owner/library'},issue:{number:n,state:'closed',state_reason:'completed',updated_at:new Date(Date.now()+5000).toISOString(),labels:[{name:'feedback:released'}],body}});
+  const sig='sha256='+createHmac('sha256','webhook-test-secret').update(raw).digest('hex');
+  return request('/v1/github/webhook','POST',raw,null,{'X-Hub-Signature-256':sig,'X-GitHub-Event':'issues','X-GitHub-Delivery':randomUUID()});
+};
+const kindsOf = async id => (await db.prepare("SELECT kind FROM outbox WHERE report_id=? AND state<>'cancelled'").bind(id).all()).results.map(j=>j.kind);
+test('release emails only the approved reporters of a request topic',async()=>{
+  const a=await fresh({kind:'request',title:'Final fix topic one'});
+  const rej=await fresh({kind:'request',title:a.title,topicId:a.id,email:'rej@example.com'}),pen=await fresh({kind:'request',title:a.title,topicId:a.id,email:'pen@example.com'});
+  await db.prepare("UPDATE reports SET issue_number=9601,triage_state='approved',triage_by='ai' WHERE id=?").bind(a.id).run();
+  await db.prepare("UPDATE reports SET triage_state='rejected' WHERE id=?").bind(rej.id).run();
+  assert.equal((await releaseIssue(9601)).status,202);
+  assert.ok((await kindsOf(a.id)).includes('email_resolved'));
+  assert.ok(!(await kindsOf(rej.id)).includes('email_resolved'));assert.ok(!(await kindsOf(pen.id)).includes('email_resolved'));
+});
+test('joining a released topic promises no tracking email, on intake and on approval',async()=>{
+  const a=await fresh({kind:'request',title:'Final fix topic two'});
+  const early=await fresh({kind:'request',title:a.title,topicId:a.id,email:'early@example.com'});
+  assert.equal((await triaged(early.id)).triage_state,'pending');
+  await db.prepare("UPDATE reports SET issue_number=9602,issue_node_id='I_9602',issue_url='https://github.com/owner/library/issues/9602',triage_state='approved',triage_by='ai' WHERE id=?").bind(a.id).run();
+  assert.equal((await releaseIssue(9602)).status,202);
+  const late=await fresh({kind:'request',title:a.title,topicId:a.id,email:'late@example.com'});
+  const lateRow=await triaged(late.id);assert.equal(lateRow.issue_number,9602);assert.ok(!(await kindsOf(late.id)).includes('email_accepted'));
+  assert.ok((await kindsOf(late.id)).includes('email_received'));
+  const r=await put(early.id,ai('approved'));assert.equal(r.status,200);
+  assert.ok(!(await kindsOf(early.id)).includes('email_accepted'));assert.ok(!(await r.json()).queued.includes('email_accepted'));
+});
+test('redaction removes emails wrapped in underscores or brackets',()=>{
+  for(const c of ['_john.smith@gmail.com_','(jane@x.io)']) assert.ok(!/@/.test(backend.scrubPublic(c,100).replace(/@\u200B/g,'')),c);
+});
+test('approving revives a github job the old code left held',async()=>{
+  const p=await fresh();
+  await db.prepare("INSERT INTO outbox(id,report_id,kind,state,due_at,created_at) VALUES(?,?,'github','held',?,?)").bind(`${p.id}:github`,p.id,Date.now(),Date.now()).run();
+  const r=await put(p.id,ai('approved'));assert.deepEqual((await r.json()).queued,['github']);
+  const job=(await triageJobs(p.id)).find(x=>x.kind==='github');assert.equal(job.state,'pending');
+  assert.ok((await db.prepare("SELECT reviewed_at FROM outbox WHERE id=?").bind(job.id).first()).reviewed_at);
+});
+test('the release email of an approved reporter is born reviewed',async()=>{
+  const p=await fresh();await db.prepare("UPDATE reports SET issue_number=9603,triage_state='approved',triage_by='ai',created_at=1000 WHERE id=?").bind(p.id).run();
+  assert.equal((await releaseIssue(9603,'')).status,202);
+  const e=ghEnv({DELIVERY_ACTIVATED_AT:new Date(Date.now()-1000).toISOString()});await backend.drain(e,p.id,fakeGitHub([]));
+  assert.equal((await db.prepare("SELECT state,reviewed_at FROM outbox WHERE id=?").bind(`${p.id}:email_resolved`).first()).state,'done');
+});
+test('two requests approved on one topic before delivery share a single issue',async()=>{
+  const a=await fresh({kind:'request',title:'Final fix topic three'}),b=await fresh({kind:'request',title:a.title,topicId:a.id,email:'b3@example.com'});
+  assert.equal((await put(a.id,ai('approved'))).status,200);assert.equal((await put(b.id,ai('approved'))).status,200);
+  const log=[];await backend.drain(ghEnv(),a.id,fakeGitHub(log));await backend.drain(ghEnv(),b.id,fakeGitHub(log));
+  assert.equal(log.filter(c=>c.method==='POST'&&c.url.endsWith('/issues')).length,1);
+  const [ra,rb]=[await triaged(a.id),await triaged(b.id)];assert.ok(ra.issue_number);assert.equal(ra.issue_number,rb.issue_number);
+  for(const id of [a.id,b.id]) assert.ok((await kindsOf(id)).includes('email_accepted'));
+});
+test('admin detail says whether another approved report shares the issue',async()=>{
+  const a=await fresh(),b=await fresh();
+  await db.prepare("UPDATE reports SET issue_number=9604,triage_state='approved' WHERE id IN (?,?)").bind(a.id,b.id).run();
+  assert.equal((await (await request(`/v1/admin/reports/${a.id}`,'GET',undefined,admin)).json()).shared,true);
+  await db.prepare("UPDATE reports SET triage_state='rejected' WHERE id=?").bind(b.id).run();
+  assert.equal((await (await request(`/v1/admin/reports/${a.id}`,'GET',undefined,admin)).json()).shared,false);
 });
