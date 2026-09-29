@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {readFileSync} from 'node:fs';
 import {deploymentSecrets} from '../scripts/release.mjs';
 
 test('a separately protected webhook secret preserves existing provider credentials',()=>{
@@ -16,5 +17,36 @@ test('a conflicting webhook secret stops deployment without exposing either secr
       assert.ok(!error.message.includes('whsec_'));
       return true;
     });
+  }
+});
+
+const OLD='o'.repeat(32),NEW='n'.repeat(40);
+const adminEnv={REPORTING_SECRETS_JSON:JSON.stringify({ADMIN_TOKEN:OLD,RESEND_API_KEY:'re_existing'})};
+test('admin_token_override_replaces_bundle_value',()=>{
+  const lines=[];
+  const secrets=deploymentSecrets('production',{...adminEnv,REPORTING_ADMIN_TOKEN:NEW},line=>lines.push(line));
+  assert.deepEqual(secrets,{ADMIN_TOKEN:NEW,RESEND_API_KEY:'re_existing'});
+  assert.deepEqual(lines,['ADMIN_TOKEN: rotated value from REPORTING_ADMIN_TOKEN']);
+});
+test('admin_token_override_absent_is_unchanged',()=>{
+  const lines=[],plain=deploymentSecrets('production',adminEnv,line=>lines.push(line));
+  assert.deepEqual(deploymentSecrets('production',{...adminEnv,REPORTING_ADMIN_TOKEN:''},line=>lines.push(line)),plain);
+  assert.deepEqual(plain,{ADMIN_TOKEN:OLD,RESEND_API_KEY:'re_existing'});
+  assert.deepEqual(lines,[]);
+});
+test('admin_token_override_short_value_fails_without_printing_it',()=>{
+  for(const value of ['short_secret_value','   ','a'.repeat(20)+' '+'b'.repeat(20),'c'.repeat(40)+'\n','d'.repeat(20)+'\t'+'e'.repeat(20)]) assert.throws(()=>deploymentSecrets('production',{...adminEnv,REPORTING_ADMIN_TOKEN:value},()=>{}),error=>{
+    assert.match(error.message,/REPORTING_ADMIN_TOKEN/);
+    assert.ok(!error.message.includes(value.trim()||'\0'));
+    return true;
+  });
+});
+// other_keys_still_refuse_overlap: proved by 'a conflicting webhook secret stops deployment...' above
+// and by operations.test.mjs 'deployment ships the composed bundle and refuses an overlapping key...'.
+test('rollback_workflow_passes_admin_token_override',()=>{
+  for(const file of ['verify.yml','rollback.yml']) {
+    const steps=readFileSync(new URL(`../.github/workflows/${file}`,import.meta.url),'utf8').split(/^ {6}- /m).filter(step=>/^ +REPORTING_SECRETS_JSON:/m.test(step));
+    assert.ok(steps.length>0,`${file} has no deploy step`);
+    for(const step of steps) assert.match(step,/^ +REPORTING_ADMIN_TOKEN: \$\{\{ secrets\.REPORTING_ADMIN_TOKEN \}\}$/m,`${file} step lacks REPORTING_ADMIN_TOKEN`);
   }
 });

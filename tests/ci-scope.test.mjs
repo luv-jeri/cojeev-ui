@@ -743,13 +743,14 @@ test('release depth reduces only documentation and named tooling, and defaults t
   assert.equal(depthOf(['docs/production/note.md', 'README.md', 'OVERHAUL-PLAN.md']), 'docs');
   assert.equal(depthOf(['docs/quality/evidence/h03-2/after-shape-menu.png']), 'docs');
   assert.equal(depthOf(['scripts/release.mjs', 'tests/release-live.test.mjs']), 'affected');
+  // R12 amends R4: a CI-contract edit runs the smoke gate, not the complete job.
   assert.equal(depthOf(['.github/workflows/verify.yml', 'docs/note.md']), 'affected');
   // One unknown path anywhere in the change returns the whole run to full.
   assert.equal(depthOf(['docs/note.md', 'components/ui/button.tsx']), 'full');
   assert.equal(depthOf(['registry/cojeev/styles/accordion.css']), 'full');
   assert.equal(depthOf(['package.json']), 'full');
   assert.equal(depthOf(['scripts/release-config.mjs']), 'full');
-  assert.equal(depthOf(['scripts/run-production-gate.mjs']), 'full', 'the catalogue runner is not exempt by path');
+  assert.equal(depthOf(['scripts/run-production-gate.mjs']), 'affected', 'the catalogue runner is a CI-contract file (R12)');
   assert.equal(depthOf([]), 'full', 'an empty diff proves nothing');
 });
 
@@ -803,11 +804,14 @@ test('a relocation reduces only when the rewritten removal reproduces the additi
   assert.equal(relocationOnly(hunk(['-fs.writeFileSync("GATE.md", text);'])), false);
   assert.equal(relocationOnly(''), false);
   assert.equal(relocationOnly(undefined), false);
-  assert.equal(depthOf(['scripts/run-production-gate.mjs'], undefined), 'full');
+  assert.equal(depthOf(['scripts/run-production-gate.mjs'], undefined), 'affected');
   // The allowance never spreads to a file outside the named set.
-  const moved = hunk(['-fs.writeFileSync("GATE.md", text);', '+fs.writeFileSync("docs/gates/GATE.md", text);']);
-  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'docs/note.md'], moved), 'affected');
-  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'components/ui/button.tsx'], moved), 'full');
+  // run-production-gate.mjs is a CI-contract file (R12) and never reaches the relocation rule,
+  // so the allowance is shown on another relocation-sensitive file.
+  const moved = hunk(['-fs.writeFileSync("GATE.md", text);', '+fs.writeFileSync("docs/gates/GATE.md", text);'], 'scripts/gate-motion-report.mjs');
+  assert.equal(depthOf(['scripts/gate-motion-report.mjs', 'docs/note.md'], moved), 'affected');
+  assert.equal(depthOf(['scripts/gate-motion-report.mjs', 'components/ui/button.tsx'], moved), 'full');
+  assert.equal(depthOf(['scripts/run-production-gate.mjs', 'docs/note.md'], moved.replaceAll('gate-motion-report', 'run-production-gate')), 'affected');
   // One file's clean relocation never excuses another's real edit, and the reason
   // names the file that actually needs the complete job.
   const mixed = `${moved}\n${hunk([
@@ -815,7 +819,7 @@ test('a relocation reduces only when the rewritten removal reproduces the additi
     '+  const reportPath = arg("report")??"docs/gates/GATE.md";',
     '+  fs.writeFileSync(reportPath, text);',
   ], 'apps/gate/run.mjs')}`;
-  const decision = releaseDepth(['scripts/run-production-gate.mjs', 'apps/gate/run.mjs'], mixed);
+  const decision = releaseDepth(['scripts/gate-motion-report.mjs', 'apps/gate/run.mjs'], mixed);
   assert.equal(decision.depth, 'full');
   assert.ok(decision.reason.includes('apps/gate/run.mjs'), decision.reason);
 });
@@ -848,9 +852,10 @@ test('a relocation is refused when no reviewed substitution touched the removed 
     '-fs.writeFileSync("GATE.md", text);',
     '+fs.writeFileSync("docs/gates/GATE.md", text);',
     '+++failures;',
-  ], 'scripts/run-production-gate.mjs');
+  ], 'scripts/gate-motion-report.mjs');
   assert.equal(relocationOnly(preIncrement), false);
-  assert.equal(releaseDepth(['scripts/run-production-gate.mjs'], preIncrement).depth, 'full');
+  // gate-motion-report.mjs is relocation-sensitive and not CI contract, so a diff that is not a pure relocation is full.
+  assert.equal(releaseDepth(['scripts/gate-motion-report.mjs'], preIncrement).depth, 'full');
   // The real cleanup's own shapes still pass: an indented insertion, an import
   // with no semicolon, and a substitution inside a long JSX line.
   assert.ok(relocationOnly(hunk([
@@ -867,9 +872,7 @@ test('a relocation is refused when no reviewed substitution touched the removed 
 
 test('paths that own a bounded browser harness select it instead of the catalogue, never nothing', () => {
   const decision = releaseDepth([
-    'scripts/check-docs.mjs',
     'tests/docs-transient-timing.browser.mjs',
-    'scripts/lib/docs-summary.mjs',
     'tests/docs-summary.test.mjs',
   ]);
   assert.equal(decision.depth, 'affected');
@@ -879,6 +882,10 @@ test('paths that own a bounded browser harness select it instead of the catalogu
   assert.equal(outputs.run_transient, 'true', 'browser evidence is reduced, never removed');
   assert.equal(outputs.run_checks, 'true');
   assert.equal(outputs.run_release, 'true');
+  // check-docs.mjs and docs-summary.mjs are CI contract (M1): the smoke catalogue runs and the harness still runs with it.
+  const contract = releaseOutputs(releaseDepth(['scripts/check-docs.mjs', 'scripts/lib/docs-summary.mjs']));
+  assert.equal(contract.run_catalogue, 'true');
+  assert.equal(contract.run_transient, 'true');
 });
 
 test('the analytics consent surface selects its own browser journey instead of the catalogue', () => {
@@ -939,10 +946,10 @@ test('release outputs are complete, explicit and fail safe for every depth', () 
   const docs = releaseOutputs(releaseDepth(['docs/note.md']));
   assert.deepEqual(docs, {
     depth: 'docs', depth_reason: '1 changed path, all documentation',
-    run_checks: 'false', run_release: 'false', run_catalogue: 'false', run_transient: 'false', run_analytics: 'false', run_seo: 'false',
+    run_checks: 'false', run_release: 'false', run_catalogue: 'false', gate_ids: '', run_transient: 'false', run_analytics: 'false', run_seo: 'false', run_reporting: 'false',
   });
   const full = releaseOutputs(releaseDepth(['components/ui/button.tsx']));
-  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics', 'run_seo']) assert.equal(full[flag], 'true', flag);
+  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics', 'run_seo', 'run_reporting']) assert.equal(full[flag], 'true', flag);
   assert.equal(full.depth, 'full');
   assert.ok(full.depth_reason.includes('components/ui/button.tsx'));
   // Every published value is a single line, so no reason can forge another output.
@@ -973,17 +980,17 @@ test('the release command reads a real diff and publishes one of the three known
   fs.mkdirSync(path.join(cwd, 'docs'));
   fs.mkdirSync(path.join(cwd, 'scripts'));
   fs.writeFileSync(path.join(cwd, 'docs/note.md'), 'base\n');
-  fs.writeFileSync(path.join(cwd, 'scripts/run-production-gate.mjs'), 'fs.writeFileSync("GATE.md", text);\n');
+  fs.writeFileSync(path.join(cwd, 'scripts/gate-motion-report.mjs'), 'fs.writeFileSync("GATE.md", text);\n');
   git('add', '-A');
   git('commit', '-qm', 'base');
   const base = git('rev-parse', 'HEAD').trim();
-  fs.writeFileSync(path.join(cwd, 'scripts/run-production-gate.mjs'), 'fs.mkdirSync("docs/gates",{recursive:true});\nfs.writeFileSync("docs/gates/GATE.md", text);\n');
+  fs.writeFileSync(path.join(cwd, 'scripts/gate-motion-report.mjs'), 'fs.mkdirSync("docs/gates",{recursive:true});\nfs.writeFileSync("docs/gates/GATE.md", text);\n');
   fs.appendFileSync(path.join(cwd, 'docs/note.md'), 'more prose\n');
   git('commit', '-qam', 'relocate the generated report');
   const head = git('rev-parse', 'HEAD').trim();
 
   const paths = changedPaths({ base, head, cwd });
-  assert.deepEqual(paths.sort(), ['docs/note.md', 'scripts/run-production-gate.mjs']);
+  assert.deepEqual(paths.sort(), ['docs/note.md', 'scripts/gate-motion-report.mjs']);
   const diff = relocationDiff({ base, head, paths, cwd });
   assert.ok(diff.includes('docs/gates/GATE.md'), diff);
   assert.ok(!diff.includes('docs/note.md'), 'only relocation-sensitive files are read');
@@ -992,7 +999,7 @@ test('the release command reads a real diff and publishes one of the three known
   // The shape the real cleanup used in apps/gate/run.mjs: the write is moved into
   // a new variable. That is a code change, not a path substitution, so it keeps
   // the complete job until it is rewritten as a substitution.
-  fs.writeFileSync(path.join(cwd, 'scripts/run-production-gate.mjs'),
+  fs.writeFileSync(path.join(cwd, 'scripts/gate-motion-report.mjs'),
     'const reportPath="docs/gates/GATE.md";\nfs.mkdirSync("docs/gates",{recursive:true});\nfs.writeFileSync(reportPath, text);\n');
   git('commit', '-qam', 'extract a variable');
   const extracted = git('rev-parse', 'HEAD').trim();
@@ -1118,4 +1125,228 @@ test('nothing selected at a reduced depth needs a browser Playwright did not ins
   for (const script of ['scripts/release-csp.mjs', 'scripts/release-install.mjs', 'scripts/verify-install.mjs', 'scripts/check-example-source.mjs']) {
     assert.equal(launches(fs.readFileSync(path.join(root, script), 'utf8')), false, script);
   }
+});
+
+// ---------------------------------------------------------------------------
+// Area rules: independent areas earn a reduced scope by directory, on a path
+// segment boundary. Site, component, config and unknown paths stay full.
+
+const pr90Paths = fs.readFileSync(path.join(root, 'tests/fixtures/pr90-paths.txt'), 'utf8').split('\n').filter(Boolean);
+const packageJson = fs.readFileSync(path.join(root, 'package.json'), 'utf8');
+const withScripts = (edit) => {
+  const after = JSON.parse(packageJson);
+  const before = structuredClone(after);
+  edit(before, after);
+  return { before: JSON.stringify(before), after: JSON.stringify(after) };
+};
+// The pr90 shape: the current manifest, minus the two script lines #90 added.
+const pr90Package = withScripts((before) => { delete before.scripts['triage:dashboard']; delete before.scripts.triage; });
+const push = (paths, extra = {}) => resolveReleaseDepth({ event: 'push', paths, diff: '', ...extra });
+const flags = (decision) => releaseOutputs(decision);
+
+test('triage_only_runs_quick', () => {
+  const paths = ['apps/triage/api.ts', 'scripts/triage/run.ts', 'scripts/triage.ts', 'tests/triage.test.ts',
+    'tests/triage-proxy.test.ts', 'docs/reporting/notes.png'];
+  const checkpoint = classify(paths);
+  assert.deepEqual(checkpoint.suites, ['quick']);
+  const scope = outputsFor(checkpoint);
+  assert.equal(scope.run_build, 'false');
+  assert.equal(scope.run_quick, 'true');
+  const release = flags(releaseDepth(paths));
+  assert.equal(release.depth, 'quick');
+  assert.equal(release.run_checks, 'true');
+  assert.equal(release.run_catalogue, 'false');
+  assert.equal(release.run_release, 'false');
+});
+
+test('pr90_fixture_never_runs_catalogue', () => {
+  assert.equal(pr90Paths.length, 34);
+  const decision = releaseDepth(pr90Paths, '', { package: pr90Package });
+  const out = flags(decision);
+  assert.equal(out.run_catalogue, 'false', decision.reason);
+  assert.equal(out.run_checks, 'true');
+  // R1: workers/reporting is quick + release-pack, so the release pair still builds.
+  assert.equal(out.run_release, 'true');
+  assert.equal(out.run_reporting, 'true', 'lib/reporting/contracts.ts and receipt-labels.ts are widget library');
+  assert.equal(decision.depth, 'affected');
+  // Without the manifest the package.json line cannot be judged: full.
+  assert.equal(releaseDepth(pr90Paths).depth, 'full');
+});
+
+test('reporting_worker_runs_pack_not_catalogue', () => {
+  for (const file of ['workers/reporting/src/x.ts', 'workers/reporting/migrations/0003_triage.sql', 'workers/reporting/test/integration.test.mjs']) {
+    const out = flags(releaseDepth([file]));
+    assert.equal(out.depth, 'affected', file);
+    assert.equal(out.run_checks, 'true');
+    assert.equal(out.run_release, 'true');
+    assert.equal(out.run_catalogue, 'false');
+    assert.equal(out.run_reporting, 'false');
+  }
+});
+
+test('registry_host_worker_runs_pack_not_catalogue', () => {
+  const out = flags(releaseDepth(['workers/registry-host/src/index.ts', 'workers/registry-host/test/csp.test.mjs']));
+  assert.equal(out.depth, 'affected');
+  assert.equal(out.run_release, 'true');
+  assert.equal(out.run_catalogue, 'false');
+});
+
+test('widget_lib_change_runs_reporting_consent', () => {
+  for (const file of ['lib/reporting/capture.ts', 'lib/reporting/client.ts', 'lib/reporting/contracts.ts', 'lib/reporting/diagnostics.ts',
+    'lib/reporting/receipt-labels.ts', 'components/reporting/admin.tsx', 'components/reporting/reporting.css']) {
+    const out = flags(releaseDepth([file]));
+    assert.equal(out.depth, 'affected', file);
+    assert.equal(out.run_reporting, 'true', file);
+    assert.equal(out.run_release, 'true', file);
+    assert.equal(out.run_catalogue, 'false', file);
+  }
+  // Unchanged from today: draft.ts and the widget itself stay full at release depth.
+  for (const file of ['lib/reporting/draft.ts', 'components/reporting/reporting-widget.tsx']) assert.equal(releaseDepth([file]).depth, 'full', file);
+});
+
+// The deployed reporting Worker imports validateVerdictRequest from this file, so an edit ships it (ruling R18 amended).
+test('triage_contract_edit_ships_the_worker', () => {
+  const out = flags(releaseDepth(['lib/reporting/triage-contract.ts']));
+  assert.equal(out.run_release, 'true');
+  assert.equal(out.run_catalogue, 'false');
+  assert.equal(out.run_reporting, 'false');
+  assert.ok(!outputsFor(classify(['lib/reporting/triage-contract.ts'])).suites.includes('reporting-consent'));
+});
+
+test('package_json_script_addition_is_quick', () => {
+  const quick = (edit) => releaseDepth(['package.json'], '', { package: withScripts(edit) }).depth;
+  assert.equal(quick((before) => { delete before.scripts['triage:dashboard']; delete before.scripts.triage; }), 'quick');
+  assert.equal(quick((before) => { delete before.scripts.triage; }), 'quick');
+  assert.equal(quick((before, after) => { after.scripts['analytics:test'] = 'true'; }), 'quick', 'a non-listed script may change');
+  for (const key of ['build', 'gate', 'gate:mobile', 'test', 'lint', 'dev', 'start', 'typecheck', 'registry:build', 'styles:build', 'check:examples', 'postinstall', 'pretest', 'install']) {
+    assert.equal(quick((before) => { delete before.scripts[key]; before.scripts[key] = 'echo old'; }), 'full', key);
+  }
+  assert.equal(quick((before, after) => { after.dependencies.left = '1.0.0'; }), 'full');
+  assert.equal(quick((before, after) => { after.browserslist = ['last 1 chrome version']; }), 'full');
+  assert.equal(quick((before, after) => { after.name = 'other'; }), 'full');
+  assert.equal(releaseDepth(['package.json'], '', { package: { before: '{', after: packageJson } }).depth, 'full', 'parse failure');
+  assert.equal(releaseDepth(['package.json']).depth, 'full', 'no manifest to compare');
+  // Checkpoint scope reads the same manifest.
+  const scoped = withScripts((before) => { delete before.scripts.triage; });
+  assert.deepEqual(classify(['package.json'], { package: scoped }).suites, ['quick']);
+  assert.equal(classify(['package.json']).scope, 'full');
+});
+
+test('lockfile_runs_full', () => {
+  for (const file of ['package-lock.json', '.github/wrangler-runtime/package.json', 'next.config.ts', 'tsconfig.json', 'eslint.config.mjs', 'postcss.config.mjs']) {
+    assert.equal(releaseDepth([file]).depth, 'full', file);
+    assert.equal(classify([file]).scope, 'full', file);
+  }
+});
+
+test('workflow_or_ci_scope_edit_runs_smoke_on_main', () => {
+  for (const file of ['.github/workflows/verify.yml', 'scripts/ci-scope.mjs', 'tests/ci-scope.test.mjs', 'scripts/run-production-gate.mjs']) {
+    for (const event of ['push', 'pull_request']) {
+      assert.equal(resolveReleaseDepth({ event, paths: [file, 'docs/note.md'], diff: '' }).depth, 'affected', `${event} ${file}`);
+    }
+  }
+});
+
+test('unknown_path_is_full', () => {
+  assert.equal(push(['something/new.ts']).depth, 'full');
+  assert.equal(releaseDepth(['apps/other/x.ts']).depth, 'full');
+});
+test('empty_diff_is_full', () => assert.equal(push([]).depth, 'full'));
+test('lookup_failure_is_full', () => {
+  assert.equal(push(undefined, { readPaths: () => { throw new Error('boom'); } }).depth, 'full');
+  const failing = resolveReleaseDepth({ event: 'push', paths: ['package.json'], readPackage: () => { throw new Error('no manifest'); } });
+  assert.equal(failing.depth, 'full');
+});
+test('manual_dispatch_is_full', () => {
+  for (const paths of [['apps/triage/api.ts'], ['workers/reporting/src/x.ts'], ['docs/a.md']]) {
+    assert.equal(resolveReleaseDepth({ event: 'workflow_dispatch', paths }).depth, 'full');
+  }
+});
+test('mixed_area_and_unknown_is_full', () => {
+  for (const unknown of ['app/about/page.tsx', 'registry/cojeev/ui/button.tsx', 'package-lock.json']) {
+    const decision = releaseDepth(['apps/triage/api.ts', 'workers/reporting/src/x.ts', unknown]);
+    assert.equal(decision.depth, 'full', unknown);
+    assert.ok(decision.reason.includes(unknown), decision.reason);
+    assert.equal(classify(['apps/triage/api.ts', unknown]).scope, 'full', unknown);
+  }
+});
+test('mixed_areas_take_the_union', () => {
+  const decision = releaseDepth(['apps/triage/api.ts', 'workers/registry-host/src/index.ts', 'lib/reporting/capture.ts', 'docs/a.md']);
+  assert.equal(decision.depth, 'affected');
+  assert.deepEqual(decision.suites, ['reporting-consent']);
+});
+
+test('no_prefix_rule_admits_neighbour', () => {
+  const areas = ['apps/triage/api.ts', 'scripts/triage/run.ts', 'scripts/triage.ts', 'lib/reporting/triage-contract.ts', 'tests/triage.test.ts',
+    'workers/reporting/src/x.ts', 'workers/registry-host/src/index.ts', 'lib/reporting/capture.ts', 'components/reporting/admin.tsx'];
+  for (const file of areas) assert.notEqual(releaseDepth([file]).depth, 'full', `${file} is in its area`);
+  const neighbours = [
+    'apps/triage-evil/x.ts', 'apps/triage', 'apps/triage/../gate/run.mjs', 'apps//triage/x.ts', 'apps/gate/x.ts',
+    'scripts/triage-evil/run.ts', 'scripts/triage.ts.bak', 'scripts/triage.tsx', 'scripts/triages/x.ts',
+    'lib/reporting/triage-contract.ts.bak', 'lib/reporting/triage-contract2.ts', 'lib/reporting/capture.ts.bak', 'lib/reporting/capture.tsx',
+    'lib/reporting/other.ts', 'lib/other/capture.ts',
+    'tests/triage.test.ts.bak', 'tests/triage/nested.test.ts', 'tests/triage.test.js',
+    'workers/reporting-evil/src/x.ts', 'workers/reporting', 'workers/registry-host-evil/x.ts', 'workers/other/x.ts', 'workers/x.ts',
+    'components/reporting-evil/x.tsx', 'components/reporting', 'components/other/admin.tsx',
+    'docs/reporting-evil/x.mjs', 'docs/reporting.mjs',
+  ];
+  // A root unit test is quick at a checkpoint by the existing rule, but never an area member at release.
+  assert.equal(releaseDepth(['tests/triager.test.ts']).depth, 'full');
+  for (const file of neighbours) {
+    assert.equal(releaseDepth([file]).depth, 'full', `release: ${file}`);
+    assert.equal(classify([file]).scope, 'full', `checkpoint: ${file}`);
+  }
+});
+
+const releaseSteps = () => parse(fs.readFileSync(path.join(root, '.github/workflows/verify.yml'), 'utf8')).jobs.verify.steps;
+const stepRunning = (needle) => releaseSteps().find(step => String(step.run ?? '').includes(needle));
+const readsFlag = (step, flag) => new RegExp(`steps\\.depth\\.outputs\\.${flag} == 'true'`).test(String(step?.if));
+
+test('area_table_covers_every_workflow_flag', () => {
+  const text = JSON.stringify(releaseSteps().map(step => step.if ?? ''));
+  const read = [...new Set([...text.matchAll(/steps\.depth\.outputs\.(run_[a-z]+)/g)].map(match => match[1]))];
+  const produced = Object.keys(releaseOutputs(releaseDepth(['components/ui/button.tsx'])));
+  // A flag the workflow reads but no output publishes is silently always off.
+  for (const flag of read) assert.ok(produced.includes(flag), `${flag} is read by verify.yml but never produced by ci-scope`);
+  // A flag with no fixture that turns it on is a rule nothing can reach.
+  const fixtures = [['docs/note.md'], ['scripts/triage.ts'], ['workers/reporting/src/x.ts'], ['components/reporting/reporting-widget.tsx'],
+    ['tests/docs-transient-timing.browser.mjs'], ['tests/analytics.browser.mjs'], ['lib/seo/structured-data.ts'], ['components/ui/button.tsx']];
+  for (const flag of produced.filter(name => name.startsWith('run_'))) {
+    assert.ok(fixtures.some(paths => releaseOutputs(releaseDepth(paths))[flag] === 'true'), `${flag} has no fixture that turns it on`);
+  }
+  // run_catalogue is the only flag that must stay off for every non-full fixture.
+  for (const paths of fixtures.filter(paths => releaseDepth(paths).depth !== 'full')) assert.equal(releaseOutputs(releaseDepth(paths)).run_catalogue, 'false', paths.join());
+});
+
+test('widget_lib_change_runs_reporting_browser_at_release_depth', () => {
+  const steps = [stepRunning('node scripts/run-reporting-browser.mjs'),
+    releaseSteps().find(step => step.name === 'Build the disposable local reporting fixture')];
+  for (const step of steps) {
+    assert.ok(step, 'reporting fixture build and browser journey must exist at release depth');
+    assert.ok(readsFlag(step, 'run_catalogue') && readsFlag(step, 'run_reporting'), step.name ?? step.run);
+  }
+  const install = stepRunning('playwright install');
+  assert.ok(readsFlag(install, 'run_reporting'), 'the journey needs a browser installed');
+  for (const file of ['components/reporting/reporting-form.tsx', 'lib/reporting/capture.ts', 'lib/reporting/client.ts', 'lib/reporting/contracts.ts',
+    'lib/reporting/diagnostics.ts', 'lib/reporting/receipt-labels.ts']) {
+    const decision = releaseDepth([file]);
+    const out = releaseOutputs(decision);
+    if (decision.depth === 'full') continue; // full runs the journey through run_catalogue
+    assert.equal(out.run_reporting, 'true', file);
+    assert.equal(out.run_catalogue, 'false', file);
+  }
+  // Areas that do not touch the widget still skip it.
+  assert.equal(releaseOutputs(releaseDepth(['scripts/triage.ts'])).run_reporting, 'false');
+});
+
+test('quick_depth_keeps_checks_and_skips_the_release_pack', () => {
+  const out = releaseOutputs(releaseDepth(['scripts/triage.ts']));
+  assert.equal(out.depth, 'quick');
+  assert.equal(out.run_checks, 'true');
+  for (const needle of ['npm run lint', 'npm run typecheck', 'npm test', 'npm run reporting:test', 'npm run registry-host:test']) {
+    const step = releaseSteps().find(s => String(s.run ?? '').includes(needle));
+    assert.ok(readsFlag(step, 'run_checks'), needle);
+  }
+  for (const needle of ['release.mjs build-pair', 'release-csp.mjs', 'release-install.mjs']) assert.ok(readsFlag(stepRunning(needle), 'run_release'), needle);
+  assert.equal(out.run_release, 'false');
 });

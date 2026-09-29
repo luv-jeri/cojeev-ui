@@ -73,12 +73,19 @@ export async function readArtifact(directory,environment,commit,digest) {
   if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');
   return manifest;
 }
-export function deploymentSecrets(environment,env=process.env) {
+export function deploymentSecrets(environment,env=process.env,log=console.error) {
   const bundles=composeSecretBundles(env.REPORTING_SECRETS_JSON,env.REPORTING_ADDITIONAL_SECRETS_JSON);
   // Provision webhook signing separately without rewriting either protected
   // bundle. Refuse overlaps so rotation is explicit, never a silent overwrite.
   const webhook=env.RESEND_WEBHOOK_SECRET ? JSON.stringify({RESEND_WEBHOOK_SECRET:env.RESEND_WEBHOOK_SECRET}) : undefined;
-  return validateSecrets(composeSecretBundles(bundles,webhook),environment);
+  const composed=validateSecrets(composeSecretBundles(bundles,webhook),environment);
+  // The one explicit exception to the no-overwrite rule: a rotated ADMIN_TOKEN
+  // that the bundles (write-only GitHub secrets) cannot carry. Same rule as validateSecrets.
+  const rotated=env.REPORTING_ADMIN_TOKEN;
+  if(rotated===undefined||rotated==='') return composed;
+  if(typeof rotated!=='string'||!rotated.trim()||/\s/.test(rotated)||rotated.length<32) throw new Error('REPORTING_ADMIN_TOKEN must be a non-blank value of at least 32 characters');
+  log('ADMIN_TOKEN: rotated value from REPORTING_ADMIN_TOKEN');
+  return {...composed,ADMIN_TOKEN:rotated};
 }
 export async function deployRelease(directory,environment,commit,digest,{rollback=false,run=wrangler,backupDatabase=prepareDatabaseRecovery,cf=cloudflare}={}) {
   const manifest=await readArtifact(directory,environment,commit,digest);
