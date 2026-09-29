@@ -84,6 +84,39 @@ try {
   });
   assert.deepEqual(textDrag, { prevented: false, overlay: false }, "A text drag is neither cancelled nor shown as a file drop");
   results.push("Dropping a file anywhere on the form shows Drop files to attach and attaches it");
+  {
+    let lookups = 0;
+    const topicBody = { requests: [
+      { id: "5d9f3a1e-0000-4000-8000-000000000001", title: "Calendar range", status: "received", componentUrl: null, createdAt: 1790000000000, updatedAt: 1790000000000, demand: 12, approved: true },
+      { id: "a7698a7b-0000-4000-8000-000000000002", title: "Component request a7698a7b", status: "received", componentUrl: null, createdAt: 1790000000000, updatedAt: 1790000000000, demand: 1, approved: false }
+    ], hasMore: false };
+    await context.route(`${api}/v1/requests?**`, async route => { lookups += 1; await route.fulfill({ json: topicBody }); });
+    const titleBox = page.getByRole("textbox", { name: "What component do you want?", exact: true });
+    await titleBox.fill("");
+    await titleBox.fill("Ca"); await page.waitForTimeout(600);
+    assert.equal(lookups, 0, "No lookup below 3 characters");
+    assert.equal(await panel(page).getByRole("heading", { name: "Others want this too", exact: true }).count(), 0);
+    await titleBox.fill("Calendar");
+    await panel(page).getByRole("heading", { name: "Others want this too", exact: true }).waitFor();
+    const section = panel(page).locator(".report-suggestions", { has: page.getByRole("heading", { name: "Others want this too", exact: true }) });
+    assert.equal(await section.getByRole("button").count(), 1);
+    assert.equal((await section.getByRole("button").innerText()).replace(/\s+/g, " ").trim(), "Calendar range · 12 people · Join");
+    assert.ok(!(await panel(page).innerText()).includes("Component request"));
+    const lib = panel(page).locator(".report-suggestions", { has: page.getByRole("heading", { name: "Already in the library", exact: true }) }).getByRole("link", { name: "Calendar", exact: true });
+    assert.equal((await lib.innerText()).replace(/\s+/g, " ").trim(), "Calendar");
+    results.push("Only approved requests appear under Others want this too, as Calendar range · 12 people · Join; library matches show the title only; no lookup below 3 characters");
+    await section.getByRole("button").click();
+    await panel(page).getByText("Joining this request. Your email counts once.", { exact: true }).waitFor();
+    assert.ok(await titleBox.isDisabled()); assert.equal(await titleBox.inputValue(), "Calendar range");
+    await panel(page).getByText("Optional", { exact: true }).waitFor();
+    assert.equal(await page.getByLabel("How would you use it?", { exact: true }).evaluate(n => n.tagName), "TEXTAREA");
+    await panel(page).getByRole("button", { name: "Ask for something else", exact: true }).click();
+    await panel(page).getByText("Joining this request. Your email counts once.", { exact: true }).waitFor({ state: "detached" });
+    assert.ok(await titleBox.isEnabled());
+    results.push("Joining an approved request shows the short notice and Optional tag; Ask for something else leaves it");
+    await context.unroute(`${api}/v1/requests?**`);
+    await titleBox.fill("");
+  }
   await fill(page, "request", `Browser request ${run}`);
   // The status may still read "Draft saved" from the drop step, so prove the typed title reached storage.
   await page.waitForFunction(title => new Promise(resolve => {

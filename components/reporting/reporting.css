@@ -122,17 +122,6 @@
   text-align: left;
   font-size: var(--fs-control);
 }
-.report-suggestions small {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-size: var(--fs-meta);
-  line-height: 1.5;
-  font-weight: var(--fw-regular);
-  color: var(--v-text-2);
-  margin-top: 3px;
-}
 .report-suggestions a:hover,
 .report-suggestions button:hover {
   color: var(--v-text-2);

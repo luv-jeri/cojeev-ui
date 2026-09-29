@@ -51,7 +51,10 @@ import {
   type CaptureArea,
   type CaptureProgress,
 } from "@/lib/reporting/capture";
-import { emailReceiptLabel, issueReceiptLabel } from "@/lib/reporting/receipt-labels";
+import {
+  emailReceiptLabel,
+  issueReceiptLabel,
+} from "@/lib/reporting/receipt-labels";
 import { siteFlags } from "@/lib/site-config";
 import {
   snapshotDiagnostics,
@@ -125,8 +128,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     [storage, setStorage] = useState(""),
     [config, setConfig] = useState<ReportingConfig | null>(null),
     [configError, setConfigError] = useState("");
-  const [topics, setTopics] = useState<RequestTopic[]>([]),
-    [topicError, setTopicError] = useState("");
+  const [topics, setTopics] = useState<RequestTopic[]>([]);
   const [picking, setPicking] = useState<false | "pins" | "area">(false),
     [capture, setCapture] = useState<File | null>(null),
     [dragging, setDragging] = useState(false),
@@ -195,7 +197,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           : "",
       );
       setTopics([]);
-      setTopicError("");
       setDragging(false);
       setTurnstileToken("");
       setVerificationAttempt((value) => value + 1);
@@ -293,30 +294,31 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       });
     return () => abort.abort();
   }, [open]);
+  const lookupOn = draft.kind === "request" && draft.title.trim().length >= 3;
   useEffect(() => {
-    if (!open || draft.kind !== "request" || !REPORTING_API) return;
+    if (!open || !lookupOn || !REPORTING_API) return;
     const abort = new AbortController();
     const timeout = setTimeout(() => {
       reportingFetch<{ requests: RequestTopic[] }>(
         `/v1/requests?q=${encodeURIComponent(draft.title)}&offset=0`,
         { signal: abort.signal },
       )
-        .then((result) => {
-          setTopics(result.requests);
-          setTopicError("");
-        })
-        .catch((cause) => {
-          if (!abort.signal.aborted) setTopicError(message(cause));
+        .then((result) => setTopics(result.requests))
+        .catch(() => {
+          if (!abort.signal.aborted) setTopics([]);
         });
     }, 300);
     return () => {
       clearTimeout(timeout);
       abort.abort();
     };
-  }, [open, draft.title, draft.kind]);
+  }, [open, draft.title, lookupOn]);
   useEffect(() => {
     if (step !== "edit") reviewTitle.current?.focus();
   }, [step]);
+  const approvedTopics = lookupOn
+    ? topics.filter((t) => t.approved).slice(0, 4)
+    : [];
   const matches = useMemo(
     () =>
       draft.kind === "request" ? findComponents(draft.title, entries) : [],
@@ -693,19 +695,16 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <span>
-                            {entry.title}
-                            <small>{entry.description}</small>
-                          </span>
+                          <span>{entry.title}</span>
                           <ArrowUpRight size={16} />
                         </Link>
                       ))}
                     </section>
                   )}
-                  {draft.kind === "request" && !!topics.length && (
+                  {!!approvedTopics.length && (
                     <section className="report-suggestions">
-                      <h3>Others are asking for</h3>
-                      {topics.slice(0, 4).map((topic) => (
+                      <h3>Others want this too</h3>
+                      {approvedTopics.map((topic) => (
                         <button
                           type="button"
                           key={topic.id}
@@ -714,23 +713,13 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                           }
                         >
                           <span>
-                            {topic.title}
-                            <small>
-                              {topic.demand}{" "}
-                              {topic.demand === 1 ? "person" : "people"} ·{" "}
-                              {STATUS_LABELS[topic.status]}
-                            </small>
+                            {topic.title} · {topic.demand}{" "}
+                            {topic.demand === 1 ? "person" : "people"} ·{" "}
+                            <span className="report-join-label">Join</span>
                           </span>
-                          <span className="report-join-label">Join</span>
                         </button>
                       ))}
                     </section>
-                  )}
-                  {topicError && (
-                    <p className="report-help">
-                      Existing requests could not load. You can still describe
-                      your request.
-                    </p>
                   )}
                 </>
               )}
@@ -874,7 +863,11 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 {draft.kind === "bug" && !!draft.pins.length && (
                   <ol className="report-pins">
                     {draft.pins.map((pin, index) => (
-                      <li key={pin.path} className="report-chip" title={pin.path}>
+                      <li
+                        key={pin.path}
+                        className="report-chip"
+                        title={pin.path}
+                      >
                         <span className="report-chip-text">
                           {pinChipText(pin, index + 1)}
                         </span>
@@ -1147,15 +1140,11 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 </div>
                 <div>
                   <dt>Email receipt</dt>
-                  <dd>
-                    {emailReceiptLabel(receipt)}
-                  </dd>
+                  <dd>{emailReceiptLabel(receipt)}</dd>
                 </div>
                 <div>
                   <dt>Issue</dt>
-                  <dd>
-                    {issueReceiptLabel(receipt)}
-                  </dd>
+                  <dd>{issueReceiptLabel(receipt)}</dd>
                 </div>
                 <div>
                   <dt>Attachments</dt>
@@ -1319,9 +1308,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           }}
         />
       )}
-      {progress && (
-        <CaptureStatus progress={progress} onCancel={stopCapture} />
-      )}
+      {progress && <CaptureStatus progress={progress} onCancel={stopCapture} />}
     </>
   );
 }
