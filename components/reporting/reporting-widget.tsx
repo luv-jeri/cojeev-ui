@@ -51,25 +51,30 @@ import {
   type CaptureArea,
   type CaptureProgress,
 } from "@/lib/reporting/capture";
-import {
-  emailReceiptLabel,
-  issueReceiptLabel,
-  receiptExpectation,
-} from "@/lib/reporting/receipt-labels";
+import { receiptExpectation } from "@/lib/reporting/receipt-labels";
 import { siteFlags } from "@/lib/site-config";
 import {
   snapshotDiagnostics,
   startDiagnostics,
 } from "@/lib/reporting/diagnostics";
 import {
+  commitSent,
   emptyDraft,
+  importedTitle,
   loadDraftWorkspace,
+  loadSent,
+  pullLegacyReceipts,
+  removeSent,
+  replaceSentReceipt,
   saveDraftWorkspace,
   type ReportingDraft,
   type ReportingDraftWorkspace,
+  type SentEntry,
 } from "@/lib/reporting/draft";
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
-import { REPORT_EVENT, STATUS_LABELS, takeRequest } from "./report-request";
+import { REPORT_EVENT, takeRequest } from "./report-request";
+import { ReceiptDetail } from "./receipt-detail";
+import { SentList } from "./sent-list";
 import { AreaPicker, CaptureStatus } from "./area-picker";
 import { MoreMenu, ReportInfo, ReportTool } from "./report-controls";
 import { pinChipText, submittedPins } from "@/lib/reporting/pin-label";
@@ -114,6 +119,12 @@ const REQUEST_PRIVACY = "Private until we approve your title.";
 // One constant so the owner's copy review can swap it in one place.
 const BUG_PRIVACY = "Private. The public issue shows only a reference.";
 const sentFile = (state: string) => state === "uploaded" || state === "ready";
+const SENT_BANNER = {
+  bug: "Report sent. Check your inbox for a receipt.",
+  request: "Request sent. Check your inbox for a receipt.",
+} as const;
+const SENT_SAVE_ERROR =
+  "Could not save this report to the sent list. Your receipt is still here.";
 
 export function ReportingWidget({ entries }: { entries: ComponentMatch[] }) {
   const path = usePathname();
@@ -137,6 +148,17 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     [capture, setCapture] = useState<File | null>(null),
     [dragging, setDragging] = useState(false),
     [reviewScope, setReviewScope] = useState("");
+  const [sent, setSent] = useState<SentEntry[]>([]),
+    [sentExpanded, setSentExpanded] = useState(false),
+    [openSentId, setOpenSentId] = useState<string | null>(null),
+    [banner, setBanner] = useState<{ kind: ReportKind; id: string } | null>(
+      null,
+    ),
+    [confirmDiscard, setConfirmDiscard] = useState(false);
+  // While the sent-list transaction is in flight it is the only writer: a save that started
+  // now would queue behind it and put the just-sent draft and its files back.
+  const committing = useRef(false),
+    focusSent = useRef(false);
   // Review is a view, not part of the draft: it is open only for the tab and step it was
   // opened in, so a tab switch or leaving the edit step closes it.
   const scope = `${draft.kind}:${step}`,
@@ -163,9 +185,12 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     },
     [],
   );
-  const update = (changes: Partial<ReportingDraft>) =>
+  const update = (changes: Partial<ReportingDraft>) => {
+    setBanner(null);
     setDraft((value) => ({ ...value, ...changes }));
+  };
   const persist = useCallback(async (value: ReportingDraft) => {
+    if (committing.current) return;
     draftsRef.current = { ...draftsRef.current, [value.kind]: value };
     try {
       await saveDraftWorkspace({
@@ -194,6 +219,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         next = { ...next, topicId: topic.id, title: topic.title, frozen: null };
       draftRef.current = next;
       setDraft(next);
+      setBanner(null);
+      setConfirmDiscard(false);
       setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
       setError(
         topic && next.attempted
@@ -211,19 +238,42 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   useEffect(() => startDiagnostics(), []);
   useEffect(() => {
     let active = true;
-    loadDraftWorkspace()
-      .then((saved) => {
-        if (active && saved) {
-          draftsRef.current = saved.drafts;
-          const next = saved.drafts[saved.activeKind] ?? {
-            ...emptyDraft(),
-            kind: saved.activeKind,
-          };
-          draftRef.current = next;
-          setDraft(next);
-          setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
+    (async () => {
+      const [saved, list] = await Promise.all([
+        loadDraftWorkspace(),
+        loadSent().catch(() => []),
+      ]);
+      if (!active) return;
+      let workspace = saved;
+      let entries = list;
+      if (saved) {
+        const pulled = pullLegacyReceipts(saved, Date.now());
+        if (pulled.entries.length) {
+          try {
+            // One transaction: the list gains the receipts and the drafts lose them, or neither.
+            entries = await commitSent(pulled.entries, pulled.workspace);
+            workspace = pulled.workspace;
+          } catch {
+            if (active)
+              setStorage(
+                "Draft storage is unavailable. Keep this page open to preserve your report.",
+              );
+          }
         }
-      })
+      }
+      if (!active) return;
+      setSent(entries);
+      if (workspace) {
+        draftsRef.current = workspace.drafts;
+        const next = workspace.drafts[workspace.activeKind] ?? {
+          ...emptyDraft(),
+          kind: workspace.activeKind,
+        };
+        draftRef.current = next;
+        setDraft(next);
+        setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
+      }
+    })()
       .catch(() => {
         if (active)
           setStorage(
@@ -387,7 +437,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       setBusy("");
     }
   }
-  async function uploadFiles(receipt: Receipt) {
+  async function uploadFiles(receipt: Receipt): Promise<boolean> {
     let currentReceipt = receipt;
     const failures: string[] = [];
     for (const item of draftRef.current.files) {
@@ -421,6 +471,52 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         `Your report is safely received. These files still need uploading: ${failures.join(" ")}`,
       );
     setBusy("");
+    return currentReceipt.attachments.every(
+      (file) => sentFile(file.state) || file.state === "expired",
+    );
+  }
+  /** Steps 3 and 4 of a send: one transaction clears the draft and adds the receipt to the list; only then does the form change. */
+  async function completeSend(withBanner: boolean) {
+    const current = draftRef.current,
+      accepted = current.receipt;
+    if (!accepted || committing.current) return;
+    const kind = current.kind,
+      fresh = { ...emptyDraft(), kind },
+      drafts = { ...draftsRef.current, [kind]: fresh };
+    // No timed save may run from here on: it would write the old draft after the commit.
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    committing.current = true;
+    setBusy("Saving to the sent list…");
+    try {
+      const list = await commitSent(
+        [
+          {
+            kind,
+            title:
+              current.frozen?.report.title ||
+              current.title ||
+              importedTitle(kind),
+            sentAt: Date.now(),
+            receipt: accepted,
+          },
+        ],
+        { activeKind: kind, drafts },
+      );
+      draftsRef.current = drafts;
+      draftRef.current = fresh;
+      setDraft(fresh);
+      setStep("edit");
+      setBanner(withBanner ? { kind, id: accepted.id } : null);
+      setConfirmDiscard(false);
+      setError("");
+      setSent(list);
+    } catch {
+      setError(SENT_SAVE_ERROR);
+      setStep("receipt");
+    } finally {
+      committing.current = false;
+      setBusy("");
+    }
   }
   async function send() {
     if (!draft.frozen || !config || (!config.local && !turnstileToken)) return;
@@ -438,9 +534,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       const accepted = { ...draftRef.current, receipt };
       draftRef.current = accepted;
       setDraft(accepted);
-      setStep("receipt");
+      if (accepted.files.length) setStep("receipt");
       await persist(accepted);
-      await uploadFiles(receipt);
+      if (await uploadFiles(receipt)) await completeSend(true);
     } catch (cause) {
       setError(message(cause));
       if (canEditRejectedSubmission(cause, previouslyAttempted)) {
@@ -468,8 +564,21 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     setError("");
     try {
       const receipt = await fetchReceipt(id, token);
-      update({ receipt });
+      const arrived = !draftRef.current.receipt;
+      const next = { ...draftRef.current, receipt };
+      draftRef.current = next;
+      setDraft(next);
       setStep("receipt");
+      // A report found after an unclear send is done the same way as one that just went through.
+      if (
+        arrived &&
+        receipt.attachments.every(
+          (file) => sentFile(file.state) || file.state === "expired",
+        )
+      ) {
+        await persist(next);
+        await completeSend(true);
+      }
     } catch (cause) {
       if (
         cause instanceof ReportingError &&
@@ -511,18 +620,20 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       )
         throw new Error("This file is not a valid Cojeev receipt.");
       const receipt = await fetchReceipt(imported.id, imported.token);
-      // A receipt belongs to the current card; importing it must not discard
-      // the other card's draft or change its report kind without evidence.
-      const next = {
-        ...emptyDraft(),
-        kind: draftRef.current.kind,
-        attempted: true,
-        receipt,
-      };
-      draftRef.current = next;
-      setDraft(next);
-      setStep("receipt");
-      await persist(next);
+      // Only the list changes: the form and both drafts stay exactly as they are.
+      const kind = receipt.kind ?? draftRef.current.kind;
+      setSent(
+        await commitSent([
+          {
+            kind,
+            title: importedTitle(kind),
+            sentAt: Date.now(),
+            receipt,
+          },
+        ]),
+      );
+      setSentExpanded(true);
+      setOpenSentId(receipt.id);
     } catch (cause) {
       setError(message(cause));
     } finally {
@@ -590,15 +701,48 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       }
     }
   }
+  async function retryUploads(receipt: Receipt) {
+    setError("");
+    setConfirmDiscard(false);
+    if (await uploadFiles(receipt)) await completeSend(true);
+  }
+  /** Refreshes one list entry in place. A refresh that runs when a row opens is silent about failure. */
+  async function refreshSent(id: string, silent: boolean) {
+    const entry = sent.find((item) => item.receipt.id === id);
+    if (!entry) return;
+    if (!silent) {
+      setBusy("Checking receipt…");
+      setError("");
+    }
+    try {
+      const fresh = await fetchReceipt(id, entry.receipt.token);
+      setSent(await replaceSentReceipt(fresh));
+    } catch (cause) {
+      if (!silent) setError(message(cause));
+    } finally {
+      if (!silent) setBusy("");
+    }
+  }
+  async function forgetSent(id: string) {
+    try {
+      setSent(await removeSent(id));
+      setOpenSentId(null);
+    } catch (cause) {
+      setError(message(cause));
+    }
+  }
+  useEffect(() => {
+    if (!focusSent.current || !openSentId || !sentExpanded) return;
+    focusSent.current = false;
+    document
+      .querySelector<HTMLElement>(".report-sent-detail h3")
+      ?.focus();
+  }, [openSentId, sentExpanded, sent]);
   const receipt = draft.receipt;
   const remainingFiles =
     receipt?.attachments.filter(
       (file) => !sentFile(file.state) && file.state !== "expired",
     ).length ?? 0;
-  const uploadedFiles =
-    receipt?.attachments.filter((file) => sentFile(file.state)).length ?? 0;
-  const expiredFiles =
-    receipt?.attachments.filter((file) => file.state === "expired").length ?? 0;
   const reportContent = (
     <div data-reporting-chrome="" className="report-sheet">
       {!loaded ? (
@@ -655,6 +799,23 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               {dragging && (
                 <div className="report-drop-overlay" aria-hidden="true">
                   Drop files to attach
+                </div>
+              )}
+              {banner && banner.kind === draft.kind && (
+                <div className="report-sent-banner" role="status">
+                  <span>{SENT_BANNER[banner.kind]}</span>
+                  <a
+                    href="#sent"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      focusSent.current = true;
+                      setSentExpanded(true);
+                      setOpenSentId(banner.id);
+                      void refreshSent(banner.id, true);
+                    }}
+                  >
+                    View
+                  </a>
                 </div>
               )}
               <label className="report-field">
@@ -964,6 +1125,20 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                     onOpenReceipt={() => receiptInput.current?.click()}
                   />
                 </div>
+                <SentList
+                  entries={sent}
+                  expanded={sentExpanded}
+                  openId={openSentId}
+                  emailEnabled={config?.emailEnabled}
+                  busy={!!busy}
+                  onToggle={() => setSentExpanded((value) => !value)}
+                  onOpen={(id) => {
+                    setOpenSentId(id);
+                    if (id) void refreshSent(id, true);
+                  }}
+                  onRefresh={(id) => void refreshSent(id, false)}
+                  onRemove={(id) => void forgetSent(id)}
+                />
                 <input
                   ref={receiptInput}
                   type="file"
@@ -1106,116 +1281,28 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 Your {draft.kind === "request" ? "request" : "report"} is
                 received.
               </h2>
-              {(() => {
-                const line = remainingFiles
-                  ? "The text is safely stored. Finish uploading the remaining files below."
-                  : receiptExpectation(draft.kind, config?.emailEnabled);
-                return line ? <p>{line}</p> : null;
-              })()}
-              <p className="report-receipt-status">
-                <span>
-                  Status:{" "}
-                  {draft.kind === "bug" && receipt.status === "resolved"
-                    ? "Resolved"
-                    : STATUS_LABELS[receipt.status]}
-                </span>
-                {receipt.attachments.length > 0 && (
-                  <span>
-                    {uploadedFiles} of {receipt.attachments.length} files
-                    uploaded
-                  </span>
-                )}
-                {expiredFiles > 0 && <span>{expiredFiles} expired</span>}
-                {receipt.issueNumber && receipt.issueUrl && (
-                  <span>
-                    Tracked as{" "}
-                    <a
-                      href={receipt.issueUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      #{receipt.issueNumber}
-                    </a>
-                  </span>
-                )}
-              </p>
-              <details className="report-delivery">
-                <summary>Delivery details</summary>
-                <dl>
-                  <div>
-                    <dt>Status</dt>
-                    <dd>
-                      {draft.kind === "bug" && receipt.status === "resolved"
-                        ? "Resolved"
-                        : STATUS_LABELS[receipt.status]}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Email receipt</dt>
-                    <dd>{emailReceiptLabel(receipt)}</dd>
-                  </div>
-                  <div>
-                    <dt>Issue</dt>
-                    <dd>{issueReceiptLabel(receipt)}</dd>
-                  </div>
-                  <div>
-                    <dt>Attachments</dt>
-                    <dd>
-                      {uploadedFiles} of {receipt.attachments.length} uploaded
-                      {expiredFiles ? ` · ${expiredFiles} expired` : ""}
-                    </dd>
-                  </div>
-                </dl>
-                <div className="report-receipt-id">
-                  <span>Report ID</span>
-                  <code>{receipt.id}</code>
-                </div>
-              </details>
-              {receipt.componentUrl && (
-                <Button asChild fullWidth>
-                  <a href={receipt.componentUrl}>
-                    Open component <ArrowUpRight size={17} />
-                  </a>
-                </Button>
+              {receiptExpectation(draft.kind, config?.emailEnabled) && (
+                <p>{receiptExpectation(draft.kind, config?.emailEnabled)}</p>
               )}
-              <p className="report-help">
-                Keep your receipt. It lets you check this report later.
-              </p>
-              <div className="report-row">
-                <Button
-                  variant="outline"
-                  disabled={!!busy}
-                  onClick={refreshReceipt}
-                >
-                  Refresh status
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const url = URL.createObjectURL(
-                      new Blob([JSON.stringify(receipt, null, 2)], {
-                        type: "application/json",
-                      }),
-                    );
-                    const anchor = document.createElement("a");
-                    anchor.href = url;
-                    anchor.download = `cojeev-receipt-${receipt.id}.json`;
-                    anchor.click();
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  }}
-                >
-                  Download receipt
-                </Button>
-              </div>
+              {!!remainingFiles && (
+                <p>
+                  The text is safely stored. Finish uploading the remaining
+                  files below.
+                </p>
+              )}
+              <ReceiptDetail
+                receipt={receipt}
+                kind={draft.kind}
+                emailEnabled={config?.emailEnabled}
+                busy={!!busy}
+                onRefresh={refreshReceipt}
+              />
               {!!remainingFiles &&
                 (draft.files.length ? (
                   <Button
                     fullWidth
                     loading={!!busy}
-                    onClick={() => {
-                      setError("");
-                      void uploadFiles(receipt);
-                    }}
+                    onClick={() => void retryUploads(receipt)}
                   >
                     Retry remaining uploads
                   </Button>
@@ -1228,8 +1315,18 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               <p className="report-help" role="status">
                 {busy || storage}
               </p>
-              <Button variant="ghost" disabled={!!busy} onClick={clear}>
-                Start another
+              <Button
+                variant="ghost"
+                disabled={!!busy}
+                onClick={() => {
+                  // Unsent files are lost by this, so the first press only asks.
+                  if (remainingFiles && !confirmDiscard) setConfirmDiscard(true);
+                  else void completeSend(false);
+                }}
+              >
+                {remainingFiles && confirmDiscard
+                  ? "Discard remaining files and start another"
+                  : "Start another"}
               </Button>
               <Link href="/requests" onClick={() => setOpen(false)}>
                 Request board <ArrowUpRight size={15} />
@@ -1246,6 +1343,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         open={open && !picking}
         onOpenChange={(value) => {
           setOpen(value);
+          if (!value) setBanner(null);
           if (!value && loaded) {
             // Save now, once: a reload right after closing must not beat the 300 ms debounce.
             if (saveTimer.current) clearTimeout(saveTimer.current);

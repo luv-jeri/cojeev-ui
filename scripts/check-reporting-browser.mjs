@@ -26,7 +26,33 @@ const fill = async (page, kind, title) => {
   await page.getByRole("textbox", { name: kind === "bug" ? "What happened?" : "How would you use it?", exact: true }).fill("Local browser verification. Reference: https://example.com/reference");
   await page.getByRole("textbox", { name: "Your email", exact: true }).fill(`browser-${run}@example.com`);
 };
-const accepted = async page => page.getByRole("heading", { name: /Your (request|report) is received/ }).waitFor();
+// A send now ends on the fresh form with a banner; only a send with files still uploading shows the receipt heading.
+const accepted = async page => page.getByRole("heading", { name: /Your (request|report) is received/ }).or(page.locator(".report-sent-banner")).first().waitFor();
+const sentBanner = (page, kind) => page.locator(".report-sent-banner").filter({ hasText: kind === "bug" ? "Report sent. Check your inbox for a receipt." : "Request sent. Check your inbox for a receipt." });
+const sentToggle = page => page.getByRole("button", { name: /^Sent from this browser · \d+$/ });
+const sentCount = async page => (await sentToggle(page).count()) ? Number((await sentToggle(page).innerText()).match(/(\d+)\s*$/)[1]) : 0;
+const expandSent = async page => { if ((await sentToggle(page).getAttribute("aria-expanded")) !== "true") await sentToggle(page).click(); };
+const sentRow = (page, title) => page.locator(".report-sent-row", { hasText: title });
+const openSentRow = async (page, title) => { await expandSent(page); const row = sentRow(page, title); if ((await row.getAttribute("aria-expanded")) !== "true") await row.click(); await page.locator(".report-sent-detail").waitFor(); };
+// Reads what is stored on this device, as plain facts: which tabs hold a receipt or files, and which reports the list holds.
+const stored = page => page.evaluate(() => new Promise((resolve, reject) => {
+  const open = indexedDB.open("cojeev-reporting-v1", 1);
+  open.onerror = () => reject(open.error);
+  open.onsuccess = () => {
+    const store = open.result.transaction("drafts").objectStore("drafts"), workspace = store.get("workspace"), sent = store.get("sent");
+    sent.onsuccess = () => {
+      const drafts = workspace.result?.drafts ?? {}, tab = kind => ({ title: drafts[kind]?.title ?? "", files: drafts[kind]?.files?.length ?? 0, receipt: drafts[kind]?.receipt?.id ?? null });
+      resolve({ request: tab("request"), bug: tab("bug"), sent: (sent.result ?? []).map(entry => entry.receipt.id), titles: (sent.result ?? []).map(entry => entry.title) });
+      open.result.close();
+    };
+  };
+}));
+const seedStore = (page, values) => page.evaluate(entries => new Promise((resolve, reject) => {
+  const open = indexedDB.open("cojeev-reporting-v1", 1);
+  open.onupgradeneeded = () => open.result.createObjectStore("drafts");
+  open.onerror = () => reject(open.error);
+  open.onsuccess = () => { const tx = open.result.transaction("drafts", "readwrite"); for (const [key, value] of Object.entries(entries)) tx.objectStore("drafts").put(value, key); tx.oncomplete = () => { open.result.close(); resolve(); }; };
+}), values);
 const assertFits = async page => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && Array.from(document.querySelectorAll(".report-sheet")).every(node => node.scrollWidth <= node.clientWidth + 1)), "No page or panel horizontal overflow");
 const localOnly = context => context.route(/^https?:\/\//, route => {
   const url = new URL(route.request().url());
@@ -183,14 +209,16 @@ try {
   await page.getByRole("button", { name: "Send request", exact: true }).click();
   await page.getByRole("button", { name: "Retry this exact report", exact: true }).waitFor();
   await page.getByRole("button", { name: "Retry this exact report", exact: true }).click();
-  await accepted(page); await page.getByText("1 of 1 files uploaded", { exact: true }).waitFor();
+  await sentBanner(page, "request").waitFor();
   assert.equal(payloads.length, 2); assert.deepEqual(payloads[0].report, payloads[1].report); assert.equal(payloads[0].token, payloads[1].token);
   await page.unroute(`${api}/v1/reports`);
   const requestId = payloads[0].report.id;
   const requestDetail = await fetch(`${api}/v1/admin/reports/${requestId}`, { headers: { Authorization: `Bearer ${adminToken}` } }).then(response => response.json());
   assert.equal(requestDetail.report.title, `Browser request ${run}`); assert.equal(requestDetail.attachments[0].state, "uploaded");
   results.push("Ambiguous accepted response safely retries the exact UUID, token and payload; D1 report and R2 attachment are real");
-  await page.getByText("We’ll email you when we’ve looked at it, and again when it’s live.", { exact: true }).waitFor();
+  // The form is fresh again; the receipt is read from the opened row of the sent list.
+  await page.locator(".report-sent-banner").getByRole("link", { name: "View", exact: true }).click();
+  await page.locator(".report-sent-detail").waitFor();
   await page.getByText("Status: Received", { exact: true }).waitFor();
   await page.getByText("1 of 1 files uploaded", { exact: true }).waitFor();
   await page.locator(".report-delivery summary", { hasText: "Delivery details" }).click();
@@ -199,21 +227,24 @@ try {
     assert.ok(terms.includes("Email receipt") && terms.includes("Issue"), "Delivery details holds the Email receipt and Issue rows");
     assert.equal(await page.locator(".report-delivery .report-receipt-id code").innerText(), payloads[0].report.id);
   }
-  results.push("The receipt shows the expectation sentence, one status line, and Delivery details with the Email receipt and Issue rows and the report ID");
+  results.push("The receipt shows one status line, and Delivery details with the Email receipt and Issue rows and the report ID (read from the opened sent row; the expectation sentence is asserted on the receipt step while an upload is held open)");
   assert.equal(await page.getByText("Tracked as", { exact: false }).count(), 0, "No issue number, no Tracked as");
   await page.route(`${api}/v1/reports/${requestId}`, async route => { const response = await route.fetch(); await route.fulfill({ response, json: { ...(await response.json()), issueNumber: 412, issueUrl: "https://github.com/luv-jeri/cojeev-ui/issues/412" } }); });
   await page.getByRole("button", { name: "Refresh status", exact: true }).click();
   assert.equal(await page.getByRole("link", { name: "#412", exact: true }).getAttribute("href"), "https://github.com/luv-jeri/cojeev-ui/issues/412");
   await page.getByText("Tracked as", { exact: false }).first().waitFor();
   await page.unroute(`${api}/v1/reports/${requestId}`);
-  await page.getByRole("button", { name: "Refresh status", exact: true }).click(); await accepted(page);
-  await page.getByText("Tracked as", { exact: false }).waitFor({ state: "detached" });
+  await page.getByRole("button", { name: "Refresh status", exact: true }).click();
+  await page.getByText("Tracked as", { exact: false }).first().waitFor({ state: "detached" });
   results.push("The receipt links the public issue once it exists");
   await screenshot(page, "request-receipt");
   {
     const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Download receipt", exact: true }).click()]);
     await download.saveAs(`${output}/receipt.json`);
-    await page.getByRole("button", { name: "Start another", exact: true }).click();
+    // The form is already fresh after a send, so there is no "Start another" press. Type something first: the import must leave it alone.
+    const typed = `Typed before import ${run}`;
+    await page.getByRole("textbox", { name: "What component do you want?", exact: true }).fill(typed);
+    const before = await sentCount(page);
     const more = page.getByRole("button", { name: "More", exact: true });
     await more.focus(); await page.keyboard.press("Enter");
     await page.getByRole("menuitem", { name: "Clear draft", exact: true }).waitFor();
@@ -226,12 +257,29 @@ try {
     const chooser = page.waitForEvent("filechooser");
     await page.keyboard.press("Enter");
     await (await chooser).setFiles(`${output}/receipt.json`);
-    await accepted(page);
-    await page.locator(".report-delivery summary", { hasText: "Delivery details" }).click();
-    assert.equal(await page.locator(".report-delivery .report-receipt-id code").innerText(), requestId);
+    await page.locator(".report-sent-detail").waitFor();
+    // The Delivery details block may still be open from the earlier read, so read its text without toggling it.
+    assert.equal(await page.locator(".report-sent-detail .report-receipt-id code").textContent(), requestId);
+    assert.equal(await page.getByRole("heading", { name: /is received/ }).count(), 0, "No receipt heading after an import");
+    assert.equal(await page.getByRole("textbox", { name: "What component do you want?", exact: true }).inputValue(), typed, "The form typed before is unchanged");
+    assert.equal(await sentCount(page), before, "A receipt already in the list is not added twice");
     results.push("A downloaded receipt reopens through More, Open a saved receipt, by keyboard");
+    {
+      // Forget it, then import the same file again: now it joins the list, opened, and the form is still untouched.
+      await page.getByRole("button", { name: "Remove from this device", exact: true }).click();
+      await sentToggle(page).waitFor({ state: "detached" });
+      await more.click(); await page.getByRole("menuitem", { name: "Open a saved receipt", exact: true }).click();
+      await page.getByLabel("Import a saved receipt", { exact: true }).setInputFiles(`${output}/receipt.json`);
+      await page.locator(".report-sent-detail").waitFor();
+      assert.equal(await sentCount(page), 1);
+      assert.equal(await sentRow(page, "Imported request").getAttribute("aria-expanded"), "true");
+      assert.equal(await page.locator(".report-sent-detail .report-receipt-id code").count() + await page.locator(".report-sent-detail .report-delivery").count(), 2);
+      assert.equal(await page.getByRole("textbox", { name: "What component do you want?", exact: true }).inputValue(), typed);
+      assert.equal(await page.getByRole("heading", { name: /is received/ }).count(), 0);
+      assert.equal(await page.locator(".report-sent-banner").count(), 0, "An import shows no banner");
+      results.push("imported_receipt_joins_the_list");
+    }
   }
-  await page.getByRole("button", { name: "Start another", exact: true }).click();
   await fill(page, "bug", `Browser bug ${run}`);
   await page.evaluate(() => { document.documentElement.dataset.mode = "dark"; console.warn("Browser test warning Bearer secret-test-value person@example.com"); });
   const detailsToggle = page.getByRole("button", { name: "Include browser details", exact: true }), reviewDetails = page.getByRole("button", { name: "Review browser details", exact: true });
@@ -315,14 +363,155 @@ try {
   assert.equal(bugPayload.diagnostics.environment.theme, "dark"); assert.ok(bugPayload.diagnostics.console.some(event => event.message.includes("[redacted]"))); assert.ok(!JSON.stringify(bugPayload.diagnostics).includes("secret-test-value"));
   assert.equal(bugPayload.diagnostics.actions, undefined); assert.ok(bugPayload.diagnostics.environment);
   assert.ok(bugPayload.pins.length >= 1); assert.equal(bugPayload.attachments.length, 1);
-  await page.getByRole("button", { name: "Send report", exact: true }).click(); await accepted(page); await page.getByText("1 of 1 files uploaded", { exact: true }).waitFor();
+  // Hold the upload for a moment so the receipt step, and its expectation sentence, can be read.
+  await page.route(/\/v1\/reports\/[^/]+\/attachments\//, async route => { await new Promise(resolve => setTimeout(resolve, 1500)); await route.continue(); });
+  await page.getByRole("button", { name: "Send report", exact: true }).click(); await accepted(page);
   await page.getByText("We’re looking into it. We’ll email you when it’s tracked, and again when it’s fixed.", { exact: true }).waitFor();
+  await sentBanner(page, "bug").waitFor({ timeout: 20000 });
+  await page.unroute(/\/v1\/reports\/[^/]+\/attachments\//);
+  await page.locator(".report-sent-banner").getByRole("link", { name: "View", exact: true }).click();
+  await page.locator(".report-sent-detail").waitFor();
   await page.getByText("Status: Received", { exact: true }).waitFor();
+  await page.getByText("1 of 1 files uploaded", { exact: true }).waitFor();
   await page.locator(".report-delivery summary", { hasText: "Delivery details" }).click();
   assert.equal(await page.locator(".report-delivery .report-receipt-id code").innerText(), bugPayload.id);
   const bugDetail = await fetch(`${api}/v1/admin/reports/${bugPayload.id}`, { headers: { Authorization: `Bearer ${adminToken}` } }).then(response => response.json());
   assert.equal(bugDetail.report.kind, "bug"); assert.equal(bugDetail.attachments[0].state, "uploaded");
   results.push("Bug diagnostics require explicit inclusion; captured data-mode and reviewed warnings survive reload unchanged, secrets redact, capture and crop upload to the local Worker");
+  {
+    // Two reports are in the list now: the bug just sent (newest) and the imported request.
+    await page.getByRole("tab", { name: "Request a feature", exact: true }).click();
+    await expandSent(page);
+    const rows = page.locator(".report-sent-row");
+    assert.equal(await rows.count(), 2);
+    assert.ok((await rows.nth(0).innerText()).includes(`Browser bug ${run}`), "Newest first");
+    assert.ok((await rows.nth(1).innerText()).includes("Imported request"));
+    for (const index of [0, 1]) {
+      const row = rows.nth(index);
+      assert.equal(await row.locator("svg").first().getAttribute("aria-hidden"), "true", "The kind icon is decorative");
+      assert.ok(/\b\d{1,2}\b/.test(await row.locator(".report-sent-row-meta").innerText()) && (await row.locator(".report-sent-row-meta").innerText()).includes("Received"), "Date and status word");
+    }
+    await openSentRow(page, `Browser bug ${run}`);
+    const detail = page.locator(".report-sent-detail");
+    await detail.getByText("Status: Received", { exact: true }).waitFor();
+    await detail.locator("summary", { hasText: "Delivery details" }).waitFor();
+    for (const name of ["Refresh status", "Download receipt"]) await detail.getByRole("button", { name, exact: true }).waitFor();
+    const track = detail.getByRole("link", { name: "Track this report", exact: true });
+    assert.match(await track.getAttribute("href"), /\/track\/#[0-9a-f-]{36}\.[0-9a-f]{64}$/);
+    await track.click();
+    await page.getByRole("heading", { name: "Your report", exact: true }).waitFor();
+    await page.locator("li[aria-current='step']").waitFor();
+    results.push("sent_list_shows_reports_from_this_browser");
+    await page.goBack(); await page.waitForFunction(() => document.querySelector(".report-launcher")?.disabled === false);
+    // The widget lives in the root layout, so the panel may still be open after a client-side back.
+    if (!(await panel(page).isVisible())) await open(page);
+    await expandSent(page);
+
+    // Forgetting one entry: the warning sits above the button, and only that entry goes.
+    await openSentRow(page, "Imported request");
+    const warning = page.locator(".report-sent-detail .report-warning"), forget = page.getByRole("button", { name: "Remove from this device", exact: true });
+    assert.equal((await warning.innerText()).trim(), "This key is the only way to check this report from here.");
+    assert.ok((await warning.boundingBox()).y < (await forget.boundingBox()).y, "The warning is above the button");
+    const beforeForget = await stored(page);
+    await forget.click();
+    await page.waitForFunction(() => document.querySelectorAll(".report-sent-row").length === 1);
+    const afterForget = await stored(page);
+    assert.equal(afterForget.sent.length, 1); assert.deepEqual(afterForget.sent, beforeForget.sent.filter(id => id !== requestId));
+    assert.ok(!(await page.locator(".report-sent-list").innerText()).includes("Imported request"));
+    assert.ok((await page.locator(".report-sent-list").innerText()).includes(`Browser bug ${run}`));
+    results.push("remove_from_this_device_forgets_only_that_entry");
+  }
+  {
+    // A send with no files ends on a fresh form, on both tabs.
+    const titleOf = kind => page.getByRole("textbox", { name: kind === "bug" ? "Short summary" : "What component do you want?", exact: true });
+    const tab = name => panel(page).getByRole("tab", { name, exact: true });
+    await tab("Request a feature").click();
+    await titleOf("request").fill(`Marker request ${run}`);
+    let count = await sentCount(page);
+    await fill(page, "bug", `Fresh bug ${run}`);
+    await page.getByRole("button", { name: "Review report", exact: true }).click();
+    await page.getByRole("button", { name: "Send report", exact: true }).click();
+    await sentBanner(page, "bug").waitFor();
+    assert.equal(await page.getByRole("heading", { name: /is received/ }).count(), 0);
+    for (const label of ["Short summary", "What happened?", "Your email"]) assert.equal(await page.getByLabel(label, { exact: true }).inputValue(), "", `Fresh form: ${label}`);
+    await page.getByRole("button", { name: "Review report", exact: true }).waitFor();
+    assert.equal(await sentBanner(page, "bug").getByRole("link", { name: "View", exact: true }).count(), 1);
+    assert.equal(await sentCount(page), count + 1);
+    await tab("Request a feature").click();
+    assert.equal(await titleOf("request").inputValue(), `Marker request ${run}`, "The other tab's draft is untouched");
+    assert.equal(await page.locator(".report-sent-banner").count(), 0, "A tab switch hides the banner");
+    await tab("Report a bug").click();
+    assert.equal(await page.locator(".report-sent-banner").count(), 0, "The banner does not come back");
+    await tab("Request a feature").click();
+    count = await sentCount(page);
+    await fill(page, "request", `Fresh request ${run}`);
+    await page.getByRole("button", { name: "Review request", exact: true }).click();
+    await page.getByRole("button", { name: "Send request", exact: true }).click();
+    await sentBanner(page, "request").waitFor();
+    for (const label of ["What component do you want?", "How would you use it?", "Your email"]) assert.equal(await page.getByLabel(label, { exact: true }).inputValue(), "", `Fresh form: ${label}`);
+    assert.equal(await sentCount(page), count + 1);
+    await tab("Report a bug").click();
+    assert.equal(await titleOf("bug").inputValue(), "", "The bug tab was left alone");
+    await tab("Request a feature").click();
+    await sentBanner(page, "request").waitFor({ state: "detached" });
+    await fill(page, "request", `Fresh request again ${run}`);
+    await page.getByRole("button", { name: "Review request", exact: true }).click();
+    await page.getByRole("button", { name: "Send request", exact: true }).click();
+    await sentBanner(page, "request").waitFor();
+    await titleOf("request").press("x");
+    await sentBanner(page, "request").waitFor({ state: "detached" });
+    results.push("after_send_returns_to_a_fresh_form");
+  }
+  {
+    // Files still uploading keep the receipt, and the draft with its file, until the last one is stored.
+    const upload = /\/v1\/reports\/[^/]+\/attachments\//;
+    const tab = name => panel(page).getByRole("tab", { name, exact: true });
+    await tab("Request a feature").click();
+    await fill(page, "request", `Held upload ${run}`);
+    await page.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "held.png", mimeType: "image/png", buffer: imageBytes });
+    await page.getByAltText("Attachment preview: held.png").waitFor();
+    const before = await stored(page), count = await sentCount(page);
+    let release; const gate = new Promise(resolve => { release = resolve; });
+    await page.route(upload, async route => { await gate; await route.continue(); });
+    await page.getByRole("button", { name: "Review request", exact: true }).click();
+    await page.getByRole("button", { name: "Send request", exact: true }).click();
+    await page.getByRole("heading", { name: "Your request is received.", exact: true }).waitFor();
+    await page.getByText("0 of 1 files uploaded", { exact: true }).waitFor();
+    await page.getByText("We’ll email you when we’ve looked at it, and again when it’s live.", { exact: true }).waitFor();
+    const during = await stored(page);
+    assert.deepEqual(during.sent, before.sent, "The list is unchanged while uploading");
+    assert.equal(during.request.files, 1, "The draft's file is still stored"); assert.ok(during.request.receipt, "The receipt is already in the draft");
+    release();
+    await sentBanner(page, "request").waitFor();
+    assert.equal(await sentCount(page), count + 1);
+    const done = await stored(page);
+    assert.equal(done.request.files, 0); assert.equal(done.request.receipt, null); assert.equal(done.sent.length, count + 1);
+    await page.unroute(upload);
+    results.push("pending_uploads_keep_the_receipt_until_done");
+
+    // A failed upload clears nothing, survives a reload, and finishes on retry.
+    await fill(page, "request", `Failed upload ${run}`);
+    await page.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "failed.png", mimeType: "image/png", buffer: imageBytes });
+    await page.getByAltText("Attachment preview: failed.png").waitFor();
+    const beforeFail = await stored(page);
+    await page.route(upload, route => route.fulfill({ status: 500, json: { error: "Upload failed on purpose." } }));
+    await page.getByRole("button", { name: "Review request", exact: true }).click();
+    await page.getByRole("button", { name: "Send request", exact: true }).click();
+    await page.getByRole("button", { name: "Retry remaining uploads", exact: true }).waitFor();
+    await page.getByRole("heading", { name: "Your request is received.", exact: true }).waitFor();
+    assert.deepEqual((await stored(page)).sent, beforeFail.sent, "A failed upload adds nothing to the list");
+    // The receipt step has no More menu, so open the panel without waiting for it.
+    await page.reload({ waitUntil: "domcontentloaded" }); await page.getByRole("button", { name: "Request a feature / Report a bug" }).click(); await panel(page).waitFor();
+    await page.getByRole("button", { name: "Retry remaining uploads", exact: true }).waitFor();
+    const reloaded = await stored(page);
+    assert.equal(reloaded.request.files, 1, "The file is still in the draft after a reload"); assert.ok(reloaded.request.receipt); assert.deepEqual(reloaded.sent, beforeFail.sent);
+    await page.unroute(upload);
+    await page.getByRole("button", { name: "Retry remaining uploads", exact: true }).click();
+    await sentBanner(page, "request").waitFor();
+    const finished = await stored(page);
+    assert.equal(finished.request.files, 0); assert.equal(finished.sent.length, beforeFail.sent.length + 1);
+    results.push("failed_upload_clears_nothing");
+  }
   await page.goto(`${base}/feedback-admin/?report=${bugPayload.id}`, { waitUntil: "domcontentloaded" });
   assert.equal(await page.locator(".report-launcher").count(), 0);
   await page.getByLabel("Maintainer token", { exact: true }).fill(adminToken); await page.getByRole("button", { name: "Unlock reports", exact: true }).click();
@@ -335,6 +524,69 @@ try {
   results.push("Maintainer deep link unlock, private read, real status update, and lock work; launcher is absent on admin");
   await context.close();
 
+  {
+    // Stored state from an older build: the list is capped on the way in, and a receipt sitting in a draft is moved.
+    const seeded = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
+    await localOnly(seeded);
+    const seedPage = await seeded.newPage(); activePage = seedPage; seedPage.on("pageerror", error => pageErrors.push(error.message));
+    const receiptFor = (id, extra = {}) => ({ id, token: "a".repeat(64), status: "received", topicId: null, email: "pending", issue: "pending", attachments: [], ...extra });
+    // The admin page mounts no widget, so nothing rewrites the store while it is seeded.
+    await seedPage.goto(`${base}/feedback-admin/`, { waitUntil: "domcontentloaded" });
+    const many = Array.from({ length: 51 }, (_, n) => ({ kind: "bug", title: `Seed ${n}`, sentAt: 1790000000000 + n, receipt: receiptFor(`00000000-0000-4000-8000-${String(n).padStart(12, "0")}`) }));
+    await seedStore(seedPage, { sent: many });
+    await seedPage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(seedPage);
+    await sentToggle(seedPage).waitFor();
+    assert.equal(await sentCount(seedPage), 50);
+    await sentToggle(seedPage).click();
+    await seedPage.getByText("Only the newest 50 are kept. Download a receipt to keep an older one.", { exact: true }).waitFor();
+    const seededTitles = await seedPage.locator(".report-sent-row-title").allInnerTexts();
+    assert.equal(seededTitles.length, 50); assert.ok(!seededTitles.includes("Seed 0"), "The oldest one dropped");
+    results.push("sent_list_keeps_the_newest_50");
+
+    const legacyId = "11111111-1111-4111-8111-111111111111";
+    await seedPage.goto(`${base}/feedback-admin/`, { waitUntil: "domcontentloaded" });
+    await seedStore(seedPage, { sent: [], workspace: { activeKind: "request", drafts: { request: { ...{ kind: "request", title: "Old receipt title", description: "", email: "", pins: [], files: [], diagnostics: null, frozen: null, attempted: true }, receipt: receiptFor(legacyId) } } } });
+    await seedPage.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(seedPage);
+    await sentToggle(seedPage).waitFor();
+    assert.equal(await sentCount(seedPage), 1);
+    await seedPage.getByRole("button", { name: "Review request", exact: true }).waitFor();
+    assert.equal(await seedPage.getByLabel("What component do you want?", { exact: true }).inputValue(), "");
+    await seedPage.waitForFunction(() => new Promise(resolve => { const open = indexedDB.open("cojeev-reporting-v1", 1); open.onsuccess = () => { const read = open.result.transaction("drafts").objectStore("drafts").get("workspace"); read.onsuccess = () => { open.result.close(); resolve(!read.result?.drafts?.request?.receipt); }; }; }));
+    assert.deepEqual((await stored(seedPage)).sent, [legacyId]);
+    assert.equal((await stored(seedPage)).request.receipt, null, "The stored workspace no longer holds the receipt");
+    results.push("legacy_receipt_moves_into_the_list");
+    await seeded.close();
+  }
+  {
+    // Nothing written later may bring a sent report, or its files, back into the form.
+    const fresh = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: "reduce" });
+    await localOnly(fresh);
+    const gone = await fresh.newPage(); activePage = gone; gone.on("pageerror", error => pageErrors.push(error.message));
+    await gone.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" }); await open(gone);
+    await fill(gone, "request", `Never back ${run}`);
+    await gone.getByLabel("Attach images or videos", { exact: true }).setInputFiles({ name: "never-back.png", mimeType: "image/png", buffer: imageBytes });
+    await gone.getByAltText("Attachment preview: never-back.png").waitFor();
+    await gone.getByRole("button", { name: "Review request", exact: true }).click();
+    await gone.getByRole("button", { name: "Send request", exact: true }).click();
+    await sentBanner(gone, "request").waitFor();
+    await gone.getByRole("button", { name: "Review request", exact: true }).waitFor();
+    // Typing on the other tab makes the widget write the whole workspace once more.
+    await panel(gone).getByRole("tab", { name: "Report a bug", exact: true }).click();
+    await gone.getByLabel("Short summary", { exact: true }).fill("x");
+    await gone.waitForFunction(() => new Promise(resolve => { const open = indexedDB.open("cojeev-reporting-v1", 1); open.onsuccess = () => { const read = open.result.transaction("drafts").objectStore("drafts").get("workspace"); read.onsuccess = () => { open.result.close(); resolve(read.result?.drafts?.bug?.title === "x"); }; }; }));
+    await gone.reload({ waitUntil: "domcontentloaded" }); await open(gone);
+    await panel(gone).getByRole("tab", { name: "Request a feature", exact: true }).click();
+    await gone.getByRole("button", { name: "Review request", exact: true }).waitFor();
+    assert.equal(await gone.getByLabel("What component do you want?", { exact: true }).inputValue(), "");
+    assert.equal(await gone.getByRole("heading", { name: /is received/ }).count(), 0, "No receipt screen");
+    assert.equal(await gone.getByAltText("Attachment preview: never-back.png").count(), 0, "No file in the form");
+    await expandSent(gone);
+    assert.equal(await gone.locator(".report-sent-row").count(), 1, "One row in the list");
+    const kept = await stored(gone);
+    assert.equal(kept.request.receipt, null); assert.equal(kept.request.files, 0); assert.equal(kept.sent.length, 1);
+    results.push("a_sent_report_never_comes_back_into_the_form");
+    await fresh.close();
+  }
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
   await localOnly(mobile);
   const mobilePage = await mobile.newPage(); activePage = mobilePage; mobilePage.on("pageerror", error => pageErrors.push(error.message)); mobilePage.on("console", entry => { if (entry.type() === "error" && /hydrat/i.test(entry.text())) hydrationErrors.push(entry.text()); });

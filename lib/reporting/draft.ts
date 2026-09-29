@@ -112,7 +112,8 @@ async function sentTransaction(change: (list: SentEntry[]) => SentEntry[], also?
 }
 export async function loadSent(): Promise<SentEntry[]> {
   const saved = await operation<SentEntry[] | undefined>("readonly", store => store.get("sent"));
-  return Array.isArray(saved) ? saved : [];
+  // Anything beyond the newest 50 (an older build, a hand-edited store) is dropped on the way in.
+  return Array.isArray(saved) ? mergeSent([], saved) : [];
 }
 export function commitSent(entries: SentEntry[], workspace?: ReportingDraftWorkspace): Promise<SentEntry[]> {
   return sentTransaction(list => mergeSent(list, entries), workspace && (store => { store.put(workspace, "workspace"); store.delete("current"); }));

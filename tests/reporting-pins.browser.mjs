@@ -247,7 +247,8 @@ test("pin_label_is_not_submitted", async () => {
     assert.ok(!reviewed.includes("Paragraph “"), "no label text in the review JSON");
     assert.equal(review.pins.length, 2);
     await panel(page).getByRole("button", { name: "Send report", exact: true }).click();
-    await page.getByRole("heading", { name: /Your report is received/ }).waitFor();
+    // The send ends on the fresh form with a banner (no files are attached here).
+    await page.locator(".report-sent-banner").waitFor();
     assert.equal(bodies.length, 1);
     assert.equal(bodies[0].report.pins.length, 2);
     for (const pin of bodies[0].report.pins) assert.deepEqual(Object.keys(pin).sort(), ["path", "tag", "x", "y"]);
