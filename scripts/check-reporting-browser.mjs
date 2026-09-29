@@ -255,6 +255,28 @@ try {
     await panel(page).getByText("Joining this request. Your email counts once.", { exact: true }).waitFor({ state: "detached" });
     assert.ok(await titleBox.isEnabled());
     results.push("Joining an approved request shows the short notice and Optional tag; Ask for something else leaves it");
+    {
+      // A long approved title wraps in its own column; the count column keeps one line, at phone width and desktop.
+      const longTitle = "Calendar with a very long approved title that goes on and on until it has to wrap onto more than one line in the panel";
+      const longBody = { requests: [{ ...topicBody.requests[0], id: "5d9f3a1e-0000-4000-8000-000000000003", title: longTitle }], hasMore: false };
+      const longRoute = route => route.fulfill({ json: longBody });
+      await context.route(`${api}/v1/requests?**`, longRoute);
+      await titleBox.fill("Calendar wide");
+      const longButton = panel(page).locator(".report-suggestions button", { hasText: longTitle });
+      await longButton.waitFor();
+      for (const width of [390, 1440]) {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 1100 });
+        const shape = await longButton.evaluate(button => {
+          const [title, count] = button.querySelectorAll(":scope > span"), line = parseFloat(getComputedStyle(count).lineHeight) || 24;
+          return { titleHeight: title.getBoundingClientRect().height, countHeight: count.getBoundingClientRect().height, line, countWidth: count.getBoundingClientRect().width };
+        });
+        assert.ok(shape.titleHeight > shape.line * 1.5, `${width}: the long title wraps (${JSON.stringify(shape)})`);
+        assert.ok(shape.countHeight < shape.line * 1.5, `${width}: the count column stays on one line (${JSON.stringify(shape)})`);
+      }
+      await page.setViewportSize({ width: 1440, height: 1100 });
+      await context.unroute(`${api}/v1/requests?**`, longRoute);
+      results.push("a_long_approved_title_wraps_and_the_count_column_does_not");
+    }
     await context.unroute(`${api}/v1/requests?**`);
     await titleBox.fill("");
   }

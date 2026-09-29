@@ -122,6 +122,10 @@
   text-align: left;
   font-size: var(--fs-control);
 }
+.report-suggestions button > span:last-child {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 .report-suggestions a:hover,
 .report-suggestions button:hover {
   color: var(--v-text-2);
