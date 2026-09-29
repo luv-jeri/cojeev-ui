@@ -390,8 +390,12 @@ jobs:
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
         env:
           COJEEV_DOCS_SHARDS: '3'
-      - run: npm run gate:mobile
+          # Empty means every component; a component-confined change names its ids.
+          COJEEV_GATE_IDS: ${{ steps.depth.outputs.gate_ids }}
+      - run: npm run gate:mobile ${GATE_IDS:+-- --ids="$GATE_IDS"}
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
+        env:
+          GATE_IDS: ${{ steps.depth.outputs.gate_ids }}
       - run: npm run gate:marketing
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_catalogue == 'true'
       - run: npm run gate:smooth-scroll

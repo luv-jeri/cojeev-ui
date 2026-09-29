@@ -943,7 +943,7 @@ test('release outputs are complete, explicit and fail safe for every depth', () 
   const docs = releaseOutputs(releaseDepth(['docs/note.md']));
   assert.deepEqual(docs, {
     depth: 'docs', depth_reason: '1 changed path, all documentation',
-    run_checks: 'false', run_release: 'false', run_catalogue: 'false', run_transient: 'false', run_analytics: 'false', run_seo: 'false', run_reporting: 'false',
+    run_checks: 'false', run_release: 'false', run_catalogue: 'false', gate_ids: '', run_transient: 'false', run_analytics: 'false', run_seo: 'false', run_reporting: 'false',
   });
   const full = releaseOutputs(releaseDepth(['components/ui/button.tsx']));
   for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics', 'run_seo', 'run_reporting']) assert.equal(full[flag], 'true', flag);

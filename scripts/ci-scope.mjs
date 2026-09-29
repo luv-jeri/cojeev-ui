@@ -12,6 +12,7 @@
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import { isDeepStrictEqual } from "node:util";
+import { isComponentPath, selectGateIdsFromCheckout } from "./ci-affected-ids.mjs";
 
 // Exact paths only. A prefix or suffix rule here would let a neighbouring file
 // ride along: `verify.yml.bak`, `run-production-gate.mjs.orig`, a second
@@ -480,10 +481,13 @@ export function releaseDepth(paths, diff, context) {
   let relocation = false;
   const suites = new Set();
   let depth = "docs";
+  const components = [];
   for (const file of paths) {
     if (documentation(file)) continue;
     const bump = next => { if (DEPTH_RANK.indexOf(next) > DEPTH_RANK.indexOf(depth)) depth = next; };
     if (FULL_ALWAYS.has(file)) return { depth: "full", suites: [], reason: oneLine(`CI contract file always runs complete release verification: ${file}`) };
+    // A component file narrows the gate only when the caller can prove which ids it touches.
+    if (isComponentPath(file) && context?.gateIds) { components.push(file); depth = "affected"; continue; }
     const owned = area(file);
     if (owned) { bump(owned.level === "quick" ? "quick" : "affected"); if (owned.suite) suites.add(owned.suite); continue; }
     if (file === "package.json" && packageReducible(context)) { bump("quick"); continue; }
@@ -492,22 +496,29 @@ export function releaseDepth(paths, diff, context) {
     if (RELOCATION_SENSITIVE.has(file) && relocationOnly(perFile.get(file))) { depth = "affected"; relocation = true; continue; }
     return { depth: "full", suites: [], reason: oneLine(`not exempt from release catalogue verification: ${file}`) };
   }
+  let gateIds;
+  if (components.length) {
+    const selected = context.gateIds(components);
+    if (!selected?.ids?.length) return { depth: "full", suites: [], reason: oneLine(`component change runs every id: ${selected?.full ?? "no ids selected"}`) };
+    gateIds = selected.ids;
+  }
   const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;
   if (depth === "docs") return { depth, suites: [], reason: `${count}, all documentation` };
   return {
     depth,
     suites: [...suites],
-    reason: `${count}, all documentation, independent areas, named release tooling${relocation ? ", verified path relocation" : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
+    gateIds,
+    reason: `${count}, all documentation, independent areas, named release tooling${relocation ? ", verified path relocation" : ""}${gateIds ? `, ${gateIds.length} affected component ids` : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
   };
 }
 
-export function resolveReleaseDepth({ event, paths, diff, readPaths, readDiff, readPackage }) {
+export function resolveReleaseDepth({ event, paths, diff, readPaths, readDiff, readPackage, readGateIds }) {
   // A manual dispatch is the explicit way to demand a complete run, so it never
   // reduces. Everything that is not a push or a pull request is unknown here.
   if (event !== "push" && event !== "pull_request") return { depth: "full", suites: [], reason: `${event} runs complete release verification` };
   try {
     const files = paths ?? readPaths();
-    return releaseDepth(files, diff ?? readDiff?.(files), { package: files.includes("package.json") ? readPackage?.() : undefined });
+    return releaseDepth(files, diff ?? readDiff?.(files), { package: files.includes("package.json") ? readPackage?.() : undefined, gateIds: readGateIds });
   } catch (error) {
     return { depth: "full", suites: [], reason: oneLine(`diff lookup failed: ${error.message}`) };
   }
@@ -532,7 +543,10 @@ export function releaseOutputs(decision) {
     // every deployment job. Off only when nothing deployable changed.
     run_release: String(decision.depth !== "docs" && decision.depth !== "quick"),
     // The browser component catalogue and the other browser gates.
-    run_catalogue: String(decision.depth === "full"),
+    // A component-confined change runs it too, for the ids in gate_ids only.
+    run_catalogue: String(decision.depth === "full" || Boolean(decision.gateIds?.length)),
+    // Comma-separated component ids for `npm run gate`; empty means every id.
+    gate_ids: decision.depth === "full" ? "" : (decision.gateIds ?? []).join(","),
     // A bounded browser harness instead of the catalogue: real browser evidence
     // for the few paths that own one, never zero browser evidence for them.
     run_transient: String(decision.depth === "full" || (decision.suites ?? []).includes("transient-timing")),
@@ -580,6 +594,7 @@ function main() {
         readPaths: () => changedPaths(range),
         readDiff: paths => relocationDiff({ ...range, paths }),
         readPackage: () => packageSources(range),
+        readGateIds: components => selectGateIdsFromCheckout(components),
       });
     } catch (error) {
       decision = { depth: "full", suites: [], reason: oneLine(`release depth selection failed: ${error.message}`) };
