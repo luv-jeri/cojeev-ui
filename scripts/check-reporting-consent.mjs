@@ -51,13 +51,14 @@ try {
     await page.getByRole("button", { name: "Request a feature / Report a bug", exact: true }).click();
     await page.getByRole("button", { name: "More", exact: true }).waitFor();
   };
+  // Only drafts a tab changed are stored, so no bug draft at all means no diagnostics; a stored draft still must say `diagnostics: null`.
   const stored = () => page.evaluate(() => new Promise((resolve, reject) => {
     const request = indexedDB.open("cojeev-reporting-v1", 1);
     request.onerror = () => reject(request.error);
     request.onsuccess = () => {
       const db = request.result;
       const read = db.transaction("drafts").objectStore("drafts").get("workspace");
-      read.onsuccess = () => { db.close(); resolve(read.result?.drafts?.bug?.diagnostics); };
+      read.onsuccess = () => { db.close(); const bug = read.result?.drafts?.bug; resolve(bug === undefined ? null : bug.diagnostics); };
       read.onerror = () => { db.close(); reject(read.error); };
     };
   }));
