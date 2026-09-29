@@ -136,6 +136,8 @@ try {
     const dialog = page.getByRole("alertdialog"); await dialog.waitFor();
     assert.ok(await page.evaluate(() => !!document.activeElement?.closest('[role="alertdialog"]')), "focus moves into the dialog");
     await page.keyboard.press("Escape"); await dialog.waitFor({ state: "hidden" });
+    // Radix restores focus when the content unmounts after its exit animation, a beat after it stops being visible.
+    await page.waitForFunction(n => n === document.activeElement, await overturn.elementHandle(), { timeout: 2000 }).catch(() => {});
     assert.ok(await overturn.evaluate(n => n === document.activeElement), "focus returns to the trigger");
     await page.keyboard.press("Enter"); await dialog.waitFor();
     await page.keyboard.press("Enter"); await dialog.waitFor({ state: "hidden" });
