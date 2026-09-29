@@ -1017,7 +1017,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                         >
                           <span>{topic.title}</span>{" "}
                           <span>
-                            · {topic.demand} {topic.demand === 1 ? "person" : "people"} ·{" "}
+                            <span className="sr-only">· </span>
+                            {topic.demand} {topic.demand === 1 ? "person" : "people"} ·{" "}
                             <span className="report-join-label">Join</span>
                           </span>
                         </button>
