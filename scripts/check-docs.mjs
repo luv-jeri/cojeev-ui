@@ -145,7 +145,7 @@ async function emulateAndSettle(page, emulateMedia, media) {
       change.evaluate(state => state.done),
       new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`The page stayed busy for 60 s after emulating ${JSON.stringify(media)}`)), 60000); }),
     ]);
-  } finally { clearTimeout(timer); await change.dispose(); }
+  } finally { clearTimeout(timer); change.dispose().catch(() => {}); } // awaiting dispose would queue behind the busy renderer
   const busy = Date.now() - start;
   if (busy >= 1000) console.error(`Renderer busy ${(busy / 1000).toFixed(1)} s after emulating ${JSON.stringify(media)} on ${new URL(page.url()).pathname}`);
 }

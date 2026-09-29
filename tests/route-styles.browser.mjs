@@ -48,7 +48,8 @@ const sampleCounts = (sample) => Object.keys(sample).reduce((counts, key) => {
 // elements per slot, so one element mounting late shifts every later key. A flow sculpture, for one, swaps its
 // "Static shape preview" status for a "Motion is resting" note only once three.js has loaded and compiled: seconds
 // after a hard load on a software-WebGL runner, yet at once after Back. Renderers out of view never start, so this
-// leaves them out with the same IntersectionObserver test the components use.
+// leaves them out with the sculpture stage's IntersectionObserver test (threshold 0.1). shape-scene starts at
+// threshold 0, so one only 0–10% in view is not waited for; that can reintroduce the flake, never hide a difference.
 const pageState = () => new Promise((resolve) => {
   const counts = {}, targets = [...document.querySelectorAll('[data-renderer="pending"]')], seen = new Map();
   for (const el of document.querySelectorAll("[data-slot]")) counts[el.dataset.slot] = (counts[el.dataset.slot] ?? 0) + 1;
