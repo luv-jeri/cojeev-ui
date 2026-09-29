@@ -7,5 +7,5 @@
 .v-sculpture-surface>[data-slot="sculpture-print-still"]{position:absolute;inset:0;width:100%;height:100%}
 .v-sculpture-surface[data-renderer="canvas2d"]>[data-slot="glyph-sculpture-canvas"]{opacity:1}
 .v-sculpture-surface[data-renderer="canvas2d"]>:is([data-slot="glyph-sculpture-still"],[data-slot="sculpture-print-still"]){visibility:hidden}
-.v-sculpture-surface>[data-slot="sculpture-error"]{position:absolute;inset:24px;display:grid;place-content:center;color:var(--v-text);font:var(--fs-body,15px)/1.5 var(--font-body,system-ui);text-align:center}
+.v-sculpture-surface>[data-slot="sculpture-error"]{position:absolute;inset:24px;display:grid;place-content:center;color:var(--v-text);font:var(--fs-body,15px)/1.5 var(--font-text,system-ui);text-align:center}
 @media (forced-colors:active){.v-sculpture-surface{color:CanvasText}}

@@ -72,8 +72,8 @@
   border-radius: 48% 52% 38% 62%;
   transform: rotate(30deg);
   transition:
-    transform var(--t-panel) var(--enter),
-    border-radius var(--t-panel) var(--enter);
+    transform var(--t-max) var(--enter),
+    border-radius var(--t-max) var(--enter);
 }
 .v-card[data-appearance="editorial"]:hover .v-card__cover-orbit {
   transform: rotate(45deg);

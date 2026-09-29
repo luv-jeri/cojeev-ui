@@ -123,6 +123,32 @@ async function key(locator, value) {
   await locator.focus();
   await locator.press(value, { delay: 60 });
 }
+// Emulated reduced motion reaches the page's change listeners in a later frame,
+// where every morph body on the page re-attaches. On docs pages with hundreds of
+// them that one frame can hold the renderer for many seconds on a slow runner, and
+// the next locator action would spend its own timeout queued behind it. Arm a
+// listener before the change (a query list created afterwards may already hold
+// the new value and never fire) and return once the frame that ran the listeners
+// is over. The bound is 60 s: the longest such frame measured was 18 s at 6x CPU
+// throttling.
+async function emulateAndSettle(page, emulateMedia, media) {
+  if (media.reducedMotion == null) return emulateMedia(media);
+  const change = await page.evaluateHandle(reduce => {
+    const query = matchMedia("(prefers-reduced-motion: reduce)");
+    return { done: query.matches === reduce ? null : new Promise(resolve => query.addEventListener("change", () => setTimeout(resolve), { once: true })) };
+  }, media.reducedMotion === "reduce");
+  const start = Date.now();
+  let timer;
+  try {
+    await emulateMedia(media);
+    await Promise.race([
+      change.evaluate(state => state.done),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`The page stayed busy for 60 s after emulating ${JSON.stringify(media)}`)), 60000); }),
+    ]);
+  } finally { clearTimeout(timer); change.dispose().catch(() => {}); } // awaiting dispose would queue behind the busy renderer
+  const busy = Date.now() - start;
+  if (busy >= 1000) console.error(`Renderer busy ${(busy / 1000).toFixed(1)} s after emulating ${JSON.stringify(media)} on ${new URL(page.url()).pathname}`);
+}
 const passive = new Set([
   "aspect-ratio",
   "avatar",
@@ -139,7 +165,7 @@ const passive = new Set([
   "typography",
 ]);
 const tests = {
-  ...createReferenceTests(),
+  ...createReferenceTests({ eventually }),
   shape: async ({root}) => {
     await root.getByRole("button",{name:"Morph to cloud-3",exact:true}).click();
     await root.getByRole("img",{name:"Selected shape: cloud-3",exact:true}).waitFor();
@@ -1412,6 +1438,8 @@ const contexts = [];
 async function measurementPage(context, errors) {
   const page = await context.newPage();
   page.setDefaultTimeout(10000);
+  const emulateMedia = page.emulateMedia.bind(page);
+  page.emulateMedia = media => emulateAndSettle(page, emulateMedia, media);
   page.setDefaultNavigationTimeout(60000);
   page.on("pageerror", error => errors.push({ type: "pageerror", message: error.message }));
   page.on("console", message => {

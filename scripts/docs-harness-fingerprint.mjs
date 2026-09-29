@@ -5,7 +5,10 @@ import { fileURLToPath } from "node:url";
 
 export const docsHarnessFiles = [
   "scripts/check-docs.mjs",
+  "scripts/docs-behaviors-composites.mjs",
   "scripts/docs-behaviors-details.mjs",
+  "scripts/docs-behaviors-effects.mjs",
+  "scripts/docs-behaviors-reference.mjs",
   "scripts/docs-harness-fingerprint.mjs",
   "scripts/docs-transient-paint.mjs",
   "scripts/lib/docs-summary.mjs",
