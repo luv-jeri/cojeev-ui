@@ -1,0 +1,100 @@
+@layer theme, base, components, utilities, cojeev-states, cojeev-flow, cojeev-morph, cojeev-accessibility;
+@import "tailwindcss";
+@import "../../registry/cojeev/styles/fonts.css";
+@import "../../registry/cojeev/styles/tokens.css";
+@import "../../registry/cojeev/styles/theme.css";
+@import "../../registry/cojeev/styles/base.css";
+@import "../../registry/cojeev/styles/accordion.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/adjuster.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/alert-dialog.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/alert.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/aspect-ratio.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/attachment.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/avatar.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/badge.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/breadcrumb.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/bubble.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/button-group.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/button.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/calendar.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/card.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/carousel.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/chart.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/checkbox.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/collapsible.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/combobox.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/command.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/context-menu.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/data-table.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/date-picker.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/dialog.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/direction.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/drawer.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/dropdown-menu.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/dropzone.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/empty.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/field.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/hover-card.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/icon.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/input-group.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/input-otp.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/input.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/item.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/kbd.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/label.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/marker.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/menubar.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/message-scroller.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/message.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/native-select.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/navigation-menu.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/pagination.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/popover.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/progress.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/questionnaire.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/radio-group.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/resizable.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/scroll-area.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/select.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/separator.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/sheet.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/sidebar.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/skeleton.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/slider.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/spinner.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/stepper.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/switch.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/table.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/tabs.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/textarea.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/toast.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/toggle-group.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/toggle.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/tooltip.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/typography.css" layer(cojeev-states);
+@import "../../registry/cojeev/styles/morph.css" layer(cojeev-morph);
+@import "../../registry/cojeev/styles/flow-press.css" layer(cojeev-flow);
+@source "../../registry/cojeev";
+
+body{background:var(--v-canvas);color:var(--v-text);margin:0}
+.tri-wrap{max-width:1360px;margin:0 auto;padding:var(--s-8) var(--s-8) var(--s-10,64px);display:grid;gap:var(--s-6)}
+.tri-head{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4)}
+.tri-counters{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-4)}
+.tri-num{font-size:34px;line-height:1;font-weight:600;font-variant-numeric:tabular-nums}
+.tri-label{color:var(--muted-foreground);font-size:var(--fs-small)}
+.tri-split{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--s-6);align-items:start}
+.tri-row{cursor:pointer}
+.tri-row[aria-selected="true"]{background:var(--v-beige)}
+.tri-cell-title{display:grid;gap:var(--s-2);min-width:0}
+.tri-badges{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.tri-muted{color:var(--muted-foreground);font-size:var(--fs-small)}
+.tri-detail{display:grid;gap:var(--s-5)}
+.tri-detail h3{margin:0 0 var(--s-2);font-size:var(--fs-small);text-transform:uppercase;letter-spacing:.08em;color:var(--muted-foreground)}
+.tri-detail p,.tri-detail pre{margin:0;white-space:pre-wrap;font:inherit;line-height:1.5}
+.tri-detail ul{margin:0;padding-left:var(--s-5);display:grid;gap:var(--s-1)}
+.tri-actions{display:flex;flex-wrap:wrap;gap:var(--s-3)}
+.tri-hint{color:var(--muted-foreground);font-size:var(--fs-small)}
+.tri-hint code{background:var(--v-beige);padding:1px 6px;border-radius:6px}
+a.tri-link{color:inherit;text-decoration:underline}
+.tri-head h1{font-size:28px;font-weight:600}
+.tri-panel{position:sticky;top:var(--s-4);max-height:calc(100vh - 2*var(--s-4));overflow:auto}
