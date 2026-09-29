@@ -608,3 +608,124 @@ test('a tag alone cannot adopt a second provider identity or a body that never c
   assert.equal((await hook(`legacy-message-${legacy.id}`,legacy.id)).status,202);
   assert.equal(await events(),start,'a body that never carried tags cannot be adopted by a tag');
 });
+
+const put = (id,body,auth=admin,headers={}) => request(`/v1/admin/reports/${id}/triage`,'PUT',body,auth,headers);
+const ai = (decision='approved',more={}) => ({decision,by:'ai',reason:'Clear steps.',title:'Menu disappears in dark mode',body:'Steps to reproduce the problem.',model:'gpt-5.6-sol',...more});
+const owner = (decision,more={}) => ({decision,by:'owner',...more});
+const triageJobs = id => db.prepare("SELECT id,kind,state,payload_json,reviewed_at FROM outbox WHERE report_id=? AND kind IN ('github','github_state','email_accepted','email_rejected') ORDER BY kind,id").bind(id).all().then(r=>r.results);
+const fresh = async more => {const p=payload(more);assert.equal((await submit(p)).status,201);return p;};
+const triaged = id => db.prepare('SELECT * FROM reports WHERE id=?').bind(id).first();
+test('triage list returns untriaged reports without email and excludes purged reports',async()=>{
+  await db.prepare("UPDATE reports SET triage_state='rejected',triage_by='owner' WHERE triage_state='pending'").run();
+  const a=await fresh(),b=await fresh();await db.prepare('UPDATE reports SET private_purged=1 WHERE id=?').bind(b.id).run();
+  const response=await request('/v1/admin/triage','GET',undefined,admin);const text=await response.text();
+  assert.equal(response.status,200);assert.ok(!text.includes('example.com'));
+  const ids=JSON.parse(text).reports.map(r=>r.id);assert.ok(ids.includes(a.id));assert.ok(!ids.includes(b.id));
+  assert.ok(JSON.parse(text).reports.length<=50);
+});
+test('an AI verdict is recorded once; a second AI verdict returns 409',async()=>{
+  const p=await fresh();const first=await put(p.id,ai());assert.equal(first.status,200);
+  assert.deepEqual(await first.json(),{ok:true,triage_state:'approved',queued:['github']});
+  const row=await triaged(p.id);assert.equal(row.triage_by,'ai');assert.equal(row.triage_model,'gpt-5.6-sol');assert.equal(row.verified_at,null);assert.equal(row.triage_title,'Menu disappears in dark mode');
+  assert.equal((await put(p.id,ai('rejected'))).status,409);
+  assert.equal((await triaged(p.id)).triage_state,'approved');assert.equal((await triageJobs(p.id)).length,1);
+});
+test('an owner decision on a pending report blocks a later AI verdict',async()=>{
+  const p=await fresh();const r=await put(p.id,owner('rejected',{reason:'Not a bug'}));assert.equal(r.status,200);
+  assert.equal((await put(p.id,ai('approved'))).status,409);
+  const row=await triaged(p.id);assert.equal(row.triage_state,'rejected');assert.equal(row.triage_by,'owner');assert.ok(row.verified_at>0);
+});
+test('approved and rejected verdicts queue the right job with reviewed_at set',async()=>{
+  const a=await fresh(),b=await fresh();
+  await put(a.id,ai('approved'));await put(b.id,ai('rejected'));
+  const [ja]=await triageJobs(a.id),[jb]=await triageJobs(b.id);
+  assert.equal(ja.kind,'github');assert.ok(ja.reviewed_at>0);assert.equal(jb.kind,'email_rejected');assert.ok(jb.reviewed_at>0);
+  // Reports older than the activation cutoff must not hold verdict jobs.
+  await db.prepare('UPDATE reports SET created_at=1000 WHERE id IN (?,?)').bind(a.id,b.id).run();
+  await backend.drain(backendEnv({EMAIL_ENABLED:'true',RESEND_API_KEY:'k',EMAIL_FROM:'a@b.co',GITHUB_TOKEN:'t',GITHUB_REPOSITORY:'o/r'}),undefined,async()=>new Response('{}',{status:500}));
+  for(const id of [a.id,b.id]) for(const job of await triageJobs(id)) assert.notEqual(job.state,'held');
+});
+test('owner overturn follows the state table',async()=>{
+  // pending + ai + approved, topic has an issue: copy it and queue email_accepted
+  const t=await fresh({kind:'request',title:'Topic with an issue'});await put(t.id,ai('approved'));
+  await db.prepare("UPDATE reports SET issue_number=7,issue_node_id='n7',issue_url='https://github.com/o/r/issues/7' WHERE id=?").bind(t.id).run();
+  const j=await fresh({kind:'request',title:t.title,topicId:t.id,email:'j@example.com'});
+  assert.equal((await triaged(j.id)).triage_by,'join');
+  // pending + ai + approved, topic gains an issue after this report arrived: copy it + email_accepted
+  const pend=await fresh({kind:'request',title:'Pending sibling',topicId:t.id,email:'p@example.com'});
+  assert.equal((await triaged(pend.id)).triage_state,'approved','joined at intake');
+  const late=await fresh({kind:'request',title:'Late joiner'});const later=await fresh({kind:'request',title:late.title,topicId:late.id,email:'l@example.com'});
+  await put(late.id,ai('approved'));await db.prepare("UPDATE reports SET issue_number=8,issue_node_id='n8',issue_url='u8' WHERE id=?").bind(late.id).run();
+  const copy=await put(later.id,ai('approved'));assert.deepEqual(await copy.json(),{ok:true,triage_state:'approved',queued:['email_accepted']});
+  assert.equal((await triaged(later.id)).issue_number,8);
+  // pending + owner + approved with no stored draft needs a title and body
+  const bare=await fresh();assert.equal((await put(bare.id,owner('approved'))).status,422);
+  // pending + owner + approved keeps the stored draft when omitted, verified now
+  const kept=await fresh();await db.prepare("UPDATE reports SET triage_title='Draft',triage_body='Draft body' WHERE id=?").bind(kept.id).run();
+  assert.equal((await put(kept.id,owner('approved'))).status,200);const kr=await triaged(kept.id);assert.equal(kr.triage_title,'Draft');assert.ok(kr.verified_at>0);
+  // rejected + owner + approved, own issue: github_state open, no email
+  const o1=await fresh();await put(o1.id,ai('rejected'));await db.prepare("UPDATE reports SET issue_number=11 WHERE id=?").bind(o1.id).run();
+  const r1=await put(o1.id,owner('approved',{title:'Now valid',body:'Body'}));assert.deepEqual((await r1.json()).queued,['github_state']);
+  const g1=(await triageJobs(o1.id)).find(x=>x.kind==='github_state');assert.deepEqual(JSON.parse(g1.payload_json),{state:'open'});assert.ok(g1.reviewed_at>0);
+  assert.equal((await triageJobs(o1.id)).filter(x=>x.kind==='email_accepted').length,0);
+  // rejected + owner + approved, no own issue, topic issue: copy + email_accepted
+  const o2=await fresh({kind:'request',title:'Another sibling',topicId:t.id,email:'o2@example.com'});
+  await db.prepare("UPDATE reports SET triage_state='rejected',triage_by='ai',triage_title='T3',triage_body='B',issue_number=NULL WHERE id=?").bind(o2.id).run();
+  const r2=await put(o2.id,owner('approved'));assert.deepEqual((await r2.json()).queued,['email_accepted']);assert.equal((await triaged(o2.id)).issue_number,7);
+  // rejected + owner + approved, nothing: github
+  const o3=await fresh();await put(o3.id,ai('rejected',{title:'Kept title'}));
+  assert.deepEqual((await (await put(o3.id,owner('approved'))).json()).queued,['github']);
+  // approved + owner + rejected, own issue: github_state closed, no email
+  const o4=await fresh();await put(o4.id,ai('approved'));await db.prepare("UPDATE reports SET issue_number=12 WHERE id=?").bind(o4.id).run();
+  const r4=await put(o4.id,owner('rejected'));assert.deepEqual((await r4.json()).queued,['github_state']);
+  const g4=(await triageJobs(o4.id)).find(x=>x.kind==='github_state');assert.deepEqual(JSON.parse(g4.payload_json),{state:'closed'});
+  assert.equal((await triageJobs(o4.id)).filter(x=>x.kind==='email_rejected').length,0);
+  // approved + owner + rejected, issue not created yet: cancel pending jobs, queue email_rejected
+  const o5=await fresh();await put(o5.id,ai('approved'));
+  const r5=await put(o5.id,owner('rejected'));assert.deepEqual((await r5.json()).queued,['email_rejected']);
+  const jobs5=await triageJobs(o5.id);assert.equal(jobs5.find(x=>x.kind==='github').state,'cancelled');assert.equal(jobs5.find(x=>x.kind==='email_rejected').state,'pending');
+  // and back to approved revives the cancelled github job
+  await put(o5.id,owner('approved'));assert.equal((await triageJobs(o5.id)).find(x=>x.kind==='github').state,'pending');
+  // same decision from the owner only verifies
+  const o6=await fresh();await put(o6.id,ai('approved'));const before=await triaged(o6.id);
+  const r6=await put(o6.id,owner('approved'));assert.deepEqual(await r6.json(),{ok:true,triage_state:'approved',queued:[]});
+  const after=await triaged(o6.id);assert.ok(after.verified_at>0);assert.equal(after.triaged_at,before.triaged_at);assert.equal(after.triage_by,'ai');
+  // a verdict on a purged report is gone (410), whatever the state
+  const gone=await fresh();await db.prepare('UPDATE reports SET private_purged=1 WHERE id=?').bind(gone.id).run();
+  assert.equal((await put(gone.id,owner('rejected'))).status,410);
+});
+test('verify sets verified_at and the unverified count drops',async()=>{
+  const p=await fresh();assert.equal((await request(`/v1/admin/reports/${p.id}/verify`,'POST',{},admin)).status,409);
+  await put(p.id,ai('approved'));const count=async()=>(await (await request('/v1/admin/reports','GET',undefined,admin)).json()).counts.unverified;
+  const before=await count();assert.equal((await request(`/v1/admin/reports/${p.id}/verify`,'POST',{},admin)).status,200);
+  assert.equal(await count(),before-1);assert.ok((await triaged(p.id)).verified_at>0);
+});
+test('admin list filters by triage state and returns counts',async()=>{
+  const p=await fresh();await put(p.id,ai('rejected'));
+  const list=async q=>(await request(`/v1/admin/reports${q}`,'GET',undefined,admin)).json();
+  const rej=await list('?triage=rejected');assert.ok(rej.reports.length>0&&rej.reports.every(r=>r.triage_state==='rejected'));
+  assert.ok(rej.reports.some(r=>r.id===p.id&&r.triage_by==='ai'&&r.triage_model==='gpt-5.6-sol'&&'email' in r));
+  assert.ok((await list('?triage=unverified')).reports.every(r=>r.triage_state!=='pending'&&r.triage_by!=='join'&&r.verified_at===null));
+  const all=await list('');for(const k of ['pending','approved','rejected','unverified']) assert.equal(typeof all.counts[k],'number');
+  assert.equal((await request('/v1/admin/reports?triage=bogus','GET',undefined,admin)).status,422);
+});
+test('triage routes require the admin token and an allowed Origin for writes',async()=>{
+  const p=await fresh();
+  assert.equal((await request('/v1/admin/triage')).status,401);
+  assert.equal((await put(p.id,ai(),null)).status,401);
+  assert.equal((await put(p.id,ai(),'wrong')).status,401);
+  assert.equal((await put(p.id,ai(),admin,{Origin:'https://evil.test'})).status,403);
+  assert.equal((await request(`/v1/admin/reports/${p.id}/verify`,'POST',{},admin,{Origin:'https://evil.test'})).status,403);
+  assert.equal((await request(`/v1/admin/reports/${p.id}/verify`,'POST',{})).status,401);
+  assert.equal((await triaged(p.id)).triage_state,'pending');
+});
+test('verdict validation rejects a bad decision, a short title and an oversized body',async()=>{
+  const p=await fresh();
+  for(const bad of [ai('maybe'),ai('approved',{title:'ab'}),ai('approved',{body:'x'.repeat(20001)}),ai('approved',{body:'   '}),ai('approved',{reason:'x'.repeat(501)}),{decision:'approved',by:'ai'},{...ai(),extra:1},{...ai(),by:'join'}])
+    assert.equal((await put(p.id,bad)).status,422,JSON.stringify(bad).slice(0,80));
+  assert.equal((await put(p.id,ai('approved',{body:'x'.repeat(20000)}))).status,200);
+});
+test('a verdict on an expired report returns 410',async()=>{
+  const p=await fresh();await db.prepare('UPDATE reports SET private_purged=1 WHERE id=?').bind(p.id).run();
+  const r=await put(p.id,ai());assert.equal(r.status,410);assert.equal((await r.json()).error,'This report has expired.');
+});
