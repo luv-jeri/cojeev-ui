@@ -11,6 +11,7 @@
  */
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import { isDeepStrictEqual } from "node:util";
 
 // Exact paths only. A prefix or suffix rule here would let a neighbouring file
 // ride along: `verify.yml.bak`, `run-production-gate.mjs.orig`, a second
@@ -135,16 +136,74 @@ const SUITES = {
 };
 const ORDER = ["prose", "quick", "ci-contract", "registry-generation", "reporting-consent", "analytics-browser", "transient-timing", "install-consumer", "component-polish", "maintenance"];
 
-function kind(file) {
-  if (NAMED.has(file)) return NAMED.get(file);
+// Independent areas. Unlike NAMED these match a whole directory, on a path
+// segment boundary (`apps/triage/` matches, `apps/triage-evil/` does not). An
+// area earns a rule only where an import scan shows nothing in the site build
+// reaches it; everything else stays exact-path or full.
+const cleanSegments = file => {
   const segments = file.split("/");
-  if (segments.some(segment => segment === "" || segment === "." || segment === "..")) return null;
+  return segments.some(segment => segment === "" || segment === "." || segment === "..") ? null : segments;
+};
+const inside = (file, directory) => file.startsWith(`${directory}/`) && file.length > directory.length + 1;
+const TRIAGE_FILES = new Set(["scripts/triage.ts", "lib/reporting/triage-contract.ts", "tests/reporting-contract.test.ts"]);
+const TRIAGE_TESTS = /^tests\/triage(?:-[a-z-]+)?\.(?:test\.ts|test\.mjs|browser\.mjs|ts)$/;
+// The reporting widget's library, imported by app/layout.tsx through the widget
+// component. draft.ts and reporting-widget.tsx are named above, not here.
+const WIDGET_LIB = new Set(["capture", "client", "contracts", "diagnostics", "receipt-labels"].map(name => `lib/reporting/${name}.ts`));
+
+/**
+ * `quick`: lint, types and the unit suites cover it. `pack`: also packaged into
+ * the release pair. `pack` with a suite: also that bounded browser journey.
+ * Never the browser catalogue.
+ */
+function area(file) {
+  if (!cleanSegments(file)) return null;
+  if (["apps/triage", "scripts/triage", "docs/reporting"].some(directory => inside(file, directory))
+    || TRIAGE_FILES.has(file) || TRIAGE_TESTS.test(file)) return { level: "quick" };
+  if (inside(file, "workers/reporting") || inside(file, "workers/registry-host")) return { level: "pack" };
+  if (file === "components/reporting/reporting-widget.tsx") return null;
+  if (WIDGET_LIB.has(file) || inside(file, "components/reporting")) return { level: "pack", suite: "reporting-consent" };
+  return null;
+}
+
+// package.json may reduce only when the manifest is identical except for
+// `scripts` entries that no verification step or install hook depends on.
+const PROTECTED_SCRIPT = /^(?:gate(?::|$)|pre|post|install$)/;
+const PROTECTED_SCRIPTS = new Set([
+  "build", "test", "lint", "dev", "start", "typecheck", "registry:build", "styles:build", "check:examples",
+  // Run by the quick suite and the release job by name.
+  "reporting:test", "registry-host:test", "analytics:browser",
+]);
+export function scriptsOnlyChange(before, after) {
+  try {
+    const [old, next] = [JSON.parse(before), JSON.parse(after)];
+    if (![old, next].every(manifest => manifest && typeof manifest === "object" && !Array.isArray(manifest))) return false;
+    const { scripts: oldScripts = {}, ...oldRest } = old;
+    const { scripts: nextScripts = {}, ...nextRest } = next;
+    if (!isDeepStrictEqual(oldRest, nextRest)) return false;
+    if (![oldScripts, nextScripts].every(scripts => scripts && typeof scripts === "object" && !Array.isArray(scripts))) return false;
+    return [...new Set([...Object.keys(oldScripts), ...Object.keys(nextScripts)])]
+      .filter(key => oldScripts[key] !== nextScripts[key])
+      .every(key => !PROTECTED_SCRIPTS.has(key) && !PROTECTED_SCRIPT.test(key));
+  } catch {
+    return false;
+  }
+}
+const packageReducible = context => Boolean(context?.package) && scriptsOnlyChange(context.package.before, context.package.after);
+
+function kind(file, context) {
+  if (NAMED.has(file)) return NAMED.get(file);
+  const segments = cleanSegments(file);
+  if (!segments) return null;
   // Prose lives under docs/ and must actually be prose: a build script or a
   // generator committed there is application code and runs the full job.
   if (segments[0] === "docs" && segments.length > 1 && file.endsWith(".md")) return "prose";
   // Root Node unit suites only. A browser suite, a nested directory or an
   // unnamed fixture is not covered by `npm test` alone.
   if (segments[0] === "tests" && segments.length === 2 && /^[^/]+\.test\.(mjs|ts)$/.test(segments[1])) return "unit";
+  // Checkpoints have no release pair to pack, so only the quick areas reduce here.
+  if (area(file)?.level === "quick") return "unit";
+  if (file === "package.json" && packageReducible(context)) return "unit";
   return null;
 }
 
@@ -152,11 +211,11 @@ function kind(file) {
 // NUL-separated path may itself contain one, so every reason is flattened.
 const oneLine = (value) => String(value).replace(/\s+/g, " ").trim().slice(0, 200);
 
-export function classify(paths) {
+export function classify(paths, context) {
   if (!paths.length) return { scope: "full", suites: [], reason: "empty diff" };
   const selected = new Set();
   for (const file of paths) {
-    const matched = kind(file);
+    const matched = kind(file, context);
     if (!matched) return { scope: "full", suites: [], reason: oneLine(`not on the checkpoint allowlist: ${file}`) };
     for (const suite of SUITES[matched]) selected.add(suite);
   }
@@ -178,12 +237,20 @@ export function changedPaths({ base, head, cwd = process.cwd() }) {
   return git(["diff", "--name-only", "--no-renames", "-z", mergeBase, head]).split("\0").filter(Boolean);
 }
 
-export function resolveScope({ event, baseRef, paths, readPaths }) {
+/** package.json as it was at the merge base and as it is at head. */
+export function packageSources({ base, head, cwd = process.cwd() }) {
+  const git = args => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  const mergeBase = git(["merge-base", base, head]).trim();
+  return { before: git(["show", `${mergeBase}:package.json`]), after: git(["show", `${head}:package.json`]) };
+}
+
+export function resolveScope({ event, baseRef, paths, readPaths, readPackage }) {
   const target = String(baseRef ?? "").replace(/^refs\/heads\//, "");
   if (event !== "pull_request") return { scope: "full", suites: [], reason: `${event} runs complete release verification` };
   if (target === "main") return { scope: "full", suites: [], reason: "a pull request into main runs complete release verification" };
   try {
-    return classify(paths ?? readPaths());
+    const files = paths ?? readPaths();
+    return classify(files, { package: files.includes("package.json") ? readPackage?.() : undefined });
   } catch (error) {
     return { scope: "full", suites: [], reason: oneLine(`diff lookup failed: ${error.message}`) };
   }
@@ -197,6 +264,8 @@ export function resolveScope({ event, baseRef, paths, readPaths }) {
 // pull request into `main`, and it is the only thing that packages, publishes
 // and deploys. Three answers:
 //
+//   quick     lint, type checking, the Node and Worker suites, and nothing that is
+//             packaged or deployed. For tooling that no build output contains.
 //   full      the complete job, including the browser component catalogue. The
 //             default for anything unknown, shared, uncertain or manual.
 //   affected  everything except the browser catalogue gates. Selected only for
@@ -215,17 +284,23 @@ export function resolveScope({ event, baseRef, paths, readPaths }) {
 // checkpoint allowlist's job — and never reduces a manual dispatch, which stays
 // the explicit way to demand a complete run.
 const DOCUMENTATION_SUFFIX = /\.(?:md|txt|png|jpe?g|svg|webp)$/;
-const CATALOGUE_EXEMPT = new Set([
-  // The workflows themselves and the pinned external deployment runtime.
+// The CI contract. A selector bug here would silently under-test every later
+// change, so an edit to any of these is always the complete job, even when the
+// same file also appears in a set below. The pinned deployment runtime is a
+// dependency manifest and is full for the same reason as package-lock.json.
+const FULL_ALWAYS = new Set([
   ".github/workflows/verify.yml",
+  "scripts/ci-scope.mjs",
+  "tests/ci-scope.test.mjs",
+  "scripts/run-production-gate.mjs",
+  ".github/wrangler-runtime/package.json",
+  ".github/wrangler-runtime/package-lock.json",
+]);
+const CATALOGUE_EXEMPT = new Set([
+  // The other workflows.
   ".github/workflows/health.yml",
   ".github/workflows/recovery.yml",
   ".github/workflows/rollback.yml",
-  ".github/wrangler-runtime/package.json",
-  ".github/wrangler-runtime/package-lock.json",
-  // The classifier and its tests.
-  "scripts/ci-scope.mjs",
-  "tests/ci-scope.test.mjs",
   // Release packaging, deployment and operations. None of these is imported by
   // the site, a component or the registry build, so no rendered surface can
   // change with them. `scripts/release-config.mjs`, `scripts/release-manifest.mjs`,
@@ -395,7 +470,9 @@ export function relocationOnly(diff) {
   return remaining.every(line => RELOCATION_INSERTIONS.some(pattern => pattern.test(line.trim())));
 }
 
-export function releaseDepth(paths, diff) {
+const DEPTH_RANK = ["docs", "quick", "affected"];
+
+export function releaseDepth(paths, diff, context) {
   if (!paths.length) return { depth: "full", suites: [], reason: "empty diff" };
   // Judged per file: one file's unrelated edit must not excuse another's, and the
   // reason must name the file that actually needs the complete job.
@@ -405,6 +482,11 @@ export function releaseDepth(paths, diff) {
   let depth = "docs";
   for (const file of paths) {
     if (documentation(file)) continue;
+    const bump = next => { if (DEPTH_RANK.indexOf(next) > DEPTH_RANK.indexOf(depth)) depth = next; };
+    if (FULL_ALWAYS.has(file)) return { depth: "full", suites: [], reason: oneLine(`CI contract file always runs complete release verification: ${file}`) };
+    const owned = area(file);
+    if (owned) { bump(owned.level === "quick" ? "quick" : "affected"); if (owned.suite) suites.add(owned.suite); continue; }
+    if (file === "package.json" && packageReducible(context)) { bump("quick"); continue; }
     if (FOCUSED_BROWSER.has(file)) { depth = "affected"; suites.add(FOCUSED_BROWSER.get(file)); continue; }
     if (CATALOGUE_EXEMPT.has(file)) { depth = "affected"; continue; }
     if (RELOCATION_SENSITIVE.has(file) && relocationOnly(perFile.get(file))) { depth = "affected"; relocation = true; continue; }
@@ -415,17 +497,17 @@ export function releaseDepth(paths, diff) {
   return {
     depth,
     suites: [...suites],
-    reason: `${count}, all documentation, named release tooling${relocation ? ", verified path relocation" : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
+    reason: `${count}, all documentation, independent areas, named release tooling${relocation ? ", verified path relocation" : ""}${suites.size ? ` or a bounded ${[...suites].join("/")} harness` : ""}`,
   };
 }
 
-export function resolveReleaseDepth({ event, paths, diff, readPaths, readDiff }) {
+export function resolveReleaseDepth({ event, paths, diff, readPaths, readDiff, readPackage }) {
   // A manual dispatch is the explicit way to demand a complete run, so it never
   // reduces. Everything that is not a push or a pull request is unknown here.
   if (event !== "push" && event !== "pull_request") return { depth: "full", suites: [], reason: `${event} runs complete release verification` };
   try {
     const files = paths ?? readPaths();
-    return releaseDepth(files, diff ?? readDiff?.(files));
+    return releaseDepth(files, diff ?? readDiff?.(files), { package: files.includes("package.json") ? readPackage?.() : undefined });
   } catch (error) {
     return { depth: "full", suites: [], reason: oneLine(`diff lookup failed: ${error.message}`) };
   }
@@ -448,7 +530,7 @@ export function releaseOutputs(decision) {
     run_checks: String(decision.depth !== "docs"),
     // Packaging, artifact integrity, consumer installation, artifact upload and
     // every deployment job. Off only when nothing deployable changed.
-    run_release: String(decision.depth !== "docs"),
+    run_release: String(decision.depth !== "docs" && decision.depth !== "quick"),
     // The browser component catalogue and the other browser gates.
     run_catalogue: String(decision.depth === "full"),
     // A bounded browser harness instead of the catalogue: real browser evidence
@@ -456,6 +538,7 @@ export function releaseOutputs(decision) {
     run_transient: String(decision.depth === "full" || (decision.suites ?? []).includes("transient-timing")),
     run_analytics: String(decision.depth === "full" || (decision.suites ?? []).includes("analytics-browser")),
     run_seo: String(decision.depth === "full" || (decision.suites ?? []).includes("seo-structured-data")),
+    run_reporting: String(decision.depth === "full" || (decision.suites ?? []).includes("reporting-consent")),
   };
 }
 
@@ -496,6 +579,7 @@ function main() {
         event: environment.CI_SCOPE_EVENT,
         readPaths: () => changedPaths(range),
         readDiff: paths => relocationDiff({ ...range, paths }),
+        readPackage: () => packageSources(range),
       });
     } catch (error) {
       decision = { depth: "full", suites: [], reason: oneLine(`release depth selection failed: ${error.message}`) };
@@ -513,6 +597,7 @@ function main() {
       event: environment.CI_SCOPE_EVENT,
       baseRef: environment.CI_SCOPE_BASE_REF,
       readPaths: () => changedPaths({ base: environment.CI_SCOPE_BASE_SHA, head: environment.CI_SCOPE_HEAD_SHA }),
+      readPackage: () => packageSources({ base: environment.CI_SCOPE_BASE_SHA, head: environment.CI_SCOPE_HEAD_SHA }),
     });
   } catch (error) {
     // An unexpected failure must still publish a complete, explicit answer.
