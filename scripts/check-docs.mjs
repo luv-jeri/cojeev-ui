@@ -139,7 +139,7 @@ const passive = new Set([
   "typography",
 ]);
 const tests = {
-  ...createReferenceTests(),
+  ...createReferenceTests({ eventually }),
   shape: async ({root}) => {
     await root.getByRole("button",{name:"Morph to cloud-3",exact:true}).click();
     await root.getByRole("img",{name:"Selected shape: cloud-3",exact:true}).waitFor();
