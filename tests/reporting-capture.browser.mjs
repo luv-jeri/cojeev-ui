@@ -117,11 +117,21 @@ try {
     }
     document.body.append(heavy);
   });
+  // Hold the capture open: the assets phase cannot finish before its images load, and these
+  // are answered after a fixed 4.5 s timer, so the card is up past 3 s however fast the page renders.
+  const holdImages = /t16-hold-\d\.png/;
+  await page.route(holdImages, async route => { await new Promise(resolve => setTimeout(resolve, 4500)); await route.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64") }).catch(() => {}); });
+  await page.evaluate(() => {
+    for (let index = 0; index < 3; index += 1) {
+      const image = document.createElement("img"); image.className = "capture-hold"; image.width = 40; image.height = 40; image.alt = "";
+      image.src = `t16-hold-${index}.png?n=${Math.random()}`; document.body.prepend(image);
+    }
+  });
   const attachmentsBefore = await page.locator(".report-attachments figure").count();
   await page.getByRole("button", { name: "Full page", exact: true }).click();
   const status = page.getByRole("dialog", { name: "Capturing a screenshot", exact: true });
   await status.waitFor({ timeout: 30000 });
-  // Elapsed time shows only from 3 s, so the capture is held open until then.
+  // Elapsed time shows only from 3 s; the held images above keep the capture open until then.
   await status.getByText(/Still working · \d+s/).waitFor({ timeout: 30000 });
   assert.match(await status.innerText(), /Still working · \d+s/, "Elapsed seconds are shown beside the capture");
   assert.ok(await page.evaluate(() => document.activeElement?.textContent?.includes("Cancel screenshot")), "Cancel screenshot takes focus so it is keyboard reachable");
@@ -135,7 +145,8 @@ try {
   assert.equal(await sandboxes(page), 0, "Cancelling releases the capture sandbox");
   await page.getByLabel("What went wrong?", { exact: true }).fill("The form is still usable after cancelling");
   assert.equal(await page.getByLabel("What went wrong?", { exact: true }).inputValue(), "The form is still usable after cancelling");
-  await page.evaluate(() => { document.getElementById("capture-heavy")?.remove(); });
+  await page.unroute(holdImages, { behavior: "ignoreErrors" });
+  await page.evaluate(() => { document.getElementById("capture-heavy")?.remove(); document.querySelectorAll(".capture-hold").forEach(node => node.remove()); });
   results.push("Full page reports live status with elapsed seconds; keyboard Cancel discards it, attaches nothing and leaves the form usable");
 
   const fullStart = Date.now();
