@@ -1472,7 +1472,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   ? "Discard remaining files and start another"
                   : "Start another"}
               </Button>
-              <Link href="/requests" onClick={() => setOpen(false)}>
+              <Link href="/requests" onNavigate={() => setOpen(false)}>
                 Request board <ArrowUpRight size={15} />
               </Link>
             </section>

@@ -70,10 +70,11 @@ export function ReceiptDetail({ receipt, kind, busy, onRefresh, onNavigate }: {
           <Button asChild variant="outline">
             <Link
               href={`/track/#${receipt.id}.${receipt.statusKey}`}
-              onClick={event => {
+              // onNavigate runs only for a plain same-tab click, so Cmd/Ctrl+click stays the browser's and leaves the drawer and report alone.
+              onNavigate={event => {
                 onNavigate();
                 // A client-side push to the same page changes the fragment without a hashchange, so the page would keep showing the old report; setting the hash fires it.
-                if (location.pathname.replace(/\/$/, "").endsWith("/track")) { event.preventDefault(); location.hash = event.currentTarget.hash; }
+                if (location.pathname.replace(/\/$/, "").endsWith("/track")) { event.preventDefault(); location.hash = `#${receipt.id}.${receipt.statusKey}`; }
               }}
             >
               Track this report

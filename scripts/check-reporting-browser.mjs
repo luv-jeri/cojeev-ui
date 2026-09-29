@@ -503,6 +503,15 @@ try {
     for (const name of ["Refresh status", "Download receipt"]) await detail.getByRole("button", { name, exact: true }).waitFor();
     const track = detail.getByRole("link", { name: "Track this report", exact: true });
     assert.match(await track.getAttribute("href"), /\/track\/#[0-9a-f-]{36}\.[0-9a-f]{64}$/);
+    // A Cmd/Ctrl+click is the browser's: a new tab opens, and this tab's drawer and page stay as they were.
+    const modified = { modifiers: ["ControlOrMeta"] };
+    const urlBefore = page.url();
+    const [tabFromDrawer] = await Promise.all([context.waitForEvent("page"), track.click(modified)]);
+    await tabFromDrawer.waitForURL(/\/track\/#/);
+    await tabFromDrawer.close();
+    assert.equal(page.url(), urlBefore, "A modified click leaves this page where it was");
+    assert.ok(await panel(page).isVisible(), "A modified click leaves the drawer open");
+    assert.ok(await detail.isVisible(), "A modified click leaves the report open");
     await track.click();
     await page.getByRole("heading", { name: "Your report", exact: true }).waitFor();
     await page.locator("li[aria-current='step']").waitFor();
@@ -517,6 +526,14 @@ try {
       await page.getByRole("heading", { name: "Your request", exact: true }).waitFor();
       assert.ok(statusCalls.length >= 1, "A Track click on the same route asks for the new report");
       await panel(page).waitFor({ state: "hidden" });
+      // On /track/ itself a modified click must not swap the report under the visitor either.
+      await open(page); await openSentRow(page, `Browser bug ${run}`);
+      const hashBefore = new URL(page.url()).hash;
+      const [tabFromTrack] = await Promise.all([context.waitForEvent("page"), page.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }).click(modified)]);
+      await tabFromTrack.close();
+      assert.equal(new URL(page.url()).hash, hashBefore, "A modified click on /track/ leaves the current report alone");
+      assert.ok(await panel(page).isVisible(), "A modified click on /track/ leaves the drawer open");
+      await page.keyboard.press("Escape"); await panel(page).waitFor({ state: "hidden" });
     }
     results.push("track_link_closes_the_drawer_and_loads_the_clicked_report");
     await page.goBack(); await page.goBack();
