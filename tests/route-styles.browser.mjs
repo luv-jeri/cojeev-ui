@@ -37,25 +37,47 @@ const measure = (page) => page.evaluate((props) => {
   }
   return out;
 }, props);
-// Component elements per slot. measure() numbers elements per slot, so one element still mounting shifts every later key.
-const structure = () => JSON.stringify(Object.entries([...document.querySelectorAll("[data-slot]")]
-  .reduce((counts, el) => (counts[el.dataset.slot] = (counts[el.dataset.slot] ?? 0) + 1, counts), {})).sort());
-// Resolves with the structure once it has held for 1s and, when given, matches `expected`: on a slow runner a
-// section can still mount after the fixed waits. After 20s it returns anyway and the comparison reports the difference.
-const settle = async (page, route, expected) => {
+const countChanges = (from, to) => [...new Set([...Object.keys(from), ...Object.keys(to)])]
+  .filter((slot) => from[slot] !== to[slot]).map((slot) => `${slot} ${from[slot] ?? 0} -> ${to[slot] ?? 0}`);
+const sampleCounts = (sample) => Object.keys(sample).reduce((counts, key) => {
+  const slot = key.slice(0, key.lastIndexOf("#"));
+  counts[slot] = (counts[slot] ?? 0) + 1;
+  return counts;
+}, {});
+// Elements per slot, and the renderers in view still deciding between WebGL and their fallback. measure() numbers
+// elements per slot, so one element mounting late shifts every later key. A flow sculpture, for one, swaps its
+// "Static shape preview" status for a "Motion is resting" note only once three.js has loaded and compiled: seconds
+// after a hard load on a software-WebGL runner, yet at once after Back. Renderers out of view never start, so this
+// leaves them out with the same IntersectionObserver test the components use.
+const pageState = () => new Promise((resolve) => {
+  const counts = {}, targets = [...document.querySelectorAll('[data-renderer="pending"]')], seen = new Map();
+  for (const el of document.querySelectorAll("[data-slot]")) counts[el.dataset.slot] = (counts[el.dataset.slot] ?? 0) + 1;
+  if (!targets.length) return resolve({ counts, pending: [] });
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) seen.set(entry.target, entry.isIntersecting);
+    if (seen.size < targets.length) return;
+    observer.disconnect();
+    resolve({ counts, pending: targets.filter((el) => seen.get(el)).map((el) => el.dataset.slot) });
+  }, { threshold: 0.1 });
+  for (const el of targets) observer.observe(el);
+});
+// Returns once no renderer in view is pending and the element counts have held for 1s. A page still changing
+// after 60s fails here, naming what kept it changing, instead of being compared mid-change.
+const settle = async (page, route) => {
   await page.waitForURL((url) => url.pathname === `${basePath}${route}`, { timeout: 60000 });
   await page.waitForLoadState("load");
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(2500);
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(500);
-  let last = "", since = Date.now();
-  for (const deadline = Date.now() + 20000; Date.now() < deadline; await page.waitForTimeout(250)) {
-    const now = await page.evaluate(structure);
-    if (now !== last) [last, since] = [now, Date.now()];
-    else if (Date.now() - since >= 1000 && (!expected || now === expected)) break;
+  let state = await page.evaluate(pageState), changes = [], since = Date.now();
+  for (const deadline = since + 60000; state.pending.length || Date.now() - since < 1000;) {
+    if (Date.now() > deadline) throw new Error(`${route} did not settle within 60s: ${state.pending.length
+      ? `${state.pending.join(", ")} still pending in view` : `component elements still changing (${changes.join(", ")})`}`);
+    await page.waitForTimeout(250);
+    const next = await page.evaluate(pageState), changed = countChanges(state.counts, next.counts);
+    if (changed.length) [changes, since] = [changed, Date.now()];
+    state = next;
   }
-  return last;
 };
 
 const failures = [];
@@ -67,21 +89,23 @@ try {
     const page = await context.newPage();
     try {
       await page.goto(`${base}${route}`, { waitUntil: "load", timeout: 120000 });
-      const hardStructure = await settle(page, route);
+      await settle(page, route);
       for (const selector of required) assert.ok(await page.locator(selector).count(), `${name}: ${selector} must exist`);
       const hard = await measure(page);
       const sheets = await page.evaluate(() => { window.__softNavigation = true; return document.styleSheets.length; });
       await page.evaluate((to) => window.next.router.push(to), via);
       await settle(page, via);
       await page.goBack();
-      await settle(page, route, hardStructure);
+      await settle(page, route);
       assert.ok(await page.evaluate(() => window.__softNavigation), `${name}: every step must stay a client-side navigation`);
       assert.ok(await page.evaluate(() => document.styleSheets.length) > sheets, `${name}: the visited route must leave its stylesheets behind`);
       const soft = await measure(page);
       const differences = Object.entries(hard).flatMap(([key, values]) => !soft[key] ? [`${key} missing`]
         : Object.entries(values).filter(([prop, value]) => soft[key][prop] !== value).map(([prop, value]) => `${key} ${prop}: ${value} -> ${soft[key][prop]}`));
-      if (differences.length) failures.push(`${name}: ${differences.length} computed values differ from the hard load\n    ${differences.slice(0, 12).join("\n    ")}`);
-      console.log(`${differences.length ? "FAIL" : "PASS"}: ${name} (${Object.keys(hard).length} component elements)`);
+      // An element present only after Back adds no hard-load key, so element counts are compared on their own.
+      const changed = countChanges(sampleCounts(hard), sampleCounts(soft));
+      if (changed.length || differences.length) failures.push(`${name}: ${changed.length ? `component elements differ from the hard load (${changed.join(", ")}); ` : ""}${differences.length} computed values differ from the hard load\n    ${differences.slice(0, 12).join("\n    ")}`);
+      console.log(`${changed.length || differences.length ? "FAIL" : "PASS"}: ${name} (${Object.keys(hard).length} component elements)`);
     } catch (error) {
       failures.push(`${name}: ${error.message}`);
       console.log(`FAIL: ${name}: ${error.message}`);
