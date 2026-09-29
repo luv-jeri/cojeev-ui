@@ -804,6 +804,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       });
       // A late result from a cancelled or superseded run must never become an attachment.
       if (stale() || run.signal.aborted) return;
+      // Intentional 500 ms hold: without it "Ready to check" (step 3) is cleared in the same tick and never seen.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (stale() || run.signal.aborted) return;
       setCapture(file);
     } catch (cause) {
       if (stale() || cause instanceof CaptureCancelled) return;

@@ -132,3 +132,16 @@ test("capture_progress_has_no_motion_when_reduced", async () => {
   const normal = await probe("no-preference");
   assert.ok(normal.running > 0, "the bar animates without the reduce preference, so this check can fail");
 });
+
+test("capture_progress_shows_all_three_steps", async () => {
+  for (const mode of ["reduce", "no-preference"]) {
+    const { context, page } = await openPage(mode);
+    try {
+      await page.evaluate(() => document.querySelectorAll("img[data-t16]").forEach(node => node.remove()));
+      await start(page, "full");
+      await card(page).waitFor({ state: "detached", timeout: 30000 });
+      const seen = await page.evaluate(() => window.__capture.steps);
+      assert.deepEqual(seen, STEPS, `${mode}: steps ${JSON.stringify(seen)}`);
+    } finally { await context.close(); }
+  }
+});
