@@ -27,6 +27,9 @@ export function decideReuse({ event, headTree, requiredDepth, repository, artifa
   if (Number.isNaN(expiresMs) || expiresMs <= nowMs) return no('artifact expired');
   if (typeof artifact.depth !== 'string' || !Object.hasOwn(DEPTH, artifact.depth)) return no('unknown marker depth');
   if (DEPTH[artifact.depth] < DEPTH[requiredDepth]) return no(`marker depth ${artifact.depth} below required ${requiredDepth}`);
+  // A marker from a pull request into another branch could carry unreviewed code to main.
+  // The base comes from the marker: a run's pull_requests list is empty once its PR merges.
+  if (artifact.base !== 'main') return no('marker is not from a pull request into main');
 
   const runId = artifact.workflow_run?.id;
   const matching = runs.filter((r) => r?.id === runId);
@@ -35,8 +38,6 @@ export function decideReuse({ event, headTree, requiredDepth, repository, artifa
   if (run.path !== '.github/workflows/verify.yml') return no('not the verify workflow');
   if (run.event !== 'pull_request') return no('run is not a pull_request run');
   if (run.conclusion !== 'success') return no(`run conclusion ${run.conclusion}`);
-  // A marker from a pull request into another branch could carry unreviewed code to main.
-  if (run.pull_requests?.[0]?.base?.ref !== 'main') return no('run is not a pull request into main');
   if (run.head_repository?.full_name !== repository || run.repository?.full_name !== repository) return no('fork or foreign run');
   const createdMs = Date.parse(run.created_at);
   if (Number.isNaN(createdMs) || createdMs < strictMs) return no('run predates strict protection');

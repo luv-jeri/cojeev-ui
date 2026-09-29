@@ -307,6 +307,7 @@ test('depth_step_has_the_import_scanner', () => {
   const installStep = workflow.slice(install, depth);
   assert.match(installStep, /continue-on-error: true/, 'a failed install falls back to full, never fails the job');
   assert.match(installStep, /packages\['node_modules\/typescript'\]\.version/, 'the version comes from the lockfile');
+  assert.match(installStep, /=~ \^\[0-9\]\+/, 'only a plain x.y.z version is installed');
   const depthStep = workflow.slice(depth, workflow.indexOf('- name:', depth + 10));
   assert.match(depthStep, /NODE_PATH: \$\{\{ runner\.temp \}\}\/ci-scope-typescript\/node_modules/);
 });

@@ -17,7 +17,8 @@ export async function lookup({ env, api, readMarker }) {
     artifacts = artifacts.filter((a) => a?.name === `verified-tree-${headTree}`);
     let runs = [];
     if (artifacts.length === 1) {
-      artifacts = [{ ...artifacts[0], depth: await readMarker(artifacts[0].id) }];
+      const marker = await readMarker(artifacts[0].id);
+      artifacts = [{ ...artifacts[0], depth: marker?.depth, base: marker?.base }];
       const runId = artifacts[0].workflow_run?.id;
       if (Number.isInteger(runId)) runs = [await api(`repos/${repository}/actions/runs/${runId}`)];
     }
@@ -34,7 +35,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'reuse-'));
     const zip = path.join(dir, 'm.zip');
     fs.writeFileSync(zip, execFileSync('gh', ['api', `repos/${process.env.REPOSITORY}/actions/artifacts/${id}/zip`], { maxBuffer: 1 << 20 }));
-    return JSON.parse(execFileSync('unzip', ['-p', zip, 'marker.json'], { encoding: 'utf8', maxBuffer: 1 << 20 })).depth;
+    const { depth, base } = JSON.parse(execFileSync('unzip', ['-p', zip, 'marker.json'], { encoding: 'utf8', maxBuffer: 1 << 20 }));
+    return { depth, base };
   };
   const r = await lookup({ env: { ...process.env, NOW: new Date().toISOString() }, api, readMarker });
   const out = `reuse=${r.reuse}\nreason=${String(r.reason).replace(/\s+/g, ' ')}${r.runId ? `\nrun_id=${r.runId}` : ''}\n`;

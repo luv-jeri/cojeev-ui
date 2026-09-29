@@ -15,13 +15,13 @@ const tree = 'bee043a6eaea1a81d7cc7a4fa52924e44d54722b';
 const repo = 'luv-jeri/cojeev-ui';
 const env = { EVENT: 'push', TREE: tree, REQUIRED_DEPTH: 'full', REPOSITORY: repo, STRICT_SINCE: '2026-09-01T00:00:00Z', NOW: '2026-09-29T10:40:00Z' };
 const art = { id: 7, name: `verified-tree-${tree}`, expired: false, expires_at: '2026-10-13T10:37:03Z', workflow_run: { id: 99 } };
-const run = { id: 99, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo }, pull_requests: [{ base: { ref: 'main' } }] };
+const run = { id: 99, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo }, pull_requests: [] };
 const api = (o = {}) => async (p) => {
   if (p.includes('/actions/artifacts')) return o.artifacts ?? { artifacts: [art] };
   if (p.endsWith('/actions/runs/99')) return 'run' in o ? o.run : run;
   throw new Error(`unexpected ${p}`);
 };
-const marker = async () => 'full';
+const marker = async () => ({ depth: 'full', base: 'main' });
 
 test('lookup_reuses_matching_pr_run', async () => {
   const r = await lookup({ env, api: api(), readMarker: marker });
@@ -38,8 +38,8 @@ test('lookup_fails_closed_on_any_error', async () => {
 test('lookup_rejects_zero_or_many_artifacts_and_bad_marker', async () => {
   assert.equal((await lookup({ env, api: api({ artifacts: { artifacts: [] } }), readMarker: marker })).reuse, false);
   assert.equal((await lookup({ env, api: api({ artifacts: { artifacts: [art, { ...art, id: 8 }] } }), readMarker: marker })).reuse, false);
-  assert.equal((await lookup({ env, api: api(), readMarker: async () => 'bogus' })).reuse, false);
-  assert.equal((await lookup({ env, api: api(), readMarker: async () => 'affected' })).reuse, false);
+  assert.equal((await lookup({ env, api: api(), readMarker: async () => ({ depth: 'bogus', base: 'main' }) })).reuse, false);
+  assert.equal((await lookup({ env, api: api(), readMarker: async () => ({ depth: 'affected', base: 'main' }) })).reuse, false);
 });
 
 test('deferred_run_writes_no_marker', () => {
@@ -106,4 +106,13 @@ test('deploy_needs_release_pack_on_pushed_commit', () => {
   assert.ok(!JSON.stringify(wf.jobs.beta).includes('steps.reuse') && !JSON.stringify(wf.jobs.production).includes('steps.reuse'));
   const up = steps.find((s) => s.uses?.startsWith('actions/upload-artifact') && s.with?.name === 'release-${{ github.sha }}');
   assert.equal(up.if, "steps.depth.outputs.run_release == 'true'");
+});
+
+test('marker_records_its_base_and_lookup_requires_main', async () => {
+  const workflow = fs.readFileSync(new URL('../.github/workflows/verify.yml', import.meta.url), 'utf8');
+  const writer = workflow.slice(workflow.indexOf('- name: Write the verified-tree marker'), workflow.indexOf('- name: Upload the verified-tree marker'));
+  assert.match(writer, /"base":"%s"/);
+  assert.match(writer, /BASE: \$\{\{ github\.base_ref \}\}/);
+  assert.equal((await lookup({ env, api: api(), readMarker: async () => ({ depth: 'full' }) })).reuse, false, 'a marker from before the base field never reuses');
+  assert.equal((await lookup({ env, api: api(), readMarker: async () => ({ depth: 'full', base: 'dev' }) })).reuse, false);
 });

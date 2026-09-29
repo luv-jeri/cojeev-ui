@@ -333,6 +333,7 @@ jobs:
         continue-on-error: true
         run: |
           version=$(node -p "require('./package-lock.json').packages['node_modules/typescript'].version")
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "unexpected typescript version in the lockfile: $version"; exit 1; }
           npm install --no-save --no-audit --no-fund --ignore-scripts --prefix "$RUNNER_TEMP/ci-scope-typescript" "typescript@$version"
       - name: Select release verification depth
         id: depth
@@ -532,10 +533,11 @@ jobs:
         run: |
           tree=$(git rev-parse 'HEAD^{tree}')
           mkdir -p "$RUNNER_TEMP/marker"
-          printf '{"tree":"%s","depth":"%s","run_id":"%s","head_sha":"%s"}\n' "$tree" "$DEPTH" "$RUN_ID" "$HEAD_SHA" > "$RUNNER_TEMP/marker/marker.json"
+          printf '{"tree":"%s","depth":"%s","base":"%s","run_id":"%s","head_sha":"%s"}\n' "$tree" "$DEPTH" "$BASE" "$RUN_ID" "$HEAD_SHA" > "$RUNNER_TEMP/marker/marker.json"
           echo "MARKER_TREE=$tree" >> "$GITHUB_ENV"
         env:
           DEPTH: ${{ steps.depth.outputs.depth }}
+          BASE: ${{ github.base_ref }}
           RUN_ID: ${{ github.run_id }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       - name: Upload the verified-tree marker

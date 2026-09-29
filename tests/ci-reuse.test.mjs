@@ -5,8 +5,8 @@ import { decideReuse } from '../scripts/ci-reuse.mjs';
 const tree = 'bee043a6eaea1a81d7cc7a4fa52924e44d54722b';
 const repo = 'luv-jeri/cojeev-ui';
 // Field names captured from GET /actions/runs/{id} and /actions/artifacts (2026-09-29).
-const art = (o = {}) => ({ id: 1, name: `verified-tree-${tree}`, expired: false, expires_at: '2026-10-13T10:37:03Z', depth: 'full', workflow_run: { id: 36540645798, head_repository_id: 1360394020, repository_id: 1360394020 }, ...o });
-const run = (o = {}) => ({ id: 36540645798, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo }, pull_requests: [{ base: { ref: 'main' } }], ...o });
+const art = (o = {}) => ({ id: 1, name: `verified-tree-${tree}`, expired: false, expires_at: '2026-10-13T10:37:03Z', depth: 'full', base: 'main', workflow_run: { id: 36540645798, head_repository_id: 1360394020, repository_id: 1360394020 }, ...o });
+const run = (o = {}) => ({ id: 36540645798, path: '.github/workflows/verify.yml', event: 'pull_request', conclusion: 'success', created_at: '2026-09-29T08:06:23Z', head_repository: { full_name: repo }, repository: { full_name: repo }, pull_requests: [], ...o });
 const input = (o = {}) => ({ event: 'push', headTree: tree, requiredDepth: 'full', repository: repo, artifacts: [art()], runs: [run()], strictSince: '2026-09-01T00:00:00Z', now: '2026-09-29T10:40:00Z', ...o });
 
 test('reuse_accepts_matching_tree', () => {
@@ -64,10 +64,8 @@ test('reuse_rejects_array_depth', () => {
 });
 
 test('reuse_rejects_non_main_base', () => {
-  const t = 'bee043a6eaea1a81d7cc7a4fa52924e44d54722b';
-  const input = (pull_requests) => ({ event: 'push', headTree: t, requiredDepth: 'full', repository: repo, strictSince: '2026-09-01T00:00:00Z', now: '2026-09-29T10:40:00Z',
-    artifacts: [{ id: 7, name: `verified-tree-${t}`, expired: false, expires_at: '2026-10-13T10:37:03Z', workflow_run: { id: 36540645798 }, depth: 'full' }],
-    runs: [run({ pull_requests })] });
-  assert.equal(decideReuse(input([{ base: { ref: 'main' } }])).reuse, true);
-  for (const bad of [[{ base: { ref: 'dev' } }], [], undefined, [{}], [{ base: {} }]]) assert.equal(decideReuse(input(bad)).reuse, false, JSON.stringify(bad));
+  // The base comes from the marker, which the PR run writes; the run's own pull_requests
+  // list is empty once the PR has merged, so it cannot be the source.
+  assert.equal(decideReuse(input({ artifacts: [art({ base: 'main' })], runs: [run({ pull_requests: [] })] })).reuse, true);
+  for (const bad of ['dev', '', undefined, null, ['main']]) assert.equal(decideReuse(input({ artifacts: [art({ base: bad })] })).reuse, false, JSON.stringify(bad));
 });

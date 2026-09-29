@@ -546,7 +546,10 @@ export function releaseDepth(paths, diff, context) {
   if (contract) {
     // Registry order, from the same resolver answer the component path uses.
     const wanted = new Set([...(gateIds ?? []), ...CI_SMOKE_IDS]);
-    gateIds = gateOrder ? gateOrder.filter(id => wanted.has(id)) : [...CI_SMOKE_IDS];
+    const ordered = gateOrder ? gateOrder.filter(id => wanted.has(id)) : [...wanted];
+    // An id missing from the registry order would silently drop out of the gate: run every id instead.
+    if (ordered.length !== wanted.size) return { depth: "full", suites: [], reason: oneLine(`CI contract gate ids are not all in the registry order: ${[...wanted].join(",")}`) };
+    gateIds = ordered;
   }
   const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;
   if (depth === "docs") return { depth, suites: [], reason: `${count}, all documentation` };
