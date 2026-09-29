@@ -16,9 +16,9 @@ test('beta and admin responses reject indexing; HTML revalidates and security he
     assert.ok(response.headers.get('content-security-policy').includes(environment === 'beta' ? 'https://feedback-beta.cojeev.com' : 'https://feedback.cojeev.com'));
   }
 });
-test('hashed framework assets cache immutably; missing routes retain real 404',async()=>{
+test('framework assets keep the asset layer cache (never a year-long one); missing routes retain real 404',async()=>{
   const response=await host.fetch(new Request('https://example.com/_next/static/chunks/abc123.js'),env('beta',200,'text/javascript'));
-  assert.equal(response.headers.get('cache-control'),'public, max-age=31536000, immutable');
+  assert.equal(response.headers.get('cache-control'),null);
   assert.equal((await host.fetch(new Request('https://example.com/absent/'),env('beta',404))).status,404);
 });
 test('health reveals only identity and private media never reaches website assets',async()=>{

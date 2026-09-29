@@ -9,6 +9,8 @@ import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './rele
 import {deploymentDiagnostic,recordDeploymentEvent} from './deployment-diagnostics.mjs';
 
 const maxBytes=25*1024*1024;
+// Framework chunks and RSC payloads are served by Cloudflare's free asset layer, with headers from site/_headers.
+export const STATIC_FILES_SKIP_WORKER=['/*','!/_next/*','!/*.txt'];
 const ALLOWED_SECRETS=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
 // Two protected bundles compose into the one validated set. REPORTING_SECRETS_JSON
 // stays the base and is never rewritten or read back, so an already-provisioned
@@ -100,7 +102,8 @@ export function validateDeploymentConfig(environment,config,kind) {
       ['website d1_databases',!config.d1_databases?.length],
       ['website r2_buckets',!config.r2_buckets?.length],
       ['assets.directory',config.assets?.directory==='../site'],
-      ['assets.run_worker_first',config.assets?.run_worker_first===true],
+      // Static files skip the Worker so they stay free; `true` is what releases before that change carry.
+      ['assets.run_worker_first',config.assets?.run_worker_first===true||JSON.stringify(config.assets?.run_worker_first)===JSON.stringify(STATIC_FILES_SKIP_WORKER)],
       ['assets.not_found_handling',config.assets?.not_found_handling==='404-page'],
     ]),
   ];

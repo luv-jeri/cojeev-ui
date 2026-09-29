@@ -84,6 +84,14 @@ test('deployment configuration cannot redirect resources to the other environmen
   assert.doesNotThrow(()=>validateDeploymentConfig('beta',config,'api'));
   assert.throws(()=>validateDeploymentConfig('beta',{...config,d1_databases:[{...config.d1_databases[0],database_id:'056bebac-a74e-403f-8d83-9734870d1ec1'}]},'api'),/mismatch: d1_databases/);
 });
+test('website hosting accepts the static-file bypass or the all-Worker setting older releases carry, nothing else',()=>{
+  const source=JSON.parse(readFileSync(new URL('workers/registry-host/wrangler.jsonc',sourceRoot),'utf8'));
+  const config={...source,...source.env.beta,assets:{...source.env.beta.assets,directory:'../site'}};delete config.env;
+  const rule=run_worker_first=>({...config,assets:{...config.assets,run_worker_first}});
+  assert.doesNotThrow(()=>validateDeploymentConfig('beta',rule(['/*','!/_next/*','!/*.txt']),'website'));
+  assert.doesNotThrow(()=>validateDeploymentConfig('beta',rule(true),'website'));
+  for(const other of [false,['/*'],['/*','!/*']]) assert.throws(()=>validateDeploymentConfig('beta',rule(other),'website'),/mismatch: assets.run_worker_first/);
+});
 test('bootstrap secrets reject missing or test Turnstile configuration and only accept known secret names',()=>{
   assert.throws(()=>validateSecrets('{}','beta'),/secret/);
   const values={ADMIN_TOKEN:'a'.repeat(40),HEALTH_TOKEN:'h'.repeat(40),IP_HASH_SECRET:'b'.repeat(40),TURNSTILE_SECRET:'1x0000000000000000000000000000000AA',TURNSTILE_SITE_KEY:'1x00000000000000000000AA'};
@@ -144,7 +152,7 @@ test('a supplemental bundle completes the protected base without overwriting it,
   assert.deepEqual(validateSecrets(composeSecretBundles(base,'{}'),'production'),{RESEND_API_KEY:dummyResend});
 });
 const sourceRoot=new URL('../',import.meta.url);
-async function fixture(environment='beta') {
+async function fixture(environment='beta',{headers=true}={}) {
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'cojeev-deploy-test-'));
   for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
     await fs.mkdir(path.join(dir,kind));
@@ -157,6 +165,7 @@ async function fixture(environment='beta') {
   await fs.mkdir(path.join(dir,'site'));
   await fs.writeFile(path.join(dir,'site/index.html'),'<html>public</html>');
   await fs.writeFile(path.join(dir,'site/release.json'),JSON.stringify({environment,release:'a'.repeat(40)}));
+  if(headers) await fs.writeFile(path.join(dir,'site/_headers'),'/*\n  x-content-type-options: nosniff\n');
   await fs.mkdir(path.join(dir,'api/migrations'));
   await fs.writeFile(path.join(dir,'api/migrations/0002_safe_delivery.sql'),'-- fixture');
   const manifest=await createManifest(dir,environment,'a'.repeat(40));
@@ -189,6 +198,13 @@ test('tampered artifacts and failed backup stop deployment before any migration 
     await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),options),/integrity/);
     assert.deepEqual(calls,[]);
   } finally {if(original===undefined)delete process.env.REPORTING_SECRETS_JSON;else process.env.REPORTING_SECRETS_JSON=original;await fs.rm(dir,{recursive:true,force:true});}
+});
+test('an artifact that lets static files skip the Worker is refused without their _headers file',async()=>{
+  const {dir,manifest}=await fixture('beta',{headers:false}),calls=[];
+  try {
+    await assert.rejects(deployRelease(dir,'beta','a'.repeat(40),manifestDigest(manifest),{run:args=>calls.push(args),backupDatabase:async()=>({})}),/_headers/);
+    assert.deepEqual(calls,[]);
+  } finally {await fs.rm(dir,{recursive:true,force:true});}
 });
 test('production promotion preflights existing secret names and preserves the configured Turnstile site key',async()=>{
   const {dir,manifest}=await fixture('production'),original=process.env.REPORTING_SECRETS_JSON;
