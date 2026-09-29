@@ -19,9 +19,9 @@ export async function receipt(env: Env, row: ReportRow, token: string): Promise<
   return {id:row.id,token,status:row.status,topicId:row.topic_id,...(row.kind==="request"&&row.status==="resolved"&&row.component_url?{componentUrl:row.component_url}:{}),
     emailDelivery:email?.state==='held'?'held':email?.delivery_status??'queued',
     email:email?.delivery_status==='delivered'?"sent":email?.state==="needs_review"||['failed','bounced'].includes(email?.delivery_status??'')?"needs_review":!emailEnabled(env)?"setup_required":"pending",
-    issue:row.issue_number?"created":github?.state==="needs_review"?"needs_review":!githubEnabled(env)?"setup_required":"pending",
+    issue:row.triage_state==="rejected"?"not_planned":row.issue_number?"created":github?.state==="needs_review"?"needs_review":!githubEnabled(env)?"setup_required":"pending",
     // The legacy enum collapses held into pending. Carry the job's own state so the receipt can say which it is; a missing job claims nothing.
-    issueDelivery:github?.state,attachments:files.results};
+    issueDelivery:row.triage_state==="pending"?"triage":github?.state,attachments:files.results};
 }
 export async function topicIssue(env: Env, topicId: string) {
   return env.DB.prepare("SELECT issue_number,issue_node_id,issue_url FROM reports WHERE topic_id=? AND triage_state='approved' AND issue_number IS NOT NULL ORDER BY created_at LIMIT 1").bind(topicId).first<{issue_number:number;issue_node_id:string;issue_url:string}>();

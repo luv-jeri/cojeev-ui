@@ -35,3 +35,8 @@ test("component matching uses names and titles without matching all stop words",
   assert.equal(findComponents("I want a date picker", entries)[0]?.name, "date-picker");
   assert.deepEqual(findComponents("I want a", entries), []);
 });
+
+test("redact keeps its 1000-character default for existing callers", () => {
+  assert.equal(redact("x".repeat(5000)).length, 1000);
+  assert.equal(redact("x".repeat(5000), 20000).length, 5000);
+});

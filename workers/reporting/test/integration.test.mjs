@@ -12,7 +12,7 @@ const githubActor={id:101,login:'reporting-maintainer'};
 const hash = value => createHash('sha256').update(value).digest('hex');
 const payload = (more={}) => ({id:randomUUID(),kind:'bug',title:'Dark mode button',description:'Switch to dark mode, then the menu disappears.',email:'person@example.com',references:[],pins:[],attachments:[],diagnostics:null,...more});
 const request = (path, method='GET', body, auth, headers={}) => mf.dispatchFetch(`http://localhost${path}`,{method,headers:{Origin:origin,...(body!==undefined?{'Content-Type':'application/json'}:{}),...(auth?{Authorization:`Bearer ${auth}`} : {}),...headers},...(body!==undefined?{body:typeof body==='string'?body:JSON.stringify(body)}:{})});
-const queueGitHub = id => db.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github',?,?)").bind(`${id}:github`,id,Date.now(),Date.now()).run();
+const queueGitHub = id => db.batch([db.prepare("UPDATE reports SET triage_state='approved',triage_by='ai',triage_title='Verdict title',triage_body='Verdict body' WHERE id=?").bind(id),db.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github',?,?)").bind(`${id}:github`,id,Date.now(),Date.now())]);
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
@@ -20,7 +20,7 @@ before(async()=>{
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
-  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
+  const helpers=await build({stdin:{contents:'export { cleanup, updateFromAdmin } from "./workers/reporting/src/lifecycle.ts"; export { accept, componentURL, receipt } from "./workers/reporting/src/reports.ts"; export { mirrorIssue, deliver, drain, publicIssue, scrubPublic, emailMessage } from "./workers/reporting/src/delivery.ts";',resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node',target:'es2022'});
   backend=await import(`data:text/javascript;base64,${Buffer.from(helpers.outputFiles[0].text).toString('base64')}`);
 });
 after(async()=>{await mf?.dispose();});
@@ -167,7 +167,7 @@ test('cleanup retires normalized private request titles without collisions and p
 });
 test('GitHub reconciliation binds markers to the report actor and creation window and keeps prose private',async()=>{
   const p=payload({title:'Private bug title',description:'Private description',email:'private-address@example.com',references:['https://private.example.com/secret']});
-  await submit(p);const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+  await submit(p);const row={...await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first(),triage_title:'Public verdict title',triage_body:`Verdict body, see /feedback-admin/?report=${p.id}`};
   const env=backendEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library'});
   let original;
   await backend.mirrorIssue(env,row,async(url,init)=>{
@@ -280,7 +280,7 @@ test('health-only credential can read diagnostics but cannot read reports, attac
 test('free text request titles remain private until a maintainer publishes a safe title',async()=>{
   const p=payload({kind:'request',title:'Secret acquisition of Acme'});await submit(p);
   assert.ok(!(await (await request('/v1/requests')).text()).includes(p.title));
-  const row=await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first();
+  const row={...await db.prepare('SELECT * FROM reports WHERE id=?').bind(p.id).first(),triage_title:'Comparison verdict',triage_body:'Verdict body'};
   await backend.mirrorIssue(backendEnv({GITHUB_TOKEN:'test',GITHUB_REPOSITORY:'owner/library'}),row,async(url,init)=>{
     if(url.endsWith('/user')) return Response.json(githubActor);
     if(init.method!=='POST') return Response.json([]);
@@ -752,4 +752,113 @@ test('an overturned rejection cancels the unsent rejection email',async()=>{
   const jobs=await triageJobs(p.id);assert.equal(jobs.find(x=>x.kind==='email_rejected').state,'cancelled');assert.equal(jobs.find(x=>x.kind==='github').state,'pending');
   const q=await fresh({kind:'request',title:'Accepted then rejected',topicId:undefined});await put(q.id,ai('approved'));await put(q.id,owner('rejected'));
   assert.equal((await triageJobs(q.id)).find(x=>x.kind==='email_accepted')?.state??'cancelled','cancelled');
+});
+
+const approve = (id,more={}) => db.prepare("UPDATE reports SET triage_state='approved',triage_by='ai',triage_title=?,triage_body=? WHERE id=?").bind(more.title??'Menu disappears in dark mode',more.body??'Steps to reproduce the problem.',id).run();
+const ghEnv = more => resendEnv({GITHUB_TOKEN:'test-only-github-token',GITHUB_REPOSITORY:'owner/library',...more});
+const fakeGitHub = (log,extra=()=>undefined) => async (url,init={}) => {
+  if(url.startsWith('https://api.resend.com')) return Response.json({id:'resend-x'});
+  const method=init.method??'GET';log.push({url,method,body:init.body});
+  const custom=extra(url,method,init);if(custom) return custom;
+  if(url==='https://api.github.com/user') return Response.json(githubActor);
+  if(method==='POST'&&url.endsWith('/issues')) return Response.json({number:314,node_id:'I_314',html_url:'https://github.com/owner/library/issues/314',body:JSON.parse(init.body).body,user:githubActor,created_at:new Date().toISOString()},{status:201});
+  if(method==='GET') return Response.json([]);
+  return Response.json({});
+};
+test('approved report creates a public issue from the scrubbed verdict with the visitor footer and kind label',async()=>{
+  const p=await fresh({email:'leaky-person@example.com',description:'Original private description text'});await queueGitHub(p.id);await approve(p.id);
+  const log=[];await backend.drain(ghEnv(),p.id,fakeGitHub(log));
+  const post=log.find(c=>c.method==='POST'&&c.url.endsWith('/issues'));const out=JSON.parse(post.body);
+  assert.equal(out.title,'Menu disappears in dark mode');
+  assert.ok(out.body.startsWith('Steps to reproduce the problem.\n\n---\nReported by a visitor.\n\n<!-- cojeev-report:'));
+  assert.deepEqual(out.labels,['bug']);
+  assert.ok(!post.body.includes('leaky-person@example.com')&&!post.body.includes('Original private description'));
+  const r=await fresh({kind:'request',title:'A timeline component'});await queueGitHub(r.id);await approve(r.id);
+  const log2=[];await backend.drain(ghEnv(),r.id,fakeGitHub(log2));
+  assert.deepEqual(JSON.parse(log2.find(c=>c.method==='POST'&&c.url.endsWith('/issues')).body).labels,['enhancement']);
+});
+test('public scrub removes emails, tokens and user paths and neutralises @mentions',async()=>{
+  const dirty='Mail a.b@example.com with Bearer abcdef123456 and ghp_abcdefgh12345 at /Users/sanjay/secret ping @octocat and @some-team';
+  const clean=backend.scrubPublic(dirty,1000);
+  for(const bad of ['a.b@example.com','abcdef123456','ghp_abcdefgh12345','/Users/sanjay']) assert.ok(!clean.includes(bad),bad);
+  assert.ok(clean.includes('@\u200Boctocat')&&clean.includes('@\u200Bsome-team'));assert.ok(!/@[a-z]/.test(clean));
+  assert.equal(backend.scrubPublic('x'.repeat(500),120).length,120);
+  const issue=backend.publicIssue({kind:'bug',triage_title:'Hi @octocat',triage_body:'Body a@b.co'},'<!-- m -->');
+  assert.equal(issue.title,'Hi @\u200Boctocat');assert.ok(issue.body.endsWith('\n\n---\nReported by a visitor.\n\n<!-- m -->'));assert.ok(!issue.body.includes('a@b.co'));
+});
+test('issue creation queues exactly one accepted email carrying #N and the issue URL',async()=>{
+  const p=await fresh();await queueGitHub(p.id);await approve(p.id);
+  const log=[],sent=[];const provider=async(url,init)=>url==='https://api.resend.com/emails'?(sent.push(JSON.parse(init.body)),Response.json({id:`acc-${sent.length}`})):fakeGitHub(log)(url,init);
+  await backend.drain(ghEnv(),p.id,provider);await backend.drain(ghEnv(),p.id,provider);
+  assert.equal((await db.prepare("SELECT count(*) AS n FROM outbox WHERE report_id=? AND kind='email_accepted'").bind(p.id).first()).n,1);
+  const accepted=sent.filter(m=>m.subject.startsWith("We're tracking"));assert.equal(accepted.length,1);
+  assert.ok(accepted[0].subject.includes('#314')&&accepted[0].text.includes('https://github.com/owner/library/issues/314'));
+  await backend.drain(ghEnv(),p.id,provider);assert.equal(sent.filter(m=>m.subject.startsWith("We're tracking")).length,1);
+});
+test('a github job for an untriaged report never creates an issue',async()=>{
+  const p=await fresh();await db.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'github',?,?,?)").bind(`${p.id}:github`,p.id,Date.now(),Date.now(),Date.now()).run();
+  for(const state of ['pending','rejected']) {
+    await db.prepare("UPDATE reports SET triage_state=? WHERE id=?").bind(state,p.id).run();
+    await db.prepare("UPDATE outbox SET state='pending',due_at=0 WHERE id=?").bind(`${p.id}:github`).run();
+    const log=[];await backend.drain(ghEnv(),p.id,fakeGitHub(log));
+    assert.equal(log.length,0,'no GitHub request');
+    assert.equal((await db.prepare("SELECT state FROM outbox WHERE id=?").bind(`${p.id}:github`).first()).state,'needs_review');
+  }
+});
+test('github_state closes as not planned with the invalid label, and reopens',async()=>{
+  const p=await fresh();await approve(p.id);
+  await db.prepare("UPDATE reports SET issue_number=77,issue_node_id='I_77',issue_url='https://github.com/owner/library/issues/77' WHERE id=?").bind(p.id).run();
+  const job=async(suffix,state)=>db.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at,payload_json) VALUES(?,?,'github_state',?,?,?,?)").bind(`${p.id}:github_state:${suffix}`,p.id,Date.now(),Date.now(),Date.now(),JSON.stringify({state})).run();
+  await job(1,'closed');let log=[];await backend.drain(ghEnv(),p.id,fakeGitHub(log));
+  const calls=log.map(c=>`${c.method} ${c.url.replace('https://api.github.com','')}`);
+  assert.deepEqual(calls,['PATCH /repos/owner/library/issues/77','POST /repos/owner/library/issues/77/labels']);
+  assert.deepEqual(JSON.parse(log[0].body),{state:'closed',state_reason:'not_planned'});assert.deepEqual(JSON.parse(log[1].body),{labels:['invalid']});
+  await job(2,'open');log=[];await backend.drain(ghEnv(),p.id,fakeGitHub(log,(url,method)=>method==='DELETE'?new Response('{}',{status:404}):undefined));
+  assert.deepEqual(log.map(c=>`${c.method} ${c.url.replace('https://api.github.com','')}`),['PATCH /repos/owner/library/issues/77','DELETE /repos/owner/library/issues/77/labels/invalid']);
+  assert.deepEqual(JSON.parse(log[0].body),{state:'open'});
+  assert.deepEqual((await db.prepare("SELECT state FROM outbox WHERE report_id=? AND kind='github_state' ORDER BY id").bind(p.id).all()).results.map(j=>j.state),['done','done']);
+});
+test('email copy matches the spec for received, accepted and rejected and signs as 000h by Cojeev',async()=>{
+  const cases=[
+    [{kind:'bug'},'email_received','Thanks for reporting this · 000h by Cojeev','Thank you for reporting the issue. We\'re looking into it and will let you know.'],
+    [{kind:'request'},'email_received','Thanks for your request · 000h by Cojeev','Thank you for your request. We\'re looking into it and will let you know.'],
+    [{kind:'bug',issue_number:9,issue_url:'https://github.com/o/r/issues/9'},'email_accepted','We\'re tracking your report as #9 · 000h by Cojeev','Thanks for reporting the issue. We checked it, and it\'s now tracked as #9. Follow progress here: https://github.com/o/r/issues/9. We\'ll email you again when it\'s fixed.'],
+    [{kind:'request',issue_number:9,issue_url:'https://github.com/o/r/issues/9'},'email_accepted','We\'re tracking your request as #9 · 000h by Cojeev','Thanks for your request. We checked it, and it\'s now tracked as #9. Follow progress here: https://github.com/o/r/issues/9. We\'ll email you again when it\'s live.'],
+    [{kind:'bug'},'email_rejected','About your report · 000h by Cojeev','Thanks for taking the time to write to us. We checked your report, but it isn\'t something we can act on, so we\'ve closed it. If we misunderstood, just reply to this email and tell us more.'],
+    [{kind:'bug',status:'resolved'},'email_resolved','The issue you reported is fixed · 000h by Cojeev',undefined]];
+  for(const [more,kind,subject,text] of cases) {
+    const m=backend.emailMessage({id:'rid',status:'received',component_url:null,issue_number:null,issue_url:null,triage_reason:'AI SECRET REASON',...more},kind,'https://library.example.com/cojeev-ui');
+    assert.equal(m.subject,subject,kind);if(text) assert.ok(m.text.includes(text),kind);
+    assert.ok(m.text.includes('Reference: rid')&&m.text.trimEnd().endsWith('000h by Cojeev'),kind);assert.ok(!m.text.includes('Cojeev UI')&&!m.html.includes('COJEEV UI'));
+  }
+});
+test('the rejection email never contains the AI reason',async()=>{
+  const p=await fresh();await db.prepare("UPDATE reports SET triage_state='rejected',triage_by='ai',triage_reason='INTERNAL AI REASON' WHERE id=?").bind(p.id).run();
+  await db.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_rejected',?,?,?)").bind(`${p.id}:email_rejected`,p.id,Date.now(),Date.now(),Date.now()).run();
+  const sent=[];await backend.drain(ghEnv(),p.id,async(_u,init)=>{sent.push(JSON.parse(init.body));return Response.json({id:'rej'});});
+  const m=sent.find(x=>x.subject.startsWith('About your report'));assert.ok(m);assert.ok(!JSON.stringify(m).includes('INTERNAL AI REASON'));
+});
+test('receipt reports Being reviewed while pending, created after the issue, not planned after rejection',async()=>{
+  const p=await fresh();const env=ghEnv();
+  const read=async()=>backend.receipt(env,await triaged(p.id),token);
+  let r=await read();assert.equal(r.issueDelivery,'triage');
+  await approve(p.id);await queueGitHub(p.id);r=await read();assert.equal(r.issue,'pending');assert.equal(r.issueDelivery,'pending');
+  await db.prepare("UPDATE reports SET triage_state='rejected' WHERE id=?").bind(p.id).run();r=await read();assert.equal(r.issue,'not_planned');
+  await db.prepare("UPDATE reports SET triage_state='approved',issue_number=5,issue_url='https://github.com/owner/library/issues/5' WHERE id=?").bind(p.id).run();r=await read();assert.equal(r.issue,'created');
+});
+test('releasing a shared issue marks every joined report resolved and emails each reporter',async()=>{
+  const a=await fresh(),b=await fresh({email:'second-person@example.com'});
+  await db.prepare('UPDATE reports SET issue_number=9191 WHERE id IN (?,?)').bind(a.id,b.id).run();
+  await db.prepare('UPDATE reports SET updated_at=? WHERE id=?').bind(Date.now()+3600000,b.id).run();
+  const body=id=>JSON.stringify({action:'closed',repository:{full_name:'owner/library'},issue:{number:9191,state:'closed',state_reason:'completed',updated_at:new Date().toISOString(),labels:[{name:'feedback:released'}],body:''}});
+  const raw=body();const sig='sha256='+createHmac('sha256','webhook-test-secret').update(raw).digest('hex');
+  const eventId=randomUUID();
+  assert.equal((await request('/v1/github/webhook','POST',raw,null,{'X-Hub-Signature-256':sig,'X-GitHub-Event':'issues','X-GitHub-Delivery':eventId})).status,202);
+  assert.equal((await triaged(a.id)).status,'resolved');assert.equal((await triaged(b.id)).status,'received','a report edited after the issue update is stale');
+  await db.prepare('UPDATE reports SET updated_at=1 WHERE id=?').bind(b.id).run();
+  const raw2=raw.replace('"labels"','"x":1,"labels"');const sig2='sha256='+createHmac('sha256','webhook-test-secret').update(raw2).digest('hex');
+  assert.equal((await request('/v1/github/webhook','POST',raw2,null,{'X-Hub-Signature-256':sig2,'X-GitHub-Event':'issues','X-GitHub-Delivery':randomUUID()})).status,202);
+  assert.equal((await triaged(b.id)).status,'resolved');
+  for(const id of [a.id,b.id]) assert.equal((await db.prepare("SELECT count(*) AS n FROM outbox WHERE report_id=? AND kind='email_resolved'").bind(id).first()).n,1);
+  assert.equal((await db.prepare('SELECT count(*) AS n FROM webhook_events WHERE id=?').bind(eventId).first()).n,1);
 });

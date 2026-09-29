@@ -1,3 +1,4 @@
+import { redact } from "../../../lib/reporting/contracts";
 import { keyedDigest } from "./security";
 import { activationCutoff, emailEnabled, githubEnabled, now, ownerNotificationEmail, type Delivery, type Env, type ReportRow } from "./types";
 import { getReport } from "./reports";
@@ -8,16 +9,34 @@ export class DeliveryFailure extends Error {
 }
 export const escapeHTML = (v:string) => v.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]!));
 export function emailMessage(row: ReportRow, kind: string, site: string) {
-  const completed=kind==="email_resolved";
-  const alreadyAvailable=kind==="email_received"&&row.kind==="request"&&row.status==="resolved"&&!!row.component_url;
-  const heading=alreadyAvailable?"Your component is already available":completed?(row.kind==="request"?"Your component is live":"The issue you reported is fixed"):(row.kind==="request"?"Your component request is saved":"Thanks for reporting this");
-  const message=alreadyAvailable?"The component you requested is already in the library. You can open it below.":completed?(row.kind==="request"?"The component you asked for is now in the library.":"We have released a fix for the issue you reported. Thank you for helping improve the library."):(row.kind==="request"?"We have received your request and added it to our work list. We will notify you when the component is live.":"We have received your report and added it to our work list. We will notify you when a fix is live.");
-  const url=(completed||alreadyAvailable) && row.component_url?row.component_url:`${site.replace(/\/$/,"")}/requests/`;
-  const label=(completed||alreadyAvailable)&&row.component_url?"Open your component":"View component requests";
+  const completed=kind==="email_resolved", request=row.kind==="request", n=row.issue_number;
+  const alreadyAvailable=kind==="email_received"&&request&&row.status==="resolved"&&!!row.component_url;
+  let heading:string, message:string, url:string, label:string, link=true;
+  if(kind==="email_accepted") {
+    heading=`We're tracking your ${request?"request":"report"} as #${n}`;
+    message=`Thanks for ${request?"your request":"reporting the issue"}. We checked it, and it's now tracked as #${n}. Follow progress here: ${row.issue_url}. We'll email you again when it's ${request?"live":"fixed"}.`;
+    url=row.issue_url??"";label="Follow progress";link=false;
+  } else if(kind==="email_rejected") {
+    // The AI's reason is internal and is never part of this message.
+    heading="About your report";
+    message="Thanks for taking the time to write to us. We checked your report, but it isn't something we can act on, so we've closed it. If we misunderstood, just reply to this email and tell us more.";
+    url="";label="";link=false;
+  } else {
+    heading=alreadyAvailable?"Your component is already available":completed?(request?"Your component is live":"The issue you reported is fixed"):(request?"Thanks for your request":"Thanks for reporting this");
+    message=alreadyAvailable?"The component you requested is already in the library. You can open it below.":completed?(request?"The component you asked for is now in the library.":"We have released a fix for the issue you reported. Thank you for helping improve the library."):(request?"Thank you for your request. We're looking into it and will let you know.":"Thank you for reporting the issue. We're looking into it and will let you know.");
+    url=(completed||alreadyAvailable) && row.component_url?row.component_url:`${site.replace(/\/$/,"")}/requests/`;
+    label=(completed||alreadyAvailable)&&row.component_url?"Open your component":"View component requests";
+  }
   const reference=`Reference: ${row.id}`;
-  const text=`${heading}\n\n${message}\n\n${reference}\n${label}: ${url}\n\nCojeev UI`;
-  const html=`<!doctype html><html><body style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:36px auto;padding:32px"><p style="font-size:13px;letter-spacing:2px">COJEEV UI</p><h1 style="font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p>${escapeHTML(message)}</p><p><a href="${escapeHTML(url)}" style="display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none">${label}</a></p><p style="font-size:12px;color:#5f5b55">${reference}</p></main></body></html>`;
-  return {subject:`${heading} · Cojeev UI`,text,html};
+  const text=`${heading}\n\n${message}\n\n${reference}\n${link?`${label}: ${url}\n`:""}\n000h by Cojeev`;
+  const button=url?`<p><a href="${escapeHTML(url)}" style="display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none">${label}</a></p>`:"";
+  const html=`<!doctype html><html><body style="margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:36px auto;padding:32px"><p style="font-size:13px;letter-spacing:2px">000H BY COJEEV</p><h1 style="font-size:30px;line-height:1.2">${escapeHTML(heading)}</h1><p>${escapeHTML(message)}</p>${button}<p style="font-size:12px;color:#5f5b55">${reference}</p></main></body></html>`;
+  return {subject:`${heading} · 000h by Cojeev`,text,html};
+}
+/** Neutralises @mentions on top of redact(), so a public issue can never notify a stranger. */
+export const scrubPublic=(text:string,max:number)=>redact(text,max).replace(/@(?=[A-Za-z0-9_])/g,"@\u200B");
+export function publicIssue(row:Pick<ReportRow,"kind"|"triage_title"|"triage_body">,marker:string) {
+  return {title:scrubPublic(row.triage_title??"",120),body:`${scrubPublic(row.triage_body??"",20000)}\n\n---\nReported by a visitor.\n\n${marker}`,labels:[row.kind==="request"?"enhancement":"bug"]};
 }
 // The maintainer alert says a report exists and where to read it. Its private title,
 // description, reporter address, diagnostics and media stay in the authenticated inbox.
@@ -63,17 +82,17 @@ export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
     if(issues.length<100) { if(original) return original; break; }
     if(page===10) throw new DeliveryFailure("Issue reconciliation needs a maintainer: too many matching pages.",false,true);
   }
-  const title=`[${row.kind==="request"?"Component request":"Bug report"}] ${row.id.slice(0,8)}`;
-  const adminURL=`${env.SITE_URL.replace(/\/$/,"")}/feedback-admin/?report=${row.id}`;
-  const body=`${marker}\n\n${row.kind==="request"?"A component has been requested.":"A library bug has been reported."}\n\n[Open the complete report](${adminURL}) (maintainer access required).\n\nThe private report contains the description, reference links, screenshots or videos, selected elements, technical details and reply address. Attachments may still be uploading; their status is shown in the report.\n\nReference: \`${row.id}\`\n\nTrack progress in the report viewer. For release automation, close as completed with the \`feedback:released\` label. Component requests also require a line in this issue body: \`Component: ${env.SITE_URL.replace(/\/$/,"")}/docs/component-name/\`. Closing alone does not send a release email.`;
-  return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify({title,body})},send) as unknown as GitHubIssue;
+  return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify(publicIssue(row,marker))},send) as unknown as GitHubIssue;
 }
+const EMAIL_KINDS=["email_received","email_resolved","email_owner_received","email_accepted","email_rejected"];
 export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Promise<string> {
   if(row.private_purged) throw new DeliveryFailure("Private report expired.",false,true);
   if(job.kind==="github") {
+    if(row.triage_state!=="approved") throw new DeliveryFailure("Waiting for triage.",false,true);
     const issue=await mirrorIssue(env,row,send);
     if(!issue.number||!issue.node_id||!issue.html_url) throw new DeliveryFailure("GitHub issue receipt incomplete.",true);
     const statements=[env.DB.prepare("UPDATE reports SET issue_number=?,issue_node_id=?,issue_url=? WHERE id=?").bind(issue.number,issue.node_id,issue.html_url,row.id)];
+    if(!row.issue_number) statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_accepted',?,?,?)").bind(`${row.id}:email_accepted`,row.id,now(),now(),now()));
     if(env.GITHUB_PROJECT_ID) statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github_project',?,?)").bind(`${row.id}:github_project`,row.id,now(),now()));
     await env.DB.batch(statements); return String(issue.number);
   }
@@ -83,7 +102,16 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     if(result.errors) throw new DeliveryFailure("GitHub Project rejected the update. Check project permissions.",false,true);
     return "added";
   }
-  if(!["email_received","email_resolved","email_owner_received"].includes(job.kind)) throw new DeliveryFailure("Unknown delivery type.",false,true);
+  if(job.kind==="github_state") {
+    const state=(JSON.parse(job.payload_json??"{}") as {state?:string}).state, n=row.issue_number;
+    if(!n||(state!=="closed"&&state!=="open")) throw new DeliveryFailure("GitHub issue state change is incomplete.",false,true);
+    const issue=`/repos/${env.GITHUB_REPOSITORY}/issues/${n}`;
+    await github(env,issue,{method:"PATCH",body:JSON.stringify(state==="closed"?{state,state_reason:"not_planned"}:{state})},send);
+    if(state==="closed") await github(env,`${issue}/labels`,{method:"POST",body:JSON.stringify({labels:["invalid"]})},send);
+    else try { await github(env,`${issue}/labels/invalid`,{method:"DELETE"},send); } catch(error) { if(!(error instanceof DeliveryFailure&&error.reason.endsWith("HTTP 404."))) throw error; }
+    return state;
+  }
+  if(!EMAIL_KINDS.includes(job.kind)) throw new DeliveryFailure("Unknown delivery type.",false,true);
   if(!emailEnabled(env)) throw new DeliveryFailure("Email domain setup required.",false,true);
   if(job.kind==="email_owner_received") {
     // This recipient is the configured maintainer, never the address on the report.
@@ -93,6 +121,8 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     return sendResend(env,job,emailPayload(env,job,owner,ownerMessage(row,env.SITE_URL)),send);
   }
   if(job.kind==="email_resolved" && row.status!=="resolved") throw new DeliveryFailure("Report was reopened before its release email sent. Review before retrying.",false,true);
+  if(job.kind==="email_accepted"&&(row.triage_state!=="approved"||!row.issue_number||!row.issue_url)) throw new DeliveryFailure("Waiting for an approved issue.",false,true);
+  if(job.kind==="email_rejected"&&row.triage_state!=="rejected") throw new DeliveryFailure("Report is no longer rejected.",false,true);
   if(!testerAllowed(env,row.email)) throw new DeliveryFailure('Beta recipient requires allowlist review.',false,true);
   return sendResend(env,job,emailPayload(env,job,row.email,emailMessage(row,job.kind,env.SITE_URL)),send);
 }
@@ -102,7 +132,7 @@ export async function drain(env:Env,reportId?:string,send=fetch) {
   const cutoff=activationCutoff(env);
   await env.DB.prepare("UPDATE outbox SET state='held',last_error='Delivery activation or historical review required.' WHERE state='pending' AND (? IS NULL OR (reviewed_at IS NULL AND report_id IN (SELECT id FROM reports WHERE created_at<?)))").bind(cutoff,cutoff).run();
   if(cutoff===null) return {processed:0};
-  const enabledKinds=[...(emailEnabled(env)?["email_received","email_resolved","email_owner_received"]:[]),...(githubEnabled(env)?["github",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:[])];
+  const enabledKinds=[...(emailEnabled(env)?EMAIL_KINDS:[]),...(githubEnabled(env)?["github","github_state",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:[])];
   if(!enabledKinds.length) return {processed:0};
   // Disabled providers must not consume the batch window and starve enabled work.
   const jobs=await env.DB.prepare(`SELECT * FROM outbox WHERE state='pending' AND due_at<=? AND kind IN (${enabledKinds.map(()=>"?").join(",")}) ${reportId?"AND report_id=?":""} ORDER BY created_at,id LIMIT 20`).bind(now(),...enabledKinds,...(reportId?[reportId]:[])).all<Delivery>();

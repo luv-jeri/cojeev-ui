@@ -37,9 +37,22 @@ The target is `luv-jeri/cojeev-ui`. Use a dedicated fine-grained token with **Is
 node scripts/reporting.mjs github-connect
 ```
 
-Alternatively, use `npx wrangler secret put GITHUB_TOKEN --config workers/reporting/wrangler.jsonc`. Never place the token in a source file or shell history. GitHub issue creation starts after the D1 receipt and explicit activation, independently of media upload. Missing credentials leave jobs retained; historical jobs require review. Accepted reports remain available in the maintainer view.
+Alternatively, use `npx wrangler secret put GITHUB_TOKEN --config workers/reporting/wrangler.jsonc`. Never place the token in a source file or shell history. GitHub issue creation starts only after a triage verdict approves the report (see below) and delivery is activated. Missing credentials leave jobs retained; historical jobs require review. Every report remains available in the maintainer view.
 
-Public issues contain a reference and authenticated report link. Descriptions, reference URLs, email, screenshots, videos and diagnostics are private in D1/R2. Every submission gets a report and tracked issue; related component requests share one demand topic and completion status. An optional `GITHUB_PROJECT_ID` enables GraphQL association; its token additionally needs project access. GitHub Project workflows can map issue state to board columns.
+### Triage flow
+
+1. A report is saved and the reporter gets an instant thank-you email. It stays `pending`: no GitHub issue exists yet, and the receipt says "Being reviewed".
+2. A verdict (AI or owner) approves or rejects it through the admin triage routes.
+3. Approved: the `github` job publishes a public issue built only from the scrubbed verdict title and body (emails, tokens, user paths and @mentions removed), the footer `Reported by a visitor.`, the hidden signed marker, and the label `bug` or `enhancement`. Description, email, links, media and diagnostics never reach GitHub. The reporter then gets "We're tracking your report as #N". A request that joins a topic with an issue shares it and gets the same email.
+4. Rejected: the reporter gets a polite "About your report" email (never the AI's reason). If the report already had an issue, it is closed as not planned with the `invalid` label; if other approved reports share that issue, this one is only detached. Overturning a rejection reopens the issue and removes the label.
+5. A `github` job for a report that is not approved fails permanently (state `needs_review`) without any GitHub request.
+
+An optional `GITHUB_PROJECT_ID` enables GraphQL association; its token additionally needs project access. Deploy and verify the Worker with:
+
+```sh
+npm run reporting:deploy
+npm run reporting:check
+```
 
 Configure the repository **Issues** webhook using the local GitHub CLI login:
 
@@ -53,9 +66,9 @@ This idempotently creates or updates the matching callback, keeping its signing 
 Component: https://YOUR-LIBRARY-SITE/docs/component-name/
 ```
 
-The URL must belong to configured `SITE_URL` and return a live HTML page. Closing an issue alone does not send a release notification. The maintainer view can also set planned/in-progress/live status; marking a request live notifies all associated requesters.
+The URL must belong to configured `SITE_URL` and return a live HTML page. Closing an issue alone does not send a release notification. A release resolves every report that shares the issue, and each reporter is emailed once. The maintainer view can also set planned/in-progress/live status; marking a request live notifies all associated requesters.
 
-## Email placeholder and activation
+## Email and activation
 
 `EMAIL_ENABLED=false` and `EMAIL_FROM=hello@your-domain.invalid` intentionally disable outgoing mail. The interface says email is disconnected; it does not claim an acknowledgement was sent. Pending acknowledgements remain in the outbox.
 
@@ -65,7 +78,7 @@ After verifying the sender domain with Resend:
 2. Set `EMAIL_FROM` to the verified sender. Complete the activation/cutoff and quota checklist before setting `EMAIL_ENABLED=true`; no Cloudflare `EMAIL` binding is used.
 3. Verify a new report's receipt, provider acceptance, signed delivery event, and real inbox receipt. Historical jobs stay held until individually reviewed.
 
-The templates have plain-text and HTML versions. The sender name is `000h by Cojeev` and reply address is `hello@cojeev.com`. A Resend ID means provider acceptance; only a signed delivered event marks delivery. Unknown outcomes require review; quota failures retain jobs.
+Reporter emails: thank-you (on submit), "We're tracking your report as #N" (issue created or joined), "About your report" (declined), and the existing fixed/live notice. The owner alert is unchanged. The templates have plain-text and HTML versions. The sender name is `000h by Cojeev` and reply address is `hello@cojeev.com`. A Resend ID means provider acceptance; only a signed delivered event marks delivery. Unknown outcomes require review; quota failures retain jobs.
 
 ## Reliability and privacy
 
