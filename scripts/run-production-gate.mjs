@@ -9,9 +9,25 @@ const docsOutput = process.env.COJEEV_DOCS_EVIDENCE ?? "artifacts/production-doc
 const registryHash = createHash("sha256").update(fs.readFileSync("out/r/registry.json")).digest("hex");
 const read = (file) => fs.existsSync(file) && fs.statSync(file).mtimeMs >= Date.parse(started)
   ? JSON.parse(fs.readFileSync(file, "utf8")) : null;
-const shards = Number(process.env.COJEEV_DOCS_SHARDS ?? 1);
-assert(Number.isInteger(shards) && shards >= 1 && shards <= 3, "Use one to three independent documentation workers");
-const expected = JSON.parse(fs.readFileSync("registry.json", "utf8")).items.filter(item => item.type === "registry:ui").map(item => item.name);
+const requestedShards = Number(process.env.COJEEV_DOCS_SHARDS ?? 1);
+assert(Number.isInteger(requestedShards) && requestedShards >= 1 && requestedShards <= 3, "Use one to three independent documentation workers");
+const all = JSON.parse(fs.readFileSync("registry.json", "utf8")).items.filter(item => item.type === "registry:ui").map(item => item.name);
+// COJEEV_GATE_IDS: comma-separated subset; unset or empty means every component. Never widen or narrow silently.
+const requested = process.env.COJEEV_GATE_IDS ? process.env.COJEEV_GATE_IDS.split(",") : null;
+if (requested) {
+  const seen = new Set();
+  for (const id of requested) {
+    assert(id.trim() && id === id.trim(), `COJEEV_GATE_IDS has a blank or padded entry: ${JSON.stringify(id)}`);
+    assert(all.includes(id), `COJEEV_GATE_IDS names an unknown id: ${id}`);
+    assert(!seen.has(id), `COJEEV_GATE_IDS names a duplicate id: ${id}`);
+    seen.add(id);
+  }
+}
+const expected = requested ? all.filter(id => requested.includes(id)) : all;
+// The presets check opens these docs pages (scripts/check-motion.mjs); a subset without them cannot affect it.
+const MOTION_IDS = ["tabs", "button", "pagination"];
+const runMotion = !requested || expected.some(id => MOTION_IDS.includes(id));
+const shards = requested ? Math.min(requestedShards, expected.length) : requestedShards;
 const partitions = Array.from({ length: shards }, (_, index) => expected.filter((_, position) => position % shards === index));
 const runs = await Promise.all(partitions.map((ids, index) => new Promise((resolve, reject) => {
   const output = shards === 1 ? docsOutput : `${docsOutput}/shard-${index + 1}`;
@@ -30,7 +46,7 @@ if (shards > 1) {
   }
   fs.writeFileSync(`${docsOutput}/results.json`, JSON.stringify({ ...reports[0], ended: new Date().toISOString(), entries, chrome: reports.flatMap(report => report.chrome), workers: shards }, null, 2));
 }
-runs.push({ name: "motion", status: spawnSync(process.execPath, ["--import", "tsx", "scripts/check-motion.mjs", "--serve"], { stdio: "inherit" }).status });
+if (runMotion) runs.push({ name: "motion", status: spawnSync(process.execPath, ["--import", "tsx", "scripts/check-motion.mjs", "--serve"], { stdio: "inherit" }).status });
 const docs = read(`${docsOutput}/results.json`);
 const motion = read("artifacts/production-motion/results.json");
 const passed = runs.every(run => run.status === 0);
@@ -41,6 +57,7 @@ const failedTwice = retried.filter(docsEntryFailed);
 const lines = [
   "# Production gate", "",
   `Result: **${passed ? "PASS" : "FAIL"}**. Started ${started}; finished ${new Date().toISOString()}.`, "",
+  `Component ids run: ${requested ? expected.join(", ") : "all"}.${runMotion ? "" : " Motion presets check skipped: no selected id is a motion preset page."}`, "",
   `Built registry SHA-256: \`${registryHash}\`.`, "",
   `Source provenance: ${JSON.stringify(docs?.revisionStart ?? "unavailable")}. Source-snapshot mode, when requested, hashes the copied source and does not certify Git history.`, "",
   "Run `npm run build && npm run gate` to reproduce. This gate serves the static build. It checks default specimens at 360, 768 and 1440 pixels in both themes, documentation controls and meaningful component interactions. Copied variant/size snippets are separately compiled by `npm run check:examples`. It does not claim every state in every browser or physical-device verification.", "",

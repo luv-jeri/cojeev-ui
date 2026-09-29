@@ -15,13 +15,14 @@ const registry = JSON.stringify({ items: [
   { name: 'not-a-component', type: 'registry:lib' },
 ] });
 
-function runGate(t, { shards = 3, scenario = 'success', sourceSnapshot = false } = {}) {
+function runGate(t, { shards = 3, scenario = 'success', sourceSnapshot = false, gateIds, extraIds = [] } = {}) {
   const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'production-gate-test-'));
   t.after(() => fs.rmSync(cwd, { recursive: true, force: true }));
   fs.mkdirSync(path.join(cwd, 'scripts'));
   fs.mkdirSync(path.join(cwd, 'out/r'), { recursive: true });
-  fs.writeFileSync(path.join(cwd, 'registry.json'), registry);
-  fs.writeFileSync(path.join(cwd, 'out/r/registry.json'), registry);
+  const fixture = extraIds.length ? JSON.stringify({ items: [...JSON.parse(registry).items, ...extraIds.map(name => ({ name, type: 'registry:ui' }))] }) : registry;
+  fs.writeFileSync(path.join(cwd, 'registry.json'), fixture);
+  fs.writeFileSync(path.join(cwd, 'out/r/registry.json'), fixture);
   // Execute an unchanged copy of the production entrypoint in an isolated cwd.
   // Only its expensive browser child programs are replaced; spawn, wait,
   // aggregation, assertions, report formatting and exit propagation stay real.
@@ -41,6 +42,8 @@ function runGate(t, { shards = 3, scenario = 'success', sourceSnapshot = false }
   const env = { ...process.env, COJEEV_DOCS_EVIDENCE: docsOutput, GATE_FIXTURE_SCENARIO: scenario };
   delete env.COJEEV_DOCS_SHARDS;
   delete env.COJEEV_SOURCE_SNAPSHOT;
+  delete env.COJEEV_GATE_IDS;
+  if (gateIds !== undefined) env.COJEEV_GATE_IDS = gateIds;
   if (shards !== undefined) env.COJEEV_DOCS_SHARDS = String(shards);
   if (sourceSnapshot) env.COJEEV_SOURCE_SNAPSHOT = '1';
   const result = spawnSync(process.execPath, ['scripts/run-production-gate.mjs'], {
@@ -49,7 +52,7 @@ function runGate(t, { shards = 3, scenario = 'success', sourceSnapshot = false }
   assert.ifError(result.error);
   assert.equal(result.signal, null, result.stderr);
   const read = file => fs.existsSync(path.join(cwd, file)) ? fs.readFileSync(path.join(cwd, file), 'utf8') : null;
-  return { ...result, read, json: file => JSON.parse(read(file)) };
+  return { ...result, cwd, read, json: file => JSON.parse(read(file)) };
 }
 
 for (const shards of [1, 2, 3]) {
@@ -134,3 +137,44 @@ for (const shards of [0, 4, 1.5]) {
     assert.equal(run.read('invocations/1.json'), null);
   });
 }
+
+test('gate_ids_unset_selects_all', t => {
+  for (const gateIds of [undefined, '']) {
+    const run = runGate(t, { shards: 1, gateIds });
+    assert.equal(run.status, 0, run.stderr);
+    assert.deepEqual(run.json('invocations/1.json').ids, ids);
+    assert(run.read('motion-invocation.json'), 'unset ids keep the motion gate');
+  }
+});
+
+test('gate_ids_subset_passes_ids_to_check_docs', t => {
+  const run = runGate(t, { shards: 3, gateIds: 'bravo,alpha' });
+  assert.equal(run.status, 0, run.stderr);
+  const seen = fs.readdirSync(path.join(run.cwd, 'invocations')).flatMap(f => run.json(`invocations/${f}`).ids);
+  assert.deepEqual(seen.sort(), ['alpha', 'bravo']);
+  assert.deepEqual(run.json(`${docsOutput}/results.json`).entries.map(e => e.id), ['alpha', 'bravo']);
+});
+
+for (const gateIds of ['alpha,nope', 'alpha,alpha', 'alpha, bravo', ' ', 'alpha,', 'not-a-component']) {
+  test(`gate_ids_unknown_id_fails: ${JSON.stringify(gateIds)}`, t => {
+    const run = runGate(t, { shards: 1, gateIds });
+    assert.equal(run.status, 1);
+    assert.match(run.stderr, /COJEEV_GATE_IDS/);
+    assert.equal(run.read('invocations/1.json'), null);
+    assert.equal(run.read('docs/gates/GATE.md'), null);
+  });
+}
+
+test('gate_ids_motion_only_when_preset_selected', t => {
+  const skipped = runGate(t, { shards: 1, gateIds: 'alpha', extraIds: ['tabs'] });
+  assert.equal(skipped.status, 0, skipped.stderr);
+  assert.equal(skipped.read('motion-invocation.json'), null);
+  const ran = runGate(t, { shards: 1, gateIds: 'alpha,tabs', extraIds: ['tabs'] });
+  assert.equal(ran.status, 0, ran.stderr);
+  assert(ran.read('motion-invocation.json'));
+});
+
+test('gate_evidence_names_selected_ids', t => {
+  assert.match(runGate(t, { shards: 1 }).read('docs/gates/GATE.md'), /Component ids run: all\./);
+  assert.match(runGate(t, { shards: 1, gateIds: 'bravo,alpha' }).read('docs/gates/GATE.md'), /Component ids run: alpha, bravo\./);
+});
