@@ -43,12 +43,6 @@
   max-width: 100%;
   color: var(--v-text);
 }
-.report-sheet .report-icon-button {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  flex-shrink: 0;
-}
 .report-form,
 .report-review,
 .report-receipt {
@@ -113,8 +107,6 @@
   gap: var(--s-1);
 }
 .report-suggestions h3,
-.report-evidence h3,
-.report-diagnostics h3,
 .report-crop h3 {
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
@@ -151,19 +143,6 @@
   border-radius: var(--r-pill);
   font-size: var(--fs-meta);
   color: var(--v-text);
-}
-.report-evidence,
-.report-diagnostics {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-}
-.report-evidence h3 span,
-.report-diagnostics h3 span {
-  font-size: var(--fs-meta);
-  font-weight: var(--fw-regular);
-  color: var(--v-text-2);
-  margin-left: var(--s-2);
 }
 .report-attachments {
   display: grid;
@@ -509,20 +488,6 @@ html[data-flow="off"]
   animation: none;
 }
 
-.report-drop-hint {
-  font-size: var(--fs-meta);
-  color: var(--v-text-2);
-  padding: var(--s-4);
-  text-align: center;
-  border: 1px dashed var(--v-edge);
-  border-radius: var(--r-md);
-}
-.report-evidence[data-dragging] .report-drop-hint {
-  background: var(--v-pink);
-  color: var(--v-on-accent);
-  border-color: var(--v-text);
-}
-
 .report-launcher[data-hidden] {
   visibility: hidden;
   pointer-events: none;
@@ -555,10 +520,6 @@ html[data-flow="off"]
 }
 .report-sheet .v-btn {
   min-height: 44px;
-}
-.report-sheet .report-icon-button {
-  width: 44px;
-  height: 44px;
 }
 
 /* ---- Quiet form: label row, toolbar, chips, footer ---- */

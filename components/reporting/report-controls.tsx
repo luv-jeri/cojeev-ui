@@ -3,11 +3,39 @@
 import { AnimatedIcon, type AnimatedIconProps } from "@/registry/cojeev/ui/animated-icon";
 import { Button } from "@/registry/cojeev/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/registry/cojeev/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/registry/cojeev/ui/tooltip";
+import type { ReactNode } from "react";
 import type { ReportKind } from "@/lib/reporting/contracts";
 
 const icon = (name: AnimatedIconProps["name"], size = 18) => (
   <AnimatedIcon name={name} style={{ width: size, height: size }} aria-hidden="true" />
 );
+
+/** One toolbar tool: icon, a visible word on desktop, and the full name as label and tooltip. */
+export function ReportTool({ label, word, icon, pressed, disabled, onClick }: {
+  label: string; word: string; icon: ReactNode; pressed?: boolean; disabled?: boolean; onClick: () => void;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="report-tool"
+          aria-label={label}
+          aria-pressed={pressed}
+          disabled={disabled}
+          onClick={onClick}
+        >
+          {icon}
+          <span className="report-tool-label">{word}</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
 
 function Line({ name, text }: { name: AnimatedIconProps["name"]; text: string }) {
   return (

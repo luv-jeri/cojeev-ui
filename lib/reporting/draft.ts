@@ -1,9 +1,10 @@
-import type { Diagnostics, Pin, Receipt, ReportKind } from "./contracts";
+import type { Diagnostics, Receipt, ReportKind } from "./contracts";
 import type { FrozenSubmission, ReportFile } from "./client";
+import type { DraftPin } from "./pin-label";
 
 export type ReportingDraft = {
   kind: ReportKind; title: string; description: string; email: string; topicId?: string;
-  pins: Pin[]; files: ReportFile[]; diagnostics: Diagnostics | null;
+  pins: DraftPin[]; files: ReportFile[]; diagnostics: Diagnostics | null;
   frozen: FrozenSubmission | null; attempted: boolean; receipt: Receipt | null;
 };
 export function emptyDraft(): ReportingDraft { return { kind: "request", title: "", description: "", email: "", pins: [], files: [], diagnostics: null, frozen: null, attempted: false, receipt: null }; }

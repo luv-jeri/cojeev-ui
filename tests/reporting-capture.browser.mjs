@@ -39,11 +39,10 @@ try {
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" });
   await openBug(page);
 
-  const bugButtons = await panel(page).getByRole("button").allInnerTexts();
-  assert.ok(bugButtons.some(label => label.includes("Select area")), "Select area replaces This view");
-  assert.ok(!bugButtons.some(label => label.includes("This view")), "This view is gone");
-  assert.ok(bugButtons.some(label => label.includes("Full page")), "Full page is retained");
-  results.push("Bug attachments offer Select area and Full page; This view is gone");
+  assert.equal(await panel(page).getByRole("button", { name: "Select area", exact: true }).count(), 1, "Select area is offered by accessible name");
+  assert.equal(await panel(page).getByRole("button", { name: "Full page", exact: true }).count(), 1, "Full page is offered by accessible name");
+  assert.equal(await panel(page).getByRole("button", { name: /This view/ }).count(), 0, "This view is gone");
+  results.push("Bug toolbar offers Select area and Full page by accessible name; This view is gone");
 
   await page.evaluate(() => {
     const spacer = document.createElement("div"); spacer.id = "capture-spacer"; spacer.style.height = "12000px"; document.body.append(spacer);

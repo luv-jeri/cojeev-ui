@@ -80,18 +80,23 @@ try {
   await page.getByRole("button", { name: "Close reporting panel", exact: true }).click();
   await page.reload(); await open();
   assert.equal(await stored(), null, "Unconsented diagnostics must remain absent after persistence/reload");
-  await page.getByRole("button", { name: "Include browser details", exact: true }).click();
+  const toggle = page.getByRole("button", { name: "Include browser details", exact: true }), review = page.getByRole("button", { name: "Review browser details", exact: true });
+  await toggle.click();
+  assert.equal(await page.locator(".report-diagnostic-groups").count(), 0, "Included details stay collapsed until Review");
+  await review.click();
   await page.locator(".report-diagnostic-groups").waitFor();
   const included = await page.locator(".report-diagnostic-groups pre").allTextContents();
   assert.ok(included.length > 0, "Explicit inclusion still captures browser details");
   await saved(true);
   await page.getByRole("button", { name: "Close reporting panel", exact: true }).click();
   await page.reload(); await open();
+  await review.click();
   assert.deepEqual(await page.locator(".report-diagnostic-groups pre").allTextContents(), included,
     "Previously included details survive reload unchanged");
   assert.ok(await stored(), "Explicitly included details persist in the actual draft database");
   await page.getByRole("button", { name: "Remove all browser details", exact: true }).click();
   await page.getByRole("button", { name: "Include browser details", exact: true }).waitFor();
+  assert.equal(await toggle.getAttribute("aria-pressed"), "false", "Removing all details releases the toggle");
   await saved(false);
   await page.getByRole("button", { name: "Close reporting panel", exact: true }).click();
   await page.reload(); await open();
@@ -99,7 +104,7 @@ try {
   assert.equal(await page.locator(".report-diagnostic-groups").count(), 0);
   assert.deepEqual(errors, []);
   assert.deepEqual(blocked, [], "The fixture should not attempt any external request");
-  console.log("PASS: new bug drafts omit diagnostics; explicit inclusion and removal persist through reload.");
+  console.log("PASS: new bug drafts omit diagnostics; explicit inclusion, review and removal persist through reload.");
 } finally {
   await browser.close();
   await new Promise(resolve => server.close(resolve));

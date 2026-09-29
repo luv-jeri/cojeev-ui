@@ -67,7 +67,9 @@ import {
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
 import { REPORT_EVENT, STATUS_LABELS, takeRequest } from "./report-request";
 import { AreaPicker, CaptureStatus } from "./area-picker";
-import { ReportInfo } from "./report-controls";
+import { ReportInfo, ReportTool } from "./report-controls";
+import { pinChipText, submittedPins } from "@/lib/reporting/pin-label";
+import { TooltipProvider } from "@/registry/cojeev/ui/tooltip";
 import { Turnstile } from "./turnstile";
 import "./reporting.css";
 
@@ -82,6 +84,8 @@ const ArrowUpRight = reportingIcon("arrow-up-right"),
   Bug = reportingIcon("bug"),
   Check = reportingIcon("check"),
   Camera = reportingIcon("camera"),
+  Crop = reportingIcon("crop"),
+  Settings = reportingIcon("settings"),
   Paperclip = reportingIcon("paperclip"),
   PinIcon = reportingIcon("pin"),
   Sparkles = reportingIcon("sparkles"),
@@ -125,7 +129,13 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     [topicError, setTopicError] = useState("");
   const [picking, setPicking] = useState<false | "pins" | "area">(false),
     [capture, setCapture] = useState<File | null>(null),
-    [dragging, setDragging] = useState(false);
+    [dragging, setDragging] = useState(false),
+    [reviewScope, setReviewScope] = useState("");
+  // Review is a view, not part of the draft: it is open only for the tab and step it was
+  // opened in, so a tab switch or leaving the edit step closes it.
+  const scope = `${draft.kind}:${step}`,
+    reviewing = reviewScope === scope,
+    setReviewing = (on: boolean) => setReviewScope(on ? scope : "");
   const [progress, setProgress] = useState<CaptureProgress | null>(null);
   const captureRun = useRef<AbortController | null>(null);
   const [turnstileToken, setTurnstileToken] = useState(""),
@@ -344,7 +354,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           (current.topicId ? "I would like this component too." : ""),
         email: current.email,
         references,
-        pins: current.kind === "bug" ? current.pins : [],
+        pins: current.kind === "bug" ? submittedPins(current.pins) : [],
         attachments: await manifestFiles(current.files),
         diagnostics: current.kind === "bug" ? current.diagnostics : null,
         ...(current.topicId ? { topicId: current.topicId } : {}),
@@ -723,11 +733,193 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   />
                 </TextareaScrollArea>
               </label>
-              <div className="report-toolbar">
-                <ReportInfo
-                  kind={draft.kind}
-                  beta={siteFlags.environment === "beta"}
-                />
+              <TooltipProvider>
+                <div
+                  className="report-toolbar"
+                  onDragOver={(event) => {
+                    if (event.dataTransfer.types.includes("Files")) {
+                      event.preventDefault();
+                      setDragging(true);
+                    }
+                  }}
+                  onDragLeave={(event) => {
+                    if (
+                      !event.currentTarget.contains(event.relatedTarget as Node)
+                    )
+                      setDragging(false);
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    setDragging(false);
+                    if (!busy)
+                      void addFiles(Array.from(event.dataTransfer.files));
+                  }}
+                  data-dragging={dragging || undefined}
+                >
+                  <input
+                    ref={fileInput}
+                    className="sr-only"
+                    type="file"
+                    accept={MEDIA_TYPES.join(",")}
+                    multiple
+                    tabIndex={-1}
+                    onChange={(event) => {
+                      void addFiles(Array.from(event.target.files ?? []));
+                      event.target.value = "";
+                    }}
+                    aria-label="Attach images or videos"
+                  />
+                  <ReportTool
+                    label="Attach files"
+                    word="Attach"
+                    icon={<Paperclip size={17} />}
+                    disabled={!!busy || draft.files.length >= LIMITS.files}
+                    onClick={() => fileInput.current?.click()}
+                  />
+                  {draft.kind === "bug" && (
+                    <>
+                      <ReportTool
+                        label="Pin elements"
+                        word="Pin"
+                        icon={<PinIcon size={17} />}
+                        disabled={!!busy}
+                        onClick={() => setPicking("pins")}
+                      />
+                      <ReportTool
+                        label="Select area"
+                        word="Area"
+                        icon={<Crop size={17} />}
+                        disabled={!!busy || draft.files.length >= LIMITS.files}
+                        onClick={() => {
+                          // The drawer must be shut before the rectangle is drawn
+                          // and stay shut until the capture is reviewed.
+                          setOpen(false);
+                          setPicking("area");
+                        }}
+                      />
+                      <ReportTool
+                        label="Full page"
+                        word="Page"
+                        icon={<Camera size={17} />}
+                        disabled={!!busy || draft.files.length >= LIMITS.files}
+                        onClick={() => {
+                          // Radix dismisses the drawer on an outside pointer press, so the
+                          // capture toolbar would otherwise close it and lose the reopen.
+                          setOpen(false);
+                          void screenshot("page");
+                        }}
+                      />
+                      <ReportTool
+                        label="Include browser details"
+                        word="Details"
+                        icon={<Settings size={17} />}
+                        pressed={!!draft.diagnostics}
+                        onClick={() => {
+                          setReviewing(false);
+                          update({
+                            diagnostics: draft.diagnostics
+                              ? null
+                              : snapshotDiagnostics(),
+                          });
+                        }}
+                      />
+                    </>
+                  )}
+                  <ReportInfo
+                    kind={draft.kind}
+                    beta={siteFlags.environment === "beta"}
+                  />
+                </div>
+              </TooltipProvider>
+              <div className="report-chips">
+                {!!draft.files.length && (
+                  <div className="report-attachments">
+                    {draft.files.map((item) => (
+                      <figure key={item.id} className="report-chip">
+                        <FilePreview file={item.file} />
+                        <figcaption>
+                          <span className="report-chip-text">
+                            {item.file.name}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            className="report-chip-remove"
+                            aria-label={`Remove ${item.file.name}`}
+                            disabled={!!busy}
+                            onClick={() =>
+                              update({
+                                files: draft.files.filter(
+                                  (file) => file.id !== item.id,
+                                ),
+                              })
+                            }
+                          >
+                            <X size={14} />
+                          </Button>
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                )}
+                {draft.kind === "bug" && !!draft.pins.length && (
+                  <ol className="report-pins">
+                    {draft.pins.map((pin, index) => (
+                      <li key={pin.path} className="report-chip" title={pin.path}>
+                        <span className="report-chip-text">
+                          {pinChipText(pin, index + 1)}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          className="report-chip-remove"
+                          aria-label={`Remove pin ${index + 1}`}
+                          onClick={() =>
+                            update({
+                              pins: draft.pins.filter((_, i) => i !== index),
+                            })
+                          }
+                        >
+                          <X size={14} />
+                        </Button>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {draft.kind === "bug" && draft.diagnostics && (
+                  <div className="report-diagnostics-chip report-chip">
+                    <span className="report-chip-text">
+                      Browser details included
+                    </span>
+                    <Button
+                      variant="ghost"
+                      className="report-chip-action"
+                      aria-label="Review browser details"
+                      aria-expanded={reviewing}
+                      onClick={() => setReviewing(!reviewing)}
+                    >
+                      Review
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="report-chip-remove"
+                      aria-label="Remove browser details"
+                      onClick={() => {
+                        setReviewing(false);
+                        update({ diagnostics: null });
+                      }}
+                    >
+                      <X size={14} />
+                    </Button>
+                  </div>
+                )}
+                {draft.kind === "bug" && draft.diagnostics && reviewing && (
+                  <DiagnosticReview
+                    diagnostics={draft.diagnostics}
+                    onChange={(diagnostics) => {
+                      if (!diagnostics) setReviewing(false);
+                      update({ diagnostics });
+                    }}
+                  />
+                )}
               </div>
               <label className="report-field">
                 Your email
@@ -748,176 +940,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 For a receipt and progress updates. Never shown on the public
                 board.
               </p>
-              <section
-                className="report-evidence"
-                onDragOver={(event) => {
-                  if (event.dataTransfer.types.includes("Files")) {
-                    event.preventDefault();
-                    setDragging(true);
-                  }
-                }}
-                onDragLeave={(event) => {
-                  if (
-                    !event.currentTarget.contains(event.relatedTarget as Node)
-                  )
-                    setDragging(false);
-                }}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  setDragging(false);
-                  if (!busy)
-                    void addFiles(Array.from(event.dataTransfer.files));
-                }}
-                data-dragging={dragging || undefined}
-              >
-                <h3>
-                  Show us what you mean <span>Optional</span>
-                </h3>
-                <input
-                  ref={fileInput}
-                  className="sr-only"
-                  type="file"
-                  accept={MEDIA_TYPES.join(",")}
-                  multiple
-                  tabIndex={-1}
-                  onChange={(event) => {
-                    void addFiles(Array.from(event.target.files ?? []));
-                    event.target.value = "";
-                  }}
-                  aria-label="Attach images or videos"
-                />
-                <div className="report-row">
-                  <Button
-                    variant="outline"
-                    disabled={!!busy || draft.files.length >= LIMITS.files}
-                    onClick={() => fileInput.current?.click()}
-                  >
-                    <Paperclip size={16} />
-                    Attach files
-                  </Button>
-                  {draft.kind === "bug" && (
-                    <>
-                      <Button
-                        variant="outline"
-                        disabled={!!busy}
-                        onClick={() => setPicking("pins")}
-                      >
-                        <PinIcon size={16} />
-                        Pin elements
-                      </Button>
-                      <Button
-                        variant="outline"
-                        disabled={!!busy || draft.files.length >= LIMITS.files}
-                        onClick={() => {
-                          // The drawer must be shut before the rectangle is drawn
-                          // and stay shut until the capture is reviewed.
-                          setOpen(false);
-                          setPicking("area");
-                        }}
-                      >
-                        <Camera size={16} />
-                        Select area
-                      </Button>
-                      <Button
-                        variant="outline"
-                        disabled={!!busy || draft.files.length >= LIMITS.files}
-                        onClick={() => {
-                          // Radix dismisses the drawer on an outside pointer press, so the
-                          // capture toolbar would otherwise close it and lose the reopen.
-                          setOpen(false);
-                          void screenshot("page");
-                        }}
-                      >
-                        Full page
-                      </Button>
-                    </>
-                  )}
-                </div>
-                <p className="report-drop-hint">
-                  {dragging
-                    ? "Drop files here"
-                    : "Drag images or videos here, or choose files above."}
-                </p>
-                {!!draft.files.length && (
-                  <div className="report-attachments">
-                    {draft.files.map((item) => (
-                      <figure key={item.id}>
-                        <FilePreview file={item.file} />
-                        <figcaption>
-                          <span>
-                            {item.file.name}
-                            <small>
-                              {(item.file.size / 1024 / 1024).toFixed(2)} MiB
-                            </small>
-                          </span>
-                          <Button
-                            variant="ghost"
-                            className="report-icon-button"
-                            aria-label={`Remove ${item.file.name}`}
-                            disabled={!!busy}
-                            onClick={() =>
-                              update({
-                                files: draft.files.filter(
-                                  (file) => file.id !== item.id,
-                                ),
-                              })
-                            }
-                          >
-                            <X size={16} />
-                          </Button>
-                        </figcaption>
-                      </figure>
-                    ))}
-                  </div>
-                )}
-                {draft.kind === "bug" && !!draft.pins.length && (
-                  <ol className="report-pins">
-                    {draft.pins.map((pin, index) => (
-                      <li key={pin.path}>
-                        <span>
-                          Pin {index + 1} · {pin.tag}
-                          <small>{pin.path}</small>
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          aria-label={`Remove pin ${index + 1}`}
-                          onClick={() =>
-                            update({
-                              pins: draft.pins.filter((_, i) => i !== index),
-                            })
-                          }
-                        >
-                          Remove
-                        </Button>
-                      </li>
-                    ))}
-                  </ol>
-                )}
-              </section>
-              {draft.kind === "bug" && (
-                <section className="report-diagnostics">
-                  <h3>
-                    Browser details <span>You’re in control</span>
-                  </h3>
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      update({ diagnostics: snapshotDiagnostics() })
-                    }
-                  >
-                    {draft.diagnostics
-                      ? "Refresh browser details"
-                      : "Include browser details"}
-                  </Button>
-                  {draft.diagnostics && (
-                    <DiagnosticReview
-                      diagnostics={draft.diagnostics}
-                      onChange={(diagnostics) => update({ diagnostics })}
-                    />
-                  )}
-                </section>
-              )}
               <div className="report-form-footer">
                 <p className="report-help" role="status">
                   {busy || storage}
