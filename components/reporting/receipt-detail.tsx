@@ -16,7 +16,7 @@ export function ReceiptDetail({ receipt, kind, busy, onRefresh, onNavigate }: {
 }) {
   const uploaded = receipt.attachments.filter(file => sentFile(file.state)).length;
   const expired = receipt.attachments.filter(file => file.state === "expired").length;
-  const status = kind === "bug" && receipt.status === "resolved" ? "Resolved" : STATUS_LABELS[receipt.status];
+  const status = kind === "bug" && receipt.status === "resolved" ? "Fixed" : STATUS_LABELS[receipt.status];
   return (
     <>
       <p className="report-receipt-status">

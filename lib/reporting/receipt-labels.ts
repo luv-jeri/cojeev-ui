@@ -49,5 +49,5 @@ export function receiptExpectation(kind: ReportKind, emailEnabled: boolean | und
 /** The one status word a list row shows: the issue number once there is one, else the CR12 label. */
 export function sentStatusWord(kind: ReportKind, receipt: Receipt): string {
   if (receipt.issueNumber) return `Tracked as #${receipt.issueNumber}`;
-  return kind === "bug" && receipt.status === "resolved" ? "Resolved" : STATUS_LABELS[receipt.status];
+  return kind === "bug" && receipt.status === "resolved" ? "Fixed" : STATUS_LABELS[receipt.status];
 }

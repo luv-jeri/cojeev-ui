@@ -48,7 +48,7 @@ test("legacy_receipt_with_unfinished_uploads_stays_put", () => {
 
 test("sentStatusWord names the issue, else the status", () => {
   assert.equal(sentStatusWord("bug", receipt("a", [], { issueNumber: 412 })), "Tracked as #412");
-  assert.equal(sentStatusWord("bug", receipt("a", [], { status: "resolved" })), "Resolved");
+  assert.equal(sentStatusWord("bug", receipt("a", [], { status: "resolved" })), "Fixed");
   assert.equal(sentStatusWord("request", receipt("a", [], { status: "resolved" })), "Live");
   assert.equal(sentStatusWord("request", receipt("a")), "Received");
 });
