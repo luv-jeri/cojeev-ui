@@ -370,7 +370,7 @@
 .report-pin-outline {
   position: fixed;
   border: 2px solid var(--v-pink);
-  background: #f5b8db25;
+  background: color-mix(in srgb, var(--v-pink) 15%, transparent);
   border-radius: var(--r-xs);
   pointer-events: none;
 }
@@ -859,7 +859,7 @@ html[data-flow="off"]
 .report-pin-marker {
   position: fixed;
   border: 2px solid var(--v-pink);
-  background: #f5b8db25;
+  background: color-mix(in srgb, var(--v-pink) 15%, transparent);
   border-radius: var(--r-xs);
   pointer-events: none;
 }
@@ -883,7 +883,7 @@ html[data-flow="off"]
 }
 .report-pin-marker[data-active="true"] {
   border-color: var(--v-ink);
-  background: #f5b8db55;
+  background: color-mix(in srgb, var(--v-pink) 33%, transparent);
 }
 .report-pin-marker[data-pulse="true"] {
   animation: report-pin-pulse 0.9s ease-out 1;
@@ -893,7 +893,7 @@ html[data-flow="off"]
     box-shadow: 0 0 0 0 var(--v-pink);
   }
   100% {
-    box-shadow: 0 0 0 14px #f5b8db00;
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--v-pink) 0%, transparent);
   }
 }
 .report-pin-tag {
