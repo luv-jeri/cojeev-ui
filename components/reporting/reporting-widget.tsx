@@ -164,7 +164,10 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   // an old copy back over what another tab sent or cleared. `fresh` is the draft object that came
   // from storage (or was just rebuilt from it): the save effect skips it because nothing changed.
   const pending = useRef<Partial<Record<ReportKind, ReportingDraft>>>({}),
-    fresh = useRef<ReportingDraft | null>(null);
+    fresh = useRef<ReportingDraft | null>(null),
+    // Receipts this tab moved into the sent list: a save effect React runs late for the pre-send
+    // draft must not queue it again.
+    committedIds = useRef(new Set<string>());
   // Review is a view, not part of the draft: it is open only for the tab and step it was
   // opened in, so a tab switch or leaving the edit step closes it.
   const scope = `${draft.kind}:${step}`,
@@ -321,6 +324,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   useEffect(() => {
     if (!loaded) return;
     if (draft === fresh.current) return;
+    if (draft.receipt && committedIds.current.has(draft.receipt.id)) return;
     pending.current = { ...pending.current, [draft.kind]: draft };
     // Text is small, so it is written at once: a write that starts late can be cut off by a
     // reload. Files are Blobs and slow to store, so bursts of changes to them wait 300 ms.
@@ -589,6 +593,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         { activeKind: kind, drafts: { [kind]: blank } },
       );
       // A save deferred while the commit ran holds the pre-send draft: drop it again.
+      committedIds.current.add(accepted.id);
       pending.current = { ...pending.current };
       delete pending.current[kind];
       draftsRef.current = { ...draftsRef.current, [kind]: blank };
