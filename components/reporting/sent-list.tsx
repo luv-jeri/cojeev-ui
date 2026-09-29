@@ -35,7 +35,7 @@ export function SentList({ entries, expanded, openId, emailEnabled, busy, note, 
                   </button>
                   {open && (
                     <div className="report-sent-detail report-receipt" id={`report-sent-${receipt.id}`} role="region" aria-labelledby={`report-sent-h-${receipt.id}`}>
-                      <h3 tabIndex={-1} id={`report-sent-h-${receipt.id}`}>{title}</h3>
+                      <h3 className="sr-only" tabIndex={-1} id={`report-sent-h-${receipt.id}`}>{title}</h3>
                       <ReceiptDetail receipt={receipt} kind={kind} emailEnabled={emailEnabled} busy={busy} onRefresh={() => onRefresh(receipt.id)} onNavigate={onNavigate} />
                       <p className="report-warning">This key is the only way to check this report from here.</p>
                       <Button variant="ghost" size="sm" disabled={busy} onClick={() => onRemove(receipt.id)}>Remove from this device</Button>
