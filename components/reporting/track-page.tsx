@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/registry/cojeev/ui/button";
 import { fetchStatus, ReportingError } from "@/lib/reporting/client";
 import type { PublicStage, PublicStatus } from "@/lib/reporting/public-status";
-import { parseTrackFragment } from "@/lib/reporting/track";
+import { isHttps, parseTrackFragment } from "@/lib/reporting/track";
 // The .track-* rules live in the widget's sheet, which otherwise arrives only with the idle-loaded widget.
 import "./reporting.css";
 
@@ -19,8 +19,6 @@ function whitelist(raw: unknown): PublicStatus | null {
   const issue = typeof r.issueNumber === "number" && typeof r.issueUrl === "string" && isHttps(r.issueUrl) ? { issueNumber: r.issueNumber, issueUrl: r.issueUrl } : {};
   return { kind: r.kind, sentAt: r.sentAt, stage: r.stage as PublicStage, attachments: typeof r.attachments === "number" ? r.attachments : 0, ...issue };
 }
-/** The issue link is a live href on a public page, so only https is kept. */
-function isHttps(url: string): boolean { try { return new URL(url).protocol === "https:"; } catch { return false; } }
 const sentDate = (at: number) => new Date(at < 1e12 ? at * 1000 : at).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
 
 export function TrackPage() {

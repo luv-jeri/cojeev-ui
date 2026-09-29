@@ -1,4 +1,5 @@
 import type { Receipt, ReportKind } from "./contracts";
+import { STATUS_LABELS } from "../../components/reporting/report-request";
 
 // The provider's own vocabulary. `accepted` means Resend took the request and returned an id;
 // only a signed `delivered` event promotes the receipt's `email` field to "sent".
@@ -43,4 +44,10 @@ export function receiptExpectation(kind: ReportKind, emailEnabled: boolean | und
   return kind === "request"
     ? "We’ll email you when we’ve looked at it, and again when it’s live."
     : "We’re looking into it. We’ll email you when it’s tracked, and again when it’s fixed.";
+}
+
+/** The one status word a list row shows: the issue number once there is one, else the CR12 label. */
+export function sentStatusWord(kind: ReportKind, receipt: Receipt): string {
+  if (receipt.issueNumber) return `Tracked as #${receipt.issueNumber}`;
+  return kind === "bug" && receipt.status === "resolved" ? "Resolved" : STATUS_LABELS[receipt.status];
 }

@@ -60,3 +60,66 @@ export async function saveDraftWorkspace(workspace: ReportingDraftWorkspace): Pr
     return request;
   });
 }
+
+// ---- Reports sent from this browser: the `sent` key of the same store ----
+export type SentEntry = { kind: ReportKind; title: string; sentAt: number; receipt: Receipt };
+export const SENT_LIMIT = 50;
+const sentFinished = (state: string) => state === "uploaded" || state === "ready" || state === "expired";
+export const importedTitle = (kind: ReportKind) => (kind === "bug" ? "Imported report" : "Imported request");
+
+/** Merges by receipt id: a known entry keeps its title and date and takes the new receipt. Newest first, capped. */
+export function mergeSent(list: SentEntry[], entries: SentEntry[]): SentEntry[] {
+  const merged = [...list];
+  for (const entry of entries) {
+    const at = merged.findIndex(item => item.receipt.id === entry.receipt.id);
+    if (at >= 0) merged[at] = { ...merged[at], receipt: entry.receipt };
+    else merged.push(entry);
+  }
+  return merged.sort((a, b) => b.sentAt - a.sentAt).slice(0, SENT_LIMIT);
+}
+
+/** Moves a finished receipt out of each tab's draft (today's shape) and gives that tab a fresh form. */
+export function pullLegacyReceipts(workspace: ReportingDraftWorkspace, now: number): { workspace: ReportingDraftWorkspace; entries: SentEntry[] } {
+  const entries: SentEntry[] = [];
+  const drafts = { ...workspace.drafts };
+  for (const kind of ["request", "bug"] as const) {
+    const draft = drafts[kind];
+    if (!draft?.receipt || !draft.receipt.attachments.every(file => sentFinished(file.state))) continue;
+    entries.push({ kind: draft.kind, title: draft.frozen?.report.title || draft.title || importedTitle(draft.kind), sentAt: now, receipt: draft.receipt });
+    drafts[kind] = { ...emptyDraft(), kind: draft.kind };
+  }
+  return entries.length ? { workspace: { ...workspace, drafts }, entries } : { workspace, entries };
+}
+
+/** One readwrite transaction over `sent` (and, when `also` is given, other keys): nothing is written unless all of it completes. */
+async function sentTransaction(change: (list: SentEntry[]) => SentEntry[], also?: (store: IDBObjectStore) => void): Promise<SentEntry[]> {
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    let next: SentEntry[] = [];
+    const transaction = db.transaction("drafts", "readwrite");
+    const store = transaction.objectStore("drafts");
+    const read = store.get("sent");
+    read.onsuccess = () => {
+      try {
+        next = change(Array.isArray(read.result) ? read.result : []);
+        store.put(next, "sent");
+        also?.(store);
+      } catch (cause) { transaction.abort(); reject(cause); }
+    };
+    transaction.oncomplete = () => resolve(next);
+    transaction.onerror = transaction.onabort = () => reject(transaction.error ?? new Error("Could not save the sent list."));
+  });
+}
+export async function loadSent(): Promise<SentEntry[]> {
+  const saved = await operation<SentEntry[] | undefined>("readonly", store => store.get("sent"));
+  return Array.isArray(saved) ? saved : [];
+}
+export function commitSent(entries: SentEntry[], workspace?: ReportingDraftWorkspace): Promise<SentEntry[]> {
+  return sentTransaction(list => mergeSent(list, entries), workspace && (store => { store.put(workspace, "workspace"); store.delete("current"); }));
+}
+export function removeSent(receiptId: string): Promise<SentEntry[]> {
+  return sentTransaction(list => list.filter(item => item.receipt.id !== receiptId));
+}
+export function replaceSentReceipt(receipt: Receipt): Promise<SentEntry[]> {
+  return sentTransaction(list => list.map(item => item.receipt.id === receipt.id ? { ...item, receipt } : item));
+}

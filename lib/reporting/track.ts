@@ -4,3 +4,6 @@ export function parseTrackFragment(hash: string): { id: string; key: string } | 
   const match = FRAGMENT.exec(hash);
   return match && /^[0-9a-f]{64}$/.test(match[2]) ? { id: match[1], key: match[2] } : null;
 }
+
+/** A link from a stored or imported receipt is untrusted, so only https is ever made a live href. */
+export function isHttps(url: string): boolean { try { return new URL(url).protocol === "https:"; } catch { return false; } }
