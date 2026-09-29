@@ -29,6 +29,21 @@ test('manifest verification detects edits, extra private files, missing files, a
     await assert.rejects(release.createManifest(dir,'beta','a'.repeat(40)),/private|forbidden/i);
   } finally { await fs.rm(dir,{recursive:true,force:true}); }
 });
+test('the site cannot ship files under the paths the hosting Worker reserves, since some skip the Worker',async()=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-test-'));
+  try {
+    await fs.mkdir(path.join(dir,'site/_next/static/media'),{recursive:true});
+    await fs.writeFile(path.join(dir,'site/index.html'),'<html>public</html>');
+    await fs.writeFile(path.join(dir,'site/_next/static/media/font.woff2'),'font');
+    await release.createManifest(dir,'beta','a'.repeat(40));
+    for(const reserved of ['media','backups','private','v1']) {
+      await fs.mkdir(path.join(dir,'site',reserved));
+      await fs.writeFile(path.join(dir,'site',reserved,'x.txt'),'data');
+      await assert.rejects(release.createManifest(dir,'beta','a'.repeat(40)),/private|forbidden|reserved/i,reserved);
+      await fs.rm(path.join(dir,'site',reserved),{recursive:true});
+    }
+  } finally { await fs.rm(dir,{recursive:true,force:true}); }
+});
 test('artifact URL validation distinguishes documentation examples from deployable references',()=>{
   assert.doesNotThrow(()=>release.validateContent('site/docs/index.html','<code>http://localhost:3000</code>','beta'));
   assert.throws(()=>release.validateContent('site/index.html','<script src="http://localhost:3000/app.js"></script>','beta'),/URL|environment/);
