@@ -878,14 +878,14 @@ test('email copy matches the spec for received, accepted and rejected and signs 
   const cases=[
     [{kind:'bug'},'email_received','Thanks for reporting this · 000h by Cojeev','Thank you for reporting the issue. We\'re looking into it and will let you know.'],
     [{kind:'request'},'email_received','Thanks for your request · 000h by Cojeev','Thank you for your request. We\'re looking into it and will let you know.'],
-    [{kind:'bug',issue_number:9,issue_url:'https://github.com/o/r/issues/9'},'email_accepted','We\'re tracking your report as #9 · 000h by Cojeev','Thanks for reporting the issue. We checked it, and it\'s now tracked as #9. Follow progress here: https://github.com/o/r/issues/9. We\'ll email you again when it\'s fixed.'],
-    [{kind:'request',issue_number:9,issue_url:'https://github.com/o/r/issues/9'},'email_accepted','We\'re tracking your request as #9 · 000h by Cojeev','Thanks for your request. We checked it, and it\'s now tracked as #9. Follow progress here: https://github.com/o/r/issues/9. We\'ll email you again when it\'s live.'],
+    [{kind:'bug',issue_number:9,issue_url:'https://github.com/o/r/issues/9'},'email_accepted','We\'re tracking your report as #9 · 000h by Cojeev','Thanks for reporting the issue. We checked it, and it\'s now tracked as #9. We\'ll email you again when it\'s fixed.'],
+    [{kind:'request',issue_number:9,issue_url:'https://github.com/o/r/issues/9'},'email_accepted','We\'re tracking your request as #9 · 000h by Cojeev','Thanks for your request. We checked it, and it\'s now tracked as #9. We\'ll email you again when it\'s live.'],
     [{kind:'bug'},'email_rejected','About your report · 000h by Cojeev','Thanks for taking the time to write to us. We checked your report, but it isn\'t something we can act on, so we\'ve closed it. If we misunderstood, just reply to this email and tell us more.'],
     [{kind:'bug',status:'resolved'},'email_resolved','The issue you reported is fixed · 000h by Cojeev',undefined]];
   for(const [more,kind,subject,text] of cases) {
     const m=backend.emailMessage({id:'rid',status:'received',component_url:null,issue_number:null,issue_url:null,triage_reason:'AI SECRET REASON',...more},kind,'https://library.example.com/cojeev-ui');
     assert.equal(m.subject,subject,kind);if(text) assert.ok(m.text.includes(text),kind);
-    assert.ok(m.text.includes('Reference: rid')&&m.text.trimEnd().endsWith('000h by Cojeev'),kind);assert.ok(!m.text.includes('Cojeev UI')&&!m.html.includes('COJEEV UI'));
+    assert.ok(m.text.includes('Reference: rid')&&m.text.trimEnd().endsWith('000h by Cojeev'),kind);assert.ok(!m.text.includes('Cojeev UI')&&!m.html.includes('COJEEV UI'));assert.ok(!m.text.includes('Follow progress here'),kind);assert.ok(!m.html.includes('Follow progress here'),kind);if(kind==='email_accepted'){assert.ok(m.text.includes('Follow on GitHub (#9)')&&m.text.includes(more.issue_url),'text has the GitHub link');assert.ok(m.html.includes('Follow on GitHub (#9)')&&m.html.includes(`href="${more.issue_url}"`),'html has the GitHub link');}
   }
 });
 test('the rejection email never contains the AI reason',async()=>{

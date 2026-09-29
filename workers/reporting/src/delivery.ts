@@ -16,7 +16,7 @@ export function emailMessage(row: ReportRow, kind: string, site: string) {
   let heading:string, message:string, plain:EmailLink|null=null;
   if(kind==="email_accepted") {
     heading=`We're tracking your ${request?"request":"report"} as #${n}`;
-    message=`Thanks for ${request?"your request":"reporting the issue"}. We checked it, and it's now tracked as #${n}. Follow progress here: ${row.issue_url}. We'll email you again when it's ${request?"live":"fixed"}.`;
+    message=`Thanks for ${request?"your request":"reporting the issue"}. We checked it, and it's now tracked as #${n}. We'll email you again when it's ${request?"live":"fixed"}.`;
     plain={label:`Follow on GitHub (#${n})`,url:row.issue_url??""};
   } else if(kind==="email_rejected") {
     // The AI's reason is internal and is never part of this message.
