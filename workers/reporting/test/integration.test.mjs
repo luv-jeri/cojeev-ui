@@ -1042,6 +1042,7 @@ test('status_endpoint_shows_only_public_facts',async()=>{
   const states=[['received',"triage_state='pending'",[]],['reviewing',"triage_state='approved'",[]],
     ['tracked',`triage_state='approved',issue_number=7001,issue_url='${url}'`,['issueNumber','issueUrl']],
     ['fixed',`triage_state='approved',status='resolved',issue_number=7001,issue_url='${url}'`,['issueNumber','issueUrl']],
+    ['tracked',`triage_state='pending',issue_number=7001,issue_url='${url}'`,[]],
     ['closed',"triage_state='rejected'",[]],['closed',`triage_state='approved',status='declined',issue_number=7001,issue_url='${url}'`,[]]];
   const fileId=randomUUID(),bytes=new Uint8Array([137,80,78,71]);
   for(const [stage,set,extra] of states) {
