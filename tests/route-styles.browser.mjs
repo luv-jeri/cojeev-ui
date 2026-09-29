@@ -37,13 +37,25 @@ const measure = (page) => page.evaluate((props) => {
   }
   return out;
 }, props);
-const settle = async (page, route) => {
+// Component elements per slot. measure() numbers elements per slot, so one element still mounting shifts every later key.
+const structure = () => JSON.stringify(Object.entries([...document.querySelectorAll("[data-slot]")]
+  .reduce((counts, el) => (counts[el.dataset.slot] = (counts[el.dataset.slot] ?? 0) + 1, counts), {})).sort());
+// Resolves with the structure once it has held for 1s and, when given, matches `expected`: on a slow runner a
+// section can still mount after the fixed waits. After 20s it returns anyway and the comparison reports the difference.
+const settle = async (page, route, expected) => {
   await page.waitForURL((url) => url.pathname === `${basePath}${route}`, { timeout: 60000 });
   await page.waitForLoadState("load");
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(2500);
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(500);
+  let last = "", since = Date.now();
+  for (const deadline = Date.now() + 20000; Date.now() < deadline; await page.waitForTimeout(250)) {
+    const now = await page.evaluate(structure);
+    if (now !== last) [last, since] = [now, Date.now()];
+    else if (Date.now() - since >= 1000 && (!expected || now === expected)) break;
+  }
+  return last;
 };
 
 const failures = [];
@@ -55,14 +67,14 @@ try {
     const page = await context.newPage();
     try {
       await page.goto(`${base}${route}`, { waitUntil: "load", timeout: 120000 });
-      await settle(page, route);
+      const hardStructure = await settle(page, route);
       for (const selector of required) assert.ok(await page.locator(selector).count(), `${name}: ${selector} must exist`);
       const hard = await measure(page);
       const sheets = await page.evaluate(() => { window.__softNavigation = true; return document.styleSheets.length; });
       await page.evaluate((to) => window.next.router.push(to), via);
       await settle(page, via);
       await page.goBack();
-      await settle(page, route);
+      await settle(page, route, hardStructure);
       assert.ok(await page.evaluate(() => window.__softNavigation), `${name}: every step must stay a client-side navigation`);
       assert.ok(await page.evaluate(() => document.styleSheets.length) > sheets, `${name}: the visited route must leave its stylesheets behind`);
       const soft = await measure(page);
