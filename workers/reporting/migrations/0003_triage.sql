@@ -1,0 +1,10 @@
+ALTER TABLE reports ADD COLUMN triage_state TEXT NOT NULL DEFAULT 'pending' CHECK (triage_state IN ('pending','approved','rejected'));
+ALTER TABLE reports ADD COLUMN triage_by TEXT CHECK (triage_by IN ('ai','owner','join'));
+ALTER TABLE reports ADD COLUMN triage_model TEXT;
+ALTER TABLE reports ADD COLUMN triage_reason TEXT;
+ALTER TABLE reports ADD COLUMN triage_title TEXT;
+ALTER TABLE reports ADD COLUMN triage_body TEXT;
+ALTER TABLE reports ADD COLUMN triaged_at INTEGER;
+ALTER TABLE reports ADD COLUMN verified_at INTEGER;
+CREATE INDEX reports_triage ON reports(triage_state, created_at DESC);
+UPDATE outbox SET state='cancelled', last_error='Superseded by triage V1.', lease_token=NULL WHERE state IN ('held','pending') AND kind IN ('github','email_received','email_owner_received');

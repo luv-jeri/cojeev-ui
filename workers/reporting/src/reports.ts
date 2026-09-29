@@ -19,9 +19,12 @@ export async function receipt(env: Env, row: ReportRow, token: string): Promise<
   return {id:row.id,token,status:row.status,topicId:row.topic_id,...(row.kind==="request"&&row.status==="resolved"&&row.component_url?{componentUrl:row.component_url}:{}),
     emailDelivery:email?.state==='held'?'held':email?.delivery_status??'queued',
     email:email?.delivery_status==='delivered'?"sent":email?.state==="needs_review"||['failed','bounced'].includes(email?.delivery_status??'')?"needs_review":!emailEnabled(env)?"setup_required":"pending",
-    issue:row.issue_number?"created":github?.state==="needs_review"?"needs_review":!githubEnabled(env)?"setup_required":"pending",
+    issue:row.triage_state==="rejected"?"not_planned":row.issue_number?"created":github?.state==="needs_review"?"needs_review":!githubEnabled(env)?"setup_required":"pending",
     // The legacy enum collapses held into pending. Carry the job's own state so the receipt can say which it is; a missing job claims nothing.
-    issueDelivery:github?.state,attachments:files.results};
+    issueDelivery:row.triage_state==="pending"?"triage":github?.state,attachments:files.results};
+}
+export async function topicIssue(env: Env, topicId: string) {
+  return env.DB.prepare("SELECT issue_number,issue_node_id,issue_url FROM reports WHERE topic_id=? AND triage_state='approved' AND issue_number IS NOT NULL ORDER BY created_at LIMIT 1").bind(topicId).first<{issue_number:number;issue_node_id:string;issue_url:string}>();
 }
 export async function accept(request: Request, env: Env): Promise<{receipt:Receipt;fresh:boolean}> {
   const raw=await readJSON(request) as {report?:unknown;token?:unknown;turnstileToken?:unknown};
@@ -47,16 +50,22 @@ export async function accept(request: Request, env: Env): Promise<{receipt:Recei
       if(!topic) throw new HttpError(422,"That request no longer exists. Start a new request.");topicId=topic.id;
     } else topicKey=report.title.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim();
   }
+  // Joining a topic that already has an issue needs no verdict: it shares that issue.
+  const joinTopic=topicId ?? (topicKey!==null?(await env.DB.prepare("SELECT id FROM topics WHERE title_key=?").bind(topicKey).first<{id:string}>())?.id??null:null);
+  const issue=joinTopic?await topicIssue(env,joinTopic):null;
+  // A released topic will never send the follow-up email that the tracking email promises.
+  const released=joinTopic?(await env.DB.prepare("SELECT status FROM topics WHERE id=?").bind(joinTopic).first<{status:string}>())?.status==="resolved":false;
   const statements=[];
   if(topicKey!==null) statements.push(env.DB.prepare("INSERT OR IGNORE INTO topics(id,title,title_key,created_at,updated_at) VALUES(?,?,?,?,?)").bind(report.id,report.title,topicKey,timestamp,timestamp));
-  statements.push(env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,topic_id,status,component_url,created_at,updated_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,COALESCE(?,(SELECT id FROM topics WHERE title_key=?)),COALESCE((SELECT status FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),'received'),(SELECT component_url FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),?,?)`)
-    .bind(report.id,tokenHash,payloadHash,report.kind,report.title,report.description,report.email,contactHash,JSON.stringify(report.references),report.diagnostics?JSON.stringify(report.diagnostics):null,JSON.stringify(report.pins),topicId,topicKey,topicId,topicKey,topicId,topicKey,timestamp,timestamp));
+  statements.push(env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,topic_id,status,component_url,triage_state,triage_by,triaged_at,issue_number,issue_node_id,issue_url,created_at,updated_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,COALESCE(?,(SELECT id FROM topics WHERE title_key=?)),COALESCE((SELECT status FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),'received'),(SELECT component_url FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),?,?,?,?,?,?,?,?)`)
+    .bind(report.id,tokenHash,payloadHash,report.kind,report.title,report.description,report.email,contactHash,JSON.stringify(report.references),report.diagnostics?JSON.stringify(report.diagnostics):null,JSON.stringify(report.pins),topicId,topicKey,topicId,topicKey,topicId,topicKey,issue?'approved':'pending',issue?'join':null,issue?timestamp:null,issue?.issue_number??null,issue?.issue_node_id??null,issue?.issue_url??null,timestamp,timestamp));
   for(const file of report.attachments) statements.push(env.DB.prepare("INSERT INTO attachments(id,report_id,name,type,size,sha256,object_key) VALUES(?,?,?,?,?,?,?)").bind(file.id,report.id,file.name,file.type,file.size,file.sha256,`${report.id}/${file.id}`));
   // The maintainer alert is queued with the report it belongs to, so configuring an
   // owner address later can never manufacture alerts for the existing backlog.
-  const kinds=["github","email_received",...(ownerNotificationEmail(env)?["email_owner_received"]:[])];
-  for(const kind of kinds) statements.push(env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,?,?,?)").bind(`${report.id}:${kind}`,report.id,kind,timestamp,timestamp));
+  // No GitHub job: a triage verdict decides whether an issue exists.
+  const kinds=["email_received",...(ownerNotificationEmail(env)?["email_owner_received"]:[]),...(issue&&!released?["email_accepted"]:[])];
+  for(const kind of kinds) statements.push(env.DB.prepare("INSERT INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,?,?,?,?)").bind(`${report.id}:${kind}`,report.id,kind,timestamp,timestamp,kind==="email_accepted"?timestamp:null));
   try { await env.DB.batch(statements); }
   catch(error) {
     // A simultaneous retry may have won the unique ID race. Never manufacture a second record.
@@ -103,14 +112,15 @@ export async function setStatus(env: Env, row: ReportRow, status: unknown, link:
   const condition=row.topic_id?"topic_id=?":"id=?";const scope=row.topic_id ?? row.id;
   if(row.topic_id) statements.push(env.DB.prepare("UPDATE topics SET status=?,component_url=?,updated_at=? WHERE id=?").bind(status,url,timestamp,row.topic_id));
   statements.push(env.DB.prepare(`UPDATE reports SET status=?,component_url=?,updated_at=? WHERE ${condition}`).bind(status,url,timestamp,scope));
-  if(resolved) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at) SELECT id||':email_resolved',id,'email_resolved',?,? FROM reports WHERE ${condition} AND email<>''`).bind(timestamp,timestamp,scope));
+  if(resolved) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) SELECT id||':email_resolved',id,'email_resolved',?,?,? FROM reports WHERE ${condition} AND email<>'' AND triage_state='approved'`).bind(timestamp,timestamp,timestamp,scope));
   await env.DB.batch(statements);
 }
 export async function privateDetail(env: Env,id:string) {
   const row=await getReport(env,id);
   const {token_hash: _token, payload_hash:_payload, contact_hash:_contact, ...report}=row; void _token; void _payload; void _contact;
   const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,name,type,size,state FROM attachments WHERE report_id=?").bind(id).all(),env.DB.prepare("SELECT id,kind,state,attempts,last_error,provider_id,delivery_status,first_attempt_at,reviewed_at FROM outbox WHERE report_id=? ORDER BY created_at").bind(id).all()]);
-  return {report,attachments:files.results,deliveries:jobs.results};
+  const shared=!!row.issue_number&&!!await env.DB.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved'").bind(row.issue_number,id).first();
+  return {report,attachments:files.results,deliveries:jobs.results,shared};
 }
 export async function privateAttachment(env: Env,id:string,fileId:string) {
   await getReport(env,id);const file=await env.DB.prepare("SELECT * FROM attachments WHERE report_id=? AND id=? AND state='uploaded'").bind(id,fileId).first<AttachmentRow>();

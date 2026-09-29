@@ -4,6 +4,7 @@ import { activationCutoff, emailEnabled, expectedActive, githubEnabled, now, own
 import { emailLimits, resendWebhook } from './resend';
 import { drain } from "./delivery";
 import { cleanup, updateFromAdmin, webhook } from "./lifecycle";
+import { adminList, applyVerdict, listUntriaged, markVerified } from "./triage";
 type Context = {waitUntil(promise:Promise<unknown>):void};
 const json=(body:unknown,status=200)=>Response.json(body,{status});
 async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
@@ -37,8 +38,12 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
     if(!["GET","HEAD"].includes(request.method)) assertBrowserOrigin(request,env);
     if(path==="/v1/admin/reports"&&request.method==="GET") {
       const offset=Math.max(0,Math.min(100000,parseInt(url.searchParams.get("offset")??"0")||0));
-      const rows=await env.DB.prepare("SELECT id,kind,title,status,created_at,issue_number,email,topic_id FROM reports ORDER BY created_at DESC,id LIMIT 21 OFFSET ?").bind(offset).all();return json({reports:rows.results.slice(0,20),hasMore:rows.results.length>20});
+      return json(await adminList(env,offset,url.searchParams.get("triage")));
     }
+    if(path==="/v1/admin/triage"&&request.method==="GET") return json(await listUntriaged(env));
+    const triageRoute=path.match(/^\/v1\/admin\/reports\/([^/]+)\/(triage|verify)$/);
+    if(triageRoute&&request.method==="PUT"&&triageRoute[2]==="triage") {const result=await applyVerdict(env,triageRoute[1],await readJSON(request,100000));ctx.waitUntil(drain(env));return json(result);}
+    if(triageRoute&&request.method==="POST"&&triageRoute[2]==="verify") return json(await markVerified(env,triageRoute[1]));
     const adminFile=path.match(/^\/v1\/admin\/reports\/([^/]+)\/attachments\/([^/]+)$/);
     if(adminFile&&request.method==="GET") return privateAttachment(env,adminFile[1],adminFile[2]);
     const adminReport=path.match(/^\/v1\/admin\/reports\/([^/]+)$/);

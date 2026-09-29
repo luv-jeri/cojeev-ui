@@ -22,17 +22,18 @@ export async function webhook(request:Request,env:Env) {
   if(request.headers.get("X-GitHub-Event")!=="issues" || body.repository?.full_name!==env.GITHUB_REPOSITORY) return {ok:true,ignored:true};
   const issue=body.issue;
   if(!issue?.number || !["closed","labeled","edited"].includes(body.action??"") || issue.state!=="closed" || issue.state_reason!=="completed" || !issue.labels?.some(l=>l.name==="feedback:released")) return {ok:true,ignored:true};
-  const row=await env.DB.prepare("SELECT * FROM reports WHERE issue_number=?").bind(issue.number).first<ReportRow>();
-  if(!row) return {ok:true,ignored:true};
+  // Joined reports share one issue, so a release resolves every report holding it.
   const updated=Date.parse(issue.updated_at??"");
-  if(!Number.isFinite(updated) || updated<row.updated_at-1000) return {ok:true,ignored:true};
+  const rows=(await env.DB.prepare("SELECT * FROM reports WHERE issue_number=? AND triage_state='approved'").bind(issue.number).all<ReportRow>()).results
+    .filter(row=>Number.isFinite(updated)&&updated>=row.updated_at-1000);
+  if(!rows.length) return {ok:true,ignored:true};
   let url: string|null=null;
-  if(row.kind==="request") {
+  if(rows.some(row=>row.kind==="request")) {
     const match=issue.body?.match(/^Component:\s*(https:\/\/\S+)\s*$/m);
     if(!match) throw new HttpError(422,"Add a Component: URL before releasing a component request.");
     url=await verifyLiveComponent(env,match[1]);
   }
-  await setStatus(env,row,"resolved",url);
+  for(const row of rows) await setStatus(env,row,"resolved",row.kind==="request"?url:null);
   await env.DB.prepare("INSERT OR IGNORE INTO webhook_events(id,created_at) VALUES(?,?)").bind(eventId,now()).run();
   return {ok:true};
 }
