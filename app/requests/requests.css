@@ -370,6 +370,15 @@
     padding-inline: var(--s-2);
   }
 }
+@media (max-width: 360px) {
+  /* Keep all three nav controls inside the page gutters on narrow phones. */
+  .requests-nav { gap: var(--s-1); }
+  .requests-nav > a:first-child {
+    font-size: var(--fs-lead);
+    padding-inline: var(--s-1);
+  }
+  .requests-nav > a:last-child { padding-inline: var(--s-1); }
+}
 .requests-page .v-btn {
   min-height: 44px;
 }

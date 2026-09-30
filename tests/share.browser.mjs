@@ -17,27 +17,38 @@ const browser = await chromium.launch();
 async function assertFits(locator, width) {
   await locator.waitFor({ state: "visible" });
   const box = await locator.boundingBox();
-  assert.ok(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= width && box.width > 0,
+  assert.ok(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= width && box.y + box.height <= 900 && box.width > 0,
     `Share fits the ${width}px header/rail`);
 }
 
+async function assertNoOverflow(page, path, width) {
+  const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  assert.ok(scrollWidth <= width, `${path} at ${width}px has no horizontal overflow (scrollWidth: ${scrollWidth})`);
+}
+
 try {
-  for (const path of ["/docs/button/", "/", "/requests/"]) {
+  for (const path of ["/docs/button/", "/", "/about/", "/requests/"]) {
     const url = `${base}${path}`;
     const expected = `${origin}${new URL(url).pathname}?utm_medium=share`;
-    for (const width of [1280, 390]) {
+    for (const width of [1280, 390, 320]) {
+      const mobile = width < 800;
       const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
       await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin });
       await context.addInitScript(() => Object.defineProperty(navigator, "share", { value: undefined, configurable: true }));
       const page = await context.newPage();
       await page.goto(`${url}?private=drop#section`, { waitUntil: "networkidle" });
       const chrome = path.startsWith("/docs")
-        ? page.locator(width === 390 ? ".docs-mobile-actions" : ".docs-sidebar .docs-persistent-links")
+        ? page.locator(mobile ? ".docs-mobile-actions" : ".docs-sidebar .docs-persistent-links")
         : page.locator(path === "/requests/" ? ".requests-nav" : ".story-header-tools");
       const share = chrome.getByRole("button", { name: "Share this page", exact: true });
       await assertFits(share, width);
-      if (path === "/requests/") await assertFits(chrome.getByRole("link").last(), width);
-      assert.equal(await share.locator(".share-label").isVisible(), width !== 390, "label follows the viewport width");
+      await assertNoOverflow(page, path, width);
+      if (path === "/requests/") {
+        for (const name of ["Cojeev UI", "Explore the library"]) {
+          await assertFits(chrome.getByRole("link", { name, exact: true }), width);
+        }
+      }
+      assert.equal(await share.locator(".share-label").isVisible(), !mobile, "label follows the viewport width");
       const idleWidth = (await share.boundingBox()).width;
       await page.evaluate(() => {
         const write = navigator.clipboard.writeText.bind(navigator.clipboard);
@@ -54,7 +65,8 @@ try {
       await share.getByText("Link copied", { exact: true }).filter({ visible: true }).waitFor();
       assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected, `${path} at ${width}px`);
       await assertFits(share, width);
-      if (width === 390) assert.equal((await share.boundingBox()).width, idleWidth, "copy feedback preserves the icon-only button size");
+      await assertNoOverflow(page, path, width);
+      if (mobile) assert.equal((await share.boundingBox()).width, idleWidth, "copy feedback preserves the icon-only button size");
 
       // Prove the real selection-copy fallback restores selection, focus and scroll.
       await page.evaluate(() => {
@@ -85,7 +97,7 @@ try {
       assert.equal(await page.evaluate(() => window.shareFallbackInsideScope), true, "fallback stays next to the trigger and owns focus");
       assert.equal(await page.locator("[data-copy-fallback]").count(), 0, "temporary field is removed");
 
-      if (path.startsWith("/docs") && width === 390) {
+      if (path.startsWith("/docs") && mobile) {
         await page.getByRole("button", { name: "Browse", exact: true }).click();
         const drawer = page.getByRole("dialog", { name: "Browse components", exact: true });
         const drawerShare = drawer.getByRole("button", { name: "Share this page", exact: true });
@@ -118,7 +130,7 @@ try {
     assert.equal(await page.getByRole("button", { name: "Share this page", exact: true }).count(), 0, `${path} has no Share control`);
   }
   await context.close();
-  console.log("PASS: clean share links, real clipboard fallback, copy feedback, desktop/collapsed chrome, 390px headers and private-page exclusions.");
+  console.log("PASS: clean share links, real clipboard fallback, copy feedback, desktop/collapsed chrome, 320px/390px headers without overflow and private-page exclusions.");
 } finally {
   await browser.close();
   await server?.close();
