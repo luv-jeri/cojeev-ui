@@ -37,11 +37,26 @@ let keyedSnapshot:unknown,morphKey=''
 function morphInputs(){const s=getSettingsSnapshot();if(s!==keyedSnapshot){keyedSnapshot=s;morphKey=JSON.stringify([s.motion,s.profile])}return morphKey}
 // One browser subscription set, acquired by mounted hooks and released with the last host.
 let environmentUsers=0,disposeEnvironment=()=>{}
-function acquireEnvironment(){
+const rootStyleHosts=new Set<()=>void>()
+function acquireEnvironment(sync:()=>void){
+ rootStyleHosts.add(sync)
  if(environmentUsers++===0){
   const ac=new AbortController(),opts={signal:ac.signal}
-  const refresh=()=>instances.forEach(b=>b.refresh())
-  const theme=new MutationObserver(refresh);theme.observe(document.documentElement,{attributes:true,attributeFilter:['data-mode','data-skin']})
+  // Palette events can arrive inside another root observer before ours runs.
+  // Reconcile geometry before repaint captures the new radius in its signature.
+  const refresh=()=>{rootStyleHosts.forEach(sync=>sync());instances.forEach(b=>b.refresh())}
+  // Parse once per root mutation batch, not per host. CSSOM preserves declarations
+  // containing quoted semicolons while excluding only the flow timing tokens.
+  const style=document.createElement('span').style
+  const nonFlowStyle=(value:string|null)=>{style.cssText=value??'';for(const name of Array.from(style))if(name.startsWith('--flow-'))style.removeProperty(name);return style.cssText}
+  const theme=new MutationObserver(records=>{
+   if(records.some(record=>record.attributeName==='style')){
+    const next=nonFlowStyle(document.documentElement.getAttribute('style'))
+    if(records.some(record=>record.attributeName==='style'&&nonFlowStyle(record.oldValue)!==next))rootStyleHosts.forEach(sync=>sync())
+   }
+   if(records.some(record=>record.attributeName!=='style'))refresh()
+  })
+  theme.observe(document.documentElement,{attributes:true,attributeFilter:['data-mode','data-skin','style'],attributeOldValue:true})
   window.addEventListener('v-theme',refresh,opts);window.addEventListener('v-palette',refresh,opts)
   document.addEventListener('pointermove',e=>{pointer.x=e.clientX;pointer.y=e.clientY;wake()},{...opts,passive:true})
   document.addEventListener('pointerleave',()=>{pointer.x=pointer.y=-1e4;wake()},opts)
@@ -50,7 +65,7 @@ function acquireEnvironment(){
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else{previous=performance.now();wake()}},opts)
   disposeEnvironment=()=>{ac.abort();theme.disconnect();stop();previous=null}
  }
- return ()=>{if(--environmentUsers===0)disposeEnvironment()}
+ return ()=>{rootStyleHosts.delete(sync);if(--environmentUsers===0)disposeEnvironment()}
 }
 /** Component-owned attachment. No document scanning, global API, or provider required. */
 export function useMorph<T extends HTMLElement>(category:Category,externalRef?:React.Ref<T>){
@@ -199,12 +214,11 @@ export function useMorph<T extends HTMLElement>(category:Category,externalRef?:R
   const attributes=new MutationObserver(()=>{if(visualSignature()!==signature){attach();signature=visualSignature()}})
   attributes.observe(el,{attributes:true,attributeFilter:['class','style','data-morph','data-tier','data-motion','data-reach','data-inside','data-amp','data-lobes','data-depth','data-asym','data-spread','data-r','data-shape','data-sw','data-dash','data-colors','aria-selected','aria-current','aria-pressed','aria-checked','aria-expanded','disabled','aria-disabled','aria-busy','data-state','data-highlighted']})
   const ancestors=new MutationObserver(records=>{if(records.some(record=>record.attributeName==='data-motion'||record.attributeName==='hidden')||visualSignature()!==signature){attach();signature=visualSignature()}})
-  // The root's inline style holds document tokens (flow timing, scrollbar, appearance). They never
-  // reshape a host, and palette changes arrive through the environment refresh; watching them made
-  // every Speed step or character change re-read every host on the page.
+  // Root style changes use the shared environment observer, which filters out
+  // flow-only writes before any host reads its visual signature.
   for(let parent=el.parentElement;parent;parent=parent.parentElement)ancestors.observe(parent,{attributes:true,attributeFilter:parent===el.ownerDocument.documentElement?['data-motion','hidden','class']:['data-motion','hidden','style','class']})
   mq.addEventListener('change',attach,opts)
-  const releaseEnvironment=acquireEnvironment()
+  const releaseEnvironment=acquireEnvironment(sync)
   return ()=>{syncHost.current=()=>{};children.disconnect();attributes.disconnect();ancestors.disconnect();unregister();unsubscribe();destroyBody();automaticRadius=undefined;ac.abort();releaseEnvironment()}
  },[host,category])
  React.useLayoutEffect(()=>{syncHost.current()})
