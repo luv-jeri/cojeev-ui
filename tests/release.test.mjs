@@ -7,6 +7,7 @@ import { execFileSync } from 'node:child_process';
 import * as release from '../scripts/release-manifest.mjs';
 import { environmentConfig, buildEnvironment } from '../scripts/release-config.mjs';
 import { checkArtifactCsp } from '../scripts/release-csp.mjs';
+import host from '../workers/registry-host/src/index.mjs';
 
 test('unknown and opposite environment settings fail closed',()=>{
   assert.throws(()=>environmentConfig('preview'),/environment/i);
@@ -117,7 +118,7 @@ test('the packaged site served through the hosting Worker keeps a CSP that permi
       const {policy}=await checkArtifactCsp(dir,environment);
       assert.ok(policy.includes(environmentConfig(environment).api),policy);
       assert.ok(!policy.includes(opposite.api)&&!policy.includes(opposite.site),policy);
-      for(const origin of ['https://challenges.cloudflare.com','https://eu.i.posthog.com','https://eu-assets.i.posthog.com']) assert.ok(policy.includes(origin),origin);
+      for(const origin of ['https://challenges.cloudflare.com','https://eu.i.posthog.com','https://eu-assets.i.posthog.com','https://static.cloudflareinsights.com']) assert.ok(policy.includes(origin),origin);
     }
     await page('<script src="https://cdn.example.com/x.js"></script>');
     await assert.rejects(checkArtifactCsp(dir,'beta'),/cdn\.example\.com/);
@@ -134,8 +135,17 @@ test('the packaged site served through the hosting Worker keeps a CSP that permi
     await assert.rejects(checkArtifactCsp(dir,'beta'),/media-src/);
     await page('<embed src="https://cdn.example.com/x.swf">');
     await assert.rejects(checkArtifactCsp(dir,'beta'),/object-src/);
-    await page('<iframe src="https://challenges.cloudflare.com/widget"></iframe><script src="https://eu-assets.i.posthog.com/a.js"></script>');
+    // Cloudflare injects this Web Analytics tag into HTML at the edge; it reports to same-origin /cdn-cgi/rum.
+    const beacon='<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" data-cf-beacon=\'{"token":"t"}\' crossorigin="anonymous"></script>';
+    await page(`<iframe src="https://challenges.cloudflare.com/widget"></iframe><script src="https://eu-assets.i.posthog.com/a.js"></script>${beacon}`);
     assert.ok((await checkArtifactCsp(dir,'beta')).policy);
+    const withoutBeacon={fetch:async(request,env)=>{
+      const response=await host.fetch(request,env),headers=new Headers(response.headers);
+      headers.set('content-security-policy',headers.get('content-security-policy').replace(' https://static.cloudflareinsights.com',''));
+      return new Response(response.body,{status:response.status,headers});
+    }};
+    await page('<p>no injected tag</p>');
+    await assert.rejects(checkArtifactCsp(dir,'beta',withoutBeacon),/script-src no longer permits https:\/\/static\.cloudflareinsights\.com/);
     await fs.rm(path.join(dir,'site/index.html'));
     await assert.rejects(checkArtifactCsp(dir,'beta'),/did not serve/);
   } finally { await fs.rm(dir,{recursive:true,force:true}); }
