@@ -3,14 +3,24 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { docsHarnessFingerprint } from "../scripts/docs-harness-fingerprint.mjs";
+import { docsHarnessFiles, docsHarnessFingerprint } from "../scripts/docs-harness-fingerprint.mjs";
 
-for (const changedFile of ["scripts/docs-transient-paint.mjs", "scripts/docs-behaviors-details.mjs", "scripts/lib/docs-summary.mjs"]) {
+test("the harness list holds every local module the docs gate loads", () => {
+  // A module the gate imports but the list leaves out can change a verdict without changing the receipt.
+  for (const file of docsHarnessFiles) {
+    for (const [, specifier] of fs.readFileSync(file, "utf8").matchAll(/from "(\.\.?\/[^"]+)"/g)) {
+      const imported = path.posix.join(path.posix.dirname(file), specifier);
+      assert.ok(docsHarnessFiles.includes(imported), `${file} imports ${imported}, which docsHarnessFiles leaves out`);
+    }
+  }
+});
+
+for (const changedFile of docsHarnessFiles) {
   test(`harness fingerprint detects a mutation of ${changedFile}`, () => {
     const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "cojeev-docs-fingerprint-"));
     try {
       fs.mkdirSync(path.join(fixture, "scripts/lib"), { recursive: true });
-      for (const file of ["scripts/check-docs.mjs", "scripts/docs-transient-paint.mjs", "scripts/docs-behaviors-details.mjs", "scripts/docs-harness-fingerprint.mjs", "scripts/lib/docs-summary.mjs"]) {
+      for (const file of docsHarnessFiles) {
         fs.copyFileSync(new URL(`../${file}`, import.meta.url), path.join(fixture, file));
       }
       const before = docsHarnessFingerprint(fixture);

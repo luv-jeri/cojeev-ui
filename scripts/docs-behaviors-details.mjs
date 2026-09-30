@@ -1,5 +1,5 @@
 /** Existing detail examples: real controls, visible outcomes and quiet fallbacks. */
-import { armOpacityObservation } from "./docs-transient-paint.mjs";
+import { armOpacityObservation, recordPaint } from "./docs-transient-paint.mjs";
 
 export function createDetailTests({ assert, eventually, text, attribute, key }) {
   const reduced = async (page, run) => {
@@ -263,9 +263,14 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       const caret = root.locator('[data-slot="writing-caret"]');
       await attribute(caret, "aria-hidden", "true");
       assert.equal(await caret.evaluate(el => getComputedStyle(el).opacity), "1");
-      await key(root.getByRole("button", { name: "Replay caret", exact: true }), "Enter");
-      await text(root.getByRole("status"), "replay 1");
-      await eventually(() => caret.evaluate(el => getComputedStyle(el).opacity === "0"), "Replay produces a visible blink");
+      // Each blink is dark for 440ms; record it as painted instead of polling for it.
+      const replay = root.getByRole("button", { name: "Replay caret", exact: true });
+      const blink = await recordPaint(caret, replay, el => getComputedStyle(el).opacity);
+      try {
+        await key(replay, "Enter");
+        await text(root.getByRole("status"), "replay 1");
+        await eventually(async () => (await blink.seen()).values.includes("0"), "Replay produces a visible blink");
+      } finally { await blink.dispose(); }
       await root.getByRole("button", { name: "Keep it still", exact: true }).click();
       await attribute(caret, "data-animating", "false");
       assert.equal(await caret.evaluate(el => getComputedStyle(el).opacity), "1");

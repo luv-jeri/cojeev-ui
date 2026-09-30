@@ -194,7 +194,7 @@
 .v-stepper-example__checkpoint-detail {
   grid-column: 2;
   grid-row: 2;
-  font: var(--fw-regular) var(--fs-caps)/1.5 var(--font-body);
+  font: var(--fw-regular) var(--fs-caps)/1.5 var(--font-text);
   color: var(--v-text-2);
 }
 [data-slot="stepper-provider"][data-presentation]

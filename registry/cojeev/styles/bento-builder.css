@@ -160,7 +160,7 @@
   background: var(--v-canvas);
   color: var(--v-text);
   box-shadow: 0 6px 20px #0002;
-  font-family: var(--font-body, inherit);
+  font-family: var(--font-text, inherit);
   font-size: var(--fs-meta);
   line-height: 1.5;
   pointer-events: none;
