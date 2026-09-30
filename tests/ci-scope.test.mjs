@@ -10,6 +10,16 @@ import { changedPaths, classify, outputsFor, relocationDiff, relocationOnly, rel
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 
+test('share changes select the analytics browser journey in affected releases', () => {
+  for (const file of ['lib/share.ts', 'components/share-button.tsx', 'tests/share.test.ts', 'tests/share.browser.mjs']) {
+    const output = releaseOutputs(releaseDepth([file]));
+    assert.equal(output.run_analytics, 'true', file);
+    assert.equal(output.run_catalogue, 'false', file);
+    assert.equal(output.run_release, 'true', file);
+  }
+  assert.equal(releaseDepth(['components/share-button-new.tsx']).depth, 'full');
+});
+
 test('choice and accordion polish select real browser and generated-output checks, not the full catalogue', () => {
   for (const file of [
     'components/component-preview.tsx', 'components/examples/choice-foundations.tsx',

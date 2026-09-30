@@ -14,6 +14,7 @@ import { MotionPresence, MotionSurface } from "@/registry/cojeev/ui/presence";
 import { site } from "@/lib/site-config";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { BetaStamp } from "@/components/brand/beta-stamp";
+import { ShareButton } from "@/components/share-button";
 
 export const sourceUrl = site.sourceUrl;
 export const creatorUrl = site.creatorUrl;
@@ -54,6 +55,7 @@ export function MarketingHeader() {
         <SidebarMenuButton asChild className="story-link" isActive={pathname?.includes("about") || pathname?.includes("work-with-me")}><Link href="/about/" onClick={() => setOpen(false)}>About the maker</Link></SidebarMenuButton>
       </nav>
       <div className="story-header-tools">
+        <ShareButton className="story-link story-share" />
         <MarketingLink href={sourceUrl} className="story-github"><AnimatedIcon name="github" /><span>GitHub</span></MarketingLink>
         <ThemeControl compact />
         <Button className="story-menu-trigger" variant="secondary" size="sm" ref={trigger} aria-controls={id} aria-expanded={open} onClick={event => { openedWithKeyboard.current = event.detail === 0; setOpen(!open); }} aria-label={open ? "Close navigation" : "Open navigation"}><AnimatedIcon name={open ? "x" : "menu"} /></Button>

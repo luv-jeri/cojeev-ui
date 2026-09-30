@@ -199,6 +199,8 @@ jobs:
         env:
           ANALYTICS_TEST_ENVIRONMENT: beta
           ANALYTICS_TEST_RELEASE: '0000000000000000000000000000000000000000'
+      - if: needs.scope.outputs.run_analytics == 'true'
+        run: npm run share:browser
       - name: Preserve sanitized checkpoint evidence
         if: always() && needs.scope.outputs.run_build == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -484,6 +486,8 @@ jobs:
         env:
           ANALYTICS_TEST_ENVIRONMENT: beta
           ANALYTICS_TEST_RELEASE: '0000000000000000000000000000000000000000'
+      - run: npm run share:browser
+        if: steps.launch_policy.outputs.deferred != 'true' && steps.reuse.outputs.reuse != 'true' && steps.depth.outputs.run_analytics == 'true'
       - name: Verify fresh consumer installation from each verified environment artifact
         if: steps.launch_policy.outputs.deferred != 'true' && steps.depth.outputs.run_release == 'true'
         run: |

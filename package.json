@@ -41,6 +41,7 @@
     "reporting:check": "npx wrangler deploy --dry-run --config workers/reporting/wrangler.jsonc",
     "analytics:test": "node --import tsx --test tests/analytics.test.ts tests/github-traffic.test.ts",
     "analytics:browser": "node tests/analytics.browser.mjs",
+    "share:browser": "node tests/share.browser.mjs",
     "analytics:github": "node scripts/snapshot-github-traffic.mjs",
     "launch:check": "node scripts/check-launch-readiness.mjs",
     "registry-host:test": "node --test workers/registry-host/test/*.test.mjs",

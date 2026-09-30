@@ -46,6 +46,7 @@ export type AnalyticsEventMap = {
     route: string;
     copy_kind: "install_command" | "source" | "guide";
   };
+  page_shared: { route: string; method: "share_sheet" | "copy_link" };
   outbound_clicked: {
     destination_category: "github" | "shadcn" | "npm" | "external";
   };
@@ -113,6 +114,7 @@ const variantIds = new Set([
 ]);
 const destinationCategories = new Set(["github", "shadcn", "npm", "external"]);
 const copyKinds = new Set(["install_command", "source", "guide"]);
+const shareMethods = new Set(["share_sheet", "copy_link"]);
 const interactionKinds = new Set(["activate", "change"]);
 
 export function readAnalyticsConfig(env: PublicEnvironment): AnalyticsConfig {
@@ -258,6 +260,11 @@ function normalizeProperties(
     return properties.component_id
       ? { component_id: properties.component_id as string, route, copy_kind: properties.copy_kind }
       : { route, copy_kind: properties.copy_kind };
+  }
+  if (event === "page_shared") {
+    if (!exactKeys(properties, ["route", "method"])) return null;
+    if (typeof properties.method !== "string" || !shareMethods.has(properties.method)) return null;
+    return { route, method: properties.method };
   }
   return null;
 }
