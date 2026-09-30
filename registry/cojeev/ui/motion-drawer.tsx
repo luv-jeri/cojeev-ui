@@ -83,6 +83,7 @@ export type MotionDrawerProps = Omit<
   onCloseAutoFocus?: React.ComponentProps<
     typeof Dialog.Content
   >["onCloseAutoFocus"];
+  onInteractOutside?: React.ComponentProps<typeof Dialog.Content>["onInteractOutside"];
 };
 
 const widths: Record<MotionDrawerVariant, number> = {
@@ -462,6 +463,7 @@ function DrawerPanel({
   stackStagger,
   closeLabel,
   onCloseAutoFocus,
+  onInteractOutside,
 }: {
   title: string;
   description?: string;
@@ -481,6 +483,7 @@ function DrawerPanel({
   onCloseAutoFocus?: React.ComponentProps<
     typeof Dialog.Content
   >["onCloseAutoFocus"];
+  onInteractOutside?: React.ComponentProps<typeof Dialog.Content>["onInteractOutside"];
 }) {
   const panel = React.useRef<HTMLDivElement>(null);
   const controls = useAnimationControls();
@@ -543,6 +546,7 @@ function DrawerPanel({
         );
       }}
       onCloseAutoFocus={onCloseAutoFocus}
+      onInteractOutside={onInteractOutside}
     >
       <motion.div
         ref={panel}
@@ -701,6 +705,7 @@ export function MotionDrawer({
   trigger: customTrigger,
   closeLabel = "Close navigation",
   onCloseAutoFocus,
+  onInteractOutside,
   children,
   className,
   ref,
@@ -828,6 +833,7 @@ export function MotionDrawer({
                 dismiss={() => change(false)}
                 closeLabel={closeLabel}
                 onCloseAutoFocus={onCloseAutoFocus}
+                onInteractOutside={onInteractOutside}
                 stackStagger={stagger}
                 stackPanels={
                   variant === "stack" && panels?.length ? (
