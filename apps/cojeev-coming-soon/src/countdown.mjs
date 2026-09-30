@@ -1,10 +1,14 @@
 export const LAUNCH_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
 
-/** One shared publication timestamp; visits, reloads and rebuilds never start it. */
-export function countdown(startedAt, now = Date.now()) {
+/** One shared launch or publication timestamp; visits, reloads and rebuilds never start it. */
+export function countdown(config, now = Date.now()) {
+  const startedAt = config && typeof config === "object" ? config.startedAt : config;
+  const launch = typeof config?.launchAt === "string" ? Date.parse(config.launchAt) : NaN;
   const start = typeof startedAt === "string" ? Date.parse(startedAt) : NaN;
-  const scheduled = Number.isFinite(start);
-  const remaining = scheduled
+  const scheduled = Number.isFinite(launch) || Number.isFinite(start);
+  const remaining = Number.isFinite(launch)
+    ? Math.max(0, launch - now)
+    : Number.isFinite(start)
     ? Math.max(0, Math.min(LAUNCH_DURATION_MS, start + LAUNCH_DURATION_MS - now))
     : LAUNCH_DURATION_MS;
   const seconds = Math.ceil(remaining / 1000);

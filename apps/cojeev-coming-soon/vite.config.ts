@@ -8,8 +8,9 @@ const shaderPackages = ["@shadergradient/react", "@react-three/fiber", "three", 
 const root = fileURLToPath(new URL("./", import.meta.url));
 const repository = fileURLToPath(new URL("../../", import.meta.url));
 const launch = JSON.parse(readFileSync(new URL("./public/launch.json", import.meta.url), "utf8"));
-if (launch.startedAt !== null && (!/T.*Z$/.test(launch.startedAt) || !Number.isFinite(Date.parse(launch.startedAt)))) {
-  throw new Error("launch.json startedAt must be null or a valid UTC ISO date.");
+const launchField = launch.launchAt === undefined ? "startedAt" : "launchAt";
+if (launch[launchField] !== null && (typeof launch[launchField] !== "string" || !/T.*Z$/.test(launch[launchField]) || !Number.isFinite(Date.parse(launch[launchField])))) {
+  throw new Error(`launch.json ${launchField} must be null or a valid UTC ISO date.`);
 }
 
 export default defineConfig({

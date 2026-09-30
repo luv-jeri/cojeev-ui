@@ -22,3 +22,22 @@ test("invalid configuration and future starts remain bounded", () => {
   assert.equal(countdown("bad date", start).state, "preview");
   assert.equal(countdown(startedAt, start - 60000).days, 30);
 });
+
+const launchAt = "2026-11-30T00:00:00Z";
+const launch = Date.parse(launchAt);
+test("launchAt counts down to the exact launch instant", () => {
+  assert.deepEqual(countdown({ launchAt }, launch - 90061000), { state: "counting", days: 1, hours: 1, minutes: 1, seconds: 1 });
+  assert.deepEqual(countdown({ launchAt }, launch - 1), { state: "counting", days: 0, hours: 0, minutes: 0, seconds: 1 });
+  assert.deepEqual(countdown({ launchAt }, launch), { state: "elapsed", days: 0, hours: 0, minutes: 0, seconds: 0 });
+});
+test("launchAt sixty days away is not capped at thirty days", () => {
+  assert.deepEqual(countdown({ launchAt }, Date.parse("2026-10-01T00:00:00Z")), { state: "counting", days: 60, hours: 0, minutes: 0, seconds: 0 });
+});
+test("a past launchAt is elapsed and never negative", () => {
+  assert.deepEqual(countdown({ launchAt }, launch + 1000), { state: "elapsed", days: 0, hours: 0, minutes: 0, seconds: 0 });
+});
+test("an invalid launchAt behaves like an invalid publication date", () => {
+  for (const launchAt of ["bad date", "", 123, null]) {
+    assert.deepEqual(countdown({ launchAt }, start), { state: "preview", days: 30, hours: 0, minutes: 0, seconds: 0 });
+  }
+});
