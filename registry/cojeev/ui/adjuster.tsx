@@ -66,6 +66,9 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
  const enabled=motion.mode!=='off'&&flow.variant!=='off'
  const enable=(next:boolean)=>{setMotionMode(next?'subtle':'off');if(next&&flow.variant==='off')setFlowSettings({variant:'glide'})}
  const reset=()=>{setMotionMode('subtle');resetFlow()}
+ // Travel to the far tab so the whole path shows. Choosing a character plays it once, unless motion is off or reduced.
+ const play=()=>setPreview(current=>current==='overview'?'settings':'overview')
+ const choose=(variant:FlowVariant)=>{setFlowSettings({variant});if(showPreview&&motion.mode!=='off'&&!reduced)play()}
  return <section data-slot="motion-controls" className={cn('v-motion-controls',className)} {...props}>
   <div className="v-motion-controls__row">
    <div><Label htmlFor={id+'-enabled'}>Enable motion</Label><Meta>Changes apply across this site.</Meta></div>
@@ -75,12 +78,12 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
   <div className="v-motion-controls__section">
    <Label id={id+'-characters'}>Choose a character</Label>
    <div className="v-motion-controls__characters" role="group" aria-labelledby={id+'-characters'}>
-    {(Object.entries(FLOW_CHARACTERS) as [FlowVariant,typeof FLOW_CHARACTERS[FlowVariant]][]).filter(([value])=>value!=='off').map(([value,character])=><Button key={value} size="sm" variant={flow.variant===value?'default':'secondary'} aria-pressed={flow.variant===value} onClick={()=>setFlowSettings({variant:value})}>{character.label}</Button>)}
+    {(Object.entries(FLOW_CHARACTERS) as [FlowVariant,typeof FLOW_CHARACTERS[FlowVariant]][]).filter(([value])=>value!=='off').map(([value,character])=><Button key={value} size="sm" variant={flow.variant===value?'default':'secondary'} aria-pressed={flow.variant===value} onClick={()=>choose(value)}>{character.label}</Button>)}
    </div>
    <BodySecondary className="v-motion-controls__description">{flow.variant==='off'?'Selection motion is paused. Choose a character to resume.':CHARACTER_DESCRIPTIONS[flow.variant]}</BodySecondary>
   </div>
   {showPreview&&<div className="v-motion-controls__preview">
-   <div className="v-motion-controls__row"><Meta>Try the movement</Meta><Button size="sm" variant="ghost" onClick={()=>setPreview(current=>current==='overview'?'activity':current==='activity'?'settings':'overview')}><Icon name="refresh" size="sm"/>Replay selection motion</Button></div>
+   <div className="v-motion-controls__row"><Meta>Try the movement</Meta><Button size="sm" variant="ghost" onClick={play}><Icon name="refresh" size="sm"/>Replay selection motion</Button></div>
    {!enabled&&<Meta>Motion is off. Enable it above to see the movement; tab selection still works.</Meta>}
    <Tabs value={preview} onValueChange={setPreview} variant="pills">
     <TabsList aria-label="Motion preview"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>

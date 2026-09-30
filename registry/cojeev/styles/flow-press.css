@@ -1132,7 +1132,8 @@
   > i::after {
   animation: none;
 }
-[data-flow-engine="motion"] > .v-glide__trail {
+/* Matches the shared layer rule's weight, which would otherwise pin the trail to the pill and hide Comet's tail. */
+[data-flow-owned][data-flow-engine="motion"].v-glide > .v-glide__trail {
   transform: translate3d(var(--trail-x, 0px), var(--trail-y, 0px), 0);
   width: var(--trail-w, 0px);
   height: var(--trail-h, 0px);
