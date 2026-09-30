@@ -706,11 +706,11 @@
     opacity: 0;
   }
 }
-[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still
+[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide:is(.-still, [data-flow-still])
   > .v-glide__pill,
-[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still
+[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide:is(.-still, [data-flow-still])
   > .v-glide__hover,
-[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still
+[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide:is(.-still, [data-flow-still])
   > .v-glide__trail {
   transition: none;
 }

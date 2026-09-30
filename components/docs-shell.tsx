@@ -19,7 +19,7 @@ import { DocsMotion } from "@/components/docs-motion";
 import { DocsAtmosphere } from "@/components/docs-atmosphere";
 import { DocsSearch } from "@/components/docs-search";
 import { MotionDrawer } from "@/registry/cojeev/ui/motion-drawer";
-import { useChoreography } from "@/registry/cojeev/motion/choreography";
+import { useMotionQuiet } from "@/registry/cojeev/motion/choreography";
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import { BetaStamp } from "@/components/brand/beta-stamp";
 
@@ -66,7 +66,7 @@ export function DocsShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname()?.replace(/\/$/, "");
-  const { quiet } = useChoreography();
+  const quiet = useMotionQuiet();
   const [searchOpen, setSearchOpen] = React.useState(false);
   const searchOpenRef = React.useRef(false);
   const searchOrigin = React.useRef<HTMLElement | null>(null);

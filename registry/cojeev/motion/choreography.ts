@@ -18,8 +18,9 @@ export const motionTokens = {
   stagger: .035,
 } as const;
 
+const isQuiet = (snapshot: SettingsSnapshot) => snapshot.motion.mode === "off" || snapshot.flow.variant === "off";
 export function resolveChoreography(snapshot: SettingsSnapshot, reduced: boolean): { quiet: boolean; transition: Transition } {
-  const quiet = reduced || snapshot.motion.mode === "off" || snapshot.flow.variant === "off";
+  const quiet = reduced || isQuiet(snapshot);
   if (quiet) return { quiet, transition: { duration: 0, delay: 0 } };
   const speed = snapshot.flow.speed;
   const spring = ["jelly", "rubber", "drop", "pebble"].includes(snapshot.flow.variant)
@@ -32,6 +33,13 @@ export function useChoreography() {
   const snapshot = React.useSyncExternalStore(subscribeSettings, getSettingsSnapshot, getServerSettingsSnapshot);
   const reduced = useReducedMotion();
   return React.useMemo(() => resolveChoreography(snapshot, reduced), [snapshot, reduced]);
+}
+
+/** The quiet flag alone. It re-renders only when quiet flips, not on every character or Speed change. */
+export function useMotionQuiet() {
+  const quiet = React.useSyncExternalStore(subscribeSettings, () => isQuiet(getSettingsSnapshot()), () => isQuiet(getServerSettingsSnapshot()));
+  const reduced = useReducedMotion();
+  return reduced || quiet;
 }
 
 /** Connect Motion's JS animations to the existing deterministic document clock. */
