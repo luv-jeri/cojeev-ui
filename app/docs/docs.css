@@ -2,8 +2,10 @@
    Registry components provide every visible control; these rules own composition. */
 /* Client-side navigation keeps this unlayered sheet after a visitor leaves the docs, and other pages
    share some of its classes (the theme control, the install command, the motion sheet). Every rule
-   therefore applies only while the docs shell is in the document; :where() adds no specificity. */
-:where(:root:has(.docs-shell)) {
+   therefore applies only while the docs shell is mounted: DocsShell marks the root when it unmounts.
+   Not :root:has(.docs-shell): a :has() anchored on the root makes every change to any :has() subject
+   anywhere (a morph body's class, a selected tab) restyle the whole document. :where() adds no specificity. */
+:where(:root:not([data-docs-left])) {
 .docs-shell {
   --docs-rail: 288px;
   position: relative;
@@ -701,7 +703,7 @@
 .docs-peek-loading { font-size:var(--fs-meta); line-height:1.5; color:var(--v-text-2); }
 @media(max-width:900px) { .docs-component-peek { display:none; }.docs-shell .docs-sidebar .docs-navigation [data-component-link] { min-height:44px; font-size:var(--fs-control); } }
 /* Page chrome must not obscure an open modal specimen, especially a bottom tray. */
-body:has([data-slot="motion-drawer-content"]) :is(.report-launcher,[data-slot="page-scrollbar"]){visibility:hidden;pointer-events:none}
+body[data-motion-drawer-open] :is(.report-launcher,[data-slot="page-scrollbar"]){visibility:hidden;pointer-events:none}
 /* A practical annotated workbench, not another wall of cards. */
 .docs-workshop__shortcuts { display:flex; flex-wrap:wrap; gap:var(--s-3); margin-top:var(--s-6); position:relative; z-index:1; }
 .docs-workshop__section-label { display:grid; gap:var(--s-3); margin-bottom:var(--s-6); }

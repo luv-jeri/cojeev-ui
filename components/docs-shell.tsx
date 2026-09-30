@@ -102,6 +102,12 @@ export function DocsShell({
     document.addEventListener("keydown", shortcut);
     return () => document.removeEventListener("keydown", shortcut);
   }, [launchSearch, changeSearchOpen]);
+  // docs.css applies only while this shell is mounted (its first rule explains why).
+  React.useLayoutEffect(() => {
+    const root = document.documentElement;
+    root.removeAttribute("data-docs-left");
+    return () => root.setAttribute("data-docs-left", "");
+  }, []);
   React.useEffect(() => {
     const media = matchMedia("(max-width: 900px)");
     const update = () => {
