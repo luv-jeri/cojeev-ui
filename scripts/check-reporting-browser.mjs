@@ -29,6 +29,14 @@ const fill = async (page, kind, title) => {
 // A send now ends on the fresh form with a banner; only a send with files still uploading shows the receipt heading.
 const accepted = async page => page.getByRole("heading", { name: /Your (request|report) is received/ }).or(page.locator(".report-sent-banner")).first().waitFor();
 const sentBanner = (page, kind) => page.locator(".report-sent-banner").filter({ hasText: kind === "bug" ? "Report sent. Check your inbox for a receipt." : "Request sent. Check your inbox for a receipt." });
+// A Cmd/Ctrl+click belongs to the browser, so the page's part is to let the click reach the link untouched.
+// ponytail: headless Chromium on a loaded Linux runner sometimes opens no tab for a clean Ctrl+click (seen with the
+// event proven unprevented), so the check stops at the event rather than waiting for a tab the page cannot open.
+const modifiedClick = async (page, link) => {
+  await page.evaluate(() => { window.__modifiedClick = null; addEventListener("click", event => { window.__modifiedClick = { modifier: event.ctrlKey || event.metaKey, prevented: event.defaultPrevented, link: !!event.target.closest?.("a[href]") }; }, { once: true }); });
+  await link.click({ modifiers: ["ControlOrMeta"] });
+  assert.deepEqual(await page.evaluate(() => window.__modifiedClick), { modifier: true, prevented: false, link: true }, "A modified click reaches the link and nothing prevents it");
+};
 const sentToggle = page => page.getByRole("button", { name: /^Sent from this browser · \d+$/ });
 const sentCount = async page => (await sentToggle(page).count()) ? Number((await sentToggle(page).innerText()).match(/(\d+)\s*$/)[1]) : 0;
 const expandSent = async page => { if ((await sentToggle(page).getAttribute("aria-expanded")) !== "true") await sentToggle(page).click(); };
@@ -370,6 +378,9 @@ try {
     await sentToggle(page).click();
     await page.locator(".report-sent-detail").waitFor({ state: "detached" });
     assert.equal(await sentToggle(page).getAttribute("aria-expanded"), "false");
+    // Listen before the menu opens: Playwright turns file-chooser interception on asynchronously,
+    // and a picker raised before that lands is the browser's own, which a headless run never reports.
+    const chooser = page.waitForEvent("filechooser");
     await more.focus(); await page.keyboard.press("Enter");
     await page.getByRole("menuitem", { name: "Clear draft", exact: true }).waitFor();
     // Radix moves focus one item per press once the menu has settled; wait for each move.
@@ -378,7 +389,7 @@ try {
       await page.keyboard.press("ArrowDown");
       await page.waitForFunction(text => document.activeElement?.textContent?.trim() === text, next);
     }
-    const chooser = page.waitForEvent("filechooser");
+    await page.getByRole("menuitem", { name: "Open a saved receipt", exact: true }).and(page.locator("[data-highlighted]")).waitFor();
     await page.keyboard.press("Enter");
     await (await chooser).setFiles(`${output}/receipt.json`);
     await page.locator(".report-sent-detail").waitFor();
@@ -525,12 +536,9 @@ try {
     for (const name of ["Refresh status", "Download receipt"]) await detail.getByRole("button", { name, exact: true }).waitFor();
     const track = detail.getByRole("link", { name: "Track this report", exact: true });
     assert.match(await track.getAttribute("href"), /\/track\/#[0-9a-f-]{36}\.[0-9a-f]{64}$/);
-    // A Cmd/Ctrl+click is the browser's: a new tab opens, and this tab's drawer and page stay as they were.
-    const modified = { modifiers: ["ControlOrMeta"] };
+    // A Cmd/Ctrl+click is the browser's: this tab's drawer and page stay as they were.
     const urlBefore = page.url();
-    const [tabFromDrawer] = await Promise.all([context.waitForEvent("page"), track.click(modified)]);
-    await tabFromDrawer.waitForURL(/\/track\/#/);
-    await tabFromDrawer.close();
+    await modifiedClick(page, track);
     assert.equal(page.url(), urlBefore, "A modified click leaves this page where it was");
     assert.ok(await panel(page).isVisible(), "A modified click leaves the drawer open");
     assert.ok(await detail.isVisible(), "A modified click leaves the report open");
@@ -551,8 +559,7 @@ try {
       // On /track/ itself a modified click must not swap the report under the visitor either.
       await open(page); await openSentRow(page, `Browser bug ${run}`);
       const hashBefore = new URL(page.url()).hash;
-      const [tabFromTrack] = await Promise.all([context.waitForEvent("page"), page.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }).click(modified)]);
-      await tabFromTrack.close();
+      await modifiedClick(page, page.locator(".report-sent-detail").getByRole("link", { name: "Track this report", exact: true }));
       assert.equal(new URL(page.url()).hash, hashBefore, "A modified click on /track/ leaves the current report alone");
       assert.ok(await panel(page).isVisible(), "A modified click on /track/ leaves the drawer open");
       await page.keyboard.press("Escape"); await panel(page).waitFor({ state: "hidden" });
