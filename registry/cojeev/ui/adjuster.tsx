@@ -86,7 +86,7 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
    <div className="v-motion-controls__row"><Meta>Try the movement</Meta><Button size="sm" variant="ghost" onClick={play}><Icon name="refresh" size="sm"/>Replay selection motion</Button></div>
    {!enabled&&<Meta>Motion is off. Enable it above to see the movement; tab selection still works.</Meta>}
    <Tabs value={preview} onValueChange={setPreview} variant="pills">
-    <TabsList aria-label="Motion preview"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
+    <TabsList aria-label="Motion preview" data-flow-label="land"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
     <TabsContent value="overview"><BodySecondary>Choose another tab to see {flow.variant==='off'?'the selection':FLOW_CHARACTERS[flow.variant].label.toLowerCase()} in action.</BodySecondary></TabsContent>
     <TabsContent value="activity"><BodySecondary>Try switching back quickly. The indicator follows your latest choice.</BodySecondary></TabsContent>
     <TabsContent value="settings"><BodySecondary>Keep the character you like, then adjust its speed and intensity below.</BodySecondary></TabsContent>

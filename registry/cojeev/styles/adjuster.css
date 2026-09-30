@@ -17,9 +17,6 @@
 /* The preview exists to show travel: unselected tabs keep their edge but drop their fill, so the moving surface, its landing and its glow stay in sight. */
 .v-motion-controls .v-motion-controls__preview [data-flow-owned].v-glide > .v-tab:not([data-glide-active]),
 .v-motion-controls .v-motion-controls__preview [data-flow-owned].v-glide > .v-tab:not([data-glide-active]):hover { background:transparent; }
-/* The arriving label takes its selected ink as the surface lands, not before, so it never reads dark on the bare track. */
-.v-motion-controls .v-motion-controls__preview [data-flow-owned].v-glide > .v-tab { transition:color var(--t-micro) ease; }
-.v-motion-controls .v-motion-controls__preview [data-flow-owned].v-glide > .v-tab[data-glide-active] { transition:color var(--t-micro) ease var(--flow-dur); }
 .v-motion-controls [data-slot="slider"] { margin-block:var(--s-2); }
 @container (max-width: 480px) {
  [data-slot="adjuster"] [data-part="grid"] { grid-template-columns: minmax(0, 1fr); }

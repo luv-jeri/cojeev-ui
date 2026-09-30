@@ -109,6 +109,14 @@
 .v-tabs[data-flow-owned].v-glide > .v-tab {
   transition: none;
 }
+/* Opt-in (the motion settings preview): the arriving label takes its
+   selected ink as the surface lands, so it never reads dark on the bare track. */
+@media (prefers-reduced-motion: no-preference) {
+  .v-tabs[data-flow-owned][data-flow-label="land"].v-glide
+    > .v-tab[aria-selected="true"] {
+    transition: color var(--t-micro) ease var(--flow-dur);
+  }
+}
 .v-nav[data-flow-owned].v-glide > .v-glide__pill > i,
 .v-nav[data-flow-owned].v-glide > .v-glide__trail > i {
   background: var(--rail-sel);
