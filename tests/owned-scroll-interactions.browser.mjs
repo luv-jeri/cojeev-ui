@@ -120,7 +120,7 @@ try {
     name: "Request a feature or report a bug",
     exact: true,
   });
-  const textarea = dialog.getByLabel("Details, inspiration & links", {
+  const textarea = dialog.getByLabel("How would you use it?", {
     exact: true,
   });
   await textarea.fill(
@@ -138,7 +138,7 @@ try {
   await textarea.press("Control+End");
   assert.ok((await textarea.evaluate((e) => e.scrollTop)) > 0);
   await dialog
-    .getByLabel("Component title", { exact: true })
+    .getByLabel("What component do you want?", { exact: true })
     .fill("Local scrolling check");
   await dialog
     .getByLabel("Your email", { exact: true })

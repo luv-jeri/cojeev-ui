@@ -33,9 +33,11 @@ export async function checkArtifactCsp(directory,environment,worker=host) {
   const header=response.headers.get('content-security-policy')??'';
   const policy=Object.fromEntries(header.split(';').map(part=>part.trim().split(/\s+/)).filter(([name])=>name).map(([name,...values])=>[name,values]));
   const permits=(directive,origin)=>(policy[directive]??policy['default-src']??[]).includes(origin);
-  // Turnstile and PostHog are compiled into the app unconditionally, so their
-  // origins are required of every environment; the API origin is this one's only.
-  const required=[[target.api,['connect-src']],['https://eu.i.posthog.com',['connect-src']],['https://eu-assets.i.posthog.com',['script-src','connect-src']],['https://challenges.cloudflare.com',['script-src','frame-src']]];
+  // Turnstile and PostHog are compiled into the app unconditionally, and Cloudflare
+  // injects its Web Analytics beacon at the edge (it reports to same-origin
+  // /cdn-cgi/rum), so their origins are required of every environment; the API
+  // origin is this one's only.
+  const required=[[target.api,['connect-src']],['https://eu.i.posthog.com',['connect-src']],['https://eu-assets.i.posthog.com',['script-src','connect-src']],['https://challenges.cloudflare.com',['script-src','frame-src']],['https://static.cloudflareinsights.com',['script-src']]];
   const problems=required.flatMap(([origin,directives])=>directives.filter(directive=>!permits(directive,origin)).map(directive=>`${directive} no longer permits ${origin}`));
   for(const forbidden of [opposite.api,opposite.site]) if(Object.values(policy).some(values=>values.includes(forbidden))) problems.push(`policy permits the ${opposite.site===forbidden?'website':'API'} origin of the other environment (${forbidden})`);
   // Each served resource tag is checked against the directive that actually governs

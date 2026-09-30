@@ -1,4 +1,5 @@
 import { LIMITS, MEDIA_TYPES, matchesMedia, type AttachmentManifest, type Receipt, type ReportPayload } from "./contracts";
+import type { PublicStatus } from "./public-status";
 
 export const REPORTING_API = (process.env.NEXT_PUBLIC_REPORTING_API_URL ?? "").replace(/\/$/, "");
 export const REPORTING_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
@@ -47,4 +48,7 @@ export function fetchReceipt(id: string, token: string): Promise<Receipt> {
 }
 export async function uploadAttachment(receipt: Receipt, item: ReportFile): Promise<void> {
   await reportingFetch(`/v1/reports/${receipt.id}/attachments/${item.id}`, { method: "PUT", headers: { Authorization: `Bearer ${receipt.token}`, "Content-Type": item.file.type }, body: item.file });
+}
+export function fetchStatus(id: string, key: string, signal?: AbortSignal): Promise<PublicStatus> {
+  return reportingFetch(`/v1/status/${encodeURIComponent(id)}`, { headers: { Authorization: `Bearer ${key}` }, signal });
 }

@@ -20,7 +20,7 @@ export interface ReportRow {
   issue_number: number | null; issue_node_id: string | null; issue_url: string | null;
   triage_state: "pending" | "approved" | "rejected"; triage_by: "ai" | "owner" | "join" | null;
   triage_model: string | null; triage_reason: string | null; triage_title: string | null; triage_body: string | null;
-  triaged_at: number | null; verified_at: number | null;
+  triaged_at: number | null; verified_at: number | null; status_key: string | null;
   created_at: number; updated_at: number; technical_purged: number; private_purged: number;
 }
 export interface AttachmentRow { id: string; report_id: string; name: string; type: string; size: number; sha256: string; state: string; object_key: string }

@@ -51,22 +51,36 @@ import {
   type CaptureArea,
   type CaptureProgress,
 } from "@/lib/reporting/capture";
-import { emailReceiptLabel, issueReceiptLabel } from "@/lib/reporting/receipt-labels";
+import { receiptExpectation } from "@/lib/reporting/receipt-labels";
 import { siteFlags } from "@/lib/site-config";
 import {
   snapshotDiagnostics,
   startDiagnostics,
 } from "@/lib/reporting/diagnostics";
 import {
+  commitSent,
   emptyDraft,
+  importedTitle,
   loadDraftWorkspace,
-  saveDraftWorkspace,
+  loadSent,
+  pullLegacyReceipts,
+  removeSent,
+  replaceSentReceipt,
+  StorageUnavailableError,
+  mergeSent,
+  saveDraftKinds,
   type ReportingDraft,
   type ReportingDraftWorkspace,
+  type SentEntry,
 } from "@/lib/reporting/draft";
 import { CropEditor, FilePreview, PinPicker } from "./capture-controls";
-import { REPORT_EVENT, STATUS_LABELS, takeRequest } from "./report-request";
+import { REPORT_EVENT, takeRequest } from "./report-request";
+import { ReceiptDetail } from "./receipt-detail";
+import { SentList } from "./sent-list";
 import { AreaPicker, CaptureStatus } from "./area-picker";
+import { MoreMenu, ReportInfo, ReportTool } from "./report-controls";
+import { pinChipText, submittedPins } from "@/lib/reporting/pin-label";
+import { TooltipProvider } from "@/registry/cojeev/ui/tooltip";
 import { Turnstile } from "./turnstile";
 import "./reporting.css";
 
@@ -81,6 +95,8 @@ const ArrowUpRight = reportingIcon("arrow-up-right"),
   Bug = reportingIcon("bug"),
   Check = reportingIcon("check"),
   Camera = reportingIcon("camera"),
+  Crop = reportingIcon("crop"),
+  Settings = reportingIcon("settings"),
   Paperclip = reportingIcon("paperclip"),
   PinIcon = reportingIcon("pin"),
   Sparkles = reportingIcon("sparkles"),
@@ -101,7 +117,18 @@ const message = (error: unknown) =>
   error instanceof Error
     ? error.message
     : "Something went wrong. Your draft is still here.";
+const REQUEST_PRIVACY = "Private until we approve your title.";
+// One constant so the owner's copy review can swap it in one place.
+const BUG_PRIVACY = "Private. The public issue shows only a reference.";
 const sentFile = (state: string) => state === "uploaded" || state === "ready";
+const SENT_BANNER = {
+  bug: "Report sent. Check your inbox for a receipt.",
+  request: "Request sent. Check your inbox for a receipt.",
+} as const;
+const SENT_MEMORY_NOTE =
+  "This list isn’t kept after you close the page. Download a receipt to keep it.";
+const SENT_SAVE_ERROR =
+  "Could not save this report to the sent list. Your receipt is still here.";
 
 export function ReportingWidget({ entries }: { entries: ComponentMatch[] }) {
   const path = usePathname();
@@ -120,11 +147,37 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     [storage, setStorage] = useState(""),
     [config, setConfig] = useState<ReportingConfig | null>(null),
     [configError, setConfigError] = useState("");
-  const [topics, setTopics] = useState<RequestTopic[]>([]),
-    [topicError, setTopicError] = useState("");
+  const [topics, setTopics] = useState<RequestTopic[]>([]);
   const [picking, setPicking] = useState<false | "pins" | "area">(false),
     [capture, setCapture] = useState<File | null>(null),
-    [dragging, setDragging] = useState(false);
+    [dragging, setDragging] = useState(false),
+    [reviewScope, setReviewScope] = useState("");
+  const [sent, setSent] = useState<SentEntry[]>([]),
+    [sentExpanded, setSentExpanded] = useState(false),
+    [openSentId, setOpenSentId] = useState<string | null>(null),
+    [banner, setBanner] = useState<{ kind: ReportKind; id: string } | null>(
+      null,
+    ),
+    [confirmDiscard, setConfirmDiscard] = useState(false),
+    [sentInMemory, setSentInMemory] = useState(false);
+  // While the sent-list transaction is in flight it is the only writer: a save that started
+  // now would queue behind it and put the just-sent draft and its files back.
+  // ponytail: the flag is set and cleared inside completeSend's try/finally, so no path can leave it set.
+  const committing = useRef(false),
+    focusSent = useRef(false);
+  // Only drafts this tab changed are written, so a tab that merely loaded a draft can never put
+  // an old copy back over what another tab sent or cleared. `fresh` is the draft object that came
+  // from storage (or was just rebuilt from it): the save effect skips it because nothing changed.
+  const pending = useRef<Partial<Record<ReportKind, ReportingDraft>>>({}),
+    fresh = useRef<ReportingDraft | null>(null),
+    // Receipts this tab moved into the sent list: a save effect React runs late for the pre-send
+    // draft must not queue it again.
+    committedIds = useRef(new Set<string>());
+  // Review is a view, not part of the draft: it is open only for the tab and step it was
+  // opened in, so a tab switch or leaving the edit step closes it.
+  const scope = `${draft.kind}:${step}`,
+    reviewing = reviewScope === scope,
+    setReviewing = (on: boolean) => setReviewScope(on ? scope : "");
   const [progress, setProgress] = useState<CaptureProgress | null>(null);
   const captureRun = useRef<AbortController | null>(null);
   const [turnstileToken, setTurnstileToken] = useState(""),
@@ -146,22 +199,34 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     },
     [],
   );
-  const update = (changes: Partial<ReportingDraft>) =>
+  const update = (changes: Partial<ReportingDraft>) => {
+    setBanner(null);
     setDraft((value) => ({ ...value, ...changes }));
-  const persist = useCallback(async (value: ReportingDraft) => {
-    draftsRef.current = { ...draftsRef.current, [value.kind]: value };
+  };
+  const flush = useCallback(async () => {
+    if (committing.current) return;
+    const drafts = pending.current;
+    if (!Object.keys(drafts).length) return;
+    pending.current = {};
     try {
-      await saveDraftWorkspace({
-        activeKind: draftRef.current.kind,
-        drafts: draftsRef.current,
-      });
-      setStorage("Draft saved on this device.");
+      await saveDraftKinds({ activeKind: draftRef.current.kind, drafts });
+      setStorage("Draft saved");
     } catch {
+      // Keep what failed, unless a newer change to the same kind has queued since.
+      pending.current = { ...drafts, ...pending.current };
       setStorage(
         "Draft storage is unavailable. Keep this page open; reloading may lose your report and files.",
       );
     }
   }, []);
+  const persist = useCallback(
+    async (value: ReportingDraft) => {
+      draftsRef.current = { ...draftsRef.current, [value.kind]: value };
+      pending.current = { ...pending.current, [value.kind]: value };
+      await flush();
+    },
+    [flush],
+  );
   const selectDraft = useCallback(
     (kind: ReportKind, topic?: RequestTopic) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
@@ -173,10 +238,16 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         ...emptyDraft(),
         kind,
       };
-      if (topic && !next.attempted)
+      fresh.current = next;
+      if (topic && !next.attempted) {
         next = { ...next, topicId: topic.id, title: topic.title, frozen: null };
+        fresh.current = null;
+        pending.current = { ...pending.current, [kind]: next };
+      }
       draftRef.current = next;
       setDraft(next);
+      setBanner(null);
+      setConfirmDiscard(false);
       setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
       setError(
         topic && next.attempted
@@ -184,30 +255,64 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           : "",
       );
       setTopics([]);
-      setTopicError("");
       setDragging(false);
       setTurnstileToken("");
       setVerificationAttempt((value) => value + 1);
-      void persist(next);
+      // The switch itself is a change (the active tab); drafts are written only if pending.
+      if (Object.keys(pending.current).length) void flush();
+      else void saveDraftKinds({ activeKind: kind, drafts: {} }).catch(() => {});
     },
-    [persist],
+    [flush],
   );
   useEffect(() => startDiagnostics(), []);
   useEffect(() => {
     let active = true;
-    loadDraftWorkspace()
-      .then((saved) => {
-        if (active && saved) {
-          draftsRef.current = saved.drafts;
-          const next = saved.drafts[saved.activeKind] ?? {
-            ...emptyDraft(),
-            kind: saved.activeKind,
-          };
-          draftRef.current = next;
-          setDraft(next);
-          setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
+    (async () => {
+      const [saved, list] = await Promise.all([
+        loadDraftWorkspace(),
+        loadSent().catch(() => []),
+      ]);
+      if (!active) return;
+      let workspace = saved;
+      let entries = list;
+      if (saved) {
+        const pulled = pullLegacyReceipts(saved, Date.now());
+        if (pulled.entries.length) {
+          try {
+            // One transaction: the list gains the receipts and the drafts lose them, or neither.
+            const moved = Object.fromEntries(
+              Object.entries(pulled.workspace.drafts).filter(
+                ([kind, value]) =>
+                  value !== saved.drafts[kind as ReportKind],
+              ),
+            );
+            entries = await commitSent(pulled.entries, {
+              ...pulled.workspace,
+              drafts: moved,
+            });
+            workspace = pulled.workspace;
+          } catch {
+            if (active)
+              setStorage(
+                "Draft storage is unavailable. Keep this page open to preserve your report.",
+              );
+          }
         }
-      })
+      }
+      if (!active) return;
+      setSent(entries);
+      if (workspace) {
+        draftsRef.current = workspace.drafts;
+        const next = workspace.drafts[workspace.activeKind] ?? {
+          ...emptyDraft(),
+          kind: workspace.activeKind,
+        };
+        draftRef.current = next;
+        fresh.current = next;
+        setDraft(next);
+        setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
+      } else fresh.current = draftRef.current;
+    })()
       .catch(() => {
         if (active)
           setStorage(
@@ -223,16 +328,25 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
   }, []);
   useEffect(() => {
     if (!loaded) return;
-    saveTimer.current = setTimeout(() => {
-      void persist(draft);
-    }, 300);
+    if (draft === fresh.current) return;
+    if (draft.receipt && committedIds.current.has(draft.receipt.id)) return;
+    pending.current = { ...pending.current, [draft.kind]: draft };
+    // Text is small, so it is written at once: a write that starts late can be cut off by a
+    // reload. Files are Blobs and slow to store, so bursts of changes to them wait 300 ms.
+    saveTimer.current = setTimeout(
+      () => {
+        void flush();
+      },
+      draft.files.length ? 300 : 0,
+    );
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [draft, loaded, persist]);
+  }, [draft, loaded, flush]);
   useEffect(() => {
+    // An idle tab never writes: only edits not yet stored are flushed.
     const save = () => {
-      if (loaded) void persist(draftRef.current);
+      if (loaded) void flush();
     };
     // Drafts load first; a request made before then, or before this panel mounted, stays pending.
     const take = () => {
@@ -243,13 +357,69 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       setOpen(true);
     };
     take();
+    const hidden = () => {
+      if (document.visibilityState === "hidden") save();
+      else if (
+        loaded &&
+        !busy &&
+        !capture &&
+        !picking &&
+        !committing.current &&
+        !Object.keys(pending.current).length
+      )
+        void refreshFromStorage();
+    };
+    const focused = () => {
+      if (loaded && document.visibilityState === "visible") hidden();
+    };
     window.addEventListener("pagehide", save);
+    window.addEventListener("focus", focused);
+    document.addEventListener("visibilitychange", hidden);
     window.addEventListener(REPORT_EVENT, take);
     return () => {
       window.removeEventListener("pagehide", save);
+      window.removeEventListener("focus", focused);
+      document.removeEventListener("visibilitychange", hidden);
       window.removeEventListener(REPORT_EVENT, take);
     };
-  }, [loaded, persist, selectDraft, busy, capture]);
+  }, [loaded, flush, selectDraft, busy, capture, picking]);
+  /** A tab with nothing unsaved shows what other tabs have stored, so it cannot resend a report another tab sent. */
+  async function refreshFromStorage() {
+    try {
+      const seen = draftRef.current;
+      const [workspace, list] = await Promise.all([
+        loadDraftWorkspace(),
+        loadSent(),
+      ]);
+      // Anything typed while this was reading wins: it may be mid-write and not stored yet.
+      if (
+        Object.keys(pending.current).length ||
+        committing.current ||
+        draftRef.current !== seen
+      )
+        return;
+      setSent(list);
+      if (!workspace) return;
+      draftsRef.current = workspace.drafts;
+      const kind = draftRef.current.kind,
+        next = workspace.drafts[kind] ?? { ...emptyDraft(), kind };
+      const sig = (value: ReportingDraft) =>
+        JSON.stringify({
+          ...value,
+          files: value.files.map((file) => file.id),
+        });
+      if (sig(next) === sig(draftRef.current)) return;
+      draftRef.current = next;
+      fresh.current = next;
+      setDraft(next);
+      setError("");
+      setBanner(null);
+      setConfirmDiscard(false);
+      setStep(next.receipt ? "receipt" : next.frozen ? "review" : "edit");
+    } catch {
+      // The tab keeps what it shows.
+    }
+  }
   const loadConfig = useCallback(() => {
     if (!REPORTING_API) return;
     setConfigError("");
@@ -272,30 +442,31 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       });
     return () => abort.abort();
   }, [open]);
+  const lookupOn = draft.kind === "request" && draft.title.trim().length >= 3;
   useEffect(() => {
-    if (!open || draft.kind !== "request" || !REPORTING_API) return;
+    if (!open || !lookupOn || !REPORTING_API) return;
     const abort = new AbortController();
     const timeout = setTimeout(() => {
       reportingFetch<{ requests: RequestTopic[] }>(
         `/v1/requests?q=${encodeURIComponent(draft.title)}&offset=0`,
         { signal: abort.signal },
       )
-        .then((result) => {
-          setTopics(result.requests);
-          setTopicError("");
-        })
-        .catch((cause) => {
-          if (!abort.signal.aborted) setTopicError(message(cause));
+        .then((result) => setTopics(result.requests))
+        .catch(() => {
+          if (!abort.signal.aborted) setTopics([]);
         });
     }, 300);
     return () => {
       clearTimeout(timeout);
       abort.abort();
     };
-  }, [open, draft.title, draft.kind]);
+  }, [open, draft.title, lookupOn]);
   useEffect(() => {
     if (step !== "edit") reviewTitle.current?.focus();
   }, [step]);
+  const approvedTopics = lookupOn
+    ? topics.filter((t) => t.approved).slice(0, 4)
+    : [];
   const matches = useMemo(
     () =>
       draft.kind === "request" ? findComponents(draft.title, entries) : [],
@@ -315,6 +486,10 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     try {
       await manifestFiles(next);
       update({ files: next });
+      // A file is written to storage now, not after the debounce: storing a Blob takes long
+      // enough that a reload right after attaching would otherwise cut the write off.
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      void persist({ ...draftRef.current, files: next });
     } catch (cause) {
       setError(message(cause));
     } finally {
@@ -343,7 +518,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           (current.topicId ? "I would like this component too." : ""),
         email: current.email,
         references,
-        pins: current.kind === "bug" ? current.pins : [],
+        pins: current.kind === "bug" ? submittedPins(current.pins) : [],
         attachments: await manifestFiles(current.files),
         diagnostics: current.kind === "bug" ? current.diagnostics : null,
         ...(current.topicId ? { topicId: current.topicId } : {}),
@@ -356,7 +531,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       setBusy("");
     }
   }
-  async function uploadFiles(receipt: Receipt) {
+  async function uploadFiles(receipt: Receipt): Promise<boolean> {
     let currentReceipt = receipt;
     const failures: string[] = [];
     for (const item of draftRef.current.files) {
@@ -390,6 +565,86 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         `Your report is safely received. These files still need uploading: ${failures.join(" ")}`,
       );
     setBusy("");
+    return currentReceipt.attachments.every(
+      (file) => sentFile(file.state) || file.state === "expired",
+    );
+  }
+  /**
+   * The one way into the sent list (send, Start another, import). When storage cannot be opened at
+   * all, the list is kept in memory for this page and says so; any other failure throws to the caller.
+   */
+  async function recordSent(
+    entries: SentEntry[],
+    workspace?: ReportingDraftWorkspace,
+  ) {
+    await changeSent(
+      () => commitSent(entries, workspace),
+      (list) => mergeSent(list, entries),
+    );
+  }
+  /** Stored change to the sent list; when storage cannot be opened at all, the same change is made to the in-memory list. */
+  async function changeSent(
+    commit: () => Promise<SentEntry[]>,
+    inMemory: (list: SentEntry[]) => SentEntry[],
+  ) {
+    try {
+      setSent(await commit());
+    } catch (cause) {
+      if (!(cause instanceof StorageUnavailableError)) throw cause;
+      setSent(inMemory);
+      setSentInMemory(true);
+    }
+  }
+  /** Steps 3 and 4 of a send: one transaction clears the draft and adds the receipt to the list; only then does the form change. */
+  async function completeSend(withBanner: boolean) {
+    const current = draftRef.current,
+      accepted = current.receipt;
+    if (!accepted || committing.current) return;
+    const kind = current.kind,
+      blank = { ...emptyDraft(), kind };
+    // No timed save may run from here on: it would write the old draft after the commit.
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    const { [kind]: dropped, ...others } = pending.current;
+    pending.current = others;
+    committing.current = true;
+    setBusy("Saving to the sent list…");
+    try {
+      await recordSent(
+        [
+          {
+            kind,
+            title:
+              current.frozen?.report.title ||
+              current.title ||
+              importedTitle(kind),
+            sentAt: Date.now(),
+            receipt: accepted,
+          },
+        ],
+        { activeKind: kind, drafts: { [kind]: blank } },
+      );
+      // A save deferred while the commit ran holds the pre-send draft: drop it again.
+      committedIds.current.add(accepted.id);
+      pending.current = { ...pending.current };
+      delete pending.current[kind];
+      draftsRef.current = { ...draftsRef.current, [kind]: blank };
+      draftRef.current = blank;
+      fresh.current = blank;
+      setDraft(blank);
+      setStep("edit");
+      setBanner(withBanner ? { kind, id: accepted.id } : null);
+      setConfirmDiscard(false);
+      setError("");
+    } catch {
+      if (dropped) pending.current = { ...pending.current, [kind]: dropped };
+      setError(SENT_SAVE_ERROR);
+      setStep("receipt");
+    } finally {
+      committing.current = false;
+      setBusy("");
+      // Any other kind deferred during the commit is written now.
+      void flush();
+    }
   }
   async function send() {
     if (!draft.frozen || !config || (!config.local && !turnstileToken)) return;
@@ -407,9 +662,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       const accepted = { ...draftRef.current, receipt };
       draftRef.current = accepted;
       setDraft(accepted);
-      setStep("receipt");
+      if (accepted.files.length) setStep("receipt");
       await persist(accepted);
-      await uploadFiles(receipt);
+      if (await uploadFiles(receipt)) await completeSend(true);
     } catch (cause) {
       setError(message(cause));
       if (canEditRejectedSubmission(cause, previouslyAttempted)) {
@@ -437,8 +692,21 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     setError("");
     try {
       const receipt = await fetchReceipt(id, token);
-      update({ receipt });
+      const arrived = !draftRef.current.receipt;
+      const next = { ...draftRef.current, receipt };
+      draftRef.current = next;
+      setDraft(next);
       setStep("receipt");
+      // A report found after an unclear send is done the same way as one that just went through.
+      if (
+        arrived &&
+        receipt.attachments.every(
+          (file) => sentFile(file.state) || file.state === "expired",
+        )
+      ) {
+        await persist(next);
+        await completeSend(true);
+      }
     } catch (cause) {
       if (
         cause instanceof ReportingError &&
@@ -480,18 +748,18 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       )
         throw new Error("This file is not a valid Cojeev receipt.");
       const receipt = await fetchReceipt(imported.id, imported.token);
-      // A receipt belongs to the current card; importing it must not discard
-      // the other card's draft or change its report kind without evidence.
-      const next = {
-        ...emptyDraft(),
-        kind: draftRef.current.kind,
-        attempted: true,
-        receipt,
-      };
-      draftRef.current = next;
-      setDraft(next);
-      setStep("receipt");
-      await persist(next);
+      // Only the list changes: the form and both drafts stay exactly as they are.
+      const kind = receipt.kind ?? draftRef.current.kind;
+      await recordSent([
+        {
+          kind,
+          title: importedTitle(kind),
+          sentAt: Date.now(),
+          receipt,
+        },
+      ]);
+      setSentExpanded(true);
+      setOpenSentId(receipt.id);
     } catch (cause) {
       setError(message(cause));
     } finally {
@@ -508,9 +776,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
     setCapture(null);
     draftsRef.current = { ...draftsRef.current, [next.kind]: next };
     try {
-      await saveDraftWorkspace({
+      await saveDraftKinds({
         activeKind: next.kind,
-        drafts: draftsRef.current,
+        drafts: { [next.kind]: next },
       });
       setStorage("This draft was cleared. Your other draft is unchanged.");
     } catch {
@@ -546,6 +814,9 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       });
       // A late result from a cancelled or superseded run must never become an attachment.
       if (stale() || run.signal.aborted) return;
+      // Intentional 500 ms hold: without it "Ready to check" (step 3) is cleared in the same tick and never seen.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (stale() || run.signal.aborted) return;
       setCapture(file);
     } catch (cause) {
       if (stale() || cause instanceof CaptureCancelled) return;
@@ -559,15 +830,57 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
       }
     }
   }
+  async function retryUploads(receipt: Receipt) {
+    setError("");
+    setConfirmDiscard(false);
+    if (await uploadFiles(receipt)) await completeSend(true);
+  }
+  /** Refreshes one list entry in place. A refresh that runs when a row opens is silent about failure. */
+  async function refreshSent(id: string, silent: boolean) {
+    const entry = sent.find((item) => item.receipt.id === id);
+    if (!entry) return;
+    if (!silent) {
+      setBusy("Checking receipt…");
+      setError("");
+    }
+    try {
+      const fresh = await fetchReceipt(id, entry.receipt.token);
+      await changeSent(
+        () => replaceSentReceipt(fresh),
+        (list) =>
+          list.map((item) =>
+            item.receipt.id === id ? { ...item, receipt: fresh } : item,
+          ),
+      );
+    } catch (cause) {
+      if (!silent) setError(message(cause));
+    } finally {
+      if (!silent) setBusy("");
+    }
+  }
+  async function forgetSent(id: string) {
+    try {
+      await changeSent(
+        () => removeSent(id),
+        (list) => list.filter((item) => item.receipt.id !== id),
+      );
+      setOpenSentId(null);
+    } catch (cause) {
+      setError(message(cause));
+    }
+  }
+  useEffect(() => {
+    if (!focusSent.current || !openSentId || !sentExpanded) return;
+    focusSent.current = false;
+    document
+      .querySelector<HTMLElement>(".report-sent-detail h3")
+      ?.focus();
+  }, [openSentId, sentExpanded, sent]);
   const receipt = draft.receipt;
   const remainingFiles =
     receipt?.attachments.filter(
       (file) => !sentFile(file.state) && file.state !== "expired",
     ).length ?? 0;
-  const uploadedFiles =
-    receipt?.attachments.filter((file) => sentFile(file.state)).length ?? 0;
-  const expiredFiles =
-    receipt?.attachments.filter((file) => file.state === "expired").length ?? 0;
   const reportContent = (
     <div data-reporting-chrome="" className="report-sheet">
       {!loaded ? (
@@ -584,12 +897,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               )}
             </div>
           )}
-          {config && !config.emailEnabled && (
-            <p className="report-help">
-              Email updates are not connected yet. Your email stays private;
-              keep your receipt to check progress here.
-            </p>
-          )}
           {error && (
             <div role="alert" className="report-error">
               {error}
@@ -605,18 +912,54 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               }}
             />
           ) : step === "edit" ? (
-            <form onSubmit={prepare} className="report-form">
-              {draft.kind === "request" && (
-                <p className="report-target">
-                  We aim to build requested components within{" "}
-                  <strong>36 hours</strong>. Timing depends on demand and
-                  complexity.
-                </p>
+            <form
+              onSubmit={prepare}
+              className="report-form"
+              onDragOver={(event) => {
+                if (event.dataTransfer.types.includes("Files")) {
+                  event.preventDefault();
+                  setDragging(true);
+                }
+              }}
+              onDragLeave={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node))
+                  setDragging(false);
+              }}
+              onDrop={(event) => {
+                // Text dragged into a field must reach the field untouched.
+                if (!event.dataTransfer.types.includes("Files")) return;
+                event.preventDefault();
+                setDragging(false);
+                if (!busy) void addFiles(Array.from(event.dataTransfer.files));
+              }}
+              data-dragging={dragging || undefined}
+            >
+              {dragging && (
+                <div className="report-drop-overlay" aria-hidden="true">
+                  Drop files to attach
+                </div>
+              )}
+              {banner && banner.kind === draft.kind && (
+                <div className="report-sent-banner" role="status">
+                  <span>{SENT_BANNER[banner.kind]}</span>
+                  <a
+                    href="#sent"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      focusSent.current = true;
+                      setSentExpanded(true);
+                      setOpenSentId(banner.id);
+                      void refreshSent(banner.id, true);
+                    }}
+                  >
+                    View
+                  </a>
+                </div>
               )}
               <label className="report-field">
                 {draft.kind === "request"
-                  ? "Component title"
-                  : "What went wrong?"}
+                  ? "What component do you want?"
+                  : "Short summary"}
                 <Input
                   name="title"
                   required
@@ -630,31 +973,18 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                       ? "e.g. A date range picker"
                       : "e.g. The menu closes before I can choose"
                   }
-                  aria-describedby={
-                    draft.kind === "request" ? "public-title" : undefined
-                  }
                 />
               </label>
-              {draft.kind === "request" && (
-                <p id="public-title" className="report-help">
-                  Your title stays private until a maintainer approves it for the
-                  public board; until then the board shows a generic reference.
-                  Keep personal information out of it either way.
-                </p>
-              )}
               {draft.topicId ? (
                 <div className="report-notice">
-                  <p>
-                    You’re joining an existing request. Your email counts once
-                    toward its demand.
-                  </p>
-                  <Button
-                    size="sm"
-                    variant="outline"
+                  <p>Joining this request. Your email counts once.</p>
+                  <button
+                    type="button"
+                    className="report-link-button"
                     onClick={() => update({ topicId: undefined })}
                   >
-                    Make a different request
-                  </Button>
+                    Ask for something else
+                  </button>
                 </div>
               ) : (
                 <>
@@ -668,19 +998,16 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <span>
-                            {entry.title}
-                            <small>{entry.description}</small>
-                          </span>
+                          <span>{entry.title}</span>
                           <ArrowUpRight size={16} />
                         </Link>
                       ))}
                     </section>
                   )}
-                  {draft.kind === "request" && !!topics.length && (
+                  {!!approvedTopics.length && (
                     <section className="report-suggestions">
-                      <h3>Others are asking for</h3>
-                      {topics.slice(0, 4).map((topic) => (
+                      <h3>Others want this too</h3>
+                      {approvedTopics.map((topic) => (
                         <button
                           type="button"
                           key={topic.id}
@@ -688,38 +1015,29 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                             update({ topicId: topic.id, title: topic.title })
                           }
                         >
+                          <span>{topic.title}</span>{" "}
                           <span>
-                            {topic.title}
-                            <small>
-                              {topic.demand}{" "}
-                              {topic.demand === 1 ? "person" : "people"} ·{" "}
-                              {STATUS_LABELS[topic.status]}
-                            </small>
+                            <span className="sr-only">· </span>
+                            {topic.demand} {topic.demand === 1 ? "person" : "people"} ·{" "}
+                            <span className="report-join-label">Join</span>
                           </span>
-                          <span className="report-join-label">Join</span>
                         </button>
                       ))}
                     </section>
                   )}
-                  {topicError && (
-                    <p className="report-help">
-                      Existing requests could not load. You can still describe
-                      your request.
-                    </p>
-                  )}
                 </>
               )}
               <label className="report-field">
-                <span id={descriptionLabel}>
-                  {draft.kind === "request"
-                    ? "Details, inspiration & links"
-                    : "What happened, and what did you expect?"}
-                </span>
-                {draft.topicId && (
-                  <span className="report-help">
-                    Optional additional context
+                <span className="report-label-row">
+                  <span id={descriptionLabel}>
+                    {draft.kind === "request"
+                      ? "How would you use it?"
+                      : "What happened?"}
                   </span>
-                )}
+                  {draft.topicId && (
+                    <span className="report-optional">Optional</span>
+                  )}
+                </span>
                 <TextareaScrollArea>
                   <Textarea
                     name="description"
@@ -733,12 +1051,184 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                     }
                     placeholder={
                       draft.kind === "request"
-                        ? "Describe how you’d use it. Add reference links or tell us why it would help."
-                        : "Include the steps that led here and what you expected to happen. You can paste links here too."
+                        ? "Who needs it and why. Links welcome."
+                        : "What you did, what you expected, what you saw."
                     }
                   />
                 </TextareaScrollArea>
               </label>
+              <TooltipProvider>
+                <div className="report-toolbar">
+                  <input
+                    ref={fileInput}
+                    className="sr-only"
+                    type="file"
+                    accept={MEDIA_TYPES.join(",")}
+                    multiple
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    onChange={(event) => {
+                      void addFiles(Array.from(event.target.files ?? []));
+                      event.target.value = "";
+                    }}
+                    aria-label="Attach images or videos"
+                  />
+                  <ReportTool
+                    label="Attach files"
+                    word="Attach"
+                    icon={<Paperclip size={17} />}
+                    disabled={!!busy || draft.files.length >= LIMITS.files}
+                    onClick={() => fileInput.current?.click()}
+                  />
+                  {draft.kind === "bug" && (
+                    <>
+                      <ReportTool
+                        label="Pin elements"
+                        word="Pin"
+                        icon={<PinIcon size={17} />}
+                        disabled={!!busy}
+                        onClick={() => setPicking("pins")}
+                      />
+                      <ReportTool
+                        label="Select area"
+                        word="Area"
+                        icon={<Crop size={17} />}
+                        disabled={!!busy || draft.files.length >= LIMITS.files}
+                        onClick={() => {
+                          // The drawer must be shut before the rectangle is drawn
+                          // and stay shut until the capture is reviewed.
+                          setOpen(false);
+                          setPicking("area");
+                        }}
+                      />
+                      <ReportTool
+                        label="Full page"
+                        word="Page"
+                        icon={<Camera size={17} />}
+                        disabled={!!busy || draft.files.length >= LIMITS.files}
+                        onClick={() => {
+                          // Radix dismisses the drawer on an outside pointer press, so the
+                          // capture toolbar would otherwise close it and lose the reopen.
+                          setOpen(false);
+                          void screenshot("page");
+                        }}
+                      />
+                      <ReportTool
+                        label="Include browser details"
+                        word="Details"
+                        icon={<Settings size={17} />}
+                        pressed={!!draft.diagnostics}
+                        onClick={() => {
+                          setReviewing(false);
+                          update({
+                            diagnostics: draft.diagnostics
+                              ? null
+                              : snapshotDiagnostics(),
+                          });
+                        }}
+                      />
+                    </>
+                  )}
+                  <ReportInfo
+                    kind={draft.kind}
+                    beta={siteFlags.environment === "beta"}
+                  />
+                </div>
+              </TooltipProvider>
+              <div className="report-chips">
+                {!!draft.files.length && (
+                  <div className="report-attachments">
+                    {draft.files.map((item) => (
+                      <figure key={item.id} className="report-chip">
+                        <FilePreview file={item.file} />
+                        <figcaption>
+                          <span className="report-chip-text">
+                            {item.file.name}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            className="report-chip-remove"
+                            aria-label={`Remove ${item.file.name}`}
+                            disabled={!!busy}
+                            onClick={() =>
+                              update({
+                                files: draft.files.filter(
+                                  (file) => file.id !== item.id,
+                                ),
+                              })
+                            }
+                          >
+                            <X size={14} />
+                          </Button>
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                )}
+                {draft.kind === "bug" && !!draft.pins.length && (
+                  <ol className="report-pins">
+                    {draft.pins.map((pin, index) => (
+                      <li
+                        key={pin.path}
+                        className="report-chip"
+                        title={pin.path}
+                      >
+                        <span className="report-chip-text">
+                          {pinChipText(pin, index + 1)}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          className="report-chip-remove"
+                          aria-label={`Remove pin ${index + 1}`}
+                          onClick={() =>
+                            update({
+                              pins: draft.pins.filter((_, i) => i !== index),
+                            })
+                          }
+                        >
+                          <X size={14} />
+                        </Button>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {draft.kind === "bug" && draft.diagnostics && (
+                  <div className="report-diagnostics-chip report-chip">
+                    <span className="report-chip-text">
+                      Browser details included
+                    </span>
+                    <Button
+                      variant="ghost"
+                      className="report-chip-action"
+                      aria-label="Review browser details"
+                      aria-expanded={reviewing}
+                      onClick={() => setReviewing(!reviewing)}
+                    >
+                      Review
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="report-chip-remove"
+                      aria-label="Remove browser details"
+                      onClick={() => {
+                        setReviewing(false);
+                        update({ diagnostics: null });
+                      }}
+                    >
+                      <X size={14} />
+                    </Button>
+                  </div>
+                )}
+                {draft.kind === "bug" && draft.diagnostics && reviewing && (
+                  <DiagnosticReview
+                    diagnostics={draft.diagnostics}
+                    onChange={(diagnostics) => {
+                      if (!diagnostics) setReviewing(false);
+                      update({ diagnostics });
+                    }}
+                  />
+                )}
+              </div>
               <label className="report-field">
                 Your email
                 <Input
@@ -755,220 +1245,49 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 />
               </label>
               <p id="email-help" className="report-help">
-                For a receipt and progress updates. Never shown on the public
-                board.
-                {siteFlags.environment === "beta" && " Beta reports are stored separately. Email updates are limited to invited testers during this beta."}
+                {config?.emailEnabled === false
+                  ? "Private. Email updates are off; save your receipt."
+                  : "Private. Used only for updates."}
               </p>
-              <section
-                className="report-evidence"
-                onDragOver={(event) => {
-                  if (event.dataTransfer.types.includes("Files")) {
-                    event.preventDefault();
-                    setDragging(true);
-                  }
-                }}
-                onDragLeave={(event) => {
-                  if (
-                    !event.currentTarget.contains(event.relatedTarget as Node)
-                  )
-                    setDragging(false);
-                }}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  setDragging(false);
-                  if (!busy)
-                    void addFiles(Array.from(event.dataTransfer.files));
-                }}
-                data-dragging={dragging || undefined}
-              >
-                <h3>
-                  Show us what you mean <span>Optional</span>
-                </h3>
-                <input
-                  ref={fileInput}
-                  className="sr-only"
-                  type="file"
-                  accept={MEDIA_TYPES.join(",")}
-                  multiple
-                  tabIndex={-1}
-                  onChange={(event) => {
-                    void addFiles(Array.from(event.target.files ?? []));
-                    event.target.value = "";
-                  }}
-                  aria-label="Attach images or videos"
-                />
-                <div className="report-row">
-                  <Button
-                    variant="outline"
-                    disabled={!!busy || draft.files.length >= LIMITS.files}
-                    onClick={() => fileInput.current?.click()}
-                  >
-                    <Paperclip size={16} />
-                    Attach files
-                  </Button>
-                  {draft.kind === "bug" && (
-                    <>
-                      <Button
-                        variant="outline"
-                        disabled={!!busy}
-                        onClick={() => setPicking("pins")}
-                      >
-                        <PinIcon size={16} />
-                        Pin elements
-                      </Button>
-                      <Button
-                        variant="outline"
-                        disabled={!!busy || draft.files.length >= LIMITS.files}
-                        onClick={() => {
-                          // The drawer must be shut before the rectangle is drawn
-                          // and stay shut until the capture is reviewed.
-                          setOpen(false);
-                          setPicking("area");
-                        }}
-                      >
-                        <Camera size={16} />
-                        Select area
-                      </Button>
-                      <Button
-                        variant="outline"
-                        disabled={!!busy || draft.files.length >= LIMITS.files}
-                        onClick={() => {
-                          // Radix dismisses the drawer on an outside pointer press, so the
-                          // capture toolbar would otherwise close it and lose the reopen.
-                          setOpen(false);
-                          void screenshot("page");
-                        }}
-                      >
-                        Full page
-                      </Button>
-                    </>
-                  )}
-                </div>
-                <p className="report-drop-hint">
-                  {dragging
-                    ? "Drop files here"
-                    : "Drag images or videos here, or choose files above."}
-                </p>
-                <p className="report-help">
-                  PNG, JPEG, WebP, MP4 or WebM. Up to six files, 10 MiB each, 30
-                  MiB total. Screenshots are captured only when you ask, and you
-                  review every one before it is attached.
-                </p>
-                {!!draft.files.length && (
-                  <div className="report-attachments">
-                    {draft.files.map((item) => (
-                      <figure key={item.id}>
-                        <FilePreview file={item.file} />
-                        <figcaption>
-                          <span>
-                            {item.file.name}
-                            <small>
-                              {(item.file.size / 1024 / 1024).toFixed(2)} MiB
-                            </small>
-                          </span>
-                          <Button
-                            variant="ghost"
-                            className="report-icon-button"
-                            aria-label={`Remove ${item.file.name}`}
-                            disabled={!!busy}
-                            onClick={() =>
-                              update({
-                                files: draft.files.filter(
-                                  (file) => file.id !== item.id,
-                                ),
-                              })
-                            }
-                          >
-                            <X size={16} />
-                          </Button>
-                        </figcaption>
-                      </figure>
-                    ))}
-                  </div>
-                )}
-                {draft.kind === "bug" && !!draft.pins.length && (
-                  <ol className="report-pins">
-                    {draft.pins.map((pin, index) => (
-                      <li key={pin.path}>
-                        <span>
-                          Pin {index + 1} · {pin.tag}
-                          <small>{pin.path}</small>
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          aria-label={`Remove pin ${index + 1}`}
-                          onClick={() =>
-                            update({
-                              pins: draft.pins.filter((_, i) => i !== index),
-                            })
-                          }
-                        >
-                          Remove
-                        </Button>
-                      </li>
-                    ))}
-                  </ol>
-                )}
-              </section>
-              {draft.kind === "bug" && (
-                <section className="report-diagnostics">
-                  <h3>
-                    Browser details <span>You’re in control</span>
-                  </h3>
-                  <p className="report-help">
-                    Include device details and recent errors, failed routes, and
-                    structural clicks. No field values, request bodies, headers,
-                    cookies or storage are collected. Review and remove any
-                    group before sending.
-                  </p>
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      update({ diagnostics: snapshotDiagnostics() })
-                    }
-                  >
-                    {draft.diagnostics
-                      ? "Refresh browser details"
-                      : "Include browser details"}
-                  </Button>
-                  {draft.diagnostics && (
-                    <DiagnosticReview
-                      diagnostics={draft.diagnostics}
-                      onChange={(diagnostics) => update({ diagnostics })}
-                    />
-                  )}
-                </section>
-              )}
               <div className="report-form-footer">
-                <p className="report-help" role="status">
-                  {busy ||
-                    storage ||
-                    "Your draft stays here when you close this panel."}
-                </p>
                 <Button type="submit" loading={!!busy} fullWidth>
                   Review {draft.kind === "request" ? "request" : "report"}
                   <ArrowUpRight size={17} />
                 </Button>
-                <div className="report-footer-links">
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                <div className="report-footer-row">
+                  <p className="report-help" role="status">
+                    {busy || storage}
+                  </p>
+                  <MoreMenu
                     disabled={!!busy}
-                    onClick={clear}
-                  >
-                    Clear draft
-                  </Button>
-                  <Link href="/requests" onClick={() => setOpen(false)}>
-                    View request board
-                  </Link>
+                    onClear={clear}
+                    onBoard={() => setOpen(false)}
+                    onOpenReceipt={() => receiptInput.current?.click()}
+                  />
                 </div>
+                <SentList
+                  entries={sent}
+                  expanded={sentExpanded}
+                  openId={openSentId}
+                  emailEnabled={config?.emailEnabled}
+                  busy={!!busy}
+                  note={sentInMemory ? SENT_MEMORY_NOTE : ""}
+                  onNavigate={() => setOpen(false)}
+                  onToggle={() => setSentExpanded((value) => !value)}
+                  onOpen={(id) => {
+                    setOpenSentId(id);
+                    if (id) void refreshSent(id, true);
+                  }}
+                  onRefresh={(id) => void refreshSent(id, false)}
+                  onRemove={(id) => void forgetSent(id)}
+                />
                 <input
                   ref={receiptInput}
                   type="file"
                   accept="application/json,.json"
                   className="sr-only"
                   tabIndex={-1}
+                  aria-hidden="true"
                   aria-label="Import a saved receipt"
                   onChange={(event) => {
                     const file = event.target.files?.[0];
@@ -976,14 +1295,6 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                     event.target.value = "";
                   }}
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={!!busy}
-                  onClick={() => receiptInput.current?.click()}
-                >
-                  Check a saved receipt
-                </Button>
               </div>
             </form>
           ) : step === "review" && draft.frozen ? (
@@ -991,10 +1302,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
               <h2 tabIndex={-1} ref={reviewTitle}>
                 Ready to send?
               </h2>
-              <p>
-                {draft.kind === "request"
-                  ? "Everything below is private. Your title only reaches the public board if a maintainer approves it."
-                  : "Your report and attachments are private. A public issue with a generic title will point maintainers to it."}
+              <p className="report-privacy-line">
+                {draft.kind === "request" ? REQUEST_PRIVACY : BUG_PRIVACY}
               </p>
               <div className="report-review-summary">
                 <strong>{draft.frozen.report.title}</strong>
@@ -1012,27 +1321,21 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 </div>
               )}
               <details className="report-json">
-                <summary>Inspect exactly what will be sent</summary>
-                <p className="report-help">
-                  These report fields and the files previewed above are
-                  submitted. A secret receipt token and a verification token
-                  authenticate the request.
-                </p>
+                <summary>See exactly what will be sent</summary>
                 <ReportSource>
                   {JSON.stringify(draft.frozen.report, null, 2)}
                 </ReportSource>
               </details>
               <p className="report-help">
-                By sending, you approve the content shown here, including every
-                visible detail in your media. Technical details and media are
-                kept for 30 days; contact and private report details for 180
-                days.
+                By sending you approve everything shown, including anything
+                visible in your files. Files and technical details are deleted
+                after 30 days; your email and report after 180.
               </p>
               {draft.attempted && (
                 <div className="report-notice">
                   <p>
-                    An earlier send was attempted. This exact report is locked
-                    for safe retry.
+                    A send was already tried. Check whether it arrived before
+                    retrying.
                   </p>
                   <Button
                     variant="outline"
@@ -1044,9 +1347,8 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                   <details>
                     <summary>Start over instead</summary>
                     <p className="report-help">
-                      Clearing removes this device’s draft and receipt key. An
-                      already accepted report stays submitted. Check whether it
-                      arrived before creating another.
+                      Starting over deletes this device’s draft and receipt key.
+                      A report already accepted stays sent.
                     </p>
                     <Button
                       variant="ghost"
@@ -1122,108 +1424,56 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                 Your {draft.kind === "request" ? "request" : "report"} is
                 received.
               </h2>
-              <p>
-                {remainingFiles
-                  ? "The text is safely stored. Finish uploading the remaining files below."
-                  : "Thank you for helping shape Cojeev."}
-              </p>
-              <dl>
-                <div>
-                  <dt>Status</dt>
-                  <dd>
-                    {draft.kind === "bug" && receipt.status === "resolved"
-                      ? "Resolved"
-                      : STATUS_LABELS[receipt.status]}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Email receipt</dt>
-                  <dd>
-                    {emailReceiptLabel(receipt)}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Issue</dt>
-                  <dd>
-                    {issueReceiptLabel(receipt)}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Attachments</dt>
-                  <dd>
-                    {uploadedFiles} of {receipt.attachments.length} uploaded
-                    {expiredFiles ? ` · ${expiredFiles} expired` : ""}
-                  </dd>
-                </div>
-              </dl>
-              {receipt.componentUrl && (
-                <Button asChild fullWidth>
-                  <a href={receipt.componentUrl}>
-                    Open component <ArrowUpRight size={17} />
-                  </a>
-                </Button>
+              {receiptExpectation(draft.kind, config?.emailEnabled) && (
+                <p>{receiptExpectation(draft.kind, config?.emailEnabled)}</p>
               )}
-              <div className="report-receipt-id">
-                <span>Report ID</span>
-                <code>{receipt.id}</code>
-              </div>
-              <p className="report-help">
-                This private receipt is saved on this device. Download a copy
-                before clearing it; the secret token lets you check this report.
-              </p>
-              <div className="report-row">
-                <Button
-                  variant="outline"
-                  disabled={!!busy}
-                  onClick={refreshReceipt}
-                >
-                  Refresh status
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const url = URL.createObjectURL(
-                      new Blob([JSON.stringify(receipt, null, 2)], {
-                        type: "application/json",
-                      }),
-                    );
-                    const anchor = document.createElement("a");
-                    anchor.href = url;
-                    anchor.download = `cojeev-receipt-${receipt.id}.json`;
-                    anchor.click();
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  }}
-                >
-                  Download receipt
-                </Button>
-              </div>
+              {!!remainingFiles && (
+                <p>
+                  The text is safely stored. Finish uploading the remaining
+                  files below.
+                </p>
+              )}
+              <ReceiptDetail
+                receipt={receipt}
+                kind={draft.kind}
+                emailEnabled={config?.emailEnabled}
+                busy={!!busy}
+                onRefresh={refreshReceipt}
+                onNavigate={() => setOpen(false)}
+              />
               {!!remainingFiles &&
                 (draft.files.length ? (
                   <Button
                     fullWidth
                     loading={!!busy}
-                    onClick={() => {
-                      setError("");
-                      void uploadFiles(receipt);
-                    }}
+                    onClick={() => void retryUploads(receipt)}
                   >
                     Retry remaining uploads
                   </Button>
                 ) : (
                   <p className="report-help">
-                    The original files are not on this device. Reopen the
-                    original draft to finish its uploads. Expired attachments
-                    are no longer available.
+                    The original files aren’t on this device, so they can’t be
+                    re-sent from here.
                   </p>
                 ))}
               <p className="report-help" role="status">
                 {busy || storage}
               </p>
-              <Button variant="ghost" disabled={!!busy} onClick={clear}>
-                Clear receipt & start another
+              <Button
+                variant="ghost"
+                disabled={!!busy}
+                onClick={() => {
+                  // Unsent files are lost by this, so the first press only asks.
+                  if (remainingFiles && !confirmDiscard) setConfirmDiscard(true);
+                  else void completeSend(false);
+                }}
+              >
+                {remainingFiles && confirmDiscard
+                  ? "Discard remaining files and start another"
+                  : "Start another"}
               </Button>
-              <Link href="/requests" onClick={() => setOpen(false)}>
-                See what’s being requested <ArrowUpRight size={15} />
+              <Link href="/requests" onNavigate={() => setOpen(false)}>
+                Request board <ArrowUpRight size={15} />
               </Link>
             </section>
           ) : null}
@@ -1237,7 +1487,12 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         open={open && !picking}
         onOpenChange={(value) => {
           setOpen(value);
-          if (!value && loaded) void persist(draftRef.current);
+          if (!value) setBanner(null);
+          if (!value && loaded) {
+            // Save now, once: a reload right after closing must not beat the 300 ms debounce.
+            if (saveTimer.current) clearTimeout(saveTimer.current);
+            void persist(draftRef.current);
+          }
         }}
         variant="stack"
         side="end"
@@ -1306,9 +1561,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
           }}
         />
       )}
-      {progress && (
-        <CaptureStatus progress={progress} onCancel={stopCapture} />
-      )}
+      {progress && <CaptureStatus progress={progress} onCancel={stopCapture} />}
     </>
   );
 }

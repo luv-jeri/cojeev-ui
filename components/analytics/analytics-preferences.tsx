@@ -9,12 +9,12 @@ import { BodySecondary, Title } from "@/registry/cojeev/ui/typography";
 import { useAnalyticsStatus } from "./use-analytics-status";
 
 const messages: Record<AnalyticsStatus, string> = {
-  active: "Website analytics is on. You can turn it off here.",
-  not_configured: "Analytics is not connected on this site. No website events are being sent.",
-  browser_privacy: "Your browser privacy signal is preventing analytics. No website events are being sent.",
-  awaiting_choice: "Analytics stays off until you choose to allow it.",
-  declined: "Analytics is off in this browser. No website events are being sent.",
-  storage_unavailable: "Your analytics preference could not be read or saved. Analytics is off in this open page, but a previously allowed choice may resume after reload.",
+  active: "Optional PostHog analytics is on. You can turn it off here.",
+  not_configured: "PostHog analytics is not connected on this site. No PostHog events are being sent.",
+  browser_privacy: "Your browser privacy signal is preventing PostHog analytics. No PostHog events are being sent.",
+  awaiting_choice: "PostHog analytics stays off until you choose to allow it.",
+  declined: "PostHog analytics is off in this browser. No PostHog events are being sent.",
+  storage_unavailable: "Your analytics preference could not be read or saved. PostHog analytics is off in this open page, but a previously allowed choice may resume after reload.",
 };
 
 export function AnalyticsPreferences() {
