@@ -16,8 +16,8 @@ test.after(async () => { await browser?.close(); });
 const panel = page => page.getByRole("dialog", { name: "Request a feature or report a bug", exact: true });
 const card = page => page.locator(".report-capture-card");
 
-async function openPage(reducedMotion = "reduce") {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion });
+async function openPage(reducedMotion = "reduce", height = 1000) {
+  const context = await browser.newContext({ viewport: { width: 1440, height }, reducedMotion });
   await context.route(/^https?:\/\//, route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort());
   const page = await context.newPage();
   await page.route(/t16-image-\d\.png/, async route => { await new Promise(resolve => setTimeout(resolve, HOLD_MS)); await route.fulfill({ status: 200, contentType: "image/png", body: PNG }).catch(() => {}); });
@@ -57,6 +57,25 @@ const start = async (page, mode) => {
   await card(page).waitFor({ timeout: 30000 });
 };
 const isSubsequence = (seen, all) => { let at = 0; return seen.every(name => { at = all.indexOf(name, at); return at++ >= 0; }); };
+
+test("pointer_cancel_with_motion_keeps_the_bug_form_open", async () => {
+  const { context, page } = await openPage("no-preference", 1100);
+  try {
+    await panel(page).getByLabel("Short summary", { exact: true }).fill("Keep this bug summary");
+    await panel(page).getByLabel("What happened?", { exact: true }).fill("Keep these details after cancelling the screenshot.");
+    await page.getByRole("button", { name: "Full page", exact: true }).click();
+    await card(page).getByRole("button", { name: "Cancel screenshot", exact: true }).click();
+    await card(page).waitFor({ state: "detached" });
+    await panel(page).waitFor({ timeout: 5000 });
+    assert.equal(await panel(page).getAttribute("data-state"), "open", "Pointer Cancel must leave the drawer open");
+    assert.equal(await panel(page).getByLabel("Short summary", { exact: true }).inputValue(), "Keep this bug summary");
+    assert.equal(await panel(page).getByLabel("What happened?", { exact: true }).inputValue(), "Keep these details after cancelling the screenshot.");
+    assert.equal(await page.getByRole("heading", { name: "Review your screenshot", exact: true }).count(), 0);
+    // An ordinary pointer press on the page must still dismiss the drawer.
+    await page.mouse.click(40, 40);
+    await panel(page).waitFor({ state: "detached" });
+  } finally { await context.close(); }
+});
 
 test("capture_progress_dims_the_page_and_names_the_step", async () => {
   const { context, page } = await openPage();

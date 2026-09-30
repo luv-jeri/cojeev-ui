@@ -1107,8 +1107,7 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
                         icon={<Camera size={17} />}
                         disabled={!!busy || draft.files.length >= LIMITS.files}
                         onClick={() => {
-                          // Radix dismisses the drawer on an outside pointer press, so the
-                          // capture toolbar would otherwise close it and lose the reopen.
+                          // Keep the drawer out of the page while the screenshot is captured.
                           setOpen(false);
                           void screenshot("page");
                         }}
@@ -1503,6 +1502,11 @@ function ReportingPanel({ entries }: { entries: ComponentMatch[] }) {
         closeLabel="Close reporting panel"
         onCloseAutoFocus={(event) => {
           if (picking) event.preventDefault();
+        }}
+        onInteractOutside={(event) => {
+          // Reporting portals belong to this drawer, including during its exit animation.
+          const target = event.detail.originalEvent.target;
+          if (target instanceof Element && target.closest("[data-reporting-chrome]")) event.preventDefault();
         }}
         trigger={
           <button
