@@ -66,7 +66,6 @@ export function ShareButton({
         shape={shape}
         className={`share-button relative ${className ?? ""}`}
         data-share-state={state}
-        loadingIndicator={<React.Fragment />}
         aria-label="Share this page"
         aria-disabled={state === "working" || undefined}
         aria-busy={state === "working" || undefined}

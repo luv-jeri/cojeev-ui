@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { shareLink, shareOrCopy, type ShareDeps } from "../lib/share";
+import { copyText, shareLink, shareOrCopy, type ShareDeps } from "../lib/share";
 
 const url = "https://x.test/docs/button/?utm_medium=share";
 function deps(over: Partial<ShareDeps> = {}) {
@@ -68,3 +68,68 @@ test("copy failure returns failed", async () => {
   assert.equal(await shareOrCopy(deps({ share: undefined, copy: async () => false }).value, url, "T"), "failed");
   assert.equal(await shareOrCopy(deps({ share: undefined, copy: async () => { throw new Error("x"); } }).value, url, "T"), "failed");
 });
+
+for (const succeeds of [true, false]) {
+  test(`clipboard fallback restores focus, selections and scroll after ${succeeds ? "success" : "failure"}`, async () => {
+    // A small DOM double models the browser's selection/focus side effects.
+    const originalRange = { cloneRange: () => originalRange };
+    let ranges = [originalRange];
+    const input = {
+      tagName: "INPUT", isConnected: true,
+      selectionStart: 2, selectionEnd: 5, selectionDirection: "backward",
+      focus: () => { document.activeElement = input; },
+      setSelectionRange: (start: number, end: number, direction: string) => {
+        input.selectionStart = start;
+        input.selectionEnd = end;
+        input.selectionDirection = direction;
+      },
+    };
+    const selection = {
+      get rangeCount() { return ranges.length; },
+      getRangeAt: (i: number) => ranges[i],
+      removeAllRanges: () => { ranges = []; },
+      addRange: (range: typeof originalRange) => {
+        ranges.push(range);
+        input.setSelectionRange(0, 0, "none");
+      },
+    };
+    let attached = false;
+    const parent = { append: () => { attached = true; } };
+    const textarea = {
+      value: "", style: { cssText: "" },
+      setAttribute: () => {},
+      focus: () => { document.activeElement = textarea; },
+      select: () => { ranges = []; },
+      setSelectionRange: () => {},
+      remove: () => { attached = false; },
+    };
+    const view = {
+      navigator: { clipboard: { writeText: async () => { throw new Error("denied"); } } },
+      scrollX: 23, scrollY: 145,
+      scrollTo: (x: number, y: number) => { view.scrollX = x; view.scrollY = y; },
+    };
+    const document = {
+      activeElement: input as typeof input | typeof textarea,
+      getSelection: () => selection,
+      defaultView: view,
+      createElement: () => textarea,
+      body: { append: () => { throw new Error("Fallback escaped the trigger scope"); } },
+      execCommand: (command: string) => {
+        assert.equal(command, "copy");
+        assert.equal(textarea.value, "https://x.test/?utm_medium=share");
+        assert.equal(attached, true);
+        assert.equal(document.activeElement, textarea);
+        view.scrollTo(0, 0);
+        if (!succeeds) throw new Error("Copy denied");
+        return true;
+      },
+    };
+    const trigger = { ownerDocument: document, parentElement: parent } as unknown as HTMLButtonElement;
+    assert.equal(await copyText("https://x.test/?utm_medium=share", trigger), succeeds);
+    assert.equal(attached, false);
+    assert.equal(document.activeElement, input);
+    assert.deepEqual(ranges, [originalRange]);
+    assert.deepEqual([input.selectionStart, input.selectionEnd, input.selectionDirection], [2, 5, "backward"]);
+    assert.deepEqual([view.scrollX, view.scrollY], [23, 145]);
+  });
+}

@@ -22,7 +22,7 @@ async function assertFits(locator, width) {
 }
 
 try {
-  for (const path of ["/docs/button/", "/"]) {
+  for (const path of ["/docs/button/", "/", "/requests/"]) {
     const url = `${base}${path}`;
     const expected = `${origin}${new URL(url).pathname}?utm_medium=share`;
     for (const width of [1280, 390]) {
@@ -33,11 +33,23 @@ try {
       await page.goto(`${url}?private=drop#section`, { waitUntil: "networkidle" });
       const chrome = path.startsWith("/docs")
         ? page.locator(width === 390 ? ".docs-mobile-actions" : ".docs-sidebar .docs-persistent-links")
-        : page.locator(".story-header-tools");
+        : page.locator(path === "/requests/" ? ".requests-nav" : ".story-header-tools");
       const share = chrome.getByRole("button", { name: "Share this page", exact: true });
       await assertFits(share, width);
+      if (path === "/requests/") await assertFits(chrome.getByRole("link").last(), width);
+      assert.equal(await share.locator(".share-label").isVisible(), width !== 390, "label follows the viewport width");
       const idleWidth = (await share.boundingBox()).width;
+      await page.evaluate(() => {
+        const write = navigator.clipboard.writeText.bind(navigator.clipboard);
+        navigator.clipboard.writeText = text => new Promise((resolve, reject) => {
+          window.finishShareCopy = () => write(text).then(resolve, reject);
+        });
+      });
       await share.click();
+      await chrome.locator('button[data-share-state="working"]').waitFor();
+      assert.equal(await share.locator('[data-slot="button-loading"]').isVisible(), false, "Share supplies its own pending icon");
+      assert.equal((await share.boundingBox()).width, idleWidth, "pending preserves the button size");
+      await page.evaluate(() => window.finishShareCopy());
       await page.getByRole("status").filter({ hasText: "Link copied" }).waitFor({ state: "attached" });
       await share.getByText("Link copied", { exact: true }).filter({ visible: true }).waitFor();
       assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected, `${path} at ${width}px`);
@@ -47,6 +59,14 @@ try {
       // Prove the real selection-copy fallback restores selection, focus and scroll.
       await page.evaluate(() => {
         navigator.clipboard.writeText = async () => { throw new Error("Clipboard API denied by test"); };
+        const copy = document.execCommand.bind(document);
+        document.execCommand = command => {
+          const fallback = document.querySelector("[data-copy-fallback]");
+          window.shareFallbackInsideScope = fallback?.parentElement === window.shareCopyTrigger.parentElement
+            && document.activeElement === fallback
+            && (!window.shareCopyTrigger.closest('[role="dialog"]') || window.shareCopyTrigger.closest('[role="dialog"]').contains(fallback));
+          return copy(command);
+        };
         const title = document.querySelector("main h1");
         const range = document.createRange();
         range.selectNodeContents(title);
@@ -54,6 +74,7 @@ try {
         selection.removeAllRanges();
         selection.addRange(range);
       });
+      await share.evaluate(node => { window.shareCopyTrigger = node; window.shareFallbackInsideScope = false; });
       await share.focus();
       const before = await page.evaluate(() => ({ selection: getSelection().toString(), x: scrollX, y: scrollY }));
       await share.press("Enter");
@@ -61,6 +82,25 @@ try {
       assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected, "fallback copies the same link");
       assert.deepEqual(await page.evaluate(() => ({ selection: getSelection().toString(), x: scrollX, y: scrollY })), before);
       assert.equal(await share.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.evaluate(() => window.shareFallbackInsideScope), true, "fallback stays next to the trigger and owns focus");
+      assert.equal(await page.locator("[data-copy-fallback]").count(), 0, "temporary field is removed");
+
+      if (path.startsWith("/docs") && width === 390) {
+        await page.getByRole("button", { name: "Browse", exact: true }).click();
+        const drawer = page.getByRole("dialog", { name: "Browse components", exact: true });
+        const drawerShare = drawer.getByRole("button", { name: "Share this page", exact: true });
+        await drawerShare.waitFor();
+        await drawerShare.evaluate(node => { window.shareCopyTrigger = node; window.shareFallbackInsideScope = false; });
+        await drawerShare.focus();
+        const selectionBefore = await page.evaluate(() => getSelection().toString());
+        await drawerShare.press("Enter");
+        await drawer.locator('[role="status"]').filter({ hasText: "Link copied" }).waitFor({ state: "attached" });
+        assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected, "drawer fallback copies the link");
+        assert.equal(await page.evaluate(() => window.shareFallbackInsideScope), true, "fallback remains inside the drawer focus scope");
+        assert.equal(await drawerShare.evaluate(node => node === document.activeElement), true, "drawer trigger regains focus");
+        assert.equal(await page.evaluate(() => getSelection().toString()), selectionBefore, "drawer copy restores selection");
+        assert.equal(await page.locator("[data-copy-fallback]").count(), 0);
+      }
 
       if (path.startsWith("/docs") && width === 1280) {
         await page.getByRole("button", { name: "Collapse navigation", exact: true }).click();

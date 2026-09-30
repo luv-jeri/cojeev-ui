@@ -9,6 +9,7 @@ import { InputWrapper, InputControl } from "@/registry/cojeev/ui/input";
 import { REPORTING_API, reportingFetch } from "@/lib/reporting/client";
 import type { RequestTopic } from "@/lib/reporting/contracts";
 import { BetaStamp } from "@/components/brand/beta-stamp";
+import { ShareButton } from "@/components/share-button";
 import { openRequest, STATUS_LABELS } from "./report-request";
 
 export function relativeAge(timestamp: number, now = Date.now()): string {
@@ -99,6 +100,7 @@ export function RequestBoard() {
         <Button asChild variant="ghost">
           <Link href="/">Cojeev UI</Link>
         </Button>
+        <ShareButton size="default" className="requests-share" />
         <Button asChild variant="ghost">
           <Link href="/docs/">
             Explore the library <AnimatedIcon name="arrow-up-right" />
