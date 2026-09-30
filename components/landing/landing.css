@@ -125,6 +125,8 @@
 .story-page[data-quiet="true"] .studio-belief [data-slot="shape"] { transition:none; }
 
 @media(max-width:360px) { .story-header .story-github { display:none; } }
+@media(max-width:800px) { .story-page .story-share { padding:var(--s-3); } .story-share .share-label { display:none; } .story-share .share-feedback { display:inline-flex; } }
+@media(max-width:450px) { .story-page .story-share { min-width:var(--s-8); padding:var(--s-2); } }
 @media(max-width:450px) { }
 
 /* A quiet foreground, with movement reserved for the distant planes. */

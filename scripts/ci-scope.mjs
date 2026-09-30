@@ -35,6 +35,7 @@ const NAMED = new Map([
   ["tests/fixtures/production-gate-child.mjs", "unit"],
 
   ["tests/analytics.browser.mjs", "analytics-browser"],
+  ["tests/share.browser.mjs", "analytics-browser"],
 
   // B02-2 transient-paint harness. It renders only the components it names,
   // not the catalogue, so its own harness run is the proportionate check.
@@ -175,7 +176,7 @@ const PROTECTED_SCRIPT = /^(?:gate(?::|$)|pre|post|install$)/;
 const PROTECTED_SCRIPTS = new Set([
   "build", "test", "lint", "dev", "start", "typecheck", "registry:build", "styles:build", "check:examples",
   // Run by the quick suite and the release job by name.
-  "reporting:test", "registry-host:test", "analytics:browser",
+  "reporting:test", "registry-host:test", "analytics:browser", "share:browser",
 ]);
 export function scriptsOnlyChange(before, after) {
   try {
@@ -399,6 +400,10 @@ const FOCUSED_BROWSER = new Map([
     "lib/analytics/client.ts",
     "tests/analytics.browser.mjs",
     "tests/analytics.test.ts",
+    "lib/share.ts",
+    "components/share-button.tsx",
+    "tests/share.test.ts",
+    "tests/share.browser.mjs",
   ].map(file => [file, "analytics-browser"]),
   // J01 structured data changes only non-visual JSON-LD script payloads. The
   // clean production artifact is parsed below so the site, catalogue and one

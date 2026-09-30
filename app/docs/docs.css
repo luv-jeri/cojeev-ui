@@ -82,11 +82,13 @@
   gap: var(--s-2);
   padding-inline: var(--s-1);
 }
-.docs-persistent-links { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; flex:none; gap:var(--s-2); min-width:0; }
+.docs-persistent-links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:center; flex:none; gap:var(--s-2); min-width:0; }
 .docs-shell .docs-persistent-links .docs-work-invitation { display:flex; min-height:40px; padding:var(--s-2) var(--s-3); font-size:var(--fs-meta); text-decoration:none; }
 .docs-work-invitation .v-btn__content { width:100%; justify-content:space-between; gap:var(--s-2); }
 .docs-work-invitation span { min-width:0; text-align:left; }
 .docs-shell .docs-persistent-links .docs-github-invitation { height:40px; min-height:40px; font-size:var(--fs-caps); padding:var(--s-2); gap:var(--s-2); }
+.docs-shell .docs-persistent-links .docs-work-invitation { grid-column:1 / -1; }
+.docs-share-invitation .share-label { white-space:normal; }
 .docs-persistent-links [data-slot=icon] { width:15px; height:15px; flex:none; color:inherit; }
 .docs-search-row { flex:none; min-width:0; padding-block:var(--s-1) var(--s-2); }
 .docs-shell .docs-search-launch { width:100%; justify-content:flex-start; min-height:44px; padding:0 var(--s-3); gap:var(--s-3); text-align:left; font-size:var(--fs-small); border-radius:var(--r-md); background:color-mix(in srgb,var(--v-text) 4%,transparent); --mfill:color-mix(in srgb,var(--v-text) 4%,var(--v-paper)); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--v-text) 10%,transparent); }
@@ -95,6 +97,8 @@
 .docs-search-launch kbd { font-family:var(--font-mono); font-size:var(--fs-caps); flex:none; color:var(--v-text-2); padding:3px var(--s-1); border:1px solid var(--v-border); border-radius:var(--r-xs); }
 .docs-search-launch [data-slot=icon] { width:17px; height:17px; flex:none; }
 .docs-sidebar[data-state=collapsed] .docs-persistent-links { grid-template-columns:1fr; gap:2px; }
+.docs-sidebar[data-state=collapsed] .docs-share-invitation .share-label { display:none; }
+.docs-sidebar[data-state=collapsed] .docs-share-invitation .share-feedback { display:inline-flex; }
 .docs-shell .docs-sidebar[data-state=collapsed] .docs-work-invitation { min-height:40px; padding:var(--s-2) var(--s-3); font-size:var(--fs-meta); }
 .docs-filter > [data-slot="label"] {
   color: var(--v-text-2);
@@ -523,6 +527,8 @@
   }
   .docs-mobile-actions { display: flex; align-items: center; gap: var(--s-2); }
   .docs-mobile-actions > button { min-height: 44px; padding-inline: var(--s-5); }
+  .docs-mobile-actions > button.docs-share-icon { min-height: 40px; padding-inline: 0; }
+  .docs-mobile-actions .share-feedback { display:inline-flex; }
   .docs-shell .docs-sidebar {
     display: none;
   }

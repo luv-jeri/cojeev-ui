@@ -362,3 +362,17 @@ test("Pages paths and router paths use the same analytics route", () => {
   for (const host of ["localhost", "preview.localhost", "127.0.0.1", "[::1]"]) assert.equal(isLoopbackHost(host), true);
   assert.equal(isLoopbackHost("000h.example.com"), false);
 });
+
+test("page_shared accepts route and method and rejects any other shape", () => {
+  const harness = allowedRuntime();
+  const client = createAnalyticsClient(enabled, harness.runtime);
+
+  assert.equal(client.track("page_shared", { route: "/docs/button/", method: "share_sheet" }), true);
+  assert.equal(client.track("page_shared", { route: "/docs/button/", method: "copy_link" }), true);
+  assert.equal(harness.requests.length, 2);
+  assert.equal(client.track("page_shared", { route: "/docs/", method: "copy_link", extra: "x" } as never), false);
+  assert.equal(client.track("page_shared", { route: "/docs/" } as never), false);
+  assert.equal(client.track("page_shared", { method: "copy_link" } as never), false);
+  assert.equal(client.track("page_shared", { route: "/docs/", method: "email" } as never), false);
+  assert.equal(harness.requests.length, 2);
+});

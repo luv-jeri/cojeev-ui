@@ -1,4 +1,5 @@
 "use client";
+import { ShareButton } from "@/components/share-button";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -135,6 +136,7 @@ export function DocsShell({
   const settings = <div className="docs-navigation-settings" aria-label="Display settings"><ThemeControl compact navigation /><DocsMotion label="Motion" className="docs-motion-launch" /></div>;
   const invitations = <div className="docs-persistent-links">
     <Button asChild variant="accent" shape="card" size="sm" className="docs-work-invitation"><Link href="/work-with-me/" aria-label="Work with me"><span>Work with me</span><AnimatedIcon name="arrow-up-right" size="sm" /></Link></Button>
+    <ShareButton className="docs-github-invitation docs-share-invitation" />
     <Button asChild variant="ghost" size="sm" className="docs-github-invitation"><Link href="https://github.com/luv-jeri/cojeev-ui" aria-label="GitHub"><AnimatedIcon name="github" size="sm" />GitHub</Link></Button>
   </div>;
   const navigation = (
@@ -283,6 +285,7 @@ export function DocsShell({
         </Link>
         <BetaStamp />
         <div className="docs-mobile-actions">
+          <ShareButton iconOnly className="docs-source-icon docs-share-icon" />
           <Link
             href="https://github.com/luv-jeri/cojeev-ui"
             className="docs-source-icon"

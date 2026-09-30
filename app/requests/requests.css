@@ -14,6 +14,7 @@
   border-bottom: 1px solid var(--v-border);
 }
 .requests-nav > a:first-child {
+  margin-inline-end: auto;
   font-family: var(--font-display);
   font-size: var(--fs-title);
   font-weight: var(--fw-semibold);
@@ -295,6 +296,10 @@
   outline-offset: 5px;
 }
 @media (max-width: 760px) {
+  .requests-nav { gap: var(--s-2); }
+  .requests-nav .requests-share { padding-inline: var(--s-2); }
+  .requests-share .share-label { display: none; }
+  .requests-share .share-feedback { display: inline-flex; }
   .requests-page {
     padding: var(--s-5) var(--s-6) 90px;
   }
@@ -364,6 +369,15 @@
     font-size: var(--fs-meta);
     padding-inline: var(--s-2);
   }
+}
+@media (max-width: 360px) {
+  /* Keep all three nav controls inside the page gutters on narrow phones. */
+  .requests-nav { gap: var(--s-1); }
+  .requests-nav > a:first-child {
+    font-size: var(--fs-lead);
+    padding-inline: var(--s-1);
+  }
+  .requests-nav > a:last-child { padding-inline: var(--s-1); }
 }
 .requests-page .v-btn {
   min-height: 44px;

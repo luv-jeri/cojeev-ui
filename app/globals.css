@@ -15,3 +15,6 @@
 @source "../components";
 /* Test messages quote class patterns like text-[length:var(--fs-*)]; scanning them emits invalid CSS. */
 @source not "../tests";
+/* Share supplies its own fixed-size pending icon, like CopyButton. */
+.share-button[aria-busy="true"] { gap: var(--s-2); }
+.share-button [data-slot="button-loading"] { display: none; }
