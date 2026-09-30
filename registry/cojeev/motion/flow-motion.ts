@@ -1,6 +1,6 @@
 import { animate, type Transition } from "motion";
 import { createMotionLane, motionTokens, trackMotion } from "./choreography";
-import { getSettingsSnapshot, getFlowSettings, type FlowVariant } from "./settings";
+import { getSettingsSnapshot, getFlowSettings, FLOW_INTENSITY, type FlowVariant } from "./settings";
 
 /** Distinct travel response, including locally pinned presets. Positive dimensions
  * use the same timing but are bounded at paint so a reversal cannot invert a layer. */
@@ -65,8 +65,10 @@ export function createFlowPainter(write: (name: string, value: string) => void) 
 export function animateFlowLanding(element: HTMLElement, variant: string, direction = "x") {
   const original=new Map(["transform","transform-origin"].map(name=>[name,{value:element.style.getPropertyValue(name),priority:element.style.getPropertyPriority(name)}]));
   const restore=()=>{for(const[name,old]of original){if(old.value)element.style.setProperty(name,old.value,old.priority);else element.style.removeProperty(name)}};
-  const { intensity, speed } = getFlowSettings();
-  const stretch = (variant === "jelly" ? .13 : variant === "drop" ? -.08 : .045) * Math.min(intensity, 2);
+  const { speed } = getFlowSettings();
+  // Intensity reaches only the characters whose sheet slider is live; the rest land at their authored strength.
+  const intensity = FLOW_INTENSITY.has(variant as FlowVariant) ? Math.min(getFlowSettings().intensity, 2) : 1;
+  const stretch = (variant === "jelly" ? .13 : variant === "drop" ? -.08 : variant === "pebble" ? .07 : .045) * intensity;
   const x = direction === "x" ? 1 + stretch : 1 - stretch * .55;
   const y = direction === "x" ? 1 - stretch * .55 : 1 + stretch;
   // Own the scalar and inline paint directly. Motion's DOM visual-element cache
@@ -76,7 +78,7 @@ export function animateFlowLanding(element: HTMLElement, variant: string, direct
     if(disposed)return;
     const remaining=1-progress,base=original.get('transform')!;
     const prefix=base.value&&base.value!=='none'?`${base.value} `:'';
-    element.style.setProperty('transform',`${prefix}scaleX(${1+(x-1)*remaining}) scaleY(${1+(y-1)*remaining})${variant==='pebble'?` skewX(${-2*intensity*remaining}deg)`:''}`,base.priority);
+    element.style.setProperty('transform',`${prefix}scaleX(${1+(x-1)*remaining}) scaleY(${1+(y-1)*remaining})${variant==='pebble'?` skewX(${-4*intensity*remaining}deg)`:''}`,base.priority);
   });
   const transition = {
     ...motionTokens.spring.expressive,
@@ -84,14 +86,15 @@ export function animateFlowLanding(element: HTMLElement, variant: string, direct
     damping: motionTokens.spring.expressive.damping * speed,
   };
   let removeAura = () => {};
-  if (variant === "ripple" || variant === "halo") {
+  // The aura is the ripple and halo signature, so Intensity sizes it: none at 0, a wide bloom at 2.
+  if ((variant === "ripple" || variant === "halo") && intensity > 0) {
     const aura = document.createElement("span");
     Object.assign(aura.style, {
       position: "absolute", inset: "0", borderRadius: "inherit", pointerEvents: "none",
-      boxShadow: variant === "ripple" ? "inset 0 0 0 1px var(--v-pink)" : "0 0 12px 4px var(--v-pink)",
+      boxShadow: variant === "ripple" ? `inset 0 0 0 ${1 + intensity}px var(--v-pink)` : `0 0 ${12 * intensity}px ${4 * intensity}px var(--v-pink)`,
     });
     element.append(aura);
-    const bloom = animate(aura, { scale: [1, 1 + .3 * intensity], opacity: [.45, 0] }, {
+    const bloom = animate(aura, { scale: [1, 1 + .3 * intensity], opacity: [.6, 0] }, {
       duration: .5 / speed, ease: [...motionTokens.ease.settle],
     });
     const stopAura = trackMotion(bloom);

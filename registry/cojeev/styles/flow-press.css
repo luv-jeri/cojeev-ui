@@ -109,6 +109,14 @@
 .v-tabs[data-flow-owned].v-glide > .v-tab {
   transition: none;
 }
+/* Opt-in (the motion settings preview): the arriving label takes its
+   selected ink as the surface lands, so it never reads dark on the bare track. */
+@media (prefers-reduced-motion: no-preference) {
+  .v-tabs[data-flow-owned][data-flow-label="land"].v-glide
+    > .v-tab[aria-selected="true"] {
+    transition: color var(--t-micro) ease var(--flow-dur);
+  }
+}
 .v-nav[data-flow-owned].v-glide > .v-glide__pill > i,
 .v-nav[data-flow-owned].v-glide > .v-glide__trail > i {
   background: var(--rail-sel);
@@ -1132,7 +1140,8 @@
   > i::after {
   animation: none;
 }
-[data-flow-engine="motion"] > .v-glide__trail {
+/* Matches the shared layer rule's weight, which would otherwise pin the trail to the pill and hide Comet's tail. */
+[data-flow-owned][data-flow-engine="motion"].v-glide > .v-glide__trail {
   transform: translate3d(var(--trail-x, 0px), var(--trail-y, 0px), 0);
   width: var(--trail-w, 0px);
   height: var(--trail-h, 0px);

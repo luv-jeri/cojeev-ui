@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cva } from "class-variance-authority"
-import { DOMAIN, FLOW_CHARACTERS, PRODUCT_CATEGORIES, getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setMotionMode, setMotionCategory, setFlowSettings, resetFlow, setMorphConfig, setMorphTier, resetMorph, exportMorphJSON, importMorphJSON, type MorphConfig, type Tier, type TierName, type FlowVariant } from "../motion/settings"
+import { DOMAIN, FLOW_CHARACTERS, FLOW_INTENSITY, PRODUCT_CATEGORIES, getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setMotionMode, setMotionCategory, setFlowSettings, resetFlow, setMorphConfig, setMorphTier, resetMorph, exportMorphJSON, importMorphJSON, type MorphConfig, type Tier, type TierName, type FlowVariant } from "../motion/settings"
 import { useMorph } from "../motion/use-morph"
 import { useFlowPress } from "../motion/flow-press"
 import { cn } from "../lib/utils"
@@ -38,6 +38,19 @@ const CHARACTER_DESCRIPTIONS:Record<Exclude<FlowVariant,'off'>,string> = {
  ripple:'A moving selection with a ripple on arrival.',
  halo:'A subtle glow around the selected item.',
 }
+/** What Intensity shapes for each character, or why it has nothing to shape. */
+const INTENSITY_NOTES:Record<FlowVariant,string> = {
+ glide:'Glide has no landing to shape, so Intensity is off.',
+ stretch:'Stretch reaches as far as the move itself, so Intensity is off.',
+ comet:'Comet\'s trail follows its speed, so Intensity is off.',
+ drop:'Ink drop always gathers to the same droplet, so Intensity is off.',
+ rubber:'Rubber pulls as far as the move itself, so Intensity is off.',
+ jelly:'Shapes how far Jelly squashes and wobbles as it lands.',
+ pebble:'Shapes how far Pebble squashes and leans as it lands.',
+ ripple:'Shapes how wide Ripple\'s ring spreads on arrival.',
+ halo:'Shapes how wide and bright Halo glows on arrival.',
+ off:'Selection motion is paused.',
+}
 function subscribeReducedMotion(listener:()=>void) {
  const media=window.matchMedia('(prefers-reduced-motion: reduce)')
  media.addEventListener('change',listener)
@@ -53,6 +66,9 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
  const enabled=motion.mode!=='off'&&flow.variant!=='off'
  const enable=(next:boolean)=>{setMotionMode(next?'subtle':'off');if(next&&flow.variant==='off')setFlowSettings({variant:'glide'})}
  const reset=()=>{setMotionMode('subtle');resetFlow()}
+ // Travel to the far tab so the whole path shows. Choosing a character plays it once, unless motion is off or reduced.
+ const play=()=>setPreview(current=>current==='overview'?'settings':'overview')
+ const choose=(variant:FlowVariant)=>{setFlowSettings({variant});if(showPreview&&motion.mode!=='off'&&!reduced)play()}
  return <section data-slot="motion-controls" className={cn('v-motion-controls',className)} {...props}>
   <div className="v-motion-controls__row">
    <div><Label htmlFor={id+'-enabled'}>Enable motion</Label><Meta>Changes apply across this site.</Meta></div>
@@ -62,15 +78,15 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
   <div className="v-motion-controls__section">
    <Label id={id+'-characters'}>Choose a character</Label>
    <div className="v-motion-controls__characters" role="group" aria-labelledby={id+'-characters'}>
-    {(Object.entries(FLOW_CHARACTERS) as [FlowVariant,typeof FLOW_CHARACTERS[FlowVariant]][]).filter(([value])=>value!=='off').map(([value,character])=><Button key={value} size="sm" variant={flow.variant===value?'default':'secondary'} aria-pressed={flow.variant===value} onClick={()=>setFlowSettings({variant:value})}>{character.label}</Button>)}
+    {(Object.entries(FLOW_CHARACTERS) as [FlowVariant,typeof FLOW_CHARACTERS[FlowVariant]][]).filter(([value])=>value!=='off').map(([value,character])=><Button key={value} size="sm" variant={flow.variant===value?'default':'secondary'} aria-pressed={flow.variant===value} onClick={()=>choose(value)}>{character.label}</Button>)}
    </div>
    <BodySecondary className="v-motion-controls__description">{flow.variant==='off'?'Selection motion is paused. Choose a character to resume.':CHARACTER_DESCRIPTIONS[flow.variant]}</BodySecondary>
   </div>
   {showPreview&&<div className="v-motion-controls__preview">
-   <div className="v-motion-controls__row"><Meta>Try the movement</Meta><Button size="sm" variant="ghost" onClick={()=>setPreview(current=>current==='overview'?'activity':current==='activity'?'settings':'overview')}><Icon name="refresh" size="sm"/>Replay selection motion</Button></div>
+   <div className="v-motion-controls__row"><Meta>Try the movement</Meta><Button size="sm" variant="ghost" onClick={play}><Icon name="refresh" size="sm"/>Replay selection motion</Button></div>
    {!enabled&&<Meta>Motion is off. Enable it above to see the movement; tab selection still works.</Meta>}
    <Tabs value={preview} onValueChange={setPreview} variant="pills">
-    <TabsList aria-label="Motion preview"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
+    <TabsList aria-label="Motion preview" data-flow-label="land"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="activity">Activity</TabsTrigger><TabsTrigger value="settings">Settings</TabsTrigger></TabsList>
     <TabsContent value="overview"><BodySecondary>Choose another tab to see {flow.variant==='off'?'the selection':FLOW_CHARACTERS[flow.variant].label.toLowerCase()} in action.</BodySecondary></TabsContent>
     <TabsContent value="activity"><BodySecondary>Try switching back quickly. The indicator follows your latest choice.</BodySecondary></TabsContent>
     <TabsContent value="settings"><BodySecondary>Keep the character you like, then adjust its speed and intensity below.</BodySecondary></TabsContent>
@@ -82,8 +98,8 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
   </div>
   <div className="v-motion-controls__section">
    <div className="v-motion-controls__row"><Label id={id+'-intensity'}>Intensity</Label><Meta>{flow.intensity.toFixed(2)}×</Meta></div>
-   <Slider aria-labelledby={id+'-intensity'} thumbLabel="Motion intensity" disabled={flow.variant==='glide'||flow.variant==='off'} aria-describedby={id+'-intensity-note'} min={0} max={Math.max(2,flow.intensity)} step={.05} value={[flow.intensity]} onValueChange={([intensity])=>setFlowSettings({intensity})}/>
-   <Meta id={id+'-intensity-note'}>{flow.variant==='glide'?'Glide stays calm. Choose an expressive character to tune intensity.':'Shapes the stretch, ripple or glow of expressive characters.'}</Meta>
+   <Slider aria-labelledby={id+'-intensity'} thumbLabel="Motion intensity" disabled={!FLOW_INTENSITY.has(flow.variant)} aria-describedby={id+'-intensity-note'} min={0} max={Math.max(2,flow.intensity)} step={.05} value={[flow.intensity]} onValueChange={([intensity])=>setFlowSettings({intensity})}/>
+   <Meta id={id+'-intensity-note'}>{INTENSITY_NOTES[flow.variant]}</Meta>
   </div>
   <div className="v-motion-controls__row"><div><Label htmlFor={id+'-hover'}>Pointer preview</Label><Meta>A hint before you select. Pointer devices only.</Meta></div><Switch id={id+'-hover'} checked={flow.hover} onCheckedChange={hover=>setFlowSettings({hover})}/></div>
   <div className="v-motion-controls__section">

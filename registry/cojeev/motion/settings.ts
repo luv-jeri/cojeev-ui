@@ -34,6 +34,8 @@ export const FLOW_CHARACTERS:Record<FlowVariant,{label:string;duration:number;ea
  halo:{label:"Halo",duration:.4,ease:"cubic-bezier(.3,1.2,.4,1)",land:"vf-land",glow:"vf-glow"},
  off:{label:"Off",duration:0,ease:"linear",land:"none"},
 }
+/** Characters whose landing Intensity shapes. The others land the same at any intensity, so the sheet disables the slider for them. */
+export const FLOW_INTENSITY:ReadonlySet<FlowVariant>=new Set(["jelly","pebble","ripple","halo"])
 const defaultSettings:MotionSettings={v:3,mode:"subtle",cats:{buttons:true,icons:true,pills:true,cards:false,skeleton:true,nav:false,inputs:false,controls:false,surfaces:false}}
 function runtime():MorphProfile {
  const TIER=structuredClone(factoryTiers)

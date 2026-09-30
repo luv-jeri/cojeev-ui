@@ -14,6 +14,9 @@
 .v-motion-controls__preview [data-slot="tabs-list"] { width:100%; gap:var(--s-1); }
 .v-motion-controls__preview [data-slot="tabs-trigger"] { flex:1; min-width:0; padding-inline:var(--s-2); }
 .v-motion-controls__preview [data-slot="tabs-content"] { min-height:82px; padding-top:var(--s-5); }
+/* The preview exists to show travel: unselected tabs keep their edge but drop their fill, so the moving surface, its landing and its glow stay in sight. */
+.v-motion-controls .v-motion-controls__preview [data-flow-owned].v-glide > .v-tab:not([data-glide-active]),
+.v-motion-controls .v-motion-controls__preview [data-flow-owned].v-glide > .v-tab:not([data-glide-active]):hover { background:transparent; }
 .v-motion-controls [data-slot="slider"] { margin-block:var(--s-2); }
 @container (max-width: 480px) {
  [data-slot="adjuster"] [data-part="grid"] { grid-template-columns: minmax(0, 1fr); }
