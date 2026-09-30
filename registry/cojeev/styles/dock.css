@@ -6,7 +6,7 @@
   max-inline-size: 100%;
   min-inline-size: 0;
   color: var(--v-text);
-  font: var(--fw-medium) var(--fs-small)/1.2 var(--font-body);
+  font: var(--fw-medium) var(--fs-small)/1.2 var(--font-text);
   isolation: isolate;
 }
 .v-dock [data-part="viewport"] {

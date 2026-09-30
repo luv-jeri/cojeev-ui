@@ -1,5 +1,5 @@
 import type { CatalogEntry } from "@/lib/catalog";
-import { absoluteSiteUrl, site } from "@/lib/site-config";
+import { absoluteSiteUrl, installCommand, site } from "@/lib/site-config";
 
 export type StructuredDataValue =
   | string
@@ -14,6 +14,23 @@ export type StructuredDataNode = {
 
 export type StructuredDataDocument = StructuredDataNode & {
   "@context": "https://schema.org";
+};
+
+export type HowToStep = StructuredDataNode & {
+  "@type": "HowToStep";
+  position: number;
+  name: string;
+  text: string;
+  url: string;
+};
+
+export type GettingStartedHowTo = StructuredDataDocument & {
+  "@type": "HowTo";
+  "@id": string;
+  name: string;
+  description: string;
+  url: string;
+  step: HowToStep[];
 };
 
 type ComponentListItem = {
@@ -131,6 +148,51 @@ export function componentStructuredData(
           { "@type": "ListItem", position: 1, name: "Components", item: docsUrl },
           { "@type": "ListItem", position: 2, name: entry.title, item: componentUrl },
         ],
+      },
+    ],
+  };
+}
+
+export function gettingStartedStructuredData(
+  origin: string = site.url,
+): GettingStartedHowTo {
+  const url = absoluteSiteUrl("/getting-started/", origin);
+  const registryOrigin = origin === site.url ? site.registryUrl : origin;
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "@id": `${url}#howto`,
+    name: "Install your first 000h component",
+    description: "Prepare a React project, install the 000h button with the shadcn CLI, render it, and continue through the component documentation.",
+    url,
+    step: [
+      {
+        "@type": "HowToStep",
+        position: 1,
+        name: "Prepare your project",
+        text: "Use a React 19 project with TypeScript, Tailwind CSS v4, and an @/ import alias. Run npx shadcn@latest init if shadcn is not set up yet.",
+        url: `${url}#prepare-your-project`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 2,
+        name: "Bring in a button",
+        text: `Run ${installCommand("button", registryOrigin)} and review the CLI prompts before replacing files with the same names.`,
+        url: `${url}#bring-in-a-button`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 3,
+        name: "Put it to work",
+        text: "Import Button from @/components/ui/button, render it in your React component, and adapt the installed source in your project.",
+        url: `${url}#put-it-to-work`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 4,
+        name: "Find your next piece",
+        text: "Browse all components for another working preview, example source, and install command.",
+        url: `${url}#find-your-next-piece`,
       },
     ],
   };

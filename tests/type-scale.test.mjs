@@ -11,7 +11,10 @@ const LARGEST_RAW = 28;
 const styles = "registry/cojeev/styles";
 const read = (file) => fs.readFileSync(file, "utf8");
 const listed = (dir, pattern) => fs.readdirSync(dir).filter((file) => pattern.test(file)).map((file) => path.join(dir, file));
-const sheets = listed(styles, /\.css$/).filter((file) => !/\/(tokens|theme|fonts)\.css$/.test(file));
+const siteFiles = ["app", "components"].flatMap((dir) => fs.readdirSync(dir, { recursive: true }).map((file) => path.join(dir, file)));
+// Library sidecars, and the site's own stylesheets (app/styles/ only imports sidecars).
+const sheets = [...listed(styles, /\.css$/).filter((file) => !/\/(tokens|theme|fonts)\.css$/.test(file)),
+  ...siteFiles.filter((file) => file.endsWith(".css") && !file.startsWith(path.join("app", "styles")))];
 const sources = ["registry/cojeev/ui", "registry/cojeev/lib"].flatMap((dir) => listed(dir, /\.tsx?$/));
 const typeTokens = new Set([...read(path.join(styles, "tokens.css")).matchAll(/(--(?:fs|fw|lh)-[\w-]+)\s*:/g)].map(([, name]) => name));
 const css = (file) => read(file).replace(/@font-face\s*{[^}]*}/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
@@ -49,12 +52,12 @@ function offScale(file, text, pattern, check) {
   return offenders;
 }
 
-test("component stylesheets size interface text from the type scale", () => {
+test("component and site stylesheets size interface text from the type scale", () => {
   const offenders = sheets.flatMap((file) => offScale(file, css(file), cssDeclaration, "size"));
   assert.deepEqual(offenders, [], "use a --fs-* step");
 });
 
-test("component weights come from the four weight tokens", () => {
+test("component and site weights come from the four weight tokens", () => {
   const offenders = sheets.flatMap((file) => offScale(file, css(file), cssDeclaration, "weight"));
   for (const file of sources) {
     const source = read(file);
@@ -80,7 +83,7 @@ test("component sources size interface text from the type scale", () => {
 });
 
 test("every type token in use is defined in tokens.css", () => {
-  const site = ["app", "components"].flatMap((dir) => fs.readdirSync(dir, { recursive: true }).filter((file) => /\.(css|tsx?)$/.test(file)).map((file) => path.join(dir, file)));
+  const site = siteFiles.filter((file) => /\.(css|tsx?)$/.test(file));
   const missing = [...listed(styles, /\.css$/), ...sources, ...site].flatMap((file) => [...read(file).matchAll(/var\(\s*(--(?:fs|fw|lh)-[\w-]+)/g)].filter(([, name]) => !typeTokens.has(name)).map(([, name]) => `${file}: ${name}`));
   assert.deepEqual(missing, [], "an undefined --fs-*, --fw-* or --lh-* token silently inherits its size");
 });

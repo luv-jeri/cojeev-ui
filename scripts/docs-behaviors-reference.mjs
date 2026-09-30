@@ -1,17 +1,21 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { recordPaint } from "./docs-transient-paint.mjs";
 
 // The reference gate checks real public specimen controls. These same journeys
 // are also exercised at desktop/touch widths by check-reference-effects.mjs.
-const stageSignature = async stage => await stage.getAttribute("data-slot") === "portal-field" ? (await stage.screenshot()).toString("base64") : stage.evaluate(element => {
+const paintSignature = element => {
   const canvas = element.querySelector("canvas");
   let pixels = "";
   if (canvas) { try { pixels = canvas.toDataURL(); } catch { pixels = "tainted"; } }
   const marks = [...element.querySelectorAll("[transform],[style],feTurbulence,clipPath rect")].map(node => [node.getAttribute("transform"), node.getAttribute("style"), node.getAttribute("baseFrequency"), node.getAttribute("x"), node.getAttribute("width")]);
   return JSON.stringify([pixels, marks]);
-});
+};
+const stageSignature = async stage => await stage.getAttribute("data-slot") === "portal-field" ? (await stage.screenshot()).toString("base64") : stage.evaluate(paintSignature);
 
-export function createReferenceTests() {
+// Change checks compare against a sample taken before the input, or record the
+// transition as painted; a fixed sleep then one late sample misses short motion.
+export function createReferenceTests({ eventually }) {
   const rows = JSON.parse(fs.readFileSync("data/reference-effects.json", "utf8"));
   return Object.fromEntries(rows.filter(row => row.status === "new").map(row => [row.id, async ({page,root:specimen,entry:sourceEntry}) => {
     const doc=sourceEntry.name, entry={id:doc}, width=page.viewportSize().width, context=page.context();
@@ -25,19 +29,23 @@ export function createReferenceTests() {
       else { await page.mouse.move(box.x + box.width * .2, box.y + box.height * .5); await page.mouse.move(box.x + box.width * .7, box.y + box.height * .4, { steps: 12 }); }
       await page.waitForTimeout(240);
       if (["swarm-cursor", "ghost-cursor", "magic-rings", "strands", "meta-balls", "ripple-distortion", "image-trail", "orbit-images", "typography-vortex", "warp-text"].includes(doc)) {
-        assert.notEqual(await stageSignature(stage), initial, "Paint responds over time or to input"); result.checks.push("visible paint changes");
+        await eventually(async () => await stageSignature(stage) !== initial, "Paint responds over time or to input"); result.checks.push("visible paint changes");
       }
-      if (doc === "elastic-mesh" && width >= 500) { assert.notEqual(await stageSignature(stage), initial); result.checks.push("mesh deformation"); }
+      if (doc === "elastic-mesh" && width >= 500) { await eventually(async () => await stageSignature(stage) !== initial, "Pointer deforms the mesh"); result.checks.push("mesh deformation"); }
       if (doc === "portal-field") {
         assert.equal(await stage.getAttribute("data-renderer"), "webgl");
-        assert.notEqual(await stageSignature(stage), initial); result.checks.push("organic WebGL halo changes");
+        await eventually(async () => await stageSignature(stage) !== initial, "The WebGL halo changes"); result.checks.push("organic WebGL halo changes");
       }
       if (doc === "article-headings") {
-        await specimen.getByRole("button", { name: "Replay decode" }).click(); await page.waitForTimeout(100);
-        const decoded = await stage.locator("[data-heading-visual]").first().innerText();
-        await page.waitForTimeout(1000);
-        assert.notEqual(await stage.locator("[data-heading-visual]").first().innerText(), decoded);
-        assert.equal(await stage.getAttribute("data-state"), "complete");
+        // Arm on the settled heading so "before" is its final text.
+        await eventually(async () => await stage.getAttribute("data-state") === "complete", "The in-view decode settles");
+        const replay = specimen.getByRole("button", { name: "Replay decode" });
+        const decode = await recordPaint(stage.locator("[data-heading-visual]").first(), replay, node => node.textContent);
+        try {
+          await replay.click();
+          await eventually(async () => (await decode.seen()).between.length > 0, "Replay visibly decodes the heading");
+        } finally { await decode.dispose(); }
+        await eventually(async () => await stage.getAttribute("data-state") === "complete", "The replayed decode finishes");
         assert.equal(await stage.getByRole("heading", { name: "Ideas need a place to return to", exact: true }).count(), 1);
         result.checks.push("finite heading decode", "canonical accessible heading");
       }
@@ -93,20 +101,23 @@ export function createReferenceTests() {
         assert.equal(Number((await specimen.getByRole("status").innerText()).match(/^\d+/)?.[0]), beforeCount + 1); result.checks.push("keyboard activation");
       }
       if (doc === "pixel-swap") {
-        await specimen.getByRole("button", { name: "Swap the study" }).click();
-        const start = await stage.locator("clipPath rect").first().getAttribute("width"); await page.waitForTimeout(220);
-        assert.notEqual(await stage.locator("clipPath rect").first().getAttribute("width"), start, "Pixel mask actually animates");
+        const swap = specimen.getByRole("button", { name: "Swap the study" });
+        const mask = await recordPaint(stage.locator("clipPath rect").first(), swap, node => node.getAttribute("width"));
+        try {
+          await swap.click();
+          await eventually(async () => (await mask.seen()).between.length > 0, "Pixel mask actually animates");
+        } finally { await mask.dispose(); }
         await page.waitForTimeout(800); assert.equal(await stage.getAttribute("data-active"), "true");
         assert.equal(await stage.locator(".v-pixel-swap__layer").first().getAttribute("inert"), ""); result.checks.push("tiled transition", "outgoing content inert");
       }
       if (doc === "target-cursor") {
         const target = stage.getByRole("button", { name: "Motion", exact: true }); await target.focus(); await target.press("Enter");
-        assert.equal(await target.getAttribute("aria-pressed"), "true"); await page.waitForTimeout(300);
-        assert.equal(await stage.locator(".v-target-cursor__mark").evaluate(el => getComputedStyle(el).opacity), "1"); result.checks.push("keyboard target tracking");
+        assert.equal(await target.getAttribute("aria-pressed"), "true");
+        await eventually(async () => await stage.locator(".v-target-cursor__mark").evaluate(el => getComputedStyle(el).opacity) === "1", "The cursor mark shows on the keyboard target"); result.checks.push("keyboard target tracking");
       }
       if (doc === "scroll-expand") {
         const slider = specimen.getByRole("slider", { name: "Expansion progress" }); const before = await stage.getAttribute("data-progress");
-        await slider.focus(); await slider.press("End"); await page.waitForTimeout(150); assert.notEqual(await stage.getAttribute("data-progress"), before); result.checks.push("controlled expansion");
+        await slider.focus(); await slider.press("End"); await eventually(async () => await stage.getAttribute("data-progress") !== before, "End expands the stage"); result.checks.push("controlled expansion");
       }
       if (doc === "infinite-spiral") {
         const choice = stage.getByRole("button", { name: "Show Remember" });
@@ -132,9 +143,11 @@ export function createReferenceTests() {
       }
       if (["grain-dissolve", "wave-wipe", "dither-dissolve"].includes(doc)) {
         const change = specimen.getByRole("button", { name: "Change scene" });
-        await change.focus(); await change.press("Enter"); await page.waitForTimeout(160);
-        const middle = await stageSignature(stage); await page.waitForTimeout(180);
-        assert.notEqual(await stageSignature(stage), middle, "Transition visibly progresses");
+        const transition = await recordPaint(stage, change, paintSignature);
+        try {
+          await change.focus(); await change.press("Enter");
+          await eventually(async () => (await transition.seen()).between.length > 1, "Transition visibly progresses");
+        } finally { await transition.dispose(); }
         await change.click(); await page.waitForTimeout(1400);
         assert.equal(await stage.getAttribute("data-active"), "false");
         assert.equal(await stage.locator(`[class="v-${doc}__layer"]`).nth(1).getAttribute("inert"), "");

@@ -5,11 +5,33 @@ import { site } from "../lib/site-config";
 import {
   componentIndexStructuredData,
   componentStructuredData,
+  gettingStartedStructuredData,
   homeStructuredData,
   serializeStructuredData,
 } from "../lib/seo/structured-data";
 
 const origin = "https://000h.cojeev.com";
+
+function propertyNames(value: unknown): string[] {
+  if (Array.isArray(value)) return value.flatMap(propertyNames);
+  if (!value || typeof value !== "object") return [];
+  return Object.entries(value).flatMap(([name, child]) => [name, ...propertyNames(child)]);
+}
+
+function typeValues(value: unknown): string[] {
+  if (Array.isArray(value)) return value.flatMap(typeValues);
+  if (!value || typeof value !== "object") return [];
+  return Object.entries(value).flatMap(([name, child]) => [
+    ...(name === "@type"
+      ? Array.isArray(child)
+        ? child.filter((candidate): candidate is string => typeof candidate === "string")
+        : typeof child === "string"
+          ? [child]
+          : []
+      : []),
+    ...typeValues(child),
+  ]);
+}
 
 test("homepage structured data connects the public site, library, and creator without invented claims", () => {
   const data = homeStructuredData(origin);
@@ -62,6 +84,40 @@ test("component structured data matches the visible component page and breadcrum
     { "@type": "ListItem", position: 1, name: "Components", item: `${origin}/docs/` },
     { "@type": "ListItem", position: 2, name: entry.title, item: `${origin}/docs/button/` },
   ]);
+});
+
+test("getting started HowTo mirrors the four visible numbered steps", () => {
+  const data = gettingStartedStructuredData(origin);
+
+  assert.equal(data["@context"], "https://schema.org");
+  assert.equal(data["@type"], "HowTo");
+  assert.equal(data.url, `${origin}/getting-started/`);
+  assert.equal(data.step.length, 4);
+  assert.deepEqual(
+    data.step.map((step) => ({ position: step.position, name: step.name, url: step.url })),
+    [
+      { position: 1, name: "Prepare your project", url: `${origin}/getting-started/#prepare-your-project` },
+      { position: 2, name: "Bring in a button", url: `${origin}/getting-started/#bring-in-a-button` },
+      { position: 3, name: "Put it to work", url: `${origin}/getting-started/#put-it-to-work` },
+      { position: 4, name: "Find your next piece", url: `${origin}/getting-started/#find-your-next-piece` },
+    ],
+  );
+  assert.match(data.step[0].text, /React 19/);
+  assert.match(data.step[0].text, /Tailwind CSS v4/);
+  assert.match(data.step[0].text, /npx shadcn@latest init/);
+  assert.match(data.step[1].text, /npx shadcn@latest add/);
+  assert.match(data.step[2].text, /@\/components\/ui\/button/);
+  assert.match(data.step[3].text, /Browse all components/);
+  assert.ok(
+    !propertyNames(data).some((name) =>
+      /^(aggregateRating|review|offers|totalTime|estimatedCost|supply)$/i.test(name),
+    ),
+  );
+  assert.ok(
+    !typeValues(data).some((type) =>
+      /^(AggregateRating|Review|Offer|HowToSupply)$/.test(type),
+    ),
+  );
 });
 
 test("structured data serialization cannot close its script element", () => {
