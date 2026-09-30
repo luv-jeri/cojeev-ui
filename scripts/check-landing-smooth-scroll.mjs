@@ -99,6 +99,8 @@ try {
     assert.equal(evidence.hash, "#featured-components");
     assert(Math.abs(evidence.top) < 40, `Reduced-motion anchor must settle immediately, got top=${evidence.top}`);
     assert.equal(evidence.scrollYAfterTwoFrames, evidence.scrollY, "Reduced-motion anchor must not continue interpolating");
+    // Lenis marks <html> while mounted; under reduced motion it must not mount, so no idle frame loop runs.
+    assert.equal(await page.locator("html.lenis").count(), 0, "Reduced motion must use native scrolling, not Lenis");
     await context.close();
     return evidence;
   });
