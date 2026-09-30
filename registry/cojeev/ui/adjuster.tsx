@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cva } from "class-variance-authority"
-import { DOMAIN, FLOW_CHARACTERS, PRODUCT_CATEGORIES, getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setMotionMode, setMotionCategory, setFlowSettings, resetFlow, setMorphConfig, setMorphTier, resetMorph, exportMorphJSON, importMorphJSON, type MorphConfig, type Tier, type TierName, type FlowVariant } from "../motion/settings"
+import { DOMAIN, FLOW_CHARACTERS, FLOW_INTENSITY, PRODUCT_CATEGORIES, getSettingsSnapshot, getServerSettingsSnapshot, subscribeSettings, setMotionMode, setMotionCategory, setFlowSettings, resetFlow, setMorphConfig, setMorphTier, resetMorph, exportMorphJSON, importMorphJSON, type MorphConfig, type Tier, type TierName, type FlowVariant } from "../motion/settings"
 import { useMorph } from "../motion/use-morph"
 import { useFlowPress } from "../motion/flow-press"
 import { cn } from "../lib/utils"
@@ -37,6 +37,19 @@ const CHARACTER_DESCRIPTIONS:Record<Exclude<FlowVariant,'off'>,string> = {
  pebble:'A rounded shape with a gentle rolling feel.',
  ripple:'A moving selection with a ripple on arrival.',
  halo:'A subtle glow around the selected item.',
+}
+/** What Intensity shapes for each character, or why it has nothing to shape. */
+const INTENSITY_NOTES:Record<FlowVariant,string> = {
+ glide:'Glide has no landing to shape, so Intensity is off.',
+ stretch:'Stretch reaches as far as the move itself, so Intensity is off.',
+ comet:'Comet\'s trail follows its speed, so Intensity is off.',
+ drop:'Ink drop always gathers to the same droplet, so Intensity is off.',
+ rubber:'Rubber pulls as far as the move itself, so Intensity is off.',
+ jelly:'Shapes how far Jelly squashes and wobbles as it lands.',
+ pebble:'Shapes how far Pebble squashes and leans as it lands.',
+ ripple:'Shapes how wide Ripple\'s ring spreads on arrival.',
+ halo:'Shapes how wide and bright Halo glows on arrival.',
+ off:'Selection motion is paused.',
 }
 function subscribeReducedMotion(listener:()=>void) {
  const media=window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -82,8 +95,8 @@ export function MotionControls({showPreview=true,className,...props}:MotionContr
   </div>
   <div className="v-motion-controls__section">
    <div className="v-motion-controls__row"><Label id={id+'-intensity'}>Intensity</Label><Meta>{flow.intensity.toFixed(2)}×</Meta></div>
-   <Slider aria-labelledby={id+'-intensity'} thumbLabel="Motion intensity" disabled={flow.variant==='glide'||flow.variant==='off'} aria-describedby={id+'-intensity-note'} min={0} max={Math.max(2,flow.intensity)} step={.05} value={[flow.intensity]} onValueChange={([intensity])=>setFlowSettings({intensity})}/>
-   <Meta id={id+'-intensity-note'}>{flow.variant==='glide'?'Glide stays calm. Choose an expressive character to tune intensity.':'Shapes the stretch, ripple or glow of expressive characters.'}</Meta>
+   <Slider aria-labelledby={id+'-intensity'} thumbLabel="Motion intensity" disabled={!FLOW_INTENSITY.has(flow.variant)} aria-describedby={id+'-intensity-note'} min={0} max={Math.max(2,flow.intensity)} step={.05} value={[flow.intensity]} onValueChange={([intensity])=>setFlowSettings({intensity})}/>
+   <Meta id={id+'-intensity-note'}>{INTENSITY_NOTES[flow.variant]}</Meta>
   </div>
   <div className="v-motion-controls__row"><div><Label htmlFor={id+'-hover'}>Pointer preview</Label><Meta>A hint before you select. Pointer devices only.</Meta></div><Switch id={id+'-hover'} checked={flow.hover} onCheckedChange={hover=>setFlowSettings({hover})}/></div>
   <div className="v-motion-controls__section">
