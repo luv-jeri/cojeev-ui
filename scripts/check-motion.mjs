@@ -1,3 +1,6 @@
+// Build the current static export first, then run: node scripts/check-motion.mjs --serve
+// --serve previews out/ on a free port and closes it on completion; POLISH_URL uses an existing server.
+// --root-style-only runs just the morph root-token regression (also included in every full run).
 import fs from 'node:fs';
 import {chromium} from 'playwright';
 import {preview} from 'vite';
@@ -5,7 +8,64 @@ import {factoryCfg,factoryTiers,FLOW_CHARACTERS,FLOW_INTENSITY} from '../registr
 const server=process.argv.includes('--serve')?await preview({configFile:false,base:'/cojeev-ui/',build:{outDir:'out'},preview:{host:'127.0.0.1',port:0,strictPort:true}}):null;
 const out='artifacts/production-motion',base=process.env.POLISH_URL??`http://127.0.0.1:${server?server.httpServer.address().port:4320}/cojeev-ui`;fs.mkdirSync(out,{recursive:true});
 const browser=await chromium.launch();const rows=[],checks=[];
+const LAG={click:240,travel:280};
 try{
+ // Root token changes must use one shared subscription without waking hosts for flow-only writes.
+ const rootContext=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+ try{
+  await rootContext.addInitScript(()=>{
+   const state=window.__morphRootCheck={observers:new Map(),styles:0,rects:0,track:false,computed:window.getComputedStyle.bind(window),rect:Element.prototype.getBoundingClientRect};
+   const NativeObserver=window.MutationObserver;
+   window.MutationObserver=class extends NativeObserver{
+    observe(target,options){super.observe(target,options);if(target===document.documentElement&&options.attributes&&(!options.attributeFilter||options.attributeFilter.includes('style')))state.observers.set(this,options)}
+    disconnect(){state.observers.delete(this);super.disconnect()}
+   };
+   window.getComputedStyle=(element,...args)=>{if(state.track&&element.classList.contains('v-morph-host'))state.styles++;return state.computed(element,...args)};
+   Element.prototype.getBoundingClientRect=function(){if(state.track&&this.classList.contains('v-morph-host'))state.rects++;return state.rect.call(this)};
+  });
+  const rp=await rootContext.newPage();await rp.goto(base+'/docs/button/');await rp.evaluate(()=>document.fonts.ready);
+  const targets=rp.locator('.v-preview__canvas .v-btn.v-morph-live').filter({visible:true});await targets.first().waitFor();
+  await rp.evaluate(()=>{
+   const state=window.__morphRootCheck;
+   state.hosts=[...document.querySelectorAll('.v-preview__canvas .v-btn.v-morph-live')].filter(e=>state.rect.call(e).width>0).slice(0,2);
+   for(const e of state.hosts){e.style.removeProperty('--v-control-radius');e.style.borderRadius='var(--v-control-radius, 999px)'}
+  });
+  const settle=()=>rp.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));await settle();
+  const snapshot=()=>rp.evaluate(()=>{const s=window.__morphRootCheck;return s.hosts.map(e=>{const r=s.rect.call(e);return {radius:s.computed(e).borderTopLeftRadius,w:r.width,h:r.height,d:e.querySelector(':scope>svg.v-morph [data-morph-body]')?.getAttribute('d')}})});
+  const rounded=await snapshot();
+  await rp.evaluate(()=>document.body.style.setProperty('--v-control-radius','2px'));await settle();const ancestor=await snapshot();
+  await rp.evaluate(()=>document.body.style.removeProperty('--v-control-radius'));await settle();
+  checks.push({name:'non-root ancestor radius change provides a stable geometry reference',pass:rounded.length===2&&ancestor.every((s,i)=>s.radius==='2px'&&s.d&&s.d!==rounded[i].d&&s.w===rounded[i].w&&s.h===rounded[i].h)});
+  // On this page, morph's environment observes data-skin and its per-host
+  // ancestry subscriptions observe data-motion. Shader theme observers use
+  // data-theme instead; they do not belong to the morph subscription count.
+  const subscriptions=()=>rp.evaluate(()=>{
+   const s=window.__morphRootCheck;
+   const morph=[...s.observers].filter(([,options])=>options.attributeFilter?.some(name=>name==='data-skin'||name==='data-motion'));
+   s.initialObserver??=morph[0]?.[0];
+   return {hosts:document.querySelectorAll('.v-morph-host').length,options:morph.map(([,options])=>options),sameObserver:morph.length===1&&morph[0][0]===s.initialObserver};
+  });
+  const before=await subscriptions();
+  await rp.getByRole('button',{name:'Motion settings',exact:true}).first().click();await rp.getByRole('dialog').waitFor();await settle();const mounted=await subscriptions();
+  checks.push({name:'root style uses one shared observer with old attribute values for all morph hosts',pass:before.hosts>2&&mounted.hosts>before.hosts&&[before,mounted].every(s=>s.options.length===1&&s.options[0].attributeOldValue===true&&s.sameObserver),before,mounted});
+  await rp.keyboard.press('Escape');await rp.getByRole('dialog').waitFor({state:'hidden'});await settle();
+  const flowOnly=async mutate=>{
+   await settle();await rp.evaluate(()=>{const s=window.__morphRootCheck;s.styles=s.rects=0;s.layers=s.hosts.map(e=>e.querySelector(':scope>svg.v-morph'));s.track=true});
+   await rp.evaluate(mutate);await settle();
+   return rp.evaluate(()=>{const s=window.__morphRootCheck;s.track=false;return {styles:s.styles,rects:s.rects,sameLayers:s.hosts.every((e,i)=>e.querySelector(':scope>svg.v-morph')===s.layers[i])}});
+  };
+  const flow=await flowOnly(()=>{const s=document.documentElement.style;s.setProperty('--flow-root-check','1');s.setProperty('--flow-root-check','2');s.setProperty('--flow-root-remove','1');s.removeProperty('--flow-root-remove')});
+  checks.push({name:'batched flow-only root writes do not refresh or remeasure any morph host',pass:flow.styles===0&&flow.rects===0&&flow.sameLayers,...flow});
+  await rp.evaluate(()=>document.documentElement.style.setProperty('--v-control-radius','2px'));await settle();const root=await snapshot();
+  checks.push({name:'non-flow root radius refreshes mounted SVG geometry without a resize',pass:root.every((s,i)=>s.radius==='2px'&&s.d===ancestor[i].d&&s.d!==rounded[i].d&&s.w===rounded[i].w&&s.h===rounded[i].h),radii:root.map(s=>s.radius),geometryMatches:root.map((s,i)=>s.d===ancestor[i].d)});
+  const retained=await flowOnly(()=>{const s=document.documentElement.style;s.setProperty('--flow-root-check','3');s.removeProperty('--flow-root-check')});
+  checks.push({name:'flow-only root writes preserve non-flow tokens without refreshing hosts',pass:retained.styles===0&&retained.rects===0&&retained.sameLayers,...retained});
+  await rp.evaluate(()=>{const root=document.documentElement,s=root.style;root.setAttribute('data-mode',root.getAttribute('data-mode')??'light');s.setProperty('--flow-root-check','4');s.setProperty('--v-control-radius','8px');s.setProperty('--flow-root-check','5')});await settle();const mixed=await snapshot();
+  checks.push({name:'batched mixed root writes still refresh non-flow geometry',pass:mixed.every((s,i)=>s.radius==='8px'&&s.d&&s.d!==root[i].d&&s.w===root[i].w&&s.h===root[i].h),radii:mixed.map(s=>s.radius),geometryChanged:mixed.map((s,i)=>s.d!==root[i].d)});
+  await rp.evaluate(()=>{const s=document.documentElement.style;s.removeProperty('--v-control-radius');s.removeProperty('--flow-root-check')});await settle();const restored=await snapshot();
+  checks.push({name:'removing a non-flow root token restores inherited morph geometry',pass:restored.every((s,i)=>s.radius===rounded[i].radius&&s.d===rounded[i].d)});
+ }finally{await rootContext.close()}
+ if(!process.argv.includes('--root-style-only')){
  const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(base+'/docs/tabs/');await page.evaluate(()=>document.fonts.ready);await page.getByRole('button',{name:'Motion settings',exact:true}).first().click();
  const dialog=page.getByRole('dialog'),group=dialog.getByRole('tablist',{name:'Motion preview'}),tabs=group.getByRole('tab');await group.waitFor();await page.waitForTimeout(400);
  for(const [id,preset] of Object.entries(FLOW_CHARACTERS).filter(([id])=>id!=='off')){
@@ -30,6 +90,13 @@ try{
  // A Speed step changes root custom properties, so one whole-document style pass is inherent.
  // Each further pass is a JS read forced after those writes; every one adds a stall to the slider.
  const cdp=await context.newCDPSession(page),documentPasses=async act=>{const total=await page.evaluate(()=>document.getElementsByTagName('*').length);await cdp.send('Tracing.start',{categories:'devtools.timeline,disabled-by-default-devtools.timeline.stack',transferMode:'ReturnAsStream'});await act();await page.waitForTimeout(250);const done=new Promise(resolve=>cdp.once('Tracing.tracingComplete',resolve));await cdp.send('Tracing.end');const {stream}=await done;let data='';for(;;){const chunk=await cdp.send('IO.read',{handle:stream});data+=chunk.data;if(chunk.eof)break}await cdp.send('IO.close',{handle:stream});const trace=JSON.parse(data);return (trace.traceEvents??trace).filter(e=>e.name==='UpdateLayoutTree'&&e.args?.beginData?.stackTrace&&(e.args.elementCount??0)>=total/2).length};
+ const clickPasses=await documentPasses(()=>dialog.getByRole('button',{name:'Jelly',exact:true}).click());checks.push({name:'a character click forces at most one whole-document style pass',pass:clickPasses<=1,passes:clickPasses});
+ // Latency, as INP reports it: the Event Timing API's longest event per interaction, from input to the next paint.
+ // Budgets are twice the fixed build's medians here (112 and 139 ms); 179910e took 528-800 ms per click, 15 whole-document passes.
+ const lag=async act=>{await page.mouse.move(0,0);await page.waitForTimeout(1000);await group.evaluate(g=>{const pill=g.querySelector(':scope>.v-glide__pill'),x=pill.getBoundingClientRect().x,r=window.__lag={events:[],down:null,moved:null,stop:false};r.observer=new PerformanceObserver(list=>{for(const e of list.getEntries())if(e.interactionId)r.events.push([e.interactionId,e.duration])});r.observer.observe({type:'event',durationThreshold:16});addEventListener('pointerdown',()=>{r.down=performance.now()},{once:true,capture:true});const frame=()=>{if(r.stop)return;if(r.down!==null&&Math.abs(pill.getBoundingClientRect().x-x)>1){r.moved=performance.now();return}requestAnimationFrame(frame)};requestAnimationFrame(frame)});await act();await page.mouse.move(0,0);await page.waitForTimeout(1000);return page.evaluate(()=>{const r=window.__lag,by={};r.stop=true;r.observer.disconnect();for(const [id,d] of r.events)by[id]=Math.max(by[id]??0,d);return {ms:Math.round(Math.max(0,...Object.values(by))),travelAfterMs:r.moved===null?null:Math.round(r.moved-r.down)}})};
+ const median=values=>[...values].sort((a,b)=>a-b)[values.length>>1],clicks=[];for(const label of ['Glide','Jelly','Halo'])clicks.push({label,...await lag(()=>dialog.getByRole('button',{name:label,exact:true}).click())});
+ checks.push({name:'a character click paints within budget',pass:median(clicks.map(c=>c.ms))<=LAG.click,budget:LAG.click,clicks});
+ checks.push({name:'the preview starts travelling within budget of the press',pass:median(clicks.map(c=>c.travelAfterMs??Infinity))<=LAG.travel,budget:LAG.travel,clicks});
  const speed=dialog.getByRole('slider',{name:'Motion speed'}),intensity=dialog.getByRole('slider',{name:'Motion intensity'});await speed.focus();const passes=await documentPasses(()=>page.keyboard.press('ArrowRight'));checks.push({name:'a Speed step forces at most one whole-document style pass',pass:passes<=1,passes});await intensity.focus();await page.keyboard.press('ArrowRight');
  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('v-flow-v1')));checks.push({name:'speed and intensity controls persist independently of preset',pass:stored.variant==='halo'&&stored.speed>1&&stored.intensity>1,stored});
  await page.reload();await page.getByRole('button',{name:'Motion settings',exact:true}).first().click();checks.push({name:'preset and tuning survive page reload',pass:await page.getByRole('dialog').getByRole('button',{name:'Halo',exact:true}).getAttribute('aria-pressed')==='true',stored:await page.evaluate(()=>JSON.parse(localStorage.getItem('v-flow-v1')))});
@@ -63,4 +130,5 @@ try{
   checks.push({name:`Intensity visibly changes ${preset.label} on a real docs example`,pass:!slider.disabled&&slider.note.length>0&&intensityShows[id](calm,lively),note:slider.note,calm:{land:calm.land,aura:calm.aura,auraScale:calm.auraScale},lively:{land:lively.land,aura:lively.aura,auraScale:lively.auraScale}});
  }
  await live.close();
-}finally{await browser.close();if(server)await new Promise(resolve=>server.httpServer.close(resolve));fs.writeFileSync(out+'/results.json',JSON.stringify({scope:'Real updated docs MotionControls selects all nine public presets and exercises native fast reversal; each choice plays the preview once and differs from Glide, and reduced motion keeps it still; persisted tuning, style passes per Speed step, each preset, Speed and per-character Intensity on a real docs example, authored Pagination press and native Button Off checks.',rows,checks},null,2)+'\n');if(rows.some(r=>!r.pass)||checks.some(c=>!c.pass))process.exitCode=1;console.log(JSON.stringify({presets:rows.length,passed:rows.filter(r=>r.pass).length,checks},null,2))}
+ }
+}finally{await browser.close();if(server)await new Promise(resolve=>server.httpServer.close(resolve));fs.writeFileSync(out+'/results.json',JSON.stringify({scope:'Shared root-style subscription, zero host reads for flow-only root writes, non-flow root radius geometry including mixed writes and removal. Real updated docs MotionControls selects all nine public presets and exercises native fast reversal; each choice plays the preview once and differs from Glide, and reduced motion keeps it still; character-click latency and style passes, persisted tuning, style passes per Speed step, each preset, Speed and per-character Intensity on a real docs example, authored Pagination press and native Button Off checks.',rows,checks},null,2)+'\n');if(rows.some(r=>!r.pass)||checks.some(c=>!c.pass))process.exitCode=1;console.log(JSON.stringify({presets:rows.length,passed:rows.filter(r=>r.pass).length,checks},null,2))}

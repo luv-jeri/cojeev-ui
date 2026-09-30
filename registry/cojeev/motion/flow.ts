@@ -65,7 +65,9 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  let prev:Box|null=null,lastActive:HTMLElement|null=null,dScale=1,queued:MotionTimer|null=null,resizeTimer:MotionTimer|null=null,stillTimer:MotionTimer|null=null,disposed=false,attached=false,reseat=false,initial=true,inView=true
  const later=(fn:()=>void,ms:number,scaled=true)=>{const timer=scheduleMotion(()=>{timers.delete(timer);if(!disposed)fn()},scaled?ms*dScale/getFlowSettings().speed:ms);timers.add(timer);return timer}
  const clearPhases=()=>{stopMovement();timers.forEach(cancelMotion);timers.clear();PHASES.forEach(c=>pill.classList.remove(c))}
- const markStill=()=>{g.classList.add('-still');cancelMotion(stillTimer);stillTimer=scheduleMotion(()=>{stillTimer=null;if(!oldClasses.has('-still'))g.classList.remove('-still')},flowTokenMs('--t-flow-still',60))}
+ // An attribute, not a class: a class change restyles the group's whole subtree wherever a sheet
+ // matches on [class~=…] (typography's not-prose rules do), and wakes every morph body inside it.
+ const markStill=()=>{g.setAttribute('data-flow-still','');cancelMotion(stillTimer);stillTimer=scheduleMotion(()=>{stillTimer=null;g.removeAttribute('data-flow-still')},flowTokenMs('--t-flow-still',60))}
  const unmark=()=>{for(const [item,old]of activeAttrs){if(old===null)item.removeAttribute('data-glide-active');else item.setAttribute('data-glide-active',old)}activeAttrs.clear()}
  const seat=()=>{
   const candidates=items(false),single=kind==='fill'||!candidates.some(item=>item.matches('[role="checkbox"]')||!!item.querySelector('input[type="checkbox"]'))||candidates.some(item=>item.matches('[role="radio"]')||!!item.querySelector('input[type="radio"]'))
@@ -86,7 +88,7 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
   return candidates.find(item=>item.matches(options.activeSelector??ACTIVE)||(isMenu&&(item===document.activeElement||item.hasAttribute('data-highlighted'))))??null
  }
  const land=()=>{if(g.dataset.flowV==='glide'||isFlowQuiet(g)||document.hidden||!inView)return;cancelLanding();cancelLanding=animateFlowLanding(pill.firstElementChild as HTMLElement,g.dataset.flowV??'glide',g.dataset.dir)}
- function suspend(){clearPhases();painter.hide(true,true);[pill,hov,trail].forEach(layer=>layer.remove());unmark();attached=false;prev=null;lastActive=null;for(const name of ['v-glide','-still'])if(!oldClasses.has(name))g.classList.remove(name);for(const name of ['data-flow-kind','data-flow-v','data-dir']){const old=oldAttrs.get(name);if(old==null)g.removeAttribute(name);else g.setAttribute(name,old)}for(const [name,old]of oldStyles){if(old)g.style.setProperty(name,old);else g.style.removeProperty(name)}}
+ function suspend(){clearPhases();painter.hide(true,true);[pill,hov,trail].forEach(layer=>layer.remove());unmark();attached=false;prev=null;lastActive=null;if(!oldClasses.has('v-glide'))g.classList.remove('v-glide');g.removeAttribute('data-flow-still');for(const name of ['data-flow-kind','data-flow-v','data-dir']){const old=oldAttrs.get(name);if(old==null)g.removeAttribute(name);else g.setAttribute(name,old)}for(const [name,old]of oldStyles){if(old)g.style.setProperty(name,old);else g.style.removeProperty(name)}}
  const place=(animate=true)=>{
   if(disposed)return;if(variantFor(g)==='off'){suspend();return}if(!g.isConnected){dispose();return}if(!seat())return
   const a=active()
@@ -164,7 +166,7 @@ export function attachFlowGroup(g:HTMLElement,options:FlowGroupOptions={}):()=>v
  const ro=new ResizeObserver(()=>{if(!resizeTimer)resizeTimer=scheduleMotion(()=>{resizeTimer=null;place(false)},16)});ro.observe(g)
  const visibility=new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;if(!inView){clearPhases();if(prev)painter.paint(prev,false,true,variantFor(g));painter.hide(true,true)}else place(false)},{threshold:0});visibility.observe(g)
  function dispose(){if(disposed)return;disposed=true;groups.delete(g);ac.abort();mo.disconnect();ancestor.disconnect();ro.disconnect();visibility.disconnect();cancelMotion(queued);cancelMotion(resizeTimer);cancelMotion(stillTimer);clearPhases();painter.dispose();[pill,hov,trail].forEach(layer=>layer.remove());unmark()
-  for(const name of ['v-glide','-still'])if(!oldClasses.has(name))g.classList.remove(name)
+  if(!oldClasses.has('v-glide'))g.classList.remove('v-glide');g.removeAttribute('data-flow-still')
   for(const [name,value]of oldAttrs){if(value===null)g.removeAttribute(name);else g.setAttribute(name,value)}
   for(const [name,value]of oldStyles){if(value)g.style.setProperty(name,value);else g.style.removeProperty(name)}release()
  }

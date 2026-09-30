@@ -440,6 +440,11 @@ function DrawerBody({ children }: { children: React.ReactNode }) {
   );
 }
 
+// While any drawer panel is mounted, <body> carries data-motion-drawer-open so page
+// chrome can step aside. An attribute, not body:has(): a :has() anchored on <body>
+// makes every change to any :has() subject on the page restyle the whole document.
+let openPanels = 0;
+
 function DrawerPanel({
   title,
   description,
@@ -504,6 +509,12 @@ function DrawerPanel({
           : {}),
       };
 
+  React.useLayoutEffect(() => {
+    if (openPanels++ === 0) document.body.setAttribute("data-motion-drawer-open", "");
+    return () => {
+      if (--openPanels === 0) document.body.removeAttribute("data-motion-drawer-open");
+    };
+  }, []);
   React.useEffect(() => {
     const element = panel.current;
     if (!element) return;

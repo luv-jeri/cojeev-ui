@@ -53,6 +53,6 @@
 }
 
 /* The reporting drawer is modal at z-index 30; the consent card (44) would paint over its form. */
-body:has([data-slot="motion-drawer-overlay"]) .analytics-consent-shell {
+body[data-motion-drawer-open] .analytics-consent-shell {
   display: none;
 }
