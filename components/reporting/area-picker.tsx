@@ -79,9 +79,12 @@ export function captureLabel(progress: CaptureProgress) {
   return progress.phase === "assets" && progress.total ? `Embedding images — ${progress.current ?? 0} of ${progress.total}…` : PHASES[progress.phase];
 }
 
+const STEP_NAMES = ["Reading the page", "Drawing the screenshot", "Ready to check"];
+const STEP_OF: Record<CaptureProgress["phase"], 1 | 2 | 3> = { preparing: 1, reading: 1, assets: 2, rendering: 2, ready: 3 };
+
 export function CaptureStatus({ progress, onCancel }: { progress: CaptureProgress; onCancel: () => void }) {
   const [elapsed, setElapsed] = useState(0);
-  const toolbar = useRef<HTMLDivElement>(null), cancel = useRef<HTMLButtonElement | HTMLAnchorElement>(null), stop = useRef(onCancel);
+  const cancel = useRef<HTMLButtonElement | HTMLAnchorElement>(null), stop = useRef(onCancel);
   useEffect(() => { stop.current = onCancel; }, [onCancel]);
   useEffect(() => { const timer = setInterval(() => setElapsed(value => value + 1), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => {
@@ -96,11 +99,22 @@ export function CaptureStatus({ progress, onCancel }: { progress: CaptureProgres
     document.addEventListener("keydown", key, true);
     return () => { document.removeEventListener("keydown", key, true); if (restore?.isConnected) restore.focus(); };
   }, []);
-  return createPortal(<div data-reporting-chrome="" className="report-picker">
-    <div className="report-picker-toolbar" ref={toolbar} role="dialog" aria-label="Capturing a screenshot">
-      <strong role="status">{captureLabel(progress)}</strong>
-      <p className="report-help" aria-live="off">{elapsed}s elapsed</p>
-      <p>Requests that already started cannot be stopped, and nothing is attached until you review the screenshot.</p>
+  const step = STEP_OF[progress.phase];
+  const detail = progress.phase === "assets" && progress.total ? captureLabel(progress) : null;
+  return createPortal(<div data-reporting-chrome="" className="report-capture-scrim">
+    <div className="report-capture-card" role="dialog" aria-label="Capturing a screenshot">
+      <h2>Capturing a screenshot</h2>
+      <div className="report-progress-bar" aria-hidden="true"><span /></div>
+      {/* One polite region, changed only when the step changes, so each step is heard once. */}
+      <span className="sr-only" role="status" aria-live="polite">{STEP_NAMES[step - 1]}</span>
+      <ol className="report-capture-steps">
+        {STEP_NAMES.map((name, index) => (
+          <li key={name} data-state={index + 1 < step ? "done" : index + 1 === step ? "current" : "todo"} aria-current={index + 1 === step ? "step" : undefined}>{name}</li>
+        ))}
+      </ol>
+      {detail && <p className="report-help">{detail}</p>}
+      {elapsed >= 3 && <p className="report-help" aria-live="off">Still working · {elapsed}s</p>}
+      <p className="report-help">Nothing is attached until you check the screenshot.</p>
       <div className="report-row"><Button ref={cancel} variant="outline" onClick={onCancel}>Cancel screenshot</Button></div>
     </div>
   </div>, document.body);

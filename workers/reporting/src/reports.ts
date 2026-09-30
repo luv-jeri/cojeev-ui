@@ -1,7 +1,8 @@
-import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus } from "../../../lib/reporting/contracts";
+import { isUUID, LIMITS, matchesMedia, redact, validateReport, type Receipt, type ReportStatus, type RequestTopic } from "../../../lib/reporting/contracts";
 import { boundedBody, checkAbuse, digest, equalSecret, HttpError, keyedDigest, readJSON } from "./security";
 import { emailEnabled, githubEnabled, now, ownerNotificationEmail, type Env, type ReportRow, type AttachmentRow, type Delivery } from "./types";
 import { testerAllowed } from './resend';
+import type { PublicStage, PublicStatus } from "../../../lib/reporting/public-status";
 
 export async function getReport(env: Env, id: string) {
   if(!isUUID(id)) throw new HttpError(404,"Report not found.");
@@ -13,10 +14,26 @@ export async function authorizeReceipt(request: Request, env: Env, id: string) {
   if(!/^[a-f0-9]{64}$/.test(token) || !await equalSecret(await digest(token),row.token_hash)) throw new HttpError(404,"Report not found.");
   return {row,token};
 }
+// Compared when a row has no key, so every failure runs the same comparison.
+const NO_KEY="0".repeat(64);
+export async function authorizeStatus(request: Request, env: Env, id: string) {
+  const row=isUUID(id)?await env.DB.prepare("SELECT * FROM reports WHERE id=?").bind(id).first<ReportRow>():null;
+  const token=(request.headers.get("Authorization")??"").replace(/^Bearer /,"");
+  const same=await equalSecret(token,row?.status_key??NO_KEY);
+  if(!row || !row.status_key || !/^[a-f0-9]{64}$/.test(token) || !same) throw new HttpError(404,"Report not found.");
+  return row;
+}
+export async function publicStatus(env: Env, row: ReportRow): Promise<PublicStatus> {
+  const files=await env.DB.prepare("SELECT COUNT(*) AS n FROM attachments WHERE report_id=?").bind(row.id).first<{n:number}>();
+  const stage:PublicStage=row.triage_state==="rejected"||row.status==="declined"?"closed":row.status==="resolved"?"fixed":row.issue_number!==null?"tracked":row.triage_state==="approved"?"reviewing":"received";
+  const issue=(stage==="tracked"||stage==="fixed")&&row.triage_state==="approved"&&row.issue_number!==null&&row.issue_url?{issueNumber:row.issue_number,issueUrl:row.issue_url}:{};
+  return {kind:row.kind,sentAt:row.created_at,stage,...issue,attachments:files?.n??0};
+}
 export async function receipt(env: Env, row: ReportRow, token: string): Promise<Receipt & {emailDelivery:string}> {
   const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,state FROM attachments WHERE report_id=?").bind(row.id).all<{id:string;state:string}>(),env.DB.prepare("SELECT kind,state,delivery_status FROM outbox WHERE report_id=?").bind(row.id).all<Delivery>()]);
   const email=jobs.results.find(j=>j.kind==="email_received"); const github=jobs.results.find(j=>j.kind==="github");
-  return {id:row.id,token,status:row.status,topicId:row.topic_id,...(row.kind==="request"&&row.status==="resolved"&&row.component_url?{componentUrl:row.component_url}:{}),
+  return {id:row.id,token,kind:row.kind,...(row.status_key?{statusKey:row.status_key}:{}),status:row.status,topicId:row.topic_id,...(row.kind==="request"&&row.status==="resolved"&&row.component_url?{componentUrl:row.component_url}:{}),
+    ...(row.triage_state==='approved'&&row.issue_number!=null&&row.issue_url?{issueNumber:row.issue_number,issueUrl:row.issue_url}:{}),
     emailDelivery:email?.state==='held'?'held':email?.delivery_status??'queued',
     email:email?.delivery_status==='delivered'?"sent":email?.state==="needs_review"||['failed','bounced'].includes(email?.delivery_status??'')?"needs_review":!emailEnabled(env)?"setup_required":"pending",
     issue:row.triage_state==="rejected"?"not_planned":row.issue_number?"created":github?.state==="needs_review"?"needs_review":!githubEnabled(env)?"setup_required":"pending",
@@ -43,6 +60,7 @@ export async function accept(request: Request, env: Env): Promise<{receipt:Recei
   // Retain only a keyed identity for distinct demand after the contact expires.
   const contactHash=await keyedDigest(env.IP_HASH_SECRET??"local-only",`report-contact:${report.email}`);
   const timestamp=now();
+  const statusKey=Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,"0")).join("");
   let topicId:string|null=null, topicKey:string|null=null;
   if(report.kind==="request") {
     if(report.topicId) {
@@ -57,9 +75,9 @@ export async function accept(request: Request, env: Env): Promise<{receipt:Recei
   const released=joinTopic?(await env.DB.prepare("SELECT status FROM topics WHERE id=?").bind(joinTopic).first<{status:string}>())?.status==="resolved":false;
   const statements=[];
   if(topicKey!==null) statements.push(env.DB.prepare("INSERT OR IGNORE INTO topics(id,title,title_key,created_at,updated_at) VALUES(?,?,?,?,?)").bind(report.id,report.title,topicKey,timestamp,timestamp));
-  statements.push(env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,topic_id,status,component_url,triage_state,triage_by,triaged_at,issue_number,issue_node_id,issue_url,created_at,updated_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,COALESCE(?,(SELECT id FROM topics WHERE title_key=?)),COALESCE((SELECT status FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),'received'),(SELECT component_url FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),?,?,?,?,?,?,?,?)`)
-    .bind(report.id,tokenHash,payloadHash,report.kind,report.title,report.description,report.email,contactHash,JSON.stringify(report.references),report.diagnostics?JSON.stringify(report.diagnostics):null,JSON.stringify(report.pins),topicId,topicKey,topicId,topicKey,topicId,topicKey,issue?'approved':'pending',issue?'join':null,issue?timestamp:null,issue?.issue_number??null,issue?.issue_node_id??null,issue?.issue_url??null,timestamp,timestamp));
+  statements.push(env.DB.prepare(`INSERT INTO reports(id,token_hash,payload_hash,kind,title,description,email,contact_hash,references_json,diagnostics_json,pins_json,topic_id,status,component_url,triage_state,triage_by,triaged_at,issue_number,issue_node_id,issue_url,created_at,updated_at,status_key)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,COALESCE(?,(SELECT id FROM topics WHERE title_key=?)),COALESCE((SELECT status FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),'received'),(SELECT component_url FROM topics WHERE id=COALESCE(?,(SELECT id FROM topics WHERE title_key=?))),?,?,?,?,?,?,?,?,?)`)
+    .bind(report.id,tokenHash,payloadHash,report.kind,report.title,report.description,report.email,contactHash,JSON.stringify(report.references),report.diagnostics?JSON.stringify(report.diagnostics):null,JSON.stringify(report.pins),topicId,topicKey,topicId,topicKey,topicId,topicKey,issue?'approved':'pending',issue?'join':null,issue?timestamp:null,issue?.issue_number??null,issue?.issue_node_id??null,issue?.issue_url??null,timestamp,timestamp,statusKey));
   for(const file of report.attachments) statements.push(env.DB.prepare("INSERT INTO attachments(id,report_id,name,type,size,sha256,object_key) VALUES(?,?,?,?,?,?,?)").bind(file.id,report.id,file.name,file.type,file.size,file.sha256,`${report.id}/${file.id}`));
   // The maintainer alert is queued with the report it belongs to, so configuring an
   // owner address later can never manufacture alerts for the existing backlog.
@@ -87,11 +105,19 @@ export async function upload(request: Request, env: Env, reportId: string, fileI
   await env.DB.prepare("UPDATE attachments SET state='uploaded' WHERE report_id=? AND id=?").bind(reportId,fileId).run();
   return {ok:true};
 }
+// The earliest maintainer-approved verdict title in a topic; pending and rejected titles never reach the public list.
+const approvedTitle="(SELECT a.triage_title FROM reports a WHERE a.topic_id=t.id AND a.triage_state='approved' AND a.triage_title IS NOT NULL ORDER BY a.created_at,a.id LIMIT 1)";
 export async function listRequests(env: Env, url: URL) {
   const offset=Math.max(0,Math.min(100000,Number.parseInt(url.searchParams.get("offset")??"0")||0));
-  const q=(url.searchParams.get("q")??"").slice(0,120).replace(/[\\%_]/g,"\\$&");
-  const rows=await env.DB.prepare(`SELECT t.id,COALESCE(t.public_title,'Component request '||substr(t.id,1,8)) AS title,t.status,t.component_url AS componentUrl,t.created_at AS createdAt,t.updated_at AS updatedAt,COUNT(DISTINCT r.contact_hash) AS demand FROM topics t LEFT JOIN reports r ON r.topic_id=t.id WHERE COALESCE(t.public_title,'Component request '||substr(t.id,1,8)) LIKE ? ESCAPE '\\' GROUP BY t.id ORDER BY t.created_at DESC,t.id LIMIT 21 OFFSET ?`).bind(`%${q}%`,offset).all();
-  return {requests:rows.results.slice(0,20),hasMore:rows.results.length>20};
+  const search=(url.searchParams.get("q")??"").slice(0,120);
+  const q=search.replace(/[\\%_]/g,"\\$&");
+  const generic="'Component request '||substr(t.id,1,8)";
+  // The SQL match runs on the stored title; redaction happens after, so the filter below closes the probe for redacted text.
+  const rows=await env.DB.prepare(`SELECT t.id,COALESCE(t.public_title,${approvedTitle},${generic}) AS title,(t.public_title IS NOT NULL OR ${approvedTitle} IS NOT NULL) AS approved,t.public_title IS NOT NULL AS hasPublic,t.status,t.component_url AS componentUrl,t.created_at AS createdAt,t.updated_at AS updatedAt,COUNT(DISTINCT r.contact_hash) AS demand FROM topics t LEFT JOIN reports r ON r.topic_id=t.id WHERE COALESCE(t.public_title,${approvedTitle},${generic}) LIKE ? ESCAPE '\\' GROUP BY t.id ORDER BY t.created_at DESC,t.id LIMIT 21 OFFSET ?`).bind(`%${q}%`,offset).all<{id:string;title:string;approved:number;hasPublic:number;status:ReportStatus;componentUrl:string|null;createdAt:number;updatedAt:number;demand:number}>();
+  const needle=search.toLowerCase();
+  const requests:RequestTopic[]=rows.results.slice(0,20).map(({hasPublic,approved,title,...row})=>({...row,title:hasPublic||!approved?title:redact(title,120),approved:approved===1}))
+    .filter(row=>!needle||row.title.toLowerCase().includes(needle));
+  return {requests,hasMore:rows.results.length>20};
 }
 export function componentURL(value: unknown, env: Env): string {
   try {
@@ -117,7 +143,7 @@ export async function setStatus(env: Env, row: ReportRow, status: unknown, link:
 }
 export async function privateDetail(env: Env,id:string) {
   const row=await getReport(env,id);
-  const {token_hash: _token, payload_hash:_payload, contact_hash:_contact, ...report}=row; void _token; void _payload; void _contact;
+  const {token_hash: _token, payload_hash:_payload, contact_hash:_contact, status_key:_key, ...report}=row; void _token; void _payload; void _contact; void _key;
   const [files,jobs]=await Promise.all([env.DB.prepare("SELECT id,name,type,size,state FROM attachments WHERE report_id=?").bind(id).all(),env.DB.prepare("SELECT id,kind,state,attempts,last_error,provider_id,delivery_status,first_attempt_at,reviewed_at FROM outbox WHERE report_id=? ORDER BY created_at").bind(id).all()]);
   const shared=!!row.issue_number&&!!await env.DB.prepare("SELECT 1 AS x FROM reports WHERE issue_number=? AND id<>? AND triage_state='approved'").bind(row.issue_number,id).first();
   return {report,attachments:files.results,deliveries:jobs.results,shared};

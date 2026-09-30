@@ -4,6 +4,7 @@
 @import "../../registry/cojeev/styles/motion-drawer.css" layer(cojeev-states.tier-1);
 @import "../../registry/cojeev/styles/badge.css" layer(cojeev-states.tier-1);
 @import "../../registry/cojeev/styles/button.css" layer(cojeev-states.tier-1);
+@import "../../registry/cojeev/styles/dropdown-menu.css" layer(cojeev-states.tier-1);
 @import "../../registry/cojeev/styles/icon.css" layer(cojeev-states.tier-1);
 @import "../../registry/cojeev/styles/input.css" layer(cojeev-states.tier-1);
 @import "../../registry/cojeev/styles/label.css" layer(cojeev-states.tier-1);

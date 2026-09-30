@@ -18,7 +18,7 @@ const localOnly = context => context.route(/^https?:\/\//, route =>
 const openBug = async page => {
   await page.getByRole("button", { name: "Request a feature / Report a bug" }).click();
   await panel(page).waitFor();
-  await page.getByRole("button", { name: "Clear draft", exact: true }).waitFor();
+  await page.getByRole("button", { name: "More", exact: true }).waitFor();
   await panel(page).getByRole("tab", { name: "Report a bug", exact: true }).click();
 };
 const captureShape = page => page.locator(".report-crop img").evaluate(img => {
@@ -39,11 +39,10 @@ try {
   await page.goto(`${base}/requests/`, { waitUntil: "domcontentloaded" });
   await openBug(page);
 
-  const bugButtons = await panel(page).getByRole("button").allInnerTexts();
-  assert.ok(bugButtons.some(label => label.includes("Select area")), "Select area replaces This view");
-  assert.ok(!bugButtons.some(label => label.includes("This view")), "This view is gone");
-  assert.ok(bugButtons.some(label => label.includes("Full page")), "Full page is retained");
-  results.push("Bug attachments offer Select area and Full page; This view is gone");
+  assert.equal(await panel(page).getByRole("button", { name: "Select area", exact: true }).count(), 1, "Select area is offered by accessible name");
+  assert.equal(await panel(page).getByRole("button", { name: "Full page", exact: true }).count(), 1, "Full page is offered by accessible name");
+  assert.equal(await panel(page).getByRole("button", { name: /This view/ }).count(), 0, "This view is gone");
+  results.push("Bug toolbar offers Select area and Full page by accessible name; This view is gone");
 
   await page.evaluate(() => {
     const spacer = document.createElement("div"); spacer.id = "capture-spacer"; spacer.style.height = "12000px"; document.body.append(spacer);
@@ -117,11 +116,23 @@ try {
     }
     document.body.append(heavy);
   });
+  // Hold the capture open: the assets phase cannot finish before its images load, and these
+  // are answered after a fixed 4.5 s timer, so the card is up past 3 s however fast the page renders.
+  const holdImages = /t16-hold-\d\.png/;
+  await page.route(holdImages, async route => { await new Promise(resolve => setTimeout(resolve, 4500)); await route.fulfill({ status: 200, contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64") }).catch(() => {}); });
+  await page.evaluate(() => {
+    for (let index = 0; index < 3; index += 1) {
+      const image = document.createElement("img"); image.className = "capture-hold"; image.width = 40; image.height = 40; image.alt = "";
+      image.src = `t16-hold-${index}.png?n=${Math.random()}`; document.body.prepend(image);
+    }
+  });
   const attachmentsBefore = await page.locator(".report-attachments figure").count();
   await page.getByRole("button", { name: "Full page", exact: true }).click();
   const status = page.getByRole("dialog", { name: "Capturing a screenshot", exact: true });
   await status.waitFor({ timeout: 30000 });
-  assert.match(await status.innerText(), /elapsed/, "Elapsed seconds are shown beside the capture");
+  // Elapsed time shows only from 3 s; the held images above keep the capture open until then.
+  await status.getByText(/Still working · \d+s/).waitFor({ timeout: 30000 });
+  assert.match(await status.innerText(), /Still working · \d+s/, "Elapsed seconds are shown beside the capture");
   assert.ok(await page.evaluate(() => document.activeElement?.textContent?.includes("Cancel screenshot")), "Cancel screenshot takes focus so it is keyboard reachable");
   await page.screenshot({ path: `${output}/capture-status-desktop-light.png` });
   await page.keyboard.press("Escape");
@@ -131,9 +142,10 @@ try {
   assert.equal(await review(page).count(), 0, "A cancelled capture never reaches review");
   assert.equal(await page.locator(".report-attachments figure").count(), attachmentsBefore, "A cancelled capture attaches nothing");
   assert.equal(await sandboxes(page), 0, "Cancelling releases the capture sandbox");
-  await page.getByLabel("What went wrong?", { exact: true }).fill("The form is still usable after cancelling");
-  assert.equal(await page.getByLabel("What went wrong?", { exact: true }).inputValue(), "The form is still usable after cancelling");
-  await page.evaluate(() => { document.getElementById("capture-heavy")?.remove(); });
+  await page.getByLabel("Short summary", { exact: true }).fill("The form is still usable after cancelling");
+  assert.equal(await page.getByLabel("Short summary", { exact: true }).inputValue(), "The form is still usable after cancelling");
+  await page.unroute(holdImages, { behavior: "ignoreErrors" });
+  await page.evaluate(() => { document.getElementById("capture-heavy")?.remove(); document.querySelectorAll(".capture-hold").forEach(node => node.remove()); });
   results.push("Full page reports live status with elapsed seconds; keyboard Cancel discards it, attaches nothing and leaves the form usable");
 
   const fullStart = Date.now();

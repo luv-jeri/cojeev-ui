@@ -7,8 +7,8 @@ export type DiagnosticEvent = { at: string; kind: string; message: string };
 export type Diagnostics = { environment?: Record<string, string | number | boolean>; console?: DiagnosticEvent[]; network?: DiagnosticEvent[]; actions?: DiagnosticEvent[] };
 export type AttachmentManifest = { id: string; name: string; type: string; size: number; sha256: string };
 export type ReportPayload = { id: string; kind: ReportKind; title: string; description: string; email: string; references: string[]; pins: Pin[]; attachments: AttachmentManifest[]; diagnostics: Diagnostics | null; topicId?: string };
-export type Receipt = { id: string; token: string; status: ReportStatus; topicId: string | null; componentUrl?: string; email: "pending" | "sent" | "setup_required" | "needs_review"; emailDelivery?: string; issue: "pending" | "created" | "not_planned" | "setup_required" | "needs_review"; issueDelivery?: string; attachments: { id: string; state: string }[] };
-export type RequestTopic = { id: string; title: string; status: ReportStatus; componentUrl: string | null; createdAt: number; updatedAt: number; demand: number };
+export type Receipt = { id: string; token: string; status: ReportStatus; topicId: string | null; componentUrl?: string; email: "pending" | "sent" | "setup_required" | "needs_review"; emailDelivery?: string; issue: "pending" | "created" | "not_planned" | "setup_required" | "needs_review"; issueDelivery?: string; issueNumber?: number; issueUrl?: string; statusKey?: string; kind?: ReportKind; attachments: { id: string; state: string }[] };
+export type RequestTopic = { id: string; title: string; status: ReportStatus; componentUrl: string | null; createdAt: number; updatedAt: number; demand: number; approved: boolean };
 export type ComponentMatch = { name: string; title: string; description: string };
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 export function isUUID(value: unknown): value is string { return typeof value === "string" && UUID.test(value); }

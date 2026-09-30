@@ -39,7 +39,7 @@ try {
   assert.equal(attempts.length, 0);
 
   await page.goto(`${base}/privacy/`, { waitUntil: "domcontentloaded" });
-  await page.getByText("Analytics stays off until you choose to allow it.", { exact: true }).waitFor();
+  await page.getByText("PostHog analytics stays off until you choose to allow it.", { exact: true }).waitFor();
   assert.equal(await page.getByRole("button", { name: "Analytics choices", exact: true }).count(), 0);
   await page.goto(`${base}/docs/button/`, { waitUntil: "domcontentloaded" });
   await trigger.waitFor();

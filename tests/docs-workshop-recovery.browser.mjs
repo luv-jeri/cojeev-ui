@@ -26,8 +26,8 @@ try {
       assert.equal(await surface.getByRole('heading',{name:'The board is being connected.'}).count(),1);
       await surface.getByRole('button',{name:'Prepare a request',exact:true}).click();
       const dialog=page.getByRole('dialog').first();await dialog.waitFor();
-      await dialog.getByLabel('Component title',{exact:true}).fill('A useful workshop idea');
-      await dialog.getByLabel('Details, inspiration & links',{exact:true}).fill('A local preview of the complete request journey.');
+      await dialog.getByLabel('What component do you want?',{exact:true}).fill('A useful workshop idea');
+      await dialog.getByLabel('How would you use it?',{exact:true}).fill('A local preview of the complete request journey.');
       await dialog.getByLabel('Your email',{exact:true}).fill('local-check@example.com');
       await dialog.getByRole('button',{name:'Review request',exact:true}).click();
       assert.equal(await page.getByRole('button',{name:/Send request/}).isEnabled(),false,'no pretend connected submission');
