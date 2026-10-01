@@ -82,6 +82,7 @@ try {
 
     await trigger.click();
     await close.click();
+    await trigger.and(page.locator(":focus")).waitFor();
     assert.equal(await trigger.evaluate(node => node === document.activeElement), true);
 
     await trigger.click();
