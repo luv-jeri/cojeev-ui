@@ -76,7 +76,7 @@ export function safeRoute(value: string): string {
   try {
     const u = new URL(value, "https://local.invalid");
     // Only this library's static public routes are permitted verbatim.
-    if (/^\/(?:cojeev-ui\/)?(?:docs\/(?:[a-z][a-z0-9-]{0,60}\/?)?|requests\/?)$/.test(u.pathname) || u.pathname === "/" || u.pathname === "/cojeev-ui/") return u.pathname;
+    if (/^\/(?:(?:ui|cojeev-ui)\/)?(?:docs\/(?:[a-z][a-z0-9-]{0,60}\/?)?|requests\/?)$/.test(u.pathname) || u.pathname === "/" || u.pathname === "/ui/" || u.pathname === "/cojeev-ui/") return u.pathname;
     return u.pathname.split("/").map(p => p ? ":segment" : "").join("/").slice(0, 180);
   } catch { return "[route]"; }
 }

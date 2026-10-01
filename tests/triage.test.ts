@@ -246,7 +246,7 @@ test("TRIAGE_API is honoured only for a local address, so the token never goes t
   const env = (api: string) => ({ REPORTING_ADMIN_TOKEN: "t", TRIAGE_API: api }) as unknown as NodeJS.ProcessEnv;
   assert.equal(resolveConfig([], env("http://localhost:8787"), () => null).api, "http://localhost:8787");
   assert.equal(resolveConfig([], env("http://127.0.0.1:8787"), () => null).api, "http://127.0.0.1:8787");
-  for (const bad of ["https://feedback.example", "http://localhost.evil.example", "http://localhost@evil.example", "ftp://localhost", "localhost:8787"]) {
+  for (const bad of ["https://cojeev.com/ui", "https://beta.000h.cojeev.com/ui", "https://feedback.example", "http://localhost.evil.example", "http://localhost@evil.example", "ftp://localhost", "localhost:8787"]) {
     assert.throws(() => resolveConfig([], env(bad), () => null), /TRIAGE_API must be a localhost/, bad);
   }
 });

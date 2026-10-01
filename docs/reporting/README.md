@@ -15,7 +15,7 @@ In a second terminal:
 NEXT_PUBLIC_REPORTING_API_URL=http://localhost:8787 COJEEV_NEXT_DIST_DIR=.next-reporting npx next dev --port 3100
 ```
 
-Open `http://localhost:3100/cojeev-ui/`. The local maintainer token is in `.work/reporting/local-admin-token`; enter it in `/cojeev-ui/feedback-admin/`. Keep tokens out of chat, Git and URLs. Local reports persist in Wrangler's local D1/R2 storage; outbound email and GitHub are disabled. Local mode refuses remote request hosts.
+Open `http://localhost:3100/ui/`. The local maintainer token is in `.work/reporting/local-admin-token`; enter it in `/ui/feedback-admin/`. Keep tokens out of chat, Git and URLs. Local reports persist in Wrangler's local D1/R2 storage; outbound email and GitHub are disabled. Local mode refuses remote request hosts.
 
 ## Cloudflare setup
 
@@ -27,7 +27,7 @@ npm run reporting:deploy
 
 Provisioning creates a dedicated D1 database, private R2 bucket and managed Turnstile widget. It writes resource IDs/site key to `workers/reporting/wrangler.jsonc`, and secrets to the ignored mode-0600 `.work/reporting/cloud-secrets.json`. It does not copy credentials from other applications. Deploy sends the secrets over stdin, checks the bundle, then deploys the Worker.
 
-Set `NEXT_PUBLIC_REPORTING_API_URL` to the deployed Worker origin at site build time. The widget fetches the public Turnstile site key from `/v1/config`; `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is an optional explicit override. Allow the exact site origin in `ALLOWED_ORIGINS` and its hostname in Turnstile. No wildcard CORS and no secret in `NEXT_PUBLIC_*` variables. The current static Next export needs no server routes or hosting migration.
+Set `NEXT_PUBLIC_REPORTING_API_URL` to `https://feedback.cojeev.com` for production or `https://feedback-beta.cojeev.com` for beta at site build time. The sites are `https://cojeev.com/ui` and `https://beta.000h.cojeev.com/ui`; their browser Origins are `https://cojeev.com` and `https://beta.000h.cojeev.com`. The widget fetches the public Turnstile site key from `/v1/config`; `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is an optional explicit override. Allow the exact site origin in `ALLOWED_ORIGINS` and its hostname in Turnstile. Provisioning lists `cojeev.com` only when it creates a new widget. It never edits an existing one, so an existing widget needs `cojeev.com` added to its hostname list separately (the migration does this in the Cloudflare dashboard before traffic moves). No wildcard CORS and no secret in `NEXT_PUBLIC_*` variables. The current static Next export needs no server routes or hosting migration.
 
 ## GitHub
 
@@ -57,13 +57,13 @@ npm run reporting:check
 Configure the repository **Issues** webhook using the local GitHub CLI login:
 
 ```sh
-REPORTING_API_URL=https://cojeev-ui-reporting.unread-fyi.workers.dev node scripts/reporting.mjs github-webhook
+REPORTING_API_URL=https://feedback.cojeev.com node scripts/reporting.mjs github-webhook
 ```
 
 This idempotently creates or updates the matching callback, keeping its signing secret out of terminal output. The callback is `WORKER_ORIGIN/v1/github/webhook`; HMAC signatures and delivery IDs are validated. Repository webhook write permission is required. This command does not copy the local GitHub token into the Worker. To notify completion from GitHub, close an issue as completed with the `feedback:released` label. Component requests also need this exact line in the issue body:
 
 ```text
-Component: https://YOUR-LIBRARY-SITE/docs/component-name/
+Component: https://cojeev.com/ui/docs/component-name/
 ```
 
 The URL must belong to configured `SITE_URL` and return a live HTML page. Closing an issue alone does not send a release notification. A release resolves every report that shares the issue, and each reporter is emailed once. The maintainer view can also set planned/in-progress/live status; marking a request live notifies all associated requesters.
