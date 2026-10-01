@@ -63,8 +63,11 @@ test("canonical_and_social_urls_have_exactly_one_ui_prefix", async () => {
     assertCanonicalMetadata(await generateMetadata({ params: Promise.resolve({ component: entry.name }) }), `https://cojeev.com/ui/docs/${canonicalName}/`);
   }
   const root = metadataExports("app/layout.tsx").metadata;
-  assert.equal(String(root.metadataBase), "https://cojeev.com/ui");
   assertCanonicalMetadata(root, "https://cojeev.com/ui/");
+});
+
+test("layout_metadata_base_keeps_file_convention_images_at_one_ui_prefix", () => {
+  assert.equal(String(metadataExports("app/layout.tsx").metadata.metadataBase), "https://cojeev.com/");
 });
 
 test("component_aliases_keep_canonical_component_names", async () => {
