@@ -44,15 +44,13 @@ How task PRs merged (ruling in the ledger):
 
 ## In flight at the restart
 
-- **A1, fix round 1.**
-  - Worktree: `.worktrees/t-a1`, branch `task/a1-…` (run `git -C .worktrees/t-a1 branch --show-current`).
-  - Sol had committed `4bf2180` but had not written `task-A1-fix-r1-final.md`.
-  - The findings are in `task-A1-findings-r1.md`. They are Astra's 2 Important issues: the asset check skips relative and srcset references, and font matching compares the pathname only.
-  - Resume:
-    1. `git -C .worktrees/t-a1 status` and `git log --oneline -3`.
-    2. If the tree is clean and the report has `## Fix round 1` with test output, go straight to `rereview.sh A1 1 astra high <findings>`.
-    3. Otherwise re-run `fix.sh A1 1 high .superpowers/sdd/2026-10-01-move-to-cojeev-ui/task-A1-findings-r1.md`.
-    4. A1 also still needs its second-vendor full review (Gemini).
+- **A1, fix round 1: build DONE.**
+  - Commit `4bf2180` in `.worktrees/t-a1`; the worktree is clean.
+  - Both Astra Important findings are FIXED. 38 tests pass, and the build, export gate and browser checks pass.
+  - Next:
+    1. `rereview.sh A1 1 astra high .superpowers/sdd/2026-10-01-move-to-cojeev-ui/task-A1-findings-r1.md`.
+    2. The second-vendor full review (`review.sh A1 gemini high`).
+    3. Then the PR and merge.
 
 ## Next steps, in order
 
