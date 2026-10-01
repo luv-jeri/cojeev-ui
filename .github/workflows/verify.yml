@@ -502,7 +502,7 @@ jobs:
           name: release-${{ github.sha }}
           path: artifacts/release/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
           include-hidden-files: false
       # Sanitized browser-gate evidence, kept on failure as well as success so a failed
       # gate can be read. Explicit whitelist of synthetic gate output only: no release
