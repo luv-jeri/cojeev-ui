@@ -59,7 +59,7 @@ Exact values come from the spec. Every task implicitly includes this section.
 - **I1:** A promotion whose target phase equals that side's live phase is permitted, subject to the same peer and identity checks. This is how code updates ship within a listed pair, including routine releases after B9. The pair table's "next promotion" column governs phase changes only.
 - **I2: withdrawn in review round 1.** The spec's Rollback section forbids replaying a pre-migration artifact (root-only assets, old route set, old CORS-only config, or a missing service binding), and before step 9 rollback means restoring a permitted additive-compatible pair. So there is no `wrangler rollback` to a B1 version and no deletion of the `cojeev.com/ui*` route, at any step. A broken `prepared` API or `mounted` website is handled inside the pair table: a `rollback.yml` dispatch to an earlier variant of the same phase, or fix forward through a new `main` run and a same-phase `promote.yml` dispatch (I1).
 - **I3:** During the migration, pushes to `main` build and verify but do not deploy. `promote.yml` is the only deploy path. A20's deploy jobs only report the live pair (`live-pair`) and skip. Automatic same-phase deploys return only with A25, a post-B10 follow-up. Until A25 merges, every routine release is two `promote.yml` dispatches per environment (B10 step 5).
-- **I4:** The pinned baseline is the `release-<sha>` artifact from A0's `main` run. Every later build needs it, because A14 copies its retained root site into every website variant, including after B9. A GitHub artifact expires after 90 days at most, so B1 copies the downloaded artifact, unchanged, as `release-<commit>.tar.gz` onto a GitHub prerelease tagged `migration-baseline`, which does not expire. CI and builders download the baseline from that prerelease. The manifest digest in `scripts/release-baseline.json` still verifies it (A14's `readBaseline`, through the existing schema-1 `verifyManifest`). A manifest digest is always `manifestDigest(manifest)`, the sha256 of the compact `JSON.stringify` of the parsed manifest, never `shasum` of the pretty-printed `manifest.json` file. A0's 90-day retention only has to last until B1 makes that copy.
+- **I4:** The pinned baseline is the `release-<sha>` artifact from A0's `main` run. Every later build needs it, because A14 copies its retained root site into every website variant, including after B9. A GitHub artifact expires after 90 days at most, so B1 copies the downloaded artifact, unchanged, as `release-<commit>.tar.gz` onto a GitHub prerelease tagged `migration-baseline`, which does not expire. CI and builders download the baseline from that prerelease. The manifest digest in `scripts/release-baseline.json` still verifies it (A14's `readBaseline`, through the existing schema-1 `verifyManifest`). A manifest digest is always `manifestDigest(manifest)`, the sha256 of the compact `JSON.stringify` of the parsed manifest, never `shasum` of the pretty-printed `manifest.json` file. A0's 90-day retention only has to last until B1 makes that copy. Owner approved the public prerelease as designed on 2026-10-01, with a secret scan before upload (B1 step 4).
 - **I5:** The coming-soon checkout has no robots source file (checked 2026-10-01: none in `public/`, `scripts/`, `src/` or `dist/`). B8 therefore follows the decision rule recorded in B1.
 
 ## Review Focus
@@ -169,6 +169,8 @@ Launch rule: start every task the moment its dependencies merge. P1 starts immed
   - `lib/site-config.ts:7–8`: defaults become `https://cojeev.com/ui`.
   - `components/brand/brand-sculpture.tsx`: `next/image` `src` must carry the base path, per Next docs (Images section of `basePath.md`).
   - `app/docs/layout.tsx:22`: default `"/ui"`.
+  - `lib/analytics/client.ts:147`: the `sanitizeRoute` fallback site URL becomes `https://cojeev.com/ui`. CI builds set no `NEXT_PUBLIC_SITE_URL`, so without this the rewritten `/ui` mount in `tests/analytics.browser.mjs:358` reports `/ui/docs/button/` instead of `/docs/button/` (review round 2).
+  - `tests/analytics.test.ts:258–259,283,359–361`: the `/cojeev-ui` inputs become `/ui`, and the `/cojeev-ui-other/docs/` boundary case becomes `/uikit/docs/`. A9 adds its named tests on top.
 - Mechanical `/cojeev-ui`→`/ui` substitutions:
   - In the 16 inline `vite.preview({base:"/cojeev-ui/"…})` calls and every `/cojeev-ui` default URL in the Appendix A preview scripts (`scripts/check-*.mjs`, `scripts/run-component-polish.mjs`, `scripts/run-reporting-browser.mjs:12,22,46`, `scripts/audit-owned-scrollports.mjs`, `scripts/capture-recovery-finish.mjs`).
   - In the 107 `tests/*.browser.mjs` files (123 occurrences).
@@ -201,10 +203,10 @@ Launch rule: start every task the moment its dependencies merge. P1 starts immed
 | `ui_brand_and_metadata_assets_resolve` | `tests/ui-export.test.mjs` | Every brand, `icon.png`, `opengraph-image.png` and `twitter-image.png` reference in fixture HTML starts with `/ui/` (or `https://cojeev.com/ui/`) and maps to an existing file under the export root. A missing file or a root-relative `/brand/` fails. |
 | `raw_export_remains_unwrapped` | `tests/ui-export.test.mjs` | `checkUiExport` passes a fixture whose `index.html`, `_next/` and `r/` sit at the export root. It fails a fixture nested as `ui/index.html` and a fixture with no root `index.html`. Packaging (A14) alone adds the `site/ui/` level. |
 
-- [ ] 1. Follow the task loop. Command: `node --import tsx --test tests/ui-base.test.mjs tests/ui-export.test.mjs`.
+- [ ] 1. Follow the task loop. Command: `node --import tsx --test tests/ui-base.test.mjs tests/ui-export.test.mjs tests/analytics.test.ts`.
 - [ ] 2. Extra commands:
   - `npm run build && node scripts/check-ui-export.mjs --dir out`. Expect exit 0 and `out/index.html` present at the export root (no `out/ui/`).
-  - `node tests/docs-search.browser.mjs`, as a smoke test of one rewritten browser mount.
+  - `node tests/docs-search.browser.mjs`, as a smoke test of one rewritten browser mount, and `node tests/analytics.browser.mjs`, which proves the route bucket with no `NEXT_PUBLIC_SITE_URL` set.
 - [ ] 3. Commit `feat: build and preview 000h under /ui`.
 
 ---
@@ -542,7 +544,7 @@ All three blocks also add `"PHASE":"unconfigured","DEPLOYMENT_ID":"unconfigured"
 
 **Files:**
 - Modify:
-  - `lib/analytics/client.ts:143–151`: the base comes from the configured site URL, stripping only the exact boundary.
+  - `lib/analytics/client.ts:143–151`: the base comes from the configured site URL, stripping only the exact boundary. A1 already moved its fallback to `https://cojeev.com/ui`.
   - `app/privacy/page.tsx`: add the verbatim migration sentence near the drafts/preferences text.
   - `tests/analytics.test.ts`, `tests/analytics.browser.mjs` and `tests/analytics-consent.browser.mjs`.
 - Create `tests/storage-coexistence.test.mjs`.
@@ -888,6 +890,7 @@ Functions:
     - `scripts/release.mjs:52` (`buildRelease`): A14 removes it.
     - `scripts/release.mjs:67` (`readArtifact`), `scripts/operations.mjs:133` (`backup`) and `scripts/operations.mjs:158` (`prepareDatabaseRecovery`): A16b removes them, when the artifact readers and the `tests/operations.test.mjs:155–262` fixture move to packaged variants.
   - `tests/operations.test.mjs:80–93`.
+  - `workers/registry-host/test/static-assets.test.mjs:13–16` (review round 2). The source `FIXED_WORKER_FIRST` list has no root-text exclusions, so the source-config loop keeps only what it can prove: `/_next/static/chunks/app.js`, `/ui/_next/static/chunks/app.js`, `/ui/_next/static/media/font.woff2`, `/ui/index.txt` and `/ui/docs/shape/__next.docs.$d$component.__PAGE__.txt` bypass the Worker, and its current Worker-run paths plus `/ui/` and `/ui/docs/button/` still run it. The retained-text bypasses `/index.txt` and `/docs/shape/__next.docs.$d$component.__PAGE__.txt` move to a second loop over the generated packaged list `workerFirstList(await retainedTextInventory(<A11 packaged-site fixture>))`, unchanged as assertions.
 - Create `tests/source-config.test.mjs`.
 
 **Interfaces:**
@@ -935,7 +938,7 @@ Functions:
 | `default_and_environment_configs_agree` | `tests/source-config.test.mjs` | For each `wrangler.jsonc`, the default block's `routes`, `services`, `vars` and `assets` deep-equal `env.production`'s. Each source block passes `validateDeploymentConfig(..., {source: true})` once `assets.directory` is set to `../site`. For both environments `environmentConfig(env).site === legacySite` (transitional; A20 deletes `site` and this assertion). |
 
 - [ ] 1. Follow the task loop. Command: `node --test tests/operations.test.mjs tests/source-config.test.mjs`.
-- [ ] 2. Extra: `npm run registry-host:test && npm run reporting:test && node --test tests/release.test.mjs tests/release-live.test.mjs`, to confirm the kept `site` field and the temporary `{source: true}` callers changed nothing.
+- [ ] 2. Extra: `npm run registry-host:test && npm run reporting:test && node --test tests/release.test.mjs tests/release-live.test.mjs`, to confirm the kept `site` field and the temporary `{source: true}` callers changed nothing, and that the split `static-assets.test.mjs` loops pass.
 - [ ] 3. Commit `feat(release): exact routes, bindings, origins and phase vars in deployment guards`.
 
 **Failure rule:** keep the existing `tests/operations.test.mjs:80–93` assertions about name, D1 and the rejected `false`, `["/*"]` and `["/*","!/*"]` shapes. Change only the `true` and three-entry acceptance, and give the reason in the PR.
@@ -1184,12 +1187,13 @@ Functions:
   - `scripts/live-contracts.mjs`: the contract sets below.
   - `tests/live-contracts.test.mjs`.
 - Modify:
-  - `scripts/release.mjs:166–177`: today's three route probes are replaced by a call to `contractProblems`. This removes the last `target.site` read in `release.mjs` (L168). The `live` CLI's website `baseline` now resolves through `readBaseline` (A14), so `BASELINE_<ENV>_DIRECTORY` is required for a baseline website.
+  - `scripts/release.mjs:166–177`: today's three route probes are replaced by a call to `contractProblems`. This removes the last `target.site` read in `release.mjs` (L168). The `live` CLI's website `baseline` now resolves through `readBaseline` (A14), so `BASELINE_<ENV>_DIRECTORY` is required for a baseline website, and only for one.
   - `scripts/check-launch-readiness.mjs:4–13,18–30,35–52`: `--url` defaults to the canonical base, and `--legacy-url` adds the legacy registry checks.
 
 **Interfaces:**
 - `contractProblems(environment, {website: Expected, api: Expected}, {fetcher, baseline, robotsBefore}): Promise<string[]>`. `liveProblems` calls it only after both identities match, passing through its own `baseline` and `robotsBefore` options. Every problem here is permanent.
-  - The `live` CLI fills `baseline` from `readBaseline(environment)` and `robotsBefore` from the committed `docs/reports/2026-10-01-move-baseline/apex-robots.before.txt` (empty when the record says `robots: "absent"`).
+  - The `live` CLI fills `baseline` from `readBaseline(environment)` only when `--website=baseline`. For a variant website it passes the committed `readBaselineRecord(environment)` (no artifact I/O), which carries the production `apexProbes`, so a variant-only check never reads `BASELINE_<ENV>_DIRECTORY` (review round 2: A23 downloads the artifact only for a baseline peer or current, and A25's jobs never do).
+  - It fills `robotsBefore` from the committed `docs/reports/2026-10-01-move-baseline/apex-robots.before.txt` (empty when the record says `robots: "absent"`).
   - A22's rehearsal passes its own synthetic values instead (see A22).
 - **Contract set for a variant website** (mounted, regenerated or redirect):
   - **Canonical** (`canonical-*`):
@@ -1205,7 +1209,7 @@ Functions:
     - each distinct `og:image` and `twitter:image` URL → 200 `image/png`.
   - **Private pages** (`private-*`): `/ui/track/` HTML has robots `noindex,nofollow` and `<meta name="referrer" content="no-referrer">`. `/ui/feedback-admin/` HTML has robots `noindex`.
   - **Cloudflare beacon** (`beacon-duplicate`): `/ui/` HTML contains at most one `static.cloudflareinsights.com` beacon script (the edge may inject one; spec "avoid duplicate beacon injection").
-  - **RSC chains** (`rsc-*`): the first canonical RSC chain (`site/ui/**/*.txt`) and the first retained legacy chain (`site/**/*.txt` outside `ui/`) in the manifest, followed live with A11's `followChain` and a `{fetch}` router over `fetcher`. Each ends 200 `text/x-component` at a path under its own prefix, never crossing between `/ui` and root.
+  - **RSC chains** (`rsc-*`): the first canonical RSC file (`site/ui/**/index.txt` or `site/ui/**/__next.*.txt`) and the first retained legacy RSC file (the same names outside `ui/`) in the manifest; `robots.txt` and any other `.txt` are never selected. Each is followed live with A11's `followChain` and a `{fetch}` router over `fetcher`. Each must end 200 with `content-type` `text/plain` (what the static export's `.txt` assets are served as; Next's export client accepts it, `next/dist/client/components/router-reducer/fetch-server-response.js:137`) or `text/x-component`, with body sha256 equal to the manifest entry, at a path under its own prefix, never crossing between `/ui` and root (review round 2).
   - **Registry** (`registry-*`):
     - For every manifest file under `site/r/` and `site/ui/r/`, GET the legacy `/r/<f>` and canonical `/ui/r/<f>`. Each must give 200, a JSON content type, no `Location`, and sha256 equal to the manifest entry. A live digest header is ignored.
     - `HEAD /r/button.json` → 200 with no body.
@@ -1229,9 +1233,9 @@ Functions:
 |---|---|
 | `live_registry_hashes_match_promoted_artifact_not_only_each_other` | Both hosts serve identical but stale bytes → `registry-hash-mismatch:<path>`. Correct bytes pass. An `x-digest` header claiming the right hash does not help. |
 | `live_gate_checks_canonical_and_legacy_contracts_separately` | Breaking only the redirect matrix gives only `legacy-*` problems. Breaking only bare `/ui` gives only `canonical-*`. An additive manifest expects legacy 200 pages; a redirect manifest expects the 301s. |
-| `baseline_website_contracts_skip_ui_and_use_pinned_hashes` (plan-added; review round 1) | A baseline website with `/ui/` returning 404 passes. Legacy `/r/<f>` bytes differing from `baseline.hashes` fail with `registry-hash-mismatch:<path>`. No `/ui` URL is requested. A missing baseline directory fails before any request. |
+| `baseline_website_contracts_skip_ui_and_use_pinned_hashes` (plan-added; review round 1) | A baseline website with `/ui/` returning 404 passes. Legacy `/r/<f>` bytes differing from `baseline.hashes` fail with `registry-hash-mismatch:<path>`. No `/ui` URL is requested. A missing baseline directory fails before any request. A variant-website `live` call with `BASELINE_<ENV>_DIRECTORY` unset never calls `readBaseline` and takes `apexProbes` from the record. |
 | `deployed_seo_and_private_pages_match_canonical_metadata` (plan-added; spec completion row 21) | Each listed page passes with correct metadata. Each of these fails with its `seo-*` or `private-*` code: a doubled `/ui/ui/`, a canonical on the legacy host, the alias canonical pointing at itself, an `og:image` answering `text/html`, and track without `no-referrer`. Two beacon scripts give `beacon-duplicate`; one passes. |
-| `live_rsc_chains_stay_under_their_own_prefix` (plan-added) | A canonical chain redirected to a root path fails `rsc-canonical`. A legacy chain redirected under `/ui` fails `rsc-legacy`. |
+| `live_rsc_chains_stay_under_their_own_prefix` (plan-added) | A canonical chain redirected to a root path fails `rsc-canonical`. A legacy chain redirected under `/ui` fails `rsc-legacy`. A chain ending 200 `text/plain` with manifest bytes passes; wrong bytes fail. A manifest whose first `site/ui/` text file is `robots.txt` selects the first `index.txt` or `__next.*.txt` instead. |
 | `apex_robots_transition_is_accepted_only_as_reviewed` (plan-added) | Robots with the recorded status passes. 200 `text/plain` with exactly the appended Sitemap line passes. 200 with an extra `Disallow: /ui` fails. With `robots: "absent"`, a 404 passes and a 200 holding only the Sitemap line passes. |
 
 - [ ] 1. Follow the task loop. Command: `node --test tests/live-contracts.test.mjs tests/live-identity.test.mjs tests/release-live.test.mjs`.
@@ -1300,8 +1304,8 @@ This one read-only CLI replaces both the former `steady-pair` command and A23's 
 **Interfaces:**
 - `promoteApi(directory, environment, commit, digest, expectedWebsiteId, {rollback, run, backupDatabase, cf, fetcher, evidence, peer})`.
 - `promoteWebsite(directory, environment, commit, digest, expectedApiId, {rollback, run, cf, fetcher, evidence, peer})`.
-  - `expectedXId` is a `deploymentId` or the literal `baseline`.
-  - `peer = {directory: PEER_DIRECTORY, digest: PEER_DIGEST}` (env vars). It is required unless the expected peer is `baseline`. It must verify with `readVariant` as the other side, with `deploymentId === expected`.
+  - `expectedXId` is a `deploymentId`, the literal `baseline`, or `baseline:<versionId>`. Both baseline forms resolve through `readBaselineRecord(environment)` to `baseline:<record versionId of that side>` before step 3 compares it with A16a's live `id`; a `baseline:<versionId>` naming any other version throws `Stale peer` (review round 2). The resolved full ID is what step 5 passes to `assertGates`.
+  - `peer = {directory: PEER_DIRECTORY, digest: PEER_DIGEST}` (env vars). It is required unless the expected peer is either baseline form. It must verify with `readVariant` as the other side, with `deploymentId === expected`.
   - `evidence` is the `PROMOTION_EVIDENCE` file path.
 - CLI (exactly the spec's):
   - `node scripts/release.mjs promote-api ENV SHA DIRECTORY DIGEST EXPECTED_WEBSITE_ID [--rollback]`
@@ -1329,6 +1333,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 | Test | Asserts |
 |---|---|
 | `promotion_rejects_unlisted_phase_pairs_and_stale_peer` (stale-peer half; the phase half is in A24) | An expected peer ID differing from live, a peer artifact whose ID differs from the argument, and a baseline peer whose Cloudflare version differs from the record each throw before any `run` call and any mutating `cf` call. An unlisted target throws the same way. |
+| `start_to_prepared_resolves_baseline_peer_through_record` (plan-added; review round 2) | From the live start pair (baseline, baseline), `promoteApi` to `prepared` with expected website `baseline`, and again with `baseline:<recorded website versionId>`, reaches Prepared with no `PEER_DIRECTORY`: `assertGates` receives `baseline:<recorded website versionId>`. `baseline:<other versionId>` throws `Stale peer` before any `run` call. |
 | `api_promotion_does_not_deploy_website` | The `run` calls are exactly `[d1 migrations apply, deploy api config]`, or only `[deploy api config]` with `--rollback`. No call names `website/wrangler.jsonc`. |
 | `website_promotion_cannot_revert_or_prematurely_switch_site_url` | The `run` calls are exactly `[deploy website config]`: no secrets file, no D1 and no API config, even when the fixture directory holds a stale `api/wrangler.jsonc`. Website `regenerated` while the live API is `prepared` is refused. |
 | `untargeted_migration_deployment_is_rejected` | CLI `deploy` and `rollback` exit 1 with the message and zero `run` calls. A schema-1 artifact given to `promote-*` is refused. With the temporary option gone, `backup` and `prepareDatabaseRecovery` reject a source config whose vars are `"unconfigured"` and accept the packaged `api-linked` fixture. |
@@ -1356,6 +1361,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
     - `permits` treats absolute same-origin URLs as `'self'`, comparing by `new URL().origin`.
     - The forbidden check (L42) compares origins: the other environment's `api`, `legacySite` origin and `origin`, instead of `opposite.site`.
   - `tests/release.test.mjs:120`: the same move from `opposite.site` to the other environment's `legacySite` and `origin`.
+  - `tests/release.test.mjs:109–112`: the CSP fixture page moves from `site/index.html` to `site/ui/index.html` (create `site/ui`), because the gate now fetches `${canonicalSite}/`, which `directoryAssets` maps to `site/ui/index.html` (review round 2).
   - `scripts/check-structured-data.mjs:35,50–55`: `--dir` points at a variant's `site/ui`, and the new `--site` sets the canonical base. It asserts exact canonical URL strings.
   - `scripts/release-install.mjs:12,16,23,27,31`:
     - `readVariant`.
@@ -1389,7 +1395,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 | `beta_robots_and_headers_block_indexing` (headers half; the robots half is in A6) | A packaged beta `_headers` has `/*` with `X-Robots-Tag: noindex`. Through the A11 harness, beta `/ui/_next/static/chunks/new.js` (served by the asset layer) carries noindex. |
 | `asset_chain_gate_rejects_escaping_canonical_chain` | `check-asset-chains` fails a fixture variant whose `/ui` export was copied to the root instead of `site/ui`. |
 
-- [ ] 1. Follow the task loop. Command: `node --test tests/packaged-gates.test.mjs tests/production-gate.test.mjs`.
+- [ ] 1. Follow the task loop. Command: `node --test tests/packaged-gates.test.mjs tests/production-gate.test.mjs tests/release.test.mjs`.
 - [ ] 2. Extra, on the A14 local variants: for each website variant run `node scripts/release-csp.mjs <env> <variant dir>` and `node scripts/check-asset-chains.mjs <variant dir>`. Then run `node scripts/release-install.mjs <env> <sha> <website-regenerated dir> <digest>`, which uses the real shadcn 4.21.0 CLI.
 - [ ] 3. Commit `feat(release): packaged CSP, structured-data, chain and dual-path install gates`.
 
@@ -1415,7 +1421,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
   - production: `gate@example.com` (RFC 2606 reserved, so mail to it cannot reach a person);
   - beta: an address already listed in beta `BETA_TESTER_EMAILS`. The beta tester allowlist is not widened.
   - The gate only compares `report.email` with it; neither the plan, the gate nor the logs ever print it.
-- **Emails the gate can cause.** Creating the report (B3) queues `email_received`, and possibly `email_owner_received`, to the contact. The success step queues `email_resolved` only if the report's `triage_state` is `approved`. On beta those messages reach the allowlisted tester.
+- **Emails the gate can cause.** Creating the report (B3) queues `email_received` to the contact, and possibly `email_owner_received`, which goes to the configured maintainer address, never to the report's contact (`workers/reporting/src/delivery.ts:129–134`). The success step queues `email_resolved` to the contact only if the report's `triage_state` is `approved`. On beta the contact messages reach the allowlisted tester; in production they go to the reserved domain.
 - **Admin response fields.** `GET /v1/admin/reports/:id` returns `{report, attachments, deliveries, shared}`. The gate reads only `report.status`, `report.component_url`, `report.email`, `report.issue_number`, `report.topic_id` and `report.id`. `PATCH` takes `{status, componentUrl}`. A non-resolved status stores `component_url = null`, and a status change applies to every report in the same topic (`workers/reporting/src/reports.ts:138–140`).
 - The gate prints only problem codes. It never prints report fields.
 - Every admin call sends `Authorization: Bearer <token>`, and every non-GET also sends `Origin: <environment origin>`.
@@ -1654,7 +1660,8 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
     - The automatic steady-state deploy (peer-run lookup, artifact download, `promote-api` then `promote-website`, then `live`) is deferred to **A25**, after B10.
 - Modify `scripts/release-config.mjs`: delete the transitional `site` field, after `git grep -n 'target\.site\|opposite\.site'` is empty. Drop its transitional assertion from `tests/source-config.test.mjs`.
 - Modify `.github/workflows/health.yml` and `.github/workflows/recovery.yml` only if A15a's `operations-health.mjs` CLI changed shape. Their scheduled mode passes no expected IDs, so A15a evaluates the pair table (the start state included). `recovery.yml` L39–47 keeps restoring only into the scratch D1.
-- Create `tests/verify-workflow.test.mjs`. Modify `tests/ci-reuse-wiring.test.mjs` only where it names the removed `beta_digest` and `production_digest` outputs.
+- Create `tests/verify-workflow.test.mjs`. Modify `tests/ci-reuse-wiring.test.mjs` only where it names the removed `beta_digest` and `production_digest` outputs, and at L94, where `build-pair` in the must-still-run-on-reuse pattern becomes `build-variants`.
+- Modify `tests/ci-scope.test.mjs` (review round 2): `build-pair` becomes `build-variants` at L678 (full-job gate list), L1068 (still conditioned on `run_release` and never on `run_catalogue`) and L1360 (`release.mjs build-variants`, still reading `run_release`), and in the L415 and L589 `doesNotMatch` patterns, so the scoped and maintenance jobs still must not package. Each assertion's depth condition is unchanged.
 
 **Named tests (`tests/verify-workflow.test.mjs`; parse with `yaml` as in `tests/ci-reuse-wiring.test.mjs:5`):**
 
@@ -1758,9 +1765,17 @@ No production change. The owner is told when it starts. Step 4 alone is outward-
    - compute the digest with the common-rules one-liner on `"$TMPDIR/baseline/<env>/manifest.json"`;
    - verify: `node scripts/release.mjs verify <env> $C0 "$TMPDIR/baseline/<env>" <digest>` (the C0 schema-1 verifier).
    - Stop on any failure.
-4. **OWNER GO REQUIRED (public prerelease, I4).**
+4. **OWNER GO REQUIRED (public prerelease, I4; approved as designed by the owner on 2026-10-01).**
    - Pack the archive: `tar -czf "$TMPDIR/release-$C0.tar.gz" -C "$TMPDIR/baseline" beta production`.
    - Show the owner `tar -tzf "$TMPDIR/release-$C0.tar.gz" | cut -d/ -f1-2 | sort -u`. It must list only `site`, `website`, `api` and `manifest.json` under each environment. Secrets are never in artifacts.
+   - Secret scan of the archive itself (owner decision 2026-10-01). Extract it into an empty directory, then scan. The patterns are the token prefixes of `scripts/deployment-diagnostics.mjs:30` plus private keys and AWS keys, and both commands print file paths only, never a matched value:
+     ```bash
+     mkdir "$TMPDIR/baseline-scan" && tar -xzf "$TMPDIR/release-$C0.tar.gz" -C "$TMPDIR/baseline-scan"
+     grep -rIlE -e '(^|[^A-Za-z0-9_])(github_pat_|gh[pousr]_|sk-|re_)[A-Za-z0-9_-]{20,}' -e 'BEGIN [A-Z ]*PRIVATE KEY' -e 'AKIA[0-9A-Z]{16}' "$TMPDIR/baseline-scan"
+     find "$TMPDIR/baseline-scan" \( -name '.dev.vars*' -o -name '.env*' -o -name '*secret*' \) -print
+     ```
+     A pass is no output from either command. **Stop on any hit:** do not upload, do not print the file's contents, and hand the listed paths to the owner.
+   - Show the owner the scan result (both commands and their output, empty on a pass) next to the listing. `gh release create` runs only after the owner's yes to both.
    - After the yes: `gh release create migration-baseline "$TMPDIR/release-$C0.tar.gz" --prerelease --target $C0 --title "Migration baseline $C0" --notes "Unchanged release-$C0 artifact from run $R0, pinned for the move to cojeev.com/ui."`.
 5. Record Worker versions:
    - `CF GET accounts/$ACCOUNT/workers/scripts/<name>/deployments | jq '.result.deployments[0] | {created_on, versions}'` for `cojeev-ui-registry`, `cojeev-ui-registry-beta`, `cojeev-ui-reporting`, `cojeev-ui-reporting-beta` and `cojeev-coming-soon`.
@@ -1833,7 +1848,7 @@ No production change. The owner is told when it starts. Step 4 alone is outward-
 2. Synthetic gate reports (A18 rules), one per environment:
    - Set each GitHub environment's `COMPONENT_GATE_CONTACT` variable: `gate@example.com` for production, and for beta an address already in beta `BETA_TESTER_EMAILS` (beta `accept()` enforces the allowlist; it is not widened). Never print either value.
    - The owner submits one request report through that environment's current report form: title `Cojeev migration gate <env> <8 random hex>`, fictional text, that environment's contact, no attachment.
-   - Submitting queues `email_received`, and possibly `email_owner_received`, to that contact. Resolving queues `email_resolved` only if the report's triage is approved. On beta these reach the allowlisted tester; in production they go to the reserved domain.
+   - Submitting queues `email_received` to that contact, and possibly `email_owner_received` to the configured maintainer (never the contact; `workers/reporting/src/delivery.ts:129–134`). Resolving queues `email_resolved` to the contact only if the report's triage is approved. On beta the contact messages reach the allowlisted tester; in production they go to the reserved domain. The maintainer notification reaches the maintainer in both environments.
    - Record its ID only as that environment's `COMPONENT_GATE_REPORT_ID` variable.
 3. Beta: dispatch `promote.yml` with `environment=beta side=api target_phase=prepared`, `beta_api_prepared_digest`, and peer/current `baseline`. Required gates: none.
    - Then check preflight from `https://beta.000h.cojeev.com` (echoed) and `https://000h.cojeev.com` (echoed for production only).
@@ -2204,7 +2219,7 @@ Every spec requirement maps to a task or a Part B step. "Live at" names the step
 
 ### Plan-added tests (not spec invariants)
 
-These back Review Focus items, plan interpretations and review round 1 findings. They are kept alongside the 113.
+These back Review Focus items, plan interpretations and review round 1 and 2 findings. They are kept alongside the 113.
 
 | Test | Task | Why |
 |---|---|---|
@@ -2217,6 +2232,7 @@ These back Review Focus items, plan interpretations and review round 1 findings.
 | `split_edge_identity_retries_within_budget`, `missing_identity_fails_immediately` | A15a | Review Focus 3; permanent identity failures |
 | `baseline_website_contracts_skip_ui_and_use_pinned_hashes`, `deployed_seo_and_private_pages_match_canonical_metadata`, `live_rsc_chains_stay_under_their_own_prefix`, `apex_robots_transition_is_accepted_only_as_reviewed` | A15b | round 1: baseline acceptance, deployed SEO, live RSC chains, robots absent or present |
 | `live_pair_reports_only_the_redirect_pair_as_steady`, `website_rollback_to_mounted_is_refused_after_redirect_was_reached`, `live_pair_ids_match_gate_evidence_format` | A16a | merged live-pair CLI; redirect history; evidence ID format (round 1) |
+| `start_to_prepared_resolves_baseline_peer_through_record` | A16b | round 2: the literal `baseline` peer resolves through the record, so B3 has a valid input |
 | `asset_chain_gate_rejects_escaping_canonical_chain` | A17 | packaged chain gate |
 | `deployed_gate_refuses_non_synthetic_report` | A18 | synthetic gate report, real admin fields (round 1) |
 | `ui_live_search_reload_and_console_are_clean` | A19 | round 1: search, reload and console in the `ui-browser` gate |
