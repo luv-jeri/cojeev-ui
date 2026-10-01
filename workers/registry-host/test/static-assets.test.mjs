@@ -22,7 +22,7 @@ test('files that skip the Worker get exactly the headers the Worker would have a
   for(const environment of ['beta','production']) {
     const file=rules(siteHeaders(environment));
     for(const [path,type] of [['/_next/static/chunks/app.js','text/javascript'],['/docs/__next._tree.txt','text/plain'],['/feedback-admin/__next._tree.txt','text/plain'],['/admin/index.txt','text/plain']]) {
-      const worker=await host.fetch(new Request(`https://example.com${path}`),{ENVIRONMENT:environment,RELEASE:'a'.repeat(40),ASSETS:{fetch:async()=>new Response('asset',{headers:{'content-type':type}})}});
+      const worker=await host.fetch(new Request(`https://${environment === 'beta' ? 'beta.000h.cojeev.com' : '000h.cojeev.com'}${path}`),{ENVIRONMENT:environment,RELEASE:'a'.repeat(40),ASSETS:{fetch:async()=>new Response('asset',{headers:{'content-type':type}})}});
       const applied=file.filter(([pattern])=>pattern.test(path)).flatMap(([,headers])=>headers).sort();
       const expected=[...worker.headers].filter(([name])=>name!=='content-type').sort();
       assert.deepEqual(applied,expected,`${environment} ${path}`);

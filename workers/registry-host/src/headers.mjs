@@ -10,6 +10,11 @@ export function securityHeaders(environment) {
   };
 }
 
+/** Logical admin routes are hidden from indexing, including paths without a trailing slash. */
+export function noindexPath(logical) {
+  return /^(?:\/ui)?\/(?:admin|feedback-admin)(?:\/|$)/.test(logical);
+}
+
 /**
  * The release writes this as `site/_headers`. Files that skip the Worker (see run_worker_first)
  * are free to serve, so Cloudflare attaches the same headers the Worker would have added.
@@ -20,6 +25,6 @@ export function siteHeaders(environment) {
   // _headers also applies to 404s, and a year-cached 404 would outlive a rollback that restores the file.
   const rules=environment === 'beta'
     ? {'/*':{...securityHeaders(environment),...noindex}}
-    : {'/*':securityHeaders(environment),'/admin/*':noindex,'/feedback-admin/*':noindex};
+    : {'/*':securityHeaders(environment),'/admin/*':noindex,'/feedback-admin/*':noindex,'/ui/admin/*':noindex,'/ui/feedback-admin/*':noindex};
   return Object.entries(rules).map(([pattern,headers])=>`${pattern}\n${Object.entries(headers).map(([name,value])=>`  ${name}: ${value}`).join('\n')}\n`).join('\n');
 }
