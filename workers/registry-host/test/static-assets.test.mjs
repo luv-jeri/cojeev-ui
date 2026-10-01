@@ -19,8 +19,9 @@ test('static files skip the Worker so Cloudflare serves them free; pages, regist
   }
 });
 
-// A `_headers` block is a path pattern followed by indented `name: value` lines.
-const rules=text=>text.trim().split(/\n\s*\n/).map(block=>{const [pattern,...lines]=block.split('\n');return [pattern.trim(),lines.map(line=>line.trim().split(/: (.*)/s).slice(0,2))];});
+// Compare every application header, excluding only asset metadata, caching and HTTP transport.
+const deliveryHeaders=new Set(['cache-control','cf-cache-status','content-length','content-type','date','etag','mf-content-encoding','transfer-encoding']);
+const applicationHeaders=response=>Object.fromEntries([...response.headers].filter(([name])=>!deliveryHeaders.has(name)));
 test('files that skip the Worker get exactly the headers the Worker would have added',async()=>{
   for(const environment of ['beta','production']) {
     const site=await mkdtemp(join(tmpdir(),'cojeev-headers-'));
@@ -31,16 +32,22 @@ test('files that skip the Worker get exactly the headers the Worker would have a
       for(const dir of ['admin','feedback-admin']) {
         await mkdir(join(site,'ui',dir),{recursive:true});
         await writeFile(join(site,'ui',dir,'index.txt'),'admin RSC\n');
+        await writeFile(join(site,'ui',dir,'index.html'),'<h1>Admin</h1>\n');
       }
       router=await startAssetRouter({worker:{kind:'source',site,workerFirst:workerFirstList(await retainedTextInventory(site)),environment,migrationStage:'redirect'},homepage:new URL('./fixtures/homepage/',import.meta.url).pathname});
-      const file=rules(siteHeaders(environment));
       for(const [path,body] of [['/ui/_next/static/chunks/new.js','// canonical chunk\n'],['/ui/docs/button/index.txt','canonical Button RSC\n'],['/ui/feedback-admin/index.txt','admin RSC\n'],['/ui/admin/index.txt','admin RSC\n']]) {
+        const origin=`https://${environment==='beta'?'beta.000h.cojeev.com':'cojeev.com'}`;
+        const workerPath=path.includes('/admin/')?'/ui/admin/':path.includes('/feedback-admin/')?'/ui/feedback-admin/':'/ui/';
         router.reset();
-        const response=await router.fetch(`https://${environment==='beta'?'beta.000h.cojeev.com':'cojeev.com'}${path}`);
+        const workerResponse=await router.fetch(`${origin}${workerPath}`);
+        assert.equal(workerResponse.status,200);
+        assert.deepEqual(router.workerRuns(),[workerPath],`${environment} Worker header reference`);
+        await workerResponse.arrayBuffer();
+        router.reset();
+        const response=await router.fetch(`${origin}${path}`);
         assert.equal(response.status,200);assert.equal(await response.text(),body);
         assert.deepEqual(router.workerRuns(),[],path);
-        const applied=file.filter(([pattern])=>ruleMatches(pattern,path)).flatMap(([,headers])=>headers).sort();
-        for(const [name,value] of applied) assert.equal(response.headers.get(name),value,`${environment} ${path} ${name}`);
+        assert.deepEqual(applicationHeaders(response),applicationHeaders(workerResponse),`${environment} ${path} application-header parity`);
         assert.equal(response.headers.has('x-robots-tag'),environment==='beta'||path.includes('/admin/')||path.includes('/feedback-admin/'));
       }
     } finally {await router?.dispose();await rm(site,{recursive:true,force:true});}
