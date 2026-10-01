@@ -26,6 +26,24 @@ const nextPromotion = 'phase change requires its listed next promotion';
 const backwards = '--rollback required to move backwards';
 const accept = (name, gates = []) => ({pair: pairs.find(pair => pair.name === name), gates});
 
+test('unknown_environment_cannot_bypass_production_gates', async t => {
+  const {assertTransition, recordGate} = await phases();
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'release-phases-environment-'));
+  t.after(() => fs.rm(dir, {recursive: true, force: true}));
+  const file = path.join(dir, 'gates.jsonl');
+  for (const environment of ['prod', 'Production', undefined, null, '', ' production ', 1]) {
+    await t.test(`transition rejects ${JSON.stringify(environment)}`, () => {
+      assert.throws(() => assertTransition({environment, live: {website: 'regenerated', api: 'linked'},
+        side: 'website', target: 'redirect'}), {message: 'Promotion refused: unknown environment'});
+    });
+    await t.test(`record rejects ${JSON.stringify(environment)}`, async () => {
+      await assert.rejects(recordGate(file, {environment, gate: 'live', website: 'website-current', api: 'api-current'}),
+        /unknown environment/i);
+    });
+  }
+  await assert.rejects(fs.readFile(file), {code: 'ENOENT'});
+});
+
 // Hand-derived from the brief: each array follows the phase order above.
 // This oracle catches an extra transition, a missing transition, or a wrong refusal.
 const transitions = {
@@ -225,6 +243,57 @@ test('gate_evidence_binds_to_the_live_pair', async t => {
   assert.deepEqual(JSON.parse(await fs.readFile(cliFile, 'utf8')), {
     environment: 'production', gate: 'browser-report', ...live, commit: 'c'.repeat(40), runId: '1003', attest: 'Keyboard report flow checked.',
   });
+});
+
+test('gate_evidence_requires_non_empty_live_and_record_ids', async t => {
+  const {recordGate, assertGates} = await phases();
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'release-phases-ids-'));
+  t.after(() => fs.rm(dir, {recursive: true, force: true}));
+  const file = path.join(dir, 'gates.jsonl');
+  const valid = {environment: 'production', gate: 'live', website: 'website-current', api: 'api-current'};
+  for (const field of ['website', 'api']) {
+    for (const value of [undefined, null, '', '   ', 1]) {
+      const record = {...valid, [field]: value};
+      const live = {website: record.website, api: record.api};
+      await t.test(`record rejects ${field} ${JSON.stringify(value)}`, async () => {
+        await assert.rejects(recordGate(file, record), /non-empty.*website.*api/i);
+      });
+      // Bypass the writer to exercise untrusted on-disk evidence independently.
+      await fs.writeFile(file, `${JSON.stringify(record)}\n`);
+      await t.test(`reader rejects matching invalid ${field} ${JSON.stringify(value)}`, async () => {
+        await assert.rejects(assertGates(file, {environment: 'production', live, gates: ['live']}),
+          /non-empty.*website.*api/i);
+        await assert.rejects(assertGates(file, {environment: 'production', live, gates: []}),
+          /non-empty.*website.*api/i);
+      });
+      await assert.rejects(assertGates(file, {environment: 'production', live: valid, gates: ['live']}),
+        {message: 'Missing gate evidence: live'});
+    }
+  }
+  await fs.writeFile(file, '');
+  await recordGate(file, valid);
+  await assertGates(file, {environment: 'production', live: valid, gates: ['live']});
+});
+
+test('rollback_requires_boolean_true', async t => {
+  const {assertTransition} = await phases();
+  const input = {environment: 'production', live: {website: 'regenerated', api: 'linked'},
+    side: 'website', reachedRedirect: false};
+  for (const rollback of ['false', 'true', 1, {}, []]) {
+    await t.test(`backwards rejects ${JSON.stringify(rollback)}`, () => {
+      assert.throws(() => assertTransition({...input, rollback, target: 'mounted'}),
+        {message: 'Promotion refused: --rollback required to move backwards'});
+    });
+    await t.test(`forward retains gates for ${JSON.stringify(rollback)}`, () => {
+      assert.deepEqual(assertTransition({...input, rollback, target: 'redirect'}),
+        accept('Redirect', ['live', 'dual-install', 'discovery']));
+    });
+    await t.test(`rollback constraints ignore ${JSON.stringify(rollback)}`, () => {
+      assert.throws(() => assertTransition({...input, rollback, side: 'api', target: 'prepared'}),
+        {message: 'Promotion refused: unlisted target pair'});
+    });
+  }
+  assert.deepEqual(assertTransition({...input, rollback: true, target: 'mounted'}), accept('Linked'));
 });
 
 test('baseline_record_shape_is_enforced', async t => {

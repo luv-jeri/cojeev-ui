@@ -45,13 +45,14 @@ export function pairOf(websitePhase, apiPhase) {
 }
 
 export function assertTransition({environment, live, side, target, rollback = false, reachedRedirect}) {
+  if (environment !== 'beta' && environment !== 'production') refuse('unknown environment');
   const current = pairOf(live.website, live.api);
   const start = live.website === 'baseline' && live.api === 'baseline';
   if (!current && !start) refuse('unlisted live pair');
   if (side !== 'website' && side !== 'api') refuse('unlisted target pair');
 
   // Specific rollback constraints precede the generic unlisted-target check.
-  if (rollback) {
+  if (rollback === true) {
     if (target === 'baseline') refuse('rollback to baseline is never permitted');
     if (['Linked', 'Regenerated', 'Redirect'].includes(current?.name) && side === 'api' && target === 'prepared')
       refuse('post-Linked rollback must keep API linked');
@@ -63,7 +64,7 @@ export function assertTransition({environment, live, side, target, rollback = fa
   const pair = pairOf(side === 'website' ? target : live.website, side === 'api' ? target : live.api);
   if (!pair) refuse('unlisted target pair');
   const name = current?.name ?? 'start';
-  if (rollback) {
+  if (rollback === true) {
     if (!ROLLBACK[name]?.[side]?.includes(target)) refuse('phase change requires its listed next promotion');
     return {pair, gates: []};
   }
@@ -83,6 +84,8 @@ export function assertTransition({environment, live, side, target, rollback = fa
 const nonEmpty = value => typeof value === 'string' && value.trim().length > 0;
 
 export async function recordGate(file, {environment, gate, website, api, commit, runId, attest}) {
+  if (environment !== 'beta' && environment !== 'production') throw new Error('Unknown environment');
+  if (!nonEmpty(website) || !nonEmpty(api)) throw new Error('Gate evidence requires non-empty website and api');
   if (!GATES.includes(gate)) throw new Error(`Unknown gate: ${gate}`);
   if (gate === 'browser-report' && !nonEmpty(attest)) throw new Error('browser-report requires a non-empty attest');
   const record = {environment, gate, website, api, commit, runId};
@@ -91,6 +94,7 @@ export async function recordGate(file, {environment, gate, website, api, commit,
 }
 
 export async function assertGates(file, {environment, live, gates}) {
+  if (!nonEmpty(live.website) || !nonEmpty(live.api)) throw new Error('Live pair requires non-empty website and api');
   if (gates.length === 0) return;
   let content;
   try {
@@ -107,6 +111,7 @@ export async function assertGates(file, {environment, live, gates}) {
   for (const gate of gates) {
     const found = GATES.includes(gate) && records.some(record =>
       record?.gate === gate && record.environment === environment &&
+      nonEmpty(record.website) && nonEmpty(record.api) &&
       record.website === live.website && record.api === live.api &&
       (gate !== 'browser-report' || nonEmpty(record.attest)));
     if (!found) throw new Error(`Missing gate evidence: ${gate}`);
