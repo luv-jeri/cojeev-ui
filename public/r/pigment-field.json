@@ -5,7 +5,7 @@
   "description": "An original GPU pigment wash using the current Cojeev palette.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

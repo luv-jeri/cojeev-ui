@@ -5,7 +5,7 @@
   "description": "Rendered text deforms through a slowly changing noise displacement.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

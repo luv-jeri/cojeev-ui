@@ -5,19 +5,19 @@
   "description": "A composable agent conversation with a bounded thread, draft composer, attachments, progress, explicit permissions and choice prompts.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/agent-state.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/message.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/message-scroller.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/attachment.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/questionnaire.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/avatar.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/bubble.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/input-group.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json",
+    "https://cojeev.com/ui/r/agent-state.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/message.json",
+    "https://cojeev.com/ui/r/message-scroller.json",
+    "https://cojeev.com/ui/r/attachment.json",
+    "https://cojeev.com/ui/r/questionnaire.json",
+    "https://cojeev.com/ui/r/avatar.json",
+    "https://cojeev.com/ui/r/bubble.json",
+    "https://cojeev.com/ui/r/input.json",
+    "https://cojeev.com/ui/r/presence.json",
+    "https://cojeev.com/ui/r/input-group.json"
   ],
   "files": [
     {

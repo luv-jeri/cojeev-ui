@@ -5,7 +5,7 @@
   "description": "Nested rotating glyph rings with a local dissolution lens and a finite suction pulse.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

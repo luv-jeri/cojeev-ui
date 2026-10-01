@@ -5,7 +5,7 @@
   "description": "Eight distinct, lightweight backgrounds behind content, with a plain option and adjustable spacing, color and strength.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

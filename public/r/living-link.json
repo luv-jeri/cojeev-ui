@@ -5,7 +5,7 @@
   "description": "A native link with a drawn ink contour, directional underline reveals, or an organic pigment wash.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

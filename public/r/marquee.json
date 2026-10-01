@@ -5,9 +5,9 @@
   "description": "A measured moving list with optional perspective and a rhythm that follows scrolling.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/typography.json"
   ],
   "files": [
     {

@@ -8,14 +8,14 @@
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/card.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/select.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/chart-tooltip.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/table.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/card.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/label.json",
+    "https://cojeev.com/ui/r/select.json",
+    "https://cojeev.com/ui/r/presence.json",
+    "https://cojeev.com/ui/r/chart-tooltip.json",
+    "https://cojeev.com/ui/r/table.json"
   ],
   "files": [
     {

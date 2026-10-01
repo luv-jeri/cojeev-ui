@@ -5,9 +5,9 @@
   "description": "A controlled branch ledger for supplied hierarchical data, with separate disclosure, selection and trailing actions.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/icon.json"
   ],
   "files": [
     {

@@ -5,8 +5,8 @@
   "description": "An event invitation with participant avatars and a reversible local RSVP, composed from Cojeev primitives.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/organism-composition.json"
   ],
   "files": [
     {

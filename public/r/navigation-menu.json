@@ -9,11 +9,11 @@
     "motion"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/scroll-area.json",
+    "https://cojeev.com/ui/r/presence.json",
+    "https://cojeev.com/ui/r/item-adornment.json",
+    "https://cojeev.com/ui/r/animated-icon.json"
   ],
   "files": [
     {

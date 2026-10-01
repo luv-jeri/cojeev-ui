@@ -5,15 +5,15 @@
   "description": "An ordered, date-grouped history with a quiet connecting margin, readable actors and timestamps, and updates that keep your place.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/avatar.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/badge.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/empty.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/item.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/animated-icon.json",
+    "https://cojeev.com/ui/r/avatar.json",
+    "https://cojeev.com/ui/r/badge.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/empty.json",
+    "https://cojeev.com/ui/r/item.json",
+    "https://cojeev.com/ui/r/presence.json",
+    "https://cojeev.com/ui/r/typography.json"
   ],
   "files": [
     {

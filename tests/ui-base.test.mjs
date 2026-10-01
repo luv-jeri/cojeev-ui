@@ -43,8 +43,7 @@ test("all_browser_mounts_match_ui_build", async () => {
   // Compatibility: install verification and rollback normalization still read old registry URLs.
   // These exact patterns retain old-base acceptance; they are not browser mounts.
   const compatibility = new Map([
-    ["scripts/run-install-verification.mjs", String.raw`(?:\/cojeev-ui)?`],
-    ["scripts/release-install.mjs", String.raw`(?:\/cojeev-ui)?`],
+    ["scripts/registry-dependency.mjs", String.raw`(?:\/cojeev-ui|\/ui)?`],
   ]);
   for (const file of (await sourceFiles()).filter(file => file.startsWith("scripts/") || file.endsWith(".browser.mjs"))) {
     let source = await readFile(file, "utf8");

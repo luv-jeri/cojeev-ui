@@ -8,11 +8,11 @@
     "cmdk"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/dialog.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/scroll-area.json",
+    "https://cojeev.com/ui/r/dialog.json",
+    "https://cojeev.com/ui/r/item-adornment.json",
+    "https://cojeev.com/ui/r/icon.json"
   ],
   "files": [
     {
