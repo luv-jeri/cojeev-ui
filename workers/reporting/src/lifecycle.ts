@@ -3,11 +3,12 @@ import { boundedBody, HttpError, verifyWebhook } from "./security";
 import { now, type Env, type ReportRow, type AttachmentRow } from "./types";
 import { redact } from '../../../lib/reporting/contracts';
 
-export async function verifyLiveComponent(env:Env,value:unknown) {
+export async function verifyLiveComponent(env:Env,value:unknown):Promise<string> {
   const url=componentURL(value,env);
   if(env.LOCAL_MODE==="true") return url;
   try {
-    const response=await fetch(url,{method:"HEAD",redirect:"manual",signal:AbortSignal.timeout(10000)});
+    if(!env.REGISTRY_SITE) throw new Error();
+    const response=await env.REGISTRY_SITE.fetch(url,{method:"HEAD",redirect:"manual",signal:AbortSignal.timeout(10000)});
     if(response.status!==200 || !(response.headers.get("Content-Type")??"").includes("text/html")) throw new Error();
     return url;
   } catch { throw new HttpError(422,"That component page is not live yet. Publish it before notifying requesters."); }

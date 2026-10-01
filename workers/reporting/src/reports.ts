@@ -121,7 +121,10 @@ export async function listRequests(env: Env, url: URL) {
 }
 export function componentURL(value: unknown, env: Env): string {
   try {
-    const url=new URL(String(value)),site=new URL(env.SITE_URL);
+    let url=new URL(String(value));
+    if(env.LEGACY_SITE_URL && url.protocol==="https:" && !url.username && !url.password && !url.search && !url.hash && url.origin===new URL(env.LEGACY_SITE_URL).origin && url.pathname.startsWith("/docs/"))
+      url=new URL(env.SITE_URL.replace(/\/$/,"")+url.pathname);
+    const site=new URL(env.SITE_URL);
     const loopback=["localhost","127.0.0.1","[::1]"];
     const localHTTP=env.LOCAL_MODE==="true"&&url.protocol==="http:"&&site.protocol==="http:"&&loopback.includes(url.hostname)&&loopback.includes(site.hostname)&&url.origin===site.origin;
     if((url.protocol!=="https:"&&!localHTTP) || url.origin!==site.origin || !url.pathname.startsWith(site.pathname.replace(/\/$/,"")+"/docs/") || url.username || url.password || url.search || url.hash) throw new Error();
