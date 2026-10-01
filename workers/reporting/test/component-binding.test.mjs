@@ -204,22 +204,26 @@ test('reporting_live_head_binds_only_same_environment_registry', async t => {
 });
 
 test('component_head_failure_does_not_resolve_or_enqueue_notification', async t => {
+  const seen = [];
+  t.mock.method(AbortSignal, 'timeout', ms => {
+    seen.push(ms);
+    return AbortSignal.abort(new DOMException('', 'TimeoutError'));
+  });
   const globalFetch = t.mock.method(globalThis, 'fetch', async () => { throw new Error('Global fetch forbidden.'); });
   const failures = [
     ...[404, 301, 308].map(status => ({ name: String(status), reply: () => new Response(null, { status, headers: { 'Content-Type': 'text/html' } }) })),
     { name: 'plain text', reply: () => new Response(null, { headers: { 'Content-Type': 'text/plain' } }) },
     { name: 'throw', reply: () => { throw new Error('Registry unavailable.'); } },
     { name: '10 s timeout', reply: (_url, { signal }) => new Promise((resolve, reject) => {
+      signal.throwIfAborted();
       signal.addEventListener('abort', () => reject(signal.reason), { once: true });
     }) },
     { name: 'missing binding' },
   ];
   for (const failure of failures) {
-    const row = await seed(); const before = await snapshot(row.id); let calls = 0;
-    const started = performance.now();
+    const row = await seed(); const before = await snapshot(row.id); const calls = [];
     const settings = env({ REGISTRY_SITE: failure.reply ? { fetch: (url, init) => {
-      calls++; assert.equal(url, 'https://cojeev.com/ui/docs/button/');
-      assert.equal(init.method, 'HEAD'); assert.equal(init.redirect, 'manual');
+      calls.push({ url, method: init.method, redirect: init.redirect });
       return failure.reply(url, init);
     } } : undefined });
     // Both callers must stop before any report, webhook marker or outbox write.
@@ -228,9 +232,11 @@ test('component_head_failure_does_not_resolve_or_enqueue_notification', async t 
       assert.rejects(() => backend.webhook(releaseWebhook(row, 'https://cojeev.com/ui/docs/button/'), settings), invalidComponent, failure.name),
     ]);
     assert.deepEqual(await snapshot(row.id), before, failure.name);
-    assert.equal(calls, failure.reply ? 2 : 0, failure.name);
-    if (failure.name === '10 s timeout') assert.ok(performance.now() - started >= 9900, 'uses the real 10 s abort timeout');
+    assert.deepEqual(calls, failure.reply ? Array.from({ length: 2 }, () => ({
+      url: 'https://cojeev.com/ui/docs/button/', method: 'HEAD', redirect: 'manual',
+    })) : [], failure.name);
   }
+  assert.deepEqual(seen, Array(12).fill(10000));
   assert.equal(globalFetch.mock.callCount(), 0);
 });
 
