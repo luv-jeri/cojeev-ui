@@ -8,7 +8,8 @@ import {renderToStaticMarkup} from "react-dom/server";
 import {Icon,iconNames} from "../registry/cojeev/ui/icon";
 
 const known=new Set(iconNames);
-const generated=/lucide-icon-(data|names)\.ts$|icon-data\.ts$/;
+// registry/cojeev/icons/ holds one generated wrapper per Lucide name for consumers to install; our site never renders them.
+const generated=/lucide-icon-(data|names)\.ts$|icon-data\.ts$|^registry\/cojeev\/icons\//;
 const sources=(directory:string):string[]=>fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry=>{
   const file=path.join(directory,entry.name);
   return entry.isDirectory()?sources(file):/\.tsx?$/.test(entry.name)&&!generated.test(file)?[file]:[];

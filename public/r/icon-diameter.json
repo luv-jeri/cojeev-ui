@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-diameter",
+  "title": "Diameter icon",
+  "description": "Diameter icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/diameter.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DiameterIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"diameter\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DiameterIcon(props:DiameterIconProps){return <Icon name=\"diameter\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/diameter.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "diameter"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-notepad-text",
+  "title": "Notepad text icon",
+  "description": "Notepad text icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/notepad-text.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type NotepadTextIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"notepad-text\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function NotepadTextIcon(props:NotepadTextIconProps){return <Icon name=\"notepad-text\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/notepad-text.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "notepad-text"
+  },
+  "type": "registry:component"
+}

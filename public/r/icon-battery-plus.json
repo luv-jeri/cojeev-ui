@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-battery-plus",
+  "title": "Battery plus icon",
+  "description": "Battery plus icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/battery-plus.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BatteryPlusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"battery-plus\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BatteryPlusIcon(props:BatteryPlusIconProps){return <Icon name=\"battery-plus\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/battery-plus.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "battery-plus"
+  },
+  "type": "registry:component"
+}

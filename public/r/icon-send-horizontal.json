@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-send-horizontal",
+  "title": "Send horizontal icon",
+  "description": "Send horizontal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/send-horizontal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SendHorizontalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"send-horizontal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SendHorizontalIcon(props:SendHorizontalIconProps){return <Icon name=\"send-horizontal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/send-horizontal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "send-horizontal"
+  },
+  "type": "registry:component"
+}

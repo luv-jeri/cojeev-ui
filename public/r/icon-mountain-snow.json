@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-mountain-snow",
+  "title": "Mountain snow icon",
+  "description": "Mountain snow icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/mountain-snow.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MountainSnowIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"mountain-snow\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MountainSnowIcon(props:MountainSnowIconProps){return <Icon name=\"mountain-snow\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/mountain-snow.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "mountain-snow"
+  },
+  "type": "registry:component"
+}

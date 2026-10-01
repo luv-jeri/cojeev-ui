@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-person-standing",
+  "title": "Person standing icon",
+  "description": "Person standing icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/person-standing.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PersonStandingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"person-standing\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PersonStandingIcon(props:PersonStandingIconProps){return <Icon name=\"person-standing\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/person-standing.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "person-standing"
+  },
+  "type": "registry:component"
+}

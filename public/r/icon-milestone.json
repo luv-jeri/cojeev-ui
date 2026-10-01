@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-milestone",
+  "title": "Milestone icon",
+  "description": "Milestone icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/milestone.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MilestoneIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"milestone\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MilestoneIcon(props:MilestoneIconProps){return <Icon name=\"milestone\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/milestone.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "milestone"
+  },
+  "type": "registry:component"
+}

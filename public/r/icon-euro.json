@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-euro",
+  "title": "Euro icon",
+  "description": "Euro icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/euro.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type EuroIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"euro\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function EuroIcon(props:EuroIconProps){return <Icon name=\"euro\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/euro.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "euro"
+  },
+  "type": "registry:component"
+}

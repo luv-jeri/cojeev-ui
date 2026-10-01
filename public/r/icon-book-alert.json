@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-book-alert",
+  "title": "Book alert icon",
+  "description": "Book alert icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/book-alert.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BookAlertIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"book-alert\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BookAlertIcon(props:BookAlertIconProps){return <Icon name=\"book-alert\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/book-alert.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "book-alert"
+  },
+  "type": "registry:component"
+}

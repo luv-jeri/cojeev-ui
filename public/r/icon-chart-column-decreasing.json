@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chart-column-decreasing",
+  "title": "Chart column decreasing icon",
+  "description": "Chart column decreasing icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chart-column-decreasing.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChartColumnDecreasingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chart-column-decreasing\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChartColumnDecreasingIcon(props:ChartColumnDecreasingIconProps){return <Icon name=\"chart-column-decreasing\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chart-column-decreasing.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chart-column-decreasing"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-gamepad-2",
+  "title": "Gamepad 2 icon",
+  "description": "Gamepad 2 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/gamepad-2.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Gamepad2IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"gamepad-2\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Gamepad2Icon(props:Gamepad2IconProps){return <Icon name=\"gamepad-2\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/gamepad-2.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "gamepad-2"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-message-circle-warning",
+  "title": "Message circle warning icon",
+  "description": "Message circle warning icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/message-circle-warning.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MessageCircleWarningIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"message-circle-warning\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MessageCircleWarningIcon(props:MessageCircleWarningIconProps){return <Icon name=\"message-circle-warning\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/message-circle-warning.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "message-circle-warning"
+  },
+  "type": "registry:component"
+}

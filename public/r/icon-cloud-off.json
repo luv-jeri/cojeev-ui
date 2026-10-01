@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-off",
+  "title": "Cloud off icon",
+  "description": "Cloud off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudOffIcon(props:CloudOffIconProps){return <Icon name=\"cloud-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-off"
+  },
+  "type": "registry:component"
+}

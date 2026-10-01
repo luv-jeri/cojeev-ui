@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-volume",
+  "title": "Volume icon",
+  "description": "Volume icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/volume.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type VolumeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"volume\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function VolumeIcon(props:VolumeIconProps){return <Icon name=\"volume\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/volume.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "volume"
+  },
+  "type": "registry:component"
+}

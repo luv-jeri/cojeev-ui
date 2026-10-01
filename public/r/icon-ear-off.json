@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ear-off",
+  "title": "Ear off icon",
+  "description": "Ear off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ear-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type EarOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ear-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function EarOffIcon(props:EarOffIconProps){return <Icon name=\"ear-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ear-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ear-off"
+  },
+  "type": "registry:component"
+}

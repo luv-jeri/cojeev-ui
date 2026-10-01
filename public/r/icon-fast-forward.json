@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-fast-forward",
+  "title": "Fast forward icon",
+  "description": "Fast forward icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/fast-forward.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FastForwardIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"fast-forward\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FastForwardIcon(props:FastForwardIconProps){return <Icon name=\"fast-forward\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/fast-forward.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "fast-forward"
+  },
+  "type": "registry:component"
+}

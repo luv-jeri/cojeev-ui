@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-soup",
+  "title": "Soup icon",
+  "description": "Soup icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/soup.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SoupIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"soup\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SoupIcon(props:SoupIconProps){return <Icon name=\"soup\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/soup.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "soup"
+  },
+  "type": "registry:component"
+}

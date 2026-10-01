@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-clock-arrow-down",
+  "title": "Clock arrow down icon",
+  "description": "Clock arrow down icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/clock-arrow-down.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ClockArrowDownIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"clock-arrow-down\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ClockArrowDownIcon(props:ClockArrowDownIconProps){return <Icon name=\"clock-arrow-down\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/clock-arrow-down.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "clock-arrow-down"
+  },
+  "type": "registry:component"
+}

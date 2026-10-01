@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-hamburger",
+  "title": "Hamburger icon",
+  "description": "Hamburger icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/hamburger.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HamburgerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"hamburger\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HamburgerIcon(props:HamburgerIconProps){return <Icon name=\"hamburger\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/hamburger.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "hamburger"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-balloon",
+  "title": "Balloon icon",
+  "description": "Balloon icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/balloon.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BalloonIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"balloon\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BalloonIcon(props:BalloonIconProps){return <Icon name=\"balloon\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/balloon.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "balloon"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-rain-wind",
+  "title": "Cloud rain wind icon",
+  "description": "Cloud rain wind icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-rain-wind.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudRainWindIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-rain-wind\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudRainWindIcon(props:CloudRainWindIconProps){return <Icon name=\"cloud-rain-wind\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-rain-wind.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-rain-wind"
+  },
+  "type": "registry:component"
+}

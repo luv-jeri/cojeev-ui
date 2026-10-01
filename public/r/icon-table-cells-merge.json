@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-table-cells-merge",
+  "title": "Table cells merge icon",
+  "description": "Table cells merge icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/table-cells-merge.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TableCellsMergeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"table-cells-merge\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TableCellsMergeIcon(props:TableCellsMergeIconProps){return <Icon name=\"table-cells-merge\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/table-cells-merge.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "table-cells-merge"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-paw-print",
+  "title": "Paw print icon",
+  "description": "Paw print icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/paw-print.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PawPrintIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"paw-print\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PawPrintIcon(props:PawPrintIconProps){return <Icon name=\"paw-print\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/paw-print.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "paw-print"
+  },
+  "type": "registry:component"
+}

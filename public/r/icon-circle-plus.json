@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-plus",
+  "title": "Circle plus icon",
+  "description": "Circle plus icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-plus.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CirclePlusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-plus\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CirclePlusIcon(props:CirclePlusIconProps){return <Icon name=\"circle-plus\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-plus.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-plus"
+  },
+  "type": "registry:component"
+}

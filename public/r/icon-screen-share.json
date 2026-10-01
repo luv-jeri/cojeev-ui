@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-screen-share",
+  "title": "Screen share icon",
+  "description": "Screen share icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/screen-share.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ScreenShareIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"screen-share\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ScreenShareIcon(props:ScreenShareIconProps){return <Icon name=\"screen-share\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/screen-share.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "screen-share"
+  },
+  "type": "registry:component"
+}

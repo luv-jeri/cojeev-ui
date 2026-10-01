@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-fullscreen",
+  "title": "Fullscreen icon",
+  "description": "Fullscreen icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/fullscreen.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FullscreenIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"fullscreen\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FullscreenIcon(props:FullscreenIconProps){return <Icon name=\"fullscreen\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/fullscreen.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "fullscreen"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-shield-half",
+  "title": "Shield half icon",
+  "description": "Shield half icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/shield-half.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ShieldHalfIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"shield-half\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ShieldHalfIcon(props:ShieldHalfIconProps){return <Icon name=\"shield-half\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/shield-half.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "shield-half"
+  },
+  "type": "registry:component"
+}

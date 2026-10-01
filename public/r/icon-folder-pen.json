@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-folder-pen",
+  "title": "Folder pen icon",
+  "description": "Folder pen icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/folder-pen.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FolderPenIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"folder-pen\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FolderPenIcon(props:FolderPenIconProps){return <Icon name=\"folder-pen\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/folder-pen.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "folder-pen"
+  },
+  "type": "registry:component"
+}

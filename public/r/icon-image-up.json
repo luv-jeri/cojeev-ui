@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-image-up",
+  "title": "Image up icon",
+  "description": "Image up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/image-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ImageUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"image-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ImageUpIcon(props:ImageUpIconProps){return <Icon name=\"image-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/image-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "image-up"
+  },
+  "type": "registry:component"
+}

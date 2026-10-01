@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-inspection-panel",
+  "title": "Inspection panel icon",
+  "description": "Inspection panel icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/inspection-panel.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type InspectionPanelIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"inspection-panel\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function InspectionPanelIcon(props:InspectionPanelIconProps){return <Icon name=\"inspection-panel\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/inspection-panel.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "inspection-panel"
+  },
+  "type": "registry:component"
+}

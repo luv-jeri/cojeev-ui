@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-between-horizontal-start",
+  "title": "Between horizontal start icon",
+  "description": "Between horizontal start icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/between-horizontal-start.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BetweenHorizontalStartIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"between-horizontal-start\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BetweenHorizontalStartIcon(props:BetweenHorizontalStartIconProps){return <Icon name=\"between-horizontal-start\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/between-horizontal-start.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "between-horizontal-start"
+  },
+  "type": "registry:component"
+}

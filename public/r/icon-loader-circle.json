@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-loader-circle",
+  "title": "Loader circle icon",
+  "description": "Loader circle icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/loader-circle.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LoaderCircleIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"loader-circle\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LoaderCircleIcon(props:LoaderCircleIconProps){return <Icon name=\"loader-circle\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/loader-circle.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "loader-circle"
+  },
+  "type": "registry:component"
+}

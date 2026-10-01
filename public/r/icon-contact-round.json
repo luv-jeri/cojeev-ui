@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-contact-round",
+  "title": "Contact round icon",
+  "description": "Contact round icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/contact-round.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ContactRoundIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"contact-round\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ContactRoundIcon(props:ContactRoundIconProps){return <Icon name=\"contact-round\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/contact-round.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "contact-round"
+  },
+  "type": "registry:component"
+}

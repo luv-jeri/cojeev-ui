@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-monitor-check",
+  "title": "Monitor check icon",
+  "description": "Monitor check icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/monitor-check.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MonitorCheckIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"monitor-check\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MonitorCheckIcon(props:MonitorCheckIconProps){return <Icon name=\"monitor-check\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/monitor-check.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "monitor-check"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-monitor",
+  "title": "Monitor icon",
+  "description": "Monitor icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/monitor.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MonitorIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"monitor\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MonitorIcon(props:MonitorIconProps){return <Icon name=\"monitor\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/monitor.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "monitor"
+  },
+  "type": "registry:component"
+}

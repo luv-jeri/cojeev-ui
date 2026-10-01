@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-headphone",
+  "title": "File headphone icon",
+  "description": "File headphone icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-headphone.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileHeadphoneIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-headphone\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileHeadphoneIcon(props:FileHeadphoneIconProps){return <Icon name=\"file-headphone\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-headphone.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-headphone"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-bug-play",
+  "title": "Bug play icon",
+  "description": "Bug play icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/bug-play.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BugPlayIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"bug-play\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BugPlayIcon(props:BugPlayIconProps){return <Icon name=\"bug-play\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/bug-play.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "bug-play"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-arrow-big-up",
+  "title": "Arrow big up icon",
+  "description": "Arrow big up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/arrow-big-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ArrowBigUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"arrow-big-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ArrowBigUpIcon(props:ArrowBigUpIconProps){return <Icon name=\"arrow-big-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/arrow-big-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "arrow-big-up"
+  },
+  "type": "registry:component"
+}

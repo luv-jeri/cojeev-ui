@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-printer-check",
+  "title": "Printer check icon",
+  "description": "Printer check icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/printer-check.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PrinterCheckIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"printer-check\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PrinterCheckIcon(props:PrinterCheckIconProps){return <Icon name=\"printer-check\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/printer-check.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "printer-check"
+  },
+  "type": "registry:component"
+}

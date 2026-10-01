@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-folder-open-dot",
+  "title": "Folder open dot icon",
+  "description": "Folder open dot icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/folder-open-dot.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FolderOpenDotIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"folder-open-dot\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FolderOpenDotIcon(props:FolderOpenDotIconProps){return <Icon name=\"folder-open-dot\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/folder-open-dot.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "folder-open-dot"
+  },
+  "type": "registry:component"
+}

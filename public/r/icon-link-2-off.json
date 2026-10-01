@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-link-2-off",
+  "title": "Link 2 off icon",
+  "description": "Link 2 off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/link-2-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Link2OffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"link-2-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Link2OffIcon(props:Link2OffIconProps){return <Icon name=\"link-2-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/link-2-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "link-2-off"
+  },
+  "type": "registry:component"
+}

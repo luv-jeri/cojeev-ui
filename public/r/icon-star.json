@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-star",
+  "title": "Star icon",
+  "description": "Star icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/star.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type StarIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"star\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function StarIcon(props:StarIconProps){return <Icon name=\"star\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/star.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "star"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-waves-arrow-down",
+  "title": "Waves arrow down icon",
+  "description": "Waves arrow down icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/waves-arrow-down.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type WavesArrowDownIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"waves-arrow-down\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function WavesArrowDownIcon(props:WavesArrowDownIconProps){return <Icon name=\"waves-arrow-down\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/waves-arrow-down.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "waves-arrow-down"
+  },
+  "type": "registry:component"
+}

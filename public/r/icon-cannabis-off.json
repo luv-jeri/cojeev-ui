@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cannabis-off",
+  "title": "Cannabis off icon",
+  "description": "Cannabis off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cannabis-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CannabisOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cannabis-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CannabisOffIcon(props:CannabisOffIconProps){return <Icon name=\"cannabis-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cannabis-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cannabis-off"
+  },
+  "type": "registry:component"
+}

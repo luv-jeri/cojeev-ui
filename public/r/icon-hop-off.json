@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-hop-off",
+  "title": "Hop off icon",
+  "description": "Hop off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/hop-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HopOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"hop-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HopOffIcon(props:HopOffIconProps){return <Icon name=\"hop-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/hop-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "hop-off"
+  },
+  "type": "registry:component"
+}

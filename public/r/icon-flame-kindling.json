@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-flame-kindling",
+  "title": "Flame kindling icon",
+  "description": "Flame kindling icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/flame-kindling.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FlameKindlingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"flame-kindling\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FlameKindlingIcon(props:FlameKindlingIconProps){return <Icon name=\"flame-kindling\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/flame-kindling.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "flame-kindling"
+  },
+  "type": "registry:component"
+}

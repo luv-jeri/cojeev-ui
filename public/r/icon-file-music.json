@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-music",
+  "title": "File music icon",
+  "description": "File music icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-music.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileMusicIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-music\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileMusicIcon(props:FileMusicIconProps){return <Icon name=\"file-music\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-music.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-music"
+  },
+  "type": "registry:component"
+}

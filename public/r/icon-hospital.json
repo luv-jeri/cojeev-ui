@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-hospital",
+  "title": "Hospital icon",
+  "description": "Hospital icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/hospital.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HospitalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"hospital\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HospitalIcon(props:HospitalIconProps){return <Icon name=\"hospital\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/hospital.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "hospital"
+  },
+  "type": "registry:component"
+}

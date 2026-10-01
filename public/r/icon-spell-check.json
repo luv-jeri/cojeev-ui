@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-spell-check",
+  "title": "Spell check icon",
+  "description": "Spell check icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/spell-check.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SpellCheckIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"spell-check\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SpellCheckIcon(props:SpellCheckIconProps){return <Icon name=\"spell-check\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/spell-check.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "spell-check"
+  },
+  "type": "registry:component"
+}

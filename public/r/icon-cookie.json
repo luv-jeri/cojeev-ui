@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cookie",
+  "title": "Cookie icon",
+  "description": "Cookie icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cookie.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CookieIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cookie\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CookieIcon(props:CookieIconProps){return <Icon name=\"cookie\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cookie.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cookie"
+  },
+  "type": "registry:component"
+}

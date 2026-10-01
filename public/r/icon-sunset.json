@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-sunset",
+  "title": "Sunset icon",
+  "description": "Sunset icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/sunset.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SunsetIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"sunset\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SunsetIcon(props:SunsetIconProps){return <Icon name=\"sunset\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/sunset.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "sunset"
+  },
+  "type": "registry:component"
+}

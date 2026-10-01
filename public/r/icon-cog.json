@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cog",
+  "title": "Cog icon",
+  "description": "Cog icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cog.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CogIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cog\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CogIcon(props:CogIconProps){return <Icon name=\"cog\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cog.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cog"
+  },
+  "type": "registry:component"
+}

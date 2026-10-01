@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-between-vertical-end",
+  "title": "Between vertical end icon",
+  "description": "Between vertical end icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/between-vertical-end.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BetweenVerticalEndIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"between-vertical-end\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BetweenVerticalEndIcon(props:BetweenVerticalEndIconProps){return <Icon name=\"between-vertical-end\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/between-vertical-end.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "between-vertical-end"
+  },
+  "type": "registry:component"
+}

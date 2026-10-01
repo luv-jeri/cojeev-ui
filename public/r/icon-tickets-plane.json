@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tickets-plane",
+  "title": "Tickets plane icon",
+  "description": "Tickets plane icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tickets-plane.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TicketsPlaneIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tickets-plane\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TicketsPlaneIcon(props:TicketsPlaneIconProps){return <Icon name=\"tickets-plane\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tickets-plane.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tickets-plane"
+  },
+  "type": "registry:component"
+}

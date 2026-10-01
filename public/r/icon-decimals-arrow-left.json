@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-decimals-arrow-left",
+  "title": "Decimals arrow left icon",
+  "description": "Decimals arrow left icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/decimals-arrow-left.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DecimalsArrowLeftIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"decimals-arrow-left\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DecimalsArrowLeftIcon(props:DecimalsArrowLeftIconProps){return <Icon name=\"decimals-arrow-left\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/decimals-arrow-left.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "decimals-arrow-left"
+  },
+  "type": "registry:component"
+}

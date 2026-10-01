@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-shovel",
+  "title": "Shovel icon",
+  "description": "Shovel icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/shovel.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ShovelIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"shovel\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ShovelIcon(props:ShovelIconProps){return <Icon name=\"shovel\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/shovel.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "shovel"
+  },
+  "type": "registry:component"
+}

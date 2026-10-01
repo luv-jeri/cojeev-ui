@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-dollar-sign",
+  "title": "Dollar sign icon",
+  "description": "Dollar sign icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/dollar-sign.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DollarSignIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"dollar-sign\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DollarSignIcon(props:DollarSignIconProps){return <Icon name=\"dollar-sign\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/dollar-sign.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "dollar-sign"
+  },
+  "type": "registry:component"
+}

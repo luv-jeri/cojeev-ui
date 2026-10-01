@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-venus-and-mars",
+  "title": "Venus and mars icon",
+  "description": "Venus and mars icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/venus-and-mars.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type VenusAndMarsIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"venus-and-mars\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function VenusAndMarsIcon(props:VenusAndMarsIconProps){return <Icon name=\"venus-and-mars\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/venus-and-mars.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "venus-and-mars"
+  },
+  "type": "registry:component"
+}

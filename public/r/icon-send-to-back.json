@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-send-to-back",
+  "title": "Send to back icon",
+  "description": "Send to back icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/send-to-back.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SendToBackIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"send-to-back\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SendToBackIcon(props:SendToBackIconProps){return <Icon name=\"send-to-back\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/send-to-back.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "send-to-back"
+  },
+  "type": "registry:component"
+}

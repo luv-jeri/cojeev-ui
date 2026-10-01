@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-hourglass",
+  "title": "Hourglass icon",
+  "description": "Hourglass icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/hourglass.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HourglassIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"hourglass\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HourglassIcon(props:HourglassIconProps){return <Icon name=\"hourglass\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/hourglass.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "hourglass"
+  },
+  "type": "registry:component"
+}

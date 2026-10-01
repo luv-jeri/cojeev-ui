@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-message-square-off",
+  "title": "Message square off icon",
+  "description": "Message square off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/message-square-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MessageSquareOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"message-square-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MessageSquareOffIcon(props:MessageSquareOffIconProps){return <Icon name=\"message-square-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/message-square-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "message-square-off"
+  },
+  "type": "registry:component"
+}

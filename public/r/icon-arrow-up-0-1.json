@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-arrow-up-0-1",
+  "title": "Arrow up 0 1 icon",
+  "description": "Arrow up 0 1 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/arrow-up-0-1.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ArrowUp01IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"arrow-up-0-1\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ArrowUp01Icon(props:ArrowUp01IconProps){return <Icon name=\"arrow-up-0-1\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/arrow-up-0-1.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "arrow-up-0-1"
+  },
+  "type": "registry:component"
+}

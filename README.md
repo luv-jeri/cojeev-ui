@@ -26,6 +26,14 @@ export function ContinueAction() {
 }
 ```
 
+Icons install the same way, one typed component per Lucide name:
+
+```sh
+npx shadcn@latest add https://000h.cojeev.com/r/icon-activity.json
+```
+
+That adds `components/icons/activity.tsx`, exporting `ActivityIcon` on the Cojeev `Icon` with its motion presets, sizes and feedback.
+
 The added stylesheet carries both light and dark token values. Choose one with `document.documentElement.dataset.mode = "dark"`. [Installation details](docs/guides/INSTALLATION.md) cover the `@cojeev` registry configuration, theming and the fresh-install check.
 
 ## Four to start with

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-off",
+  "title": "Circle off icon",
+  "description": "Circle off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CircleOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CircleOffIcon(props:CircleOffIconProps){return <Icon name=\"circle-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-off"
+  },
+  "type": "registry:component"
+}

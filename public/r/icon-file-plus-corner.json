@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-plus-corner",
+  "title": "File plus corner icon",
+  "description": "File plus corner icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-plus-corner.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FilePlusCornerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-plus-corner\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FilePlusCornerIcon(props:FilePlusCornerIconProps){return <Icon name=\"file-plus-corner\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-plus-corner.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-plus-corner"
+  },
+  "type": "registry:component"
+}

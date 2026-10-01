@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-towel-rack",
+  "title": "Towel rack icon",
+  "description": "Towel rack icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/towel-rack.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TowelRackIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"towel-rack\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TowelRackIcon(props:TowelRackIconProps){return <Icon name=\"towel-rack\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/towel-rack.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "towel-rack"
+  },
+  "type": "registry:component"
+}

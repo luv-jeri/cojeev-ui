@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-map-pin-minus-inside",
+  "title": "Map pin minus inside icon",
+  "description": "Map pin minus inside icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/map-pin-minus-inside.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MapPinMinusInsideIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"map-pin-minus-inside\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MapPinMinusInsideIcon(props:MapPinMinusInsideIconProps){return <Icon name=\"map-pin-minus-inside\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/map-pin-minus-inside.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "map-pin-minus-inside"
+  },
+  "type": "registry:component"
+}

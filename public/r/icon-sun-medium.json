@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-sun-medium",
+  "title": "Sun medium icon",
+  "description": "Sun medium icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/sun-medium.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SunMediumIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"sun-medium\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SunMediumIcon(props:SunMediumIconProps){return <Icon name=\"sun-medium\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/sun-medium.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "sun-medium"
+  },
+  "type": "registry:component"
+}

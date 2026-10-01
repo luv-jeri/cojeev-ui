@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-bottom-dashed-scissors",
+  "title": "Square bottom dashed scissors icon",
+  "description": "Square bottom dashed scissors icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-bottom-dashed-scissors.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareBottomDashedScissorsIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-bottom-dashed-scissors\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareBottomDashedScissorsIcon(props:SquareBottomDashedScissorsIconProps){return <Icon name=\"square-bottom-dashed-scissors\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-bottom-dashed-scissors.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-bottom-dashed-scissors"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tractor",
+  "title": "Tractor icon",
+  "description": "Tractor icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tractor.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TractorIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tractor\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TractorIcon(props:TractorIconProps){return <Icon name=\"tractor\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tractor.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tractor"
+  },
+  "type": "registry:component"
+}

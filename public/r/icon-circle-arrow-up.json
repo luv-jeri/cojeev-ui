@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-arrow-up",
+  "title": "Circle arrow up icon",
+  "description": "Circle arrow up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-arrow-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CircleArrowUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-arrow-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CircleArrowUpIcon(props:CircleArrowUpIconProps){return <Icon name=\"circle-arrow-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-arrow-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-arrow-up"
+  },
+  "type": "registry:component"
+}

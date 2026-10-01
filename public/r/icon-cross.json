@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cross",
+  "title": "Cross icon",
+  "description": "Cross icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cross.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CrossIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cross\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CrossIcon(props:CrossIconProps){return <Icon name=\"cross\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cross.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cross"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-funnel",
+  "title": "Funnel icon",
+  "description": "Funnel icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/funnel.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FunnelIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"funnel\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FunnelIcon(props:FunnelIconProps){return <Icon name=\"funnel\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/funnel.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "funnel"
+  },
+  "type": "registry:component"
+}

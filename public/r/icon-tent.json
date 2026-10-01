@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tent",
+  "title": "Tent icon",
+  "description": "Tent icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tent.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TentIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tent\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TentIcon(props:TentIconProps){return <Icon name=\"tent\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tent.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tent"
+  },
+  "type": "registry:component"
+}

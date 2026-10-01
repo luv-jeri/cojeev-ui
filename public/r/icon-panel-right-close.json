@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-panel-right-close",
+  "title": "Panel right close icon",
+  "description": "Panel right close icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/panel-right-close.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PanelRightCloseIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"panel-right-close\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PanelRightCloseIcon(props:PanelRightCloseIconProps){return <Icon name=\"panel-right-close\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/panel-right-close.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "panel-right-close"
+  },
+  "type": "registry:component"
+}

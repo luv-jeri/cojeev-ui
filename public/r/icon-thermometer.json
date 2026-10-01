@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-thermometer",
+  "title": "Thermometer icon",
+  "description": "Thermometer icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/thermometer.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ThermometerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"thermometer\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ThermometerIcon(props:ThermometerIconProps){return <Icon name=\"thermometer\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/thermometer.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "thermometer"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-shapes",
+  "title": "Shapes icon",
+  "description": "Shapes icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/shapes.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ShapesIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"shapes\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ShapesIcon(props:ShapesIconProps){return <Icon name=\"shapes\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/shapes.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "shapes"
+  },
+  "type": "registry:component"
+}

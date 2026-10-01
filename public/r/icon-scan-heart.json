@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-scan-heart",
+  "title": "Scan heart icon",
+  "description": "Scan heart icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/scan-heart.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ScanHeartIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"scan-heart\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ScanHeartIcon(props:ScanHeartIconProps){return <Icon name=\"scan-heart\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/scan-heart.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "scan-heart"
+  },
+  "type": "registry:component"
+}

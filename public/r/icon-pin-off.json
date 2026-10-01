@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-pin-off",
+  "title": "Pin off icon",
+  "description": "Pin off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/pin-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PinOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"pin-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PinOffIcon(props:PinOffIconProps){return <Icon name=\"pin-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/pin-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "pin-off"
+  },
+  "type": "registry:component"
+}

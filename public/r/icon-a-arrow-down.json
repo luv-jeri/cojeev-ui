@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-a-arrow-down",
+  "title": "A arrow down icon",
+  "description": "A arrow down icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/a-arrow-down.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AArrowDownIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"a-arrow-down\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AArrowDownIcon(props:AArrowDownIconProps){return <Icon name=\"a-arrow-down\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/a-arrow-down.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "a-arrow-down"
+  },
+  "type": "registry:component"
+}

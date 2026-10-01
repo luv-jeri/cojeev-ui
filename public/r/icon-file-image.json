@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-image",
+  "title": "File image icon",
+  "description": "File image icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-image.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileImageIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-image\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileImageIcon(props:FileImageIconProps){return <Icon name=\"file-image\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-image.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-image"
+  },
+  "type": "registry:component"
+}

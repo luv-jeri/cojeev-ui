@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-book-audio",
+  "title": "Book audio icon",
+  "description": "Book audio icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/book-audio.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BookAudioIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"book-audio\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BookAudioIcon(props:BookAudioIconProps){return <Icon name=\"book-audio\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/book-audio.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "book-audio"
+  },
+  "type": "registry:component"
+}

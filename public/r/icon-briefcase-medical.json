@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-briefcase-medical",
+  "title": "Briefcase medical icon",
+  "description": "Briefcase medical icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/briefcase-medical.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BriefcaseMedicalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"briefcase-medical\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BriefcaseMedicalIcon(props:BriefcaseMedicalIconProps){return <Icon name=\"briefcase-medical\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/briefcase-medical.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "briefcase-medical"
+  },
+  "type": "registry:component"
+}

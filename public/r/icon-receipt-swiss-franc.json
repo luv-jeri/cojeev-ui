@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-receipt-swiss-franc",
+  "title": "Receipt swiss franc icon",
+  "description": "Receipt swiss franc icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/receipt-swiss-franc.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ReceiptSwissFrancIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"receipt-swiss-franc\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ReceiptSwissFrancIcon(props:ReceiptSwissFrancIconProps){return <Icon name=\"receipt-swiss-franc\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/receipt-swiss-franc.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "receipt-swiss-franc"
+  },
+  "type": "registry:component"
+}

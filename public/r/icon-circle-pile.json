@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-pile",
+  "title": "Circle pile icon",
+  "description": "Circle pile icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-pile.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CirclePileIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-pile\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CirclePileIcon(props:CirclePileIconProps){return <Icon name=\"circle-pile\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-pile.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-pile"
+  },
+  "type": "registry:component"
+}

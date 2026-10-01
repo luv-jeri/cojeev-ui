@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-flask-conical-off",
+  "title": "Flask conical off icon",
+  "description": "Flask conical off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/flask-conical-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FlaskConicalOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"flask-conical-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FlaskConicalOffIcon(props:FlaskConicalOffIconProps){return <Icon name=\"flask-conical-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/flask-conical-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "flask-conical-off"
+  },
+  "type": "registry:component"
+}

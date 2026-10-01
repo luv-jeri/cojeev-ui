@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-message-circle-more",
+  "title": "Message circle more icon",
+  "description": "Message circle more icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/message-circle-more.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MessageCircleMoreIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"message-circle-more\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MessageCircleMoreIcon(props:MessageCircleMoreIconProps){return <Icon name=\"message-circle-more\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/message-circle-more.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "message-circle-more"
+  },
+  "type": "registry:component"
+}

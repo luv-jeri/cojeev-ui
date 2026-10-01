@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-timer-off",
+  "title": "Timer off icon",
+  "description": "Timer off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/timer-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TimerOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"timer-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TimerOffIcon(props:TimerOffIconProps){return <Icon name=\"timer-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/timer-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "timer-off"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-eye-closed",
+  "title": "Eye closed icon",
+  "description": "Eye closed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/eye-closed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type EyeClosedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"eye-closed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function EyeClosedIcon(props:EyeClosedIconProps){return <Icon name=\"eye-closed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/eye-closed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "eye-closed"
+  },
+  "type": "registry:component"
+}

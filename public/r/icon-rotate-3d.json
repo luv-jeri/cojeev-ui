@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-rotate-3d",
+  "title": "Rotate 3d icon",
+  "description": "Rotate 3d icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/rotate-3d.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Rotate3dIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"rotate-3d\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Rotate3dIcon(props:Rotate3dIconProps){return <Icon name=\"rotate-3d\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/rotate-3d.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "rotate-3d"
+  },
+  "type": "registry:component"
+}

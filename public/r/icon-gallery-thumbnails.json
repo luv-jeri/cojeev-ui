@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-gallery-thumbnails",
+  "title": "Gallery thumbnails icon",
+  "description": "Gallery thumbnails icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/gallery-thumbnails.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type GalleryThumbnailsIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"gallery-thumbnails\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function GalleryThumbnailsIcon(props:GalleryThumbnailsIconProps){return <Icon name=\"gallery-thumbnails\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/gallery-thumbnails.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "gallery-thumbnails"
+  },
+  "type": "registry:component"
+}

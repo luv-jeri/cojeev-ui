@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-stack",
+  "title": "File stack icon",
+  "description": "File stack icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-stack.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileStackIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-stack\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileStackIcon(props:FileStackIconProps){return <Icon name=\"file-stack\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-stack.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-stack"
+  },
+  "type": "registry:component"
+}

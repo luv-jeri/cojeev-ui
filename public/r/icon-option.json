@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-option",
+  "title": "Option icon",
+  "description": "Option icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/option.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type OptionIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"option\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function OptionIcon(props:OptionIconProps){return <Icon name=\"option\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/option.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "option"
+  },
+  "type": "registry:component"
+}

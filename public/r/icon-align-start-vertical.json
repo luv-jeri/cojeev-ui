@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-start-vertical",
+  "title": "Align start vertical icon",
+  "description": "Align start vertical icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-start-vertical.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignStartVerticalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-start-vertical\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignStartVerticalIcon(props:AlignStartVerticalIconProps){return <Icon name=\"align-start-vertical\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-start-vertical.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-start-vertical"
+  },
+  "type": "registry:component"
+}

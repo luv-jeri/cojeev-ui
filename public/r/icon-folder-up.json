@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-folder-up",
+  "title": "Folder up icon",
+  "description": "Folder up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/folder-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FolderUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"folder-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FolderUpIcon(props:FolderUpIconProps){return <Icon name=\"folder-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/folder-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "folder-up"
+  },
+  "type": "registry:component"
+}

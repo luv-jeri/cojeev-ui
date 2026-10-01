@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-signal-zero",
+  "title": "Signal zero icon",
+  "description": "Signal zero icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/signal-zero.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SignalZeroIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"signal-zero\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SignalZeroIcon(props:SignalZeroIconProps){return <Icon name=\"signal-zero\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/signal-zero.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "signal-zero"
+  },
+  "type": "registry:component"
+}
