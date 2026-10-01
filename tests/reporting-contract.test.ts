@@ -3,6 +3,30 @@ import assert from "node:assert/strict";
 import { validateReport, redact, safeRoute, matchesMedia, findComponents } from "../lib/reporting/contracts";
 
 const valid = () => ({ id: "c0994f8a-24c3-4f09-83cc-a6ecb14cc033", kind: "bug", title: "Button disappears", description: "Switch to dark mode and click the menu.", email: "a@example.com", references: [], pins: [], attachments: [], diagnostics: null });
+test("ui_diagnostics_preserve_only_safe_public_routes", () => {
+  const cases = [
+    ["https://cojeev.com/ui/docs/button/?t=1#x", "/ui/docs/button/"],
+    ["https://cojeev.com/ui/requests/?t=1#x", "/ui/requests/"],
+    ["https://cojeev.com/ui/?t=1#x", "/ui/"],
+    ["https://beta.000h.cojeev.com/ui/docs/date-picker/", "/ui/docs/date-picker/"],
+    ["/ui/feedback-admin/?report=1", "/:segment/:segment/"],
+    ["/ui/track/#abc", "/:segment/:segment/"],
+    ["/ui/workspace/x", "/:segment/:segment/:segment"],
+    ["/ui/docs/button/private/", "/:segment/:segment/:segment/:segment/"],
+    ["/uikit/docs/button/", "/:segment/:segment/:segment/"],
+    ["/ui-other/requests/", "/:segment/:segment/"],
+    ["/cojeev-ui/", "/cojeev-ui/"],
+    ["/cojeev-ui/docs/button/?t=1#x", "/cojeev-ui/docs/button/"],
+    ["/cojeev-ui/requests/", "/cojeev-ui/requests/"],
+  ];
+  for (const [source, expected] of cases) {
+    const url = new URL(source, "https://cojeev.com").href;
+    assert.equal(safeRoute(source), expected, source);
+    assert.equal(redact(url), expected, `redacted diagnostics: ${source}`);
+    const diagnostics = validateReport({ ...valid(), diagnostics: { environment: { page: url } } }).diagnostics;
+    assert.equal(diagnostics?.environment?.page, expected, `validated diagnostics: ${source}`);
+  }
+});
 test("accepts a bounded report, preserves intentional prose, requires email", () => {
   assert.equal(validateReport(valid()).description, valid().description);
   assert.throws(() => validateReport({ ...valid(), email: "" }), /email/i);
