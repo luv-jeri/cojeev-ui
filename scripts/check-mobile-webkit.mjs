@@ -12,7 +12,7 @@ import { mobileVerdict, selectMobileCases } from "./lib/mobile-gate-select.mjs";
 const args = Object.fromEntries(process.argv.slice(2).map(argument => { const [name, ...value] = argument.replace(/^--/, "").split("="); return [name, value.join("=") || "true"]; }));
 const staticServer = args.serve && !args.url ? await startPreview({
   configFile: false,
-  base: "/cojeev-ui/",
+  base: "/ui/",
   build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
@@ -20,7 +20,7 @@ async function closeStaticServer() {
   if (staticServer?.httpServer.listening) await new Promise((resolve, reject) => staticServer.httpServer.close(error => error ? reject(error) : resolve()));
 }
 const address = staticServer?.httpServer.address();
-const base = (args.url || `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/cojeev-ui`).replace(/\/$/, "");
+const base = (args.url || `http://127.0.0.1:${address && typeof address === "object" ? address.port : 4320}/ui`).replace(/\/$/, "");
 const output = path.resolve(args.output || `output/playwright/mobile-webkit-${Date.now()}`);
 fs.mkdirSync(output, { recursive: true });
 function revision() {

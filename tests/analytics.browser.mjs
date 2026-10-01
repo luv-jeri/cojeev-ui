@@ -8,8 +8,8 @@ import { preview as previewServer } from "vite";
 const expectSilent = process.argv.includes("--expect-silent");
 const server = process.env.ANALYTICS_URL
   ? null
-  : await previewServer({ configFile: false, base: "/cojeev-ui/", build: { outDir: process.env.ANALYTICS_TEST_OUT_DIR ?? "out" }, preview: { host: "127.0.0.1", port: 0, strictPort: true } });
-const base = (process.env.ANALYTICS_URL ?? `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`).replace(/\/$/, "");
+  : await previewServer({ configFile: false, base: "/ui/", build: { outDir: process.env.ANALYTICS_TEST_OUT_DIR ?? "out" }, preview: { host: "127.0.0.1", port: 0, strictPort: true } });
+const base = (process.env.ANALYTICS_URL ?? `http://127.0.0.1:${server.httpServer.address().port}/ui`).replace(/\/$/, "");
 const testToken = process.env.ANALYTICS_TEST_TOKEN ?? "phc_public_test_token";
 // A stamped fixture build inlines these; the gate is told the same values so every
 // payload assertion below stays an exact key set either way.
@@ -142,7 +142,7 @@ function assertSafeCaptures(captures) {
       assert(payload.properties.route.startsWith("/"));
       assert(!payload.properties.route.includes("?"));
       assert(!payload.properties.route.includes("#"));
-      assert(!payload.properties.route.startsWith("/cojeev-ui/"), "basePath is removed from every route");
+      assert(!payload.properties.route.startsWith("/ui/"), "basePath is removed from every route");
     }
     assert.equal(headers.referer, undefined, `${payload.event}: capture sends no referrer header`);
     const serialized = JSON.stringify(payload);

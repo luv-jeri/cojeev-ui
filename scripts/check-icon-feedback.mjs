@@ -1,6 +1,6 @@
 /** Shared Icon feedback proof on native SVGs and controls. No registry build required. */
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {build} from 'esbuild';import {chromium,webkit} from 'playwright';
-const base=process.env.BASE_URL??'http://127.0.0.1:4320/cojeev-ui';const output=path.resolve(process.env.OUTPUT_DIR??'output/playwright/icon-feedback');fs.mkdirSync(output,{recursive:true});
+const base=process.env.BASE_URL??'http://127.0.0.1:4320/ui';const output=path.resolve(process.env.OUTPUT_DIR??'output/playwright/icon-feedback');fs.mkdirSync(output,{recursive:true});
 const bundle=await build({stdin:{sourcefile:'icon-feedback-fixture.tsx',loader:'tsx',resolveDir:process.cwd(),contents:`
 import React from 'react';import {createRoot} from 'react-dom/client';import {Icon} from './registry/cojeev/ui/icon';import {AnimatedIcon,StateChevron} from './registry/cojeev/ui/animated-icon';import {setMotionMode} from './registry/cojeev/motion/settings';
 function Fixture(){const [events,setEvents]=React.useState([]);const [mount,setMount]=React.useState(true);const [disabled,setDisabled]=React.useState(false);const [spinDisabled,setSpinDisabled]=React.useState(false);const [hidden,setHidden]=React.useState(false);const [open,setOpen]=React.useState(false);const ref=React.useCallback(node=>{if(node)window.nativeIconTag=node.tagName;return()=>{window.iconRefCleanups=(window.iconRefCleanups??0)+1}},[]);const record=x=>setEvents(old=>[...old,x]);

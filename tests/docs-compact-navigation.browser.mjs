@@ -8,7 +8,7 @@ await mkdir(output, { recursive: true });
 try {
   for (const mode of ['light', 'dark']) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(`${process.env.POLISH_URL ?? 'http://127.0.0.1:4321/cojeev-ui'}/docs/`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${process.env.POLISH_URL ?? 'http://127.0.0.1:4321/ui'}/docs/`, { waitUntil: 'domcontentloaded' });
     await page.locator('.report-launcher:not(:disabled)').waitFor();
     const sidebar = page.locator('.docs-sidebar');
     const theme = sidebar.getByRole('switch', { name: 'Dark appearance' });

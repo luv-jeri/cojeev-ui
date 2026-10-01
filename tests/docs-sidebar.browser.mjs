@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
 const browser=await chromium.launch(), output='output/playwright/sidebar-calm';
-const base=process.env.DOCS_BASE_URL??'http://127.0.0.1:4321/cojeev-ui';
+const base=process.env.DOCS_BASE_URL??'http://127.0.0.1:4321/ui';
 await mkdir(output,{recursive:true});
 try { for(const mode of ['light','dark']) {
  const page=await browser.newPage({viewport:{width:1440,height:960},reducedMotion:'reduce'}), errors=[];

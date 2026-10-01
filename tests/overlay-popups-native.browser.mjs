@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { build } from "esbuild";
 import { chromium } from "playwright";
-const base = process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4321/cojeev-ui",
+const base = process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4321/ui",
   html = await (await fetch(`${base}/docs/hover-card/`)).text(),
   css = (
     await Promise.all(

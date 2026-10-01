@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
-const base = process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4321/cojeev-ui";
+const base = process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4321/ui";
 const output = "output/playwright/table-recovery";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();

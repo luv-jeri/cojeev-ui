@@ -7,11 +7,11 @@ if (supplied && !['127.0.0.1', 'localhost', '[::1]'].includes(new URL(supplied).
   throw new Error('Component checks require a loopback preview, not a live website.');
 }
 const server = supplied ? null : await preview({
-  configFile: false, appType: 'mpa', base: '/cojeev-ui/', build: { outDir: 'out' },
+  configFile: false, appType: 'mpa', base: '/ui/', build: { outDir: 'out' },
   preview: { host: '127.0.0.1', port: 0, strictPort: true },
 });
 try {
-  const base = supplied ?? `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`;
+  const base = supplied ?? `http://127.0.0.1:${server.httpServer.address().port}/ui`;
   for (const file of [
     'tests/choice-recovery.docs.browser.mjs',
     'tests/disclosure-recovery.docs.browser.mjs',

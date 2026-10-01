@@ -6,11 +6,11 @@ const server = process.env.SHARE_URL
   ? null
   : await previewServer({
       configFile: false,
-      base: "/cojeev-ui/",
+      base: "/ui/",
       build: { outDir: process.env.SHARE_OUT_DIR ?? "out" },
       preview: { host: "127.0.0.1", port: 0, strictPort: true },
     });
-const base = (process.env.SHARE_URL ?? `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`).replace(/\/$/, "");
+const base = (process.env.SHARE_URL ?? `http://127.0.0.1:${server.httpServer.address().port}/ui`).replace(/\/$/, "");
 const origin = new URL(base).origin;
 const browser = await chromium.launch();
 

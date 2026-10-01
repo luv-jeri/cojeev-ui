@@ -19,7 +19,7 @@ export default function DocsLayout({
   }));
   return (
     <RootProvider theme={{ enabled: false }} search={{ enabled: false }}>
-      <DocsShell entries={entries} searchUrl={`${process.env.COJEEV_BASE_PATH ?? "/cojeev-ui"}/docs-search.json`}>{children}</DocsShell>
+      <DocsShell entries={entries} searchUrl={`${process.env.COJEEV_BASE_PATH ?? "/ui"}/docs-search.json`}>{children}</DocsShell>
     </RootProvider>
   );
 }

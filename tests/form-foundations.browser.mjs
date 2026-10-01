@@ -18,7 +18,7 @@ const bundle = await build({ stdin: { contents: `
 `, loader:"tsx",resolveDir:process.cwd() }, bundle:true,write:false,format:"iife",platform:"browser",define:{"process.env.NODE_ENV":'"production"'} });
 // Reuse the real docs' compiled utility stylesheet, avoiding a second CSS compiler.
 const origin=process.env.DOCS_ORIGIN??"http://127.0.0.1:4320";
-const html=await (await fetch(`${origin}/cojeev-ui/docs/input/`)).text();
+const html=await (await fetch(`${origin}/ui/docs/input/`)).text();
 const links=[...html.matchAll(/href="([^"]+\.css[^\"]*)"/g)].map(match=>match[1]);
 const css=(await Promise.all(links.map(async href=>(await fetch(new URL(href,origin))).text()))).join("\n")+"\n@layer cojeev-states {"+await readFile("registry/cojeev/styles/control-appearance.css","utf8")+"}";
 const browser=await chromium.launch();
@@ -64,7 +64,7 @@ try {
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),"no horizontal overflow");
  }
  const docs=await browser.newPage({viewport:{width:1280,height:1000},reducedMotion:"reduce"});
- await docs.goto(`${origin}/cojeev-ui/docs/input/`,{waitUntil:"domcontentloaded"});
+ await docs.goto(`${origin}/ui/docs/input/`,{waitUntil:"domcontentloaded"});
  await docs.waitForFunction(()=>document.querySelector('.report-launcher')?.disabled===false);
  await docs.locator('[data-form-example="input"]').first().waitFor();
  const preview=docs.locator('.docs-playground [data-slot="preview"]').first();
@@ -79,7 +79,7 @@ try {
   await preview.locator('.v-preview__frame').screenshot({path:`${output}/docs-input-${approach.toLowerCase()}-${width}-${mode}.png`});
  }
  for(const route of ['field','input-group','textarea']) {
-  await docs.goto(`${origin}/cojeev-ui/docs/${route}/`,{waitUntil:'domcontentloaded'});
+  await docs.goto(`${origin}/ui/docs/${route}/`,{waitUntil:'domcontentloaded'});
   await docs.waitForFunction(()=>document.querySelector('.report-launcher')?.disabled===false);
   const example=docs.locator('.docs-playground [data-example-role="interactive"]');
   await example.locator('.v-morph-live').first().waitFor({state:'attached'});

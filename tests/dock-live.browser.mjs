@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
 
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui";
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 960 } });

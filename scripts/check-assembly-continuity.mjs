@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 
-const base = (process.env.BASE_URL || "http://127.0.0.1:4335/cojeev-ui").replace(/\/$/, "");
+const base = (process.env.BASE_URL || "http://127.0.0.1:4335/ui").replace(/\/$/, "");
 const output = "output/playwright/000h-assembly";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();

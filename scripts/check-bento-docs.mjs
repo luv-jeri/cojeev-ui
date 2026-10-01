@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 const { chromium } = await import(process.env.BENTO_PLAYWRIGHT ?? "playwright");
-const base = process.env.BENTO_DOCS_BASE ?? "http://127.0.0.1:4320/cojeev-ui";
+const base = process.env.BENTO_DOCS_BASE ?? "http://127.0.0.1:4320/ui";
 const output = "output/playwright/bento-docs";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();

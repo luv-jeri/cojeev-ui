@@ -5,7 +5,7 @@ try {
   for (const width of [360, 1440]) for (const mode of ["light", "dark"]) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     await page.addInitScript(mode => localStorage.setItem("cojeev-docs-theme", mode), mode);
-    await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui"}/docs/pattern-background/`);
+    await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui"}/docs/pattern-background/`);
     const example = page.locator('[data-example="pattern-background"]').first();
     await example.getByRole('slider', { name: 'Pattern spacing', exact: true }).waitFor();
     await page.evaluate(() => document.fonts.ready);

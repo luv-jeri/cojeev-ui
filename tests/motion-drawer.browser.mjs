@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {mkdir} from "node:fs/promises";
 import {chromium} from "playwright";
 const browser=await chromium.launch();
-const base=process.env.POLISH_URL??"http://127.0.0.1:4320/cojeev-ui";
+const base=process.env.POLISH_URL??"http://127.0.0.1:4320/ui";
 await mkdir("output/playwright/round-7-drawer",{recursive:true});
 const settled=page=>page.waitForFunction(()=>{const d=document.querySelector('[data-slot="motion-drawer-content"]');if(!d)return false;const m=new DOMMatrixReadOnly(getComputedStyle(d).transform);return Math.abs(m.m41)<.1&&Math.abs(m.m42)<.1&&Math.abs(m.a-1)<.001});
 const drag=async(page,x,y,dx,dy)=>{await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+dx,y+dy,{steps:12});await page.mouse.up()};

@@ -18,7 +18,7 @@ export async function startReportingFixture(origin, port = 8787) {
     // Even an accidental future delivery attempt cannot contact a provider.
     outboundService: () => new Response('External delivery disabled in browser fixture', { status: 503 }),
     bindings: {
-      ALLOWED_ORIGINS: site.origin, SITE_URL: `${site.origin}/cojeev-ui`,
+      ALLOWED_ORIGINS: site.origin, SITE_URL: `${site.origin}/ui`,
       LOCAL_MODE: 'true', EMAIL_ENABLED: 'false', ADMIN_TOKEN: admin,
       IP_HASH_SECRET: randomBytes(32).toString('hex'),
     },

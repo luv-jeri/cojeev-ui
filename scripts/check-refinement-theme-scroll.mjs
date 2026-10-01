@@ -8,7 +8,7 @@ import { build } from "esbuild";
 import { PNG } from "pngjs";
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
 const args=Object.fromEntries(process.argv.slice(2).map(arg=>{const[k,...v]=arg.replace(/^--/,"").split("=");return[k,v.join("=")]}));
-const base=(args.url||"http://127.0.0.1:4320/cojeev-ui").replace(/\/$/,"");
+const base=(args.url||"http://127.0.0.1:4320/ui").replace(/\/$/,"");
 const output=path.resolve(root,args.output||"output/playwright/refinement-theme-scroll/round1");
 fs.mkdirSync(output,{recursive:true});const results=[];
 const fixture=await build({stdin:{sourcefile:"theme-scroll-audit.tsx",loader:"tsx",resolveDir:root,contents:`

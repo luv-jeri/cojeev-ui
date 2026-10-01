@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     "localhost",
     ...(process.env.COJEEV_DEV_ORIGINS ?? "").split(",").map((host) => host.trim()).filter(Boolean),
   ],
-  basePath: process.env.COJEEV_BASE_PATH ?? "/cojeev-ui",
+  basePath: process.env.COJEEV_BASE_PATH ?? "/ui",
   trailingSlash: true,
   images: { unoptimized: true },
 };

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { chromium } from "playwright";
 
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui";
 const output = "output/playwright/preview-background-library";
 await fs.mkdir(output, { recursive: true });
 const choices = [

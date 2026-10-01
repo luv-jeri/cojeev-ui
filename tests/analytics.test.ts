@@ -255,8 +255,8 @@ test("release identifiers are read from the build, shape-checked, and ride the p
 });
 
 test("routes lose query and hash data while private surfaces are rejected", () => {
-  assert.equal(sanitizeRoute("/cojeev-ui/docs/button/?secret=yes#copy"), "/docs/button/");
-  assert.equal(sanitizeRoute("/cojeev-ui/feedback-admin/?draft=private"), null);
+  assert.equal(sanitizeRoute("/ui/docs/button/?secret=yes#copy"), "/docs/button/");
+  assert.equal(sanitizeRoute("/ui/feedback-admin/?draft=private"), null);
   assert.equal(sanitizeRoute("/workspace/attachment.txt"), null);
   assert.equal(sanitizeRoute("https://someone.example/private"), null);
 });
@@ -280,7 +280,7 @@ test("capture sends an anonymous, GeoIP-disabled payload with only the event sch
   assert.equal(client.track("component_impression", {
     component_id: "button",
     placement: "docs",
-    route: "/cojeev-ui/docs/button/?token=secret",
+    route: "/ui/docs/button/?token=secret",
   }), true);
   assert.equal(harness.requests.length, 1);
   assert.equal(harness.requests[0].input, "https://us.i.posthog.com/i/v0/e/");
@@ -356,9 +356,9 @@ test("outbound event rejects route, URL, and label additions", () => {
 });
 
 test("Pages paths and router paths use the same analytics route", () => {
-  assert.equal(sanitizeRoute("/cojeev-ui/docs/button/"), sanitizeRoute("/docs/button/"));
-  assert.equal(sanitizeRoute("/cojeev-ui/"), "/");
-  assert.equal(sanitizeRoute("/cojeev-ui-other/docs/"), "/cojeev-ui-other/docs/");
+  assert.equal(sanitizeRoute("/ui/docs/button/"), sanitizeRoute("/docs/button/"));
+  assert.equal(sanitizeRoute("/ui/"), "/");
+  assert.equal(sanitizeRoute("/uikit/docs/"), "/uikit/docs/");
   for (const host of ["localhost", "preview.localhost", "127.0.0.1", "[::1]"]) assert.equal(isLoopbackHost(host), true);
   assert.equal(isLoopbackHost("000h.example.com"), false);
 });

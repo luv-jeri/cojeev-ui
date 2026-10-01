@@ -14,7 +14,7 @@ try {
       localStorage.setItem('cojeev-docs-theme', mode);
       localStorage.setItem('cojeev-docs-navigation', 'collapsed');
     }, mode);
-    await page.goto('http://127.0.0.1:4320/cojeev-ui/docs/message/', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://127.0.0.1:4320/ui/docs/message/', { waitUntil: 'domcontentloaded' });
     await page.locator('.report-launcher:not(:disabled)').waitFor();
     const sidebar = page.locator('.docs-sidebar');
     await page.waitForFunction(() => document.querySelector('.docs-sidebar')?.getAttribute('data-state') === 'collapsed');

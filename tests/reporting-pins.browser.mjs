@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { chromium } from "playwright";
 
-// Run against a served build: POLISH_URL=http://127.0.0.1:4320/cojeev-ui REPORTING_BROWSER_API=http://127.0.0.1:8787 node --test tests/reporting-pins.browser.mjs
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+// Run against a served build: POLISH_URL=http://127.0.0.1:4320/ui REPORTING_BROWSER_API=http://127.0.0.1:8787 node --test tests/reporting-pins.browser.mjs
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui";
 const api = process.env.REPORTING_BROWSER_API ?? "http://127.0.0.1:8787";
 const SECRET = "secret-value-123";
 const KNOWN = "Known paragraph text";

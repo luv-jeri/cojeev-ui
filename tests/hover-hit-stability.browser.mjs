@@ -4,7 +4,7 @@ import { chromium } from 'playwright';
 // Prevent repaint from detaching the live body, and animated artwork from
 // becoming a changing hit target within its stable native control.
 const browser = await chromium.launch();
-const base = process.env.POLISH_URL ?? 'http://127.0.0.1:4320/cojeev-ui';
+const base = process.env.POLISH_URL ?? 'http://127.0.0.1:4320/ui';
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
   await page.goto(`${base}/docs/button/`, { waitUntil: 'domcontentloaded' });

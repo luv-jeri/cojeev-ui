@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm run registry:build && npm run styles:build && next build",
-    "start": "vite preview --outDir out --base /cojeev-ui/ --host 127.0.0.1 --port 3000",
+    "start": "vite preview --outDir out --base /ui/ --host 127.0.0.1 --port 3000",
     "typecheck": "tsc --noEmit",
     "registry:build": "node scripts/build-registry.mjs",
     "styles:build": "node scripts/build-route-styles.mjs",

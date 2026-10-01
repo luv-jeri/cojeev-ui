@@ -9,7 +9,7 @@ const browser = await chromium.launch();
 try {
   for (const ratio of [1, 2]) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 }, deviceScaleFactor: ratio });
-  await page.goto(`${process.env.POLISH_URL ?? 'http://127.0.0.1:4321/cojeev-ui'}/docs/`, { waitUntil: 'domcontentloaded' });
+  await page.goto(`${process.env.POLISH_URL ?? 'http://127.0.0.1:4321/ui'}/docs/`, { waitUntil: 'domcontentloaded' });
   await page.locator('.report-launcher:not(:disabled)').waitFor();
   const toggle = page.getByRole('switch', { name: 'Dark appearance' });
   for (const mode of ['dark', 'light']) {

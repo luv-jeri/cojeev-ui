@@ -6,7 +6,7 @@ const browser = await chromium.launch();
 try {
   for (const width of [360, 1440]) {
     const page = await browser.newPage({ viewport: { width, height: 1000 } });
-    await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui"}/docs/button/`);
+    await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui"}/docs/button/`);
     const demo = page.locator('[data-example="button"] [data-button-demo="full"]').first();
     const action = demo.getByRole("button", { name: "Add a note", exact: true });
     const disabled = demo.getByRole("button", { name: "Disabled", exact: true });

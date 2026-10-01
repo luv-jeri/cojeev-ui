@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { chromium } from "playwright";
 
-// Run against a served build: POLISH_URL=http://127.0.0.1:4320/cojeev-ui node --test tests/reporting-capture-progress.browser.mjs
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+// Run against a served build: POLISH_URL=http://127.0.0.1:4320/ui node --test tests/reporting-capture-progress.browser.mjs
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui";
 const STEPS = ["Reading the page", "Drawing the screenshot", "Ready to check"];
 // 1x1 PNG. The route below answers it slowly so the assets phase stays observable.
 const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");

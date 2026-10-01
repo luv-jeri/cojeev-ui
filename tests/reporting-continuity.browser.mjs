@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { PNG } from 'pngjs';
 
-const base = process.env.POLISH_URL ?? 'http://127.0.0.1:4320/cojeev-ui';
+const base = process.env.POLISH_URL ?? 'http://127.0.0.1:4320/ui';
 const out = 'output/playwright/reporting-continuity';
 await fs.mkdir(out, { recursive: true });
 const browser = await chromium.launch();

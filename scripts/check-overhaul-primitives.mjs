@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 import { build } from "esbuild";
 
 const args = Object.fromEntries(process.argv.slice(2).map(arg => { const [key, ...value] = arg.replace(/^--/, "").split("="); return [key, value.join("=")]; }));
-const base = (args.url || "http://127.0.0.1:4320/cojeev-ui").replace(/\/$/, "");
+const base = (args.url || "http://127.0.0.1:4320/ui").replace(/\/$/, "");
 const output = path.resolve(args.output || "output/playwright/overhaul-primitives");
 const widths = (args.widths || "1440,390").split(",").map(Number);
 const only = args.only?.split(",");

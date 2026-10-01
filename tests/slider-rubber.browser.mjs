@@ -3,7 +3,7 @@ import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright";
 await mkdir("output/playwright/overhaul-rubber", { recursive: true });
 const browser = await chromium.launch();
-const base = process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+const base = process.env.DOCS_BASE_URL ?? "http://127.0.0.1:4320/ui";
 try {
   for (const mode of ["light", "dark"]) {
     const page = await browser.newPage({

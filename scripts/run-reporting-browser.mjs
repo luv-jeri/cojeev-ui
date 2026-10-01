@@ -9,7 +9,7 @@ import { startReportingFixture } from './reporting-browser-fixture.mjs';
 const privateDir = await mkdtemp(path.join(tmpdir(), '000h-reporting-browser-'));
 let site, fixture;
 try {
-  site = await preview({ configFile: false, base: '/cojeev-ui/', build: { outDir: 'out' }, preview: { host: '127.0.0.1', port: 0, strictPort: true } });
+  site = await preview({ configFile: false, base: '/ui/', build: { outDir: 'out' }, preview: { host: '127.0.0.1', port: 0, strictPort: true } });
   const origin = `http://127.0.0.1:${site.httpServer.address().port}`;
   // The separately built fixture embeds this exact loopback API. A port conflict
   // fails instead of silently testing a different process.
@@ -19,7 +19,7 @@ try {
   const code = await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, ['scripts/check-reporting-browser.mjs'], {
       stdio: 'inherit', env: { ...process.env,
-        REPORTING_BROWSER_URL: `${origin}/cojeev-ui`, REPORTING_BROWSER_API: fixture.api,
+        REPORTING_BROWSER_URL: `${origin}/ui`, REPORTING_BROWSER_API: fixture.api,
         REPORTING_ADMIN_TOKEN_FILE: tokenFile,
         REPORTING_BROWSER_OUTPUT: 'artifacts/reporting-browser',
       },
@@ -43,7 +43,7 @@ try {
   for (const [label, script] of followUps) {
     const failed = await new Promise((resolve, reject) => {
       const child = spawn(process.execPath, ['--test', script], {
-        stdio: 'inherit', env: { ...process.env, POLISH_URL: `${origin}/cojeev-ui`,
+        stdio: 'inherit', env: { ...process.env, POLISH_URL: `${origin}/ui`,
           REPORTING_BROWSER_API: fixture.api, REPORTING_BROWSER_OUTPUT: 'artifacts/reporting-browser' },
       });
       child.once('error', reject);

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 
-const base = process.env.REPORTING_BROWSER_URL ?? "http://localhost:3100/cojeev-ui";
+const base = process.env.REPORTING_BROWSER_URL ?? "http://localhost:3100/ui";
 const api = process.env.REPORTING_BROWSER_API ?? "http://localhost:8787";
 const output = process.env.REPORTING_BROWSER_OUTPUT ?? ".work/reporting/browser";
 const config = await fetch(`${api}/v1/config`).then(response => response.json());

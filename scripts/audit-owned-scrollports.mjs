@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/ui";
 const recoveryComponents = [
   "calendar",
   "date-picker",

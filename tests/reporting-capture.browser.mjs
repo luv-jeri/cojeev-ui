@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 
 // Focused check for C08-1: area selection, visible capture lifecycle, cancellation and redaction.
 // It needs only a running site — no reporting Worker, no admin token, no attachment delivery.
-const base = process.env.CAPTURE_BROWSER_URL ?? "http://127.0.0.1:3177/cojeev-ui";
+const base = process.env.CAPTURE_BROWSER_URL ?? "http://127.0.0.1:3177/ui";
 const output = process.env.CAPTURE_BROWSER_OUTPUT ?? ".work/reporting/capture";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });

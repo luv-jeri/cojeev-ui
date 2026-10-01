@@ -9,7 +9,7 @@ try {
     reducedMotion: "reduce",
   });
   const visit = async (route) => {
-    await page.goto("http://127.0.0.1:4321/cojeev-ui" + route, {
+    await page.goto("http://127.0.0.1:4321/ui" + route, {
       waitUntil: "domcontentloaded",
     });
     await page.waitForFunction(

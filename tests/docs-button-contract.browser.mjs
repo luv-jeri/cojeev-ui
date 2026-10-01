@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
 const browser = await chromium.launch();
-const base = process.env.POLISH_URL ?? 'http://127.0.0.1:4320/cojeev-ui';
+const base = process.env.POLISH_URL ?? 'http://127.0.0.1:4320/ui';
 const output = 'output/playwright/docs-button-contract';
 await mkdir(output, { recursive: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });

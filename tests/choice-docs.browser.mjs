@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
-const base=process.env.DOCS_BASE_URL??'http://127.0.0.1:4320/cojeev-ui',output='output/playwright/choice-foundations';await mkdir(output,{recursive:true});
+const base=process.env.DOCS_BASE_URL??'http://127.0.0.1:4320/ui',output='output/playwright/choice-foundations';await mkdir(output,{recursive:true});
 const browser=await chromium.launch();
 const routes=process.env.CHOICE_ROUTES?.split(',') ?? ['checkbox','radio-group','switch'];
 try{const page=await browser.newPage({viewport:{width:1280,height:1000}});

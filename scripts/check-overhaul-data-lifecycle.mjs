@@ -10,7 +10,7 @@ const args = Object.fromEntries(
     return [k, v.join("=")];
   }),
 );
-const base = (args.url || "http://127.0.0.1:4320/cojeev-ui").replace(
+const base = (args.url || "http://127.0.0.1:4320/ui").replace(
   /\/$/,
   "",
 );

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {mkdir} from "node:fs/promises";
 import {chromium} from "playwright";
 const browser=await chromium.launch();
-const base=process.env.POLISH_URL??"http://127.0.0.1:4320/cojeev-ui";
+const base=process.env.POLISH_URL??"http://127.0.0.1:4320/ui";
 await mkdir("output/playwright/round-6-icons",{recursive:true});
 try{
   for(const width of [360,1440])for(const mode of ["light","dark"]){

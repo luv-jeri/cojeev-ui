@@ -1,9 +1,9 @@
 /**
  * Real-browser regressions for RF-M-001 and RF-M-002. No server is started.
- * CLI: POLISH_URL=http://127.0.0.1:4320/cojeev-ui node tests/rapid-motion-regressions.browser.mjs
+ * CLI: POLISH_URL=http://127.0.0.1:4320/ui node tests/rapid-motion-regressions.browser.mjs
  * The exported runner also accepts a CUA tab's playwright API and CDP capability.
  */
-export async function checkRapidMotion({ page, cdp, navigate, base = "http://127.0.0.1:4320/cojeev-ui" }) {
+export async function checkRapidMotion({ page, cdp, navigate, base = "http://127.0.0.1:4320/ui" }) {
   const results = [];
   const check = (condition, message) => { if (!condition) throw new Error(message); };
   const read = async (selector) => {

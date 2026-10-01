@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { chromium } from "playwright";
 
-// Run by scripts/run-reporting-browser.mjs, or on its own: POLISH_URL=http://127.0.0.1:4381/cojeev-ui node --test tests/reporting-late-save.browser.mjs
+// Run by scripts/run-reporting-browser.mjs, or on its own: POLISH_URL=http://127.0.0.1:4381/ui node --test tests/reporting-late-save.browser.mjs
 // The API is faked in the browser, so this spends none of the fixture's send limit. It is a separate script because
 // it needs many sends and a page-level timing hook that the main journey should not carry.
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui";
 const api = process.env.REPORTING_BROWSER_API ?? "http://127.0.0.1:8787";
 const cors = { "access-control-allow-origin": "*", "access-control-allow-headers": "*", "access-control-allow-methods": "*" };
 
