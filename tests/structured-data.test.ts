@@ -10,7 +10,38 @@ import {
   serializeStructuredData,
 } from "../lib/seo/structured-data";
 
-const origin = "https://000h.cojeev.com";
+const origin = "https://cojeev.com/ui";
+
+test("structured_data_ids_and_breadcrumbs_use_canonical_site", () => {
+  const entries = documentationCatalog();
+  const button = entries.find(entry => entry.name === "button");
+  assert.ok(button);
+  function check(value: unknown): void {
+    if (Array.isArray(value)) return value.forEach(check);
+    if (!value || typeof value !== "object") return;
+    const node = value as Record<string, unknown>;
+    if (node["@type"] === "Person") {
+      assert.equal(node.url, site.creatorUrl);
+      return;
+    }
+    for (const [key, child] of Object.entries(node)) {
+      if (["@id", "url", "item"].includes(key)) {
+        assert.equal(typeof child, "string");
+        assert.match(String(child), /^https:\/\/cojeev\.com\/ui\/(?!ui\/)/);
+      }
+      check(child);
+    }
+  }
+  [homeStructuredData(), componentIndexStructuredData(entries), componentStructuredData(button), gettingStartedStructuredData()].forEach(check);
+  const component = componentStructuredData(button)["@graph"];
+  assert.equal(component[0]["@id"], "https://cojeev.com/ui/docs/button/#component");
+  assert.equal(component[0].url, "https://cojeev.com/ui/docs/button/");
+  assert.equal(component[1]["@id"], "https://cojeev.com/ui/docs/button/#breadcrumb");
+  assert.deepEqual(component[1].itemListElement, [
+    { "@type": "ListItem", position: 1, name: "Components", item: "https://cojeev.com/ui/docs/" },
+    { "@type": "ListItem", position: 2, name: button.title, item: "https://cojeev.com/ui/docs/button/" },
+  ]);
+});
 
 function propertyNames(value: unknown): string[] {
   if (Array.isArray(value)) return value.flatMap(propertyNames);
