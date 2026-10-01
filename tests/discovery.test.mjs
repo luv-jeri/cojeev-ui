@@ -61,6 +61,37 @@ test('apex_robots_adds_only_ui_sitemap_line', async () => {
   }
 });
 
+test('apex_robots_rejects_cr_delimited_ui_disallow', async () => {
+  const { robotsProblems } = await import('../scripts/check-discovery.mjs');
+  const sitemap = 'Sitemap: https://cojeev.com/ui/sitemap.xml\n';
+  for (const newline of ['\r', '\n', '\r\n']) {
+    const before = `User-agent: *${newline}Disallow: /ui/${newline}`;
+    const after = before + (before.endsWith('\n') ? '' : '\n') + sitemap;
+    assert.match(robotsProblems(before, after).join('\n'), /blocks \/ui\//, JSON.stringify(newline));
+  }
+
+  const before = 'User-agent: *\rDisallow: /private/\r';
+  assert.deepEqual(robotsProblems(before, before + '\n' + sitemap), []);
+  assert.match(
+    robotsProblems(before, 'User-agent: *\nDisallow: /private/\n' + sitemap).join('\n'),
+    /append only the approved UI Sitemap line/,
+  );
+});
+
+test('apex_robots_extension_records_preserve_user_agent_groups', async () => {
+  const { robotsProblems } = await import('../scripts/check-discovery.mjs');
+  const sitemap = 'Sitemap: https://cojeev.com/ui/sitemap.xml\n';
+  for (const extension of ['Crawl-delay: 10', 'X-Extension: value']) {
+    const before = `User-agent: *\n${extension}\nUser-agent: ExampleBot\nDisallow: /ui/\n`;
+    assert.match(robotsProblems(before, before + sitemap).join('\n'), /blocks \/ui\//, extension);
+
+    for (const rule of ['Allow: /private/', 'Disallow: /private/', 'Disallow:']) {
+      const separateGroups = `User-agent: *\n${rule}\n${extension}\nUser-agent: ExampleBot\nDisallow: /ui/\n`;
+      assert.deepEqual(robotsProblems(separateGroups, separateGroups + sitemap), [], rule);
+    }
+  }
+});
+
 test('shadcn_directory_template_fetches_live_json', async () => {
   const { shadcnTemplateProblems } = await import('../scripts/check-discovery.mjs');
   const template = 'https://cojeev.com/ui/r/{name}.json';

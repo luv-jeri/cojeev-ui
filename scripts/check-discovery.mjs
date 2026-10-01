@@ -11,7 +11,7 @@ export function robotsProblems(before, after) {
   const prefix = before && !before.endsWith('\n') ? `${before}\n` : before;
   if (after !== prefix + sitemapLine) problems.push('Apex robots must append only the approved UI Sitemap line.');
 
-  const lines = after.split(/\r?\n/).map(line => line.split('#')[0].trim());
+  const lines = after.split(/\r\n|[\r\n]/).map(line => line.split('#')[0].trim());
   if (lines.filter(line => /^sitemap\s*:/i.test(line)).length !== 1) {
     problems.push('Apex robots must contain exactly one Sitemap line.');
   }
@@ -29,6 +29,7 @@ export function robotsProblems(before, after) {
       hasRules = false;
       continue;
     }
+    if (field !== 'allow' && field !== 'disallow') continue;
     hasRules = true;
     if (field !== 'disallow' || !value || !agents.includes('*')) continue;
     // Robots paths match a prefix, with '*' wildcards and an optional end '$'.
