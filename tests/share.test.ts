@@ -18,6 +18,12 @@ test("share link drops query and hash and adds utm_medium=share", () => {
   assert.equal(shareLink(new URL("https://x.test/docs/button/?private=drop#section")), url);
 });
 
+test("share_uses_ui_path_without_query_or_fragment", () => {
+  const expected = "https://cojeev.com/ui/docs/button/?utm_medium=share";
+  assert.equal(shareLink({ origin: "https://cojeev.com", pathname: "/ui/docs/button/" }), expected);
+  assert.equal(shareLink(new URL("https://cojeev.com/ui/docs/button/?private=drop#section")), expected);
+});
+
 test("uses the share sheet when available and does not copy", async () => {
   const { value, calls } = deps();
   let shared;

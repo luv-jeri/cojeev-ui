@@ -23,6 +23,7 @@ import { MotionDrawer } from "@/registry/cojeev/ui/motion-drawer";
 import { useMotionQuiet } from "@/registry/cojeev/motion/choreography";
 import { useMorph } from "@/registry/cojeev/motion/use-morph";
 import { BetaStamp } from "@/components/brand/beta-stamp";
+import { ExploreCojeevLink } from "@/components/explore-cojeev-link";
 
 /** Animate the paper, never the navigation's layout or pointer targets. */
 function NavigationSurface() {
@@ -59,7 +60,7 @@ function subscribeNavigationPreference(callback: () => void) {
 
 export function DocsShell({
   entries,
-  searchUrl = "/cojeev-ui/docs-search.json",
+  searchUrl = "/ui/docs-search.json",
   children,
 }: {
   entries: DocsLink[];
@@ -158,12 +159,15 @@ export function DocsShell({
       {!mobile && <NavigationSurface />}
       {!mobile && (
         <div className="docs-rail-heading">
-          <Link href="/docs/" className="docs-brand" aria-label="000h by Cojeev">
-            <span className="docs-brand-seal">
-              <BrandMark className="docs-brand-mark" />
-            </span>
-            {expanded && <span className="docs-brand-name">000h <small>by Cojeev</small></span>}
-          </Link>
+          <div style={{ display: "grid", gap: 2 }}>
+            <Link href="/docs/" className="docs-brand" aria-label="000h">
+              <span className="docs-brand-seal">
+                <BrandMark className="docs-brand-mark" />
+              </span>
+              {expanded && <span className="docs-brand-name">000h</span>}
+            </Link>
+            <a className="cojeev-attribution" href="https://cojeev.com/" style={{ fontSize: "var(--fs-caps)" }}>by Cojeev</a>
+          </div>
           {expanded && <BetaStamp />}
           <Button
             size="sm"
@@ -279,10 +283,13 @@ export function DocsShell({
         Skip to content
       </a>
       <header className="docs-mobile">
-        <Link href="/" className="docs-brand">
-          <BrandMark className="docs-brand-mark" />
-          000h by Cojeev
-        </Link>
+        <div style={{ display: "grid", gap: 2 }}>
+          <Link href="/" className="docs-brand">
+            <BrandMark className="docs-brand-mark" />
+            000h
+          </Link>
+          <a className="cojeev-attribution" href="https://cojeev.com/" style={{ fontSize: "var(--fs-caps)" }}>by Cojeev</a>
+        </div>
         <BetaStamp />
         <div className="docs-mobile-actions">
           <ShareButton iconOnly className="docs-source-icon docs-share-icon" />
@@ -341,6 +348,7 @@ export function DocsShell({
       {!mobile && navigation}
       <div id="docs-main" className="docs-main" tabIndex={-1}>
         {children}
+        <ExploreCojeevLink />
       </div>
     </div>
   );
