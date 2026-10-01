@@ -2,6 +2,10 @@
 
 Cojeev UI is distributed through a public shadcn registry.
 
+The site moved to cojeev.com/ui. Saved drafts and browser preferences from 000h.cojeev.com do not transfer. Keep your downloaded report receipts.
+
+The legacy registry at `https://000h.cojeev.com/r/<name>.json` keeps working.
+
 Cojeev UI copies React source into your application through the shadcn CLI. Use a React 19 application with TypeScript, Tailwind CSS v4, and an `@/` import alias. The registry includes its token theme, fonts and shared motion code; it does not require the private Cojeev application.
 
 For the checked compiler baseline, declaration boundary and the separate route
@@ -13,7 +17,7 @@ For a Vite project with Tailwind and the alias configured, initialize shadcn and
 
 ```sh
 npx shadcn@latest init
-npx shadcn@latest add https://000h.cojeev.com/r/button.json
+npx shadcn@latest add https://cojeev.com/ui/r/button.json
 ```
 
 ```tsx
@@ -37,7 +41,7 @@ For namespace commands, add this entry to your application's `components.json`:
 ```json
 {
   "registries": {
-    "@cojeev": "https://000h.cojeev.com/r/{name}.json"
+    "@cojeev": "https://cojeev.com/ui/r/{name}.json"
   }
 }
 ```
@@ -49,7 +53,7 @@ You can then use `npx shadcn@latest add @cojeev/button`. The namespace entry is 
 Components read spacing, type and control-height tokens that the foundation stylesheet defines. The shadcn CLI never replaces a file you already have unless you ask, so a project installed before a token was added keeps its old `tokens.css`, and a newly added component can lose its spacing or font. Refresh the foundation when you add components from a newer release:
 
 ```sh
-npx shadcn@latest add https://000h.cojeev.com/r/cojeev.json --overwrite
+npx shadcn@latest add https://cojeev.com/ui/r/cojeev.json --overwrite
 ```
 
 This replaces every file the foundation installs: its stylesheets, `lib/utils.ts` (the `cn` helper), `lib/cojeev/`, `lib/cojeev-motion/` and the font script. Preview the changes with `--dry-run` first, then reapply any local edits you made to those files.
