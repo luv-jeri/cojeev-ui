@@ -60,6 +60,7 @@ try {
 
     await page.keyboard.press("Escape");
     assert.equal(await trigger.getAttribute("aria-expanded"), "false");
+    await trigger.and(page.locator(":focus")).waitFor();
     assert.equal(await trigger.evaluate(node => node === document.activeElement), true);
 
     await trigger.click();
@@ -78,6 +79,7 @@ try {
     });
     await page.keyboard.press("Escape");
     assert.equal(await trigger.getAttribute("aria-expanded"), "false");
+    await trigger.and(page.locator(":focus")).waitFor();
     assert.equal(await trigger.evaluate(node => node === document.activeElement), true);
 
     await trigger.click();
@@ -90,6 +92,7 @@ try {
     assert.equal(await trigger.evaluate(node => node === document.activeElement), true);
     await page.keyboard.press("Escape");
     assert.equal(await trigger.getAttribute("aria-expanded"), "false");
+    await trigger.and(page.locator(":focus")).waitFor();
     assert.equal(await trigger.evaluate(node => node === document.activeElement), true);
 
     await trigger.click();

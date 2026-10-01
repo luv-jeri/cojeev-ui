@@ -20,8 +20,8 @@ async function sources(directory) {
 }
 const files = (await Promise.all(["app", "components", "lib", "registry"].map(sources))).flat();
 
-// Resolve literal arguments and file-local constants, including calls through the
-// motion parse/persist wrappers. Unresolved key call sites fail the inventory.
+// Resolve literal names and file-local constants, including calls through the
+// motion parse/persist wrappers. Unresolved storage owners fail the inventory.
 function scanKeys({ path, text }) {
   const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   const constants = new Map();
@@ -36,19 +36,37 @@ function scanKeys({ path, text }) {
     if (node && ts.isIdentifier(node) && !seen.has(node.text)) return resolve(constants.get(node.text), new Set([...seen, node.text]));
     return null;
   };
+  const memberName = node => node && ts.isPropertyAccessExpression(node) ? node.name.text
+    : node && ts.isElementAccessExpression(node) ? resolve(node.argumentExpression) : null;
+  const globalName = node => {
+    if (node && ts.isIdentifier(node)) return node.text;
+    const name = memberName(node);
+    return name && ts.isIdentifier(node.expression) && ["window", "globalThis", "self"].includes(node.expression.text) ? name : null;
+  };
   walk(source, node => {
     // Layout boot scripts are source too; inspect their literal JS bodies.
-    if (ts.isStringLiteralLike(node) && /\b(?:localStorage|sessionStorage|indexedDB)\b/.test(node.text)) {
+    if (ts.isStringLiteralLike(node) && /\b(?:localStorage|sessionStorage|indexedDB|BroadcastChannel)\b/.test(node.text)) {
       const embedded = scanKeys({ path: `${path}:inline`, text: node.text });
       for (const key of embedded.keys) keys.add(key);
       for (const key of embedded.removed) removed.add(key);
     }
+    const write = ts.isBinaryExpression(node)
+      && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment
+      && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment
+      && (ts.isPropertyAccessExpression(node.left) || ts.isElementAccessExpression(node.left))
+      && ["localStorage", "sessionStorage"].includes(globalName(node.left.expression));
+    const channel = ts.isNewExpression(node) && globalName(node.expression) === "BroadcastChannel";
+    if (write || channel) {
+      const key = write ? memberName(node.left) : resolve(node.arguments?.[0]);
+      assert(key, `${path}: unresolved storage key in ${node.getText(source)}`);
+      keys.add(key);
+      return;
+    }
     if (!ts.isCallExpression(node)) return;
     const expression = node.expression;
-    const method = ts.isPropertyAccessExpression(expression) ? expression.name.text
-      : ts.isElementAccessExpression(expression) ? resolve(expression.argumentExpression) : null;
+    const method = memberName(expression);
     const motionWrapper = path === "registry/cojeev/motion/settings.ts" && ts.isIdentifier(expression) && ["parse", "persist"].includes(expression.text);
-    const database = method === "open" && /(?:^|\.)indexedDB$/.test(expression.expression.getText(source));
+    const database = method === "open" && globalName(expression.expression) === "indexedDB";
     if (!["getItem", "setItem", "removeItem"].includes(method) && !motionWrapper && !database) return;
     const key = resolve(node.arguments[0]);
     // These are the forwarding parameters, whose callers are scanned above.
@@ -68,6 +86,31 @@ function scanKeys({ path, text }) {
     (method === "removeItem" ? removed : keys).add(key);
   });
   return { keys, removed };
+}
+
+// Every fixture introduces an unlisted owner (the first also collides with the
+// homepage). An empty scan would let it bypass the real inventory assertions.
+for (const [name, text, key] of [
+  ["local_storage_element_write", 'localStorage["cojeev-coming-soon-theme"] = "dark";', "cojeev-coming-soon-theme"],
+  ["local_storage_property_write", 'localStorage.unlisted = "value";', "unlisted"],
+  ["session_storage_element_write", 'sessionStorage["unlisted"] = "value";', "unlisted"],
+  ["session_storage_property_write", 'sessionStorage.unlisted = "value";', "unlisted"],
+  ["broadcast_channel_constructor", 'new BroadcastChannel("unlisted");', "unlisted"],
+  ["window_element_indexed_db_open", 'window["indexedDB"].open("unlisted");', "unlisted"],
+  ["global_this_indexed_db_open", 'globalThis.indexedDB.open("unlisted");', "unlisted"],
+  ["inline_broadcast_channel_constructor", 'const script = `new BroadcastChannel("unlisted");`;', "unlisted"],
+]) {
+  test(`storage_inventory_records_${name}`, () => {
+    const found = scanKeys({ path: "fixture.ts", text });
+    assert.deepEqual([...found.keys], [key], "unlisted storage owner must reach inventory/collision assertions");
+    assert(!UI_KEYS.includes(key));
+  });
+}
+
+for (const text of ['localStorage[runtimeKey] = "value";', 'new BroadcastChannel(runtimeKey);']) {
+  test(`storage_inventory_rejects_unresolved_owner: ${text}`, () => {
+    assert.throws(() => scanKeys({ path: "fixture.ts", text }), /unresolved storage key/);
+  });
 }
 
 test("ui_keys_do_not_collide_with_homepage_keys", () => {
