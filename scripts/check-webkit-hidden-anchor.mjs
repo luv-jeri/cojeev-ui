@@ -26,11 +26,11 @@ fs.mkdirSync(out, { recursive: true });
 const server = await preview({
   configFile: false,
   root: repoRoot,
-  base: "/cojeev-ui/",
+  base: "/ui/",
   build: { outDir: path.join(repoRoot, "out") },
   preview: { host: "127.0.0.1", port: 0 },
 });
-const base = `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`;
+const base = `http://127.0.0.1:${server.httpServer.address().port}/ui`;
 const built = await build({
   tsconfig: path.join(repoRoot, "tsconfig.json"),
   stdin: {

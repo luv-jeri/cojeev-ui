@@ -5,7 +5,7 @@ import { chromium } from "playwright";
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 360, height: 900 } });
-  await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui"}/docs/scroll-area/`);
+  await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui"}/docs/scroll-area/`);
   const example = page.locator('[data-example="scroll-area"]').first();
   await page.evaluate(() => document.fonts.ready);
   await example.locator('.v-morph-live').first().waitFor({ state: "attached" });

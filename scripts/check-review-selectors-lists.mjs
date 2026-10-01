@@ -27,7 +27,7 @@ try {
     const verify = async (name, run) => { if (args.only && !args.only.split(",").some(part => name.toLowerCase().includes(part.toLowerCase()))) return; try { await run(); record.checks.push(name); } catch (error) { record.failures.push({ name, message: error.message }); } };
     const shot = async (name, locator) => { await locator.scrollIntoViewIfNeeded(); await locator.screenshot({ path: path.join(output, `${width}-${theme}-${name}.png`) }); };
     try {
-      const base = args.url || "http://127.0.0.1:4320/cojeev-ui";
+      const base = args.url || "http://127.0.0.1:4320/ui";
       const response = await context.request.get(`${base}/docs/checkbox/`);
       const source = await response.text();
       const links = source.match(/<link[^>]+rel="stylesheet"[^>]*>/g) || [];

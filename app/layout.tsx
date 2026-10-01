@@ -14,7 +14,7 @@ import "@/components/analytics/analytics-consent.css";
 export const metadata: Metadata = {
   title: { default: site.title, template: `%s · ${site.title}` },
   description: site.description,
-  metadataBase: new URL(`${site.url}/`),
+  metadataBase: new URL(new URL(site.url).origin),
   authors: [{ name: site.author, url: site.creatorUrl }],
   openGraph: { title: site.title, description: site.description, siteName: site.title, type: "website", url: absoluteSiteUrl("/") },
   twitter: { card: "summary_large_image", title: site.title, description: site.description },

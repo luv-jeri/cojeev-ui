@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { chromium } from "playwright";
 import fs from "node:fs/promises";
 
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui";
 const out = "output/playwright/reporting-stack";
 await fs.mkdir(out, { recursive: true });
 const browser = await chromium.launch();

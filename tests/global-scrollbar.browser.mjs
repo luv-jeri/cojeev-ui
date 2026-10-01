@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui"}/docs/scroll-area/`);
+  await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui"}/docs/scroll-area/`);
   await page.evaluate(() => document.fonts.ready);
   await page.locator('[data-slot="page-scrollbar"]').waitFor();
 

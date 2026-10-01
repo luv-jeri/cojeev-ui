@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {generateBento,resizeBentoSeam} from '../registry/cojeev/lib/bento-layout.ts';
-const base=process.env.POLISH_URL??'http://127.0.0.1:4321/cojeev-ui',out='output/playwright/bento-recovery';await mkdir(out,{recursive:true});
+const base=process.env.POLISH_URL??'http://127.0.0.1:4321/ui',out='output/playwright/bento-recovery';await mkdir(out,{recursive:true});
 const browser=await chromium.launch();
 try{
  const page=await browser.newPage({viewport:{width:1280,height:1000},permissions:['clipboard-read','clipboard-write']});const errors=[];page.on('pageerror',e=>errors.push(e.message));

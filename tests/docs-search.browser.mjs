@@ -7,7 +7,7 @@ try {
  for(const width of [390,1280])for(const mode of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
   await page.addInitScript(mode=>{localStorage.setItem('cojeev-docs-theme',mode);localStorage.setItem('cojeev-docs-navigation','collapsed')},mode);
-  await page.goto(`${process.env.POLISH_URL ?? 'http://127.0.0.1:4321/cojeev-ui'}/docs/`,{waitUntil:'domcontentloaded'});
+  await page.goto(`${process.env.POLISH_URL ?? 'http://127.0.0.1:4321/ui'}/docs/`,{waitUntil:'domcontentloaded'});
   await page.locator('.report-launcher:not(:disabled)').waitFor();
   if(width===390)await page.getByRole('button',{name:'Browse',exact:true}).click();
   const nav=page.locator('#docs-navigation');

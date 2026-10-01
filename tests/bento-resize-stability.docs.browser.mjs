@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
 import { mkdir, writeFile } from "node:fs/promises";
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/ui";
 const out = "output/playwright/bento-resize-stability";
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch();

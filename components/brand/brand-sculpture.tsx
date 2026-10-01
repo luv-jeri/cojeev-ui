@@ -23,7 +23,8 @@ export function BrandSculpture() {
           <BrandMark className="brand-sculpture__fallback" />
         ) : (
           <Image
-            src={sculpture}
+            // Next emits the configured base path in the static import URL.
+            src={sculpture.src}
             width={640}
             height={640}
             sizes="(max-width: 620px) 88px, 128px"

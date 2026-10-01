@@ -8,7 +8,7 @@ try {
  for(const mode of ['light','dark']){
   const page=await browser.newPage({viewport:{width:390,height:900},reducedMotion:'reduce'});
   await page.addInitScript(mode=>localStorage.setItem('cojeev-docs-theme',mode),mode);
-  await page.goto('http://127.0.0.1:4320/cojeev-ui/docs/button/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:4320/ui/docs/button/',{waitUntil:'domcontentloaded'});
   await page.locator('.report-launcher:not(:disabled)').waitFor();
   const viewport=page.locator('.docs-props').first();
   const managed=viewport.locator('xpath=ancestor::*[@data-slot="scroll-area"][1]');
@@ -25,7 +25,7 @@ try {
   await page.mouse.down();await page.mouse.move(bounds.x+bounds.width/2+100,bounds.y+bounds.height/2,{steps:8});await page.mouse.up();
   assert.ok(await viewport.evaluate(el=>el.scrollLeft)>room/3,'Organic thumb drag moves the real table viewport');
   await managed.screenshot({path:`output/playwright/overhaul-scroll/${mode}-table.png`});
-  await page.goto('http://127.0.0.1:4320/cojeev-ui/docs/reading-trail/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:4320/ui/docs/reading-trail/',{waitUntil:'domcontentloaded'});
   await page.locator('.report-launcher:not(:disabled)').waitFor();
   const article=page.getByRole('region',{name:'Example article',exact:true}).first();
   assert.equal(await article.locator('xpath=ancestor::*[@data-slot="scroll-area"][1]').count(),1,'Article and table share the same custom scroll primitive');

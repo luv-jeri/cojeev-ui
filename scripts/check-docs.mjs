@@ -21,11 +21,11 @@ const args = Object.fromEntries(
 );
 const staticServer = args.serve ? await startPreview({
   configFile: false,
-  base: "/cojeev-ui/",
+  base: "/ui/",
   build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
-const base = args.url || `http://127.0.0.1:${staticServer ? staticServer.httpServer.address().port : 4320}/cojeev-ui`;
+const base = args.url || `http://127.0.0.1:${staticServer ? staticServer.httpServer.address().port : 4320}/ui`;
 const main = args.checkout ? path.resolve(args.checkout) : process.cwd();
 const output = path.resolve(args.output || "output/playwright/docs");
 fs.mkdirSync(output, { recursive: true });

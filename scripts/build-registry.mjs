@@ -6,7 +6,7 @@ import { componentAPIs } from "./component-api.mjs";
 import { sourceImport, rewriteInstalledImports } from "./registry-imports.mjs";
 import { noticeText } from "./registry-notices.mjs";
 
-const baseURL=process.env.COJEEV_REGISTRY_URL??"https://luv-jeri.github.io/cojeev-ui";
+const baseURL=process.env.COJEEV_REGISTRY_URL??"https://cojeev.com/ui";
 const source="registry/cojeev";
 const ids=fs.readdirSync(`${source}/ui`).filter(file=>file.endsWith(".tsx")).map(file=>file.slice(0,-4)).sort();
 // The shadcn installer resolves registered modules by basename. A helper with

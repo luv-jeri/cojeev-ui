@@ -8,12 +8,12 @@ import path from "node:path";
 import { chromium } from "playwright";
 
 const staticServer = process.argv.includes("--serve") ? await (await import("vite")).preview({
-  configFile: false, base: "/cojeev-ui/", build: { outDir: "out" },
+  configFile: false, base: "/ui/", build: { outDir: "out" },
   preview: { host: "127.0.0.1", port: 0, strictPort: true },
 }) : null;
 const base = (process.env.BASE_URL ?? (staticServer
-  ? `http://127.0.0.1:${staticServer.httpServer.address().port}/cojeev-ui`
-  : "http://127.0.0.1:4320/cojeev-ui")).replace(/\/$/, "");
+  ? `http://127.0.0.1:${staticServer.httpServer.address().port}/ui`
+  : "http://127.0.0.1:4320/ui")).replace(/\/$/, "");
 const output = process.env.OUTPUT_DIR ?? "output/playwright/landing-guides";
 const widths = (process.env.WIDTHS ?? "390,1440").split(",").map(Number);
 await fs.mkdir(output, { recursive: true });

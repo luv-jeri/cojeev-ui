@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
-const base=process.env.POLISH_URL??'http://127.0.0.1:4321/cojeev-ui';
+const base=process.env.POLISH_URL??'http://127.0.0.1:4321/ui';
 const out='output/playwright/docs-workshop-recovery';
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch();

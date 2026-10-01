@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
-const base=process.env.BASE_URL??'http://127.0.0.1:4320/cojeev-ui';
+const base=process.env.BASE_URL??'http://127.0.0.1:4320/ui';
 const output=path.resolve(process.env.OUTPUT_DIR??'output/playwright/review-assembly-redesign');
 fs.mkdirSync(output,{recursive:true});
 const browser=await chromium.launch(),results={checks:[],errors:[]};

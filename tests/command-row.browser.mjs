@@ -3,7 +3,7 @@ import {chromium} from 'playwright';
 const browser=await chromium.launch();
 try{
  const page=await browser.newPage({viewport:{width:1280,height:900}});
- await page.goto('http://127.0.0.1:4320/cojeev-ui/docs/command/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:4320/ui/docs/command/',{waitUntil:'domcontentloaded'});
  await page.locator('.report-launcher:not(:disabled)').waitFor();
  const row=page.locator('[data-example-role="interactive"] [data-slot="command-item"]').filter({hasText:'New note'});
  await row.click();

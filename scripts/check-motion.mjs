@@ -5,8 +5,8 @@ import fs from 'node:fs';
 import {chromium} from 'playwright';
 import {preview} from 'vite';
 import {factoryCfg,factoryTiers,FLOW_CHARACTERS,FLOW_INTENSITY} from '../registry/cojeev/motion/settings.ts';
-const server=process.argv.includes('--serve')?await preview({configFile:false,base:'/cojeev-ui/',build:{outDir:'out'},preview:{host:'127.0.0.1',port:0,strictPort:true}}):null;
-const out='artifacts/production-motion',base=process.env.POLISH_URL??`http://127.0.0.1:${server?server.httpServer.address().port:4320}/cojeev-ui`;fs.mkdirSync(out,{recursive:true});
+const server=process.argv.includes('--serve')?await preview({configFile:false,base:'/ui/',build:{outDir:'out'},preview:{host:'127.0.0.1',port:0,strictPort:true}}):null;
+const out='artifacts/production-motion',base=process.env.POLISH_URL??`http://127.0.0.1:${server?server.httpServer.address().port:4320}/ui`;fs.mkdirSync(out,{recursive:true});
 const browser=await chromium.launch();const rows=[],checks=[];
 const LAG={click:240,travel:280};
 try{

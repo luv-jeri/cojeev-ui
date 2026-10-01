@@ -20,7 +20,7 @@ const bundle=await build({stdin:{contents:`
  };window.renderNative();
 `,loader:"tsx",resolveDir:process.cwd()},bundle:true,write:false,format:"iife",platform:"browser",alias:process.env.CALENDAR_DATE_FNS_FIXTURE?{"date-fns":process.env.CALENDAR_DATE_FNS_FIXTURE}:undefined,define:{"process.env.NODE_ENV":'"production"'}});
 const origin=process.env.DOCS_ORIGIN??"http://127.0.0.1:4320";
-const html=await (await fetch(`${origin}/cojeev-ui/docs/calendar/`)).text();
+const html=await (await fetch(`${origin}/ui/docs/calendar/`)).text();
 const links=[...html.matchAll(/href="([^"]+\.css[^\"]*)"/g)].map(match=>match[1]);
 const css=(await Promise.all(links.map(async href=>(await fetch(new URL(href,origin))).text()))).join("\n");
 const browser=await chromium.launch();

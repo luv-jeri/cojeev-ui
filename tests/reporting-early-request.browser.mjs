@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { chromium } from "playwright";
 
-// Run against a served build or dev server: POLISH_URL=http://127.0.0.1:4381/cojeev-ui node --test tests/reporting-early-request.browser.mjs
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui";
+// Run against a served build or dev server: POLISH_URL=http://127.0.0.1:4381/ui node --test tests/reporting-early-request.browser.mjs
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui";
 
 test("a request opened before the reporting widget mounts opens once it mounts", async () => {
   const browser = await chromium.launch();

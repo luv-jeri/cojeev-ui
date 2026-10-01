@@ -1,12 +1,12 @@
 // Focused homepage check for G01-1: the extracted fonts still render, the two repaired axe rules stay
 // clean, every featured demo and the shape studio still respond, and the static export still carries
 // the content with JavaScript switched off. Point it at a served production build:
-//   node scripts/check-landing-performance.mjs http://127.0.0.1:4346/
+//   node scripts/check-landing-performance.mjs http://127.0.0.1:4346/ui/
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 const axeSource = readFileSync("node_modules/axe-core/axe.min.js", "utf8");
-const BASE = process.argv[2] ?? "http://127.0.0.1:4346/";
+const BASE = process.argv[2] ?? "http://127.0.0.1:4346/ui/";
 const SHOTS = process.env.LANDING_CHECK_SHOTS ?? "artifacts/landing-performance";
 const results = [];
 const check = (name, ok, detail = "") => { results.push({ name, ok, detail }); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? " — " + detail : ""}`); };

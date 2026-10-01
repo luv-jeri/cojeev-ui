@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/ui";
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({

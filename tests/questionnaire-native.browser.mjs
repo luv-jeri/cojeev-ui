@@ -3,7 +3,7 @@ import { build } from "esbuild";
 import { chromium } from "playwright";
 const origin = process.env.DOCS_ORIGIN ?? "http://127.0.0.1:4321";
 const html = await (
-  await fetch(`${origin}/cojeev-ui/docs/questionnaire/`)
+  await fetch(`${origin}/ui/docs/questionnaire/`)
 ).text();
 const css = (
   await Promise.all(

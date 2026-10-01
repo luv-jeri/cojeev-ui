@@ -4,7 +4,7 @@ import {chromium} from "playwright";
 const browser=await chromium.launch();
 try {
   const page=await browser.newPage({viewport:{width:1440,height:1000},hasTouch:true});
-  await page.goto(`${process.env.POLISH_URL??"http://127.0.0.1:4320/cojeev-ui"}/docs/animated-icon/`);
+  await page.goto(`${process.env.POLISH_URL??"http://127.0.0.1:4320/ui"}/docs/animated-icon/`);
   const example=page.locator('[data-example="animated-icon"]').first();
   await example.locator(".v-morph-live").first().waitFor({state:"attached"});
   const action=example.locator('[data-icon-option="check"]').first();
@@ -74,7 +74,7 @@ try {
   assert.equal(await icon.getAttribute("data-animated"),null);
   assert.equal(await drawAmount(),null,"reduced motion restores a complete check");
   await page.emulateMedia({reducedMotion:"no-preference"});
-  await page.goto(`${process.env.POLISH_URL??"http://127.0.0.1:4320/cojeev-ui"}/docs/icon/`);
+  await page.goto(`${process.env.POLISH_URL??"http://127.0.0.1:4320/ui"}/docs/icon/`);
   await page.locator('[data-example="icon"] .v-morph-live').first().waitFor({state:"attached"});
   const native=page.locator('[data-icon-option="check"]').first();
   await native.click();

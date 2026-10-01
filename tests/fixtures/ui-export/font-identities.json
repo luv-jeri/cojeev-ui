@@ -1,0 +1,14 @@
+[
+  {
+    "name": "different query string",
+    "cssFont": "/ui/_next/static/media/display.woff2?version=css",
+    "matchingPreload": "https://cojeev.com/ui/_next/static/media/display.woff2?version=css#preload",
+    "preload": "/ui/_next/static/media/display.woff2?version=preload"
+  },
+  {
+    "name": "beta origin against production CSS",
+    "cssFont": "https://cojeev.com/ui/_next/static/media/display.woff2",
+    "matchingPreload": "/ui/_next/static/media/display.woff2",
+    "preload": "https://beta.000h.cojeev.com/ui/_next/static/media/display.woff2"
+  }
+]

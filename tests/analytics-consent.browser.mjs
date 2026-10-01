@@ -6,12 +6,12 @@ const server = process.env.ANALYTICS_CONSENT_URL
   ? null
   : await previewServer({
       configFile: false,
-      base: "/cojeev-ui/",
+      base: "/ui/",
       build: { outDir: process.env.ANALYTICS_CONSENT_OUT_DIR ?? "out" },
       preview: { host: "127.0.0.1", port: 0, strictPort: true },
     });
 const base = (process.env.ANALYTICS_CONSENT_URL ??
-  `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`).replace(/\/$/, "");
+  `http://127.0.0.1:${server.httpServer.address().port}/ui`).replace(/\/$/, "");
 const consentKey = "000h.analytics-consent.v1";
 const browser = await chromium.launch();
 

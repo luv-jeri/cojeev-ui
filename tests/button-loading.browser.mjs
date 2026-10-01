@@ -5,7 +5,7 @@ import { chromium } from "playwright";
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
-  await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/cojeev-ui"}/docs/button/`);
+  await page.goto(`${process.env.POLISH_URL ?? "http://127.0.0.1:4320/ui"}/docs/button/`);
   const root = page.locator('[data-example="button"]').first();
   const status = root.locator('[role="status"]');
   const action = root.getByRole("button", { name: "Add a note", exact: true });

@@ -6,7 +6,7 @@ import { mkdir } from "node:fs/promises";
 // hydration, must fail even when the eventual settled screenshot looks correct.
 // The default matches the configured basePath in next.config.ts, as the sibling
 // browser suites do. POLISH_URL still overrides it for a blank-base-path server.
-const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/cojeev-ui";
+const base = process.env.POLISH_URL ?? "http://127.0.0.1:4321/ui";
 const output = process.env.THEME_OUTPUT ?? "output/playwright/theme-first-paint";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();

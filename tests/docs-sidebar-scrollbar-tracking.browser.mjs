@@ -72,12 +72,12 @@ const duringGesture = async (page, gesture, label) => {
 
 const server = url ? null : await startPreview({
   configFile: false,
-  base: '/cojeev-ui/',
+  base: '/ui/',
   build: { outDir: 'out' },
   // Prefer 4345 but step aside rather than fight another process for it.
   preview: { host: '127.0.0.1', port: 4345, strictPort: false },
 });
-const base = url ?? `http://127.0.0.1:${server.httpServer.address().port}/cojeev-ui`;
+const base = url ?? `http://127.0.0.1:${server.httpServer.address().port}/ui`;
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 try {
