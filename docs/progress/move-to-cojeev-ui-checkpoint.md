@@ -42,36 +42,29 @@ How task PRs merged (ruling in the ledger):
 1. `gh pr merge N --squash --match-head-commit <full sha>`.
 2. Cancel the PR's `Verify and release` run. The full suite runs at the integration-to-main PR (B2).
 
-## In flight at the restart
+## State at 2026-10-01 (latest update)
 
-- **A1, fix round 1: build DONE.**
-  - Commit `4bf2180` in `.worktrees/t-a1`; the worktree is clean.
-  - Both Astra Important findings are FIXED. 38 tests pass, and the build, export gate and browser checks pass.
-  - Next:
-    1. `rereview.sh A1 1 astra high .superpowers/sdd/2026-10-01-move-to-cojeev-ui/task-A1-findings-r1.md`.
-    2. The second-vendor full review (`review.sh A1 gemini high`).
-    3. Then the PR and merge.
-
-## Next steps, in order
-
-1. **A1:** finish its fix loop and second review, then open the PR, merge it, and remove the worktree.
-2. **A11 is launchable now**, because A2 has merged. Base it on `origin/feat/move-to-cojeev-ui`.
-   - Carry the ledger pointer: `static-assets.test.mjs` Worker-side paths on the legacy host hit row 9's 404, so A11 must replace that check.
-   - The brief is already extracted at `task-A11-brief.md`. Re-extract it if the plan changes.
-3. **A6–A10** dispatch once A1 merges. Their briefs are extracted.
-4. **Then the remaining groups**, in the task table's dependency order:
-   - A12 (needs A2, A3, A11, A24; carry the A2 pointer: regenerate `worker-configuration.d.ts`), A13, A18;
-   - A14, A15a;
-   - A15b, A16a, A17, A19;
-   - A16b;
-   - A22, A23 (carry the ruling: scope the four reporting secrets to API promotions only);
-   - A20.
-5. **Retroactive second-vendor (Gemini) review** for A2 and A24 before B2, because Opus was unavailable when they merged.
-6. **B1 (Part B):** step 1's precondition is now met, because production and beta both report C0 = 2337a6b.
-   - Tell the owner when B1 starts.
-   - Merges of release-scope changes to `main` are frozen from B1 step 2 until the B2 merge.
-   - **Step 4 (public `migration-baseline` prerelease) needs the owner's yes**, after they see the secret-scan result. The scan prints file paths only.
-7. **Owner go points:** B1 step 4, B2 (merge to main), B3, B5–B10, and every production `rollback.yml` dispatch. Ask before B8 (the coming-soon push) separately. Show the shadcn directory PR text before opening it.
+- **Merged into the integration branch:**
+  - A5 #105, A21 #106, A2 #107, A3 #108, A24 #109, A1 #110;
+  - fix #111 (7f9509a), which types `REGISTRY_SITE` as `{ fetch: typeof fetch }` and fixed a root `tsc` break left by A3.
+- **New merge gate (ruling):** before merging any task PR, run `npx next typegen && npx tsc --noEmit` locally.
+- **B1:** steps 1–4 are DONE.
+  - C0 = 2337a6b, R0 = 36891631881.
+  - The `migration-baseline` prerelease is published.
+  - **`main` is frozen for release-scope merges until B2.**
+  - Steps 5–15 are delegated to Sol in `.worktrees/t-b1` (branch `chore/b1-baseline-record`, brief `task-B1-brief.md`). It uses the wrangler OAuth read session.
+  - Afterwards, check the "Needs owner token" list in its README, then open the PR into integration and merge it.
+- **In flight:**
+  - A6: Gemini then Astra review.
+  - A11: Astra then Gemini review. Afterwards, create the A11b task (ruling in the ledger); A17, A19 and A22 depend on A11b.
+  - A7: re-runs the checks the type break blocked.
+  - A8 and A10: resume their builds after the type fix.
+  - A9: building.
+- **Gemini seat:** works through the allow-rules in `~/.gemini/antigravity-cli/settings.json`. It must run with no `--effort` flag and a prompt that limits it to single read-only commands. Gemini findings that contradict ledger rulings are overruled with a recorded ruling.
+- **Resume steps:**
+  1. For each in-flight task, read `task-ID-final.md`, `task-ID-fix-r1-final.md` and the review files in the SDD workspace.
+  2. Continue the loop: review, fix, re-review, then PR, the tsc gate and the merge.
+  3. Then the next waves, per the plan's task table.
 
 ## Standing rules
 
