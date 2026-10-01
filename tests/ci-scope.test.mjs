@@ -781,10 +781,9 @@ test('ci_scope_selects_migration_routing_and_origin_gates', () => {
     'scripts/asset-router-harness.mjs', 'scripts/check-asset-chains.mjs',
     'scripts/live-install.mjs', 'scripts/deployed-component-gate.mjs', 'scripts/rollback-rehearsal.mjs',
     'scripts/check-discovery.mjs', 'scripts/redirect-browser.mjs', '.github/workflows/promote.yml',
-    'tests/release-phases.test.mjs', 'tests/release-promote.test.mjs', 'tests/release-baseline.test.mjs',
-    'tests/asset-router-harness.test.mjs', 'tests/check-asset-chains.test.mjs',
-    'tests/live-install.test.mjs', 'tests/deployed-component-gate.test.mjs', 'tests/rollback-rehearsal.test.mjs',
-    'tests/check-discovery.test.mjs', 'tests/redirect-browser.test.mjs',
+    'tests/release-phases.test.mjs', 'tests/promotion.test.mjs', 'tests/promote-workflow.test.mjs',
+    'tests/packaged-gates.test.mjs', 'tests/deployed-component-gate.test.mjs', 'tests/rollback-rehearsal.test.mjs',
+    'tests/discovery.test.mjs', 'tests/redirect-browser.test.mjs',
   ]) {
     const output = releaseOutputs(releaseDepth([file]));
     assert.equal(output.run_catalogue, 'false', file);
@@ -802,6 +801,18 @@ test('ci_scope_selects_migration_routing_and_origin_gates', () => {
     assert.equal(output.run_migration, 'true', depth);
     assert.equal(output.run_release, 'true', depth);
   }
+});
+
+test('real migration release-only test changes skip the catalogue together', () => {
+  const decision = releaseDepth([
+    'tests/discovery.test.mjs', 'tests/promotion.test.mjs',
+    'tests/promote-workflow.test.mjs', 'tests/packaged-gates.test.mjs',
+  ]);
+  const output = releaseOutputs(decision);
+  assert.equal(decision.depth, 'affected');
+  assert.equal(output.run_catalogue, 'false');
+  assert.equal(output.run_checks, 'true');
+  assert.equal(output.run_release, 'true');
 });
 
 test('release depth reduces only documentation and named tooling, and defaults to full', () => {
