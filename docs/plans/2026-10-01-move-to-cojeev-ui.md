@@ -122,7 +122,7 @@ Launch rule: start every task the moment its dependencies merge. P1 starts immed
   - A16a owns the `live-pair` branch.
   - A16b owns `promote-api`/`promote-website`, the refusing `deploy`/`rollback` branches, and the deletion of `readArtifact` and `deployRelease`.
   - A25 (on `main`, after B10) adds the `digest` branch.
-- `tests/release.test.mjs`: A13 adds schema-2 cases and keeps the schema-1 assertions; A14 owns L15–43 (`buildEnvironment`); A17 owns L120; A25 adds the digest case.
+- `tests/release.test.mjs`: A13 adds schema-2 cases and keeps the schema-1 assertions; A14 owns L15–43 (`buildEnvironment`); A17 owns L109–112, L120 and L149 (the CSP fixture and its negative case); A25 adds the digest case.
 - `scripts/operations.mjs`: A12 owns `validateDeploymentConfig` and adds the temporary `{source: true}` to `backup` and `prepareDatabaseRecovery`. A16b removes it.
 - `tests/operations.test.mjs`: A12 owns L80–93. A16b owns L155–262: the fixture and the `deployRelease` tests.
 - `workers/registry-host/test/static-assets.test.mjs`: A2 changes its request host, and A11 replaces its glob simulator.
@@ -629,8 +629,10 @@ All three blocks also add `"PHASE":"unconfigured","DEPLOYMENT_ID":"unconfigured"
   - `workers/registry-host/test/asset-router.test.mjs`.
   - `workers/registry-host/test/fixtures/packaged-site/` (tree below).
   - `workers/registry-host/test/fixtures/homepage/`: `index.html`, `404.html`, `robots.txt` and a `_headers` file whose only rule is `/*` → `X-Homepage-Fixture: 1`.
-  - `workers/registry-host/test/fixtures/harness-entry.mjs`: a test-only entry that imports the real `src/index.mjs`, reports each run's pathname to the `HARNESS_LOG` binding, and returns the real response untouched.
+  - `workers/registry-host/test/fixtures/harness-entry.mjs`: a test-only entry that imports the selected Worker module (source `src/index.mjs`, or a packaged variant's `website/index.js`), reports each run's pathname to the `HARNESS_LOG` binding, and returns the real response untouched.
+  - `workers/registry-host/test/fixtures/browser-variants/production/` and `beta/` (M5): complete `website-redirect` fixture variants for A19 (tree below).
 - Modify `workers/registry-host/test/static-assets.test.mjs`: replace its local glob simulator with `ruleMatches` from `scripts/worker-first.mjs`. Keep its `_headers` parity and no-cache tests.
+- **Size rule (M5):** if this task passes ~400 changed lines, move packaged mode, `materializeVariant` and the browser fixture variants into a follow-up PR A11b with the same dependency (A2). A17, A19 and A22 then also depend on A11b.
 
 **Packaged fixture tree (spec; file contents are short marker strings unless noted):**
 ```
@@ -662,6 +664,24 @@ packaged-site/
 ```
 Order: the 8 fixed rules, then exact root files sorted by code point (each literal form followed by its percent-encoded form when they differ), then directory patterns sorted.
 
+**Browser fixture variant tree (spec, M5; one per environment; page contents are short marker strings unless noted):**
+```
+browser-variants/<env>/
+  manifest.json                    # A13 schema-2 identity fields only: schema 2, environment, commit, side "website", phase "redirect",
+                                   # deploymentId, migrationStage "redirect", registryGraph "canonical"; empty files map; never digest-verified
+  website/wrangler.jsonc           # packaged shape: main "./index.js"; assets {directory "../site", binding "ASSETS",
+                                   # run_worker_first = workerFirstList of this site, not_found_handling "404-page", html_handling as A14 packages it};
+                                   # vars ENVIRONMENT, RELEASE, PHASE "redirect", DEPLOYMENT_ID, MIGRATION_STAGE "redirect", REGISTRY_GRAPH "canonical"
+  site/_headers                    # siteHeaders("<env>") output
+  site/404.html                    # the exported 404 page: <h1>Page not found</h1>
+  site/ui/release.json             # equal to manifest.json's identity
+  site/ui/track/index.html
+  site/ui/feedback-admin/index.html
+  site/ui/work-with-me/index.html
+  site/ui/docs/button/index.html   # a visible <h1>Button</h1>
+```
+No `website/index.js` is committed; `materializeVariant` writes it.
+
 **Interfaces:**
 - `FIXED_WORKER_FIRST: readonly string[]`: the 8 fixed rules, in Global Constraints order.
 - `retainedTextInventory(siteRoot: string): Promise<{rootFiles: string[], directories: string[]}>`.
@@ -684,31 +704,36 @@ Order: the 8 fixed rules, then exact root files sorted by code point (each liter
    "/r/button.json", "/ui/r/button.json", "/health", "/ui/health", "/release.json", "/ui/release.json",
    "/media/a.txt", "/backups/a.txt", "/private/a.txt", "/v1/a.txt", "/ui/media/", "/ui/v1"]
   ```
-- `startAssetRouter({site, workerFirst, environment, migrationStage, homepage}): Promise<Router>`, where `Router` is:
+- `startAssetRouter({worker, homepage}): Promise<Router>`. `worker` picks the Worker code and config. The two modes are explicit and never mixed (M2):
+  - `{kind: "packaged", directory}`: a website variant directory (A14's layout, or a materialized browser fixture variant). It runs `<directory>/website/index.js`, the bytes `promote-website` uploads with `--no-bundle`, with exactly the `vars`, `assets.run_worker_first`, `not_found_handling` and `html_handling` of `<directory>/website/wrangler.jsonc`, and `ASSETS` on `<directory>/site`. It accepts no list, environment or stage argument. A17, A19 and A22 use only this mode.
+  - `{kind: "source", site, workerFirst, environment, migrationStage}`: the current `src/index.mjs` on a source fixture tree such as `packaged-site/`. Only this task's fixture tests use it.
+- `Router` is:
   - `fetch(url: string, init?: RequestInit): Promise<Response>`: dispatch through the real asset router; the URL's host is the request host.
   - `homepage(url: string, init?: RequestInit): Promise<Response>`: dispatch straight to the homepage fixture.
   - `workerRuns(): string[]`: pathnames for which registry Worker code ran, in order.
   - `reset(): void` and `dispose(): Promise<void>`.
+- `materializeVariant(fixtureDirectory, {entry = "workers/registry-host/src/index.mjs"} = {}): Promise<string>` (M5) copies a browser fixture variant into a fresh temp directory and writes its `website/index.js` as the esbuild bundle of `entry`, with the options at `scripts/release.mjs:53` (today's website bundling). It returns the directory. Negative tests pass a wrapping `entry`. This task's packaged-mode test and A19's tests use it.
 - `followChain(router, url, maxHops = 5): Promise<{hops: {status: number, location: string | null}[], final: Response}>`. `router` is anything with `fetch(url, init)`, so A15b can pass `{fetch: liveFetcher}` with `redirect: "manual"` for live chains.
-- `chainProblems(hops, {mount: "canonical" | "legacy", query: string}): string[]`.
+- `chainProblems(hops, {mount: "canonical" | "legacy", query: string, canonicalBase: string}): string[]`. `canonicalBase` is the environment's canonical site: `CANONICAL_BASE[environment]` from A2, equal to `environmentConfig(environment).canonicalSite`. Every caller passes its own environment's value (M1).
   - Canonical: every `Location` must start `/ui/` or `${canonicalBase}/`, keep `query` and never contain `/ui/ui/`.
   - Legacy: no hop may add `/ui` and every hop must keep `query`.
 - Harness construction rules:
   - The installed Miniflare is `5.20260908.0-alpha` (the lockfile's root `miniflare`, which Wrangler 4.130.0 also depends on). One Miniflare instance runs two workers.
-  - The registry worker is the esbuild bundle of `harness-entry.mjs`, with `ASSETS` on `site` and the run-worker-first list set to `workerFirst`. `not_found_handling` is `"404-page"`, and `html_handling` matches the packaged config. `serviceBindings` are `COJEEV_HOMEPAGE` → the homepage worker and `HARNESS_LOG` → a Node function.
+  - The registry worker is the esbuild bundle of `harness-entry.mjs` wrapping the selected module, with `ASSETS` and the run-worker-first list taken from the selected mode. `not_found_handling` is `"404-page"`, and `html_handling` matches the packaged config. `serviceBindings` are `COJEEV_HOMEPAGE` → the homepage worker and `HARNESS_LOG` → a Node function.
   - Option shape: write the worker options in the V4 shape (`assets: {directory, binding, run_worker_first, not_found_handling, html_handling}`) and pass them through `convertV4MiniflareOptions`, the repo's existing pattern (`workers/reporting/test/integration.test.mjs:19`, `scripts/reporting-browser-fixture.mjs:14`). Miniflare 5's native schema names the field `runWorkerFirst`. Use the native names only if the conversion rejects a field, and record that in the PR.
   - The homepage worker is assets-only on `homepage` if Miniflare accepts that. Otherwise it is a pass-through `env.ASSETS.fetch` script; the PR records which one was used.
   - Prefer deriving the registry worker options from the packaged `website/wrangler.jsonc` through Wrangler 4.130.0's exported `unstable_getMiniflareWorkerOptions`, so the router config is Wrangler's own translation (it already emits Miniflare 5 options). Fall back to the hand-written V4 shape above.
-- Consumers: A15b (`followChain` and `chainProblems` on live chains), A17 (`check-asset-chains.mjs`), A19 (packaged browser mode) and A22 (rehearsal).
+- Consumers: A15b (`followChain` and `chainProblems` on live chains), A17 (`check-asset-chains.mjs`, packaged mode), A19 (packaged browser mode on the browser fixture variants) and A22 (rehearsal, packaged mode).
 
-**Named tests** (`asset-router.test.mjs` runs on the fixture through `startAssetRouter`; `worker-first.test.mjs` is pure):
+**Named tests** (`asset-router.test.mjs` runs on the `packaged-site/` fixture through `startAssetRouter` source mode, except the packaged-mode test; `worker-first.test.mjs` is pure):
 
 | Test | File | Asserts |
 |---|---|---|
 | `missing_ui_text_siblings_delegate_through_real_asset_router_with_body_header_parity` | asset-router | For GET and HEAD of `https://cojeev.com/uikit.txt?x=1`, `/ui-other.txt` and `/uix.txt?y=2`: `workerRuns()` records the path, and status, body bytes and every header except `date` equal `router.homepage()` for the identical request. No registry CSP and no `x-robots-tag` are present. |
 | `legacy_text_exclusions_use_exact_root_files_and_scoped_directory_patterns` | worker-first | `workerFirstList(await retainedTextInventory(fixture))` deep-equals the expected list above. `workerFirstProblems` rejects lists containing `!/*.txt`, `!/ui*`, `!/ui*.txt`, `!/u*`, `!/docs/*`, `!/media/*.txt`, or `!/about/*.txt` when the inventory has no `about`. |
 | `generated_run_worker_first_list_stays_within_100_entry_limit` | worker-first | A valid 100-entry list passes. 101 entries fail. 99 distinct entries plus 2 duplicates fail. |
-| `ui_asset_redirects_keep_mount_and_query` | asset-router | `https://cojeev.com/ui/docs/button?x=1` and `/ui/docs/button/index.html?x=1` give asset-layer redirect chains with no `chainProblems` (canonical) that end at 200 HTML. |
+| `ui_asset_redirects_keep_mount_and_query` | asset-router | `https://cojeev.com/ui/docs/button?x=1` and `/ui/docs/button/index.html?x=1` give asset-layer redirect chains with no `chainProblems` (canonical, production `canonicalBase`) that end at 200 HTML. A hop `Location: https://beta.000h.cojeev.com/ui/x` is a problem under the production `canonicalBase`, and `https://cojeev.com/ui/x` is one under the beta base. |
+| `packaged_mode_runs_the_variant_bundle_with_its_vars` (plan-added; M2, M5) | asset-router | On `materializeVariant` of each browser fixture variant in packaged mode, `/ui/health` reports that variant's `DEPLOYMENT_ID`, `PHASE` and `MIGRATION_STAGE` from its `website/wrangler.jsonc`. A variant materialized with an `entry` that answers a marker for `/ui/health` returns the marker, so the variant's own bundle ran, not `src/`. Each fixture's `run_worker_first` equals `workerFirstList(await retainedTextInventory(<variant>/site))`. |
 | `literal_and_encoded_canonical_rsc_paths_stay_under_ui` | asset-router | The literal `$` and `%24` forms of `/ui/docs/button/__next.$d$component.txt?_rsc=1` each end at 200 with the fixture bytes, with no canonical `chainProblems`. |
 | `legacy_rsc_encoding_redirect_chains_keep_root_paths_and_queries` | asset-router | With `migrationStage:"redirect"` on `https://000h.cojeev.com`, the literal and encoded forms of `/docs/button/__next.$d$component.txt?_rsc=1` and `/__next.$d$x.txt?q=1` end at 200 retained bytes or a real 404, with no legacy `chainProblems` and no 301 to `/ui`. |
 | `static_bypasses_do_not_cover_html` | asset-router | Every `CODE_PROBES` path and every `.html` file in the fixture appears in `workerRuns()`. For each probe, the router's observation equals `!list.some(rule => rule.startsWith("!") && ruleMatches(rule.slice(1), path))`. |
@@ -1085,6 +1110,7 @@ Functions:
   ```json
   {"environment":"production","release":"<commit>","deploymentId":"website-mounted-<12>-<8>","phase":"mounted","migrationStage":"additive","registryGraph":"baseline","analyticsEnabled":false}
   ```
+- `website/index.js`: the esbuild bundle of `workers/registry-host/src/index.mjs`, as today (`scripts/release.mjs:53`). A11's packaged mode, A17 and A22 run exactly these bytes (M2).
 - `website/wrangler.jsonc`: the merged environment config, plus:
   - `assets.directory: "../site"`;
   - `run_worker_first: workerFirstList(await retainedTextInventory(<variant>/site))`;
@@ -1137,15 +1163,17 @@ Functions:
 - `Expected = {kind: "variant", manifest} | {kind: "baseline", commit, versionId}`.
   - `expectedFrom(environment, side, argument): Promise<Expected>`. `DIR:DIGEST` reads `DIR/manifest.json`, requires `verifyManifest(DIR, manifest, {environment, commit: manifest.commit, digest, schema: 2})` and `manifest.side === side`. The literal `baseline` reads `readBaselineRecord(environment)` and takes that side's version ID.
   - `expectedId(expected)` returns the `deploymentId`, or `baseline:<versionId>` (the A24 evidence format).
-- `readIdentities(environment, {fetcher}): Promise<{website: Identity, api: Identity}>`, with `Identity = {release, deploymentId: string | null, phase: string | null, migrationStage?, registryGraph?, reportingBase?, analyticsEnabled?}`.
-  - Website: legacy `/health`, plus `/ui/health` and `/ui/release.json` whenever legacy reports a `deploymentId`. API: `/health`.
+- `readIdentities(environment, {fetcher}): Promise<Observed>` returns one observation per endpoint, never merged (M3):
+  - `Observed = {website: {health: Observation, uiHealth: Observation | null, uiRelease: Observation | null}, api: {health: Observation}}`.
+  - `Observation = {ok: true, environment, release, deploymentId: string | null, phase: string | null, migrationStage?, registryGraph?, reportingBase?, analyticsEnabled?} | {ok: false, reason: "http-<status>" | "not-json" | "missing-<field>"}`, holding exactly that endpoint's body fields.
+  - Website: `health` is legacy `/health`. `uiHealth` (`/ui/health`) and `uiRelease` (`/ui/release.json`) are fetched whenever legacy reports a `deploymentId`, and are `null` otherwise. API: `/health`.
   - It is exported for A16a. It makes no `cf` call.
-- `identityProblems(environment, {website, api}, observed): string[]`:
-  - Website variant: legacy `/health`, `/ui/health` and `/ui/release.json` must each equal the expected manifest's `environment`, `release`, `deploymentId`, `phase`, `migrationStage` and `registryGraph`. `analyticsEnabled` is read from `/ui/release.json`.
-  - API variant: `/health` must equal the expected `environment`, `release`, `deploymentId`, `phase` and `reportingBase`.
-  - Baseline side: `/health.release === commit` and no `deploymentId`.
-  - The same release with a different ID, a baseline side that reports a `deploymentId`, or legacy and `/ui` disagreeing, gives `stale-identity` (transient). A different release gives `release-mismatch` (transient, as today). A missing or malformed field gives `identity-malformed` (permanent).
-- `liveProblems(environment, {website: Expected, api: Expected, token, expectedAnalyticsEnabled, fetcher}): Promise<{problems: string[], observed: {website, api}}>`. Identity is checked first, through `readIdentities` and `identityProblems`. Contracts run only after both identities match. Today's delivery-health token rules (L145–151) are kept.
+- `identityProblems(environment, {website, api}, observed: Observed): string[]`:
+  - Website variant: `health`, `uiHealth` and `uiRelease` must each equal the expected manifest's `environment`, `release`, `deploymentId`, `phase`, `migrationStage` and `registryGraph`. `analyticsEnabled` is read from `uiRelease`.
+  - API variant: `api.health` must equal the expected `environment`, `release`, `deploymentId`, `phase` and `reportingBase`.
+  - Baseline side: `health.environment === environment`, `health.release === commit` and no `deploymentId`.
+  - The same release with a different ID, a baseline side that reports a `deploymentId`, or `health` and `uiHealth`/`uiRelease` disagreeing, gives `stale-identity` (transient). A different release gives `release-mismatch` (transient, as today). An `ok: false` observation, a missing or malformed field, or an `environment` other than `environment` gives `identity-malformed` (permanent).
+- `liveProblems(environment, {website: Expected, api: Expected, token, expectedAnalyticsEnabled, fetcher}): Promise<{problems: string[], observed: Observed}>`. Identity is checked first, through `readIdentities` and `identityProblems`. Contracts run only after both identities match. Today's delivery-health token rules (L145–151) are kept.
 - `checkLiveRelease(environment, expected, options)`: the existing retry loop (`LIVE_RETRY_WAITS`, `LIVE_BUDGET_MS = 60000`). `TRANSIENT_LIVE_PROBLEMS` adds `stale-identity`.
 - CLI: `node scripts/release.mjs live ENV --website=DIR:DIGEST|baseline --api=DIR:DIGEST|baseline`. `EXPECTED_ANALYTICS_ENABLED` is kept. On success it prints one line, `live ok website=<expectedId> api=<expectedId>`.
 - `checkHealth(environment, {token, expected = {}, fetcher})` reads the same identities through `readIdentities`.
@@ -1167,7 +1195,7 @@ Functions:
 |---|---|
 | `live_gate_rejects_stale_same_sha_variant` | `/ui/health` reports the expected release with another `deploymentId` for the whole budget → fails with `stale-identity` after the bounded retries. It never passes. A baseline side that reports any `deploymentId` also never passes. |
 | `split_edge_identity_retries_within_budget` (Review Focus 3) | `/ui/health` is new while `/health` is old for two attempts, then they agree → pass, with total fake wait ≤ 60000 ms. A persistent split → `stale-identity` failure at budget end. |
-| `missing_identity_fails_immediately` | A response missing `deploymentId` or `phase` fails on the first attempt with no wait. |
+| `missing_identity_fails_immediately` | A response missing `deploymentId` or `phase` fails on the first attempt with no wait. So does a `/ui/release.json` alone reporting the other environment while `/health` and `/ui/health` are correct, and `readIdentities` returns that endpoint's own observation (M3). |
 | `health_checks_independently_expected_api_and_website_identities` | Website at commit A and API at commit B in the Linked pair pass when each matches its own expected ID. Scheduled mode passes the five pairs and the start state (baseline, baseline), so health stays quiet before B3. (redirect, prepared) and (baseline, linked) give `unlisted-pair`. |
 | `health_recovery_and_diagnostics_keep_existing_protections` (health half, `tests/release-live.test.mjs`) | Alert codes stay within the fixed list (new codes added there), output stays sanitized, and the delivery-health token rules are unchanged. |
 
@@ -1209,7 +1237,7 @@ Functions:
     - each distinct `og:image` and `twitter:image` URL → 200 `image/png`.
   - **Private pages** (`private-*`): `/ui/track/` HTML has robots `noindex,nofollow` and `<meta name="referrer" content="no-referrer">`. `/ui/feedback-admin/` HTML has robots `noindex`.
   - **Cloudflare beacon** (`beacon-duplicate`): `/ui/` HTML contains at most one `static.cloudflareinsights.com` beacon script (the edge may inject one; spec "avoid duplicate beacon injection").
-  - **RSC chains** (`rsc-*`): the first canonical RSC file (`site/ui/**/index.txt` or `site/ui/**/__next.*.txt`) and the first retained legacy RSC file (the same names outside `ui/`) in the manifest; `robots.txt` and any other `.txt` are never selected. Each is followed live with A11's `followChain` and a `{fetch}` router over `fetcher`. Each must end 200 with `content-type` `text/plain` (what the static export's `.txt` assets are served as; Next's export client accepts it, `next/dist/client/components/router-reducer/fetch-server-response.js:137`) or `text/x-component`, with body sha256 equal to the manifest entry, at a path under its own prefix, never crossing between `/ui` and root (review round 2).
+  - **RSC chains** (`rsc-*`): the first canonical RSC file (`site/ui/**/index.txt` or `site/ui/**/__next.*.txt`) and the first retained legacy RSC file (the same names outside `ui/`) in the manifest; `robots.txt` and any other `.txt` are never selected. Each is followed live with A11's `followChain` and a `{fetch}` router over `fetcher`, and its hops are checked with `chainProblems(hops, {mount, query, canonicalBase: canonicalSite})` for this environment (M1). Each must end 200 with `content-type` `text/plain` (what the static export's `.txt` assets are served as; Next's export client accepts it, `next/dist/client/components/router-reducer/fetch-server-response.js:137`) or `text/x-component`, with body sha256 equal to the manifest entry, at a path under its own prefix, never crossing between `/ui` and root (review round 2).
   - **Registry** (`registry-*`):
     - For every manifest file under `site/r/` and `site/ui/r/`, GET the legacy `/r/<f>` and canonical `/ui/r/<f>`. Each must give 200, a JSON content type, no `Location`, and sha256 equal to the manifest entry. A live digest header is ignored.
     - `HEAD /r/button.json` → 200 with no body.
@@ -1235,7 +1263,7 @@ Functions:
 | `live_gate_checks_canonical_and_legacy_contracts_separately` | Breaking only the redirect matrix gives only `legacy-*` problems. Breaking only bare `/ui` gives only `canonical-*`. An additive manifest expects legacy 200 pages; a redirect manifest expects the 301s. |
 | `baseline_website_contracts_skip_ui_and_use_pinned_hashes` (plan-added; review round 1) | A baseline website with `/ui/` returning 404 passes. Legacy `/r/<f>` bytes differing from `baseline.hashes` fail with `registry-hash-mismatch:<path>`. No `/ui` URL is requested. A missing baseline directory fails before any request. A variant-website `live` call with `BASELINE_<ENV>_DIRECTORY` unset never calls `readBaseline` and takes `apexProbes` from the record. |
 | `deployed_seo_and_private_pages_match_canonical_metadata` (plan-added; spec completion row 21) | Each listed page passes with correct metadata. Each of these fails with its `seo-*` or `private-*` code: a doubled `/ui/ui/`, a canonical on the legacy host, the alias canonical pointing at itself, an `og:image` answering `text/html`, and track without `no-referrer`. Two beacon scripts give `beacon-duplicate`; one passes. |
-| `live_rsc_chains_stay_under_their_own_prefix` (plan-added) | A canonical chain redirected to a root path fails `rsc-canonical`. A legacy chain redirected under `/ui` fails `rsc-legacy`. A chain ending 200 `text/plain` with manifest bytes passes; wrong bytes fail. A manifest whose first `site/ui/` text file is `robots.txt` selects the first `index.txt` or `__next.*.txt` instead. |
+| `live_rsc_chains_stay_under_their_own_prefix` (plan-added) | A canonical chain redirected to a root path fails `rsc-canonical`, and so does a beta chain redirected to `https://cojeev.com/ui/…` (M1). A legacy chain redirected under `/ui` fails `rsc-legacy`. A chain ending 200 `text/plain` with manifest bytes passes; wrong bytes fail. A manifest whose first `site/ui/` text file is `robots.txt` selects the first `index.txt` or `__next.*.txt` instead. |
 | `apex_robots_transition_is_accepted_only_as_reviewed` (plan-added) | Robots with the recorded status passes. 200 `text/plain` with exactly the appended Sitemap line passes. 200 with an extra `Disallow: /ui` fails. With `robots: "absent"`, a 404 passes and a 200 holding only the Sitemap line passes. |
 
 - [ ] 1. Follow the task loop. Command: `node --test tests/live-contracts.test.mjs tests/live-identity.test.mjs tests/release-live.test.mjs`.
@@ -1257,9 +1285,9 @@ This one read-only CLI replaces both the former `steady-pair` command and A23's 
 
 **Interfaces:**
 - `readLivePair(environment, {fetcher, cf, record}): Promise<{website: Live, api: Live}>`, where `Live = {phase, deploymentId: string | null, commit, id, versionId?}`.
-  - Identities come from A15a's `readIdentities`.
+  - Identities come from A15a's `readIdentities` per-endpoint observations: a side's identity is its `health` observation (website: legacy `/health`). An `ok: false` observation, or any observation whose `environment` differs from `environment`, throws `Malformed live <side> identity` (M3).
   - A side whose `/health` has no `deploymentId` is `baseline` only if `cf("workers/scripts/<name>/deployments")`'s active version equals that side's version ID in `readBaselineRecord(environment)`. Otherwise it throws `Unknown live <side> deployment`.
-  - From `mounted` on, `/ui/health` must agree with legacy `/health`, else it throws `Website identity split`.
+  - From `mounted` on, `uiHealth` and `uiRelease` must each agree with legacy `health` on `environment`, `release`, `deploymentId` and `phase`, else it throws `Website identity split`.
   - `id` is the `deploymentId`, or `baseline:<versionId>` for a baseline side: exactly A24's gate-evidence format.
 - `reachedRedirect(environment, {cf}): Promise<boolean>` is true when any website version message contains `cojeev-migration side=website phase=redirect`. If the version list cannot be read, the result is `true` (fail closed).
 - `cf` is GET-only here. Neither function nor the CLI ever calls `run` or a mutating `cf` request.
@@ -1280,7 +1308,7 @@ This one read-only CLI replaces both the former `steady-pair` command and A23's 
 |---|---|
 | `live_pair_reports_only_the_redirect_pair_as_steady` (the former `steady_pair_reports_only_the_redirect_pair`) | Report mode prints `steady` for (redirect, linked), `migrating <name>` for the other four pairs, `migrating start` for (baseline, baseline) and `migrating unlisted` for (redirect, prepared). The `GITHUB_OUTPUT` lines carry the live IDs and commits. Report mode makes zero `cf` calls. |
 | `website_rollback_to_mounted_is_refused_after_redirect_was_reached` | A `cf` versions stub with a redirect message → plan mode refuses a mounted rollback. An unreadable version list → refused. No redirect message and live Regenerated → permitted. |
-| `live_pair_ids_match_gate_evidence_format` (plan-added; review round 1) | Plan mode's `website_id` and `api_id` are the `deploymentId` for a variant side and `baseline:<versionId>` for a baseline side. A gate recorded with those exact strings through A24's `recordGate` satisfies `assertGates` for the pair `readLivePair` returns. A baseline-looking side whose Cloudflare active version differs from the record throws `Unknown live <side> deployment`. Neither mode calls `run` or a non-GET `cf`. |
+| `live_pair_ids_match_gate_evidence_format` (plan-added; review round 1) | Plan mode's `website_id` and `api_id` are the `deploymentId` for a variant side and `baseline:<versionId>` for a baseline side. A gate recorded with those exact strings through A24's `recordGate` satisfies `assertGates` for the pair `readLivePair` returns. A baseline-looking side whose Cloudflare active version differs from the record throws `Unknown live <side> deployment`. A mounted website whose `/ui/release.json` alone carries another `deploymentId` throws `Website identity split`, and one whose `/ui/health` reports the other environment throws `Malformed live website identity` (M3). Neither mode calls `run` or a non-GET `cf`. |
 
 - [ ] 1. Follow the task loop. Command: `node --test tests/live-pair.test.mjs tests/release-phases.test.mjs`.
 - [ ] 2. Commit `feat(release): read-only live-pair report and promotion plan`.
@@ -1361,7 +1389,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
     - `permits` treats absolute same-origin URLs as `'self'`, comparing by `new URL().origin`.
     - The forbidden check (L42) compares origins: the other environment's `api`, `legacySite` origin and `origin`, instead of `opposite.site`.
   - `tests/release.test.mjs:120`: the same move from `opposite.site` to the other environment's `legacySite` and `origin`.
-  - `tests/release.test.mjs:109–112`: the CSP fixture page moves from `site/index.html` to `site/ui/index.html` (create `site/ui`), because the gate now fetches `${canonicalSite}/`, which `directoryAssets` maps to `site/ui/index.html` (review round 2).
+  - `tests/release.test.mjs:109–112,149`: the CSP fixture page moves from `site/index.html` to `site/ui/index.html` (create `site/ui`), because the gate now fetches `${canonicalSite}/`, which `directoryAssets` maps to `site/ui/index.html` (review round 2). The negative case at L149 moves with it: it deletes `site/ui/index.html`, so it still fails with `did not serve` (M4).
   - `scripts/check-structured-data.mjs:35,50–55`: `--dir` points at a variant's `site/ui`, and the new `--site` sets the canonical base. It asserts exact canonical URL strings.
   - `scripts/release-install.mjs:12,16,23,27,31`:
     - `readVariant`.
@@ -1379,8 +1407,8 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 - `node scripts/check-structured-data.mjs --dir <variant>/site/ui --site https://cojeev.com/ui`.
 - `node scripts/release-install.mjs ENV SHA DIRECTORY DIGEST` keeps its CLI shape and needs a website variant directory.
 - `node scripts/live-install.mjs ENV` installs `button,cojeev,bento-builder` into two disposable consumers, from `${legacySite}` and `${canonicalSite}`, with no dependency rewriting. It prints one line with the shadcn CLI version and both results, and exits 1 on any failure.
-- `node scripts/check-asset-chains.mjs DIRECTORY` starts A11's `startAssetRouter` on the variant's `site/` with its packaged `run_worker_first`, then:
-  - runs `chainProblems` for one canonical and one legacy literal or encoded RSC path taken from the manifest;
+- `node scripts/check-asset-chains.mjs DIRECTORY` starts A11's `startAssetRouter` in packaged mode on DIRECTORY, so it runs the variant's own `website/index.js` with its packaged vars and `run_worker_first` (M2), then:
+  - runs `chainProblems` with `canonicalBase` set to the manifest environment's canonical site (M1), for one canonical and one legacy literal or encoded RSC path taken from the manifest;
   - runs the three `/ui*` sibling delegation probes (production only);
   - checks that `CODE_PROBES` run code.
   - It exits 1 on any problem.
@@ -1393,7 +1421,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 | `shadcn_old_url_installs_foundation_and_composed_item` | Against a packaged fixture, the stub installer receives `button`, `cojeev` and `bento-builder` from `<origin>/r/`, and `bento-builder`'s dependencies `bento-grid` and `button` resolve there too. Every dependency URL it fetches is on the disposable origin. |
 | `shadcn_new_url_installs_foundation_and_composed_item` | The same at `<origin>/ui/r/`. |
 | `beta_robots_and_headers_block_indexing` (headers half; the robots half is in A6) | A packaged beta `_headers` has `/*` with `X-Robots-Tag: noindex`. Through the A11 harness, beta `/ui/_next/static/chunks/new.js` (served by the asset layer) carries noindex. |
-| `asset_chain_gate_rejects_escaping_canonical_chain` | `check-asset-chains` fails a fixture variant whose `/ui` export was copied to the root instead of `site/ui`. |
+| `asset_chain_gate_rejects_escaping_canonical_chain` | `check-asset-chains` fails a fixture variant whose `/ui` export was copied to the root instead of `site/ui`. The fixture is an A14 `buildVariants` test output, so it carries `website/index.js` and a schema-2 manifest (M2). |
 
 - [ ] 1. Follow the task loop. Command: `node --test tests/packaged-gates.test.mjs tests/production-gate.test.mjs tests/release.test.mjs`.
 - [ ] 2. Extra, on the A14 local variants: for each website variant run `node scripts/release-csp.mjs <env> <variant dir>` and `node scripts/check-asset-chains.mjs <variant dir>`. Then run `node scripts/release-install.mjs <env> <sha> <website-regenerated dir> <digest>`, which uses the real shadcn 4.21.0 CLI.
@@ -1463,8 +1491,8 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 - Not in this task: `tests/reporting-continuity.browser.mjs:6` and `scripts/check-landing-performance.mjs`. A1 rewrites their mounts.
 
 **Interfaces:**
-- `node scripts/redirect-browser.mjs --packaged=DIR`: DIR is a `website-redirect` variant.
-  - Starts A11's `startAssetRouter` on `DIR/site` with the packaged `run_worker_first`, `environment` from the manifest and `migrationStage: "redirect"`.
+- `node scripts/redirect-browser.mjs --packaged=DIR`: DIR is a `website-redirect` variant, or a materialized A11 browser fixture variant in tests.
+  - Starts A11's `startAssetRouter` in packaged mode on DIR, so the variant's own `website/index.js`, vars (`MIGRATION_STAGE: "redirect"`) and `run_worker_first` serve `DIR/site` (M2). `environment` comes from `DIR/manifest.json` and selects the hosts below.
   - A Playwright `context.route("**/*")` fulfils every request whose host is the environment's legacy or canonical host from `router.fetch(url, {method, headers})`. It fulfils the API host from a fixed stub. It aborts every other host.
 - `node scripts/redirect-browser.mjs --live=ENV`: no interception, except that reporting `POST`s are aborted (read-only).
 - Both modes print `PASS <check>` or `FAIL <check> <url path>` per check and exit 1 on any failure.
@@ -1489,13 +1517,13 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 - reload, and require the same pathname, a visible button heading, and no URL in the run containing `/ui/ui/`;
 - across the whole run, collect `console` messages of type `error` and failed requests. Both lists must be empty, except the intercepted funnel request and the aborted reporting `POST`s. Failures print only the check name and the URL path.
 
-**Named tests (`tests/redirect-browser.test.mjs`, which spawns `--packaged` on A11's fixtures, unless noted):**
+**Named tests (`tests/redirect-browser.test.mjs`, which spawns `--packaged` on A11's browser fixture variants, each materialized with `materializeVariant`, unless noted; M5):**
 
 | Test | Asserts |
 |---|---|
-| `tracking_fragment_survives_legacy_redirect` | The production rows pass on the packaged fixture. A fixture whose Worker drops the query fails the second row. |
-| `beta_tracking_fragment_survives_same_host_redirect_in_browser` | The beta fragment row passes on a beta packaged fixture. |
-| `beta_queued_admin_query_and_component_links_survive_cutover` | The beta admin, component, alias and unknown rows pass. A fixture that redirects `/ui/docs/button/` again fails the no-second-prefix row. |
+| `tracking_fragment_survives_legacy_redirect` | The production rows pass on the production browser fixture variant. One materialized with an `entry` that drops the query fails the second row. |
+| `beta_tracking_fragment_survives_same_host_redirect_in_browser` | The beta fragment row passes on the beta browser fixture variant. |
+| `beta_queued_admin_query_and_component_links_survive_cutover` | The beta admin, component, alias and unknown rows pass. One materialized with an `entry` that redirects `/ui/docs/button/` again fails the no-second-prefix row. |
 | `ui_live_search_reload_and_console_are_clean` (`tests/navigation-ui.browser.mjs`) | On the loopback `/ui` mount the journey passes. A page that logs one console error, or a request answering 500, makes it fail with that check name. |
 
 - [ ] 1. Follow the task loop. Command: `node --test tests/redirect-browser.test.mjs && npm run build && node tests/navigation-ui.browser.mjs`.
@@ -1517,11 +1545,12 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
   - `artifactRoot` is a `build-variants` output (A14).
   - `install(websiteDirectory)` defaults to spawning `node scripts/release-install.mjs ENV SHA DIR DIGEST` (A17, both paths).
 - CLI: `node scripts/rollback-rehearsal.mjs ARTIFACT_ROOT ENV` prints one `PASS|FAIL <step>` line per step and exits 1 unless every step matches its expectation.
-- It is entirely local: no Cloudflare account, no network and no secrets.
+- It needs no Cloudflare account and no secrets, and it never reaches a deployed service: not the Cloudflare API, not `cojeev.com` or any of its subdomains, and no `*.workers.dev` host. Its only outbound network is the real installs' package downloads (M6).
+- **Host allowlist (M6).** In-process, the rehearsal fetcher (below) is the allowlist: the environment's legacy, canonical and API hosts, all served locally; any other host throws. `install` runs its child processes with `HTTP_PROXY`, `HTTPS_PROXY`, `npm_config_proxy` and `npm_config_https_proxy` pointing at a local proxy started by the rehearsal. That proxy allows only loopback, `registry.npmjs.org` and the third-party hosts the pinned shadcn CLI's `init` needs (recorded in the PR), and refuses everything else. The children get no Cloudflare or reporting secret.
 
-**Rehearsal environment (construction rules):**
-- **Website:** A11's `startAssetRouter` serving the live website variant's `site/`. The fake `run` restarts it when a `wrangler deploy --config <dir>/website/wrangler.jsonc` call arrives.
-- **API:** Miniflare running the bundled `workers/reporting/src/index.ts`. The rehearsal runs whichever API variant is live and restarts it on an API deploy call.
+**Rehearsal environment (construction rules). Every Worker runs from the selected packaged variant; source bundles are never used (M2):**
+- **Website:** A11's `startAssetRouter` in packaged mode on the live website variant directory: its own `website/index.js`, `website/wrangler.jsonc` vars and `run_worker_first`, and `site/`. The fake `run` restarts it on the newly deployed variant when a `wrangler deploy --config <dir>/website/wrangler.jsonc` call arrives.
+- **API:** Miniflare running the live API variant's packaged `api/index.js`, the bytes `promote-api` uploads with `--no-bundle`. It restarts on the newly deployed variant when an API deploy call arrives.
   - Bindings: the packaged API config's `vars` exactly (so `LOCAL_MODE` is `"false"` and `SITE_URL` is canonical), plus random dummy values for each secret name the Worker reads.
   - `REGISTRY_SITE` is a Node-function service binding that forwards to the website `router.fetch`, and logs each call.
   - `outboundService` returns 503 and records the call, as in `scripts/reporting-browser-fixture.mjs`.
@@ -1548,18 +1577,20 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 - The `REGISTRY_SITE` log shows HEAD requests to `/ui/docs/button/`. `outboundService` recorded zero calls.
 - `install(liveWebsiteDirectory)` succeeds.
 
-**Named tests (`tests/rollback-rehearsal.test.mjs`; A14 fixture variants and a stub `install`):**
+**Named tests (`tests/rollback-rehearsal.test.mjs`; A14 `buildVariants` test outputs, which carry real `website/index.js` and `api/index.js` bundles, and a stub `install`):**
 
 | Test | Asserts |
 |---|---|
-| `rollback_rehearsal_preserves_canonical_health_reporting_and_installs` | All five steps match their expectations. After steps 1, 2 and 4, every check passes, and `install` is called with the live website directory. A fixture regenerated variant missing `/ui/health` turns step 1 into `FAIL`. |
+| `rollback_rehearsal_preserves_canonical_health_reporting_and_installs` | All five steps match their expectations. After steps 1, 2 and 4, every check passes, and `install` is called with the live website directory. A regenerated variant whose `website/index.js` is replaced by a wrapping bundle that answers 404 for `/ui/health`, with every other response unchanged, turns step 1 into `FAIL` (M7: health is Worker-generated, so the mutation is in the Worker response). A rehearsal fetcher request to `https://api.cloudflare.com/` or a live `cojeev.com` host throws, and the install proxy refuses those hosts and allows `registry.npmjs.org` (M6). |
 | `rollback_from_any_post_linked_phase_keeps_canonical_site_url_and_accepts_canonical_and_legacy_component_urls` (component-URL half; the promotion half is in A16b) | After each permitted step, the canonical and legacy inputs both store the canonical URL through the binding, and global fetch is never used. |
 
 - [ ] 1. Follow the task loop. Command: `node --test tests/rollback-rehearsal.test.mjs`.
-- [ ] 2. Extra: `node scripts/rollback-rehearsal.mjs <A14 local variants dir> beta`, then the same for `production` (real shadcn CLI installs).
+- [ ] 2. Extra: `node scripts/rollback-rehearsal.mjs <A14 local variants dir> beta`, then the same for `production` (real shadcn CLI installs; package downloads only, through the allowlist proxy).
 - [ ] 3. Commit `test(release): local rollback rehearsal on packaged variants`.
 
-**Failure rule:** if Miniflare cannot load the reporting Worker with `LOCAL_MODE="false"` and dummy secrets, stop and report which binding failed. Never switch the rehearsal to `LOCAL_MODE="true"`, because the spec says that does not satisfy the gate.
+**Failure rules:**
+- If Miniflare cannot load the reporting Worker with `LOCAL_MODE="false"` and dummy secrets, stop and report which binding failed. Never switch the rehearsal to `LOCAL_MODE="true"`, because the spec says that does not satisfy the gate.
+- If npm or the pinned shadcn CLI bypasses the proxy settings, stop and report. Never drop the allowlist.
 
 ---
 
@@ -1600,12 +1631,12 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
      | `ui-browser` | `npx playwright install --with-deps chromium`, then `UI_BROWSER_URL=<canonicalSite>/ node tests/navigation-ui.browser.mjs` |
      | `browser-report` | no command; `record-gate … --attest="$ATTEST"`, which fails when `attest` is empty |
      | `dual-install` | `node scripts/live-install.mjs ENV` |
-     | `discovery` | `node scripts/check-discovery.mjs robots docs/reports/2026-10-01-move-baseline/apex-robots.before.txt`, then `node scripts/check-discovery.mjs shadcn-template 'https://cojeev.com/ui/r/{name}.json' button,cojeev,bento-builder`, then `record-gate … --attest="$ATTEST"` |
+     | `discovery` | `node scripts/check-discovery.mjs robots docs/reports/2026-10-01-move-baseline/apex-robots.before.txt`, then `node scripts/check-discovery.mjs shadcn-template 'https://cojeev.com/ui/r/{name}.json' button,cojeev,bento-builder`, then a shell check that fails when `$ATTEST` is empty or only whitespace (A24's `recordGate` enforces `attest` only for `browser-report`; M9), then `record-gate … --attest="$ATTEST"` |
 
   7. `node scripts/release.mjs promote-<side> ENV COMMIT artifacts/candidate/<env>/<side>-<target_phase> DIGEST <peer id> [--rollback]`.
      - It gets `PEER_DIRECTORY`, `PEER_DIGEST` and `PROMOTION_EVIDENCE`.
      - It gets `ROLLBACK_SCHEMA_ACK: 0002_safe_delivery.sql` only when `side == 'api' && rollback`.
-     - It gets the existing four reporting secrets plus `CLOUDFLARE_API_TOKEN`. The reporting secrets appear on no other step.
+     - It gets the existing four reporting secrets (`REPORTING_SECRETS_JSON`, `REPORTING_ADDITIONAL_SECRETS_JSON`, `RESEND_WEBHOOK_SECRET`, `REPORTING_ADMIN_TOKEN`) plus `CLOUDFLARE_API_TOKEN`. The reporting secrets appear on no other step, with one exception: `REPORTING_ADMIN_TOKEN` is also mapped to `ADMIN_TOKEN` on the component-gate steps (the step-6 `component-head` gate and the step-8 post-promotion run). No new secret is added (M8).
   8. `node scripts/release.mjs live ENV …` for the new pair. When the new pair is Linked or Redirect (forward or rollback), also run `node scripts/deployed-component-gate.mjs ENV` with the same three values as the gate step. This is the spec's post-cutover run: beta after its cutover, production after `SITE_URL` switches, and production again after old-page redirects.
   9. On `failure()`: `node scripts/operations-health.mjs ENV` with `EXPECTED_WEBSITE_ID`, `EXPECTED_API_ID`, `UPDATE_ALERT: 'true'` and `OPERATIONS_FAILURE: deployment-failed`.
 - `PROMOTION_EVIDENCE` is `$RUNNER_TEMP/promotion-evidence.jsonl`. Evidence is run-local: it is never uploaded, cached or reused across runs.
@@ -1619,7 +1650,7 @@ Website promotion never reads secrets, never touches D1 and never deploys any AP
 
 | Test | Asserts |
 |---|---|
-| `promote_workflow_runs_gates_before_targeted_promotion` | Step order is provenance, then download, verify, plan, the gates with their `record-gate`, `promote-*`, post-promotion `live`, and the post-promotion component gate conditioned on the Linked or Redirect pair. Secret scoping: the four reporting secrets appear only on the promote step; `CLOUDFLARE_API_TOKEN` only on the plan and promote steps; `REPORTING_ADMIN_TOKEN` only on component-gate steps; `HEALTH_TOKEN` only on `live` steps. Concurrency and `environment` are set. The plan step runs `release.mjs live-pair`, and no workflow contains `plan-promotion`. With `peer_run_id: baseline`, the baseline download step runs and `BASELINE_<ENV>_DIRECTORY` ends in `/<env>`; with run IDs on both sides it is skipped. Component-gate steps pass `vars.COMPONENT_GATE_CONTACT`. |
+| `promote_workflow_runs_gates_before_targeted_promotion` | Step order is provenance, then download, verify, plan, the gates with their `record-gate`, `promote-*`, post-promotion `live`, and the post-promotion component gate conditioned on the Linked or Redirect pair. Secret scoping (M8): `REPORTING_SECRETS_JSON`, `REPORTING_ADDITIONAL_SECRETS_JSON` and `RESEND_WEBHOOK_SECRET` appear only on the promote step; `REPORTING_ADMIN_TOKEN` appears only on the promote step and, as `ADMIN_TOKEN`, on the component-gate steps; `CLOUDFLARE_API_TOKEN` only on the plan and promote steps; `HEALTH_TOKEN` only on `live` steps. The discovery gate's empty-`attest` check precedes its `record-gate` (M9). Concurrency and `environment` are set. The plan step runs `release.mjs live-pair`, and no workflow contains `plan-promotion`. With `peer_run_id: baseline`, the baseline download step runs and `BASELINE_<ENV>_DIRECTORY` ends in `/<env>`; with run IDs on both sides it is skipped. Component-gate steps pass `vars.COMPONENT_GATE_CONTACT`. |
 | `rollback_workflow_is_targeted_and_keeps_provenance` | `rollback.yml` calls `promote.yml` with `rollback: true`. It holds no `release.mjs rollback` or `release.mjs deploy` string. Provenance is verified for all three runs. |
 | `health_recovery_and_diagnostics_keep_existing_protections` (workflow half) | The failure step passes both expected IDs, `UPDATE_ALERT` and `OPERATIONS_FAILURE`, and no secret except `GH_TOKEN`. |
 
@@ -1690,6 +1721,7 @@ Until A25 merges, every routine release is two `promote.yml` dispatches per envi
   - `.github/workflows/verify.yml`: the `beta` and `production` jobs' report step from A20 gains the steady-state sequence below. Add `actions: read` to both jobs' permissions. The failure notification now gets `EXPECTED_WEBSITE_ID` and `EXPECTED_API_ID`.
   - `scripts/release.mjs` (CLI dispatch only): add `digest DIRECTORY`, which prints `manifestDigest(JSON.parse(<DIRECTORY>/manifest.json))`. This is the only supported way to compute a manifest digest; `shasum` of the file is wrong (I4).
   - `tests/verify-workflow.test.mjs`.
+  - `tests/release.test.mjs`: add the `release_digest_cli_matches_manifest_digest` case (M10).
 
 **Steady-state deploy sequence (I3), per environment job. Each step runs only if the previous one succeeded:**
 1. A20's `node scripts/release.mjs live-pair <env>` (id `pair`).
@@ -2219,12 +2251,13 @@ Every spec requirement maps to a task or a Part B step. "Live at" names the step
 
 ### Plan-added tests (not spec invariants)
 
-These back Review Focus items, plan interpretations and review round 1 and 2 findings. They are kept alongside the 113.
+These back Review Focus items, plan interpretations, review round 1 and 2 findings and the preflight rulings. They are kept alongside the 113.
 
 | Test | Task | Why |
 |---|---|---|
 | `legacy_redirect_location_always_stays_under_canonical_base`, `unknown_and_variant_hosts_fail_closed`, `head_matches_get_for_redirects_registry_and_health` | A2 | Review Focus 1, 2, 5 |
 | `legacy_rsc_fetch_with_query_is_served_or_404_never_301` | A11 | Review Focus 4 |
+| `packaged_mode_runs_the_variant_bundle_with_its_vars` | A11 | preflight M2, M5: packaged gates run the variant's own bundle and vars; complete browser fixture variants |
 | `private_pages_keep_noindex_and_no_referrer` | A6 | spec completion row 21 (track and admin directives) |
 | `default_and_environment_configs_agree` | A12 | source configs, transitional `site` field |
 | `manifest_schema_2_validates_identity_fields`, `mounted_registry_copy_keeps_baseline_provenance` | A13 | schema 2 kept beside schema 1; baseline provenance mapping (round 1) |
