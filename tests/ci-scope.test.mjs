@@ -749,6 +749,72 @@ test('the command publishes one of the two known reduced scopes when it resolves
 
 const depthOf = (paths, diff) => releaseDepth(paths, diff).depth;
 
+test('ci_scope_selects_migration_routing_and_origin_gates', () => {
+  for (const file of [
+    'workers/registry-host/src/routing.mjs',
+    'workers/reporting/src/lifecycle.ts',
+    'workers/reporting/wrangler.jsonc',
+    'scripts/release.mjs',
+    'scripts/release-phases.mjs',
+    'scripts/operations.mjs',
+    'scripts/worker-first.mjs',
+    'app/sitemap.ts',
+    'lib/seo/structured-data.ts',
+    'lib/site-config.ts',
+    'next.config.ts',
+    '.github/workflows/promote.yml',
+    '.github/workflows/rollback.yml',
+    '.github/workflows/health.yml',
+    'scripts/check-discovery.mjs',
+  ]) {
+    const decision = releaseDepth([file]);
+    const output = releaseOutputs(decision);
+    assert.equal(output.run_migration, 'true', file);
+    assert.equal(output.run_release, 'true', file);
+    assert.ok(decision.suites.includes('migration-gates'), file);
+  }
+  for (const file of ['docs/note.md', 'scripts/triage/judge.ts']) {
+    assert.equal(releaseOutputs(releaseDepth([file])).run_migration, 'false', file);
+  }
+  for (const file of [
+    'scripts/release-phases.mjs', 'scripts/release-promote.mjs', 'scripts/release-baseline.json',
+    'scripts/asset-router-harness.mjs', 'scripts/check-asset-chains.mjs',
+    'scripts/live-install.mjs', 'scripts/deployed-component-gate.mjs', 'scripts/rollback-rehearsal.mjs',
+    'scripts/check-discovery.mjs', 'scripts/redirect-browser.mjs', '.github/workflows/promote.yml',
+    'tests/release-phases.test.mjs', 'tests/promotion.test.mjs', 'tests/promote-workflow.test.mjs',
+    'tests/packaged-gates.test.mjs', 'tests/deployed-component-gate.test.mjs', 'tests/rollback-rehearsal.test.mjs',
+    'tests/discovery.test.mjs', 'tests/redirect-browser.test.mjs',
+  ]) {
+    const output = releaseOutputs(releaseDepth([file]));
+    assert.equal(output.run_catalogue, 'false', file);
+    assert.equal(output.run_release, 'true', file);
+  }
+  for (const file of ['scripts/worker-first.mjs', 'scripts/check-ui-export.mjs',
+    'scripts/check-funnel-links.mjs', 'scripts/registry-dependency.mjs']) {
+    assert.equal(releaseOutputs(releaseDepth([file])).run_catalogue, 'true', file);
+  }
+  const full = releaseOutputs(releaseDepth(['unknown/file.ts']));
+  assert.equal(full.run_migration, 'true');
+  assert.equal(full.run_release, 'true');
+  for (const depth of ['docs', 'quick']) {
+    const output = releaseOutputs({ depth, suites: ['migration-gates'] });
+    assert.equal(output.run_migration, 'true', depth);
+    assert.equal(output.run_release, 'true', depth);
+  }
+});
+
+test('real migration release-only test changes skip the catalogue together', () => {
+  const decision = releaseDepth([
+    'tests/discovery.test.mjs', 'tests/promotion.test.mjs',
+    'tests/promote-workflow.test.mjs', 'tests/packaged-gates.test.mjs',
+  ]);
+  const output = releaseOutputs(decision);
+  assert.equal(decision.depth, 'affected');
+  assert.equal(output.run_catalogue, 'false');
+  assert.equal(output.run_checks, 'true');
+  assert.equal(output.run_release, 'true');
+});
+
 test('release depth reduces only documentation and named tooling, and defaults to full', () => {
   assert.equal(depthOf(['docs/production/note.md', 'README.md', 'OVERHAUL-PLAN.md']), 'docs');
   assert.equal(depthOf(['docs/quality/evidence/h03-2/after-shape-menu.png']), 'docs');
@@ -937,7 +1003,7 @@ test('structured data pages select rendered SEO validation instead of the compon
   ];
   const decision = releaseDepth(paths);
   assert.equal(decision.depth, 'affected');
-  assert.deepEqual(decision.suites, ['seo-structured-data']);
+  assert.deepEqual(decision.suites, ['migration-gates', 'seo-structured-data']);
   const outputs = releaseOutputs(decision);
   assert.equal(outputs.run_catalogue, 'false');
   assert.equal(outputs.run_seo, 'true');
@@ -956,10 +1022,10 @@ test('release outputs are complete, explicit and fail safe for every depth', () 
   const docs = releaseOutputs(releaseDepth(['docs/note.md']));
   assert.deepEqual(docs, {
     depth: 'docs', depth_reason: '1 changed path, all documentation',
-    run_checks: 'false', run_release: 'false', run_catalogue: 'false', gate_ids: '', run_transient: 'false', run_analytics: 'false', run_seo: 'false', run_reporting: 'false',
+    run_checks: 'false', run_release: 'false', run_migration: 'false', run_catalogue: 'false', gate_ids: '', run_transient: 'false', run_analytics: 'false', run_seo: 'false', run_reporting: 'false',
   });
   const full = releaseOutputs(releaseDepth(['components/ui/button.tsx']));
-  for (const flag of ['run_checks', 'run_release', 'run_catalogue', 'run_transient', 'run_analytics', 'run_seo', 'run_reporting']) assert.equal(full[flag], 'true', flag);
+  for (const flag of ['run_checks', 'run_release', 'run_migration', 'run_catalogue', 'run_transient', 'run_analytics', 'run_seo', 'run_reporting']) assert.equal(full[flag], 'true', flag);
   assert.equal(full.depth, 'full');
   assert.ok(full.depth_reason.includes('components/ui/button.tsx'));
   // Every published value is a single line, so no reason can forge another output.
@@ -1283,7 +1349,7 @@ test('mixed_area_and_unknown_is_full', () => {
 test('mixed_areas_take_the_union', () => {
   const decision = releaseDepth(['apps/triage/api.ts', 'workers/registry-host/src/index.ts', 'lib/reporting/capture.ts', 'docs/a.md']);
   assert.equal(decision.depth, 'affected');
-  assert.deepEqual(decision.suites, ['reporting-consent']);
+  assert.deepEqual(decision.suites, ['migration-gates', 'reporting-consent']);
 });
 
 test('no_prefix_rule_admits_neighbour', () => {

@@ -329,6 +329,23 @@ const CI_CONTRACT = new Set([
 // A fixed list: it never passes through selectGateIds, so a docs-chrome component
 // in it does not make a CI edit full.
 export const CI_SMOKE_IDS = ["button", "tabs"];
+// Directory entries end in `/`; every other entry is an exact classification
+// path, including files created by later migration tasks.
+const MIGRATION_GATE_PATHS = [
+  "workers/registry-host/", "workers/reporting/", "lib/reporting/", "components/reporting/", "lib/seo/",
+  "app/sitemap.ts", "app/robots.ts", "lib/site-config.ts", "next.config.ts",
+  "scripts/release.mjs", "scripts/release-config.mjs", "scripts/release-manifest.mjs", "scripts/release-csp.mjs",
+  "scripts/release-install.mjs", "scripts/release-rollback-run.mjs", "scripts/release-phases.mjs",
+  "scripts/release-variants.mjs", "scripts/release-promote.mjs", "scripts/release-baseline.json",
+  "scripts/operations.mjs", "scripts/operations-health.mjs", "scripts/deployment-diagnostics.mjs",
+  "scripts/worker-first.mjs", "scripts/asset-router-harness.mjs", "scripts/check-asset-chains.mjs",
+  "scripts/live-install.mjs", "scripts/deployed-component-gate.mjs", "scripts/rollback-rehearsal.mjs",
+  "scripts/redirect-browser.mjs", "scripts/check-discovery.mjs", "scripts/check-ui-export.mjs",
+  "scripts/check-funnel-links.mjs", "scripts/registry-dependency.mjs", "scripts/run-install-verification.mjs",
+  "scripts/verify-install.mjs", "scripts/check-structured-data.mjs", "scripts/check-launch-readiness.mjs",
+  ".github/workflows/verify.yml", ".github/workflows/promote.yml", ".github/workflows/rollback.yml",
+  ".github/workflows/health.yml", ".github/workflows/recovery.yml",
+];
 const CATALOGUE_EXEMPT = new Set([
   // The other workflows.
   ".github/workflows/health.yml",
@@ -342,6 +359,25 @@ const CATALOGUE_EXEMPT = new Set([
   // the catalogue runner itself.
   "scripts/release.mjs",
   "scripts/release-rollback-run.mjs",
+  "scripts/release-phases.mjs",
+  "scripts/release-promote.mjs",
+  "scripts/release-baseline.json",
+  "scripts/asset-router-harness.mjs",
+  "scripts/check-asset-chains.mjs",
+  "scripts/live-install.mjs",
+  "scripts/deployed-component-gate.mjs",
+  "scripts/rollback-rehearsal.mjs",
+  "scripts/check-discovery.mjs",
+  "scripts/redirect-browser.mjs",
+  ".github/workflows/promote.yml",
+  "tests/release-phases.test.mjs",
+  "tests/promotion.test.mjs",
+  "tests/promote-workflow.test.mjs",
+  "tests/packaged-gates.test.mjs",
+  "tests/deployed-component-gate.test.mjs",
+  "tests/rollback-rehearsal.test.mjs",
+  "tests/discovery.test.mjs",
+  "tests/redirect-browser.test.mjs",
   "scripts/operations.mjs",
   "scripts/operations-health.mjs",
   "scripts/deployment-diagnostics.mjs",
@@ -516,14 +552,17 @@ export function releaseDepth(paths, diff, context) {
   // reason must name the file that actually needs the complete job.
   const perFile = splitDiff(diff);
   let relocation = false;
-  const suites = new Set();
+  const migration = paths.some(file => MIGRATION_GATE_PATHS.some(pattern =>
+    pattern.endsWith("/") ? file.startsWith(pattern) : file === pattern));
+  const migrationSuites = migration ? ["migration-gates"] : [];
+  const suites = new Set(migrationSuites);
   let depth = "docs";
   const components = [];
   let contract = false;
   for (const file of paths) {
     if (documentation(file)) continue;
     const bump = next => { if (DEPTH_RANK.indexOf(next) > DEPTH_RANK.indexOf(depth)) depth = next; };
-    if (FULL_ALWAYS.has(file)) return { depth: "full", suites: [], reason: oneLine(`${file} always runs complete release verification`) };
+    if (FULL_ALWAYS.has(file)) return { depth: "full", suites: migrationSuites, reason: oneLine(`${file} always runs complete release verification`) };
     // Before the component and area rules, so a contract file that is also listed
     // elsewhere still gets the smoke gate.
     // A contract file that also owns a bounded browser harness keeps that harness: the smoke catalogue does not replace it.
@@ -536,12 +575,12 @@ export function releaseDepth(paths, diff, context) {
     if (FOCUSED_BROWSER.has(file)) { depth = "affected"; suites.add(FOCUSED_BROWSER.get(file)); continue; }
     if (CATALOGUE_EXEMPT.has(file)) { depth = "affected"; continue; }
     if (RELOCATION_SENSITIVE.has(file) && relocationOnly(perFile.get(file))) { depth = "affected"; relocation = true; continue; }
-    return { depth: "full", suites: [], reason: oneLine(`not exempt from release catalogue verification: ${file}`) };
+    return { depth: "full", suites: migrationSuites, reason: oneLine(`not exempt from release catalogue verification: ${file}`) };
   }
   let gateIds, gateOrder;
   if (components.length) {
     const selected = context.gateIds(components);
-    if (!selected?.ids?.length) return { depth: "full", suites: [], reason: oneLine(`component change runs every id: ${selected?.full ?? "no ids selected"}`) };
+    if (!selected?.ids?.length) return { depth: "full", suites: migrationSuites, reason: oneLine(`component change runs every id: ${selected?.full ?? "no ids selected"}`) };
     gateIds = selected.ids;
     gateOrder = selected.order;
   } else if (contract && context?.gateIds) {
@@ -553,7 +592,7 @@ export function releaseDepth(paths, diff, context) {
     const wanted = new Set([...(gateIds ?? []), ...CI_SMOKE_IDS]);
     const ordered = gateOrder ? gateOrder.filter(id => wanted.has(id)) : [...wanted];
     // An id missing from the registry order would silently drop out of the gate: run every id instead.
-    if (ordered.length !== wanted.size) return { depth: "full", suites: [], reason: oneLine(`CI contract gate ids are not all in the registry order: ${[...wanted].join(",")}`) };
+    if (ordered.length !== wanted.size) return { depth: "full", suites: migrationSuites, reason: oneLine(`CI contract gate ids are not all in the registry order: ${[...wanted].join(",")}`) };
     gateIds = ordered;
   }
   const count = `${paths.length} changed ${paths.length === 1 ? "path" : "paths"}`;
@@ -588,6 +627,8 @@ export function relocationDiff({ base, head, paths, cwd = process.cwd() }) {
 }
 
 export function releaseOutputs(decision) {
+  const suites = decision.suites ?? [];
+  const migration = decision.depth === "full" || suites.includes("migration-gates");
   return {
     depth: decision.depth,
     depth_reason: oneLine(decision.reason) || "unspecified",
@@ -595,7 +636,8 @@ export function releaseOutputs(decision) {
     run_checks: String(decision.depth !== "docs"),
     // Packaging, artifact integrity, consumer installation, artifact upload and
     // every deployment job. Off only when nothing deployable changed.
-    run_release: String(decision.depth !== "docs" && decision.depth !== "quick"),
+    run_release: String(migration || (decision.depth !== "docs" && decision.depth !== "quick")),
+    run_migration: String(migration),
     // The browser component catalogue and the other browser gates.
     // A component-confined change runs it too, for the ids in gate_ids only.
     run_catalogue: String(decision.depth === "full" || Boolean(decision.gateIds?.length)),
@@ -603,10 +645,10 @@ export function releaseOutputs(decision) {
     gate_ids: decision.depth === "full" ? "" : (decision.gateIds ?? []).join(","),
     // A bounded browser harness instead of the catalogue: real browser evidence
     // for the few paths that own one, never zero browser evidence for them.
-    run_transient: String(decision.depth === "full" || (decision.suites ?? []).includes("transient-timing")),
-    run_analytics: String(decision.depth === "full" || (decision.suites ?? []).includes("analytics-browser")),
-    run_seo: String(decision.depth === "full" || (decision.suites ?? []).includes("seo-structured-data")),
-    run_reporting: String(decision.depth === "full" || (decision.suites ?? []).includes("reporting-consent")),
+    run_transient: String(decision.depth === "full" || suites.includes("transient-timing")),
+    run_analytics: String(decision.depth === "full" || suites.includes("analytics-browser")),
+    run_seo: String(decision.depth === "full" || suites.includes("seo-structured-data")),
+    run_reporting: String(decision.depth === "full" || suites.includes("reporting-consent")),
   };
 }
 
