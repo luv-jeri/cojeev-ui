@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-pizza",
+  "title": "Pizza icon",
+  "description": "Pizza icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/pizza.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PizzaIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"pizza\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PizzaIcon(props:PizzaIconProps){return <Icon name=\"pizza\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/pizza.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "pizza"
+  },
+  "type": "registry:component"
+}

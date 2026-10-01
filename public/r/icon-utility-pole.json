@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-utility-pole",
+  "title": "Utility pole icon",
+  "description": "Utility pole icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/utility-pole.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type UtilityPoleIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"utility-pole\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function UtilityPoleIcon(props:UtilityPoleIconProps){return <Icon name=\"utility-pole\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/utility-pole.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "utility-pole"
+  },
+  "type": "registry:component"
+}

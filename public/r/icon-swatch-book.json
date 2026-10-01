@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-swatch-book",
+  "title": "Swatch book icon",
+  "description": "Swatch book icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/swatch-book.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SwatchBookIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"swatch-book\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SwatchBookIcon(props:SwatchBookIconProps){return <Icon name=\"swatch-book\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/swatch-book.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "swatch-book"
+  },
+  "type": "registry:component"
+}

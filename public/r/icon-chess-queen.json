@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chess-queen",
+  "title": "Chess queen icon",
+  "description": "Chess queen icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chess-queen.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChessQueenIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chess-queen\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChessQueenIcon(props:ChessQueenIconProps){return <Icon name=\"chess-queen\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chess-queen.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chess-queen"
+  },
+  "type": "registry:component"
+}

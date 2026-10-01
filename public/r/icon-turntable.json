@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-turntable",
+  "title": "Turntable icon",
+  "description": "Turntable icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/turntable.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TurntableIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"turntable\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TurntableIcon(props:TurntableIconProps){return <Icon name=\"turntable\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/turntable.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "turntable"
+  },
+  "type": "registry:component"
+}

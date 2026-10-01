@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-undo",
+  "title": "Undo icon",
+  "description": "Undo icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/undo.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type UndoIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"undo\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function UndoIcon(props:UndoIconProps){return <Icon name=\"undo\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/undo.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "undo"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-panels-right-bottom",
+  "title": "Panels right bottom icon",
+  "description": "Panels right bottom icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/panels-right-bottom.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PanelsRightBottomIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"panels-right-bottom\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PanelsRightBottomIcon(props:PanelsRightBottomIconProps){return <Icon name=\"panels-right-bottom\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/panels-right-bottom.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "panels-right-bottom"
+  },
+  "type": "registry:component"
+}

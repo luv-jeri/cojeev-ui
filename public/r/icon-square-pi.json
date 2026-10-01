@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-pi",
+  "title": "Square pi icon",
+  "description": "Square pi icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-pi.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquarePiIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-pi\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquarePiIcon(props:SquarePiIconProps){return <Icon name=\"square-pi\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-pi.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-pi"
+  },
+  "type": "registry:component"
+}

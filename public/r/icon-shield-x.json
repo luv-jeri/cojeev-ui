@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-shield-x",
+  "title": "Shield x icon",
+  "description": "Shield x icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/shield-x.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ShieldXIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"shield-x\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ShieldXIcon(props:ShieldXIconProps){return <Icon name=\"shield-x\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/shield-x.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "shield-x"
+  },
+  "type": "registry:component"
+}

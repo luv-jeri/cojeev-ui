@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-router",
+  "title": "Router icon",
+  "description": "Router icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/router.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RouterIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"router\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RouterIcon(props:RouterIconProps){return <Icon name=\"router\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/router.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "router"
+  },
+  "type": "registry:component"
+}

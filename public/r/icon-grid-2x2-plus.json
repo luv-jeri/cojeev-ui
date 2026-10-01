@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-grid-2x2-plus",
+  "title": "Grid 2x2 plus icon",
+  "description": "Grid 2x2 plus icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/grid-2x2-plus.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Grid2x2PlusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"grid-2x2-plus\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Grid2x2PlusIcon(props:Grid2x2PlusIconProps){return <Icon name=\"grid-2x2-plus\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/grid-2x2-plus.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "grid-2x2-plus"
+  },
+  "type": "registry:component"
+}

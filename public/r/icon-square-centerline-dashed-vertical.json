@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-centerline-dashed-vertical",
+  "title": "Square centerline dashed vertical icon",
+  "description": "Square centerline dashed vertical icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-centerline-dashed-vertical.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareCenterlineDashedVerticalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-centerline-dashed-vertical\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareCenterlineDashedVerticalIcon(props:SquareCenterlineDashedVerticalIconProps){return <Icon name=\"square-centerline-dashed-vertical\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-centerline-dashed-vertical.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-centerline-dashed-vertical"
+  },
+  "type": "registry:component"
+}

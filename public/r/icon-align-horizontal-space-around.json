@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-horizontal-space-around",
+  "title": "Align horizontal space around icon",
+  "description": "Align horizontal space around icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-horizontal-space-around.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignHorizontalSpaceAroundIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-horizontal-space-around\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignHorizontalSpaceAroundIcon(props:AlignHorizontalSpaceAroundIconProps){return <Icon name=\"align-horizontal-space-around\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-horizontal-space-around.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-horizontal-space-around"
+  },
+  "type": "registry:component"
+}

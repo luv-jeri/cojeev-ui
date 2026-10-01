@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-russian-ruble",
+  "title": "Russian ruble icon",
+  "description": "Russian ruble icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/russian-ruble.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RussianRubleIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"russian-ruble\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RussianRubleIcon(props:RussianRubleIconProps){return <Icon name=\"russian-ruble\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/russian-ruble.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "russian-ruble"
+  },
+  "type": "registry:component"
+}

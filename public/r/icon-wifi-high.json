@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-wifi-high",
+  "title": "Wifi high icon",
+  "description": "Wifi high icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/wifi-high.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type WifiHighIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"wifi-high\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function WifiHighIcon(props:WifiHighIconProps){return <Icon name=\"wifi-high\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/wifi-high.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "wifi-high"
+  },
+  "type": "registry:component"
+}

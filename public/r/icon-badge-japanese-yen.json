@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-badge-japanese-yen",
+  "title": "Badge japanese yen icon",
+  "description": "Badge japanese yen icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/badge-japanese-yen.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BadgeJapaneseYenIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"badge-japanese-yen\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BadgeJapaneseYenIcon(props:BadgeJapaneseYenIconProps){return <Icon name=\"badge-japanese-yen\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/badge-japanese-yen.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "badge-japanese-yen"
+  },
+  "type": "registry:component"
+}

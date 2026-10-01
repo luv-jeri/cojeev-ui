@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-cog",
+  "title": "Cloud cog icon",
+  "description": "Cloud cog icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-cog.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudCogIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-cog\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudCogIcon(props:CloudCogIconProps){return <Icon name=\"cloud-cog\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-cog.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-cog"
+  },
+  "type": "registry:component"
+}

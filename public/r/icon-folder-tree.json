@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-folder-tree",
+  "title": "Folder tree icon",
+  "description": "Folder tree icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/folder-tree.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FolderTreeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"folder-tree\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FolderTreeIcon(props:FolderTreeIconProps){return <Icon name=\"folder-tree\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/folder-tree.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "folder-tree"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chart-no-axes-column-increasing",
+  "title": "Chart no axes column increasing icon",
+  "description": "Chart no axes column increasing icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chart-no-axes-column-increasing.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChartNoAxesColumnIncreasingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chart-no-axes-column-increasing\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChartNoAxesColumnIncreasingIcon(props:ChartNoAxesColumnIncreasingIconProps){return <Icon name=\"chart-no-axes-column-increasing\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chart-no-axes-column-increasing.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chart-no-axes-column-increasing"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-message-square-lock",
+  "title": "Message square lock icon",
+  "description": "Message square lock icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/message-square-lock.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MessageSquareLockIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"message-square-lock\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MessageSquareLockIcon(props:MessageSquareLockIconProps){return <Icon name=\"message-square-lock\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/message-square-lock.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "message-square-lock"
+  },
+  "type": "registry:component"
+}

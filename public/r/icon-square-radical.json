@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-radical",
+  "title": "Square radical icon",
+  "description": "Square radical icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-radical.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareRadicalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-radical\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareRadicalIcon(props:SquareRadicalIconProps){return <Icon name=\"square-radical\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-radical.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-radical"
+  },
+  "type": "registry:component"
+}

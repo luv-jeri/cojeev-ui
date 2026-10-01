@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-panel-left-right-dashed",
+  "title": "Panel left right dashed icon",
+  "description": "Panel left right dashed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/panel-left-right-dashed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PanelLeftRightDashedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"panel-left-right-dashed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PanelLeftRightDashedIcon(props:PanelLeftRightDashedIconProps){return <Icon name=\"panel-left-right-dashed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/panel-left-right-dashed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "panel-left-right-dashed"
+  },
+  "type": "registry:component"
+}

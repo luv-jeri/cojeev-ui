@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-corner-right-down",
+  "title": "Corner right down icon",
+  "description": "Corner right down icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/corner-right-down.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CornerRightDownIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"corner-right-down\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CornerRightDownIcon(props:CornerRightDownIconProps){return <Icon name=\"corner-right-down\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/corner-right-down.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "corner-right-down"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ethernet-port",
+  "title": "Ethernet port icon",
+  "description": "Ethernet port icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ethernet-port.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type EthernetPortIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ethernet-port\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function EthernetPortIcon(props:EthernetPortIconProps){return <Icon name=\"ethernet-port\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ethernet-port.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ethernet-port"
+  },
+  "type": "registry:component"
+}

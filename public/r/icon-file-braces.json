@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-braces",
+  "title": "File braces icon",
+  "description": "File braces icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-braces.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileBracesIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-braces\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileBracesIcon(props:FileBracesIconProps){return <Icon name=\"file-braces\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-braces.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-braces"
+  },
+  "type": "registry:component"
+}

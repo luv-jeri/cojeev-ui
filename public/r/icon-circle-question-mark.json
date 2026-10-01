@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-question-mark",
+  "title": "Circle question mark icon",
+  "description": "Circle question mark icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-question-mark.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CircleQuestionMarkIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-question-mark\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CircleQuestionMarkIcon(props:CircleQuestionMarkIconProps){return <Icon name=\"circle-question-mark\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-question-mark.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-question-mark"
+  },
+  "type": "registry:component"
+}

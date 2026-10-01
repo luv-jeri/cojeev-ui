@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-hard-hat",
+  "title": "Hard hat icon",
+  "description": "Hard hat icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/hard-hat.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HardHatIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"hard-hat\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HardHatIcon(props:HardHatIconProps){return <Icon name=\"hard-hat\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/hard-hat.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "hard-hat"
+  },
+  "type": "registry:component"
+}

@@ -86,3 +86,6 @@ node_modules/
 /verification/default-visual-review.json
 /verification/reference-regressions.json
 /PUBLIC-SNAPSHOT.json
+
+# Generated per-icon sources; scripts/build-registry.mjs rewrites them on every build.
+/registry/cojeev/icons/

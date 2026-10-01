@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ellipsis",
+  "title": "Ellipsis icon",
+  "description": "Ellipsis icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ellipsis.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type EllipsisIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ellipsis\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function EllipsisIcon(props:EllipsisIconProps){return <Icon name=\"ellipsis\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ellipsis.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ellipsis"
+  },
+  "type": "registry:component"
+}

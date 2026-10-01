@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-drill",
+  "title": "Drill icon",
+  "description": "Drill icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/drill.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DrillIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"drill\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DrillIcon(props:DrillIconProps){return <Icon name=\"drill\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/drill.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "drill"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-sun-moon",
+  "title": "Sun moon icon",
+  "description": "Sun moon icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/sun-moon.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SunMoonIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"sun-moon\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SunMoonIcon(props:SunMoonIconProps){return <Icon name=\"sun-moon\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/sun-moon.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "sun-moon"
+  },
+  "type": "registry:component"
+}

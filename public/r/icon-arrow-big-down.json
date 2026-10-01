@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-arrow-big-down",
+  "title": "Arrow big down icon",
+  "description": "Arrow big down icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/arrow-big-down.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ArrowBigDownIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"arrow-big-down\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ArrowBigDownIcon(props:ArrowBigDownIconProps){return <Icon name=\"arrow-big-down\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/arrow-big-down.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "arrow-big-down"
+  },
+  "type": "registry:component"
+}

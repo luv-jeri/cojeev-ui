@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-signal-low",
+  "title": "Signal low icon",
+  "description": "Signal low icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/signal-low.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SignalLowIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"signal-low\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SignalLowIcon(props:SignalLowIconProps){return <Icon name=\"signal-low\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/signal-low.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "signal-low"
+  },
+  "type": "registry:component"
+}

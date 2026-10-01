@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-package-minus",
+  "title": "Package minus icon",
+  "description": "Package minus icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/package-minus.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PackageMinusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"package-minus\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PackageMinusIcon(props:PackageMinusIconProps){return <Icon name=\"package-minus\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/package-minus.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "package-minus"
+  },
+  "type": "registry:component"
+}

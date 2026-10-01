@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-file-check-corner",
+  "title": "File check corner icon",
+  "description": "File check corner icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/file-check-corner.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FileCheckCornerIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"file-check-corner\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FileCheckCornerIcon(props:FileCheckCornerIconProps){return <Icon name=\"file-check-corner\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/file-check-corner.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "file-check-corner"
+  },
+  "type": "registry:component"
+}

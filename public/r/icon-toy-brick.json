@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-toy-brick",
+  "title": "Toy brick icon",
+  "description": "Toy brick icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/toy-brick.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ToyBrickIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"toy-brick\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ToyBrickIcon(props:ToyBrickIconProps){return <Icon name=\"toy-brick\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/toy-brick.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "toy-brick"
+  },
+  "type": "registry:component"
+}

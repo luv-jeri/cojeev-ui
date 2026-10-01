@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-pencil-off",
+  "title": "Pencil off icon",
+  "description": "Pencil off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/pencil-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PencilOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"pencil-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PencilOffIcon(props:PencilOffIconProps){return <Icon name=\"pencil-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/pencil-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "pencil-off"
+  },
+  "type": "registry:component"
+}

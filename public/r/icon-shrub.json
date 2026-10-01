@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-shrub",
+  "title": "Shrub icon",
+  "description": "Shrub icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/shrub.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ShrubIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"shrub\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ShrubIcon(props:ShrubIconProps){return <Icon name=\"shrub\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/shrub.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "shrub"
+  },
+  "type": "registry:component"
+}

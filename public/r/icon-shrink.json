@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-shrink",
+  "title": "Shrink icon",
+  "description": "Shrink icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/shrink.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ShrinkIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"shrink\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ShrinkIcon(props:ShrinkIconProps){return <Icon name=\"shrink\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/shrink.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "shrink"
+  },
+  "type": "registry:component"
+}

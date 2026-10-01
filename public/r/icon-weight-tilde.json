@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-weight-tilde",
+  "title": "Weight tilde icon",
+  "description": "Weight tilde icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/weight-tilde.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type WeightTildeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"weight-tilde\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function WeightTildeIcon(props:WeightTildeIconProps){return <Icon name=\"weight-tilde\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/weight-tilde.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "weight-tilde"
+  },
+  "type": "registry:component"
+}

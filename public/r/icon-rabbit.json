@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-rabbit",
+  "title": "Rabbit icon",
+  "description": "Rabbit icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/rabbit.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RabbitIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"rabbit\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RabbitIcon(props:RabbitIconProps){return <Icon name=\"rabbit\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/rabbit.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "rabbit"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-ribbon",
+  "title": "Ribbon icon",
+  "description": "Ribbon icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/ribbon.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RibbonIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"ribbon\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RibbonIcon(props:RibbonIconProps){return <Icon name=\"ribbon\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/ribbon.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "ribbon"
+  },
+  "type": "registry:component"
+}

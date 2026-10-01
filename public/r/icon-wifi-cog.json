@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-wifi-cog",
+  "title": "Wifi cog icon",
+  "description": "Wifi cog icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/wifi-cog.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type WifiCogIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"wifi-cog\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function WifiCogIcon(props:WifiCogIconProps){return <Icon name=\"wifi-cog\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/wifi-cog.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "wifi-cog"
+  },
+  "type": "registry:component"
+}

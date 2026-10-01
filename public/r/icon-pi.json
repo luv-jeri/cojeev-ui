@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-pi",
+  "title": "Pi icon",
+  "description": "Pi icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/pi.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PiIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"pi\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PiIcon(props:PiIconProps){return <Icon name=\"pi\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/pi.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "pi"
+  },
+  "type": "registry:component"
+}

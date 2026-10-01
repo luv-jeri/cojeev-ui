@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-bed-double",
+  "title": "Bed double icon",
+  "description": "Bed double icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/bed-double.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BedDoubleIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"bed-double\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BedDoubleIcon(props:BedDoubleIconProps){return <Icon name=\"bed-double\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/bed-double.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "bed-double"
+  },
+  "type": "registry:component"
+}

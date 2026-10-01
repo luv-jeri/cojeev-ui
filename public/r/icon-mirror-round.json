@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-mirror-round",
+  "title": "Mirror round icon",
+  "description": "Mirror round icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/mirror-round.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MirrorRoundIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"mirror-round\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MirrorRoundIcon(props:MirrorRoundIconProps){return <Icon name=\"mirror-round\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/mirror-round.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "mirror-round"
+  },
+  "type": "registry:component"
+}

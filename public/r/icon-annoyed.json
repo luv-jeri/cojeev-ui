@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-annoyed",
+  "title": "Annoyed icon",
+  "description": "Annoyed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/annoyed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AnnoyedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"annoyed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AnnoyedIcon(props:AnnoyedIconProps){return <Icon name=\"annoyed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/annoyed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "annoyed"
+  },
+  "type": "registry:component"
+}

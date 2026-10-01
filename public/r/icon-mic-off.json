@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-mic-off",
+  "title": "Mic off icon",
+  "description": "Mic off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/mic-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MicOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"mic-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MicOffIcon(props:MicOffIconProps){return <Icon name=\"mic-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/mic-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "mic-off"
+  },
+  "type": "registry:component"
+}

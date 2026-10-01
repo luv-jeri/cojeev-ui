@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-piggy-bank",
+  "title": "Piggy bank icon",
+  "description": "Piggy bank icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/piggy-bank.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type PiggyBankIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"piggy-bank\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function PiggyBankIcon(props:PiggyBankIconProps){return <Icon name=\"piggy-bank\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/piggy-bank.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "piggy-bank"
+  },
+  "type": "registry:component"
+}

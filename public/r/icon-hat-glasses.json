@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-hat-glasses",
+  "title": "Hat glasses icon",
+  "description": "Hat glasses icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/hat-glasses.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type HatGlassesIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"hat-glasses\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function HatGlassesIcon(props:HatGlassesIconProps){return <Icon name=\"hat-glasses\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/hat-glasses.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "hat-glasses"
+  },
+  "type": "registry:component"
+}

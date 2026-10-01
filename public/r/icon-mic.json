@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-mic",
+  "title": "Mic icon",
+  "description": "Mic icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/mic.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type MicIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"mic\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function MicIcon(props:MicIconProps){return <Icon name=\"mic\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/mic.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "mic"
+  },
+  "type": "registry:component"
+}

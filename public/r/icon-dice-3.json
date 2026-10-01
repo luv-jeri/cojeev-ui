@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-dice-3",
+  "title": "Dice 3 icon",
+  "description": "Dice 3 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/dice-3.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Dice3IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"dice-3\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Dice3Icon(props:Dice3IconProps){return <Icon name=\"dice-3\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/dice-3.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "dice-3"
+  },
+  "type": "registry:component"
+}

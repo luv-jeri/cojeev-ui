@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-layout-panel-top",
+  "title": "Layout panel top icon",
+  "description": "Layout panel top icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/layout-panel-top.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LayoutPanelTopIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"layout-panel-top\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LayoutPanelTopIcon(props:LayoutPanelTopIconProps){return <Icon name=\"layout-panel-top\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/layout-panel-top.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "layout-panel-top"
+  },
+  "type": "registry:component"
+}

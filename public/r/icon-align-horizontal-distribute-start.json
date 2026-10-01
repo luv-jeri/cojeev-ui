@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-horizontal-distribute-start",
+  "title": "Align horizontal distribute start icon",
+  "description": "Align horizontal distribute start icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-horizontal-distribute-start.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignHorizontalDistributeStartIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-horizontal-distribute-start\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignHorizontalDistributeStartIcon(props:AlignHorizontalDistributeStartIconProps){return <Icon name=\"align-horizontal-distribute-start\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-horizontal-distribute-start.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-horizontal-distribute-start"
+  },
+  "type": "registry:component"
+}

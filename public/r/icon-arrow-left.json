@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-arrow-left",
+  "title": "Arrow left icon",
+  "description": "Arrow left icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/arrow-left.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ArrowLeftIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"arrow-left\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ArrowLeftIcon(props:ArrowLeftIconProps){return <Icon name=\"arrow-left\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/arrow-left.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "arrow-left"
+  },
+  "type": "registry:component"
+}

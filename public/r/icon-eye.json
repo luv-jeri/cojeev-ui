@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-eye",
+  "title": "Eye icon",
+  "description": "Eye icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/eye.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type EyeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"eye\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function EyeIcon(props:EyeIconProps){return <Icon name=\"eye\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/eye.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "eye"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-chevrons-up",
+  "title": "Chevrons up icon",
+  "description": "Chevrons up icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/chevrons-up.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ChevronsUpIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"chevrons-up\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ChevronsUpIcon(props:ChevronsUpIconProps){return <Icon name=\"chevrons-up\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/chevrons-up.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "chevrons-up"
+  },
+  "type": "registry:component"
+}

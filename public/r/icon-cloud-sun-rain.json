@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-cloud-sun-rain",
+  "title": "Cloud sun rain icon",
+  "description": "Cloud sun rain icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/cloud-sun-rain.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CloudSunRainIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"cloud-sun-rain\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CloudSunRainIcon(props:CloudSunRainIconProps){return <Icon name=\"cloud-sun-rain\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/cloud-sun-rain.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "cloud-sun-rain"
+  },
+  "type": "registry:component"
+}

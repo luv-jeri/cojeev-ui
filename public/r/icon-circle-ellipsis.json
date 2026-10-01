@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-circle-ellipsis",
+  "title": "Circle ellipsis icon",
+  "description": "Circle ellipsis icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/circle-ellipsis.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CircleEllipsisIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"circle-ellipsis\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CircleEllipsisIcon(props:CircleEllipsisIconProps){return <Icon name=\"circle-ellipsis\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/circle-ellipsis.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "circle-ellipsis"
+  },
+  "type": "registry:component"
+}

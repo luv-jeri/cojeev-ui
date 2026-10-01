@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-laptop-minimal",
+  "title": "Laptop minimal icon",
+  "description": "Laptop minimal icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/laptop-minimal.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LaptopMinimalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"laptop-minimal\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LaptopMinimalIcon(props:LaptopMinimalIconProps){return <Icon name=\"laptop-minimal\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/laptop-minimal.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "laptop-minimal"
+  },
+  "type": "registry:component"
+}

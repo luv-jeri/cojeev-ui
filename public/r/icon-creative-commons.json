@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-creative-commons",
+  "title": "Creative commons icon",
+  "description": "Creative commons icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/creative-commons.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CreativeCommonsIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"creative-commons\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CreativeCommonsIcon(props:CreativeCommonsIconProps){return <Icon name=\"creative-commons\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/creative-commons.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "creative-commons"
+  },
+  "type": "registry:component"
+}

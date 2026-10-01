@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-calendar-days",
+  "title": "Calendar days icon",
+  "description": "Calendar days icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/calendar-days.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CalendarDaysIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"calendar-days\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CalendarDaysIcon(props:CalendarDaysIconProps){return <Icon name=\"calendar-days\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/calendar-days.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "calendar-days"
+  },
+  "type": "registry:component"
+}

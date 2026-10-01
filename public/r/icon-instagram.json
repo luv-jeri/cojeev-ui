@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-instagram",
+  "title": "Instagram icon",
+  "description": "Instagram icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/instagram.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type InstagramIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"instagram\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function InstagramIcon(props:InstagramIconProps){return <Icon name=\"instagram\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/instagram.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "instagram"
+  },
+  "type": "registry:component"
+}

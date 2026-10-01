@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-square-x",
+  "title": "Square x icon",
+  "description": "Square x icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/square-x.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SquareXIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"square-x\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SquareXIcon(props:SquareXIconProps){return <Icon name=\"square-x\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/square-x.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "square-x"
+  },
+  "type": "registry:component"
+}

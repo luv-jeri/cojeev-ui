@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-brick-wall",
+  "title": "Brick wall icon",
+  "description": "Brick wall icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/brick-wall.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type BrickWallIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"brick-wall\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function BrickWallIcon(props:BrickWallIconProps){return <Icon name=\"brick-wall\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/brick-wall.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "brick-wall"
+  },
+  "type": "registry:component"
+}

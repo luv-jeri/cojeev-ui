@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-radius",
+  "title": "Radius icon",
+  "description": "Radius icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/radius.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RadiusIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"radius\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RadiusIcon(props:RadiusIconProps){return <Icon name=\"radius\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/radius.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "radius"
+  },
+  "type": "registry:component"
+}

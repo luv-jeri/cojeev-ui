@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-iteration-ccw",
+  "title": "Iteration ccw icon",
+  "description": "Iteration ccw icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/iteration-ccw.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type IterationCcwIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"iteration-ccw\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function IterationCcwIcon(props:IterationCcwIconProps){return <Icon name=\"iteration-ccw\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/iteration-ccw.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "iteration-ccw"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tram-front",
+  "title": "Tram front icon",
+  "description": "Tram front icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tram-front.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TramFrontIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tram-front\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TramFrontIcon(props:TramFrontIconProps){return <Icon name=\"tram-front\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tram-front.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tram-front"
+  },
+  "type": "registry:component"
+}

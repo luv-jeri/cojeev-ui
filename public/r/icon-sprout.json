@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-sprout",
+  "title": "Sprout icon",
+  "description": "Sprout icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/sprout.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type SproutIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"sprout\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function SproutIcon(props:SproutIconProps){return <Icon name=\"sprout\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/sprout.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "sprout"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-fold-vertical",
+  "title": "Fold vertical icon",
+  "description": "Fold vertical icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/fold-vertical.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FoldVerticalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"fold-vertical\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FoldVerticalIcon(props:FoldVerticalIconProps){return <Icon name=\"fold-vertical\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/fold-vertical.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "fold-vertical"
+  },
+  "type": "registry:component"
+}

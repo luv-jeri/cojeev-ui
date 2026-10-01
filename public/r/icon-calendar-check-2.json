@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-calendar-check-2",
+  "title": "Calendar check 2 icon",
+  "description": "Calendar check 2 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/calendar-check-2.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type CalendarCheck2IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"calendar-check-2\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function CalendarCheck2Icon(props:CalendarCheck2IconProps){return <Icon name=\"calendar-check-2\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/calendar-check-2.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "calendar-check-2"
+  },
+  "type": "registry:component"
+}

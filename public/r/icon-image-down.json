@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-image-down",
+  "title": "Image down icon",
+  "description": "Image down icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/image-down.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ImageDownIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"image-down\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ImageDownIcon(props:ImageDownIconProps){return <Icon name=\"image-down\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/image-down.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "image-down"
+  },
+  "type": "registry:component"
+}

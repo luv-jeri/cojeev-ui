@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-dribbble",
+  "title": "Dribbble icon",
+  "description": "Dribbble icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/dribbble.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type DribbbleIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"dribbble\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function DribbbleIcon(props:DribbbleIconProps){return <Icon name=\"dribbble\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/dribbble.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "dribbble"
+  },
+  "type": "registry:component"
+}

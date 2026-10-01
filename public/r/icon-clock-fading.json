@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-clock-fading",
+  "title": "Clock fading icon",
+  "description": "Clock fading icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/clock-fading.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ClockFadingIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"clock-fading\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ClockFadingIcon(props:ClockFadingIconProps){return <Icon name=\"clock-fading\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/clock-fading.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "clock-fading"
+  },
+  "type": "registry:component"
+}

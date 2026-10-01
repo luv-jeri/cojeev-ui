@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-table-of-contents",
+  "title": "Table of contents icon",
+  "description": "Table of contents icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/table-of-contents.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TableOfContentsIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"table-of-contents\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TableOfContentsIcon(props:TableOfContentsIconProps){return <Icon name=\"table-of-contents\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/table-of-contents.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "table-of-contents"
+  },
+  "type": "registry:component"
+}

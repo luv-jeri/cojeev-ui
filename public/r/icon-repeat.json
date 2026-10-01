@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-repeat",
+  "title": "Repeat icon",
+  "description": "Repeat icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/repeat.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type RepeatIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"repeat\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function RepeatIcon(props:RepeatIconProps){return <Icon name=\"repeat\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/repeat.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "repeat"
+  },
+  "type": "registry:component"
+}

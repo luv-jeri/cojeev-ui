@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-text-cursor",
+  "title": "Text cursor icon",
+  "description": "Text cursor icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/text-cursor.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TextCursorIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"text-cursor\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TextCursorIcon(props:TextCursorIconProps){return <Icon name=\"text-cursor\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/text-cursor.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "text-cursor"
+  },
+  "type": "registry:component"
+}

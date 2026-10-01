@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tree-palm",
+  "title": "Tree palm icon",
+  "description": "Tree palm icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tree-palm.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TreePalmIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tree-palm\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TreePalmIcon(props:TreePalmIconProps){return <Icon name=\"tree-palm\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tree-palm.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tree-palm"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-stethoscope",
+  "title": "Stethoscope icon",
+  "description": "Stethoscope icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/stethoscope.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type StethoscopeIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"stethoscope\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function StethoscopeIcon(props:StethoscopeIconProps){return <Icon name=\"stethoscope\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/stethoscope.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "stethoscope"
+  },
+  "type": "registry:component"
+}

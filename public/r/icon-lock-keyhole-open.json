@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-lock-keyhole-open",
+  "title": "Lock keyhole open icon",
+  "description": "Lock keyhole open icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/lock-keyhole-open.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LockKeyholeOpenIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"lock-keyhole-open\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LockKeyholeOpenIcon(props:LockKeyholeOpenIconProps){return <Icon name=\"lock-keyhole-open\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/lock-keyhole-open.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "lock-keyhole-open"
+  },
+  "type": "registry:component"
+}

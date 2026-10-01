@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-folder-search",
+  "title": "Folder search icon",
+  "description": "Folder search icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/folder-search.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type FolderSearchIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"folder-search\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function FolderSearchIcon(props:FolderSearchIconProps){return <Icon name=\"folder-search\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/folder-search.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "folder-search"
+  },
+  "type": "registry:component"
+}

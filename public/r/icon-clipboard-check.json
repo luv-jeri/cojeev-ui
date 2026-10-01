@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-clipboard-check",
+  "title": "Clipboard check icon",
+  "description": "Clipboard check icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/clipboard-check.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ClipboardCheckIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"clipboard-check\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ClipboardCheckIcon(props:ClipboardCheckIconProps){return <Icon name=\"clipboard-check\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/clipboard-check.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "clipboard-check"
+  },
+  "type": "registry:component"
+}

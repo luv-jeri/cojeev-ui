@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-tv",
+  "title": "Tv icon",
+  "description": "Tv icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/tv.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TvIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"tv\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TvIcon(props:TvIconProps){return <Icon name=\"tv\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/tv.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "tv"
+  },
+  "type": "registry:component"
+}

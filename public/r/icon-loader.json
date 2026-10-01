@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-loader",
+  "title": "Loader icon",
+  "description": "Loader icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/loader.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type LoaderIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"loader\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function LoaderIcon(props:LoaderIconProps){return <Icon name=\"loader\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/loader.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "loader"
+  },
+  "type": "registry:component"
+}

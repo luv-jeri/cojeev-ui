@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-heading-3",
+  "title": "Heading 3 icon",
+  "description": "Heading 3 icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/heading-3.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type Heading3IconProps=Omit<IconProps,\"name\">;\n/** Lucide \"heading-3\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function Heading3Icon(props:Heading3IconProps){return <Icon name=\"heading-3\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/heading-3.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "heading-3"
+  },
+  "type": "registry:component"
+}

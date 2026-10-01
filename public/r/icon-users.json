@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-users",
+  "title": "Users icon",
+  "description": "Users icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/users.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type UsersIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"users\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function UsersIcon(props:UsersIconProps){return <Icon name=\"users\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/users.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "users"
+  },
+  "type": "registry:component"
+}

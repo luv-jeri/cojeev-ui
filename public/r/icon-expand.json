@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-expand",
+  "title": "Expand icon",
+  "description": "Expand icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/expand.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ExpandIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"expand\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ExpandIcon(props:ExpandIconProps){return <Icon name=\"expand\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/expand.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "expand"
+  },
+  "type": "registry:component"
+}

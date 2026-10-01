@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-end-vertical",
+  "title": "Align end vertical icon",
+  "description": "Align end vertical icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-end-vertical.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignEndVerticalIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-end-vertical\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignEndVerticalIcon(props:AlignEndVerticalIconProps){return <Icon name=\"align-end-vertical\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-end-vertical.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-end-vertical"
+  },
+  "type": "registry:component"
+}

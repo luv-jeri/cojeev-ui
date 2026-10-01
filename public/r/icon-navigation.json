@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-navigation",
+  "title": "Navigation icon",
+  "description": "Navigation icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/navigation.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type NavigationIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"navigation\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function NavigationIcon(props:NavigationIconProps){return <Icon name=\"navigation\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/navigation.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "navigation"
+  },
+  "type": "registry:component"
+}

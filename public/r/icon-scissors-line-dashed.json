@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-scissors-line-dashed",
+  "title": "Scissors line dashed icon",
+  "description": "Scissors line dashed icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/scissors-line-dashed.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ScissorsLineDashedIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"scissors-line-dashed\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ScissorsLineDashedIcon(props:ScissorsLineDashedIconProps){return <Icon name=\"scissors-line-dashed\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/scissors-line-dashed.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "scissors-line-dashed"
+  },
+  "type": "registry:component"
+}

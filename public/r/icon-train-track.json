@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-train-track",
+  "title": "Train track icon",
+  "description": "Train track icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/train-track.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type TrainTrackIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"train-track\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function TrainTrackIcon(props:TrainTrackIconProps){return <Icon name=\"train-track\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/train-track.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "train-track"
+  },
+  "type": "registry:component"
+}

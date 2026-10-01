@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-zap-off",
+  "title": "Zap off icon",
+  "description": "Zap off icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/zap-off.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type ZapOffIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"zap-off\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function ZapOffIcon(props:ZapOffIconProps){return <Icon name=\"zap-off\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/zap-off.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "zap-off"
+  },
+  "type": "registry:component"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-align-vertical-space-between",
+  "title": "Align vertical space between icon",
+  "description": "Align vertical space between icon as a typed React component on the Cojeev Icon, with its motion presets, sizes and feedback.",
+  "registryDependencies": [
+    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
+    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+  ],
+  "files": [
+    {
+      "path": "registry/cojeev/icons/align-vertical-space-between.tsx",
+      "content": "import * as React from \"react\";\nimport {Icon,type IconProps} from \"@/components/ui/icon\";\n\nexport type AlignVerticalSpaceBetweenIconProps=Omit<IconProps,\"name\">;\n/** Lucide \"align-vertical-space-between\" through the Cojeev Icon: motion presets, sizes and feedback included. */\nexport function AlignVerticalSpaceBetweenIcon(props:AlignVerticalSpaceBetweenIconProps){return <Icon name=\"align-vertical-space-between\" {...props}/>;}\n",
+      "type": "registry:component",
+      "target": "components/icons/align-vertical-space-between.tsx"
+    }
+  ],
+  "meta": {
+    "category": "Icons",
+    "icon": "align-vertical-space-between"
+  },
+  "type": "registry:component"
+}
