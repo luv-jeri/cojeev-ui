@@ -42,14 +42,14 @@ export async function buildRelease(root,environment,commit,destination,settings=
     for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
       const directory=path.join(destination,kind);await fs.mkdir(directory);
       const source=await json(path.join(scratch,`workers/${worker}/wrangler.jsonc`));
-      const config={...source,...source.env[environment],vars:{...source.env[environment].vars,RELEASE:commit},main:'./index.js'};
+      const config={...source,...source.env[environment],services:source.env[environment].services,vars:{...source.env[environment].vars,RELEASE:commit},main:'./index.js'};
       delete config.env;delete config.$schema;
       if(kind==='website') config.assets={...config.assets,directory:'../site'};
       else {
         config.d1_databases=config.d1_databases.map(binding=>({...binding,migrations_dir:'./migrations'}));
         await fs.cp(path.join(scratch,'workers/reporting/migrations'),path.join(directory,'migrations'),{recursive:true});
       }
-      validateDeploymentConfig(environment,config,kind);
+      validateDeploymentConfig(environment,config,kind,{source:true});
       await build({entryPoints:[path.join(scratch,`workers/${worker}/${source.main}`)],outfile:path.join(directory,'index.js'),bundle:true,format:'esm',platform:'browser',target:'es2022',logLevel:'silent'});
       await fs.writeFile(path.join(directory,'wrangler.jsonc'),JSON.stringify(config,null,2)+'\n');
     }
@@ -64,7 +64,7 @@ export async function readArtifact(directory,environment,commit,digest) {
   await verifyManifest(directory,manifest,{environment,commit,digest});
   for(const kind of ['api','website']) {
     const config=await json(path.join(directory,kind,'wrangler.jsonc'));
-    validateDeploymentConfig(environment,config,kind);
+    validateDeploymentConfig(environment,config,kind,{source:true});
     if(config.vars.RELEASE!==commit||config.main!=='./index.js') throw new Error('Artifact release/config mismatch');
     // Files that skip the Worker get their security headers only from site/_headers.
     if(kind==='website'&&config.assets.run_worker_first!==true) await fs.access(path.join(directory,'site/_headers')).catch(()=>{throw new Error('Artifact lets static files skip the Worker without site/_headers');});

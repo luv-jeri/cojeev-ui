@@ -22,16 +22,33 @@
     {
       "pattern": "000h.cojeev.com",
       "custom_domain": true
+    },
+    {
+      "pattern": "cojeev.com/ui*",
+      "zone_name": "cojeev.com"
     }
   ],
   "vars": {
     "ENVIRONMENT": "production",
-    "RELEASE": "unconfigured"
+    "RELEASE": "unconfigured",
+    "PHASE": "unconfigured",
+    "DEPLOYMENT_ID": "unconfigured",
+    "MIGRATION_STAGE": "unconfigured",
+    "REGISTRY_GRAPH": "unconfigured"
   },
   "assets": {
     "directory": "../../out",
     "binding": "ASSETS",
-    "run_worker_first": ["/*", "!/_next/*", "!/*.txt"],
+    "run_worker_first": [
+      "/*",
+      "!/_next/*",
+      "!/ui/_next/*",
+      "!/ui/*.txt",
+      "!/ui/brand/*",
+      "!/ui/icon.png",
+      "!/ui/opengraph-image.png",
+      "!/ui/twitter-image.png"
+    ],
     "not_found_handling": "404-page"
   },
   "env": {
@@ -45,12 +62,25 @@
       ],
       "vars": {
         "ENVIRONMENT": "beta",
-        "RELEASE": "unconfigured"
+        "RELEASE": "unconfigured",
+        "PHASE": "unconfigured",
+        "DEPLOYMENT_ID": "unconfigured",
+        "MIGRATION_STAGE": "unconfigured",
+        "REGISTRY_GRAPH": "unconfigured"
       },
       "assets": {
         "directory": "../../out",
         "binding": "ASSETS",
-        "run_worker_first": ["/*", "!/_next/*", "!/*.txt"],
+        "run_worker_first": [
+          "/*",
+          "!/_next/*",
+          "!/ui/_next/*",
+          "!/ui/*.txt",
+          "!/ui/brand/*",
+          "!/ui/icon.png",
+          "!/ui/opengraph-image.png",
+          "!/ui/twitter-image.png"
+        ],
         "not_found_handling": "404-page"
       }
     },
@@ -60,18 +90,47 @@
         {
           "pattern": "000h.cojeev.com",
           "custom_domain": true
+        },
+        {
+          "pattern": "cojeev.com/ui*",
+          "zone_name": "cojeev.com"
         }
       ],
       "vars": {
         "ENVIRONMENT": "production",
-        "RELEASE": "unconfigured"
+        "RELEASE": "unconfigured",
+        "PHASE": "unconfigured",
+        "DEPLOYMENT_ID": "unconfigured",
+        "MIGRATION_STAGE": "unconfigured",
+        "REGISTRY_GRAPH": "unconfigured"
       },
       "assets": {
         "directory": "../../out",
         "binding": "ASSETS",
-        "run_worker_first": ["/*", "!/_next/*", "!/*.txt"],
+        "run_worker_first": [
+          "/*",
+          "!/_next/*",
+          "!/ui/_next/*",
+          "!/ui/*.txt",
+          "!/ui/brand/*",
+          "!/ui/icon.png",
+          "!/ui/opengraph-image.png",
+          "!/ui/twitter-image.png"
+        ],
         "not_found_handling": "404-page"
-      }
+      },
+      "services": [
+        {
+          "binding": "COJEEV_HOMEPAGE",
+          "service": "cojeev-coming-soon"
+        }
+      ]
     }
-  }
+  },
+  "services": [
+    {
+      "binding": "COJEEV_HOMEPAGE",
+      "service": "cojeev-coming-soon"
+    }
+  ]
 }

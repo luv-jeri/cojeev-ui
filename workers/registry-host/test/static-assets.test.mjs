@@ -12,10 +12,14 @@ import {startAssetRouter} from '../../../scripts/asset-router-harness.mjs';
 const runsWorker=(rule,path)=>rule===true||Array.isArray(rule)&&rule.some(p=>!p.startsWith('!')&&ruleMatches(p,path))&&!rule.some(p=>p.startsWith('!')&&ruleMatches(p.slice(1),path));
 const config=JSON.parse(readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8'));
 
-test('static files skip the Worker so Cloudflare serves them free; pages, registry items and guarded paths still run it',()=>{
+test('static files skip the Worker so Cloudflare serves them free; pages, registry items and guarded paths still run it',async()=>{
   for(const {assets} of [config,config.env.beta,config.env.production]) {
-    for(const path of ['/_next/static/chunks/app.js','/_next/static/media/font.woff2','/index.txt','/docs/shape/__next.docs.$d$component.__PAGE__.txt']) assert.equal(runsWorker(assets.run_worker_first,path),false,path);
-    for(const path of ['/','/docs/button/','/health','/release.json','/r/button.json','/media/private.png','/v1/admin/reports','/__cojeev_missing_release_probe__/']) assert.equal(runsWorker(assets.run_worker_first,path),true,path);
+    for(const path of ['/_next/static/chunks/app.js','/ui/_next/static/chunks/app.js','/ui/_next/static/media/font.woff2','/ui/index.txt','/ui/docs/shape/__next.docs.$d$component.__PAGE__.txt']) assert.equal(runsWorker(assets.run_worker_first,path),false,path);
+    for(const path of ['/','/docs/button/','/health','/release.json','/r/button.json','/media/private.png','/v1/admin/reports','/__cojeev_missing_release_probe__/','/ui/','/ui/docs/button/']) assert.equal(runsWorker(assets.run_worker_first,path),true,path);
+  }
+  const packaged=workerFirstList(await retainedTextInventory(new URL('./fixtures/packaged-site/',import.meta.url).pathname));
+  for(const path of ['/index.txt','/docs/shape/__next.docs.$d$component.__PAGE__.txt']) {
+    assert.equal(runsWorker(packaged,path),false,path);
   }
 });
 
