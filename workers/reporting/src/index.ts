@@ -11,7 +11,7 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
   const url=new URL(request.url),path=url.pathname.replace(/\/$/,"");
   if(env.LOCAL_MODE==="true" && !["localhost","127.0.0.1","[::1]"].includes(url.hostname)) throw new HttpError(503,"Local reporting mode cannot accept remote traffic.");
   if(request.method==="OPTIONS") { assertBrowserOrigin(request,env);return new Response(null,{status:204}); }
-  if(path==='/health'&&request.method==='GET') return json({status:'ok',environment:env.ENVIRONMENT??'unconfigured',release:env.RELEASE??'unconfigured'});
+  if(path==='/health'&&request.method==='GET') return json({status:'ok',environment:env.ENVIRONMENT??'unconfigured',release:env.RELEASE??'unconfigured',deploymentId:env.DEPLOYMENT_ID??'unconfigured',phase:env.PHASE??'unconfigured',reportingBase:env.SITE_URL??'unconfigured'});
   if(path==='/v1/resend/webhook'&&request.method==='POST') return json(await resendWebhook(request,env),202);
   if(path==="/v1/github/webhook"&&request.method==="POST") { const result=await webhook(request,env);ctx.waitUntil(drain(env));return json(result,202); }
   if(path==="/v1/config"&&request.method==="GET") return json({emailEnabled:emailEnabled(env),turnstileSiteKey:env.TURNSTILE_SITE_KEY??"",local:env.LOCAL_MODE==="true"});

@@ -10,7 +10,7 @@ let mf, db;
 const admin = 'a'.repeat(64), token = 'b'.repeat(64), origin = 'http://localhost:3000';
 before(async () => {
   const compiled = await build({ entryPoints: ['workers/reporting/src/index.ts'], bundle: true, write: false, format: 'esm', platform: 'browser', target: 'es2022' });
-  mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: compiled.outputFiles[0].text, compatibilityDate: '2026-09-01', d1Databases: ['DB'], r2Buckets: ['MEDIA'], bindings: { ENVIRONMENT: 'production', ALLOWED_ORIGINS: origin, SITE_URL: 'https://library.example.com/cojeev-ui', LOCAL_MODE: 'true', ADMIN_TOKEN: admin, HEALTH_TOKEN: 'h'.repeat(64), IP_HASH_SECRET: 'local-test-contact-salt-'.repeat(3), GITHUB_REPOSITORY: 'owner/library', GITHUB_WEBHOOK_SECRET: 'webhook-test-secret', DELIVERY_ACTIVATED_AT: '2020-01-01T00:00:00Z' } }));
+  mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: compiled.outputFiles[0].text, compatibilityDate: '2026-09-01', d1Databases: ['DB'], r2Buckets: ['MEDIA'], bindings: { ENVIRONMENT: 'production', ALLOWED_ORIGINS: origin, SITE_URL: 'https://library.example.com/ui', LOCAL_MODE: 'true', ADMIN_TOKEN: admin, HEALTH_TOKEN: 'h'.repeat(64), IP_HASH_SECRET: 'local-test-contact-salt-'.repeat(3), GITHUB_REPOSITORY: 'owner/library', GITHUB_WEBHOOK_SECRET: 'webhook-test-secret', DELIVERY_ACTIVATED_AT: '2020-01-01T00:00:00Z' } }));
   db = await mf.getD1Database('DB');
   for (const name of (await readdir('workers/reporting/migrations')).filter(n => n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`, 'utf8')).replace(/\n/g, ' '));
 });

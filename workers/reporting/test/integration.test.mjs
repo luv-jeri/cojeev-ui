@@ -16,7 +16,7 @@ const queueGitHub = id => db.batch([db.prepare("UPDATE reports SET triage_state=
 const submit = p => request('/v1/reports','POST',{report:p,token,turnstileToken:''},null,{'CF-Connecting-IP':p.id});
 before(async()=>{
   const compiled=await build({entryPoints:['workers/reporting/src/index.ts'],bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
-  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ENVIRONMENT:'production',ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/cojeev-ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,HEALTH_TOKEN:healthToken,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
+  mf=new Miniflare(convertV4MiniflareOptions({modules:true,script:compiled.outputFiles[0].text,compatibilityDate:'2026-09-01',d1Databases:['DB'],r2Buckets:['MEDIA'],bindings:{ENVIRONMENT:'production',ALLOWED_ORIGINS:origin,SITE_URL:'https://library.example.com/ui',LOCAL_MODE:'true',ADMIN_TOKEN:admin,HEALTH_TOKEN:healthToken,IP_HASH_SECRET:ipSecret,GITHUB_REPOSITORY:'owner/library',GITHUB_WEBHOOK_SECRET:'webhook-test-secret',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',RESEND_WEBHOOK_SECRET:'whsec_'+Buffer.from('test-webhook-secret').toString('base64')}}));
   db=await mf.getD1Database('DB');
   for(const name of (await readdir('workers/reporting/migrations')).filter(n=>n.endsWith('.sql')).sort()) await db.exec((await readFile(`workers/reporting/migrations/${name}`,'utf8')).replace(/\n/g,' '));
   media=await mf.getR2Bucket('MEDIA');
@@ -64,7 +64,7 @@ test('completion updates all topic subscribers and queues one notification each'
   await db.prepare("UPDATE reports SET triage_state='approved' WHERE id IN (?,?)").bind(a.id,b.id).run();
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',{status:'resolved'},admin)).status,422);
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',{status:'resolved',componentUrl:'https://evil.test/docs/button/'},admin)).status,422);
-  const update={status:'resolved',componentUrl:'https://library.example.com/cojeev-ui/docs/button/'};
+  const update={status:'resolved',componentUrl:'https://library.example.com/ui/docs/button/'};
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',update,admin)).status,200);
   assert.equal((await request(`/v1/admin/reports/${a.id}`,'PATCH',update,admin)).status,200);
   const jobs=await db.prepare("SELECT * FROM outbox WHERE kind='email_resolved' AND report_id IN (?,?)").bind(a.id,b.id).all();assert.equal(jobs.results.length,2);
@@ -78,10 +78,10 @@ test('production protection fails closed and GitHub signatures are mandatory',as
   assert.equal((await request('/v1/github/webhook','POST',body,null,{'X-Hub-Signature-256':sig,'X-GitHub-Event':'issues','X-GitHub-Delivery':randomUUID()})).status,202);
 });
 
-const backendEnv=more=>({DB:db,MEDIA:media,LOCAL_MODE:'true',SITE_URL:'https://library.example.com/cojeev-ui',IP_HASH_SECRET:ipSecret,DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',...more});
+const backendEnv=more=>({DB:db,MEDIA:media,LOCAL_MODE:'true',SITE_URL:'https://library.example.com/ui',IP_HASH_SECRET:ipSecret,DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',...more});
 test('joining a resolved request returns its live URL and sends an already-available acknowledgment',async()=>{
   const first=payload({kind:'request',title:'Already available component'});await submit(first);
-  const componentUrl='https://library.example.com/cojeev-ui/docs/timeline/';
+  const componentUrl='https://library.example.com/ui/docs/timeline/';
   assert.equal((await request(`/v1/admin/reports/${first.id}`,'PATCH',{status:'resolved',componentUrl},admin)).status,200);
   const joined=payload({kind:'request',title:first.title,topicId:first.id,email:'late-requester@example.com'});
   const response=await submit(joined);assert.equal(response.status,201);const receipt=await response.json();
@@ -109,7 +109,7 @@ test('local request resolution permits matching loopback HTTP while all other HT
     {site:'http://localhost:3100',url:'http://user@localhost:3100/docs/button/',local:'true'},
   ];
   for(const item of cases) assert.throws(()=>backend.componentURL(item.url,backendEnv({SITE_URL:item.site,LOCAL_MODE:item.local})),error=>error.status===422);
-  assert.equal(backend.componentURL('https://library.example.com/cojeev-ui/docs/button/',backendEnv({LOCAL_MODE:'false'})),'https://library.example.com/cojeev-ui/docs/button/');
+  assert.equal(backend.componentURL('https://library.example.com/ui/docs/button/',backendEnv({LOCAL_MODE:'false'})),'https://library.example.com/ui/docs/button/');
 });
 test('contact expiry preserves distinct demand across old and new contributions',async()=>{
   const a=payload({kind:'request',title:'Retention demand example',email:'retention-a@example.com'});
@@ -259,7 +259,7 @@ test('GitHub release automation requires release label and component URL and ded
   assert.equal((await db.prepare('SELECT status FROM reports WHERE id=?').bind(p.id).first()).status,'received');
   const released={...base,issue:{...base.issue,labels:[{name:'feedback:released'}]}};
   assert.equal((await send(released)).status,422);
-  released.issue.body='Component: https://library.example.com/cojeev-ui/docs/timeline/';
+  released.issue.body='Component: https://library.example.com/ui/docs/timeline/';
   const eventId=randomUUID();assert.equal((await send(released,eventId)).status,202);
   const replay=await send(released,eventId);assert.equal((await replay.json()).duplicate,true);
   assert.equal((await db.prepare('SELECT status FROM reports WHERE id=?').bind(p.id).first()).status,'resolved');
@@ -269,7 +269,7 @@ test('GitHub release automation requires release label and component URL and ded
 const resendEnv=more=>backendEnv({ENVIRONMENT:'production',DELIVERY_ACTIVATED_AT:'2020-01-01T00:00:00Z',EMAIL_ENABLED:'true',EMAIL_FROM:'updates@cojeev.com',RESEND_API_KEY:'test-only-resend-key',...more});
 test('health discloses only release identity publicly and requires admin for queue diagnostics',async()=>{
   const response=await request('/health');assert.equal(response.status,200);
-  assert.deepEqual(Object.keys(await response.json()).sort(),['environment','release','status']);
+  assert.deepEqual(Object.keys(await response.json()).sort(),['deploymentId','environment','phase','release','reportingBase','status']);
   assert.equal((await request('/v1/admin/health')).status,401);
   const health=await request('/v1/admin/health','GET',undefined,admin);assert.equal(health.status,200);
   assert.ok((await health.json()).queue);
@@ -883,7 +883,7 @@ test('email copy matches the spec for received, accepted and rejected and signs 
     [{kind:'bug'},'email_rejected','About your report · 000h by Cojeev','Thanks for taking the time to write to us. We checked your report, but it isn\'t something we can act on, so we\'ve closed it. If we misunderstood, just reply to this email and tell us more.'],
     [{kind:'bug',status:'resolved'},'email_resolved','The issue you reported is fixed · 000h by Cojeev',undefined]];
   for(const [more,kind,subject,text] of cases) {
-    const m=backend.emailMessage({id:'rid',status:'received',component_url:null,issue_number:null,issue_url:null,triage_reason:'AI SECRET REASON',...more},kind,'https://library.example.com/cojeev-ui');
+    const m=backend.emailMessage({id:'rid',status:'received',component_url:null,issue_number:null,issue_url:null,triage_reason:'AI SECRET REASON',...more},kind,'https://library.example.com/ui');
     assert.equal(m.subject,subject,kind);if(text) assert.ok(m.text.includes(text),kind);
     assert.ok(m.text.includes('Reference: rid')&&m.text.trimEnd().endsWith('000h by Cojeev'),kind);assert.ok(!m.text.includes('Cojeev UI')&&!m.html.includes('COJEEV UI'));assert.ok(!m.text.includes('Follow progress here'),kind);assert.ok(!m.html.includes('Follow progress here'),kind);if(kind==='email_accepted'){assert.ok(m.text.includes('Follow on GitHub (#9)')&&m.text.includes(more.issue_url),'text has the GitHub link');assert.ok(m.html.includes('Follow on GitHub (#9)')&&m.html.includes(`href="${more.issue_url}"`),'html has the GitHub link');}
   }
@@ -944,7 +944,7 @@ test('re-approving a report with its own issue revives a cancelled accepted emai
 });
 
 // Final-review fixes (R22-R31).
-const releaseIssue = async (n,body='Component: https://library.example.com/cojeev-ui/docs/final-fix/') => {
+const releaseIssue = async (n,body='Component: https://library.example.com/ui/docs/final-fix/') => {
   const raw=JSON.stringify({action:'closed',repository:{full_name:'owner/library'},issue:{number:n,state:'closed',state_reason:'completed',updated_at:new Date(Date.now()+5000).toISOString(),labels:[{name:'feedback:released'}],body}});
   const sig='sha256='+createHmac('sha256','webhook-test-secret').update(raw).digest('hex');
   return request('/v1/github/webhook','POST',raw,null,{'X-Hub-Signature-256':sig,'X-GitHub-Event':'issues','X-GitHub-Delivery':randomUUID()});
@@ -1025,7 +1025,7 @@ test('approving a pending report into a released topic sends only the it\'s-live
   assert.deepEqual(jobs.map(j=>j.kind),['email_resolved']);assert.equal(jobs[0].state,'pending');assert.ok(jobs[0].reviewed_at);
 });
 // Captured from ownerMessage before this task touched delivery.ts.
-const OWNER_LITERAL={"subject":"New bug report saved · 000h by Cojeev","text":"New bug report saved\n\nOpen the private report to read its details. This alert carries no report content.\n\nReference: rid\nOpen the private report: https://library.example.com/cojeev-ui/feedback-admin/?report=rid\n\n000h by Cojeev","html":"<!doctype html><html><body style=\"margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif\"><main style=\"max-width:560px;margin:36px auto;padding:32px\"><p style=\"font-size:13px;letter-spacing:2px\">000H BY COJEEV</p><h1 style=\"font-size:30px;line-height:1.2\">New bug report saved</h1><p>Open the private report to read its details. This alert carries no report content.</p><p><a href=\"https://library.example.com/cojeev-ui/feedback-admin/?report=rid\" style=\"display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none\">Open the private report</a></p><p style=\"font-size:12px;color:#5f5b55\">Reference: rid</p></main></body></html>"};
+const OWNER_LITERAL={"subject":"New bug report saved · 000h by Cojeev","text":"New bug report saved\n\nOpen the private report to read its details. This alert carries no report content.\n\nReference: rid\nOpen the private report: https://library.example.com/ui/feedback-admin/?report=rid\n\n000h by Cojeev","html":"<!doctype html><html><body style=\"margin:0;background:#fbf4e6;color:#111;font:16px/1.6 Arial,sans-serif\"><main style=\"max-width:560px;margin:36px auto;padding:32px\"><p style=\"font-size:13px;letter-spacing:2px\">000H BY COJEEV</p><h1 style=\"font-size:30px;line-height:1.2\">New bug report saved</h1><p>Open the private report to read its details. This alert carries no report content.</p><p><a href=\"https://library.example.com/ui/feedback-admin/?report=rid\" style=\"display:inline-block;background:#f5b8db;color:#111;padding:12px 20px;border-radius:30px;text-decoration:none\">Open the private report</a></p><p style=\"font-size:12px;color:#5f5b55\">Reference: rid</p></main></body></html>"};
 const statusOf=(id,key)=>request(`/v1/status/${id}`,'GET',undefined,key);
 const keyOf=async id=>(await triaged(id)).status_key;
 test('status_key_is_minted_at_insert',async()=>{
@@ -1071,8 +1071,8 @@ test('status_endpoint_rejects_a_wrong_key_like_a_missing_report',async()=>{
   assert.equal((await statusOf(p.id,key)).status,200);
 });
 test('every_customer_email_links_to_its_tracking_page',()=>{
-  const site='https://library.example.com/cojeev-ui/',key='d'.repeat(64),url=`https://library.example.com/cojeev-ui/track/#rid.${key}`;
-  const comp='https://library.example.com/cojeev-ui/docs/timeline/',gh='https://github.com/o/r/issues/9';
+  const site='https://library.example.com/ui/',key='d'.repeat(64),url=`https://library.example.com/ui/track/#rid.${key}`;
+  const comp='https://library.example.com/ui/docs/timeline/',gh='https://github.com/o/r/issues/9';
   const base={id:'rid',status:'received',component_url:null,issue_number:null,issue_url:null,status_key:key};
   const cases=[
     [{kind:'bug'},'email_received','Track your report',url,false],
