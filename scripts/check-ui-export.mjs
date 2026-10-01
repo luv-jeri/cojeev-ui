@@ -39,9 +39,15 @@ export async function checkUiExport(directory, basePath) {
     const file = path.resolve(root, `.${url.pathname.slice(basePath.length)}`);
     return file.startsWith(`${root}${path.sep}`) ? file : null;
   }
-  async function asset(reference, relativeTo, label) {
+  function resourceIdentity(url) {
+    return `${url.origin}${url.pathname}${url.search}`;
+  }
+  async function asset(reference, relativeTo, label, requirePrefix = false) {
     const url = mountedUrl(reference, relativeTo);
-    if (!url) { problems.push(`${label}: asset must start with /ui/ or the canonical /ui/ URL: ${reference}`); return null; }
+    if (!url || (requirePrefix && !reference.startsWith(`${basePath}/`) && !reference.startsWith(`${url.origin}${basePath}/`))) {
+      problems.push(`${label}: asset must start with /ui/ or the canonical /ui/ URL: ${reference}`);
+      return null;
+    }
     const file = exportedFile(url);
     if (!file || !await exists(file)) problems.push(`${label}: missing exported asset ${reference}`);
     return url;
@@ -64,19 +70,21 @@ export async function checkUiExport(directory, basePath) {
       for (const match of style.css.matchAll(/url\(\s*["']?([^"'\s)]+)["']?\s*\)/g)) {
         if (!/\.woff2?(?:[?#]|$)/i.test(match[1])) continue;
         const url = await asset(match[1], style.url, `${label} CSS font`);
-        if (url) cssFonts.add(url.pathname);
+        if (url) cssFonts.add(resourceIdentity(url));
       }
     }
     for (const element of $('link[rel="preload"][as="font"]').toArray()) {
       const reference = $(element).attr("href") ?? "";
       const url = await asset(reference, pageUrl, `${label} font preload`);
-      if (url && !cssFonts.has(url.pathname)) problems.push(`${label}: font preload does not match a loaded CSS font resource: ${reference}`);
+      if (url && !cssFonts.has(resourceIdentity(url))) problems.push(`${label}: font preload does not match a loaded CSS font resource: ${reference}`);
     }
-    for (const element of $("[href], [src], meta[content]").toArray()) {
-      for (const attribute of ["href", "src", "content"]) {
-        const reference = $(element).attr(attribute);
-        if (reference && /(?:\/brand\/|\/(?:icon|opengraph-image|twitter-image)\.png(?:[?#]|$)|000h-sculpture[^/]*\.(?:webp|png))/i.test(reference)) {
-          await asset(reference, pageUrl, label);
+    for (const element of $("[href], [src], [srcset], meta[content]").toArray()) {
+      const references = ["href", "src", "content"].map(attribute => $(element).attr(attribute));
+      const srcset = $(element).attr("srcset");
+      if (srcset) references.push(...srcset.split(",").map(candidate => candidate.trim().split(/\s+/)[0]));
+      for (const reference of references) {
+        if (reference && /(?:(?:^|\/)brand\/|(?:^|\/)(?:icon|opengraph-image|twitter-image)\.png(?:[?#]|$)|000h-sculpture[^/]*\.(?:webp|png))/i.test(reference)) {
+          await asset(reference, pageUrl, label, true);
         }
       }
     }

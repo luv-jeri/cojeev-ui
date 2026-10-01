@@ -1,0 +1,6 @@
+[
+  { "name": "bare relative missing brand", "html": "<img src=\"brand/missing.webp\">", "reference": "brand/missing.webp" },
+  { "name": "bare relative existing icon", "html": "<link rel=\"icon\" href=\"icon.png\">", "reference": "icon.png" },
+  { "name": "bare relative existing brand", "html": "<img src=\"brand/sculpture.webp\">", "reference": "brand/sculpture.webp" },
+  { "name": "dot relative metadata", "html": "<meta property=\"og:image\" content=\"./opengraph-image.png\">", "reference": "./opengraph-image.png" }
+]

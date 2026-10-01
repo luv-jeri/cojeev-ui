@@ -63,3 +63,50 @@ test("raw_export_remains_unwrapped", async t => {
   const result = spawnSync(process.execPath, ["scripts/check-ui-export.mjs", "--dir", directory], { encoding: "utf8" });
   assert.equal(result.status, 1);
 });
+
+test("ui_relative_asset_references_require_mount", async t => {
+  const cases = JSON.parse(await readFile(new URL("./fixtures/ui-export/unmounted-assets.json", import.meta.url), "utf8"));
+  const checkUiExport = await checker();
+  for (const entry of cases) {
+    await t.test(entry.name, async t => {
+      const directory = await fixture(t);
+      await writeFile(path.join(directory, "index.html"), entry.html);
+      const problems = await checkUiExport(directory, "/ui");
+      assert.ok(problems.some(problem => problem.includes("asset must start") && problem.includes(entry.reference)), JSON.stringify(problems));
+    });
+  }
+});
+
+test("ui_srcset_candidates_require_mounted_existing_assets", async t => {
+  const cases = JSON.parse(await readFile(new URL("./fixtures/ui-export/srcset-assets.json", import.meta.url), "utf8"));
+  const checkUiExport = await checker();
+  for (const entry of cases) {
+    await t.test(entry.name, async t => {
+      const directory = await fixture(t);
+      await writeFile(path.join(directory, "index.html"), entry.html);
+      const problems = await checkUiExport(directory, "/ui");
+      assert.ok(problems.some(problem => problem.includes(entry.problem) && problem.includes(entry.reference)), JSON.stringify(problems));
+    });
+  }
+  const directory = await fixture(t);
+  await writeFile(path.join(directory, "index.html"), '<img srcset="/ui/brand/sculpture.webp 1x, https://cojeev.com/ui/brand/sculpture.webp 2x">');
+  assert.deepEqual(await checkUiExport(directory, "/ui"), []);
+});
+
+test("ui_font_preload_preserves_origin_path_and_query", async t => {
+  const cases = JSON.parse(await readFile(new URL("./fixtures/ui-export/font-identities.json", import.meta.url), "utf8"));
+  const checkUiExport = await checker();
+  for (const entry of cases) {
+    await t.test(entry.name, async t => {
+      const directory = await fixture(t);
+      const htmlFile = path.join(directory, "index.html");
+      const html = await readFile(htmlFile, "utf8");
+      await writeFile(path.join(directory, "_next/static/css/site.css"), `@font-face{font-family:display;src:url("${entry.cssFont}")}`);
+      await writeFile(htmlFile, html.replace("/ui/_next/static/media/display.woff2", entry.matchingPreload));
+      assert.deepEqual(await checkUiExport(directory, "/ui"), [], "resolved matching resources pass, regardless of relative spelling or fragment");
+      await writeFile(htmlFile, html.replace("/ui/_next/static/media/display.woff2", entry.preload));
+      const problems = await checkUiExport(directory, "/ui");
+      assert.ok(problems.some(problem => problem.includes("font preload does not match") && problem.includes(entry.preload)), JSON.stringify(problems));
+    });
+  }
+});

@@ -1,0 +1,5 @@
+[
+  { "name": "unmounted second candidate", "html": "<img srcset=\"/ui/brand/sculpture.webp 1x, /brand/missing.webp 2x\">", "reference": "/brand/missing.webp", "problem": "asset must start" },
+  { "name": "missing mounted candidate", "html": "<source srcset=\"/ui/brand/missing.webp 640w, /ui/brand/sculpture.webp 1280w\">", "reference": "/ui/brand/missing.webp", "problem": "missing exported asset" },
+  { "name": "bare relative candidate", "html": "<img srcset=\"brand/sculpture.webp 2x\">", "reference": "brand/sculpture.webp", "problem": "asset must start" }
+]
