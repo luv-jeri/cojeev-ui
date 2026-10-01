@@ -1,6 +1,6 @@
 # Contributing
 
-Use Node.js 22.12+, run `npm ci`, then `npm run dev -- --port 4320`. Documentation lives at `/cojeev-ui/`.
+Use Node.js 22.12+, run `npm ci`, then `npm run dev -- --port 4320`. Documentation lives at `/ui/`.
 
 Keep every component in the same family: warm canvas, purposeful pink/olive/blue/yellow accents, Bricolage Grotesque headings, DM Sans body text, shared spacing and authored shapes. Moving parts should respond naturally without moving the surrounding layout. Respect reduced motion and global Off. Background effects and 3D should stop unnecessary work offscreen and release resources when removed.
 
