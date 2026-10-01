@@ -336,3 +336,29 @@ test('baseline_record_shape_is_enforced', async t => {
   await assert.rejects(readBaselineRecord('beta', file), {message: 'Invalid baseline record: schema'});
   await assert.rejects(readBaselineRecord('unknown', fixture), {message: 'Invalid baseline record: environment'});
 });
+
+test('baseline_absent_robots_accepts_missing_content_type_only', async t => {
+  const {readBaselineRecord} = await phases();
+  const record = JSON.parse(await fs.readFile(fixture, 'utf8'));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'release-phases-robots-'));
+  t.after(() => fs.rm(dir, {recursive: true, force: true}));
+  const file = path.join(dir, 'record.json');
+  for (const [name, robots, contentType, accepted] of [
+    ['absent robots accepts null', 'absent', null, true],
+    ['absent robots rejects empty string', 'absent', '', false],
+    ['present robots rejects null', 'present', null, false],
+  ]) {
+    await t.test(name, async () => {
+      const value = structuredClone(record);
+      value.production.apexProbes['/robots.txt'] = {
+        status: robots === 'absent' ? 404 : 200, contentType, robots,
+      };
+      await fs.writeFile(file, JSON.stringify(value));
+      if (accepted)
+        assert.deepEqual(await readBaselineRecord('production', file), value.production);
+      else
+        await assert.rejects(readBaselineRecord('production', file),
+          {message: 'Invalid baseline record: production.apexProbes./robots.txt.contentType'});
+    });
+  }
+});
