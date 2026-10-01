@@ -5,10 +5,10 @@
   "description": "Coloured organic shapes for list items, with deterministic automatic selection and custom icon or no-icon options.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/shape.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json",
+    "https://cojeev.com/ui/r/shape.json",
+    "https://cojeev.com/ui/r/animated-icon.json"
   ],
   "files": [
     {

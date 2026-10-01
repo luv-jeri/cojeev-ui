@@ -5,11 +5,11 @@
   "description": "Displays records with client-side filtering, sortable columns, and paginated rows.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/table.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/pagination.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/table.json",
+    "https://cojeev.com/ui/r/pagination.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/icon.json"
   ],
   "files": [
     {

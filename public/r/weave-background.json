@@ -5,8 +5,8 @@
   "description": "Interlaced thread-like strokes with visible over-and-under crossings.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/pattern-background.json"
   ],
   "files": [
     {

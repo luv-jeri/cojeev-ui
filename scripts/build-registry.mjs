@@ -79,7 +79,7 @@ base.files.push(...["DMSans-OFL.txt","BricolageGrotesque-OFL.txt"].map(name=>({p
 // drops the comment a source opens with, notice included.
 fs.writeFileSync(`${source}/NOTICES.txt`,noticeText(fs.readFileSync("LICENCE","utf8"),["lib","motion","ui"].flatMap(folder=>fs.readdirSync(`${source}/${folder}`).sort().filter(name=>/\.tsx?$/.test(name)).map(name=>[`${source}/${folder}/${name}`,fs.readFileSync(`${source}/${folder}/${name}`,"utf8")]))));
 base.files.push({path:`${source}/NOTICES.txt`,type:"registry:file",target:"lib/cojeev/NOTICES.txt"});
-const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"cojeev",homepage:baseURL,items};
+const registry={$schema:"https://ui.shadcn.com/schema/registry.json",name:"cojeev",homepage:`${(process.env.NEXT_PUBLIC_SITE_URL??"https://cojeev.com/ui").replace(/\/+$/,"")}/`,items};
 fs.writeFileSync("registry.json",JSON.stringify(registry,null,2)+"\n");
 // Refresh the live documentation catalogue without producing distributable
 // payloads, invoking the shadcn CLI, or running a production build.

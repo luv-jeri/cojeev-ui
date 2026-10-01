@@ -5,7 +5,7 @@
   "description": "Native scroll progress resolves word opacity and blur while leveling the phrase.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

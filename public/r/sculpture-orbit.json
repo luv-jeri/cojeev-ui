@@ -5,12 +5,12 @@
   "description": "A shared sculpture viewer with pointer rotation, touch-friendly navigation and complete keyboard controls.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/slider.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/icon.json",
+    "https://cojeev.com/ui/r/slider.json",
+    "https://cojeev.com/ui/r/label.json",
+    "https://cojeev.com/ui/r/typography.json"
   ],
   "files": [
     {

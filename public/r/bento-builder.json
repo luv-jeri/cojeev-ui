@@ -7,13 +7,13 @@
     "react-dom"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/bento-grid.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/native-select.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/bento-grid.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/input.json",
+    "https://cojeev.com/ui/r/native-select.json",
+    "https://cojeev.com/ui/r/icon.json",
+    "https://cojeev.com/ui/r/scroll-area.json"
   ],
   "files": [
     {

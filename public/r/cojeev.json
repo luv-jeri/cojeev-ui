@@ -729,7 +729,7 @@
     },
     "iconLibrary": "lucide",
     "registries": {
-      "@cojeev": "https://luv-jeri.github.io/cojeev-ui/r/{name}.json"
+      "@cojeev": "https://cojeev.com/ui/r/{name}.json"
     }
   }
 }

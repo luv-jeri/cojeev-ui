@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "cojeev",
-  "homepage": "https://luv-jeri.github.io/cojeev-ui",
+  "homepage": "https://cojeev.com/ui/",
   "items": [
     {
       "name": "cojeev",
@@ -23,7 +23,7 @@
           "baseColor": "neutral"
         },
         "registries": {
-          "@cojeev": "https://luv-jeri.github.io/cojeev-ui/r/{name}.json"
+          "@cojeev": "https://cojeev.com/ui/r/{name}.json"
         }
       },
       "files": [
@@ -671,8 +671,8 @@
       "title": "Accordion",
       "description": "Organizes related sections into expandable panels so readers can open the details they need.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -776,7 +776,7 @@
       "title": "Accordion Gallery",
       "description": "A selected image panel opens to reveal its label, story and action.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -858,8 +858,8 @@
       "title": "Action dock",
       "description": "A reusable action dock composed from Cojeev base components.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json"
       ],
       "dependencies": [],
       "files": [
@@ -895,15 +895,15 @@
       "title": "Activity feed",
       "description": "An ordered, date-grouped history with a quiet connecting margin, readable actors and timestamps, and updates that keep your place.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/avatar.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/badge.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/empty.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/avatar.json",
+        "https://cojeev.com/ui/r/badge.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/empty.json",
+        "https://cojeev.com/ui/r/item.json",
+        "https://cojeev.com/ui/r/presence.json",
+        "https://cojeev.com/ui/r/typography.json"
       ],
       "dependencies": [],
       "files": [
@@ -997,15 +997,15 @@
       "title": "Motion Adjuster",
       "description": "Provides live controls for the shared motion settings and editable body profiles used across the library.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/code-block.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/slider.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/switch.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/tabs.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/code-block.json",
+        "https://cojeev.com/ui/r/label.json",
+        "https://cojeev.com/ui/r/slider.json",
+        "https://cojeev.com/ui/r/switch.json",
+        "https://cojeev.com/ui/r/tabs.json",
+        "https://cojeev.com/ui/r/typography.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -1073,19 +1073,19 @@
       "title": "Agent chat",
       "description": "A composable agent conversation with a bounded thread, draft composer, attachments, progress, explicit permissions and choice prompts.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/agent-state.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/message.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/message-scroller.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/attachment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/questionnaire.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/avatar.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/bubble.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input-group.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/agent-state.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/message.json",
+        "https://cojeev.com/ui/r/message-scroller.json",
+        "https://cojeev.com/ui/r/attachment.json",
+        "https://cojeev.com/ui/r/questionnaire.json",
+        "https://cojeev.com/ui/r/avatar.json",
+        "https://cojeev.com/ui/r/bubble.json",
+        "https://cojeev.com/ui/r/input.json",
+        "https://cojeev.com/ui/r/presence.json",
+        "https://cojeev.com/ui/r/input-group.json"
       ],
       "dependencies": [],
       "files": [
@@ -1448,7 +1448,7 @@
       "title": "Agent state",
       "description": "A sculpted, living status field that changes contour and color as an agent thinks, works, asks for input, or finishes.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -1536,8 +1536,8 @@
       "title": "Alert",
       "description": "An authored note, attached-action banner or folded dispatch that makes the message and its next step clear.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -1804,8 +1804,8 @@
       "title": "Alert Dialog",
       "description": "Pauses a workflow for a focused confirmation before a consequential action proceeds.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -1923,8 +1923,8 @@
       "title": "Ambient background",
       "description": "Adds a quiet animated composition around content, with decorative shapes kept behind a readable surface.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/shape.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/shape.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -1988,8 +1988,8 @@
       "title": "Animated icon",
       "description": "Replayable micro-interactions for the full Cojeev icon library, with semantic motion families and optional visual treatments.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "motion"
@@ -2098,7 +2098,7 @@
       "title": "Animated number",
       "description": "A smooth, interruptible number transition for totals, metrics and small moments of progress.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -2192,16 +2192,16 @@
       "title": "Appearance",
       "description": "Choose from six coordinated palettes and adjust reading contrast across the application.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/slider.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/select.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/popover.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/shape.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/tooltip.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/label.json",
+        "https://cojeev.com/ui/r/slider.json",
+        "https://cojeev.com/ui/r/select.json",
+        "https://cojeev.com/ui/r/popover.json",
+        "https://cojeev.com/ui/r/shape.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/tooltip.json"
       ],
       "dependencies": [],
       "files": [
@@ -2286,8 +2286,8 @@
       "title": "Area chart",
       "description": "Layered area charts with shared series colors, responsive bounds and a keyboard data inspector.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/chart.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/chart.json"
       ],
       "dependencies": [
         "motion"
@@ -2346,7 +2346,7 @@
       "title": "Article Headings",
       "description": "Semantic article headings resolve through a brief, grapheme-safe noise frontier.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -2473,7 +2473,7 @@
       "title": "Aspect Ratio",
       "description": "Keeps a media container at a chosen width-to-height ratio as its available width changes.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -2555,7 +2555,7 @@
       "title": "Assembly part",
       "description": "A persistent native component moving between a floating organism and its measured layout.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -2728,8 +2728,8 @@
       "title": "Attachment",
       "description": "Presents a file name, type, metadata, and nearby actions as a compact attachment row.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -2815,8 +2815,8 @@
       "title": "Avatar",
       "description": "Portraits, identity rows and participant groups that keep the person recognizable—with artwork, initials and independent shape choices.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "@radix-ui/react-avatar",
@@ -3020,7 +3020,7 @@
       "title": "Badge",
       "description": "Stamp a review state, attach a filing tag or count a collection. Three compact treatments with one clear meaning in text.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -3228,8 +3228,8 @@
       "title": "Bar chart",
       "description": "Compare series with grouped, stacked or horizontal bars and a shared interactive tooltip.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/chart.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/chart.json"
       ],
       "dependencies": [
         "motion"
@@ -3288,13 +3288,13 @@
       "title": "Bento Builder",
       "description": "An editable Bento canvas with complete partitions, content swapping, snapped neighbor resizing, history and usable layout export.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/bento-grid.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/native-select.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/bento-grid.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/input.json",
+        "https://cojeev.com/ui/r/native-select.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "react-dom"
@@ -3369,7 +3369,7 @@
       "title": "Bento Grid",
       "description": "A complete canvas of rounded cards or organically interlocking pieces. Compose a layout, then install just the lightweight renderer.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -3440,8 +3440,8 @@
       "title": "Breadcrumb",
       "description": "Find your place with a complete trail, a pocket-sized ancestor menu or a connected directory path.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -3565,8 +3565,8 @@
       "title": "Bubble",
       "description": "Groups conversational content and timestamps into visually distinct message bubbles.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "motion",
@@ -3764,9 +3764,9 @@
       "title": "Button",
       "description": "Triggers an action with native button behavior and an optional busy indicator.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/spinner.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/spinner.json",
+        "https://cojeev.com/ui/r/presence.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -4031,9 +4031,9 @@
       "title": "Button Group",
       "description": "Places related actions together and can track one selected button value.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -4148,7 +4148,7 @@
       "title": "Buy Me Coffee",
       "description": "A support poster reveals an inviting cup illustration and a real caller destination.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -4232,8 +4232,8 @@
       "title": "Calendar",
       "description": "Choose one appointment day, a continuous date range, or separate days in an accessible month grid.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "motion",
@@ -4546,8 +4546,8 @@
       "title": "Card",
       "description": "Groups related content, metadata, and actions into a distinct surface.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -4677,7 +4677,7 @@
       "title": "Caret Swap",
       "description": "A colored caret block consumes a phrase before typing its replacement in whole graphemes.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -4768,10 +4768,10 @@
       "title": "Carousel",
       "description": "Browse a peeking shelf, a full reading spread or a miniature index of ideas, with native scrolling and a shared organic scrollbar.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -4909,14 +4909,14 @@
       "title": "Chart",
       "description": "Compose an understandable chart from a frame, labelled series, inspectable plot and accessible values.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/card.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/select.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/chart-tooltip.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/table.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/card.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/label.json",
+        "https://cojeev.com/ui/r/select.json",
+        "https://cojeev.com/ui/r/presence.json",
+        "https://cojeev.com/ui/r/chart-tooltip.json",
+        "https://cojeev.com/ui/r/table.json"
       ],
       "dependencies": [
         "motion",
@@ -5285,8 +5285,8 @@
       "title": "Dynamic chart tooltip",
       "description": "Compare a point, read its known subtotal or rank its series. Values update in place and keep their series colours.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/card.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/card.json"
       ],
       "dependencies": [
         "motion"
@@ -5376,7 +5376,7 @@
       "title": "Checkbox",
       "description": "Captures an independent checked, unchecked, or indeterminate choice.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -5528,7 +5528,7 @@
       "title": "Click Spark",
       "description": "A finite spray of accent marks responds to a real activation.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -5629,13 +5629,13 @@
       "title": "Code block",
       "description": "Displays a code snippet with an optional caption, language label, wrapping, and copy feedback.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/typography.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [
         "prismjs@1.30.0"
@@ -5768,8 +5768,8 @@
       "title": "Collapsible",
       "description": "Shows or hides one optional section without leaving the surrounding layout.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -5869,13 +5869,13 @@
       "title": "Combobox",
       "description": "Filters a list of options through text input and stores one selected value.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/command.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/input.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/command.json",
+        "https://cojeev.com/ui/r/item-adornment.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -6054,11 +6054,11 @@
       "title": "Command",
       "description": "Builds a searchable command list that users can navigate and activate from the keyboard.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/dialog.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/dialog.json",
+        "https://cojeev.com/ui/r/item-adornment.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -6197,8 +6197,8 @@
       "title": "Compact dashboard",
       "description": "Historical compatibility alias for WorkSidePanel; use the dedicated panel composition in new work.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json"
       ],
       "dependencies": [],
       "files": [
@@ -6234,10 +6234,10 @@
       "title": "Context Menu",
       "description": "Reveals contextual actions for a target through a context-menu interaction.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/item-adornment.json",
+        "https://cojeev.com/ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -6381,7 +6381,7 @@
       "title": "Contour field",
       "description": "Original topographic lines on the inherited paper surface, with a bounded GPU renderer.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -6459,8 +6459,8 @@
       "title": "Contours background",
       "description": "Nested organic contour lines with generous space between islands.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -6518,8 +6518,8 @@
       "title": "Conversation panel",
       "description": "A reusable conversation panel composed from Cojeev base components.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json"
       ],
       "dependencies": [],
       "files": [
@@ -6555,11 +6555,11 @@
       "title": "Data Table",
       "description": "Displays records with client-side filtering, sortable columns, and paginated rows.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/table.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pagination.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/table.json",
+        "https://cojeev.com/ui/r/pagination.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -6754,12 +6754,12 @@
       "title": "Date Picker",
       "description": "Choose one day, a range, or multiple dates from a labelled field and calendar popover.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/calendar.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/popover.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/calendar.json",
+        "https://cojeev.com/ui/r/popover.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -7331,7 +7331,7 @@
       "title": "Depth background",
       "description": "Layered pollen, contours and orbital shapes with perspective, native-scroll depth and pointer response.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -7410,10 +7410,10 @@
       "title": "Dialog",
       "description": "A decision slip, focused editor or illustrated exhibit. Give one task your attention without losing your place.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -7538,7 +7538,7 @@
       "title": "Direction",
       "description": "Sets a text direction for a subtree and shares it with direction-aware primitives.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "@radix-ui/react-direction"
@@ -7612,7 +7612,7 @@
       "title": "Dither Dissolve",
       "description": "Caller scenes exchange beneath a deterministic ordered dither cover.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -7703,8 +7703,8 @@
       "title": "Dither sculpture",
       "description": "Depth-tested sculptural forms printed as ordered dots, halftone, error diffusion or stipple.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/glyph-sculpture.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/glyph-sculpture.json"
       ],
       "dependencies": [],
       "files": [
@@ -7830,8 +7830,8 @@
       "title": "Dock",
       "description": "A compact workspace launcher with a magnifying glass bar, raised shelf and labelled vertical rail.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [],
       "files": [
@@ -7930,8 +7930,8 @@
       "title": "Dots background",
       "description": "An evenly spaced field of fine points for quiet, familiar structure.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -7989,7 +7989,7 @@
       "title": "Drawer",
       "description": "Presents dialog content in a drawer surface while keeping the current page underneath.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -8103,10 +8103,10 @@
       "title": "Dropdown Menu",
       "description": "Opens a compact menu of actions or stateful choices from a visible trigger.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/item-adornment.json",
+        "https://cojeev.com/ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -8257,10 +8257,10 @@
       "title": "Dropzone",
       "description": "Collects local files through drag and drop or a native file picker and reports the selection.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/shape.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/shape.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/presence.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -8381,7 +8381,7 @@
       "title": "Elastic Mesh",
       "description": "A triangulated printed sheet stretches toward the pointer and springs home.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -8485,8 +8485,8 @@
       "title": "Empty",
       "description": "Explains an empty collection or unavailable result and creates space for a useful next step.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/card.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/card.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -8692,7 +8692,7 @@
       "title": "Falling Text",
       "description": "Measured word rectangles fall, collide and settle inside a bounded stage.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -8777,8 +8777,8 @@
       "title": "Field",
       "description": "Connects a form control with its label, description, and validation message.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/label.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/label.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -8935,7 +8935,7 @@
       "title": "Float layer",
       "description": "An entrance, scroll depth and gentle idle movement for a real component or a group of elements.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -9044,8 +9044,8 @@
       "title": "Flow sculpture",
       "description": "A rendered form responds to pointer strokes through a fluid distortion field.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/glass-sculpture.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/glass-sculpture.json"
       ],
       "dependencies": [],
       "files": [
@@ -9142,8 +9142,8 @@
       "title": "Focus session",
       "description": "A local focus timer composed from Cojeev cards, progress, badges and native controls.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json"
       ],
       "dependencies": [],
       "files": [
@@ -9181,8 +9181,8 @@
       "title": "Folds background",
       "description": "Quiet faceted planes inspired by folded paper, without busy linework.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -9240,7 +9240,7 @@
       "title": "Ghost Cursor",
       "description": "A translucent ink impression follows a local pointer with soft inertia.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -9344,8 +9344,8 @@
       "title": "Glass sculpture",
       "description": "Translucent geometry bends an original patterned studio through a softly lit glass surface.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/glyph-sculpture.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/glyph-sculpture.json"
       ],
       "dependencies": [
         "three@0.185.1"
@@ -9465,7 +9465,7 @@
       "title": "Glyph sculpture",
       "description": "A real 3D surface drawn with glyphs, optional contour marks and your own local geometry.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "three@0.185.1"
@@ -9684,7 +9684,7 @@
       "title": "Grain Dissolve",
       "description": "Caller scenes dissolve through a grainy pigment field with a soft focus exchange.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -9775,8 +9775,8 @@
       "title": "Grid background",
       "description": "Hairline rules that give canvases and working surfaces a gentle rhythm.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -9834,8 +9834,8 @@
       "title": "Guided pointer",
       "description": "An illustrated pointer moves between story waypoints, with a small arrival or hold cue.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -9925,8 +9925,8 @@
       "title": "Hero button",
       "description": "Twelve tactile calls to action: living ink, paper, keys, tickets and small moments of motion around one native button.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "motion"
@@ -10014,8 +10014,8 @@
       "title": "Hover Card",
       "description": "A person, an excerpt or a small visual study—three considered previews, close to the thing you are exploring.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -10120,7 +10120,7 @@
       "title": "Icon library",
       "description": "1,722 icon names with Cojeev micro-interactions, outline, duotone and organic treatments, built on Lucide geometry.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -10259,7 +10259,7 @@
       "title": "Image Masking",
       "description": "Caller images are framed by original Cojeev silhouettes using CSS masks or SVG clip paths.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -10353,7 +10353,7 @@
       "title": "Image Trail",
       "description": "Distance-triggered image impressions follow the pointer and fade away.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -10457,7 +10457,7 @@
       "title": "Infinite Spiral",
       "description": "Helical image cards recycle through depth with explicit previous, next and pause controls.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -10534,8 +10534,8 @@
       "title": "Ink sculpture",
       "description": "Hatched and engraved marks follow the light and relief of a 3D form.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/glyph-sculpture.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/glyph-sculpture.json"
       ],
       "dependencies": [],
       "files": [
@@ -10672,9 +10672,9 @@
       "title": "Input",
       "description": "Collects a single-line value through a native input with optional composed affixes and clearing controls.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -10851,10 +10851,10 @@
       "title": "Input Group",
       "description": "Combines a text control with adjacent prefixes, suffixes, or actions in one input surface.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/textarea.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/input.json",
+        "https://cojeev.com/ui/r/textarea.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -10989,7 +10989,7 @@
       "title": "Input OTP",
       "description": "Presents a single code input as a sequence of visible character slots.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -11073,8 +11073,8 @@
       "title": "Invite card",
       "description": "An event invitation with participant avatars and a reversible local RSVP, composed from Cojeev primitives.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json"
       ],
       "dependencies": [],
       "files": [
@@ -11111,7 +11111,7 @@
       "title": "Item",
       "description": "A notebook ledger, an illustrated collection or an actionable detail. Three readable arrangements for the things you want to keep together.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -11340,10 +11340,10 @@
       "title": "Item adornment",
       "description": "Coloured organic shapes for list items, with deterministic automatic selection and custom icon or no-icon options.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/shape.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/shape.json",
+        "https://cojeev.com/ui/r/animated-icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -11434,7 +11434,7 @@
       "title": "Kbd",
       "description": "Formats a key or key combination as a recognizable keyboard instruction.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -11519,7 +11519,7 @@
       "title": "Label",
       "description": "Provides a native form label plus compact stat-label primitives for named values.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -11651,8 +11651,8 @@
       "title": "Line chart",
       "description": "Track changes using linear, smooth or step lines with accessible point inspection.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/chart.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/chart.json"
       ],
       "dependencies": [
         "motion"
@@ -11711,11 +11711,11 @@
       "title": "Linear Modal",
       "description": "Follow a card, image and title into a full detail, then back. Card, Centered and browsable Gallery preserve the reference's shared-layout journey.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/dialog.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/dialog.json"
       ],
       "dependencies": [
         "@radix-ui/react-dialog",
@@ -11825,7 +11825,7 @@
       "title": "Living link",
       "description": "A native link with a drawn ink contour, directional underline reveals, or an organic pigment wash.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -11913,7 +11913,7 @@
       "title": "Magic Rings",
       "description": "Open concentric rings expand in Cojeev colors and respond to pointer position.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -12017,7 +12017,7 @@
       "title": "Marker",
       "description": "Separates or annotates a sequence with a short event, status, or time label.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -12102,9 +12102,9 @@
       "title": "Marquee",
       "description": "A measured moving list with optional perspective and a rhythm that follows scrolling.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/typography.json"
       ],
       "dependencies": [],
       "files": [
@@ -12243,10 +12243,10 @@
       "title": "Menubar",
       "description": "Groups application commands into a horizontal row of keyboard-navigable menus.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/item-adornment.json",
+        "https://cojeev.com/ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -12404,7 +12404,7 @@
       "title": "Message",
       "description": "Structures a conversational or activity entry with a main content area and supporting description.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -12534,9 +12534,9 @@
       "title": "Message Scroller",
       "description": "Keeps a conversation near its latest content while allowing readers to scroll back without being pulled down.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -12626,7 +12626,7 @@
       "title": "Meta Balls",
       "description": "Moving scalar-field bodies merge and separate through liquid contours.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -12730,14 +12730,14 @@
       "title": "Milestone path",
       "description": "Follow caller-owned progress as a connected Journey, a scrollable Sequence or a compact checkpoint Review.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/badge.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/empty.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/stepper.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/badge.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/empty.json",
+        "https://cojeev.com/ui/r/stepper.json",
+        "https://cojeev.com/ui/r/typography.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "motion"
@@ -12836,10 +12836,10 @@
       "title": "Motion Drawer",
       "description": "A reference-faithful edge drawer, floating quick panel, layered workspace and bottom action tray.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "@radix-ui/react-dialog",
@@ -13029,17 +13029,17 @@
       "title": "Multi-select",
       "description": "Searchable multiple choices with removable selections, form values and clear validation.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/badge.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/checkbox.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/popover.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/badge.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/checkbox.json",
+        "https://cojeev.com/ui/r/item-adornment.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/input.json",
+        "https://cojeev.com/ui/r/label.json",
+        "https://cojeev.com/ui/r/popover.json"
       ],
       "dependencies": [],
       "files": [
@@ -13215,7 +13215,7 @@
       "title": "Native Select",
       "description": "Uses the browser’s native select control to choose from a compact list of options.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -13318,11 +13318,11 @@
       "title": "Navigation Menu",
       "description": "Organizes destination links and optional expandable navigation panels.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/presence.json",
+        "https://cojeev.com/ui/r/item-adornment.json",
+        "https://cojeev.com/ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -13451,10 +13451,10 @@
       "title": "Number input",
       "description": "A number field with readable formatting, a native editing caret and expressive stepping.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-number.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/animated-number.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [],
       "files": [
@@ -13613,9 +13613,9 @@
       "title": "Option Wheel",
       "description": "A paper dial, aligned reel or compact readout for choosing one direction with pointer, wheel or keyboard.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -13704,7 +13704,7 @@
       "title": "Orbit Images",
       "description": "An orbit of supplied images frames stationary content.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -13782,10 +13782,10 @@
       "title": "Organism assembly",
       "description": "An interactive studio that gathers floating shapes into six reusable compositions.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -13877,22 +13877,22 @@
       "title": "Organism composition",
       "description": "Six useful compositions made from persistent Cojeev base components, with organic assembly and native controls.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/card.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/avatar.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/badge.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/bubble.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input-group.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/message-scroller.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/progress.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/shape.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/assembly-part.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/card.json",
+        "https://cojeev.com/ui/r/avatar.json",
+        "https://cojeev.com/ui/r/badge.json",
+        "https://cojeev.com/ui/r/bubble.json",
+        "https://cojeev.com/ui/r/input-group.json",
+        "https://cojeev.com/ui/r/message-scroller.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/item.json",
+        "https://cojeev.com/ui/r/progress.json",
+        "https://cojeev.com/ui/r/typography.json",
+        "https://cojeev.com/ui/r/shape.json",
+        "https://cojeev.com/ui/r/presence.json",
+        "https://cojeev.com/ui/r/assembly-part.json"
       ],
       "dependencies": [
         "motion"
@@ -14152,10 +14152,10 @@
       "title": "Pagination",
       "description": "Lets users move between numbered pages and see their current position.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/input.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/input.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -14301,8 +14301,8 @@
       "title": "Particle sculpture",
       "description": "A cloud sampled from a real surface yields to the pointer and springs back into form.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/glass-sculpture.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/glass-sculpture.json"
       ],
       "dependencies": [],
       "files": [
@@ -14411,7 +14411,7 @@
       "title": "Particle Text",
       "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -14508,7 +14508,7 @@
       "title": "Pattern background",
       "description": "Eight distinct, lightweight backgrounds behind content, with a plain option and adjustable spacing, color and strength.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -14588,8 +14588,8 @@
       "title": "Pebbles background",
       "description": "Sparse, softly irregular pebble outlines distributed across the surface.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -14647,8 +14647,8 @@
       "title": "Pie chart",
       "description": "Show proportions using themed pie and donut layouts, with readable totals and segment inspection.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/chart.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/chart.json"
       ],
       "dependencies": [
         "motion"
@@ -14707,7 +14707,7 @@
       "title": "Pigment field",
       "description": "An original GPU pigment wash using the current Cojeev palette.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -14785,7 +14785,7 @@
       "title": "Pixel Swap",
       "description": "A staggered tile mask exchanges two compositions without duplicating their interactive content.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -14869,7 +14869,7 @@
       "title": "Popover",
       "description": "Places a dismissible panel next to a trigger for a small contextual task or set of controls.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -14968,7 +14968,7 @@
       "title": "Portal Field",
       "description": "An organically warped luminous halo with a soft chromatic fringe behind real content.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -15068,7 +15068,7 @@
       "title": "Presence",
       "description": "MotionPresence keeps keyed children mounted for their exits. MotionSurface adds coordinated lifecycle states to an existing primitive.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion",
@@ -15170,18 +15170,18 @@
       "title": "Component preview",
       "description": "Pairs a live component example with a code view and a copy action.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/code-block.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/tabs.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pigment-field.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/depth-background.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/ambient-background.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/popover.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/code-block.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/tabs.json",
+        "https://cojeev.com/ui/r/typography.json",
+        "https://cojeev.com/ui/r/pattern-background.json",
+        "https://cojeev.com/ui/r/pigment-field.json",
+        "https://cojeev.com/ui/r/depth-background.json",
+        "https://cojeev.com/ui/r/ambient-background.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/popover.json"
       ],
       "dependencies": [],
       "files": [
@@ -15301,8 +15301,8 @@
       "title": "Profile card",
       "description": "A reusable profile card composed from Cojeev base components.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json"
       ],
       "dependencies": [],
       "files": [
@@ -15338,7 +15338,7 @@
       "title": "Progress",
       "description": "One measured amount, explained as an inline task, a small report or connected milestones—with independent organic track geometry.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion",
@@ -15451,9 +15451,9 @@
       "title": "Questionnaire",
       "description": "A little guided brief: open questions, a focused journey or a two-column worksheet with living choice marks and honest completion progress.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/progress.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/label.json",
+        "https://cojeev.com/ui/r/progress.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -15713,8 +15713,8 @@
       "title": "Radar chart",
       "description": "Compare several dimensions with a shared radar scale and contextual series highlighting.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/chart.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/chart.json"
       ],
       "dependencies": [
         "motion"
@@ -15774,8 +15774,8 @@
       "title": "Radial chart",
       "description": "Show progress against a shared maximum using full rings or semicircles.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/chart.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/chart.json"
       ],
       "dependencies": [
         "motion"
@@ -15840,7 +15840,7 @@
       "title": "Radio group",
       "description": "Lets users select one option from a labeled set of mutually exclusive choices.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -16046,10 +16046,10 @@
       "title": "Reading trail",
       "description": "Keep your place with a connected spine, an expandable bookmark or a descriptive chapter overview—all following actual reading progress.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/collapsible.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/collapsible.json"
       ],
       "dependencies": [],
       "files": [
@@ -16132,8 +16132,8 @@
       "title": "Resizable",
       "description": "Divides a region into panels whose relative sizes can be adjusted with a separator.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -16229,7 +16229,7 @@
       "title": "Ripple Distortion",
       "description": "Pointer impulses send expanding waves through a textured print.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -16333,7 +16333,7 @@
       "title": "Scroll Area",
       "description": "Contains overflowing content in a bounded viewport with styled scrollbars.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion",
@@ -16623,7 +16623,7 @@
       "title": "Scroll Expand",
       "description": "A framed composition opens as native scroll or controlled progress advances.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -16693,8 +16693,8 @@
       "title": "Scroll organism",
       "description": "A softly stretching companion driven by native document scrolling.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/shape.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/shape.json"
       ],
       "dependencies": [
         "motion"
@@ -16764,7 +16764,7 @@
       "title": "Scroll Reveal",
       "description": "Native scroll progress resolves word opacity and blur while leveling the phrase.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -16861,12 +16861,12 @@
       "title": "Sculpture orbit",
       "description": "A shared sculpture viewer with pointer rotation, touch-friendly navigation and complete keyboard controls.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/slider.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/slider.json",
+        "https://cojeev.com/ui/r/label.json",
+        "https://cojeev.com/ui/r/typography.json"
       ],
       "dependencies": [],
       "files": [
@@ -16954,11 +16954,11 @@
       "title": "Select",
       "description": "Opens a list of options from a trigger and stores one selected value.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json",
+        "https://cojeev.com/ui/r/item-adornment.json",
+        "https://cojeev.com/ui/r/animated-icon.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -17112,7 +17112,7 @@
       "title": "Semantic bloom",
       "description": "A living wordmark whose particles wander, connect and gather into a liquid organism. Adapted from ThreeUI with Cojeev colors and motion controls.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -17248,7 +17248,7 @@
       "title": "Separator",
       "description": "Divides adjacent content with a horizontal or vertical rule.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -17336,7 +17336,7 @@
       "title": "Shape studio",
       "description": "One shape studio: twelve compatible living contours, layered artwork and the complete original mask inventory. Compose it here, then take the SVG or React code.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -17421,7 +17421,7 @@
       "title": "Shape artwork",
       "description": "An original SVG silhouette with a cast shadow and a rotated rear outline. The same vector layers power its live preview and standalone SVG export.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -17553,8 +17553,8 @@
       "title": "Shape scene",
       "description": "A tactile 3D composition made from Cojeev shapes, with a static fallback and motion preferences built in.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/shape.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/shape.json"
       ],
       "dependencies": [
         "three@0.185.1"
@@ -17661,7 +17661,7 @@
       "title": "Sheet",
       "description": "Opens a side surface for focused secondary content while the current page remains in place.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -17782,9 +17782,9 @@
       "title": "Sidebar",
       "description": "A paper folio, a readable compact index and a motion drawer. Three calm ways to keep the same workspace within reach.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/icon.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "@radix-ui/react-slot",
@@ -17976,8 +17976,8 @@
       "title": "Skeleton",
       "description": "Give unavailable content a useful outline: a reading page, a person or a board of ideas, with three quiet-safe paint effects.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/card.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/card.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -18184,7 +18184,7 @@
       "title": "Slider",
       "description": "Adjusts one or more numeric values by moving labeled thumbs along a track.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion",
@@ -18290,7 +18290,7 @@
       "title": "Loading",
       "description": "Three indeterminate signals: a morphing Bloom, gathering Orbit or handing-off Relay. The original small seed stays the default.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -18419,8 +18419,8 @@
       "title": "Sprouts background",
       "description": "Small paired leaves and seed-like marks with plenty of open space.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -18478,9 +18478,9 @@
       "title": "Stepper",
       "description": "Move a real draft through connected stages, a descriptive checkpoint ledger or a focused current-step workspace.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/animated-icon.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -18657,7 +18657,7 @@
       "title": "Strands",
       "description": "A bundle of colored ribbons moves through a bounded sine field.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -18761,8 +18761,8 @@
       "title": "Sunwash background",
       "description": "Broad, soft pools of color that leave the content in focus.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -18820,7 +18820,7 @@
       "title": "Swapy",
       "description": "Cards swap positions through a drag handle or keyboard controls and retain their order in React state.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -18910,7 +18910,7 @@
       "title": "Swarm Cursor",
       "description": "A local flock of colored seeds follows the pointer and scatters on activation.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -19014,7 +19014,7 @@
       "title": "Switch",
       "description": "Turns a named binary setting on or off.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -19119,8 +19119,8 @@
       "title": "Tables",
       "description": "Scan a compact ledger, explore detailed records or compare them side by side. One Tables guide for native parts and the composed DataTable.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -19240,8 +19240,8 @@
       "title": "Tabs",
       "description": "Switches between related content panels while keeping the available views visible.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/presence.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/presence.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -19361,7 +19361,7 @@
       "title": "Target Cursor",
       "description": "Local corner brackets follow real controls on hover and keyboard focus.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -19421,7 +19421,7 @@
       "title": "Text reveal",
       "description": "Readable word, grapheme, phrase or measured-line arrivals with soft focus, fold and organic scale choices.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -19527,7 +19527,7 @@
       "title": "Text ribbon",
       "description": "A measured phrase follows six original SVG paths, with direct manipulation and gentle changes of pace.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -19673,8 +19673,8 @@
       "title": "Textarea",
       "description": "Collects multiline text and offers composer and character-count parts for longer input.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/scroll-area.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -19812,8 +19812,8 @@
       "title": "Theme toggle",
       "description": "A controlled light/dark switch with a morphing sun and moon and a smooth organic page reveal.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json"
       ],
       "dependencies": [
         "motion"
@@ -19899,9 +19899,9 @@
       "title": "Toast",
       "description": "Reports a brief outcome in a notification area without moving the user away from the current task.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -20016,7 +20016,7 @@
       "title": "Toggle",
       "description": "A small action with a lasting state: a toolbar tool, a paper bookmark or a descriptive preference. Native targets stay put while the painted surface responds.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -20142,8 +20142,8 @@
       "title": "Toggle Group",
       "description": "Groups pressable choices that can allow one or several selected values.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/toggle.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/toggle.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -20215,7 +20215,7 @@
       "title": "Tooltip",
       "description": "Precise ink callouts, useful keyboard hints and small paper annotations. Short explanations that appear where attention already is.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -20318,9 +20318,9 @@
       "title": "Tree",
       "description": "A controlled branch ledger for supplied hierarchical data, with separate disclosure, selection and trailing actions.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/button.json",
+        "https://cojeev.com/ui/r/icon.json"
       ],
       "dependencies": [],
       "files": [
@@ -20480,7 +20480,7 @@
       "title": "Typography",
       "description": "Provides text roles for headings, body copy, metadata, values, and identifiers.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "class-variance-authority"
@@ -20836,7 +20836,7 @@
       "title": "Typography Vortex",
       "description": "Nested rotating glyph rings with a local dissolution lens and a finite suction pulse.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -20927,7 +20927,7 @@
       "title": "Variable Proximity",
       "description": "Pointer distance changes the real variable-font weight of individual graphemes.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -21024,7 +21024,7 @@
       "title": "Warp Text",
       "description": "Rendered text deforms through a slowly changing noise displacement.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -21109,7 +21109,7 @@
       "title": "Wave Wipe",
       "description": "An organic wave rises across caller content to reveal the next scene.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -21200,8 +21200,8 @@
       "title": "Weave background",
       "description": "Interlaced thread-like strokes with visible over-and-under crossings.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/pattern-background.json"
       ],
       "dependencies": [],
       "files": [
@@ -21259,7 +21259,7 @@
       "title": "Word relay",
       "description": "Exchanges phrases, words or letters inside a stable wrapping footprint, with interruptible motion and explicit navigation.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [
         "motion"
@@ -21406,7 +21406,7 @@
       "title": "Word Stream",
       "description": "Phrases build word by word, drift left and run out before the final phrase holds.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -21503,8 +21503,8 @@
       "title": "Work side panel",
       "description": "A reusable work side panel composed from Cojeev base components.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-        "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+        "https://cojeev.com/ui/r/cojeev.json",
+        "https://cojeev.com/ui/r/organism-composition.json"
       ],
       "dependencies": [],
       "files": [
@@ -21540,7 +21540,7 @@
       "title": "Writing caret",
       "description": "A quiet writing mark with a short, deliberate blink sequence.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [
@@ -21621,7 +21621,7 @@
       "title": "Zoom Words",
       "description": "An enlarged camera follows measured centers along a growing word line.",
       "registryDependencies": [
-        "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+        "https://cojeev.com/ui/r/cojeev.json"
       ],
       "dependencies": [],
       "files": [

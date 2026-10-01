@@ -5,6 +5,7 @@ import path from 'node:path';
 import {createServer} from 'node:http';
 import {spawn} from 'node:child_process';
 import {readArtifact} from './release.mjs';
+import {rewriteDependency, rewriteNamespace} from './registry-dependency.mjs';
 
 const [environment,commit,directory,digest]=process.argv.slice(2);
 if(!directory) throw new Error('Pass ENV SHA ARTIFACT_DIRECTORY MANIFEST_DIGEST');
@@ -21,14 +22,15 @@ const server=createServer(async(request,response)=>{
 try {
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const origin=`http://127.0.0.1:${server.address().port}`;
-  for(const file of await fs.readdir(registry)) {
-    if(!file.endsWith('.json')) continue;
+  const available=new Set((await fs.readdir(registry)).filter(file=>/^[a-z0-9-]+\.json$/.test(file)));
+  for(const file of available) {
     const item=JSON.parse(await fs.readFile(path.join(registry,file),'utf8'));
-    if(item.registryDependencies) item.registryDependencies=item.registryDependencies.map(value=>/^https?:\/\/[^/]+(?:\/cojeev-ui)?\/r\//.test(value)?`${origin}/r/${value.split('/r/')[1]}`:value);
+    if(item.registryDependencies) item.registryDependencies=item.registryDependencies.map(value=>rewriteDependency(value,origin,available));
+    rewriteNamespace(item,origin);
     await fs.writeFile(path.join(temp,file),JSON.stringify(item));
   }
   const code=await new Promise((resolve,reject)=>{
-    const child=spawn(process.execPath,['scripts/verify-install.mjs',`--url=${origin}`,`--receipt=artifacts/stranger/${environment}-${commit}.json`],{stdio:'inherit'});
+    const child=spawn(process.execPath,['scripts/verify-install.mjs',`--url=${origin}`,'--components=button,cojeev,bento-builder',`--receipt=artifacts/stranger/${environment}-${commit}.json`],{stdio:'inherit'});
     child.on('error',reject);child.on('exit',resolve);
   });
   if(code!==0) throw new Error('Fresh consumer installation failed');

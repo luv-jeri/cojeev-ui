@@ -5,8 +5,8 @@
   "description": "A compact workspace launcher with a magnifying glass bar, raised shelf and labelled vertical rail.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/scroll-area.json"
   ],
   "files": [
     {

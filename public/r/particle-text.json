@@ -5,7 +5,7 @@
   "description": "Particles sampled from real glyph pixels gather into a readable phrase and repel the local pointer.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

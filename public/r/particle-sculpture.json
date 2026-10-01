@@ -5,8 +5,8 @@
   "description": "A cloud sampled from a real surface yields to the pointer and springs back into form.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/glass-sculpture.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/glass-sculpture.json"
   ],
   "files": [
     {

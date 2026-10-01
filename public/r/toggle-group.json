@@ -8,8 +8,8 @@
     "@radix-ui/react-toggle-group"
   ],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/toggle.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/toggle.json"
   ],
   "files": [
     {

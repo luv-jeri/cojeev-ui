@@ -5,17 +5,17 @@
   "description": "Searchable multiple choices with removable selections, form values and clear validation.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/scroll-area.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/badge.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/checkbox.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/item-adornment.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/input.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/label.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/popover.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/scroll-area.json",
+    "https://cojeev.com/ui/r/badge.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/checkbox.json",
+    "https://cojeev.com/ui/r/item-adornment.json",
+    "https://cojeev.com/ui/r/animated-icon.json",
+    "https://cojeev.com/ui/r/icon.json",
+    "https://cojeev.com/ui/r/input.json",
+    "https://cojeev.com/ui/r/label.json",
+    "https://cojeev.com/ui/r/popover.json"
   ],
   "files": [
     {

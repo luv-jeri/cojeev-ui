@@ -5,7 +5,7 @@
   "description": "A measured phrase follows six original SVG paths, with direct manipulation and gentle changes of pace.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {

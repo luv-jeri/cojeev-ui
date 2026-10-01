@@ -5,18 +5,18 @@
   "description": "Pairs a live component example with a code view and a copy action.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/code-block.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/tabs.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/typography.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/pattern-background.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/pigment-field.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/depth-background.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/ambient-background.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/button.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/popover.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/code-block.json",
+    "https://cojeev.com/ui/r/animated-icon.json",
+    "https://cojeev.com/ui/r/tabs.json",
+    "https://cojeev.com/ui/r/typography.json",
+    "https://cojeev.com/ui/r/pattern-background.json",
+    "https://cojeev.com/ui/r/pigment-field.json",
+    "https://cojeev.com/ui/r/depth-background.json",
+    "https://cojeev.com/ui/r/ambient-background.json",
+    "https://cojeev.com/ui/r/button.json",
+    "https://cojeev.com/ui/r/icon.json",
+    "https://cojeev.com/ui/r/popover.json"
   ],
   "files": [
     {

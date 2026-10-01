@@ -5,8 +5,8 @@
   "description": "A reusable conversation panel composed from Cojeev base components.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/organism-composition.json"
   ],
   "files": [
     {

@@ -5,8 +5,8 @@
   "description": "Historical compatibility alias for WorkSidePanel; use the dedicated panel composition in new work.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/organism-composition.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/organism-composition.json"
   ],
   "files": [
     {

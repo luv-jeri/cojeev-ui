@@ -5,8 +5,8 @@
   "description": "An illustrated pointer moves between story waypoints, with a small arrival or hold cue.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
-    "https://luv-jeri.github.io/cojeev-ui/r/icon.json"
+    "https://cojeev.com/ui/r/cojeev.json",
+    "https://cojeev.com/ui/r/icon.json"
   ],
   "files": [
     {

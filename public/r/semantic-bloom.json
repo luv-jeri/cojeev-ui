@@ -5,7 +5,7 @@
   "description": "A living wordmark whose particles wander, connect and gather into a liquid organism. Adapted from ThreeUI with Cojeev colors and motion controls.",
   "dependencies": [],
   "registryDependencies": [
-    "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json"
+    "https://cojeev.com/ui/r/cojeev.json"
   ],
   "files": [
     {
