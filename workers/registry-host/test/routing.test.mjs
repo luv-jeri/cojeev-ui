@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import host from '../src/index.mjs';
+import * as routing from '../src/routing.mjs';
 
 const stages = ['additive', 'redirect'];
 const legacyHosts = {production: '000h.cojeev.com', beta: 'beta.000h.cojeev.com'};
@@ -279,8 +280,38 @@ test('non_redirect_stages_keep_additive_assets_and_physical_requests', async () 
   }
 });
 
-test('pure_decisions_expose_mounts_logical_paths_and_ordered_outcomes', async () => {
-  const {decide, CANONICAL_BASE, LEGACY_HOST} = await import('../src/routing.mjs');
+test('logical_path_preserves_legacy_and_normalizes_only_owned_canonical_mounts', () => {
+  assert.equal(typeof routing.logicalPath, 'function');
+  for (const [environment, url, expected] of [
+    ['production', 'https://cojeev.com/ui/admin', '/admin'],
+    ['production', 'https://cojeev.com/ui/health', '/health'],
+    ['production', 'https://000h.cojeev.com/ui/admin', '/ui/admin'],
+    ['production', 'https://cojeev.com/uikit/admin', '/uikit/admin'],
+    ['production', 'https://beta.000h.cojeev.com/ui/admin', '/ui/admin'],
+    ['beta', 'https://beta.000h.cojeev.com/ui/admin', '/admin'],
+    ['beta', 'https://beta.000h.cojeev.com/admin', '/admin'],
+    ['beta', 'https://cojeev.com/ui/admin', '/ui/admin'],
+    [undefined, 'https://cojeev.com/ui/admin', '/ui/admin'],
+    ['unknown', 'https://cojeev.com/ui/admin', '/ui/admin'],
+  ]) assert.equal(routing.logicalPath(new URL(url), {ENVIRONMENT: environment}), expected, `${environment} ${url}`);
+});
+
+test('unset_environment_fails_closed_on_every_host', async () => {
+  for (const stage of stages) for (const hostname of ['cojeev.com', '000h.cojeev.com', 'beta.000h.cojeev.com', 'x.workers.dev']) for (const path of ['/', '/health', '/ui', '/ui/health', '/r/button.json', '/ui/r/button.json']) {
+    const f = fixture({stage});
+    delete f.env.ENVIRONMENT;
+    const url = new URL(`https://${hostname}${path}`);
+    assert.deepEqual(routing.decide(url, 'GET', f.env), {kind: 'not-found'}, url.href);
+    const response = await host.fetch(new Request(url), f.env);
+    assert.equal(response.status, 404, url.href);
+    assert.equal(response.headers.has('location'), false, url.href);
+    assert.equal(f.assets.length, 0, url.href);
+    assert.equal(f.homepage.length, 0, url.href);
+  }
+});
+
+test('pure_decisions_expose_mounts_logical_paths_and_ordered_outcomes', () => {
+  const {decide, CANONICAL_BASE, LEGACY_HOST} = routing;
   assert.deepEqual(CANONICAL_BASE, {production: 'https://cojeev.com/ui', beta: 'https://beta.000h.cojeev.com/ui'});
   assert.deepEqual(LEGACY_HOST, legacyHosts);
   const env = {ENVIRONMENT: 'production', MIGRATION_STAGE: 'redirect'};

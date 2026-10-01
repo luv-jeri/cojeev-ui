@@ -19,8 +19,12 @@ test('beta and admin responses reject indexing; HTML revalidates and security he
   }
 });
 test('framework assets keep the asset layer cache (never a year-long one); missing routes retain real 404',async()=>{
-  const response=await host.fetch(new Request('https://beta.000h.cojeev.com/_next/static/chunks/abc123.js'),env('beta',200,'text/javascript'));
-  assert.equal(response.headers.get('cache-control'),null);
+  const assetEnv = env('beta',200,'text/javascript');
+  assetEnv.ASSETS.fetch = async () => new Response('chunk bytes', {headers: {'content-type': 'text/javascript', 'cache-control': 'public, max-age=60'}});
+  const response=await host.fetch(new Request('https://beta.000h.cojeev.com/ui/_next/static/chunks/abc123.js'),assetEnv);
+  assert.equal(response.status,200);
+  assert.equal(await response.text(),'chunk bytes');
+  assert.equal(response.headers.get('cache-control'),'public, max-age=60');
   assert.equal((await host.fetch(new Request('https://beta.000h.cojeev.com/absent/'),env('beta',404))).status,404);
 });
 test('health reveals only identity and private media never reaches website assets',async()=>{
@@ -56,11 +60,25 @@ test('ui_admin_and_beta_are_noindex', async () => {
   const production = headerRules('production');
   for (const path of ['/admin/*', '/feedback-admin/*', '/ui/admin/*', '/ui/feedback-admin/*']) assert.deepEqual(production.get(path), {'x-robots-tag': 'noindex, nofollow, noarchive'});
   assert.deepEqual(headerRules('beta').get('/*')['x-robots-tag'], 'noindex, nofollow, noarchive');
-  for (const path of ['/admin', '/admin/', '/admin/x', '/feedback-admin', '/feedback-admin/x']) assert.equal(headers.noindexPath(path), true, path);
-  for (const path of ['/docs/', '/administrator', '/feedback-admin-other', '/ui/admin']) assert.equal(headers.noindexPath(path), false, path);
+  for (const path of ['/admin', '/admin/', '/admin/x', '/feedback-admin', '/feedback-admin/x', '/ui/admin', '/ui/admin/', '/ui/admin/x', '/ui/feedback-admin', '/ui/feedback-admin/', '/ui/feedback-admin/x']) assert.equal(headers.noindexPath(path), true, path);
+  for (const path of ['/docs/', '/administrator', '/feedback-admin-other', '/ui/administrator', '/ui/feedback-admin-other', '/uikit/admin', '/ui-other/admin']) assert.equal(headers.noindexPath(path), false, path);
   for (const [url, method] of [['https://beta.000h.cojeev.com/ui', 'GET'], ['https://beta.000h.cojeev.com/ui/docs/', 'POST'], ['https://x.workers.dev/nope/', 'GET']]) {
     const response = await host.fetch(new Request(url, {method}), env('beta'));
     assert.equal(response.headers.get('x-robots-tag'), 'noindex, nofollow, noarchive');
+  }
+});
+
+test('production_legacy_ui_admin_paths_are_noindex', async () => {
+  for (const stage of ['additive', 'redirect']) for (const path of ['/ui/admin', '/ui/admin/', '/ui/admin/x', '/ui/feedback-admin', '/ui/feedback-admin/', '/ui/feedback-admin/x']) {
+    const response = await host.fetch(new Request(`https://000h.cojeev.com${path}`), {...env('production'), MIGRATION_STAGE: stage});
+    assert.equal(response.headers.get('x-robots-tag'), 'noindex, nofollow, noarchive', `${stage} ${path}`);
+  }
+});
+
+test('production_legacy_ui_metadata_is_no_store', async () => {
+  for (const stage of ['additive', 'redirect']) for (const path of ['/ui/health', '/ui/release.json']) {
+    const response = await host.fetch(new Request(`https://000h.cojeev.com${path}`), {...env('production', 200, 'application/json'), MIGRATION_STAGE: stage});
+    assert.equal(response.headers.get('cache-control'), 'no-store', `${stage} ${path}`);
   }
 });
 

@@ -12,7 +12,7 @@ export function securityHeaders(environment) {
 
 /** Logical admin routes are hidden from indexing, including paths without a trailing slash. */
 export function noindexPath(logical) {
-  return /^\/(?:admin|feedback-admin)(?:\/|$)/.test(logical);
+  return /^(?:\/ui)?\/(?:admin|feedback-admin)(?:\/|$)/.test(logical);
 }
 
 /**

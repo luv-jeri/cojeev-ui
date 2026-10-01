@@ -1,5 +1,5 @@
 import {noindexPath, securityHeaders} from './headers.mjs';
-import {decide, LEGACY_HOST} from './routing.mjs';
+import {decide, logicalPath} from './routing.mjs';
 
 /** @type {import('@cloudflare/workers-types').ExportedHandler<RegistryHostEnv>} */
 const host = {
@@ -38,13 +38,11 @@ const host = {
         response = await env.ASSETS.fetch(request);
         break;
     }
-    const canonicalHost = env.ENVIRONMENT === 'beta' ? LEGACY_HOST.beta : 'cojeev.com';
-    const logical = decision.kind === 'asset' ? decision.logical
-      : url.hostname === canonicalHost && url.pathname.startsWith('/ui/') ? url.pathname.slice(3) : url.pathname;
+    const logical = logicalPath(url, env);
     const secured = new Response(response.body,response);
     for (const [name,value] of Object.entries(securityHeaders(env.ENVIRONMENT))) secured.headers.set(name,value);
     if(env.ENVIRONMENT === 'beta' || noindexPath(logical)) secured.headers.set('x-robots-tag','noindex, nofollow, noarchive');
-    if(decision.kind === 'redirect' || logical === '/health' || logical === '/release.json') secured.headers.set('cache-control','no-store');
+    if(decision.kind === 'redirect' || /^(?:\/ui)?\/(?:health|release\.json)$/.test(logical)) secured.headers.set('cache-control','no-store');
     else if((response.headers.get('content-type') ?? '').includes('text/html')) secured.headers.set('cache-control','public, max-age=0, must-revalidate');
     if (request.method !== "GET" || decision.kind !== 'asset' || !decision.registryName || !env.REGISTRY_METRICS) return secured;
 

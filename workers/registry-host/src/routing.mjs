@@ -8,6 +8,16 @@ export const LEGACY_HOST = {
   beta: 'beta.000h.cojeev.com',
 };
 
+function canonicalHost(environment) {
+  return environment === 'production' ? 'cojeev.com' : LEGACY_HOST[environment];
+}
+
+/** Return the encoded logical path without changing the physical request path. */
+export function logicalPath(url, env) {
+  return url.hostname === canonicalHost(env.ENVIRONMENT) && url.pathname.startsWith('/ui/')
+    ? url.pathname.slice(3) : url.pathname;
+}
+
 /**
  * @typedef {{kind: 'not-found'} | {kind: 'delegate'} | {kind: 'method-not-allowed'} |
  *   {kind: 'redirect', location: string} | {kind: 'health'} |
@@ -23,18 +33,18 @@ export const LEGACY_HOST = {
  * @returns {Decision}
  */
 export function decide(url, method, env) {
-  const environment = env.ENVIRONMENT ?? 'production';
+  const environment = env.ENVIRONMENT;
   const legacyHost = LEGACY_HOST[environment];
-  const canonicalHost = environment === 'production' ? 'cojeev.com' : legacyHost;
+  const canonical = canonicalHost(environment);
   const path = url.pathname;
 
-  if (url.hostname !== legacyHost && url.hostname !== canonicalHost) return {kind: 'not-found'};
-  if (environment === 'production' && url.hostname === canonicalHost && path !== '/ui' && !path.startsWith('/ui/')) return {kind: 'delegate'};
+  if (url.hostname !== legacyHost && url.hostname !== canonical) return {kind: 'not-found'};
+  if (environment === 'production' && url.hostname === canonical && path !== '/ui' && !path.startsWith('/ui/')) return {kind: 'delegate'};
   if (method !== 'GET' && method !== 'HEAD') return {kind: 'method-not-allowed'};
-  if (url.hostname === canonicalHost && path === '/ui') return {kind: 'redirect', location: `${CANONICAL_BASE[environment]}/${url.search}`};
+  if (url.hostname === canonical && path === '/ui') return {kind: 'redirect', location: `${CANONICAL_BASE[environment]}/${url.search}`};
 
-  const mount = url.hostname === canonicalHost && path.startsWith('/ui/') ? 'canonical' : 'legacy';
-  const logical = mount === 'canonical' ? path.slice(3) : path;
+  const logical = logicalPath(url, env);
+  const mount = logical !== path ? 'canonical' : 'legacy';
   if (logical === '/health') return {kind: 'health'};
   if (/^(?:\/ui)?\/(?:media|backups|private|v1)(?:\/|$)/.test(logical)) return {kind: 'not-found'};
   const registry = logical.match(/^\/r\/([a-z0-9][a-z0-9-]{0,79})\.json$/);

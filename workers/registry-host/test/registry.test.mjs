@@ -41,7 +41,8 @@ test("HEAD, non-registry, and invalid paths never count as registry requests", a
   assert.equal(events.length, 0);
 });
 
-test("an HTML fallback is an error and telemetry failure never breaks installation", async () => {
+test("an HTML fallback is an error and telemetry failure never breaks installation", async t => {
+  const warn = t.mock.method(console, 'warn', () => {});
   const wrong = fixture({ mime: "text/html" });
   await host.fetch(new Request("https://000h.cojeev.com/r/button.json"), wrong.env);
   assert.equal(wrong.events[0].blobs[3], "error");
@@ -49,9 +50,13 @@ test("an HTML fallback is an error and telemetry failure never breaks installati
   const response = await host.fetch(new Request("https://000h.cojeev.com/r/button.json"), failed.env);
   assert.equal(response.status, 200);
   assert.equal(await response.text(), '{"name":"button"}');
+  assert.equal(warn.mock.callCount(), 1);
+  assert.deepEqual(warn.mock.calls[0].arguments, ['{"event":"registry_metrics_unavailable"}']);
 });
 
-test('both_registry_paths_preserve_metrics_and_probe_labels', async () => {
+test('both_registry_paths_preserve_metrics_and_probe_labels', async t => {
+  const warn = t.mock.method(console, 'warn', () => {});
+  let failedWrites = 0;
   for (const environment of ['production', 'beta']) for (const stage of ['additive', 'redirect']) for (const [mount, hostname, path] of [
     ['legacy', environment === 'beta' ? 'beta.000h.cojeev.com' : '000h.cojeev.com', '/r/cojeev.json'],
     ['canonical', environment === 'beta' ? 'beta.000h.cojeev.com' : 'cojeev.com', '/ui/r/cojeev.json'],
@@ -64,11 +69,15 @@ test('both_registry_paths_preserve_metrics_and_probe_labels', async () => {
     assert.equal(response.headers.has('location'), false);
     assert.equal(await response.text(), '{"name":"button"}');
     assert.deepEqual(events, [{indexes: ['cojeev'], blobs: ['cojeev', 'foundation', audience, outcome, mount], doubles: [status]}]);
+    assert.equal(warn.mock.callCount(), failedWrites);
     const failed = fixture({fail: true});
     failed.env.ENVIRONMENT = environment;
     failed.env.MIGRATION_STAGE = stage;
     const recovered = await host.fetch(new Request(`https://${hostname}${path}`, {headers: {'x-cojeev-probe': '1'}}), failed.env);
     assert.equal(recovered.status, 200);
     assert.equal(await recovered.text(), '{"name":"button"}');
+    failedWrites++;
+    assert.equal(warn.mock.callCount(), failedWrites);
+    assert.deepEqual(warn.mock.calls[failedWrites - 1].arguments, ['{"event":"registry_metrics_unavailable"}']);
   }
 });
