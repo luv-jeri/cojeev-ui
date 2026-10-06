@@ -39,6 +39,7 @@
     "BETA_TESTER_EMAILS": "",
     "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
     "DEPLOYMENT_INTENT": "active",
+    "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
     "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
   },
   "d1_databases": [
@@ -83,6 +84,7 @@
         "BETA_TESTER_EMAILS": "unread.fyi@gmail.com",
         "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
         "DEPLOYMENT_INTENT": "active",
+        "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui-beta-feedback"
       },
       "d1_databases": [
@@ -128,6 +130,7 @@
         "BETA_TESTER_EMAILS": "",
         "REPORT_NOTIFICATION_EMAIL": "unread.fyi@gmail.com",
         "DEPLOYMENT_INTENT": "active",
+        "APP_GITHUB_REPOSITORY": "luv-jeri/cojeev",
         "GITHUB_REPOSITORY": "luv-jeri/cojeev-ui"
       },
       "d1_databases": [
