@@ -5,6 +5,7 @@ export interface Env {
   ALLOWED_ORIGINS: string; SITE_URL: string; LOCAL_MODE?: string;
   TURNSTILE_SITE_KEY?: string; TURNSTILE_SECRET?: string; IP_HASH_SECRET?: string;
   ADMIN_TOKEN?: string; HEALTH_TOKEN?: string; GITHUB_TOKEN?: string; GITHUB_REPOSITORY?: string;
+  APP_GITHUB_REPOSITORY?: string;
   GITHUB_PROJECT_ID?: string; GITHUB_WEBHOOK_SECRET?: string;
   EMAIL_FROM?: string; EMAIL_ENABLED?: string;
   RESEND_API_KEY?: string; RESEND_WEBHOOK_SECRET?: string;
@@ -13,6 +14,7 @@ export interface Env {
   REPORT_NOTIFICATION_EMAIL?: string; DEPLOYMENT_INTENT?: string;
 }
 export interface ReportRow {
+  source: "website" | "app"; app_category: AppReportCategory | null; destination_repository: string | null;
   id: string; token_hash: string; payload_hash: string; kind: ReportKind;
   title: string; description: string; email: string; contact_hash: string; references_json: string;
   diagnostics_json: string | null; pins_json: string; topic_id: string | null;
@@ -23,6 +25,9 @@ export interface ReportRow {
   triaged_at: number | null; verified_at: number | null; status_key: string | null;
   created_at: number; updated_at: number; technical_purged: number; private_purged: number;
 }
+export type AppReportCategory = "memory" | "handoff" | "sharing" | "updates" | "skills-beta" | "crash" | "ui";
+export type AppReportPayload = { id: string; installId: string; category: AppReportCategory; message: string; diagnostics: string | null; appVersion: string; platform: "macos" | "windows" };
+export type AppReportReceipt = { id: string; status: "accepted" };
 export interface AttachmentRow { id: string; report_id: string; name: string; type: string; size: number; sha256: string; state: string; object_key: string }
 export interface Delivery { id: string; report_id: string; kind: string; state: string; attempts: number; due_at: number; lease_until: number; lease_token: string | null; last_error: string | null; payload_json: string | null; first_attempt_at: number | null; reviewed_at: number | null; delivery_status: string; provider_id: string | null }
 export const now = () => Date.now();
