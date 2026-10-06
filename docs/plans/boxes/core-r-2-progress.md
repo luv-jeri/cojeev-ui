@@ -54,3 +54,12 @@ REMOTE-DELTA: 0 changes pending coordinator. No GitHub mutations or gh commands 
 3. Run focused Worker regression checks and typecheck under the compile lock; check the running Worker once with isolated fixtures; review the ancestor diff and commit locally.
 
 Check-running time is recorded separately from test writing, implementation/debugging, review and setup at completion.
+
+Integrator commits: `bc6b6d5` contract, `fcb0441` types/migration, `e091a24` repository settings. Route composition is committed separately before implementation; its acceptApp export is supplied by the next implementation commit. Existing sorted migration discovery probes 0005 in the unchanged test bootstrap; no separate invented prose checker/manifest is added.
+
+RED command: `rtk proxy lockf /Volumes/CojeevBuild/lanes/compile.lock node --test --test-name-pattern='app_report_' workers/reporting/test/integration.test.mjs` (exit 1, duration 702.903292 ms). These are feature failures against the missing route, before production implementation:
+- `app_report_creates_labelled_issue`: “native app report must be accepted without website Origin/Turnstile”; “404 !== 201”.
+- `app_report_retry_is_idempotent`: “concurrent retries must share one durable report”; “actual: [ 404, 404 ], expected: [ 200, 201 ]”.
+- `app_report_rejects_bad_category_and_oversize`: “404 !== 422” on category `bug` (not in the allowlist).
+- `app_report_rate_limited_per_install`: “404 !== 201” on the first allowed report, before reaching the sixth-report assertion.
+The initial attempt during dependency extraction failed in Miniflare startup with “Error: spawn Unknown system error -88” (910.173042 ms); it is not counted as RED evidence. The workerd binary finished extraction and the rerun above exercised the route.

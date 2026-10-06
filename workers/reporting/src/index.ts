@@ -1,4 +1,4 @@
-import { accept, authorizeReceipt, authorizeStatus, publicStatus, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
+import { accept, acceptApp, authorizeReceipt, authorizeStatus, publicStatus, getReport, listRequests, privateAttachment, privateDetail, receipt, upload } from "./reports";
 import { assertBrowserOrigin, equalSecret, HttpError, origins, readJSON, requireAdmin } from "./security";
 import { activationCutoff, emailEnabled, expectedActive, githubEnabled, now, ownerNotificationEmail, type Env, type Delivery } from "./types";
 import { emailLimits, resendWebhook } from './resend';
@@ -16,6 +16,10 @@ async function route(request:Request,env:Env,ctx:Context):Promise<Response> {
   if(path==="/v1/github/webhook"&&request.method==="POST") { const result=await webhook(request,env);ctx.waitUntil(drain(env));return json(result,202); }
   if(path==="/v1/config"&&request.method==="GET") return json({emailEnabled:emailEnabled(env),turnstileSiteKey:env.TURNSTILE_SITE_KEY??"",local:env.LOCAL_MODE==="true"});
   if(path==="/v1/requests"&&request.method==="GET") return json(await listRequests(env,url));
+  if(path==="/v1/app-reports"&&request.method==="POST") {
+    const result=await acceptApp(request,env);
+    ctx.waitUntil(drain(env,result.receipt.id));return json(result.receipt,result.fresh?201:200);
+  }
   if(path==="/v1/reports"&&request.method==="POST") {
     assertBrowserOrigin(request,env);const result=await accept(request,env);
     ctx.waitUntil(drain(env,result.receipt.id));return json(result.receipt,result.fresh?201:200);
