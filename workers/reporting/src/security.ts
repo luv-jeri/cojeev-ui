@@ -49,6 +49,16 @@ export async function checkAbuse(request: Request, env: Env, token: unknown, id:
   const hosts = origins(env).map(v=>new URL(v).hostname);
   if(!result.success || !result.hostname || !hosts.includes(result.hostname) || result.action !== "reporting") throw new HttpError(403,"The security check expired. Please try again.");
 }
+export async function appAdmission(request: Request, env: Env, installId: string) {
+  const isLocal=env.LOCAL_MODE==="true"&&["localhost","127.0.0.1","[::1]"].includes(new URL(request.url).hostname);
+  const ip=request.headers.get("CF-Connecting-IP");
+  if(!isLocal&&(!ip||!env.IP_HASH_SECRET||env.IP_HASH_SECRET.length<32)) throw new HttpError(503,"Reporting protection is not configured yet.");
+  const time=Date.now(),slot=Math.floor(time/600000),expires=(slot+1)*600000;
+  const keys=await Promise.all([`install:${installId}`,`ip:${ip??"local"}`].map(value=>keyedDigest(env.IP_HASH_SECRET??"local-only",`app-rate:${slot}:${value}`)));
+  // These statements run in the same transaction as report/outbox insertion.
+  // A racing duplicate's unique-ID failure rolls back its quota increments.
+  return {keys,retryAfter:Math.max(1,Math.ceil((expires-time)/1000)),statements:keys.map(key=>env.DB.prepare("INSERT INTO rate_limits(key,count,expires_at) VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1").bind(key,expires))};
+}
 export async function verifyWebhook(request: Request, env: Env, body: ArrayBuffer) {
   if(!env.GITHUB_WEBHOOK_SECRET) throw new HttpError(503,"GitHub webhook is not configured.");
   const signature=request.headers.get("X-Hub-Signature-256") ?? "";

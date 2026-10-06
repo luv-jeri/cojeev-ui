@@ -70,13 +70,14 @@ async function github(env:Env,path:string,init:RequestInit={}, send=fetch) {
 }
 type GitHubIssue={number:number;node_id:string;html_url:string;body?:string;created_at?:string;user?:{id:number;login:string};pull_request?:unknown};
 export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
-  if(!githubEnabled(env)) throw new DeliveryFailure("GitHub setup required.",false,true);
+  const repository=row.source==="app"?row.destination_repository:env.GITHUB_REPOSITORY;
+  if(!githubEnabled({...env,GITHUB_REPOSITORY:repository??undefined})) throw new DeliveryFailure("GitHub setup required.",false,true);
   if(row.issue_number) return {number:row.issue_number,node_id:row.issue_node_id,html_url:row.issue_url};
   const actor=await github(env,"/user",{},send);
   if(typeof actor.id!=="number"||!Number.isSafeInteger(actor.id)||actor.id<=0) throw new DeliveryFailure("GitHub token owner could not be verified.",false,true);
   // A signed marker prevents a different contributor from spoofing a receipt.
   const marker=`<!-- cojeev-report:${row.id}:${await keyedDigest(env.IP_HASH_SECRET??env.GITHUB_TOKEN!,`github-report:${row.id}`)} -->`;
-  const repo=`/repos/${env.GITHUB_REPOSITORY}`;
+  const repo=`/repos/${repository}`;
   const since=new Date(row.created_at-60000).toISOString();
   let original:GitHubIssue|undefined;
   for(let page=1;page<=10;page++) {
@@ -87,7 +88,12 @@ export async function mirrorIssue(env:Env,row:ReportRow,send=fetch) {
     if(issues.length<100) { if(original) return original; break; }
     if(page===10) throw new DeliveryFailure("Issue reconciliation needs a maintainer: too many matching pages.",false,true);
   }
-  return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify(publicIssue(row,marker))},send) as unknown as GitHubIssue;
+  const payload=row.source==="app"?{
+    title:scrubPublic(row.title,120),
+    body:`${scrubPublic(row.title,120)}\n\n${scrubPublic(row.description,2000)}${row.diagnostics_json?`\n\nDiagnostics:\n${scrubPublic(JSON.parse(row.diagnostics_json) as string,1600)}`:""}\n\n${marker}`,
+    labels:["user-report",row.app_category]
+  }:publicIssue(row,marker);
+  return await github(env,`${repo}/issues`,{method:"POST",body:JSON.stringify(payload)},send) as unknown as GitHubIssue;
 }
 const EMAIL_KINDS=["email_received","email_resolved","email_owner_received","email_accepted","email_rejected"];
 export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Promise<string> {
@@ -105,8 +111,10 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
     const issue=await mirrorIssue(env,row,send);
     if(!issue.number||!issue.node_id||!issue.html_url) throw new DeliveryFailure("GitHub issue receipt incomplete.",true);
     const statements=[env.DB.prepare("UPDATE reports SET issue_number=?,issue_node_id=?,issue_url=? WHERE id=?").bind(issue.number,issue.node_id,issue.html_url,row.id)];
-    statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_accepted',?,?,?)").bind(`${row.id}:email_accepted`,row.id,now(),now(),now()));
-    if(env.GITHUB_PROJECT_ID) statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github_project',?,?)").bind(`${row.id}:github_project`,row.id,now(),now()));
+    if(row.source!=="app") {
+      statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at,reviewed_at) VALUES(?,?,'email_accepted',?,?,?)").bind(`${row.id}:email_accepted`,row.id,now(),now(),now()));
+      if(env.GITHUB_PROJECT_ID) statements.push(env.DB.prepare("INSERT OR IGNORE INTO outbox(id,report_id,kind,due_at,created_at) VALUES(?,?,'github_project',?,?)").bind(`${row.id}:github_project`,row.id,now(),now()));
+    }
     await env.DB.batch(statements); return String(issue.number);
   }
   if(job.kind==="github_project") {
@@ -141,28 +149,33 @@ export async function deliver(env:Env,job:Delivery,row:ReportRow,send=fetch):Pro
   return sendResend(env,job,emailPayload(env,job,row.email,emailMessage(row,job.kind,env.SITE_URL)),send);
 }
 export async function drain(env:Env,reportId?:string,send=fetch) {
+  // App creation is safe to retry only through mirrorIssue's signed-marker scan.
+  await env.DB.prepare("UPDATE outbox SET state='pending',due_at=?,lease_token=NULL,delivery_status='uncertain' WHERE kind='github' AND state='processing' AND lease_until<? AND attempts<8 AND report_id IN (SELECT id FROM reports WHERE source='app')").bind(now(),now()).run();
   // A crashed send has an unknown remote outcome. Never blindly resend it.
   await env.DB.prepare("UPDATE outbox SET state='needs_review',last_error='Delivery lease expired; check the provider before retrying.',lease_token=NULL WHERE state='processing' AND lease_until<?").bind(now()).run();
   const cutoff=activationCutoff(env);
   await env.DB.prepare("UPDATE outbox SET state='held',last_error='Delivery activation or historical review required.' WHERE state='pending' AND (? IS NULL OR (reviewed_at IS NULL AND report_id IN (SELECT id FROM reports WHERE created_at<?)))").bind(cutoff,cutoff).run();
   if(cutoff===null) return {processed:0};
-  const enabledKinds=[...(emailEnabled(env)?EMAIL_KINDS:[]),...(githubEnabled(env)?["github","github_state",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:[])];
+  const appEnabled=!!env.GITHUB_TOKEN&&/^[\w.-]+\/[\w.-]+$/.test(env.APP_GITHUB_REPOSITORY??"");
+  const enabledKinds=[...(emailEnabled(env)?EMAIL_KINDS:[]),...(githubEnabled(env)?["github","github_state",...(env.GITHUB_PROJECT_ID?["github_project"]:[])]:appEnabled?["github"]:[])];
   if(!enabledKinds.length) return {processed:0};
   // Disabled providers must not consume the batch window and starve enabled work.
-  const jobs=await env.DB.prepare(`SELECT * FROM outbox WHERE state='pending' AND due_at<=? AND kind IN (${enabledKinds.map(()=>"?").join(",")}) ${reportId?"AND report_id=?":""} ORDER BY created_at,id LIMIT 20`).bind(now(),...enabledKinds,...(reportId?[reportId]:[])).all<Delivery>();
+  const jobs=await env.DB.prepare(`SELECT * FROM outbox WHERE state='pending' AND due_at<=? AND kind IN (${enabledKinds.map(()=>"?").join(",")}) AND (kind<>'github' OR report_id IN (SELECT id FROM reports WHERE (source='website' AND ?=1) OR (source='app' AND ?=1))) ${reportId?"AND report_id=?":""} ORDER BY created_at,id LIMIT 20`).bind(now(),...enabledKinds,Number(githubEnabled(env)),Number(appEnabled),...(reportId?[reportId]:[])).all<Delivery>();
   let processed=0;
   for(const job of jobs.results) {
-    if(job.kind.startsWith("email")&&!emailEnabled(env) || job.kind.startsWith("github")&&!githubEnabled(env)) continue;
+    const row=await getReport(env,job.report_id);
+    const appJob=job.kind==="github"&&row.source==="app";
+    if(job.kind.startsWith("email")&&!emailEnabled(env) || job.kind.startsWith("github")&&!(appJob?appEnabled:githubEnabled(env))) continue;
     const lease=crypto.randomUUID();
     const claim=await env.DB.prepare("UPDATE outbox SET state='processing',attempts=attempts+1,lease_until=?,lease_token=? WHERE id=? AND state='pending' RETURNING id").bind(now()+300000,lease,job.id).first();
     if(!claim) continue;
     processed++;
     try {
-      const provider=await deliver(env,job,await getReport(env,job.report_id),send);
+      const provider=await deliver(env,job,row,send);
       await env.DB.prepare("UPDATE outbox SET state='done',provider_id=?,lease_token=NULL,last_error=NULL WHERE id=? AND lease_token=?").bind(provider,job.id,lease).run();
     } catch(error) {
       const failure=error instanceof DeliveryFailure?error:new DeliveryFailure("Delivery could not be confirmed. Check provider status.",true);
-      const review=!failure.quota&&(failure.ambiguous||failure.permanent||job.attempts>=7);
+      const review=!failure.quota&&((failure.ambiguous&&!appJob)||failure.permanent||job.attempts>=7);
       await env.DB.prepare("UPDATE outbox SET state=?,last_error=?,due_at=?,lease_token=NULL,delivery_status=? WHERE id=? AND lease_token=?").bind(review?"needs_review":"pending",failure.reason,now()+(failure.quota?3600000:Math.min(86400000,60000*2**job.attempts)),failure.quota?'quota':failure.ambiguous?'uncertain':review?'failed':'queued',job.id,lease).run();
     }
   }
