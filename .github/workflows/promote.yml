@@ -185,7 +185,6 @@ jobs:
       CURRENT_COMMIT: ${{ inputs.current_commit }}
       CURRENT_PHASE: ${{ inputs.current_phase }}
       CURRENT_DIGEST: ${{ inputs.current_digest }}
-      PROMOTION_EVIDENCE: ${{ runner.temp }}/promotion-evidence.jsonl
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -202,7 +201,9 @@ jobs:
           cp .github/wrangler-runtime/package*.json "$RUNNER_TEMP/cojeev-wrangler/"
           npm ci --ignore-scripts --prefix "$RUNNER_TEMP/cojeev-wrangler"
           echo "WRANGLER_BIN=$RUNNER_TEMP/cojeev-wrangler/node_modules/wrangler/bin/wrangler.js" >> "$GITHUB_ENV"
-          : > "$PROMOTION_EVIDENCE"
+          # runner.temp is not allowed in job-level env, so later steps get the path through GITHUB_ENV.
+          echo "PROMOTION_EVIDENCE=$RUNNER_TEMP/promotion-evidence.jsonl" >> "$GITHUB_ENV"
+          : > "$RUNNER_TEMP/promotion-evidence.jsonl"
       - name: Validate candidate, peer and current source run provenance
         id: provenance
         run: |

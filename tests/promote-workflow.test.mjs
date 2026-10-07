@@ -52,7 +52,8 @@ test('promote_workflow_runs_gates_before_targeted_promotion', t => {
   assert.equal(steps[1].with['node-version'], '22.22.0');
   assert.equal(steps[2].run, 'npm ci --ignore-scripts');
   assert.match(get(steps, 'runtime').run, /wrangler-runtime\/package\*\.json/);
-  assert.equal(job.env.PROMOTION_EVIDENCE, '${{ runner.temp }}/promotion-evidence.jsonl');
+  assert.equal(job.env.PROMOTION_EVIDENCE, undefined);
+  assert.match(get(steps, 'runtime').run, /echo "PROMOTION_EVIDENCE=\$RUNNER_TEMP\/promotion-evidence\.jsonl" >> "\$GITHUB_ENV"/);
   const order = ['runtime', 'provenance', 'candidate', 'peer', 'current', 'baseline', 'verify', 'plan',
     ...gateNames, 'promote', 'post-live', 'post-component', 'failure'];
   const positions = order.map(id => steps.indexOf(get(steps, id)));
@@ -267,4 +268,16 @@ test('health_recovery_and_diagnostics_keep_existing_protections', () => {
   assert.equal(failure.env.GH_TOKEN, '${{ github.token }}');
   assert.doesNotMatch(JSON.stringify(failure), /secrets\./);
   assert.ok(steps.indexOf(failure) > steps.indexOf(get(steps, 'post-component')));
+});
+
+test('workflow_and_job_env_never_use_the_runner_context', () => {
+  // GitHub rejects the whole file when workflow- or job-level env reads runner.* (it exists only inside steps).
+  const dir = path.join(root, '.github/workflows');
+  for (const name of fs.readdirSync(dir).filter(file => /\.ya?ml$/.test(file))) {
+    const workflow = parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+    const envs = [['workflow', workflow.env], ...Object.entries(workflow.jobs ?? {}).map(([id, job]) => [id, job.env])];
+    for (const [where, env] of envs)
+      for (const [key, value] of Object.entries(env ?? {}))
+        assert.doesNotMatch(String(value), /\$\{\{[^}]*\brunner\./, `${name} ${where}.env.${key}`);
+  }
 });
