@@ -893,7 +893,7 @@
       "name": "activity-feed",
       "type": "registry:ui",
       "title": "Activity feed",
-      "description": "An ordered, date-grouped history with a quiet connecting margin, readable actors and timestamps, and updates that keep your place.",
+      "description": "An ordered, date-grouped history in three looks (a living thread, a quiet ledger or gathered bursts), with readable actors and timestamps, and updates that keep your place.",
       "registryDependencies": [
         "https://luv-jeri.github.io/cojeev-ui/r/cojeev.json",
         "https://luv-jeri.github.io/cojeev-ui/r/animated-icon.json",
@@ -905,11 +905,23 @@
         "https://luv-jeri.github.io/cojeev-ui/r/presence.json",
         "https://luv-jeri.github.io/cojeev-ui/r/typography.json"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "motion"
+      ],
       "files": [
         {
           "path": "registry/cojeev/ui/activity-feed.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/cojeev/lib/activity-motion.tsx",
+          "type": "registry:lib",
+          "target": "lib/cojeev/activity-motion.tsx"
+        },
+        {
+          "path": "registry/cojeev/lib/milestone-travel.tsx",
+          "type": "registry:lib",
+          "target": "lib/cojeev/milestone-travel.tsx"
         },
         {
           "path": "registry/cojeev/styles/activity-feed.css",
@@ -924,7 +936,9 @@
         "source": {
           "name": "Activity feed",
           "variants": [
-            "default"
+            "thread",
+            "ledger",
+            "bursts"
           ],
           "sizes": [
             "default"
@@ -982,6 +996,12 @@
                 "type": "React.ReactNode",
                 "required": false,
                 "description": ""
+              },
+              {
+                "name": "variant",
+                "type": "\"thread\" | \"ledger\" | \"bursts\"",
+                "required": false,
+                "description": "Look of the history. \"thread\": one row per entry on a living thread. \"ledger\": dense,\none avatar per run of entries by the same actor within a group, pinned group labels.\n\"bursts\": one card per actor's updates made within 30 minutes of each other; two or\nmore become a native disclosure titled \"N updates\"."
               }
             ]
           }

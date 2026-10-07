@@ -28,7 +28,25 @@ export function createDetailTests({ assert, eventually, text, attribute, key }) 
       });
       const ids = await entries.evaluateAll(nodes => nodes.map(node => node.dataset.activityEntry));
       assert.equal(new Set(ids).size, 5);
-      return "Progressive reveal moves focus, local prepend preserves all five entries, and quiet content remains readable";
+      await reduced(page, async () => {
+        // Undo is caller content: the entry carries it, the example keeps the way back.
+        await feed.locator('[data-activity-entry="brief"] [data-brand]').waitFor();
+        await feed.locator('[data-activity-entry="brief"]').getByRole("button", { name: "Undo", exact: true }).click();
+        await eventually(async () => await entries.count() === 4, "Undo removes the entry");
+        await text(root.getByRole("status").filter({ hasText: "Undone" }), "Undone · Collected the starting notes");
+        await eventually(() => root.getByRole("button", { name: "Redo", exact: true }).evaluate(el => el === document.activeElement), "Focus moves to Redo");
+        await root.getByRole("button", { name: "Redo", exact: true }).click();
+        await eventually(async () => await entries.count() === 5, "Redo restores the entry");
+        await eventually(() => feed.locator('[data-activity-entry="brief"]').getByRole("button", { name: "Undo", exact: true }).evaluate(el => el === document.activeElement), "Focus returns to Undo");
+        // The example's switcher changes the look and keeps every entry.
+        for (const [label, look] of [["Ledger", "ledger"], ["Bursts", "bursts"], ["Thread", "thread"]]) {
+          await root.getByRole("radio", { name: label, exact: true }).click();
+          await attribute(feed, "data-variant", look);
+          assert.equal(await entries.count(), 5, `${label} keeps every entry`);
+          if (look === "bursts") await text(feed.locator("summary.v-activity-feed__card-head").first(), "2 updates");
+        }
+      });
+      return "Progressive reveal moves focus, local prepend preserves all five entries, quiet content remains readable, caller undo/redo keeps focus, and the three looks keep every entry";
     },
     appearance: async ({ page, root }) => {
       const reset = root.getByRole("button", { name: "Reset appearance", exact: true });
