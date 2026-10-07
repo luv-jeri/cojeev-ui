@@ -596,7 +596,7 @@ jobs:
     timeout-minutes: 20
     environment:
       name: beta
-      url: https://beta.000h.cojeev.com
+      url: https://beta.000h.cojeev.com/ui
     concurrency:
       group: deploy-beta
       cancel-in-progress: false
@@ -652,7 +652,7 @@ jobs:
     timeout-minutes: 20
     environment:
       name: production
-      url: https://000h.cojeev.com
+      url: https://www.cojeev.com/ui
     concurrency:
       group: deploy-production
       cancel-in-progress: false

@@ -1110,3 +1110,9 @@ test('email_html_escapes_every_value',()=>{
   assert.ok(m.html.includes(`href="${esc(evil)}"`)&&m.html.includes(`href="${esc(`${site}/track/#rid.${'e'.repeat(64)}`)}"`));
   assert.ok(r.html.includes(`href="${esc(evil)}"`));
 });
+
+test('production component resolution accepts the canonical ui path and rejects other origins or root docs',()=>{
+  const env=backendEnv({SITE_URL:'https://www.cojeev.com/ui',LOCAL_MODE:'false'});
+  assert.equal(backend.componentURL('https://www.cojeev.com/ui/docs/x/',env),'https://www.cojeev.com/ui/docs/x/');
+  for(const url of ['https://www.cojeev.com/docs/x/','https://cojeev.com/ui/docs/x/','https://000h.cojeev.com/docs/x/','https://www.cojeev.com/ui/docs/x/?next=1']) assert.throws(()=>backend.componentURL(url,env),error=>error.status===422);
+});

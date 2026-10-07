@@ -36,7 +36,7 @@ const LOCAL_HOSTS=['localhost','127.0.0.1','[::1]'];
 export function validateContent(file, content, environment) {
   const target=environmentConfig(environment);
   const opposite=environmentConfig(environment==='beta'?'production':'beta');
-  const forbidden=[new URL(opposite.site).hostname,new URL(opposite.api).hostname,'luv-jeri.github.io'];
+  const forbidden=[new URL(opposite.site).hostname,new URL(opposite.api).hostname,'000h.cojeev.com','luv-jeri.github.io'];
   // A dependency position: a malformed value here is reported by name instead of
   // surfacing as a bare TypeError from the URL parser.
   const reject=url=>{
@@ -97,7 +97,7 @@ export async function createManifest(root, environment, commit) {
     if(/(^|\/)(?:\.|private|backup|reports|secrets)/i.test(file) || /\.(?:sql|sqlite|db|pem|key|map)$/i.test(file) && !/^api\/migrations\/\d{4}_[a-z_]+\.sql$/.test(file)) throw new Error(`Private/forbidden artifact path: ${file}`);
     if(!/^(site\/|api\/|website\/)/.test(file)) throw new Error(`Unexpected artifact path: ${file}`);
     // The hosting Worker answers 404 here, but static files (see run_worker_first) never reach it.
-    if(/^site\/(?:media|backups|private|v1)(?:\/|$)/.test(file)) throw new Error(`Reserved website path: ${file}`);
+    if(/^site\/(?:ui\/)?(?:media|backups|private|v1)(?:\/|$)/.test(file)) throw new Error(`Reserved website path: ${file}`);
     const bytes=await fs.readFile(path.join(root,file));
     // Scanned: every public `site/**` .html/.js/.css/.json byte served to browsers,
     // plus sitemap.xml, robots.txt and the __next RSC .txt payloads for an
@@ -113,7 +113,7 @@ export async function createManifest(root, environment, commit) {
     if(/\.(html|js|css|json|xml|txt)$/.test(file)) validateContent(file,bytes.toString('utf8'),environment);
     files[file]=hash(bytes);
   }
-  if(!files['site/index.html']) throw new Error('Missing website artifact');
+  if(!files['site/ui/index.html']) throw new Error('Missing website artifact');
   return {schema:1,environment,commit,files};
 }
 export async function verifyManifest(root, manifest, expected) {

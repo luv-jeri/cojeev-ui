@@ -20,6 +20,6 @@ export function siteHeaders(environment) {
   // _headers also applies to 404s, and a year-cached 404 would outlive a rollback that restores the file.
   const rules=environment === 'beta'
     ? {'/*':{...securityHeaders(environment),...noindex}}
-    : {'/*':securityHeaders(environment),'/admin/*':noindex,'/feedback-admin/*':noindex};
+    : {'/*':securityHeaders(environment),'/admin/*':noindex,'/feedback-admin/*':noindex,'/ui/admin/*':noindex,'/ui/feedback-admin/*':noindex};
   return Object.entries(rules).map(([pattern,headers])=>`${pattern}\n${Object.entries(headers).map(([name,value])=>`  ${name}: ${value}`).join('\n')}\n`).join('\n');
 }

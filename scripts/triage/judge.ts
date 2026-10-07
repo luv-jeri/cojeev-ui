@@ -4,7 +4,9 @@ import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { VERDICT_SCHEMA, validateVerdictRequest, type TriageInput, type Verdict } from "../../lib/reporting/triage-contract";
 
-const PROMPT = `You are triaging one visitor report for 000h, an open-source React component library (https://000h.cojeev.com).
+import { environmentConfig } from "../release-config.mjs";
+
+const PROMPT = `You are triaging one visitor report for 000h, an open-source React component library (${environmentConfig("production").site}).
 Decide whether it is a real, actionable report.
 
 approved — a bug: something broken or wrong in the 000h components or its documentation site, described well enough to act on.

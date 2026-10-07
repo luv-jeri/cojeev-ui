@@ -7,4 +7,4 @@
 - [Documentation components](reference/DOCS-COMPONENTS.md): working on the component documentation site.
 - [Reporting development](reporting/README.md): running the optional feedback service locally.
 
-Browse the [live component documentation](https://000h.cojeev.com/docs/) for examples and component APIs.
+Browse the [live component documentation](https://www.cojeev.com/ui/docs/) for examples and component APIs.

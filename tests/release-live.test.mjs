@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {checkLiveRelease,liveProblems,LIVE_BUDGET_MS,LIVE_RETRY_WAITS,releaseMetadata,TRANSIENT_LIVE_PROBLEMS} from '../scripts/release.mjs';
 
 const commit='a'.repeat(40),token='t'.repeat(40);
-const site='https://beta.000h.cojeev.com',api='https://feedback-beta.cojeev.com';
+const site='https://beta.000h.cojeev.com/ui',api='https://feedback-beta.cojeev.com';
 const headers={'x-content-type-options':'nosniff','x-robots-tag':'noindex, nofollow'};
 // A live release is a service expected to deliver, so this stands for one that declares
 // itself active with every delivery path configured, the maintainer alert included.

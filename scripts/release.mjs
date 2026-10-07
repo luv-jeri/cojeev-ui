@@ -5,7 +5,7 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
-import {buildEnvironment,environmentConfig} from './release-config.mjs';
+import {buildEnvironment,environmentConfig,reportingOrigins} from './release-config.mjs';
 import {assertCleanSource,copyCommittedSource,createManifest,manifestDigest,verifyManifest} from './release-manifest.mjs';
 import {prepareDatabaseRecovery,cloudflare,composeSecretBundles,validateDeploymentConfig,validateSecrets,wrangler} from './operations.mjs';
 import {checkHealth} from './operations-health.mjs';
@@ -18,6 +18,16 @@ export function releaseMetadata(environment,commit,publicEnv) {
     release:commit,
     analyticsEnabled:publicEnv.NEXT_PUBLIC_ANALYTICS_ENABLED==='true'&&Boolean(publicEnv.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN?.trim()),
   };
+}
+// Next exports paths relative to the application root. Cloudflare assets need
+// the URL prefix on disk; _headers and the fallback 404 remain at the asset root.
+export async function prepareStaticOutput(output,environment,commit,publicEnv) {
+  const entries=await fs.readdir(output);
+  await fs.mkdir(path.join(output,'ui'));
+  for(const entry of entries) await fs.rename(path.join(output,entry),path.join(output,'ui',entry));
+  await fs.copyFile(path.join(output,'ui/404.html'),path.join(output,'404.html'));
+  await fs.writeFile(path.join(output,'ui/release.json'),JSON.stringify(releaseMetadata(environment,commit,publicEnv))+'\n');
+  await fs.writeFile(path.join(output,'_headers'),siteHeaders(environment));
 }
 export async function buildRelease(root,environment,commit,destination,settings={}) {
   if(process.versions.node!=='22.22.0') throw new Error('Release build requires Node 22.22.0');
@@ -34,11 +44,10 @@ export async function buildRelease(root,environment,commit,destination,settings=
     await fs.cp(await fs.realpath(path.join(root,'node_modules')),path.join(scratch,'node_modules'),{recursive:true,verbatimSymlinks:true});
     const buildEnv={PATH:process.env.PATH,HOME:process.env.HOME,TMPDIR:process.env.TMPDIR,CI:'true',NEXT_TELEMETRY_DISABLED:'1',...publicEnv};
     execFileSync('npm',['run','build'],{cwd:scratch,env:buildEnv,stdio:'inherit'});
+    await prepareStaticOutput(path.join(scratch,'out'),environment,commit,publicEnv);
     // Refuse to merge into an older release directory.
     await fs.mkdir(destination,{recursive:false});
     await fs.cp(path.join(scratch,'out'),path.join(destination,'site'),{recursive:true});
-    await fs.writeFile(path.join(destination,'site/release.json'),JSON.stringify(releaseMetadata(environment,commit,publicEnv))+'\n');
-    await fs.writeFile(path.join(destination,'site/_headers'),siteHeaders(environment));
     for(const [kind,worker] of [['api','reporting'],['website','registry-host']]) {
       const directory=path.join(destination,kind);await fs.mkdir(directory);
       const source=await json(path.join(scratch,`workers/${worker}/wrangler.jsonc`));
@@ -46,6 +55,8 @@ export async function buildRelease(root,environment,commit,destination,settings=
       delete config.env;delete config.$schema;
       if(kind==='website') config.assets={...config.assets,directory:'../site'};
       else {
+        config.vars.SITE_URL=environmentConfig(environment).site;
+        config.vars.ALLOWED_ORIGINS=reportingOrigins(environment).join(',');
         config.d1_databases=config.d1_databases.map(binding=>({...binding,migrations_dir:'./migrations'}));
         await fs.cp(path.join(scratch,'workers/reporting/migrations'),path.join(directory,'migrations'),{recursive:true});
       }
@@ -69,7 +80,7 @@ export async function readArtifact(directory,environment,commit,digest) {
     // Files that skip the Worker get their security headers only from site/_headers.
     if(kind==='website'&&config.assets.run_worker_first!==true) await fs.access(path.join(directory,'site/_headers')).catch(()=>{throw new Error('Artifact lets static files skip the Worker without site/_headers');});
   }
-  const release=await json(path.join(directory,'site/release.json'));
+  const release=await json(path.join(directory,'site/ui/release.json'));
   if(release.environment!==environment||release.release!==commit) throw new Error('Public release identity mismatch');
   return manifest;
 }

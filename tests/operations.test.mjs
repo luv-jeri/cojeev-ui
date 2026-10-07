@@ -88,7 +88,7 @@ test('website hosting accepts the static-file bypass or the all-Worker setting o
   const source=JSON.parse(readFileSync(new URL('workers/registry-host/wrangler.jsonc',sourceRoot),'utf8'));
   const config={...source,...source.env.beta,assets:{...source.env.beta.assets,directory:'../site'}};delete config.env;
   const rule=run_worker_first=>({...config,assets:{...config.assets,run_worker_first}});
-  assert.doesNotThrow(()=>validateDeploymentConfig('beta',rule(['/*','!/_next/*','!/*.txt']),'website'));
+  assert.doesNotThrow(()=>validateDeploymentConfig('beta',rule(['/*','!/ui/_next/*','!/ui/*.txt']),'website'));
   assert.doesNotThrow(()=>validateDeploymentConfig('beta',rule(true),'website'));
   for(const other of [false,['/*'],['/*','!/*']]) assert.throws(()=>validateDeploymentConfig('beta',rule(other),'website'),/mismatch: assets.run_worker_first/);
 });
@@ -162,9 +162,9 @@ async function fixture(environment='beta',{headers=true}={}) {
     await fs.writeFile(path.join(dir,kind,'wrangler.jsonc'),JSON.stringify(config));
     await fs.writeFile(path.join(dir,kind,'index.js'),'export default {}');
   }
-  await fs.mkdir(path.join(dir,'site'));
-  await fs.writeFile(path.join(dir,'site/index.html'),'<html>public</html>');
-  await fs.writeFile(path.join(dir,'site/release.json'),JSON.stringify({environment,release:'a'.repeat(40)}));
+  await fs.mkdir(path.join(dir,'site/ui'),{recursive:true});
+  await fs.writeFile(path.join(dir,'site/ui/index.html'),'<html>public</html>');
+  await fs.writeFile(path.join(dir,'site/ui/release.json'),JSON.stringify({environment,release:'a'.repeat(40)}));
   if(headers) await fs.writeFile(path.join(dir,'site/_headers'),'/*\n  x-content-type-options: nosniff\n');
   await fs.mkdir(path.join(dir,'api/migrations'));
   await fs.writeFile(path.join(dir,'api/migrations/0002_safe_delivery.sql'),'-- fixture');
@@ -279,4 +279,15 @@ test('isolated restore refuses nonempty scratch without issuing import',async()=
   };
   await assert.rejects(restore('beta',key,{run,cf:policyAPI}),/empty/);
   assert.ok(!commands.some(args=>args[0]==='d1'&&args.includes('--file')));
+});
+
+test('production deployment verifies both ui zone routes and origin-only reporting CORS',()=>{
+  const website=JSON.parse(readFileSync(new URL('workers/registry-host/wrangler.jsonc',sourceRoot),'utf8'));
+  const config={...website,...website.env.production,assets:{...website.env.production.assets,directory:'../site'}};delete config.env;
+  assert.doesNotThrow(()=>validateDeploymentConfig('production',config,'website'));
+  assert.throws(()=>validateDeploymentConfig('production',{...config,routes:config.routes.slice(0,1)},'website'),/mismatch: routes/);
+  const reporting=JSON.parse(readFileSync(new URL('workers/reporting/wrangler.jsonc',sourceRoot),'utf8'));
+  const api={...reporting,...reporting.env.production};delete api.env;
+  assert.doesNotThrow(()=>validateDeploymentConfig('production',api,'api'));
+  assert.throws(()=>validateDeploymentConfig('production',{...api,vars:{...api.vars,ALLOWED_ORIGINS:api.vars.ALLOWED_ORIGINS.replace('https://www.cojeev.com','https://www.cojeev.com/ui')}},'api'),/mismatch: vars.ALLOWED_ORIGINS/);
 });

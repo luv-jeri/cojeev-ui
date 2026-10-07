@@ -1,6 +1,6 @@
 ![The 000h seed mark on warm paper, with organic shapes drifting right into a pale-blue stage that holds a profile card.](docs/readme/000h-readme-banner.svg)
 
-<sub>Artwork, not a screenshot — the seed mark, the pigment stage and a profile card drawn in the library's own tokens. The components themselves move: **[open the live gallery](https://000h.cojeev.com/)**.</sub>
+<sub>Artwork, not a screenshot — the seed mark, the pigment stage and a profile card drawn in the library's own tokens. The components themselves move: **[open the live gallery](https://www.cojeev.com/ui/)**.</sub>
 
 # 000h by Cojeev
 
@@ -8,14 +8,14 @@ Expressive React components with organic shapes, purposeful motion, and source y
 
 **173 installable components**, MIT licensed and shadcn-compatible, with no dependency on the private Cojeev application. You add one entry at a time and the source lands in your project, where it is yours to change.
 
-[Website](https://000h.cojeev.com/) · [Browse components](https://000h.cojeev.com/docs/) · [Work with Sanjay](https://000h.cojeev.com/work-with-me/)
+[Website](https://www.cojeev.com/ui/) · [Browse components](https://www.cojeev.com/ui/docs/) · [Work with Sanjay](https://www.cojeev.com/ui/work-with-me/)
 
 ## Install one component
 
 You need React 19, TypeScript, Tailwind CSS v4 and an initialized shadcn project with an `@/` alias.
 
 ```sh
-npx shadcn@latest add https://000h.cojeev.com/r/button.json
+npx shadcn@latest add https://www.cojeev.com/ui/r/button.json
 ```
 
 ```tsx
@@ -29,7 +29,7 @@ export function ContinueAction() {
 Icons install the same way, one typed component per Lucide name:
 
 ```sh
-npx shadcn@latest add https://000h.cojeev.com/r/icon-activity.json
+npx shadcn@latest add https://www.cojeev.com/ui/r/icon-activity.json
 ```
 
 That adds `components/icons/activity.tsx`, exporting `ActivityIcon` on the Cojeev `Icon` with its motion presets, sizes and feedback.
@@ -44,10 +44,10 @@ The added stylesheet carries both light and dark token values. Choose one with `
 
 | Component | How it feels |
 | --- | --- |
-| [`Slider`](https://000h.cojeev.com/docs/slider/) | The track answers the value. A rubber strand rests thick over a short span and stretches thin as you pull it wide. |
-| [`MotionDrawer`](https://000h.cojeev.com/docs/motion-drawer/) | Drag it shut from any non-interactive area — buttons and links never start one. Stacked panels keep half-filled fields while they wait behind. |
-| [`BentoGrid`](https://000h.cojeev.com/docs/bento-grid/) | Rounded cards, or one continuous puzzle whose tiles share seeded edges. Change the seed and the seams redraw while every tile and label stays put. |
-| [`Command`](https://000h.cojeev.com/docs/command/) | Type to narrow, arrow through, press to run — or open the same list over the page as a palette. |
+| [`Slider`](https://www.cojeev.com/ui/docs/slider/) | The track answers the value. A rubber strand rests thick over a short span and stretches thin as you pull it wide. |
+| [`MotionDrawer`](https://www.cojeev.com/ui/docs/motion-drawer/) | Drag it shut from any non-interactive area — buttons and links never start one. Stacked panels keep half-filled fields while they wait behind. |
+| [`BentoGrid`](https://www.cojeev.com/ui/docs/bento-grid/) | Rounded cards, or one continuous puzzle whose tiles share seeded edges. Change the seed and the seams redraw while every tile and label stays put. |
+| [`Command`](https://www.cojeev.com/ui/docs/command/) | Type to narrow, arrow through, press to run — or open the same list over the page as a palette. |
 
 ## Motion you can turn down
 
@@ -87,4 +87,4 @@ Library code is [MIT](LICENCE). The bundled DM Sans and Bricolage Grotesque keep
 
 Documentation is built with [Fumadocs](https://github.com/fuma-nama/fumadocs); registry tooling is [shadcn](https://github.com/shadcn-ui/ui).
 
-Built by Sanjay Kumar. [Work with me](https://000h.cojeev.com/work-with-me/) · [github.com/luv-jeri/cojeev-ui](https://github.com/luv-jeri/cojeev-ui)
+Built by Sanjay Kumar. [Work with me](https://www.cojeev.com/ui/work-with-me/) · [github.com/luv-jeri/cojeev-ui](https://github.com/luv-jeri/cojeev-ui)

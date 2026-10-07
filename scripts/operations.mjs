@@ -5,12 +5,12 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
-import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig} from './release-config.mjs';
+import {ACCOUNT,RECOVERY_BUCKET,RESTORE_DATABASE,environmentConfig,reportingOrigins,websiteRoutes} from './release-config.mjs';
 import {deploymentDiagnostic,recordDeploymentEvent} from './deployment-diagnostics.mjs';
 
 const maxBytes=25*1024*1024;
 // Framework chunks and RSC payloads are served by Cloudflare's free asset layer, with headers from site/_headers.
-export const STATIC_FILES_SKIP_WORKER=['/*','!/_next/*','!/*.txt'];
+export const STATIC_FILES_SKIP_WORKER=['/*','!/ui/_next/*','!/ui/*.txt'];
 const ALLOWED_SECRETS=['ADMIN_TOKEN','HEALTH_TOKEN','IP_HASH_SECRET','TURNSTILE_SECRET','TURNSTILE_SITE_KEY','GITHUB_TOKEN','GITHUB_WEBHOOK_SECRET','RESEND_API_KEY','RESEND_WEBHOOK_SECRET'];
 // Two protected bundles compose into the one validated set. REPORTING_SECRETS_JSON
 // stays the base and is never rewritten or read back, so an already-provisioned
@@ -81,7 +81,7 @@ export async function cloudflare(endpoint) {
 }
 export function validateDeploymentConfig(environment,config,kind) {
   const target=environmentConfig(environment),api=kind==='api';
-  const allowed=api?[target.site,target.api,...(environment==='production'?['https://luv-jeri.github.io']:[])]:[];
+  const allowed=api?reportingOrigins(environment):[];
   // This guardrail exists to catch an environment mixup minutes before a deploy,
   // so it names the field that failed instead of one undifferentiated refusal.
   const checks=[
@@ -91,7 +91,7 @@ export function validateDeploymentConfig(environment,config,kind) {
     ['vars.ENVIRONMENT',config.vars?.ENVIRONMENT===environment],
     ['workers_dev',config.workers_dev===false],
     ['preview_urls',config.preview_urls===false],
-    ['routes',config.routes?.length===1&&config.routes[0].pattern===new URL(api?target.api:target.site).hostname&&config.routes[0].custom_domain===true],
+    ['routes',api?config.routes?.length===1&&config.routes[0].pattern===new URL(target.api).hostname&&config.routes[0].custom_domain===true:JSON.stringify(config.routes)===JSON.stringify(websiteRoutes(environment))],
     ...(api?[
       ['d1_databases',config.d1_databases?.length===1&&config.d1_databases[0].database_id===target.databaseId],
       ['r2_buckets',config.r2_buckets?.length===1&&config.r2_buckets[0].bucket_name===target.media],
