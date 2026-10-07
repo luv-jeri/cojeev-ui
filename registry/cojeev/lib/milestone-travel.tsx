@@ -254,8 +254,9 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     at = -1, // where the body is parked, or heading
     mood = false, // true while the body shows "needs one action"
     ep: { to: number; landed: boolean; passed: Set<number> } | null = null;
-  const owned = new Set<number>(),
-    ownedSegs = new Set<number>();
+  // Index -> the exact element hidden, so a reorder mid-travel still unhides the right node.
+  const owned = new Map<number, HTMLElement | SVGElement>(),
+    ownedSegs = new Map<number, Element>();
 
   // layers, back to front: spine, rings, halo, gooey bodies, upright glyphs
   const defs = el("defs", svg);
@@ -503,11 +504,15 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   /* ownership: static markers hide only while this layer paints them */
   function own(from: number, to: number) {
     for (let i = from; i <= to; i++) {
-      owned.add(i);
-      part(i, "marker")?.setAttribute(OWNED, "");
-      if (i < to) {
-        ownedSegs.add(i);
-        part(i, "connection")?.setAttribute(OWNED, "");
+      const marker = part(i, "marker");
+      if (marker) {
+        owned.set(i, marker);
+        marker.setAttribute(OWNED, "");
+      }
+      const connection = i < to ? part(i, "connection") : null;
+      if (connection) {
+        ownedSegs.set(i, connection);
+        connection.setAttribute(OWNED, "");
       }
     }
   }
@@ -516,7 +521,9 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     0;
   function setTurn(i: number, deg: number) {
     const m = part(i, "marker");
-    if (!m) return;
+    if (m) turn(m, deg);
+  }
+  function turn(m: HTMLElement | SVGElement, deg: number) {
     const d = ((deg % 360) + 360) % 360;
     if (d < 0.05 || d > 359.95) m.style.removeProperty("--mp-turn");
     else m.style.setProperty("--mp-turn", `${d.toFixed(2)}deg`);
@@ -526,17 +533,17 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
    * so `keep` carries its turn over; a cancelled beat drops to the upright rest paint.
    */
   function release(keep: boolean) {
-    for (const i of owned) {
+    for (const [i, marker] of owned) {
       const b =
         body.show && body.seg < 0 && body.at === i
           ? body
           : marks[i]?.show
             ? marks[i]
             : null;
-      setTurn(i, keep && b ? b.rot.x : 0);
-      part(i, "marker")?.removeAttribute(OWNED);
+      turn(marker, keep && b ? b.rot.x : 0);
+      marker.removeAttribute(OWNED);
     }
-    for (const i of ownedSegs) part(i, "connection")?.removeAttribute(OWNED);
+    for (const connection of ownedSegs.values()) connection.removeAttribute(OWNED);
     owned.clear();
     ownedSegs.clear();
     painting = false;

@@ -348,6 +348,7 @@ function Step({
   breathe: boolean;
 }) {
   const { travel, labels, onSelect } = React.useContext(SharedContext);
+  const id = React.useId();
   return (
     <MilestoneItem
       step={index + 1}
@@ -388,7 +389,7 @@ function Step({
       </span>
       <div className="v-milestone-path__content">
         <div className="v-milestone-path__heading">
-          <MilestoneTitle className="v-milestone-path__title">
+          <MilestoneTitle id={`${id}-title`} className="v-milestone-path__title">
             {onSelect ? (
               <Button
                 variant="ghost"
@@ -436,8 +437,12 @@ function Step({
         )}
         {item.details != null && item.details !== false && (
           <details className="v-milestone-path__details">
-            <summary>
-              Details<span className="sr-only">: {item.title}</span>
+            {/* Named by reference so a rich title is never rendered twice. */}
+            <summary
+              id={`${id}-details`}
+              aria-labelledby={`${id}-details ${id}-title`}
+            >
+              Details
             </summary>
             <div className="v-milestone-path__detail">{item.details}</div>
           </details>
@@ -548,7 +553,7 @@ export function MilestonePath({
     () => ({
       travel,
       allowed: live && inView && presentation !== "review",
-      breathe: live,
+      breathe: live && inView,
       now,
       labels: statusLabels,
       onSelect: onMilestoneSelect,

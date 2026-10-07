@@ -51,7 +51,10 @@ test("server render: needs carries its action, running time waits for the client
   const $ = load(renderToStaticMarkup(createElement(MilestonePath, { items })));
   const row = (id: string) => $(`[data-milestone-id="${id}"]`);
   assert.equal(row("a").find(".v-milestone-path__duration").text(), "Elapsed time 1:05");
-  assert.equal(row("a").find("details summary").text(), "Details: Plan");
+  const summary = row("a").find("details summary");
+  assert.equal(summary.text(), "Details");
+  const names = String(summary.attr("aria-labelledby")).split(" ").map((ref) => $(`[id="${ref}"]`).text());
+  assert.deepEqual(names, ["Details", "Plan"], "named Details plus the title, without a second copy of the title");
   assert.equal(row("b").find(".v-milestone-path__status").text(), "Needs one action");
   assert.equal(row("b").find("button.v-milestone-path__action").text(), "Try again");
   assert.equal(row("b").find(".v-milestone-path__duration").first().text(), "Elapsed time 1:02:05");
