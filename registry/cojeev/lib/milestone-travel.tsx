@@ -2,7 +2,12 @@
 
 import * as React from "react";
 import { path as outline, spring, type Spring } from "../motion/geometry";
-import { registerMotionClock } from "../motion/clock";
+import {
+  cancelMotion,
+  registerMotionClock,
+  scheduleMotion,
+  type MotionTimer,
+} from "../motion/clock";
 
 export type MilestoneTravel = "seed" | "droplet" | "division";
 type State = "complete" | "current" | "upcoming" | "needs";
@@ -223,6 +228,9 @@ function attr(e: Element, k: string, v: string | null) {
 const OWNED = "data-travel-owned";
 const BLOB_SPRINGS = ["p", "oy", "s", "q", "rot", "m", "co"] as const;
 
+/** A phase wait: the shared motion clock bounds it; `when` lets it end early once the springs settle. */
+type Wait = { g: number; timer: MotionTimer; when?: () => boolean; r: () => void };
+
 function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   const S = (k: number, z: number, x = 0): Spring => ({ x, v: 0, to: x, k, z });
   const tune = (s: Spring, k: number, z: number) => {
@@ -245,8 +253,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     rings: { el: SVGCircleElement; show: boolean }[] = [],
     ink: number[] = [],
     marks: Blob[] = [];
-  let now = 0,
-    waits: { g: number; at: number; when?: () => boolean; r: () => void }[] = [],
+  let waits: Wait[] = [],
     hook: (() => void) | null = null,
     busy = false,
     gen = 0,
@@ -305,6 +312,7 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     };
   }
   const body = makeBlob(gBody);
+  body.g.setAttribute("data-traveler", "");
   const springs = () => [
     halo.s,
     sep,
@@ -476,30 +484,30 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
   /* the clock */
   function frame(dt: number) {
     if (!painting) return false;
-    now += dt;
     for (const s of springs()) if (!rest(s)) spring(s, dt);
     hook?.();
     draw();
-    for (const w of waits.slice())
-      if (w.g !== gen || now >= w.at || w.when?.()) {
-        waits.splice(waits.indexOf(w), 1);
-        w.r();
-      }
+    for (const w of waits.slice()) if (w.g !== gen || w.when?.()) done(w);
     const active =
       waits.length > 0 || !!hook || springs().some((s) => !rest(s));
     if (!active && !busy) release(true);
     return active;
   }
-  const sleep = (ms: number) =>
+  function done(w: Wait) {
+    const i = waits.indexOf(w);
+    if (i < 0) return;
+    waits.splice(i, 1);
+    cancelMotion(w.timer);
+    w.r();
+  }
+  const wait = (ms: number, when?: () => boolean) =>
     new Promise<void>((r) => {
-      waits.push({ g: gen, at: now + ms / 1000, r });
+      const w: Wait = { g: gen, when, r, timer: scheduleMotion(() => done(w), ms) };
+      waits.push(w);
       wake();
     });
-  const until = (when: () => boolean, maxMs = 3000) =>
-    new Promise<void>((r) => {
-      waits.push({ g: gen, at: now + maxMs / 1000, when, r });
-      wake();
-    });
+  const sleep = (ms: number) => wait(ms);
+  const until = (when: () => boolean, maxMs = 3000) => wait(maxMs, when);
 
   /* ownership: static markers hide only while this layer paints them */
   function own(from: number, to: number) {
@@ -550,7 +558,10 @@ function createScene(host: HTMLElement, svg: SVGSVGElement, gooId: string) {
     hook = null;
     const pending = waits;
     waits = [];
-    pending.forEach((w) => w.r());
+    pending.forEach((w) => {
+      cancelMotion(w.timer);
+      w.r();
+    });
     busy = false;
     neck.n = 0;
     ep = null;
