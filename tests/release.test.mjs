@@ -9,6 +9,48 @@ import { environmentConfig, buildEnvironment } from '../scripts/release-config.m
 import { checkArtifactCsp } from '../scripts/release-csp.mjs';
 import host from '../workers/registry-host/src/index.mjs';
 
+test('manifest_schema_2_validates_identity_fields',async()=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'release-schema-2-'));
+  const commit='a'.repeat(40);
+  const expected=manifest=>({environment:'production',commit,digest:release.manifestDigest(manifest),schema:2});
+  try {
+    await fs.mkdir(path.join(dir,'site/ui'),{recursive:true});
+    await fs.writeFile(path.join(dir,'site/index.html'),'<html>public</html>');
+    await fs.writeFile(path.join(dir,'site/ui/index.html'),'<html>mounted</html>');
+    await fs.writeFile(path.join(dir,'site/ui/release.json'),'{}');
+    const old=await release.createManifest(dir,'production',commit);
+    await release.verifyManifest(dir,old,{...expected(old),schema:undefined});
+    await release.verifyManifest(dir,old,{...expected(old),schema:1});
+    await assert.rejects(release.verifyManifest(dir,old,expected(old)),{message:'Unversioned artifact: migration artifacts need manifest schema 2'});
+    const id={side:'website',phase:'mounted',deploymentId:'website-mounted-aaaaaaaaaaaa-12345678',migrationStage:'additive',registryGraph:'baseline',reportingBase:null};
+    const manifest=await release.createManifest(dir,'production',commit,id);
+    assert.equal(manifest.schema,2);
+    assert.deepEqual(manifest.files['site/ui/index.html'],{sha256:'e36cdbb1fc1b0aa1590be8c1fc861a103e334ce2928c45933953da78bf6c4591',origin:'build'});
+    await release.verifyManifest(dir,manifest,expected(manifest));
+    await release.verifyManifest(dir,manifest,{...expected(manifest),schema:undefined});
+    for(const change of [{migrationStage:'redirect'},{registryGraph:'canonical'},{reportingBase:'legacy'},
+      {deploymentId:'malformed'},{deploymentId:'website-redirect-aaaaaaaaaaaa-12345678'},
+      {side:'api'},{phase:'unknown'},{baseline:{commit:'bad',digest:'bad'}}]) {
+      const invalid={...manifest,...change};
+      await assert.rejects(release.verifyManifest(dir,invalid,expected(invalid)),/identity|baseline|phase|deployment/i);
+    }
+    const unknown={...manifest,schema:3};
+    await assert.rejects(release.verifyManifest(dir,unknown,{...expected(unknown),schema:undefined}),/Artifact identity or manifest digest mismatch/);
+    await assert.rejects(release.verifyManifest(dir,manifest,{...expected(manifest),schema:1}),/identity/);
+    const invalidOrigin=structuredClone(manifest); invalidOrigin.files['site/ui/index.html'].origin='invented';
+    await assert.rejects(release.verifyManifest(dir,invalidOrigin,expected(invalidOrigin)),/origin|integrity/i);
+    await fs.writeFile(path.join(dir,'site/ui/index.html'),'tampered');
+    await assert.rejects(release.verifyManifest(dir,manifest,expected(manifest)),/integrity/i);
+    await fs.rm(path.join(dir,'site'),{recursive:true});
+    await fs.mkdir(path.join(dir,'api')); await fs.writeFile(path.join(dir,'api/index.js'),'export default {}');
+    const api=await release.createManifest(dir,'production',commit,{side:'api',phase:'prepared',deploymentId:'api-prepared-aaaaaaaaaaaa-12345678',reportingBase:'legacy'});
+    assert.equal(api.migrationStage,null); assert.equal(api.registryGraph,null);
+    await release.verifyManifest(dir,api,expected(api));
+    const wrongBase={...api,reportingBase:'canonical'};
+    await assert.rejects(release.verifyManifest(dir,wrongBase,expected(wrongBase)),/identity|reportingBase/i);
+  } finally {await fs.rm(dir,{recursive:true,force:true});}
+});
+
 test('unknown and opposite environment settings fail closed',()=>{
   assert.throws(()=>environmentConfig('preview'),/environment/i);
   assert.equal(environmentConfig('beta').databaseId,'e2adf4c4-5ab0-434d-b90f-96ea451e3be7');
